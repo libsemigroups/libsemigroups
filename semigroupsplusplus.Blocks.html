@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Blocks</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::Blocks</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Blocks::Blocks">Blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>0 parameters</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::Blocks">Blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 parameters</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::Blocks">Blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>3 parameters</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::Blocks">Blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Copy</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Destructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Blocks::~Blocks">~Blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Default</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Blocks::block">block<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::cbegin">cbegin<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::cend">cend<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::degree">degree<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::hash_value">hash_value<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::is_transverse_block">is_transverse_block<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::lookup">lookup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::nr_blocks">nr_blocks<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::operator%3C">operator&lt;<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::operator%3D">operator=<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>deleted</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::operator%3D%3D">operator==<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Blocks::rank">rank<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::Blocks"><span><span class="keyword">Class</span><span>semigroupsplusplus::Blocks</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Class for blocks, which are signed partitions of the set <em>{0, ..., n}</em> for some integer <em>n</em>. It is possible to associate to every <a href="semigroupsplusplus.Bipartition.html#semigroupsplusplus.Bipartition">semigroupsplusplus::Bipartition</a>                    a pair of blocks which determine the Green's L- and R-class of the
+                    <a href="semigroupsplusplus.Bipartition.html#semigroupsplusplus.Bipartition">semigroupsplusplus::Bipartition</a> in the monoid of all partitions. This is the purpose of this class.
+                </p>
+                <p>The <strong>Blocks</strong> class is not currently used by the algorithms for
+                    <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">semigroupsplusplus::Semigroup</a>s but the extra methods are used in the GAP package
+                    <a href="https://gap-packages.github.io/Semigroups/">Semigroups package for GAP</a>.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::Blocks">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Blocks</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a blocks object of size 0.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::Blocks">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Blocks</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;unsigned int&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">blocks,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;bool&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">lookup</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>,
+                        then <em>i - 1</em> occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, <em>i&gt;= 0</em>. None of this is checked but it probably should be. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                        is not copied, and is deleted by the destructor.</p>
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.lookup">lookup</a> must have length equal to the maximum value in
+                        <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, this maximum is also the number of blocks in the partition. A value <strong>true</strong> in position <em>i</em> indicates that the <em>i</em>th block is signed and
+                        <strong>false</strong> that it is unsigned.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::blocks">
+                            <td>blocks</td>
+                            <td>
+                                <div class="doc">
+                                    <p>lookup table for the partition being defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::lookup">
+                            <td>lookup</td>
+                            <td>
+                                <div class="doc">
+                                    <p>lookup table for which blocks are signed.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::Blocks">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Blocks</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;unsigned int&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">blocks,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;bool&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">lookup,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">u_int32_t</span></span>
+                                </td>
+                                <td class="argument_name">nr_blocks</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>,
+                        then <em>i - 1</em> occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, <em>i&gt;= 0</em>. None of this is checked but it probably should be. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                        is not copied, and is deleted by the destructor of
+                        <strong>Blocks</strong>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.lookup">lookup</a> must have length equal to the maximum value in
+                        <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, this maximum is also the number of blocks in the partition. A value <strong>true</strong> in position <em>i</em> indicates that the <em>i</em>th block is signed and
+                        <strong>false</strong> that it is unsigned.</p>
+                    <p>This constructor is provided for the situation where the number of blocks in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> is known <em>a priori</em> and so does not need to be calculated in the constructor.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::blocks">
+                            <td>blocks</td>
+                            <td>
+                                <div class="doc">
+                                    <p>lookup table for the partition being defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::lookup">
+                            <td>lookup</td>
+                            <td>
+                                <div class="doc">
+                                    <p>lookup table for which blocks are signed.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::nr_blocks">
+                            <td>nr_blocks</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of blocks in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::Blocks">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Blocks</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Blocks">Blocks</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">copy</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Copies all the information in <a href="#semigroupsplusplus::Blocks::Blocks.copy">copy</a> and returns a new instance of
+                        <strong>Blocks</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::Blocks::copy">
+                            <td>copy</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the blocks to copy.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="destructors">Destructors</h2>
+        <div class="destructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::~Blocks">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">~Blocks</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Deletes the blocks and lookup provided at construction time.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::block">
+                    <div class="return_type"><span class="type"><span class="name ">u_int32_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">block</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method asserts that the argument is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::block::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an integer less than <a href="#semigroupsplusplus::Blocks::degree">semigroupsplusplus::Blocks::degree</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the index of the block containing <a href="#semigroupsplusplus::Blocks::block.pos">pos</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::cbegin">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;unsigned int&gt;::const_iterator</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cbegin</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method asserts that <a href="#semigroupsplusplus::Blocks::degree">semigroupsplusplus::Blocks::degree</a> is not 0.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>A const_iterator pointing to the first value in the blocks lookup.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::cend">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;unsigned int&gt;::const_iterator</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cend</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method asserts that <a href="#semigroupsplusplus::Blocks::degree">semigroupsplusplus::Blocks::degree</a> is not 0.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>A const_iterator referring to the past-the-end element in blocks lookup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::degree">
+                    <div class="return_type"><span class="type"><span class="name ">u_int32_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">degree</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the degree of a <strong>Blocks</strong> object which is the size of the set on which it is a partition.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::hash_value">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a hash value for a <strong>Blocks</strong> object.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::is_transverse_block">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">is_transverse_block</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">index</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method asserts that the argument is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::is_transverse_block::index">
+                            <td>index</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an integer less than <a href="#semigroupsplusplus::Blocks::nr_blocks">semigroupsplusplus::Blocks::nr_blocks</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>whether or not the block with index <a href="#semigroupsplusplus::Blocks::is_transverse_block.index">index</a> is a transverse (signed) block or not.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::lookup">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;bool&gt;</span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                        </span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">lookup</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a pointer to the lookup table for block indices.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::nr_blocks">
+                    <div class="return_type"><span class="type"><span class="name ">u_int32_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">nr_blocks</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of blocks in the <strong>Blocks</strong> object.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::operator<">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator&lt;</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Blocks">Blocks</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">that</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This operator defines a total order on the set of all blocks (including those of different <a href="#semigroupsplusplus::Blocks::degree">semigroupsplusplus::Blocks::degree</a>).</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::operator<::that">
+                            <td>that</td>
+                            <td>
+                                <div class="doc">
+                                    <p>another blocks object.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> or <strong>false</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::operator=">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Blocks">Blocks</a></span><span class="qualifier">  &amp;</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator=</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Blocks">Blocks</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">copy</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>deleted</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::operator=::copy">
+                            <td>copy</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a <strong>Blocks</strong> object The assignment operator is deleted for <strong>Blocks</strong> to avoid unintended copying.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>nothing as it cannot be envoked.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::operator==">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator==</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Blocks">Blocks</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">that</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Two <strong>Blocks</strong> objects are equal if and only if their underlying signed partitions are equal. It is ok to compare blocks of different
+                        <a href="#semigroupsplusplus::Blocks::degree">semigroupsplusplus::Blocks::degree</a> with this operator.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Blocks::operator==::that">
+                            <td>that</td>
+                            <td>
+                                <div class="doc">
+                                    <p>another blocks object.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> or <strong>false</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Blocks::rank">
+                    <div class="return_type"><span class="type"><span class="name ">u_int32_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">rank</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>non-const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of signed (transverse) blocks in the <strong>Blocks</strong> object.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MatrixOverSemiring</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::MatrixOverSemiring</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Bases</div>
+            <ul>
+                <li><a href="#">ElementWithVectorData&lt;long long, semigroupsplusplus::MatrixOverSemiring&gt;<span class="counter"></span></a></li>
+            </ul>
+            <div class="subtitle">Subclasses</div>
+            <ul>
+                <li><a href="semigroupsplusplus.ProjectiveMaxPlusMatrix.html#semigroupsplusplus.ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Non-abstract</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">MatrixOverSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 or 3 parameters</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">MatrixOverSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 parameters (vector pointer, semiring pointer)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">MatrixOverSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 parameters (matrix const ref, semiring pointer)</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::cache_hash_value">cache_hash_value<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::complexity">complexity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::degree">degree<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::identity">identity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::really_copy">really_copy<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::redefine">redefine<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::MatrixOverSemiring::semiring">semiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::MatrixOverSemiring"><span><span class="keyword">Class</span><span>semigroupsplusplus::MatrixOverSemiring</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Class for square matrices over semirings, which is a subclass of
+                    <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData">semigroupsplusplus::ElementWithVectorData</a>. See <a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">semigroupsplusplus::Semiring</a>.</p>
+                <p>This class is abstract since it does not implement all methods required by the <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">semigroupsplusplus::Element</a> class, it exists to provide common methods for its subclasses.
+                </p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="bases">Bases</h2>
+        <table class="bases">
+            <tbody>
+                <tr id="">
+                    <td class="keyword"></td>
+                    <td><span class="type"><span class="name ">ElementWithVectorData&lt;long long, semigroupsplusplus::MatrixOverSemiring&gt;</span></span>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="subclasses">Subclasses</h2>
+        <table class="subclasses">
+            <tbody>
+                <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix+semigroupsplusplus::ProjectiveMaxPlusMatrix">
+                    <td class="keyword"></td>
+                    <td><a href="semigroupsplusplus.ProjectiveMaxPlusMatrix.html#semigroupsplusplus.ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix</a></td>
+                    <td>
+                        <div class="brief">
+                            <p>Non-abstract</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">MatrixOverSemiring</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;long long&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">hv,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a>, <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a> is not copied, and should be
+                        deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a> and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a> should be a vector of integer values of length <em>n ^
+2</em> for some integer <em>n</em>, so that the value in position <em>i </em> n + j<em> is the
+entry in the </em>i<em>th row and </em>j*th column of the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to defining data of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::hv">
+                            <td>hv</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The hash value of the element being created</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">MatrixOverSemiring</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;long long&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a>, <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a> is not copied, and should be
+                        deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a> and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a> should be a vector of integer values of length <em>n ^
+2</em> for some integer <em>n</em>, so that the value in position <em>i </em> n + j<em> is the
+entry in the </em>i<em>th row and </em>j*th column of the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to defining data of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">MatrixOverSemiring</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::vector&lt;long long&gt;, std::allocator&lt;std::vector&lt;long long&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring.matrix">matrix</a>, which is copied into the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::MatrixOverSemiring::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>A pointer to the semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::cache_hash_value">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cache_hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.hash_value">semigroupsplusplus::Element::hash_value</a>.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::complexity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">complexity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.complexity">semigroupsplusplus::Element::complexity</a> for more details.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><em>n ^ 3</em> where <em>n</em> is the dimension of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::degree">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">degree</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.degree">semigroupsplusplus::Element::degree</a> for more details.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the dimension of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::identity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">identity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.identity">semigroupsplusplus::Element::identity</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a new matrix with dimension equal to that of <strong>this</strong>, where the main diagonal consists of the value <a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.one">semigroupsplusplus::Semiring::one</a>                                        and every other entry
+                                        <a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.zero">semigroupsplusplus::Semiring::zero</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::really_copy">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">really_copy</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">increase_deg_by</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_copy">semigroupsplusplus::Element::really_copy</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::really_copy::increase_deg_by">
+                            <td>increase_deg_by</td>
+                            <td>
+                                <div class="doc">
+                                    <p>this must be 0, since it does not make sense to increase the degree of a matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>A pointer to a copy of <strong>this</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::redefine">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">redefine</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">y</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.redefine">semigroupsplusplus::Element::redefine</a>.</p>
+                    <p>Redefine <strong>this</strong> to be the product of <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.x">x</a> and <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.y">y</a>. This method asserts that the dimensions of
+                        <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.x">x</a>, <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.y">y</a>, and <strong>this</strong>, are all equal, and that neither <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.x">x</a>                        nor <a href="#semigroupsplusplus::MatrixOverSemiring::redefine.y">y</a> equals <strong>this</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::redefine::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a matrix</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::MatrixOverSemiring::redefine::y">
+                            <td>y</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a matrix</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::MatrixOverSemiring::semiring">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">semiring</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the <a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">semigroupsplusplus::Semiring</a> over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

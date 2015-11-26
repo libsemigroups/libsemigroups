@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TropicalMinPlusSemiring</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::TropicalMinPlusSemiring</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Bases</div>
+            <ul>
+                <li><a href="#semigroupsplusplus.TropicalSemiring%2Bsemigroupsplusplus.TropicalSemiring">TropicalSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Abstract</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::TropicalMinPlusSemiring::TropicalMinPlusSemiring">TropicalMinPlusSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Default</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::TropicalMinPlusSemiring::one">one<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>Semiring multiplicative identity.</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::TropicalMinPlusSemiring::plus">plus<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>Multiplication in the semiring.</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::TropicalMinPlusSemiring::prod">prod<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>Multiplication in the semiring.</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::TropicalMinPlusSemiring::zero">zero<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>Semiring additive identity.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::TropicalMinPlusSemiring"><span><span class="keyword">Class</span><span>semigroupsplusplus::TropicalMinPlusSemiring</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Tropical min-plus semiring.</p>
+                <p>The <strong>tropical min-plus semiring</strong> consists of the integers <em>0, ... , t</em> for some value <em>t</em> (called the <strong>threshold</strong> of the semiring) and infinity. Infinity is represented by LONG_MAX.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="bases">Bases</h2>
+        <table class="bases">
+            <tbody>
+                <tr id="semigroupsplusplus::TropicalSemiring+semigroupsplusplus::TropicalSemiring">
+                    <td class="keyword"></td>
+                    <td><span class="type"><span class="name "><a href="semigroupsplusplus.TropicalSemiring.html#semigroupsplusplus.TropicalSemiring">TropicalSemiring</a></span></span>
+                    </td>
+                    <td>
+                        <div class="brief">
+                            <p>Abstract</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::TropicalMinPlusSemiring::TropicalMinPlusSemiring">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">TropicalMinPlusSemiring</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">int64_t</span></span>
+                                </td>
+                                <td class="argument_name">threshold</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>Default</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::TropicalMinPlusSemiring::TropicalMinPlusSemiring::threshold">
+                            <td>threshold</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the largest integer in the semiring (or equivalently the size of the semiring minus 2).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::TropicalMinPlusSemiring::one">
+                    <ul class="specifiers">
+                        <li class="override">override</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">int64_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">one</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns the multiplicative identity, or one, of the tropical min-plus semiring.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the integer 0.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="overrides"><span class="title">Overrides: </span><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.one">Semiring::one</a></div>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::TropicalMinPlusSemiring::plus">
+                    <ul class="specifiers">
+                        <li class="override">override</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">int64_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">plus</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">int64_t</span></span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">int64_t</span></span>
+                                </td>
+                                <td class="argument_name">y</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>Multiplication in the semiring.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::TropicalMinPlusSemiring::plus::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>any int64_t int</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::TropicalMinPlusSemiring::plus::y">
+                            <td>y</td>
+                            <td>
+                                <div class="doc">
+                                    <p>any int64_t int</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>LONG_MAX if either of x and y is LONG_MAX, and otherwise the minimum of x, y, and the threshold of the semiring.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="overrides"><span class="title">Overrides: </span><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.plus">Semiring::plus</a></div>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::TropicalMinPlusSemiring::prod">
+                    <ul class="specifiers">
+                        <li class="override">override</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">int64_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">prod</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">int64_t</span></span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">int64_t</span></span>
+                                </td>
+                                <td class="argument_name">y</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>Multiplication in the semiring.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::TropicalMinPlusSemiring::prod::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>any int64_t int</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::TropicalMinPlusSemiring::prod::y">
+                            <td>y</td>
+                            <td>
+                                <div class="doc">
+                                    <p>any int64_t int</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>LONG_MAX if x or y equals LONG_MAX, otherwise return the minimum of x + y and the threshold of the semiring.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="overrides"><span class="title">Overrides: </span><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.prod">Semiring::prod</a></div>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::TropicalMinPlusSemiring::zero">
+                    <ul class="specifiers">
+                        <li class="override">override</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">int64_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">zero</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns the additive identity, or zero, of the tropical min-plus semiring.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the integer LONG_MAX.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="overrides"><span class="title">Overrides: </span><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring.zero">Semiring::zero</a></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PBR</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::PBR</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Bases</div>
+            <ul>
+                <li><a href="#">ElementWithVectorData&lt;std::vector&lt;unsigned int&gt;, semigroupsplusplus::PBR&gt;<span class="counter"></span></a></li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::PBR::PBR">PBR<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Default</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::PBR::cache_hash_value">cache_hash_value<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::PBR::complexity">complexity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::PBR::degree">degree<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::PBR::identity">identity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::PBR::redefine">redefine<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::PBR"><span><span class="keyword">Class</span><span>semigroupsplusplus::PBR</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Partitioned binary relations are a generalisation of bipartitions, which were introduced by <a href="https://arxiv.org/abs/1102.0862">Martin and Mazorchuk</a>. This is a subclass of <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData">semigroupsplusplus::ElementWithVectorData</a>.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="bases">Bases</h2>
+        <table class="bases">
+            <tbody>
+                <tr id="">
+                    <td class="keyword"></td>
+                    <td><span class="type"><span class="name ">ElementWithVectorData&lt;std::vector&lt;unsigned int&gt;, semigroupsplusplus::PBR&gt;</span></span>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::PBR">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">PBR</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::vector&lt;unsigned int&gt;, std::allocator&lt;std::vector&lt;unsigned int&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> *</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">vector,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">hv</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a PBR defined by <a href="#semigroupsplusplus::PBR::PBR.vector">vector</a>, <a href="#semigroupsplusplus::PBR::PBR.vector">vector</a> is not copied, and should be deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a>                        and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::PBR::PBR.vector">vector</a> should be a vector of vectors of non-negative integer values of length <em>2n</em> for some integer <em>n</em>, the vector in position <em>i</em> is the list of points
+                        adjacent to <em>i</em> in the PBR.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::PBR::PBR::vector">
+                            <td>vector</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to defining data of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::PBR::PBR::hv">
+                            <td>hv</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The hash value of the element being created.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::cache_hash_value">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cache_hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.hash_value">semigroupsplusplus::Element::hash_value</a>.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::complexity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">complexity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.complexity">semigroupsplusplus::Element::complexity</a> for more details.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the two times <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.degree">semigroupsplusplus::Element::degree</a> all cubed.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::degree">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">degree</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.degree">semigroupsplusplus::Element::degree</a> for more details.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>half the number of points in the PBR, which is also half the length of the underlying vector <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData._vector">semigroupsplusplus::ElementWithVectorData::_vector</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::identity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">identity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.identity">semigroupsplusplus::Element::identity</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a new PBR with degree equal to <a href="#semigroupsplusplus::PBR::degree">semigroupsplusplus::PBR::degree</a> where every value is adjacent to its negative (or <em>i</em> is adjacent <em>i +</em> <a href="#semigroupsplusplus::PBR::degree">semigroupsplusplus::PBR::degree</a>                                        and vice versa for every <em>i</em> less than <a href="#semigroupsplusplus::PBR::degree">semigroupsplusplus::PBR::degree</a>).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::PBR::redefine">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">redefine</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">y</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.redefine">semigroupsplusplus::Element::redefine</a>.</p>
+                    <p>Redefine <strong>this</strong> to be the composition of <a href="#semigroupsplusplus::PBR::redefine.x">x</a> and <a href="#semigroupsplusplus::PBR::redefine.y">y</a>. This method asserts that the degrees of <a href="#semigroupsplusplus::PBR::redefine.x">x</a>,
+                        <a href="#semigroupsplusplus::PBR::redefine.y">y</a>, and <strong>this</strong>, are all equal, and that neither
+                        <a href="#semigroupsplusplus::PBR::redefine.x">x</a> nor <a href="#semigroupsplusplus::PBR::redefine.y">y</a> equals <strong>this</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::PBR::redefine::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>PBR</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::PBR::redefine::y">
+                            <td>y</td>
+                            <td>
+                                <div class="doc">
+                                    <p>PBR</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

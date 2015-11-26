@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Semigroup</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::Semigroup</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Variables</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Semigroup::LIMIT_MAX">LIMIT_MAX<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>static</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::UNDEFINED">UNDEFINED<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>static</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>default</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>copy constructor</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>add generators</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Destructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Semigroup::~Semigroup">~Semigroup<span class="counter"></span></a></li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Semigroup::add_generators">add_generators<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::at">at<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::batch_size">batch_size<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::current_max_word_length">current_max_word_length<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::current_nrrules">current_nrrules<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::current_position">current_position<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::current_size">current_size<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::degree">degree<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::elements">elements<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::enumerate">enumerate<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::enumerate">enumerate<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::factorisation">factorisation<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::fast_product">fast_product<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::final_letter">final_letter<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::first_letter">first_letter<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::gens">gens<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::genslookup">genslookup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::idempotents_cbegin">idempotents_cbegin<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::idempotents_cend">idempotents_cend<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::is_begun">is_begun<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::is_done">is_done<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::is_idempotent">is_idempotent<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::left_cayley_graph">left_cayley_graph<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::length_const">length_const<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::length_non_const">length_non_const<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::next_relation">next_relation<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::nr_idempotents">nr_idempotents<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::nrgens">nrgens<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::nrrules">nrrules<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::operator%3D">operator=<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>deleted</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::operator%5B%5D">operator[]<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::position">position<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::prefix">prefix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::product_by_reduction">product_by_reduction<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::reset_next_relation">reset_next_relation<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::right_cayley_graph">right_cayley_graph<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::set_batch_size">set_batch_size<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::size">size<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::sorted_at">sorted_at<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::sorted_elements">sorted_elements<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::sorted_position">sorted_position<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::suffix">suffix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::test_membership">test_membership<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::Semigroup"><span><span class="keyword">Class</span><span>semigroupsplusplus::Semigroup</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Class for representing a semigroup consisting of <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">semigroupsplusplus::Element</a>s and defined by a generating set.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="variables">Variables</h2>
+        <table class="variables">
+            <tbody>
+                <tr id="semigroupsplusplus::Semigroup::LIMIT_MAX">
+                    <td class="variable_name identifier">LIMIT_MAX</td>
+                    <td class="variable_type"><span class="type"><span class="name ">size_t</span></span>
+                    </td>
+                    <td class="doc">
+                        <div class="doc">
+                            <p>This variable is used to indicate the maximum possible limit that can be used with <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>.</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="semigroupsplusplus::Semigroup::UNDEFINED">
+                    <td class="variable_name identifier">UNDEFINED</td>
+                    <td class="variable_type"><span class="type"><span class="name ">size_t</span></span>
+                    </td>
+                    <td class="doc">
+                        <div class="doc">
+                            <p>This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup.</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::Semigroup">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Semigroup</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">gens</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This is the default constructor for a semigroup generated by <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a>. The generators <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a> must all be of the same derived
+                        subclass of the
+                        <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">semigroupsplusplus::Element</a> base class. Additionally, <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a> must satisfy the following:</p>
+                    <ol>
+                        <li>there must be at least one generator;</li>
+                        <li>the generators must have equal degree <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.degree">semigroupsplusplus::Element::degree</a>;</li>
+                    </ol>
+                    <p>if either of these points is not satisfied, then an asssertion failure will occur.</p>
+                    <p>There can be duplicate generators and although they do not count as distinct elements, they do count as distinct generators. In other words, the generators of the semigroup are precisely (a copy of) <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a>                        in the same order they occur in <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a>.</p>
+                    <p>The generators <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a> are copied by the constructor, and so it is the responsibility of the caller to delete the argument <a href="#semigroupsplusplus::Semigroup::Semigroup.gens">gens</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::Semigroup::gens">
+                            <td>gens</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the generators of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::Semigroup">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Semigroup</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">copy</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a new <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a> and <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>                        which is an exact copy of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>. No enumeration is triggered by this constructor of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> or of the newly constructed
+                        semigroup.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::Semigroup::copy">
+                            <td>copy</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a semigroup to copy</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::Semigroup">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Semigroup</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">copy,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This is a constructor for a semigroup generated by the generators of the
+                        <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> and <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a>                        <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> and the (possibly) additional generators <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>.</p>
+                    <p>The relevant parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> are copied and then
+                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> is called. Consequently, the semigroup is (partially or fully) enumerated by this constructor.</p>
+                    <p>The same effect can be obtained by copying <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> using the copy constructor and then calling <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>.
+                        However, this constructor avoids copying those parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> that
+                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> invalidates anyway. If <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> has not been enumerated at all, then
+                        these two routes for adding more generators are equivalent.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::Semigroup::copy">
+                            <td>copy</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::Semigroup::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a collection of additional generators</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::Semigroup::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="destructors">Destructors</h2>
+        <div class="destructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::~Semigroup">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">~Semigroup</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>A default destructor.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::add_generators">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">add_generators</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::unordered_set&lt;semigroupsplusplus::Element *, std::hash&lt;semigroupsplusplus::Element *&gt;, std::equal_to&lt;semigroupsplusplus::Element *&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> *</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This function can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by
+                        the old generators and the new in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
+                    <p>This method is non-const, and changes the semigroup in place, thereby invalidating possibly previously known data about the semigroup, such as the left or right Cayley graphs.</p>
+                    <p>A generator is only added if it is does not belong in the existing data structure (it may belong to the semigroup but just not be known to belong). If <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is empty or
+                        only contains elements that are known to belong to the semigroup, then the semigroup is left unchanged.</p>
+                    <p>Otherwise, the semigroup is returned in a state where all of the previously enumerated elements which had been multiplied by all of the old generators, have now been multiplied by the new generators. This means that after this function
+                        is called the semigroup might contain many more elements than before (whether it is fully enumerating or not). It can also be the case that the new generators are the only new elements, unlike say, in the case of groups.</p>
+                    <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::add_generators::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the new generators to be added</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::add_generators::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::at">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">at</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::at::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a position of an element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::at::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>).</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the element of the semigroup in position <a href="#semigroupsplusplus::Semigroup::at.pos">pos</a>, or a <em>nullptr</em> if there is no such element.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::batch_size">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">batch_size</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the current value of the batch size. This is the minimum number of elements enumerated in any call to the <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>                                        method.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::current_max_word_length">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">current_max_word_length</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The maximum length of any element so far computed.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::current_nrrules">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">current_nrrules</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of relations in the presentation for the semigroup that have been found so far</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::current_position">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">current_position</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">x</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::current_position::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>pointer to an element of the same type as those in the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position of the element <a href="#semigroupsplusplus::Semigroup::current_position.x">x</a> in the semigroup if it is already known to belong to the semigroup, and
+                                        <a href="#semigroupsplusplus::Semigroup::UNDEFINED">semigroupsplusplus::Semigroup::UNDEFINED</a> if not. If the semigroup is not fully enumerated, then this method may return
+                                        <a href="#semigroupsplusplus::Semigroup::UNDEFINED">semigroupsplusplus::Semigroup::UNDEFINED</a> when <a href="#semigroupsplusplus::Semigroup::current_position.x">x</a> is in the semigroup, but not this is not yet known.
+                                        See also <a href="#semigroupsplusplus::Semigroup::position">semigroupsplusplus::Semigroup::position</a> and
+                                        <a href="#semigroupsplusplus::Semigroup::sorted_position">semigroupsplusplus::Semigroup::sorted_position</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::current_size">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">current_size</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of elements in the semigroup that have been enumerated so far.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::degree">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">degree</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the degree of the elements in the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::elements">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">elements</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::elements::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the vector consisting of pointers to all of the elements of the semigroup.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::enumerate">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">enumerate</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">limit,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This is the main method of the Semigroup class, and is where the Froidure-Pin Algorithm is implemented. This method is non-const since it involves partially enumerating the semigroup.</p>
+                    <p>If the semigroup is already fully enumerated, or the number of elements previously enumerated exceeds <a href="#semigroupsplusplus::Semigroup::enumerate.limit">limit</a>, then calling this function does nothing. Otherwise, <a href="#semigroupsplusplus::Semigroup::enumerate">enumerate</a>                        and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> attempts to find at least the maximum of <a href="#semigroupsplusplus::Semigroup::enumerate.limit">limit</a> and the batch size elements
+                        of the semigroup. If the semigroup is fully enumerated, then it knows its left and right Cayley graphs, and a minimal factorisation of every element (in terms of its generating set). All of the elements are stored in memory until
+                        the object is destroyed.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::enumerate::limit">
+                            <td>limit</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of elements to enumerate (defaults to <a href="#semigroupsplusplus::Semigroup::LIMIT_MAX">semigroupsplusplus::Semigroup::LIMIT_MAX</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::enumerate::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::enumerate">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">enumerate</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Calls <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">enumerate</a>(LIMIT_MAX, report), and so triggers a full enumeration of the
+                        semigroup.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::enumerate::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::factorisation">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">factorisation</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.word_t">word_t</a></span><span class="qualifier">  &amp;</span></span>
+                                </td>
+                                <td class="argument_name">word,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve enumerating the semigroup.</p>
+                    <p>If <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> is less than the size of this semigroup, then this method changes its first argument <a href="#semigroupsplusplus::Semigroup::factorisation.word">word</a> in-place
+                        (first clearing it and then) to contain a minimal factorization of the element in position <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> of the semigroup with respect to the generators of the semigroup. This
+                        method enumerates the semigroup until at least the <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> element is known. If
+                        <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> is greater than the size of the semigroup, then nothing happens and <a href="#semigroupsplusplus::Semigroup::factorisation.word">word</a> is not modified, in particular
+                        not cleared.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::factorisation::word">
+                            <td>word</td>
+                            <td>
+                                <div class="doc">
+                                    <p>changed in-place to contain a word in the generators equal to the
+                                        <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::factorisation::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a possible position of element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::factorisation::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::fast_product">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">fast_product</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">i,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">j</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const, it asserts that the values <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> and <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a> are valid, and it either:</p>
+                    <ul>
+                        <li>
+                            <p>follows the path in the right or left Cayley graph from <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> to <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a>, whichever is shorter (<a href="#semigroupsplusplus::Semigroup::product_by_reduction">semigroupsplusplus::Semigroup::product_by_reduction</a>);
+                                or</p>
+                        </li>
+                        <li>
+                            <p>multiplies the elements in postions <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> and <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a> together;</p>
+                        </li>
+                    </ul>
+                    <p>whichever is better. This is determined by comparing
+                        <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.complexity">semigroupsplusplus::Element::complexity</a> and the <a href="#semigroupsplusplus::Semigroup::length_const">semigroupsplusplus::Semigroup::length_const</a>                        of <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> and <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a>.</p>
+                    <p>For example, if the <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.complexity">semigroupsplusplus::Element::complexity</a> of the multiplication is linear and the semigroup is a semigroup of transformations of
+                        degree 20, and the shortest paths in the left and right Cayley graphs from <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> to <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a> are of length 100 and 1131,
+                        then it better to just multiply the transformation.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::fast_product::i">
+                            <td>i</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::fast_product::j">
+                            <td>j</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> in the semigroup of the product of the <a href="#semigroupsplusplus::Semigroup::fast_product.i">i</a> and <a href="#semigroupsplusplus::Semigroup::fast_product.j">j</a>th
+                                        elements.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::final_letter">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">letter_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">final_letter</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that <a href="#semigroupsplusplus::Semigroup::final_letter.pos">pos</a> is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::final_letter::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the final letter of the element in position <a href="#semigroupsplusplus::Semigroup::final_letter.pos">pos</a> of the semigroup, i.e. the index of the generator corresponding to the final letter of the element. Note that
+                                        <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>[<a href="#semigroupsplusplus::Semigroup::final_letter">final_letter</a>(<a href="#semigroupsplusplus::Semigroup::final_letter.pos">pos</a>)]
+                                        may not equal _elements[<a href="#semigroupsplusplus::Semigroup::final_letter">final_letter</a>(<a href="#semigroupsplusplus::Semigroup::final_letter.pos">pos</a>)].</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::first_letter">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">letter_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">first_letter</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that <a href="#semigroupsplusplus::Semigroup::first_letter.pos">pos</a> is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::first_letter::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the first letter of the element in position <a href="#semigroupsplusplus::Semigroup::first_letter.pos">pos</a> of the semigroup, i.e. the index of the generator corresponding to the first letter of the element. Note that
+                                        <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>[<a href="#semigroupsplusplus::Semigroup::first_letter">first_letter</a>(<a href="#semigroupsplusplus::Semigroup::first_letter.pos">pos</a>)]
+                                        may not equal _elements[<a href="#semigroupsplusplus::Semigroup::first_letter">first_letter</a>(<a href="#semigroupsplusplus::Semigroup::first_letter.pos">pos</a>)].</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::gens">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">gens</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a pointer to a vector containing the generators of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::genslookup">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">genslookup</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">letter_t</a></span></span>
+                                </td>
+                                <td class="argument_name">i</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const, and it asserts that the value <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a> is valid. In many cases <a href="#semigroupsplusplus::Semigroup::genslookup">genslookup</a>(<a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>)
+                        will equal <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>, examples of when this will not be the case are:</p>
+                    <ul>
+                        <li>
+                            <p>there are duplicate generators;</p>
+                        </li>
+                        <li>
+                            <p><a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> was called after the semigroup was already partially enumerated.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::genslookup::i">
+                            <td>i</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of a generator of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> of the <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>th generator.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::idempotents_cbegin">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;size_t&gt;::const_iterator</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">idempotents_cbegin</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nr_threads</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                    <p>If the size of the semigroup is less than 823543 or the number of threads is 1, then this is a single-threaded function. Otherwise, the elements of the semigroup are tested for idempotency in <a href="#semigroupsplusplus::Semigroup::idempotents_cbegin.nr_threads">nr_threads</a>                        concurrent threads.
+                    </p>
+                    <p>The value of the positions, and number, of idempotents is stored after they are first computed.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::idempotents_cbegin::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration and/or counting, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::idempotents_cbegin::nr_threads">
+                            <td>nr_threads</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of threads to use (defaults to 1)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a const iterator for the positions <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> of idempotents in the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::idempotents_cend">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;size_t&gt;::const_iterator</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">idempotents_cend</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nr_threads</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                    <p>If the size of the semigroup is less than 823543 or the number of threads is 1, then this is a single-threaded function. Otherwise, the elements of the semigroup are tested for idempotency in <a href="#semigroupsplusplus::Semigroup::idempotents_cend.nr_threads">nr_threads</a>                        concurrent threads.
+                    </p>
+                    <p>The value of the positions, and number, of idempotents is stored after they are first computed.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::idempotents_cend::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration and/or counting, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::idempotents_cend::nr_threads">
+                            <td>nr_threads</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of threads to use (defaults to 1)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a const iterator for the positions <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> of idempotents in the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::is_begun">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">is_begun</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if no elements (other than the generators) have been enumerated and <strong>false</strong> otherwise</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::is_done">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">is_done</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if the semigroup is fully enumerated and <strong>false</strong> if not
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::is_idempotent">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">is_idempotent</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nr_threads</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::is_idempotent::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::is_idempotent::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration and/or counting, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::is_idempotent::nr_threads">
+                            <td>nr_threads</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of threads to use (defaults to 1)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if the <a href="#semigroupsplusplus::Semigroup::is_idempotent.pos">pos</a> element of the semigroup is an idempotent and return <strong>false</strong> otherwise.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::left_cayley_graph">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.cayley_graph_t">cayley_graph_t</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">left_cayley_graph</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::left_cayley_graph::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>).</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a pointer to the left Cayley graph of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::length_const">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">length_const</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that <a href="#semigroupsplusplus::Semigroup::length_const.pos">pos</a> is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::length_const::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the length of the element in position <a href="#semigroupsplusplus::Semigroup::length_const.pos">pos</a>. This assumes that such an element has already been enumerated and will cause an assertion failure if it is not.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::length_non_const">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">length_non_const</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::length_non_const::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::length_non_const::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the length of the element in position <a href="#semigroupsplusplus::Semigroup::length_non_const.pos">pos</a>, assuming that there is such an element, if not, this will cause an assertion failure.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::next_relation">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">next_relation</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;size_t&gt;</span><span class="qualifier">  &amp;</span></span>
+                                </td>
+                                <td class="argument_name">relation,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                    <p>This method changes <a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> in-place so that one of the following holds:
+                    </p>
+                    <ul>
+                        <li>
+                            <p><a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> is a vector consisting of a <a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">semigroupsplusplus::letter_t</a> and a <a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">semigroupsplusplus::letter_t</a>                                such that <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>()[<a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a>[0]] == <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>()[
+                                <a
+                                    href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a>[1]], i.e. if the semigroup was defined with duplicate generators;</p>
+                        </li>
+                        <li>
+                            <p><a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> is a vector consisting of a <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a>, <a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">semigroupsplusplus::letter_t</a>,
+                                and <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> such that
+                                <strong>this</strong>[<a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a>[0]] * <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>()[<a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a>[1]]
+                                ==
+                                <strong>this</strong>[<a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a>[2]]</p>
+                        </li>
+                        <li>
+                            <p><a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> is empty if there are no more relations.</p>
+                        </li>
+                    </ul>
+                    <p><a href="#semigroupsplusplus::Semigroup::next_relation">next_relation</a> is guaranteed to output all relations of length 2 before any relations of length 3. If called repeatedly after
+                        <a href="#semigroupsplusplus::Semigroup::reset_next_relation">semigroupsplusplus::Semigroup::reset_next_relation</a>, and until <a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> is empty, then the values
+                        placed in <a href="#semigroupsplusplus::Semigroup::next_relation.relation">relation</a> correspond to a length-reducing confluent rewriting system that defines the semigroup.</p>
+                    <p>This can be used in conjunction with <a href="#semigroupsplusplus::Semigroup::factorisation">semigroupsplusplus::Semigroup::factorisation</a> to obtain a presentation defining the semigroup.</p>
+                    <p>See also <a href="#semigroupsplusplus::Semigroup::reset_next_relation">semigroupsplusplus::Semigroup::reset_next_relation</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::next_relation::relation">
+                            <td>relation</td>
+                            <td>
+                                <div class="doc">
+                                    <p>container for the next relation, changed in-place.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::next_relation::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::nr_idempotents">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">nr_idempotents</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nr_threads</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                    <p>If the size of the semigroup is less than 823543 or the number of threads is 1, then this is a single-threaded function. Otherwise, the elements of the semigroup are tested for idempotency in <a href="#semigroupsplusplus::Semigroup::nr_idempotents.nr_threads">nr_threads</a>                        concurrent threads.
+                    </p>
+                    <p>The value of the positions, and number, of idempotents is stored after they are first computed.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::nr_idempotents::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration and/or counting, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::nr_idempotents::nr_threads">
+                            <td>nr_threads</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of threads to use (defaults to 1)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the total number of idempotents in the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::nrgens">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">nrgens</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of generators of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::nrrules">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">nrrules</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup. See <a href="#semigroupsplusplus::Semigroup::next_relation">semigroupsplusplus::Semigroup::next_relation</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::nrrules::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the total number of relations in the presentation defining the semigroup.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::operator=">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  &amp;</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator=</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">semigroup</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>The Semigroup class does not support an assignment contructor to avoid accidental copying. An object in Semigroup may use many gigabytes of memory and might be extremely expensive to copy. A copy constructor is provided in case such
+                        a copy should be required anyway.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::operator=::semigroup">
+                            <td>semigroup</td>
+                            <td>
+                                <div class="doc">
+                                    <p>const reference to a semigroup that cannot be assigned.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>nothing it is deleted.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::operator[]">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator[]</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and does no checks on its arguments.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::operator[]::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the element of the semigroup in position <a href="#semigroupsplusplus::Semigroup::operator%5B%5D.pos">pos</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::position">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">position</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                    <p>This method can be used to find the <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> position of the element <a href="#semigroupsplusplus::Semigroup::position.x">x</a> if it belongs to the semigroup.
+                        The semigroup is enumerated in batches until
+                        <a href="#semigroupsplusplus::Semigroup::position.x">x</a> is found or the semigroup is fully enumerated but <a href="#semigroupsplusplus::Semigroup::position.x">x</a> was not found (see <a href="#semigroupsplusplus::Semigroup::set_batch_size">semigroupsplusplus::Semigroup::set_batch_size</a>).</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::position::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a possible element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::position::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> position of the element <a href="#semigroupsplusplus::Semigroup::position.x">x</a> in the semigroup, or
+                                        <a href="#semigroupsplusplus::Semigroup::UNDEFINED">semigroupsplusplus::Semigroup::UNDEFINED</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::prefix">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">prefix</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that <a href="#semigroupsplusplus::Semigroup::prefix.pos">pos</a> is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::prefix::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position of the prefix of the element <strong>s</strong> in position
+                                        <a href="#semigroupsplusplus::Semigroup::prefix.pos">pos</a> (of the semigroup) of length one less than the length of <strong>s</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::product_by_reduction">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">product_by_reduction</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">i,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">j</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that the values <a href="#semigroupsplusplus::Semigroup::product_by_reduction.i">i</a> and <a href="#semigroupsplusplus::Semigroup::product_by_reduction.j">j</a> are valid.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::product_by_reduction::i">
+                            <td>i</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::product_by_reduction::j">
+                            <td>j</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> in the semigroup of the product of the <a href="#semigroupsplusplus::Semigroup::product_by_reduction.i">i</a> and
+                                        <a
+                                            href="#semigroupsplusplus::Semigroup::product_by_reduction.j">j</a>th elements by following the path in the right or left Cayley graph from <a href="#semigroupsplusplus::Semigroup::product_by_reduction.i">i</a> to <a href="#semigroupsplusplus::Semigroup::product_by_reduction.j">j</a>,
+                                            whichever is shorter.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::reset_next_relation">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">reset_next_relation</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves changing some private data members but it does not call <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>.</p>
+                    <p>This resets the private data members in the semigroup that govern the behaviour of <a href="#semigroupsplusplus::Semigroup::next_relation">semigroupsplusplus::Semigroup::next_relation</a>. After a call to this function, the next call
+                        to <a href="#semigroupsplusplus::Semigroup::next_relation">semigroupsplusplus::Semigroup::next_relation</a> will return the first relation of the presentation defining the semigroup.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::right_cayley_graph">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.cayley_graph_t">cayley_graph_t</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">right_cayley_graph</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::right_cayley_graph::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>).</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a pointer to the right Cayley graph of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::set_batch_size">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">set_batch_size</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">batch_size</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it changes a class data member, but it does not enumerate the semigroup any further.</p>
+                    <p>The <em>batch size</em> is the number of new elements to be found by any call to
+                        <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>. A call to <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>                        and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> returns between 0 and approximately the batch size.</p>
+                    <p>The default value of the batch size is 8192.</p>
+                    <p>This is used by, for example, <a href="#semigroupsplusplus::Semigroup::position">semigroupsplusplus::Semigroup::position</a> so that it is possible to find the position of an element without fully enumerating the semigroup. The value
+                        of the batch size is also used to initialise certain data members, if you know a good upper bound for the size of your semigroup, then it is a good idea to call <a href="#semigroupsplusplus::Semigroup::set_batch_size">set_batch_size</a>                        with that upper bound as an argument, this can significantly improve the performance of the <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>                        method.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::set_batch_size::batch_size">
+                            <td>batch_size</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a new value for the batch size.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::size">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">size</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::size::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the size of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::sorted_at">
+                    <div class="return_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">sorted_at</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::sorted_at::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::sorted_at::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>).</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the element of the semigroup in position <a href="#semigroupsplusplus::Semigroup::sorted_at.pos">pos</a> of the sorted array of elements, or nullptr in <a href="#semigroupsplusplus::Semigroup::sorted_at.pos">pos</a> is
+                                        not valid (i.e. too big).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::sorted_elements">
+                    <div class="return_type"><span class="type"><span class="name ">std::vector&lt;std::pair&lt;semigroupsplusplus::Element *, size_t&gt;, std::allocator&lt;std::pair&lt;semigroupsplusplus::Element *, size_t&gt;&gt;&gt;</span>
+                        <span
+                            class="qualifier"> *</span>
+                            </span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">sorted_elements</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::sorted_elements::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a vector consisting of pairs <strong>x</strong> where <strong>x.first</strong> is a pointer to an element of the semigroup and <strong>x.second</strong> is the <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a>                                        position of that element in the semigroup. This vector is sorted.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::sorted_position">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">sorted_position</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it involves fully enumerating the semigroup.
+                    </p>
+                    <p>This method can be used to find the position of the element <a href="#semigroupsplusplus::Semigroup::sorted_position.x">x</a> in the sorted array of elements of the semigroup.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::sorted_position::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a possible element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::sorted_position::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position of the element <a href="#semigroupsplusplus::Semigroup::sorted_position.x">x</a> in the sorted array of elements of the semigroup, or <a href="#semigroupsplusplus::Semigroup::UNDEFINED">semigroupsplusplus::Semigroup::UNDEFINED</a>                                        if <a href="#semigroupsplusplus::Semigroup::sorted_position.x">x</a> is not an element of <strong>this</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::suffix">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">suffix</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                                </td>
+                                <td class="argument_name">pos</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const and it asserts that <a href="#semigroupsplusplus::Semigroup::suffix.pos">pos</a> is valid.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::suffix::pos">
+                            <td>pos</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of an already enumerated element of the semigroup.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position of the suffix of the element <strong>s</strong> in position
+                                        <a href="#semigroupsplusplus::Semigroup::suffix.pos">pos</a> (of the semigroup) of length one less than the length of <strong>s</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::test_membership">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">test_membership</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const since it may involve fully enumerating the semigroup.
+                    </p>
+                    <p>This method can be used to check if the element <a href="#semigroupsplusplus::Semigroup::test_membership.x">x</a> is an element of the semigroup. The semigroup is enumerated in batches until <a href="#semigroupsplusplus::Semigroup::test_membership.x">x</a>                        is found or the semigroup is fully enumerated but <a href="#semigroupsplusplus::Semigroup::test_membership.x">x</a> was not found (see
+                        <a href="#semigroupsplusplus::Semigroup::set_batch_size">semigroupsplusplus::Semigroup::set_batch_size</a>).</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::test_membership::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a possible element of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::test_membership::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> or <strong>false</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

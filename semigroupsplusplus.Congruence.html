@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Congruence</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::Congruence</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Congruence::Congruence">Congruence<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>5 parameters (for finitely presented semigroup)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::Congruence">Congruence<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>6 parameters (for a <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">semigroupsplusplus::Semigroup</a>)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::Congruence">Congruence<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>5 parameters (for a coset table)</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Destructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Congruence::~Congruence">~Congruence<span class="counter"></span></a></li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Congruence::compress">compress<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::is_tc_done">is_tc_done<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::kill">kill<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::nr_classes">nr_classes<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::todd_coxeter">todd_coxeter<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Congruence::word_to_coset">word_to_coset<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::Congruence"><span><span class="keyword">Class</span><span>semigroupsplusplus::Congruence</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Class for representing a congruence on a semigroup defined either as an instance of a <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">semigroupsplusplus::Semigroup</a> object or as a finitely presented semigroup
+                    defined by generators and relations.</p>
+                <p>This class and its implemented methods are rather rudimentary in the current version of Semigroups++.</p>
+                <p>The word "coset" is used throughout this section to mean "congruence class".
+                </p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::Congruence">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Congruence</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::string</span></span>
+                                </td>
+                                <td class="argument_name">type,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nrgens,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">relations,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">extra,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">thread_id</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This constructor returns an instance of a congruence object whose type is described by the string <a href="#semigroupsplusplus::Congruence::Congruence.type">type</a>. The congruence is defined over the semigroup defined by the generators
+                        <a href="#semigroupsplusplus::Congruence::Congruence.nrgens">nrgens</a> and relations <a href="#semigroupsplusplus::Congruence::Congruence.relations">relations</a> and is the least congruence containing the generating pairs in <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>.</p>
+                    <p>Note that cldoc mangles the types of the parameters <a href="#semigroupsplusplus::Congruence::Congruence.relations">relations</a> and
+                        <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>, which are both <strong>std::vector&lt;&lt;relation_t&gt;&gt;</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::type">
+                            <td>type</td>
+                            <td>
+                                <div class="doc">
+                                    <p>string describing the type of congruence (left/right/twosided)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::nrgens">
+                            <td>nrgens</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of generators</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::relations">
+                            <td>relations</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a vector of <a href="semigroupsplusplus.html#semigroupsplusplus.relation_t">semigroupsplusplus::relation_t</a></p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::extra">
+                            <td>extra</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a vector of extra <a href="semigroupsplusplus.html#semigroupsplusplus.relation_t">semigroupsplusplus::relation_t</a> (such as those used to define a congruence on a finitely presented semigroup)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::thread_id">
+                            <td>thread_id</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an integer identifying the thread which is instantiating the congruence (defaults to 0).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::Congruence">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Congruence</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::string</span></span>
+                                </td>
+                                <td class="argument_name">type,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semigroup,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">extra,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">prefill,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">thread_id</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This constructor returns an instance of a congruence object whose type is described by the string <a href="#semigroupsplusplus::Congruence::Congruence.type">type</a>. The congruence is defined over the semigroup <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a>                        and is the least congruence containing the generating pairs in <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>.</p>
+                    <p>If the value <a href="#semigroupsplusplus::Congruence::Congruence.prefill">prefill</a> is <strong>true</strong>, then the left or right Cayley graph of
+                        <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a> is used to completely prefill the coset table in
+                        <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>, so that only coincidences are processed during
+                        <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>. This can be faster than simply running <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>                        on the presentation defining <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a> in the case that the congruence being defined has lots of equivalence classes when compared to the size of
+                        <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a> (for some definition of "lots").</p>
+                    <p>Note that cldoc mangles the types of the parameter <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>, which is
+                        <strong>std::vector&lt;&lt;relation_t&gt;&gt;</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::type">
+                            <td>type</td>
+                            <td>
+                                <div class="doc">
+                                    <p>string describing the type of congruence (left/right/twosided)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::semigroup">
+                            <td>semigroup</td>
+                            <td>
+                                <div class="doc">
+                                    <p>pointer to a <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">semigroupsplusplus::Semigroup</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::extra">
+                            <td>extra</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a vector of <a href="semigroupsplusplus.html#semigroupsplusplus.relation_t">semigroupsplusplus::relation_t</a> used to define a congruence on
+                                        <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::prefill">
+                            <td>prefill</td>
+                            <td>
+                                <div class="doc">
+                                    <p>prefill the coset table (for Todd-Coxeter) with the left or right Cayley graph of <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration of <a href="#semigroupsplusplus::Congruence::Congruence.semigroup">semigroup</a>, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::thread_id">
+                            <td>thread_id</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an integer identifying the thread which is instantiating the congruence (defaults to 0).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::Congruence">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Congruence</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::string</span></span>
+                                </td>
+                                <td class="argument_name">type,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">nrgens,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;size_t&gt;, std::vector&lt;size_t&gt;&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">extra,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">RecVec&lt;size_t&gt;</span><span class="qualifier">  &amp;</span></span>
+                                </td>
+                                <td class="argument_name">prefill,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">thread_id</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This constructor returns an instance of a congruence object whose type is described by the string <a href="#semigroupsplusplus::Congruence::Congruence.type">type</a>. The congruence is the least congruence containing the generating pairs
+                        in <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>, and it is defined on the semigroup whose right or left Cayley graph is described by <a href="#semigroupsplusplus::Congruence::Congruence.prefill">prefill</a>.</p>
+                    <p>Note that cldoc mangles the types of the parameters <a href="#semigroupsplusplus::Congruence::Congruence.extra">extra</a>, which is
+                        <strong>std::vector&lt;&lt;relation_t&gt;&gt;</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::type">
+                            <td>type</td>
+                            <td>
+                                <div class="doc">
+                                    <p>string describing the type of congruence (left/right/twosided)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::nrgens">
+                            <td>nrgens</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of generators</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::extra">
+                            <td>extra</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a vector of <a href="semigroupsplusplus.html#semigroupsplusplus.relation_t">semigroupsplusplus::relation_t</a> used to define the congruence being constructed.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::prefill">
+                            <td>prefill</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a prefilled coset table (for Todd-Coxeter).</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::Congruence::thread_id">
+                            <td>thread_id</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an integer identifying the thread which is instantiating the congruence (defaults to 0).</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="destructors">Destructors</h2>
+        <div class="destructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::~Congruence">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">~Congruence</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>A default destructor.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::compress">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">compress</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method compresses the coset table used by <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>.</p>
+                    <p>This method is non-const because it will call <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a> if it has not already been run to completion.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::compress::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::is_tc_done">
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">is_tc_done</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>const</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if the method <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a> has been run until its conclusion, and <strong>false</strong> if it has not.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::kill">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">kill</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method can be used to terminate <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a> if it is running for too long, or if an instance running in another thread concludes before
+                        this.
+                    </p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::nr_classes">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">nr_classes</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const because it will call <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a> if it has not already been run to completion.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::nr_classes::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the number of congruences classes (or cosets) of the congruence.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::todd_coxeter">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">todd_coxeter</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This runs the
+                        <a href="https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm">Todd-Coxeter
+algorithm</a> on <strong>this</strong>. Note that this may never terminate, but can be killed using
+                        <a href="#semigroupsplusplus::Congruence::kill">semigroupsplusplus::Congruence::kill</a>. The implementation is based on one by Goetz Pfeiffer in GAP.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::todd_coxeter::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during the algorithm, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Congruence::word_to_coset">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Congruence::coset_t">coset_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">word_to_coset</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.word_t">word_t</a></span></span>
+                                </td>
+                                <td class="argument_name">word,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is non-const because it will call <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a> if it has not already been run to completion.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Congruence::word_to_coset::word">
+                            <td>word</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a <a href="semigroupsplusplus.html#semigroupsplusplus.word_t">semigroupsplusplus::word_t</a> in the (indices of) the generators of the semigroup that <strong>this</strong> is defined over.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Congruence::word_to_coset::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during <a href="#semigroupsplusplus::Congruence::todd_coxeter">semigroupsplusplus::Congruence::todd_coxeter</a>, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the index of the coset corresponding to <a href="#semigroupsplusplus::Congruence::word_to_coset.word">word</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

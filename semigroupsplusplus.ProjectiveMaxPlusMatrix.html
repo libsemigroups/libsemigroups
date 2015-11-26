@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ProjectiveMaxPlusMatrix</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::ProjectiveMaxPlusMatrix</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Bases</div>
+            <ul>
+                <li><a href="#semigroupsplusplus.MatrixOverSemiring%2Bsemigroupsplusplus.MatrixOverSemiring">MatrixOverSemiring<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Non-abstract</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 or 3 parameters</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 parameters (vector pointer, hash value)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>2 parameters (vector const ref, semiring pointer)</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::cache_hash_value">cache_hash_value<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::ProjectiveMaxPlusMatrix"><span><span class="keyword">Class</span><span>semigroupsplusplus::ProjectiveMaxPlusMatrix</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Class for projective square matrices <a href="semigroupsplusplus.MaxPlusSemiring.html#semigroupsplusplus.MaxPlusSemiring">semigroupsplusplus::MaxPlusSemiring</a> semiring, which is a subclass of <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData">semigroupsplusplus::ElementWithVectorData</a>.
+                    See <a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">semigroupsplusplus::Semiring</a>. Two projective matrices are equal if they differ by a scalar multiple.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="bases">Bases</h2>
+        <table class="bases">
+            <tbody>
+                <tr id="semigroupsplusplus::MatrixOverSemiring+semigroupsplusplus::MatrixOverSemiring">
+                    <td class="keyword"></td>
+                    <td><span class="type"><span class="name "><a href="semigroupsplusplus.MatrixOverSemiring.html#semigroupsplusplus.MatrixOverSemiring">MatrixOverSemiring</a></span></span>
+                    </td>
+                    <td>
+                        <div class="brief">
+                            <p>Non-abstract</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">ProjectiveMaxPlusMatrix</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;long long&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">hv,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a>, <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a> is not
+                        copied, and should be deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a> and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a> should be a vector of integer values of length <em>n ^
+2</em> for some integer <em>n</em>, so that the value in position <em>i </em> n + j<em> is the
+entry in the </em>i<em>th row and </em>j*th column of the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to defining data of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::hv">
+                            <td>hv</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Hash value of the element being created (defaults to Element::UNDEFINED)
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to the semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">ProjectiveMaxPlusMatrix</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;long long&gt;</span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a>, <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a> is not
+                        copied, and should be deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a> and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a> should be a vector of integer values of length <em>n ^
+2</em> for some integer <em>n</em>, so that the value in position <em>i </em> n + j<em> is the
+entry in the </em>i<em>th row and </em>j*th column of the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to defining data of the matrix.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to the semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">ProjectiveMaxPlusMatrix</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;std::vector&lt;long long&gt;, std::allocator&lt;std::vector&lt;long long&gt;&gt;&gt;</span>
+                                    <span
+                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
+                                        </span>
+                                </td>
+                                <td class="argument_name">matrix,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></span><span class="qualifier"> *</span></span>
+                                </td>
+                                <td class="argument_name">semiring</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>Constructs a matrix defined by <a href="#semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix.matrix">matrix</a>, which is copied into the constructed matrix.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::matrix">
+                            <td>matrix</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The matrix</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix::semiring">
+                            <td>semiring</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Pointer to the semiring over which the matrix is defined.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::ProjectiveMaxPlusMatrix::cache_hash_value">
+                    <ul class="specifiers">
+                        <li class="override">override</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cache_hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.hash_value">semigroupsplusplus::Element::hash_value</a>.</p>
+                </div>
+                <table class="arguments"></table>
+                <div class="overrides"><span class="title">Overrides: </span><a href="semigroupsplusplus.MatrixOverSemiring.html#semigroupsplusplus.MatrixOverSemiring.cache_hash_value">MatrixOverSemiring::cache_hash_value</a></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

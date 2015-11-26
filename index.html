@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Semigroups++</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Namespaces</div>
+            <ul>
+                <li><a href="semigroupsplusplus.html#semigroupsplusplus">semigroupsplusplus<span class="counter"></span></a></li>
+            </ul>
+            <div class="subtitle">Report</div>
+            <ul>
+                <li><a href="report.html">Documentation generator</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <div class="description">
+            <div class="doc">
+                <h1>Semigroups++ Version 0.0.1</h1>
+                <h3>by <a href="http://www-groups.mcs.st-andrews.ac.uk/~jamesm/">J. D. Mitchell</a> with contributions by <a href="http://www-circa.mcs.st-andrews.ac.uk/~julius/">J. Jonusas</a> and <a href="http://www-circa.mcs.st-andrews.ac.uk/~mct25/">M. Torpey</a></h3>
+                <p>This is the source code documentation for Semigroups++ produced using
+                    <a href="https://github.com/jessevdk/cldoc">cldoc</a>. This documentation can be compiled by running <code>make doc</code> in the <code>semigroupsplusplus</code> directory, and the tests can be run by doing <code>make test</code> in
+                    the
+                    <code>semigroupsplusplus</code> directory.</p>
+                <p>The algorithms and data structures in this version of Semigroups++ are based on
+                    <a href="https://www.irif.fr/~jep/PDF/Rio.pdf">Algorithms for computing finite semigroups</a>,
+                    <a href="https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf">Expository Slides</a>, and
+                    <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> by Jean-Eric Pin.</p>
+                <p>The Semigroups++ library is used in the
+                    <a href="http://gap-packages.github.io/Semigroups/">Semigroups package for GAP</a>. The development version is available on
+                    <a href="https://github.com/james-d-mitchell/semigroupsplusplus">Github</a>.</p>
+                <p>Some of the features of
+                    <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> are not yet implemented in the Semigroups++ library, this is a work in progress. Missing features include those for:</p>
+                <ul>
+                    <li>Green's relations, or classes</li>
+                    <li>finding a zero</li>
+                    <li>minimal ideal, principal left/right ideals, or indeed any ideals</li>
+                    <li>inverses</li>
+                    <li>local submonoids</li>
+                    <li>the kernel</li>
+                    <li>variety tests.</li>
+                </ul>
+                <p>These will be included in a future version. </p>
+                <p>The Semigroups++ library performs roughly the same as
+                    <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> when there is a known upper bound on the size of the semigroup being enumerated, and this is used to initialise the data structures for
+                    the semigroup; see <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup.set_batch_size">semigroupsplusplus::Semigroup::set_batch_size</a> for more details. Note that in
+                    <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> it is always necessary to provide such an upper bound, but in the Semigroups++ library it is not. </p>
+                <p>The Semigroups++ library also has some advantages over
+                    <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a>:</p>
+                <ul>
+                    <li>there is a (hopefully) convenient C++ API, which makes it relatively easy to create, and manipulate semigroups and monoids</li>
+                    <li>there are some multithreaded methods for semigroups and their congruences</li>
+                    <li>you do not have to know/guess the size of a semigroup or monoid before you begin
+                    </li>
+                    <li>Semigroups++ supports more types of elements than
+                        <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a>:</li>
+                    <li>it is relatively straightforward to add support for further types of elements and semigroups</li>
+                    <li>it is possible to enumerate a certain number of elements of a semigroup or monoid (say if you are looking for an element with a particular property), to stop, and then later start the enumeration again at a later point.</li>
+                    <li>you can instantiate as many semigroups and monoids as you can fit in memory</li>
+                    <li>it is possible to add more generators after a semigroup or monoid has been constructed, without lossing or having to recompute any information that was previously known</li>
+                    <li>Semigroups++ contains a rudimentary implementation of the
+                        <a href="https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm">Todd-Coxeter algorithm</a> for finitely presented semigroups, which can also be used to compute congruence of a (not necessarily finitely presented) semigroup or monoid.
+                    </li>
+                </ul>
+                <p>If you find any problems with Semigroups++ or have any suggestions for features that you'd like to see please use the
+                    <a href="https://github.com/james-d-mitchell/semigroupsplusplus/issues">issue tracker</a>.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="namespaces">Namespaces</h2>
+        <div class="namespaces">
+            <div class="item"><a href="semigroupsplusplus.html#semigroupsplusplus" id="semigroupsplusplus+semigroupsplusplus">semigroupsplusplus</a>
+                <table class="namespace">
+                    <tbody>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Bipartition.html#semigroupsplusplus.Bipartition">Bipartition</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Blocks.html#semigroupsplusplus.Blocks">Blocks</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.BooleanMat.html#semigroupsplusplus.BooleanMat">BooleanMat</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Congruence.html#semigroupsplusplus.Congruence">Congruence</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element">Element</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Integers.html#semigroupsplusplus.Integers">Integers</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.MatrixOverSemiring.html#semigroupsplusplus.MatrixOverSemiring">MatrixOverSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.MaxPlusSemiring.html#semigroupsplusplus.MaxPlusSemiring">MaxPlusSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.MinPlusSemiring.html#semigroupsplusplus.MinPlusSemiring">MinPlusSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.NaturalSemiring.html#semigroupsplusplus.NaturalSemiring">NaturalSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.PBR.html#semigroupsplusplus.PBR">PBR</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.ProjectiveMaxPlusMatrix.html#semigroupsplusplus.ProjectiveMaxPlusMatrix">ProjectiveMaxPlusMatrix</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">Semigroup</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.Semiring.html#semigroupsplusplus.Semiring">Semiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.TropicalMaxPlusSemiring.html#semigroupsplusplus.TropicalMaxPlusSemiring">TropicalMaxPlusSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.TropicalMinPlusSemiring.html#semigroupsplusplus.TropicalMinPlusSemiring">TropicalMinPlusSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Non-abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="semigroupsplusplus.TropicalSemiring.html#semigroupsplusplus.TropicalSemiring">TropicalSemiring</a></td>
+                            <td class="doc">
+                                <div class="brief">
+                                    <p>Abstract</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->

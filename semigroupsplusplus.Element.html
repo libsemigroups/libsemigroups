@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Element</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="styles/cldoc.css">
+</head>
+
+<body id="cldoc">
+    <div id="cldoc_sidebar">
+        <div id="cldoc_sidebar_items">
+            <div class="back">
+                <div class="name"><span><span class="keyword">Class</span><span>semigroupsplusplus::Element</span></span>
+                </div><a href="semigroupsplusplus.html"><span class="arrow">↵</span> <span>semigroupsplusplus</span></a></div>
+            <div id="cldoc_sidebar_pagenav"></div>
+            <div class="subtitle">Subclasses</div>
+            <ul>
+                <li><a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData">ElementWithVectorData<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>Abstract</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Fields</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Element::_hash_value">_hash_value<span class="counter"></span></a><span class="protected">p</span></li>
+            </ul>
+            <div class="subtitle">Variables</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Element::UNDEFINED">UNDEFINED<span class="counter"></span></a><span class="protected">p</span>
+                    <div class="brief">
+                        <p>static</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Constructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Element::Element">Element<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>0 or 1 parameter (hash value)</p>
+                    </div>
+                </li>
+            </ul>
+            <div class="subtitle">Destructors</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Element::~Element">~Element<span class="counter"></span></a><span class="virtual">v</span></li>
+            </ul>
+            <div class="subtitle">Member Functions</div>
+            <ul>
+                <li><a href="#semigroupsplusplus::Element::complexity">complexity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::degree">degree<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::hash_value">hash_value<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::identity">identity<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::operator%3C">operator&lt;<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::operator%3D%3D">operator==<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::really_copy">really_copy<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::really_delete">really_delete<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::redefine">redefine<span class="counter"></span></a><span class="virtual">v</span>
+                    <div class="brief">
+                        <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::cache_hash_value">cache_hash_value<span class="counter"></span></a><span class="protected virtual">p&nbsp;v</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Element::reset_hash_value">reset_hash_value<span class="counter"></span></a><span class="protected">p</span>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="cldoc_content">
+        <h1 id="semigroupsplusplus::Element"><span><span class="keyword">Class</span><span>semigroupsplusplus::Element</span></span>
+        </h1>
+        <div class="description">
+            <div class="doc">
+                <p>Abstract base class for elements of a semigroup.</p>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="subclasses">Subclasses</h2>
+        <table class="subclasses">
+            <tbody>
+                <tr id="semigroupsplusplus::ElementWithVectorData+semigroupsplusplus::ElementWithVectorData">
+                    <td class="keyword"></td>
+                    <td><a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData">ElementWithVectorData</a></td>
+                    <td>
+                        <div class="brief">
+                            <p>Abstract</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="fields">Fields</h2>
+        <table class="fields">
+            <tbody>
+                <tr id="semigroupsplusplus::Element::_hash_value">
+                    <td class="field_name identifier">_hash_value</td>
+                    <td class="field_type"><span class="type"><span class="name ">size_t</span></span>
+                    </td>
+                    <td class="doc">
+                        <div class="doc">
+                            <p>This data member holds a cached version of the hash value of an Element. It is stored here if it is ever computed. It is invalidated by
+                                <a href="#semigroupsplusplus::Element::redefine">semigroupsplusplus::Element::redefine</a> and sometimes by
+                                <a href="#semigroupsplusplus::Element::really_copy">semigroupsplusplus::Element::really_copy</a>.</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="variables">Variables</h2>
+        <table class="variables">
+            <tbody>
+                <tr id="semigroupsplusplus::Element::UNDEFINED">
+                    <td class="variable_name identifier">UNDEFINED</td>
+                    <td class="variable_type"><span class="type"><span class="name ">size_t</span></span>
+                    </td>
+                    <td class="doc">
+                        <div class="doc">
+                            <p>This variable is used to indicate that a value is undefined, such as, the cached hash value.</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 data-cldoc-dynamic="1" id="constructors">Constructors</h2>
+        <div class="constructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::Element">
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">Element</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">hv</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="brief">
+                    <p>0 or 1 parameter (hash value)</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Element::Element::hv">
+                            <td>hv</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the hash value (for caching) of the element being created (defaults to <a href="#semigroupsplusplus::Element::UNDEFINED">semigroupsplusplus::Element::UNDEFINED</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="destructors">Destructors</h2>
+        <div class="destructors">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::~Element">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                    </ul>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">~Element</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>A default destructor.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+        </div>
+        <h2 data-cldoc-dynamic="1" id="member functions">Member Functions</h2>
+        <div class="member_functions">
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::complexity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">complexity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns an integer which represents the complexity of multiplying two objects in the same subclass of <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a> which have the same <a href="#semigroupsplusplus::Element::degree">semigroupsplusplus::Element::degree</a>.
+                        For example, the complexity of multiplying two <em>3</em> by <em>3</em> matrices over a common semiring is <em>O(3 ^ 3)</em>, and 27 is returned by
+                        <a href="semigroupsplusplus.MatrixOverSemiring.html#semigroupsplusplus.MatrixOverSemiring.complexity">semigroupsplusplus::MatrixOverSemiring::complexity</a>.</p>
+                    <p>The returned value is used in, for example, <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup.fast_product">semigroupsplusplus::Semigroup::fast_product</a> and
+                        <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup.nr_idempotents">semigroupsplusplus::Semigroup::nr_idempotents</a> to decide if it is better to multiply elements or follow a path in the Cayley graph.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the complexity of multiplying two elements.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::degree">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">degree</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns an integer which represents the size of the element, and is used to determine whether or not two elements are compatible for multiplication. For example, two <a href="semigroupsplusplus.Transformation.html#semigroupsplusplus.Transformation">semigroupsplusplus::Transformation</a>s
+                        of different degrees cannot be multiplied, or a <a href="semigroupsplusplus.Bipartition.html#semigroupsplusplus.Bipartition">semigroupsplusplus::Bipartition</a> of degree 10 cannot be an element of a monoid of bipartitions of degree
+                        3.</p>
+                    <p>See the relevant subclass for the particular meaning of the return value of this method for each subclass.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the degree of an element.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::hash_value">
+                    <div class="return_type"><span class="type"><span class="name ">size_t</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns a hash value for an object in a subclass of
+                        <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the hash value of an element.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::identity">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">identity</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method returns the multiplicative identity element for an object in a subclass of <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>. The returned identity belongs to the same subclass and has
+                        the same <a href="#semigroupsplusplus::Element::degree">semigroupsplusplus::Element::degree</a> as <strong>this</strong>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the identity element.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::operator<">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator&lt;</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">that</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method defines a total order on the set of objects in the same subclass of <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a> with a given <a href="#semigroupsplusplus::Element::degree">semigroupsplusplus::Element::degree</a>.
+                        The definition of this total order depends on the method for the operator &lt; in the subclass.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Element::operator<::that">
+                            <td>that</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Another element of the same type</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if <strong>this</strong> is less than <a href="#semigroupsplusplus::Element::operator%26lt%3B.that">that</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::operator==">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">bool</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">operator==</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">that</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method checks the mathematical equality of two objects in the same subclass of <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Element::operator==::that">
+                            <td>that</td>
+                            <td>
+                                <div class="doc">
+                                    <p>Another element of the same type</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p><strong>true</strong> if <strong>this</strong> equals <a href="#semigroupsplusplus::Element::operator%3D%3D.that">that</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::really_copy">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">really_copy</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">size_t</span></span>
+                                </td>
+                                <td class="argument_name">increase_deg_by</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method really copies an <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>. To minimise the amount of copying when <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>s
+                        are inserted in unordered_maps and other containers,
+                        <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>s behave somewhat like pointers, in that the actual data in an
+                        <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a> is only copied when this method is called. Otherwise, if an
+                        <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a> is copied, then its defining data is only stored once.</p>
+                    <p>See also <a href="#semigroupsplusplus::Element::really_delete">semigroupsplusplus::Element::really_delete</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Element::really_copy::increase_deg_by">
+                            <td>increase_deg_by</td>
+                            <td>
+                                <div class="doc">
+                                    <p>increase the size of the container of the defining data of <strong>this</strong> by this amount.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a new element completely independent of <strong>this</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::really_delete">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">really_delete</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method really deletes an <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>. To minimise the amount of copying when <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>s
+                        are inserted in unordered_maps and other containers, <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>s behave somewhat like pointers, in that the actual data in an <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a>                        is only deleted when this method is called. Otherwise, if an <a href="#semigroupsplusplus::Element::Element">semigroupsplusplus::Element::Element</a> is deleted, then its defining data is not deleted, since it may be contained in
+                        multiple copies of the element.</p>
+                    <p>See also <a href="#semigroupsplusplus::Element::really_copy">semigroupsplusplus::Element::really_copy</a>.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::redefine">
+                    <ul class="specifiers">
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">redefine</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">x,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Element">Element</a></span><span class="qualifier">  <span class="keyword">const</span> *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">y</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>See <a href="#semigroupsplusplus::Element::redefine">redefine</a>.</p>
+                    <p>Redefine <strong>this</strong> to be the product of <a href="#semigroupsplusplus::Element::redefine.x">x</a> and <a href="#semigroupsplusplus::Element::redefine.y">y</a>.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Element::redefine::x">
+                            <td>x</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an element</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Element::redefine::y">
+                            <td>y</td>
+                            <td>
+                                <div class="doc">
+                                    <p>an element</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::cache_hash_value">
+                    <ul class="specifiers">
+                        <li class="protected">protected</li>
+                        <li class="virtual">virtual</li>
+                        <li class="abstract">abstract</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">cache_hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is used to compute and cache the hash value of an element.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Element::reset_hash_value">
+                    <ul class="specifiers">
+                        <li class="protected">protected</li>
+                    </ul>
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">reset_hash_value</td>
+                                <td class="open_paren">(</td>
+                                <td colspan="2"></td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is used to reset the cached hash value to
+                        <a href="#semigroupsplusplus::Element::UNDEFINED">semigroupsplusplus::Element::UNDEFINED</a>.</p>
+                </div>
+                <table class="arguments"></table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<!-- vi:ts=2:et -->
