@@ -83,11 +83,14 @@ namespace std {
 template <typename S, class T>
 class ElementWithVectorData : public Element {
 
-  public:
+ public:
+    explicit ElementWithVectorData (size_t size) : _vector(new std::vector<S>()) {
+      _vector->resize(size);
+    }
 
-    ElementWithVectorData (std::vector<S>* vector) : _vector(vector) {}
+    explicit ElementWithVectorData (std::vector<S>* vector) : _vector(vector) {}
 
-    inline S operator [] (size_t pos) const {
+    inline S operator[] (size_t pos) const {
       return (*_vector)[pos];
     }
 
@@ -111,8 +114,7 @@ class ElementWithVectorData : public Element {
       delete _vector;
     };
 
-  protected:
-
+ protected:
     std::vector<S>* _vector;
 };
 
@@ -263,10 +265,19 @@ class BooleanMat: public ElementWithVectorData<bool, BooleanMat> {
 class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
 
  public:
-    explicit Bipartition(std::vector<u_int32_t>* blocks) :
-      ElementWithVectorData<u_int32_t, Bipartition> (blocks) {}
+    explicit Bipartition(size_t degree) :
+      ElementWithVectorData<u_int32_t, Bipartition> (2 * degree),
+      _nr_blocks(Bipartition::UNDEFINED),
+      _nr_left_blocks(Bipartition::UNDEFINED),
+      _trans_blocks_lookup(),
+      _rank(Bipartition::UNDEFINED) {}
 
-    u_int32_t block(size_t pos)                       const;
+    explicit Bipartition(std::vector<u_int32_t>* blocks) :
+      ElementWithVectorData<u_int32_t, Bipartition> (blocks),
+      _nr_blocks(Bipartition::UNDEFINED),
+      _nr_left_blocks(Bipartition::UNDEFINED),
+      _trans_blocks_lookup(),
+      _rank(Bipartition::UNDEFINED) {}
 
     size_t   complexity()                             const override;
     size_t   degree()                                 const override;
@@ -274,10 +285,46 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     Element* identity()                               const override;
     void     redefine(Element const*, Element const*)       override;
 
+    u_int32_t block(size_t pos)                       const;
+    u_int32_t const_nr_blocks()                       const;
+
+    bool operator< (const Bipartition& that) const {
+      if (this->degree() != that.degree()) {
+        return (this->degree() < that.degree());
+      }
+      for (size_t i = 0; i < this->degree(); i++) {
+        if ((*this)[i] != that[i]) {
+          return (*this)[i] < that[i];
+        }
+      }
+      return false;
+    }
+
+    u_int32_t nr_blocks();
+    u_int32_t nr_left_blocks();
+    u_int32_t rank();
+    std::vector<bool> const& trans_blocks_lookup();
+
+    inline void set_nr_blocks (size_t nr_blocks) {
+      _nr_blocks = nr_blocks;
+    }
+
+    inline void set_nr_left_blocks (size_t nr_left_blocks) {
+      _nr_left_blocks = nr_left_blocks;
+    }
+
+
  private:
-    u_int32_t fuseit(std::vector<u_int32_t>const&, u_int32_t);
-    u_int32_t nrblocks() const;
-    u_int32_t _nrblocks;
+    u_int32_t                fuseit(u_int32_t);
+
+    size_t             _nr_blocks;
+    size_t             _nr_left_blocks;
+    std::vector<bool>  _trans_blocks_lookup;
+    size_t             _rank;
+
+    static std::vector<u_int32_t> _fuse;
+    static std::vector<u_int32_t> _lookup;
+    static size_t                 UNDEFINED;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

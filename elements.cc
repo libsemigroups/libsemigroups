@@ -43,7 +43,7 @@ void BooleanMat::redefine (Element const* x,
                            Element const* y) {
   assert(x->degree() == y->degree());
   assert(x->degree() == this->degree());
-  
+
   size_t k;
   size_t dim = this->degree();
   std::vector<bool>* xx(static_cast<BooleanMat const*>(x)->_vector);
@@ -66,6 +66,10 @@ void BooleanMat::redefine (Element const* x,
 // Bipartition
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+std::vector<u_int32_t> Bipartition::_fuse = std::vector<u_int32_t>();
+std::vector<u_int32_t> Bipartition::_lookup = std::vector<u_int32_t>();
+size_t Bipartition::UNDEFINED = -1;
 
 u_int32_t Bipartition::block (size_t pos) const {
   return _vector->at(pos);
@@ -111,29 +115,27 @@ void Bipartition::redefine (Element const* x, Element const* y) {
   std::vector<u_int32_t>* xblocks(xx->_vector);
   std::vector<u_int32_t>* yblocks(yy->_vector);
 
-  u_int32_t nrx(xx->nrblocks());
-  u_int32_t nry(yy->nrblocks());
+  u_int32_t nrx(xx->const_nr_blocks());
+  u_int32_t nry(yy->const_nr_blocks());
 
-  std::vector<u_int32_t> fuse;
-  std::vector<u_int32_t> lookup;
-  fuse.reserve(nrx + nry);
-  lookup.reserve(nrx + nry);
+  _fuse.clear();
+  _fuse.reserve(nrx + nry);
+  _lookup.clear();
+  _lookup.reserve(nrx + nry);
 
-  // maybe this should be pointer to local data, may slow down hashing
-  // but speed up redefinition?
   for (size_t i = 0; i < nrx + nry; i++) {
-    fuse.push_back(i);
-    lookup.push_back(-1);
+    _fuse.push_back(i);
+    _lookup.push_back(-1);
   }
 
   for (size_t i = 0; i < n; i++) {
-    u_int32_t j = fuseit(fuse, xblocks->at(i + n));
-    u_int32_t k = fuseit(fuse, yblocks->at(i) + nrx);
+    u_int32_t j = fuseit(xblocks->at(i + n));
+    u_int32_t k = fuseit(yblocks->at(i) + nrx);
     if (j != k) {
       if (j < k) {
-        fuse.at(k) = j;
+        _fuse.at(k) = j;
       } else {
-        fuse.at(j) = k;
+        _fuse.at(j) = k;
       }
     }
   }
@@ -141,35 +143,37 @@ void Bipartition::redefine (Element const* x, Element const* y) {
   u_int32_t next = 0;
 
   for (size_t i = 0; i < n; i++) {
-    u_int32_t j = fuseit(fuse, xblocks->at(i));
-    if (lookup.at(j) == (u_int32_t) -1) {
-      lookup.at(j) = next;
+    u_int32_t j = fuseit((*xblocks)[i]);
+    if (_lookup[j] == (u_int32_t) -1) {
+      _lookup[j] = next;
       next++;
     }
-    this->_vector->at(i) = lookup.at(j);
+    (*this->_vector)[i] = _lookup[j];
   }
 
   for (size_t i = n; i < 2 * n; i++) {
-    u_int32_t j = fuseit(fuse, yblocks->at(i) + nrx);
-    if (lookup.at(j) == (u_int32_t) -1) {
-      lookup.at(j) = next;
+    u_int32_t j = fuseit((*yblocks)[i] + nrx);
+    if (_lookup[j] == (u_int32_t) -1) {
+      _lookup[j] = next;
       next++;
     }
-    this->_vector->at(i) = lookup.at(j);
+    (*this->_vector)[i] = _lookup[j];
   }
 }
 
-inline u_int32_t Bipartition::fuseit (std::vector<u_int32_t> const& fuse, 
-                                      u_int32_t pos                      ) {
-  while (fuse.at(pos) < pos) {
-    pos = fuse.at(pos);
+inline u_int32_t Bipartition::fuseit (u_int32_t pos) {
+  while (_fuse.at(pos) < pos) {
+    pos = _fuse.at(pos);
   }
   return pos;
 }
 
 // nr blocks
 
-u_int32_t Bipartition::nrblocks () const {
+u_int32_t Bipartition::const_nr_blocks () const {
+  if (_nr_blocks != Bipartition::UNDEFINED) {
+    return _nr_blocks;
+  }
   size_t nr = 0;
   for (auto x: *_vector) {
     if (x > nr) {
@@ -178,6 +182,51 @@ u_int32_t Bipartition::nrblocks () const {
   }
   return nr + 1;
 }
+
+u_int32_t Bipartition::nr_blocks () {
+  if (_nr_blocks == Bipartition::UNDEFINED) {
+    _nr_blocks = this->const_nr_blocks();
+  }
+  return _nr_blocks;
+}
+
+u_int32_t Bipartition::nr_left_blocks () {
+  if (_nr_left_blocks == Bipartition::UNDEFINED) {
+    _nr_left_blocks = *std::max_element(_vector->begin(), _vector->begin() + (_vector->size() / 2));
+  }
+  return _nr_left_blocks;
+}
+
+// Transverse blocks lookup table.
+// Returns a vector of bools <out> for the left blocks so that <out[i]> is
+// <true> if and only the <i>th block of <this> is a transverse block.
+//
+// @return a const std::vector<bool>*.
+
+std::vector<bool> const& Bipartition::trans_blocks_lookup () {
+  if (_trans_blocks_lookup.empty()) {
+    _trans_blocks_lookup.resize(this->nr_left_blocks());
+    for (auto index: *_vector) {
+      if (index < this->nr_left_blocks()) {
+        _trans_blocks_lookup[index] = true;
+      }
+    }
+  }
+  return _trans_blocks_lookup;
+}
+
+u_int32_t Bipartition::rank () {
+  if (_rank == this->UNDEFINED) {
+    _rank = 0;
+    for (auto x: this->trans_blocks_lookup()) {
+      if (x) {
+        _rank++;
+      }
+    }
+  }
+  return _rank;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +293,7 @@ void MatrixOverSemiring::redefine (Element const* x,
     for (size_t j = 0; j < deg; j++) {
       long v = _semiring->zero();
       for (size_t k = 0; k < deg; k++) {
-        v = _semiring->plus(v, _semiring->prod(xx->at(i * deg + k), 
+        v = _semiring->plus(v, _semiring->prod(xx->at(i * deg + k),
                                                yy->at(k * deg + j)));
       }
       _vector->at(i * deg + j) = v;
@@ -297,7 +346,7 @@ size_t PBR::hash_value () const {
   size_t seed = 0;
   size_t pow = 101;
   for (size_t i = 0; i < this->degree(); i++) {
-    for (size_t j = 0; j < this->at(i).size(); j++) { 
+    for (size_t j = 0; j < this->at(i).size(); j++) {
       seed = (seed * pow) + this->at(i).at(j);
     }
   }
@@ -305,7 +354,7 @@ size_t PBR::hash_value () const {
 }
 
 Element* PBR::identity () const {
-  std::vector<std::vector<u_int32_t> >* 
+  std::vector<std::vector<u_int32_t> >*
     adj(new std::vector<std::vector<u_int32_t> >());
   size_t n = this->degree();
   adj->reserve(2 * n);
@@ -324,14 +373,14 @@ Element* PBR::identity () const {
 //FIXME also we repeatedly search in the same part of the graph, and so
 //there is probably a lot of repeated work in the dfs. Better use some version
 //of Floyd-Warshall
-void PBR::redefine (Element const* xx, 
+void PBR::redefine (Element const* xx,
                     Element const* yy ) {
   assert(xx->degree() == yy->degree());
   assert(xx->degree() == this->degree());
 
   PBR const* x(static_cast<PBR const*>(xx));
   PBR const* y(static_cast<PBR const*>(yy));
-   
+
   u_int32_t n = this->degree();
 
   for (size_t i = 0; i < 2 * n; i++) {
@@ -363,7 +412,7 @@ void PBR::redefine (Element const* xx,
 // add vertex2 to the adjacency of vertex1
 void PBR::add_adjacency (size_t vertex1, size_t vertex2) {
   auto it = std::lower_bound(_vector->at(vertex1).begin(),
-                             _vector->at(vertex1).end(), 
+                             _vector->at(vertex1).end(),
                              vertex2);
   if (it == _vector->at(vertex1).end()) {
     _vector->at(vertex1).push_back(vertex2);
@@ -373,13 +422,13 @@ void PBR::add_adjacency (size_t vertex1, size_t vertex2) {
 }
 
 void PBR::x_dfs (u_int32_t          n,
-                 u_int32_t          i, 
+                 u_int32_t          i,
                  u_int32_t          v,         // the vertex we're currently doing
                  std::vector<bool>& x_seen,
                  std::vector<bool>& y_seen,
-                 PBR const*         x, 
+                 PBR const*         x,
                  PBR const*         y      ) {
-  
+
   if (!x_seen.at(i)) {
     x_seen.at(i) = true;
     for (auto j: x->at(i)) {
@@ -393,11 +442,11 @@ void PBR::x_dfs (u_int32_t          n,
 }
 
 void PBR::y_dfs (u_int32_t          n,
-                 u_int32_t          i, 
+                 u_int32_t          i,
                  u_int32_t          v,         // the vertex we're currently doing
                  std::vector<bool>& x_seen,
                  std::vector<bool>& y_seen,
-                 PBR const*         x, 
+                 PBR const*         x,
                  PBR const*         y      ) {
 
   if (!y_seen.at(i)) {
