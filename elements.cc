@@ -192,9 +192,14 @@ u_int32_t Bipartition::nr_blocks () {
 
 u_int32_t Bipartition::nr_left_blocks () {
   if (_nr_left_blocks == Bipartition::UNDEFINED) {
-    _nr_left_blocks = *std::max_element(_vector->begin(), _vector->begin() + (_vector->size() / 2));
+    _nr_left_blocks = *std::max_element(_vector->begin(),
+                                        _vector->begin() + (_vector->size() / 2)) + 1;
   }
   return _nr_left_blocks;
+}
+
+u_int32_t Bipartition::nr_right_blocks () {
+  return nr_blocks() - nr_left_blocks() + rank();
 }
 
 // Transverse blocks lookup table.
