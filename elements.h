@@ -304,7 +304,7 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     u_int32_t nr_left_blocks();
     u_int32_t nr_right_blocks();
     u_int32_t rank();
-    std::vector<bool> const& trans_blocks_lookup();
+    bool is_transverse_block(size_t index);
 
     inline void set_nr_blocks (size_t nr_blocks) {
       _nr_blocks = nr_blocks;
@@ -314,9 +314,9 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
       _nr_left_blocks = nr_left_blocks;
     }
 
-
  private:
     u_int32_t          fuseit(u_int32_t);
+    void               init_trans_blocks_lookup();
 
     size_t             _nr_blocks;
     size_t             _nr_left_blocks;

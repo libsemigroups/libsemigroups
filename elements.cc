@@ -72,7 +72,7 @@ std::vector<u_int32_t> Bipartition::_lookup = std::vector<u_int32_t>();
 size_t Bipartition::UNDEFINED = -1;
 
 u_int32_t Bipartition::block (size_t pos) const {
-  return _vector->at(pos);
+  return (*_vector)[pos];
 }
 
 size_t Bipartition::complexity () const {
@@ -208,22 +208,30 @@ u_int32_t Bipartition::nr_right_blocks () {
 //
 // @return a const std::vector<bool>*.
 
-std::vector<bool> const& Bipartition::trans_blocks_lookup () {
+bool Bipartition::is_transverse_block (size_t index) {
+  if (index < nr_left_blocks()) {
+    init_trans_blocks_lookup();
+    return _trans_blocks_lookup[index];
+  }
+  return false;
+}
+
+void Bipartition::init_trans_blocks_lookup () {
   if (_trans_blocks_lookup.empty()) {
     _trans_blocks_lookup.resize(this->nr_left_blocks());
-    for (auto index: *_vector) {
-      if (index < this->nr_left_blocks()) {
-        _trans_blocks_lookup[index] = true;
+    for (auto it = _vector->begin() + degree(); it < _vector->end(); it++) {
+      if ((*it) < this->nr_left_blocks()) {
+        _trans_blocks_lookup[(*it)] = true;
       }
     }
   }
-  return _trans_blocks_lookup;
 }
 
 u_int32_t Bipartition::rank () {
   if (_rank == this->UNDEFINED) {
+    init_trans_blocks_lookup();
     _rank = 0;
-    for (auto x: this->trans_blocks_lookup()) {
+    for (auto x: _trans_blocks_lookup) {
       if (x) {
         _rank++;
       }
