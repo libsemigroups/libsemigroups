@@ -1,4 +1,21 @@
 
+//Obj BLOCKS_INT_REP (Obj self, Obj x) {
+//
+//  if (bipart_get_int_rep(x) == NULL) {
+//    Bipartition* xx = bipart_get_cpp(x); // get C++ bipartition
+//    size_t n = xx->degree();
+//
+//    Obj int_rep = NEW_PLIST(T_PLIST_CYC, 2 * xx->degree());
+//    SET_LEN_PLIST(int_rep, (Int) 2 * xx->degree());
+//
+//    for (size_t i = 0; i < 2 * n; i++) {
+//      SET_ELM_PLIST(int_rep, i + 1, INTOBJ_INT(xx->block(i) + 1));
+//    }
+//    bipart_set_int_rep(x, int_rep);
+//  }
+//
+//  return bipart_get_int_rep(x);
+//}
 /*******************************************************************************
  * Class for containing a C++ semigroup and accessing its methods
 *******************************************************************************/
@@ -8,19 +25,19 @@
     // <old> with some new generators, these new generators are stored in
     // the <gens> component of <data>. I.e. the meaning of the <gens> component
     // of the <data> is different if we are taking the closure than if we are
-    // not. 
-    Interface (Obj data, Converter* converter, SemigroupBase* old) 
+    // not.
+    Interface (Obj data, Converter* converter, SemigroupBase* old)
       : _converter(converter) {
     }*/
 
 /*// method for Semigroup class
 size_t simple_size () {
-  T x(_degree, _gens.at(0)); 
+  T x(_degree, _gens.at(0));
   size_t report = 0;
   while (_pos < _nr) {
     for (size_t j = 0; j < _nrgens; j++) {
-      x.redefine(_elements->at(_pos), _gens.at(j)); 
-      auto it = _map.find(x); 
+      x.redefine(_elements->at(_pos), _gens.at(j));
+      auto it = _map.find(x);
       if (it == _map.end()) {
         _elements->push_back(static_cast<T*>(x.copy()));
         _map.insert(std::make_pair(*_elements->back(), _nr));
@@ -40,7 +57,7 @@ size_t simple_size () {
       enumerate(-1);
       std::vector<Relation>* relations = new std::vector<Relation>();
       int nr = (int) _nrrules;
-      
+
       size_t tmp = 0;
 
       for (size_t i = 1; i < _gens.size(); i++) {
@@ -51,7 +68,7 @@ size_t simple_size () {
       }
       std::cout << "nr of relations = " << relations->size() - tmp << "\n";
       tmp = relations->size();
-      
+
       size_t i;
       for (i = 0; i < _lenindex.at(1); i++) {
         for (size_t j = 0; j < _reduced.nrcols(); j++) {
@@ -63,7 +80,7 @@ size_t simple_size () {
       }
       std::cout << "nr of relations = " << relations->size() - tmp << "\n";
       tmp = relations->size();
-      
+
       for (; i < _reduced.nrrows(); i++) {
         for (size_t j = 0; j < _reduced.nrcols(); j++) {
           if (_reduced.get(_suffix.at(i), j) && !_reduced.get(i, j)) {
@@ -73,18 +90,18 @@ size_t simple_size () {
         }
       }
       std::cout << "nr of relations = " << relations->size() - tmp << "\n";
-      
+
       std::cout << "_nrrules = " << _nrrules << "\n";
       assert(nr == 0);
       return relations;
     }*/
 
-/*    // TODO split into 2 methods! 
+/*    // TODO split into 2 methods!
     Semigroup (const Semigroup& copy, const std::vector<T*>& coll = std::vector<T*>())
       // initialize as if <coll> is not empty . . .
       : _batch_size    (8192),
         _degree        (copy._degree),    // copy for comparison in add_generators
-        _duplicate_gens(copy._duplicate_gens), 
+        _duplicate_gens(copy._duplicate_gens),
         _elements      (new std::vector<T*>()),
         _final         (copy._final),     // copy for assignment to specific positions in add_generators
         _first         (copy._first),     // copy for assignment to specific positions in add_generators
@@ -105,16 +122,16 @@ size_t simple_size () {
         _relation_gen  (0),
         _suffix        (copy._suffix),    // copy for assignment to specific positions in add_generators
         _tmp_product   (new T(copy.degree(), copy.gens().at(0))), // this is assigned for clean copy
-        _wordlen       (0) 
+        _wordlen       (0)
     {
       _elements->reserve(copy._nr);
       _map.reserve(copy._nr);
-      
+
       std::unordered_set<T*> new_gens;
 
       // check which of <coll> belong to <copy>
       for (T* x: coll) {
-        if (copy._map.find(*x) == copy._map.end()) { 
+        if (copy._map.find(*x) == copy._map.end()) {
           new_gens.insert(x);
         }
       }
@@ -136,18 +153,18 @@ size_t simple_size () {
         _right = new RecVec<size_t>(*copy._right);
         _wordlen = copy._wordlen;
       } else {
-        if (deg_plus != 0) { 
+        if (deg_plus != 0) {
           _degree = copy.degree() + deg_plus;
           _found_one = false;
           _pos_one = 0;
-        } 
+        }
         _lenindex.push_back(0);
         _lenindex.push_back(copy._lenindex.at(1));
         _index.reserve(copy._nr);
         _left = new RecVec<size_t>(*copy._left, new_gens.size());
         _right = new RecVec<size_t>(*copy._right, new_gens.size());
         _reduced = RecVec<bool>(_nrgens + coll.size(), _nr);
-        
+
         // add the distinct old generators to new _index
         for (size_t i = 0; i < copy._lenindex.at(1); i++) {
           _index.push_back(copy._index.at(i));
@@ -158,15 +175,15 @@ size_t simple_size () {
       for (size_t i = 0; i < copy.nrgens(); i++) {
         _gens.push_back(static_cast<T*>(copy._gens.at(i)->copy(deg_plus)));
       }
-      
+
       _id = static_cast<T*>(copy._id->copy(deg_plus));
       _tmp_product = new T(_degree, _gens.at(0));
-      
+
       for (size_t i = 0; i < copy._elements->size(); i++) {
         _elements->push_back(static_cast<T*>(copy._elements->at(i)->T::copy(deg_plus)));
         is_one(_elements->back(), i);
         _map.insert(std::make_pair(*_elements->back(), i));
       }
-      
+
       add_generators(new_gens, false);
     }*/

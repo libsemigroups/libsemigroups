@@ -7,7 +7,7 @@
 
 #ifndef SEMIGROUPS_ELEMENTS_H
 #define SEMIGROUPS_ELEMENTS_H
-//#define NDEBUG
+// #define NDEBUG
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "semiring.h"
+#include "blocks.hh"
 
 #include <assert.h>
 #include <functional>
@@ -263,21 +264,25 @@ class BooleanMat: public ElementWithVectorData<bool, BooleanMat> {
 ////////////////////////////////////////////////////////////////////////////////
 
 class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
-
+//FIXME need a destructor
  public:
-    explicit Bipartition(size_t degree) :
+    explicit Bipartition (size_t degree) :
       ElementWithVectorData<u_int32_t, Bipartition> (2 * degree),
       _nr_blocks(Bipartition::UNDEFINED),
       _nr_left_blocks(Bipartition::UNDEFINED),
       _trans_blocks_lookup(),
-      _rank(Bipartition::UNDEFINED) {}
+      _rank(Bipartition::UNDEFINED),
+      _left_blocks(nullptr),
+      _right_blocks(nullptr) {}
 
-    explicit Bipartition(std::vector<u_int32_t>* blocks) :
-      ElementWithVectorData<u_int32_t, Bipartition> (blocks),
+    explicit Bipartition (std::vector<u_int32_t>* blocks) :
+      ElementWithVectorData<u_int32_t, Bipartition>(blocks),
       _nr_blocks(Bipartition::UNDEFINED),
       _nr_left_blocks(Bipartition::UNDEFINED),
       _trans_blocks_lookup(),
-      _rank(Bipartition::UNDEFINED) {}
+      _rank(Bipartition::UNDEFINED),
+      _left_blocks(nullptr),
+      _right_blocks(nullptr) {}
 
     size_t   complexity()                             const override;
     size_t   degree()                                 const override;
@@ -300,11 +305,13 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
       return false;
     }
 
-    u_int32_t nr_blocks();
-    u_int32_t nr_left_blocks();
-    u_int32_t nr_right_blocks();
-    u_int32_t rank();
-    bool is_transverse_block(size_t index);
+    u_int32_t             nr_blocks();
+    u_int32_t             nr_left_blocks();
+    u_int32_t             nr_right_blocks();
+    u_int32_t             rank();
+    bool                  is_transverse_block(size_t index);
+    Blocks*               left_blocks(); //FIXME should be const
+    Blocks*               right_blocks();//FIXME should be const
 
     inline void set_nr_blocks (size_t nr_blocks) {
       _nr_blocks = nr_blocks;
@@ -312,6 +319,14 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
 
     inline void set_nr_left_blocks (size_t nr_left_blocks) {
       _nr_left_blocks = nr_left_blocks;
+    }
+
+    inline void set_rank (size_t rank) {
+      _rank = rank;
+    }
+
+    inline typename std::vector<u_int32_t>::iterator begin () const {
+      return _vector->begin();
     }
 
  private:
@@ -322,10 +337,12 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     size_t             _nr_left_blocks;
     std::vector<bool>  _trans_blocks_lookup;
     size_t             _rank;
+    Blocks*            _left_blocks;
+    Blocks*            _right_blocks;
 
     static std::vector<u_int32_t> _fuse;
     static std::vector<u_int32_t> _lookup;
-    static size_t                 UNDEFINED;
+    static u_int32_t              UNDEFINED;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
