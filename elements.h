@@ -264,25 +264,23 @@ class BooleanMat: public ElementWithVectorData<bool, BooleanMat> {
 ////////////////////////////////////////////////////////////////////////////////
 
 class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
-//FIXME need a destructor
+
  public:
     explicit Bipartition (size_t degree) :
       ElementWithVectorData<u_int32_t, Bipartition> (2 * degree),
       _nr_blocks(Bipartition::UNDEFINED),
       _nr_left_blocks(Bipartition::UNDEFINED),
       _trans_blocks_lookup(),
-      _rank(Bipartition::UNDEFINED),
-      _left_blocks(nullptr),
-      _right_blocks(nullptr) {}
+      _rank(Bipartition::UNDEFINED)
+      {}
 
     explicit Bipartition (std::vector<u_int32_t>* blocks) :
       ElementWithVectorData<u_int32_t, Bipartition>(blocks),
       _nr_blocks(Bipartition::UNDEFINED),
       _nr_left_blocks(Bipartition::UNDEFINED),
       _trans_blocks_lookup(),
-      _rank(Bipartition::UNDEFINED),
-      _left_blocks(nullptr),
-      _right_blocks(nullptr) {}
+      _rank(Bipartition::UNDEFINED)
+     {}
 
     size_t   complexity()                             const override;
     size_t   degree()                                 const override;
@@ -293,13 +291,13 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     u_int32_t block(size_t pos)                       const;
     u_int32_t const_nr_blocks()                       const;
 
-    bool operator< (const Bipartition& that) const {
-      if (this->degree() != that.degree()) {
-        return (this->degree() < that.degree());
+    bool lt (Bipartition* that) const {
+      if (this->degree() != that->degree()) {
+        return (this->degree() < that->degree());
       }
-      for (size_t i = 0; i < this->degree(); i++) {
-        if ((*this)[i] != that[i]) {
-          return (*this)[i] < that[i];
+      for (size_t i = 0; i < 2 * this->degree(); i++) {
+        if ((*this)[i] != (*that)[i]) {
+          return (*this)[i] < (*that)[i];
         }
       }
       return false;
@@ -337,8 +335,6 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     size_t             _nr_left_blocks;
     std::vector<bool>  _trans_blocks_lookup;
     size_t             _rank;
-    Blocks*            _left_blocks;
-    Blocks*            _right_blocks;
 
     static std::vector<u_int32_t> _fuse;
     static std::vector<u_int32_t> _lookup;

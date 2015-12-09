@@ -47,6 +47,7 @@ class Blocks {
     {
       _nr_blocks = *(std::max_element(_blocks->begin(),
                                       _blocks->end())) + 1;
+      assert(blocks->size() != 0);
       assert(_nr_blocks == _lookup->size());
     }
 
@@ -58,8 +59,12 @@ class Blocks {
       _nr_blocks(nr_blocks),
       _rank(UNDEFINED)
     {
+      assert(blocks->size() != 0);
       assert(_nr_blocks == _lookup->size());
     }
+
+    Blocks& operator= (Blocks const&) = delete;
+    Blocks (Blocks const&) = delete;
 
     ~Blocks () {
       delete _blocks;
@@ -94,10 +99,12 @@ class Blocks {
     }
 
     inline u_int32_t block (size_t pos) const {
+      assert(pos < _blocks->size());
       return (*_blocks)[pos];
     }
 
     inline bool is_transverse_block (size_t index) const {
+      assert(index < _lookup->size());
       return (*_lookup)[index];
     }
 
@@ -112,8 +119,8 @@ class Blocks {
     inline u_int32_t rank () {
       if (_rank == UNDEFINED) {
         _rank = 0;
-        for (auto index: *_blocks) {
-          if (index) _rank++;
+        for (auto val: *_lookup) {
+          if (val) _rank++;
         }
       }
       return _rank;

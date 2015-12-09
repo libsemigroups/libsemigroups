@@ -242,37 +242,31 @@ u_int32_t Bipartition::rank () {
 }
 
 Blocks* Bipartition::left_blocks () {
-  if (_left_blocks == nullptr) {
-    init_trans_blocks_lookup();
-    _left_blocks = new Blocks(new std::vector<u_int32_t>(_vector->begin(),
-                                                         _vector->begin() + (_vector->size() / 2)),
-                                                         new std::vector<bool>(_trans_blocks_lookup));
-  }
-  return _left_blocks;
+  init_trans_blocks_lookup();
+  return new Blocks(new std::vector<u_int32_t>(_vector->begin(),
+                                               _vector->begin() + (_vector->size() / 2)),
+                                               new std::vector<bool>(_trans_blocks_lookup));
 }
 
 Blocks* Bipartition::right_blocks () {
-  if (_right_blocks == nullptr) {
-    std::vector<u_int32_t>* blocks = new std::vector<u_int32_t>();
-    std::vector<bool>*      blocks_lookup  = new std::vector<bool>();
+  std::vector<u_int32_t>* blocks         = new std::vector<u_int32_t>();
+  std::vector<bool>*      blocks_lookup  = new std::vector<bool>();
 
-    // must reindex the blocks
-    _lookup.clear();
-    _lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
-    u_int32_t nr_blocks = 0;
+  // must reindex the blocks
+  _lookup.clear();
+  _lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
+  u_int32_t nr_blocks = 0;
 
-    for (auto it = _vector->begin() + (_vector->size() / 2); it < _vector->end(); it++) {
-      if (_lookup[*it] == Bipartition::UNDEFINED) {
-        _lookup[*it] = nr_blocks;
-        blocks_lookup->push_back(this->is_transverse_block(*it));
-        nr_blocks++;
-      }
-      blocks->push_back(_lookup[*it]);
+  for (auto it = _vector->begin() + (_vector->size() / 2); it < _vector->end(); it++) {
+    if (_lookup[*it] == Bipartition::UNDEFINED) {
+      _lookup[*it] = nr_blocks;
+      blocks_lookup->push_back(this->is_transverse_block(*it));
+      nr_blocks++;
     }
-
-    _right_blocks = new Blocks(blocks, blocks_lookup, nr_blocks);
+    blocks->push_back(_lookup[*it]);
   }
-  return _right_blocks;
+
+  return new Blocks(blocks, blocks_lookup, nr_blocks);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
