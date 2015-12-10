@@ -797,7 +797,7 @@ class Semigroup {
     *******************************************************************************/
 
     void add_generators (const std::unordered_set <Element*>& coll,
-                         bool                           report) {
+                         bool                                 report) {
       if (report) {
         std::cout << "semigroups++: add_generators" << std::endl;
       }

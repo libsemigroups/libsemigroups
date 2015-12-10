@@ -88,6 +88,13 @@ class Blocks {
           return (*this->_blocks)[i] < (*that._blocks)[i];
         }
       }
+      for (size_t i = 0; i < this->nr_blocks(); i++) {
+        if (((*this->_lookup)[i] && !(*that._lookup)[i])) {
+          return true;
+        } else if ((!(*this->_lookup)[i] && (*that._lookup)[i])) {
+          return false;
+        }
+      }
       return false;
     }
 
