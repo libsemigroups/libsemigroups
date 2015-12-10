@@ -17,8 +17,8 @@
 
 #include <assert.h>
 #include <functional>
-#include <iostream>
 #include <vector>
+#include <algorithm>
 
 // Blocks are stored internally as a list consisting of:
 //
