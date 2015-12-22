@@ -123,8 +123,8 @@ class RecVec {
           }
 
           size_t old_nr_cols = _nr_used_cols + _nr_unused_cols;
-          size_t new_nr_cols = std::max(5 * old_nr_cols / 4 + 4, nr);
-          
+          size_t new_nr_cols = std::max(5 * old_nr_cols / 4 + 4, nr + old_nr_cols);
+
           _vec.resize(new_nr_cols * _nr_rows, static_cast<T>(0));
 
           typename std::vector<T>::iterator old_it(_vec.begin() + (old_nr_cols * _nr_rows) - old_nr_cols);
