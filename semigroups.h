@@ -123,10 +123,11 @@ class Semigroup {
         _final         (copy._final),
         _first         (copy._first),
         _found_one     (copy._found_one),
+        _gens          (),
         _genslookup    (copy._genslookup),
         _id            (copy._id->really_copy()),
         _index         (copy._index),
-        _left          (copy._left),
+        _left          (new CayleyGraph(copy._left)),
         _length        (copy._length),
         _lenindex      (copy._lenindex),
         _multiplied    (copy._multiplied),
@@ -140,10 +141,9 @@ class Semigroup {
         _reduced       (copy._reduced),
         _relation_gen  (copy._relation_gen),
         _relation_pos  (copy._relation_pos),
-        _right         (copy._right),
+        _right         (new CayleyGraph(copy._right)),
         _suffix        (copy._suffix),
-        _wordlen       (copy._wordlen)
-    {
+        _wordlen       (copy._wordlen) {
       _elements->reserve(_nr);
       _map.reserve(_nr);
       _tmp_product = copy._id->really_copy();
