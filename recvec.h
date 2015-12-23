@@ -59,8 +59,8 @@ class RecVec {
             _nr_unused_cols (copy->_nr_unused_cols),
             _nr_rows        (copy->_nr_rows)
         {
-          std::cout << "RecVec: copy constructor!\n";
-          assert((_nr_used_cols + _nr_unused_cols) * _nr_rows == _vec.size());
+          //std::cout << "RecVec: copy constructor!\n";
+          //assert((_nr_used_cols + _nr_unused_cols) * _nr_rows == _vec.size());
         }
 
         /***********************************************************************
