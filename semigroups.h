@@ -32,6 +32,16 @@ class Semigroup {
 
   typedef RecVec<bool>            Flags;
 
+  struct Less {
+        explicit Less (Semigroup const& semigroup) : _semigroup(semigroup) {}
+
+        bool operator () (size_t const& i, size_t const& j) {
+          return *(*_semigroup._elements)[i] < *(*_semigroup._elements)[j];
+        }
+
+        Semigroup const& _semigroup;
+    };
+
   public:
 
     Semigroup& operator= (Semigroup const&) = delete;
@@ -73,6 +83,7 @@ class Semigroup {
       _relation_gen  (0),
       _relation_pos  (-1),
       _right         (new CayleyGraph(gens->size())),
+      _sorted        (nullptr),
       _suffix        (),
       _wordlen       (0) // (length of the current word) - 1
     {
@@ -142,6 +153,7 @@ class Semigroup {
         _relation_gen  (copy._relation_gen),
         _relation_pos  (copy._relation_pos),
         _right         (new CayleyGraph(copy._right)),
+        _sorted        (nullptr),
         _suffix        (copy._suffix),
         _wordlen       (copy._wordlen) {
       _elements->reserve(_nr);
@@ -182,6 +194,7 @@ class Semigroup {
         _relation_gen   (0),
         _relation_pos   (-1),
         _right          (new CayleyGraph(copy._right)),
+        _sorted         (nullptr),
         _wordlen        (0)
     {
       assert(!coll->empty());
@@ -539,6 +552,19 @@ class Semigroup {
      *
     *******************************************************************************/
 
+    void sort_elements (bool report=false) {
+      if (_sorted == nullptr) {
+        enumerate(-1, report);
+        _sorted = new std::vector<size_t>();
+        _sorted->reserve(_elements->size());
+        for (size_t i = 0; i < _elements->size(); i++) {
+          _sorted->push_back(i);
+        }
+        std::sort(_sorted->begin(), _sorted->end(), Less(*this));
+      }
+    }
+    // TODO add sorted_pos here to store a look up for the position
+
     std::vector<Element*>* elements (size_t limit, bool report) {
       enumerate(limit, report);
       return _elements;
@@ -550,6 +576,15 @@ class Semigroup {
 
       if (pos < this->_elements->size()) {
         return (*_elements)[pos];
+      } else {
+        return nullptr;
+      }
+    }
+
+    Element* sorted_at (size_t pos, bool report) {
+      sort_elements(report);
+      if (pos < this->_elements->size()) {
+        return (*_elements)[(*_sorted)[pos]];
       } else {
         return nullptr;
       }
@@ -975,6 +1010,7 @@ class Semigroup {
 
   private:
 
+
     /*******************************************************************************
      *
     *******************************************************************************/
@@ -1097,6 +1133,7 @@ class Semigroup {
     size_t                                   _relation_gen;
     size_t                                   _relation_pos;
     CayleyGraph*                             _right;
+    std::vector<size_t>*                     _sorted;
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
     size_t                                   _wordlen;
