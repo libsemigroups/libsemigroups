@@ -544,6 +544,17 @@ class Semigroup {
       return _elements;
     }
 
+    //const Element* at (size_t pos, bool report) {
+    Element* at (size_t pos, bool report) {
+      enumerate(pos + 1, report);
+
+      if (pos < this->_elements->size()) {
+        return (*_elements)[pos];
+      } else {
+        return nullptr;
+      }
+    }
+
     /*******************************************************************************
      *
     *******************************************************************************/
@@ -1089,6 +1100,7 @@ class Semigroup {
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
     size_t                                   _wordlen;
+
 };
 
 #endif
