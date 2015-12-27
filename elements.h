@@ -45,12 +45,17 @@ class Element {
   public:
     virtual ~Element () {}
 
-    bool     operator == (const Element& that) const {
+    bool operator == (const Element& that) const {
       return this->equals(&that);
+    };
+
+    bool operator < (const Element& that) const {
+      return this->less(&that);
     };
 
     virtual size_t   complexity    ()                               const = 0;
     virtual size_t   degree        ()                               const = 0;
+    virtual bool     less          (const Element*)                 const = 0;
     virtual bool     equals        (const Element*)                 const = 0;
     virtual size_t   hash_value    ()                               const = 0;
     virtual Element* identity      ()                               const = 0;
@@ -102,6 +107,19 @@ class ElementWithVectorData : public Element {
     bool equals (const Element* that) const override {
       return *(static_cast<const T*>(that)->_vector)
         == *(this->_vector);
+    }
+
+    bool less (const Element* that) const override {
+      auto ewvd = static_cast<const ElementWithVectorData*>(that);
+      if (this->_vector->size() != ewvd->_vector->size()) {
+        return this->_vector->size() < ewvd->_vector->size();
+      }
+      for (size_t i = 0; i < this->_vector->size(); i++) {
+        if ((*this)[i] != (*ewvd)[i]) {
+          return (*this)[i] < (*ewvd)[i];
+        }
+      }
+      return false;
     }
 
     // this must be overridden if increase_deg_by != 0
@@ -290,18 +308,6 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
 
     u_int32_t block(size_t pos)                       const;
     u_int32_t const_nr_blocks()                       const;
-
-    bool lt (Bipartition* that) const {
-      if (this->degree() != that->degree()) {
-        return (this->degree() < that->degree());
-      }
-      for (size_t i = 0; i < 2 * this->degree(); i++) {
-        if ((*this)[i] != (*that)[i]) {
-          return (*this)[i] < (*that)[i];
-        }
-      }
-      return false;
-    }
 
     u_int32_t             nr_blocks();
     u_int32_t             nr_left_blocks();
