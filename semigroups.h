@@ -35,8 +35,9 @@ class Semigroup {
   struct Less {
         explicit Less (Semigroup const& semigroup) : _semigroup(semigroup) {}
 
-        bool operator () (size_t const& i, size_t const& j) {
-          return *(*_semigroup._elements)[i] < *(*_semigroup._elements)[j];
+        bool operator () (Element const* x, Element const* y) {
+          //return *(*_semigroup._elements)[i] < *(*_semigroup._elements)[j];
+          return *x < *y;
         }
 
         Semigroup const& _semigroup;
@@ -555,19 +556,20 @@ class Semigroup {
      *
     *******************************************************************************/
 
-    void sort_elements (bool report=false) {
-      if (_sorted == nullptr) {
-        enumerate(-1, report);
-        _sorted = new std::vector<size_t>();
-        _sorted->reserve(_elements->size());
-        for (size_t i = 0; i < _elements->size(); i++) {
-          _sorted->push_back(i);
-        }
-        std::sort(_sorted->begin(), _sorted->end(), Less(*this));
+    void sort_elements (bool report) {
+      if (_sorted != nullptr) {
+        return;
       }
+      enumerate(-1, report);
+      _sorted = new std::vector<Element*>(*_elements);
+      //_sorted->reserve(_elements->size());
+      //for (size_t i = 0; i < _elements->size(); i++) {
+      //  _sorted->push_back(i);
+      //}
+      std::sort(_sorted->begin(), _sorted->end(), Less(*this));
     }
 
-    size_t position_sorted (Element* x, bool report) {
+    /*size_t position_sorted (Element* x, bool report) {
       if (x->degree() != _degree) {
         return -1;
       }
@@ -585,7 +587,7 @@ class Semigroup {
       } else {
         return -1;
       }
-    }
+    }*/
 
     std::vector<Element*>* elements (bool report=false) {
       enumerate(-1, report);
@@ -605,8 +607,8 @@ class Semigroup {
 
     Element* sorted_at (size_t pos, bool report) {
       sort_elements(report);
-      if (pos < this->_elements->size()) {
-        return (*_elements)[(*_sorted)[pos]];
+      if (pos < this->_sorted->size()) {
+        return (*_sorted)[pos];
       } else {
         return nullptr;
       }
@@ -1155,7 +1157,7 @@ class Semigroup {
     size_t                                   _relation_gen;
     size_t                                   _relation_pos;
     CayleyGraph*                             _right;
-    std::vector<size_t>*                     _sorted;
+    std::vector<Element*>*                   _sorted;
     std::vector<size_t>*                     _pos_sorted;
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
@@ -1163,4 +1165,4 @@ class Semigroup {
 
 };
 
-#endif
+#endif // SEMIGROUPS_H_
