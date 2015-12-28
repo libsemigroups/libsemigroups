@@ -594,11 +594,16 @@ class Semigroup {
       return _elements;
     }
 
+    std::vector<Element*>* sorted_elements (bool report=false) {
+      sort_elements(report);
+      return _sorted;
+    }
+
     //const Element* at (size_t pos, bool report) {
     Element* at (size_t pos, bool report) {
       enumerate(pos + 1, report);
 
-      if (pos < this->_elements->size()) {
+      if (pos < _elements->size()) {
         return (*_elements)[pos];
       } else {
         return nullptr;
@@ -607,7 +612,7 @@ class Semigroup {
 
     Element* sorted_at (size_t pos, bool report) {
       sort_elements(report);
-      if (pos < this->_sorted->size()) {
+      if (pos < _sorted->size()) {
         return (*_sorted)[pos];
       } else {
         return nullptr;
