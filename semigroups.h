@@ -84,6 +84,7 @@ class Semigroup {
       _relation_pos  (-1),
       _right         (new CayleyGraph(gens->size())),
       _sorted        (nullptr),
+      _pos_sorted    (nullptr),
       _suffix        (),
       _wordlen       (0) // (length of the current word) - 1
     {
@@ -154,6 +155,7 @@ class Semigroup {
         _relation_pos  (copy._relation_pos),
         _right         (new CayleyGraph(copy._right)),
         _sorted        (nullptr),
+        _pos_sorted    (nullptr),
         _suffix        (copy._suffix),
         _wordlen       (copy._wordlen) {
       _elements->reserve(_nr);
@@ -195,6 +197,7 @@ class Semigroup {
         _relation_pos   (-1),
         _right          (new CayleyGraph(copy._right)),
         _sorted         (nullptr),
+        _pos_sorted     (nullptr),
         _wordlen        (0)
     {
       assert(!coll->empty());
@@ -563,10 +566,29 @@ class Semigroup {
         std::sort(_sorted->begin(), _sorted->end(), Less(*this));
       }
     }
-    // TODO add sorted_pos here to store a look up for the position
 
-    std::vector<Element*>* elements (size_t limit, bool report) {
-      enumerate(limit, report);
+    size_t position_sorted (Element* x, bool report) {
+      if (x->degree() != _degree) {
+        return -1;
+      }
+      if (_pos_sorted == nullptr) {
+        sort_elements();
+        _pos_sorted = new std::vector<size_t>();
+        _pos_sorted->resize(_sorted->size());
+        for (size_t i = 0; i < _sorted->size(); i++) {
+          (*_pos_sorted)[(*_sorted)[i]] = i;
+        }
+      }
+      auto it = _map.find(x);
+      if (it != _map.end()) {
+        return (*_pos_sorted)[it->second];
+      } else {
+        return -1;
+      }
+    }
+
+    std::vector<Element*>* elements (bool report=false) {
+      enumerate(-1, report);
       return _elements;
     }
 
@@ -1134,6 +1156,7 @@ class Semigroup {
     size_t                                   _relation_pos;
     CayleyGraph*                             _right;
     std::vector<size_t>*                     _sorted;
+    std::vector<size_t>*                     _pos_sorted;
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
     size_t                                   _wordlen;
