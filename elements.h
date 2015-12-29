@@ -109,7 +109,7 @@ class ElementWithVectorData : public Element {
         == *(this->_vector);
     }
 
-    bool less (const Element* that) const override {
+    virtual bool less (const Element* that) const override {
       auto ewvd = static_cast<const ElementWithVectorData*>(that);
       if (this->_vector->size() != ewvd->_vector->size()) {
         return this->_vector->size() < ewvd->_vector->size();
@@ -149,7 +149,7 @@ class PartialTransformation :
 
   public:
 
-    PartialTransformation (std::vector<S>* vector) :
+    explicit PartialTransformation (std::vector<S>* vector) :
       ElementWithVectorData<S, T>(vector) {}
 
     size_t complexity () const override {
@@ -227,8 +227,45 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
 
   public:
 
-    PartialPerm (std::vector<T>* vector) :
+    explicit PartialPerm (std::vector<T>* vector) :
       PartialTransformation<T, PartialPerm<T> >(vector) {}
+
+    // this is required so that we sort in the same way as GAP :(
+    // FIXME this doesn't work
+    virtual bool less (const Element* that) const override {
+      auto pp_this = static_cast<const PartialPerm<T>*>(this);
+      auto pp_that = static_cast<const PartialPerm<T>*>(that);
+
+      size_t deg_this = pp_this->degree();
+      for (auto it = pp_this->_vector->end() - 1; it >= pp_this->_vector->begin(); it--) {
+        if (*it == UNDEFINED) {
+          deg_this--;
+        } else {
+          break;
+        }
+      }
+      size_t deg_that = pp_that->degree();
+      for (auto it = pp_that->_vector->end() - 1; it >=
+          pp_that->_vector->begin() && deg_that >= deg_this; it--) {
+        if (*it == UNDEFINED) {
+          deg_that--;
+        } else {
+          break;
+        }
+      }
+
+      if (deg_this != deg_that) {
+        return deg_this < deg_that;
+      }
+
+      for (size_t i = 0; i < deg_this; i++) {
+        if ((*pp_this)[i] != (*pp_that)[i]) {
+          return (*pp_this)[i] == UNDEFINED || ((*pp_that)[i] != UNDEFINED &&
+              (*pp_this)[i] < (*pp_that)[i]);
+        }
+      }
+      return false;
+    }
 
     Element* really_copy (size_t increase_deg_by = 0) const override {
       std::vector<T>* vector(new std::vector<T>(*this->_vector));
@@ -248,6 +285,16 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
       for (T i = 0; i < this->degree(); i++) {
         this->_vector->at(i) = (xx[i] == UNDEFINED ? UNDEFINED : yy[xx[i]]);
       }
+    }
+
+    size_t rank () const {
+      size_t nr_defined = 0;
+      for (auto x: *this->_vector) {
+        if (x != UNDEFINED) {
+          nr_defined++;
+        }
+      }
+      return nr_defined;
     }
 
   private:
