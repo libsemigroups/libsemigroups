@@ -35,9 +35,9 @@ class Semigroup {
   struct Less {
         explicit Less (Semigroup const& semigroup) : _semigroup(semigroup) {}
 
-        bool operator () (Element const* x, Element const* y) {
-          //return *(*_semigroup._elements)[i] < *(*_semigroup._elements)[j];
-          return *x < *y;
+        bool operator () (std::pair<Element const*, size_t> const &x,
+                          std::pair<Element const*, size_t> const &y) {
+          return *(x.first) < *(y.first);
         }
 
         Semigroup const& _semigroup;
@@ -561,24 +561,24 @@ class Semigroup {
         return;
       }
       enumerate(-1, report);
-      _sorted = new std::vector<Element*>(*_elements);
-      //_sorted->reserve(_elements->size());
-      //for (size_t i = 0; i < _elements->size(); i++) {
-      //  _sorted->push_back(i);
-      //}
+      _sorted = new std::vector<std::pair<Element*, size_t> >();
+      _sorted->reserve(_elements->size());
+      for (size_t i = 0; i < _elements->size(); i++) {
+        _sorted->push_back(make_pair((*_elements)[i], i));
+      }
       std::sort(_sorted->begin(), _sorted->end(), Less(*this));
     }
 
-    /*size_t position_sorted (Element* x, bool report) {
+    size_t position_sorted (Element* x, bool report) {
       if (x->degree() != _degree) {
         return -1;
       }
       if (_pos_sorted == nullptr) {
-        sort_elements();
+        sort_elements(report);
         _pos_sorted = new std::vector<size_t>();
         _pos_sorted->resize(_sorted->size());
         for (size_t i = 0; i < _sorted->size(); i++) {
-          (*_pos_sorted)[(*_sorted)[i]] = i;
+          (*_pos_sorted)[(*_sorted)[i].second] = i;
         }
       }
       auto it = _map.find(x);
@@ -587,14 +587,14 @@ class Semigroup {
       } else {
         return -1;
       }
-    }*/
+    }
 
     std::vector<Element*>* elements (bool report=false) {
       enumerate(-1, report);
       return _elements;
     }
 
-    std::vector<Element*>* sorted_elements (bool report=false) {
+    std::vector<std::pair<Element*, size_t> >* sorted_elements (bool report=false) {
       sort_elements(report);
       return _sorted;
     }
@@ -613,7 +613,7 @@ class Semigroup {
     Element* sorted_at (size_t pos, bool report) {
       sort_elements(report);
       if (pos < _sorted->size()) {
-        return (*_sorted)[pos];
+        return (*_sorted)[pos].first;
       } else {
         return nullptr;
       }
@@ -1162,7 +1162,7 @@ class Semigroup {
     size_t                                   _relation_gen;
     size_t                                   _relation_pos;
     CayleyGraph*                             _right;
-    std::vector<Element*>*                   _sorted;
+    std::vector<std::pair<Element*, size_t> >* _sorted;
     std::vector<size_t>*                     _pos_sorted;
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
