@@ -64,7 +64,11 @@ class Blocks {
     }
 
     Blocks& operator= (Blocks const&) = delete;
-    Blocks (Blocks const&) = delete;
+    Blocks (Blocks const& copy) :
+      _blocks(new std::vector<u_int32_t>(*copy._blocks)),
+      _lookup(new std::vector<bool>(*copy._lookup)),
+      _nr_blocks(copy._nr_blocks),
+      _rank(copy._rank) {}
 
     ~Blocks () {
       delete _blocks;
