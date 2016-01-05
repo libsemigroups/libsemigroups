@@ -274,6 +274,8 @@ class Semigroup {
 
       delete _left;
       delete _right;
+      delete _sorted;
+      delete _pos_sorted;
 
       for (auto x: _duplicate_gens) {
         _gens->at(x.first)->really_delete();
