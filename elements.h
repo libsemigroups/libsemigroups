@@ -55,6 +55,12 @@ class Element {
 
     virtual size_t   complexity    ()                               const = 0;
     virtual size_t   degree        ()                               const = 0;
+    virtual size_t rank () {
+      return 0;
+    }
+    virtual size_t crank () const {
+      return 0;
+    }
     virtual bool     less          (const Element*)                 const = 0;
     virtual bool     equals        (const Element*)                 const = 0;
     virtual size_t   hash_value    ()                               const = 0;
@@ -159,6 +165,19 @@ class PartialTransformation :
     size_t degree () const override {
       return this->_vector->size();
     }
+    
+    virtual size_t crank () const override {
+      _lookup.clear();
+      _lookup.resize(degree(), false);
+      size_t r = 0;
+      for (auto x: *(this->_vector)) {
+        if (x != _UNDEFINED && !_lookup[x]) {
+          _lookup[x] = true;
+          r++;
+        }
+      }
+      return r;
+    }
 
     size_t hash_value () const override {
       size_t seed = 0;
@@ -177,7 +196,17 @@ class PartialTransformation :
       }
       return new T(vector);
     }
+
+ private:
+    static std::vector<bool> _lookup;
+    static S                 _UNDEFINED;
 };
+
+template <typename S, typename T>
+std::vector<bool> PartialTransformation<S, T>::_lookup = std::vector<bool>();
+
+template <typename S, typename T>
+S PartialTransformation<S, T>::_UNDEFINED = (S) -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +267,7 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
 
       size_t deg_this = pp_this->degree();
       for (auto it = pp_this->_vector->end() - 1; it >= pp_this->_vector->begin(); it--) {
-        if (*it == UNDEFINED) {
+        if (*it == _UNDEFINED) {
           deg_this--;
         } else {
           break;
@@ -247,7 +276,7 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
       size_t deg_that = pp_that->degree();
       for (auto it = pp_that->_vector->end() - 1; it >=
           pp_that->_vector->begin() && deg_that >= deg_this; it--) {
-        if (*it == UNDEFINED) {
+        if (*it == _UNDEFINED) {
           deg_that--;
         } else {
           break;
@@ -260,7 +289,7 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
 
       for (size_t i = 0; i < deg_this; i++) {
         if ((*pp_this)[i] != (*pp_that)[i]) {
-          return (*pp_this)[i] == UNDEFINED || ((*pp_that)[i] != UNDEFINED &&
+          return (*pp_this)[i] == _UNDEFINED || ((*pp_that)[i] != _UNDEFINED &&
               (*pp_this)[i] < (*pp_that)[i]);
         }
       }
@@ -270,7 +299,7 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
     Element* really_copy (size_t increase_deg_by = 0) const override {
       std::vector<T>* vector(new std::vector<T>(*this->_vector));
       for (size_t i = 0; i < increase_deg_by; i++) {
-        vector->push_back(UNDEFINED);
+        vector->push_back(_UNDEFINED);
       }
       return new PartialPerm<T>(vector);
     }
@@ -283,14 +312,14 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
       PartialPerm<T> yy(*static_cast<PartialPerm<T> const*>(y));
 
       for (T i = 0; i < this->degree(); i++) {
-        this->_vector->at(i) = (xx[i] == UNDEFINED ? UNDEFINED : yy[xx[i]]);
+        this->_vector->at(i) = (xx[i] == _UNDEFINED ? _UNDEFINED : yy[xx[i]]);
       }
     }
 
-    size_t rank () const {
+    size_t crank () const override {
       size_t nr_defined = 0;
       for (auto x: *this->_vector) {
-        if (x != UNDEFINED) {
+        if (x != _UNDEFINED) {
           nr_defined++;
         }
       }
@@ -299,8 +328,11 @@ class PartialPerm : public PartialTransformation<T, PartialPerm<T> > {
 
   private:
 
-    T UNDEFINED = (T) -1;
+    static T _UNDEFINED;
 };
+
+template <typename T>
+T PartialPerm<T>::_UNDEFINED = (T) -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +381,7 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
 
     size_t   complexity()                             const override;
     size_t   degree()                                 const override;
+    size_t   rank()                                         override;
     size_t   hash_value()                             const override;
     Element* identity()                               const override;
     void     redefine(Element const*, Element const*)       override;
@@ -359,7 +392,6 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     u_int32_t             nr_blocks();
     u_int32_t             nr_left_blocks();
     u_int32_t             nr_right_blocks();
-    u_int32_t             rank();
     bool                  is_transverse_block(size_t index);
     Blocks*               left_blocks(); //FIXME should be const
     Blocks*               right_blocks();//FIXME should be const
@@ -371,6 +403,7 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     inline void set_nr_left_blocks (size_t nr_left_blocks) {
       _nr_left_blocks = nr_left_blocks;
     }
+
 
     inline void set_rank (size_t rank) {
       _rank = rank;

@@ -228,7 +228,7 @@ void Bipartition::init_trans_blocks_lookup () {
   }
 }
 
-u_int32_t Bipartition::rank () {
+size_t Bipartition::rank () {
   if (_rank == this->UNDEFINED) {
     init_trans_blocks_lookup();
     _rank = 0;

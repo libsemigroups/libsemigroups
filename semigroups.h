@@ -417,7 +417,7 @@ class Semigroup {
     /*******************************************************************************
      * length: the length of the _elements.at(pos)
     *******************************************************************************/
-
+    //FIXME make this non-const and actually enumerate
     size_t length (size_t pos) const {
       assert(pos < _nr);
       return _length.at(pos);
@@ -466,6 +466,33 @@ class Semigroup {
      * Non-const methods . . .
     ********************************************************************************
     *******************************************************************************/
+
+    void max_word_length_by_rank (std::vector<size_t>& result, bool report) {
+
+      enumerate(-1, report);
+
+      size_t max_rank = 0;
+      for (auto x: *_gens) {
+        size_t r = x->crank();
+        if (r > max_rank) {
+          max_rank = r;
+        }
+      }
+
+      result.resize(max_rank, 0);
+      int pos = _elements->size() - 1;
+      int len = _lenindex.size() - 3; // not sure if this is right
+      while (len >= 0 && std::find(result.begin(), result.end(), 0) != result.end()) {
+        while (pos >= static_cast<int>(_lenindex[len])) {
+          size_t r = (*_elements)[pos]->crank() - 1;
+          if (result[r] == 0) {
+            result[r] = len + 1;
+          }
+          pos--;
+        }
+        len--;
+      }
+    }
 
     /*******************************************************************************
      * nr_idempotents: get the total number of idempotents
@@ -1127,6 +1154,8 @@ class Semigroup {
         }
       }
     }
+    
+
 
   /*********************************************************************************
   **********************************************************************************
@@ -1169,6 +1198,7 @@ class Semigroup {
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
     size_t                                   _wordlen;
+
 
 };
 
