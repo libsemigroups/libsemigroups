@@ -355,6 +355,19 @@ class Semigroup {
     }
 
     /*******************************************************************************
+     * position_current: position in the existing data structure
+    *******************************************************************************/
+
+    size_t position_current (Element* x) const {
+      if (x->degree() != _degree) {
+        return -1;
+      }
+
+      auto it = _map.find(x);
+      return (it == _map.end() ? -1 : it->second);
+    }
+
+    /*******************************************************************************
      * current_size: the number of elements enumerated so far
     *******************************************************************************/
 
@@ -1198,6 +1211,7 @@ class Semigroup {
     std::vector<size_t>                      _suffix;
     Element*                                 _tmp_product;
     size_t                                   _wordlen;
+
 
 
 };
