@@ -430,10 +430,17 @@ class Semigroup {
     /*******************************************************************************
      * length: the length of the _elements.at(pos)
     *******************************************************************************/
-    //FIXME make this non-const and actually enumerate
+    
     size_t length (size_t pos) const {
       assert(pos < _nr);
       return _length.at(pos);
+    }
+    
+    size_t length_non_const (size_t pos, bool report) {
+      if (pos >= _nr) {
+        enumerate(-1, report);
+      }
+      return length(pos);
     }
 
     /*******************************************************************************
