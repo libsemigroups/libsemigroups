@@ -181,6 +181,7 @@ u_int32_t Bipartition::const_nr_blocks () const {
       nr = x;
     }
   }
+  assert(nr != Bipartition::UNDEFINED);
   return nr + 1;
 }
 
