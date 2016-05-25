@@ -18,6 +18,7 @@
 
 #include "recvec.h"
 #include "elements.h"
+#include "timer.hh"
 
 #include <algorithm>
 #include <unordered_map>
@@ -430,12 +431,12 @@ class Semigroup {
     /*******************************************************************************
      * length: the length of the _elements.at(pos)
     *******************************************************************************/
-    
+
     size_t length (size_t pos) const {
       assert(pos < _nr);
       return _length.at(pos);
     }
-    
+
     size_t length_non_const (size_t pos, bool report) {
       if (pos >= _nr) {
         enumerate(-1, report);
@@ -521,13 +522,17 @@ class Semigroup {
     size_t nr_idempotents (bool report) {
       if (_nr_idempotents == 0) {
         enumerate(-1, report);
-
+        Timer timer;
+        if (report) {
+          timer.start();
+        }
         size_t sum_word_lengths = 0;
         for (size_t i = 1; i < _lenindex.size(); i++) {
           sum_word_lengths += i * (_lenindex.at(i) - _lenindex.at(i - 1));
         }
 
         if (_nr * _tmp_product->complexity() < sum_word_lengths) {
+          // TODO use threads here!
           for (size_t i = 0; i < _nr; i++) {
             _tmp_product->redefine(_elements->at(i), _elements->at(i));
             if (*_tmp_product == *_elements->at(i)) {
@@ -540,6 +545,9 @@ class Semigroup {
               _nr_idempotents++;
             }
           }
+        }
+        if (report) {
+          timer.stop();
         }
       }
       return _nr_idempotents;
@@ -785,10 +793,11 @@ class Semigroup {
     void enumerate (size_t limit, bool report) {
       if (_pos >= _nr || limit <= _nr) return;
       limit = std::max(limit, _nr + _batch_size);
-
+      Timer timer;
       if (report) {
         std::cout << "semigroups++: enumerate" << std::endl;
         std::cout << "limit = " << limit << std::endl;
+        timer.start();
       }
 
       //multiply the generators by every generator
@@ -900,6 +909,7 @@ class Semigroup {
             std::cout << ", so far" << std::endl;
           } else {
             std::cout << ", finished!" << std::endl;
+            timer.stop();
           }
 
         }
@@ -1174,7 +1184,7 @@ class Semigroup {
         }
       }
     }
-    
+
 
 
   /*********************************************************************************
