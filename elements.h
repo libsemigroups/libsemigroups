@@ -165,7 +165,7 @@ class PartialTransformation :
     size_t degree () const override {
       return this->_vector->size();
     }
-    
+
     virtual size_t crank () const override {
       _lookup.clear();
       _lookup.resize(degree(), false);
@@ -408,9 +408,14 @@ class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     inline void set_rank (size_t rank) {
       _rank = rank;
     }
-
+    //TODO make these methods for ElementWithVectorData
     inline typename std::vector<u_int32_t>::iterator begin () const {
       return _vector->begin();
+    }
+
+    //TODO make these methods for ElementWithVectorData
+    inline typename std::vector<u_int32_t>::iterator end () const {
+      return _vector->end();
     }
 
  private:
