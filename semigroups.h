@@ -698,7 +698,7 @@ class Semigroup {
      * factorization: returns the minimum word equal to _elements.at(pos).
     *******************************************************************************/
 
-    Word* factorisation (size_t pos, bool report) {
+    Word* factorisation (size_t pos, bool report = true) {
 
       Word* word = new Word();
       if (pos > _nr && !is_done()) {
