@@ -48,12 +48,13 @@ class Congruence {
  private:
   void new_coset(coset_t const&, letter_t const&);
   void identify_cosets(coset_t, coset_t);
-  void trace(coset_t const&, relation_t const&, bool add = true);
+  inline void trace(coset_t const&, relation_t const&, bool add = true);
 
   size_t                                  _nrgens;
   std::vector<relation_t>                 _relations;
 
   size_t                                  _active;
+  size_t                                  _pack;
 
   std::vector<coset_t>                    _forwd;
   std::vector<signed_coset_t>             _bckwd;
@@ -72,6 +73,8 @@ class Congruence {
   // statistics etc
   bool                                    _report;
   size_t                                  _defined;
+  size_t                                  _killed;
+  size_t                                  _stop_packing;
   size_t                                  _next_report;
 
   static size_t                           INFTY;

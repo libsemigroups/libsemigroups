@@ -22,14 +22,19 @@ Congruence::Congruence (size_t                         nrgens,
   _next(UNDEFINED),
   _last(0),
   _active(1),
+  _pack(120000),
   _table(_nrgens, 1, UNDEFINED),
   _preim_init(_nrgens, 1, UNDEFINED),
   _preim_next(_nrgens, 1, UNDEFINED),
   _report(true),
   _defined(1),
+  _killed(0),
+  _stop_packing(false),
   _next_report(0) {
+    // TODO: check that the entries in extra/relations are properly defined
+    // i.e. that every entry is at most nrgens - 1
     // TODO: ok?
-    for (relation_t rel: extra) {
+    for (relation_t const& rel: extra) {
       trace(0, rel);
     }
 }
@@ -198,10 +203,27 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
     }
   }
 
-  if (_report && _next_report > 8194) {
-    std::cout << _defined << " cosets, " << _active << " active, ";
-    std::cout << _defined - _active << " killed" << std::endl;
+  _next_report++;
+
+  if (_next_report > 4000000) {
+    if (_report) {
+      std::cout << _defined << " defined, "
+        << _forwd.size() << " max, "
+        << _active << " active, "
+        << (_defined - _active) - _killed << " killed, "
+        << "current ";
+      if (add) {
+        std::cout << _current;
+      } else {
+        std::cout << _current_no_add;
+      }
+      std::cout << std::endl;
+    }
+    if ((_defined - _active) - _killed < 100) {
+      _stop_packing = true;
+    }
     _next_report = 0;
+    _killed = _defined - _active;
   }
 
   letter_t a = rel.first.back();
@@ -240,11 +262,36 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
 void Congruence::todd_coxeter (size_t limit) {
 
   do {
-    for (relation_t rel: _relations) {
+    for (relation_t const& rel: _relations) {
       trace(_current, rel);
     }
 
-    // TODO lookahead phase
+    if (_active > _pack) {
+      if (_report) {
+        std::cout << _defined << " defined, "
+          << _forwd.size() << " max, "
+          << _active << " active, "
+          << (_defined - _active) - _killed << " killed, "
+          << "current " << _current << std::endl;
+        std::cout << "Entering lookahead phase . . .\n";
+        _killed = _defined - _active;
+      }
+      size_t oldactive = _active;
+      _current_no_add = _current;
+      do {
+        for (relation_t const& rel: _relations) {
+          trace(_current_no_add, rel, false);
+        }
+        _current_no_add = _forwd[_current_no_add];
+      } while (_current_no_add != _next && !_stop_packing);
+      if (_report) {
+        std::cout << "Lookahead phase complete " << oldactive - _active <<
+          " killed " << std::endl;
+      }
+      _pack += _pack / 10;
+      _stop_packing = false;
+      _current_no_add = UNDEFINED;
+    }
     _current = _forwd[_current];
   } while (_current != _next);
   if (_report) {
