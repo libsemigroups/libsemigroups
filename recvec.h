@@ -5,9 +5,8 @@
  *
  */
 
-#ifndef BASICS_H_
-#define BASICS_H_
-//#define NDEBUG
+#ifndef RECVEC_H_
+#define RECVEC_H_
 
 #include <assert.h>
 #include <algorithm>
@@ -214,6 +213,38 @@ class RecVec {
           return _nr_used_cols + _nr_unused_cols;
         }
 
+        /***********************************************************************
+         * adjoins the RecVec copy to the end of this
+        ***********************************************************************/
+
+        void adjoin (const RecVec<T>& copy) {
+          assert(copy._nr_used_cols == _nr_used_cols);
+
+          size_t old_nr_rows = _nr_rows;
+          add_rows(copy._nr_rows);
+
+          if (copy._nr_unused_cols == _nr_unused_cols) {
+            std::copy(copy._vec.begin(),
+                      copy._vec.end(),
+                      _vec.begin() + (_nr_used_cols + _nr_unused_cols) *
+                      old_nr_rows);
+          } else {
+            for (size_t i = old_nr_rows; i < _nr_rows; i++) {
+              for (size_t j = 0; j < _nr_used_cols; j++) {
+                set(i, j, copy.get(i - old_nr_rows, j));
+              }
+            }
+          }
+        }
+
+        inline typename std::vector<T>::iterator begin () {
+          return _vec.begin();
+        }
+
+        inline typename std::vector<T>::iterator end () {
+          return _vec.end();
+        }
+
       private:
         std::vector<T> _vec;
         size_t         _nr_used_cols;
@@ -222,4 +253,4 @@ class RecVec {
         T              _default_val;
 };
 
-#endif  // BASICS_H_
+#endif  // RECVEC_H_
