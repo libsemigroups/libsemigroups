@@ -482,6 +482,11 @@ class Semigroup {
       }
     }
 
+    size_t genslookup (size_t i) const {
+      assert(i < _nrgens);
+      return _genslookup[i];
+    }
+
     /*******************************************************************************
     ********************************************************************************
      * Non-const methods . . .
@@ -574,7 +579,7 @@ class Semigroup {
      *
     *******************************************************************************/
 
-    size_t size (bool report) {
+    size_t size (bool report = true) {
       enumerate(-1, report);
       return _elements->size();
     }
@@ -680,7 +685,7 @@ class Semigroup {
      *
     *******************************************************************************/
 
-    CayleyGraph* right_cayley_graph (bool report) {
+    CayleyGraph* right_cayley_graph (bool report = true) {
       enumerate(-1, report);
       return _right;
     }
