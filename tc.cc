@@ -13,6 +13,9 @@ size_t Congruence::UNDEFINED = -1;
 Congruence::Congruence (size_t                         nrgens,
                         std::vector<relation_t> const& relations,
                         std::vector<relation_t> const& extra) :
+  _use_known(false),
+  _extra(extra),
+  _id_coset(0),
   _nrgens(nrgens),
   _relations(relations),
   _forwd(1, UNDEFINED),
@@ -20,8 +23,8 @@ Congruence::Congruence (size_t                         nrgens,
   _current(0),
   _current_no_add(UNDEFINED),
   _next(UNDEFINED),
-  _last(0),
   _active(1),
+  _last(0),
   _pack(120000),
   _table(_nrgens, 1, UNDEFINED),
   _preim_init(_nrgens, 1, UNDEFINED),
@@ -34,33 +37,73 @@ Congruence::Congruence (size_t                         nrgens,
     // TODO: check that the entries in extra/relations are properly defined
     // i.e. that every entry is at most nrgens - 1
     // TODO: ok?
-    for (relation_t const& rel: extra) {
-      trace(0, rel);
-    }
 }
 
 Congruence::Congruence (Semigroup* semigroup) :
-  Congruence(semigroup, std::vector<relation_t>()) {}
+  Congruence(semigroup, std::vector<relation_t>(), false) {}
 
 Congruence::Congruence (Semigroup*                     semigroup,
-                        std::vector<relation_t> const& extra) :
+                        std::vector<relation_t> const& extra,
+                        bool                           use_known) :
   Congruence(semigroup->nrgens(),  std::vector<relation_t>(), extra) {
 
-  std::vector<size_t> relation;
+  if (use_known) { // use the right Cayley table of semigroup
+    _use_known = true;
+    _active += semigroup->size();
 
-  semigroup->reset_next_relation();
-  semigroup->next_relation(relation, _report);
+    _table.adjoin(*semigroup->right_cayley_graph());
+    for (auto it = _table.begin(); it < _table.end(); it++) {
+      (*it)++;
+    }
 
-  if (relation.size() == 2) { // this is for the case when there are duplicate gens
-    assert(false); // FIXME
-  }
+    _id_coset = 0;
 
-  while (! relation.empty()) {
-    word_t lhs = *(semigroup->factorisation(relation[0]));
-    lhs.push_back(relation[1]);
-    word_t rhs = *(semigroup->factorisation(relation[2]));
-    _relations.push_back(std::make_pair(lhs, rhs));
+    for (size_t i = 0; i < _nrgens; i++) {
+      _table.set(_id_coset, i, semigroup->genslookup(i) + 1);
+    }
+
+    _forwd.reserve(_active);
+    _bckwd.reserve(_active);
+
+    for (size_t i = 1; i < _active; i++) {
+      _forwd.push_back(i + 1);
+      _bckwd.push_back(i - 1);
+    }
+    _forwd[0] = 1;
+    _forwd[_active - 1] = UNDEFINED;
+
+    _last = _active - 1;
+
+    _preim_init.add_rows(semigroup->size());
+    _preim_next.add_rows(semigroup->size());
+
+    for (coset_t c = 0; c < _active; c++) {
+      for (letter_t i = 0; i < _nrgens; i++) {
+        coset_t b = _table.get(c, i);
+        _preim_next.set(c, i, _preim_init.get(b, i));
+        _preim_init.set(b, i, c);
+      }
+    }
+
+    _defined = _active;
+  } else { // don't use the right Cayley table of semigroup
+   std::vector<size_t> relation;
+
+    semigroup->reset_next_relation();
     semigroup->next_relation(relation, _report);
+
+    if (relation.size() == 2) {
+      // this is for the case when there are duplicate gens
+      assert(false); // FIXME
+    }
+
+    while (! relation.empty()) {
+      word_t lhs = *(semigroup->factorisation(relation[0]));
+      lhs.push_back(relation[1]);
+      word_t rhs = *(semigroup->factorisation(relation[2]));
+      _relations.push_back(std::make_pair(lhs, rhs));
+      semigroup->next_relation(relation, _report);
+    }
   }
 }
 
@@ -116,6 +159,7 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
     while (_bckwd[rhs] < 0) {
       rhs = -_bckwd[rhs];
     }
+    assert(lhs != 2 || rhs != 16);
 
     if (lhs != rhs) {
       _active--;
@@ -126,6 +170,7 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
       if (rhs == _current_no_add) {
         _current_no_add = _bckwd[_current_no_add];
       }
+      assert(rhs != _next);
       if (rhs == _last) {
         _last = _bckwd[_last];
       } else {
@@ -149,6 +194,7 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
         v = _table.get(rhs, i);
         if (v != UNDEFINED) {
           coset_t u = _preim_init.get(v, i);
+          assert(u != UNDEFINED);
           if (u == rhs) {
             _preim_init.set(v, i, _preim_next.get(rhs, i));
           } else {
@@ -175,6 +221,25 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
     lhs = _lhs_stack.top(); _lhs_stack.pop();
     rhs = _rhs_stack.top(); _rhs_stack.pop();
   }
+}
+
+void Congruence::check_forwd () {
+  for (size_t i = 0; i < _forwd.size(); i++) {
+    assert(_forwd[i] != i);
+  }
+
+  coset_t x = _id_coset;
+  size_t nr = 0;
+  do {
+    x = _forwd[x];
+    nr++;
+  } while (x != _next && nr <= _table.nr_rows());
+  assert(nr == _active);
+  while (x != UNDEFINED) {
+    x = _forwd[x];
+    nr++;
+  }
+  assert(nr == _table.nr_rows());
 }
 
 void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
@@ -261,6 +326,12 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
 
 void Congruence::todd_coxeter (size_t limit) {
 
+  // TODO this should be put into a method that is only called once
+
+  for (relation_t const& rel: _extra) {
+    trace(_id_coset, rel);
+  }
+
   do {
     for (relation_t const& rel: _relations) {
       trace(_current, rel);
@@ -297,5 +368,15 @@ void Congruence::todd_coxeter (size_t limit) {
   if (_report) {
     std::cout << _defined << " cosets defined, maximum " << _forwd.size();
     std::cout <<  ", " <<_active << " survived" << std::endl;
+  }
+}
+
+void Congruence::todd_coxeter_finite () {
+  if (_use_known) {
+    for (relation_t const& rel: _extra) {
+      trace(_id_coset, rel);
+    }
+  } else {
+    todd_coxeter();
   }
 }
