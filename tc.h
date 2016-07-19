@@ -43,11 +43,15 @@ class Congruence {
     return _active;
   }
 
+  coset_t word_to_coset (word_t);
+
  private:
   void new_coset(coset_t const&, letter_t const&);
   void identify_cosets(coset_t, coset_t);
   inline void trace(coset_t const&, relation_t const&, bool add = true);
   void check_forwd();
+
+  bool                         _tc_done;  // Has todd_coxeter already been run?
 
   coset_t                      _id_coset; // TODO: Remove?
   size_t                       _nrgens;

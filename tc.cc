@@ -15,6 +15,7 @@ Congruence::Congruence (size_t                         nrgens,
                         std::vector<relation_t> const& extra) :
   _use_known(false),
   _extra(extra),
+  _tc_done(false),
   _id_coset(0),
   _nrgens(nrgens),
   _relations(relations),
@@ -86,7 +87,7 @@ Congruence::Congruence (Semigroup*                     semigroup,
 
     _defined = _active;
   } else { // Don't use the right Cayley table of semigroup
-   std::vector<size_t> relation;
+    std::vector<size_t> relation;
 
     semigroup->reset_next_relation();
     semigroup->next_relation(relation, _report);
@@ -385,6 +386,11 @@ void Congruence::todd_coxeter (size_t limit) {
 
   // TODO this should be put into a method that is only called once
 
+  // If we have already run this before, then we are done
+  if (_tc_done) {
+    return;
+  }
+
   // Apply each "extra" relation to the first coset only
   for (relation_t const& rel: _extra) {
     trace(_id_coset, rel);  // Allow new cosets
@@ -442,6 +448,8 @@ void Congruence::todd_coxeter (size_t limit) {
     std::cout <<  ", " <<_active << " survived" << std::endl;
   }
 
+  _tc_done = true;
+
   // No return value: all info is now stored in the class
 }
 
@@ -453,4 +461,18 @@ void Congruence::todd_coxeter_finite () {
   } else {
     todd_coxeter();
   }
+}
+
+//
+// word_to_coset( w )
+// We assume that todd_coxeter has already been run.
+// Return the coset which corresponds to the word <w>.
+//
+size_t Congruence::word_to_coset (word_t w) {
+  coset_t c = _id_coset;
+  for (auto it = w.begin(); it < w.end(); it++) {
+    c = _table.get(c, *it);
+    assert(c != UNDEFINED);
+  }
+  return c;
 }
