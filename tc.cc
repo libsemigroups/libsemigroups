@@ -15,20 +15,20 @@ size_t Congruence::UNDEFINED = -1;
 Congruence::Congruence (size_t                         nrgens,
                         std::vector<relation_t> const& relations,
                         std::vector<relation_t> const& extra) :
-  _use_known(false),
-  _extra(extra),
   _tc_done(false),
   _id_coset(0),
   _nrgens(nrgens),
   _relations(relations),
+  _extra(extra),
+  _active(1),
+  _pack(120000),
+  _stop(false),
   _forwd(1, UNDEFINED),
   _bckwd(1, 0),
   _current(0),
   _current_no_add(UNDEFINED),
-  _next(UNDEFINED),
-  _active(1),
   _last(0),
-  _pack(120000),
+  _next(UNDEFINED),
   _table(_nrgens, 1, UNDEFINED),
   _preim_init(_nrgens, 1, UNDEFINED),
   _preim_next(_nrgens, 1, UNDEFINED),
@@ -37,7 +37,7 @@ Congruence::Congruence (size_t                         nrgens,
   _killed(0),
   _stop_packing(false),
   _next_report(0),
-  _stop(false) {
+  _use_known(false) {
   // TODO: check that the entries in extra/relations are properly defined
   // i.e. that every entry is at most nrgens - 1
 }
@@ -454,6 +454,7 @@ void Congruence::todd_coxeter_finite () {
         return;
       }
     }
+    _tc_done = true;
   } else {
     todd_coxeter();
   }
@@ -498,7 +499,9 @@ Congruence* finite_cong_enumerate (Semigroup* S,
                                    bool report) {
 
   Timer timer;
-  timer.start();
+  if (report) {
+    timer.start();
+  }
   Congruence* cong_t(new Congruence(S, extra, true));
   Congruence* cong_f(new Congruence(S, extra, false));
 
@@ -512,7 +515,9 @@ Congruence* finite_cong_enumerate (Semigroup* S,
   threads.at(0).join();
   threads.at(1).join();
 
-  timer.stop();
+  if (report) {
+    timer.stop();
+  }
 
   return (cong_t->is_tc_done() ? cong_t : cong_f);
 }
