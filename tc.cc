@@ -178,7 +178,6 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
     while (_bckwd[rhs] < 0) {
       rhs = -_bckwd[rhs];
     }
-    assert(lhs != 2 || rhs != 16);
 
     if (lhs != rhs) {
       _active--;
@@ -258,25 +257,6 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
     lhs = _lhs_stack.top(); _lhs_stack.pop();
     rhs = _rhs_stack.top(); _rhs_stack.pop();
   }
-}
-
-void Congruence::check_forwd () {
-  for (size_t i = 0; i < _forwd.size(); i++) {
-    assert(_forwd[i] != i);
-  }
-
-  coset_t x = _id_coset;
-  size_t nr = 0;
-  do {
-    x = _forwd[x];
-    nr++;
-  } while (x != _next && nr <= _table.nr_rows());
-  assert(nr == _active);
-  while (x != UNDEFINED) {
-    x = _forwd[x];
-    nr++;
-  }
-  assert(nr == _table.nr_rows());
 }
 
 //
