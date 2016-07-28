@@ -47,6 +47,7 @@ class Congruence {
 
   void terminate ();
   bool is_tc_done ();
+  void set_report (bool);
 
  private:
   void new_coset(coset_t const&, letter_t const&);
@@ -139,6 +140,6 @@ class Congruence {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-Congruence* finite_cong_enumerate (Semigroup*, std::vector<relation_t> const&);
+Congruence* finite_cong_enumerate (Semigroup*, std::vector<relation_t> const&, bool report = false);
 
 #endif // TC_H_

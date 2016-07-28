@@ -477,6 +477,10 @@ void Congruence::terminate () {
   _stop = true;
 }
 
+void Congruence::set_report (bool val) {
+  _report = val;
+}
+
 bool Congruence::is_tc_done () {
   return _tc_done;
 }
@@ -490,12 +494,16 @@ void go (Congruence& this_cong, Congruence& that_cong) {
 }
 
 Congruence* finite_cong_enumerate (Semigroup* S,
-                                   std::vector<relation_t> const& extra) {
+                                   std::vector<relation_t> const& extra,
+                                   bool report) {
 
   Timer timer;
   timer.start();
   Congruence* cong_t(new Congruence(S, extra, true));
   Congruence* cong_f(new Congruence(S, extra, false));
+
+  cong_t->set_report(report);
+  cong_f->set_report(report);
 
   std::vector<std::thread> threads;
   threads.push_back(std::thread(go, std::ref(*cong_t), std::ref(*cong_f)));
