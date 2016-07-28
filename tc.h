@@ -67,7 +67,7 @@ class Congruence {
   size_t                       _pack;    // Nr of active cosets allowed before a
                                          // packing phase starts
 
-  bool                         _stop; //TODO use std::atomic_bool
+  std::atomic_bool             _stop;
 
   //
   // COSET LISTS:
