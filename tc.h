@@ -45,6 +45,9 @@ class Congruence {
 
   coset_t word_to_coset (word_t);
 
+  void terminate ();
+  bool is_tc_done ();
+
  private:
   void new_coset(coset_t const&, letter_t const&);
   void identify_cosets(coset_t, coset_t);
@@ -62,6 +65,9 @@ class Congruence {
 
   size_t                       _pack;    // Nr of active cosets allowed before a
                                          // packing phase starts
+
+  bool                         _stop; //TODO use std::atomic_bool
+
   //
   // COSET LISTS:
   //
@@ -129,5 +135,10 @@ class Congruence {
   static size_t                INFTY;
   static size_t                UNDEFINED;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+Congruence* finite_cong_enumerate (Semigroup*, std::vector<relation_t> const&);
 
 #endif // TC_H_

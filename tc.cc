@@ -7,6 +7,8 @@
 
 #include "tc.h"
 
+#include <thread>
+
 size_t Congruence::INFTY = -1;
 size_t Congruence::UNDEFINED = -1;
 
@@ -34,7 +36,8 @@ Congruence::Congruence (size_t                         nrgens,
   _defined(1),
   _killed(0),
   _stop_packing(false),
-  _next_report(0) {
+  _next_report(0),
+  _stop(false) {
   // TODO: check that the entries in extra/relations are properly defined
   // i.e. that every entry is at most nrgens - 1
 }
@@ -157,6 +160,10 @@ void Congruence::new_coset (coset_t const& c, letter_t const& a) {
 void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
   assert(_lhs_stack.empty() && _rhs_stack.empty());
 
+  if (_stop) {
+    return;
+  }
+
   // Make sure lhs < rhs
   if (lhs == rhs) {
     return;
@@ -169,7 +176,7 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
 
   // TODO something with pos?
 
-  while (true) {
+  while (!_stop) {
     // If <lhs> is not active, use the coset it was identified with
     while (_bckwd[lhs] < 0) {
       lhs = -_bckwd[lhs];
@@ -291,6 +298,9 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
     } else {
       return;
     }
+    if (_stop) {
+      return;
+    }
   }
   // <rhs> is the image of <c> under <rel>[2] (minus the last letter)
 
@@ -355,6 +365,9 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
     // lhs^a and rhs^b are both defined
     identify_cosets(u, v);
   }
+  if (_stop) {
+    return;
+  }
 }
 
 //
@@ -406,7 +419,7 @@ void Congruence::todd_coxeter (size_t limit) {
         _current_no_add = _forwd[_current_no_add];
 
         // Quit loop if we reach an inactive coset OR we get a "stop" signal
-      } while (_current_no_add != _next && !_stop_packing);
+      } while (!_stop && _current_no_add != _next && !_stop_packing);
       if (_report) {
         std::cout << "Lookahead phase complete " << oldactive - _active <<
           " killed " << std::endl;
@@ -420,7 +433,7 @@ void Congruence::todd_coxeter (size_t limit) {
     _current = _forwd[_current];
 
     // Quit loop when we reach an inactive coset
-  } while (_current != _next);
+  } while (!_stop && _current != _next);
 
   // Final report
   if (_report) {
@@ -437,6 +450,9 @@ void Congruence::todd_coxeter_finite () {
   if (_use_known) {
     for (relation_t const& rel: _extra) {
       trace(_id_coset, rel);
+      if (_stop) {
+        return;
+      }
     }
   } else {
     todd_coxeter();
@@ -455,4 +471,40 @@ size_t Congruence::word_to_coset (word_t w) {
     assert(c != UNDEFINED);
   }
   return c;
+}
+
+void Congruence::terminate () {
+  _stop = true;
+}
+
+bool Congruence::is_tc_done () {
+  return _tc_done;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//TODO make this a lambda function in finite_cong_enumerate
+void go (Congruence& this_cong, Congruence& that_cong) {
+  this_cong.todd_coxeter_finite();
+  that_cong.terminate();
+}
+
+Congruence* finite_cong_enumerate (Semigroup* S,
+                                   std::vector<relation_t> const& extra) {
+
+  Timer timer;
+  timer.start();
+  Congruence* cong_t(new Congruence(S, extra, true));
+  Congruence* cong_f(new Congruence(S, extra, false));
+
+  std::vector<std::thread> threads;
+  threads.push_back(std::thread(go, std::ref(*cong_t), std::ref(*cong_f)));
+  threads.push_back(std::thread(go, std::ref(*cong_f), std::ref(*cong_t)));
+
+  threads.at(0).join();
+  threads.at(1).join();
+
+  timer.stop();
+
+  return (cong_t->is_tc_done() ? cong_t : cong_f);
 }
