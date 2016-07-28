@@ -488,11 +488,6 @@ bool Congruence::is_tc_done () {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-//TODO make this a lambda function in finite_cong_enumerate
-void go (Congruence& this_cong, Congruence& that_cong) {
-  this_cong.todd_coxeter_finite();
-  that_cong.terminate();
-}
 
 Congruence* finite_cong_enumerate (Semigroup* S,
                                    std::vector<relation_t> const& extra,
@@ -507,6 +502,11 @@ Congruence* finite_cong_enumerate (Semigroup* S,
 
   cong_t->set_report(report);
   cong_f->set_report(report);
+
+  auto go = [] (Congruence& this_cong, Congruence& that_cong) {
+    this_cong.todd_coxeter_finite();
+    that_cong.terminate();
+  };
 
   std::vector<std::thread> threads;
   threads.push_back(std::thread(go, std::ref(*cong_t), std::ref(*cong_f)));
