@@ -497,6 +497,7 @@ Congruence* finite_cong_enumerate (Semigroup* S,
   if (report) {
     timer.start();
   }
+
   Congruence* cong_t(new Congruence(S, extra, true));
   Congruence* cong_f(new Congruence(S, extra, false));
 
@@ -508,16 +509,22 @@ Congruence* finite_cong_enumerate (Semigroup* S,
     that_cong.terminate();
   };
 
-  std::vector<std::thread> threads;
-  threads.push_back(std::thread(go, std::ref(*cong_t), std::ref(*cong_f)));
-  threads.push_back(std::thread(go, std::ref(*cong_f), std::ref(*cong_t)));
+  std::thread thread_t(go, std::ref(*cong_t), std::ref(*cong_f));
+  std::thread thread_f(go, std::ref(*cong_f), std::ref(*cong_t));
 
-  threads.at(0).join();
-  threads.at(1).join();
+  thread_t.join();
+  thread_f.join();
 
   if (report) {
     timer.stop();
   }
 
-  return (cong_t->is_tc_done() ? cong_t : cong_f);
+  if (cong_t->is_tc_done()) {
+    delete cong_f;
+    return cong_t;
+  } else {
+    assert(cong_f->is_tc_done());
+    delete cong_t;
+    return cong_f;
+  }
 }
