@@ -8,6 +8,7 @@
 #ifndef TC_H_
 #define TC_H_
 
+#include <atomic>
 #include <forward_list>
 #include <stack>
 #include <utility>
