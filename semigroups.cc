@@ -7,7 +7,7 @@
 
 #include "semigroups.h"
 
-void Semigroup::max_word_length_by_rank (std::vector<size_t>& result, bool report) {
+/*void Semigroup::max_word_length_by_rank (std::vector<size_t>& result, bool report) {
 
   enumerate(-1, report);
 
@@ -24,4 +24,4 @@ void Semigroup::max_word_length_by_rank (std::vector<size_t>& result, bool repor
     }
     len--;
   }
-}
+}*/

@@ -694,7 +694,7 @@ class Semigroup {
      *
     *******************************************************************************/
 
-    CayleyGraph* left_cayley_graph (bool report) {
+    CayleyGraph* left_cayley_graph (bool report = true) {
       enumerate(-1, report);
       return _left;
     }
