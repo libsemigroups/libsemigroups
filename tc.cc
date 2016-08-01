@@ -11,15 +11,18 @@
 
 size_t Congruence::INFTY = -1;
 size_t Congruence::UNDEFINED = -1;
+std::mutex Congruence::_report_mtx;
 
-Congruence::Congruence (size_t                         nrgens,
+Congruence::Congruence (cong_t                         type,
+                        size_t                         nrgens,
+                        // TODO default these to empty vectors
                         std::vector<relation_t> const& relations,
                         std::vector<relation_t> const& extra) :
+  _type(type),
   _tc_done(false),
   _id_coset(0),
   _nrgens(nrgens),
   _relations(relations),
-  _extra(extra),
   _active(1),
   _pack(120000),
   _stop(false),
@@ -38,23 +41,59 @@ Congruence::Congruence (size_t                         nrgens,
   _stop_packing(false),
   _next_report(0),
   _use_known(false) {
+
   // TODO: check that the entries in extra/relations are properly defined
   // i.e. that every entry is at most nrgens - 1
+
+    switch (_type) {
+      case LEFT:
+        for (relation_t& rel: _relations) {
+          std::reverse(rel.first.begin(), rel.first.end());
+          std::reverse(rel.second.begin(), rel.second.end());
+        }
+        _extra = extra;
+        for (relation_t& rel: _extra) {
+          std::reverse(rel.first.begin(), rel.first.end());
+          std::reverse(rel.second.begin(), rel.second.end());
+        }
+        break;
+      case RIGHT: // do nothing
+        _extra = extra;
+        break;
+      case TWOSIDED:
+        _relations.insert(_relations.end(),
+                          extra.begin(),
+                          extra.end());
+        _extra = std::vector<relation_t>();
+        break;
+      default:
+        assert(false);
+    }
 }
 
+// FIXME remove this, it's for testing only
 Congruence::Congruence (Semigroup* semigroup) :
-  Congruence(semigroup, std::vector<relation_t>(), false) {}
+  Congruence(TWOSIDED, semigroup, std::vector<relation_t>(), false) {}
 
-Congruence::Congruence (Semigroup*                     semigroup,
+Congruence::Congruence (cong_t                         type,
+                        Semigroup*                     semigroup,
                         std::vector<relation_t> const& extra,
                         bool                           use_known) :
-  Congruence(semigroup->nrgens(),  std::vector<relation_t>(), extra) {
+  Congruence(type,
+             semigroup->nrgens(),
+             std::vector<relation_t>(),
+             extra) {
 
-  if (use_known) { // use the right Cayley table of semigroup
+  if (use_known) { // use the right or left Cayley table of semigroup
     _use_known = true;
     _active += semigroup->size();
 
-    _table.adjoin(*semigroup->right_cayley_graph());
+    if (type == LEFT) {
+      _table.adjoin(*semigroup->left_cayley_graph(_report));
+    } else {
+      _table.adjoin(*semigroup->right_cayley_graph(_report));
+    }
+
     for (auto it = _table.begin(); it < _table.end(); it++) {
       (*it)++;
     }
@@ -89,7 +128,8 @@ Congruence::Congruence (Semigroup*                     semigroup,
     }
 
     _defined = _active;
-  } else { // Don't use the right Cayley table of semigroup
+  } else { // Don't use the right/left Cayley graph
+    _use_known = false;
     std::vector<size_t> relation;
 
     semigroup->reset_next_relation();
@@ -99,13 +139,24 @@ Congruence::Congruence (Semigroup*                     semigroup,
       // This is for the case when there are duplicate gens
       assert(false); // FIXME
     }
-
-    while (! relation.empty()) {
-      word_t lhs = *(semigroup->factorisation(relation[0]));
-      lhs.push_back(relation[1]);
-      word_t rhs = *(semigroup->factorisation(relation[2]));
-      _relations.push_back(std::make_pair(lhs, rhs));
-      semigroup->next_relation(relation, _report);
+    if (_type == LEFT) {
+      while (! relation.empty()) {
+        word_t lhs = *(semigroup->factorisation(relation[0]));
+        lhs.push_back(relation[1]);
+        std::reverse(lhs.begin(), lhs.end());
+        word_t rhs = *(semigroup->factorisation(relation[2]));
+        std::reverse(rhs.begin(), rhs.end());
+        _relations.push_back(std::make_pair(lhs, rhs));
+        semigroup->next_relation(relation, _report);
+      }
+    } else {
+      while (! relation.empty()) {
+        word_t lhs = *(semigroup->factorisation(relation[0]));
+        lhs.push_back(relation[1]);
+        word_t rhs = *(semigroup->factorisation(relation[2]));
+        _relations.push_back(std::make_pair(lhs, rhs));
+        semigroup->next_relation(relation, _report);
+      }
     }
   }
 }
@@ -158,11 +209,11 @@ void Congruence::new_coset (coset_t const& c, letter_t const& a) {
 // Identify lhs with rhs, and process any further coincidences
 //
 void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
-  assert(_lhs_stack.empty() && _rhs_stack.empty());
-
   if (_stop) {
     return;
   }
+
+  assert(_lhs_stack.empty() && _rhs_stack.empty());
 
   // Make sure lhs < rhs
   if (lhs == rhs) {
@@ -308,6 +359,7 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
   _next_report++;
   if (_next_report > 4000000) {
     if (_report) {
+      _report_mtx.lock();
       std::cout << _defined << " defined, "
         << _forwd.size() << " max, "
         << _active << " active, "
@@ -319,6 +371,7 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
         std::cout << _current_no_add;
       }
       std::cout << std::endl;
+      _report_mtx.unlock();
     }
     // If we are killing cosets too slowly, then stop packing
     if ((_defined - _active) - _killed < 100) {
@@ -387,8 +440,14 @@ void Congruence::todd_coxeter (size_t limit) {
   // Apply each "extra" relation to the first coset only
   for (relation_t const& rel: _extra) {
     trace(_id_coset, rel);  // Allow new cosets
+    if (_stop) {
+      return;
+    }
   }
-
+  if (_relations.empty()) {
+    _tc_done = true;
+    return;
+  }
   do {
     // Apply each relation to the "_current" coset
     for (relation_t const& rel: _relations) {
@@ -398,12 +457,14 @@ void Congruence::todd_coxeter (size_t limit) {
     // If the number of active cosets is too high, start a packing phase
     if (_active > _pack) {
       if (_report) {
+        _report_mtx.lock();
         std::cout << _defined << " defined, "
           << _forwd.size() << " max, "
           << _active << " active, "
           << (_defined - _active) - _killed << " killed, "
           << "current " << _current << std::endl;
-        std::cout << "Entering lookahead phase . . .\n";
+        std::cout << "Entering lookahead phase . . ." << std::endl;
+        _report_mtx.unlock();
         _killed = _defined - _active;
       }
 
@@ -419,10 +480,15 @@ void Congruence::todd_coxeter (size_t limit) {
         _current_no_add = _forwd[_current_no_add];
 
         // Quit loop if we reach an inactive coset OR we get a "stop" signal
-      } while (!_stop && _current_no_add != _next && !_stop_packing);
+        if (_stop) {
+          return;
+        }
+      } while (_current_no_add != _next && !_stop_packing);
       if (_report) {
+        _report_mtx.lock();
         std::cout << "Lookahead phase complete " << oldactive - _active <<
           " killed " << std::endl;
+        _report_mtx.unlock();
       }
       _pack += _pack / 10;  // Raise packing threshold 10%
       _stop_packing = false;
@@ -433,12 +499,17 @@ void Congruence::todd_coxeter (size_t limit) {
     _current = _forwd[_current];
 
     // Quit loop when we reach an inactive coset
-  } while (!_stop && _current != _next);
+    if (_stop) {
+      return;
+    }
+  } while (_current != _next);
 
   // Final report
   if (_report) {
+    _report_mtx.lock();
     std::cout << _defined << " cosets defined, maximum " << _forwd.size();
     std::cout <<  ", " <<_active << " survived" << std::endl;
+    _report_mtx.unlock();
   }
 
   _tc_done = true;
@@ -446,25 +517,35 @@ void Congruence::todd_coxeter (size_t limit) {
   // No return value: all info is now stored in the class
 }
 
-void Congruence::todd_coxeter_finite () {
+/*void Congruence::todd_coxeter_finite () {
   if (_use_known) {
-    for (relation_t const& rel: _extra) {
-      trace(_id_coset, rel);
-      if (_stop) {
-        return;
-      }
+    switch (_type) {
+      case LEFT: // TODO
+        break;
+      case RIGHT:
+        for (relation_t const& rel: _extra) {
+          trace(_id_coset, rel);
+          if (_stop) {
+            return;
+          }
+        }
+        _tc_done = true;
+        break;
+      case TWOSIDED:
+        break;
+      default:
+        assert(false);
     }
-    _tc_done = true;
   } else {
     todd_coxeter();
   }
-}
+}*/
 
 //
 // word_to_coset( w )
 // We assume that todd_coxeter has already been run.
 // Return the coset which corresponds to the word <w>.
-//
+// FIXME: handle left congruences!!
 size_t Congruence::word_to_coset (word_t w) {
   coset_t c = _id_coset;
   for (auto it = w.begin(); it < w.end(); it++) {
@@ -489,7 +570,8 @@ bool Congruence::is_tc_done () {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-Congruence* finite_cong_enumerate (Semigroup* S,
+Congruence* finite_cong_enumerate (cong_t type,
+                                   Semigroup* S,
                                    std::vector<relation_t> const& extra,
                                    bool report) {
 
@@ -498,14 +580,14 @@ Congruence* finite_cong_enumerate (Semigroup* S,
     timer.start();
   }
 
-  Congruence* cong_t(new Congruence(S, extra, true));
-  Congruence* cong_f(new Congruence(S, extra, false));
+  Congruence* cong_t(new Congruence(type, S, extra, true));
+  Congruence* cong_f(new Congruence(type, S, extra, false));
 
   cong_t->set_report(report);
   cong_f->set_report(report);
 
   auto go = [] (Congruence& this_cong, Congruence& that_cong) {
-    this_cong.todd_coxeter_finite();
+    this_cong.todd_coxeter();
     that_cong.terminate();
   };
 
@@ -520,10 +602,12 @@ Congruence* finite_cong_enumerate (Semigroup* S,
   }
 
   if (cong_t->is_tc_done()) {
+    std::cout << "Using the Cayley graph won!" << std::endl;
     delete cong_f;
     return cong_t;
   } else {
     assert(cong_f->is_tc_done());
+    std::cout << "Using the Cayley graph lost!" << std::endl;
     delete cong_t;
     return cong_f;
   }

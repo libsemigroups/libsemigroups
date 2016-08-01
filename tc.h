@@ -10,6 +10,7 @@
 
 #include <atomic>
 #include <forward_list>
+#include <mutex>
 #include <stack>
 #include <utility>
 #include <vector>
@@ -24,21 +25,31 @@ typedef size_t                    letter_t;
 typedef std::vector<letter_t>     word_t;
 typedef std::pair<word_t, word_t> relation_t;
 
+enum cong_t {
+  LEFT     = 0,
+  RIGHT    = 1,
+  TWOSIDED = 2
+};
+
 class Congruence {
 
  typedef size_t                    coset_t;
  typedef int64_t                   signed_coset_t;
 
  public:
-  explicit Congruence (size_t,
-                       std::vector<relation_t> const&,
-                       std::vector<relation_t> const&);
-  Congruence (Semigroup*, std::vector<relation_t> const&, bool);
+  Congruence (cong_t,
+              size_t,
+              std::vector<relation_t> const&,
+              std::vector<relation_t> const&);
+
+  Congruence (cong_t, Semigroup*, std::vector<relation_t> const&, bool);
+
+  // FIXME remove this, it's for testing only
   explicit Congruence (Semigroup*);
 
   void todd_coxeter (size_t limit = INFTY);
 
-  void todd_coxeter_finite ();
+  //void todd_coxeter_finite ();
 
   size_t nr_active_cosets () {
     return _active;
@@ -55,6 +66,8 @@ class Congruence {
   void identify_cosets(coset_t, coset_t);
   inline void trace(coset_t const&, relation_t const&, bool add = true);
   void check_forwd();
+
+  cong_t                       _type;
 
   bool                         _tc_done;  // Has todd_coxeter already been run?
 
@@ -136,11 +149,15 @@ class Congruence {
 
   static size_t                INFTY;
   static size_t                UNDEFINED;
+  static std::mutex            _report_mtx;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-Congruence* finite_cong_enumerate (Semigroup*, std::vector<relation_t> const&, bool report = false);
+Congruence* finite_cong_enumerate (cong_t,
+                                   Semigroup*,
+                                   std::vector<relation_t> const&,
+                                   bool report = false);
 
 #endif // TC_H_
