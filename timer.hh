@@ -34,16 +34,17 @@ class Timer {
       }
     }
 
-    void stop () {
-      print();
+    void stop (std::string str = "") {
+      print(str);
       _running = false;
     }
 
-    void print () {
+    void print (std::string str = "") {
       if (_running) {
         time_point_t end     = std::chrono::steady_clock::now();
         nano_t       elapsed = std::chrono::duration_cast<nano_t>(end - _start);
-        std::cout << "elapsed time = ";
+
+        std::cout << str << "Elapsed time = ";
         if (print_it<std::chrono::hours>(elapsed, "h ", 0)) {
           print_it<std::chrono::minutes>(elapsed, "m", 0);
           std::cout << std::endl;

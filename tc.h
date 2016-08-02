@@ -40,9 +40,14 @@ class Congruence {
   Congruence (cong_t,
               size_t,
               std::vector<relation_t> const&,
-              std::vector<relation_t> const&);
+              std::vector<relation_t> const&,
+              size_t thread_id = 1);
 
-  Congruence (cong_t, Semigroup*, std::vector<relation_t> const&, bool);
+  Congruence (cong_t,
+              Semigroup*,
+              std::vector<relation_t> const&,
+              bool,
+              size_t thread_id = 1);
 
   // FIXME remove this, it's for testing only
   explicit Congruence (Semigroup*);
@@ -146,6 +151,8 @@ class Congruence {
 
   // Determines whether we pre-populate the table with known info
   bool                         _use_known;
+
+  size_t                       _thread_id;
 
   static size_t                INFTY;
   static size_t                UNDEFINED;

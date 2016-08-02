@@ -13,11 +13,18 @@ size_t Congruence::INFTY = -1;
 size_t Congruence::UNDEFINED = -1;
 std::mutex Congruence::_report_mtx;
 
+#define REPORT(str) \
+  _report_mtx.lock(); \
+  std::cout << "Thread #" << _thread_id << ": " << __func__ << ": " \
+    << str << std::endl; \
+  _report_mtx.unlock();
+
 Congruence::Congruence (cong_t                         type,
                         size_t                         nrgens,
                         // TODO default these to empty vectors
                         std::vector<relation_t> const& relations,
-                        std::vector<relation_t> const& extra) :
+                        std::vector<relation_t> const& extra,
+                        size_t                         thread_id) :
   _type(type),
   _tc_done(false),
   _id_coset(0),
@@ -40,7 +47,8 @@ Congruence::Congruence (cong_t                         type,
   _killed(0),
   _stop_packing(false),
   _next_report(0),
-  _use_known(false) {
+  _use_known(false),
+  _thread_id(thread_id) {
 
   // TODO: check that the entries in extra/relations are properly defined
   // i.e. that every entry is at most nrgens - 1
@@ -78,11 +86,13 @@ Congruence::Congruence (Semigroup* semigroup) :
 Congruence::Congruence (cong_t                         type,
                         Semigroup*                     semigroup,
                         std::vector<relation_t> const& extra,
-                        bool                           use_known) :
+                        bool                           use_known,
+                        size_t                         thread_id) :
   Congruence(type,
              semigroup->nrgens(),
              std::vector<relation_t>(),
-             extra) {
+             extra,
+             thread_id) {
 
   if (use_known) { // use the right or left Cayley table of semigroup
     _use_known = true;
@@ -167,6 +177,9 @@ Congruence::Congruence (cong_t                         type,
 //
 void Congruence::new_coset (coset_t const& c, letter_t const& a) {
 
+  if (_stop) {
+    return;
+  }
   _active++;
   _defined++;
   _next_report++;
@@ -326,6 +339,10 @@ void Congruence::identify_cosets (coset_t lhs, coset_t rhs) {
 //
 void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
 
+  if (_stop) {
+    return;
+  }
+
   coset_t lhs = c;
   for (auto it = rel.first.begin(); it < rel.first.end() - 1; it++) {
     if (_table.get(lhs, *it) != UNDEFINED) {
@@ -359,19 +376,11 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
   _next_report++;
   if (_next_report > 4000000) {
     if (_report) {
-      _report_mtx.lock();
-      std::cout << _defined << " defined, "
-        << _forwd.size() << " max, "
-        << _active << " active, "
-        << (_defined - _active) - _killed << " killed, "
-        << "current ";
-      if (add) {
-        std::cout << _current;
-      } else {
-        std::cout << _current_no_add;
-      }
-      std::cout << std::endl;
-      _report_mtx.unlock();
+      REPORT(_defined << " defined, " <<
+             _forwd.size() << " max, " <<
+             _active << " active, " <<
+             (_defined - _active) - _killed << " killed, " <<
+             "current " << (add ? _current : _current_no_add));
     }
     // If we are killing cosets too slowly, then stop packing
     if ((_defined - _active) - _killed < 100) {
@@ -381,6 +390,9 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
     _killed = _defined - _active;
   }
 
+  if (_stop) {
+    return;
+  }
   letter_t a = rel.first.back();
   letter_t b = rel.second.back();
   coset_t  u = _table.get(lhs, a);
@@ -418,9 +430,6 @@ void Congruence::trace (coset_t const& c, relation_t const& rel, bool add) {
     // lhs^a and rhs^b are both defined
     identify_cosets(u, v);
   }
-  if (_stop) {
-    return;
-  }
 }
 
 //
@@ -457,14 +466,12 @@ void Congruence::todd_coxeter (size_t limit) {
     // If the number of active cosets is too high, start a packing phase
     if (_active > _pack) {
       if (_report) {
-        _report_mtx.lock();
-        std::cout << _defined << " defined, "
-          << _forwd.size() << " max, "
-          << _active << " active, "
-          << (_defined - _active) - _killed << " killed, "
-          << "current " << _current << std::endl;
-        std::cout << "Entering lookahead phase . . ." << std::endl;
-        _report_mtx.unlock();
+        REPORT(_defined << " defined, " <<
+               _forwd.size() << " max, " <<
+               _active << " active, " <<
+               (_defined - _active) - _killed << " killed, " <<
+               "current " << _current);
+        REPORT("Entering lookahead phase . . .");
         _killed = _defined - _active;
       }
 
@@ -485,10 +492,8 @@ void Congruence::todd_coxeter (size_t limit) {
         }
       } while (_current_no_add != _next && !_stop_packing);
       if (_report) {
-        _report_mtx.lock();
-        std::cout << "Lookahead phase complete " << oldactive - _active <<
-          " killed " << std::endl;
-        _report_mtx.unlock();
+        REPORT("Lookahead phase complete " <<
+               oldactive - _active << " killed");
       }
       _pack += _pack / 10;  // Raise packing threshold 10%
       _stop_packing = false;
@@ -506,10 +511,9 @@ void Congruence::todd_coxeter (size_t limit) {
 
   // Final report
   if (_report) {
-    _report_mtx.lock();
-    std::cout << _defined << " cosets defined, maximum " << _forwd.size();
-    std::cout <<  ", " <<_active << " survived" << std::endl;
-    _report_mtx.unlock();
+    REPORT(_defined << " cosets defined," <<
+           " maximum " << _forwd.size() <<
+           _active << " survived");
   }
 
   _tc_done = true;
@@ -580,8 +584,8 @@ Congruence* finite_cong_enumerate (cong_t type,
     timer.start();
   }
 
-  Congruence* cong_t(new Congruence(type, S, extra, true));
-  Congruence* cong_f(new Congruence(type, S, extra, false));
+  Congruence* cong_t(new Congruence(type, S, extra, true, 1));
+  Congruence* cong_f(new Congruence(type, S, extra, false, 2));
 
   cong_t->set_report(report);
   cong_f->set_report(report);
@@ -598,16 +602,18 @@ Congruence* finite_cong_enumerate (cong_t type,
   thread_f.join();
 
   if (report) {
-    timer.stop();
+    timer.stop(std::string(__func__) + ": ");
   }
 
   if (cong_t->is_tc_done()) {
-    std::cout << "Using the Cayley graph won!" << std::endl;
+    std::cout << __func__ << ": Using the Cayley graph (Thread #1) won!" <<
+      std::endl;
     delete cong_f;
     return cong_t;
   } else {
     assert(cong_f->is_tc_done());
-    std::cout << "Using the Cayley graph lost!" << std::endl;
+    std::cout << __func__ << ": Using the Cayley graph (Thread #1) lost!" <<
+      std::endl;
     delete cong_t;
     return cong_f;
   }
