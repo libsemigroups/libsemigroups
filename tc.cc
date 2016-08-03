@@ -549,12 +549,21 @@ void Congruence::todd_coxeter (size_t limit) {
 // word_to_coset( w )
 // We assume that todd_coxeter has already been run.
 // Return the coset which corresponds to the word <w>.
-// FIXME: handle left congruences!!
+//
 size_t Congruence::word_to_coset (word_t w) {
   coset_t c = _id_coset;
-  for (auto it = w.begin(); it < w.end(); it++) {
-    c = _table.get(c, *it);
-    assert(c != UNDEFINED);
+  if (_type == LEFT) {
+    // Iterate in reverse order
+    for (auto rit = w.rbegin(); rit >= w.rend(); rit++) {
+      c = _table.get(c, *rit);
+      assert(c != UNDEFINED);
+    }
+  } else {
+    // Iterate in sequential order
+    for (auto it = w.begin(); it < w.end(); it++) {
+      c = _table.get(c, *it);
+      assert(c != UNDEFINED);
+    }
   }
   return c;
 }
@@ -606,14 +615,18 @@ Congruence* finite_cong_enumerate (cong_t type,
   }
 
   if (cong_t->is_tc_done()) {
-    std::cout << __func__ << ": Using the Cayley graph (Thread #1) won!" <<
-      std::endl;
+    if (report) {
+      std::cout << __func__ << ": Using the Cayley graph (Thread #1) won!" <<
+        std::endl;
+    }
     delete cong_f;
     return cong_t;
   } else {
     assert(cong_f->is_tc_done());
-    std::cout << __func__ << ": Using the Cayley graph (Thread #1) lost!" <<
-      std::endl;
+    if (report) {
+      std::cout << __func__ << ": Using the Cayley graph (Thread #1) lost!" <<
+        std::endl;
+    }
     delete cong_t;
     return cong_f;
   }
