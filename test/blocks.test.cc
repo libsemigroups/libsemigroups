@@ -81,6 +81,7 @@ TEST_CASE("Blocks: left blocks of bipartition", "") {
   REQUIRE(b->block(4) == 0);
   REQUIRE(b->block(5) == 2);
   delete b;
+  x.really_delete();
 }
 
 TEST_CASE("Blocks: right blocks of bipartition", "") {
@@ -109,4 +110,5 @@ TEST_CASE("Blocks: right blocks of bipartition", "") {
   REQUIRE(b->block(8) == 4);
   REQUIRE(b->block(9) == 1);
   delete b;
+  x.really_delete();
 }

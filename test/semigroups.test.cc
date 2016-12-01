@@ -21,14 +21,6 @@
 
 using namespace semigroupsplusplus;
 
-template <typename T> static inline void really_delete_cont(T* cont) {
-  for (Element* x : *cont) {
-    x->really_delete();
-    delete x;
-  }
-  delete cont;
-}
-
 template <typename T> static inline void really_delete_cont(T cont) {
   for (Element* x : cont) {
     x->really_delete();
@@ -56,8 +48,15 @@ TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 4);
 
-  REQUIRE(*S[0] == Transformation<u_int16_t>({0, 1, 0}));
-  REQUIRE(*S[1] == Transformation<u_int16_t>({0, 1, 2}));
+  Element* expected = new Transformation<u_int16_t>({0, 1, 0});
+  REQUIRE(*S[0] == *expected);
+  expected->really_delete();
+  delete expected;
+
+  expected = new Transformation<u_int16_t>({0, 1, 2});
+  REQUIRE(*S[1] == *expected);
+  expected->really_delete();
+  delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == 0);
@@ -92,9 +91,16 @@ TEST_CASE("Semigroup: small partial perm semigroup", "[small]") {
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 9);
 
-  REQUIRE(*S[0] == PartialPerm<u_int16_t>(
-                       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10));
-  REQUIRE(*S[1] == PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10));
+  Element* expected = new PartialPerm<u_int16_t>(
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+  REQUIRE(*S[0] == *expected);
+  expected->really_delete();
+  delete expected;
+
+  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  REQUIRE(*S[1] == *expected);
+  expected->really_delete();
+  delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
@@ -228,6 +234,7 @@ TEST_CASE("Semigroup: small projective max plus matrix semigroup", "[small]") {
 
   REQUIRE(S.position(id) == 0);
   REQUIRE(S.test_membership(id));
+  id->really_delete();
   delete id;
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -523,32 +530,44 @@ TEST_CASE("Semigroup: at, position, current_*", "[method]") {
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1024);
 
-  REQUIRE(*S.at(100, false) == Transformation<u_int16_t>({5, 3, 4, 1, 2, 5}));
+  Element* expected = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
+  REQUIRE(*S.at(100, false) == *expected);
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
+  expected->really_delete();
+  delete expected;
 
   Element* x = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
   REQUIRE(S.position(x, false) == 100);
-  delete (x);
+  x->really_delete();
+  delete x;
 
-  REQUIRE(*S.at(1023, false) == Transformation<u_int16_t>({5, 4, 3, 4, 1, 5}));
+  expected = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
+  REQUIRE(*S.at(1023, false) == *expected);
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
+  expected->really_delete();
+  delete expected;
 
   x = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
   REQUIRE(S.position(x, false) == 1023);
-  delete (x);
+  x->really_delete();
+  delete x;
 
-  REQUIRE(*S.at(3000, false) == Transformation<u_int16_t>({5, 3, 5, 3, 4, 5}));
+  expected = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
+  REQUIRE(*S.at(3000, false) == *expected);
   REQUIRE(S.current_size() == 3001);
   REQUIRE(S.current_nrrules() == 526);
   REQUIRE(S.current_max_word_length() == 9);
+  expected->really_delete();
+  delete expected;
 
   x = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
   REQUIRE(S.position(x, false) == 3000);
-  delete (x);
+  x->really_delete();
+  delete x;
 
   REQUIRE(S.size(false) == 7776);
   REQUIRE(S.degree() == 6);
@@ -807,7 +826,7 @@ TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: genslookup [after add_generators", "[method]") {
+TEST_CASE("Semigroup: genslookup [after add_generators]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
