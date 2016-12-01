@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/james-d-mitchell/semigroupsplusplus.svg?branch=master)](https://travis-ci.org/james-d-mitchell/semigroupsplusplus)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/semigroupsplusplus)](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/semigroupsplusplus) 
 
 # Semigroups++ - A C++ library for computing finite semigroups
 ### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/)

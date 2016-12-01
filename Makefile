@@ -28,8 +28,8 @@ endif
 COMMON_DOC_FLAGS = --report --merge docs --output html $(SOURCES) $(HEADERS)
 
 error:
-	@echo "Please choose one of the following: doc, serve, test,"
-	@echo " or testclean"; \
+	@echo "Please choose one of the following: doc, test, testdebug, "
+	@echo "testclean, or doclean"; \
 	@exit 2
 doc:
 	@echo "Generating static documentation . . ."; \
@@ -37,17 +37,15 @@ doc:
 	@echo "Fixing some bugs in cldoc . . ."; \
 	python docs/cldoc-fix
 
-serve:
-	cldoc serve html
-
 test: testdirs $(TEST_OBJECTS) $(OBJECTS)
 	@echo "Building the test executable . . ."; \
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(TEST_OBJECTS) -o test/test $(LDFLAGS)
 	@echo "Running the tests ("$(LOG_DIR)/$(TODAY).log") . . ."; \
 	test/test -d yes --order lex --force-colour | tee -a $(LOG_DIR)/$(TODAY).log
+	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
 testdebug: $(TEST_OBJECTS) $(OBJECTS)
-	# only make testclean if necessary
+	# TODO only make testclean if necessary
 	make testclean
 	make test DEBUG=true
 
