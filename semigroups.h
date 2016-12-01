@@ -538,6 +538,9 @@ namespace semigroupsplusplus {
 
     void set_batch_size(size_t batch_size) {
       _batch_size = batch_size;
+      if (!this->is_begun()) {
+        _map.reserve(_batch_size);
+      }
     }
 
     // non-const
