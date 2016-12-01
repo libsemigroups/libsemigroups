@@ -90,7 +90,10 @@ namespace semigroupsplusplus {
       } else {
         inv_genslookup.push_back(_genslookup.size());
         is_one((*_gens)[i], _nr);
-        _elements->push_back((*_gens)[i]->really_copy());
+        _elements->push_back((*_gens)[i]);
+        // Note that every non-duplicate generator is *really* stored in
+        // _elements, and so must be *really_delete*d from _elements but not
+        // _gens
         _first.push_back(i);
         _final.push_back(i);
         _genslookup.push_back(_nr);
@@ -151,16 +154,13 @@ namespace semigroupsplusplus {
     _map.reserve(_nr);
     _tmp_product = copy._id->really_copy();
 
-    for (Element const* x : *(copy._gens)) {
-      _gens->push_back(x->really_copy());
-    }
-
     size_t i = 0;
     for (Element const* x : *(copy._elements)) {
       Element* y = x->really_copy();
       _elements->push_back(y);
       _map.insert(std::make_pair(y, i++));
     }
+    copy_gens();
   }
 
   Semigroup::Semigroup(const Semigroup&             copy,
@@ -203,6 +203,15 @@ namespace semigroupsplusplus {
         _wordlen(0),
         _reporter(*this) {
     assert(!coll->empty());
+    assert(coll->at(0)->degree() >= copy.degree());
+
+    // remove duplicate generators
+    std::unordered_set<Element*>* new_gens = new std::unordered_set<Element*>();
+    for (Element* x : *coll) {
+      assert(x->degree() == (*coll)[0]->degree());
+      new_gens->insert(x);
+      // don't really_copy x since it will be copied by add_generators anyway
+    }
 
     _elements->reserve(copy._nr);
     _map.reserve(copy._nr);
@@ -215,19 +224,7 @@ namespace semigroupsplusplus {
     _prefix.resize(copy._nr, 0);
     _suffix.resize(copy._nr, 0);
 
-    std::unordered_set<Element*>* new_gens = new std::unordered_set<Element*>();
-
-    // remove duplicate generators
-    for (Element const* x : *coll) {
-      assert(x->degree() == (*coll)[0]->degree());
-      new_gens->insert(x->really_copy());
-      // copy here so that after add_generators, the semigroup is responsible
-      // for the destruction of gens.
-    }
-
-    assert((*new_gens->begin())->degree() >= copy.degree());
-
-    size_t deg_plus = (*new_gens->begin())->degree() - copy.degree();
+    size_t deg_plus = coll->at(0)->degree() - copy.degree();
 
     if (deg_plus != 0) {
       _degree += deg_plus;
@@ -249,10 +246,6 @@ namespace semigroupsplusplus {
       _length[_index[i]] = 1;
     }
 
-    for (Element const* x : *copy._gens) {
-      _gens->push_back(x->really_copy(deg_plus));
-    }
-
     _id          = copy._id->really_copy(deg_plus);
     _tmp_product = copy._id->really_copy(deg_plus);
 
@@ -263,13 +256,11 @@ namespace semigroupsplusplus {
       _map.insert(std::make_pair(y, i));
       is_one(_elements->back(), i++);
     }
-
+    copy_gens(deg_plus);  // copy the old generators
     add_generators(new_gens, report);
-    for (Element* x : *new_gens) {
-      // FIXME x->really_delete(); this should be the same as in the destructor
-      delete x;
-    }
     delete new_gens;
+    // don't delete or really_delete anything in new_gens, since they are in
+    // coll and should be deleted there.
   }
 
   // Destructor
@@ -286,7 +277,7 @@ namespace semigroupsplusplus {
     delete _sorted;
     delete _pos_sorted;
 
-    // delete those generators not stored in _elements
+    // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
       (*_gens)[x.first]->really_delete();
       delete (*_gens)[x.first];
@@ -1002,4 +993,23 @@ namespace semigroupsplusplus {
     _reporter(__func__, 0);
     _reporter.stop_timer();
   }
+
+  // _nrgens, _duplicates_gens, _genslookup, and _elements must all be
+  // initialised for this to work, and _gens must point to an empty vector.
+  void Semigroup::copy_gens(size_t increase_deg_by) {
+    assert(_gens.empty());
+    _gens->resize(_nrgens, nullptr);
+    // really copy duplicate gens from _elements
+    for (auto const& x : _duplicate_gens) {
+      (*_gens)[x.first] =
+          (*_elements)[_genslookup[x.second]]->really_copy(increase_deg_by);
+    }
+    // the non-duplicate gens are already in _elements, so don't really copy
+    for (size_t i = 0; i < _nrgens; i++) {
+      if ((*_gens)[i] == nullptr) {
+        (*_gens)[i] = (*_elements)[_genslookup[i]];
+      }
+    }
+  }
+
 }  // namespace semigroupsplusplus

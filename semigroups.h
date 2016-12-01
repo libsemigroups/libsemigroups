@@ -1041,6 +1041,8 @@ namespace semigroupsplusplus {
       }
     };
 
+    void copy_gens(size_t increase_deg_by = 0);
+
     size_t _batch_size;
     size_t _degree;
     std::vector<std::pair<size_t, size_t>> _duplicate_gens;
