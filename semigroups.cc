@@ -237,8 +237,8 @@ namespace semigroupsplusplus {
     // add the distinct old generators to new _index
     for (size_t i = 0; i < copy._lenindex[1]; i++) {
       _index.push_back(copy._index[i]);
-      _final[_index[i]]  = i;
-      _first[_index[i]]  = i;
+      _final[_index[i]]  = copy._final[copy._index[i]];
+      _first[_index[i]]  = copy._first[copy._index[i]];
       _prefix[_index[i]] = UNDEFINED;
       _suffix[_index[i]] = UNDEFINED;
       _length[_index[i]] = 1;
@@ -632,7 +632,7 @@ namespace semigroupsplusplus {
     std::vector<bool> old_new;  // have we seen _elements->at(i) yet in new?
 
     // add the new generators to new _gens, _elements, and _index
-    for (Element* x : *coll) {
+    for (Element const* x : *coll) {
       if (_map.find(x) == _map.end()) {
         if (!there_are_new_gens) {
           // erase the old index
@@ -682,6 +682,8 @@ namespace semigroupsplusplus {
     _lenindex.push_back(_nrgens - _duplicate_gens.size());
 
     // add columns for new generators
+    // FIXME isn't this a bit wasteful, we could recycle the old _reduced, to
+    // avoid reallocation
     _reduced = flags_t(_nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
     _left->add_cols(_nrgens - _left->nr_cols());
     _right->add_cols(_nrgens - _right->nr_cols());
