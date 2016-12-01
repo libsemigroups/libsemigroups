@@ -35,7 +35,6 @@ TEST_CASE("Blocks: empty blocks", "") {
   REQUIRE(b1.lookup() == nullptr);
   REQUIRE(b1.nr_blocks() == 0);
   REQUIRE(b1.rank() == 0);
-  REQUIRE(b1.hash_value() == 0);
 }
 
 TEST_CASE("Blocks: non-empty blocks", "") {
@@ -47,7 +46,6 @@ TEST_CASE("Blocks: non-empty blocks", "") {
   REQUIRE(*b.lookup() == std::vector<bool>({true, false, true}));
   REQUIRE(b.nr_blocks() == 3);
   REQUIRE(b.rank() == 2);
-  REQUIRE(b.hash_value() == 381493);
   REQUIRE(b.is_transverse_block(0));
   REQUIRE(!b.is_transverse_block(1));
   REQUIRE(b.is_transverse_block(2));
@@ -73,7 +71,6 @@ TEST_CASE("Blocks: left blocks of bipartition", "") {
   REQUIRE(*b->lookup() == std::vector<bool>({true, true, true}));
   REQUIRE(b->nr_blocks() == 3);
   REQUIRE(b->rank() == 3);
-  REQUIRE(b->hash_value() == 121021022111);
   REQUIRE(b->is_transverse_block(0));
   REQUIRE(b->is_transverse_block(1));
   REQUIRE(b->is_transverse_block(2));
@@ -96,7 +93,6 @@ TEST_CASE("Blocks: right blocks of bipartition", "") {
   REQUIRE(*b->lookup() == std::vector<bool>({false, true, true, true, true}));
   REQUIRE(b->nr_blocks() == 5);
   REQUIRE(b->rank() == 4);
-  REQUIRE(b->hash_value() == 12133314101111);
   REQUIRE(!b->is_transverse_block(0));
   REQUIRE(b->is_transverse_block(1));
   REQUIRE(b->is_transverse_block(2));

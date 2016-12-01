@@ -37,8 +37,6 @@ TEST_CASE("Transformation<u_int16_t>: methods", "") {
   REQUIRE(y->complexity() == 3);
   REQUIRE(static_cast<Transformation<u_int16_t>*>(x)->crank() == 2);
   REQUIRE(static_cast<Transformation<u_int16_t>*>(y)->crank() == 2);
-  REQUIRE(x->hash_value() == 3);
-  REQUIRE(y->hash_value() == 3);
   Element* id = x->identity();
   REQUIRE(*id == Transformation<u_int16_t>({0, 1, 2}));
   x->really_delete();
@@ -99,8 +97,6 @@ TEST_CASE("Transformation<u_int32_t>: methods", "") {
   REQUIRE(y->complexity() == 3);
   REQUIRE(static_cast<Transformation<u_int32_t>*>(x)->crank() == 2);
   REQUIRE(static_cast<Transformation<u_int32_t>*>(y)->crank() == 2);
-  REQUIRE(x->hash_value() == 3);
-  REQUIRE(y->hash_value() == 3);
   Element* id = x->identity();
   REQUIRE(*id == Transformation<u_int32_t>({0, 1, 2}));
   x->really_delete();
@@ -166,8 +162,6 @@ TEST_CASE("PartialPerm<u_int16_t>: methods", "") {
   REQUIRE(y->complexity() == 11);
   REQUIRE(static_cast<PartialPerm<u_int16_t>*>(x)->crank() == 1);
   REQUIRE(static_cast<PartialPerm<u_int16_t>*>(y)->crank() == 3);
-  REQUIRE(x->hash_value() == 1869779479026401);
-  REQUIRE(y->hash_value() == 169880213528891);
   Element* id = x->identity();
   REQUIRE(*id == PartialPerm<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
   x->really_delete();
@@ -225,8 +219,6 @@ TEST_CASE("PartialPerm<u_int32_t>: methods", "") {
   REQUIRE(y->complexity() == 11);
   REQUIRE(static_cast<PartialPerm<u_int32_t>*>(x)->crank() == 1);
   REQUIRE(static_cast<PartialPerm<u_int32_t>*>(y)->crank() == 3);
-  REQUIRE(x->hash_value() % 100 == 5);
-  REQUIRE(y->hash_value() % 100 == 71);
   Element* id = x->identity();
   REQUIRE(*id == PartialPerm<u_int32_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
   x->really_delete();
@@ -280,8 +272,6 @@ TEST_CASE("BooleanMat: methods", "") {
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
   REQUIRE(z->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 97);
-  REQUIRE(y->hash_value() % 100 == 63);
   Element* id = x->identity();
   z->redefine(id, x);
   REQUIRE(*z == *x);
@@ -341,8 +331,6 @@ TEST_CASE("Bipartition: overridden methods", "") {
   REQUIRE(x->complexity() == 400);
   REQUIRE(y->complexity() == 400);
   REQUIRE(z->complexity() == 400);
-  REQUIRE(x->hash_value() % 100 == 88);
-  REQUIRE(y->hash_value() % 100 == 34);
   Element* id = x->identity();
   z->redefine(id, x);
   REQUIRE(*z == *x);
@@ -467,8 +455,6 @@ TEST_CASE("ProjectiveMaxPlusMatrix: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 71);
-  REQUIRE(y->hash_value() % 100 == 79);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -527,8 +513,6 @@ TEST_CASE("MatrixOverSemiring [Integers]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 62);
-  REQUIRE(y->hash_value() % 100 == 24);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -568,8 +552,6 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 62);
-  REQUIRE(y->hash_value() % 100 == 47);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -610,8 +592,6 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 62);
-  REQUIRE(y->hash_value() % 100 == 38);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -653,8 +633,6 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 39);
-  REQUIRE(y->hash_value() % 100 == 36);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -696,8 +674,6 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 39);
-  REQUIRE(y->hash_value() % 100 == 53);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -740,8 +716,6 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 27);
   REQUIRE(y->complexity() == 27);
-  REQUIRE(x->hash_value() % 100 == 39);
-  REQUIRE(y->hash_value() % 100 == 27);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
@@ -881,8 +855,6 @@ TEST_CASE("PBR: methods", "") {
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 216);
   REQUIRE(y->complexity() == 216);
-  REQUIRE(x->hash_value() % 100 == 23);
-  REQUIRE(y->hash_value() % 100 == 44);
   Element* id = x->identity();
   y->redefine(id, x);
   REQUIRE(*y == *x);
