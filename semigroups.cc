@@ -24,10 +24,7 @@ namespace semigroupsplusplus {
   Semigroup::pos_t Semigroup::UNDEFINED = -1;
   Semigroup::pos_t Semigroup::LIMIT_MAX = -1;
 
-  // default
-  // @gens   the generators of the semigroup
-
-  Semigroup::Semigroup(std::vector<Element*>* gens)
+  Semigroup::Semigroup(std::vector<Element*> const* gens)
       : _batch_size(8192),
         _degree(UNDEFINED),
         _duplicate_gens(),
@@ -76,8 +73,9 @@ namespace semigroupsplusplus {
     _lenindex.push_back(0);
     _id = (*_gens)[0]->identity();
 
-    // inverse of genslookup for keeping track of duplicate gens
-    // maps from positions in _elements to positions in _gens
+    // inverse of genslookup for keeping track of duplicate gens maps from
+    // positions in _elements to positions in _gens, i.e. from pos_t to
+    // letter_t
     std::vector<letter_t> inv_genslookup;
 
     // add the generators
@@ -108,6 +106,8 @@ namespace semigroupsplusplus {
     _lenindex.push_back(_index.size());
     _map.reserve(_batch_size);
   }
+
+  Semigroup::Semigroup(std::vector<Element*> const& gens) : Semigroup(&gens) {}
 
   // Copy constructor
 
@@ -163,11 +163,16 @@ namespace semigroupsplusplus {
     }
   }
 
+  Semigroup::Semigroup(const Semigroup&             copy,
+                       std::vector<Element*> const& coll,
+                       bool                         report)
+      : Semigroup(copy, &coll, report) {}
+
   // Copy <copy> and add the generators in <coll>
 
-  Semigroup::Semigroup(const Semigroup&       copy,
-                       std::vector<Element*>* coll,
-                       bool                   report)
+  Semigroup::Semigroup(const Semigroup&             copy,
+                       std::vector<Element*> const* coll,
+                       bool                         report)
       : _batch_size(copy._batch_size),
         _degree(copy._degree),  // copy for comparison in add_generators
         _duplicate_gens(copy._duplicate_gens),
@@ -611,6 +616,11 @@ namespace semigroupsplusplus {
     _reporter.stop_timer();
   }
 
+  void Semigroup::add_generators(std::unordered_set<Element*> const& coll,
+                                 bool                                report) {
+    add_generators(&coll, report);
+  }
+
   void Semigroup::add_generators(const std::unordered_set<Element*>* coll,
                                  bool                                report) {
     if (coll->empty()) {
@@ -700,9 +710,9 @@ namespace semigroupsplusplus {
     while (nr_old_left > 0) {
       nr_shorter_elements = _nr;
       while (_pos < _lenindex[_wordlen + 1] && nr_old_left > 0) {
-        size_t i = _index[_pos];  // position in _elements
-        size_t b = _first[i];
-        size_t s = _suffix[i];
+        pos_t    i = _index[_pos];  // position in _elements
+        letter_t b = _first[i];
+        pos_t    s = _suffix[i];
         if (_multiplied[i]) {
           nr_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
@@ -833,7 +843,7 @@ namespace semigroupsplusplus {
   void inline Semigroup::closure_update(pos_t              i,
                                         letter_t           j,
                                         letter_t           b,
-                                        letter_t           s,
+                                        pos_t              s,
                                         std::vector<bool>& old_new,
                                         pos_t              old_nr) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {

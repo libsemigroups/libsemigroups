@@ -24,8 +24,16 @@ using namespace semigroupsplusplus;
 template <typename T> static inline void really_delete_cont(T* cont) {
   for (Element* x : *cont) {
     x->really_delete();
+    delete x;
   }
   delete cont;
+}
+
+template <typename T> static inline void really_delete_cont(T cont) {
+  for (Element* x : cont) {
+    x->really_delete();
+    delete x;
+  }
 }
 
 static inline size_t evaluate_reduct(Semigroup& S, word_t const& word) {
@@ -37,9 +45,8 @@ static inline size_t evaluate_reduct(Semigroup& S, word_t const& word) {
 }
 
 TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
-  auto gens =
-      new std::vector<Element*>({new Transformation<u_int16_t>({0, 1, 0}),
-                                 new Transformation<u_int16_t>({0, 1, 2})});
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
+                                new Transformation<u_int16_t>({0, 1, 2})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -72,13 +79,13 @@ TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
 }
 
 TEST_CASE("Semigroup: small partial perm semigroup", "[small]") {
-  auto gens = new std::vector<Element*>(
-      {new PartialPerm<u_int16_t>(
-           {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-
-       new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)});
+  std::vector<Element*> gens = {
+      new PartialPerm<u_int16_t>(
+          {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
+      new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
+
   REQUIRE(S.size(false) == 22);
   REQUIRE(S.degree() == 11);
   REQUIRE(S.nr_idempotents(false) == 1);
@@ -129,13 +136,13 @@ TEST_CASE("Semigroup: small partial perm semigroup", "[small]") {
 }
 
 TEST_CASE("Semigroup: small bipartition semigroup", "[small]") {
-  auto gens = new std::vector<Element*>(
-      {new Bipartition(
-           {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
-       new Bipartition(
-           {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
-       new Bipartition(
-           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})});
+  std::vector<Element*> gens = {
+      new Bipartition(
+          {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
+      new Bipartition(
+          {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
+      new Bipartition(
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
   Semigroup S = Semigroup(gens);
   REQUIRE(S.size(false) == 10);
   REQUIRE(S.degree() == 10);
@@ -143,27 +150,27 @@ TEST_CASE("Semigroup: small bipartition semigroup", "[small]") {
   REQUIRE(S.nrgens() == 3);
   REQUIRE(S.nrrules(false) == 14);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(*S[1] == *(*gens)[1]);
-  REQUIRE(*S[2] == *(*gens)[2]);
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(*S[1] == *gens[1]);
+  REQUIRE(*S[2] == *gens[2]);
 
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
-  REQUIRE(S.position((*gens)[1]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(S.position(gens[1]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
-  REQUIRE(S.position((*gens)[2]) == 2);
-  REQUIRE(S.test_membership((*gens)[2]));
+  REQUIRE(S.position(gens[2]) == 2);
+  REQUIRE(S.test_membership(gens[2]));
 
   Element* y = new Bipartition(
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
   REQUIRE(S.position(y) == 2);
   REQUIRE(S.test_membership(y));
-  y->redefine((*gens)[0], (*gens)[1]);
+  y->redefine(gens[0], gens[1]);
   REQUIRE(S.position(y) == 4);
   REQUIRE(S.test_membership(y));
-  y->redefine((*gens)[1], (*gens)[2]);
+  y->redefine(gens[1], gens[2]);
   REQUIRE(S.position(y) == 7);
   REQUIRE(S.test_membership(y));
   y->really_delete();
@@ -172,31 +179,31 @@ TEST_CASE("Semigroup: small bipartition semigroup", "[small]") {
 }
 
 TEST_CASE("Semigroup: small Boolean matrix semigroup", "[small]") {
-  auto gens = new std::vector<Element*>(
-      {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
-       new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
-       new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}})});
+  std::vector<Element*> gens = {
+      new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
+      new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
+      new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}})};
   Semigroup S = Semigroup(gens);
   REQUIRE(S.size(false) == 3);
   REQUIRE(S.degree() == 3);
   REQUIRE(S.nr_idempotents(false) == 2);
   REQUIRE(S.nrgens() == 3);
   REQUIRE(S.nrrules(false) == 7);
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(*S[1] == *(*gens)[1]);
-  REQUIRE(*S[1] == *(*gens)[2]);
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(*S[1] == *gens[1]);
+  REQUIRE(*S[1] == *gens[2]);
 
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
-  REQUIRE(S.position((*gens)[1]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(S.position(gens[1]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
-  REQUIRE(S.position((*gens)[2]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(S.position(gens[2]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
   Element* y = new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-  y->redefine((*gens)[0], (*gens)[0]);
+  y->redefine(gens[0], gens[0]);
   REQUIRE(S.position(y) == 2);
   REQUIRE(S.test_membership(y));
   y->really_delete();
@@ -210,33 +217,31 @@ TEST_CASE("Semigroup: small projective max plus matrix semigroup", "[small]") {
   auto id = x->identity();
   x->really_delete();
   delete x;
-  auto      gens = new std::vector<Element*>({id});
-  Semigroup S    = Semigroup(gens);
+  Semigroup S = Semigroup({id});
 
   REQUIRE(S.size(false) == 1);
   REQUIRE(S.degree() == 3);
   REQUIRE(S.nr_idempotents(false) == 1);
   REQUIRE(S.nrgens() == 1);
   REQUIRE(S.nrrules(false) == 1);
-  REQUIRE(*S[0] == *(*gens)[0]);
+  REQUIRE(*S[0] == *id);
 
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(S.position(id) == 0);
+  REQUIRE(S.test_membership(id));
+  delete id;
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
-  really_delete_cont(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup: small matrix semigroup [Integers]", "[small]") {
-  Semiring* sr   = new Integers();
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{0, 0}, {0, 1}}, sr),
-       new MatrixOverSemiring({{0, 1}, {-1, 0}}, sr)});
+  Semiring*             sr   = new Integers();
+  std::vector<Element*> gens = {new MatrixOverSemiring({{0, 0}, {0, 1}}, sr),
+                                new MatrixOverSemiring({{0, 1}, {-1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 13);
@@ -244,19 +249,20 @@ TEST_CASE("Semigroup: small matrix semigroup [Integers]", "[small]") {
   REQUIRE(S.nr_idempotents(false) == 4);
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 6);
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(*S[1] == *(*gens)[1]);
+  REQUIRE(*S[0] == *(gens)[0]);
+  REQUIRE(*S[1] == *(gens)[1]);
 
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
-  REQUIRE(S.position((*gens)[1]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(S.position(gens[1]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[1], (*gens)[1]);
+
+  x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -273,10 +279,10 @@ TEST_CASE("Semigroup: small matrix semigroup [Integers]", "[small]") {
 }
 
 TEST_CASE("Semigroup: small matrix semigroup [MaxPlusSemiring]", "[small]") {
-  Semiring* sr   = new MaxPlusSemiring();
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{0, -4}, {-4, -1}}, sr),
-       new MatrixOverSemiring({{0, -3}, {-3, -1}}, sr)});
+  Semiring*             sr   = new MaxPlusSemiring();
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring({{0, -4}, {-4, -1}}, sr),
+      new MatrixOverSemiring({{0, -3}, {-3, -1}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 26);
@@ -284,19 +290,19 @@ TEST_CASE("Semigroup: small matrix semigroup [MaxPlusSemiring]", "[small]") {
   REQUIRE(S.nr_idempotents(false) == 4);
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 9);
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(*S[1] == *(*gens)[1]);
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(*S[1] == *gens[1]);
 
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
-  REQUIRE(S.position((*gens)[1]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(S.position(gens[1]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[1], (*gens)[1]);
+  x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -313,9 +319,9 @@ TEST_CASE("Semigroup: small matrix semigroup [MaxPlusSemiring]", "[small]") {
 }
 
 TEST_CASE("Semigroup: small matrix semigroup [MinPlusSemiring]", "[small]") {
-  Semiring* sr   = new MinPlusSemiring();
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{1, 0}, {0, LONG_MAX}}, sr)});
+  Semiring*             sr   = new MinPlusSemiring();
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring({{1, 0}, {0, LONG_MAX}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 3);
@@ -324,14 +330,14 @@ TEST_CASE("Semigroup: small matrix semigroup [MinPlusSemiring]", "[small]") {
   REQUIRE(S.nrgens() == 1);
   REQUIRE(S.nrrules(false) == 1);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[0], (*gens)[0]);
+  x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 1);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -349,10 +355,10 @@ TEST_CASE("Semigroup: small matrix semigroup [MinPlusSemiring]", "[small]") {
 
 TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
           "[small]") {
-  Semiring* sr   = new TropicalMaxPlusSemiring(33);
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr),
-       new MatrixOverSemiring({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr)});
+  Semiring*             sr   = new TropicalMaxPlusSemiring(33);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr),
+      new MatrixOverSemiring({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 121);
@@ -361,9 +367,9 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 18);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
@@ -374,7 +380,7 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
   x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[0], (*gens)[0]);
+  x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -386,10 +392,10 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
 
 TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
           "[small]") {
-  Semiring* sr   = new TropicalMinPlusSemiring(11);
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-       new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)});
+  Semiring*             sr   = new TropicalMinPlusSemiring(11);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
+      new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 1039);
@@ -398,9 +404,9 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 38);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
@@ -411,7 +417,7 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
   x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[0], (*gens)[0]);
+  x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -422,10 +428,10 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
 }
 
 TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
-  Semiring* sr   = new NaturalSemiring(11, 3);
-  auto      gens = new std::vector<Element*>(
-      {new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-       new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)});
+  Semiring*             sr   = new NaturalSemiring(11, 3);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
+      new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 86);
@@ -434,9 +440,9 @@ TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 16);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
@@ -447,7 +453,7 @@ TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
   x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[1], (*gens)[0]);
+  x->redefine(gens[1], gens[0]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -458,11 +464,11 @@ TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
 }
 
 TEST_CASE("Semigroup: small pbr semigroup", "[small]") {
-  auto gens = new std::vector<Element*>(
-      {new PBR(new std::vector<std::vector<u_int32_t>>(
-           {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
-       new PBR(new std::vector<std::vector<u_int32_t>>(
-           {{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}))});
+  std::vector<Element*> gens = {
+      new PBR(new std::vector<std::vector<u_int32_t>>(
+          {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>(
+          {{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}))};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.size(false) == 30);
@@ -471,18 +477,18 @@ TEST_CASE("Semigroup: small pbr semigroup", "[small]") {
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 11);
 
-  REQUIRE(*S[0] == *(*gens)[0]);
-  REQUIRE(S.position((*gens)[0]) == 0);
-  REQUIRE(S.test_membership((*gens)[0]));
-  REQUIRE(*S[1] == *(*gens)[1]);
-  REQUIRE(S.position((*gens)[1]) == 1);
-  REQUIRE(S.test_membership((*gens)[1]));
+  REQUIRE(*S[0] == *gens[0]);
+  REQUIRE(S.position(gens[0]) == 0);
+  REQUIRE(S.test_membership(gens[0]));
+  REQUIRE(*S[1] == *gens[1]);
+  REQUIRE(S.position(gens[1]) == 1);
+  REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new PBR(
       new std::vector<std::vector<u_int32_t>>({{}, {}, {}, {}, {}, {}}));
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->redefine((*gens)[1], (*gens)[1]);
+  x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -492,12 +498,12 @@ TEST_CASE("Semigroup: small pbr semigroup", "[small]") {
 }
 
 TEST_CASE("Semigroup: large transformation semigroup", "[large]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   REQUIRE(S.size(false) == 7776);
   REQUIRE(S.degree() == 6);
@@ -508,12 +514,12 @@ TEST_CASE("Semigroup: large transformation semigroup", "[large]") {
 }
 
 TEST_CASE("Semigroup: at, position, current_*", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1024);
 
@@ -554,12 +560,12 @@ TEST_CASE("Semigroup: at, position, current_*", "[method]") {
 }
 
 TEST_CASE("Semigroup: enumerate", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1024);
 
@@ -588,12 +594,12 @@ TEST_CASE("Semigroup: enumerate", "[method]") {
 }
 
 TEST_CASE("Semigroup: enumerate [many stops and starts]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(128);
 
@@ -611,12 +617,12 @@ TEST_CASE("Semigroup: enumerate [many stops and starts]", "[method]") {
 }
 
 TEST_CASE("Semigroup: factorisation, length [1 element]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1024);
 
@@ -639,12 +645,12 @@ TEST_CASE("Semigroup: factorisation, length [1 element]", "[method]") {
 }
 
 TEST_CASE("Semigroup: factorisation, products [all elements]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1024);
 
@@ -659,12 +665,12 @@ TEST_CASE("Semigroup: factorisation, products [all elements]", "[method]") {
 
 TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
           "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.enumerate(1000, false);  // full enumerates
 
@@ -731,12 +737,12 @@ TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
 }
 
 TEST_CASE("Semigroup: genslookup [standard]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.genslookup(0) == 0);
@@ -749,39 +755,39 @@ TEST_CASE("Semigroup: genslookup [standard]", "[method]") {
 }
 
 TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.genslookup(0) == 0);
@@ -802,13 +808,13 @@ TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
 }
 
 TEST_CASE("Semigroup: genslookup [after add_generators", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
-  Semigroup S = Semigroup(new std::vector<Element*>{gens->at(0)});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+  Semigroup S = Semigroup({gens[0]});
 
   REQUIRE(S.size(false) == 1);
   REQUIRE(S.degree() == 6);
@@ -816,28 +822,28 @@ TEST_CASE("Semigroup: genslookup [after add_generators", "[method]") {
   REQUIRE(S.nrgens() == 1);
   REQUIRE(S.nrrules(false) == 1);
 
-  S.add_generators(new std::unordered_set<Element*>({gens->at(1)}), false);
+  S.add_generators({gens[1]}, false);
   REQUIRE(S.size(false) == 2);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.nr_idempotents(false) == 1);
   REQUIRE(S.nrgens() == 2);
   REQUIRE(S.nrrules(false) == 4);
 
-  S.add_generators(new std::unordered_set<Element*>({gens->at(2)}), false);
+  S.add_generators({gens[2]}, false);
   REQUIRE(S.size(false) == 120);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.nr_idempotents(false) == 1);
   REQUIRE(S.nrgens() == 3);
   REQUIRE(S.nrrules(false) == 25);
 
-  S.add_generators(new std::unordered_set<Element*>({gens->at(3)}), false);
+  S.add_generators({gens[3]}, false);
   REQUIRE(S.size(false) == 1546);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.nr_idempotents(false) == 32);
   REQUIRE(S.nrgens() == 4);
   REQUIRE(S.nrrules(false) == 495);
 
-  S.add_generators(new std::unordered_set<Element*>({gens->at(4)}), false);
+  S.add_generators({gens[4]}, false);
   REQUIRE(S.size(false) == 7776);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.nr_idempotents(false) == 537);
@@ -854,12 +860,12 @@ TEST_CASE("Semigroup: genslookup [after add_generators", "[method]") {
 }
 
 TEST_CASE("Semigroup: idempotent_cbegin/cend [1 thread]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   size_t nr = 0;
@@ -872,14 +878,14 @@ TEST_CASE("Semigroup: idempotent_cbegin/cend [1 thread]", "[method]") {
   really_delete_cont(gens);
 }
 
-#ifndef SKIP_LONG_TESTS
+#ifndef SKIP_TEST
 
 TEST_CASE("Semigroup: idempotent_cbegin/cend, is_idempotent [2 threads] ~1.7s",
           "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
-       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})};
   Semigroup S = Semigroup(gens);
 
   size_t nr = 0;
@@ -906,12 +912,12 @@ TEST_CASE("Semigroup: idempotent_cbegin/cend, is_idempotent [2 threads] ~1.7s",
 #endif
 
 TEST_CASE("Semigroup: is_done, is_begun", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(!S.is_begun());
@@ -930,19 +936,19 @@ TEST_CASE("Semigroup: is_done, is_begun", "[method]") {
 }
 
 TEST_CASE("Semigroup: current_position", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
-  REQUIRE(S.current_position((*gens)[0]) == 0);
-  REQUIRE(S.current_position((*gens)[1]) == 1);
-  REQUIRE(S.current_position((*gens)[2]) == 2);
-  REQUIRE(S.current_position((*gens)[3]) == 3);
-  REQUIRE(S.current_position((*gens)[4]) == 4);
+  REQUIRE(S.current_position(gens[0]) == 0);
+  REQUIRE(S.current_position(gens[1]) == 1);
+  REQUIRE(S.current_position(gens[2]) == 2);
+  REQUIRE(S.current_position(gens[3]) == 3);
+  REQUIRE(S.current_position(gens[4]) == 4);
 
   S.set_batch_size(1024);
   S.enumerate(1024, false);
@@ -973,32 +979,32 @@ TEST_CASE("Semigroup: current_position", "[method]") {
 }
 
 TEST_CASE("Semigroup: sorted_position, sorted_at", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
-  REQUIRE(S.sorted_position((*gens)[0], false) == 310);
-  REQUIRE(*S.sorted_at(310) == *(*gens)[0]);
+  REQUIRE(S.sorted_position(gens[0], false) == 310);
+  REQUIRE(*S.sorted_at(310) == *gens[0]);
   REQUIRE(S.sorted_at(310) == S.at(0));
 
-  REQUIRE(S.sorted_position((*gens)[1]) == 1390);
-  REQUIRE(*S.sorted_at(1390) == *(*gens)[1]);
+  REQUIRE(S.sorted_position(gens[1]) == 1390);
+  REQUIRE(*S.sorted_at(1390) == *gens[1]);
   REQUIRE(S.sorted_at(1390) == S.at(1));
 
-  REQUIRE(S.sorted_position((*gens)[2]) == 5235);
-  REQUIRE(*S.sorted_at(5235) == *(*gens)[2]);
+  REQUIRE(S.sorted_position(gens[2]) == 5235);
+  REQUIRE(*S.sorted_at(5235) == *gens[2]);
   REQUIRE(S.sorted_at(5235) == S.at(2));
 
-  REQUIRE(S.sorted_position((*gens)[3]) == 6790);
-  REQUIRE(*S.sorted_at(6790) == *(*gens)[3]);
+  REQUIRE(S.sorted_position(gens[3]) == 6790);
+  REQUIRE(*S.sorted_at(6790) == *gens[3]);
   REQUIRE(S.sorted_at(6790) == S.at(3));
 
-  REQUIRE(S.sorted_position((*gens)[4]) == 1606);
-  REQUIRE(*S.sorted_at(1606) == *(*gens)[4]);
+  REQUIRE(S.sorted_position(gens[4]) == 1606);
+  REQUIRE(*S.sorted_at(1606) == *gens[4]);
   REQUIRE(S.sorted_at(1606) == S.at(4));
 
   REQUIRE(S.is_done());
@@ -1023,12 +1029,12 @@ TEST_CASE("Semigroup: sorted_position, sorted_at", "[method]") {
 }
 
 TEST_CASE("Semigroup: right/left Cayley graph", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.right_cayley_graph(false) != nullptr);
@@ -1038,12 +1044,12 @@ TEST_CASE("Semigroup: right/left Cayley graph", "[method]") {
 }
 
 TEST_CASE("Semigroup: elements, sorted_elements", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(S.elements(false) != nullptr);
@@ -1053,12 +1059,12 @@ TEST_CASE("Semigroup: elements, sorted_elements", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy [not enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
   REQUIRE(!S.is_begun());
@@ -1066,7 +1072,7 @@ TEST_CASE("Semigroup: copy [not enumerated]", "[method]") {
   REQUIRE(S.current_size() == 5);
   REQUIRE(S.current_nrrules() == 0);
   REQUIRE(S.current_max_word_length() == 1);
-  REQUIRE(S.current_position((*gens)[1]) == 1);
+  REQUIRE(S.current_position(gens[1]) == 1);
 
   really_delete_cont(gens);
 
@@ -1089,9 +1095,9 @@ TEST_CASE("Semigroup: copy [not enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy and add gens [not enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1103,10 +1109,10 @@ TEST_CASE("Semigroup: copy and add gens [not enumerated]", "[method]") {
   REQUIRE(S.current_nrrules() == 0);
   REQUIRE(S.current_max_word_length() == 1);
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1131,12 +1137,12 @@ TEST_CASE("Semigroup: copy and add gens [not enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_batch_size(1000);
   S.enumerate(1001, false);
@@ -1146,7 +1152,7 @@ TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
   REQUIRE(S.current_size() == 1006);
   REQUIRE(S.current_nrrules() == 70);
   REQUIRE(S.current_max_word_length() == 7);
-  REQUIRE(S.current_position((*gens)[1]) == 1);
+  REQUIRE(S.current_position(gens[1]) == 1);
   really_delete_cont(gens);
 
   Semigroup T = Semigroup(S);
@@ -1177,10 +1183,10 @@ TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy and add gens [partly enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
   S.set_batch_size(60);
@@ -1194,9 +1200,9 @@ TEST_CASE("Semigroup: copy and add gens [partly enumerated]", "[method]") {
   REQUIRE(S.current_nrrules() == 11);
   REQUIRE(S.current_max_word_length() == 7);
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1226,12 +1232,12 @@ TEST_CASE("Semigroup: copy and add gens [partly enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy [fully enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1255,10 +1261,10 @@ TEST_CASE("Semigroup: copy [fully enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: copy and add gens [fully enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
   S.enumerate(121, false);
@@ -1271,9 +1277,9 @@ TEST_CASE("Semigroup: copy and add gens [fully enumerated]", "[method]") {
   REQUIRE(S.current_nrrules() == 25);
   REQUIRE(S.current_max_word_length() == 11);
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1301,12 +1307,12 @@ TEST_CASE("Semigroup: copy and add gens [fully enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: relations", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1345,12 +1351,12 @@ TEST_CASE("Semigroup: relations", "[method]") {
 }
 
 TEST_CASE("Semigroup: relations [from copy, not enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1392,12 +1398,12 @@ TEST_CASE("Semigroup: relations [from copy, not enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: relations [from copy, partly enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1442,12 +1448,12 @@ TEST_CASE("Semigroup: relations [from copy, partly enumerated]", "[method]") {
 }
 
 TEST_CASE("Semigroup: relations [from copy, fully enumerated]", "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1492,19 +1498,19 @@ TEST_CASE("Semigroup: relations [from copy, fully enumerated]", "[method]") {
 
 TEST_CASE("Semigroup: relations [from copy and add gens, not enumerated]",
           "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1561,10 +1567,10 @@ TEST_CASE("Semigroup: relations [from copy and add gens, not enumerated]",
 
 TEST_CASE("Semigroup: relations [from copy and add gens, partly enumerated]",
           "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
   S.set_batch_size(100);
@@ -1574,9 +1580,9 @@ TEST_CASE("Semigroup: relations [from copy and add gens, partly enumerated]",
   REQUIRE(S.is_begun());
   REQUIRE(!S.is_done());
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1627,10 +1633,10 @@ TEST_CASE("Semigroup: relations [from copy and add gens, partly enumerated]",
 
 TEST_CASE("Semigroup: relations [from copy and add gens, fully enumerated]",
           "[method]") {
-  auto gens = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})});
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
 
@@ -1639,9 +1645,9 @@ TEST_CASE("Semigroup: relations [from copy and add gens, fully enumerated]",
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
 
-  auto coll = new std::vector<Element*>(
-      {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})});
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup T = Semigroup(S, coll, false);
   really_delete_cont(coll);
@@ -1690,4 +1696,50 @@ TEST_CASE("Semigroup: relations [from copy and add gens, fully enumerated]",
   // that of S. We don't test for it since it might vary since the order is
   // determined by the order in the unordered_set used in the copy and add
   // generators constructor, and this is not fixed or guaranteed.
+}
+
+TEST_CASE("Semigroup: add_generators [duplicate generators]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
+      new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
+      new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
+      new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
+      new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+
+  Semigroup S = Semigroup({gens[0], gens[0]});
+
+  REQUIRE(S.size(false) == 1);
+  REQUIRE(S.nrgens() == 2);
+
+  S.add_generators({gens[0]}, false);
+  REQUIRE(S.size(false) == 1);
+  REQUIRE(S.nrgens() == 2);
+
+  S.add_generators({gens[1]}, false);
+  REQUIRE(S.size(false) == 2);
+  REQUIRE(S.nrgens() == 3);
+
+  S.add_generators({gens[2]}, false);
+  REQUIRE(S.size(false) == 7);
+  REQUIRE(S.nrgens() == 4);
+
+  S.add_generators({gens[3]}, false);
+  REQUIRE(S.size(false) == 18);
+  REQUIRE(S.nrgens() == 5);
+
+  S.add_generators({gens[4]}, false);
+  REQUIRE(S.size(false) == 87);
+  REQUIRE(S.nrgens() == 6);
+
+  S.add_generators({gens[5]}, false);
+  REQUIRE(S.size(false) == 97);
+  REQUIRE(S.nrgens() == 7);
+
+  S.add_generators({gens[6]}, false);
+  REQUIRE(S.size(false) == 119);
+  REQUIRE(S.nrgens() == 8);
+
+  really_delete_cont(gens);
 }
