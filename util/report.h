@@ -184,20 +184,27 @@ namespace semigroupsplusplus {
     // This method can be used to set the class name used in the output. This
     // can be used for example when a reporter class is static, and so there
     // may be no instance of the class to use as a parameter for the
-    // constructor.
+    // constructor. It only prints the last part of the name, i.e. the part
+    // after the last ::.
     template <class T> void set_class_name(T const& obj) {
-      std::string class_name =
-          std::string(abi::__cxa_demangle(typeid(obj).name(), 0, 0, 0));
-      size_t prev = 0, pos  = 0;
-      while (pos != std::string::npos) {
-        prev = pos;
-        pos  = class_name.find("::", pos + 1);
+      // TODO(JDM) only do this if _report is true, and _class == ""
+      int   status;
+      char* ptr = abi::__cxa_demangle(typeid(obj).name(), 0, 0, &status);
+      if (status == 0) {  // successfully demangled
+        std::string full = std::string(ptr);
+        // find the last :: in the class name <full>
+        size_t prev = 0, pos = 0;
+        while (pos != std::string::npos) {
+          prev = pos;
+          pos  = full.find("::", pos + 1);
+        }
+        if (prev != 0) {
+          _class = full.substr(prev + 2, std::string::npos);
+        } else {
+          _class = full;
+        }
       }
-      if (prev != 0) {
-        _class = class_name.substr(prev + 2, std::string::npos);
-      } else {
-        _class = class_name;
-      }
+      free(ptr);
     }
 
     // non-const
