@@ -3,9 +3,9 @@
 .deps
 .libs
 html
-.report.h.swo
-.semigroups.cc.swo
-.semigroups.h.swo
+*.swo
+*.swp
 test/test
+test/logs
 *.o
 gh-pages
