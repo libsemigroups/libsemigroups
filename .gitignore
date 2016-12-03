@@ -9,3 +9,4 @@ test/test
 test/logs
 *.o
 gh-pages
+test/lcov
