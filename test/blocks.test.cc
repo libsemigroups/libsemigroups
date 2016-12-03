@@ -112,3 +112,78 @@ TEST_CASE("Blocks: right blocks of bipartition", "") {
   delete b;
   x.really_delete();
 }
+
+TEST_CASE("Blocks: copy [empty blocks]", "") {
+  Blocks* b = new Blocks();
+  Blocks  c(*b);
+
+  REQUIRE(b->degree() == 0);
+  REQUIRE(b->lookup() == nullptr);
+  REQUIRE(b->nr_blocks() == 0);
+  REQUIRE(b->rank() == 0);
+
+  REQUIRE(c.degree() == 0);
+  REQUIRE(c.lookup() == nullptr);
+  REQUIRE(c.nr_blocks() == 0);
+  REQUIRE(c.rank() == 0);
+
+  delete b;
+}
+
+TEST_CASE("Blocks: copy [non-empty blocks]", "") {
+  Blocks* b =
+      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, false}));
+  Blocks c(*b);
+
+  REQUIRE(b->degree() == 11);
+  REQUIRE(b->lookup() != nullptr);
+  REQUIRE(b->nr_blocks() == 3);
+  REQUIRE(b->rank() == 1);
+
+  REQUIRE(c.degree() == 11);
+  REQUIRE(c.lookup() != nullptr);
+  REQUIRE(c.nr_blocks() == 3);
+  REQUIRE(c.rank() == 1);
+
+  delete b;
+}
+
+TEST_CASE("Blocks: hash value", "") {
+  Blocks* b =
+      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, false}));
+  Blocks* c =
+      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, true}));
+  REQUIRE(b->hash_value() != c->hash_value());
+  delete b;
+  delete c;
+
+  b = new Blocks();
+  REQUIRE(b->hash_value() == 0);
+  delete b;
+}
+
+TEST_CASE("Blocks: operator<", "") {
+  Blocks* b =
+      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, false}));
+  Blocks* c =
+      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, true}));
+  REQUIRE(*c < *b);
+  REQUIRE(!(*b < *c));
+  delete c;
+
+  c = new Blocks(new std::vector<u_int32_t>({0, 1, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                 new std::vector<bool>({false, true, true}));
+  REQUIRE(*b < *c);
+  REQUIRE(!(*c < *b));
+  delete b;
+
+  b = new Blocks();
+  REQUIRE(*b < *c);
+  delete b;
+  delete c;
+}

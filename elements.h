@@ -453,6 +453,7 @@ namespace semigroupsplusplus {
       }
       return new T(vector);
     }
+
     // static
     //
     // This value is used to indicate that a partial transformation is not
@@ -1236,8 +1237,7 @@ namespace semigroupsplusplus {
     //
     // @return a new PBR with degree equal to <degree> where every value is
     // adjacent to its negative (or *i* is adjacent *i +* <degree> and vice
-    // versa
-    // for every *i* less than <degree>).
+    // versa for every *i* less than <degree>).
     Element* identity() const override;
 
     // non-const
@@ -1247,10 +1247,8 @@ namespace semigroupsplusplus {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts
-    // that the degrees of <x>, <y>, and **this**, are all equal, and that
-    // neither
-    // <x> nor <y> equals **this**.
+    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
+    // that neither <x> nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override;
 
    private:

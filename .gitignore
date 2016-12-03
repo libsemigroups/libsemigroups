@@ -10,3 +10,5 @@ test/logs
 *.o
 gh-pages
 test/lcov
+*.gcno
+*.gcda

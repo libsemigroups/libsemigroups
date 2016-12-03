@@ -89,11 +89,12 @@ namespace semigroupsplusplus {
       return 0;
     }
     size_t seed = 0;
+    size_t n    = _blocks->size();
     for (auto const& index : *_blocks) {
-      seed = ((seed * _blocks->size()) + index);
+      seed = ((seed * n) + index);
     }
     for (auto val : *_lookup) {
-      seed = ((seed * _blocks->size()) + val);
+      seed = ((seed * n) + val);
     }
     return seed;
   }

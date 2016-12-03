@@ -31,6 +31,12 @@ TEST_CASE("Transformation<u_int16_t>: methods", "") {
   REQUIRE(*x == *y);
   REQUIRE((*x < *y) == false);
 
+  Element* z =
+      new Transformation<u_int16_t>(new std::vector<u_int16_t>({0, 1, 0, 3}));
+  REQUIRE(*x < *z);
+  z->really_delete();
+  delete z;
+
   Element* expected = new Transformation<u_int16_t>({0, 0, 0});
   REQUIRE(*expected < *x);
   expected->really_delete();
@@ -48,6 +54,11 @@ TEST_CASE("Transformation<u_int16_t>: methods", "") {
   REQUIRE(*id == *expected);
   expected->really_delete();
   delete expected;
+
+  Element* a = x->really_copy(10);
+  REQUIRE(a->degree() == 13);
+  a->really_delete();
+  delete a;
 
   x->really_delete();
   delete x;
@@ -184,7 +195,8 @@ TEST_CASE("PartialPerm<u_int16_t>: methods", "") {
   REQUIRE(xx->at(4) == 65535);
   REQUIRE(xx->at(5) == 1);
 
-  REQUIRE((*x < *y) == true);
+  REQUIRE(*x < *y);
+  REQUIRE(!(*x < *x));
   Element* expected = new PartialPerm<u_int16_t>({0, 0, 0});
   REQUIRE(*expected < *x);
   expected->really_delete();
@@ -202,6 +214,11 @@ TEST_CASE("PartialPerm<u_int16_t>: methods", "") {
   REQUIRE(*id == *expected);
   expected->really_delete();
   delete expected;
+
+  Element* a = x->really_copy(10);
+  REQUIRE(a->degree() == 21);
+  a->really_delete();
+  delete a;
 
   x->really_delete();
   delete x;
@@ -515,6 +532,25 @@ TEST_CASE("Bipartition: delete/copy", "") {
   zz.really_delete();
 }
 
+TEST_CASE("Bipartition: degree 0", "") {
+  Bipartition* x = new Bipartition(std::vector<u_int32_t>({}));
+  REQUIRE(x->const_nr_blocks() == 0);
+  REQUIRE(x->nr_left_blocks() == 0);
+
+  Blocks* b = x->left_blocks();
+  REQUIRE(b->degree() == 0);
+  REQUIRE(b->nr_blocks() == 0);
+  delete b;
+
+  b = x->right_blocks();
+  REQUIRE(b->degree() == 0);
+  REQUIRE(b->nr_blocks() == 0);
+  delete b;
+
+  x->really_delete();
+  delete x;
+}
+
 TEST_CASE("ProjectiveMaxPlusMatrix: methods", "") {
   Semiring* sr = new MaxPlusSemiring();
 
@@ -525,6 +561,8 @@ TEST_CASE("ProjectiveMaxPlusMatrix: methods", "") {
   REQUIRE(*x == *expected);
   expected->really_delete();
   delete expected;
+
+  REQUIRE(static_cast<MatrixOverSemiring*>(x)->semiring() == sr);
 
   Element* y = new ProjectiveMaxPlusMatrix(
       {{LONG_MIN, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr);
@@ -1073,6 +1111,105 @@ TEST_CASE("PBR: methods", "") {
   delete y;
   id->really_delete();
   delete id;
+}
+
+TEST_CASE("PBR: universal product", "") {
+  Element* x =
+      new PBR(new std::vector<std::vector<u_int32_t>>({{5, 3},
+                                                       {5, 4, 3, 0, 1, 2},
+                                                       {5, 4, 3, 0, 2},
+                                                       {5, 3, 0, 1, 2},
+                                                       {5, 0, 2},
+                                                       {5, 4, 3, 1, 2}}));
+  Element* y = new PBR(new std::vector<std::vector<u_int32_t>>({{5, 4, 3, 0},
+                                                                {5, 4, 2},
+                                                                {5, 1, 2},
+                                                                {5, 4, 3, 2},
+                                                                {5, 4, 3, 2},
+                                                                {4, 1, 2}}));
+
+  Element* z = new PBR(new std::vector<std::vector<u_int32_t>>({{5, 4, 3, 0},
+                                                                {5, 4, 2},
+                                                                {5, 1, 2},
+                                                                {5, 4, 3, 2},
+                                                                {5, 4, 3, 2},
+                                                                {4, 1, 2}}));
+  z->redefine(x, y);
+
+  Element* expected =
+      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5}}));
+  REQUIRE(*z == *expected);
+
+  x->really_delete();
+  delete x;
+  y->really_delete();
+  delete y;
+  z->really_delete();
+  delete z;
+  expected->really_delete();
+  delete expected;
+}
+
+TEST_CASE("PBR: product [bigger than previous]", "") {
+  Element* x =
+      new PBR(new std::vector<std::vector<u_int32_t>>({{5, 3},
+                                                       {5, 4, 3, 0, 1, 2},
+                                                       {5, 4, 3, 0, 2},
+                                                       {5, 3, 0, 1, 2},
+                                                       {5, 0, 2},
+                                                       {5, 4, 3, 1, 2},
+                                                       {},
+                                                       {}}));
+  Element* y =
+      new PBR(new std::vector<std::vector<u_int32_t>>({{5, 3},
+                                                       {5, 4, 3, 0, 1, 2},
+                                                       {5, 4, 3, 0, 2},
+                                                       {5, 3, 0, 1, 2},
+                                                       {5, 0, 2},
+                                                       {5, 4, 3, 1, 2},
+                                                       {},
+                                                       {6}}));
+  x->redefine(y, y);
+  Element* expected =
+      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {0, 1, 2, 3, 4, 5},
+                                                       {},
+                                                       {6}}));
+
+  REQUIRE(*x == *expected);
+
+  x->really_delete();
+  delete x;
+  y->really_delete();
+  delete y;
+  expected->really_delete();
+  delete expected;
+
+  x = new PBR(new std::vector<std::vector<u_int32_t>>(
+      {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}}));
+  y = new PBR(new std::vector<std::vector<u_int32_t>>(
+      {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}}));
+
+  x->redefine(y, y);
+  expected = new PBR(new std::vector<std::vector<u_int32_t>>(
+      {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}}));
+  REQUIRE(*x == *expected);
+
+  x->really_delete();
+  delete x;
+  y->really_delete();
+  delete y;
+  expected->really_delete();
+  delete expected;
 }
 
 TEST_CASE("PBR: hash ~28ms", "") {

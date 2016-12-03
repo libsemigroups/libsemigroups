@@ -22,6 +22,7 @@
 #include <limits.h>
 
 #include <algorithm>
+#include <cstdint>
 
 namespace semigroupsplusplus {
 
