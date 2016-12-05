@@ -2,7 +2,7 @@
 
 Semigroups++
 
-# Semigroups++ Version 0.0.1
+# Semigroups++ Version 0.0.2
 ### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/)
 
 This is the source code documentation for Semigroups++ produced using
