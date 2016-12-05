@@ -433,7 +433,7 @@ namespace semigroupsplusplus {
       enumerate(report);
     }
 
-    relation.clear();  // FIXME use an array instead since this has fixed size
+    relation.clear();
 
     if (_relation_pos == _nr) {  // no more relations
       return;
@@ -454,19 +454,14 @@ namespace semigroupsplusplus {
           }
           _relation_gen++;
         }
-        if (relation.empty()) {
+        if (_relation_gen == _nrgens) {  // then relation is empty
           _relation_gen = 0;
           _relation_pos++;
         } else {
           break;
         }
       }
-      if (_relation_gen == _nrgens) {
-        _relation_gen = 0;
-        _relation_pos++;
-      } else {
-        _relation_gen++;
-      }
+      _relation_gen++;
     } else {
       // duplicate generators
       if (_relation_gen < _duplicate_gens.size()) {
