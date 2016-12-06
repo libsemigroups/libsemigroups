@@ -113,8 +113,8 @@ namespace semigroupsplusplus {
     //
     // when we wanted to see aaabbbcccddd.
     template <class T> friend Reporter& operator<<(Reporter& rep, const T& tt) {
-      rep.output_prefix();
       if (rep._report) {
+        rep.output_prefix();
         *(rep._ostream) << tt;
       }
       return rep;
@@ -124,8 +124,8 @@ namespace semigroupsplusplus {
     //
     // This method exists to allow std::endl to be put to a <Reporter>.
     Reporter& operator<<(std::ostream& (*function)(std::ostream&) ) {
-      this->output_prefix();
       if (_report) {
+        this->output_prefix();
         *_ostream << function;
       }
       return *this;
@@ -136,15 +136,19 @@ namespace semigroupsplusplus {
     // @thread_id the number put to std::cout to identify the thread which is
     //            printing
     Reporter& operator()(std::string func, size_t thread_id = 0) {
-      _thread_id       = thread_id;
-      _func            = func;
-      _operator_called = true;
+      if (_report) {
+        _thread_id       = thread_id;
+        _func            = func;
+        _operator_called = true;
+      }
       return *this;
     }
 
     Reporter& operator()(size_t thread_id = 0) {
-      _thread_id       = thread_id;
-      _operator_called = true;
+      if (_report) {
+        _thread_id       = thread_id;
+        _operator_called = true;
+      }
       return *this;
     }
 
@@ -187,7 +191,6 @@ namespace semigroupsplusplus {
     // constructor. It only prints the last part of the name, i.e. the part
     // after the last ::.
     template <class T> void set_class_name(T const& obj) {
-      // TODO(JDM) only do this if _report is true, and _class == ""
       int   status;
       char* ptr = abi::__cxa_demangle(typeid(obj).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
