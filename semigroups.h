@@ -774,10 +774,9 @@ namespace semigroupsplusplus {
     // changes its first argument <word> in-place (first clearing it and then)
     // to contain a minimal factorization of the element in position <pos> of
     // the semigroup with respect to the generators of the semigroup.  This
-    // method
-    // enumerates the semigroup until at least the <pos> element is known. If
-    // <pos> is greater than the size of the semigroup, then nothing happens
-    // and <word> is not modified, in particular not cleared.
+    // method enumerates the semigroup until at least the <pos> element is
+    // known. If <pos> is greater than the size of the semigroup, then nothing
+    // happens and <word> is not modified, in particular not cleared.
 
     void
     factorisation(word_t& word, pos_t pos, bool report = DEFAULT_REPORT_VALUE);
@@ -789,9 +788,8 @@ namespace semigroupsplusplus {
     //
     // This resets the private data members in the semigroup that govern the
     // behaviour of <next_relation>. After a call to this function, the next
-    // call
-    // to <next_relation> will return the first relation of the presentation
-    // defining the semigroup.
+    // call to <next_relation> will return the first relation of the
+    // presentation defining the semigroup.
 
     void reset_next_relation() {
       _relation_pos = UNDEFINED;
@@ -948,12 +946,10 @@ namespace semigroupsplusplus {
 
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
-    // of
-    // an <Element>* and <pos_t> which is sorted on the first entry using the
-    // myless subclass. This is done so that we can both get the elements in
-    // sorted
-    // order, and find the position of an element in the sorted list of
-    // elements.
+    // of an <Element>* and <pos_t> which is sorted on the first entry using
+    // the myless subclass. This is done so that we can both get the elements
+    // in sorted order, and find the position of an element in the sorted list
+    // of elements.
 
     void sort_elements(bool report = DEFAULT_REPORT_VALUE);
 
@@ -981,8 +977,7 @@ namespace semigroupsplusplus {
     }
 
     // Check if an element is the identity, <x> should be in the position <pos>
-    // of
-    // _elements.
+    // of _elements.
 
     void inline is_one(Element const* x, pos_t pos) {
       if (!_found_one && *x == *_id) {
@@ -1082,6 +1077,7 @@ namespace semigroupsplusplus {
 
     Reporter _reporter;
   };
+
 }  // namespace semigroupsplusplus
 
 #endif  // SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
