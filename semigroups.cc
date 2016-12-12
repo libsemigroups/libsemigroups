@@ -992,7 +992,7 @@ namespace semigroupsplusplus {
   // _nrgens, _duplicates_gens, _genslookup, and _elements must all be
   // initialised for this to work, and _gens must point to an empty vector.
   void Semigroup::copy_gens(size_t increase_deg_by) {
-    assert(_gens.empty());
+    assert(_gens->empty());
     _gens->resize(_nrgens, nullptr);
     // really copy duplicate gens from _elements
     for (auto const& x : _duplicate_gens) {

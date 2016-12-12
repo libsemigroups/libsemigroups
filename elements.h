@@ -605,8 +605,6 @@ namespace semigroupsplusplus {
         : PartialTransformation<T, PartialPerm<T>>() {
       assert(dom.size() == ran.size());
       assert(deg >= *std::max_element(dom.begin(), dom.end()));
-      assert(codeg >= *std::max_element(ran.begin(), ran.end()));
-      assert(deg >= (deg > codeg ? deg : codeg));
 
       this->_vector->resize(deg + 1, PP_UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {

@@ -120,7 +120,7 @@ namespace semigroupsplusplus {
     // TODO(JDM) check table is valid
     assert(prefill.nr_cols() == _nrgens);
     assert(prefill.nr_rows() > 0);
-    assert(relations.empty());
+    assert(_relations.empty());
     // todd_coxeter requires that relations is empty if we are using a
     // completely
     // prefilled table
