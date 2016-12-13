@@ -33,7 +33,7 @@ namespace semigroupsplusplus {
         _first(),
         _found_one(false),
         _gens(new std::vector<Element*>()),
-        _genslookup(),
+        _letter_to_pos(),
         _idempotents(),
         _idempotents_found(false),
         _idempotents_start_pos(0),
@@ -50,13 +50,13 @@ namespace semigroupsplusplus {
         _nrrules(0),
         _pos(0),
         _pos_one(0),
+        _pos_sorted(nullptr),
         _prefix(),
         _reduced(gens->size()),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
         _right(new cayley_graph_t(gens->size())),
         _sorted(nullptr),
-        _pos_sorted(nullptr),
         _suffix(),
         _wordlen(0),  // (length of the current word) - 1
         _reporter(*this) {
@@ -73,22 +73,16 @@ namespace semigroupsplusplus {
     _lenindex.push_back(0);
     _id = (*_gens)[0]->identity();
 
-    // inverse of genslookup for keeping track of duplicate gens maps from
-    // positions in _elements to positions in _gens, i.e. from pos_t to
-    // letter_t
-    std::vector<letter_t> inv_genslookup;
-
     // add the generators
     for (size_t i = 0; i < _nrgens; i++) {
       auto it = _map.find((*_gens)[i]);
       if (it != _map.end()) {  // duplicate generator
-        _genslookup.push_back(it->second);
+        _letter_to_pos.push_back(it->second);
         _nrrules++;
-        _duplicate_gens.push_back(
-            std::make_pair(i, inv_genslookup[it->second]));
-        // i.e. _gens[i] = _gens[inv_genslookup[it->second]]
+        _duplicate_gens.push_back(std::make_pair(i, _first[it->second]));
+        // i.e. _gens[i] = _gens[_first[it->second]]
+        // _first maps from pos_t -> letter_t :)
       } else {
-        inv_genslookup.push_back(_genslookup.size());
         is_one((*_gens)[i], _nr);
         _elements->push_back((*_gens)[i]);
         // Note that every non-duplicate generator is *really* stored in
@@ -96,7 +90,7 @@ namespace semigroupsplusplus {
         // _gens
         _first.push_back(i);
         _final.push_back(i);
-        _genslookup.push_back(_nr);
+        _letter_to_pos.push_back(_nr);
         _length.push_back(1);
         _map.insert(std::make_pair(_elements->back(), _nr));
         _prefix.push_back(UNDEFINED);
@@ -123,7 +117,7 @@ namespace semigroupsplusplus {
         _first(copy._first),
         _found_one(copy._found_one),
         _gens(new std::vector<Element*>()),
-        _genslookup(copy._genslookup),
+        _letter_to_pos(copy._letter_to_pos),
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
@@ -140,13 +134,13 @@ namespace semigroupsplusplus {
         _nrrules(copy._nrrules),
         _pos(copy._pos),
         _pos_one(copy._pos_one),
+        _pos_sorted(nullptr),  // TODO(JDM) copy this if set
         _prefix(copy._prefix),
         _reduced(copy._reduced),
         _relation_gen(copy._relation_gen),
         _relation_pos(copy._relation_pos),
         _right(new cayley_graph_t(*copy._right)),
-        _sorted(nullptr),
-        _pos_sorted(nullptr),
+        _sorted(nullptr),  // TODO(JDM) copy this if set
         _suffix(copy._suffix),
         _wordlen(copy._wordlen),
         _reporter(*this) {
@@ -163,16 +157,11 @@ namespace semigroupsplusplus {
     copy_gens();
   }
 
-  Semigroup::Semigroup(const Semigroup&             copy,
-                       std::vector<Element*> const& coll,
-                       bool                         report)
-      : Semigroup(copy, &coll, report) {}
-
-  // Copy <copy> and add the generators in <coll>
-
-  Semigroup::Semigroup(const Semigroup&             copy,
-                       std::vector<Element*> const* coll,
-                       bool                         report)
+  // Private - partial copy
+  //
+  // <add_generators> or <closure> should usually be called after this.
+  Semigroup::Semigroup(Semigroup const& copy, std::vector<Element*> const* coll)
+      // TODO(JDM) Element const*
       : _batch_size(copy._batch_size),
         _degree(copy._degree),  // copy for comparison in add_generators
         _duplicate_gens(copy._duplicate_gens),
@@ -180,7 +169,7 @@ namespace semigroupsplusplus {
         _found_one(copy._found_one),  // copy in case degree doesn't change in
                                       // add_generators
         _gens(new std::vector<Element*>()),
-        _genslookup(copy._genslookup),
+        _letter_to_pos(copy._letter_to_pos),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _idempotents_start_pos(copy._idempotents_start_pos),
@@ -194,24 +183,22 @@ namespace semigroupsplusplus {
         _pos(copy._pos),
         _pos_one(copy._pos_one),  // copy in case degree doesn't change in
                                   // add_generators
+        _pos_sorted(nullptr),
         _reduced(copy._reduced),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
         _right(new cayley_graph_t(*copy._right)),
         _sorted(nullptr),
-        _pos_sorted(nullptr),
         _wordlen(0),
         _reporter(*this) {
     assert(!coll->empty());
     assert(coll->at(0)->degree() >= copy.degree());
 
-    // remove duplicate generators
-    std::unordered_set<Element*>* new_gens = new std::unordered_set<Element*>();
+#ifdef DEBUG
     for (Element* x : *coll) {
       assert(x->degree() == (*coll)[0]->degree());
-      new_gens->insert(x);
-      // don't really_copy x since it will be copied by add_generators anyway
     }
+#endif
 
     _elements->reserve(copy._nr);
     _map.reserve(copy._nr);
@@ -256,11 +243,8 @@ namespace semigroupsplusplus {
       _map.insert(std::make_pair(y, i));
       is_one(_elements->back(), i++);
     }
-    copy_gens(deg_plus);  // copy the old generators
-    add_generators(new_gens, report);
-    delete new_gens;
-    // don't delete or really_delete anything in new_gens, since they are in
-    // coll and should be deleted there.
+    copy_gens();  // copy the old generators
+    // Now this is ready to have add_generators or closure called on it
   }
 
   // Destructor
@@ -510,7 +494,7 @@ namespace semigroupsplusplus {
             _prefix.push_back(i);
             _reduced.set(i, j, true);
             _right->set(i, j, _nr);
-            _suffix.push_back(_genslookup[j]);
+            _suffix.push_back(_letter_to_pos[j]);
             _nr++;
           }
         }
@@ -519,7 +503,7 @@ namespace semigroupsplusplus {
       for (size_t i = 0; i != _pos; ++i) {
         size_t b = _final[_index[i]];
         for (size_t j = 0; j != _nrgens; ++j) {
-          _left->set(_index[i], j, _right->get(_genslookup[j], b));
+          _left->set(_index[i], j, _right->get(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
@@ -541,12 +525,12 @@ namespace semigroupsplusplus {
           if (!_reduced.get(s, j)) {
             size_t r = _right->get(s, j);
             if (_found_one && r == _pos_one) {
-              _right->set(i, j, _genslookup[b]);
+              _right->set(i, j, _letter_to_pos[b]);
             } else if (_prefix[r] != UNDEFINED) {  // r is not a generator
               _right->set(
                   i, j, _right->get(_left->get(_prefix[r], b), _final[r]));
             } else {
-              _right->set(i, j, _right->get(_genslookup[b], _final[r]));
+              _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
             }
           } else {
             _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
@@ -602,13 +586,61 @@ namespace semigroupsplusplus {
     _reporter.stop_timer();
   }
 
-  void Semigroup::add_generators(std::unordered_set<Element*> const& coll,
-                                 bool                                report) {
+  Semigroup* Semigroup::copy_closure(std::vector<Element*> const* coll,
+                                     bool                         report) {
+    if (coll->empty()) {
+      return new Semigroup(*this);
+    } else {
+      // The next line is required so that when we call the closure method on
+      // out, the partial copy contains enough information to all membership
+      // testing without a call to enumerate (which will fail because the
+      // partial copy does not contain enough data to run enumerate).
+      this->enumerate(LIMIT_MAX, report);
+      // Partially copy
+      Semigroup* out = new Semigroup(*this, coll);
+      out->closure(coll, report);
+      return out;
+    }
+  }
+
+  void Semigroup::closure(std::vector<Element*> const& coll, bool report) {
+    closure(&coll, report);
+  }
+
+  void Semigroup::closure(std::vector<Element*> const* coll, bool report) {
+    if (coll->empty()) {
+      return;
+    } else {
+      std::vector<Element*> singleton(1, nullptr);
+
+      for (auto const& x : *coll) {
+        if (!test_membership(x, report)) {
+          singleton[0] = x;
+          add_generators(singleton, report);
+        }
+      }
+    }
+  }
+
+  Semigroup* Semigroup::copy_add_generators(std::vector<Element*> const* coll,
+                                            bool report) const {
+    if (coll->empty()) {
+      return new Semigroup(*this);
+    } else {
+      // Partially copy
+      Semigroup* out = new Semigroup(*this, coll);
+      out->add_generators(coll, report);
+      return out;
+    }
+  }
+
+  void Semigroup::add_generators(std::vector<Element*> const& coll,
+                                 bool                         report) {
     add_generators(&coll, report);
   }
 
-  void Semigroup::add_generators(const std::unordered_set<Element*>* coll,
-                                 bool                                report) {
+  void Semigroup::add_generators(const std::vector<Element*>* coll,
+                                 bool                         report) {
     if (coll->empty()) {
       return;
     }
@@ -624,47 +656,60 @@ namespace semigroupsplusplus {
     size_t old_nr      = _nr;
     size_t nr_old_left = _pos;
 
-    bool              there_are_new_gens = false;
     std::vector<bool> old_new;  // have we seen _elements->at(i) yet in new?
+
+    // erase the old index
+    _index.erase(_index.begin() + _lenindex[1], _index.end());
+
+    // set up old_new
+    old_new.resize(old_nr, false);
+    for (size_t i = 0; i < _letter_to_pos.size(); i++) {
+      old_new[_letter_to_pos[i]] = true;
+    }
 
     // add the new generators to new _gens, _elements, and _index
     for (Element const* x : *coll) {
-      if (_map.find(x) == _map.end()) {
-        if (!there_are_new_gens) {
-          // erase the old index
-          _index.erase(_index.begin() + _lenindex[1], _index.end());
-
-          // set up old_new
-          old_new.resize(old_nr, false);
-          for (size_t i = 0; i < _genslookup.size(); i++) {
-            old_new[_genslookup[i]] = true;
-          }
-          there_are_new_gens = true;
-        }
-
-        _first.push_back(_gens->size());
-        _final.push_back(_gens->size());
-
+      assert(x->degree() == degree());
+      auto it = _map.find(x);
+      if (it == _map.end()) {  // new generator
         _gens->push_back(x->really_copy());
         _elements->push_back(_gens->back());
-        _genslookup.push_back(_nr);
+        _map.insert(std::make_pair(_gens->back(), _nr));
+
+        _first.push_back(_gens->size() - 1);
+        _final.push_back(_gens->size() - 1);
+
+        _letter_to_pos.push_back(_nr);
         _index.push_back(_nr);
 
         is_one(x, _nr);
-        _map.insert(std::make_pair(_gens->back(), _nr));
         _multiplied.push_back(false);
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
         _length.push_back(1);
-
         _nr++;
-      }
-    }
+      } else if (_letter_to_pos[_first[it->second]] == it->second) {
+        _gens->push_back(x->really_copy());
+        // x is one of the existing generators
+        _duplicate_gens.push_back(
+            std::make_pair(_gens->size() - 1, _first[it->second]));
+        // _gens[_gens.size() - 1] = _gens[_first[it->second])]
+        // since _first maps pos_t -> letter_t
+        _letter_to_pos.push_back(it->second);
+      } else {
+        // x is an old element that will now be a generator
+        _gens->push_back((*_elements)[it->second]);
+        _letter_to_pos.push_back(it->second);
+        _index.push_back(it->second);
 
-    if (!there_are_new_gens) {
-      // everything in coll was already in the semigroup
-      _reporter.stop_timer();
-      return;
+        _first[it->second]  = _gens->size() - 1;
+        _final[it->second]  = _gens->size() - 1;
+        _prefix[it->second] = UNDEFINED;
+        _suffix[it->second] = UNDEFINED;
+        _length[it->second] = UNDEFINED;
+
+        old_new[it->second] = true;
+      }
     }
 
     // reset the data structure
@@ -677,20 +722,20 @@ namespace semigroupsplusplus {
     _lenindex.push_back(0);
     _lenindex.push_back(_nrgens - _duplicate_gens.size());
 
-    // add columns for new generators
+    // Add columns for new generators
     // FIXME isn't this a bit wasteful, we could recycle the old _reduced, to
     // avoid reallocation
     _reduced = flags_t(_nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
     _left->add_cols(_nrgens - _left->nr_cols());
     _right->add_cols(_nrgens - _right->nr_cols());
 
-    // add rows in for newly added generators
+    // Add rows in for newly added generators
     _left->add_rows(_nrgens - old_nrgens);
     _right->add_rows(_nrgens - old_nrgens);
 
     size_t nr_shorter_elements;
 
-    // repeat until we have multiplied all of the elements of <old> up to the
+    // Repeat until we have multiplied all of the elements of <old> up to the
     // old value of _pos by all of the (new and old) generators
 
     while (nr_old_left > 0) {
@@ -713,7 +758,7 @@ namespace semigroupsplusplus {
               _prefix[k] = i;
               _reduced.set(i, j, true);
               if (_wordlen == 0) {
-                _suffix[k] = _genslookup[j];
+                _suffix[k] = _letter_to_pos[j];
               } else {
                 _suffix[k] = _right->get(s, j);
               }
@@ -727,7 +772,6 @@ namespace semigroupsplusplus {
           for (size_t j = old_nrgens; j < _nrgens; j++) {
             closure_update(i, j, b, s, old_new, old_nr);
           }
-
         } else {
           // _elements[i] is not in old
           _multiplied[i] = true;
@@ -745,7 +789,7 @@ namespace semigroupsplusplus {
             size_t b = _final[_index[i]];
             for (size_t j = 0; j < _nrgens; j++) {
               // TODO(JDM) reuse old info here!
-              _left->set(_index[i], j, _right->get(_genslookup[j], b));
+              _left->set(_index[i], j, _right->get(_letter_to_pos[j], b));
             }
           }
         } else {
@@ -835,11 +879,11 @@ namespace semigroupsplusplus {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       size_t r = _right->get(s, j);
       if (_found_one && r == _pos_one) {
-        _right->set(i, j, _genslookup[b]);
+        _right->set(i, j, _letter_to_pos[b]);
       } else if (_prefix[r] != UNDEFINED) {
         _right->set(i, j, _right->get(_left->get(_prefix[r], b), _final[r]));
       } else {
-        _right->set(i, j, _right->get(_genslookup[b], _final[r]));
+        _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
       }
     } else {
       _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
@@ -855,7 +899,7 @@ namespace semigroupsplusplus {
         _reduced.set(i, j, true);
         _right->set(i, j, _nr);
         if (_wordlen == 0) {
-          _suffix.push_back(_genslookup[j]);
+          _suffix.push_back(_letter_to_pos[j]);
         } else {
           _suffix.push_back(_right->get(s, j));
         }
@@ -871,7 +915,7 @@ namespace semigroupsplusplus {
         _reduced.set(i, j, true);
         _right->set(i, j, it->second);
         if (_wordlen == 0) {
-          _suffix[it->second] = _genslookup[j];
+          _suffix[it->second] = _letter_to_pos[j];
         } else {
           _suffix[it->second] = _right->get(s, j);
         }
@@ -989,20 +1033,22 @@ namespace semigroupsplusplus {
     _reporter.stop_timer();
   }
 
-  // _nrgens, _duplicates_gens, _genslookup, and _elements must all be
+  // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
   // initialised for this to work, and _gens must point to an empty vector.
-  void Semigroup::copy_gens(size_t increase_deg_by) {
+  void Semigroup::copy_gens() {
     assert(_gens->empty());
     _gens->resize(_nrgens, nullptr);
     // really copy duplicate gens from _elements
     for (auto const& x : _duplicate_gens) {
-      (*_gens)[x.first] =
-          (*_elements)[_genslookup[x.second]]->really_copy(increase_deg_by);
+      // The degree of everything in _elements has already been increased (if
+      // it needs to be at all), and so we do not need to increase the degree
+      // in the copy below.
+      (*_gens)[x.first] = (*_elements)[_letter_to_pos[x.second]]->really_copy();
     }
     // the non-duplicate gens are already in _elements, so don't really copy
     for (size_t i = 0; i < _nrgens; i++) {
       if ((*_gens)[i] == nullptr) {
-        (*_gens)[i] = (*_elements)[_genslookup[i]];
+        (*_gens)[i] = (*_elements)[_letter_to_pos[i]];
       }
     }
   }

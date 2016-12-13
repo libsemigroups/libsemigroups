@@ -29,11 +29,15 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 static inline size_t evaluate_reduct(Semigroup& S, word_t const& word) {
-  letter_t out = S.genslookup(word[0]);
+  letter_t out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
     out = S.right_cayley_graph()->get(out, *it);
   }
   return out;
+}
+
+static inline size_t evaluate_reduct(Semigroup* S, word_t const& word) {
+  return evaluate_reduct(*S, word);
 }
 
 TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
@@ -691,7 +695,7 @@ TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
-  S.enumerate(1000, false);  // full enumerates
+  S.enumerate(1000, false);  // fully enumerates
 
   REQUIRE(S.first_letter(6377) == 2);
   REQUIRE(S.prefix(6377) == 5049);
@@ -755,7 +759,7 @@ TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: genslookup [standard]", "[method]") {
+TEST_CASE("Semigroup: letter_to_pos [standard]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -764,16 +768,16 @@ TEST_CASE("Semigroup: genslookup [standard]", "[method]") {
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
-  REQUIRE(S.genslookup(0) == 0);
-  REQUIRE(S.genslookup(1) == 1);
-  REQUIRE(S.genslookup(2) == 2);
-  REQUIRE(S.genslookup(3) == 3);
-  REQUIRE(S.genslookup(4) == 4);
+  REQUIRE(S.letter_to_pos(0) == 0);
+  REQUIRE(S.letter_to_pos(1) == 1);
+  REQUIRE(S.letter_to_pos(2) == 2);
+  REQUIRE(S.letter_to_pos(3) == 3);
+  REQUIRE(S.letter_to_pos(4) == 4);
 
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
+TEST_CASE("Semigroup: letter_to_pos [duplicate gens]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -809,13 +813,13 @@ TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
 
-  REQUIRE(S.genslookup(0) == 0);
-  REQUIRE(S.genslookup(1) == 1);
-  REQUIRE(S.genslookup(2) == 1);
-  REQUIRE(S.genslookup(3) == 1);
-  REQUIRE(S.genslookup(4) == 1);
-  REQUIRE(S.genslookup(10) == 1);
-  REQUIRE(S.genslookup(12) == 3);
+  REQUIRE(S.letter_to_pos(0) == 0);
+  REQUIRE(S.letter_to_pos(1) == 1);
+  REQUIRE(S.letter_to_pos(2) == 1);
+  REQUIRE(S.letter_to_pos(3) == 1);
+  REQUIRE(S.letter_to_pos(4) == 1);
+  REQUIRE(S.letter_to_pos(10) == 1);
+  REQUIRE(S.letter_to_pos(12) == 3);
 
   REQUIRE(S.size(false) == 7776);
   REQUIRE(S.degree() == 6);
@@ -826,7 +830,7 @@ TEST_CASE("Semigroup: genslookup [duplicate gens]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: genslookup [after add_generators]", "[method]") {
+TEST_CASE("Semigroup: letter_to_pos [after add_generators]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -869,11 +873,11 @@ TEST_CASE("Semigroup: genslookup [after add_generators]", "[method]") {
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules(false) == 2459);
 
-  REQUIRE(S.genslookup(0) == 0);
-  REQUIRE(S.genslookup(1) == 1);
-  REQUIRE(S.genslookup(2) == 2);
-  REQUIRE(S.genslookup(3) == 120);
-  REQUIRE(S.genslookup(4) == 1546);
+  REQUIRE(S.letter_to_pos(0) == 0);
+  REQUIRE(S.letter_to_pos(1) == 1);
+  REQUIRE(S.letter_to_pos(2) == 2);
+  REQUIRE(S.letter_to_pos(3) == 120);
+  REQUIRE(S.letter_to_pos(4) == 1546);
 
   really_delete_cont(gens);
 }
@@ -1163,7 +1167,7 @@ TEST_CASE("Semigroup: copy [not enumerated]", "[method]") {
   REQUIRE(T.is_done());
 }
 
-TEST_CASE("Semigroup: copy and add gens [not enumerated]", "[method]") {
+TEST_CASE("Semigroup: copy_closure [not enumerated]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
@@ -1183,43 +1187,118 @@ TEST_CASE("Semigroup: copy and add gens [not enumerated]", "[method]") {
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
   really_delete_cont(coll);
 
-  REQUIRE(!T.is_begun());
-  REQUIRE(!T.is_done());
-  REQUIRE(T.nrgens() == 5);
-  REQUIRE(T.degree() == 6);
-  REQUIRE(T.current_size() == 5);
-  REQUIRE(T.current_nrrules() == 0);
-  REQUIRE(T.current_max_word_length() == 1);
-  REQUIRE(T.current_position(S.gens()->at(1)) == 1);
+  REQUIRE(T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 7719);
+  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_max_word_length() == 14);
+  REQUIRE(T->current_position(S.gens()->at(1)) == 1);
 
-  REQUIRE(T.size(false) == 7776);
-  REQUIRE(T.is_done());
-  REQUIRE(T.nr_idempotents(false) == 537);
-  // REQUIRE(T.nrrules(false) == 2177);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
 
-  coll        = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
-  Semigroup U = Semigroup(T, coll, false);
+  coll         = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+  Semigroup* U = T->copy_closure(&coll, false);
   really_delete_cont(coll);
 
-  REQUIRE(U.is_begun());
-  REQUIRE(U.is_done());
-  REQUIRE(U.nrgens() == 6);
-  REQUIRE(U.degree() == 7);
-  REQUIRE(U.current_size() == 16807);
-  REQUIRE(U.current_max_word_length() == 16);
-  REQUIRE(U.nr_idempotents(false) == 1358);
-  // REQUIRE(U.nrrules() == 8272); This is correct since the order of the
-  // generators of T and hence U is different to that of S. We don't test for
-  // it since it might vary since the order is determined by the order in the
-  // unordered_set used in the copy and add generators constructor, and this is
-  // not fixed or guaranteed.
+  REQUIRE(U->is_begun());
+  REQUIRE(U->is_done());
+  REQUIRE(U->nrgens() == 6);
+  REQUIRE(U->degree() == 7);
+  REQUIRE(U->current_size() == 16807);
+  REQUIRE(U->current_max_word_length() == 16);
+  REQUIRE(U->nr_idempotents(false) == 1358);
+  REQUIRE(U->nrrules() == 7901);
+
+  coll         = std::vector<Element*>();
+  Semigroup* V = U->copy_closure(&coll, false);
+  REQUIRE(V != U);
+  REQUIRE(V->is_begun());
+  REQUIRE(V->is_done());
+  REQUIRE(V->nrgens() == 6);
+  REQUIRE(V->degree() == 7);
+  REQUIRE(V->current_size() == 16807);
+  REQUIRE(V->current_max_word_length() == 16);
+  REQUIRE(V->nr_idempotents(false) == 1358);
+  REQUIRE(V->nrrules() == 7901);
+
+  delete T;
+  delete U;
+  delete V;
+}
+
+TEST_CASE("Semigroup: copy_add_generators [not enumerated]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+
+  REQUIRE(!S.is_begun());
+  REQUIRE(!S.is_done());
+  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.degree() == 6);
+  REQUIRE(S.current_size() == 2);
+  REQUIRE(S.current_nrrules() == 0);
+  REQUIRE(S.current_max_word_length() == 1);
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  really_delete_cont(coll);
+
+  REQUIRE(!T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 5);
+  REQUIRE(T->current_nrrules() == 0);
+  REQUIRE(T->current_max_word_length() == 1);
+  REQUIRE(T->current_position(S.gens()->at(1)) == 1);
+
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
+
+  coll         = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+  Semigroup* U = T->copy_add_generators(&coll, false);
+  really_delete_cont(coll);
+
+  REQUIRE(U->is_begun());
+  REQUIRE(U->is_done());
+  REQUIRE(U->nrgens() == 6);
+  REQUIRE(U->degree() == 7);
+  REQUIRE(U->current_size() == 16807);
+  REQUIRE(U->current_max_word_length() == 16);
+  REQUIRE(U->nr_idempotents(false) == 1358);
+  REQUIRE(U->nrrules() == 7901);
+
+  coll         = std::vector<Element*>();
+  Semigroup* V = U->copy_add_generators(&coll, false);
+  REQUIRE(V != U);
+  REQUIRE(V->is_begun());
+  REQUIRE(V->is_done());
+  REQUIRE(V->nrgens() == 6);
+  REQUIRE(V->degree() == 7);
+  REQUIRE(V->current_size() == 16807);
+  REQUIRE(V->current_max_word_length() == 16);
+  REQUIRE(V->nr_idempotents(false) == 1358);
+  REQUIRE(V->nrrules() == 7901);
+
+  delete T;
+  delete U;
+  delete V;
 }
 
 TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
@@ -1268,7 +1347,7 @@ TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
   REQUIRE(T.is_done());
 }
 
-TEST_CASE("Semigroup: copy and add gens [partly enumerated]", "[method]") {
+TEST_CASE("Semigroup: copy_closure [partly enumerated]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1290,31 +1369,66 @@ TEST_CASE("Semigroup: copy and add gens [partly enumerated]", "[method]") {
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
   really_delete_cont(coll);
 
-  // The next two lines may depend on the implementation of unordered_set, and
-  // so are commented out, see the comment below about the order of the
-  // generators.
-  // REQUIRE(*(*coll)[0] == *(T.gens()->at(4)));
-  // REQUIRE(*(*coll)[1] == *(T.gens()->at(3)));
+  REQUIRE(T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 7719);
+  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_max_word_length() == 14);
 
-  REQUIRE(T.is_begun());
-  REQUIRE(!T.is_done());
-  REQUIRE(T.nrgens() == 5);
-  REQUIRE(T.degree() == 6);
-  REQUIRE(T.current_size() == 818);
-  REQUIRE(T.current_nrrules() == 54);
-  REQUIRE(T.current_max_word_length() == 7);
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
+  delete T;
+}
 
-  REQUIRE(T.size(false) == 7776);
-  REQUIRE(T.is_done());
-  REQUIRE(T.nr_idempotents(false) == 537);
-  // REQUIRE(T.nrrules(false) == 2458);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+TEST_CASE("Semigroup: copy_add_generators [partly enumerated]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.set_batch_size(60);
+  S.enumerate(60, false);
+
+  REQUIRE(S.is_begun());
+  REQUIRE(!S.is_done());
+  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.degree() == 6);
+  REQUIRE(S.current_size() == 63);
+  REQUIRE(S.current_nrrules() == 11);
+  REQUIRE(S.current_max_word_length() == 7);
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  really_delete_cont(coll);
+
+  REQUIRE(T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 818);
+  REQUIRE(T->current_nrrules() == 55);
+  REQUIRE(T->current_max_word_length() == 7);
+
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
+  delete T;
 }
 
 TEST_CASE("Semigroup: copy [fully enumerated]", "[method]") {
@@ -1346,7 +1460,7 @@ TEST_CASE("Semigroup: copy [fully enumerated]", "[method]") {
   REQUIRE(T.nrrules(false) == 2459);
 }
 
-TEST_CASE("Semigroup: copy and add gens [fully enumerated]", "[method]") {
+TEST_CASE("Semigroup: copy_closure [fully enumerated]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1367,32 +1481,68 @@ TEST_CASE("Semigroup: copy and add gens [fully enumerated]", "[method]") {
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
   really_delete_cont(coll);
 
-  // The next two lines may depend on the implementation of unordered_set, and
-  // so are commented out, see the comment below about the order of the
-  // generators.
-  // REQUIRE(*(*coll)[0] == *(T.gens()->at(4)));
-  // REQUIRE(*(*coll)[1] == *(T.gens()->at(3)));
+  REQUIRE(T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 7719);
+  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_max_word_length() == 14);
 
-  REQUIRE(T.is_begun());
-  REQUIRE(!T.is_done());
-  REQUIRE(T.nrgens() == 5);
-  REQUIRE(T.degree() == 6);
-  REQUIRE(T.current_size() == 6842);
-  REQUIRE(T.current_nrrules() == 1968);
-  REQUIRE(T.current_max_word_length() == 12);
-
-  REQUIRE(T.size(false) == 7776);
-  REQUIRE(T.is_done());
-  REQUIRE(T.nr_idempotents(false) == 537);
-  REQUIRE(T.nrrules(false) == 2458);
-  // It is ok that T.nrrules() != S.nrrules() since the generators of T are in
-  // a different order to those of S.
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
+  delete T;
 }
 
-TEST_CASE("Semigroup: copy and add gens [duplicate gens]", "[method]") {
+TEST_CASE("Semigroup: copy_add_generators [fully enumerated]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.enumerate(121, false);
+
+  REQUIRE(S.is_begun());
+  REQUIRE(S.is_done());
+  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.degree() == 6);
+  REQUIRE(S.current_size() == 120);
+  REQUIRE(S.current_nrrules() == 25);
+  REQUIRE(S.current_max_word_length() == 11);
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  really_delete_cont(coll);
+
+  REQUIRE(T->is_begun());
+  REQUIRE(!T->is_done());
+  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->degree() == 6);
+  REQUIRE(T->current_size() == 6842);
+  REQUIRE(T->current_nrrules() == 1970);
+  REQUIRE(T->current_max_word_length() == 12);
+
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  REQUIRE(T->nrrules(false) == 2459);
+  delete T;
+}
+
+TEST_CASE("Semigroup: relations [duplicate gens]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1469,7 +1619,7 @@ TEST_CASE("Semigroup: relations", "[method]") {
   REQUIRE(S.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [duplicate gens]", "[method]") {
+TEST_CASE("Semigroup: relations [copy_closure, duplicate gens]", "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1496,12 +1646,50 @@ TEST_CASE("Semigroup: relations [duplicate gens]", "[method]") {
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
   really_delete_cont(coll);
 
-  REQUIRE(T.size(false) == 7776);
-  REQUIRE(T.is_done());
-  REQUIRE(T.nr_idempotents(false) == 537);
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  delete T;
+}
+
+TEST_CASE("Semigroup: relations [copy_add_generators, duplicate gens]",
+          "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+
+  S.enumerate(Semigroup::LIMIT_MAX, false);
+  REQUIRE(S.is_begun());
+  REQUIRE(S.is_done());
+  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.degree() == 6);
+  REQUIRE(S.current_size() == 120);
+  REQUIRE(S.size() == 120);
+  REQUIRE(S.current_nrrules() == 33);
+  REQUIRE(S.nrrules() == 33);
+  REQUIRE(S.current_max_word_length() == 11);
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  really_delete_cont(coll);
+
+  REQUIRE(T->size(false) == 7776);
+  REQUIRE(T->is_done());
+  REQUIRE(T->nr_idempotents(false) == 537);
+  delete T;
 }
 
 TEST_CASE("Semigroup: relations [from copy, not enumerated]", "[method]") {
@@ -1650,7 +1838,7 @@ TEST_CASE("Semigroup: relations [from copy, fully enumerated]", "[method]") {
   REQUIRE(T.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [from copy and add gens, not enumerated]",
+TEST_CASE("Semigroup: relations [from copy_closure, not enumerated]",
           "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1666,60 +1854,107 @@ TEST_CASE("Semigroup: relations [from copy and add gens, not enumerated]",
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
   really_delete_cont(coll);
 
-  // The next two lines may depend on the implementation of unordered_set, and
-  // so are commented out, see the comment below about the order of the
-  // generators.
-  // REQUIRE(*(*coll)[0] == *(T.gens()->at(4)));
-  // REQUIRE(*(*coll)[1] == *(T.gens()->at(3)));
-
   std::vector<size_t> result;
-  T.next_relation(result, false);
+  T->next_relation(result, false);
   size_t nr = 0;
   while (!result.empty()) {
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
 
-  T.reset_next_relation();
-  T.next_relation(result, false);
+  T->reset_next_relation();
+  T->next_relation(result, false);
   nr = 0;
 
   while (!result.empty()) {
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy and add gens, partly enumerated]",
+TEST_CASE("Semigroup: relations [from copy_add_generators, not enumerated]",
+          "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+
+  REQUIRE(!S.is_begun());
+  REQUIRE(!S.is_done());
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  REQUIRE(*coll[0] == *(T->gens()->at(3)));
+  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  really_delete_cont(coll);
+
+  std::vector<size_t> result;
+  T->next_relation(result, false);
+  size_t nr = 0;
+  while (!result.empty()) {
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+
+  T->reset_next_relation();
+  T->next_relation(result, false);
+  nr = 0;
+
+  while (!result.empty()) {
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
+}
+
+TEST_CASE("Semigroup: relations [from copy_closure, partly enumerated]",
           "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1738,54 +1973,106 @@ TEST_CASE("Semigroup: relations [from copy and add gens, partly enumerated]",
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
   really_delete_cont(coll);
 
   std::vector<size_t> result;
-  T.next_relation(result, false);
+  T->next_relation(result, false);
   size_t nr = 0;
   while (!result.empty()) {
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
 
-  T.reset_next_relation();
-  T.next_relation(result, false);
+  T->reset_next_relation();
+  T->next_relation(result, false);
   nr = 0;
 
   while (!result.empty()) {
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy and add gens, fully enumerated]",
+TEST_CASE("Semigroup: relations [from copy_add_generators, partly enumerated]",
+          "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.set_batch_size(100);
+
+  S.enumerate(10, false);
+
+  REQUIRE(S.is_begun());
+  REQUIRE(!S.is_done());
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  really_delete_cont(coll);
+
+  std::vector<size_t> result;
+  T->next_relation(result, false);
+  size_t nr = 0;
+  while (!result.empty()) {
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+
+  T->reset_next_relation();
+  T->next_relation(result, false);
+  nr = 0;
+
+  while (!result.empty()) {
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
+}
+
+TEST_CASE("Semigroup: relations [from copy_closure, fully enumerated]",
           "[method]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1803,53 +2090,106 @@ TEST_CASE("Semigroup: relations [from copy and add gens, fully enumerated]",
       new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup T = Semigroup(S, coll, false);
+  Semigroup* T = S.copy_closure(&coll, false);
   really_delete_cont(coll);
 
   std::vector<size_t> result;
-  T.next_relation(result, false);
+  T->next_relation(result, false);
   size_t nr = 0;
   while (!result.empty()) {
     REQUIRE(result.size() == 3);  // there are no duplicate gens
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
 
-  T.reset_next_relation();
-  T.next_relation(result, false);
+  T->reset_next_relation();
+  T->next_relation(result, false);
   nr = 0;
 
   while (!result.empty()) {
     REQUIRE(result.size() == 3);
     word_t lhs, rhs;
-    T.factorisation(lhs, result[0], false);
+    T->factorisation(lhs, result[0], false);
     lhs.push_back(result[1]);
-    T.factorisation(rhs, result[2], false);
+    T->factorisation(rhs, result[2], false);
 
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
     REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-    T.next_relation(result, false);
+    T->next_relation(result, false);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
-  // REQUIRE(2458 == nr);
-  // This is correct since the order of the generators of T is different to
-  // that of S. We don't test for it since it might vary since the order is
-  // determined by the order in the unordered_set used in the copy and add
-  // generators constructor, and this is not fixed or guaranteed.
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
+}
+
+TEST_CASE("Semigroup: relations [from copy_add_generators, fully enumerated]",
+          "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+
+  S.enumerate(8000, false);
+
+  REQUIRE(S.is_begun());
+  REQUIRE(S.is_done());
+
+  std::vector<Element*> coll = {
+      new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+
+  Semigroup* T = S.copy_add_generators(&coll, false);
+  really_delete_cont(coll);
+
+  std::vector<size_t> result;
+  T->next_relation(result, false);
+  size_t nr = 0;
+  while (!result.empty()) {
+    REQUIRE(result.size() == 3);  // there are no duplicate gens
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+
+  T->reset_next_relation();
+  T->next_relation(result, false);
+  nr = 0;
+
+  while (!result.empty()) {
+    REQUIRE(result.size() == 3);
+    word_t lhs, rhs;
+    T->factorisation(lhs, result[0], false);
+    lhs.push_back(result[1]);
+    T->factorisation(rhs, result[2], false);
+
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
+    T->next_relation(result, false);
+    nr++;
+  }
+  REQUIRE(T->nrrules() == nr);
+  REQUIRE(2459 == nr);
+  delete T;
 }
 
 TEST_CASE("Semigroup: add_generators [duplicate generators]", "[method]") {
@@ -1867,37 +2207,223 @@ TEST_CASE("Semigroup: add_generators [duplicate generators]", "[method]") {
   REQUIRE(S.size(false) == 1);
   REQUIRE(S.nrgens() == 2);
 
-  S.add_generators(std::unordered_set<Element*>({}), false);
+  S.add_generators(std::vector<Element*>({}), false);
   REQUIRE(S.size(false) == 1);
   REQUIRE(S.nrgens() == 2);
 
   S.add_generators({gens[0]}, false);
   REQUIRE(S.size(false) == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nrgens() == 3);
 
   S.add_generators({gens[1]}, false);
   REQUIRE(S.size(false) == 2);
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nrgens() == 4);
 
   S.add_generators({gens[2]}, false);
   REQUIRE(S.size(false) == 7);
-  REQUIRE(S.nrgens() == 4);
+  REQUIRE(S.nrgens() == 5);
 
   S.add_generators({gens[3]}, false);
   REQUIRE(S.size(false) == 18);
-  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.nrgens() == 6);
 
   S.add_generators({gens[4]}, false);
   REQUIRE(S.size(false) == 87);
-  REQUIRE(S.nrgens() == 6);
+  REQUIRE(S.nrgens() == 7);
 
   S.add_generators({gens[5]}, false);
   REQUIRE(S.size(false) == 97);
-  REQUIRE(S.nrgens() == 7);
+  REQUIRE(S.nrgens() == 8);
 
   S.add_generators({gens[6]}, false);
   REQUIRE(S.size(false) == 119);
+  REQUIRE(S.nrgens() == 9);
+  REQUIRE(S.nrrules() == 213);
+
+  gens[0]->redefine(gens[3], gens[4]);
+  S.add_generators({gens[0]}, false);
+  REQUIRE(S.size(false) == 119);
+  REQUIRE(S.nrgens() == 10);
+  REQUIRE(S.nrrules() == 267);
+
+  REQUIRE(S.letter_to_pos(0) == 0);
+  REQUIRE(S.letter_to_pos(1) == 0);
+  REQUIRE(S.letter_to_pos(2) == 0);
+  REQUIRE(S.letter_to_pos(3) == 1);
+  REQUIRE(S.letter_to_pos(4) == 2);
+  REQUIRE(S.letter_to_pos(5) == 7);
+  REQUIRE(S.letter_to_pos(6) == 18);
+  REQUIRE(S.letter_to_pos(7) == 87);
+  REQUIRE(S.letter_to_pos(8) == 97);
+  REQUIRE(S.letter_to_pos(9) == 21);
+
+  really_delete_cont(gens);
+}
+
+TEST_CASE("Semigroup: add_generators [incremental 1]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
+      new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
+      new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
+      new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
+      new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+
+  Semigroup S = Semigroup({gens[0], gens[0]});
+  S.add_generators(std::vector<Element*>({}), false);
+  S.add_generators({gens[0]}, false);
+  S.add_generators({gens[1]}, false);
+  S.add_generators({gens[2]}, false);
+  S.add_generators({gens[3]}, false);
+  REQUIRE(S.size(false) == 18);
+  REQUIRE(S.nrgens() == 6);
+
+  S.add_generators({gens[4]}, false);
+  S.add_generators({gens[5]}, false);
+  REQUIRE(S.size(false) == 97);
+  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.nrrules() == 126);
+
+  S.add_generators({gens[4], gens[5]}, false);
+  S.add_generators({gens[5]}, false);
+  S.add_generators({gens[6]}, false);
+  S.add_generators({gens[0], gens[0]}, false);
+  REQUIRE(S.size(false) == 119);
+  REQUIRE(S.nrgens() == 14);
+  REQUIRE(S.nrrules() == 253);
+
+  really_delete_cont(gens);
+}
+
+TEST_CASE("Semigroup: add_generators [incremental 2]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
+      new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
+      new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
+      new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
+      new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+
+  Semigroup T = Semigroup(gens);
+  REQUIRE(T.size(false) == 119);
+
+  Semigroup S = Semigroup({gens[0], gens[0]});
+  S.add_generators(std::vector<Element*>({}), false);
+  S.add_generators({gens[0]}, false);
+  S.enumerate(Semigroup::LIMIT_MAX, false);
+  S.add_generators({gens[1]}, false);
+  S.enumerate(Semigroup::LIMIT_MAX, false);
+  S.add_generators({gens[2]}, false);
+  S.enumerate(Semigroup::LIMIT_MAX, false);
+  REQUIRE(S.current_size() == 7);
+  S.add_generators({gens[3], gens[4], gens[5]}, false);
+  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.letter_to_pos(5) == 7);
+  REQUIRE(S.letter_to_pos(6) == 8);
+  REQUIRE(S.letter_to_pos(7) == 9);
+  REQUIRE(S.current_size() == 55);
+
+  S.add_generators({S.at(44)}, false);
+  REQUIRE(S.nrgens() == 9);
+  REQUIRE(S.current_size() == 73);
+  REQUIRE(S.size(false) == 97);
+
+  S.add_generators({S.at(75)}, false);
+  REQUIRE(S.nrgens() == 10);
+  REQUIRE(S.current_size() == 97);
+  REQUIRE(S.size(false) == 97);
+
+  S.add_generators({gens[6]}, false);
+  REQUIRE(S.nrgens() == 11);
+  REQUIRE(S.size(false) == 119);
+  really_delete_cont(gens);
+}
+
+TEST_CASE("Semigroup: closure [duplicate generators]", "[method]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+      new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
+      new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
+      new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
+      new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
+      new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+
+  Semigroup S = Semigroup({gens[0], gens[0]});
+
+  REQUIRE(S.size(false) == 1);
+  REQUIRE(S.nrgens() == 2);
+
+  S.closure(std::vector<Element*>({}), false);
+  REQUIRE(S.size(false) == 1);
+  REQUIRE(S.nrgens() == 2);
+
+  S.closure({gens[0]}, false);
+  REQUIRE(S.size(false) == 1);
+  REQUIRE(S.nrgens() == 2);
+
+  S.closure({gens[1]}, false);
+  REQUIRE(S.size(false) == 2);
+  REQUIRE(S.nrgens() == 3);
+
+  S.closure({gens[2]}, false);
+  REQUIRE(S.size(false) == 7);
+  REQUIRE(S.nrgens() == 4);
+
+  S.closure({gens[3]}, false);
+  REQUIRE(S.size(false) == 18);
+  REQUIRE(S.nrgens() == 5);
+
+  S.closure({gens[4]}, false);
+  REQUIRE(S.size(false) == 87);
+  REQUIRE(S.nrgens() == 6);
+
+  S.closure({gens[5]}, false);
+  REQUIRE(S.size(false) == 97);
+  REQUIRE(S.nrgens() == 7);
+
+  S.closure({gens[6]}, false);
+  REQUIRE(S.size(false) == 119);
   REQUIRE(S.nrgens() == 8);
 
+  really_delete_cont(gens);
+}
+
+TEST_CASE("Semigroup: closure ", "[method]") {
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 0, 0}),
+                                new Transformation<u_int16_t>({0, 0, 1}),
+                                new Transformation<u_int16_t>({0, 0, 2}),
+                                new Transformation<u_int16_t>({0, 1, 0}),
+                                new Transformation<u_int16_t>({0, 1, 1}),
+                                new Transformation<u_int16_t>({0, 1, 2}),
+                                new Transformation<u_int16_t>({0, 2, 0}),
+                                new Transformation<u_int16_t>({0, 2, 1}),
+                                new Transformation<u_int16_t>({0, 2, 2}),
+                                new Transformation<u_int16_t>({1, 0, 0}),
+                                new Transformation<u_int16_t>({1, 0, 1}),
+                                new Transformation<u_int16_t>({1, 0, 2}),
+                                new Transformation<u_int16_t>({1, 1, 0}),
+                                new Transformation<u_int16_t>({1, 1, 1}),
+                                new Transformation<u_int16_t>({1, 1, 2}),
+                                new Transformation<u_int16_t>({1, 2, 0}),
+                                new Transformation<u_int16_t>({1, 2, 1}),
+                                new Transformation<u_int16_t>({1, 2, 2}),
+                                new Transformation<u_int16_t>({2, 0, 0}),
+                                new Transformation<u_int16_t>({2, 0, 1}),
+                                new Transformation<u_int16_t>({2, 0, 2}),
+                                new Transformation<u_int16_t>({2, 1, 0}),
+                                new Transformation<u_int16_t>({2, 1, 1}),
+                                new Transformation<u_int16_t>({2, 1, 2}),
+                                new Transformation<u_int16_t>({2, 2, 0}),
+                                new Transformation<u_int16_t>({2, 2, 1}),
+                                new Transformation<u_int16_t>({2, 2, 2})};
+
+  Semigroup S = Semigroup({gens[0]});
+
+  S.closure(gens, false);
+  REQUIRE(S.size(false) == 27);
+  REQUIRE(S.nrgens() == 10);
   really_delete_cont(gens);
 }

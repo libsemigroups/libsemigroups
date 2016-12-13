@@ -161,7 +161,7 @@ namespace semigroupsplusplus {
       }
 
       for (size_t i = 0; i < _nrgens; i++) {
-        _table.set(0, i, semigroup->genslookup(i) + 1);
+        _table.set(0, i, semigroup->letter_to_pos(i) + 1);
       }
 
       init_after_prefill();
