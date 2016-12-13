@@ -39,9 +39,9 @@ test: testbuild testrun
 testdebug: CXXFLAGS += -O0 -g
 testdebug: testclean testbuild
 
-testcover: CXXFLAGS += -O0 -g --coverage 
-testcover: LDFLAGS = -O0 -g --coverage
-testcover: testdebug testrun
+testcov: CXXFLAGS += -O0 -g --coverage 
+testcov: LDFLAGS = -O0 -g --coverage
+testcov: testdebug testrun
 	lcov --capture --directory test/bin --output-file test/lcov/$(TODAY).info
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
 	open test/lcov/$(TODAY)-html/index.html
@@ -69,4 +69,4 @@ testrun:
 	test/test -d yes --order lex --force-colour | tee -a $(LOG_DIR)/$(TODAY).log
 	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
-.PHONY: error doc test testdebug testcover testclean doclean testdirs testbuild testrun
+.PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun
