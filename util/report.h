@@ -181,6 +181,14 @@ namespace libsemigroups {
       _report = val;
     }
 
+    // const
+    //
+    // This method returns true or false depending on whether or not we are
+    // reporting.
+    bool get_report() const {
+      return _report;
+    }
+
     // non-const, template
     // @obj the value to set the class name to.
     //

@@ -153,12 +153,11 @@ namespace libsemigroups {
 
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
-
-    // TODO initialise using ()
-    std::vector<u_int32_t>& fuse =
-      _fuse[glob_reporter.thread_id(std::this_thread::get_id())];
-    std::vector<u_int32_t>& lookup =
-      _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+    //FIXME is there copying here?
+    std::vector<u_int32_t>& fuse(
+        _fuse[glob_reporter.thread_id(std::this_thread::get_id())]);
+    std::vector<u_int32_t>& lookup(
+        _lookup[glob_reporter.thread_id(std::this_thread::get_id())]);
 
     fuse.clear();
     fuse.reserve(nrx + nry);

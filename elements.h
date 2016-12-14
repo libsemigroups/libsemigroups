@@ -1311,5 +1311,4 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 }  // namespace libsemigroups
-
 #endif  // LIBSEMIGROUPS_ELEMENTS_H_
