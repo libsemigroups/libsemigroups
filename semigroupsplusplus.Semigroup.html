@@ -45,31 +45,25 @@
                         <p>copy constructor</p>
                     </div>
                 </li>
-                <li><a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup<span class="counter"></span></a>
-                    <div class="brief">
-                        <p>add generators</p>
-                    </div>
-                </li>
-                <li><a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup<span class="counter"></span></a>
-                    <div class="brief">
-                        <p>add generators</p>
-                    </div>
-                </li>
             </ul>
             <div class="subtitle">Destructors</div>
             <ul>
-                <li><a href="#semigroupsplusplus::Semigroup::~Semigroup">~Semigroup<span class="counter"></span></a></li>
+                <li><a href="#semigroupsplusplus::Semigroup::~Semigroup">~Semigroup<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>A default destructor.</p>
+                    </div>
+                </li>
             </ul>
             <div class="subtitle">Member Functions</div>
             <ul>
                 <li><a href="#semigroupsplusplus::Semigroup::add_generators">add_generators<span class="counter"></span></a>
                     <div class="brief">
-                        <p>non-const</p>
+                        <p>non-const (pointer parameter)</p>
                     </div>
                 </li>
                 <li><a href="#semigroupsplusplus::Semigroup::add_generators">add_generators<span class="counter"></span></a>
                     <div class="brief">
-                        <p>non-const</p>
+                        <p>non-const (const ref parameter)</p>
                     </div>
                 </li>
                 <li><a href="#semigroupsplusplus::Semigroup::at">at<span class="counter"></span></a>
@@ -80,6 +74,26 @@
                 <li><a href="#semigroupsplusplus::Semigroup::batch_size">batch_size<span class="counter"></span></a>
                     <div class="brief">
                         <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::closure">closure<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const (pointer parameter)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::closure">closure<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const (const ref parameter)</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::copy_add_generators">copy_add_generators<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::copy_closure">copy_closure<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>non-const</p>
                     </div>
                 </li>
                 <li><a href="#semigroupsplusplus::Semigroup::current_max_word_length">current_max_word_length<span class="counter"></span></a>
@@ -147,11 +161,6 @@
                         <p>const</p>
                     </div>
                 </li>
-                <li><a href="#semigroupsplusplus::Semigroup::genslookup">genslookup<span class="counter"></span></a>
-                    <div class="brief">
-                        <p>const</p>
-                    </div>
-                </li>
                 <li><a href="#semigroupsplusplus::Semigroup::idempotents_cbegin">idempotents_cbegin<span class="counter"></span></a>
                     <div class="brief">
                         <p>non-const</p>
@@ -190,6 +199,11 @@
                 <li><a href="#semigroupsplusplus::Semigroup::length_non_const">length_non_const<span class="counter"></span></a>
                     <div class="brief">
                         <p>non-const</p>
+                    </div>
+                </li>
+                <li><a href="#semigroupsplusplus::Semigroup::letter_to_pos">letter_to_pos<span class="counter"></span></a>
+                    <div class="brief">
+                        <p>const</p>
                     </div>
                 </li>
                 <li><a href="#semigroupsplusplus::Semigroup::next_relation">next_relation<span class="counter"></span></a>
@@ -419,9 +433,8 @@
                     </table>
                 </div>
                 <div class="doc">
-                    <p>Constructs a new <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a>,
-                        <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> and <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> which is an exact copy of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>.
-                        No enumeration is triggered by this constructor of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> or of the newly constructed semigroup.</p>
+                    <p>Constructs a new <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a>                        and <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> which is an exact copy of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>. No enumeration is triggered by this constructor
+                        of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> or of the newly constructed semigroup.</p>
                 </div>
                 <table class="arguments">
                     <tbody>
@@ -430,146 +443,6 @@
                             <td>
                                 <div class="doc">
                                     <p>a semigroup to copy</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="function">
-                <div class="declaration" id="semigroupsplusplus::Semigroup::Semigroup">
-                    <table class="declaration">
-                        <tbody>
-                            <tr>
-                                <td class="identifier">Semigroup</td>
-                                <td class="open_paren">(</td>
-                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
-                                    </span>
-                                </td>
-                                <td class="argument_name">copy,</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    *</span>
-                                    </span>
-                                </td>
-                                <td class="argument_name">coll,</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
-                                </td>
-                                <td class="argument_name">report</td>
-                                <td class="close_paren">)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="doc">
-                    <p>This is a constructor for a semigroup generated by the generators of the
-                        <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>,
-                        <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a> and <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>                        and the (possibly) additional generators <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>.</p>
-                    <p>The relevant parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> are copied and then
-                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> is called. Consequently,
-                        the semigroup is (partially or fully) enumerated by this constructor.</p>
-                    <p>The same effect can be obtained by copying <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> using the copy constructor and then calling <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>                        and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>. However, this constructor avoids copying those parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>                        that
-                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> invalidates anyway.
-                        If <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> has not been enumerated at all, then these two routes for adding more generators are equivalent.</p>
-                </div>
-                <table class="arguments">
-                    <tbody>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::copy">
-                            <td>copy</td>
-                            <td>
-                                <div class="doc">
-                                    <p>a semigroup</p>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::coll">
-                            <td>coll</td>
-                            <td>
-                                <div class="doc">
-                                    <p>a collection of additional generators</p>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::report">
-                            <td>report</td>
-                            <td>
-                                <div class="doc">
-                                    <p>report during enumeration, if any (defaults to
-                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="function">
-                <div class="declaration" id="semigroupsplusplus::Semigroup::Semigroup">
-                    <table class="declaration">
-                        <tbody>
-                            <tr>
-                                <td class="identifier">Semigroup</td>
-                                <td class="open_paren">(</td>
-                                <td class="argument_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier">  <span class="keyword">const</span> &amp;</span>
-                                    </span>
-                                </td>
-                                <td class="argument_name">copy,</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    &amp;</span>
-                                    </span>
-                                </td>
-                                <td class="argument_name">coll,</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
-                                </td>
-                                <td class="argument_name">report</td>
-                                <td class="close_paren">)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="doc">
-                    <p>This is a constructor for a semigroup generated by the generators of the
-                        <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>, <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a>,
-                        <a href="#semigroupsplusplus::Semigroup::Semigroup">semigroupsplusplus::Semigroup::Semigroup</a> and <a href="#semigroupsplusplus::Semigroup::Semigroup">Semigroup</a> <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>                        and the (possibly) additional generators <a href="#semigroupsplusplus::Semigroup::gens">semigroupsplusplus::Semigroup::gens</a>.</p>
-                    <p>The relevant parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> are copied and then
-                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> is called. Consequently,
-                        the semigroup is (partially or fully) enumerated by this constructor.</p>
-                    <p>The same effect can be obtained by copying <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> using the copy constructor and then calling <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>                        and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>. However, this constructor avoids copying those parts of the data structure of <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a>                        that
-                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> invalidates anyway.
-                        If <a href="#semigroupsplusplus::Semigroup::Semigroup.copy">copy</a> has not been enumerated at all, then these two routes for adding more generators are equivalent.</p>
-                </div>
-                <table class="arguments">
-                    <tbody>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::copy">
-                            <td>copy</td>
-                            <td>
-                                <div class="doc">
-                                    <p>a semigroup</p>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::coll">
-                            <td>coll</td>
-                            <td>
-                                <div class="doc">
-                                    <p>a collection of additional generators</p>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="semigroupsplusplus::Semigroup::Semigroup::report">
-                            <td>report</td>
-                            <td>
-                                <div class="doc">
-                                    <p>report during enumeration, if any (defaults to
-                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
                                 </div>
                             </td>
                         </tr>
@@ -592,7 +465,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="doc">
+                <div class="brief">
                     <p>A default destructor.</p>
                 </div>
                 <table class="arguments"></table>
@@ -609,10 +482,8 @@
                             <tr>
                                 <td class="identifier">add_generators</td>
                                 <td class="open_paren">(</td>
-                                <td class="argument_type"><span class="type"><span class="name ">std::unordered_set&lt;semigroupsplusplus::Element *, std::hash&lt;semigroupsplusplus::Element *&gt;, std::equal_to&lt;semigroupsplusplus::Element *&gt;&gt;</span>
-                                    <span
-                                        class="qualifier"> <span class="keyword">const</span> *</span>
-                                        </span>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    *</span>
+                                    </span>
                                 </td>
                                 <td class="argument_name">coll,</td>
                             </tr>
@@ -627,13 +498,13 @@
                     </table>
                 </div>
                 <div class="doc">
-                    <p>This function can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by
-                        the old generators and the new in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
+                    <p>This method can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by the
+                        old generators and the new in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
                     <p>This method is non-const, and changes the semigroup in place, thereby invalidating possibly previously known data about the semigroup, such as the left or right Cayley graphs.</p>
-                    <p>A generator is only added if it is does not belong in the existing data structure (it may belong to the semigroup but just not be known to belong). If <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is empty or
-                        only contains elements that are known to belong to the semigroup, then the semigroup is left unchanged.</p>
-                    <p>Otherwise, the semigroup is returned in a state where all of the previously enumerated elements which had been multiplied by all of the old generators, have now been multiplied by the new generators. This means that after this function
-                        is called the semigroup might contain many more elements than before (whether it is fully enumerating or not). It can also be the case that the new generators are the only new elements, unlike say, in the case of groups.</p>
+                    <p>Every generator in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is added regardless of whether or not it is already a generator or element of the semigroup (it may belong to the semigroup but just not be known
+                        to belong). If <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is empty, then the semigroup is left unchanged. The order the generators is added is also the order they occur in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
+                    <p>The semigroup is returned in a state where all of the previously enumerated elements which had been multiplied by all of the old generators, have now been multiplied by the new generators. This means that after this method is called
+                        the semigroup might contain many more elements than before (whether it is fully enumerating or not). It can also be the case that the new generators are the only new elements, unlike, say, in the case of non-trivial groups.</p>
                     <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
                 </div>
                 <table class="arguments">
@@ -667,10 +538,8 @@
                             <tr>
                                 <td class="identifier">add_generators</td>
                                 <td class="open_paren">(</td>
-                                <td class="argument_type"><span class="type"><span class="name ">std::unordered_set&lt;semigroupsplusplus::Element *, std::hash&lt;semigroupsplusplus::Element *&gt;, std::equal_to&lt;semigroupsplusplus::Element *&gt;&gt;</span>
-                                    <span
-                                        class="qualifier"> <span class="keyword">const</span> &amp;</span>
-                                        </span>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    &amp;</span>
+                                    </span>
                                 </td>
                                 <td class="argument_name">coll,</td>
                             </tr>
@@ -685,14 +554,13 @@
                     </table>
                 </div>
                 <div class="doc">
-                    <p>This function can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by
-                        the old generators and the new in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
+                    <p>This method can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by the
+                        old generators and the new in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
                     <p>This method is non-const, and changes the semigroup in place, thereby invalidating possibly previously known data about the semigroup, such as the left or right Cayley graphs.</p>
-                    <p>A generator is only added if it is does not belong in the existing data structure (it may belong to the semigroup but just not be known to belong). If <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is empty or
-                        only contains elements that are known to belong to the semigroup, then the semigroup is left unchanged.</p>
-                    <p>Otherwise, the semigroup is returned in a state where all of the previously enumerated elements which had been multiplied by all of the old generators, have now been multiplied by the new generators. This means that after this function
-                        is called the semigroup might contain many more elements than before (whether it is fully enumerating or not). It can also be the case that the new generators are the only new elements, unlike say, in the case of groups.</p>
-                    <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
+                    <p>Every generator in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is added regardless of whether or not it is already a generator or element of the semigroup (it may belong to the semigroup but just not be known
+                        to belong). If <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a> is empty, then the semigroup is left unchanged. The order the generators is added is also the order they occur in <a href="#semigroupsplusplus::Semigroup::add_generators.coll">coll</a>.</p>
+                    <p>The semigroup is returned in a state where all of the previously enumerated elements which had been multiplied by all of the old generators, have now been multiplied by the new generators. This means that after this method is called
+                        the semigroup might contain many more elements than before (whether it is fully enumerating or not). It can also be the case that the new generators are the only new elements, unlike, say, in the case of non-trivial groups.</p>
                 </div>
                 <table class="arguments">
                     <tbody>
@@ -798,6 +666,236 @@
                             <td>
                                 <div class="doc">
                                     <p>the current value of the batch size. This is the minimum number of elements enumerated in any call to the <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a> and <a href="#semigroupsplusplus::Semigroup::enumerate">semigroupsplusplus::Semigroup::enumerate</a>                                        method.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::closure">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">closure</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by the
+                        old generators and the new in <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a>.</p>
+                    <p>This method differs from <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>                        in that it tries to add the new generators one by one, and only adds those generators that are not products of existing generators (including any new generators from
+                        <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a> that were added before). The generators are added in the order they occur in <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a>.</p>
+                    <p>This method is non-const, and changes the semigroup in place, thereby invalidating possibly previously known data about the semigroup, such as the left or right Cayley graphs.</p>
+                    <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::closure::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the new generators to be added</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::closure::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::closure">
+                    <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">closure</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    &amp;</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method can be used to add new generators to the existing semigroup in such a way that any previously enumerated data is preserved and not recomputed, or copied. This can be faster than recomputing the semigroup generated by the
+                        old generators and the new in <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a>.</p>
+                    <p>This method differs from <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>                        in that it tries to add the new generators one by one, and only adds those generators that are not products of existing generators (including any new generators from
+                        <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a> that were added before). The generators are added in the order they occur in <a href="#semigroupsplusplus::Semigroup::closure.coll">coll</a>.</p>
+                    <p>This method is non-const, and changes the semigroup in place, thereby invalidating possibly previously known data about the semigroup, such as the left or right Cayley graphs.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::closure::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the new generators to be added</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::closure::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::copy_add_generators">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">copy_add_generators</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is equivalent to copying <strong>this</strong> and then calling
+                        <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> on the copy,
+                        but this method avoids copying the parts of <strong>this</strong> that are immediately invalidated by <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a>.</p>
+                    <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::copy_add_generators.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::copy_add_generators::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the new generators to be added</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::copy_add_generators::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The newly constructed semigroup generated by <strong>this</strong> and
+                                        <a href="#semigroupsplusplus::Semigroup::copy_add_generators.coll">coll</a>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::copy_closure">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus.Semigroup">Semigroup</a></span><span class="qualifier"> *</span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">copy_closure</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name ">std::vector&lt;semigroupsplusplus::Element *&gt;</span><span class="qualifier">  <span class="keyword">const</span>                                    *</span>
+                                    </span>
+                                </td>
+                                <td class="argument_name">coll,</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="argument_type"><span class="type"><span class="name builtin">bool</span></span>
+                                </td>
+                                <td class="argument_name">report</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is equivalent to copying <strong>this</strong> and then calling <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a> and <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a>                        on the copy with <a href="#semigroupsplusplus::Semigroup::copy_closure.coll">coll</a>, but this method avoids copying the parts of
+                        <strong>this</strong> that are immediately invalidated by <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a> and <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a>.</p>
+                    <p>This method is non-const because it is necessary to fully enumerate
+                        <strong>this</strong> before copying and calling <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a> and <a href="#semigroupsplusplus::Semigroup::closure">semigroupsplusplus::Semigroup::closure</a>.</p>
+                    <p>The elements the argument <a href="#semigroupsplusplus::Semigroup::copy_closure.coll">coll</a> are copied into the semigroup, and should be deleted by the caller.</p>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::copy_closure::coll">
+                            <td>coll</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the new generators to be added</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="semigroupsplusplus::Semigroup::copy_closure::report">
+                            <td>report</td>
+                            <td>
+                                <div class="doc">
+                                    <p>report during enumeration, if any (defaults to
+                                        <a href="semigroupsplusplus.html#semigroupsplusplus.DEFAULT_REPORT_VALUE">semigroupsplusplus::DEFAULT_REPORT_VALUE</a>)</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>The newly constructed semigroup generated by <strong>this</strong> and
+                                        <a href="#semigroupsplusplus::Semigroup::copy_closure.coll">coll</a>.</p>
                                 </div>
                             </td>
                         </tr>
@@ -1136,9 +1234,8 @@
                     <p>This method is non-const since it may involve enumerating the semigroup.</p>
                     <p>If <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> is less than the size of this semigroup, then this method changes its first argument <a href="#semigroupsplusplus::Semigroup::factorisation.word">word</a> in-place
                         (first clearing it and then) to contain a minimal factorization of the element in position <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> of the semigroup with respect to the generators of the semigroup. This
-                        method enumerates the semigroup until at least the <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> element is known. If
-                        <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> is greater than the size of the semigroup, then nothing happens and <a href="#semigroupsplusplus::Semigroup::factorisation.word">word</a> is not modified, in particular
-                        not cleared.</p>
+                        method enumerates the semigroup until at least the <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> element is known. If <a href="#semigroupsplusplus::Semigroup::factorisation.pos">pos</a> is greater than the size
+                        of the semigroup, then nothing happens and <a href="#semigroupsplusplus::Semigroup::factorisation.word">word</a> is not modified, in particular not cleared.</p>
                 </div>
                 <table class="arguments">
                     <tbody>
@@ -1352,58 +1449,6 @@
                             <td>
                                 <div class="doc">
                                     <p>a pointer to a vector containing the generators of the semigroup.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="function">
-                <div class="declaration" id="semigroupsplusplus::Semigroup::genslookup">
-                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
-                    </div>
-                    <table class="declaration">
-                        <tbody>
-                            <tr>
-                                <td class="identifier">genslookup</td>
-                                <td class="open_paren">(</td>
-                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">letter_t</a></span></span>
-                                </td>
-                                <td class="argument_name">i</td>
-                                <td class="close_paren">)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="doc">
-                    <p>This method is const, and it asserts that the value <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a> is valid. In many cases <a href="#semigroupsplusplus::Semigroup::genslookup">genslookup</a>(<a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>)
-                        will equal <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>, examples of when this will not be the case are:</p>
-                    <ul>
-                        <li>
-                            <p>there are duplicate generators;</p>
-                        </li>
-                        <li>
-                            <p><a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> was called
-                                after the semigroup was already partially enumerated.
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-                <table class="arguments">
-                    <tbody>
-                        <tr id="semigroupsplusplus::Semigroup::genslookup::i">
-                            <td>i</td>
-                            <td>
-                                <div class="doc">
-                                    <p>a valid position of a generator of the semigroup</p>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="return">
-                            <td class="keyword">return</td>
-                            <td>
-                                <div class="doc">
-                                    <p>the position <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> of the <a href="#semigroupsplusplus::Semigroup::genslookup.i">i</a>th generator.</p>
                                 </div>
                             </td>
                         </tr>
@@ -1806,6 +1851,58 @@
                 </table>
             </div>
             <div class="function">
+                <div class="declaration" id="semigroupsplusplus::Semigroup::letter_to_pos">
+                    <div class="return_type"><span class="type"><span class="name "><a href="#semigroupsplusplus::Semigroup::pos_t">pos_t</a></span></span>
+                    </div>
+                    <table class="declaration">
+                        <tbody>
+                            <tr>
+                                <td class="identifier">letter_to_pos</td>
+                                <td class="open_paren">(</td>
+                                <td class="argument_type"><span class="type"><span class="name "><a href="semigroupsplusplus.html#semigroupsplusplus.letter_t">letter_t</a></span></span>
+                                </td>
+                                <td class="argument_name">i</td>
+                                <td class="close_paren">)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="doc">
+                    <p>This method is const, and it asserts that the value <a href="#semigroupsplusplus::Semigroup::letter_to_pos.i">i</a> is valid. In many cases <a href="#semigroupsplusplus::Semigroup::letter_to_pos">letter_to_pos</a>(<a href="#semigroupsplusplus::Semigroup::letter_to_pos.i">i</a>)
+                        will equal <a href="#semigroupsplusplus::Semigroup::letter_to_pos.i">i</a>, examples of when this will not be the case are:</p>
+                    <ul>
+                        <li>
+                            <p>there are duplicate generators;</p>
+                        </li>
+                        <li>
+                            <p><a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> and <a href="#semigroupsplusplus::Semigroup::add_generators">semigroupsplusplus::Semigroup::add_generators</a> was called
+                                after the semigroup was already partially enumerated.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <table class="arguments">
+                    <tbody>
+                        <tr id="semigroupsplusplus::Semigroup::letter_to_pos::i">
+                            <td>i</td>
+                            <td>
+                                <div class="doc">
+                                    <p>a valid position of a generator of the semigroup</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="return">
+                            <td class="keyword">return</td>
+                            <td>
+                                <div class="doc">
+                                    <p>the position <a href="#semigroupsplusplus::Semigroup::pos_t">semigroupsplusplus::Semigroup::pos_t</a> of the <a href="#semigroupsplusplus::Semigroup::letter_to_pos.i">i</a>th generator.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="function">
                 <div class="declaration" id="semigroupsplusplus::Semigroup::next_relation">
                     <div class="return_type"><span class="type"><span class="name builtin">void</span></span>
                     </div>
@@ -1904,8 +2001,7 @@
                 <div class="doc">
                     <p>This method is non-const since it may involve fully enumerating the semigroup.
                     </p>
-                    <p>If the size of the semigroup is less than 823543 or the number of threads is 1, then this is a single-threaded function. Otherwise, the elements of the semigroup are tested for idempotency in <a href="#semigroupsplusplus::Semigroup::nr_idempotents.nr_threads">nr_threads</a>                        concurrent threads.
-                    </p>
+                    <p>If the size of the semigroup is less than 823543 or the number of threads is 1, then this is a single-threaded function. Otherwise, the elements of the semigroup are tested for idempotency in <a href="#semigroupsplusplus::Semigroup::nr_idempotents.nr_threads">nr_threads</a>                        concurrent threads. It appears to only be beneficial to use concurrency when the size of semigroup exceeds 823543.</p>
                     <p>The value of the positions, and number, of idempotents is stored after they are first computed.</p>
                 </div>
                 <table class="arguments">

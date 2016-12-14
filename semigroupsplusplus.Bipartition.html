@@ -137,7 +137,6 @@
                     (i.e. has more methods) than strictly required by the algorithms for <a href="semigroupsplusplus.Semigroup.html#semigroupsplusplus.Semigroup">semigroupsplusplus::Semigroup</a>s because the extra methods are used in the GAP package
                     <a href="https://gap-packages.github.io/Semigroups/">Semigroups package for
 GAP</a>.</p>
-                <p>TODO(JDM) more explanation</p>
             </div>
         </div>
         <h2 data-cldoc-dynamic="1" id="bases">Bases</h2>
@@ -206,10 +205,11 @@ GAP</a>.</p>
                     </table>
                 </div>
                 <div class="doc">
-                    <p>The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> must have length <em>2n</em> for some integer <em>n</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>,
-                        then <em>i - 1</em> occurs earlier in
-                        <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>, <em>i&gt;= 0</em>. None of this is checked but it probably should be. The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>                        is not copied, and should be deleted using
-                        <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a> and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a></p>
+                    <p>The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> must have length <em>2n</em> for some integer <em>n</em>, consist of non-negative integers, and have the property that if <em>i</em>, *i</p>
+                    <blockquote>
+                        <p>0<em>, occurs in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>, then </em>i - 1* occurs earlier in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>. None of this is checked. The
+                            argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> is not copied, and should be deleted using <a href="semigroupsplusplus.ElementWithVectorData.html#semigroupsplusplus.ElementWithVectorData.really_delete">semigroupsplusplus::ElementWithVectorData::really_delete</a>                            and <a href="semigroupsplusplus.Element.html#semigroupsplusplus.Element.really_delete">semigroupsplusplus::Element::really_delete</a></p>
+                    </blockquote>
                 </div>
                 <table class="arguments">
                     <tbody>
@@ -225,7 +225,8 @@ GAP</a>.</p>
                             <td>hv</td>
                             <td>
                                 <div class="doc">
-                                    <p>The hash value of the element being created.</p>
+                                    <p>The hash value of the element being created (defaults to Element::UNDEFINED).
+                                    </p>
                                 </div>
                             </td>
                         </tr>
@@ -249,10 +250,8 @@ GAP</a>.</p>
                     </table>
                 </div>
                 <div class="doc">
-                    <p>The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> must have length <em>2n</em> for some integer <em>n</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>,
-                        then <em>i - 1</em> occurs earlier in
-                        <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>. None of this is checked but it probably should be. The argument
-                        <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> is copied into the newly constructed bipartition.</p>
+                    <p>The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a> must have length <em>2n</em> for some integer <em>n</em>, consist of non-negative integers, and have the property that <em>i</em>, <em>i&gt;
+0</em>, occurs in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>, then <em>i - 1</em> occurs earlier in <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>. None of this is checked. The argument <a href="#semigroupsplusplus::Bipartition::Bipartition.blocks">blocks</a>                        is copied into the newly constructed bipartition.</p>
                 </div>
                 <table class="arguments">
                     <tbody>

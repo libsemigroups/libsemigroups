@@ -166,8 +166,10 @@
                     </table>
                 </div>
                 <div class="doc">
-                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>,
-                        then <em>i - 1</em> occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, <em>i&gt;= 0</em>. None of this is checked but it probably should be. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                        is not copied, and is deleted by the destructor.</p>
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em>, consist of non-negative integers, and have the property that if <em>i</em>, *i</p>
+                    <blockquote>
+                        <p>0<em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, then </em>i - 1* occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>. None of this is checked. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                            is not copied, and is deleted by the destructor.</p>
+                    </blockquote>
                     <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.lookup">lookup</a> must have length equal to the maximum value in
                         <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, this maximum is also the number of blocks in the partition. A value <strong>true</strong> in position <em>i</em> indicates that the <em>i</em>th block is signed and
                         <strong>false</strong> that it is unsigned.</p>
@@ -221,9 +223,10 @@
                     </table>
                 </div>
                 <div class="doc">
-                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em> and the property that if <em>i</em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>,
-                        then <em>i - 1</em> occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, <em>i&gt;= 0</em>. None of this is checked but it probably should be. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                        is not copied, and is deleted by the destructor of
-                        <strong>Blocks</strong>.</p>
+                    <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a> must have length <em>n</em> for some integer <em>n&gt; 0</em>, consist of non-negative integers, and have the property that if <em>i</em>, *i</p>
+                    <blockquote>
+                        <p>0<em> occurs in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, then </em>i - 1* occurs earlier in <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>. None of this is checked. The argument <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>                            is not copied, and is deleted by the destructor.</p>
+                    </blockquote>
                     <p>The argument <a href="#semigroupsplusplus::Blocks::Blocks.lookup">lookup</a> must have length equal to the maximum value in
                         <a href="#semigroupsplusplus::Blocks::Blocks.blocks">blocks</a>, this maximum is also the number of blocks in the partition. A value <strong>true</strong> in position <em>i</em> indicates that the <em>i</em>th block is signed and
                         <strong>false</strong> that it is unsigned.</p>
@@ -663,7 +666,7 @@
                             <td class="keyword">return</td>
                             <td>
                                 <div class="doc">
-                                    <p>nothing as it cannot be envoked.</p>
+                                    <p>nothing as it cannot be invoked.</p>
                                 </div>
                             </td>
                         </tr>
