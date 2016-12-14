@@ -12,7 +12,7 @@ Semigroups++ is a C/C++ library for computing finite semigroups; it is based on
 
 The Semigroups++ library is used in the [Semigroups package for GAP](https://gap-packages.github.io/Semigroups/).
 
-The current version of Semigroups++ is 0.0.2 from 05/12/2016.
+The current version of Semigroups++ is 0.0.3 from 14/12/2016.
 
 ## Documentation
 The C/C++ library API is generated using [cldoc](https://github.com/jessevdk/cldoc) and available [here](http://james-d-mitchell.github.io/semigroupsplusplus/).
