@@ -604,7 +604,7 @@ namespace semigroupsplusplus {
                          size_t                deg)
         : PartialTransformation<T, PartialPerm<T>>() {
       assert(dom.size() == ran.size());
-      assert(deg >= *std::max_element(dom.begin(), dom.end()));
+      assert(dom.empty() || deg >= *std::max_element(dom.begin(), dom.end()));
 
       this->_vector->resize(deg + 1, PP_UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
@@ -689,10 +689,8 @@ namespace semigroupsplusplus {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts
-    // that the degrees of <x>, <y>, and **this**, are all equal, and that
-    // neither
-    // <x> nor <y> equals **this**.
+    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
+    // that neither <x> nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -710,8 +708,7 @@ namespace semigroupsplusplus {
     // const
     //
     // The *rank* of a partial permutation is the number of its distinct image
-    // values, not including UNDEFINED. This method involves slightly less
-    // work
+    // values, not including UNDEFINED. This method involves slightly less work
     // than <PartialTransformation::crank> since a partial permutation is
     // injective, and so every image value occurs precisely once.
     //
