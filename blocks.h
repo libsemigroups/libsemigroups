@@ -53,10 +53,11 @@ namespace semigroupsplusplus {
     // @blocks lookup table for the partition being defined.
     // @lookup lookup table for which blocks are signed.
     //
-    // The argument <blocks> must have length *n* for some integer *n > 0* and
-    // the property that if *i* occurs in <blocks>, then *i - 1* occurs earlier
-    // in <blocks>, *i >= 0*. None of this is checked but it probably should be.
-    // The argument <blocks> is not copied, and is deleted by the destructor.
+    // The argument <blocks> must have length *n* for some integer *n > 0*,
+    // consist of non-negative integers, and have the property that if *i*, *i
+    // > 0* occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
+    // of this is checked.  The argument <blocks> is not copied, and is deleted
+    // by the destructor.
     //
     // The argument <lookup> must have length equal to the maximum value in
     // <blocks>, this maximum is also the number of blocks in the partition. A
@@ -75,11 +76,11 @@ namespace semigroupsplusplus {
     // @lookup     lookup table for which blocks are signed.
     // @nr_blocks the number of blocks in <blocks>.
     //
-    // The argument <blocks> must have length *n* for some integer *n > 0* and
-    // the property that if *i* occurs in <blocks>, then *i - 1* occurs earlier
-    // in <blocks>, *i >= 0*. None of this is checked but it probably should be.
-    // The argument <blocks> is not copied, and is deleted by the destructor of
-    // **Blocks**.
+    // The argument <blocks> must have length *n* for some integer *n > 0*,
+    // consist of non-negative integers, and have the property that if *i*, *i
+    // > 0* occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
+    // of this is checked.  The argument <blocks> is not copied, and is deleted
+    // by the destructor.
     //
     // The argument <lookup> must have length equal to the maximum value in
     // <blocks>, this maximum is also the number of blocks in the partition. A
@@ -106,7 +107,7 @@ namespace semigroupsplusplus {
     // The assignment operator is deleted for **Blocks** to avoid unintended
     // copying.
     //
-    // @return nothing as it cannot be envoked.
+    // @return nothing as it cannot be invoked.
     Blocks& operator=(Blocks const& copy) = delete;
 
     // Copy

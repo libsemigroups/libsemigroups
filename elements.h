@@ -591,7 +591,7 @@ namespace semigroupsplusplus {
     explicit PartialPerm(std::vector<T> const& vector)
         : PartialTransformation<T, PartialPerm<T>>(vector) {}
 
-    //
+    // 3 parameters
     // @dom The domain
     // @ran The range
     // @deg The intended degree of the partial perm. This must be at least the
@@ -616,8 +616,7 @@ namespace semigroupsplusplus {
     // @that Compare **this** and <that>.
     //
     // This defines a total order on partial permutations that is equivalent to
-    // that used by GAP. It is not short-lex on the list of images, but it
-    // probably should be.
+    // that used by GAP. It is not short-lex on the list of images.
     //
     // @return **true** if something complicated is **true** and **false** if
     // it is not.
@@ -738,7 +737,7 @@ namespace semigroupsplusplus {
     // and should be deleted using <ElementWithVectorData::really_delete>.
     //
     // The argument <matrix> should be a vector of boolean values of length *n ^
-    // 2* for some integer *n*, so that the value in position *i * n + j* is the
+    // 2* for some integer *n*, so that the value in position *in + j* is the
     // entry in the *i*th row and *j*th column of the constructed matrix.
     explicit BooleanMat(std::vector<bool>* matrix,
                         size_t             hv = Element::UNDEFINED)
@@ -804,10 +803,9 @@ namespace semigroupsplusplus {
   // strictly required by the algorithms for <Semigroup>s because the extra
   // methods are used in the GAP package [Semigroups package for
   // GAP](https://gap-packages.github.io/Semigroups/).
-  //
-  // TODO(JDM) more explanation
 
   class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
+    // TODO(JDM) add more explanation to the doc here
    public:
     // 1 parameters (integer)
     // @degree Degree of bipartition being constructed.
@@ -822,13 +820,14 @@ namespace semigroupsplusplus {
 
     // 1 parameter (vector pointer)
     // @blocks lookup table for the bipartition being defined.
-    // @hv     The hash value of the element being created.
+    // @hv     The hash value of the element being created (defaults to
+    // Element::UNDEFINED).
     //
-    // The argument <blocks> must have length *2n* for some integer *n* and the
-    // property that if *i* occurs in <blocks>, then *i - 1* occurs earlier in
-    // <blocks>, *i >= 0*. None of this is checked but it probably should be.
-    // The argument <blocks> is not copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>
+    // The argument <blocks> must have length *2n* for some integer *n*,
+    // consist of non-negative integers, and have the property that if *i*, *i
+    // > 0*, occurs in <blocks>, then *i - 1* occurs earlier in <blocks>.  None
+    // of this is checked.  The argument <blocks> is not copied, and should be
+    // deleted using <ElementWithVectorData::really_delete>
     explicit Bipartition(std::vector<u_int32_t>* blocks,
                          size_t                  hv = Element::UNDEFINED)
         : ElementWithVectorData<u_int32_t, Bipartition>(blocks, hv),
@@ -840,10 +839,11 @@ namespace semigroupsplusplus {
     // 1 parameter (vector const reference)
     // @blocks lookup table for the bipartition being defined.
     //
-    // The argument <blocks> must have length *2n* for some integer *n* and the
-    // property that if *i* occurs in <blocks>, then *i - 1* occurs earlier in
-    // <blocks>. None of this is checked but it probably should be. The argument
-    // <blocks> is copied into the newly constructed bipartition.
+    // The argument <blocks> must have length *2n* for some integer *n*,
+    // consist of non-negative integers, and have the property that *i*, *i >
+    // 0*,  occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
+    // of this is checked. The argument <blocks> is copied into the newly
+    // constructed bipartition.
     explicit Bipartition(std::vector<u_int32_t> const& blocks)
         : Bipartition(new std::vector<u_int32_t>(blocks)) {}
 

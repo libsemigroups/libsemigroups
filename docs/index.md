@@ -57,15 +57,15 @@ The Semigroups++ library also has some advantages over
 * you do not have to know/guess the size of a semigroup or monoid before you
   begin
 * Semigroups++ supports more types of elements than 
-[Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html):
+[Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
 * it is relatively straightforward to add support for further types of elements
   and semigroups
 * it is possible to enumerate a certain number of elements of a semigroup or
   monoid (say if you are looking for an element with a particular property), to
-  stop, and then later start the enumeration again at a later point.
+  stop, and then start the enumeration again at a later point
 * you can instantiate as many semigroups and monoids as you can fit in memory
 * it is possible to add more generators after a semigroup or monoid has been
-  constructed, without lossing or having to recompute any information that was
+  constructed, without losing or having to recompute any information that was
   previously known
 * Semigroups++ contains a rudimentary implementation of the 
   [Todd-Coxeter algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm)

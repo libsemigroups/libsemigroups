@@ -442,7 +442,8 @@ namespace semigroupsplusplus {
     // If the size of the semigroup is less than 823543 or the number of threads
     // is 1, then this is a single-threaded function. Otherwise, the elements of
     // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads.
+    // threads. It appears to only be beneficial to use concurrency when the
+    // size of semigroup exceeds 823543.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.

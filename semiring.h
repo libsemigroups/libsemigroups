@@ -41,7 +41,7 @@ namespace semigroupsplusplus {
   //   *0 x a = a x 0* for all *R*.
   //
   // More information about semirings can be found on
-  // [wikipedia](https://en.wikipedia.org/wiki/Semiring).
+  // [Wikipedia](https://en.wikipedia.org/wiki/Semiring).
   //
   // This class its subclasses provide very basic functionality for creating
   // semirings.
