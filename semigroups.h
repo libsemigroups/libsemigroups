@@ -19,7 +19,6 @@
 #ifndef SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
 #define SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
 
-#define NDEBUG
 #include <assert.h>
 
 #include <algorithm>

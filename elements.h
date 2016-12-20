@@ -21,7 +21,6 @@
 #ifndef SEMIGROUPSPLUSPLUS_ELEMENTS_H_
 #define SEMIGROUPSPLUSPLUS_ELEMENTS_H_
 
-#define NDEBUG
 #include <assert.h>
 #include <math.h>
 
