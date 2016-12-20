@@ -12,3 +12,5 @@ gh-pages
 test/lcov
 *.gcno
 *.gcda
+DEBUG
+LCOV

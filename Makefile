@@ -1,19 +1,19 @@
 OBJ_DIR = test/bin
 TEST_OBJ_DIR = test/bin/test
+UTIL_OBJ_DIR = test/bin/util
 LOG_DIR = test/logs
 LCOV_DIR = test/lcov
+
 TODAY = $(shell date "+%Y-%m-%d-%H-%M-%S")
 
-SOURCES = $(wildcard *.cc)
-HEADERS = $(wildcard *.h)
-UTILS   = $(wildcard util/*.h)
+HEADERS = $(wildcard *.h)  $(wildcard util/*.h)
+SOURCES = $(wildcard *.cc) $(wildcard util/*.cc) $(wildcard test/*.cc)
+
 OBJECTS = $(SOURCES:%.cc=$(OBJ_DIR)/%.o)
 
-TEST_SOURCES = $(wildcard test/*.cc)
-TEST_OBJECTS = $(TEST_SOURCES:%.cc=$(OBJ_DIR)/%.o)
+TEST_PROG = test/test -d yes --force-colour --order lex --abort
 
 CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
-
 
 COMMON_DOC_FLAGS = --report --merge docs --output html $(SOURCES) $(HEADERS)
 
@@ -23,10 +23,34 @@ ifneq ($(CXX),clang++)
    endif
 endif
 
+ifneq ($(shell test -e $(OBJ_DIR)/DEBUG && echo exists), exists)
+  CLEAN = testclean
+else ifneq ($(wildcard $(OBJ_DIR)/*.gcno),)
+  CLEAN = testclean
+else ifeq ($(shell test -e $(OBJ_DIR)/DEBUG && echo exists), exists)
+  CLEAN = testclean
+else ifeq ($(shell test -e $(OBJ_DIR)/LCOV && echo exists), exists)
+  CLEAN = testclean
+else
+  CLEAN = $()
+endif
+
+ifneq ($(shell test -e $(OBJ_DIR)/DEBUG && echo exists), exists)
+  DEBUG_CLEAN = testclean
+ else 
+  DEBUG_CLEAN = $()
+endif
+
+ifneq ($(shell test -e $(OBJ_DIR)/LCOV && echo exists), exists)
+  LCOV_CLEAN = testclean
+ else 
+  LCOV_CLEAN = $()
+endif
+
 error:
 	@echo "Please choose one of the following: doc, test, testdebug, "
 	@echo "testclean, or doclean"; \
-	@exit 2
+	exit 2
 doc:
 	@echo "Generating static documentation . . ."; \
 	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS)
@@ -34,17 +58,26 @@ doc:
 	python docs/cldoc-fix
 
 test: CXXFLAGS += -O2 -g
-test: testbuild testrun
+test: $(CLEAN) testbuild testrun
+	rm -f $(OBJ_DIR)/DEBUG
+	rm -f $(OBJ_DIR)/LCOV
 
-testdebug: CXXFLAGS += -O0 -g
-testdebug: testclean testbuild
+testquick: CXXFLAGS += -DSKIP_TEST
+testquick: test
+
+testdebug: CXXFLAGS += -O0 -g -UNDEBUG -DDEBUG
+testdebug: $(DEBUG_CLEAN) testbuild
+	touch $(OBJ_DIR)/DEBUG
+	rm -f $(OBJ_DIR)/LCOV
 
 testcov: CXXFLAGS += -O0 -g --coverage 
 testcov: LDFLAGS = -O0 -g --coverage
-testcov: testdebug testrun
+testcov: $(LCOV_CLEAN) testdebug testrunquick
+	rm -f $(OBJ_DIR)/DEBUG
+	touch $(OBJ_DIR)/LCOV
 	lcov --capture --directory test/bin --output-file test/lcov/$(TODAY).info
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
-	open test/lcov/$(TODAY)-html/index.html
+	@echo "See: " test/lcov/$(TODAY)-html/index.html
 
 testclean:
 	rm -rf $(OBJ_DIR) test/test
@@ -52,21 +85,22 @@ testclean:
 docclean:
 	rm -rf html
 
-testdirs:
-	mkdir -p $(OBJ_DIR)
-	mkdir -p $(TEST_OBJ_DIR)
-	mkdir -p $(LOG_DIR)
-	mkdir -p $(LCOV_DIR)
+superclean: testclean docclean
+	rm -rf $(LOG_DIR) $(LCOV_DIR)
 
-$(OBJ_DIR)/%.o: %.cc $(HEADERS) $(UTILS)
+testdirs:
+	mkdir -p $(OBJ_DIR) $(TEST_OBJ_DIR) $(UTIL_OBJ_DIR) $(LOG_DIR) $(LCOV_DIR)
+
+$(OBJ_DIR)/%.o: %.cc $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDFLAGS)
 
-testbuild: testdirs $(TEST_OBJECTS) $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(TEST_OBJECTS) -o test/test $(LDFLAGS)
+testbuild: testdirs $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o test/test $(LDFLAGS)
 
 testrun:
 	@echo "Running the tests ("$(LOG_DIR)/$(TODAY).log") . . ."; \
-	test/test -d yes --order lex --force-colour | tee -a $(LOG_DIR)/$(TODAY).log
+	test/test -d yes --force-colour --abort | tee -a $(LOG_DIR)/$(TODAY).log
 	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
-.PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun
+.PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun testsuperclean
+.NOTPARALLEL: testrun testclean
