@@ -14,7 +14,6 @@ TEST_OBJECTS = $(TEST_SOURCES:%.cc=$(OBJ_DIR)/%.o)
 
 CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
-
 COMMON_DOC_FLAGS = --report --merge docs --output html $(SOURCES) $(HEADERS)
 
 ifneq ($(CXX),clang++)
@@ -23,10 +22,16 @@ ifneq ($(CXX),clang++)
    endif
 endif
 
+ifneq ($(wildcard $(OBJ_DIR)/*.gcno),)
+  CLEAN = testclean
+else 
+  CLEAN = $()
+endif
+
 error:
 	@echo "Please choose one of the following: doc, test, testdebug, "
 	@echo "testclean, or doclean"; \
-	@exit 2
+	exit 2
 doc:
 	@echo "Generating static documentation . . ."; \
 	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS)
@@ -34,7 +39,7 @@ doc:
 	python docs/cldoc-fix
 
 test: CXXFLAGS += -O2 -g
-test: testbuild testrun
+test: $(CLEAN) testbuild testrun
 
 testdebug: CXXFLAGS += -O0 -g
 testdebug: testclean testbuild
@@ -44,7 +49,7 @@ testcov: LDFLAGS = -O0 -g --coverage
 testcov: testdebug testrun
 	lcov --capture --directory test/bin --output-file test/lcov/$(TODAY).info
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
-	open test/lcov/$(TODAY)-html/index.html
+	@echo "See: " test/lcov/$(TODAY)-html/index.html
 
 testclean:
 	rm -rf $(OBJ_DIR) test/test
@@ -70,3 +75,4 @@ testrun:
 	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
 .PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun
+.NOTPARALLEL: testrun testclean
