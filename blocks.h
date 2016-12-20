@@ -22,7 +22,6 @@
 #ifndef SEMIGROUPSPLUSPLUS_BLOCKS_H_
 #define SEMIGROUPSPLUSPLUS_BLOCKS_H_
 
-#define NDEBUG
 #include <assert.h>
 
 #include <algorithm>
