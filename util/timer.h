@@ -36,7 +36,7 @@ namespace semigroupsplusplus {
 
    public:
     // Default constructor
-    Timer() : _start(), _running(false) {}
+    Timer() : _start(), _end(), _running(false) {}
 
     // Is the timer running?
     //
@@ -60,6 +60,7 @@ namespace semigroupsplusplus {
     // Stops the timer regardless of its state..
     void stop() {
       _running = false;
+      _end     = std::chrono::steady_clock::now();
     }
 
     // Print elapsed time
@@ -76,32 +77,44 @@ namespace semigroupsplusplus {
     }
 
     std::string string(std::string prefix = "") {
+      nano_t elapsed;
       if (_running) {
-        time_point_t end     = std::chrono::steady_clock::now();
-        nano_t       elapsed = std::chrono::duration_cast<nano_t>(end - _start);
+        time_point_t end = std::chrono::steady_clock::now();
+        elapsed          = std::chrono::duration_cast<nano_t>(end - _start);
+      } else {
+        elapsed = std::chrono::duration_cast<nano_t>(_end - _start);
+      }
 
-        if (string_it<std::chrono::hours>(elapsed, prefix, "h ", 0)) {
-          string_it<std::chrono::minutes>(elapsed, prefix, "m", 0);
-          return prefix;
-        } else if (string_it<std::chrono::minutes>(elapsed, prefix, "m ", 0)) {
-          string_it<std::chrono::seconds>(elapsed, prefix, "s", 0);
-          return prefix;
-        } else if (string_it<std::chrono::milliseconds>(
-                       elapsed, prefix, "ms ", 9)) {
-          return prefix;
-        } else if (string_it<std::chrono::microseconds>(
-                       elapsed, prefix, "\u03BCs ", 9)) {
-          return prefix;
-        } else if (string_it<std::chrono::nanoseconds>(
-                       elapsed, prefix, "ns ", 0)) {
-          return prefix;
-        }
+      if (string_it<std::chrono::hours>(elapsed, prefix, "h ", 0)) {
+        string_it<std::chrono::minutes>(elapsed, prefix, "m", 0);
+        return prefix;
+      } else if (string_it<std::chrono::minutes>(elapsed, prefix, "m ", 0)) {
+        string_it<std::chrono::seconds>(elapsed, prefix, "s", 0);
+        return prefix;
+      } else if (string_it<std::chrono::milliseconds>(
+            elapsed, prefix, "ms ", 9)) {
+        return prefix;
+      } else if (string_it<std::chrono::microseconds>(
+            elapsed, prefix, "\u03BCs ", 9)) {
+        return prefix;
+      } else if (string_it<std::chrono::nanoseconds>(
+            elapsed, prefix, "ns ", 0)) {
+        return prefix;
       }
       return prefix;
     }
 
+    int64_t elapsed() { // in nanoseconds?
+      if (_running) {
+        return (std::chrono::steady_clock::now() - _start).count();
+      } else {
+        return (_end - _start).count();
+      }
+    }
+
    private:
     std::chrono::steady_clock::time_point _start;
+    std::chrono::steady_clock::time_point _end;
     bool                                  _running;
 
     template <typename T>
