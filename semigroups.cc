@@ -233,7 +233,7 @@ namespace semigroupsplusplus {
       _length[_index[i]] = 1;
     }
 
-    _id          = copy._id->really_copy(deg_plus);
+    _id          = coll->at(0)->identity();
     _tmp_product = copy._id->really_copy(deg_plus);
 
     size_t i = 0;
@@ -241,7 +241,7 @@ namespace semigroupsplusplus {
       Element* y = x->really_copy(deg_plus);
       _elements->push_back(y);
       _map.insert(std::make_pair(y, i));
-      is_one(_elements->back(), i++);
+      is_one(y, i++);
     }
     copy_gens();  // copy the old generators
     // Now this is ready to have add_generators or closure called on it
