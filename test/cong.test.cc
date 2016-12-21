@@ -17,9 +17,10 @@
 //
 
 #include "../cong.h"
-#include "catch.hpp"
 
 #include <utility>
+
+#include "catch.hpp"
 
 using namespace semigroupsplusplus;
 
@@ -30,19 +31,20 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-TEST_CASE("Z_Congruence: 5-parameter constructor", "[constructor]") {
+TEST_CASE("Congruence: 5-parameter constructor", "[constructor]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
   Congruence* leftcong = new Congruence("left", 2, rels, extra);
+  delete leftcong;
 }
 
-TEST_CASE("Z_Congruence: Small FP semigroup", "[small]") {
+TEST_CASE("Congruence: Small FP semigroup", "[small]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
@@ -60,10 +62,10 @@ TEST_CASE("Z_Congruence: Small FP semigroup", "[small]") {
   delete cong;
 }
 
-TEST_CASE("Z_Congruence: Small left congruence on free semigroup", "[small]") {
+TEST_CASE("Congruence: Small left congruence on free semigroup", "[small]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
   Congruence* leftcong = new Congruence("left", 2, rels, extra);
@@ -72,10 +74,10 @@ TEST_CASE("Z_Congruence: Small left congruence on free semigroup", "[small]") {
   delete leftcong;
 }
 
-TEST_CASE("Z_Congruence: Small right congruence on free semigroup", "[small]") {
+TEST_CASE("Congruence: Small right congruence on free semigroup", "[small]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
   Congruence* rightcong = new Congruence("right", 2, rels, extra);
@@ -85,10 +87,11 @@ TEST_CASE("Z_Congruence: Small right congruence on free semigroup", "[small]") {
   delete rightcong;
 }
 
-TEST_CASE("Z_Congruence: word_to_coset for left congruence on free semigroup", "[method]") {
+TEST_CASE("Congruence: word_to_coset for left congruence on free semigroup",
+          "[method]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
   Congruence* leftcong = new Congruence("left", 2, rels, extra);
@@ -101,12 +104,12 @@ TEST_CASE("Z_Congruence: word_to_coset for left congruence on free semigroup", "
   delete leftcong;
 }
 
-TEST_CASE("Z_Congruence: word_to_coset for small FP semigroup", "[method]") {
+TEST_CASE("Congruence: word_to_coset for small FP semigroup", "[method]") {
   std::vector<relation_t> rels;
-  rels.push_back(std::make_pair<word_t, word_t>({0, 0, 0}, {0})); // (a^3, a)
-  rels.push_back(std::make_pair<word_t, word_t>({0}, {1, 1}));    // (a, b^2)
+  rels.push_back(std::pair<word_t, word_t>({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(std::pair<word_t, word_t>({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
-  Congruence* cong;
+  Congruence*             cong;
 
   cong = new Congruence("twosided", 2, rels, extra);
   REQUIRE(cong->word_to_coset({0, 0, 1}, false) == 5);
@@ -114,6 +117,7 @@ TEST_CASE("Z_Congruence: word_to_coset for small FP semigroup", "[method]") {
   REQUIRE(cong->word_to_coset({0, 1, 1, 0, 0, 1}, false) == 5);
   REQUIRE(cong->word_to_coset({0, 0, 0}, false) == 1);
   REQUIRE(cong->word_to_coset({1}, false) == 3);
+  delete cong;
 
   cong = new Congruence("twosided", 2, rels, extra);
   cong->todd_coxeter(false);
@@ -121,7 +125,8 @@ TEST_CASE("Z_Congruence: word_to_coset for small FP semigroup", "[method]") {
   delete cong;
 }
 
-TEST_CASE("Z_Congruence: 6-argument constructor (trivial cong)", "[constructor]") {
+TEST_CASE("Congruence: 6-argument constructor (trivial cong)",
+          "[constructor]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -132,9 +137,11 @@ TEST_CASE("Z_Congruence: 6-argument constructor (trivial cong)", "[constructor]"
   std::vector<relation_t> extra;
   Congruence* cong = new Congruence("twosided", &S, extra, false, false);
   //                                                     prefill, report
+  delete cong;
 }
 
-TEST_CASE("Z_Congruence: 6-argument constructor (nontrivial cong)", "[constructor]") {
+TEST_CASE("Congruence: 6-argument constructor (nontrivial cong)",
+          "[constructor]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -144,7 +151,7 @@ TEST_CASE("Z_Congruence: 6-argument constructor (nontrivial cong)", "[constructo
 
   Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t w1, w2;
+  word_t   w1, w2;
   S.factorisation(w1, S.position(t1), false);
   S.factorisation(w2, S.position(t2), false);
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
@@ -155,9 +162,10 @@ TEST_CASE("Z_Congruence: 6-argument constructor (nontrivial cong)", "[constructo
   t2->really_delete();
   delete t1;
   delete t2;
+  delete cong;
 }
 
-TEST_CASE("Z_Congruence: transformation semigroup size 88", "[small]") {
+TEST_CASE("Congruence: transformation semigroup size 88", "[small]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -167,7 +175,7 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88", "[small]") {
 
   Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t w1, w2;
+  word_t   w1, w2;
   S.factorisation(w1, S.position(t1), false);
   S.factorisation(w2, S.position(t2), false);
   std::vector<relation_t> extra;
@@ -180,7 +188,7 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88", "[small]") {
 
   Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
   Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  word_t w3, w4;
+  word_t   w3, w4;
   S.factorisation(w3, S.position(t3), false);
   S.factorisation(w4, S.position(t4), false);
   REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w4, false));
@@ -193,9 +201,11 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88", "[small]") {
   delete t2;
   delete t3;
   delete t4;
+  delete cong;
 }
 
-TEST_CASE("Z_Congruence: transformation semigroup size 88 (prefill)", "[small]") {
+TEST_CASE("Congruence: transformation semigroup size 88 (prefill)",
+          "[small]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -205,7 +215,7 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88 (prefill)", "[small]")
 
   Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t w1, w2;
+  word_t   w1, w2;
   S.factorisation(w1, S.position(t1), false);
   S.factorisation(w2, S.position(t2), false);
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
@@ -216,7 +226,7 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88 (prefill)", "[small]")
 
   Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
   Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  word_t w3, w4;
+  word_t   w3, w4;
   S.factorisation(w3, S.position(t3), false);
   S.factorisation(w4, S.position(t4), false);
   REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w4, false));
@@ -229,9 +239,11 @@ TEST_CASE("Z_Congruence: transformation semigroup size 88 (prefill)", "[small]")
   delete t2;
   delete t3;
   delete t4;
+  delete cong;
 }
 
-TEST_CASE("Z_Congruence: left congruence on transformation semigroup size 88", "[small]") {
+TEST_CASE("Congruence: left congruence on transformation semigroup size 88",
+          "[small]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -241,7 +253,7 @@ TEST_CASE("Z_Congruence: left congruence on transformation semigroup size 88", "
 
   Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t w1, w2;
+  word_t   w1, w2;
   S.factorisation(w1, S.position(t1), false);
   S.factorisation(w2, S.position(t2), false);
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
@@ -253,47 +265,7 @@ TEST_CASE("Z_Congruence: left congruence on transformation semigroup size 88", "
   Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
   Element* t4 = new Transformation<u_int16_t>({1, 1, 1, 1, 1});
   Element* t5 = new Transformation<u_int16_t>({1, 3, 4, 2, 3});
-  word_t w3, w4, w5;
-  S.factorisation(w3, S.position(t3), false);
-  S.factorisation(w4, S.position(t4), false);
-  S.factorisation(w5, S.position(t5), false);
-  REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w4, false));
-  REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w2, false));
-  REQUIRE(cong->word_to_coset(w5, false) != cong->word_to_coset(w4, false));
-
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
-  delete t1;
-  delete t2;
-  delete t3;
-  delete t4;
-}
-
-TEST_CASE("Z_Congruence: left congruence on transformation semigroup size 88 (prefill)", "[small]") {
-  std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
-  really_delete_cont(gens);
-  REQUIRE(S.size(false) == 88);
-  REQUIRE(S.degree() == 5);
-
-  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t w1, w2;
-  S.factorisation(w1, S.position(t1), false);
-  S.factorisation(w2, S.position(t2), false);
-  std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence* cong = new Congruence("left", &S, extra, true, false);
-  //                                                   prefill, report
-  REQUIRE(cong->nr_classes(false) == 69);
-  REQUIRE(cong->nr_classes(false) == 69);
-
-  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-  Element* t4 = new Transformation<u_int16_t>({1, 1, 1, 1, 1});
-  Element* t5 = new Transformation<u_int16_t>({1, 3, 4, 2, 3});
-  word_t w3, w4, w5;
+  word_t   w3, w4, w5;
   S.factorisation(w3, S.position(t3), false);
   S.factorisation(w4, S.position(t4), false);
   S.factorisation(w5, S.position(t5), false);
@@ -311,10 +283,60 @@ TEST_CASE("Z_Congruence: left congruence on transformation semigroup size 88 (pr
   delete t3;
   delete t4;
   delete t5;
+  delete cong;
+}
+
+TEST_CASE("Congruence: left congruence on transformation semigroup size 88 "
+          "(prefill)",
+          "[small]") {
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  REQUIRE(S.size(false) == 88);
+  REQUIRE(S.degree() == 5);
+
+  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_t   w1, w2;
+  S.factorisation(w1, S.position(t1), false);
+  S.factorisation(w2, S.position(t2), false);
+  std::vector<relation_t> extra({std::make_pair(w1, w2)});
+
+  Congruence* cong = new Congruence("left", &S, extra, true, false);
+  //                                                   prefill, report
+  REQUIRE(cong->nr_classes(false) == 69);
+  REQUIRE(cong->nr_classes(false) == 69);
+
+  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+  Element* t4 = new Transformation<u_int16_t>({1, 1, 1, 1, 1});
+  Element* t5 = new Transformation<u_int16_t>({1, 3, 4, 2, 3});
+  word_t   w3, w4, w5;
+  S.factorisation(w3, S.position(t3), false);
+  S.factorisation(w4, S.position(t4), false);
+  S.factorisation(w5, S.position(t5), false);
+  REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w4, false));
+  REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w2, false));
+  REQUIRE(cong->word_to_coset(w5, false) != cong->word_to_coset(w4, false));
+
+  t1->really_delete();
+  t2->really_delete();
+  t3->really_delete();
+  t4->really_delete();
+  t5->really_delete();
+  delete t1;
+  delete t2;
+  delete t3;
+  delete t4;
+  delete t5;
+  delete cong;
 }
 
 #ifndef SKIP_TEST
-TEST_CASE("Z_Congruence: transformation semigroup, size 91738, with parallel_todd_coxeter", "[big]") {
+
+TEST_CASE("Congruence: transformation semigroup, size 91738, with "
+          "parallel_todd_coxeter",
+          "[big]") {
   std::vector<Element*> gens;
   gens = {new Transformation<u_int16_t>({1, 4, 3, 0, 7, 2, 0, 1}),
           new Transformation<u_int16_t>({1, 4, 7, 7, 5, 7, 2, 3}),
@@ -326,7 +348,7 @@ TEST_CASE("Z_Congruence: transformation semigroup, size 91738, with parallel_tod
 
   Element* t1 = new Transformation<u_int16_t>({0, 7, 0, 0, 2, 0, 4, 1});
   Element* t2 = new Transformation<u_int16_t>({6, 6, 1, 0, 4, 5, 6, 6});
-  word_t w1, w2;
+  word_t   w1, w2;
   S.factorisation(w1, S.position(t1), false);
   S.factorisation(w2, S.position(t2), false);
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
@@ -337,7 +359,7 @@ TEST_CASE("Z_Congruence: transformation semigroup, size 91738, with parallel_tod
 
   Element* t3 = new Transformation<u_int16_t>({3, 5, 0, 0, 6, 0, 6, 3});
   Element* t4 = new Transformation<u_int16_t>({5, 4, 5, 5, 7, 5, 4, 3});
-  word_t w3, w4;
+  word_t   w3, w4;
   S.factorisation(w3, S.position(t3), false);
   S.factorisation(w4, S.position(t4), false);
   REQUIRE(cong->word_to_coset(w3, false) == cong->word_to_coset(w4, false));
@@ -350,5 +372,7 @@ TEST_CASE("Z_Congruence: transformation semigroup, size 91738, with parallel_tod
   delete t2;
   delete t3;
   delete t4;
+  delete cong;
 }
+
 #endif
