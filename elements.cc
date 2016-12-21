@@ -383,8 +383,11 @@ namespace semigroupsplusplus {
     assert(xx->degree() == yy->degree());
     assert(xx->degree() == this->degree());
     assert(xx != this && yy != this);
-    assert(xx->semiring() == yy->semiring()
-           && xx->semiring() == this->semiring());
+    // It can be that the elements are defined over semirings that are distinct
+    // in memory but equal (for example, when one element comes from a
+    // semigroup and another from an ideal of that semigroup).
+    //assert(xx->semiring() == yy->semiring()
+    //       && xx->semiring() == this->semiring());
     size_t deg = this->degree();
 
     for (size_t i = 0; i < deg; i++) {
