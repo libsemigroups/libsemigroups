@@ -41,6 +41,9 @@ doc:
 test: CXXFLAGS += -O2 -g
 test: $(CLEAN) testbuild testrun
 
+testquick: CXXFLAGS += -DSKIP_TEST
+testquick: test
+
 testdebug: CXXFLAGS += -O0 -g
 testdebug: testclean testbuild
 
