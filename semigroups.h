@@ -214,6 +214,11 @@ namespace semigroupsplusplus {
       return _gens;
     }
 
+    Element* gens(size_t pos) const {
+      assert(pos < _gens->size());
+      return (*_gens)[pos];
+    }
+
     // const
     //
     // This method is const.
