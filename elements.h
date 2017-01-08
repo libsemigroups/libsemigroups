@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <math.h>
 
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <unordered_set>
@@ -138,6 +139,12 @@ namespace semigroupsplusplus {
     //
     // @return a new element completely independent of **this**.
     virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
+
+    // non-const
+    // @x an element.
+    //
+    // This method copies <x> into **this** by changing **this** in-place.
+    virtual void copy(Element const* x) = 0;
 
     // non-const
     //
@@ -307,6 +314,16 @@ namespace semigroupsplusplus {
       (void) increase_deg_by;
       std::vector<S>* vector(new std::vector<S>(*_vector));
       return new T(vector, this->_hash_value);
+    }
+
+    void copy(Element const* x) override {
+      assert(x->degree() == this->degree());
+      auto xx = static_cast<ElementWithVectorData const*>(x);
+      size_t deg = _vector->size();
+      for (size_t i = 0; i < deg; i++) {
+        (*_vector)[i] = (*xx)[i];
+      }
+      this->reset_hash_value();
     }
 
     // non-const
