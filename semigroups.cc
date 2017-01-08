@@ -275,6 +275,35 @@ namespace semigroupsplusplus {
     delete _elements;
   }
 
+  // w is a word in the generators (i.e. a vector of letter_t's)
+  Semigroup::pos_t Semigroup::word_to_pos(word_t const& w) const {
+    assert(w.size() > 0);
+    if (w.size() == 1) {
+      return letter_to_pos(w[0]);
+    }
+    pos_t out = letter_to_pos(w[0]);
+    for (auto it = w.begin() + 1; it < w.end(); it ++) {
+      assert(*it < nrgens());
+      out = fast_product(out, letter_to_pos(*it));
+    }
+    return out;
+  }
+
+  Element* Semigroup::word_to_element(word_t const& w) const {
+    assert(w.size() > 0);
+    if (is_done() || w.size() == 1) {
+      return (*_elements)[word_to_pos(w)]->really_copy();
+    }
+    Element* out = _tmp_product->really_copy();
+    out->redefine((*_gens)[w[0]], (*_gens)[w[1]]);
+    for (auto it = w.begin() + 2; it < w.end(); it++) {
+      assert(*it < nrgens());
+      _tmp_product->copy(out);
+      out->redefine(_tmp_product, (*_gens)[*it]);
+    }
+    return out;
+  }
+
   // Product by tracing in the left or right Cayley graph
 
   Semigroup::pos_t Semigroup::product_by_reduction(pos_t i, pos_t j) const {
@@ -946,8 +975,7 @@ namespace semigroupsplusplus {
       sum_word_lengths += i * (_lenindex[i] - _lenindex[i - 1]);
     }
     // TODO(JDM) make the number in the next line a macro or something so that
-    // it
-    // is easy to change.
+    // it is easy to change.
     if (nr_threads == 1 || size() < 823543) {
       if ((_nr - _idempotents_start_pos) * _tmp_product->complexity()
           < sum_word_lengths) {

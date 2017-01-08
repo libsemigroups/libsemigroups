@@ -136,6 +136,12 @@ namespace semigroupsplusplus {
     // constructed semigroup.
     Semigroup(const Semigroup& copy);
 
+    // TODO doc Semigroup::word_to_pos
+    pos_t word_to_pos(word_t const& w) const;
+
+    // TODO doc Semigroup::word_to_element
+    Element* word_to_element(word_t const& w) const;
+
    private:
     // partial copy
     // @copy a semigroup
