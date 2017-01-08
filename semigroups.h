@@ -1072,27 +1072,6 @@ namespace semigroupsplusplus {
       Semigroup const& _semigroup;
     };
 
-    struct myequal {
-      // To keep cldoc happy
-      // @x a pointer to a const Element
-      // @y a pointer to a const Element
-      //
-      // @return **true** or **false**
-      size_t operator()(const Element* x, const Element* y) const {
-        return *x == *y;
-      }
-    };
-
-    struct myhash {
-      // To keep cldoc happy
-      // @x a pointer to a const Element
-      //
-      // @return **true** or **false**
-      size_t operator()(const Element* x) const {
-        return x->hash_value();
-      }
-    };
-
     void copy_gens();
 
     size_t _batch_size;
@@ -1113,7 +1092,8 @@ namespace semigroupsplusplus {
     cayley_graph_t*        _left;
     std::vector<pos_t>     _length;
     std::vector<size_t>    _lenindex;
-    std::unordered_map<const Element*, size_t, myhash, myequal> _map;
+    std::unordered_map<const Element*, size_t, Element::Hash, Element::Equal>
+                         _map;
     std::vector<bool>    _multiplied;
     size_t               _nr;
     size_t               _nrgens;

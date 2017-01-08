@@ -162,6 +162,27 @@ namespace semigroupsplusplus {
     // Redefine **this** to be the product of <x> and <y>.
     virtual void redefine(Element const* x, Element const* y) = 0;
 
+    struct Equal {
+      // To keep cldoc happy
+      // @x a pointer to a const Element
+      // @y a pointer to a const Element
+      //
+      // @return **true** or **false**
+      size_t operator()(const Element* x, const Element* y) const {
+        return *x == *y;
+      }
+    };
+
+    struct Hash {
+      // To keep cldoc happy
+      // @x a pointer to a const Element
+      //
+      // @return **true** or **false**
+      size_t operator()(const Element* x) const {
+        return x->hash_value();
+      }
+    };
+
    protected:
     // const
     //
