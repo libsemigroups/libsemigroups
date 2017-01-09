@@ -489,7 +489,8 @@ namespace semigroupsplusplus {
     }
   }
 
-  void Semigroup::enumerate(size_t limit, bool report) {
+  void
+  Semigroup::enumerate(std::atomic<bool>& killed, size_t limit, bool report) {
     if (_pos >= _nr || limit <= _nr) {
       return;
     }
@@ -541,7 +542,7 @@ namespace semigroupsplusplus {
     }
 
     // multiply the words of length > 1 by every generator
-    bool stop = (_nr >= limit);
+    bool stop = (_nr >= limit || killed);
 
     while (_pos != _nr && !stop) {
       size_t nr_shorter_elements = _nr;
@@ -581,7 +582,7 @@ namespace semigroupsplusplus {
               _suffix.push_back(_right->get(s, j));
               _index.push_back(_nr);
               _nr++;
-              stop = (_nr >= limit);
+              stop = (_nr >= limit || killed);
             }
           }
         }  // finished applying gens to <_elements->at(_pos)>

@@ -831,8 +831,15 @@ namespace semigroupsplusplus {
     // minimal factorisation of every element (in terms of its generating set).
     // All of the elements are stored in memory until the object is destroyed.
 
-    void enumerate(size_t limit  = LIMIT_MAX,
-                   bool   report = DEFAULT_REPORT_VALUE);
+    void enumerate(std::atomic<bool>& killed,
+                   size_t             limit  = LIMIT_MAX,
+                   bool               report = DEFAULT_REPORT_VALUE);
+
+    void enumerate(size_t            limit  = LIMIT_MAX,
+                   bool              report = DEFAULT_REPORT_VALUE) {
+      std::atomic<bool> killed(false);
+      enumerate(killed, limit, report);
+    }
 
     // non-const
     // @report   report during enumeration, if any (defaults to
@@ -840,7 +847,8 @@ namespace semigroupsplusplus {
     //
     // Calls <enumerate>(LIMIT_MAX, report), and so triggers a full enumeration
     // of the semigroup.
-
+    // TODO it is hard or impossible to invoke this method due to ambiguity
+    // with the previous one
     void inline enumerate(bool report = DEFAULT_REPORT_VALUE) {
       enumerate(LIMIT_MAX, report);
     }
