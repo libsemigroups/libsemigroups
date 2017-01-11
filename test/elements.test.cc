@@ -22,7 +22,7 @@
 
 using namespace semigroupsplusplus;
 
-TEST_CASE("Transformation<u_int16_t>: methods", "") {
+TEST_CASE("Transformation<u_int16_t>: methods", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   Element* y =
       new Transformation<u_int16_t>(new std::vector<u_int16_t>({0, 1, 0}));
@@ -68,7 +68,7 @@ TEST_CASE("Transformation<u_int16_t>: methods", "") {
   delete id;
 }
 
-TEST_CASE("Transformation<u_int16_t>: hash", "") {
+TEST_CASE("Transformation<u_int16_t>: hash", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -77,7 +77,7 @@ TEST_CASE("Transformation<u_int16_t>: hash", "") {
   delete x;
 }
 
-TEST_CASE("Transformation<u_int16_t>: delete/copy", "") {
+TEST_CASE("Transformation<u_int16_t>: delete/copy", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -108,7 +108,7 @@ TEST_CASE("Transformation<u_int16_t>: delete/copy", "") {
   delete expected;
 }
 
-TEST_CASE("Transformation<u_int32_t>: methods", "") {
+TEST_CASE("Transformation<u_int32_t>: methods", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({0, 1, 0});
   Element* y =
       new Transformation<u_int32_t>(new std::vector<u_int32_t>({0, 1, 0}));
@@ -142,7 +142,7 @@ TEST_CASE("Transformation<u_int32_t>: methods", "") {
   delete id;
 }
 
-TEST_CASE("Transformation<u_int32_t>: hash ~8ms", "") {
+TEST_CASE("Transformation<u_int32_t>: hash ~8ms", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -151,7 +151,7 @@ TEST_CASE("Transformation<u_int32_t>: hash ~8ms", "") {
   delete x;
 }
 
-TEST_CASE("Transformation<u_int32_t>: delete/copy", "") {
+TEST_CASE("Transformation<u_int32_t>: delete/copy", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -182,7 +182,7 @@ TEST_CASE("Transformation<u_int32_t>: delete/copy", "") {
   delete expected;
 }
 
-TEST_CASE("PartialPerm<u_int16_t>: methods", "") {
+TEST_CASE("PartialPerm<u_int16_t>: methods", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
   Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
   REQUIRE(*x == *y);
@@ -228,7 +228,7 @@ TEST_CASE("PartialPerm<u_int16_t>: methods", "") {
   delete id;
 }
 
-TEST_CASE("PartialPerm<u_int16_t>: hash ~8ms", "") {
+TEST_CASE("PartialPerm<u_int16_t>: hash ~8ms", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 9);
   for (size_t i = 0; i < 1000000; i++) {
@@ -238,7 +238,7 @@ TEST_CASE("PartialPerm<u_int16_t>: hash ~8ms", "") {
   delete x;
 }
 
-TEST_CASE("PartialPerm<u_int16_t>: delete/copy", "") {
+TEST_CASE("PartialPerm<u_int16_t>: delete/copy", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 9);
   Element* y = x->really_copy();
@@ -259,7 +259,7 @@ TEST_CASE("PartialPerm<u_int16_t>: delete/copy", "") {
   delete expected;
 }
 
-TEST_CASE("PartialPerm<u_int32_t>: methods", "") {
+TEST_CASE("PartialPerm<u_int32_t>: methods", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 10);
   Element* y = new PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 10);
   REQUIRE(*x == *y);
@@ -300,7 +300,7 @@ TEST_CASE("PartialPerm<u_int32_t>: methods", "") {
   delete id;
 }
 
-TEST_CASE("PartialPerm<u_int32_t>: hash ~8ms", "") {
+TEST_CASE("PartialPerm<u_int32_t>: hash ~8ms", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 9);
   for (size_t i = 0; i < 1000000; i++) {
@@ -310,7 +310,7 @@ TEST_CASE("PartialPerm<u_int32_t>: hash ~8ms", "") {
   delete x;
 }
 
-TEST_CASE("PartialPerm<u_int32_t>: delete/copy", "") {
+TEST_CASE("PartialPerm<u_int32_t>: delete/copy", "[quick][element][pperm]") {
   Element* x = new PartialPerm<u_int32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 9);
   Element* y = x->really_copy();
@@ -332,7 +332,7 @@ TEST_CASE("PartialPerm<u_int32_t>: delete/copy", "") {
   zz.really_delete();
 }
 
-TEST_CASE("BooleanMat: methods", "") {
+TEST_CASE("BooleanMat: methods", "[quick][element][booleanmat]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   Element* y = new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
   Element* z = new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
@@ -363,7 +363,7 @@ TEST_CASE("BooleanMat: methods", "") {
   delete id;
 }
 
-TEST_CASE("BooleanMat: hash ~8ms", "") {
+TEST_CASE("BooleanMat: hash ~8ms", "[quick][element][booleanmat]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -372,7 +372,7 @@ TEST_CASE("BooleanMat: hash ~8ms", "") {
   delete x;
 }
 
-TEST_CASE("BooleanMat: delete/copy", "") {
+TEST_CASE("BooleanMat: delete/copy", "[quick][element][booleanmat]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -391,7 +391,7 @@ TEST_CASE("BooleanMat: delete/copy", "") {
   delete expected;
 }
 
-TEST_CASE("Bipartition: overridden methods", "") {
+TEST_CASE("Bipartition: overridden methods", "[quick][element][bipart]") {
   Element* x = new Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   Element* y = new Bipartition(
@@ -441,7 +441,7 @@ TEST_CASE("Bipartition: overridden methods", "") {
   delete id;
 }
 
-TEST_CASE("Bipartition: hash ~12ms", "") {
+TEST_CASE("Bipartition: hash ~12ms", "[quick][element][bipart]") {
   Element* x = new Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   for (size_t i = 0; i < 1000000; i++) {
@@ -451,7 +451,7 @@ TEST_CASE("Bipartition: hash ~12ms", "") {
   delete x;
 }
 
-TEST_CASE("Bipartition: non-overridden methods", "") {
+TEST_CASE("Bipartition: non-overridden methods", "[quick][element][bipart]") {
   Bipartition* x = new Bipartition(
       {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
@@ -513,7 +513,7 @@ TEST_CASE("Bipartition: non-overridden methods", "") {
   delete x;
 }
 
-TEST_CASE("Bipartition: delete/copy", "") {
+TEST_CASE("Bipartition: delete/copy", "[quick][element][bipart]") {
   Element* x = new Bipartition({0, 0, 0, 0, 0});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -532,7 +532,7 @@ TEST_CASE("Bipartition: delete/copy", "") {
   zz.really_delete();
 }
 
-TEST_CASE("Bipartition: degree 0", "") {
+TEST_CASE("Bipartition: degree 0", "[quick][element][bipart]") {
   Bipartition* x = new Bipartition(std::vector<u_int32_t>({}));
   REQUIRE(x->const_nr_blocks() == 0);
   REQUIRE(x->nr_left_blocks() == 0);
@@ -551,7 +551,7 @@ TEST_CASE("Bipartition: degree 0", "") {
   delete x;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix: methods", "") {
+TEST_CASE("ProjectiveMaxPlusMatrix: methods", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
 
   Element* x =
@@ -599,7 +599,7 @@ TEST_CASE("ProjectiveMaxPlusMatrix: methods", "") {
   delete sr;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix: hash ~11ms", "") {
+TEST_CASE("ProjectiveMaxPlusMatrix: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element*  x =
       new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -611,7 +611,7 @@ TEST_CASE("ProjectiveMaxPlusMatrix: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix: delete/copy", "") {
+TEST_CASE("ProjectiveMaxPlusMatrix: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element*  x =
       new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -639,7 +639,7 @@ TEST_CASE("ProjectiveMaxPlusMatrix: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: methods", "") {
+TEST_CASE("MatrixOverSemiring [Integers]: methods", "[quick][element][matrix]") {
   Semiring* sr = new Integers();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -678,7 +678,7 @@ TEST_CASE("MatrixOverSemiring [Integers]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new Integers();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -689,7 +689,7 @@ TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -728,7 +728,7 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -739,7 +739,7 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -779,7 +779,7 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -790,7 +790,7 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(33);
 
   Element* x =
@@ -831,7 +831,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(33);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -843,7 +843,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(33);
 
   Element* x =
@@ -884,7 +884,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(33);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -896,7 +896,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(33, 2);
 
   Element* x =
@@ -937,7 +937,7 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms", "") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms", "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(33, 2);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -950,7 +950,7 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [Integers]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new Integers();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -972,7 +972,7 @@ TEST_CASE("MatrixOverSemiring [Integers]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -994,7 +994,7 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1016,7 +1016,7 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(23);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1038,7 +1038,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(23);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1060,7 +1060,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy", "") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy", "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(23, 0);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1082,7 +1082,7 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy", "") {
   delete sr;
 }
 
-TEST_CASE("PBR: methods", "") {
+TEST_CASE("PBR: methods", "[quick][element][pbr]") {
   Element* x = new PBR(new std::vector<std::vector<u_int32_t>>(
       {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
   Element* y = new PBR(new std::vector<std::vector<u_int32_t>>(
@@ -1113,7 +1113,7 @@ TEST_CASE("PBR: methods", "") {
   delete id;
 }
 
-TEST_CASE("PBR: universal product", "") {
+TEST_CASE("PBR: universal product", "[quick][element][pbr]") {
   Element* x =
       new PBR(new std::vector<std::vector<u_int32_t>>({{5, 3},
                                                        {5, 4, 3, 0, 1, 2},
@@ -1155,7 +1155,7 @@ TEST_CASE("PBR: universal product", "") {
   delete expected;
 }
 
-TEST_CASE("PBR: product [bigger than previous]", "") {
+TEST_CASE("PBR: product [bigger than previous]", "[quick][element][pbr]") {
   Element* x =
       new PBR(new std::vector<std::vector<u_int32_t>>({{5, 3},
                                                        {5, 4, 3, 0, 1, 2},
@@ -1212,7 +1212,7 @@ TEST_CASE("PBR: product [bigger than previous]", "") {
   delete expected;
 }
 
-TEST_CASE("PBR: hash ~28ms", "") {
+TEST_CASE("PBR: hash ~28ms", "[quick][element][pbr]") {
   Element* x = new PBR(new std::vector<std::vector<u_int32_t>>(
       {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
   for (size_t i = 0; i < 1000000; i++) {
@@ -1222,7 +1222,7 @@ TEST_CASE("PBR: hash ~28ms", "") {
   delete x;
 }
 
-TEST_CASE("PBR: delete/copy", "") {
+TEST_CASE("PBR: delete/copy", "[quick][element][pbr]") {
   Element* x = new PBR(new std::vector<std::vector<u_int32_t>>(
       {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
   Element* y = x->really_copy();

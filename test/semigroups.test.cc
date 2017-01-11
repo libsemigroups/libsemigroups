@@ -42,7 +42,8 @@ static inline size_t evaluate_reduct(Semigroup* S, word_t const& word) {
   return evaluate_reduct(*S, word);
 }
 
-TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
+TEST_CASE("Semigroup 01: small transformation semigroup",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                 new Transformation<u_int16_t>({0, 1, 2})};
   Semigroup S = Semigroup(gens);
@@ -84,7 +85,8 @@ TEST_CASE("Semigroup: small transformation semigroup", "[small]") {
   delete x;
 }
 
-TEST_CASE("Semigroup: small partial perm semigroup", "[small]") {
+TEST_CASE("Semigroup 02: small partial perm semigroup",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new PartialPerm<u_int16_t>(
           {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
@@ -149,7 +151,8 @@ TEST_CASE("Semigroup: small partial perm semigroup", "[small]") {
   delete y;
 }
 
-TEST_CASE("Semigroup: small bipartition semigroup", "[small]") {
+TEST_CASE("Semigroup 03: small bipartition semigroup",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Bipartition(
           {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -193,7 +196,8 @@ TEST_CASE("Semigroup: small bipartition semigroup", "[small]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: small Boolean matrix semigroup", "[small]") {
+TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
       new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
@@ -227,7 +231,8 @@ TEST_CASE("Semigroup: small Boolean matrix semigroup", "[small]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: small projective max plus matrix semigroup", "[small]") {
+TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
+          "[quick][semigroup][finite]") {
   Semiring* sr = new MaxPlusSemiring();
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
@@ -256,7 +261,8 @@ TEST_CASE("Semigroup: small projective max plus matrix semigroup", "[small]") {
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [Integers]", "[small]") {
+TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new Integers();
   std::vector<Element*> gens = {new MatrixOverSemiring({{0, 0}, {0, 1}}, sr),
                                 new MatrixOverSemiring({{0, 1}, {-1, 0}}, sr)};
@@ -297,7 +303,8 @@ TEST_CASE("Semigroup: small matrix semigroup [Integers]", "[small]") {
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [MaxPlusSemiring]", "[small]") {
+TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new MaxPlusSemiring();
   std::vector<Element*> gens = {
       new MatrixOverSemiring({{0, -4}, {-4, -1}}, sr),
@@ -338,7 +345,8 @@ TEST_CASE("Semigroup: small matrix semigroup [MaxPlusSemiring]", "[small]") {
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [MinPlusSemiring]", "[small]") {
+TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new MinPlusSemiring();
   std::vector<Element*> gens = {
       new MatrixOverSemiring({{1, 0}, {0, LONG_MAX}}, sr)};
@@ -374,8 +382,8 @@ TEST_CASE("Semigroup: small matrix semigroup [MinPlusSemiring]", "[small]") {
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
-          "[small]") {
+TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new TropicalMaxPlusSemiring(33);
   std::vector<Element*> gens = {
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr),
@@ -412,8 +420,8 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMaxPlusSemiring]",
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
-          "[small]") {
+TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new TropicalMinPlusSemiring(11);
   std::vector<Element*> gens = {
       new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -450,7 +458,8 @@ TEST_CASE("Semigroup: small matrix semigroup [TropicalMinPlusSemiring]",
   delete sr;
 }
 
-TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
+TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
+          "[quick][semigroup][finite]") {
   Semiring*             sr   = new NaturalSemiring(11, 3);
   std::vector<Element*> gens = {
       new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -487,7 +496,7 @@ TEST_CASE("Semigroup: small matrix semigroup [NaturalSemiring]", "[small]") {
   delete sr;
 }
 
-TEST_CASE("Semigroup: small pbr semigroup", "[small]") {
+TEST_CASE("Semigroup 12: small pbr semigroup", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>(
           {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
@@ -522,7 +531,7 @@ TEST_CASE("Semigroup: small pbr semigroup", "[small]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: large transformation semigroup", "[large]") {
+TEST_CASE("Semigroup 13: large transformation semigroup", "[large]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -539,7 +548,8 @@ TEST_CASE("Semigroup: large transformation semigroup", "[large]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: at, position, current_*", "[method]") {
+TEST_CASE("Semigroup 14: at, position, current_*",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -598,7 +608,7 @@ TEST_CASE("Semigroup: at, position, current_*", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: enumerate", "[method]") {
+TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -633,7 +643,8 @@ TEST_CASE("Semigroup: enumerate", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: enumerate [many stops and starts]", "[method]") {
+TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -657,7 +668,8 @@ TEST_CASE("Semigroup: enumerate [many stops and starts]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: factorisation, length [1 element]", "[method]") {
+TEST_CASE("Semigroup 17: factorisation, length [1 element]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -686,7 +698,8 @@ TEST_CASE("Semigroup: factorisation, length [1 element]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: factorisation, products [all elements]", "[method]") {
+TEST_CASE("Semigroup 18: factorisation, products [all elements]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -706,8 +719,8 @@ TEST_CASE("Semigroup: factorisation, products [all elements]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
-          "[method]") {
+TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -780,7 +793,8 @@ TEST_CASE("Semigroup: first/final letter, prefix, suffix, products",
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: letter_to_pos [standard]", "[method]") {
+TEST_CASE("Semigroup 20: letter_to_pos [standard]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -799,7 +813,8 @@ TEST_CASE("Semigroup: letter_to_pos [standard]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: letter_to_pos [duplicate gens]", "[method]") {
+TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -853,7 +868,8 @@ TEST_CASE("Semigroup: letter_to_pos [duplicate gens]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: letter_to_pos [after add_generators]", "[method]") {
+TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -906,7 +922,12 @@ TEST_CASE("Semigroup: letter_to_pos [after add_generators]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: idempotent_cbegin/cend [1 thread]", "[method]") {
+<<<<<<< HEAD
+TEST_CASE("Semigroup 23: idempotents_cbegin/cend [1 thread]",
+=======
+TEST_CASE("Semigroup 23: idempotent_cbegin/cend [1 thread]",
+>>>>>>> 78ddf59... Add proper tags to most test files
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -926,7 +947,8 @@ TEST_CASE("Semigroup: idempotent_cbegin/cend [1 thread]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: idempotent_cend/cbegin [1 thread]", "[method]") {
+TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -947,7 +969,8 @@ TEST_CASE("Semigroup: idempotent_cend/cbegin [1 thread]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: is_idempotent [1 thread]", "[method]") {
+TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -967,8 +990,14 @@ TEST_CASE("Semigroup: is_idempotent [1 thread]", "[method]") {
   REQUIRE(nr == S.nr_idempotents());
 }
 
-TEST_CASE("Semigroup 26: idempotent_cbegin/cend, is_idempotent [2 threads]",
+<<<<<<< HEAD
+TEST_CASE("Semigroup 26: idempotents_cbegin/cend, is_idempotent [2 threads]",
           "[standard][semigroup][finite][multithread]") {
+=======
+TEST_CASE(
+    "Semigroup 26: idempotent_cbegin/cend, is_idempotent [2 threads]",
+    "[standard][semigroup][finite][multithread]") {
+>>>>>>> 78ddf59... Add proper tags to most test files
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
@@ -997,7 +1026,11 @@ TEST_CASE("Semigroup 26: idempotent_cbegin/cend, is_idempotent [2 threads]",
   really_delete_cont(gens);
 }
 
+<<<<<<< HEAD
 TEST_CASE("Semigroup: is_done, is_begun", "[method]") {
+=======
+TEST_CASE("Semigroup 27: is_done, is_begun", "[quick][semigroup][finite]") {
+>>>>>>> 78ddf59... Add proper tags to most test files
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1022,7 +1055,7 @@ TEST_CASE("Semigroup: is_done, is_begun", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: current_position", "[method]") {
+TEST_CASE("Semigroup 28: current_position", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1075,7 +1108,8 @@ TEST_CASE("Semigroup: current_position", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: sorted_position, sorted_at", "[method]") {
+TEST_CASE("Semigroup 29: sorted_position, sorted_at",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1129,7 +1163,8 @@ TEST_CASE("Semigroup: sorted_position, sorted_at", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: right/left Cayley graph", "[method]") {
+TEST_CASE("Semigroup 30: right/left Cayley graph",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1145,7 +1180,8 @@ TEST_CASE("Semigroup: right/left Cayley graph", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: elements, sorted_elements", "[method]") {
+TEST_CASE("Semigroup 31: elements, sorted_elements",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1161,7 +1197,7 @@ TEST_CASE("Semigroup: elements, sorted_elements", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: copy [not enumerated]", "[method]") {
+TEST_CASE("Semigroup 32: copy [not enumerated]", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1199,7 +1235,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.is_done());
 }
 
-TEST_CASE("Semigroup: copy_closure [not enumerated]", "[method]") {
+TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
@@ -1270,7 +1307,8 @@ TEST_CASE("Semigroup: copy_closure [not enumerated]", "[method]") {
   delete V;
 }
 
-TEST_CASE("Semigroup: copy_add_generators [not enumerated]", "[method]") {
+TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
@@ -1341,7 +1379,8 @@ TEST_CASE("Semigroup: copy_add_generators [not enumerated]", "[method]") {
   delete V;
 }
 
-TEST_CASE("Semigroup: copy [partly enumerated]", "[method]") {
+TEST_CASE("Semigroup 35: copy [partly enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1389,7 +1428,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.is_done());
 }
 
-TEST_CASE("Semigroup: copy_closure [partly enumerated]", "[method]") {
+TEST_CASE("Semigroup 36: copy_closure [partly enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1433,7 +1473,8 @@ TEST_CASE("Semigroup: copy_closure [partly enumerated]", "[method]") {
   delete T;
 }
 
-TEST_CASE("Semigroup: copy_add_generators [partly enumerated]", "[method]") {
+TEST_CASE("Semigroup 37: copy_add_generators [partly enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1477,7 +1518,8 @@ TEST_CASE("Semigroup: copy_add_generators [partly enumerated]", "[method]") {
   delete T;
 }
 
-TEST_CASE("Semigroup: copy [fully enumerated]", "[method]") {
+TEST_CASE("Semigroup 38: copy [fully enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1508,7 +1550,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == 2459);
 }
 
-TEST_CASE("Semigroup: copy_closure [fully enumerated]", "[method]") {
+TEST_CASE("Semigroup 39: copy_closure [fully enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1551,7 +1594,8 @@ TEST_CASE("Semigroup: copy_closure [fully enumerated]", "[method]") {
   delete T;
 }
 
-TEST_CASE("Semigroup: copy_add_generators [fully enumerated]", "[method]") {
+TEST_CASE("Semigroup 40: copy_add_generators [fully enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1594,7 +1638,8 @@ TEST_CASE("Semigroup: copy_add_generators [fully enumerated]", "[method]") {
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [duplicate gens]", "[method]") {
+TEST_CASE("Semigroup 41: relations [duplicate gens]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1628,7 +1673,7 @@ TEST_CASE("Semigroup: relations [duplicate gens]", "[method]") {
   REQUIRE(result.empty());
 }
 
-TEST_CASE("Semigroup: relations", "[method]") {
+TEST_CASE("Semigroup 42: relations", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1673,7 +1718,8 @@ TEST_CASE("Semigroup: relations", "[method]") {
   REQUIRE(S.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [copy_closure, duplicate gens]", "[method]") {
+TEST_CASE("Semigroup 43: relations [copy_closure, duplicate gens]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1711,8 +1757,8 @@ TEST_CASE("Semigroup: relations [copy_closure, duplicate gens]", "[method]") {
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [copy_add_generators, duplicate gens]",
-          "[method]") {
+TEST_CASE("Semigroup 44: relations [copy_add_generators, duplicate gens]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -1750,7 +1796,8 @@ TEST_CASE("Semigroup: relations [copy_add_generators, duplicate gens]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy, not enumerated]", "[method]") {
+TEST_CASE("Semigroup 45: relations [from copy, not enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1799,7 +1846,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [from copy, partly enumerated]", "[method]") {
+TEST_CASE("Semigroup 46: relations [from copy, partly enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1851,7 +1899,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [from copy, fully enumerated]", "[method]") {
+TEST_CASE("Semigroup 47: relations [from copy, fully enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1902,8 +1951,8 @@ T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == nr);
 }
 
-TEST_CASE("Semigroup: relations [from copy_closure, not enumerated]",
-          "[method]") {
+TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1962,8 +2011,8 @@ TEST_CASE("Semigroup: relations [from copy_closure, not enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy_add_generators, not enumerated]",
-          "[method]") {
+TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2022,8 +2071,8 @@ TEST_CASE("Semigroup: relations [from copy_add_generators, not enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy_closure, partly enumerated]",
-          "[method]") {
+TEST_CASE("Semigroup 52: relations [from copy_closure, partly enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2083,8 +2132,9 @@ TEST_CASE("Semigroup: relations [from copy_closure, partly enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy_add_generators, partly enumerated]",
-          "[method]") {
+TEST_CASE(
+    "Semigroup 53: relations [from copy_add_generators, partly enumerated]",
+    "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2144,8 +2194,8 @@ TEST_CASE("Semigroup: relations [from copy_add_generators, partly enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy_closure, fully enumerated]",
-          "[method]") {
+TEST_CASE("Semigroup 54: relations [from copy_closure, fully enumerated]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2206,8 +2256,9 @@ TEST_CASE("Semigroup: relations [from copy_closure, fully enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: relations [from copy_add_generators, fully enumerated]",
-          "[method]") {
+TEST_CASE(
+    "Semigroup 55: relations [from copy_add_generators, fully enumerated]",
+    "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
       new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2268,7 +2319,8 @@ TEST_CASE("Semigroup: relations [from copy_add_generators, fully enumerated]",
   delete T;
 }
 
-TEST_CASE("Semigroup: add_generators [duplicate generators]", "[method]") {
+TEST_CASE("Semigroup 56: add_generators [duplicate generators]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2337,7 +2389,8 @@ TEST_CASE("Semigroup: add_generators [duplicate generators]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: add_generators [incremental 1]", "[method]") {
+TEST_CASE("Semigroup 57: add_generators [incremental 1]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2374,7 +2427,8 @@ TEST_CASE("Semigroup: add_generators [incremental 1]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: add_generators [incremental 2]", "[method]") {
+TEST_CASE("Semigroup 58: add_generators [incremental 2]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2421,7 +2475,8 @@ T.set_report(SEMIGROUPS_REPORT);
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: closure [duplicate generators]", "[method]") {
+TEST_CASE("Semigroup 59: closure [duplicate generators]",
+          "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2472,7 +2527,7 @@ TEST_CASE("Semigroup: closure [duplicate generators]", "[method]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup: closure ", "[method]") {
+TEST_CASE("Semigroup 60: closure ", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 0, 0}),
                                 new Transformation<u_int16_t>({0, 0, 1}),
                                 new Transformation<u_int16_t>({0, 0, 2}),
