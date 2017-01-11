@@ -28,10 +28,29 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
 #include "timer.h"
 
-namespace semigroupsplusplus {
+#define REPORT(message)                                                     \
+  if (glob_reporter.get_report()) {                                         \
+    glob_reporter.lock();                                                   \
+    glob_reporter(this, __func__, std::this_thread::get_id()) << message    \
+                                                              << std::endl; \
+    glob_reporter.unlock();                                                 \
+  }
+
+#define REPORT_FROM_FUNC(message)                                     \
+  if (glob_reporter.get_report()) {                                   \
+    glob_reporter.lock();                                             \
+    glob_reporter(__func__, std::this_thread::get_id()) << message    \
+                                                        << std::endl; \
+    glob_reporter.unlock();                                           \
+  }
+
+namespace libsemigroups {
 
   //
   // This is a simple class which can be used to print information to
@@ -65,23 +84,16 @@ namespace semigroupsplusplus {
     // The default constructor. Note that by default this will output nothing,
     // see <Reporter::set_report> and <Reporter::set_class_name>.
     Reporter()
-        : _operator_called(false),
-          _report(false),
+        : _color_prefix({"",
+                         "\033[40;38;5;82m",
+                         "\033[33m",
+                         "\033[40;38;5;208m",
+                         "\033[38;5;27m"}),
+          _map(),
+          _next_tid(0),
           _ostream(&std::cout),
-          _thread_id(0) {}
-
-    // 1 parameter
-    // @obj the object whose name will be used by the reporter.
-    //
-    // Note that by default this will output nothing, see
-    // <Reporter::set_report>.
-    template <class T>
-    explicit Reporter(T const& obj)
-        : _operator_called(false),
-          _report(false),
-          _ostream(&std::cout),
-          _thread_id(0) {
-      set_class_name(obj);
+          _report(false) {
+      thread_id(std::this_thread::get_id());
     }
 
     ~Reporter() {}
@@ -112,10 +124,7 @@ namespace semigroupsplusplus {
     //
     // when we wanted to see aaabbbcccddd.
     template <class T> friend Reporter& operator<<(Reporter& rep, const T& tt) {
-      if (rep._report) {
-        rep.output_prefix();
-        *(rep._ostream) << tt;
-      }
+      *(rep._ostream) << tt;
       return rep;
     }
 
@@ -123,10 +132,7 @@ namespace semigroupsplusplus {
     //
     // This method exists to allow std::endl to be put to a <Reporter>.
     Reporter& operator<<(std::ostream& (*function)(std::ostream&) ) {
-      if (_report) {
-        this->output_prefix();
-        *_ostream << function;
-      }
+      *_ostream << "\033[0m" << function;
       return *this;
     }
 
@@ -134,20 +140,18 @@ namespace semigroupsplusplus {
     // @func the function name part of the prefix put to std::cout
     // @thread_id the number put to std::cout to identify the thread which is
     //            printing
-    Reporter& operator()(std::string func, size_t thread_id = 0) {
-      if (_report) {
-        _thread_id       = thread_id;
-        _func            = func;
-        _operator_called = true;
-      }
+    template <class T>
+    Reporter& operator()(T const* obj, char const* func, std::thread::id tid) {
+      size_t id = thread_id(tid);
+      *_ostream << get_color_prefix(id) << "Thread #" << id << ": "
+                << get_class_name(obj) << "::" << func << ": ";
       return *this;
     }
 
-    Reporter& operator()(size_t thread_id = 0) {
-      if (_report) {
-        _thread_id       = thread_id;
-        _operator_called = true;
-      }
+    Reporter& operator()(char const* func, std::thread::id tid) {
+      size_t id = thread_id(tid);
+      *_ostream << get_color_prefix(id) << "Thread #" << id << ": "
+                << func << ": ";
       return *this;
     }
 
@@ -157,9 +161,7 @@ namespace semigroupsplusplus {
     // threads
     // it does not give garbled output.
     void lock() {
-      if (_report) {
-        _mtx.lock();
-      }
+      _mtx.lock();
     }
 
     // non-const
@@ -168,9 +170,7 @@ namespace semigroupsplusplus {
     // threads
     // another thread will be free to put to std::cout.
     void unlock() {
-      if (_report) {
-        _mtx.unlock();
-      }
+      _mtx.unlock();
     }
 
     // non-const
@@ -189,9 +189,37 @@ namespace semigroupsplusplus {
     // may be no instance of the class to use as a parameter for the
     // constructor. It only prints the last part of the name, i.e. the part
     // after the last ::.
-    template <class T> void set_class_name(T const& obj) {
+
+    void set_ostream(std::ostream* os) {
+      _ostream = os;
+    }
+
+    void reset_thread_ids() {
+      _mtx.lock();
+      // Only do this from the main thread
+      assert(thread_id(std::this_thread::get_id()) == 0);
+      // Delete all thread_ids
+      _map.clear();
+      _next_tid = 0;
+      // Reinsert the main thread's id
+      thread_id(std::this_thread::get_id());
+      _mtx.unlock();
+    }
+
+    size_t thread_id(std::thread::id tid) {
+      auto it = _map.find(tid);
+      if (it != _map.end()) {
+        return (*it).second;
+      } else {
+        _map.insert(std::make_pair(tid, _next_tid++));
+        return _next_tid - 1;
+      }
+    }
+
+   private:
+    template <class T> std::string get_class_name(T const* obj) {
       int   status;
-      char* ptr = abi::__cxa_demangle(typeid(obj).name(), 0, 0, &status);
+      char* ptr = abi::__cxa_demangle(typeid(*obj).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
         std::string full = std::string(ptr);
         // find the last :: in the class name <full>
@@ -201,76 +229,27 @@ namespace semigroupsplusplus {
           pos  = full.find("::", pos + 1);
         }
         if (prev != 0) {
-          _class = full.substr(prev + 2, std::string::npos);
+          return full.substr(prev + 2, std::string::npos);
         } else {
-          _class = full;
+          return full;
         }
       }
       free(ptr);
+      return std::string();
     }
 
-    // non-const
-    //
-    // This method can be used to start a timer. The reporter is locked when the
-    // <Timer> is started but this is not thread safe, since if started in one
-    // thread and stop in another the output is not meaningful.
-    void start_timer() {
-      if (_report) {
-        _mtx.lock();
-        _timer.start();
-        _mtx.unlock();
-      }
+    std::string get_color_prefix(size_t tid) {
+      return _color_prefix[tid % _color_prefix.size()];
     }
 
-    // non-const
-    // @prefix a string to prefix the time (defaults to "elapsed time = ")
-    //
-    // This method can be used to stop a timer, and report the amount of time.
-    // The reporter is locked when the <Timer> is stopped but this is not thread
-    // safe, since if started in one thread and stop in another the output is
-    // not
-    // meaningful.
-    void stop_timer(std::string prefix = "elapsed time = ") {
-      if (_report && _timer.is_running()) {
-        _mtx.lock();
-        (*this)(_func, _thread_id) << prefix << _timer.string() << std::endl;
-        _timer.stop();
-        _mtx.unlock();
-      }
-    }
-
-    void set_ostream(std::ostream* os) {
-      _ostream = os;
-    }
-
-   private:
-    void output_prefix() {
-      if (_report && _operator_called) {
-        *_ostream << "Thread #" << _thread_id << ": ";
-
-        if (_class != "") {
-          *_ostream << _class;
-          if (_func != "") {
-            *_ostream << "::";
-          } else {
-            *_ostream << ": ";
-          }
-        }
-        if (_func != "") {
-          *_ostream << _func << ": ";
-        }
-      }
-      _operator_called = false;
-    }
-
-    std::string       _class;
-    std::string       _func;
+    std::vector<std::string> _color_prefix;
+    std::unordered_map<std::thread::id, size_t> _map;
     std::mutex        _mtx;
-    bool              _operator_called;
+    size_t            _next_tid;
+    std::ostream*     _ostream;  // For testing
     std::atomic<bool> _report;
-    std::ostream*     _ostream;
-    size_t            _thread_id;
-    Timer             _timer;
   };
-}  // namespace semigroupsplusplus
-#endif  // SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
+
+  extern Reporter glob_reporter; // defined in semigroups.cc
+}  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_UTIL_REPORT_H_
