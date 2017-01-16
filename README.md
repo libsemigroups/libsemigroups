@@ -21,3 +21,19 @@ The C/C++ library API is generated using [cldoc](https://github.com/jessevdk/cld
 
 Semigroups++ requires a C++ compiler supporting the c++11 standard.
 
+## Using with cling (EXPERIMENTAL!!!)
+
+After autoconfiscation ...
+
+      ./configure
+      make
+      sudo make install
+      cling -L /usr/local/lib
+      [cling]$ .L semigroups
+      [cling]$ #include "../semigroups.h"
+      [cling]$ using namespace semigroupsplusplus;
+      [cling]$   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
+      [cling]$                                 new Transformation<u_int16_t>({0, 1, 2})};
+      [cling]$   Semigroup S = Semigroup(gens);
+      [cling]$ S.size(false)
+      2
