@@ -1,6 +1,8 @@
 
 - Why do we need to set LD_LIBRARY_PATH?
 - Move declarations to .pxd file
-- Automatic generation of the .pxd file (e.g. with xdress?)
+- Automatic generation of the .pxd file?
+  xdress maybe? did not manage to install: complaining when trying to
+  link against clang libraries that are provided as static libraries.
 - Write manually some minimal Python wrapper
 - Automatic generation of the Python wrappers?
