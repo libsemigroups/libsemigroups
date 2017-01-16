@@ -6,7 +6,7 @@ setup(
     name = "semigroupsplusplus-python-bindings",
     ext_modules = cythonize([
         Extension("semigroups",
-                      sources=["semigroups.pyx","Rectangle.cpp"],
+                      sources=["semigroups.pyx"],
                       libraries=["semigroups"],
                       language="c++",             # generate C++ code
                       extra_compile_args=["-std=c++11"],
