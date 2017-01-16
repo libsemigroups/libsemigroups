@@ -28,6 +28,7 @@ dnl *
 
 AC_CONFIG_FILES([
 	Makefile
+        test/Makefile
 	])
 AC_OUTPUT dnl
 

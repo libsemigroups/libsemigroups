@@ -25,3 +25,6 @@ config/
 configure
 libtool
 m4/
+Makefile
+test.trs
+DEBUG
