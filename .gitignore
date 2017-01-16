@@ -1,5 +1,6 @@
 .dirstamp
 *.lo
+*.la
 .deps
 .libs
 html
@@ -12,3 +13,15 @@ gh-pages
 test/lcov
 *.gcno
 *.gcda
+config.status
+config.log
+*~
+# For now, the files generated autoreconf are *not* under version control
+Makefile.in
+README
+aclocal.m4
+autom4te.cache/
+config/
+configure
+libtool
+m4/
