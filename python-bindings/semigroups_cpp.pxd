@@ -14,6 +14,8 @@ cdef extern from "semigroups.h" namespace "semigroupsplusplus":
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
         vector[T] _vector
+        vector[T].iterator begin()
+        vector[T].iterator end()
     cdef cppclass Semigroup:
         Semigroup(vector[Element*]) except +
         int size()
