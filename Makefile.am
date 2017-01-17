@@ -24,3 +24,6 @@ libsemigroupsplusplus_la_SOURCES = libsemigroupsplusplus/blocks.cc
 libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/cong.cc
 libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/elements.cc
 libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/semigroups.cc
+
+all-local: libsemigroupsplusplus.la
+	@echo "SUCCESS!"
