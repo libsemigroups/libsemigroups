@@ -21,6 +21,7 @@ AC_PROG_LIBTOOL
 AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_LANG([C++])
+AX_PTHREAD()
 
 dnl *
 dnl * Output configured files
