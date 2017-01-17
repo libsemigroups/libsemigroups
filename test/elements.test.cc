@@ -20,7 +20,7 @@
 
 #include "../elements.h"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("Transformation<u_int16_t>: methods", "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({0, 1, 0});

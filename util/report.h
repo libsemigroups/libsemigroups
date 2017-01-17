@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
-#define SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
+#ifndef LIBSEMIGROUPS_UTIL_REPORT_H_
+#define LIBSEMIGROUPS_UTIL_REPORT_H_
 
 #include <assert.h>
 #include <cxxabi.h>

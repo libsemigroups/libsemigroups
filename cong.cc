@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <thread>
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   size_t   Congruence::INFTY     = -1;
   size_t   Congruence::UNDEFINED = -1;
@@ -690,4 +690,4 @@ namespace semigroupsplusplus {
       return cong_f;
     }
   }
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups

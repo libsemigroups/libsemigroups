@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   size_t Element::UNDEFINED = -1;
 
@@ -596,4 +596,4 @@ namespace semigroupsplusplus {
       }
     }
   }
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups

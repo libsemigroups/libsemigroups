@@ -21,7 +21,7 @@
 
 #include "../util/recvec.h"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("RecVec: default constructor with 3 default args", "[quick][util][recvec]") {
   RecVec<bool> rv = RecVec<bool>();

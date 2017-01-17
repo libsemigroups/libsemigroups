@@ -16,15 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef SEMIGROUPSPLUSPLUS_SEMIRING_H_
-#define SEMIGROUPSPLUSPLUS_SEMIRING_H_
+#ifndef LIBSEMIGROUPS_SEMIRING_H_
+#define LIBSEMIGROUPS_SEMIRING_H_
 
 #include <limits.h>
 
 #include <algorithm>
 #include <cstdint>
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   // Abstract
   // A *semiring* is a set *R* together with two binary operations + and x
@@ -473,6 +473,6 @@ namespace semigroupsplusplus {
     int64_t _threshold;
     int64_t _period;
   };
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups
 
-#endif  // SEMIGROUPSPLUSPLUS_SEMIRING_H_
+#endif  // LIBSEMIGROUPS_SEMIRING_H_

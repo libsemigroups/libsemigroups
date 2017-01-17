@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
-#define SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_H_
 
 #include <assert.h>
 
@@ -36,7 +36,7 @@
 //
 // Namespace for everything in the Semigroups++ library.
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   extern Reporter glob_reporter;
 
@@ -245,9 +245,9 @@ namespace semigroupsplusplus {
     //
     // @return the position of the element <x> in the semigroup if it is
     // already known to belong to the semigroup, and
-    // <semigroupsplusplus::Semigroup::UNDEFINED> if not. If the semigroup is
+    // <libsemigroups::Semigroup::UNDEFINED> if not. If the semigroup is
     // not fully enumerated, then this method may return
-    // <semigroupsplusplus::Semigroup::UNDEFINED> when <x> is in the semigroup,
+    // <libsemigroups::Semigroup::UNDEFINED> when <x> is in the semigroup,
     // but not this is not yet known. See also <position> and
     // <sorted_position>.
 
@@ -1060,6 +1060,6 @@ namespace semigroupsplusplus {
     size_t              _wordlen;
   };
 
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups
 
-#endif  // SEMIGROUPSPLUSPLUS_SEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_H_

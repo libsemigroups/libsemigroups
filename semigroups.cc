@@ -18,7 +18,7 @@
 
 #include "semigroups.h"
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   Reporter glob_reporter;
 
@@ -1078,4 +1078,4 @@ namespace semigroupsplusplus {
     }
   }
 
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups

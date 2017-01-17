@@ -14,3 +14,13 @@ test/lcov
 *.gcda
 DEBUG
 LCOV
+*.m4
+*.status
+configure
+*.la
+libtool
+*.in
+autom4te.cache
+config
+.!*
+libsemitest
