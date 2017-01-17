@@ -300,21 +300,21 @@ namespace semigroupsplusplus {
     // const
     //
     // @return An iterator pointing to the first value in <_vector>.
-    inline typename std::vector<u_int32_t>::iterator begin() const {
+    inline typename std::vector<S>::iterator begin() const {
       return _vector->begin();
     }
 
     // const
     //
     // @return An iterator referring to the past-the-end element in <_vector>.
-    inline typename std::vector<u_int32_t>::iterator end() const {
+    inline typename std::vector<S>::iterator end() const {
       return _vector->end();
     }
 
     // const
     //
     // @return A const_iterator pointing to the first value in <_vector>.
-    inline typename std::vector<u_int32_t>::iterator cbegin() const {
+    inline typename std::vector<S>::iterator cbegin() const {
       return _vector->cbegin();
     }
 
@@ -322,7 +322,7 @@ namespace semigroupsplusplus {
     //
     // @return A const_iterator referring to the past-the-end element in
     // <_vector>.
-    inline typename std::vector<u_int32_t>::iterator cend() const {
+    inline typename std::vector<S>::iterator cend() const {
       return _vector->cend();
     }
 
