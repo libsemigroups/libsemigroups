@@ -6,6 +6,7 @@ SUBDIRS = test
 
 AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 -pthread
 AM_LDFLAGS      = -pthread
+
 ACLOCAL_AMFLAGS	= -I m4
 
 lib_LTLIBRARIES = libsemigroups.la
@@ -28,5 +29,21 @@ libsemigroups_la_CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -s
 libsemigroups_la_CPPFLAGS = -DCONFIG_H
 libsemigroups_la_LDFLAGS = -module -avoid-version
 
+CLDOC_H = $(wildcard semigroups/*.h)
+
+COMMON_DOC_FLAGS = --report --merge docs --output html $(libsemigroups_la_SOURCES) $(CLDOC_H)
+
+
 all-local: libsemigroups.la
 	@echo "SUCCESS!"
+
+doc:
+	@echo "Generating static documentation . . ."; \
+	cldoc generate $(libsemigroups_la_CXXFLAGS) -- --static $(COMMON_DOC_FLAGS)
+	@echo "Fixing some bugs in cldoc . . ."; \
+	python docs/cldoc-fix
+
+docclean:
+	rm -rf html
+
+.PHONY: doc doclean 

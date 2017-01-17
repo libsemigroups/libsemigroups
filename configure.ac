@@ -44,8 +44,5 @@ AC_CHECK_FUNCS([gettimeofday memset pow sqrt])
 
 dnl Output configured files
 
-AC_CONFIG_FILES([
-	Makefile
-        test/Makefile
-	])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
