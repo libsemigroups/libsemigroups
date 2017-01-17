@@ -2,8 +2,7 @@
 # Automake configuration
 ##############################################################################
 
-AUTOMAKE_OPTIONS = foreign
-SUBDIRS = test 
+#SUBDIRS = test 
 
 AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 -pthread
 AM_LDFLAGS      = -pthread
