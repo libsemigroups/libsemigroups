@@ -19,8 +19,8 @@
 // This file contains the declaration of a blocks class, which is needed by the
 // bipartitions code.
 
-#ifndef SEMIGROUPSPLUSPLUS_BLOCKS_H_
-#define SEMIGROUPSPLUSPLUS_BLOCKS_H_
+#ifndef LIBSEMIGROUPS_BLOCKS_H_
+#define LIBSEMIGROUPS_BLOCKS_H_
 
 #include <assert.h>
 
@@ -28,7 +28,7 @@
 #include <functional>
 #include <vector>
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   // Non-abstract
   // Class for blocks, which are signed partitions of the set *{0, ..., n}*
@@ -226,6 +226,6 @@ namespace semigroupsplusplus {
     u_int32_t               _rank;
     static u_int32_t        UNDEFINED;
   };
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups
 
-#endif  // SEMIGROUPSPLUSPLUS_BLOCKS_H_
+#endif  // LIBSEMIGROUPS_BLOCKS_H_

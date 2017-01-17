@@ -2,31 +2,31 @@
 # Automake configuration
 ##############################################################################
 
-#SUBDIRS = test 
+SUBDIRS = test 
 
 AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 -pthread
 AM_LDFLAGS      = -pthread
 ACLOCAL_AMFLAGS	= -I m4
 
-lib_LTLIBRARIES = libsemigroupsplusplus.la
+lib_LTLIBRARIES = libsemigroups.la
 
-nobase_include_HEADERS = libsemigroupsplusplus/blocks.h  
-nobase_include_HEADERS += libsemigroupsplusplus/cong.h 
-nobase_include_HEADERS += libsemigroupsplusplus/elements.h  
-nobase_include_HEADERS += libsemigroupsplusplus/semigroups.h 
-nobase_include_HEADERS += libsemigroupsplusplus/semiring.h
-nobase_include_HEADERS += libsemigroupsplusplus/util/recvec.h  
-nobase_include_HEADERS += libsemigroupsplusplus/util/report.h
-nobase_include_HEADERS += libsemigroupsplusplus/util/timer.h
+nobase_include_HEADERS = semigroups/blocks.h  
+nobase_include_HEADERS += semigroups/cong.h 
+nobase_include_HEADERS += semigroups/elements.h  
+nobase_include_HEADERS += semigroups/semigroups.h 
+nobase_include_HEADERS += semigroups/semiring.h
+nobase_include_HEADERS += semigroups/util/recvec.h  
+nobase_include_HEADERS += semigroups/util/report.h
+nobase_include_HEADERS += semigroups/util/timer.h
 
-libsemigroupsplusplus_la_SOURCES = libsemigroupsplusplus/blocks.cc
-libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/cong.cc
-libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/elements.cc
-libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/semigroups.cc
+libsemigroups_la_SOURCES = semigroups/blocks.cc
+libsemigroups_la_SOURCES += semigroups/cong.cc
+libsemigroups_la_SOURCES += semigroups/elements.cc
+libsemigroups_la_SOURCES += semigroups/semigroups.cc
 
-libsemigroupsplusplus_la_CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
-libsemigroupsplusplus_la_CPPFLAGS = -DCONFIG_H
-libsemigroupsplusplus_la_LDFLAGS = -module -avoid-version
+libsemigroups_la_CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
+libsemigroups_la_CPPFLAGS = -DCONFIG_H
+libsemigroups_la_LDFLAGS = -module -avoid-version
 
-all-local: libsemigroupsplusplus.la
+all-local: libsemigroups.la
 	@echo "SUCCESS!"

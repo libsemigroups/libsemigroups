@@ -21,7 +21,7 @@
 #include "../blocks.h"
 #include "../elements.h"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("Blocks: empty blocks", "") {
   Blocks b1;

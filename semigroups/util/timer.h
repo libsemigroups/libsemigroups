@@ -16,15 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef SEMIGROUPSPLUSPLUS_UTIL_TIMER_H_
-#define SEMIGROUPSPLUSPLUS_UTIL_TIMER_H_
+#ifndef LIBSEMIGROUPS_UTIL_TIMER_H_
+#define LIBSEMIGROUPS_UTIL_TIMER_H_
 
 #include <assert.h>
 #include <chrono>
 #include <iostream>
 #include <string>
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   //
   // This is a simple class to which can be used to send timing information to
@@ -131,6 +131,6 @@ namespace semigroupsplusplus {
       return false;
     }
   };
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups
 
-#endif  // SEMIGROUPSPLUSPLUS_UTIL_TIMER_H_
+#endif  // LIBSEMIGROUPS_UTIL_TIMER_H_

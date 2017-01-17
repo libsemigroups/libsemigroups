@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef SEMIGROUPSPLUSPLUS_CONG_H_
-#define SEMIGROUPSPLUSPLUS_CONG_H_
+#ifndef LIBSEMIGROUPS_CONG_H_
+#define LIBSEMIGROUPS_CONG_H_
 
 // TODO(?): the congruence object and the Todd-Coxeter data structures should be
 // separated (i.e. all the Todd-Coxeter data stuff should go into a member
@@ -37,7 +37,7 @@
 #include "semigroups.h"
 #include "util/report.h"
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   // Non-abstract
   // Class for representing a congruence on a semigroup defined either as an
@@ -359,5 +359,5 @@ namespace semigroupsplusplus {
   Congruence* parallel_todd_coxeter(Congruence* cong1,
                                     Congruence* cong2,
                                     bool        report = DEFAULT_REPORT_VALUE);
-}  // namespace semigroupsplusplus
-#endif  // SEMIGROUPSPLUSPLUS_CONG_H_
+}  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_CONG_H_

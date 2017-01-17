@@ -3,7 +3,7 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 
 setup(
-    name = "semigroupsplusplus-python-bindings",
+    name = "libsemigroups-python-bindings",
     ext_modules = cythonize([
         Extension("semigroups",
                       sources=["semigroups.pyx", "semigroups_cpp.cpp"],

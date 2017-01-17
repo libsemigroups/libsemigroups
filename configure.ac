@@ -3,8 +3,8 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Autoconf and automake initialization.
 
 AC_PREREQ([2.69])
-AC_INIT([semigroupsplusplus],[0.0.3],[jdm3@st-andrews.ac.uk])
-AC_CONFIG_SRCDIR(libsemigroupsplusplus/semigroups.cc)
+AC_INIT([libsemigroups],[0.0.3],[jdm3@st-andrews.ac.uk])
+AC_CONFIG_SRCDIR(semigroups/semigroups.cc)
 AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
@@ -44,5 +44,8 @@ AC_CHECK_FUNCS([gettimeofday memset pow sqrt])
 
 dnl Output configured files
 
-AC_CONFIG_FILES([Makefile])
-AC_OUTPUT 
+AC_CONFIG_FILES([
+	Makefile
+        test/Makefile
+	])
+AC_OUTPUT

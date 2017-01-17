@@ -18,8 +18,8 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
-#ifndef SEMIGROUPSPLUSPLUS_ELEMENTS_H_
-#define SEMIGROUPSPLUSPLUS_ELEMENTS_H_
+#ifndef LIBSEMIGROUPS_ELEMENTS_H_
+#define LIBSEMIGROUPS_ELEMENTS_H_
 
 #include <assert.h>
 #include <math.h>
@@ -35,7 +35,7 @@
 
 #define PP_UNDEFINED PartialTransformation<T, PartialPerm<T>>::UNDEFINED
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   // Abstract
   //
@@ -44,7 +44,7 @@ namespace semigroupsplusplus {
    public:
     // 0 or 1 parameter (hash value)
     // @hv the hash value (for caching) of the element being created (defaults
-    // to <semigroupsplusplus::Element::UNDEFINED>.
+    // to <libsemigroups::Element::UNDEFINED>.
     explicit Element(size_t hv = Element::UNDEFINED) : _hash_value(hv) {}
 
     //
@@ -157,7 +157,7 @@ namespace semigroupsplusplus {
     // @x an element
     // @y an element
     //
-    // See <semigroupsplusplus::Element::redefine>.
+    // See <libsemigroups::Element::redefine>.
     //
     // Redefine **this** to be the product of <x> and <y>.
     virtual void redefine(Element const* x, Element const* y) = 0;
@@ -171,7 +171,7 @@ namespace semigroupsplusplus {
     // const
     //
     // This method is used to reset the cached hash value to
-    // <semigroupsplusplus::Element::UNDEFINED>.
+    // <libsemigroups::Element::UNDEFINED>.
     void reset_hash_value() const {
       _hash_value = UNDEFINED;
     }
@@ -185,8 +185,8 @@ namespace semigroupsplusplus {
     //
     // This data member holds a cached version of the hash value of an Element.
     // It is stored here if it is ever computed. It is invalidated by
-    // <semigroupsplusplus::Element::redefine> and sometimes by
-    // <semigroupsplusplus::Element::really_copy>.
+    // <libsemigroups::Element::redefine> and sometimes by
+    // <libsemigroups::Element::really_copy>.
     mutable size_t _hash_value;
   };
 
@@ -1265,6 +1265,6 @@ namespace semigroupsplusplus {
     static RecVec<bool>      out;
     static RecVec<bool>      tmp;
   };
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups
 
-#endif  // SEMIGROUPSPLUSPLUS_ELEMENTS_H_
+#endif  // LIBSEMIGROUPS_ELEMENTS_H_

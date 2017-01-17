@@ -19,7 +19,7 @@
 #include "../semiring.h"
 #include "catch.hpp"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("Semiring: threshold/period [undefined]", "[]") {
   Semiring* sr = new MaxPlusSemiring();
