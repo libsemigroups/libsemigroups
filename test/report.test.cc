@@ -21,7 +21,7 @@
 
 #include "catch.hpp"
 
-#include "../util/report.h"
+#include "../semigroups/util/report.h"
 
 using namespace libsemigroups;
 

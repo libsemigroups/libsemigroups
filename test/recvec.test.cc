@@ -19,7 +19,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "../util/recvec.h"
+#include "../semigroups/util/recvec.h"
 
 using namespace libsemigroups;
 
