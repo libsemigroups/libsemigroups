@@ -20,3 +20,6 @@ cdef extern from "semigroups.h" namespace "semigroupsplusplus":
         Semigroup(vector[Element*]) except +
         int size()
 
+cdef extern from "semigroups_cpp.h" namespace "semigroupsplusplus":
+    cdef cppclass PythonElement(Element):
+        PythonElement(int) except +

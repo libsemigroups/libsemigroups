@@ -1,8 +1,19 @@
 #cython: infer_types=True
 
+"""
+
+>>> from semigroups import Semigroup
+>>> Semigroup([0,1,-1])
+
+
+"""
 from libc.stdint cimport uint16_t
 from libcpp.vector cimport vector
 cimport semigroups_cpp as cpp
+
+#cdef class MyCppElement(cpp.Element):
+#    pass
+
 
 cdef class Element:
     cdef cpp.Element* cpp_element
@@ -40,6 +51,29 @@ cdef class Transformation(Element):
             [1, 2, 0]
         """
         return str(list(self))
+
+cdef class PythonElement(Element):
+    """
+    A class for semigroup element wrapping Python elements
+
+    For now, it's actually a wrapper for C int's ...
+
+    EXAMPLE::
+
+        >>> PythonElement(-1)
+        <semigroups.PythonElement at ...>
+        >>> Semigroup([PythonElement(-1)]).size()
+        2
+        >>> Semigroup([PythonElement(1)]).size()
+        1
+        >>> Semigroup([PythonElement(0)]).size()
+        1
+        >>> Semigroup([PythonElement(0), PythonElement(-1)]).size()
+        3
+    """
+    def __cinit__(self, value):
+        self.cpp_element = new cpp.PythonElement(value)
+
 
 
 cdef class Semigroup:
