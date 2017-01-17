@@ -5,8 +5,8 @@ dnl Autoconf and automake initialization.
 AC_PREREQ([2.69])
 AC_INIT([semigroupsplusplus],[0.0.3],[jdm3@st-andrews.ac.uk])
 AC_CONFIG_AUX_DIR(config)
-AC_CONFIG_SRCDIR(semigroups.cc)
-AM_INIT_AUTOMAKE([gnu check-news 1.7])
+AC_CONFIG_SRCDIR(libsemigroupsplusplus/semigroups.cc)
+AM_INIT_AUTOMAKE(gnu check-news 1.7 subdir-objects)
 AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
