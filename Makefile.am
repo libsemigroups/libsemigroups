@@ -9,17 +9,18 @@ AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 -pthr
 AM_LDFLAGS      = -pthread
 ACLOCAL_AMFLAGS	= -I m4
 
-#  LIBS="$PTHREAD_LIBS $LIBS"
-#  CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-#  CC="$PTHREAD_CC"
-
-
-nobase_include_HEADERS = libsemigroupsplusplus/blocks.h  libsemigroupsplusplus/cong.h  libsemigroupsplusplus/elements.h  
-nobase_include_HEADERS += libsemigroupsplusplus/semigroups.h  libsemigroupsplusplus/semiring.h
-nobase_include_HEADERS += libsemigroupsplusplus/util/recvec.h  libsemigroupsplusplus/util/report.h
+nobase_include_HEADERS = libsemigroupsplusplus/blocks.h  
+nobase_include_HEADERS += libsemigroupsplusplus/cong.h 
+nobase_include_HEADERS += libsemigroupsplusplus/elements.h  
+nobase_include_HEADERS += libsemigroupsplusplus/semigroups.h 
+nobase_include_HEADERS += libsemigroupsplusplus/semiring.h
+nobase_include_HEADERS += libsemigroupsplusplus/util/recvec.h  
+nobase_include_HEADERS += libsemigroupsplusplus/util/report.h
 nobase_include_HEADERS += libsemigroupsplusplus/util/timer.h
 
-lib_LTLIBRARIES = libsemigroups.la
+lib_LTLIBRARIES = libsemigroupsplusplus.la
 
-libsemigroups_la_SOURCES = libsemigroupsplusplus/blocks.cc  libsemigroupsplusplus/cong.cc  libsemigroupsplusplus/elements.cc
-libsemigroups_la_SOURCES += libsemigroupsplusplus/semigroups.cc
+libsemigroupsplusplus_la_SOURCES = libsemigroupsplusplus/blocks.cc
+libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/cong.cc
+libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/elements.cc
+libsemigroupsplusplus_la_SOURCES += libsemigroupsplusplus/semigroups.cc
