@@ -30,3 +30,4 @@ test.trs
 DEBUG
 LCOV
 libsemitest
+.!*
