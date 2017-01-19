@@ -6,3 +6,6 @@
   link against clang libraries that are provided as static libraries.
 - Write manually some minimal Python wrapper
 - Automatic generation of the Python wrappers?
+
+- Fetch features from
+  https://trac.sagemath.org/attachment/ticket/8360/trac_8360_semigroupe-interface-nt.patch
