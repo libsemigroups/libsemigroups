@@ -29,7 +29,7 @@
 
 #include "blocks.h"
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   u_int32_t Blocks::UNDEFINED = -1;
 
@@ -98,4 +98,4 @@ namespace semigroupsplusplus {
     }
     return seed;
   }
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups

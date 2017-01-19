@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../semigroups.h"
+#include "../semigroups/semigroups.h"
 #include "catch.hpp"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 template <typename T> static inline void really_delete_cont(T cont) {
   for (Element* x : cont) {

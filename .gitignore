@@ -28,3 +28,6 @@ m4/
 Makefile
 test.trs
 DEBUG
+LCOV
+libsemitest
+.!*

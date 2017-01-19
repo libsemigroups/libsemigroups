@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../semiring.h"
+#include "../semigroups/semiring.h"
 #include "catch.hpp"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("Semiring: threshold/period [undefined]", "[]") {
   Semiring* sr = new MaxPlusSemiring();

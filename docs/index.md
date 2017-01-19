@@ -7,9 +7,9 @@ Semigroups++
 
 This is the source code documentation for Semigroups++ produced using
 [cldoc](https://github.com/jessevdk/cldoc). This documentation can be
-compiled by running `make doc` in the `semigroupsplusplus`
+compiled by running `make doc` in the `libsemigroups`
 directory, and the tests can be run by doing `make test` in the
-`semigroupsplusplus` directory.
+`libsemigroups` directory.
 
 The algorithms and data structures in this version of Semigroups++ are
 based on 
@@ -21,7 +21,7 @@ by Jean-Eric Pin.
 The Semigroups++ library is used in the 
 [Semigroups package for GAP](http://gap-packages.github.io/Semigroups/).
 The development version is available on 
-[Github](https://github.com/james-d-mitchell/semigroupsplusplus).
+[Github](https://github.com/james-d-mitchell/libsemigroups).
 
 Some of the features of 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) 
@@ -42,7 +42,7 @@ The Semigroups++ library performs roughly the same as
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
 when there is a known upper bound on the size of the semigroup being
 enumerated, and this is used to initialise the data structures for the
-semigroup; see <semigroupsplusplus::Semigroup::set_batch_size> for more
+semigroup; see <libsemigroups::Semigroup::set_batch_size> for more
 details. Note that in 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
 it is always necessary to provide such an upper bound, but in the Semigroups++
@@ -75,4 +75,4 @@ The Semigroups++ library also has some advantages over
 
 If you find any problems with Semigroups++ or have any suggestions for features
 that you'd like to see please use the 
-[issue tracker](https://github.com/james-d-mitchell/semigroupsplusplus/issues).
+[issue tracker](https://github.com/james-d-mitchell/libsemigroups/issues).

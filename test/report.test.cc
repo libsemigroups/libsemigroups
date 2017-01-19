@@ -21,9 +21,9 @@
 
 #include "catch.hpp"
 
-#include "../util/report.h"
+#include "../semigroups/util/report.h"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 // Classes for testing
 class Class {

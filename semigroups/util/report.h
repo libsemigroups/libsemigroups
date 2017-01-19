@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
-#define SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
+#ifndef LIBSEMIGROUPS_UTIL_REPORT_H_
+#define LIBSEMIGROUPS_UTIL_REPORT_H_
 
 #include <assert.h>
 #include <cxxabi.h>
@@ -31,7 +31,7 @@
 
 #include "timer.h"
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   //
   // This is a simple class which can be used to print information to
@@ -272,5 +272,5 @@ namespace semigroupsplusplus {
     size_t            _thread_id;
     Timer             _timer;
   };
-}  // namespace semigroupsplusplus
-#endif  // SEMIGROUPSPLUSPLUS_UTIL_REPORT_H_
+}  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_UTIL_REPORT_H_

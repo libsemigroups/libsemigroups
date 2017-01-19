@@ -18,7 +18,7 @@
 
 #include "semigroups.h"
 
-namespace semigroupsplusplus {
+namespace libsemigroups {
 
   // Static data members
   Semigroup::pos_t Semigroup::UNDEFINED = -1;
@@ -1053,4 +1053,4 @@ namespace semigroupsplusplus {
     }
   }
 
-}  // namespace semigroupsplusplus
+}  // namespace libsemigroups

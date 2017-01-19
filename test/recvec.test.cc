@@ -19,9 +19,9 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "../util/recvec.h"
+#include "../semigroups/util/recvec.h"
 
-using namespace semigroupsplusplus;
+using namespace libsemigroups;
 
 TEST_CASE("RecVec: default constructor with 3 default args", "[constructor]") {
   RecVec<bool> rv = RecVec<bool>();
