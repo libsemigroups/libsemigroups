@@ -7,7 +7,7 @@ setup(
     ext_modules = cythonize([
         Extension("semigroups",
                       sources=["semigroups.pyx", "semigroups_cpp.cpp"],
-                      libraries=["semigroups"],
+                      libraries=["libsemigroups"],
                       language="c++",             # generate C++ code
                       extra_compile_args=["-std=c++11"],
                       )])
