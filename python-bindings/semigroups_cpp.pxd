@@ -8,9 +8,10 @@
 from libc.stdint cimport uint16_t
 from libcpp.vector cimport vector
 
-cdef extern from "semigroups.h" namespace "semigroupsplusplus":
+cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
     cdef cppclass Element:
-        pass
+        identity()
+        redefine(Element *, Element *)
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
         vector[T] _vector
@@ -20,6 +21,7 @@ cdef extern from "semigroups.h" namespace "semigroupsplusplus":
         Semigroup(vector[Element*]) except +
         int size()
 
-cdef extern from "semigroups_cpp.h" namespace "semigroupsplusplus":
+cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):
-        PythonElement(int) except +
+        object get_value()
+        PythonElement(value) except +

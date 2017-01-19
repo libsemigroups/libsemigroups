@@ -60,8 +60,14 @@ cdef class PythonElement(Element):
 
     EXAMPLE::
 
-        >>> PythonElement(-1)
+        >>> from semigroups import Semigroup, PythonElement
+        >>> x = PythonElement(-1)
         <semigroups.PythonElement at ...>
+
+    Testing deallocation:
+
+        >>> x = 3
+
         >>> Semigroup([PythonElement(-1)]).size()
         2
         >>> Semigroup([PythonElement(1)]).size()
@@ -70,15 +76,49 @@ cdef class PythonElement(Element):
         1
         >>> Semigroup([PythonElement(0), PythonElement(-1)]).size()
         3
+
+        x = [PythonElement(-1)]
+        x = 2
     """
-    def __cinit__(self, value):
+    def __cinit__(self):
+        self.cpp_element = NULL
+
+    def __dealloc__(self):
+        """
+        TESTS::
+
+            >>> from semigroups import Semigroup, PythonElement
+            >>> x = PythonElement(-1)
+            <semigroups.PythonElement at ...>
+
+        Testing deallocation:
+            >>> x = 3
+        """
+        pass
+        # TODO: why activating the del below causes a seg fault
+        #del self.cpp_element
+
+    def __init__(self, value):
         self.cpp_element = new cpp.PythonElement(value)
 
+    def get_value(self):
+        """
 
+        """
+        return (<cpp.PythonElement *>self.cpp_element).get_value()
+
+    def __repr__(self):
+        return repr(self.get_value())
+
+    def __mul__(self, other):
+        pass
+        #product = cpp.PythonElement(None)
+        #product.redefine(self. , other.)
 
 cdef class Semigroup:
     cdef cpp.Semigroup* cpp_semigroup      # holds a pointer to the C++ instance which we're wrapping
     def __cinit__(self, generators):
+        ## Jeroen: Move this to __init__
         cdef vector[cpp.Element *] gens
         for g in generators:
             gens.push_back((<Element>g).cpp_element)
@@ -98,4 +138,5 @@ cdef class Semigroup:
             >>> S.size()
             5
         """
+        # Plausibly wrap in sig_off / sig_on
         return self.cpp_semigroup.size()
