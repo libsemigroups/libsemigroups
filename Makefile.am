@@ -6,9 +6,7 @@ AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
 ACLOCAL_AMFLAGS	= -I m4
 
-lib_LTLIBRARIES = libsemigroups.la
-
-nobase_include_HEADERS = semigroups/blocks.h  
+nobase_include_HEADERS =  semigroups/blocks.h  
 nobase_include_HEADERS += semigroups/cong.h 
 nobase_include_HEADERS += semigroups/elements.h  
 nobase_include_HEADERS += semigroups/semigroups.h 
@@ -17,13 +15,15 @@ nobase_include_HEADERS += semigroups/util/recvec.h
 nobase_include_HEADERS += semigroups/util/report.h
 nobase_include_HEADERS += semigroups/util/timer.h
 
+lib_LTLIBRARIES = libsemigroups.la
+
 libsemigroups_la_SOURCES = semigroups/blocks.cc
 libsemigroups_la_SOURCES += semigroups/cong.cc
 libsemigroups_la_SOURCES += semigroups/elements.cc
 libsemigroups_la_SOURCES += semigroups/semigroups.cc
 
-libsemigroups_la_CPPFLAGS = -DCONFIG_H
-libsemigroups_la_LDFLAGS = -module -avoid-version
+#libsemigroups_la_CPPFLAGS = -DCONFIG_H
+#libsemigroups_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
 CLDOC_H = $(wildcard semigroups/*.h)
 
@@ -38,7 +38,7 @@ libsemitest_SOURCES += test/semigroups.test.cc
 
 libsemitest_CXXFLAGS = $(AM_CXXFLAGS) -O3
 libsemitest_CPPFLAGS = -DCONFIG_H
-libsemitest_LDFLAGS = -module -avoid-version
+libsemitest_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
 libsemitest_LDADD = libsemigroups.la
 
