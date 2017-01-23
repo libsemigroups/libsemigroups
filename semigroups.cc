@@ -491,7 +491,9 @@ namespace semigroupsplusplus {
 
   void
   Semigroup::enumerate(std::atomic<bool>& killed, size_t limit, bool report) {
+    _mtx.lock();
     if (_pos >= _nr || limit <= _nr) {
+      _mtx.unlock();
       return;
     }
     limit = std::max(limit, _nr + _batch_size);
@@ -614,6 +616,7 @@ namespace semigroupsplusplus {
       }
     }
     _reporter.stop_timer();
+    _mtx.unlock();
   }
 
   Semigroup* Semigroup::copy_closure(std::vector<Element*> const* coll,

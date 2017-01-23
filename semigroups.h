@@ -22,6 +22,7 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -1114,6 +1115,7 @@ namespace semigroupsplusplus {
     std::unordered_map<const Element*, size_t, Element::Hash, Element::Equal>
                          _map;
     std::vector<bool>    _multiplied;
+    std::mutex           _mtx;
     size_t               _nr;
     size_t               _nrgens;
     size_t               _nr_idempotents;
