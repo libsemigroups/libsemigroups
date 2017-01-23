@@ -107,7 +107,7 @@ namespace libsemigroups {
     // Look up these element positions and store the Element pointers
     size_t next_nontrivial_class = 0;
     assert(pos_classes.size() == nr_classes());
-    for (size_t class_nr = 0; class_nr < nr_classes(); class_nr++) {
+    for (size_t class_nr = 0; class_nr < pos_classes.size(); class_nr++) {
       // Use only the classes with at least 2 elements
       if (pos_classes[class_nr].size() > 1) {
         classes.push_back(std::vector<Element const*>());

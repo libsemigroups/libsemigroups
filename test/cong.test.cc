@@ -406,7 +406,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 }
 
 TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
-          "[standard][congruence][multithread][finite][pbr][fixme]") {
+          "[extreme][congruence][multithread][finite][pbr][fixme]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
       new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
@@ -436,8 +436,20 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   cong.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 19009);
+
   Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
-  // REQUIRE(nontrivial_classes.size() == 577); FIXME this is still broken
+  REQUIRE(nontrivial_classes.size() == 577);
+  std::vector<size_t> sizes({0, 0, 0, 0});
+  for (Congruence::class_t block : nontrivial_classes) {
+    switch(block.size()) {
+      case     4: sizes[0]++; break;
+      case    16: sizes[1]++; break;
+      case    96: sizes[2]++; break;
+      case 41216: sizes[3]++; break;
+      default: REQUIRE(false);
+    }
+  }
+  REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
   really_delete_partition(nontrivial_classes);
 }
 
