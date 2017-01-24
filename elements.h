@@ -38,6 +38,8 @@
 
 namespace libsemigroups {
 
+  extern unsigned int const MAX_THREADS;
+
   // Abstract
   //
   // Abstract base class for elements of a semigroup.
@@ -81,8 +83,7 @@ namespace libsemigroups {
     //
     // The returned value is used in, for example, <Semigroup::fast_product> and
     // <Semigroup::nr_idempotents> to decide if it is better to multiply
-    // elements
-    // or follow a path in the Cayley graph.
+    // elements or follow a path in the Cayley graph.
     //
     // @return the complexity of multiplying two elements.
     virtual size_t complexity() const = 0;
@@ -93,8 +94,7 @@ namespace libsemigroups {
     // and is used to determine whether or not two elements are compatible for
     // multiplication. For example, two <Transformation>s of different degrees
     // cannot be multiplied, or a <Bipartition> of degree 10 cannot be an
-    // element
-    // of a monoid of bipartitions of degree 3.
+    // element of a monoid of bipartitions of degree 3.
     //
     // See the relevant subclass for the particular meaning of the return value
     // of this method for each subclass.
@@ -208,7 +208,7 @@ namespace libsemigroups {
     //
     // This variable is used to indicate that a value is undefined, such as,
     // the cached hash value.
-    static size_t UNDEFINED;
+    static size_t const UNDEFINED;
 
     //
     // This data member holds a cached version of the hash value of an Element.
@@ -866,7 +866,7 @@ namespace libsemigroups {
     // of this is checked.  The argument <blocks> is not copied, and should be
     // deleted using <ElementWithVectorData::really_delete>
     explicit Bipartition(std::vector<u_int32_t>* blocks,
-                         size_t                  hv = Element::UNDEFINED)
+                         size_t                  hv     = Element::UNDEFINED)
         : ElementWithVectorData<u_int32_t, Bipartition>(blocks, hv),
           _nr_blocks(Bipartition::UNDEFINED),
           _nr_left_blocks(Bipartition::UNDEFINED),
@@ -896,8 +896,7 @@ namespace libsemigroups {
     // const
     //
     // A bipartition is of degree *n* if it is a partition of *{0, ..., 2n -
-    // 1}*.
-    // See <Element::degree> for more details.
+    // 1}*.  See <Element::degree> for more details.
     //
     // @return the degree of the bipartition.
     size_t degree() const override;
@@ -1000,11 +999,9 @@ namespace libsemigroups {
     // @nr_left_blocks an integer
     //
     // This method sets the cached value of the number of left blocks of
-    // **this**
-    // to
-    // <nr_left_blocks>. It asserts that either there is no existing cached
-    // value
-    // or <nr_left_blocks> equals the existing cached value.
+    // **this** to <nr_left_blocks>. It asserts that either there is no
+    // existing cached value or <nr_left_blocks> equals the existing cached
+    // value.
     inline void set_nr_left_blocks(size_t nr_left_blocks) {
       assert(_nr_left_blocks == Bipartition::UNDEFINED
              || _nr_left_blocks == nr_left_blocks);
@@ -1023,17 +1020,18 @@ namespace libsemigroups {
     }
 
    private:
-    u_int32_t fuseit(u_int32_t);
+    u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
     void      init_trans_blocks_lookup();
 
-    size_t            _nr_blocks;
-    size_t            _nr_left_blocks;
-    std::vector<bool> _trans_blocks_lookup;
-    size_t            _rank;
+    static std::vector<std::vector<u_int32_t>> _fuse;
+    static std::vector<std::vector<u_int32_t>> _lookup;
 
-    static std::vector<u_int32_t> _fuse;
-    static std::vector<u_int32_t> _lookup;
-    static u_int32_t              UNDEFINED;
+    size_t                 _nr_blocks;
+    size_t                 _nr_left_blocks;
+    std::vector<bool>      _trans_blocks_lookup;
+    size_t                 _rank;
+
+    static u_int32_t const        UNDEFINED;
   };
 
   // Non-abstract
@@ -1284,24 +1282,33 @@ namespace libsemigroups {
     void redefine(Element const* x, Element const* y) override;
 
    private:
-    void unite_rows(size_t const& vertex1, size_t const& vertex2);
+    void unite_rows(RecVec<bool>& out,
+                    RecVec<bool>& tmp,
+                    size_t const& vertex1,
+                    size_t const& vertex2);
 
-    void x_dfs(u_int32_t const& n,
-               u_int32_t const& i,
-               PBR const* const x,
-               PBR const* const y,
-               size_t const&    adj);
+    void x_dfs(std::vector<bool>& x_seen,
+               std::vector<bool>& y_seen,
+               RecVec<bool>&      tmp,
+               u_int32_t const&   n,
+               u_int32_t const&   i,
+               PBR const* const   x,
+               PBR const* const   y,
+               size_t const&      adj);
 
-    void y_dfs(u_int32_t const& n,
-               u_int32_t const& i,
-               PBR const* const x,
-               PBR const* const y,
-               size_t const&    adj);
+    void y_dfs(std::vector<bool>& x_seen,
+               std::vector<bool>& y_seen,
+               RecVec<bool>&      tmp,
+               u_int32_t const&   n,
+               u_int32_t const&   i,
+               PBR const* const   x,
+               PBR const* const   y,
+               size_t const&      adj);
 
-    static std::vector<bool> x_seen;
-    static std::vector<bool> y_seen;
-    static RecVec<bool>      out;
-    static RecVec<bool>      tmp;
+    static std::vector<std::vector<bool>> _x_seen;
+    static std::vector<std::vector<bool>> _y_seen;
+    static std::vector<RecVec<bool>>      _out;
+    static std::vector<RecVec<bool>>      _tmp;
   };
 }  // namespace libsemigroups
 

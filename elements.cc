@@ -22,10 +22,13 @@
 #include "elements.h"
 
 #include <algorithm>
+#include <thread>
+
+#include "util/report.h"
 
 namespace libsemigroups {
 
-  size_t Element::UNDEFINED = -1;
+  size_t const Element::UNDEFINED = -1;
 
   // BooleanMat
 
@@ -96,9 +99,9 @@ namespace libsemigroups {
 
   // Bipartition
 
-  std::vector<u_int32_t> Bipartition::_fuse     = std::vector<u_int32_t>();
-  std::vector<u_int32_t> Bipartition::_lookup   = std::vector<u_int32_t>();
-  u_int32_t              Bipartition::UNDEFINED = -1;
+  u_int32_t const                     Bipartition::UNDEFINED = -1;
+  std::vector<std::vector<u_int32_t>> Bipartition::_fuse(MAX_THREADS);
+  std::vector<std::vector<u_int32_t>> Bipartition::_lookup(MAX_THREADS);
 
   u_int32_t Bipartition::block(size_t pos) const {
     assert(pos < 2 * degree());
@@ -151,24 +154,30 @@ namespace libsemigroups {
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
 
-    _fuse.clear();
-    _fuse.reserve(nrx + nry);
-    _lookup.clear();
-    _lookup.reserve(nrx + nry);
+    // TODO initialise using ()
+    std::vector<u_int32_t>& fuse =
+      _fuse[glob_reporter.thread_id(std::this_thread::get_id())];
+    std::vector<u_int32_t>& lookup =
+      _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+
+    fuse.clear();
+    fuse.reserve(nrx + nry);
+    lookup.clear();
+    lookup.reserve(nrx + nry);
 
     for (size_t i = 0; i < nrx + nry; i++) {
-      _fuse.push_back(i);
-      _lookup.push_back(-1);
+      fuse.push_back(i);
+      lookup.push_back(-1);
     }
 
     for (size_t i = 0; i < n; i++) {
-      u_int32_t j = fuseit((*xblocks)[i + n]);
-      u_int32_t k = fuseit((*yblocks)[i] + nrx);
+      u_int32_t j = fuseit(fuse, (*xblocks)[i + n]);
+      u_int32_t k = fuseit(fuse, (*yblocks)[i] + nrx);
       if (j != k) {
         if (j < k) {
-          _fuse[k] = j;
+          fuse[k] = j;
         } else {
-          _fuse[j] = k;
+          fuse[j] = k;
         }
       }
     }
@@ -176,28 +185,29 @@ namespace libsemigroups {
     u_int32_t next = 0;
 
     for (size_t i = 0; i < n; i++) {
-      u_int32_t j = fuseit((*xblocks)[i]);
-      if (_lookup[j] == (u_int32_t) -1) {
-        _lookup[j] = next;
+      u_int32_t j = fuseit(fuse, (*xblocks)[i]);
+      if (lookup[j] == (u_int32_t) -1) {
+        lookup[j] = next;
         next++;
       }
-      (*this->_vector)[i] = _lookup[j];
+      (*this->_vector)[i] = lookup[j];
     }
 
     for (size_t i = n; i < 2 * n; i++) {
-      u_int32_t j = fuseit((*yblocks)[i] + nrx);
-      if (_lookup[j] == (u_int32_t) -1) {
-        _lookup[j] = next;
+      u_int32_t j = fuseit(fuse, (*yblocks)[i] + nrx);
+      if (lookup[j] == (u_int32_t) -1) {
+        lookup[j] = next;
         next++;
       }
-      (*this->_vector)[i] = _lookup[j];
+      (*this->_vector)[i] = lookup[j];
     }
     this->reset_hash_value();
   }
 
-  inline u_int32_t Bipartition::fuseit(u_int32_t pos) {
-    while (_fuse[pos] < pos) {
-      pos = _fuse[pos];
+  inline u_int32_t Bipartition::fuseit(std::vector<u_int32_t>& fuse,
+                                       u_int32_t               pos) {
+    while (fuse[pos] < pos) {
+      pos = fuse[pos];
     }
     return pos;
   }
@@ -293,19 +303,22 @@ namespace libsemigroups {
     std::vector<bool>*      blocks_lookup = new std::vector<bool>();
 
     // must reindex the blocks
-    _lookup.clear();
-    _lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
+    std::vector<u_int32_t>& lookup =
+      _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+
+    lookup.clear();
+    lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
     u_int32_t nr_blocks = 0;
 
     for (auto it = _vector->begin() + (_vector->size() / 2);
          it < _vector->end();
          it++) {
-      if (_lookup[*it] == Bipartition::UNDEFINED) {
-        _lookup[*it] = nr_blocks;
+      if (lookup[*it] == Bipartition::UNDEFINED) {
+        lookup[*it] = nr_blocks;
         blocks_lookup->push_back(this->is_transverse_block(*it));
         nr_blocks++;
       }
-      blocks->push_back(_lookup[*it]);
+      blocks->push_back(lookup[*it]);
     }
 
     return new Blocks(blocks, blocks_lookup, nr_blocks);
@@ -433,10 +446,10 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
 
-  std::vector<bool> PBR::x_seen;
-  std::vector<bool> PBR::y_seen;
-  RecVec<bool>      PBR::out;
-  RecVec<bool>      PBR::tmp;
+  std::vector<std::vector<bool>> PBR::_x_seen(MAX_THREADS);
+  std::vector<std::vector<bool>> PBR::_y_seen(MAX_THREADS);
+  std::vector<RecVec<bool>>      PBR::_out(MAX_THREADS);
+  std::vector<RecVec<bool>>      PBR::_tmp(MAX_THREADS);
 
   size_t PBR::complexity() const {
     return pow((2 * this->degree()), 3);
@@ -483,6 +496,16 @@ namespace libsemigroups {
 
     u_int32_t const n = this->degree();
 
+    // TODO initialise using ()
+    std::vector<bool>& x_seen =
+      _x_seen[glob_reporter.thread_id(std::this_thread::get_id())];
+    std::vector<bool>& y_seen =
+      _y_seen[glob_reporter.thread_id(std::this_thread::get_id())];
+    RecVec<bool>& tmp =
+      _tmp[glob_reporter.thread_id(std::this_thread::get_id())];
+    RecVec<bool>& out =
+      _out[glob_reporter.thread_id(std::this_thread::get_id())];
+
     if (x_seen.size() != 2 * n) {
       x_seen.clear();
       x_seen.resize(2 * n, false);
@@ -505,15 +528,15 @@ namespace libsemigroups {
         if (j < n) {
           out.set(i, j, true);
         } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
-          unite_rows(i, j);
+          unite_rows(out, tmp, i, j);
         } else {
           if (j >= tmp.nr_rows()) {
             tmp.add_rows(j - tmp.nr_rows() + 1);
           }
           tmp.set(j, 0, true);
           x_seen[i] = true;
-          y_dfs(n, j - n, x, y, j);
-          unite_rows(i, j);
+          y_dfs(x_seen, y_seen, tmp, n, j - n, x, y, j);
+          unite_rows(out, tmp, i, j);
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);
         }
@@ -528,15 +551,15 @@ namespace libsemigroups {
         if (j >= n) {
           out.set(i, j, true);
         } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
-          unite_rows(i, j);
+          unite_rows(out, tmp, i, j);
         } else {
           if (j >= tmp.nr_rows()) {
             tmp.add_rows(j - tmp.nr_rows() + 1);
           }
           tmp.set(j, 0, true);
           y_seen[i] = true;
-          x_dfs(n, j + n, x, y, j);
-          unite_rows(i, j);
+          x_dfs(x_seen, y_seen, tmp, n, j + n, x, y, j);
+          unite_rows(out, tmp, i, j);
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);
         }
@@ -557,41 +580,50 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
-  inline void PBR::unite_rows(size_t const& i, size_t const& j) {
+  inline void PBR::unite_rows(RecVec<bool>& out,
+                              RecVec<bool>& tmp,
+                              size_t const& i,
+                              size_t const& j) {
     for (size_t k = 0; k < out.nr_cols(); k++) {
       out.set(i, k, (out.get(i, k) || tmp.get(j, k + 1)));
     }
   }
 
-  void PBR::x_dfs(u_int32_t const& n,
-                  u_int32_t const& i,
-                  PBR const* const x,
-                  PBR const* const y,
-                  size_t const&    adj) {
+  void PBR::x_dfs(std::vector<bool>& x_seen,
+                  std::vector<bool>& y_seen,
+                  RecVec<bool>&      tmp,
+                  u_int32_t const&   n,
+                  u_int32_t const&   i,
+                  PBR const* const   x,
+                  PBR const* const   y,
+                  size_t const&      adj) {
     if (!x_seen[i]) {
       x_seen[i] = true;
       for (auto const& j : (*x)[i]) {
         if (j < n) {
           tmp.set(adj, j + 1, true);
         } else {
-          y_dfs(n, j - n, x, y, adj);
+          y_dfs(x_seen, y_seen, tmp, n, j - n, x, y, adj);
         }
       }
     }
   }
 
-  void PBR::y_dfs(u_int32_t const& n,
-                  u_int32_t const& i,
-                  PBR const* const x,
-                  PBR const* const y,
-                  size_t const&    adj) {
+  void PBR::y_dfs(std::vector<bool>& x_seen,
+                  std::vector<bool>& y_seen,
+                  RecVec<bool>&      tmp,
+                  u_int32_t const&   n,
+                  u_int32_t const&   i,
+                  PBR const* const   x,
+                  PBR const* const   y,
+                  size_t const&      adj) {
     if (!y_seen[i]) {
       y_seen[i] = true;
       for (auto const& j : (*y)[i]) {
         if (j >= n) {
           tmp.set(adj, j + 1, true);
         } else {
-          x_dfs(n, j + n, x, y, adj);
+          x_dfs(x_seen, y_seen, tmp, n, j + n, x, y, adj);
         }
       }
     }
