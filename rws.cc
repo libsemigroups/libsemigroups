@@ -27,7 +27,7 @@ namespace libsemigroups {
   rws_rule_t const RWS::NONE = std::make_pair("", "");
 
   void RWS::compress() {
-    for (auto it = _rules.cbegin(); it < _rules.cend(); it++) {
+    for (auto it = _rules.begin(); it < _rules.end(); it++) {
       while (!(*it).second) {
         it = _rules.erase(it);
       }
@@ -93,13 +93,13 @@ namespace libsemigroups {
     w.clear();
     while (!buf.empty()) {
       w.push_back(buf[0]);
-      buf.erase(buf.cbegin());
+      buf.erase(buf.begin());
       for (std::pair<rws_rule_t, bool> const& x : _rules) {
         if (x.second) {
           rws_rule_t rule = x.first;
           if (rule.first.size() <= w.size()) {
             // Check if rule.first is a suffix of v
-            auto it     = w.cend() - 1;
+            auto it     = w.end() - 1;
             auto first1 = rule.first.cend() - 1;
             auto last1  = rule.first.cbegin();
             while ((first1 > last1) && (*first1 == *it)) {
@@ -107,7 +107,7 @@ namespace libsemigroups {
               --it;
             }
             if (*first1 == *it) {  // rule.first is suffix of v
-              w.erase(it, w.cend());
+              w.erase(it, w.end());
               buf.insert(buf.begin(), rule.second.cbegin(), rule.second.cend());
               break;
             }
