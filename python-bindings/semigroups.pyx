@@ -1,9 +1,10 @@
 #cython: infer_types=True, embedsignature=True
 """
 
->>> from semigroups import Semigroup
->>> Semigroup([0,1,-1])
-
+    >>> from semigroups import Semigroup
+    >>> S = Semigroup([0,-1])
+    >>> S.size()
+    3
 
 """
 from libc.stdint cimport uint16_t
@@ -191,6 +192,14 @@ cdef class Semigroup:
     """
     A class for handles to libsemigroups semigroups
 
+    EXAMPLES:
+
+    We construct the symmetric group::
+
+        >>> from semigroups import Semigroup, Transformation
+        >>> S = Semigroup([Transformation([1,2,0]),Transformation([2,1,0])])
+        >>> S.size()
+        6
     """
     cdef cpp.Semigroup* _handle      # holds a pointer to the C++ instance which we're wrapping
 
@@ -198,7 +207,17 @@ cdef class Semigroup:
         self._handle = NULL
 
     def __init__(self, generators):
-        ## Jeroen: Move this to __init__
+        """
+        TESTS::
+
+            >>> Semigroup([1, Transformation([1,0])])
+            ...
+            TypeError: all generators should have the same type
+        """
+        generators = [g if isinstance(g, Element) else PythonElement(g)
+                      for g in generators]
+        if not len({type(g) for g in generators}) <= 1:
+            raise TypeError("all generators should have the same type")
         cdef vector[cpp.Element *] gens
         for g in generators:
             gens.push_back((<Element>g)._handle)
