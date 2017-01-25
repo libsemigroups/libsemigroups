@@ -318,3 +318,135 @@ TEST_CASE(
   REQUIRE(nontrivial_classes[0].size() == 2);
   really_delete_partition(nontrivial_classes);
 }
+
+TEST_CASE("KBP 09: finite fp-semigroup, dihedral group of order 6",
+          "[quick][fpsemigroup][kbp][finite]") {
+  std::vector<relation_t> rels = {
+      relation_t({0, 0}, {0}),
+      relation_t({0, 1}, {1}),
+      relation_t({1, 0}, {1}),
+      relation_t({0, 2}, {2}),
+      relation_t({2, 0}, {2}),
+      relation_t({0, 3}, {3}),
+      relation_t({3, 0}, {3}),
+      relation_t({0, 4}, {4}),
+      relation_t({4, 0}, {4}),
+      relation_t({1, 2}, {0}),
+      relation_t({2, 1}, {0}),
+      relation_t({3, 4}, {0}),
+      relation_t({4, 3}, {0}),
+      relation_t({2, 2}, {0}),
+      relation_t({1, 4, 2, 3, 3}, {0}),
+      relation_t({4, 4, 4}, {0})};
+  std::vector<relation_t> extra = {};
+
+  Congruence cong("twosided", 5, rels, extra);
+  cong.force_kbp();
+  cong.set_report(KBP_REPORT);
+
+  REQUIRE(cong.nr_classes() == 6);
+  REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
+}
+
+TEST_CASE("KBP 10: finite fp-semigroup, size 16",
+          "[quick][fpsemigroup][kbp][finite]") {
+  std::vector<relation_t> rels = {
+      relation_t({3}, {2}),
+      relation_t({0, 3}, {0, 2}),
+      relation_t({1, 1}, {1}),
+      relation_t({1, 3}, {1, 2}),
+      relation_t({2, 1}, {2}),
+      relation_t({2, 2}, {2}),
+      relation_t({2, 3}, {2}),
+      relation_t({0, 0, 0}, {0}),
+      relation_t({0, 0, 1}, {1}),
+      relation_t({0, 0, 2}, {2}),
+      relation_t({0, 1, 2}, {1, 2}),
+      relation_t({1, 0, 0}, {1}),
+      relation_t({1, 0, 2}, {0, 2}),
+      relation_t({2, 0, 0}, {2}),
+      relation_t({0, 1, 0, 1}, {1, 0, 1}),
+      relation_t({0, 2, 0, 2}, {2, 0, 2}),
+      relation_t({1, 0, 1, 0}, {1, 0, 1}),
+      relation_t({1, 2, 0, 1}, {1, 0, 1}),
+      relation_t({1, 2, 0, 2}, {2, 0, 2}),
+      relation_t({2, 0, 1, 0}, {2, 0, 1}),
+      relation_t({2, 0, 2, 0}, {2, 0, 2})};
+  std::vector<relation_t> extra = {};
+
+  Congruence cong("twosided", 4, rels, extra);
+  cong.force_kbp();
+  cong.set_report(KBP_REPORT);
+
+  REQUIRE(cong.nr_classes() == 16);
+  REQUIRE(cong.word_to_class_index({2}) == cong.word_to_class_index({3}));
+}
+
+TEST_CASE("KBP 11: finite fp-semigroup, size 16",
+          "[quick][fpsemigroup][kbp][finite]") {
+  std::vector<relation_t> rels = {
+      relation_t({2}, {1}),
+      relation_t({4}, {3}),
+      relation_t({5}, {0}),
+      relation_t({6}, {3}),
+      relation_t({7}, {1}),
+      relation_t({8}, {3}),
+      relation_t({9}, {3}),
+      relation_t({10}, {0}),
+      relation_t({0, 2}, {0, 1}),
+      relation_t({0, 4}, {0, 3}),
+      relation_t({0, 5}, {0, 0}),
+      relation_t({0, 6}, {0, 3}),
+      relation_t({0, 7}, {0, 1}),
+      relation_t({0, 8}, {0, 3}),
+      relation_t({0, 9}, {0, 3}),
+      relation_t({0, 10}, {0, 0}),
+      relation_t({1, 1}, {1}),
+      relation_t({1, 2}, {1}),
+      relation_t({1, 4}, {1, 3}),
+      relation_t({1, 5}, {1, 0}),
+      relation_t({1, 6}, {1, 3}),
+      relation_t({1, 7}, {1}),
+      relation_t({1, 8}, {1, 3}),
+      relation_t({1, 9}, {1, 3}),
+      relation_t({1, 10}, {1, 0}),
+      relation_t({3, 1}, {3}),
+      relation_t({3, 2}, {3}),
+      relation_t({3, 3}, {3}),
+      relation_t({3, 4}, {3}),
+      relation_t({3, 5}, {3, 0}),
+      relation_t({3, 6}, {3}),
+      relation_t({3, 7}, {3}),
+      relation_t({3, 8}, {3}),
+      relation_t({3, 9}, {3}),
+      relation_t({3, 10}, {3, 0}),
+      relation_t({0, 0, 0}, {0}),
+      relation_t({0, 0, 1}, {1}),
+      relation_t({0, 0, 3}, {3}),
+      relation_t({0, 1, 3}, {1, 3}),
+      relation_t({1, 0, 0}, {1}),
+      relation_t({1, 0, 3}, {0, 3}),
+      relation_t({3, 0, 0}, {3}),
+      relation_t({0, 1, 0, 1}, {1, 0, 1}),
+      relation_t({0, 3, 0, 3}, {3, 0, 3}),
+      relation_t({1, 0, 1, 0}, {1, 0, 1}),
+      relation_t({1, 3, 0, 1}, {1, 0, 1}),
+      relation_t({1, 3, 0, 3}, {3, 0, 3}),
+      relation_t({3, 0, 1, 0}, {3, 0, 1}),
+      relation_t({3, 0, 3, 0}, {3, 0, 3})};
+  std::vector<relation_t> extra = {};
+
+  Congruence cong("twosided", 11, rels, extra);
+  cong.force_kbp();
+  cong.set_report(KBP_REPORT);
+
+  REQUIRE(cong.nr_classes() == 16);
+  REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({5}));
+  REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({10}));
+  REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
+  REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({7}));
+  REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({4}));
+  REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({6}));
+  REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
+  REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
+}
