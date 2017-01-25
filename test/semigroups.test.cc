@@ -996,8 +996,7 @@ TEST_CASE("Semigroup 26: idempotents_cbegin/cend, is_idempotent [2 threads]",
   S.set_report(SEMIGROUPS_REPORT);
 
   size_t nr = 0;
-  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend();
-       it++) {
+  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend(); it++) {
     REQUIRE(S.fast_product(*it, *it) == *it);
     nr++;
   }
@@ -1005,8 +1004,7 @@ TEST_CASE("Semigroup 26: idempotents_cbegin/cend, is_idempotent [2 threads]",
   REQUIRE(nr == 6322);
 
   nr = 0;
-  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend();
-       it++) {
+  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend(); it++) {
     REQUIRE(S.is_idempotent((*it)));
     nr++;
   }
@@ -1203,7 +1201,7 @@ TEST_CASE("Semigroup 32: copy [not enumerated]", "[quick][semigroup][finite]") {
   really_delete_cont(gens);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!T.is_begun());
   REQUIRE(!T.is_done());
@@ -1387,7 +1385,7 @@ TEST_CASE("Semigroup 35: copy [partly enumerated]",
   really_delete_cont(gens);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
   REQUIRE(!T.is_done());
@@ -1525,7 +1523,7 @@ TEST_CASE("Semigroup 38: copy [fully enumerated]",
   REQUIRE(S.nrrules() == 2459);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
   REQUIRE(T.is_done());
@@ -1795,7 +1793,7 @@ TEST_CASE("Semigroup 45: relations [from copy, not enumerated]",
   really_delete_cont(gens);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == S.nrrules());
 
   std::vector<size_t> result;
@@ -1848,7 +1846,7 @@ TEST_CASE("Semigroup 46: relations [from copy, partly enumerated]",
   S.enumerate(1000);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == S.nrrules());
 
   std::vector<size_t> result;
@@ -1900,7 +1898,7 @@ TEST_CASE("Semigroup 47: relations [from copy, fully enumerated]",
   S.enumerate(8000);
 
   Semigroup T = Semigroup(S);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.nrrules() == S.nrrules());
 
   std::vector<size_t> result;
@@ -2425,7 +2423,7 @@ TEST_CASE("Semigroup 58: add_generators [incremental 2]",
       new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
 
   Semigroup T = Semigroup(gens);
-T.set_report(SEMIGROUPS_REPORT);
+  T.set_report(SEMIGROUPS_REPORT);
   REQUIRE(T.size() == 119);
 
   Semigroup S = Semigroup({gens[0], gens[0]});

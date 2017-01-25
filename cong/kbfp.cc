@@ -23,8 +23,8 @@
 
 #include <vector>
 
-#include "kbfp.h"
 #include "../rwse.h"
+#include "kbfp.h"
 
 namespace libsemigroups {
 
@@ -65,7 +65,7 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-          Congruence::KBFP::word_to_class_index(word_t const& word) {
+  Congruence::KBFP::word_to_class_index(word_t const& word) {
     if (!is_done()) {
       run();
     }
@@ -87,10 +87,10 @@ namespace libsemigroups {
       // Assert appropriate for JDM's long comment in cong.cc
       assert(_cong._relations.empty() || _cong._extra.empty());
       if (_cong._extra.empty()) {
-        return classes; // trivial congruence - no nontrivial classes
+        return classes;  // trivial congruence - no nontrivial classes
       }
       // nontrivial congruence on free semigroup - answer is infinite
-      assert(!_cong._relations.empty()); // TODO: fail gracefully?
+      assert(!_cong._relations.empty());  // TODO: fail gracefully?
     }
 
     word_t word;
@@ -114,8 +114,8 @@ namespace libsemigroups {
         for (size_t pos : pos_classes[class_nr]) {
           assert(pos < _cong._semigroup->size());
           // Push each element into classes
-          classes[next_nontrivial_class].
-            push_back(_cong._semigroup->at(pos)->really_copy());
+          classes[next_nontrivial_class].push_back(
+              _cong._semigroup->at(pos)->really_copy());
         }
         next_nontrivial_class++;
       }

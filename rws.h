@@ -118,9 +118,9 @@ namespace libsemigroups {
       delete _order;
     }
 
-    bool   is_confluent(std::atomic<bool>& killed) const;
+    bool is_confluent(std::atomic<bool>& killed) const;
 
-    bool   is_confluent() const {
+    bool is_confluent() const {
       std::atomic<bool> killed(false);
       return is_confluent(killed);
     }

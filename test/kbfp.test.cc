@@ -20,12 +20,12 @@
 // achieved by calling cong.force_kbfp() before calculating anything about the
 // congruence.
 
+#include <utility>
+
 #include "../cong.h"
 #include "catch.hpp"
 
 #define KBFP_REPORT false
-
-#include <utility>
 
 using namespace libsemigroups;
 

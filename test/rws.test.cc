@@ -445,8 +445,7 @@ TEST_CASE("RWS 23: F(2, 6), infinite, from Chapter 9, Section 1 in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 24: add_rule",
-          "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
@@ -468,18 +467,18 @@ TEST_CASE("RWS 24: add_rule",
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.is_confluent());
 
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[3].first)) ==
-          rws.rewrite(rws.word_to_rws_word(rels[3].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[6].first)) ==
-          rws.rewrite(rws.word_to_rws_word(rels[6].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[7].first)) ==
-          rws.rewrite(rws.word_to_rws_word(rels[7].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0}))) ==
-          rws.rewrite(rws.word_to_rws_word(word_t({2, 2, 0, 1, 2}))));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({2, 1}))) ==
-          rws.rewrite(rws.word_to_rws_word(word_t({1, 1, 1, 2}))));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0}))) !=
-          rws.rewrite(rws.word_to_rws_word(word_t({2}))));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[3].first))
+          == rws.rewrite(rws.word_to_rws_word(rels[3].second)));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[6].first))
+          == rws.rewrite(rws.word_to_rws_word(rels[6].second)));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[7].first))
+          == rws.rewrite(rws.word_to_rws_word(rels[7].second)));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0})))
+          == rws.rewrite(rws.word_to_rws_word(word_t({2, 2, 0, 1, 2}))));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({2, 1})))
+          == rws.rewrite(rws.word_to_rws_word(word_t({1, 1, 1, 2}))));
+  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0})))
+          != rws.rewrite(rws.word_to_rws_word(word_t({2}))));
 }
 
 TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
@@ -582,8 +581,7 @@ TEST_CASE("RWS 27: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR",
-          "[rws][quick][fpsemigroup]") {
+TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
   std::vector<rws_rule_t> rules = {
       rws_rule_t("aaa", "a"),
       rws_rule_t("bbbb", "b"),

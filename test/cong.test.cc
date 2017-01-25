@@ -65,14 +65,13 @@ TEST_CASE("Congruence 01: Small fp semigroup",
   REQUIRE(cong.nr_classes() == 5);
   REQUIRE(cong.is_done());
 
-  REQUIRE(cong.word_to_class_index({0, 0, 1}) ==
-          cong.word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 0, 0, 0, 1}) ==
-          cong.word_to_class_index({0, 1, 1, 0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 0, 0}) !=
-          cong.word_to_class_index({0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({1}) !=
-          cong.word_to_class_index({0, 0, 0}));
+  REQUIRE(cong.word_to_class_index({0, 0, 1})
+          == cong.word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 0, 0, 0, 1})
+          == cong.word_to_class_index({0, 1, 1, 0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 0, 0})
+          != cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({1}) != cong.word_to_class_index({0, 0, 0}));
 }
 
 TEST_CASE("Congruence 02: Small left congruence on free semigroup",
@@ -111,16 +110,16 @@ TEST_CASE(
   Congruence cong("left", 2, rels, extra);
   cong.set_report(CONG_REPORT);
 
-  REQUIRE(cong.word_to_class_index({0, 0, 1}) ==
-          cong.word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 1}) ==
-          cong.word_to_class_index({0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 0, 0}) !=
-          cong.word_to_class_index({0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({1}) !=
-          cong.word_to_class_index({0, 0, 0, 0}));
-  REQUIRE(cong.word_to_class_index({0, 0, 0, 0}) !=
-          cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 0, 1})
+          == cong.word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 0, 0})
+          != cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({1})
+          != cong.word_to_class_index({0, 0, 0, 0}));
+  REQUIRE(cong.word_to_class_index({0, 0, 0, 0})
+          != cong.word_to_class_index({0, 0, 1}));
 }
 
 TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
@@ -133,22 +132,21 @@ TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
   Congruence cong1("twosided", 2, rels, extra);
   cong1.set_report(CONG_REPORT);
 
-  REQUIRE(cong1.word_to_class_index({0, 0, 1}) ==
-          cong1.word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong1.word_to_class_index({0, 1, 1, 0, 0, 1}) ==
-          cong1.word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong1.word_to_class_index({0, 0, 0}) ==
-          cong1.word_to_class_index({1, 1}));
-  REQUIRE(cong1.word_to_class_index({1}) !=
-          cong1.word_to_class_index({0}));
+  REQUIRE(cong1.word_to_class_index({0, 0, 1})
+          == cong1.word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong1.word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong1.word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong1.word_to_class_index({0, 0, 0})
+          == cong1.word_to_class_index({1, 1}));
+  REQUIRE(cong1.word_to_class_index({1}) != cong1.word_to_class_index({0}));
 
   Congruence cong2("twosided", 2, rels, extra);
   cong2.set_report(CONG_REPORT);
 
-  REQUIRE(cong2.word_to_class_index({0, 0, 0, 0}) ==
-          cong2.word_to_class_index({0, 0}));
-  REQUIRE(cong2.word_to_class_index({0, 0, 0, 0}) ==
-          cong2.word_to_class_index({0, 1, 1, 0, 1, 1}));
+  REQUIRE(cong2.word_to_class_index({0, 0, 0, 0})
+          == cong2.word_to_class_index({0, 0}));
+  REQUIRE(cong2.word_to_class_index({0, 0, 0, 0})
+          == cong2.word_to_class_index({0, 1, 1, 0, 1, 1}));
 }
 
 TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
@@ -255,14 +253,14 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-  REQUIRE(cong.word_to_class_index(w3) ==
-          cong.word_to_class_index({0, 0, 1, 0, 1}));
-  REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1}) ==
-          cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0}) !=
-          cong.word_to_class_index({1, 1}));
-  REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0}) !=
-          cong.word_to_class_index({1, 0, 0, 1}));
+  REQUIRE(cong.word_to_class_index(w3)
+          == cong.word_to_class_index({0, 0, 1, 0, 1}));
+  REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
+          == cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
+  REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
+          != cong.word_to_class_index({1, 1}));
+  REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
+          != cong.word_to_class_index({1, 0, 0, 1}));
 
   t3->really_delete();
   t4->really_delete();
@@ -362,7 +360,6 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0, 1}));
 }
 
-
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
           "[standard][congruence][multithread][finite]") {
   std::vector<Element*> gens = {
@@ -411,18 +408,18 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
           "[standard][congruence][multithread][finite][pbr][fixme]") {
   std::vector<Element*> gens = {
-    new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-    new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))
-  };
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
+      new PBR(
+          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup S = Semigroup(gens);
@@ -433,8 +430,8 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   // REQUIRE(S.nrrules() == 45416);
 
   std::vector<relation_t> extra(
-       {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
-        relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
 
@@ -447,16 +444,15 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 TEST_CASE("Congruence 13: partial perm example",
           "[standard][congruence][multithread][finite]") {
   std::vector<Element*> gens = {
-    new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
-    new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-    new PartialPerm<u_int16_t>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-    new PartialPerm<u_int16_t>({0, 2, 5}, {3, 4, 1}, 6),
-    new PartialPerm<u_int16_t>({0, 2, 5}, {0, 2, 5}, 6),
-    new PartialPerm<u_int16_t>({0, 1, 4}, {1, 2, 0}, 6),
-    new PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-    new PartialPerm<u_int16_t>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-    new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)
-  };
+      new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
+      new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+      new PartialPerm<u_int16_t>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+      new PartialPerm<u_int16_t>({0, 2, 5}, {3, 4, 1}, 6),
+      new PartialPerm<u_int16_t>({0, 2, 5}, {0, 2, 5}, 6),
+      new PartialPerm<u_int16_t>({0, 1, 4}, {1, 2, 0}, 6),
+      new PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+      new PartialPerm<u_int16_t>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+      new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)};
 
   Semigroup S = Semigroup(gens);
   S.set_report(CONG_REPORT);

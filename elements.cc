@@ -153,7 +153,7 @@ namespace libsemigroups {
 
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
-    //FIXME is there copying here?
+    // FIXME is there copying here?
     std::vector<u_int32_t>& fuse(
         _fuse[glob_reporter.thread_id(std::this_thread::get_id())]);
     std::vector<u_int32_t>& lookup(
@@ -303,7 +303,7 @@ namespace libsemigroups {
 
     // must reindex the blocks
     std::vector<u_int32_t>& lookup =
-      _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+        _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
 
     lookup.clear();
     lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
@@ -398,7 +398,7 @@ namespace libsemigroups {
     // It can be that the elements are defined over semirings that are distinct
     // in memory but equal (for example, when one element comes from a
     // semigroup and another from an ideal of that semigroup).
-    //assert(xx->semiring() == yy->semiring()
+    // assert(xx->semiring() == yy->semiring()
     //       && xx->semiring() == this->semiring());
     size_t deg = this->degree();
 
@@ -497,13 +497,13 @@ namespace libsemigroups {
 
     // TODO initialise using ()
     std::vector<bool>& x_seen =
-      _x_seen[glob_reporter.thread_id(std::this_thread::get_id())];
+        _x_seen[glob_reporter.thread_id(std::this_thread::get_id())];
     std::vector<bool>& y_seen =
-      _y_seen[glob_reporter.thread_id(std::this_thread::get_id())];
+        _y_seen[glob_reporter.thread_id(std::this_thread::get_id())];
     RecVec<bool>& tmp =
-      _tmp[glob_reporter.thread_id(std::this_thread::get_id())];
+        _tmp[glob_reporter.thread_id(std::this_thread::get_id())];
     RecVec<bool>& out =
-      _out[glob_reporter.thread_id(std::this_thread::get_id())];
+        _out[glob_reporter.thread_id(std::this_thread::get_id())];
 
     if (x_seen.size() != 2 * n) {
       x_seen.clear();

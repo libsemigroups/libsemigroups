@@ -151,8 +151,8 @@ namespace libsemigroups {
 
     Reporter& operator()(char const* func, std::thread::id tid) {
       size_t id = thread_id(tid);
-      *_ostream << get_color_prefix(id) << "Thread #" << id << ": "
-                << func << ": ";
+      *_ostream << get_color_prefix(id) << "Thread #" << id << ": " << func
+                << ": ";
       return *this;
     }
 
@@ -259,6 +259,6 @@ namespace libsemigroups {
     std::atomic<bool>    _report;
   };
 
-  extern Reporter glob_reporter; // defined in semigroups.cc
+  extern Reporter glob_reporter;  // defined in semigroups.cc
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_UTIL_REPORT_H_

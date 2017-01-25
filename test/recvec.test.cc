@@ -23,21 +23,24 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("RecVec: default constructor with 3 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: default constructor with 3 default args",
+          "[quick][util][recvec]") {
   RecVec<bool> rv = RecVec<bool>();
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_rows() == 0);
   REQUIRE(rv.nr_cols() == 0);
 }
 
-TEST_CASE("RecVec: default constructor with 2 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: default constructor with 2 default args",
+          "[quick][util][recvec]") {
   RecVec<size_t> rv = RecVec<size_t>(5);
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_cols() == 5);
   REQUIRE(rv.nr_rows() == 0);
 }
 
-TEST_CASE("RecVec: default constructor with 1 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: default constructor with 1 default args",
+          "[quick][util][recvec]") {
   RecVec<bool> rv = RecVec<bool>(5, 5);
   REQUIRE(rv.size() == 25);
   REQUIRE(rv.nr_cols() == 5);
@@ -45,7 +48,8 @@ TEST_CASE("RecVec: default constructor with 1 default args", "[quick][util][recv
   REQUIRE(all_of(rv.begin(), rv.end(), [](bool val) { return val == false; }));
 }
 
-TEST_CASE("RecVec: default constructor with 0 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: default constructor with 0 default args",
+          "[quick][util][recvec]") {
   RecVec<bool> rv = RecVec<bool>(2, 7, true);
   REQUIRE(rv.size() == 14);
   REQUIRE(rv.nr_cols() == 2);
@@ -53,7 +57,8 @@ TEST_CASE("RecVec: default constructor with 0 default args", "[quick][util][recv
   REQUIRE(all_of(rv.begin(), rv.end(), [](bool val) { return val == true; }));
 }
 
-TEST_CASE("RecVec: copy constructor with 1 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: copy constructor with 1 default args",
+          "[quick][util][recvec]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv);
   REQUIRE(copy.size() == 21);
@@ -63,7 +68,8 @@ TEST_CASE("RecVec: copy constructor with 1 default args", "[quick][util][recvec]
       all_of(copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: copy constructor with 0 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: copy constructor with 0 default args",
+          "[quick][util][recvec]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv, 2);
   REQUIRE(copy.size() == 35);
@@ -73,7 +79,8 @@ TEST_CASE("RecVec: copy constructor with 0 default args", "[quick][util][recvec]
       all_of(copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method add_rows with 1 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: method add_rows with 1 default args",
+          "[quick][util][recvec]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows();
   REQUIRE(rv.size() == 24);
@@ -92,7 +99,8 @@ TEST_CASE("RecVec: method add_rows with 1 default args", "[quick][util][recvec]"
   REQUIRE(all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method add_rows with 0 default args", "[quick][util][recvec]") {
+TEST_CASE("RecVec: method add_rows with 0 default args",
+          "[quick][util][recvec]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows(10);
   REQUIRE(rv.size() == 51);

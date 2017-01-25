@@ -37,8 +37,7 @@ namespace libsemigroups {
     RWSE(RWS* rws, rws_word_t* w, size_t hv = Element::UNDEFINED)
         : Element(hv), _rws(rws), _rws_word(w) {}
 
-    RWSE(RWS& rws, rws_word_t const& w)
-        : RWSE(&rws, new rws_word_t(w)) {}
+    RWSE(RWS& rws, rws_word_t const& w) : RWSE(&rws, new rws_word_t(w)) {}
 
     RWSE(RWS& rws, letter_t a)
         : RWSE(&rws, new rws_word_t(RWS::letter_to_rws_word(a))) {}
@@ -79,8 +78,8 @@ namespace libsemigroups {
 
    private:
     // TODO const!
-    RWS*        _rws;
-    rws_word_t* _rws_word;
+    RWS*              _rws;
+    rws_word_t*       _rws_word;
     static rws_word_t _buf;
   };
 }  // namespace libsemigroups

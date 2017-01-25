@@ -22,6 +22,8 @@
 
 #include "tc.h"
 
+#include <algorithm>
+
 #define TC_KILLED                      \
   if (_killed) {                       \
     if (!_already_reported_killed) {   \
@@ -290,7 +292,6 @@ namespace libsemigroups {
 
   // Create a new active coset for coset c to map to under generator a
   void Congruence::TC::new_coset(class_index_t const& c, letter_t const& a) {
-
     TC_KILLED
 
     _active++;

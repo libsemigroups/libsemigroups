@@ -318,7 +318,7 @@ namespace libsemigroups {
 
     void copy(Element const* x) override {
       assert(x->degree() == this->degree());
-      auto xx = static_cast<ElementWithVectorData const*>(x);
+      auto   xx  = static_cast<ElementWithVectorData const*>(x);
       size_t deg = _vector->size();
       for (size_t i = 0; i < deg; i++) {
         (*_vector)[i] = (*xx)[i];
@@ -866,7 +866,7 @@ namespace libsemigroups {
     // of this is checked.  The argument <blocks> is not copied, and should be
     // deleted using <ElementWithVectorData::really_delete>
     explicit Bipartition(std::vector<u_int32_t>* blocks,
-                         size_t                  hv     = Element::UNDEFINED)
+                         size_t                  hv = Element::UNDEFINED)
         : ElementWithVectorData<u_int32_t, Bipartition>(blocks, hv),
           _nr_blocks(Bipartition::UNDEFINED),
           _nr_left_blocks(Bipartition::UNDEFINED),
@@ -1021,17 +1021,17 @@ namespace libsemigroups {
 
    private:
     u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
-    void      init_trans_blocks_lookup();
+    void init_trans_blocks_lookup();
 
     static std::vector<std::vector<u_int32_t>> _fuse;
     static std::vector<std::vector<u_int32_t>> _lookup;
 
-    size_t                 _nr_blocks;
-    size_t                 _nr_left_blocks;
-    std::vector<bool>      _trans_blocks_lookup;
-    size_t                 _rank;
+    size_t            _nr_blocks;
+    size_t            _nr_left_blocks;
+    std::vector<bool> _trans_blocks_lookup;
+    size_t            _rank;
 
-    static u_int32_t const        UNDEFINED;
+    static u_int32_t const UNDEFINED;
   };
 
   // Non-abstract

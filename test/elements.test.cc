@@ -22,7 +22,8 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Transformation<u_int16_t>: methods", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int16_t>: methods",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   Element* y =
       new Transformation<u_int16_t>(new std::vector<u_int16_t>({0, 1, 0}));
@@ -68,7 +69,8 @@ TEST_CASE("Transformation<u_int16_t>: methods", "[quick][element][transformation
   delete id;
 }
 
-TEST_CASE("Transformation<u_int16_t>: hash", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int16_t>: hash",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -77,7 +79,8 @@ TEST_CASE("Transformation<u_int16_t>: hash", "[quick][element][transformation]")
   delete x;
 }
 
-TEST_CASE("Transformation<u_int16_t>: delete/copy", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int16_t>: delete/copy",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -108,7 +111,8 @@ TEST_CASE("Transformation<u_int16_t>: delete/copy", "[quick][element][transforma
   delete expected;
 }
 
-TEST_CASE("Transformation<u_int32_t>: methods", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int32_t>: methods",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({0, 1, 0});
   Element* y =
       new Transformation<u_int32_t>(new std::vector<u_int32_t>({0, 1, 0}));
@@ -142,7 +146,8 @@ TEST_CASE("Transformation<u_int32_t>: methods", "[quick][element][transformation
   delete id;
 }
 
-TEST_CASE("Transformation<u_int32_t>: hash ~8ms", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int32_t>: hash ~8ms",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -151,7 +156,8 @@ TEST_CASE("Transformation<u_int32_t>: hash ~8ms", "[quick][element][transformati
   delete x;
 }
 
-TEST_CASE("Transformation<u_int32_t>: delete/copy", "[quick][element][transformation]") {
+TEST_CASE("Transformation<u_int32_t>: delete/copy",
+          "[quick][element][transformation]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   Element* y = x->really_copy();
   x->really_delete();  // deletes _vector in x but not in y
@@ -639,7 +645,8 @@ TEST_CASE("ProjectiveMaxPlusMatrix: delete/copy", "[quick][element][matrix]") {
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [Integers]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new Integers();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -678,7 +685,8 @@ TEST_CASE("MatrixOverSemiring [Integers]: methods", "[quick][element][matrix]") 
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new Integers();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -689,7 +697,8 @@ TEST_CASE("MatrixOverSemiring [Integers]: hash ~11ms", "[quick][element][matrix]
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -728,7 +737,8 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: methods", "[quick][element][mat
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -739,7 +749,8 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: hash ~11ms", "[quick][element][
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
 
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -779,7 +790,8 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: methods", "[quick][element][mat
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   for (size_t i = 0; i < 1000000; i++) {
@@ -790,7 +802,8 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: hash ~11ms", "[quick][element][
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(33);
 
   Element* x =
@@ -831,7 +844,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: methods", "[quick][elem
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(33);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -843,7 +857,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: hash ~11ms", "[quick][e
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(33);
 
   Element* x =
@@ -884,7 +899,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: methods", "[quick][elem
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(33);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -896,7 +912,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: hash ~11ms", "[quick][e
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods",
+          "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(33, 2);
 
   Element* x =
@@ -937,7 +954,8 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: methods", "[quick][element][mat
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms",
+          "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(33, 2);
   Element*  x =
       new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -950,7 +968,8 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms", "[quick][element][
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [Integers]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [Integers]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new Integers();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -972,7 +991,8 @@ TEST_CASE("MatrixOverSemiring [Integers]: delete/copy", "[quick][element][matrix
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new MaxPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -994,7 +1014,8 @@ TEST_CASE("MatrixOverSemiring [MaxPlusSemiring]: delete/copy", "[quick][element]
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new MinPlusSemiring();
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1016,7 +1037,8 @@ TEST_CASE("MatrixOverSemiring [MinPlusSemiring]: delete/copy", "[quick][element]
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMaxPlusSemiring(23);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1038,7 +1060,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMaxPlusSemiring]: delete/copy", "[quick][
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new TropicalMinPlusSemiring(23);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
@@ -1060,7 +1083,8 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy", "[quick][
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy", "[quick][element][matrix]") {
+TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy",
+          "[quick][element][matrix]") {
   Semiring* sr = new NaturalSemiring(23, 0);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();

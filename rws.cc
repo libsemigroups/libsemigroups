@@ -154,7 +154,7 @@ namespace libsemigroups {
                   rewrite(w, buf);
                   if (v != w) {
                     _confluence_known = true;
-                    _is_confluent = false;
+                    _is_confluent     = false;
                     return false;
                   }
                 }
@@ -166,7 +166,7 @@ namespace libsemigroups {
     }
     if (!killed) {
       _confluence_known = true;
-      _is_confluent = true;
+      _is_confluent     = true;
       return true;
     }
     return false;
@@ -243,7 +243,6 @@ namespace libsemigroups {
 
   // KBS_2 from Sims, p77-78
   void RWS::knuth_bendix(std::atomic<bool>& killed) {
-
     if (is_confluent(killed) && !killed) {
       REPORT("the system is confluent already");
       return;

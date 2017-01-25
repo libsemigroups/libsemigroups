@@ -20,12 +20,12 @@
 // achieved by calling cong->tc() before calculating anything about the
 // congruence.
 
+#include <utility>
+
 #include "../cong.h"
 #include "catch.hpp"
 
 #define TC_REPORT false
-
-#include <utility>
 
 using namespace libsemigroups;
 
@@ -187,9 +187,8 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   really_delete_cont(vec);
 }
 
-TEST_CASE(
-    "TC 07: left congruence on transformation semigroup size 88",
-    "[quick][congruence][tc][noprefill][finite]") {
+TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
+          "[quick][congruence][tc][noprefill][finite]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(vec);
@@ -220,11 +219,10 @@ TEST_CASE(
   really_delete_cont(vec);
 }
 
-TEST_CASE(
-    "TC 08: right congruence on transformation semigroup size 88",
-    "[quick][congruence][tc][noprefill][finite]") {
+TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
+          "[quick][congruence][tc][noprefill][finite]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+                               new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(vec);
   S.set_report(TC_REPORT);
 
@@ -232,7 +230,7 @@ TEST_CASE(
   REQUIRE(S.nrrules() == 18);
   REQUIRE(S.degree() == 5);
 
-  word_t   w1, w2;
+  word_t w1, w2;
   vec.push_back(new Transformation<u_int16_t>({3, 4, 4, 4, 4}));
   S.factorisation(w1, S.position(vec.back()));
   vec.push_back(new Transformation<u_int16_t>({3, 1, 3, 3, 3}));
@@ -245,7 +243,7 @@ TEST_CASE(
   REQUIRE(cong.nr_classes() == 72);
   REQUIRE(cong.nr_classes() == 72);
 
-  word_t   w3, w4, w5, w6;
+  word_t w3, w4, w5, w6;
   vec.push_back(new Transformation<u_int16_t>({1, 3, 3, 3, 3}));
   S.factorisation(w3, S.position(vec.back()));
   vec.push_back(new Transformation<u_int16_t>({4, 2, 4, 4, 2}));
@@ -314,9 +312,8 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   delete cong;
 }
 
-TEST_CASE(
-    "TC 10: left congruence on transformation semigroup size 88",
-    "[quick][congruence][tc][prefill][finite]") {
+TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
+          "[quick][congruence][tc][prefill][finite]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -354,9 +351,8 @@ TEST_CASE(
   delete cong;
 }
 
-TEST_CASE(
-    "TC 11: right congruence on transformation semigroup size 88",
-    "[quick][congruence][tc][prefill][finite]") {
+TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
+          "[quick][congruence][tc][prefill][finite]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);

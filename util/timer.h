@@ -92,19 +92,19 @@ namespace libsemigroups {
         string_it<std::chrono::seconds>(elapsed, prefix, "s", 0);
         return prefix;
       } else if (string_it<std::chrono::milliseconds>(
-            elapsed, prefix, "ms ", 9)) {
+                     elapsed, prefix, "ms ", 9)) {
         return prefix;
       } else if (string_it<std::chrono::microseconds>(
-            elapsed, prefix, "\u03BCs ", 9)) {
+                     elapsed, prefix, "\u03BCs ", 9)) {
         return prefix;
       } else if (string_it<std::chrono::nanoseconds>(
-            elapsed, prefix, "ns ", 0)) {
+                     elapsed, prefix, "ns ", 0)) {
         return prefix;
       }
       return prefix;
     }
 
-    int64_t elapsed() { // in nanoseconds?
+    int64_t elapsed() {  // in nanoseconds?
       if (_running) {
         return (std::chrono::steady_clock::now() - _start).count();
       } else {

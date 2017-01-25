@@ -67,7 +67,7 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-          Congruence::KBP::word_to_class_index(word_t const& word) {
+  Congruence::KBP::word_to_class_index(word_t const& word) {
     assert(is_done());
     return _P_cong->word_to_class_index(word);
   }

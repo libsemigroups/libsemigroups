@@ -106,7 +106,7 @@ namespace libsemigroups {
                    std::vector<relation_t>(),
                    std::vector<relation_t>()) {
     _semigroup = semigroup;
-    _extra = genpairs; // it is essential that this is set here!
+    _extra     = genpairs;  // it is essential that this is set here!
   }
 
   Congruence::Congruence(std::string                    type,
@@ -115,9 +115,8 @@ namespace libsemigroups {
       : Congruence(type_from_string(type), semigroup, extra) {}
 
   Congruence::DATA* Congruence::winning_data(
-      std::vector<Congruence::DATA*>& data,
+      std::vector<Congruence::DATA*>&                      data,
       std::vector<std::function<void(Congruence::DATA*)>>& funcs) {
-
     std::vector<std::thread::id> tids(data.size(), std::this_thread::get_id());
 
     auto go = [&data, &funcs, &tids](size_t pos) {

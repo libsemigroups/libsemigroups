@@ -27,8 +27,8 @@
 #include <vector>
 
 #include "semigroups.h"
-#include "util/uf.h"
 #include "util/report.h"
+#include "util/uf.h"
 
 namespace libsemigroups {
 
@@ -55,9 +55,9 @@ namespace libsemigroups {
     };
 
    public:
-    typedef size_t class_index_t;
+    typedef size_t                      class_index_t;
     typedef std::vector<Element const*> class_t;
-    typedef std::vector<class_t> partition_t;
+    typedef std::vector<class_t>        partition_t;
 
     static unsigned int const MAX_THREADS;
 
@@ -171,7 +171,7 @@ namespace libsemigroups {
     }
 
     void set_relations(std::vector<relation_t> const& relations) {
-      assert(_relations.empty()); // _extra can be non-empty!
+      assert(_relations.empty());  // _extra can be non-empty!
       _relations = relations;
     }
 
@@ -212,8 +212,7 @@ namespace libsemigroups {
     // enumerating the classes etc of a congruence
     class DATA {
      public:
-      explicit DATA(Congruence& cong,
-                    size_t      report_interval = 1000)
+      explicit DATA(Congruence& cong, size_t report_interval = 1000)
           : _cong(cong),
             _killed(false),
             _report_interval(report_interval),
@@ -225,7 +224,7 @@ namespace libsemigroups {
       virtual bool          is_done() const                         = 0;
       virtual size_t        nr_classes()                            = 0;
       virtual class_index_t word_to_class_index(word_t const& word) = 0;
-      virtual partition_t   nontrivial_classes()                    = 0;
+      virtual partition_t nontrivial_classes()                      = 0;
 
       void kill() {
         // TODO add killed-by-thread
@@ -274,7 +273,7 @@ namespace libsemigroups {
                Semigroup*                     semigroup,
                std::vector<relation_t> const& extra);
 
-    cong_t                  type_from_string(std::string);
+    cong_t type_from_string(std::string);
 
     DATA*                   _data;
     std::vector<relation_t> _extra;
@@ -286,8 +285,8 @@ namespace libsemigroups {
     cong_t                  _type;
     std::recursive_mutex    _mtx;
 
-    static size_t const       INFTY;
-    static size_t const       UNDEFINED;
+    static size_t const INFTY;
+    static size_t const UNDEFINED;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_H_

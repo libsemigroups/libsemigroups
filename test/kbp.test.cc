@@ -20,12 +20,12 @@
 // achieved by calling cong.force_kbp() before calculating anything about the
 // congruence.
 
+#include <utility>
+
 #include "../cong.h"
 #include "catch.hpp"
 
 #define KBP_REPORT false
-
-#include <utility>
 
 using namespace libsemigroups;
 
@@ -283,17 +283,18 @@ TEST_CASE("KBP 07: finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR",
       relation_t({1, 1}, {0}),
       relation_t({2, 2, 2, 2}, {0}),
       relation_t({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0})};
-  
+
   std::vector<relation_t> extra = {};
-  Congruence cong("twosided", 3, rels, extra);
+  Congruence              cong("twosided", 3, rels, extra);
   cong.force_kbp();
   cong.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 120);
 }
 
-TEST_CASE("KBP 08: infinite fp-semigroup, rght congruence with one non-trivial class",
-          "[quick][congruence][kbp][fpsemigroup]") {
+TEST_CASE(
+    "KBP 08: infinite fp-semigroup, rght congruence with one non-trivial class",
+    "[quick][congruence][kbp][fpsemigroup]") {
   std::vector<relation_t> rels = {
       relation_t({1, 1, 1, 1, 1, 1, 1}, {1}),
       relation_t({2, 2, 2, 2, 2}, {2}),
@@ -304,13 +305,13 @@ TEST_CASE("KBP 08: infinite fp-semigroup, rght congruence with one non-trivial c
   };
 
   std::vector<relation_t> extra = {relation_t({1, 2, 2, 1}, {1, 1, 2, 1, 2})};
-  Congruence cong("right", 3, rels, extra);
+  Congruence              cong("right", 3, rels, extra);
   cong.force_kbp();
   cong.set_report(KBP_REPORT);
 
   // Generating pair
-  REQUIRE(cong.word_to_class_index({1, 2, 2, 1}) ==
-          cong.word_to_class_index({1, 1, 2, 1, 2}));
+  REQUIRE(cong.word_to_class_index({1, 2, 2, 1})
+          == cong.word_to_class_index({1, 1, 2, 1, 2}));
 
   Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);

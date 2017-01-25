@@ -127,13 +127,13 @@ namespace libsemigroups {
 
     // Record information about non-trivial classes
     _nr_nontrivial_classes = _next_class;
-    _nr_nontrivial_elms = _map_next;
+    _nr_nontrivial_elms    = _map_next;
 
     if (!killed) {
-        REPORT("finished with " << _found_pairs.size() << " pairs: " << _map_next
-                        << " elements in "
-                        << _lookup.nr_blocks()
-                        << " classes");
+      REPORT("finished with " << _found_pairs.size() << " pairs: " << _map_next
+                              << " elements in "
+                              << _lookup.nr_blocks()
+                              << " classes");
       _done = true;
     } else {
       REPORT("killed");
@@ -169,7 +169,7 @@ namespace libsemigroups {
         pair = (i < j ? p_pair_const_t(xx, yy) : p_pair_const_t(yy, xx));
       } else {
         pair = (i < j ? p_pair_const_t(it_x->first, it_y->first)
-                : p_pair_const_t(it_y->first, it_x->first));
+                      : p_pair_const_t(it_y->first, it_x->first));
         if (_found_pairs.find(pair) != _found_pairs.end()) {
           return;
         }
@@ -206,7 +206,7 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-          Congruence::P::word_to_class_index(word_t const& w) {
+  Congruence::P::word_to_class_index(word_t const& w) {
     assert(is_done());
 
     Element*  x     = _cong._semigroup->word_to_element(w);
