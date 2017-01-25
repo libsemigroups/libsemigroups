@@ -39,7 +39,7 @@ namespace libsemigroups {
     assert(increase_deg_by == 0);
     (void) increase_deg_by;  // to keep the compiler happy
     rws_word_t* rws_word(new rws_word_t(*(this->_rws_word)));
-    return new RWSE(_rws, rws_word, this->_hash_value);
+    return new RWSE(_rws, rws_word, false, this->_hash_value);
   }
 
   void RWSE::copy(Element const* x) {
