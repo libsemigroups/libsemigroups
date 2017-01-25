@@ -10,8 +10,8 @@ from libcpp.vector cimport vector
 
 cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
     cdef cppclass Element:
-        identity()
-        redefine(Element *, Element *)
+        Element* identity()
+        void redefine(Element *, Element *)
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
         vector[T] _vector

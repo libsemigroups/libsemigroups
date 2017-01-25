@@ -1,5 +1,4 @@
-#cython: infer_types=True
-
+#cython: infer_types=True, embedsignature=True
 """
 
 >>> from semigroups import Semigroup
@@ -16,18 +15,90 @@ cimport semigroups_cpp as cpp
 
 
 cdef class Element:
-    cdef cpp.Element* cpp_element
+    """
+    An abstract base class for handles to libsemigroups elements.
+
+    Any subclass shall implement an ``__init__`` method which
+    initializes _handle.
+
+    .. WARNING::
+
+        For now, the ``__init__`` method should also accept to be
+        called with ``None`` as argument, in which case it *should
+        not* initialize the handle.
+
+        This is used by ``new_from_handle``.
+
+    .. TODO::
+
+        Find a better protocol to create an instance from a class and
+        a handle.
+    """
+    cdef cpp.Element* _handle
+
+    def __cinit__(self):
+        self._handle = NULL
 
     def __dealloc__(self):
-        del self.cpp_element
+        """
+        Deallocate the handle of ``self``.
+
+        TESTS::
+
+            >>> from semigroups import Semigroup, PythonElement, Transformation
+            >>> x = PythonElement(-1)
+            >>> x = 3
+
+            >>> x = Transformation([1,2,0])
+            >>> del x
+        """
+        if self._handle != NULL:
+            del self._handle
+
+    def __mul__(Element self, Element other):
+        """
+        Return the product of ``self`` and ``other``.
+
+        EXAMPLES::
+
+            >>> from semigroups import Semigroup, PythonElement, Transformation
+            >>> x = Transformation([2,1,1])
+            >>> y = Transformation([2,1,0])
+            >>> x * y
+            [0, 1, 1]
+            >>> y * x
+            [1, 1, 2]
+        """
+        cdef cpp.Element* product = self._handle.identity()
+        product.redefine(self._handle, other._handle)
+        return self.new_from_handle(product)
+
+    cdef new_from_handle(self, cpp.Element* handle):
+        """
+        Construct a new element from a specified handle and with the
+        same class as ``self``.
+        """
+        cdef Element result = self.__class__(None)
+        result._handle = handle
+        return result
 
 cdef class Transformation(Element):
-    def __cinit__(self, iterable):
-        self.cpp_element = new cpp.Transformation[uint16_t](iterable)
+    """
+    A class for handles to libsemigroups transformations.
+
+    EXAMPLES::
+
+        >>> from semigroups import Semigroup, PythonElement, Transformation
+        >>> Transformation([2,1,1])
+        [2, 1, 1]
+    """
+    def __init__(self, iterable):
+        if iterable is not None:
+            self._handle = new cpp.Transformation[uint16_t](iterable)
 
     def __iter__(self):
         """
-        Return an iterator over `self`
+        Return an iterator over ``self``
 
         EXAMPLES::
 
@@ -35,14 +106,14 @@ cdef class Transformation(Element):
             >>> list(Transformation([1,2,0]))
             [1, 2, 0]
         """
-        cdef cpp.Element* e = self.cpp_element
+        cdef cpp.Element* e = self._handle
         e2 = <cpp.Transformation[uint16_t] *>e
         for x in e2[0]:
             yield x
 
     def __repr__(self):
         """
-        Return a string representation of `self`
+        Return a string representation of `self`.
 
         EXAMPLES::
 
@@ -54,19 +125,14 @@ cdef class Transformation(Element):
 
 cdef class PythonElement(Element):
     """
-    A class for semigroup element wrapping Python elements
-
-    For now, it's actually a wrapper for C int's ...
+    A class for handles to libsemigroups elements that themselves wrap
+    back a Python element
 
     EXAMPLE::
 
         >>> from semigroups import Semigroup, PythonElement
-        >>> x = PythonElement(-1)
-        <semigroups.PythonElement at ...>
-
-    Testing deallocation:
-
-        >>> x = 3
+        >>> x = PythonElement(-1); x
+        -1
 
         >>> Semigroup([PythonElement(-1)]).size()
         2
@@ -79,53 +145,67 @@ cdef class PythonElement(Element):
 
         x = [PythonElement(-1)]
         x = 2
+
+        sage: W = SymmetricGroup(4)
+        sage: pi = W.simple_projections()
+        sage: F = FiniteSetMaps(W)
+        sage: S = Semigroup([PythonElement(F(p)) for p in pi])
+        sage: S.size()
+        Thread #0: Semigroup::enumerate: limit = 18446744073709551615
+        Thread #0: Semigroup::enumerate: found 14 elements, 6 rules, max word length 3, so far
+        Thread #0: Semigroup::enumerate: found 19 elements, 7 rules, max word length 4, so far
+        Thread #0: Semigroup::enumerate: found 22 elements, 7 rules, max word length 5, so far
+        Thread #0: Semigroup::enumerate: found 23 elements, 7 rules, max word length 6, so far
+        Thread #0: Semigroup::enumerate: found 23 elements, 7 rules, max word length 6, finished!
+        Thread #0: Semigroup::enumerate: elapsed time = 308μs
+        23
+
+    TESTS::
+
+        Testing reference counting::
+
+            >>> s = "UN NOUVEL OBJET"
+            >>> sys.getrefcount(s)
+            2
+            >>> x = PythonElement(s)
+            >>> sys.getrefcount(s)
+            3
+            >>> del x
+            >>> sys.getrefcount(s)
+            2
     """
-    def __cinit__(self):
-        self.cpp_element = NULL
-
-    def __dealloc__(self):
-        """
-        TESTS::
-
-            >>> from semigroups import Semigroup, PythonElement
-            >>> x = PythonElement(-1)
-            <semigroups.PythonElement at ...>
-
-        Testing deallocation:
-            >>> x = 3
-        """
-        pass
-        # TODO: why activating the del below causes a seg fault
-        #del self.cpp_element
-
     def __init__(self, value):
-        self.cpp_element = new cpp.PythonElement(value)
+        if value is not None:
+            self._handle = new cpp.PythonElement(value)
 
     def get_value(self):
         """
 
         """
-        return (<cpp.PythonElement *>self.cpp_element).get_value()
+        return (<cpp.PythonElement *>self._handle).get_value()
 
     def __repr__(self):
         return repr(self.get_value())
 
-    def __mul__(self, other):
-        pass
-        #product = cpp.PythonElement(None)
-        #product.redefine(self. , other.)
-
 cdef class Semigroup:
-    cdef cpp.Semigroup* cpp_semigroup      # holds a pointer to the C++ instance which we're wrapping
-    def __cinit__(self, generators):
+    """
+    A class for handles to libsemigroups semigroups
+
+    """
+    cdef cpp.Semigroup* _handle      # holds a pointer to the C++ instance which we're wrapping
+
+    def __cinit__(self):
+        self._handle = NULL
+
+    def __init__(self, generators):
         ## Jeroen: Move this to __init__
         cdef vector[cpp.Element *] gens
         for g in generators:
-            gens.push_back((<Element>g).cpp_element)
-        self.cpp_semigroup = new cpp.Semigroup(gens)
+            gens.push_back((<Element>g)._handle)
+        self._handle = new cpp.Semigroup(gens)
 
     def __dealloc__(self):
-        del self.cpp_semigroup
+        del self._handle
 
     def size(self):
         """
@@ -139,4 +219,4 @@ cdef class Semigroup:
             5
         """
         # Plausibly wrap in sig_off / sig_on
-        return self.cpp_semigroup.size()
+        return self._handle.size()
