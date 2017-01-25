@@ -1,10 +1,10 @@
-# Python bindings for Semigroups
+# Python bindings for libsemigroups
 
 ## Basic instructions
 
     git clone ...
 
-    cd semigroupsplusplus/
+    cd libsemigroups
     make
     sudo make install
 
