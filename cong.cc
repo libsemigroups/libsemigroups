@@ -125,11 +125,13 @@ namespace libsemigroups {
         funcs.at(pos)(data.at(pos));
       }
       data.at(pos)->run();
-      for (auto it = data.begin(); it < data.begin() + pos; it++) {
-        (*it)->kill();
-      }
-      for (auto it = data.begin() + pos + 1; it < data.end(); it++) {
-        (*it)->kill();
+      if (data.at(pos)->is_done()) {
+        for (auto it = data.begin(); it < data.begin() + pos; it++) {
+          (*it)->kill();
+        }
+        for (auto it = data.begin() + pos + 1; it < data.end(); it++) {
+          (*it)->kill();
+        }
       }
     };
 

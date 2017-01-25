@@ -27,7 +27,7 @@
 namespace libsemigroups {
 
   Congruence::P::P(Congruence& cong)
-      : DATA(cong),
+      : DATA(cong, 40000),
         _class_lookup(),
         _done(false),
         _found_pairs(),
@@ -100,6 +100,12 @@ namespace libsemigroups {
                         << _pairs_to_mult.size()
                         << " pairs on the stack");
         _report_next = 0;
+        if (_cong._semigroup->is_done() && _found_pairs.size() >
+            _cong._semigroup->size()) {
+          REPORT("too many pairs found, stopping");
+          killed = true;
+          return;
+        }
       } else if (killed) {
         REPORT("killed");
         return;
