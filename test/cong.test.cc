@@ -480,3 +480,61 @@ TEST_CASE("Congruence 13: partial perm example",
 
   REQUIRE(cong.nr_classes() == 32);
 }
+
+TEST_CASE("Congruence 14: Bicyclic monoid",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
+                                  relation_t({1, 0}, {1}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {2}),
+                                  relation_t({2, 0}, {2}),
+                                  relation_t({1, 2}, {0})};
+  std::vector<relation_t> extra;
+  Congruence              cong("twosided", 3, rels, extra);
+  cong.set_report(CONG_REPORT);
+  REQUIRE(cong.word_to_class_index({0})
+          == cong.word_to_class_index({1, 2, 1, 1, 2, 2}));
+  REQUIRE(cong.word_to_class_index({0})
+          == cong.word_to_class_index({1, 0, 2, 0, 1, 2}));
+  REQUIRE(cong.word_to_class_index({2, 1})
+          == cong.word_to_class_index({1, 2, 0, 2, 1, 1, 2}));
+}
+
+TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
+          "[fixme][quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
+                                  relation_t({1, 0}, {1}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {2}),
+                                  relation_t({2, 0}, {2}),
+                                  relation_t({1, 2}, {0})};
+  std::vector<relation_t> extra({relation_t({1, 1, 1}, {0})});
+  Congruence              cong("twosided", 3, rels, extra);
+
+  // TODO: KBFP should be run automatically
+  cong.force_kbfp();
+
+  cong.set_report(CONG_REPORT);
+
+  REQUIRE(cong.nr_classes() == 3);
+}
+
+TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
+                                  relation_t({1, 0}, {1}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {2}),
+                                  relation_t({2, 0}, {2}),
+                                  relation_t({1, 2}, {2, 1})};
+  std::vector<relation_t> extra({relation_t({1, 1, 1, 1, 1}, {1}),
+                                 relation_t({2, 2, 2}, {2})});
+  Congruence              cong("twosided", 3, rels, extra);
+
+ // TODO: KBFP should be run automatically
+  cong.force_kbfp();
+
+  cong.set_report(CONG_REPORT);
+
+ REQUIRE(cong.nr_classes() == 15);
+}
