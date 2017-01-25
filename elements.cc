@@ -153,11 +153,11 @@ namespace libsemigroups {
 
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
-    // FIXME is there copying here?
-    std::vector<u_int32_t>& fuse(
-        _fuse[glob_reporter.thread_id(std::this_thread::get_id())]);
-    std::vector<u_int32_t>& lookup(
-        _lookup[glob_reporter.thread_id(std::this_thread::get_id())]);
+
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+
+    std::vector<u_int32_t>& fuse(_fuse[tid]);
+    std::vector<u_int32_t>& lookup(_lookup[tid]);
 
     fuse.clear();
     fuse.reserve(nrx + nry);
@@ -494,16 +494,12 @@ namespace libsemigroups {
     PBR const* y(static_cast<PBR const*>(yy));
 
     u_int32_t const n = this->degree();
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
-    // TODO initialise using ()
-    std::vector<bool>& x_seen =
-        _x_seen[glob_reporter.thread_id(std::this_thread::get_id())];
-    std::vector<bool>& y_seen =
-        _y_seen[glob_reporter.thread_id(std::this_thread::get_id())];
-    RecVec<bool>& tmp =
-        _tmp[glob_reporter.thread_id(std::this_thread::get_id())];
-    RecVec<bool>& out =
-        _out[glob_reporter.thread_id(std::this_thread::get_id())];
+    std::vector<bool>& x_seen = _x_seen[tid];
+    std::vector<bool>& y_seen = _y_seen[tid];
+    RecVec<bool>&      tmp    = _tmp[tid];
+    RecVec<bool>&      out    = _out[tid];
 
     if (x_seen.size() != 2 * n) {
       x_seen.clear();
