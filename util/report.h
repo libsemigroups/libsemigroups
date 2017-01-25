@@ -93,6 +93,7 @@ namespace libsemigroups {
           _next_tid(0),
           _ostream(&std::cout),
           _report(false) {
+      // Get thread id 0 for the main thread
       thread_id(std::this_thread::get_id());
     }
 
@@ -203,7 +204,6 @@ namespace libsemigroups {
     }
 
     void reset_thread_ids() {
-      _mtx.lock();
       // Only do this from the main thread
       assert(thread_id(std::this_thread::get_id()) == 0);
       // Delete all thread_ids
@@ -211,15 +211,16 @@ namespace libsemigroups {
       _next_tid = 0;
       // Reinsert the main thread's id
       thread_id(std::this_thread::get_id());
-      _mtx.unlock();
     }
 
+    // Caution should only use this method when the reporter is locked!
     size_t thread_id(std::thread::id tid) {
-      auto it = _map.find(tid);
+      std::lock_guard<std::recursive_mutex> lg(_mtx);
+      auto                                  it = _map.find(tid);
       if (it != _map.end()) {
         return (*it).second;
       } else {
-        _map.insert(std::make_pair(tid, _next_tid++));
+        _map.emplace(tid, _next_tid++);
         return _next_tid - 1;
       }
     }
@@ -252,10 +253,10 @@ namespace libsemigroups {
 
     std::vector<std::string> _color_prefix;
     std::unordered_map<std::thread::id, size_t> _map;
-    std::mutex        _mtx;
-    size_t            _next_tid;
-    std::ostream*     _ostream;  // For testing
-    std::atomic<bool> _report;
+    std::recursive_mutex _mtx;
+    size_t               _next_tid;
+    std::ostream*        _ostream;  // For testing
+    std::atomic<bool>    _report;
   };
 
   extern Reporter glob_reporter; // defined in semigroups.cc
