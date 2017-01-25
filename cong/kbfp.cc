@@ -50,7 +50,7 @@ namespace libsemigroups {
       assert(_rws->is_confluent());
       std::vector<Element*> gens;
       for (size_t i = 0; i < _cong._nrgens; i++) {
-        gens.push_back(new RWSE(*_rws, RWS::letter_to_rws_word(i)));
+        gens.push_back(new RWSE(*_rws, i));
       }
       _semigroup = new Semigroup(gens);
       really_delete_cont(gens);
@@ -71,7 +71,7 @@ namespace libsemigroups {
     }
     assert(is_done());  // so that _semigroup != nullptr
 
-    Element* x   = new RWSE(*_rws, _rws->rewrite(RWS::word_to_rws_word(word)));
+    Element* x   = new RWSE(*_rws, word);
     size_t   pos = _semigroup->position(x);
     x->really_delete();
     delete x;
