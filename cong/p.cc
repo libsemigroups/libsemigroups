@@ -103,6 +103,10 @@ namespace libsemigroups {
         _report_next = 0;
         if (_cong._semigroup->is_done()
             && _found_pairs.size() > _cong._semigroup->size()) {
+          // If the congruence is only using 1 thread, then this will never
+          // happen, if the congruence uses > 1 threads, then it is ok for P to
+          // kill itself, because another thread will complete and return the
+          // required DATA*.
           REPORT("too many pairs found, stopping");
           killed = true;
           return;
