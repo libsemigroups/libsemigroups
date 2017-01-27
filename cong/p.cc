@@ -100,8 +100,8 @@ namespace libsemigroups {
                         << _pairs_to_mult.size()
                         << " pairs on the stack");
         _report_next = 0;
-        if (_cong._semigroup->is_done() && _found_pairs.size() >
-            _cong._semigroup->size()) {
+        if (_cong._semigroup->is_done()
+            && _found_pairs.size() > _cong._semigroup->size()) {
           REPORT("too many pairs found, stopping");
           killed = true;
           return;

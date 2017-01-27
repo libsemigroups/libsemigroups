@@ -32,19 +32,17 @@ namespace libsemigroups {
 
   // This class is just a wrapper for an rws_word_t.
   class RWSE : public Element {
-
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce, size_t hv)
         : Element(hv), _rws(rws), _rws_word(w) {
-          if (reduce) {
-            rws_word_t buf;
-            _rws->rewrite(_rws_word, buf);
-          }
-        }
+      if (reduce) {
+        rws_word_t buf;
+        _rws->rewrite(_rws_word, buf);
+      }
+    }
 
    public:
-    RWSE(RWS* rws, rws_word_t* w)
-        : RWSE(rws, w, true, Element::UNDEFINED) {}
+    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true, Element::UNDEFINED) {}
 
     RWSE(RWS& rws, rws_word_t const& w) : RWSE(&rws, new rws_word_t(w)) {}
 

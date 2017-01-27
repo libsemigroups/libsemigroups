@@ -32,6 +32,7 @@ namespace libsemigroups {
   size_t const       Congruence::INFTY       = -1;
   size_t const       Congruence::UNDEFINED   = -1;
   unsigned int const Congruence::MAX_THREADS = 4;
+
   // This is the value of the maximum number of threads used by the Congruence
   // class
 

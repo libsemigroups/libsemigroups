@@ -441,12 +441,21 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   REQUIRE(nontrivial_classes.size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
   for (Congruence::class_t block : nontrivial_classes) {
-    switch(block.size()) {
-      case     4: sizes[0]++; break;
-      case    16: sizes[1]++; break;
-      case    96: sizes[2]++; break;
-      case 41216: sizes[3]++; break;
-      default: REQUIRE(false);
+    switch (block.size()) {
+      case 4:
+        sizes[0]++;
+        break;
+      case 16:
+        sizes[1]++;
+        break;
+      case 96:
+        sizes[2]++;
+        break;
+      case 41216:
+        sizes[3]++;
+        break;
+      default:
+        REQUIRE(false);
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
@@ -524,12 +533,11 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
                                   relation_t({0, 2}, {2}),
                                   relation_t({2, 0}, {2}),
                                   relation_t({1, 2}, {2, 1})};
-  std::vector<relation_t> extra({relation_t({1, 1, 1, 1, 1}, {1}),
-                                 relation_t({2, 2, 2}, {2})});
-  Congruence              cong("twosided", 3, rels, extra);
-
+  std::vector<relation_t> extra(
+      {relation_t({1, 1, 1, 1, 1}, {1}), relation_t({2, 2, 2}, {2})});
+  Congruence cong("twosided", 3, rels, extra);
 
   cong.set_report(CONG_REPORT);
 
- REQUIRE(cong.nr_classes() == 15);
+  REQUIRE(cong.nr_classes() == 15);
 }

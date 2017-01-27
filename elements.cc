@@ -493,8 +493,8 @@ namespace libsemigroups {
     PBR const* x(static_cast<PBR const*>(xx));
     PBR const* y(static_cast<PBR const*>(yy));
 
-    u_int32_t const n = this->degree();
-    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+    u_int32_t const n   = this->degree();
+    size_t          tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     std::vector<bool>& x_seen = _x_seen[tid];
     std::vector<bool>& y_seen = _y_seen[tid];
