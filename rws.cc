@@ -89,7 +89,7 @@ namespace libsemigroups {
 
   // REWRITE_FROM_LEFT from Sims, p67
   void RWS::rewrite(rws_word_t& w, rws_word_t& buf) const {
-    buf = w;
+    buf.swap(w);
     w.clear();
     while (!buf.empty()) {
       w.push_back(buf[0]);
@@ -200,11 +200,11 @@ namespace libsemigroups {
           }
         }
       }
-    }
-    if (_report_next++ > _report_interval) {
-      REPORT("total rules = " << _rules.size() << ", active rules = "
-                              << _nr_active_rules);
-      _report_next = 0;
+      if (_report_next++ > _report_interval) {
+        REPORT("total rules = " << _rules.size() << ", active rules = "
+                                << _nr_active_rules);
+        _report_next = 0;
+      }
     }
   }
 
