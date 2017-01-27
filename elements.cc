@@ -141,7 +141,9 @@ namespace libsemigroups {
   }
 
   // multiply x and y into this
-  void Bipartition::redefine(Element const* x, Element const* y) {
+  void Bipartition::redefine(Element const* x,
+                             Element const* y,
+                             size_t const&  thread_id) {
     assert(x->degree() == y->degree());
     assert(x->degree() == this->degree());
     assert(x != this && y != this);
@@ -156,10 +158,8 @@ namespace libsemigroups {
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
 
-    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
-
-    std::vector<u_int32_t>& fuse(_fuse[tid]);
-    std::vector<u_int32_t>& lookup(_lookup[tid]);
+    std::vector<u_int32_t>& fuse(_fuse[thread_id]);
+    std::vector<u_int32_t>& lookup(_lookup[thread_id]);
 
     fuse.clear();
     fuse.reserve(nrx + nry);
@@ -489,7 +489,8 @@ namespace libsemigroups {
     return new PBR(adj);
   }
 
-  void PBR::redefine(Element const* xx, Element const* yy) {
+  void
+  PBR::redefine(Element const* xx, Element const* yy, size_t const& thread_id) {
     assert(xx->degree() == yy->degree());
     assert(xx->degree() == this->degree());
     assert(xx != this && yy != this);
@@ -497,13 +498,12 @@ namespace libsemigroups {
     PBR const* x(static_cast<PBR const*>(xx));
     PBR const* y(static_cast<PBR const*>(yy));
 
-    u_int32_t const n   = this->degree();
-    size_t          tid = glob_reporter.thread_id(std::this_thread::get_id());
+    u_int32_t const n = this->degree();
 
-    std::vector<bool>& x_seen = _x_seen[tid];
-    std::vector<bool>& y_seen = _y_seen[tid];
-    RecVec<bool>&      tmp    = _tmp[tid];
-    RecVec<bool>&      out    = _out[tid];
+    std::vector<bool>& x_seen = _x_seen[thread_id];
+    std::vector<bool>& y_seen = _y_seen[thread_id];
+    RecVec<bool>&      tmp    = _tmp[thread_id];
+    RecVec<bool>&      out    = _out[thread_id];
 
     if (x_seen.size() != 2 * n) {
       x_seen.clear();

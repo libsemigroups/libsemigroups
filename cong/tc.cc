@@ -77,7 +77,7 @@ namespace libsemigroups {
   // Now the new preimage and all the old preimages are stored.
 
   Congruence::TC::TC(Congruence& cong)
-      : DATA(cong, 1000000),
+      : DATA(cong, 2000000),
         _active(1),
         _already_reported_killed(false),
         _bckwd(1, 0),

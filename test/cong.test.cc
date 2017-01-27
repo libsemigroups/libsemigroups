@@ -406,7 +406,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 }
 
 TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
-          "[extreme][congruence][multithread][finite][pbr][fixme]") {
+          "[extreme][congruence][multithread][finite][pbr]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
       new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
@@ -540,4 +540,120 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
   cong.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 15);
+}
+
+TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points",
+          "[extreme][congruence][multithread][finite][pbr]") {
+  std::vector<Element*> gens = {
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
+      new PBR(
+          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+  REQUIRE(gens[0]->degree() == 2);
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(CONG_REPORT);
+  really_delete_cont(gens);
+
+  // REQUIRE(S.size() == 65536);
+  // REQUIRE(S.nrrules() == 45416);
+
+  std::vector<relation_t> extra(
+      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+  Congruence cong("twosided", &S, extra);
+  cong.set_report(CONG_REPORT);
+  cong.set_max_threads(2);
+
+  REQUIRE(cong.nr_classes() == 19009);
+
+  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  REQUIRE(nontrivial_classes.size() == 577);
+  std::vector<size_t> sizes({0, 0, 0, 0});
+  for (Congruence::class_t block : nontrivial_classes) {
+    switch (block.size()) {
+      case 4:
+        sizes[0]++;
+        break;
+      case 16:
+        sizes[1]++;
+        break;
+      case 96:
+        sizes[2]++;
+        break;
+      case 41216:
+        sizes[3]++;
+        break;
+      default:
+        REQUIRE(false);
+    }
+  }
+  REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
+  really_delete_partition(nontrivial_classes);
+}
+
+TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points",
+          "[extreme][congruence][multithread][finite][pbr]") {
+  std::vector<Element*> gens = {
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
+      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
+      new PBR(
+          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+  REQUIRE(gens[0]->degree() == 2);
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(CONG_REPORT);
+  really_delete_cont(gens);
+
+  // REQUIRE(S.size() == 65536);
+  // REQUIRE(S.nrrules() == 45416);
+
+  std::vector<relation_t> extra(
+      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+  Congruence cong("twosided", &S, extra);
+  cong.set_report(CONG_REPORT);
+  cong.set_max_threads(1);
+
+  REQUIRE(cong.nr_classes() == 19009);
+
+  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  REQUIRE(nontrivial_classes.size() == 577);
+  std::vector<size_t> sizes({0, 0, 0, 0});
+  for (Congruence::class_t block : nontrivial_classes) {
+    switch (block.size()) {
+      case 4:
+        sizes[0]++;
+        break;
+      case 16:
+        sizes[1]++;
+        break;
+      case 96:
+        sizes[2]++;
+        break;
+      case 41216:
+        sizes[3]++;
+        break;
+      default:
+        REQUIRE(false);
+    }
+  }
+  REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
+  really_delete_partition(nontrivial_classes);
 }

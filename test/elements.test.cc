@@ -406,7 +406,7 @@ TEST_CASE("Bipartition: overridden methods", "[quick][element][bipart]") {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
   REQUIRE(!(*y == *z));
 
-  z->redefine(x, y);
+  z->redefine(x, y, 0);
   Element* expected = new Bipartition(
       {0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1});
   REQUIRE(*z == *expected);
@@ -415,7 +415,7 @@ TEST_CASE("Bipartition: overridden methods", "[quick][element][bipart]") {
 
   expected = new Bipartition(
       {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
-  z->redefine(y, x);
+  z->redefine(y, x, 0);
   REQUIRE(*z == *expected);
   expected->really_delete();
   delete expected;
@@ -429,13 +429,13 @@ TEST_CASE("Bipartition: overridden methods", "[quick][element][bipart]") {
   REQUIRE(z->complexity() == 400);
 
   Element* id = x->identity();
-  z->redefine(id, x);
+  z->redefine(id, x, 0);
   REQUIRE(*z == *x);
-  z->redefine(x, id);
+  z->redefine(x, id, 0);
   REQUIRE(*z == *x);
-  z->redefine(id, y);
+  z->redefine(id, y, 0);
   REQUIRE(*z == *y);
-  z->redefine(y, id);
+  z->redefine(y, id, 0);
   REQUIRE(*z == *y);
   x->really_delete();
   delete x;

@@ -502,6 +502,7 @@ namespace libsemigroups {
     REPORT("limit = " << limit);
     Timer timer;
     timer.start();
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     // multiply the generators by every generator
     if (_pos < _lenindex[1]) {
@@ -510,7 +511,7 @@ namespace libsemigroups {
         size_t i       = _index[_pos];
         _multiplied[i] = true;
         for (size_t j = 0; j != _nrgens; ++j) {
-          _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+          _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
@@ -566,7 +567,7 @@ namespace libsemigroups {
               _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
             }
           } else {
-            _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+            _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
@@ -681,6 +682,7 @@ namespace libsemigroups {
     }
     Timer timer;
     timer.start();
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     assert(degree() == (*coll->begin())->degree());
 
@@ -803,13 +805,13 @@ namespace libsemigroups {
             }
           }
           for (size_t j = old_nrgens; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr);
+            closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         } else {
           // _elements[i] is not in old
           _multiplied[i] = true;
           for (size_t j = 0; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr);
+            closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         }
         _pos++;
@@ -906,7 +908,8 @@ namespace libsemigroups {
                                         letter_t           b,
                                         pos_t              s,
                                         std::vector<bool>& old_new,
-                                        pos_t              old_nr) {
+                                        pos_t              old_nr,
+                                        size_t const&      tid) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       size_t r = _right->get(s, j);
       if (_found_one && r == _pos_one) {
@@ -917,7 +920,7 @@ namespace libsemigroups {
         _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
       }
     } else {
-      _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+      _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
       auto it = _map.find(_tmp_product);
       if (it == _map.end()) {  // it's new!
         is_one(_tmp_product, _nr);

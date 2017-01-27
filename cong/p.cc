@@ -72,6 +72,7 @@ namespace libsemigroups {
   }
 
   void Congruence::P::run(std::atomic<bool>& killed) {
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
     while (!_pairs_to_mult.empty()) {
       // Get the next pair
       p_pair_const_t current_pair = _pairs_to_mult.top();
@@ -82,13 +83,13 @@ namespace libsemigroups {
       for (size_t i = 0; i < _cong._nrgens; i++) {
         Element* gen = _cong._semigroup->gens(i);
         if (_cong._type == LEFT || _cong._type == TWOSIDED) {
-          _tmp1->redefine(gen, current_pair.first);
-          _tmp2->redefine(gen, current_pair.second);
+          _tmp1->redefine(gen, current_pair.first, tid);
+          _tmp2->redefine(gen, current_pair.second, tid);
           add_pair(_tmp1, _tmp2);
         }
         if (_cong._type == RIGHT || _cong._type == TWOSIDED) {
-          _tmp1->redefine(current_pair.first, gen);
-          _tmp2->redefine(current_pair.second, gen);
+          _tmp1->redefine(current_pair.first, gen, tid);
+          _tmp2->redefine(current_pair.second, gen, tid);
           add_pair(_tmp1, _tmp2);
         }
       }

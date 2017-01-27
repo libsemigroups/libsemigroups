@@ -975,7 +975,8 @@ namespace libsemigroups {
                                letter_t           b,
                                letter_t           s,
                                std::vector<bool>& old_new,
-                               pos_t              old_nr);
+                               pos_t              old_nr,
+                               size_t const&      thread_id);
 
     struct myless {
       // A constructor

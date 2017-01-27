@@ -34,20 +34,20 @@
 
 #include "timer.h"
 
-#define REPORT(message)                                               \
-  if (glob_reporter.get_report()) {                                   \
-    size_t tid = glob_reporter.thread_id(std::this_thread::get_id()); \
-    glob_reporter.lock();                                             \
-    glob_reporter(this, __func__, tid) << message << std::endl;       \
-    glob_reporter.unlock();                                           \
+#define REPORT(message)                                                 \
+  if (glob_reporter.get_report()) {                                     \
+    size_t __tid = glob_reporter.thread_id(std::this_thread::get_id()); \
+    glob_reporter.lock();                                               \
+    glob_reporter(this, __func__, __tid) << message << std::endl;       \
+    glob_reporter.unlock();                                             \
   }
 
-#define REPORT_FROM_FUNC(message)                                     \
-  if (glob_reporter.get_report()) {                                   \
-    size_t tid = glob_reporter.thread_id(std::this_thread::get_id()); \
-    glob_reporter.lock();                                             \
-    glob_reporter(__func__, tid) << message << std::endl;             \
-    glob_reporter.unlock();                                           \
+#define REPORT_FROM_FUNC(message)                                       \
+  if (glob_reporter.get_report()) {                                     \
+    size_t __tid = glob_reporter.thread_id(std::this_thread::get_id()); \
+    glob_reporter.lock();                                               \
+    glob_reporter(__func__, __tid) << message << std::endl;             \
+    glob_reporter.unlock();                                             \
   }
 
 namespace libsemigroups {

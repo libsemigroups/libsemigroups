@@ -165,7 +165,15 @@ namespace libsemigroups {
     // See <libsemigroups::Element::redefine>.
     //
     // Redefine **this** to be the product of <x> and <y>.
-    virtual void redefine(Element const* x, Element const* y) = 0;
+    virtual void
+    redefine(Element const* x, Element const* y, size_t const& thread_id) {
+      (void) thread_id;
+      redefine(x, y);
+    }
+
+    virtual void redefine(Element const* x, Element const* y) {
+      redefine(x, y, 0);
+    }
 
     struct Equal {
       // To keep cldoc happy
@@ -572,10 +580,6 @@ namespace libsemigroups {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts
-    // that the degrees of <x>, <y>, and **this**, are all equal, and that
-    // neither
-    // <x> nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -823,10 +827,6 @@ namespace libsemigroups {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the product of <x> and <y>. This method asserts
-    // that
-    // the dimensions of <x>, <y>, and **this**, are all equal, and that neither
-    // <x>
-    // nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override;
   };
 
@@ -923,7 +923,9 @@ namespace libsemigroups {
     // Redefine this to be the product (as defined at the top of this page) of
     // <x> and <y>. This method asserts that the dimensions of <x>, <y>, and
     // this, are all equal, and that neither <x> nor <y> equals **this**.
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  thread_id) override;
 
     // non-const
     //
@@ -1277,7 +1279,9 @@ namespace libsemigroups {
     // Redefine **this** to be the composition of <x> and <y>. This method
     // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
     // that neither <x> nor <y> equals **this**.
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  thread_id) override;
 
    private:
     void unite_rows(RecVec<bool>& out,
