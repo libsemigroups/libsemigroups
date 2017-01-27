@@ -97,5 +97,8 @@ testrun:
 	$(TEST_PROG) $(TEST_FLAGS) | tee -a $(LOG_DIR)/$(TODAY).log
 	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
+format: 
+	clang-format -i *.cc *.h test/*.cc util/*.h util/*.cc cong/*.h cong/*.cc
+
 .PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun testsuperclean
 .NOTPARALLEL: testrun testclean
