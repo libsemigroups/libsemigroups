@@ -289,7 +289,7 @@ namespace libsemigroups {
     std::atomic<bool>       _relations_done;
     Semigroup*              _semigroup;
     cong_t                  _type;
-    std::recursive_mutex    _mtx;
+    std::mutex              _mtx;
 
     static size_t const INFTY;
     static size_t const UNDEFINED;

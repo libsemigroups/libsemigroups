@@ -34,19 +34,19 @@
 
 #include "timer.h"
 
-#define REPORT(message)                                                     \
-  if (glob_reporter.get_report()) {                                         \
-    glob_reporter.lock();                                                   \
-    glob_reporter(this, __func__, std::this_thread::get_id()) << message    \
-                                                              << std::endl; \
-    glob_reporter.unlock();                                                 \
+#define REPORT(message)                                               \
+  if (glob_reporter.get_report()) {                                   \
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id()); \
+    glob_reporter.lock();                                             \
+    glob_reporter(this, __func__, tid) << message << std::endl;       \
+    glob_reporter.unlock();                                           \
   }
 
 #define REPORT_FROM_FUNC(message)                                     \
   if (glob_reporter.get_report()) {                                   \
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id()); \
     glob_reporter.lock();                                             \
-    glob_reporter(__func__, std::this_thread::get_id()) << message    \
-                                                        << std::endl; \
+    glob_reporter(__func__, tid) << message << std::endl;             \
     glob_reporter.unlock();                                           \
   }
 
@@ -142,16 +142,14 @@ namespace libsemigroups {
     // @thread_id the number put to std::cout to identify the thread which is
     //            printing
     template <class T>
-    Reporter& operator()(T const* obj, char const* func, std::thread::id tid) {
-      size_t id = thread_id(tid);
-      *_ostream << get_color_prefix(id) << "Thread #" << id << ": "
+    Reporter& operator()(T const* obj, char const* func, size_t tid) {
+      *_ostream << get_color_prefix(tid) << "Thread #" << tid << ": "
                 << get_class_name(obj) << "::" << func << ": ";
       return *this;
     }
 
-    Reporter& operator()(char const* func, std::thread::id tid) {
-      size_t id = thread_id(tid);
-      *_ostream << get_color_prefix(id) << "Thread #" << id << ": " << func
+    Reporter& operator()(char const* func, size_t tid) {
+      *_ostream << get_color_prefix(tid) << "Thread #" << tid << ": " << func
                 << ": ";
       return *this;
     }
@@ -215,8 +213,8 @@ namespace libsemigroups {
 
     // Caution should only use this method when the reporter is locked!
     size_t thread_id(std::thread::id tid) {
-      std::lock_guard<std::recursive_mutex> lg(_mtx);
-      auto                                  it = _map.find(tid);
+      std::lock_guard<std::mutex> lg(_mtx);
+      auto                        it = _map.find(tid);
       if (it != _map.end()) {
         return (*it).second;
       } else {
@@ -253,10 +251,10 @@ namespace libsemigroups {
 
     std::vector<std::string> _color_prefix;
     std::unordered_map<std::thread::id, size_t> _map;
-    std::recursive_mutex _mtx;
-    size_t               _next_tid;
-    std::ostream*        _ostream;  // For testing
-    std::atomic<bool>    _report;
+    std::mutex        _mtx;
+    size_t            _next_tid;
+    std::ostream*     _ostream;  // For testing
+    std::atomic<bool> _report;
   };
 
   extern Reporter glob_reporter;  // defined in semigroups.cc
