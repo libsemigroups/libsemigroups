@@ -511,9 +511,6 @@ TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
   std::vector<relation_t> extra({relation_t({1, 1, 1}, {0})});
   Congruence              cong("twosided", 3, rels, extra);
 
-  // TODO: KBFP should be run automatically
-  cong.force_kbfp();
-
   cong.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 3);
@@ -531,8 +528,6 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
                                  relation_t({2, 2, 2}, {2})});
   Congruence              cong("twosided", 3, rels, extra);
 
- // TODO: KBFP should be run automatically
-  cong.force_kbfp();
 
   cong.set_report(CONG_REPORT);
 

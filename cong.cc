@@ -64,32 +64,6 @@ namespace libsemigroups {
         _type(type) {
     // TODO(JDM): check that the entries in extra/relations are properly defined
     // i.e. that every entry is at most nrgens - 1
-
-    if (!_relations.empty() && !_extra.empty()) {
-      // This represents a non-trivial congruence on a non-free fp semigroup U,
-      // and KBP is currently the only way of computing such a thing. In
-      // particular, the nontrivial_classes method must use KBP if the fp
-      // semigroup U is infinite. Since we currently have no way to tell if the
-      // fp semigroup is finite or infinite (in the sense that the fp semigroup
-      // is only specified by the parameters _nrgens, and _relations and is not
-      // actually present as a Congruence object anywhere in memory), we just
-      // use KBP for everything for the sake of simplicity. This could be
-      // improved by adding a constructor for the Congruence class (for the
-      // congruence of the fp semigroup) that takes a Congruence (representing
-      // the fp semigroup itself). Then instead of forcing KBP here we could
-      // try enumerating the Congruence representing the fp semigroup (using
-      // get_data) and running KBP on the other Congruence in parallel. In the
-      // case that the fp semigroup U is finite, this would probably be better
-      // than forcing KBP. If the fp semigroup U is infinite, then  KBP will
-      // win (for nontrivial_classes).
-      //
-      // It might be that if we do not force KBP here, that in the case that
-      // the quotient of the fp semigroup U, by the congruence we are
-      // constructing, is finite, we might get an answer to methods other than
-      // nontrivial_classes, more quickly using a different method than KBP. We
-      // decided not to care about this for the time being.
-      force_kbp();  // TODO improve this in future
-    }
   }
 
   Congruence::Congruence(std::string                    type,
