@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_CONG_H_
 #define LIBSEMIGROUPS_CONG_H_
 
+#include <algorithm>
 #include <atomic>
 #include <mutex>
 #include <stack>
@@ -58,8 +59,6 @@ namespace libsemigroups {
     typedef size_t                      class_index_t;
     typedef std::vector<Element const*> class_t;
     typedef std::vector<class_t>        partition_t;
-
-    static unsigned int const MAX_THREADS;
 
     // 5 parameters (for finitely presented semigroup)
     // @type string describing the type of congruence (left/right/twosided)
@@ -196,6 +195,12 @@ namespace libsemigroups {
       _prefill = table;
     }
 
+    void set_max_threads(size_t nr_threads) {
+      unsigned int n =
+          static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+      _max_threads = std::min(n, std::thread::hardware_concurrency());
+    }
+
     // non-const
     // This runs the [Todd-Coxeter
     // algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm) on
@@ -277,6 +282,7 @@ namespace libsemigroups {
 
     DATA*                   _data;
     std::vector<relation_t> _extra;
+    size_t                  _max_threads;
     size_t                  _nrgens;
     RecVec<class_index_t>   _prefill;
     std::vector<relation_t> _relations;

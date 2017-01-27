@@ -29,15 +29,8 @@
 namespace libsemigroups {
 
   // Define static data members
-  size_t const       Congruence::INFTY       = -1;
-  size_t const       Congruence::UNDEFINED   = -1;
-  unsigned int const Congruence::MAX_THREADS = 4;
-
-  // This is the value of the maximum number of threads used by the Congruence
-  // class
-
-  unsigned int const MAX_THREADS =
-      std::max(std::thread::hardware_concurrency(), Congruence::MAX_THREADS);
+  size_t const Congruence::INFTY     = -1;
+  size_t const Congruence::UNDEFINED = -1;
 
   // Get the type from a string
   Congruence::cong_t Congruence::type_from_string(std::string type) {
@@ -57,6 +50,7 @@ namespace libsemigroups {
                          std::vector<relation_t> const& extra)
       : _data(nullptr),
         _extra(extra),
+        _max_threads(std::thread::hardware_concurrency()),
         _nrgens(nrgens),
         _prefill(),
         _relations(relations),
@@ -110,19 +104,20 @@ namespace libsemigroups {
       }
     };
 
-    REPORT("using " << data.size() << " / "
+    size_t nr_threads = std::min(data.size(), _max_threads);
+
+    REPORT("using " << nr_threads << " / "
                     << std::thread::hardware_concurrency()
                     << " threads");
     glob_reporter.reset_thread_ids();
 
     std::vector<std::thread> t;
-    for (size_t i = 0; i < data.size(); i++) {
+    for (size_t i = 0; i < nr_threads; i++) {
       t.push_back(std::thread(go, i));
     }
-    for (size_t i = 0; i < t.size(); i++) {
+    for (size_t i = 0; i < nr_threads; i++) {
       t.at(i).join();
     }
-
     for (auto winner = data.begin(); winner < data.end(); winner++) {
       if ((*winner)->is_done()) {
         size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
@@ -152,7 +147,6 @@ namespace libsemigroups {
         _data->run();
       } else {
         if (_semigroup != nullptr) {
-          // TODO don't use more threads than the hardware supports here.
           auto prefillit = [this](Congruence::DATA* data) {
             static_cast<TC*>(data)->prefill();
           };
@@ -165,12 +159,10 @@ namespace libsemigroups {
           data.push_back(new P(*this));
           _data = winning_data(data, funcs);
         } else if (!_prefill.empty()) {
-          // FIXME this should be combined with the previous case
           _data = new TC(*this);
           static_cast<TC*>(_data)->prefill(_prefill);
           _data->run();
         } else {  // Congruence is defined over an fp semigroup
-          // FIXME don't use more than MAX_THREADS here
           if (_type == TWOSIDED) {
             std::vector<DATA*> data = {
                 new TC(*this), new KBFP(*this), new KBP(*this)};
