@@ -436,27 +436,19 @@ namespace libsemigroups {
     }
 
     // non-const
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads. It appears to only be beneficial to use concurrency when the
-    // size of semigroup exceeds 823543.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
     //
     // @return the total number of idempotents in the semigroup.
 
-    size_t nr_idempotents(size_t nr_threads = 1);
+    size_t nr_idempotents();
 
     // non-const
     // @pos a valid position of an element of the semigroup.
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
@@ -464,18 +456,12 @@ namespace libsemigroups {
     // @return **true** if the <pos> element of the semigroup is an idempotent
     // and return **false** otherwise.
 
-    bool is_idempotent(pos_t pos, size_t nr_threads = 1);
+    bool is_idempotent(pos_t pos);
 
     // non-const
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
@@ -483,19 +469,12 @@ namespace libsemigroups {
     // @return a const iterator for the positions <pos_t> of idempotents in
     // the semigroup.
 
-    std::vector<pos_t>::const_iterator
-    idempotents_cbegin(size_t nr_threads = 1);
+    std::vector<pos_t>::const_iterator idempotents_cbegin();
 
     // non-const
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
@@ -503,7 +482,7 @@ namespace libsemigroups {
     // @return a const iterator for the positions <pos_t> of idempotents in
     // the semigroup.
 
-    std::vector<pos_t>::const_iterator idempotents_cend(size_t nr_threads = 1);
+    std::vector<pos_t>::const_iterator idempotents_cend();
 
     // non-const
     //
@@ -944,10 +923,11 @@ namespace libsemigroups {
       glob_reporter.set_report(val);
     }
 
-    /* void set_max_threads(size_t nr_threads) {
-       _max_threads =
-           std::min(nr_threads, std::thread::hardware_concurrency());
-     }*/
+    void set_max_threads(size_t nr_threads) {
+      unsigned int n =
+          static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+      _max_threads = std::min(n, std::thread::hardware_concurrency());
+    }
 
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
@@ -959,7 +939,7 @@ namespace libsemigroups {
     void sort_elements();
 
     // Find the idempotents and store their positions and their number
-    void find_idempotents(size_t nr_threads = 1);
+    void find_idempotents();
 
     // Function for counting idempotents in a thread, changes the parameter <nr>
     // in place.
@@ -1040,6 +1020,7 @@ namespace libsemigroups {
     std::vector<size_t>    _lenindex;
     std::unordered_map<const Element*, size_t, Element::Hash, Element::Equal>
                          _map;
+    size_t               _max_threads;
     std::vector<bool>    _multiplied;
     std::mutex           _mtx;
     size_t               _nr;

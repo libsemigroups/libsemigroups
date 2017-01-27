@@ -45,6 +45,7 @@ namespace libsemigroups {
         _length(),
         _lenindex(),
         _map(),
+        _max_threads(std::thread::hardware_concurrency()),
         _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
@@ -128,6 +129,7 @@ namespace libsemigroups {
         _left(new cayley_graph_t(*copy._left)),
         _length(copy._length),
         _lenindex(copy._lenindex),
+        _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
@@ -175,6 +177,7 @@ namespace libsemigroups {
         _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
         _left(new cayley_graph_t(*copy._left)),
+        _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
@@ -338,16 +341,16 @@ namespace libsemigroups {
 
   // Get the number of idempotents
 
-  size_t Semigroup::nr_idempotents(size_t nr_threads) {
+  size_t Semigroup::nr_idempotents() {
     if (!_idempotents_found) {
-      find_idempotents(nr_threads);
+      find_idempotents();
     }
     return _nr_idempotents;
   }
 
-  bool Semigroup::is_idempotent(pos_t pos, size_t nr_threads) {
+  bool Semigroup::is_idempotent(pos_t pos) {
     if (!_idempotents_found) {
-      find_idempotents(nr_threads);
+      find_idempotents();
     }
     assert(pos < size());
     return _is_idempotent[pos];
@@ -356,17 +359,17 @@ namespace libsemigroups {
   // Const iterator to the first position of an idempotent
 
   typename std::vector<Semigroup::pos_t>::const_iterator
-  Semigroup::idempotents_cbegin(size_t nr_threads) {
+  Semigroup::idempotents_cbegin() {
     if (!_idempotents_found) {
-      find_idempotents(nr_threads);
+      find_idempotents();
     }
     return _idempotents.cbegin();
   }
 
   typename std::vector<Semigroup::pos_t>::const_iterator
-  Semigroup::idempotents_cend(size_t nr_threads) {
+  Semigroup::idempotents_cend() {
     if (!_idempotents_found) {
-      find_idempotents(nr_threads);
+      find_idempotents();
     }
     return _idempotents.cend();
   }
@@ -960,7 +963,7 @@ namespace libsemigroups {
   // TOOD(JDM) improve this if R/L-classes are known to stop performing the
   // product if we fall out of the R-class of the initial element.
 
-  void Semigroup::find_idempotents(size_t nr_threads) {
+  void Semigroup::find_idempotents() {
     _idempotents_found = true;
     enumerate();
 
@@ -973,9 +976,8 @@ namespace libsemigroups {
          i++) {
       sum_word_lengths += i * (_lenindex[i] - _lenindex[i - 1]);
     }
-    // TODO(JDM) make the number in the next line a macro or something so that
-    // it is easy to change.
-    if (nr_threads == 1 || size() < 823543) {
+
+    if (_max_threads == 1 || size() < 823543) {
       if ((_nr - _idempotents_start_pos) * _tmp_product->complexity()
           < sum_word_lengths) {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
@@ -1001,23 +1003,23 @@ namespace libsemigroups {
         }
       }
     } else {
-      size_t av_load    = sum_word_lengths / nr_threads;
+      size_t av_load    = sum_word_lengths / _max_threads;
       pos_t  begin      = _idempotents_start_pos;
       pos_t  end        = _idempotents_start_pos;
       size_t total_load = 0;
 
-      std::vector<size_t>             nr(nr_threads, 0);
-      std::vector<std::vector<pos_t>> idempotents(nr_threads,
+      std::vector<size_t>             nr(_max_threads, 0);
+      std::vector<std::vector<pos_t>> idempotents(_max_threads,
                                                   std::vector<pos_t>());
-      std::vector<std::vector<bool>> is_idempotent(nr_threads,
+      std::vector<std::vector<bool>> is_idempotent(_max_threads,
                                                    std::vector<bool>());
       std::vector<std::thread> threads;
       glob_reporter.reset_thread_ids();
 
       // TODO(JDM) use less threads if the av_load is too low
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         size_t thread_load = 0;
-        if (i != nr_threads - 1) {
+        if (i != _max_threads - 1) {
           while (thread_load < av_load) {
             thread_load += length_const(end);
             end++;
@@ -1040,13 +1042,13 @@ namespace libsemigroups {
         begin = end;
       }
 
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         threads[i].join();
         _nr_idempotents += nr[i];
       }
       _idempotents.reserve(_nr_idempotents);
       _is_idempotent.reserve(size());
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         _idempotents.insert(
             _idempotents.end(), idempotents[i].begin(), idempotents[i].end());
         _is_idempotent.insert(_is_idempotent.end(),

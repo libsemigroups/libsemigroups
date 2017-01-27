@@ -994,9 +994,11 @@ TEST_CASE("Semigroup 26: idempotents_cbegin/cend, is_idempotent [2 threads]",
       new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
+  S.set_max_threads(2);
 
   size_t nr = 0;
-  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend(); it++) {
+
+  for (auto it = S.idempotents_cbegin(); it < S.idempotents_cend(); it++) {
     REQUIRE(S.fast_product(*it, *it) == *it);
     nr++;
   }
@@ -1004,7 +1006,7 @@ TEST_CASE("Semigroup 26: idempotents_cbegin/cend, is_idempotent [2 threads]",
   REQUIRE(nr == 6322);
 
   nr = 0;
-  for (auto it = S.idempotents_cbegin(2); it < S.idempotents_cend(); it++) {
+  for (auto it = S.idempotents_cbegin(); it < S.idempotents_cend(); it++) {
     REQUIRE(S.is_idempotent((*it)));
     nr++;
   }
