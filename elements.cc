@@ -99,9 +99,11 @@ namespace libsemigroups {
 
   // Bipartition
 
-  u_int32_t const                     Bipartition::UNDEFINED = -1;
-  std::vector<std::vector<u_int32_t>> Bipartition::_fuse(MAX_THREADS);
-  std::vector<std::vector<u_int32_t>> Bipartition::_lookup(MAX_THREADS);
+  u_int32_t const Bipartition::UNDEFINED = -1;
+  std::vector<std::vector<u_int32_t>>
+      Bipartition::_fuse(std::thread::hardware_concurrency());
+  std::vector<std::vector<u_int32_t>>
+      Bipartition::_lookup(std::thread::hardware_concurrency());
 
   u_int32_t Bipartition::block(size_t pos) const {
     assert(pos < 2 * degree());
@@ -445,10 +447,12 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
 
-  std::vector<std::vector<bool>> PBR::_x_seen(MAX_THREADS);
-  std::vector<std::vector<bool>> PBR::_y_seen(MAX_THREADS);
-  std::vector<RecVec<bool>>      PBR::_out(MAX_THREADS);
-  std::vector<RecVec<bool>>      PBR::_tmp(MAX_THREADS);
+  std::vector<std::vector<bool>>
+      PBR::_x_seen(std::thread::hardware_concurrency());
+  std::vector<std::vector<bool>>
+                            PBR::_y_seen(std::thread::hardware_concurrency());
+  std::vector<RecVec<bool>> PBR::_out(std::thread::hardware_concurrency());
+  std::vector<RecVec<bool>> PBR::_tmp(std::thread::hardware_concurrency());
 
   size_t PBR::complexity() const {
     return pow((2 * this->degree()), 3);

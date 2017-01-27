@@ -38,8 +38,6 @@
 
 namespace libsemigroups {
 
-  extern unsigned int const MAX_THREADS;
-
   // Abstract
   //
   // Abstract base class for elements of a semigroup.
