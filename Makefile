@@ -18,7 +18,8 @@ TEST_FLAGS = $()
 
 CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
-COMMON_DOC_FLAGS = --report --merge docs --output html $(SOURCES) $(HEADERS)
+COMMON_DOC_FLAGS = --report --merge docs --output html  $(wildcard *.h) $(wildcard *.cc)
+
 
 ifneq ($(CXX),clang++)
   ifneq ($(CXX), c++) 
@@ -52,7 +53,7 @@ error:
 	exit 2
 doc:
 	@echo "Generating static documentation . . ."; \
-	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS)
+	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS) $(DOC_SOURCES)
 	@echo "Fixing some bugs in cldoc . . ."; \
 	python docs/cldoc-fix
 
