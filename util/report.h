@@ -218,6 +218,7 @@ namespace libsemigroups {
       if (it != _map.end()) {
         return (*it).second;
       } else {
+        assert(_next_tid <= std::thread::hardware_concurrency());
         _map.emplace(tid, _next_tid++);
         return _next_tid - 1;
       }
