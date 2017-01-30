@@ -101,7 +101,7 @@ namespace libsemigroups {
                         << _pairs_to_mult.size()
                         << " pairs on the stack");
         _report_next = 0;
-        if (_cong._semigroup->is_done()
+        if (tid != 0 && _cong._semigroup->is_done()
             && _found_pairs.size() > _cong._semigroup->size()) {
           // If the congruence is only using 1 thread, then this will never
           // happen, if the congruence uses > 1 threads, then it is ok for P to
