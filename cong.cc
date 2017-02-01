@@ -85,7 +85,8 @@ namespace libsemigroups {
 
   Congruence::DATA* Congruence::winning_data(
       std::vector<Congruence::DATA*>&                      data,
-      std::vector<std::function<void(Congruence::DATA*)>>& funcs) {
+      std::vector<std::function<void(Congruence::DATA*)>>& funcs,
+      bool                                                 ignore_max_threads) {
     std::vector<std::thread::id> tids(data.size(), std::this_thread::get_id());
 
     auto go = [this, &data, &funcs, &tids](size_t pos) {
@@ -109,7 +110,12 @@ namespace libsemigroups {
       }
     };
 
-    size_t nr_threads = std::min(data.size(), _max_threads);
+    size_t nr_threads;
+    if (ignore_max_threads) {
+      nr_threads = data.size();
+    } else {
+      nr_threads = std::min(data.size(), _max_threads);
+    }
 
     REPORT("using " << nr_threads << " / "
                     << std::thread::hardware_concurrency()
@@ -172,7 +178,7 @@ namespace libsemigroups {
             std::vector<DATA*> data = {
                 new TC(*this), new KBFP(*this), new KBP(*this)};
             std::vector<std::function<void(DATA*)>> funcs = {};
-            _data = winning_data(data, funcs);
+            _data = winning_data(data, funcs, true);
           } else {
             _data = new TC(*this);
             _data->run();

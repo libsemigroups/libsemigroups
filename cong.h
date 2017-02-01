@@ -267,7 +267,8 @@ namespace libsemigroups {
 
     DATA* get_data();
     DATA* winning_data(std::vector<DATA*>&                      data,
-                       std::vector<std::function<void(DATA*)>>& funcs);
+                       std::vector<std::function<void(DATA*)>>& funcs,
+                       bool ignore_max_threads = false);
 
     Congruence(cong_t                         type,
                size_t                         nrgens,

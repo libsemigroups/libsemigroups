@@ -354,6 +354,9 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
   std::vector<relation_t> extra = {{{0}, {1}}};
   Congruence              cong("twosided", 3, rels, extra);
   cong.set_report(CONG_REPORT);
+  // This line is here to make sure that the max_threads is ignored here, since
+  // if we are limited to one thread here then this example doesn't run!
+  cong.set_max_threads(1);
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 1}));
