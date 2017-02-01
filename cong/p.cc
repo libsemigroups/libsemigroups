@@ -16,7 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO file description
+// This file contains implementations for the private inner class of Congruence
+// called P, which is a subclass of Congruence::DATA.  This class is for
+// performing an exhaustive enumeration of pairs of elements belonging to a
+// congruence. It is intended that this runs before the underlying semigroup is
+// fully enumerated, and when the congruence contains a very small number of
+// related pairs.
 
 // TODO: A configurable memory limit
 
@@ -30,12 +35,12 @@ namespace libsemigroups {
       : DATA(cong, 40000),
         _class_lookup(),
         _done(false),
-        _found_pairs(),
+        _found_pairs(new std::unordered_set<p_pair_const_t, PHash, PEqual>()),
         _lookup(0),
         _map(),
         _map_next(0),
         _next_class(0),
-        _pairs_to_mult(),
+        _pairs_to_mult(new std::stack<p_pair_const_t>()),
         _reverse_map(),
         _tmp1(nullptr),
         _tmp2(nullptr) {
@@ -57,14 +62,7 @@ namespace libsemigroups {
   }
 
   Congruence::P::~P() {
-    if (_tmp1 != nullptr) {
-      _tmp1->really_delete();
-      delete _tmp1;
-    }
-    if (_tmp2 != nullptr) {
-      _tmp2->really_delete();
-      delete _tmp2;
-    }
+    delete_tmp_storage();
     for (auto& x : _map) {
       const_cast<Element*>(x.first)->really_delete();
       delete x.first;
@@ -73,11 +71,11 @@ namespace libsemigroups {
 
   void Congruence::P::run(std::atomic<bool>& killed) {
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
-    while (!_pairs_to_mult.empty()) {
+    while (!_pairs_to_mult->empty()) {
       // Get the next pair
-      p_pair_const_t current_pair = _pairs_to_mult.top();
+      p_pair_const_t current_pair = _pairs_to_mult->top();
 
-      _pairs_to_mult.pop();
+      _pairs_to_mult->pop();
 
       // Add its left and/or right multiples
       for (size_t i = 0; i < _cong._nrgens; i++) {
@@ -94,15 +92,15 @@ namespace libsemigroups {
         }
       }
       if (_report_next++ > _report_interval) {
-        REPORT("found " << _found_pairs.size() << " pairs: " << _map_next
+        REPORT("found " << _found_pairs->size() << " pairs: " << _map_next
                         << " elements in "
                         << _lookup.nr_blocks()
                         << " classes, "
-                        << _pairs_to_mult.size()
+                        << _pairs_to_mult->size()
                         << " pairs on the stack");
         _report_next = 0;
         if (tid != 0 && _cong._semigroup->is_done()
-            && _found_pairs.size() > _cong._semigroup->size()) {
+            && _found_pairs->size() > _cong._semigroup->size()) {
           // If the congruence is only using 1 thread, then this will never
           // happen, if the congruence uses > 1 threads, then it is ok for P to
           // kill itself, because another thread will complete and return the
@@ -141,13 +139,33 @@ namespace libsemigroups {
     _nr_nontrivial_elms    = _map_next;
 
     if (!killed) {
-      REPORT("finished with " << _found_pairs.size() << " pairs: " << _map_next
+      REPORT("finished with " << _found_pairs->size() << " pairs: " << _map_next
                               << " elements in "
                               << _lookup.nr_blocks()
                               << " classes");
       _done = true;
+      delete_tmp_storage();
     } else {
       REPORT("killed");
+    }
+  }
+
+  void Congruence::P::delete_tmp_storage() {
+    delete _found_pairs;
+    _found_pairs = nullptr;
+
+    delete _pairs_to_mult;
+    _pairs_to_mult = nullptr;
+
+    if (_tmp1 != nullptr) {
+      _tmp1->really_delete();
+      delete _tmp1;
+      _tmp1 = nullptr;
+    }
+    if (_tmp2 != nullptr) {
+      _tmp2->really_delete();
+      delete _tmp2;
+      _tmp2 = nullptr;
     }
   }
 
@@ -181,12 +199,12 @@ namespace libsemigroups {
       } else {
         pair = (i < j ? p_pair_const_t(it_x->first, it_y->first)
                       : p_pair_const_t(it_y->first, it_x->first));
-        if (_found_pairs.find(pair) != _found_pairs.end()) {
+        if (_found_pairs->find(pair) != _found_pairs->end()) {
           return;
         }
       }
-      _found_pairs.insert(pair);
-      _pairs_to_mult.push(pair);
+      _found_pairs->insert(pair);
+      _pairs_to_mult->push(pair);
       _lookup.unite(i, j);
     }
   }
@@ -231,9 +249,10 @@ namespace libsemigroups {
 
   Congruence::partition_t Congruence::P::nontrivial_classes() {
     assert(is_done());
-    partition_t classes(_nr_nontrivial_classes, class_t());
     assert(_reverse_map.size() >= _nr_nontrivial_elms);
     assert(_class_lookup.size() >= _nr_nontrivial_elms);
+
+    partition_t classes(_nr_nontrivial_classes, class_t());
     for (p_index_t ind = 0; ind < _nr_nontrivial_elms; ind++) {
       classes[_class_lookup[ind]].push_back(_reverse_map[ind]->really_copy());
     }

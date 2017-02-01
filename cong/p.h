@@ -16,7 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO file description
+// This file contains implementations for the private inner class of Congruence
+// called P, which is a subclass of Congruence::DATA.  This class is for
+// performing an exhaustive enumeration of pairs of elements belonging to a
+// congruence. It is intended that this runs before the underlying semigroup is
+// fully enumerated, and when the congruence contains a very small number of
+// related pairs.
 
 #ifndef LIBSEMIGROUPS_CONG_P_H_
 #define LIBSEMIGROUPS_CONG_P_H_
@@ -71,12 +76,14 @@ namespace libsemigroups {
 
     void add_pair(Element const* x, Element const* y);
 
+    void delete_tmp_storage();
+
     p_index_t get_index(Element const* x);
     p_index_t add_index(Element const* x);
 
     std::vector<class_index_t> _class_lookup;
     bool                       _done;
-    std::unordered_set<p_pair_const_t, PHash, PEqual> _found_pairs;
+    std::unordered_set<p_pair_const_t, PHash, PEqual>* _found_pairs;
     UF _lookup;
     std::unordered_map<const Element*, p_index_t, Element::Hash, Element::Equal>
                                 _map;
@@ -84,7 +91,7 @@ namespace libsemigroups {
     class_index_t               _next_class;
     p_index_t                   _nr_nontrivial_classes;
     p_index_t                   _nr_nontrivial_elms;
-    std::stack<p_pair_const_t>  _pairs_to_mult;
+    std::stack<p_pair_const_t>*  _pairs_to_mult;
     std::vector<Element const*> _reverse_map;
     Element*                    _tmp1;
     Element*                    _tmp2;
