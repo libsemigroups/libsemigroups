@@ -88,12 +88,17 @@ namespace libsemigroups {
       std::vector<std::function<void(Congruence::DATA*)>>& funcs) {
     std::vector<std::thread::id> tids(data.size(), std::this_thread::get_id());
 
-    auto go = [&data, &funcs, &tids](size_t pos) {
+    auto go = [this, &data, &funcs, &tids](size_t pos) {
       tids[pos] = std::this_thread::get_id();
       if (pos < funcs.size()) {
         funcs.at(pos)(data.at(pos));
       }
-      data.at(pos)->run();
+      try {
+        data.at(pos)->run();
+      } catch (std::bad_alloc const& e) {
+        REPORT("allocation failed: " << e.what())
+        return;
+      }
       if (data.at(pos)->is_done()) {
         for (auto it = data.begin(); it < data.begin() + pos; it++) {
           (*it)->kill();
@@ -131,8 +136,8 @@ namespace libsemigroups {
         return *winner;
       }
     }
-    assert(false);
-    return nullptr;
+    REPORT("allocation failed in every thread, aborting!")
+    std::abort();
   }
 
   Congruence::DATA* Congruence::get_data() {
