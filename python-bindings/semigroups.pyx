@@ -87,6 +87,7 @@ cdef class Element:
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
 
+    # TODO: Make this a class method
     cdef new_from_handle(self, cpp.Element* handle):
         """
         Construct a new element from a specified handle and with the
@@ -215,6 +216,7 @@ cdef class Semigroup:
         6
     """
     cdef cpp.Semigroup* _handle      # holds a pointer to the C++ instance which we're wrapping
+    cdef Element _an_element
 
     def __cinit__(self):
         self._handle = NULL
@@ -235,6 +237,7 @@ cdef class Semigroup:
         for g in generators:
             gens.push_back((<Element>g)._handle)
         self._handle = new cpp.Semigroup(gens)
+        self._an_element = generators[0]
 
     def __dealloc__(self):
         del self._handle
@@ -252,3 +255,65 @@ cdef class Semigroup:
         """
         # Plausibly wrap in sig_off / sig_on
         return self._handle.size()
+
+    cdef new_from_handle(self, cpp.Element* handle):
+        return self._an_element.new_from_handle(handle)
+
+    def __getitem__(self, size_t pos):
+        """
+        Return the ``pos``-th element of ``self``.
+
+        EXAMPLES::
+
+            >>> from semigroups import Semigroup
+            >>> S = Semigroup([1j])
+            >>> S[0]
+            1j
+            >>> S[1]
+            Thread #0: Semigroup::enumerate: limit = 8193
+            Thread #0: Semigroup::enumerate: found 3 elements, 0 rules, max word length 3, so far
+            Thread #0: Semigroup::enumerate: found 4 elements, 0 rules, max word length 4, so far
+            Thread #0: Semigroup::enumerate: found 4 elements, 1 rules, max word length 4, finished!
+            Thread #0: Semigroup::enumerate: elapsed time = 165μs 
+            (-1+0j)
+            >>> S[2]
+            (-0-1j)
+            >>> S[3]
+            (1-0j)
+        """
+        cdef cpp.Element* element
+        element = self._handle.at(pos)
+        if element == NULL:
+            return None
+        else:
+            return self.new_from_handle(element)
+
+    def __iter__(self):
+        """
+        An iterator over the elements of self.
+
+        EXAMPLES::
+
+            >>> from semigroups import Semigroup
+            >>> S = Semigroup([1j])
+            >>> for x in S:
+            ...     print(x)
+            1j
+            Thread #0: Semigroup::enumerate: limit = 8193
+            Thread #0: Semigroup::enumerate: found 3 elements, 0 rules, max word length 3, so far
+            Thread #0: Semigroup::enumerate: found 4 elements, 0 rules, max word length 4, so far
+            Thread #0: Semigroup::enumerate: found 4 elements, 1 rules, max word length 4, finished!
+            Thread #0: Semigroup::enumerate: elapsed time = 100μs
+            (-1+0j)
+            (-0-1j)
+            (1-0j)
+        """
+        cdef size_t pos = 0
+        cdef cpp.Element* element
+        while True:
+            element = self._handle.at(pos)
+            if element == NULL:
+                break
+            else:
+                yield self.new_from_handle(element)
+            pos += 1

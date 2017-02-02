@@ -18,8 +18,10 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[T].iterator begin()
         vector[T].iterator end()
     cdef cppclass Semigroup:
+        # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
         int size()
+        Element* at(size_t pos)  # pos_t
 
 cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):
