@@ -18,7 +18,7 @@
     >>> S.size()
     5
 
-## Debugging instructions
+## Trick to debug segmentation faults
 
 Install Sage
 
@@ -26,6 +26,11 @@ Install gdb in Sage:
 
     sage -i gdb
 
+Run sage as:
+
     sage -gdb
 
-    ... type commands as usual ...
+and type the commands that trigger the segfault. Then gdb will be
+fired automatically, allowing for analysing the stack trace.
+
+## [TODO list](TODO)
