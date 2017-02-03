@@ -6,21 +6,27 @@ AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
 ACLOCAL_AMFLAGS	= -I m4
 
-nobase_include_HEADERS =  semigroups/blocks.h  
-nobase_include_HEADERS += semigroups/cong.h 
-nobase_include_HEADERS += semigroups/elements.h  
-nobase_include_HEADERS += semigroups/semigroups.h 
+nobase_include_HEADERS =  semigroups/blocks.h  	 semigroups/cong.h 
+nobase_include_HEADERS += semigroups/elements.h  semigroups/semigroups.h 
+nobase_include_HEADERS += semigroups/rws.h 	 semigroups/rwse.h 
 nobase_include_HEADERS += semigroups/semiring.h
-nobase_include_HEADERS += semigroups/util/recvec.h  
-nobase_include_HEADERS += semigroups/util/report.h
-nobase_include_HEADERS += semigroups/util/timer.h
+
+nobase_include_HEADERS += semigroups/util/recvec.h   semigroups/util/report.h	
+nobase_include_HEADERS += semigroups/util/timer.h    semigroups/util/uf.h
+
+nobase_include_HEADERS += semigroups/cong/kbfp.h semigroups/cong/p.h
+nobase_include_HEADERS += semigroups/cong/kbp.h	 semigroups/cong/tc.h
 
 lib_LTLIBRARIES = libsemigroups.la
 
-libsemigroups_la_SOURCES = semigroups/blocks.cc
-libsemigroups_la_SOURCES += semigroups/cong.cc
-libsemigroups_la_SOURCES += semigroups/elements.cc
-libsemigroups_la_SOURCES += semigroups/semigroups.cc
+libsemigroups_la_SOURCES = semigroups/blocks.cc 	semigroups/cong.cc
+libsemigroups_la_SOURCES += semigroups/elements.cc	semigroups/semigroups.cc
+libsemigroups_la_SOURCES += semigroups/rws.cc		semigroups/rwse.cc
+
+libsemigroups_la_SOURCES += semigroups/cong/kbfp.cc	semigroups/cong/p.cc
+libsemigroups_la_SOURCES += semigroups/cong/kbp.cc	semigroups/cong/tc.cc
+
+libsemigroups_la_SOURCES += semigroups/util/uf.cc
 
 #libsemigroups_la_CPPFLAGS = -DCONFIG_H
 #libsemigroups_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
@@ -31,10 +37,12 @@ COMMON_DOC_FLAGS = --report --merge docs --output html $(libsemigroups_la_SOURCE
 
 check_PROGRAMS = libsemitest
 
-libsemitest_SOURCES =  test/blocks.test.cc test/elements.test.cc
-libsemitest_SOURCES += test/report.test.cc test/semiring.test.cc
-libsemitest_SOURCES += test/cong.test.cc   test/recvec.test.cc	 
-libsemitest_SOURCES += test/semigroups.test.cc
+libsemitest_SOURCES =  test/blocks.test.cc	test/recvec.test.cc
+libsemitest_SOURCES += test/cong.test.cc	test/rws.test.cc
+libsemitest_SOURCES += test/elements.test.cc	test/rwse.test.cc
+libsemitest_SOURCES += test/kbfp.test.cc	test/semigroups.test.cc
+libsemitest_SOURCES += test/kbp.test.cc		test/semiring.test.cc
+libsemitest_SOURCES += test/p.test.cc		test/tc.test.cc
 
 libsemitest_CXXFLAGS = $(AM_CXXFLAGS) -O3
 libsemitest_CPPFLAGS = -DCONFIG_H

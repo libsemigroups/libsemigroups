@@ -23,8 +23,8 @@
 
 #include "catch.hpp"
 
-#include "../cong.h"
-#include "../rws.h"
+#include "../semigroups/cong.h"
+#include "../semigroups/rws.h"
 
 #define RWS_REPORT false
 

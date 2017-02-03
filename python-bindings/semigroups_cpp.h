@@ -56,12 +56,17 @@ class PythonElement: public Element {
       return new PythonElement(_value);
     }
 
+    void copy(Element const* x) override {
+      _value = static_cast<PythonElement const*>(x)->_value;
+      this->reset_hash_value();
+    }
+
     void really_delete() override {
       Py_DECREF(_value);
       return;
     }
 
-    void redefine(Element const* x, Element const* y) {
+    void redefine(Element const* x, Element const* y) override {
       PyObject * product =
         PyNumber_Multiply(static_cast<const PythonElement *>(x)->_value,
                           static_cast<const PythonElement *>(y)->_value);
@@ -70,8 +75,7 @@ class PythonElement: public Element {
       Py_INCREF(_value);
       reset_hash_value();
     }
-
 };
 
-};
+}; // namespace libsemigroups
 

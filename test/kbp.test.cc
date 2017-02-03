@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "../cong.h"
+#include "../semigroups/cong.h"
 #include "catch.hpp"
 
 #define KBP_REPORT false

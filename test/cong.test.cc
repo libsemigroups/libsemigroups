@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "../cong.h"
+#include "../semigroups/cong.h"
 #include "catch.hpp"
 
 #define CONG_REPORT false
