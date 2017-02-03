@@ -20,6 +20,8 @@
 
 namespace libsemigroups {
 
+  Reporter glob_reporter;
+
   // Static data members
   Semigroup::pos_t Semigroup::UNDEFINED = -1;
   Semigroup::pos_t Semigroup::LIMIT_MAX = -1;
@@ -43,6 +45,7 @@ namespace libsemigroups {
         _length(),
         _lenindex(),
         _map(),
+        _max_threads(std::thread::hardware_concurrency()),
         _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
@@ -58,8 +61,7 @@ namespace libsemigroups {
         _right(new cayley_graph_t(gens->size())),
         _sorted(nullptr),
         _suffix(),
-        _wordlen(0),  // (length of the current word) - 1
-        _reporter(*this) {
+        _wordlen(0) {  // (length of the current word) - 1
     assert(_nrgens != 0);
 
     _degree = (*gens)[0]->degree();
@@ -127,6 +129,7 @@ namespace libsemigroups {
         _left(new cayley_graph_t(*copy._left)),
         _length(copy._length),
         _lenindex(copy._lenindex),
+        _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
@@ -142,8 +145,7 @@ namespace libsemigroups {
         _right(new cayley_graph_t(*copy._right)),
         _sorted(nullptr),  // TODO(JDM) copy this if set
         _suffix(copy._suffix),
-        _wordlen(copy._wordlen),
-        _reporter(*this) {
+        _wordlen(copy._wordlen) {
     _elements->reserve(_nr);
     _map.reserve(_nr);
     _tmp_product = copy._id->really_copy();
@@ -175,6 +177,7 @@ namespace libsemigroups {
         _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
         _left(new cayley_graph_t(*copy._left)),
+        _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
@@ -189,8 +192,7 @@ namespace libsemigroups {
         _relation_pos(UNDEFINED),
         _right(new cayley_graph_t(*copy._right)),
         _sorted(nullptr),
-        _wordlen(0),
-        _reporter(*this) {
+        _wordlen(0) {
     assert(!coll->empty());
     assert(coll->at(0)->degree() >= copy.degree());
 
@@ -275,6 +277,35 @@ namespace libsemigroups {
     delete _elements;
   }
 
+  // w is a word in the generators (i.e. a vector of letter_t's)
+  Semigroup::pos_t Semigroup::word_to_pos(word_t const& w) const {
+    assert(w.size() > 0);
+    if (w.size() == 1) {
+      return letter_to_pos(w[0]);
+    }
+    pos_t out = letter_to_pos(w[0]);
+    for (auto it = w.begin() + 1; it < w.end(); it++) {
+      assert(*it < nrgens());
+      out = fast_product(out, letter_to_pos(*it));
+    }
+    return out;
+  }
+
+  Element* Semigroup::word_to_element(word_t const& w) const {
+    assert(w.size() > 0);
+    if (is_done() || w.size() == 1) {
+      return (*_elements)[word_to_pos(w)]->really_copy();
+    }
+    Element* out = _tmp_product->really_copy();
+    out->redefine((*_gens)[w[0]], (*_gens)[w[1]]);
+    for (auto it = w.begin() + 2; it < w.end(); it++) {
+      assert(*it < nrgens());
+      _tmp_product->copy(out);
+      out->redefine(_tmp_product, (*_gens)[*it]);
+    }
+    return out;
+  }
+
   // Product by tracing in the left or right Cayley graph
 
   Semigroup::pos_t Semigroup::product_by_reduction(pos_t i, pos_t j) const {
@@ -310,16 +341,16 @@ namespace libsemigroups {
 
   // Get the number of idempotents
 
-  size_t Semigroup::nr_idempotents(bool report, size_t nr_threads) {
+  size_t Semigroup::nr_idempotents() {
     if (!_idempotents_found) {
-      find_idempotents(report, nr_threads);
+      find_idempotents();
     }
     return _nr_idempotents;
   }
 
-  bool Semigroup::is_idempotent(pos_t pos, bool report, size_t nr_threads) {
+  bool Semigroup::is_idempotent(pos_t pos) {
     if (!_idempotents_found) {
-      find_idempotents(report, nr_threads);
+      find_idempotents();
     }
     assert(pos < size());
     return _is_idempotent[pos];
@@ -328,24 +359,24 @@ namespace libsemigroups {
   // Const iterator to the first position of an idempotent
 
   typename std::vector<Semigroup::pos_t>::const_iterator
-  Semigroup::idempotents_cbegin(bool report, size_t nr_threads) {
+  Semigroup::idempotents_cbegin() {
     if (!_idempotents_found) {
-      find_idempotents(report, nr_threads);
+      find_idempotents();
     }
     return _idempotents.cbegin();
   }
 
   typename std::vector<Semigroup::pos_t>::const_iterator
-  Semigroup::idempotents_cend(bool report, size_t nr_threads) {
+  Semigroup::idempotents_cend() {
     if (!_idempotents_found) {
-      find_idempotents(report, nr_threads);
+      find_idempotents();
     }
     return _idempotents.cend();
   }
 
   // Get the position of an element in the semigroup
 
-  Semigroup::pos_t Semigroup::position(Element* x, bool report) {
+  Semigroup::pos_t Semigroup::position(Element* x) {
     if (x->degree() != _degree) {
       return UNDEFINED;
     }
@@ -358,18 +389,18 @@ namespace libsemigroups {
       if (is_done()) {
         return UNDEFINED;
       }
-      enumerate(_nr + 1, report);
+      enumerate(_nr + 1);
       // _nr + 1 means we enumerate _batch_size more elements
     }
   }
 
-  size_t Semigroup::sorted_position(Element* x, bool report) {
-    pos_t pos = position(x, report);
+  size_t Semigroup::sorted_position(Element* x) {
+    pos_t pos = position(x);
 
     if (pos == UNDEFINED) {
       return UNDEFINED;
     } else if (_pos_sorted == nullptr) {
-      sort_elements(report);
+      sort_elements();
       _pos_sorted = new std::vector<size_t>();
       _pos_sorted->resize(_sorted->size());
       for (size_t i = 0; i < _sorted->size(); i++) {
@@ -379,8 +410,8 @@ namespace libsemigroups {
     return (*_pos_sorted)[pos];
   }
 
-  Element* Semigroup::at(pos_t pos, bool report) {
-    enumerate(pos + 1, report);
+  Element* Semigroup::at(pos_t pos) {
+    enumerate(pos + 1);
 
     if (pos < _elements->size()) {
       return (*_elements)[pos];
@@ -389,8 +420,8 @@ namespace libsemigroups {
     }
   }
 
-  Element* Semigroup::sorted_at(pos_t pos, bool report) {
-    sort_elements(report);
+  Element* Semigroup::sorted_at(pos_t pos) {
+    sort_elements();
     if (pos < _sorted->size()) {
       return (*_sorted)[pos].first;
     } else {
@@ -398,9 +429,9 @@ namespace libsemigroups {
     }
   }
 
-  void Semigroup::factorisation(word_t& word, pos_t pos, bool report) {
+  void Semigroup::factorisation(word_t& word, pos_t pos) {
     if (pos > _nr && !is_done()) {
-      enumerate(pos, report);
+      enumerate(pos);
     }
 
     if (pos < _nr) {
@@ -412,9 +443,9 @@ namespace libsemigroups {
     }
   }
 
-  void Semigroup::next_relation(std::vector<size_t>& relation, bool report) {
+  void Semigroup::next_relation(std::vector<size_t>& relation) {
     if (!is_done()) {
-      enumerate(report);
+      enumerate();
     }
 
     relation.clear();
@@ -455,20 +486,23 @@ namespace libsemigroups {
       } else {
         _relation_gen = 0;
         _relation_pos++;
-        next_relation(relation, report);
+        next_relation(relation);
       }
     }
   }
 
-  void Semigroup::enumerate(size_t limit, bool report) {
-    if (_pos >= _nr || limit <= _nr) {
+  void Semigroup::enumerate(std::atomic<bool>& killed, size_t limit) {
+    _mtx.lock();
+    if (_pos >= _nr || limit <= _nr || killed) {
+      _mtx.unlock();
       return;
     }
     limit = std::max(limit, _nr + _batch_size);
 
-    _reporter.set_report(report);
-    _reporter.start_timer();
-    _reporter(__func__) << "limit = " << limit << std::endl;
+    REPORT("limit = " << limit);
+    Timer timer;
+    timer.start();
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     // multiply the generators by every generator
     if (_pos < _lenindex[1]) {
@@ -477,7 +511,7 @@ namespace libsemigroups {
         size_t i       = _index[_pos];
         _multiplied[i] = true;
         for (size_t j = 0; j != _nrgens; ++j) {
-          _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+          _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
@@ -512,7 +546,7 @@ namespace libsemigroups {
     }
 
     // multiply the words of length > 1 by every generator
-    bool stop = (_nr >= limit);
+    bool stop = (_nr >= limit || killed);
 
     while (_pos != _nr && !stop) {
       size_t nr_shorter_elements = _nr;
@@ -533,7 +567,7 @@ namespace libsemigroups {
               _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
             }
           } else {
-            _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+            _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
@@ -552,7 +586,7 @@ namespace libsemigroups {
               _suffix.push_back(_right->get(s, j));
               _index.push_back(_nr);
               _nr++;
-              stop = (_nr >= limit);
+              stop = (_nr >= limit || killed);
             }
           }
         }  // finished applying gens to <_elements->at(_pos)>
@@ -572,22 +606,26 @@ namespace libsemigroups {
         _lenindex.push_back(_index.size());
       }
 
-      _reporter(__func__) << "found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length();
-
       if (!is_done()) {
-        _reporter << ", so far" << std::endl;
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length()
+                        << ", so far")
       } else {
-        _reporter << ", finished!" << std::endl;
-        _reporter.stop_timer();
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length()
+                        << ", finished")
       }
     }
-    _reporter.stop_timer();
+    REPORT(timer.string("elapsed time = "));
+    if (killed) {
+      REPORT("killed");
+    }
+    _mtx.unlock();
   }
 
-  Semigroup* Semigroup::copy_closure(std::vector<Element*> const* coll,
-                                     bool                         report) {
+  Semigroup* Semigroup::copy_closure(std::vector<Element*> const* coll) {
     if (coll->empty()) {
       return new Semigroup(*this);
     } else {
@@ -595,61 +633,58 @@ namespace libsemigroups {
       // out, the partial copy contains enough information to all membership
       // testing without a call to enumerate (which will fail because the
       // partial copy does not contain enough data to run enumerate).
-      this->enumerate(LIMIT_MAX, report);
+      this->enumerate(LIMIT_MAX);
       // Partially copy
       Semigroup* out = new Semigroup(*this, coll);
-      out->closure(coll, report);
+      out->closure(coll);
       return out;
     }
   }
 
-  void Semigroup::closure(std::vector<Element*> const& coll, bool report) {
-    closure(&coll, report);
+  void Semigroup::closure(std::vector<Element*> const& coll) {
+    closure(&coll);
   }
 
-  void Semigroup::closure(std::vector<Element*> const* coll, bool report) {
+  void Semigroup::closure(std::vector<Element*> const* coll) {
     if (coll->empty()) {
       return;
     } else {
       std::vector<Element*> singleton(1, nullptr);
 
       for (auto const& x : *coll) {
-        if (!test_membership(x, report)) {
+        if (!test_membership(x)) {
           singleton[0] = x;
-          add_generators(singleton, report);
+          add_generators(singleton);
         }
       }
     }
   }
 
-  Semigroup* Semigroup::copy_add_generators(std::vector<Element*> const* coll,
-                                            bool report) const {
+  Semigroup*
+  Semigroup::copy_add_generators(std::vector<Element*> const* coll) const {
     if (coll->empty()) {
       return new Semigroup(*this);
     } else {
       // Partially copy
       Semigroup* out = new Semigroup(*this, coll);
-      out->add_generators(coll, report);
+      out->add_generators(coll);
       return out;
     }
   }
 
-  void Semigroup::add_generators(std::vector<Element*> const& coll,
-                                 bool                         report) {
-    add_generators(&coll, report);
+  void Semigroup::add_generators(std::vector<Element*> const& coll) {
+    add_generators(&coll);
   }
 
-  void Semigroup::add_generators(const std::vector<Element*>* coll,
-                                 bool                         report) {
+  void Semigroup::add_generators(const std::vector<Element*>* coll) {
     if (coll->empty()) {
       return;
     }
+    Timer timer;
+    timer.start();
+    size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     assert(degree() == (*coll->begin())->degree());
-
-    _reporter.set_report(report);
-    _reporter.start_timer();
-    _reporter(__func__);
 
     // get some parameters from the old semigroup
     size_t old_nrgens  = _nrgens;
@@ -770,13 +805,13 @@ namespace libsemigroups {
             }
           }
           for (size_t j = old_nrgens; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr);
+            closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         } else {
           // _elements[i] is not in old
           _multiplied[i] = true;
           for (size_t j = 0; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr);
+            closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         }
         _pos++;
@@ -806,27 +841,28 @@ namespace libsemigroups {
         _wordlen++;
       }
 
-      _reporter(__func__) << "found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length();
-
       if (!is_done()) {
-        _reporter << ", so far" << std::endl;
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length()
+                        << ", so far")
       } else {
-        _reporter << ", finished!" << std::endl;
-        _reporter.stop_timer();
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length()
+                        << ", finished")
       }
     }
-    _reporter.stop_timer();
+    REPORT(timer.string("elapsed time = "));
   }
 
   // Private methods
 
-  void Semigroup::sort_elements(bool report) {
+  void Semigroup::sort_elements() {
     if (_sorted != nullptr) {
       return;
     }
-    enumerate(report);
+    enumerate();
     _sorted = new std::vector<std::pair<Element*, size_t>>();
     _sorted->reserve(_elements->size());
     for (size_t i = 0; i < _elements->size(); i++) {
@@ -836,11 +872,10 @@ namespace libsemigroups {
   }
 
   // FIXME(JDM) improve this to either multiply or product_by_reduction
-  // depending
-  // on which will be quickest. It is actually slow because of not doing this
+  // depending on which will be quickest. It is actually slow because of not
+  // doing this
 
-  void Semigroup::idempotents_thread(size_t              thread_id,
-                                     size_t&             nr,
+  void Semigroup::idempotents_thread(size_t&             nr,
                                      std::vector<pos_t>& idempotents,
                                      std::vector<bool>&  is_idempotent,
                                      pos_t               begin,
@@ -864,10 +899,8 @@ namespace libsemigroups {
         is_idempotent.push_back(false);
       }
     }
-    _reporter.lock();
-    _reporter(__func__, thread_id) << "elapsed time = " << timer.string()
-                                   << std::endl;
-    _reporter.unlock();
+
+    REPORT(timer.string("elapsed time = "));
   }
 
   void inline Semigroup::closure_update(pos_t              i,
@@ -875,7 +908,8 @@ namespace libsemigroups {
                                         letter_t           b,
                                         pos_t              s,
                                         std::vector<bool>& old_new,
-                                        pos_t              old_nr) {
+                                        pos_t              old_nr,
+                                        size_t const&      tid) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       size_t r = _right->get(s, j);
       if (_found_one && r == _pos_one) {
@@ -886,7 +920,7 @@ namespace libsemigroups {
         _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
       }
     } else {
-      _tmp_product->redefine((*_elements)[i], (*_gens)[j]);
+      _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
       auto it = _map.find(_tmp_product);
       if (it == _map.end()) {  // it's new!
         is_one(_tmp_product, _nr);
@@ -932,12 +966,12 @@ namespace libsemigroups {
   // TOOD(JDM) improve this if R/L-classes are known to stop performing the
   // product if we fall out of the R-class of the initial element.
 
-  void Semigroup::find_idempotents(bool report, size_t nr_threads) {
+  void Semigroup::find_idempotents() {
     _idempotents_found = true;
-    enumerate(report);
+    enumerate();
 
-    _reporter.set_report(report);
-    _reporter.start_timer();
+    Timer timer;
+    timer.start();
 
     size_t sum_word_lengths = 0;
     for (size_t i = length_non_const(_idempotents_start_pos);
@@ -945,10 +979,8 @@ namespace libsemigroups {
          i++) {
       sum_word_lengths += i * (_lenindex[i] - _lenindex[i - 1]);
     }
-    // TODO(JDM) make the number in the next line a macro or something so that
-    // it
-    // is easy to change.
-    if (nr_threads == 1 || size() < 823543) {
+
+    if (_max_threads == 1 || size() < 823543) {
       if ((_nr - _idempotents_start_pos) * _tmp_product->complexity()
           < sum_word_lengths) {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
@@ -974,22 +1006,23 @@ namespace libsemigroups {
         }
       }
     } else {
-      size_t av_load    = sum_word_lengths / nr_threads;
+      size_t av_load    = sum_word_lengths / _max_threads;
       pos_t  begin      = _idempotents_start_pos;
       pos_t  end        = _idempotents_start_pos;
       size_t total_load = 0;
 
-      std::vector<size_t>             nr(nr_threads, 0);
-      std::vector<std::vector<pos_t>> idempotents(nr_threads,
+      std::vector<size_t>             nr(_max_threads, 0);
+      std::vector<std::vector<pos_t>> idempotents(_max_threads,
                                                   std::vector<pos_t>());
-      std::vector<std::vector<bool>> is_idempotent(nr_threads,
+      std::vector<std::vector<bool>> is_idempotent(_max_threads,
                                                    std::vector<bool>());
       std::vector<std::thread> threads;
-      _reporter.set_report(report);
+      glob_reporter.reset_thread_ids();
+
       // TODO(JDM) use less threads if the av_load is too low
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         size_t thread_load = 0;
-        if (i != nr_threads - 1) {
+        if (i != _max_threads - 1) {
           while (thread_load < av_load) {
             thread_load += length_const(end);
             end++;
@@ -999,13 +1032,11 @@ namespace libsemigroups {
           end         = size();
           thread_load = sum_word_lengths - total_load;
         }
-        _reporter.lock();
-        _reporter(__func__, 0) << "thread " << i + 1 << " has load "
-                               << thread_load << std::endl;
-        _reporter.unlock();
+
+        REPORT("thread " << i + 1 << " has load " << thread_load)
+
         threads.push_back(std::thread(&Semigroup::idempotents_thread,
                                       this,
-                                      i + 1,
                                       std::ref(nr[i]),
                                       std::ref(idempotents[i]),
                                       std::ref(is_idempotent[i]),
@@ -1014,13 +1045,13 @@ namespace libsemigroups {
         begin = end;
       }
 
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         threads[i].join();
         _nr_idempotents += nr[i];
       }
       _idempotents.reserve(_nr_idempotents);
       _is_idempotent.reserve(size());
-      for (size_t i = 0; i < nr_threads; i++) {
+      for (size_t i = 0; i < _max_threads; i++) {
         _idempotents.insert(
             _idempotents.end(), idempotents[i].begin(), idempotents[i].end());
         _is_idempotent.insert(_is_idempotent.end(),
@@ -1029,8 +1060,7 @@ namespace libsemigroups {
       }
     }
     _idempotents_start_pos = _nr;
-    _reporter(__func__, 0);
-    _reporter.stop_timer();
+    REPORT(timer.string("elapsed time = "));
   }
 
   // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be

@@ -22,6 +22,7 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -37,12 +38,7 @@
 
 namespace libsemigroups {
 
-  //
-  // This is the value used as the default value for the *report* parameter in
-  // many of the methods for the <Semigroup> class. You might want to change
-  // this
-  // to **false**, if you find the stuff printed when reporting annoying.
-  static const bool DEFAULT_REPORT_VALUE = true;
+  extern Reporter glob_reporter;
 
   //
   // Type for the index of a generator of a semigroup.
@@ -136,6 +132,12 @@ namespace libsemigroups {
     // constructed semigroup.
     Semigroup(const Semigroup& copy);
 
+    // TODO doc Semigroup::word_to_pos
+    pos_t word_to_pos(word_t const& w) const;
+
+    // TODO doc Semigroup::word_to_element
+    Element* word_to_element(word_t const& w) const;
+
    private:
     // partial copy
     // @copy a semigroup
@@ -206,6 +208,11 @@ namespace libsemigroups {
 
     std::vector<Element*>* gens() const {
       return _gens;
+    }
+
+    Element* gens(size_t pos) const {
+      assert(pos < _gens->size());
+      return (*_gens)[pos];
     }
 
     // const
@@ -356,8 +363,6 @@ namespace libsemigroups {
 
     // non-const
     // @pos a valid position of an element of the semigroup.
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
@@ -365,9 +370,9 @@ namespace libsemigroups {
     // @return the length of the element in position <pos>, assuming that
     // there is such an element, if not, this will cause an assertion failure.
 
-    size_t length_non_const(pos_t pos, bool report = DEFAULT_REPORT_VALUE) {
+    size_t length_non_const(pos_t pos) {
       if (pos >= _nr) {
-        enumerate(report);
+        enumerate();
       }
       return length_const(pos);
     }
@@ -431,56 +436,32 @@ namespace libsemigroups {
     }
 
     // non-const
-    // @report report during enumeration and/or counting, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads. It appears to only be beneficial to use concurrency when the
-    // size of semigroup exceeds 823543.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
     //
     // @return the total number of idempotents in the semigroup.
 
-    size_t nr_idempotents(bool   report     = DEFAULT_REPORT_VALUE,
-                          size_t nr_threads = 1);
+    size_t nr_idempotents();
 
     // non-const
     // @pos a valid position of an element of the semigroup.
-    // @report report during enumeration and/or counting, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
     //
     // @return **true** if the <pos> element of the semigroup is an idempotent
-    // and
-    // return **false** otherwise.
+    // and return **false** otherwise.
 
-    bool is_idempotent(pos_t  pos,
-                       bool   report     = DEFAULT_REPORT_VALUE,
-                       size_t nr_threads = 1);
+    bool is_idempotent(pos_t pos);
 
     // non-const
-    // @report report during enumeration and/or counting, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
@@ -488,22 +469,12 @@ namespace libsemigroups {
     // @return a const iterator for the positions <pos_t> of idempotents in
     // the semigroup.
 
-    std::vector<pos_t>::const_iterator
-    idempotents_cbegin(bool   report     = DEFAULT_REPORT_VALUE,
-                       size_t nr_threads = 1);
+    std::vector<pos_t>::const_iterator idempotents_cbegin();
 
     // non-const
-    // @report report during enumeration and/or counting, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
-    // @nr_threads the number of threads to use (defaults to 1)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
-    //
-    // If the size of the semigroup is less than 823543 or the number of threads
-    // is 1, then this is a single-threaded function. Otherwise, the elements of
-    // the semigroup are tested for idempotency in <nr_threads> concurrent
-    // threads.
     //
     // The value of the positions, and number, of idempotents is stored after
     // they are first computed.
@@ -511,12 +482,9 @@ namespace libsemigroups {
     // @return a const iterator for the positions <pos_t> of idempotents in
     // the semigroup.
 
-    std::vector<pos_t>::const_iterator
-    idempotents_cend(bool report = DEFAULT_REPORT_VALUE, size_t nr_threads = 1);
+    std::vector<pos_t>::const_iterator idempotents_cend();
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup. See <next_relation>.
@@ -524,8 +492,8 @@ namespace libsemigroups {
     // @return the total number of relations in the presentation defining the
     // semigroup.
 
-    size_t nrrules(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(report);
+    size_t nrrules() {
+      enumerate();
       return _nrrules;
     }
 
@@ -559,23 +527,19 @@ namespace libsemigroups {
     }
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
     //
     // @return the size of the semigroup.
 
-    size_t size(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(report);
+    size_t size() {
+      enumerate();
       return _elements->size();
     }
 
     // non-const
     // @x      a possible element of the semigroup
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
@@ -587,14 +551,12 @@ namespace libsemigroups {
     //
     // @return **true** or **false**.
 
-    bool test_membership(Element* x, bool report = DEFAULT_REPORT_VALUE) {
-      return (position(x, report) != UNDEFINED);
+    bool test_membership(Element* x) {
+      return (position(x) != UNDEFINED);
     }
 
     // non-const
     // @x      a possible element of the semigroup
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
@@ -608,12 +570,10 @@ namespace libsemigroups {
     // @return the <pos_t> position of the element <x> in the semigroup, or
     // <UNDEFINED>.
 
-    pos_t position(Element* x, bool report = DEFAULT_REPORT_VALUE);
+    pos_t position(Element* x);
 
     // non-const
     // @x      a possible element of the semigroup
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
@@ -625,11 +585,9 @@ namespace libsemigroups {
     // of
     // the semigroup, or <UNDEFINED> if <x> is not an element of **this**.
 
-    size_t sorted_position(Element* x, bool report = DEFAULT_REPORT_VALUE);
+    size_t sorted_position(Element* x);
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
@@ -640,14 +598,12 @@ namespace libsemigroups {
     // TODO(JDM) replace this with a method for cbegin and cend, don't allow
     // access to _elements.
 
-    std::vector<Element*>* elements(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(report);
+    std::vector<Element*>* elements() {
+      enumerate();
       return _elements;
     }
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
@@ -659,16 +615,13 @@ namespace libsemigroups {
     //
     // TODO(JDM) replace this with a method for sorted_cbegin and sorted_cend.
 
-    std::vector<std::pair<Element*, pos_t>>*
-    sorted_elements(bool report = DEFAULT_REPORT_VALUE) {
-      sort_elements(report);
+    std::vector<std::pair<Element*, pos_t>>* sorted_elements() {
+      sort_elements();
       return _sorted;
     }
 
     // non-const
     // @pos a position of an element of the semigroup.
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>).
     //
     // This method is non-const since it may involve fully enumerating the
     // semigroup.
@@ -676,7 +629,7 @@ namespace libsemigroups {
     // @return the element of the semigroup in position <pos>, or a *nullptr* if
     // there is no such element.
 
-    Element* at(pos_t pos, bool report = DEFAULT_REPORT_VALUE);
+    Element* at(pos_t pos);
 
     // const
     // @pos a valid position of an already enumerated element of the semigroup.
@@ -691,8 +644,6 @@ namespace libsemigroups {
 
     // non-const
     // @pos a position of an already enumerated element of the semigroup.
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>).
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
@@ -701,33 +652,29 @@ namespace libsemigroups {
     // array
     // of elements, or nullptr in <pos> is not valid (i.e. too big).
 
-    Element* sorted_at(pos_t pos, bool report = DEFAULT_REPORT_VALUE);
+    Element* sorted_at(pos_t pos);
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>).
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
     //
     // @return a pointer to the right Cayley graph of the semigroup.
 
-    cayley_graph_t* right_cayley_graph(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(report);
+    cayley_graph_t* right_cayley_graph() {
+      enumerate();
       return _right;
     }
 
     // non-const
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>).
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
     //
     // @return a pointer to the left Cayley graph of the semigroup.
 
-    cayley_graph_t* left_cayley_graph(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(report);
+    cayley_graph_t* left_cayley_graph() {
+      enumerate();
       return _left;
     }
 
@@ -735,8 +682,6 @@ namespace libsemigroups {
     // @word   changed in-place to contain a word in the generators equal to the
     //         <pos> element of the semigroup
     // @pos    a possible position of element of the semigroup.
-    // @report report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it may involve enumerating the semigroup.
     //
@@ -748,8 +693,7 @@ namespace libsemigroups {
     // known. If <pos> is greater than the size of the semigroup, then nothing
     // happens and <word> is not modified, in particular not cleared.
 
-    void
-    factorisation(word_t& word, pos_t pos, bool report = DEFAULT_REPORT_VALUE);
+    void factorisation(word_t& word, pos_t pos);
 
     // non-const
     //
@@ -768,8 +712,6 @@ namespace libsemigroups {
 
     // non-const
     // @relation container for the next relation, changed in-place.
-    // @report   report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is non-const since it involves fully enumerating the
     // semigroup.
@@ -799,13 +741,10 @@ namespace libsemigroups {
     //
     // See also <reset_next_relation>.
 
-    void next_relation(std::vector<size_t>& relation,
-                       bool                 report = DEFAULT_REPORT_VALUE);
+    void next_relation(std::vector<size_t>& relation);
 
     // non-const
     // @limit    the number of elements to enumerate (defaults to <LIMIT_MAX>)
-    // @report   report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This is the main method of the Semigroup class, and is where the
     // Froidure-Pin Algorithm is implemented.  This method is non-const since it
@@ -820,24 +759,19 @@ namespace libsemigroups {
     // minimal factorisation of every element (in terms of its generating set).
     // All of the elements are stored in memory until the object is destroyed.
 
-    void enumerate(size_t limit  = LIMIT_MAX,
-                   bool   report = DEFAULT_REPORT_VALUE);
+    void enumerate(std::atomic<bool>& killed, size_t limit = LIMIT_MAX);
 
     // non-const
-    // @report   report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
-    // Calls <enumerate>(LIMIT_MAX, report), and so triggers a full enumeration
+    // Calls <enumerate>(LIMIT_MAX), and so triggers a full enumeration
     // of the semigroup.
-
-    void inline enumerate(bool report = DEFAULT_REPORT_VALUE) {
-      enumerate(LIMIT_MAX, report);
+    void enumerate(size_t limit = LIMIT_MAX) {
+      std::atomic<bool> killed(false);
+      enumerate(killed, limit);
     }
 
     // non-const (pointer parameter)
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method can be used to add new generators to the existing semigroup
     // in such a way that any previously enumerated data is preserved and not
@@ -865,13 +799,10 @@ namespace libsemigroups {
     // The elements the argument <coll> are copied into the semigroup, and
     // should be deleted by the caller.
 
-    void add_generators(const std::vector<Element*>* coll,
-                        bool report = DEFAULT_REPORT_VALUE);
+    void add_generators(const std::vector<Element*>* coll);
 
     // non-const (const ref parameter)
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method can be used to add new generators to the existing semigroup
     // in such a way that any previously enumerated data is preserved and not
@@ -896,13 +827,10 @@ namespace libsemigroups {
     // also be the case that the new generators are the only new elements,
     // unlike, say, in the case of non-trivial groups.
 
-    void add_generators(std::vector<Element*> const& coll,
-                        bool report = DEFAULT_REPORT_VALUE);
+    void add_generators(std::vector<Element*> const& coll);
 
     // const
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is equivalent to copying **this** and then calling
     // <add_generators> on the copy, but this method avoids copying the parts
@@ -914,13 +842,10 @@ namespace libsemigroups {
     // @return The newly constructed semigroup generated by **this** and
     // <coll>.
 
-    Semigroup* copy_add_generators(const std::vector<Element*>* coll,
-                                   bool report = DEFAULT_REPORT_VALUE) const;
+    Semigroup* copy_add_generators(const std::vector<Element*>* coll) const;
 
     // non-const (pointer parameter)
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method can be used to add new generators to the existing semigroup
     // in such a way that any previously enumerated data is preserved and not
@@ -940,13 +865,10 @@ namespace libsemigroups {
     // The elements the argument <coll> are copied into the semigroup, and
     // should be deleted by the caller.
 
-    void closure(const std::vector<Element*>* coll,
-                 bool                         report = DEFAULT_REPORT_VALUE);
+    void closure(const std::vector<Element*>* coll);
 
     // non-const (const ref parameter)
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method can be used to add new generators to the existing semigroup
     // in such a way that any previously enumerated data is preserved and not
@@ -963,13 +885,10 @@ namespace libsemigroups {
     // invalidating possibly previously known data about the semigroup, such as
     // the left or right Cayley graphs.
 
-    void closure(std::vector<Element*> const& coll,
-                 bool                         report = DEFAULT_REPORT_VALUE);
+    void closure(std::vector<Element*> const& coll);
 
     // non-const
     // @coll    the new generators to be added
-    // @report  report during enumeration, if any (defaults to
-    // <DEFAULT_REPORT_VALUE>)
     //
     // This method is equivalent to copying **this** and then calling <closure>
     // on the copy with <coll>, but this method avoids copying the parts of
@@ -984,8 +903,7 @@ namespace libsemigroups {
     // @return The newly constructed semigroup generated by **this** and
     // <coll>.
 
-    Semigroup* copy_closure(std::vector<Element*> const* coll,
-                            bool report = DEFAULT_REPORT_VALUE);
+    Semigroup* copy_closure(std::vector<Element*> const* coll);
 
     // static
     //
@@ -1001,6 +919,16 @@ namespace libsemigroups {
 
     static size_t LIMIT_MAX;
 
+    void set_report(bool val) {
+      glob_reporter.set_report(val);
+    }
+
+    void set_max_threads(size_t nr_threads) {
+      unsigned int n =
+          static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+      _max_threads = std::min(n, std::thread::hardware_concurrency());
+    }
+
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
     // of an <Element>* and <pos_t> which is sorted on the first entry using
@@ -1008,17 +936,15 @@ namespace libsemigroups {
     // in sorted order, and find the position of an element in the sorted list
     // of elements.
 
-    void sort_elements(bool report = DEFAULT_REPORT_VALUE);
+    void sort_elements();
 
     // Find the idempotents and store their positions and their number
-    void find_idempotents(bool   report     = DEFAULT_REPORT_VALUE,
-                          size_t nr_threads = 1);
+    void find_idempotents();
 
     // Function for counting idempotents in a thread, changes the parameter <nr>
     // in place.
 
-    void idempotents_thread(size_t              thread_id,
-                            size_t&             nr,
+    void idempotents_thread(size_t&             nr,
                             std::vector<pos_t>& idempotents,
                             std::vector<bool>&  is_idempotent,
                             pos_t               begin,
@@ -1049,7 +975,8 @@ namespace libsemigroups {
                                letter_t           b,
                                letter_t           s,
                                std::vector<bool>& old_new,
-                               pos_t              old_nr);
+                               pos_t              old_nr,
+                               size_t const&      thread_id);
 
     struct myless {
       // A constructor
@@ -1072,27 +999,6 @@ namespace libsemigroups {
       Semigroup const& _semigroup;
     };
 
-    struct myequal {
-      // To keep cldoc happy
-      // @x a pointer to a const Element
-      // @y a pointer to a const Element
-      //
-      // @return **true** or **false**
-      size_t operator()(const Element* x, const Element* y) const {
-        return *x == *y;
-      }
-    };
-
-    struct myhash {
-      // To keep cldoc happy
-      // @x a pointer to a const Element
-      //
-      // @return **true** or **false**
-      size_t operator()(const Element* x) const {
-        return x->hash_value();
-      }
-    };
-
     void copy_gens();
 
     size_t _batch_size;
@@ -1113,8 +1019,11 @@ namespace libsemigroups {
     cayley_graph_t*        _left;
     std::vector<pos_t>     _length;
     std::vector<size_t>    _lenindex;
-    std::unordered_map<const Element*, size_t, myhash, myequal> _map;
+    std::unordered_map<const Element*, size_t, Element::Hash, Element::Equal>
+                         _map;
+    size_t               _max_threads;
     std::vector<bool>    _multiplied;
+    std::mutex           _mtx;
     size_t               _nr;
     size_t               _nrgens;
     size_t               _nr_idempotents;
@@ -1131,8 +1040,6 @@ namespace libsemigroups {
     std::vector<size_t> _suffix;
     Element*            _tmp_product;
     size_t              _wordlen;
-
-    Reporter _reporter;
   };
 
 }  // namespace libsemigroups

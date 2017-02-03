@@ -36,7 +36,8 @@ class AnotherClass {
   AnotherClass() {}
 };
 
-TEST_CASE("Reporter: default report, 0 parameters, no call", "") {
+TEST_CASE("Reporter: default report, 0 parameters, no call",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_ostream(os);
@@ -45,7 +46,8 @@ TEST_CASE("Reporter: default report, 0 parameters, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 0 parameters, no call", "") {
+TEST_CASE("Reporter: no report, 0 parameters, no call",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(false);
@@ -55,7 +57,8 @@ TEST_CASE("Reporter: no report, 0 parameters, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 0 parameters, no call", "") {
+TEST_CASE("Reporter: report, 0 parameters, no call",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(true);
@@ -67,7 +70,8 @@ TEST_CASE("Reporter: report, 0 parameters, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: default report, 0 parameters, call 1 parameter", "") {
+TEST_CASE("Reporter: default report, 0 parameters, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_ostream(os);
@@ -79,7 +83,8 @@ TEST_CASE("Reporter: default report, 0 parameters, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 0 parameters, call 1 parameter", "") {
+TEST_CASE("Reporter: no report, 0 parameters, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(false);
@@ -92,7 +97,8 @@ TEST_CASE("Reporter: no report, 0 parameters, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 0 parameters, call 1 parameter", "") {
+TEST_CASE("Reporter: report, 0 parameters, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(true);
@@ -109,7 +115,8 @@ TEST_CASE("Reporter: report, 0 parameters, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: default report, 0 parameters, call 2 parameters", "") {
+TEST_CASE("Reporter: default report, 0 parameters, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_ostream(os);
@@ -121,7 +128,8 @@ TEST_CASE("Reporter: default report, 0 parameters, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 0 parameters, call 2 parameters", "") {
+TEST_CASE("Reporter: no report, 0 parameters, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(false);
@@ -134,7 +142,8 @@ TEST_CASE("Reporter: no report, 0 parameters, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 0 parameters, call 2 parameters", "") {
+TEST_CASE("Reporter: report, 0 parameters, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(true);
@@ -151,7 +160,8 @@ TEST_CASE("Reporter: report, 0 parameters, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: default report, 1 parameter, no call", "") {
+TEST_CASE("Reporter: default report, 1 parameter, no call",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -161,7 +171,8 @@ TEST_CASE("Reporter: default report, 1 parameter, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 1 parameter, no call", "") {
+TEST_CASE("Reporter: no report, 1 parameter, no call",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -172,7 +183,7 @@ TEST_CASE("Reporter: no report, 1 parameter, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 1 parameter, no call", "") {
+TEST_CASE("Reporter: report, 1 parameter, no call", "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -185,7 +196,8 @@ TEST_CASE("Reporter: report, 1 parameter, no call", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: default report, 1 parameter, call 1 parameter", "") {
+TEST_CASE("Reporter: default report, 1 parameter, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -198,7 +210,8 @@ TEST_CASE("Reporter: default report, 1 parameter, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 1 parameter, call 1 parameter", "") {
+TEST_CASE("Reporter: no report, 1 parameter, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -212,7 +225,8 @@ TEST_CASE("Reporter: no report, 1 parameter, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 1 parameter, call 1 parameter", "") {
+TEST_CASE("Reporter: report, 1 parameter, call 1 parameter",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -230,7 +244,8 @@ TEST_CASE("Reporter: report, 1 parameter, call 1 parameter", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: default report, 1 parameter, call 2 parameters", "") {
+TEST_CASE("Reporter: default report, 1 parameter, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -243,7 +258,8 @@ TEST_CASE("Reporter: default report, 1 parameter, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: no report, 1 parameter, call 2 parameters", "") {
+TEST_CASE("Reporter: no report, 1 parameter, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -257,7 +273,8 @@ TEST_CASE("Reporter: no report, 1 parameter, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 1 parameter, call 2 parameters", "") {
+TEST_CASE("Reporter: report, 1 parameter, call 2 parameters",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -275,7 +292,7 @@ TEST_CASE("Reporter: report, 1 parameter, call 2 parameters", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: << std::endl", "") {
+TEST_CASE("Reporter: << std::endl", "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -294,7 +311,7 @@ TEST_CASE("Reporter: << std::endl", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: set_class_name", "") {
+TEST_CASE("Reporter: set_class_name", "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -330,7 +347,8 @@ TEST_CASE("Reporter: set_class_name", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 0 parameters, start/stop timer", "") {
+TEST_CASE("Reporter: report, 0 parameters, start/stop timer",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(true);
@@ -372,7 +390,8 @@ TEST_CASE("Reporter: report, 0 parameters, start/stop timer", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 1 parameter, start/stop timer", "") {
+TEST_CASE("Reporter: report, 1 parameter, start/stop timer",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c  = Class();
   Reporter            r(c);
@@ -415,7 +434,8 @@ TEST_CASE("Reporter: report, 1 parameter, start/stop timer", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 0 parameters, threads", "") {
+TEST_CASE("Reporter: report, 0 parameters, threads",
+          "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Reporter            r;
   r.set_report(true);
@@ -449,7 +469,7 @@ TEST_CASE("Reporter: report, 0 parameters, threads", "") {
   delete os;
 }
 
-TEST_CASE("Reporter: report, 1 parameter, threads", "") {
+TEST_CASE("Reporter: report, 1 parameter, threads", "[quick][util][reporter]") {
   std::ostringstream* os = new std::ostringstream();
   Class               c;
   Reporter            r(c);

@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <math.h>
 
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <unordered_set>
@@ -80,8 +81,7 @@ namespace libsemigroups {
     //
     // The returned value is used in, for example, <Semigroup::fast_product> and
     // <Semigroup::nr_idempotents> to decide if it is better to multiply
-    // elements
-    // or follow a path in the Cayley graph.
+    // elements or follow a path in the Cayley graph.
     //
     // @return the complexity of multiplying two elements.
     virtual size_t complexity() const = 0;
@@ -92,8 +92,7 @@ namespace libsemigroups {
     // and is used to determine whether or not two elements are compatible for
     // multiplication. For example, two <Transformation>s of different degrees
     // cannot be multiplied, or a <Bipartition> of degree 10 cannot be an
-    // element
-    // of a monoid of bipartitions of degree 3.
+    // element of a monoid of bipartitions of degree 3.
     //
     // See the relevant subclass for the particular meaning of the return value
     // of this method for each subclass.
@@ -140,6 +139,12 @@ namespace libsemigroups {
     virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
 
     // non-const
+    // @x an element.
+    //
+    // This method copies <x> into **this** by changing **this** in-place.
+    virtual void copy(Element const* x) = 0;
+
+    // non-const
     //
     // This method really deletes an <Element>. To minimise the amount of
     // copying when <Element>s are inserted in unordered_maps and other
@@ -160,7 +165,36 @@ namespace libsemigroups {
     // See <libsemigroups::Element::redefine>.
     //
     // Redefine **this** to be the product of <x> and <y>.
-    virtual void redefine(Element const* x, Element const* y) = 0;
+    virtual void
+    redefine(Element const* x, Element const* y, size_t const& thread_id) {
+      (void) thread_id;
+      redefine(x, y);
+    }
+
+    virtual void redefine(Element const* x, Element const* y) {
+      redefine(x, y, 0);
+    }
+
+    struct Equal {
+      // To keep cldoc happy
+      // @x a pointer to a const Element
+      // @y a pointer to a const Element
+      //
+      // @return **true** or **false**
+      size_t operator()(const Element* x, const Element* y) const {
+        return *x == *y;
+      }
+    };
+
+    struct Hash {
+      // To keep cldoc happy
+      // @x a pointer to a const Element
+      //
+      // @return **true** or **false**
+      size_t operator()(const Element* x) const {
+        return x->hash_value();
+      }
+    };
 
    protected:
     // const
@@ -180,7 +214,7 @@ namespace libsemigroups {
     //
     // This variable is used to indicate that a value is undefined, such as,
     // the cached hash value.
-    static size_t UNDEFINED;
+    static size_t const UNDEFINED;
 
     //
     // This data member holds a cached version of the hash value of an Element.
@@ -288,6 +322,16 @@ namespace libsemigroups {
       return new T(vector, this->_hash_value);
     }
 
+    void copy(Element const* x) override {
+      assert(x->degree() == this->degree());
+      auto   xx  = static_cast<ElementWithVectorData const*>(x);
+      size_t deg = _vector->size();
+      for (size_t i = 0; i < deg; i++) {
+        (*_vector)[i] = (*xx)[i];
+      }
+      this->reset_hash_value();
+    }
+
     // non-const
     //
     // See <Element::really_delete>.
@@ -300,21 +344,21 @@ namespace libsemigroups {
     // const
     //
     // @return An iterator pointing to the first value in <_vector>.
-    inline typename std::vector<S>::iterator begin() const {
+    inline typename std::vector<u_int32_t>::iterator begin() const {
       return _vector->begin();
     }
 
     // const
     //
     // @return An iterator referring to the past-the-end element in <_vector>.
-    inline typename std::vector<S>::iterator end() const {
+    inline typename std::vector<u_int32_t>::iterator end() const {
       return _vector->end();
     }
 
     // const
     //
     // @return A const_iterator pointing to the first value in <_vector>.
-    inline typename std::vector<S>::iterator cbegin() const {
+    inline typename std::vector<u_int32_t>::iterator cbegin() const {
       return _vector->cbegin();
     }
 
@@ -322,7 +366,7 @@ namespace libsemigroups {
     //
     // @return A const_iterator referring to the past-the-end element in
     // <_vector>.
-    inline typename std::vector<S>::iterator cend() const {
+    inline typename std::vector<u_int32_t>::iterator cend() const {
       return _vector->cend();
     }
 
@@ -536,10 +580,6 @@ namespace libsemigroups {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts
-    // that the degrees of <x>, <y>, and **this**, are all equal, and that
-    // neither
-    // <x> nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -787,10 +827,6 @@ namespace libsemigroups {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the product of <x> and <y>. This method asserts
-    // that
-    // the dimensions of <x>, <y>, and **this**, are all equal, and that neither
-    // <x>
-    // nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override;
   };
 
@@ -858,8 +894,7 @@ namespace libsemigroups {
     // const
     //
     // A bipartition is of degree *n* if it is a partition of *{0, ..., 2n -
-    // 1}*.
-    // See <Element::degree> for more details.
+    // 1}*.  See <Element::degree> for more details.
     //
     // @return the degree of the bipartition.
     size_t degree() const override;
@@ -888,7 +923,9 @@ namespace libsemigroups {
     // Redefine this to be the product (as defined at the top of this page) of
     // <x> and <y>. This method asserts that the dimensions of <x>, <y>, and
     // this, are all equal, and that neither <x> nor <y> equals **this**.
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  thread_id) override;
 
     // non-const
     //
@@ -962,11 +999,9 @@ namespace libsemigroups {
     // @nr_left_blocks an integer
     //
     // This method sets the cached value of the number of left blocks of
-    // **this**
-    // to
-    // <nr_left_blocks>. It asserts that either there is no existing cached
-    // value
-    // or <nr_left_blocks> equals the existing cached value.
+    // **this** to <nr_left_blocks>. It asserts that either there is no
+    // existing cached value or <nr_left_blocks> equals the existing cached
+    // value.
     inline void set_nr_left_blocks(size_t nr_left_blocks) {
       assert(_nr_left_blocks == Bipartition::UNDEFINED
              || _nr_left_blocks == nr_left_blocks);
@@ -985,17 +1020,18 @@ namespace libsemigroups {
     }
 
    private:
-    u_int32_t fuseit(u_int32_t);
-    void      init_trans_blocks_lookup();
+    u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
+    void init_trans_blocks_lookup();
+
+    static std::vector<std::vector<u_int32_t>> _fuse;
+    static std::vector<std::vector<u_int32_t>> _lookup;
 
     size_t            _nr_blocks;
     size_t            _nr_left_blocks;
     std::vector<bool> _trans_blocks_lookup;
     size_t            _rank;
 
-    static std::vector<u_int32_t> _fuse;
-    static std::vector<u_int32_t> _lookup;
-    static u_int32_t              UNDEFINED;
+    static u_int32_t const UNDEFINED;
   };
 
   // Non-abstract
@@ -1243,28 +1279,38 @@ namespace libsemigroups {
     // Redefine **this** to be the composition of <x> and <y>. This method
     // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
     // that neither <x> nor <y> equals **this**.
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  thread_id) override;
 
    private:
-    void unite_rows(size_t const& vertex1, size_t const& vertex2);
+    void unite_rows(RecVec<bool>& out,
+                    RecVec<bool>& tmp,
+                    size_t const& vertex1,
+                    size_t const& vertex2);
 
-    void x_dfs(u_int32_t const& n,
-               u_int32_t const& i,
-               PBR const* const x,
-               PBR const* const y,
-               size_t const&    adj);
+    void x_dfs(std::vector<bool>& x_seen,
+               std::vector<bool>& y_seen,
+               RecVec<bool>&      tmp,
+               u_int32_t const&   n,
+               u_int32_t const&   i,
+               PBR const* const   x,
+               PBR const* const   y,
+               size_t const&      adj);
 
-    void y_dfs(u_int32_t const& n,
-               u_int32_t const& i,
-               PBR const* const x,
-               PBR const* const y,
-               size_t const&    adj);
+    void y_dfs(std::vector<bool>& x_seen,
+               std::vector<bool>& y_seen,
+               RecVec<bool>&      tmp,
+               u_int32_t const&   n,
+               u_int32_t const&   i,
+               PBR const* const   x,
+               PBR const* const   y,
+               size_t const&      adj);
 
-    static std::vector<bool> x_seen;
-    static std::vector<bool> y_seen;
-    static RecVec<bool>      out;
-    static RecVec<bool>      tmp;
+    static std::vector<std::vector<bool>> _x_seen;
+    static std::vector<std::vector<bool>> _y_seen;
+    static std::vector<RecVec<bool>>      _out;
+    static std::vector<RecVec<bool>>      _tmp;
   };
 }  // namespace libsemigroups
-
 #endif  // LIBSEMIGROUPS_ELEMENTS_H_

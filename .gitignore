@@ -16,7 +16,6 @@ test/lcov
 config.status
 config.log
 *~
-# For now, the files generated autoreconf are *not* under version control
 Makefile.in
 README
 aclocal.m4
@@ -27,7 +26,17 @@ libtool
 m4/
 Makefile
 test.trs
-DEBUG
-LCOV
 libsemitest
 .!*
+DEBUG
+LCOV
+*.m4
+*.status
+configure
+*.la
+libtool
+*.in
+autom4te.cache
+config
+.!*
+libsemitest

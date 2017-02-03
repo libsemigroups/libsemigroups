@@ -186,6 +186,10 @@ namespace libsemigroups {
       return _nr_rows * _nr_used_cols;
     }
 
+    size_t empty() const {
+      return _nr_rows == 0;
+    }
+
     // Number of rows (const)
     //
     // This method is const.
