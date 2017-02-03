@@ -7,6 +7,7 @@
     cd libsemigroups
     make
     sudo make install
+    sudo ldconfig
 
     cd python-bindings
     pip3 install --user .
