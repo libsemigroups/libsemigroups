@@ -7,11 +7,14 @@
 
 from libc.stdint cimport uint16_t
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
     cdef cppclass Element:
         Element* identity()
         void redefine(Element *, Element *)
+        bool operator==(Element&)
+        bool operator<(Element&)
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
         vector[T] _vector
@@ -21,7 +24,14 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
         int size()
+        int nr_idempotents()
         Element* at(size_t pos)  # pos_t
+        void set_report(bool val)
+        int current_max_word_length()
+        int current_position(Element* x)
+        bool is_done()
+        bool is_begun()
+        bool test_membership(Element* x)
 
 cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):
