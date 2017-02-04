@@ -10,7 +10,7 @@
     sudo ldconfig
 
     cd python-bindings
-    pip3 install --user .
+    pip3 install --user . --upgrade
 
     python3
 
