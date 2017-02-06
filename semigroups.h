@@ -220,7 +220,7 @@ namespace libsemigroups {
     // This method is const.
     //
     // @return **true** if the semigroup is fully enumerated and **false** if
-    // not
+    // not.
 
     bool is_done() const {
       return (_pos >= _nr);
@@ -231,7 +231,7 @@ namespace libsemigroups {
     // This method is const.
     //
     // @return **true** if no elements (other than the generators) have
-    // been enumerated and **false** otherwise
+    // been enumerated and **false** otherwise.
 
     bool is_begun() const {
       assert(_lenindex.size() > 1);
@@ -501,23 +501,21 @@ namespace libsemigroups {
     // @batch_size a new value for the batch size.
     //
     // This method is non-const since it changes a class data member, but it
-    // does
-    // not enumerate the semigroup any further.
+    // does not enumerate the semigroup any further.
     //
-    // The *batch size* is the number of new elements to be found by any call to
-    // <enumerate>. A call to <enumerate> returns between 0 and approximately
-    // the
-    // batch size.
+    // The *batch size* is the number of new elements to be found by any call
+    // to <enumerate>. A call to <enumerate> returns between 0 and
+    // approximately the batch size.
     //
     // The default value of the batch size is 8192.
     //
     // This is used by, for example, <position> so that it is possible to find
     // the position of an element without fully enumerating the semigroup. The
     // value of the batch size is also used to initialise certain data members,
-    // if you know a good upper bound for the size of your semigroup, then it is
-    // a good idea to call <set_batch_size> with that upper bound as an
-    // argument,
-    // this can significantly improve the performance of the <enumerate> method.
+    // if you know a good upper bound for the size of your semigroup, then it
+    // is a good idea to call <set_batch_size> with that upper bound as an
+    // argument, this can significantly improve the performance of the
+    // <enumerate> method.
 
     void set_batch_size(size_t batch_size) {
       _batch_size = batch_size;
@@ -694,6 +692,7 @@ namespace libsemigroups {
     // happens and <word> is not modified, in particular not cleared.
 
     void factorisation(word_t& word, pos_t pos);
+    word_t* factorisation(pos_t pos);
 
     // non-const
     //
