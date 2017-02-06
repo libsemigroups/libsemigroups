@@ -168,6 +168,9 @@ namespace libsemigroups {
     static rws_word_t letter_to_rws_word(letter_t const& a);
     static rws_word_t word_to_rws_word(word_t const& w);
 
+    static letter_t rws_letter_to_letter(rws_letter_t const& rws_letter);
+    static word_t rws_word_to_word(rws_word_t const& rws_word);
+
     void set_report(bool val) {
       glob_reporter.set_report(val);
     }
