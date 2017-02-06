@@ -274,7 +274,7 @@ cdef class Semigroup:
     def current_position(self, Element x):
         pos = self._handle.current_position(x._handle)
         if pos == -1:
-            return None
+            return None # TODO Ok?
         return pos
     
     def __contains__(self, Element x):
@@ -286,11 +286,21 @@ cdef class Semigroup:
         else:
             self._handle.set_report(0)
 
-    def factorisation(self, pos):
-        cdef vector[size_t]* w = self._handle.factorisation(pos)
-        if w == NULL:
-            return None
-        return [x for x in w[0]] 
+    def factorisation(self, Element x):
+        '''
+        >>> S = FullTransformationMonoid(5)
+        >>> S.factorisation(Transformation([0] * 5))
+        [1, 0, 2, 1, 0, 2, 1, 0, 2, 1]
+        >>> S[1] * S[0] * S[2] * S[1] * S[0] * S[2] * S[1] * S[0] * S[2] * S[1]
+        '''
+        pos = self._handle.position(x._handle)
+        if pos == -1:
+            return None # TODO Ok?
+        cdef vector[size_t]* c_word = self._handle.factorisation(pos)
+        assert c_word != NULL
+        py_word = [letter for letter in c_word[0]]
+        del c_word
+        return py_word
     
     def enumerate(self, limit):
         self._handle.enumerate(limit)

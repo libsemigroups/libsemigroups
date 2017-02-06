@@ -29,6 +29,7 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         void set_report(bool val)
         int current_max_word_length()
         int current_position(Element* x)
+        int position(Element* x)
         bool is_done()
         bool is_begun()
         bool test_membership(Element* x)

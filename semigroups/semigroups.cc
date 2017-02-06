@@ -429,9 +429,25 @@ namespace libsemigroups {
     }
   }
 
+  word_t* Semigroup::factorisation(pos_t pos) {
+    if (pos >= _nr && !is_done()) {
+      enumerate(pos + 1);
+    }
+
+    if (pos >= _nr) {
+      return nullptr;
+    }
+    word_t* word = new word_t();
+    while (pos != UNDEFINED) {
+      word->push_back(_first[pos]);
+      pos = _suffix[pos];
+    }
+    return word;
+  }
+
   void Semigroup::factorisation(word_t& word, pos_t pos) {
-    if (pos > _nr && !is_done()) {
-      enumerate(pos);
+    if (pos >= _nr && !is_done()) {
+      enumerate(pos + 1);
     }
 
     if (pos < _nr) {
