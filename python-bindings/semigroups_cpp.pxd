@@ -32,6 +32,8 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         bool is_done()
         bool is_begun()
         bool test_membership(Element* x)
+        vector[size_t]* factorisation(size_t pos)
+        void enumerate(size_t limit)
 
 cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):

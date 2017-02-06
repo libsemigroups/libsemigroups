@@ -286,6 +286,15 @@ cdef class Semigroup:
         else:
             self._handle.set_report(0)
 
+    def factorisation(self, pos):
+        cdef vector[size_t]* w = self._handle.factorisation(pos)
+        if w == NULL:
+            return None
+        return [x for x in w[0]] 
+    
+    def enumerate(self, limit):
+        self._handle.enumerate(limit)
+
     def size(self):
         """
         Return the size of this semigroup
@@ -361,3 +370,15 @@ cdef class Semigroup:
             else:
                 yield self.new_from_handle(element)
             pos += 1
+
+def FullTransformationMonoid(n):
+    assert isinstance(n, int) and n >= 1
+    if n == 1: 
+        return Semigroup(Transformation([0]))
+    elif n == 2:
+        return Semigroup(Transformation([1, 0]), Transformation([0, 0]))
+    
+    return Semigroup([Transformation([1, 0] + list(range(2, n))), 
+                      Transformation([0, 0] + list(range(2, n))), 
+                      Transformation([n - 1] + list(range(n - 1)))])
+
