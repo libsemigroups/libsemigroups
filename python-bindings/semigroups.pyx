@@ -184,13 +184,6 @@ cdef class PythonElement(Element):
         sage: F = FiniteSetMaps(W)
         sage: S = Semigroup([PythonElement(F(p)) for p in pi])
         sage: S.size()
-        Thread #0: Semigroup::enumerate: limit = 18446744073709551615
-        Thread #0: Semigroup::enumerate: found 14 elements, 6 rules, max word length 3, so far
-        Thread #0: Semigroup::enumerate: found 19 elements, 7 rules, max word length 4, so far
-        Thread #0: Semigroup::enumerate: found 22 elements, 7 rules, max word length 5, so far
-        Thread #0: Semigroup::enumerate: found 23 elements, 7 rules, max word length 6, so far
-        Thread #0: Semigroup::enumerate: found 23 elements, 7 rules, max word length 6, finished!
-        Thread #0: Semigroup::enumerate: elapsed time = 308μs
         23
 
     TESTS::
@@ -289,6 +282,7 @@ cdef class Semigroup:
 
     def factorisation(self, Element x):
         '''
+        >>> import from semigroups *
         >>> S = FullTransformationMonoid(5)
         >>> S.factorisation(Transformation([0] * 5))
         [1, 0, 2, 1, 0, 2, 1, 0, 2, 1]
@@ -334,11 +328,6 @@ cdef class Semigroup:
             >>> S[0]
             1j
             >>> S[1]
-            Thread #0: Semigroup::enumerate: limit = 8193
-            Thread #0: Semigroup::enumerate: found 3 elements, 0 rules, max word length 3, so far
-            Thread #0: Semigroup::enumerate: found 4 elements, 0 rules, max word length 4, so far
-            Thread #0: Semigroup::enumerate: found 4 elements, 1 rules, max word length 4, finished!
-            Thread #0: Semigroup::enumerate: elapsed time = 165μs 
             (-1+0j)
             >>> S[2]
             (-0-1j)
@@ -363,11 +352,6 @@ cdef class Semigroup:
             >>> for x in S:
             ...     print(x)
             1j
-            Thread #0: Semigroup::enumerate: limit = 8193
-            Thread #0: Semigroup::enumerate: found 3 elements, 0 rules, max word length 3, so far
-            Thread #0: Semigroup::enumerate: found 4 elements, 0 rules, max word length 4, so far
-            Thread #0: Semigroup::enumerate: found 4 elements, 1 rules, max word length 4, finished!
-            Thread #0: Semigroup::enumerate: elapsed time = 100μs
             (-1+0j)
             (-0-1j)
             (1-0j)
