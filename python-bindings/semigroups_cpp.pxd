@@ -15,6 +15,8 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         void redefine(Element *, Element *)
         bool operator==(Element&)
         bool operator<(Element&)
+        Element* really_copy()
+        void really_delete()
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
         vector[T] _vector

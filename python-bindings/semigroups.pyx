@@ -68,6 +68,7 @@ cdef class Element:
             >>> del x
         """
         if self._handle != NULL:
+            self._handle[0].really_delete()
             del self._handle
 
     def __mul__(Element self, Element other):
@@ -111,7 +112,7 @@ cdef class Element:
         same class as ``self``.
         """
         cdef Element result = self.__class__(None)
-        result._handle = handle
+        result._handle = handle[0].really_copy()
         return result
 
 cdef class Transformation(Element):
