@@ -2550,3 +2550,16 @@ TEST_CASE("Semigroup 60: closure ", "[quick][semigroup][finite]") {
   REQUIRE(S.nrgens() == 10);
   really_delete_cont(gens);
 }
+
+TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite][xxx]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
+      new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+  really_delete_cont(gens);
+
+  REQUIRE(*(S.factorisation(2)) == word_t({0, 1}));
+}
+
