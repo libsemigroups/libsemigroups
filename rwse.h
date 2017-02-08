@@ -81,13 +81,15 @@ namespace libsemigroups {
       this->_hash_value = std::hash<rws_word_t>()(*_rws_word);
     }
 
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  thread_id) override;
 
    private:
     // TODO const!
     RWS*              _rws;
     rws_word_t*       _rws_word;
-    static rws_word_t _buf;
+    static std::vector<rws_word_t> _buf;
   };
 }  // namespace libsemigroups
 
