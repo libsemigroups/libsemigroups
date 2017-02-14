@@ -29,7 +29,6 @@
 
 #include "semigroups.h"
 #include "util/report.h"
-#include "util/uf.h"
 
 namespace libsemigroups {
 

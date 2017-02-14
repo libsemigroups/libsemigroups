@@ -7,9 +7,8 @@ LCOV_DIR = test/lcov
 
 TODAY = $(shell date "+%Y-%m-%d-%H-%M-%S")
 
-HEADERS = $(wildcard *.h)  $(wildcard util/*.h) $(wildcard cong/*.h) 
-SOURCES = $(wildcard *.cc) $(wildcard util/*.cc) $(wildcard test/*.cc)
-SOURCES +=  $(wildcard cong/*.cc)
+HEADERS = $(wildcard *.h)  $(wildcard util/*.h) 
+SOURCES = $(wildcard *.cc) $(wildcard test/*.cc)
 
 OBJECTS = $(SOURCES:%.cc=$(OBJ_DIR)/%.o)
 
@@ -19,7 +18,6 @@ TEST_FLAGS = $()
 CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
 COMMON_DOC_FLAGS = --report --merge docs --output html  $(wildcard *.h) $(wildcard *.cc)
-
 
 ifneq ($(CXX),clang++)
   ifneq ($(CXX), c++) 

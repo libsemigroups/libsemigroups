@@ -29,6 +29,8 @@
 
 #include <utility>
 
+#include "../util/uf.cc"
+
 namespace libsemigroups {
 
   Congruence::P::P(Congruence& cong)

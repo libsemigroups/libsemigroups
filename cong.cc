@@ -21,10 +21,10 @@
 #include <algorithm>
 #include <thread>
 
-#include "cong/kbfp.h"
-#include "cong/kbp.h"
-#include "cong/p.h"
-#include "cong/tc.h"
+#include "cong/kbfp.cc"
+#include "cong/kbp.cc"
+#include "cong/p.cc"
+#include "cong/tc.cc"
 
 namespace libsemigroups {
 

@@ -29,13 +29,6 @@
 
 namespace libsemigroups {
 
-  template <typename T> static inline void really_delete_cont(T cont) {
-    for (Element* x : cont) {
-      x->really_delete();
-      delete x;
-    }
-  }
-
   void Congruence::KBP::run() {
     // Initialise the rewriting system
     _rws->add_rules(_cong.relations());
