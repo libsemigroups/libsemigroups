@@ -85,6 +85,10 @@ namespace libsemigroups {
                   Element const* y,
                   size_t const&  thread_id) override;
 
+    rws_word_t* get_rws_word() const {
+      return _rws_word;
+    }
+
    private:
     // TODO const!
     RWS*              _rws;

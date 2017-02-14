@@ -57,11 +57,11 @@ namespace libsemigroups {
     return static_cast<letter_t>(rws_letter - 1);
   }
 
-  word_t RWS::rws_word_to_word(rws_word_t const& rws_word) {
-    word_t w;
-    w.reserve(rws_word.size());
-    for (rws_letter_t rws_letter : rws_word) {
-      w.push_back(rws_letter_to_letter(rws_letter));
+  word_t* RWS::rws_word_to_word(rws_word_t const* rws_word) {
+    word_t* w = new word_t();
+    w->reserve(rws_word->size());
+    for (rws_letter_t const& rws_letter : *rws_word) {
+      w->push_back(rws_letter_to_letter(rws_letter));
     }
     return w;
   }

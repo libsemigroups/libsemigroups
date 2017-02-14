@@ -38,6 +38,8 @@
 
 namespace libsemigroups {
 
+  class RWSE;
+
   extern Reporter glob_reporter;
 
   //
@@ -691,8 +693,20 @@ namespace libsemigroups {
     // known. If <pos> is greater than the size of the semigroup, then nothing
     // happens and <word> is not modified, in particular not cleared.
 
-    void factorisation(word_t& word, pos_t pos);
-    word_t* factorisation(pos_t pos);
+    void minimal_factorisation(word_t& word, pos_t pos);
+    word_t* minimal_factorisation(pos_t pos);
+    word_t* minimal_factorisation(Element* x);
+
+    void factorisation(word_t& word, pos_t pos) {
+      minimal_factorisation(word, pos);
+    }
+
+    template <typename T>
+    word_t* factorisation(T obj) {
+      return minimal_factorisation(obj);
+    }
+
+    word_t* factorisation(RWSE* x);
 
     // non-const
     //

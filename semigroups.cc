@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "rwse.h"
 #include "semigroups.h"
 
 namespace libsemigroups {
@@ -429,7 +430,19 @@ namespace libsemigroups {
     }
   }
 
-  word_t* Semigroup::factorisation(pos_t pos) {
+  word_t* Semigroup::minimal_factorisation(Element* x) {
+    pos_t pos = this->position(x);
+    if (pos == Semigroup::UNDEFINED) {
+      return nullptr;
+    }
+    return factorisation(pos);
+  }
+
+  word_t* Semigroup::factorisation(RWSE* x) {
+    return RWS::rws_word_to_word(x->get_rws_word());
+  }
+
+  word_t* Semigroup::minimal_factorisation(pos_t pos) {
     if (pos >= _nr && !is_done()) {
       enumerate(pos + 1);
     }
@@ -445,7 +458,7 @@ namespace libsemigroups {
     return word;
   }
 
-  void Semigroup::factorisation(word_t& word, pos_t pos) {
+  void Semigroup::minimal_factorisation(word_t& word, pos_t pos) {
     if (pos >= _nr && !is_done()) {
       enumerate(pos + 1);
     }

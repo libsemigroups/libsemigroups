@@ -64,3 +64,30 @@ TEST_CASE("RWSE 01:", "[quick][rwse]") {
   ab.really_delete();
   b.really_delete();
 }
+
+TEST_CASE("RWSE 02: factorisation", "[quick][rwse]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({1, 0}),
+      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  Semigroup S = Semigroup(gens);
+  S.set_report(RWSE_REPORT);
+  really_delete_cont(gens);
+
+  std::vector<relation_t> extra;
+  Congruence              cong("twosided", &S, extra);
+  RWS rws(cong);
+  REQUIRE(rws.is_confluent());
+
+  gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
+  Semigroup T = Semigroup(gens);
+  really_delete_cont(gens);
+  T.set_report(RWSE_REPORT);
+
+  RWSE ab(rws, word_t({0, 1}));
+  REQUIRE(*T.factorisation(&ab) == word_t({1}));
+  ab.really_delete();
+
+  RWSE aaa(rws, word_t({0, 0, 0}));
+  REQUIRE(*T.factorisation(&aaa) == word_t({0}));
+  aaa.really_delete();
+}
