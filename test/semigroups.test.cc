@@ -2551,7 +2551,7 @@ TEST_CASE("Semigroup 60: closure ", "[quick][semigroup][finite]") {
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite][xxx]") {
+TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite]") {
   std::vector<Element*> gens = {
       new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
       new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
@@ -2563,3 +2563,20 @@ TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite][xxx]") {
   REQUIRE(*(S.factorisation(2)) == word_t({0, 1}));
 }
 
+TEST_CASE("Semigroup 62: performance", "[standard][semigroup][finite]") {
+  std::vector<Element*> gens = {
+      new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
+      new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
+      new Transformation<uint_fast8_t>({3, 0, 7, 2, 4, 6, 2, 4}),
+      new Transformation<uint_fast8_t>({3, 2, 3, 4, 5, 3, 0, 1}),
+      new Transformation<uint_fast8_t>({4, 3, 7, 7, 4, 5, 0, 4}),
+      new Transformation<uint_fast8_t>({5, 6, 3, 0, 3, 0, 5, 1}),
+      new Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4}),
+      new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
+  Semigroup S(gens);
+  S.reserve(597369);
+  S.set_report(SEMIGROUPS_REPORT);
+  really_delete_cont(gens);
+
+  REQUIRE(S.size() == 597369);
+}

@@ -36,7 +36,7 @@ namespace libsemigroups {
         _first(),
         _found_one(false),
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(),
+        _id(),
         _idempotents(),
         _idempotents_found(false),
         _idempotents_start_pos(0),
@@ -45,6 +45,7 @@ namespace libsemigroups {
         _left(new cayley_graph_t(gens->size())),
         _length(),
         _lenindex(),
+        _letter_to_pos(),
         _map(),
         _max_threads(std::thread::hardware_concurrency()),
         _multiplied(),
@@ -64,6 +65,8 @@ namespace libsemigroups {
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
     assert(_nrgens != 0);
+
+    reserve(_nrgens);
 
     _degree = (*gens)[0]->degree();
 
@@ -93,18 +96,17 @@ namespace libsemigroups {
         // _gens
         _first.push_back(i);
         _final.push_back(i);
+        _index.push_back(_nr);
         _letter_to_pos.push_back(_nr);
         _length.push_back(1);
         _map.insert(std::make_pair(_elements->back(), _nr));
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
-        _index.push_back(_nr);
         _nr++;
       }
     }
     expand(_nr);
     _lenindex.push_back(_index.size());
-    _map.reserve(_batch_size);
   }
 
   Semigroup::Semigroup(std::vector<Element*> const& gens) : Semigroup(&gens) {}
@@ -120,7 +122,6 @@ namespace libsemigroups {
         _first(copy._first),
         _found_one(copy._found_one),
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(copy._letter_to_pos),
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
@@ -130,6 +131,7 @@ namespace libsemigroups {
         _left(new cayley_graph_t(*copy._left)),
         _length(copy._length),
         _lenindex(copy._lenindex),
+        _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
@@ -172,12 +174,12 @@ namespace libsemigroups {
         _found_one(copy._found_one),  // copy in case degree doesn't change in
                                       // add_generators
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(copy._letter_to_pos),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
         _left(new cayley_graph_t(*copy._left)),
+        _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
@@ -276,6 +278,25 @@ namespace libsemigroups {
       delete x;
     }
     delete _elements;
+  }
+
+  void Semigroup::reserve(size_t n) {
+    _elements->reserve(n);
+    _final.reserve(n);
+    _first.reserve(n);
+    _gens->reserve(n);
+    _index.reserve(n);
+    _length.reserve(n);
+    _letter_to_pos.reserve(n);
+    _map.reserve(n);
+    _prefix.reserve(n);
+    _suffix.reserve(n);
+
+    // TODO the analogue of the below using RecVec::reserve, which currently
+    // does not exist
+    // if (n > _right->nr_rows()) {
+    //  expand(n - _right->nr_rows());
+    // }
   }
 
   // w is a word in the generators (i.e. a vector of letter_t's)
@@ -837,7 +858,8 @@ namespace libsemigroups {
             closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         } else {
-          // _elements[i] is not in old
+          // _elements[i] is either not in old, or it is in old but its
+          // descendants are not known
           _multiplied[i] = true;
           for (size_t j = 0; j < _nrgens; j++) {
             closure_update(i, j, b, s, old_new, old_nr, tid);

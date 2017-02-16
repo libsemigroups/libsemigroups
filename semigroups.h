@@ -521,10 +521,9 @@ namespace libsemigroups {
 
     void set_batch_size(size_t batch_size) {
       _batch_size = batch_size;
-      if (!this->is_begun()) {
-        _map.reserve(_batch_size);
-      }
     }
+
+    void reserve(size_t n);
 
     // non-const
     //
@@ -1022,7 +1021,6 @@ namespace libsemigroups {
     std::vector<letter_t>  _first;
     bool                   _found_one;
     std::vector<Element*>* _gens;
-    std::vector<pos_t>     _letter_to_pos;
     Element*               _id;
     std::vector<size_t>    _idempotents;
     bool                   _idempotents_found;
@@ -1032,6 +1030,7 @@ namespace libsemigroups {
     cayley_graph_t*        _left;
     std::vector<pos_t>     _length;
     std::vector<size_t>    _lenindex;
+    std::vector<pos_t>     _letter_to_pos;
     std::unordered_map<const Element*, size_t, Element::Hash, Element::Equal>
                          _map;
     size_t               _max_threads;
