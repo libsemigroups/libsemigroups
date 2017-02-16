@@ -1,7 +1,5 @@
 OBJ_DIR = test/bin
 TEST_OBJ_DIR = test/bin/test
-UTIL_OBJ_DIR = test/bin/util
-CONG_OBJ_DIR = test/bin/cong
 LOG_DIR = test/logs
 LCOV_DIR = test/lcov
 
@@ -13,7 +11,7 @@ SOURCES = $(wildcard *.cc) $(wildcard test/*.cc)
 OBJECTS = $(SOURCES:%.cc=$(OBJ_DIR)/%.o)
 
 TEST_PROG = test/test -d yes --force-colour --order lex --abort
-TEST_FLAGS = $()
+TEST_FLAGS = [quick]
 
 CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
@@ -55,7 +53,7 @@ doc:
 	@echo "Fixing some bugs in cldoc . . ."; \
 	python docs/cldoc-fix
 
-test: CXXFLAGS += -O2 -g -DNDEBUG
+test: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
 test: $(CLEAN) testbuild testrun
 	@rm -f $(OBJ_DIR)/DEBUG
 	@rm -f $(OBJ_DIR)/LCOV
@@ -73,6 +71,12 @@ testcov: $(LCOV_CLEAN) testdebug testrun
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
 	@echo "See: " test/lcov/$(TODAY)-html/index.html
 
+bench: TEST_FLAGS = [benchmark]
+bench: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
+bench: $(CLEAN) testbuild
+	@rm -f $(OBJ_DIR)/DEBUG
+	@rm -f $(OBJ_DIR)/LCOV
+
 testclean:
 	rm -rf $(OBJ_DIR) test/test
 
@@ -83,7 +87,7 @@ superclean: testclean docclean
 	rm -rf $(LOG_DIR) $(LCOV_DIR)
 
 testdirs:
-	mkdir -p $(OBJ_DIR) $(TEST_OBJ_DIR) $(UTIL_OBJ_DIR) $(LOG_DIR) $(LCOV_DIR) $(CONG_OBJ_DIR)
+	mkdir -p $(OBJ_DIR) $(TEST_OBJ_DIR) $(LOG_DIR) $(LCOV_DIR)
 
 $(OBJ_DIR)/%.o: %.cc $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDFLAGS)
