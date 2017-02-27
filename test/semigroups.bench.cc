@@ -94,7 +94,7 @@ void example1_setup(Semigroup* S) {
 // My favourite example
 
 TEST_CASE("Benchmark 01: add_generators versus enumerate example 1",
-          "[benchmark][01]") {
+          "[.][benchmark][01]") {
   std::cout << "Performing " << 597369 / example1_step << " runs . . ."
             << std::endl;
 
@@ -140,7 +140,7 @@ void example2_setup(Semigroup* S) {
 // S := Semigroup(S.1, S.3, S.4, S.12);
 
 TEST_CASE("Benchmark 02: add_generators versus enumerate example 2",
-          "[benchmark][02]") {
+          "[.][benchmark][02]") {
   std::cout << "Performing " << 663336 / example1_step << " runs . . ."
             << std::endl;
 
