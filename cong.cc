@@ -150,8 +150,9 @@ namespace libsemigroups {
     Timer timer;
     timer.start();
     if (_data == nullptr) {
-      if (_semigroup != nullptr && _semigroup->is_done()
-          && _semigroup->size() < 1024) {
+      if (_semigroup != nullptr
+          && (_max_threads == 1
+              || (_semigroup->is_done() && _semigroup->size() < 1024))) {
         REPORT("semigroup is small, not using multiple threads")
         _data = new TC(*this);
         static_cast<TC*>(_data)->prefill();
@@ -164,10 +165,10 @@ namespace libsemigroups {
 
           std::vector<DATA*> data = {new TC(*this), new TC(*this)};
           std::vector<std::function<void(DATA*)>> funcs = {prefillit};
-          if (_type == TWOSIDED) {
+          /*if (_type == TWOSIDED) {
             data.push_back(new KBFP(*this));
           }
-          data.push_back(new P(*this));
+          data.push_back(new P(*this));*/
           _data = winning_data(data, funcs);
         } else if (!_prefill.empty()) {
           _data = new TC(*this);
