@@ -75,7 +75,7 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse]") {
 
   std::vector<relation_t> extra;
   Congruence              cong("twosided", &S, extra);
-  RWS rws(cong);
+  RWS                     rws(cong);
   REQUIRE(rws.is_confluent());
 
   gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};

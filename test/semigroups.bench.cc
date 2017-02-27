@@ -47,7 +47,7 @@ std::vector<size_t> bench(std::vector<Element*>           gens,
                           std::function<void(Semigroup*)> setup,
                           size_t                          nr_trials = 10) {
   std::vector<size_t> mean_time = {0, 0, 0};
-  Timer  t;
+  Timer               t;
 
   for (size_t j = 0; j < nr_trials; j++) {
     Semigroup* S = new Semigroup(gens);
@@ -113,7 +113,7 @@ TEST_CASE("Benchmark 01: add_generators versus enumerate example 1",
   std::vector<size_t> ag_times;
   std::vector<size_t> en_times;
   std::vector<size_t> cu_times;
-  size_t counter = 0;
+  size_t              counter = 0;
 
   for (size_t limit = example1_step; limit < 597369; limit += example1_step) {
     std::vector<size_t> t = bench(gens, coll, limit, example1_setup, 3);
@@ -140,7 +140,7 @@ void example2_setup(Semigroup* S) {
 // S := Semigroup(S.1, S.3, S.4, S.12);
 
 TEST_CASE("Benchmark 02: add_generators versus enumerate example 2",
-    "[benchmark][02]") {
+          "[benchmark][02]") {
   std::cout << "Performing " << 663336 / example1_step << " runs . . ."
             << std::endl;
 
@@ -168,7 +168,7 @@ TEST_CASE("Benchmark 02: add_generators versus enumerate example 2",
   std::vector<size_t> ag_times;
   std::vector<size_t> en_times;
   std::vector<size_t> cu_times;
-  size_t counter = 0;
+  size_t              counter = 0;
 
   for (size_t limit = example2_step; limit < 663336; limit += example2_step) {
     std::vector<size_t> t = bench(gens, coll, limit, example2_setup, 3);
@@ -182,4 +182,3 @@ TEST_CASE("Benchmark 02: add_generators versus enumerate example 2",
   really_delete_cont(gens);
   really_delete_cont(coll);
 }
-

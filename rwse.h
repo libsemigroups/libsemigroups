@@ -91,8 +91,8 @@ namespace libsemigroups {
 
    private:
     // TODO const!
-    RWS*              _rws;
-    rws_word_t*       _rws_word;
+    RWS*                           _rws;
+    rws_word_t*                    _rws_word;
     static std::vector<rws_word_t> _buf;
   };
 }  // namespace libsemigroups

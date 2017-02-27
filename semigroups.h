@@ -700,8 +700,7 @@ namespace libsemigroups {
       minimal_factorisation(word, pos);
     }
 
-    template <typename T>
-    word_t* factorisation(T obj) {
+    template <typename T> word_t* factorisation(T obj) {
       return minimal_factorisation(obj);
     }
 

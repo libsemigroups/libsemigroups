@@ -91,7 +91,7 @@ namespace libsemigroups {
     class_index_t               _next_class;
     p_index_t                   _nr_nontrivial_classes;
     p_index_t                   _nr_nontrivial_elms;
-    std::stack<p_pair_const_t>*  _pairs_to_mult;
+    std::stack<p_pair_const_t>* _pairs_to_mult;
     std::vector<Element const*> _reverse_map;
     Element*                    _tmp1;
     Element*                    _tmp2;
