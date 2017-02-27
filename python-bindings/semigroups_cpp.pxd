@@ -17,8 +17,14 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         bool operator<(Element&)
         Element* really_copy()
         void really_delete()
+        int degree()
     cdef cppclass Transformation[T](Element):
         Transformation(vector[T]) except +
+        vector[T] _vector
+        vector[T].iterator begin()
+        vector[T].iterator end()
+    cdef cppclass PartialPerm[T](Element):
+        PartialPerm(vector[T]) except +
         vector[T] _vector
         vector[T].iterator begin()
         vector[T].iterator end()

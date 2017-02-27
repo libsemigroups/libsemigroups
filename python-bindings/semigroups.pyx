@@ -86,6 +86,7 @@ cdef class Element:
             [1, 1, 2]
         """
         cdef cpp.Element* product = self._handle.identity()
+        assert self._handle.degree() == other._handle.degree()
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
     
@@ -104,7 +105,7 @@ cdef class Element:
         else:
             err_msg = "op {0} isn't implemented yet".format(op)
             raise NotImplementedError(err_msg)
-
+    
     # TODO: Make this a class method
     cdef new_from_handle(self, cpp.Element* handle):
         """
@@ -155,6 +156,41 @@ cdef class Transformation(Element):
             [1, 2, 0]
         """
         return "Transformation(" + str(list(self)) + ")"
+
+cdef class PartialPerm(Element):
+    """
+    A class for handles to libsemigroups partial perm.
+    """
+    def __init__(self, *args):
+        if len(args) == 1 and args[0] == None:
+            return
+        #TODO check the args 
+        dom, ran, deg = args[0], args[1], args[2]
+        assert max(dom) < deg and max(ran) < deg
+        assert type(deg) is int
+        imglist = [-1] * deg
+        for x in dom:
+            imglist[x] = ran[x]
+
+        self._handle = new cpp.PartialPerm[uint16_t](imglist)
+
+    def __iter__(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.PartialPerm[uint16_t] *>e
+        for x in e2[0]:
+            yield x
+
+    def __repr__(self):
+        """
+        Return a string representation of `self`.
+
+        EXAMPLES::
+
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1,2,0])
+            [1, 2, 0]
+        """
+        return "PartialPerm(" + str(list(self)) + ")"
 
 cdef class PythonElement(Element):
     """
