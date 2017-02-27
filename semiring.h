@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_SEMIRING_H_
 #define LIBSEMIGROUPS_SEMIRING_H_
 
+#include <assert.h>
 #include <limits.h>
 
 #include <algorithm>
@@ -399,10 +400,13 @@ namespace libsemigroups {
   class NaturalSemiring : public Semiring {
    public:
     // Default
-    // @threshold the threshold, should be positive, this is not checked.
-    // @period    the period, should be non-negative, this is not checked.
+    // @threshold the threshold, should be positive, this is asserted.
+    // @period    the period, should be positive, this is asserted.
     NaturalSemiring(int64_t threshold, int64_t period)
-        : Semiring(), _threshold(threshold), _period(period) {}
+        : Semiring(), _threshold(threshold), _period(period) {
+      assert(_period > 0);
+      assert(_threshold > 0);
+    }
 
     // Semiring multiplicative identity.
     // This method returns the multiplicative identity, or one, of the
