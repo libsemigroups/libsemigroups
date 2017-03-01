@@ -152,8 +152,13 @@ cdef class Transformation(Element):
         [2, 1, 1]
     """
     def __init__(self, iterable):
+       
         if iterable is not None:
+            assert hasattr(iterable,'__iter__')
+            assert max(iterable)+1<=len(iterable)
             self._handle = new cpp.Transformation[uint16_t](iterable)
+
+
 
     def __iter__(self):
         """
@@ -180,7 +185,11 @@ cdef class Transformation(Element):
             >>> Transformation([1,2,0])
             [1, 2, 0]
         """
+        iterable=[x for x in self]
+        if iterable==[x for x in range(len(iterable))]:
+            return "Identity Transformation"
         return "Transformation(" + str(list(self)) + ")"
+
 
 
 cdef class PartialPerm(Element):
@@ -226,6 +235,9 @@ cdef class PartialPerm(Element):
 	    PartialPerm([2, 4, -1, 3, -1, -1])
 
         """
+        iterable=[x for x in self]
+        if iterable==[x for x in range(len(iterable))]:
+            return "Identity Partial Perm"
         return "PartialPerm(" + str(list(self)).replace('65535','-1') + ")"
 
 cdef class PythonElement(Element):
