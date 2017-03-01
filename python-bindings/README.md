@@ -4,6 +4,10 @@
 
     git clone ...
 
+    git checkout autotools
+    ./autogen.sh
+    ./configure
+
     cd libsemigroups
     make
     sudo make install
