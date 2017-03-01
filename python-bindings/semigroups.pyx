@@ -89,6 +89,31 @@ cdef class Element:
         assert self._handle.degree() == other._handle.degree()
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
+	
+    def __pow__(self,power,modulo):#It works, but don't understand why it needs 'modulo' argument
+        assert isinstance(power,int)
+        assert power>0
+
+        #Converts power to binary, then constructs element to the power of 2^n for needed n.
+        binaryString=bin(power-1)[2:]
+        powerOf2List=[self]
+        for x in binaryString:
+            powerOf2List.append(powerOf2List[-1].__mul__(powerOf2List[-1]))
+        output=self
+
+	#generates answer using element to the power of powers of 2 (binary tells you which ones to multiply)
+        for i in range(len(binaryString)):
+            if binaryString[i]=="1":
+                 output=output.__mul__(powerOf2List[i])
+        return output
+
+        '''
+        >>> from semigroups import Semigroup, PythonElement, Transformation
+        >>> y=Transformation([2,1,0])
+        >>> y**2
+        Transformation([0, 1, 2])
+        >>> y*y
+        Transformation([0, 1, 2])'''
     
     def __richcmp__(Element self, Element other, int op):
         """Ref: http://docs.cython.org/src/userguide/special_methods.html#rich-comparisons"""
@@ -168,9 +193,9 @@ cdef class PartialPerm(Element):
         dom, ran, deg = args[0], args[1], args[2]
         assert max(dom) < deg and max(ran) < deg
         assert type(deg) is int
-        imglist = [-1] * deg
-        for x in dom:
-            imglist[x] = ran[x]
+        imglist = [65535] * deg
+        for i in range(len(dom)):
+            imglist[dom[i]-1]=ran[i]
 
         self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
@@ -186,11 +211,12 @@ cdef class PartialPerm(Element):
 
         EXAMPLES::
 
-            >>> from semigroups import PartialPerm
-            >>> PartialPerm([1,2,0])
-            [1, 2, 0]
+            >>> from semigroups import *
+	    >>> PartialPerm([1,4,2],[2,3,4],6)
+	    PartialPerm([2, 4, -1, 3, -1, -1])
+
         """
-        return "PartialPerm(" + str(list(self)) + ")"
+        return "PartialPerm(" + str(list(self)).replace('65535','-1') + ")"
 
 cdef class PythonElement(Element):
     """
