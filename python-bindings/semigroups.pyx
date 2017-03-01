@@ -157,10 +157,10 @@ cdef class Transformation(Element):
     """
     def __init__(self, List):
         
-        if iterable is not Nothing:
+        if List is not Nothing:
             assert isinstance(List,list)
-            assert max(iterable)+1<=len(iterable)
-            self._handle = new cpp.Transformation[uint16_t](iterable)
+            assert max(List)+1<=len(List)
+            self._handle = new cpp.Transformation[uint16_t](List)
 
 
 
