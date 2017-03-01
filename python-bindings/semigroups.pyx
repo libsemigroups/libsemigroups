@@ -198,9 +198,14 @@ cdef class PartialPerm(Element):
             assert max(dom) < deg and max(ran) < deg
         imglist = [65535] * deg
         for i in range(len(dom)):
-            assert dom[i] is int and ran[i] is int
+            assert isinstance(dom[i],int) and isinstance(ran[i],int)
             assert dom[i]>=0 and ran[i]>=0
-            imglist[dom[i]-1]=ran[i]
+            
+            #Ensures range and domain have no repeats
+            assert ran[i] not in imglist
+            assert dom.count(i)<2
+
+            imglist[dom[i]]=ran[i]
 
         self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
