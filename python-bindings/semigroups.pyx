@@ -28,6 +28,10 @@ from libcpp cimport bool
 #cdef class MyCppElement(cpp.Element):
 #    pass
 
+cdef class Nothing:
+    def __cinit__(self):
+        pass
+   
 
 cdef class Element:
     """
@@ -90,7 +94,7 @@ cdef class Element:
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
 	
-    def __pow__(self,power,modulo):#It works, but don't understand why it needs 'modulo' argument
+    def __pow__(self,power,modulo):#It works, but don't understand why it needs 'modulo' argument aal20
         assert isinstance(power,int)
         assert power>0
 
@@ -137,7 +141,7 @@ cdef class Element:
         Construct a new element from a specified handle and with the
         same class as ``self``.
         """
-        cdef Element result = self.__class__(None)
+        cdef Element result = self.__class__(Nothing)
         result._handle = handle[0].really_copy()
         return result
 
@@ -151,10 +155,10 @@ cdef class Transformation(Element):
         >>> Transformation([2,1,1])
         [2, 1, 1]
     """
-    def __init__(self, iterable):
-       
-        if iterable is not None:
-            assert hasattr(iterable,'__iter__')
+    def __init__(self, List):
+        
+        if iterable is not Nothing:
+            assert isinstance(List,list)
             assert max(iterable)+1<=len(iterable)
             self._handle = new cpp.Transformation[uint16_t](iterable)
 
@@ -185,9 +189,6 @@ cdef class Transformation(Element):
             >>> Transformation([1,2,0])
             [1, 2, 0]
         """
-        iterable=[x for x in self]
-        if iterable==[x for x in range(len(iterable))]:
-            return "Identity Transformation"
         return "Transformation(" + str(list(self)) + ")"
 
 
@@ -235,9 +236,6 @@ cdef class PartialPerm(Element):
 	    PartialPerm([2, 4, -1, 3, -1, -1])
 
         """
-        iterable=[x for x in self]
-        if iterable==[x for x in range(len(iterable))]:
-            return "Identity Partial Perm"
         return "PartialPerm(" + str(list(self)).replace('65535','-1') + ")"
 
 cdef class PythonElement(Element):
