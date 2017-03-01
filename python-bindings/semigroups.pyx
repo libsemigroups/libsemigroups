@@ -182,19 +182,24 @@ cdef class Transformation(Element):
         """
         return "Transformation(" + str(list(self)) + ")"
 
+
 cdef class PartialPerm(Element):
     """
     A class for handles to libsemigroups partial perm.
     """
+
     def __init__(self, *args):
         if len(args) == 1 and args[0] == None:
             return
-        #TODO check the args 
         dom, ran, deg = args[0], args[1], args[2]
-        assert max(dom) < deg and max(ran) < deg
         assert type(deg) is int
+        assert len(dom) == len(ran)
+        if len(dom)!=0:
+            assert max(dom) < deg and max(ran) < deg
         imglist = [65535] * deg
         for i in range(len(dom)):
+            assert dom[i] is int and ran[i] is int
+            assert dom[i]>=0 and ran[i]>=0
             imglist[dom[i]-1]=ran[i]
 
         self._handle = new cpp.PartialPerm[uint16_t](imglist)
