@@ -968,17 +968,6 @@ TEST_CASE("MatrixOverSemiring [NaturalSemiring]: hash ~11ms",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring [NaturalSemiring]", "[quick][element][matrix]") {
-  Semiring* sr = new NaturalSemiring(1, 0);
-
-  /*Element* A = new MatrixOverSemiring({{1, 0}, {1, 1}}, sr);
-  Element* B = new MatrixOverSemiring({{1, 0}, {1, 1}}, sr);
-
-  A->redefine(B, B);*/
-
-  delete sr;
-}
-
 TEST_CASE("MatrixOverSemiring [Integers]: delete/copy",
           "[quick][element][matrix]") {
   Semiring* sr = new Integers();
@@ -1096,7 +1085,7 @@ TEST_CASE("MatrixOverSemiring [TropicalMinPlusSemiring]: delete/copy",
 
 TEST_CASE("MatrixOverSemiring [NaturalSemiring]: delete/copy",
           "[quick][element][matrix]") {
-  Semiring* sr = new NaturalSemiring(23, 0);
+  Semiring* sr = new NaturalSemiring(23, 1);
   Element* x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   Element* y = x->really_copy();
 

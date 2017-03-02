@@ -309,7 +309,7 @@ TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
 }
 
 TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
-          "[standard][rws][fpsemigroup]") {
+          "[extreme][rws][fpsemigroup]") {
   std::vector<rws_rule_t> rules = {
       rws_rule_t("aaaaaaa", ""),
       rws_rule_t("bb", "ababab"),

@@ -61,7 +61,12 @@ TEST_CASE("RWSE 01:", "[quick][rwse]") {
   REQUIRE(!(b < ab));
   REQUIRE(b == ab);
   REQUIRE(!(ab < b));
+  REQUIRE(!(ab < b));
   ab.really_delete();
+
+  RWSE aba(rws, word_t({0, 1, 0}));
+  REQUIRE(b < aba);
+  aba.really_delete();
   b.really_delete();
 }
 

@@ -37,12 +37,6 @@ ifneq ($(shell test -e $(OBJ_DIR)/DEBUG && echo exists), exists)
   DEBUG_CLEAN = $()
 endif
 
-ifneq ($(shell test -e $(OBJ_DIR)/LCOV && echo exists), exists)
-  LCOV_CLEAN = testclean
- else 
-  LCOV_CLEAN = $()
-endif
-
 error:
 	@echo "Please choose one of the following: doc, test, testdebug, "
 	@echo "testclean, or doclean"; \
@@ -56,7 +50,6 @@ doc:
 test: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
 test: $(CLEAN) testbuild testrun
 	@rm -f $(OBJ_DIR)/DEBUG
-	@rm -f $(OBJ_DIR)/LCOV
 
 testdebug: CXXFLAGS += -O0 -g -UNDEBUG -DDEBUG
 testdebug: $(DEBUG_CLEAN) testbuild
@@ -64,9 +57,8 @@ testdebug: $(DEBUG_CLEAN) testbuild
 
 testcov: CXXFLAGS += -O0 -g --coverage 
 testcov: LDFLAGS = -O0 -g --coverage
-testcov: TEST_FLAGS += [quick]
-testcov: $(LCOV_CLEAN) testdebug testrun
-	@touch $(OBJ_DIR)/LCOV
+testcov: TEST_FLAGS = [quick],[standard]
+testcov: testclean testdebug testrun
 	lcov --capture --directory test/bin --output-file test/lcov/$(TODAY).info
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
 	@echo "See: " test/lcov/$(TODAY)-html/index.html
@@ -75,7 +67,6 @@ bench: TEST_FLAGS = [benchmark]
 bench: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
 bench: $(CLEAN) testbuild
 	@rm -f $(OBJ_DIR)/DEBUG
-	@rm -f $(OBJ_DIR)/LCOV
 
 testclean:
 	rm -rf $(OBJ_DIR) test/test

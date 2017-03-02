@@ -975,6 +975,7 @@ TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
       new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
+  S.set_max_threads(1000);
   really_delete_cont(gens);
 
   size_t nr = 0;
@@ -2579,4 +2580,24 @@ TEST_CASE("Semigroup 62: performance", "[standard][semigroup][finite]") {
   really_delete_cont(gens);
 
   REQUIRE(S.size() == 597369);
+}
+
+TEST_CASE("Semigroup 63: minimal_factorisation ",
+          "[quick][semigroup][finite]") {
+  std::vector<Element*> gens = {
+      new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
+      new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  REQUIRE(*(S.minimal_factorisation(gens[0])) == word_t({0}));
+  really_delete_cont(gens);
+
+  Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
+  REQUIRE(S.minimal_factorisation(x) == nullptr);
+  x->really_delete();
+  delete x;
+
+  REQUIRE(S.minimal_factorisation(10000000) == nullptr);
 }
