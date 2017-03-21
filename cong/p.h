@@ -53,7 +53,7 @@ namespace libsemigroups {
 
     class_index_t word_to_class_index(word_t const& word) final;
 
-    partition_t nontrivial_classes() final;
+    Partition<word_t> nontrivial_classes() final;
 
     void run() {
       run(_killed);

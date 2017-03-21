@@ -50,8 +50,6 @@ namespace libsemigroups {
 
     class_index_t word_to_class_index(word_t const& word) final;
 
-    partition_t nontrivial_classes() final;
-
     // This method compresses the coset table used by <todd_coxeter>.
     void compress();
 

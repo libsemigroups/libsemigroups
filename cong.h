@@ -27,6 +27,7 @@
 #include <utility>
 #include <vector>
 
+#include "partition.h"
 #include "semigroups.h"
 #include "util/report.h"
 
@@ -55,9 +56,7 @@ namespace libsemigroups {
     };
 
    public:
-    typedef size_t                      class_index_t;
-    typedef std::vector<Element const*> class_t;
-    typedef std::vector<class_t>        partition_t;
+    typedef size_t class_index_t;  // TODO: should this be public?
 
     // 5 parameters (for finitely presented semigroup)
     // @type string describing the type of congruence (left/right/twosided)
@@ -140,7 +139,7 @@ namespace libsemigroups {
       return data->nr_classes();
     }
 
-    partition_t nontrivial_classes() {
+    Partition<word_t> nontrivial_classes() {
       DATA* data = get_data();
       if (!data->is_done()) {
         data->run();
@@ -228,7 +227,8 @@ namespace libsemigroups {
       virtual bool          is_done() const                         = 0;
       virtual size_t        nr_classes()                            = 0;
       virtual class_index_t word_to_class_index(word_t const& word) = 0;
-      virtual partition_t nontrivial_classes()                      = 0;
+
+      virtual Partition<word_t> nontrivial_classes();
 
       void kill() {
         // TODO add killed-by-thread
@@ -242,6 +242,9 @@ namespace libsemigroups {
       virtual void compress() {}
 
      protected:
+      typedef std::vector<word_t*>        class_t;
+      typedef std::vector<class_t*>       partition_t;
+
       Congruence&       _cong;
       std::atomic<bool> _killed;
       size_t            _report_interval;
