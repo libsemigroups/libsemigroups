@@ -36,15 +36,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-}
-
 TEST_CASE(
     "TC 01: Small fp semigroup",
     "[quick][congruence][quick][congruence][tc][noprefill][fpsemigroup]") {
@@ -183,10 +174,9 @@ TEST_CASE("TC 06: transformation semigroup size 88",
 
   REQUIRE(cong.word_to_class_index(w1) == cong.word_to_class_index(w2));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 68);
-  really_delete_partition(nontrivial_classes);
+  REQUIRE(nontrivial_classes[0]->size() == 68);
 
   really_delete_cont(vec);
 }
@@ -215,10 +205,9 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 20);
-  really_delete_partition(nontrivial_classes);
+  REQUIRE(nontrivial_classes[0]->size() == 20);
 
   really_delete_cont(vec);
 }
@@ -261,7 +250,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 4);
   std::vector<size_t> sizes({0, 0, 0});
   for (size_t i = 0; i < nontrivial_classes.size(); i++) {
@@ -280,7 +269,6 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
-  really_delete_partition(nontrivial_classes);
 
   really_delete_cont(vec);
 }
