@@ -34,7 +34,7 @@ namespace libsemigroups {
   class RWSE : public Element {
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce, size_t hv)
-        : Element(hv), _rws(rws), _rws_word(w) {
+        : Element(hv, Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
       if (reduce) {
         rws_word_t buf;
         _rws->rewrite(_rws_word, buf);
