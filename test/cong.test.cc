@@ -648,3 +648,31 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
 }
+
+TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 0}, {0, 0}),
+                                  relation_t({0, 1}, {1, 0}),
+                                  relation_t({0, 2}, {2, 0}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {0}),
+                                  relation_t({2, 0}, {0}),
+                                  relation_t({1, 0}, {0, 1}),
+                                  relation_t({1, 1}, {1, 1}),
+                                  relation_t({1, 2}, {2, 1}),
+                                  relation_t({1, 1, 1}, {1}),
+                                  relation_t({1, 2}, {1}),
+                                  relation_t({2, 1}, {1})};
+  std::vector<relation_t> extra = {relation_t({0}, {1})};
+
+  Congruence cong("twosided", 3, rels, extra);
+  cong.set_report(CONG_REPORT);
+
+  REQUIRE(!cong.is_done());
+
+  Partition<word_t> nt_classes = cong.nontrivial_classes();
+  REQUIRE(nt_classes.size() == 1);
+  REQUIRE(nt_classes[0]->size() == 5);
+
+  REQUIRE(cong.is_done());
+}
