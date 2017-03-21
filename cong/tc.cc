@@ -287,7 +287,10 @@ namespace libsemigroups {
         // assert(c != UNDEFINED);
       }
     }
-    return c;
+    // c in {1 .. n} (where 0 is the id coset)
+    assert(c <= nr_classes());
+    // Convert to {0 .. n-1}
+    return c - 1;
   }
 
   // Create a new active coset for coset c to map to under generator a
@@ -546,6 +549,7 @@ namespace libsemigroups {
     }
     if (_relations.empty()) {
       _tc_done = true;
+      compress();
       return;
     }
     do {
@@ -602,6 +606,7 @@ namespace libsemigroups {
                             << _active
                             << " survived");
     _tc_done = true;
+    compress();
 
     // No return value: all info is now stored in the class
   }
