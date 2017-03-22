@@ -1,31 +1,31 @@
 #<cldoc:index>
 
-Semigroups++
+libsemigroups
 
-# Semigroups++ Version 0.0.3
+# libsemigroups Version 0.0.3
 ### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/)
 
-This is the source code documentation for Semigroups++ produced using
+This is the source code documentation for libsemigroups produced using
 [cldoc](https://github.com/jessevdk/cldoc). This documentation can be
 compiled by running `make doc` in the `libsemigroups`
 directory, and the tests can be run by doing `make test` in the
 `libsemigroups` directory.
 
-The algorithms and data structures in this version of Semigroups++ are
+The algorithms and data structures in this version of libsemigroups are
 based on 
 [Algorithms for computing finite semigroups](https://www.irif.fr/~jep/PDF/Rio.pdf), 
 [Expository Slides](https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf), and 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) 
 by Jean-Eric Pin.
 
-The Semigroups++ library is used in the 
+The libsemigroups library is used in the 
 [Semigroups package for GAP](http://gap-packages.github.io/Semigroups/).
 The development version is available on 
 [Github](https://github.com/james-d-mitchell/libsemigroups).
 
 Some of the features of 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) 
-are not yet implemented in the Semigroups++ library, this is a work in
+are not yet implemented in the libsemigroups library, this is a work in
 progress. Missing features include those for:
 
 * Green's relations, or classes
@@ -38,17 +38,17 @@ progress. Missing features include those for:
 
 These will be included in a future version. 
 
-The Semigroups++ library performs roughly the same as 
+The libsemigroups library performs roughly the same as 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
 when there is a known upper bound on the size of the semigroup being
 enumerated, and this is used to initialise the data structures for the
 semigroup; see <libsemigroups::Semigroup::set_batch_size> for more
 details. Note that in 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
-it is always necessary to provide such an upper bound, but in the Semigroups++
+it is always necessary to provide such an upper bound, but in the libsemigroups
 library it is not. 
 
-The Semigroups++ library also has some advantages over 
+The libsemigroups library also has some advantages over 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html):
 
 * there is a (hopefully) convenient C++ API, which makes it relatively easy to
@@ -56,7 +56,7 @@ The Semigroups++ library also has some advantages over
 * there are some multithreaded methods for semigroups and their congruences
 * you do not have to know/guess the size of a semigroup or monoid before you
   begin
-* Semigroups++ supports more types of elements than 
+* libsemigroups supports more types of elements than 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html)
 * it is relatively straightforward to add support for further types of elements
   and semigroups
@@ -67,12 +67,12 @@ The Semigroups++ library also has some advantages over
 * it is possible to add more generators after a semigroup or monoid has been
   constructed, without losing or having to recompute any information that was
   previously known
-* Semigroups++ contains a rudimentary implementation of the 
+* libsemigroups contains a rudimentary implementation of the 
   [Todd-Coxeter algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm)
   for finitely presented semigroups, which can also be used to
   compute congruence of a (not necessarily finitely presented) semigroup or
   monoid.
 
-If you find any problems with Semigroups++ or have any suggestions for features
+If you find any problems with libsemigroups or have any suggestions for features
 that you'd like to see please use the 
 [issue tracker](https://github.com/james-d-mitchell/libsemigroups/issues).

@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for computing with semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ namespace libsemigroups {
   // defined by generators and relations.
   //
   // This class and its implemented methods are rather rudimentary in the
-  // current version of Semigroups++.
+  // current version of libsemigroups.
   //
   // The word "coset" is used throughout this section to mean "congruence
   // class".

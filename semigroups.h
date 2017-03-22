@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for computing with semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@
 #include "util/report.h"
 
 //
-// Namespace for everything in the Semigroups++ library.
+// Namespace for everything in the libsemigroups library.
 
 namespace libsemigroups {
 
