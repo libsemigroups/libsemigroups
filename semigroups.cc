@@ -459,8 +459,12 @@ namespace libsemigroups {
     return factorisation(pos);
   }
 
-  word_t* Semigroup::factorisation(RWSE* x) {
-    return RWS::rws_word_to_word(x->get_rws_word());
+  word_t* Semigroup::factorisation(Element* x) {
+    if (x->get_type() == Element::elm_t::RWSE) {
+      return RWS::rws_word_to_word(((RWSE*) x)->get_rws_word());
+    }
+    assert(x->get_type() == Element::elm_t::NOT_RWSE);
+    return minimal_factorisation(x);
   }
 
   word_t* Semigroup::minimal_factorisation(pos_t pos) {

@@ -32,15 +32,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-}
-
 TEST_CASE("Congruence 00: 5-parameter constructor",
           "[quick][congruence][fpsemigroup][multithread]") {
   std::vector<relation_t> rels;
@@ -440,11 +431,11 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (Congruence::class_t block : nontrivial_classes) {
-    switch (block.size()) {
+  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
+    switch (nontrivial_classes.at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -462,7 +453,6 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
-  really_delete_partition(nontrivial_classes);
 }
 
 TEST_CASE("Congruence 13: partial perm example",
@@ -545,7 +535,7 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
   REQUIRE(cong.nr_classes() == 15);
 }
 
-TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points",
+TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
           "[extreme][congruence][multithread][finite][pbr]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
@@ -578,11 +568,11 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (Congruence::class_t block : nontrivial_classes) {
-    switch (block.size()) {
+  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
+    switch (nontrivial_classes.at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -600,10 +590,9 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
-  really_delete_partition(nontrivial_classes);
 }
 
-TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points",
+TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
           "[extreme][congruence][multithread][finite][pbr]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
@@ -636,11 +625,11 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (Congruence::class_t block : nontrivial_classes) {
-    switch (block.size()) {
+  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
+    switch (nontrivial_classes.at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -658,5 +647,32 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
-  really_delete_partition(nontrivial_classes);
+}
+
+TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 0}, {0, 0}),
+                                  relation_t({0, 1}, {1, 0}),
+                                  relation_t({0, 2}, {2, 0}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {0}),
+                                  relation_t({2, 0}, {0}),
+                                  relation_t({1, 0}, {0, 1}),
+                                  relation_t({1, 1}, {1, 1}),
+                                  relation_t({1, 2}, {2, 1}),
+                                  relation_t({1, 1, 1}, {1}),
+                                  relation_t({1, 2}, {1}),
+                                  relation_t({2, 1}, {1})};
+  std::vector<relation_t> extra = {relation_t({0}, {1})};
+
+  Congruence cong("twosided", 3, rels, extra);
+  cong.set_report(CONG_REPORT);
+
+  REQUIRE(!cong.is_done());
+
+  Partition<word_t> nt_classes = cong.nontrivial_classes();
+  REQUIRE(nt_classes.size() == 1);
+  REQUIRE(nt_classes[0]->size() == 5);
+
+  REQUIRE(cong.is_done());
 }

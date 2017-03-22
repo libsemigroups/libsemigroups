@@ -36,15 +36,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-}
-
 TEST_CASE("KBFP 01: Small fp semigroup",
           "[quick][congruence][kbfp][fpsemigroup]") {
   std::vector<relation_t> rels;
@@ -124,10 +115,9 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 68);
-  really_delete_partition(nontrivial_classes);
+  REQUIRE(nontrivial_classes[0]->size() == 68);
 
   t1->really_delete();
   t2->really_delete();

@@ -65,9 +65,8 @@ namespace libsemigroups {
     return _P_cong->word_to_class_index(word);
   }
 
-  Congruence::partition_t Congruence::KBP::nontrivial_classes() {
+  Partition<word_t> Congruence::KBP::nontrivial_classes() {
     assert(is_done());
-    // TODO: should these classes be processed in some way?
     return _P_cong->nontrivial_classes();
   }
 

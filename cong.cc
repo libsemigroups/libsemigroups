@@ -270,4 +270,48 @@ namespace libsemigroups {
     }
     _mtx.unlock();
   }
+
+  Partition<word_t> Congruence::DATA::nontrivial_classes() {
+    assert(is_done());
+    partition_t* classes = new partition_t();
+
+    if (_cong._semigroup == nullptr) {
+      if (_cong._extra.empty()) {
+        return Partition<word_t>(classes);  // no nontrivial classes
+      }
+      assert(!_cong._relations.empty());  // TODO: fail gracefully?
+    }
+
+    // Note: we assume classes are numbered contiguously {0 .. n-1}
+    partition_t* all_classes = new partition_t();
+    for (size_t i = 0; i < nr_classes(); i++) {
+      all_classes->push_back(new class_t());
+    }
+
+    // Look up the class number of each element of the parent semigroup
+    word_t* word;
+    for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
+      word = _cong._semigroup->factorisation(pos);
+      assert(word_to_class_index(*word) < nr_classes());
+      (*all_classes)[word_to_class_index(*word)]->push_back(word);
+    }
+
+    // Store the words
+    assert(all_classes->size() == nr_classes());
+    for (size_t class_nr = 0; class_nr < all_classes->size(); class_nr++) {
+      // Use only the classes with at least 2 elements
+      if ((*all_classes)[class_nr]->size() > 1) {
+        classes->push_back((*all_classes)[class_nr]);
+      } else {
+        // Delete the unused class
+        assert((*all_classes)[class_nr]->size() == 1);
+        delete (*(*all_classes)[class_nr])[0];
+        delete (*all_classes)[class_nr];
+      }
+    }
+    delete all_classes;
+
+    return Partition<word_t>(classes);
+  }
+
 }  // namespace libsemigroups

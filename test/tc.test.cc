@@ -36,15 +36,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-}
-
 TEST_CASE(
     "TC 01: Small fp semigroup",
     "[quick][congruence][quick][congruence][tc][noprefill][fpsemigroup]") {
@@ -62,11 +53,12 @@ TEST_CASE(
   REQUIRE(cong->nr_classes() == 5);
   REQUIRE(cong->is_done());
 
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
+  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
+          cong->word_to_class_index({1}));
 
   delete cong;
 }
@@ -111,12 +103,14 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
   Congruence* cong = new Congruence("left", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) == 2);
+  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));;
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));;
+  REQUIRE(cong->word_to_class_index({1}) !=
+          cong->word_to_class_index({0, 0, 0, 0}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
+          cong->word_to_class_index({0, 0, 0, 0}));
   delete cong;
 }
 
@@ -130,17 +124,18 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
+  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
+          cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
+          cong->word_to_class_index({1}));
   delete cong;
 
   cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) == 2);
+  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) < cong->nr_classes());
   delete cong;
 }
 
@@ -179,10 +174,9 @@ TEST_CASE("TC 06: transformation semigroup size 88",
 
   REQUIRE(cong.word_to_class_index(w1) == cong.word_to_class_index(w2));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 68);
-  really_delete_partition(nontrivial_classes);
+  REQUIRE(nontrivial_classes[0]->size() == 68);
 
   really_delete_cont(vec);
 }
@@ -211,10 +205,9 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 20);
-  really_delete_partition(nontrivial_classes);
+  REQUIRE(nontrivial_classes[0]->size() == 20);
 
   really_delete_cont(vec);
 }
@@ -257,13 +250,25 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
+  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 4);
-  REQUIRE(nontrivial_classes[0].size() == 3);
-  REQUIRE(nontrivial_classes[1].size() == 5);
-  REQUIRE(nontrivial_classes[2].size() == 5);
-  REQUIRE(nontrivial_classes[3].size() == 7);
-  really_delete_partition(nontrivial_classes);
+  std::vector<size_t> sizes({0, 0, 0});
+  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
+    switch (nontrivial_classes.at(i)->size()) {
+      case 3:
+        sizes[0]++;
+        break;
+      case 5:
+        sizes[1]++;
+        break;
+      case 7:
+        sizes[2]++;
+        break;
+      default:
+        REQUIRE(false);
+    }
+  }
+  REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
 
   really_delete_cont(vec);
 }

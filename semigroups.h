@@ -691,20 +691,48 @@ namespace libsemigroups {
     // method enumerates the semigroup until at least the <pos> element is
     // known. If <pos> is greater than the size of the semigroup, then nothing
     // happens and <word> is not modified, in particular not cleared.
-
     void minimal_factorisation(word_t& word, pos_t pos);
+
+    // non-const
+    // @pos    a possible position of element of the semigroup.
+    //
+    // This is the same as the two-argument function, but it returns a pointer
+    // to the factorisation instead of modifying another argument in place
     word_t* minimal_factorisation(pos_t pos);
+
+    // non-const
+    // @x   pointer to an element of the semigroup
+    //
+    // This is the same as the function taking a pos_t, but it factorises an
+    // explicit element instead of using the position
     word_t* minimal_factorisation(Element* x);
 
+    // non-const
+    // @word   changed in-place to contain a word in the generators equal to the
+    //         <pos> element of the semigroup
+    // @pos    a possible position of element of the semigroup.
+    //
+    // This is the same as minimal_factorisation, except that the resulting
+    // factorisation may not be minimal.
     void factorisation(word_t& word, pos_t pos) {
       minimal_factorisation(word, pos);
     }
 
-    template <typename T> word_t* factorisation(T obj) {
-      return minimal_factorisation(obj);
+    // non-const
+    // @pos    a possible position of element of the semigroup.
+    //
+    // This is the same as minimal_factorisation, except that the resulting
+    // factorisation may not be minimal.
+    word_t* factorisation(pos_t pos) {
+      return minimal_factorisation(pos);
     }
 
-    word_t* factorisation(RWSE* x);
+    // non-const
+    // @x   pointer to an element of the semigroup
+    //
+    // This is the same as minimal_factorisation, except that the resulting
+    // factorisation may not be minimal.
+    word_t* factorisation(Element* x);
 
     // non-const
     //
