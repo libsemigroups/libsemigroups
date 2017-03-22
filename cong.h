@@ -175,11 +175,11 @@ namespace libsemigroups {
       return _relations;
     }
 
-    std::vector<relation_t> const& extra() {
     // const
     //
     // @return the vector of extra relations (or equivalently, generating
     // pairs) used to define the congruence.
+    std::vector<relation_t> const& extra() const {
       return _extra;
     }
 
@@ -195,12 +195,12 @@ namespace libsemigroups {
       _relations = relations;
     }
 
-    void set_report(bool val) {
     // const
     // @val a boolean value
     //
     // If @val is true, then some methods for a Congruence object may report
     // information about the progress of the computation.
+    void set_report(bool val) const {
       glob_reporter.set_report(val);
       assert(glob_reporter.get_report() == val);
     }
