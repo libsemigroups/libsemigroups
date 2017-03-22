@@ -388,12 +388,12 @@ namespace libsemigroups {
     // <rws_word>.
     static word_t* rws_word_to_word(rws_word_t const* rws_word);
 
-    void set_report(bool val) {
     // const
     // @val a boolean value
     //
     // If @val is true, then some methods for a RWS object may report
     // information about the progress of the computation.
+    void set_report(bool val) const {
       glob_reporter.set_report(val);
     }
 
