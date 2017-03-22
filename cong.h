@@ -211,9 +211,20 @@ namespace libsemigroups {
     void force_kbfp();
 
    private:
+    // Subclasses of DATA
+    class KBFP;  // Knuth-Bendix followed by Froidure-Pin
+    class KBP;   // Knuth-Bendix followed by P
+    class P;     // Orbit of pairs
+    class TC;    // Todd-Coxeter
+
     // Abstract base class for nested classes containing methods for actually
     // enumerating the classes etc of a congruence
     class DATA {
+      friend KBFP;
+      friend KBP;
+      friend P;
+      friend TC;
+
      public:
       explicit DATA(Congruence& cong, size_t report_interval = 1000)
           : _cong(cong),
@@ -241,21 +252,14 @@ namespace libsemigroups {
 
       virtual void compress() {}
 
-     protected:
+     private:
+      Congruence&                   _cong;
+      std::atomic<bool>             _killed;
+      size_t                        _report_interval;
+      size_t                        _report_next;
       typedef std::vector<word_t*>  class_t;
       typedef std::vector<class_t*> partition_t;
-
-      Congruence&       _cong;
-      std::atomic<bool> _killed;
-      size_t            _report_interval;
-      size_t            _report_next;
     };
-
-    // Subclasses of DATA
-    class KBFP;  // Knuth-Bendix followed by Froidure-Pin
-    class TC;    // Todd-Coxeter
-    class P;     // Orbit of pairs
-    class KBP;   // Knuth-Bendix followed by P
 
     // Set the relations of a Congruence object to the relations of the
     // semigroup over which the Congruence is defined (if any). Report is here
