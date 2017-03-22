@@ -76,7 +76,8 @@ namespace libsemigroups {
             }
             return (itp != p.cend() && this->_letter_order(*itp, *itq));
           }),
-        _letter_order(letter_order) {}
+          _letter_order(letter_order) {}
+
    private:
     std::function<bool(rws_letter_t const&, rws_letter_t const&)> _letter_order;
   };
