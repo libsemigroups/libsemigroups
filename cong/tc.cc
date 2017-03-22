@@ -101,7 +101,9 @@ namespace libsemigroups {
 
   void Congruence::TC::prefill() {
     Semigroup* semigroup = _cong._semigroup;
-    assert(semigroup != nullptr);
+    if (semigroup == nullptr) {
+      return;
+    }
     if (_cong._type == LEFT) {
       _table.append(*semigroup->left_cayley_graph());
     } else {
