@@ -55,8 +55,7 @@ namespace libsemigroups {
     // by the destructor when this Partition object is deleted.
     //
     // FIXME delete if not used
-    explicit Partition(std::vector<std::vector<T*>*>* parts)
-      : _parts(parts) {}
+    explicit Partition(std::vector<std::vector<T*>*>* parts) : _parts(parts) {}
 
     //
     // A default destructor.

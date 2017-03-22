@@ -242,8 +242,8 @@ namespace libsemigroups {
       virtual void compress() {}
 
      protected:
-      typedef std::vector<word_t*>        class_t;
-      typedef std::vector<class_t*>       partition_t;
+      typedef std::vector<word_t*>  class_t;
+      typedef std::vector<class_t*> partition_t;
 
       Congruence&       _cong;
       std::atomic<bool> _killed;

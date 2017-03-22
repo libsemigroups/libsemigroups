@@ -60,7 +60,7 @@ TEST_CASE("KBP 01: for an infinite fp semigroup",
   Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
   REQUIRE(nontrivial_classes[0]->size() == 5);
-  REQUIRE(*nontrivial_classes.at(0,0) == word_t({0}));
+  REQUIRE(*nontrivial_classes.at(0, 0) == word_t({0}));
 }
 
 TEST_CASE("KBP 02: for an infinite fp semigroup",

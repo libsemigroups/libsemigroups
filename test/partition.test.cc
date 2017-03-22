@@ -24,17 +24,15 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Partition 01: 0-argument constructor",
-          "[partition][quick]") {
+TEST_CASE("Partition 01: 0-argument constructor", "[partition][quick]") {
   Partition<size_t>* part = new Partition<size_t>();
   REQUIRE(part->size() == 0);
   delete part;
 }
 
-TEST_CASE("Partition 02: 1-argument constructor",
-          "[partition][quick]") {
-  std::vector<std::vector<word_t*>*>* vector
-    = new std::vector<std::vector<word_t*>*>();
+TEST_CASE("Partition 02: 1-argument constructor", "[partition][quick]") {
+  std::vector<std::vector<word_t*>*>* vector =
+      new std::vector<std::vector<word_t*>*>();
 
   for (size_t i = 0; i < 3; i++) {
     vector->push_back(new std::vector<word_t*>());

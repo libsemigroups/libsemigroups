@@ -44,17 +44,14 @@ namespace libsemigroups {
   class Element {
    public:
     // the concrete subclass of Element which this element matches
-    enum elm_t {
-      RWSE = 0,
-      NOT_RWSE = 1
-    };
+    enum elm_t { RWSE = 0, NOT_RWSE = 1 };
 
     // 0 or 1 parameter (hash value)
     // @hv the hash value (for caching) of the element being created (defaults
     // to <libsemigroups::Element::UNDEFINED>.
-    explicit Element(size_t hv = Element::UNDEFINED,
-                     elm_t type = Element::elm_t::NOT_RWSE)
-      : _hash_value(hv), _type(type) {}
+    explicit Element(size_t hv   = Element::UNDEFINED,
+                     elm_t  type = Element::elm_t::NOT_RWSE)
+        : _hash_value(hv), _type(type) {}
 
     elm_t get_type() {
       return _type;

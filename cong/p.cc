@@ -257,8 +257,8 @@ namespace libsemigroups {
     Partition<word_t> classes(_nr_nontrivial_classes);
 
     for (p_index_t ind = 0; ind < _nr_nontrivial_elms; ind++) {
-      Element* elm = const_cast<Element*>(_reverse_map[ind]);
-      word_t* word = _cong._semigroup->factorisation(elm);
+      Element* elm  = const_cast<Element*>(_reverse_map[ind]);
+      word_t*  word = _cong._semigroup->factorisation(elm);
       classes[_class_lookup[ind]]->push_back(word);
     }
     return classes;

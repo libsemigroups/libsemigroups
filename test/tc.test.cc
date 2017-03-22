@@ -53,12 +53,12 @@ TEST_CASE(
   REQUIRE(cong->nr_classes() == 5);
   REQUIRE(cong->is_done());
 
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
-          cong->word_to_class_index({1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({1}));
 
   delete cong;
 }
@@ -103,14 +103,16 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
   Congruence* cong = new Congruence("left", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));;
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));;
-  REQUIRE(cong->word_to_class_index({1}) !=
-          cong->word_to_class_index({0, 0, 0, 0}));
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
-          cong->word_to_class_index({0, 0, 0, 0}));
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  ;
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  ;
+  REQUIRE(cong->word_to_class_index({1})
+          != cong->word_to_class_index({0, 0, 0, 0}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({0, 0, 0, 0}));
   delete cong;
 }
 
@@ -124,12 +126,12 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) ==
-          cong->word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) !=
-          cong->word_to_class_index({1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({1}));
   delete cong;
 
   cong = new Congruence("twosided", 2, rels, extra);
