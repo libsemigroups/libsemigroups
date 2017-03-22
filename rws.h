@@ -50,7 +50,8 @@ namespace libsemigroups {
     std::function<bool(rws_word_t const&, rws_word_t const&)> _func;
   };
 
-  struct SHORTLEX : public RO {
+  class SHORTLEX : public RO {
+   public:
     SHORTLEX()
         : RO([](rws_word_t const& p, rws_word_t const& q) {
             return (p.size() > q.size() || (p.size() == q.size() && p > q));
@@ -61,7 +62,7 @@ namespace libsemigroups {
     // correct letters
     explicit SHORTLEX(std::function<bool(rws_letter_t const&,
                                          rws_letter_t const&)> letter_order)
-        : RO([&letter_order](rws_word_t const& p, rws_word_t const& q) {
+        : RO([this](rws_word_t const& p, rws_word_t const& q) {
             if (p.size() > q.size()) {
               return true;
             } else if (p.size() < q.size()) {
@@ -73,8 +74,11 @@ namespace libsemigroups {
               itp++;
               itq++;
             }
-            return (itp != p.cend() && letter_order(*itp, *itq));
-          }) {}
+            return (itp != p.cend() && this->_letter_order(*itp, *itq));
+          }),
+        _letter_order(letter_order) {}
+   private:
+    std::function<bool(rws_letter_t const&, rws_letter_t const&)> _letter_order;
   };
 
   // TODO add more reduction orderings
