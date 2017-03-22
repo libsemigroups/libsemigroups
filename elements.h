@@ -43,23 +43,35 @@ namespace libsemigroups {
   // Abstract base class for elements of a semigroup.
   class Element {
    public:
-    // the concrete subclass of Element which this element matches
-    enum elm_t { RWSE = 0, NOT_RWSE = 1 };
+    // The different types of element.
+    enum elm_t {
+      // Type for <Element>s arising from a rewriting system <RWS>.
+      RWSE = 0,
+      // Type for <Element>s not arising from a rewriting system <RWS>.
+      NOT_RWSE = 1
+    };
 
     // 0 or 1 parameter (hash value)
     // @hv the hash value (for caching) of the element being created (defaults
-    // to <libsemigroups::Element::UNDEFINED>.
+    // to <libsemigroups::Element::UNDEFINED>).
+    // @type the type <elm_t> of the element being created (defaults to
+    // <libsemigroups::Element::NOT_RWSE>).
     explicit Element(size_t hv   = Element::UNDEFINED,
                      elm_t  type = Element::elm_t::NOT_RWSE)
         : _hash_value(hv), _type(type) {}
 
-    elm_t get_type() {
-      return _type;
-    }
-
     //
     // A default destructor.
     virtual ~Element() {}
+
+    // const
+    //
+    // This method returns the type <elm_t> of an <Element> object.
+    //
+    // @return the type of **this**.
+    elm_t get_type() const {
+      return _type;
+    }
 
     // const
     // @that Another element of the same type
@@ -125,9 +137,8 @@ namespace libsemigroups {
     // const
     //
     // This method returns the multiplicative identity element for an object in
-    // a
-    // subclass of <Element>. The returned identity belongs to the same subclass
-    // and has the same <degree> as **this**.
+    // a subclass of <Element>. The returned identity belongs to the same
+    // subclass and has the same <degree> as **this**.
     //
     // @return the identity element.
     virtual Element* identity() const = 0;
@@ -171,36 +182,56 @@ namespace libsemigroups {
     // @x an element
     // @y an element
     //
-    // See <libsemigroups::Element::redefine>.
+    // Redefine **this** to be the product of <x> and <y>. This is in-place
+    // multiplication to avoid allocation of memory for products which do not
+    // require to be stored for future use.
+    virtual void redefine(Element const* x, Element const* y) {
+      redefine(x, y, 0);
+    }
+
+    // non-const
+    // @x an element
+    // @y an element
+    // @thread_id the id number of the thread calling the method
     //
-    // Redefine **this** to be the product of <x> and <y>.
+    // See <redefine>.
+    //
+    // Note that if different threads call this method with the same value of
+    // <thread_id> then bad things will happen.
     virtual void
     redefine(Element const* x, Element const* y, size_t const& thread_id) {
       (void) thread_id;
       redefine(x, y);
     }
 
-    virtual void redefine(Element const* x, Element const* y) {
-      redefine(x, y, 0);
-    }
-
+    // Provides a call operator for comparing <Element>s via pointers.
+    //
+    // This struct is has a call operator for comparing const <Element>
+    // pointers (by comparing the <Element>s they point to). This is used by
+    // <Semigroup::enumerate> in certain methods for congruences.
     struct Equal {
-      // To keep cldoc happy
+      // const
       // @x a pointer to a const Element
       // @y a pointer to a const Element
       //
       // @return **true** or **false**
-      size_t operator()(const Element* x, const Element* y) const {
+      size_t operator()(Element const* x, Element const* y) const {
         return *x == *y;
       }
     };
 
+    // Provides a call operator returning a hash value via a pointer.
+    //
+    //
+    // This struct is has a call operator for obtaining a hash value for the
+    // <Element> from a const <Element> pointer. This is used by
+    // <Semigroup::enumerate> in certain methods for congruences.
     struct Hash {
-      // To keep cldoc happy
+      // const
       // @x a pointer to a const Element
       //
       // @return **true** or **false**
-      size_t operator()(const Element* x) const {
+      size_t operator()(Element const* x) const {
         return x->hash_value();
       }
     };
@@ -334,6 +365,10 @@ namespace libsemigroups {
       return new T(vector, this->_hash_value);
     }
 
+    // non-const
+    // @x an element.
+    //
+    // This method copies <x> into **this** by changing **this** in-place.
     void copy(Element const* x) override {
       assert(x->degree() == this->degree());
       auto   xx  = static_cast<ElementWithVectorData const*>(x);
@@ -592,6 +627,8 @@ namespace libsemigroups {
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
+    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
+    // that neither <x> nor <y> equals **this**.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -929,12 +966,16 @@ namespace libsemigroups {
     // non-const
     // @x a bipartition
     // @y a bipartition
+    // @thread_id the id number of the thread calling the method
     //
     // See <Element::redefine>.
     //
     // Redefine this to be the product (as defined at the top of this page) of
     // <x> and <y>. This method asserts that the dimensions of <x>, <y>, and
     // this, are all equal, and that neither <x> nor <y> equals **this**.
+    //
+    // Note that if different threads call this method with the same value of
+    // <thread_id> then bad things will happen.
     void redefine(Element const* x,
                   Element const* y,
                   size_t const&  thread_id) override;
@@ -1255,7 +1296,7 @@ namespace libsemigroups {
     //
     // See <Element::complexity> for more details.
     //
-    // @return the two times <ElementWithVectorData::degree> all cubed.
+    // @return two times <ElementWithVectorData::degree> all cubed.
     size_t complexity() const override;
 
     // const
@@ -1268,9 +1309,7 @@ namespace libsemigroups {
 
     // const
     //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a PBR.
+    // Calculates a hash value; see <Element::hash_value>.
     void cache_hash_value() const override;
 
     // const
@@ -1285,12 +1324,16 @@ namespace libsemigroups {
     // non-const
     // @x PBR
     // @y PBR
+    // @thread_id the id number of the thread calling the method
     //
     // See <Element::redefine>.
     //
     // Redefine **this** to be the composition of <x> and <y>. This method
     // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
     // that neither <x> nor <y> equals **this**.
+    //
+    // Note that if different threads call this method with the same value of
+    // <thread_id> then bad things will happen.
     void redefine(Element const* x,
                   Element const* y,
                   size_t const&  thread_id) override;

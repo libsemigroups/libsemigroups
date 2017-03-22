@@ -40,6 +40,10 @@ namespace libsemigroups {
 
   class RWSE;
 
+  //
+  // This object is used for printing information during a computation. The
+  // reason it is global is that we must be able to report from different
+  // threads running concurrently.
   extern Reporter glob_reporter;
 
   //
@@ -134,10 +138,24 @@ namespace libsemigroups {
     // constructed semigroup.
     Semigroup(const Semigroup& copy);
 
-    // TODO doc Semigroup::word_to_pos
+    // const
+    // @w a <word_t> in the indices of generators of the semigroup
+    //
+    // Supposing that the entries in <w> correspond to indices of the
+    // generators used to create **this**, this method returns the position in
+    // **this** of the element obtained by evaluating <w>.
+    //
+    // @return a position of an element in the semigroup.
     pos_t word_to_pos(word_t const& w) const;
 
-    // TODO doc Semigroup::word_to_element
+    // const
+    // @w a <word_t> in the indices of generators of the semigroup
+    //
+    // Supposing that the entries in <w> correspond to indices of the
+    // generators used to create **this**, this method returns the
+    // the element of **this** obtained by evaluating <w>.
+    //
+    // @return a pointer to an Element which belongs to **this**.
     Element* word_to_element(word_t const& w) const;
 
    private:
@@ -202,7 +220,7 @@ namespace libsemigroups {
       return _gens->size();
     }
 
-    // const
+    // const (0 parameters)
     //
     // This method is const.
     //
@@ -211,6 +229,13 @@ namespace libsemigroups {
     std::vector<Element*>* gens() const {
       return _gens;
     }
+
+    // const (1 parameter)
+    // @pos the index of a generator
+    //
+    // This method is const.
+    //
+    // @return a pointer to the <pos> generator.
 
     Element* gens(size_t pos) const {
       assert(pos < _gens->size());
@@ -518,11 +543,15 @@ namespace libsemigroups {
     // is a good idea to call <set_batch_size> with that upper bound as an
     // argument, this can significantly improve the performance of the
     // <enumerate> method.
-
     void set_batch_size(size_t batch_size) {
       _batch_size = batch_size;
     }
 
+    // non-const
+    // @n the requested capacity
+    //
+    // Requests that the capacity (i.e. number of elements) of  the semigroup be
+    // at least enough to contain n elements.
     void reserve(size_t n);
 
     // non-const
@@ -531,7 +560,6 @@ namespace libsemigroups {
     // semigroup.
     //
     // @return the size of the semigroup.
-
     size_t size() {
       enumerate();
       return _elements->size();
@@ -697,14 +725,19 @@ namespace libsemigroups {
     // @pos    a possible position of element of the semigroup.
     //
     // This is the same as the two-argument function, but it returns a pointer
-    // to the factorisation instead of modifying another argument in place
+    // to the factorisation instead of modifying an argument in-place.
+    //
+    // @return a pointer to a <word_t> which evaluates to the <Element> with
+    // index <pos> in **this**.
     word_t* minimal_factorisation(pos_t pos);
 
     // non-const
     // @x   pointer to an element of the semigroup
     //
-    // This is the same as the function taking a pos_t, but it factorises an
-    // explicit element instead of using the position
+    // This is the same as the function taking a <pos_t>, but it factorises an
+    // <Element> instead of using the position of an element.
+    //
+    // @return a pointer to a <word_t> which evaluates to <x>.
     word_t* minimal_factorisation(Element* x);
 
     // non-const
@@ -723,6 +756,9 @@ namespace libsemigroups {
     //
     // This is the same as minimal_factorisation, except that the resulting
     // factorisation may not be minimal.
+    //
+    // @return a pointer to a <word_t> which evaluates to the <Element> with
+    // index <pos> in **this**.
     word_t* factorisation(pos_t pos) {
       return minimal_factorisation(pos);
     }
@@ -732,6 +768,8 @@ namespace libsemigroups {
     //
     // This is the same as minimal_factorisation, except that the resulting
     // factorisation may not be minimal.
+    //
+    // @return a pointer to a <word_t> which evaluates to <x>.
     word_t* factorisation(Element* x);
 
     // non-const
@@ -783,7 +821,8 @@ namespace libsemigroups {
     void next_relation(std::vector<size_t>& relation);
 
     // non-const
-    // @limit    the number of elements to enumerate (defaults to <LIMIT_MAX>)
+    // @killed  an atomic boolean
+    // @limit   the number of elements to enumerate (defaults to <LIMIT_MAX>)
     //
     // This is the main method of the Semigroup class, and is where the
     // Froidure-Pin Algorithm is implemented.  This method is non-const since it
@@ -791,16 +830,20 @@ namespace libsemigroups {
     //
     // If the semigroup is already fully enumerated, or the number of elements
     // previously enumerated exceeds <limit>, then calling this function does
-    // nothing. Otherwise, <enumerate> attempts to find at least the maximum
-    // of <limit> and the batch size elements of the semigroup. If the semigroup
-    // is fully enumerated, then it knows its left and right Cayley graphs, and
-    // a
-    // minimal factorisation of every element (in terms of its generating set).
-    // All of the elements are stored in memory until the object is destroyed.
-
+    // nothing. Otherwise, <enumerate> attempts to find at least the maximum of
+    // <limit>, and the batch size, elements of the semigroup. If <killed> is
+    // set to/ **true** by another thread, then the enumeration is terminated
+    // as soon as possible. It is possible to resume enumeration after it has
+    // been killed by another thread.
+    //
+    // If the semigroup is fully enumerated, then it knows its left and right
+    // Cayley graphs, and a minimal factorisation of every element (in terms of
+    // its generating set).  All of the elements are stored in memory until the
+    // object is destroyed.
     void enumerate(std::atomic<bool>& killed, size_t limit = LIMIT_MAX);
 
     // non-const
+    // @limit a limit to the total number of elements to be enumerated
     //
     // Calls <enumerate>(LIMIT_MAX), and so triggers a full enumeration
     // of the semigroup.
@@ -959,9 +1002,21 @@ namespace libsemigroups {
     static size_t LIMIT_MAX;
 
     void set_report(bool val) {
+    // const
+    // @val a boolean value
+    //
+    // If @val is true, then some methods for a <Semigroup> object will report
+    // information about the progress of the computation.
       glob_reporter.set_report(val);
     }
 
+    // non-const
+    // @nr_threads the maximum number of threads
+    //
+    // This method sets the maximum number of threads to be used by any method
+    // of a <Semigroup>. The number of threads is limited to the minimum of
+    // <nr_threads> and the number of threads supported by the hardware.
+    //
     void set_max_threads(size_t nr_threads) {
       unsigned int n =
           static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
