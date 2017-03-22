@@ -208,8 +208,6 @@ namespace libsemigroups {
       delete _order;
     }
 
-    bool is_confluent(std::atomic<bool>& killed) const;
-
     // const
     //
     // A rewriting system is *confluent* ... TODO
@@ -404,6 +402,8 @@ namespace libsemigroups {
     void compress();
 
    private:
+    bool is_confluent(std::atomic<bool>& killed) const;
+
     void deactivate_rule(size_t i) {
       assert(i < _rules.size());
       _nr_active_rules--;
