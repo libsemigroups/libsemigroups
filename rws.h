@@ -125,6 +125,11 @@ namespace libsemigroups {
   // defining a finitely presented monoid or semigroup.
   class RWS {
    public:
+    // static
+    //
+    // This variable is used to indicate that no rule has been added by a call
+    // to <add_rule>, which returns the rule which was added.
+    static rws_rule_t const NONE;
 
     // 1 param (reduction ordering)
     // @order a pointer to a reduction ordering
@@ -417,8 +422,6 @@ namespace libsemigroups {
     size_t       _report_interval;
     std::vector<std::pair<rws_rule_t, bool>> _rules;
     std::stack<rws_rule_t> _stack;
-
-    static rws_rule_t const NONE;
   };
 
 }  // namespace libsemigroups
