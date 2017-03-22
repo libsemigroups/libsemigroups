@@ -46,6 +46,7 @@ doc:
 	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS) $(DOC_SOURCES)
 	@echo "Fixing some bugs in cldoc . . ."; \
 	python docs/cldoc-fix
+	@echo "See: html/index.html"; \
 
 test: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
 test: $(CLEAN) testbuild testrun
