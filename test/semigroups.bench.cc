@@ -85,7 +85,6 @@ std::vector<size_t> bench(std::vector<Element*>           gens,
 size_t const example1_step = 5000;
 
 void example1_setup(Semigroup* S) {
-
   S->reserve(650000);
   S->set_report(false);
   S->set_batch_size(example1_step);

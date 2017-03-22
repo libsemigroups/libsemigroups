@@ -105,10 +105,8 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
   cong->set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 1})
           == cong->word_to_class_index({0, 0, 0, 0, 1}));
-  ;
   REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
           == cong->word_to_class_index({0, 0, 0, 0, 1}));
-  ;
   REQUIRE(cong->word_to_class_index({1})
           != cong->word_to_class_index({0, 0, 0, 0}));
   REQUIRE(cong->word_to_class_index({0, 0, 0})
