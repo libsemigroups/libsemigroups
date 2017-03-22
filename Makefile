@@ -94,5 +94,8 @@ testrun:
 format: 
 	clang-format -i *.cc *.h test/*.cc util/*.h util/*.cc cong/*.h cong/*.cc
 
+lint: 
+	cpplint *.cc *.h util/*.h util/*.cc cong/*.h cong/*.cc test/*.cc
+
 .PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun testsuperclean
 .NOTPARALLEL: testrun testclean
