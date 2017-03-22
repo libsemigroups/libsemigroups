@@ -1001,12 +1001,12 @@ namespace libsemigroups {
 
     static size_t LIMIT_MAX;
 
-    void set_report(bool val) {
     // const
     // @val a boolean value
     //
     // If @val is true, then some methods for a <Semigroup> object will report
     // information about the progress of the computation.
+    void set_report(bool val) const {
       glob_reporter.set_report(val);
     }
 
