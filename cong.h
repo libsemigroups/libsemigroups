@@ -162,10 +162,6 @@ namespace libsemigroups {
       return get_data()->is_done();
     }
 
-    cong_t get_type() {
-      return _type;
-    }
-
     // non-const
     //
     // This method is non-const since if the congruence is defined over a
@@ -209,20 +205,16 @@ namespace libsemigroups {
       assert(glob_reporter.get_report() == val);
     }
 
-    void run() {
-      get_data();
-    }
-
-    void compress() {
-      DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
+    // non-const
+    // @table a partial coset table for Todd-Coxeter
+    //
+    // This method allows a partial coset table, for the Todd-Coxeter
+    // algorithm, to be specified. This must be done before anything is
+    // computed about the congruence, otherwise it has not effect.
+    void set_prefill(RecVec<class_index_t> const& table) {
+      if (_data == nullptr) {
+        _prefill = table;
       }
-      data->compress();
-    }
-
-    void set_prefill(RecVec<class_index_t>& table) {
-      _prefill = table;
     }
 
     // non-const
