@@ -1,5 +1,5 @@
 //
-// libsemigroups - C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 Michael Torpey
 //
 // This program is free software: you can redistribute it and/or modify
