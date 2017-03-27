@@ -7,10 +7,11 @@
 
 from libc.stdint cimport uint16_t
 from libc.stdint cimport uint32_t
+from libc.stdint cimport uint64_t
 from libcpp.vector cimport vector
 from libcpp.pair cimport pair
 from libcpp cimport bool
-from libcpp cimport string
+from libcpp.string cimport string
 
 cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
     cdef cppclass Element:
@@ -55,6 +56,19 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
                    vector[pair[vector[int], vector[int]]],
                    vector[pair[vector[int], vector[int]]])
         int nr_classes()
+
+cdef extern from "semigroups/cong.h" namespace "libsemigroups":
+    cdef cppclass Congruence:
+        Congruence(string, size_t, vector[pair[vector[uint64_t],vector[uint64_t]]],
+                        vector[pair[vector[uint64_t],vector[uint64_t]]]) except +
+        int nr_classes()
+        bool is_done()
+        void set_report(bool val)
+        void run()
+        void set_max_threads(size_t nr_threads)
+        void set_relations(vector[pair[vector[uint64_t],vector[uint64_t]]])
+        void compress()
+        void set_prefill()
 
 cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):
