@@ -24,6 +24,10 @@ from libc.stdint cimport uint16_t
 from libcpp.vector cimport vector
 cimport semigroups_cpp as cpp
 from libcpp cimport bool
+from libcpp.string cimport string
+from libcpp.pair cimport pair
+from libc.stdint cimport uint32_t
+from libc.stdint cimport uint64_t
 
 #cdef class MyCppElement(cpp.Element):
 #    pass
@@ -459,3 +463,83 @@ def FullTransformationMonoid(n):
                       Transformation([0, 0] + list(range(2, n))), 
                       Transformation([n - 1] + list(range(n - 1)))])
 
+cdef class Congruence:
+    
+    cdef cpp.Congruence* _handle
+
+    def __cinit__(self):
+        self._handle = NULL
+
+    def __init__(self,integer,rels, ext):
+
+        assert isinstance(integer,int)
+        assert integer >= 0
+        assert isinstance(rels,list)
+        assert isinstance(ext,list)
+        for i in rels:
+            assert isinstance(i,list)
+            assert len(i) == 2
+            for j in i:
+                assert isinstance(j,list)
+                for k in j:
+                      assert isinstance(k,int)
+                      assert k < integer
+        for i in ext:
+            assert isinstance(i,list)
+            assert len(i) == 2
+            for j in i:
+                assert isinstance(j,list)
+                for k in j:
+                      assert isinstance(k,int)
+                      assert k < integer
+
+        cdef size_t size = integer
+        cdef string cong = "twosided"
+        cdef vector[pair[vector[uint64_t],vector[uint64_t]]] relations = rels
+        cdef vector[pair[vector[uint64_t],vector[uint64_t]]] extra = ext
+        
+        '''
+        for i in xrange(len(rels)):
+            relations.push_back(pair(vector[0],vector[0]))
+            for k in xrange(len(rels[i][0])):
+                relations[i].first.push_back(rels[i][0][k])
+            for k in xrange(len(rels[i][1])):
+                relations[i].second.push_back(rels[i][1][k])
+        
+        for i in xrange(len(ext)):
+            for k in xrange(len(ext[i][0])):
+                extra[i].first.push_back(ext[i][0][k])
+            for k in xrange(len(ext[i][1])):
+                extra[i].second.push_back(ext[i][1][k])
+        '''
+        self._handle = new cpp.Congruence(cong,size,relations,extra) 
+
+    def nr_classes(self):
+        '''I think I need some assert here as endless loop caused'''
+        return self._handle.nr_classes()
+
+    def run(self):
+        return self._handle.run()
+
+    def is_done(self):
+        return self._handle.is_done()
+
+    def set_report(self, val):
+        if val == True:
+            return self._handle.set_report(1)
+        else:
+            return self._handle.set_report(0)
+
+    def set_max_threads(self, nr_threads):
+        return self._handle.set_max_threads(nr_threads)
+
+    def set_relations(self,rels):
+        cdef vector[pair[vector[uint64_t],vector[uint64_t]]] relations = rels
+        return self._handle.set_relations(relations)
+
+    def compress(self):
+        return self._handle.compress()
+    '''
+    def set_prefill(self):
+        return self._handle.set_prefill()
+    '''
