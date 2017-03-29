@@ -200,24 +200,32 @@ cdef class PartialPerm(Element):
     """
     
     cdef list dom,ran
-    cdef int deg    
+    cdef int deg    #Note that it converts floats to ints
     
     def __init__(self, *args):
         if len(args) == 1 and args[0] == Nothing:
             return
         self.dom, self.ran, self.deg = args[0], args[1], args[2]
-        assert type(self.deg) is int
-        assert len(self.dom) == len(self.ran)
+        
+
+
+        if len(self.dom) != len(self.ran):
+            raise IndexError
         if len(self.dom)!=0:
-            assert max(self.dom) < self.deg and max(self.ran) < self.deg
+            if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
+                raise ValueError
         imglist = [65535] * self.deg
         for i in range(len(self.dom)):
-            assert isinstance(self.dom[i],int) and isinstance(self.ran[i],int)
-            assert self.dom[i]>=0 and self.ran[i]>=0
+            if not (isinstance(self.dom[i],int) and isinstance(self.ran[i],int)):
+                raise TypeError
+            if self.dom[i]<0 or self.ran[i]<0:
+                raise ValueError
             
             #Ensures range and domain have no repeats
-            assert self.ran[i] not in imglist
-            assert self.dom.count(i)<2
+            if self.ran[i] in imglist:
+                raise ValueError
+            if self.dom.count(i)>1:
+                raise ValueError
 
             imglist[self.dom[i]]=self.ran[i]
 
