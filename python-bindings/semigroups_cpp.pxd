@@ -6,8 +6,11 @@
 # to use the same names for the C++ classes and their Cython wrappers
 
 from libc.stdint cimport uint16_t
+from libc.stdint cimport uint32_t
 from libcpp.vector cimport vector
+from libcpp.pair cimport pair
 from libcpp cimport bool
+from libcpp cimport string
 
 cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
     cdef cppclass Element:
@@ -28,6 +31,11 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[T] _vector
         vector[T].iterator begin()
         vector[T].iterator end()
+    cdef cppclass Bipartition(Element):
+        Bipartition(vector[uint32_t]) except +
+        vector[uint32_t] _vector
+        vector[uint32_t].iterator begin()
+        vector[uint32_t].iterator end()
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
@@ -43,6 +51,12 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         bool test_membership(Element* x)
         vector[size_t]* factorisation(size_t pos)
         void enumerate(size_t limit)
+    cdef cppclass Congruence:
+        Congruence(string, 
+                   int, 
+                   vector[pair[vector[int], vector[int]]],
+                   vector[pair[vector[int], vector[int]]])
+        int nr_classes()
 
 cdef extern from "semigroups_cpp.h" namespace "libsemigroups":
     cdef cppclass PythonElement(Element):
