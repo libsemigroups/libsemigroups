@@ -11,8 +11,10 @@ from semigroups import PartialPerm
 
 
 class TestPartialPerm(unittest.TestCase):
-#    def test_init(self):
-#        PartialPerm
+    def test_init(self):
+        PartialPerm([1,0,2],[2,0,1],3)
+        PartialPerm([1,0],[0,1],5)
+        PartialPerm([0,3,4,5,8,20,23373],[1,2,34,23423,233,432,26],26260)
 
 
     def test_init_fail(self):
