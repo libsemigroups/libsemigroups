@@ -294,7 +294,7 @@ cdef class Bipartition(Element):
 
 
         """
-        return "Bipartition(" + str(list(self)).replace('65535','-1') + ")"
+        return "Bipartition(" + str(list(self)) + ")"
 
 
 
