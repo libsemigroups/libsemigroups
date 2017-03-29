@@ -251,17 +251,21 @@ cdef class Bipartition(Element):
             for sublist in List:
                 assert isinstance(sublist,list)
                 n=max(max(sublist),n)
+
+            #Note that this assert ensures all entries are non-zero ints
+            assert set().union(*List)==set(range(n)).union(set(range(-1,-n,-1)))
+
+
             dictOfSublistsWithMins={}
             for sublist in List:
                 for i in range(len(sublist)):
                     entry=sublist[i]
-                    assert isinstance(entry,int)
-                    assert entry!=0
                     if entry<0:
                         sublist[i]=n+abs(entry)
                 dictOfSublistsWithMins[min(sublist)]=sublist
             output=[0]*(n*2)
             i=1
+
             while len(dictOfSublistsWithMins)>0:
                 sublistKey=min(dictOfSublistsWithMins.keys())
                 for item in dictOfSublistsWithMins[sublistKey]:
