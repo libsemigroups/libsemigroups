@@ -240,6 +240,16 @@ cdef class PartialPerm(Element):
 	    PartialPerm([2, 4, -1, 3, -1, -1])
 
         """
+        if self.dom==None or self.ran==None or self.deg==None:
+            L=list(self)
+            self.deg=len(L)
+            self.dom=[]
+            self.ran=[]
+            for i in range(self.deg):
+                if L[i]!=65535 and L[i]!=-1:
+                    self.dom.append(i)
+                    self.ran.append(L[i])
+
 
         return ("PartialPerm(%s, %s, %s)"%(self.dom,self.ran,self.deg)).replace('65535','-1')
 
