@@ -253,7 +253,7 @@ cdef class Bipartition(Element):
                 n=max(max(sublist),n)
 
             #Note that this assert ensures all entries are non-zero ints
-            assert set().union(*List)==set(range(n)).union(set(range(-1,-n,-1)))
+            assert set().union(*List)==set(range(1,n+1)).union(set(range(-1,-n-1,-1)))
 
 
             dictOfSublistsWithMins={}
@@ -282,15 +282,16 @@ cdef class Bipartition(Element):
         for x in e2[0]:
             yield x
 
-    def __repr__(self):
+    def IntRep(self):
         """
         Return a string representation of `self`.
 
         EXAMPLES::
 
             >>> from semigroups import *
-	    >>> PartialPerm([1,4,2],[2,3,4],6)
-	    PartialPerm([2, 4, -1, 3, -1, -1])
+            >>> p.IntRep()
+            'Bipartition([1, 2, 2, 1, 2, 3])'
+
 
         """
         return "Bipartition(" + str(list(self)).replace('65535','-1') + ")"
