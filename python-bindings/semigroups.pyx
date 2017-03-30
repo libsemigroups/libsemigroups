@@ -90,6 +90,7 @@ cdef class Element:
             >>> y * x
             [1, 1, 2]
         """
+        assert isinstance(self,type(other))
         cdef cpp.Element* product = self._handle.identity()
         assert self._handle.degree() == other._handle.degree()
         product.redefine(self._handle, other._handle)
