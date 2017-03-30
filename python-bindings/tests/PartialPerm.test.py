@@ -7,7 +7,7 @@ if not path in sys.path:
     sys.path.insert(1, path)
 del path
 
-from semigroups import PartialPerm
+from semigroups import PartialPerm,Transformation
 
 
 class TestPartialPerm(unittest.TestCase):
