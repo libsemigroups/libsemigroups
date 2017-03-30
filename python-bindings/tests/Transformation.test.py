@@ -17,7 +17,13 @@ class TestTransformation(unittest.TestCase):
         Transformation([1, 1, 3, 2, 4, 3])
         Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5])
 
+    def test_init_fail(self):
+        with self.assertRaises(ValueError):
+            Transformation([1,5,26])
+            Transformation([1])
 
+        with self.assertRaises(TypeError):
+            Transformation(26)
 
 
 
