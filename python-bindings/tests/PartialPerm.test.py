@@ -25,6 +25,7 @@ class TestPartialPerm(unittest.TestCase):
             PartialPerm([1,2],[-1,2],3)
             PartialPerm([1,2],[2,2],3)
             PartialPerm([1,1],[0,2],3)
+            PartialPerm([],[],-1)
 
         with self.assertRaises(TypeError):
             PartialPerm([1,2],[0,'i'],3)
