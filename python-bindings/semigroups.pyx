@@ -160,8 +160,10 @@ cdef class Transformation(Element):
     def __init__(self, List):
         
         if List is not Nothing:
-            assert isinstance(List,list)
-            assert max(List)+1<=len(List)
+            if not isinstance(List,list):
+                raise TypeError
+            if max(List)+1>len(List):
+                raise ValueError
             self._handle = new cpp.Transformation[uint16_t](List)
 
 
