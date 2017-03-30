@@ -208,7 +208,8 @@ cdef class PartialPerm(Element):
         self.dom, self.ran, self.deg = args[0], args[1], args[2]
         
 
-
+        if self.deg<0:
+            raise ValueError
         if len(self.dom) != len(self.ran):
             raise IndexError
         if len(self.dom)!=0:
