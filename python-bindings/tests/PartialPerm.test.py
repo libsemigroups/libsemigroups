@@ -42,7 +42,13 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(AssertionError):
             PartialPerm([1,2],[0,1],3)*PartialPerm([1,2],[0,1],4)
 
-        
+    def test_pow(self):
+        self.assertEqual( PartialPerm([0, 1], [0, 1], 2)**20, PartialPerm([0, 1], [0, 1], 2))
+        self.assertEqual( PartialPerm([1, 2, 4, 6, 7, 23], [0, 5, 2, 4, 6, 7], 26)**5, PartialPerm([4, 6, 7, 23], [5, 2, 4, 6], 26))
+        self.assertEqual( PartialPerm([0, 3, 7, 2], [5, 7, 1, 3], 8)**10, PartialPerm([], [], 8))
+
+        with self.assertRaises(AssertionError):
+            PartialPerm([1,2],[0,1],3)**-1
 
 
 
