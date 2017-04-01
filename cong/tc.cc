@@ -292,25 +292,49 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::TC::word_to_class_index(word_t const& w) {
-    assert(is_done());
     class_index_t c = _id_coset;
     if (_cong._type == LEFT) {
       // Iterate in reverse order
-      for (auto rit = w.crbegin(); rit != w.crend(); ++rit) {
+      for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
+           ++rit) {
         c = _table.get(c, *rit);
-        // assert(c != UNDEFINED);
       }
     } else {
       // Iterate in sequential order
-      for (auto it = w.cbegin(); it != w.cend(); ++it) {
+      for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
         c = _table.get(c, *it);
-        // assert(c != UNDEFINED);
       }
     }
     // c in {1 .. n} (where 0 is the id coset)
-    assert(c < _active);
+    assert(c < _active || c == UNDEFINED);
     // Convert to {0 .. n-1}
-    return c - 1;
+    return (c == UNDEFINED ? c : c - 1);
+  }
+
+  Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
+                                                            word_t const& w2) {
+    init();
+    if (is_killed()) {
+      return result_t::UNKNOWN;
+    }
+
+    class_index_t c1 = word_to_class_index(w1);
+    class_index_t c2 = word_to_class_index(w2);
+
+    if (c1 == UNDEFINED || c2 == UNDEFINED) {
+      return result_t::UNKNOWN;
+    }
+
+    // c in {1 .. n} (where 0 is the id coset)
+    assert(c1 < _active);
+    assert(c2 < _active);
+    if (c1 == c2) {
+      return result_t::TRUE;
+    } else if (is_done()) {
+      return result_t::FALSE;
+    } else {
+      return result_t::UNKNOWN;
+    }
   }
 
   // Create a new active coset for coset c to map to under generator a

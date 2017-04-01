@@ -368,6 +368,19 @@ namespace libsemigroups {
       // @return keeping cldoc happy
       virtual class_index_t word_to_class_index(word_t const& word) = 0;
 
+      // Possible result of questions that might not yet be answerable
+      enum result_t { TRUE = 0, FALSE = 1, UNKNOWN = 2 };
+
+      // This method returns **TRUE** if the two words are known to describe
+      // elements in the same congruence class, **FALSE** if they are known to
+      // lie in different classes, and **UNKNOWN** if the information has not
+      // yet been discovered.
+      // @w1 const reference to the first word
+      // @w2 const reference to the second word
+      //
+      // @return keeping cldoc happy
+      virtual result_t current_equals(word_t const& w1, word_t const& w2) = 0;
+
       // This method returns the non-trivial classes of the congruence.
       //
       // @return keeping cldoc happy

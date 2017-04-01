@@ -269,6 +269,25 @@ namespace libsemigroups {
     return _class_lookup[ind_x];
   }
 
+  Congruence::DATA::result_t Congruence::P::current_equals(word_t const& w1,
+                                                           word_t const& w2) {
+    if (is_done()) {
+      return word_to_class_index(w1) == word_to_class_index(w2)
+                 ? result_t::TRUE
+                 : result_t::FALSE;
+    }
+    Element*  x     = _cong._semigroup->word_to_element(w1);
+    Element*  y     = _cong._semigroup->word_to_element(w2);
+    p_index_t ind_x = get_index(x);
+    p_index_t ind_y = get_index(y);
+    x->really_delete();
+    y->really_delete();
+    delete x;
+    delete y;
+    return _lookup.find(ind_x) == _lookup.find(ind_y) ? result_t::TRUE
+                                                      : result_t::UNKNOWN;
+  }
+
   Partition<word_t> Congruence::P::nontrivial_classes() {
     assert(is_done());
     assert(_reverse_map.size() >= _nr_nontrivial_elms);

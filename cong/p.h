@@ -52,6 +52,7 @@ namespace libsemigroups {
     size_t nr_classes() final;
 
     class_index_t word_to_class_index(word_t const& word) final;
+    result_t current_equals(word_t const& w1, word_t const& w2) final;
 
     Partition<word_t> nontrivial_classes() final;
 

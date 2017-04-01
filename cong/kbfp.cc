@@ -94,4 +94,17 @@ namespace libsemigroups {
     assert(pos != Semigroup::UNDEFINED);
     return pos;
   }
+
+  Congruence::DATA::result_t
+  Congruence::KBFP::current_equals(word_t const& w1, word_t const& w2) {
+    init();
+    if (is_killed()) {
+      return result_t::UNKNOWN;
+    }
+    assert(_rws->is_confluent());
+    return _rws->rewrite(RWS::word_to_rws_word(w1))
+                   == _rws->rewrite(RWS::word_to_rws_word(w2))
+               ? result_t::TRUE
+               : result_t::FALSE;
+  }
 }  // namespace libsemigroups

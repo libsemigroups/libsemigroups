@@ -81,6 +81,16 @@ namespace libsemigroups {
     return _P_cong->word_to_class_index(word);
   }
 
+  Congruence::DATA::result_t Congruence::KBP::current_equals(word_t const& w1,
+                                                             word_t const& w2) {
+    init();
+    if (is_killed()) {
+      return result_t::UNKNOWN;
+    }
+    assert(_P_cong != nullptr);
+    return _P_cong->cget_data()->current_equals(w1, w2);
+  }
+
   Partition<word_t> Congruence::KBP::nontrivial_classes() {
     assert(is_done());
     return _P_cong->nontrivial_classes();
