@@ -208,6 +208,10 @@ cdef class PartialPerm(Element):
     def __init__(self, *args):
         if len(args) == 1 and args[0] == Nothing:
             return
+
+        if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
+            raise TypeError
+
         self.dom, self.ran, self.deg = args[0], args[1], args[2]
         
 
