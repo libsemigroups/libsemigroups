@@ -42,7 +42,7 @@ namespace libsemigroups {
         _map(),
         _map_next(0),
         _next_class(0),
-        _pairs_to_mult(new std::stack<p_pair_const_t>()),
+        _pairs_to_mult(new std::queue<p_pair_const_t>()),
         _reverse_map(),
         _tmp1(nullptr),
         _tmp2(nullptr) {
@@ -91,7 +91,7 @@ namespace libsemigroups {
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
     while (!_pairs_to_mult->empty()) {
       // Get the next pair
-      p_pair_const_t current_pair = _pairs_to_mult->top();
+      p_pair_const_t current_pair = _pairs_to_mult->front();
 
       _pairs_to_mult->pop();
 
