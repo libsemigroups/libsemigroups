@@ -118,9 +118,7 @@ namespace libsemigroups {
     // @return the index of the coset corresponding to <word>.
     class_index_t word_to_class_index(word_t const& word) {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->word_to_class_index(word);
     }
 
@@ -132,9 +130,7 @@ namespace libsemigroups {
     // @return the number of congruences classes (or cosets) of the congruence.
     size_t nr_classes() {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->nr_classes();
     }
 
@@ -148,9 +144,7 @@ namespace libsemigroups {
     // generators of the semigroup over which the congruence is defined.
     Partition<word_t> nontrivial_classes() {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->nontrivial_classes();
     }
 
