@@ -101,7 +101,7 @@ namespace libsemigroups {
         REPORT("allocation failed: " << e.what())
         return;
       }
-      if (data.at(pos)->is_done()) {
+      if (!data.at(pos)->is_killed()) {
         for (auto it = data.begin(); it < data.begin() + pos; it++) {
           (*it)->kill();
         }
@@ -131,7 +131,7 @@ namespace libsemigroups {
       t.at(i).join();
     }
     for (auto winner = data.begin(); winner < data.end(); winner++) {
-      if ((*winner)->is_done()) {
+      if (!(*winner)->is_killed()) {
         size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
         REPORT("Thread #" << tid << " is the winner!");
         for (auto loser = data.begin(); loser < winner; loser++) {
