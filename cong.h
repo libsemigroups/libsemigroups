@@ -283,6 +283,11 @@ namespace libsemigroups {
     }
 
     // non-const
+    // This deletes all DATA objects stored in this congruence, including
+    // finished objects and partially-enumerated objects.
+    void clear_data();
+
+    // non-const
     // This forces the congruence to use the [Todd-Coxeter
     // algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm)
     // to compute the congruence. This is non-const because any existing data

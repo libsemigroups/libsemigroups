@@ -225,42 +225,44 @@ namespace libsemigroups {
     return winner;
   }
 
-  void Congruence::force_tc() {
+  void Congruence::clear_data() {
     if (_data != nullptr) {
       delete _data;
     }
+    if (!_partial_data.empty()) {
+      for (size_t i = 0; i < _partial_data.size(); i++) {
+        delete _partial_data.at(i);
+      }
+      _partial_data.clear();
+    }
+  }
+
+  void Congruence::force_tc() {
+    clear_data();
     _data = new TC(*this);
   }
 
   void Congruence::force_tc_prefill() {
-    if (_data != nullptr) {
-      delete _data;
-    }
+    clear_data();
     _data = new TC(*this);
     static_cast<TC*>(_data)->prefill();
   }
 
   void Congruence::force_p() {
-    if (_data != nullptr) {
-      delete _data;
-    }
     assert(_semigroup != nullptr);
+    clear_data();
     _data = new P(*this);
   }
 
   void Congruence::force_kbp() {
-    if (_data != nullptr) {
-      delete _data;
-    }
     assert(_semigroup == nullptr);
+    clear_data();
     _data = new KBP(*this);
   }
 
   void Congruence::force_kbfp() {
-    if (_data != nullptr) {
-      delete _data;
-    }
     assert(_type == TWOSIDED);
+    clear_data();
     _data = new KBFP(*this);
   }
 

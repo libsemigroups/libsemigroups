@@ -116,6 +116,9 @@ TEST_CASE("KBP 03: for an infinite fp semigroup",
   Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
   REQUIRE(nontrivial_classes.size() == 1);
   REQUIRE(nontrivial_classes[0]->size() == 2);
+
+  cong.force_kbp();  // clear data
+  REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
 }
 
 TEST_CASE("KBP 04: for an infinite fp semigroup",

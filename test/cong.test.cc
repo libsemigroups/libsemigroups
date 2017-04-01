@@ -723,4 +723,7 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
   REQUIRE(!cong.test_less_than(y, x));
 
   REQUIRE(!cong.is_done());
+
+  cong.force_kbfp();  // clear data
+  REQUIRE(cong.test_equals(x, y));
 }
