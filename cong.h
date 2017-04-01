@@ -404,6 +404,11 @@ namespace libsemigroups {
     }
 
     DATA* get_data();
+
+    DATA* cget_data() const {
+      return _data;
+    }
+
     DATA* winning_data(std::vector<DATA*>&                      data,
                        std::vector<std::function<void(DATA*)>>& funcs,
                        bool ignore_max_threads = false);
