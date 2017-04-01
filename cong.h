@@ -123,6 +123,32 @@ namespace libsemigroups {
     }
 
     // non-const
+    // @w1     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    // @w2     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    //
+    // This method is non-const because it may fully compute a data structure
+    // for the congruence.
+    //
+    // @return a bool describing whether the two words are in the same
+    //         equivalence class of this congruence
+    bool test_equals(word_t const& w1, word_t const& w2) {
+      DATA* data;
+      if (is_done()) {
+        data = cget_data();
+      } else {
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
+          return data->current_equals(w1, w2) != DATA::result_t::UNKNOWN;
+        };
+        data = get_data(words_func);
+      }
+      DATA::result_t result = data->current_equals(w1, w2);
+      assert(result != DATA::result_t::UNKNOWN);
+      return result == DATA::result_t::TRUE;
+    }
+
+    // non-const
     //
     // This method is non-const because it may fully compute a data structure
     // for the congruence.

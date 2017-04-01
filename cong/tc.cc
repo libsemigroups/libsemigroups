@@ -295,8 +295,7 @@ namespace libsemigroups {
     class_index_t c = _id_coset;
     if (_cong._type == LEFT) {
       // Iterate in reverse order
-      for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
-           ++rit) {
+      for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED; ++rit) {
         c = _table.get(c, *rit);
       }
     } else {
