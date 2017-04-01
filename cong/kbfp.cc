@@ -107,4 +107,14 @@ namespace libsemigroups {
                ? result_t::TRUE
                : result_t::FALSE;
   }
+
+  Congruence::DATA::result_t
+  Congruence::KBFP::current_less_than(word_t const& w1, word_t const& w2) {
+    init();
+    assert(_rws->is_confluent());
+    return _rws->test_less_than(RWS::word_to_rws_word(w1),
+                                RWS::word_to_rws_word(w2))
+               ? result_t::TRUE
+               : result_t::FALSE;
+  }
 }  // namespace libsemigroups
