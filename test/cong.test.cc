@@ -703,3 +703,24 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
 
   REQUIRE(cong.is_done());
 }
+
+TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 0, 0}, {0}),
+                                  relation_t({0, 1}, {1, 0})};
+  std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
+  Congruence              cong("twosided", 2, rels, extra);
+  cong.set_report(CONG_REPORT);
+
+  word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+  REQUIRE(cong.test_equals(x, y));
+
+  REQUIRE(cong.test_less_than({0, 0, 0}, {1}));
+  REQUIRE(!cong.test_less_than({1}, {0, 0, 0}));
+  REQUIRE(!cong.test_less_than(x, y));
+  REQUIRE(!cong.test_less_than(y, x));
+
+  REQUIRE(!cong.is_done());
+}

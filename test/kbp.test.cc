@@ -429,3 +429,20 @@ TEST_CASE("KBP 11: finite fp-semigroup, size 16",
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
 }
+
+TEST_CASE("KBP 12: Infinite fp semigroup with infinite classes",
+          "[quick][congruence][fpsemigroup][kbp]") {
+  std::vector<relation_t> rels = {relation_t({0, 0, 0}, {0}),
+                                  relation_t({0, 1}, {1, 0})};
+  std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
+  Congruence              cong("twosided", 2, rels, extra);
+  cong.force_kbp();
+  cong.set_report(KBP_REPORT);
+
+  word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+  REQUIRE(cong.test_equals(x, y));
+
+  REQUIRE(!cong.is_done());
+}
