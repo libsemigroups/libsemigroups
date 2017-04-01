@@ -44,6 +44,7 @@ namespace libsemigroups {
     }
 
     void run() final;
+    void run(size_t steps) final;
 
     bool is_done() const final {
       return (_semigroup != nullptr) && (_P_cong != nullptr)

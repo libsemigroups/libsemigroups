@@ -165,9 +165,9 @@ namespace libsemigroups {
   }
 
   void Congruence::TC::init_tc_relations() {
-    if (!_relations.empty() || !_extra.empty()) {
-      return;  // This method was called already
-    }
+    // This should not have been run before
+    assert(_relations.empty() && _extra.empty());
+
     // Handle _extra first!
     switch (_cong._type) {
       case LEFT:
@@ -290,7 +290,7 @@ namespace libsemigroups {
       }
     }
     // c in {1 .. n} (where 0 is the id coset)
-    assert(c <= nr_classes());
+    assert(c < _active);
     // Convert to {0 .. n-1}
     return c - 1;
   }
@@ -537,23 +537,38 @@ namespace libsemigroups {
 
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
+    while (!is_done()) {
+      run(UINT_MAX);
+      TC_KILLED
+    }
+  }
+
+  // Apply the Todd-Coxeter algorithm for the specified number of iterations
+  void Congruence::TC::run(size_t steps) {
     // If we have already run this before, then we are done
+    _steps = steps;
     if (_tc_done || _is_compressed) {
       return;
     }
-    init_tc_relations();
-    TC_KILLED
 
-    // Apply each "extra" relation to the first coset only
-    for (relation_t const& rel : _extra) {
-      trace(_id_coset, rel);  // Allow new cosets
+    if (_relations.empty() && _extra.empty()) {
+      // This is the first run
+      init_tc_relations();
       TC_KILLED
+      // Apply each "extra" relation to the first coset only
+      for (relation_t const& rel : _extra) {
+        trace(_id_coset, rel);  // Allow new cosets
+        TC_KILLED
+      }
+      if (_relations.empty()) {
+        _tc_done = true;
+        compress();
+        return;
+      }
     }
-    if (_relations.empty()) {
-      _tc_done = true;
-      compress();
-      return;
-    }
+
+    // Run a batch
+    REPORT("number of steps: " << _steps);
     do {
       // Apply each relation to the "_current" coset
       for (relation_t const& rel : _relations) {
@@ -598,17 +613,20 @@ namespace libsemigroups {
 
       // Quit loop when we reach an inactive coset
       TC_KILLED
-    } while (_current != _next);
+    } while (_current != _next && --_steps > 0);
 
     // Final report
-    REPORT("finished with " << _defined << " cosets defined,"
+    REPORT("stopping with " << _defined << " cosets defined,"
                             << " maximum "
                             << _forwd.size()
                             << ", "
                             << _active
                             << " survived");
-    _tc_done = true;
-    compress();
+    if (_current == _next) {
+      _tc_done = true;
+      compress();
+      REPORT("finished!");
+    }
 
     // No return value: all info is now stored in the class
   }

@@ -30,6 +30,12 @@
 namespace libsemigroups {
 
   void Congruence::KBP::run() {
+    while (!_killed && !is_done()) {
+      run(UINT_MAX);
+    }
+  }
+  
+  void Congruence::KBP::run(size_t steps) {
     // Initialise the rewriting system
     _rws->add_rules(_cong.relations());
     REPORT("running Knuth-Bendix . . .");
@@ -48,11 +54,19 @@ namespace libsemigroups {
       _P_cong->set_relations(_cong.relations());
       _P_cong->force_p();
 
-      // only need _semigroup here to know the generators, and how to hash
-      // things etc
+  void Congruence::KBP::run() {
+    while (!_killed && !is_done()) {
+      run(UINT_MAX);
+    }
+  }
+
+  void Congruence::KBP::run(size_t steps) {
+    init();
+    if (!_killed) {
       REPORT("running P . . .")
-      P* p = static_cast<P*>(_P_cong->get_data());
-      p->run(_killed);
+      P* p = static_cast<P*>(_P_cong->cget_data());
+      assert(p != nullptr);
+      p->run(steps, _killed);
     }
     if (_killed) {
       REPORT("killed")

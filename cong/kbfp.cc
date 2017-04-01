@@ -36,6 +36,12 @@ namespace libsemigroups {
   }
 
   void Congruence::KBFP::run() {
+    while (!_killed && !is_done()) {
+      run(UINT_MAX);
+    }
+  }
+  
+  void Congruence::KBFP::run(size_t steps) {
     // Initialise the rewriting system
     _cong.init_relations(_cong._semigroup, _killed);
     _rws->add_rules(_cong.relations());
@@ -57,7 +63,7 @@ namespace libsemigroups {
 
       REPORT("running Froidure-Pin . . .")
 
-      _semigroup->enumerate(_killed, Semigroup::LIMIT_MAX);
+      _semigroup->enumerate(_killed, _semigroup->current_size() + steps);
     }
     if (_killed) {
       REPORT("killed")
@@ -66,9 +72,6 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::KBFP::word_to_class_index(word_t const& word) {
-    if (!is_done()) {
-      run();
-    }
     assert(is_done());  // so that _semigroup != nullptr
 
     Element* x   = new RWSE(*_rws, word);

@@ -71,7 +71,23 @@ namespace libsemigroups {
     }
   }
 
+  void Congruence::P::run() {
+    run(_killed);
+  }
+
   void Congruence::P::run(std::atomic<bool>& killed) {
+    while (!killed && !is_done()) {
+      run(UINT_MAX, killed);
+    }
+  }
+
+  // This cannot currently be tested
+  void Congruence::P::run(size_t steps) {
+    run(steps, _killed);
+  }
+
+  void Congruence::P::run(size_t steps, std::atomic<bool>& killed) {
+    REPORT("number of steps = " << steps);
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
     while (!_pairs_to_mult->empty()) {
       // Get the next pair
@@ -111,8 +127,12 @@ namespace libsemigroups {
           killed = true;
           return;
         }
-      } else if (killed) {
+      }
+      if (killed) {
         REPORT("killed");
+        return;
+      }
+      if (--steps == 0) {
         return;
       }
     }

@@ -340,8 +340,13 @@ namespace libsemigroups {
       virtual ~DATA() {}
 
       // This method runs the algorithm used to determine the congruence, i.e.
-      // Todd-Coxeter, Knuth-Bendix, etc
+      // Todd-Coxeter, Knuth-Bendix, etc., until completion
       virtual void run() = 0;
+
+      // This method runs the algorithm for a while, then stops after a certain
+      // amount of work or when done
+      // @steps the amount of work to do before returning
+      virtual void run(size_t steps) = 0;
 
       // This method returns true if a DATA object's run method has been run to
       // conclusion, i.e. that it has not been killed by another instance.

@@ -55,10 +55,10 @@ namespace libsemigroups {
 
     Partition<word_t> nontrivial_classes() final;
 
-    void run() {
-      run(_killed);
-    }
+    void run() final;
+    void run(size_t steps) final;
     void run(std::atomic<bool>& killed);
+    void run(size_t steps, std::atomic<bool>& killed);
 
    private:
     struct PHash {
