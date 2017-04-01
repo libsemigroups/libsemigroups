@@ -29,18 +29,18 @@
 
 namespace libsemigroups {
 
-  void Congruence::KBP::run() {
-    while (!_killed && !is_done()) {
-      run(UINT_MAX);
+  void Congruence::KBP::init() {
+    if (_semigroup != nullptr) {
+      return;
     }
-  }
-  
-  void Congruence::KBP::run(size_t steps) {
+    assert(_P_cong == nullptr);
+
     // Initialise the rewriting system
     _rws->add_rules(_cong.relations());
     REPORT("running Knuth-Bendix . . .");
     _rws->knuth_bendix(_killed);
 
+    // Setup the P cong
     if (!_killed) {
       assert(_rws->is_confluent());
       std::vector<Element*> gens;
@@ -53,6 +53,8 @@ namespace libsemigroups {
       _P_cong = new Congruence(_cong._type, _semigroup, _cong._extra);
       _P_cong->set_relations(_cong.relations());
       _P_cong->force_p();
+    }
+  }
 
   void Congruence::KBP::run() {
     while (!_killed && !is_done()) {

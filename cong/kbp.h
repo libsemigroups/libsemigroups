@@ -60,6 +60,8 @@ namespace libsemigroups {
 
     Partition<word_t> nontrivial_classes() final;
 
+    void init() final;
+
     void compress() override {
       _rws->compress();
     }

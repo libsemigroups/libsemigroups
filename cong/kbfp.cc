@@ -40,9 +40,11 @@ namespace libsemigroups {
       run(UINT_MAX);
     }
   }
-  
-  void Congruence::KBFP::run(size_t steps) {
-    // Initialise the rewriting system
+
+  void Congruence::KBFP::init() {
+    if (_semigroup != nullptr) {
+      return;
+    }
     _cong.init_relations(_cong._semigroup, _killed);
     _rws->add_rules(_cong.relations());
     _rws->add_rules(_cong.extra());
@@ -50,20 +52,31 @@ namespace libsemigroups {
     assert(_cong._semigroup == nullptr || !_cong.extra().empty());
 
     REPORT("running Knuth-Bendix . . .")
-
     _rws->knuth_bendix(_killed);
+    if (_killed) {
+      REPORT("killed");
+      return;
+    }
+
+    assert(_rws->is_confluent());
+    std::vector<Element*> gens;
+    for (size_t i = 0; i < _cong._nrgens; i++) {
+      gens.push_back(new RWSE(*_rws, i));
+    }
+    _semigroup = new Semigroup(gens);
+    really_delete_cont(gens);
+  }
+
+  void Congruence::KBFP::run(size_t steps) {
+    assert(!is_done());
+
+    init();
+
     if (!_killed) {
-      assert(_rws->is_confluent());
-      std::vector<Element*> gens;
-      for (size_t i = 0; i < _cong._nrgens; i++) {
-        gens.push_back(new RWSE(*_rws, i));
-      }
-      _semigroup = new Semigroup(gens);
-      really_delete_cont(gens);
-
       REPORT("running Froidure-Pin . . .")
-
-      _semigroup->enumerate(_killed, _semigroup->current_size() + steps);
+      // The default batch_size is too large and can take a long time
+      _semigroup->set_batch_size(steps);
+      _semigroup->enumerate(_killed, _semigroup->current_size() + 1);
     }
     if (_killed) {
       REPORT("killed")
@@ -81,5 +94,4 @@ namespace libsemigroups {
     assert(pos != Semigroup::UNDEFINED);
     return pos;
   }
-
 }  // namespace libsemigroups

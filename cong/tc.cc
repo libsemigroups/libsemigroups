@@ -99,6 +99,24 @@ namespace libsemigroups {
         _table(cong._nrgens, 1, UNDEFINED),
         _tc_done(false) {}
 
+  void Congruence::TC::init() {
+    if (_relations.empty() && _extra.empty()) {
+      // This is the first run
+      init_tc_relations();
+      TC_KILLED
+      // Apply each "extra" relation to the first coset only
+      for (relation_t const& rel : _extra) {
+        trace(_id_coset, rel);  // Allow new cosets
+        TC_KILLED
+      }
+      if (_relations.empty()) {
+        _tc_done = true;
+        compress();
+        return;
+      }
+    }
+  }
+
   void Congruence::TC::prefill() {
     Semigroup* semigroup = _cong._semigroup;
     if (semigroup == nullptr) {
@@ -545,26 +563,12 @@ namespace libsemigroups {
 
   // Apply the Todd-Coxeter algorithm for the specified number of iterations
   void Congruence::TC::run(size_t steps) {
-    // If we have already run this before, then we are done
     _steps = steps;
+
+    init();
+
     if (_tc_done || _is_compressed) {
       return;
-    }
-
-    if (_relations.empty() && _extra.empty()) {
-      // This is the first run
-      init_tc_relations();
-      TC_KILLED
-      // Apply each "extra" relation to the first coset only
-      for (relation_t const& rel : _extra) {
-        trace(_id_coset, rel);  // Allow new cosets
-        TC_KILLED
-      }
-      if (_relations.empty()) {
-        _tc_done = true;
-        compress();
-        return;
-      }
     }
 
     // Run a batch

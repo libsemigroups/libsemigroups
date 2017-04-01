@@ -390,6 +390,10 @@ namespace libsemigroups {
       virtual void compress() {}
 
      private:
+      // This initialises the data structure, and can be run from inside a
+      // thread after construction.  If already initialised, this does nothing.
+      virtual void init() = 0;
+
       Congruence&                   _cong;
       std::atomic<bool>             _killed;
       size_t                        _report_interval;

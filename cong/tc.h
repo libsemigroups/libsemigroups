@@ -58,6 +58,8 @@ namespace libsemigroups {
     void prefill(RecVec<class_index_t>& table);
 
    private:
+    void init() final;
+
     void init_after_prefill();
     void init_tc_relations();
 

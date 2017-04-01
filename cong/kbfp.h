@@ -60,6 +60,8 @@ namespace libsemigroups {
     }
 
    private:
+    void init() final;
+
     RWS*       _rws;
     Semigroup* _semigroup;
   };

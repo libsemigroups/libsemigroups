@@ -61,6 +61,8 @@ namespace libsemigroups {
     void run(size_t steps, std::atomic<bool>& killed);
 
    private:
+    void init() final {}  // The constructor sets up everything
+
     struct PHash {
      public:
       size_t operator()(p_pair_const_t const& pair) const {
