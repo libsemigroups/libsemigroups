@@ -407,6 +407,25 @@ namespace libsemigroups {
       // @return keeping cldoc happy
       virtual result_t current_equals(word_t const& w1, word_t const& w2) = 0;
 
+      // This method returns **TRUE** if the two words are known to be in
+      // distinct classes, where w1's class is less than w2's class by some
+      // total ordering; **FALSE** if this is known to be untrue; and
+      // **UNKNOWN** if the information has not yet been discovered.
+      // @w1 const reference to the first word
+      // @w2 const reference to the second word
+      //
+      // @return keeping cldoc happy
+      virtual result_t current_less_than(word_t const& w1, word_t const& w2) {
+        if (is_done()) {
+          return word_to_class_index(w1) < word_to_class_index(w2)
+                     ? result_t::TRUE
+                     : result_t::FALSE;
+        } else if (current_equals(w1, w2) == result_t::TRUE) {
+          return result_t::FALSE;  // elements are equal
+        }
+        return result_t::UNKNOWN;
+      }
+
       // This method returns the non-trivial classes of the congruence.
       //
       // @return keeping cldoc happy
