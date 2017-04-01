@@ -35,7 +35,10 @@ namespace libsemigroups {
   class Congruence::KBP : public Congruence::DATA {
    public:
     explicit KBP(Congruence& cong)
-        : DATA(cong), _rws(new RWS()), _semigroup(nullptr), _P_cong(nullptr) {}
+        : DATA(cong, 200),
+          _rws(new RWS()),
+          _semigroup(nullptr),
+          _P_cong(nullptr) {}
 
     ~KBP() {
       delete _rws;

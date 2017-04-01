@@ -31,6 +31,8 @@
 #include "semigroups.h"
 #include "util/report.h"
 
+#define RETURN_FALSE nullptr
+
 namespace libsemigroups {
 
   // Non-abstract
@@ -59,6 +61,9 @@ namespace libsemigroups {
     //
     // Type for indices of congruence classes in a Congruence object.
     typedef size_t class_index_t;
+
+    // The maximum number of steps that can be done in one batch when processing
+    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
 
     // 5 parameters (for finitely presented semigroup)
     // @type string describing the type of congruence (left/right/twosided)
@@ -330,8 +335,11 @@ namespace libsemigroups {
       // Default constructor
       // @cong keeping cldoc happy
       // @report_interval keeping cldoc happy
-      explicit DATA(Congruence& cong, size_t report_interval = 1000)
+      explicit DATA(Congruence& cong,
+                    size_t      default_nr_steps,
+                    size_t      report_interval = 1000)
           : _cong(cong),
+            _default_nr_steps(default_nr_steps),
             _killed(false),
             _report_interval(report_interval),
             _report_next(0) {}
@@ -384,6 +392,25 @@ namespace libsemigroups {
         return _killed;
       }
 
+      // Non-const
+      // @goal_func a function to test whether we can stop running
+      //
+      // This function calls **run** on the DATA object in batches until
+      // goal_func returns true.  If goal_func is RETURN_FALSE, then the object
+      // is instead run to completion.
+      void run_until(std::function<bool(DATA*)> goal_func) {
+        if (is_done()) {
+          return;
+        }
+        if (goal_func != RETURN_FALSE) {
+          while (!_killed && !is_done() && !goal_func(this)) {
+            run(_default_nr_steps);
+          }
+        } else {
+          run();
+        }
+      }
+
       // Compress the data structure, this does nothing by default, but
       // rewriting systems and the Todd-Coxeter data structures can be
       // compressed, to use less memory.
@@ -395,6 +422,7 @@ namespace libsemigroups {
       virtual void init() = 0;
 
       Congruence&                   _cong;
+      size_t                        _default_nr_steps;
       std::atomic<bool>             _killed;
       size_t                        _report_interval;
       size_t                        _report_next;
@@ -412,15 +440,16 @@ namespace libsemigroups {
       init_relations(semigroup, killed);
     }
 
-    DATA* get_data();
-
     DATA* cget_data() const {
       return _data;
     }
 
+    DATA* get_data(std::function<bool(DATA*)> goal_func = RETURN_FALSE);
+
     DATA* winning_data(std::vector<DATA*>&                      data,
                        std::vector<std::function<void(DATA*)>>& funcs,
-                       bool ignore_max_threads = false);
+                       bool                       ignore_max_threads = false,
+                       std::function<bool(DATA*)> goal_func = RETURN_FALSE);
 
     Congruence(cong_t                         type,
                size_t                         nrgens,

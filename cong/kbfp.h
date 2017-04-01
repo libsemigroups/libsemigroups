@@ -34,7 +34,7 @@ namespace libsemigroups {
   class Congruence::KBFP : public Congruence::DATA {
    public:
     explicit KBFP(Congruence& cong)
-        : DATA(cong), _rws(new RWS()), _semigroup(nullptr) {}
+        : DATA(cong, 200), _rws(new RWS()), _semigroup(nullptr) {}
 
     ~KBFP() {
       delete _rws;

@@ -37,7 +37,7 @@ namespace libsemigroups {
 
   void Congruence::KBFP::run() {
     while (!_killed && !is_done()) {
-      run(UINT_MAX);
+      run(Congruence::LIMIT_MAX);
     }
   }
 

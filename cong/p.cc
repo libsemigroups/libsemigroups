@@ -34,7 +34,7 @@
 namespace libsemigroups {
 
   Congruence::P::P(Congruence& cong)
-      : DATA(cong, 40000),
+      : DATA(cong, 2000, 40000),
         _class_lookup(),
         _done(false),
         _found_pairs(new std::unordered_set<p_pair_const_t, PHash, PEqual>()),
@@ -77,7 +77,7 @@ namespace libsemigroups {
 
   void Congruence::P::run(std::atomic<bool>& killed) {
     while (!killed && !is_done()) {
-      run(UINT_MAX, killed);
+      run(Congruence::LIMIT_MAX, killed);
     }
   }
 

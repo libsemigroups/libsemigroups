@@ -58,7 +58,7 @@ namespace libsemigroups {
 
   void Congruence::KBP::run() {
     while (!_killed && !is_done()) {
-      run(UINT_MAX);
+      run(Congruence::LIMIT_MAX);
     }
   }
 

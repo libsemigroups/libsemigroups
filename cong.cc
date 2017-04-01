@@ -86,16 +86,17 @@ namespace libsemigroups {
   Congruence::DATA* Congruence::winning_data(
       std::vector<Congruence::DATA*>&                      data,
       std::vector<std::function<void(Congruence::DATA*)>>& funcs,
-      bool                                                 ignore_max_threads) {
+      bool                                                 ignore_max_threads,
+      std::function<bool(Congruence::DATA*)>               goal_func) {
     std::vector<std::thread::id> tids(data.size(), std::this_thread::get_id());
 
-    auto go = [this, &data, &funcs, &tids](size_t pos) {
+    auto go = [this, &data, &funcs, &tids, &goal_func](size_t pos) {
       tids[pos] = std::this_thread::get_id();
       if (pos < funcs.size()) {
         funcs.at(pos)(data.at(pos));
       }
       try {
-        data.at(pos)->run();
+        data.at(pos)->run_until(goal_func);
       } catch (std::bad_alloc const& e) {
         REPORT("allocation failed: " << e.what())
         return;
@@ -146,7 +147,14 @@ namespace libsemigroups {
     std::abort();
   }
 
-  Congruence::DATA* Congruence::get_data() {
+  // Non-const
+  // @goal_func a function which returns true when it is time to stop running
+  //            (or nullptr to run to completion)
+  //
+  // This function returns a pointer to a DATA object, which will be run either
+  // to completion, or until **goal_func** is satisfied.  It will be created if
+  // it does not already exist.
+  Congruence::DATA* Congruence::get_data(std::function<bool(DATA*)> goal_func) {
     Timer timer;
     timer.start();
     if (_data == nullptr) {
@@ -179,14 +187,16 @@ namespace libsemigroups {
             std::vector<DATA*> data = {
                 new TC(*this), new KBFP(*this), new KBP(*this)};
             std::vector<std::function<void(DATA*)>> funcs = {};
-            _data = winning_data(data, funcs, true);
+            _data = winning_data(data, funcs, true, goal_func);
           } else {
             _data = new TC(*this);
-            _data->run();
+            _data->run_until(goal_func);
           }
         }
       }
       REPORT(timer.string("elapsed time = "));
+    } else {
+      _data->run_until(goal_func);
     }
     return _data;
   }

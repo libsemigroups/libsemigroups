@@ -77,7 +77,7 @@ namespace libsemigroups {
   // Now the new preimage and all the old preimages are stored.
 
   Congruence::TC::TC(Congruence& cong)
-      : DATA(cong, 2000000),
+      : DATA(cong, 1000, 2000000),
         _active(1),
         _already_reported_killed(false),
         _bckwd(1, 0),
@@ -556,7 +556,7 @@ namespace libsemigroups {
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
     while (!is_done()) {
-      run(UINT_MAX);
+      run(Congruence::LIMIT_MAX);
       TC_KILLED
     }
   }
