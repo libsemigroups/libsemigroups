@@ -258,6 +258,9 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   REQUIRE(cong.test_equals({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
   REQUIRE(!cong.test_equals({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
 
+  REQUIRE(!cong.test_less_than({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+  REQUIRE(cong.test_less_than({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+
   t3->really_delete();
   t4->really_delete();
   delete t3;
@@ -367,6 +370,8 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
 
   REQUIRE(cong.test_equals({1}, {1, 1}));
   REQUIRE(cong.test_equals({1, 0, 1}, {1, 0}));
+
+  REQUIRE(!cong.test_less_than({1, 0, 1}, {1, 0}));
 }
 
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
@@ -412,6 +417,9 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 
   REQUIRE(cong.test_equals({1, 2, 1, 3, 3, 2, 1, 2}, {2, 1, 3, 3, 2, 1, 0}));
   REQUIRE(!cong.test_equals({1, 1, 0}, {1, 3, 3, 2, 2, 1, 0}));
+
+  REQUIRE(cong.test_less_than({1, 3, 3, 2, 2, 1, 0}, {1, 1, 0}));
+  REQUIRE(!cong.test_less_than({1, 1, 0, 0}, {0, 0, 3}));
 
   REQUIRE(cong.nr_classes() == 525);
   REQUIRE(cong.nr_classes() == 525);

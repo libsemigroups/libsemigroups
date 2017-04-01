@@ -149,6 +149,32 @@ namespace libsemigroups {
     }
 
     // non-const
+    // @w1     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    // @w2     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    //
+    // This method is non-const because it may fully compute a data structure
+    // for the congruence.
+    //
+    // @return a bool describing whether the class of w1 is less than the class
+    //         of w2 in a total ordering of congruence classes
+    bool test_less_than(word_t const& w1, word_t const& w2) {
+      DATA* data;
+      if (is_done()) {
+        data = cget_data();
+      } else {
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
+          return data->current_less_than(w1, w2) != DATA::result_t::UNKNOWN;
+        };
+        data = get_data(words_func);
+      }
+      DATA::result_t result = data->current_less_than(w1, w2);
+      assert(result != DATA::result_t::UNKNOWN);
+      return result == DATA::result_t::TRUE;
+    }
+
+    // non-const
     //
     // This method is non-const because it may fully compute a data structure
     // for the congruence.
