@@ -510,6 +510,14 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
   REQUIRE(rws.rewrite("bbbbaabbbbaa") == rws.rewrite("bbbbaa"));
   REQUIRE(rws.rewrite("bbbaa") == rws.rewrite("baabb"));
   REQUIRE(rws.rewrite("abbbaabbba") == rws.rewrite("bbbbaa"));
+
+  REQUIRE(!rws.test_less_than("abbbaabbba", "bbbbaa"));
+  REQUIRE(!rws.test_less_than("abba", "abba"));
+
+  // Call test_less_than without knuth_bendix first
+  RWS rws2(rules);
+  rws2.set_report(RWS_REPORT);
+  REQUIRE(!rws2.test_less_than("abbbaabbba", "bbbbaa"));
 }
 
 TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
@@ -541,6 +549,8 @@ TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
   REQUIRE(rws.rewrite("bbbbbbbbaabbbbbbbbaa") == rws.rewrite("bbbbbbbbaa"));
   REQUIRE(rws.rewrite("bbbaa") == rws.rewrite("baabb"));
   REQUIRE(rws.rewrite("abbbbbaabbbbba") == rws.rewrite("bbbbbbbbaa"));
+
+  REQUIRE(rws.test_less_than("aaa", "bbbbbbbbb"));
 }
 
 TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
@@ -595,4 +605,7 @@ TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 8);
   REQUIRE(rws.is_confluent());
+
+  REQUIRE(!rws.test_less_than("bababababab", "aaaaa"));
+  REQUIRE(rws.test_less_than("aaaaa", "bababababab"));
 }
