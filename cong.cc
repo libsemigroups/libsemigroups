@@ -125,6 +125,9 @@ namespace libsemigroups {
 
     std::vector<std::thread> t;
     for (size_t i = 0; i < nr_threads; i++) {
+      data.at(i)->unkill();
+    }
+    for (size_t i = 0; i < nr_threads; i++) {
       t.push_back(std::thread(go, i));
     }
     for (size_t i = 0; i < nr_threads; i++) {
@@ -134,11 +137,21 @@ namespace libsemigroups {
       if (!(*winner)->is_killed()) {
         size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
         REPORT("Thread #" << tid << " is the winner!");
-        for (auto loser = data.begin(); loser < winner; loser++) {
-          delete *loser;
-        }
-        for (auto loser = winner + 1; loser < data.end(); loser++) {
-          delete *loser;
+        if ((*winner)->is_done()) {
+          // Delete the losers and clear _partial_data
+          for (auto loser = data.begin(); loser < winner; loser++) {
+            delete *loser;
+          }
+          for (auto loser = winner + 1; loser < data.end(); loser++) {
+            delete *loser;
+          }
+          _partial_data.clear();
+        } else {
+          // Store all the data in _partial_data
+          if (_partial_data.empty()) {
+            _partial_data = data;
+          }
+          assert(_partial_data == data);
         }
         return *winner;
       }
@@ -155,50 +168,61 @@ namespace libsemigroups {
   // to completion, or until **goal_func** is satisfied.  It will be created if
   // it does not already exist.
   Congruence::DATA* Congruence::get_data(std::function<bool(DATA*)> goal_func) {
+    if (_data != nullptr) {
+      _data->run_until(goal_func);
+      return _data;
+    }
+
     Timer timer;
     timer.start();
-    if (_data == nullptr) {
-      if (_semigroup != nullptr
-          && (_max_threads == 1
-              || (_semigroup->is_done() && _semigroup->size() < 1024))) {
-        REPORT("semigroup is small, not using multiple threads")
-        _data = new TC(*this);
-        static_cast<TC*>(_data)->prefill();
-        _data->run();
-      } else {
-        if (_semigroup != nullptr) {
-          auto prefillit = [this](Congruence::DATA* data) {
-            static_cast<TC*>(data)->prefill();
-          };
+    DATA* winner;
+    if (!_partial_data.empty()) {
+      // Continue the already-existing data objects
+      std::vector<std::function<void(DATA*)>> funcs = {};
+      winner = winning_data(_partial_data, funcs, true, goal_func);
+    } else if (_semigroup != nullptr
+               && (_max_threads == 1
+                   || (_semigroup->is_done() && _semigroup->size() < 1024))) {
+      REPORT("semigroup is small, not using multiple threads")
+      winner = new TC(*this);
+      static_cast<TC*>(winner)->prefill();
+      winner->run();
+      assert(winner->is_done());
+    } else {
+      if (_semigroup != nullptr) {
+        auto prefillit = [this](Congruence::DATA* data) {
+          static_cast<TC*>(data)->prefill();
+        };
 
-          std::vector<DATA*> data = {new TC(*this), new TC(*this)};
-          std::vector<std::function<void(DATA*)>> funcs = {prefillit};
-          /*if (_type == TWOSIDED) {
-            data.push_back(new KBFP(*this));
-          }
-          data.push_back(new P(*this));*/
-          _data = winning_data(data, funcs);
-        } else if (!_prefill.empty()) {
-          _data = new TC(*this);
-          static_cast<TC*>(_data)->prefill(_prefill);
-          _data->run();
-        } else {  // Congruence is defined over an fp semigroup
-          if (_type == TWOSIDED) {
-            std::vector<DATA*> data = {
-                new TC(*this), new KBFP(*this), new KBP(*this)};
-            std::vector<std::function<void(DATA*)>> funcs = {};
-            _data = winning_data(data, funcs, true, goal_func);
-          } else {
-            _data = new TC(*this);
-            _data->run_until(goal_func);
-          }
+        std::vector<DATA*> data = {new TC(*this), new TC(*this)};
+        std::vector<std::function<void(DATA*)>> funcs = {prefillit};
+        /*if (_type == TWOSIDED) {
+          data.push_back(new KBFP(*this));
+        }
+        data.push_back(new P(*this));*/
+        winner = winning_data(data, funcs);
+      } else if (!_prefill.empty()) {
+        winner = new TC(*this);
+        static_cast<TC*>(winner)->prefill(_prefill);
+        winner->run();
+        assert(winner->is_done());
+      } else {  // Congruence is defined over an fp semigroup
+        if (_type == TWOSIDED) {
+          std::vector<DATA*> data = {
+              new TC(*this), new KBFP(*this), new KBP(*this)};
+          std::vector<std::function<void(DATA*)>> funcs = {};
+          winner = winning_data(data, funcs, true, goal_func);
+        } else {
+          winner = new TC(*this);
+          winner->run_until(goal_func);
         }
       }
-      REPORT(timer.string("elapsed time = "));
-    } else {
-      _data->run_until(goal_func);
     }
-    return _data;
+    REPORT(timer.string("elapsed time = "));
+    if (winner->is_done()) {
+      _data = winner;
+    }
+    return winner;
   }
 
   void Congruence::force_tc() {

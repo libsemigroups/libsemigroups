@@ -463,6 +463,11 @@ namespace libsemigroups {
         _killed = true;
       }
 
+      // This method sets a given instance of a DATA object to "not killed"
+      void unkill() {
+        _killed = false;
+      }
+
       // This method can be used to tell whether or not a given DATA object has
       // been killed by another instance.
       // @return keeping cldoc happy
@@ -544,6 +549,7 @@ namespace libsemigroups {
     std::vector<relation_t> _extra;
     size_t                  _max_threads;
     size_t                  _nrgens;
+    std::vector<DATA*>      _partial_data;
     RecVec<class_index_t>   _prefill;
     std::vector<relation_t> _relations;
     std::atomic<bool>       _relations_done;
