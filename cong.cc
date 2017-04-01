@@ -29,8 +29,8 @@
 namespace libsemigroups {
 
   // Define static data members
-  size_t const Congruence::INFTY     = -1;
-  size_t const Congruence::UNDEFINED = -1;
+  size_t const Congruence::INFTY     = std::numeric_limits<size_t>::max();
+  size_t const Congruence::UNDEFINED = std::numeric_limits<size_t>::max();
 
   // Get the type from a string
   Congruence::cong_t Congruence::type_from_string(std::string type) {
