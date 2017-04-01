@@ -30,7 +30,8 @@
       _already_reported_killed = true; \
       REPORT("killed")                 \
     }                                  \
-    return;                            \
+    _stop_packing = true;              \
+    _steps        = 1;                 \
   }
 
 namespace libsemigroups {
@@ -103,11 +104,9 @@ namespace libsemigroups {
     if (_relations.empty() && _extra.empty()) {
       // This is the first run
       init_tc_relations();
-      TC_KILLED
       // Apply each "extra" relation to the first coset only
       for (relation_t const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
-        TC_KILLED
       }
       if (_relations.empty()) {
         _tc_done = true;
@@ -216,7 +215,6 @@ namespace libsemigroups {
     // call relations() here so that we can pass _killed.
 
     _cong.init_relations(_cong._semigroup, _killed);
-    TC_KILLED
 
     // Must insert at _relations.end() since it might be non-empty
     _relations.insert(
@@ -228,7 +226,6 @@ namespace libsemigroups {
       case TWOSIDED:
         break;
       case LEFT:
-        TC_KILLED
         for (relation_t& rel : _relations) {
           std::reverse(rel.first.begin(), rel.first.end());
           std::reverse(rel.second.begin(), rel.second.end());
@@ -490,8 +487,6 @@ namespace libsemigroups {
   void Congruence::TC::trace(class_index_t const& c,
                              relation_t const&    rel,
                              bool                 add) {
-    TC_KILLED
-
     class_index_t lhs = c;
     for (auto it = rel.first.cbegin(); it < rel.first.cend() - 1; it++) {
       if (_table.get(lhs, *it) != UNDEFINED) {
@@ -515,7 +510,6 @@ namespace libsemigroups {
       } else {
         return;
       }
-      TC_KILLED
     }
     // <rhs> is the image of <c> under <rel>[2] (minus the last letter)
 
@@ -535,7 +529,6 @@ namespace libsemigroups {
       _report_next   = 0;
       _cosets_killed = _defined - _active;
     }
-    TC_KILLED
 
     letter_t      a = rel.first.back();
     letter_t      b = rel.second.back();
@@ -578,7 +571,7 @@ namespace libsemigroups {
 
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
-    while (!is_done()) {
+    while (!is_done() && !is_killed()) {
       run(Congruence::LIMIT_MAX);
       TC_KILLED
     }
