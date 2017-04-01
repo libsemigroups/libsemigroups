@@ -377,7 +377,7 @@ namespace libsemigroups {
       // This method can be used to tell whether or not a given DATA object has
       // been killed by another instance.
       // @return keeping cldoc happy
-      std::atomic<bool>& get_killed() {
+      std::atomic<bool>& is_killed() {
         return _killed;
       }
 
