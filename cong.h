@@ -153,13 +153,11 @@ namespace libsemigroups {
     //
     // @return **true** if the congruence is fully determined, and **false** if
     // it is not.
-    bool is_done() {
-      // FIXME this should really be const, but currently isn't because
-      // get_data isn't const
+    bool is_done() const {
       if (_data == nullptr) {
         return false;
       }
-      return get_data()->is_done();
+      return _data->is_done();
     }
 
     // non-const
