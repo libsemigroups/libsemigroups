@@ -206,38 +206,42 @@ cdef class PartialPerm(Element):
     cdef int deg    #Note that it converts floats to ints
     
     def __init__(self, *args):
-        if len(args) == 1 and args[0] == Nothing:
-            return
 
-        if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
-            raise TypeError
+        if len(args) == 1:
+            if args[0] == Nothing:
+                return
+            self._handle = new cpp.PartialPerm[uint16_t](list(args)[0])
+        else:
 
-        self.dom, self.ran, self.deg = args[0], args[1], args[2]
-        
-
-        if self.deg<0:
-            raise ValueError
-        if len(self.dom) != len(self.ran):
-            raise IndexError
-        if len(self.dom)!=0:
-            if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
-                raise ValueError
-        imglist = [65535] * self.deg
-        for i in range(len(self.dom)):
-            if not (isinstance(self.dom[i],int) and isinstance(self.ran[i],int)):
+            if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
                 raise TypeError
-            if self.dom[i]<0 or self.ran[i]<0:
-                raise ValueError
+
+            self.dom, self.ran, self.deg = args[0], args[1], args[2]
             
-            #Ensures range and domain have no repeats
-            if self.ran[i] in imglist:
-                raise ValueError
-            if self.dom.count(i)>1:
-                raise ValueError
 
-            imglist[self.dom[i]]=self.ran[i]
+            if self.deg<0:
+                raise ValueError
+            if len(self.dom) != len(self.ran):
+                raise IndexError
+            if len(self.dom)!=0:
+                if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
+                    raise ValueError
+            imglist = [65535] * self.deg
+            for i in range(len(self.dom)):
+                if not (isinstance(self.dom[i],int) and isinstance(self.ran[i],int)):
+                    raise TypeError
+                if self.dom[i]<0 or self.ran[i]<0:
+                    raise ValueError
+                
+                #Ensures range and domain have no repeats
+                if self.ran[i] in imglist:
+                    raise ValueError
+                if self.dom.count(i)>1:
+                    raise ValueError
 
-        self._handle = new cpp.PartialPerm[uint16_t](imglist)
+                imglist[self.dom[i]]=self.ran[i]
+
+            self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
     def __iter__(self):
         cdef cpp.Element* e = self._handle
