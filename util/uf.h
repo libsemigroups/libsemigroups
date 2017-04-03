@@ -52,6 +52,11 @@ namespace libsemigroups {
     size_t   get_size();
     table_t* get_table();
 
+    void join(UF const& uf);
+    void join(UF* uf) {
+      join(*uf);
+    }
+
     // get_blocks
     blocks_t* get_blocks();
 
@@ -70,11 +75,16 @@ namespace libsemigroups {
     // nr_blocks
     size_t nr_blocks();
 
+    void reset_next_rep();
+    size_t next_rep();
+
+
    private:
     size_t    _size;
     table_t*  _table;
     blocks_t* _blocks;
     bool      _haschanged;
+    size_t    _next_rep;
   };
 }  // namespace libsemigroups
 

@@ -182,3 +182,49 @@ TEST_CASE("UF 13: empty table", "[quick][uf]") {
   REQUIRE(uf.get_size() == 1);
   REQUIRE(uf.nr_blocks() == 1);
 }
+
+TEST_CASE("UF 14: next_rep", "[quick][uf]") {
+  UF uf(10);
+  uf.unite(2, 4);
+  uf.unite(4, 9);
+  uf.unite(1, 7);
+
+  REQUIRE(uf.nr_blocks() == 7);
+
+  uf.reset_next_rep();
+  REQUIRE(uf.next_rep() == 0);
+  REQUIRE(uf.next_rep() == 1);
+  REQUIRE(uf.next_rep() == 2);
+  REQUIRE(uf.next_rep() == 3);
+  REQUIRE(uf.next_rep() == 5);
+  REQUIRE(uf.next_rep() == 6);
+  REQUIRE(uf.next_rep() == 8);
+}
+
+TEST_CASE("UF 14: join", "[quick][uf]") {
+  UF uf1(10);
+  uf1.unite(2, 4);
+  uf1.unite(4, 9);
+  uf1.unite(1, 7);
+
+  REQUIRE(uf1.nr_blocks() == 7);
+
+  uf1.join(uf1);
+  REQUIRE(uf1.nr_blocks() == 7);
+
+  UF uf2(10);
+  uf2.unite(1, 4);
+  uf2.unite(3, 9);
+  uf2.unite(0, 7);
+  REQUIRE(uf2.nr_blocks() == 7);
+
+  uf1.join(uf2);
+  REQUIRE(uf2.nr_blocks() == 7);
+  REQUIRE(uf1.nr_blocks() == 4);
+
+  uf1.reset_next_rep();
+  REQUIRE(uf1.next_rep() == 0);
+  REQUIRE(uf1.next_rep() == 5);
+  REQUIRE(uf1.next_rep() == 6);
+  REQUIRE(uf1.next_rep() == 8);
+}

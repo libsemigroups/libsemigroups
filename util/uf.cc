@@ -50,14 +50,16 @@ namespace libsemigroups {
       : _size(table.size()),
         _table(new table_t(table)),
         _blocks(nullptr),
-        _haschanged(true) {}
+        _haschanged(true),
+        _next_rep(0) {}
 
   // Constructor by size
   UF::UF(size_t size)
       : _size(size),
         _table(new table_t()),
         _blocks(nullptr),
-        _haschanged(false) {
+        _haschanged(false),
+        _next_rep(0) {
     _table->reserve(size);
     for (size_t i = 0; i < size; i++) {
       _table->push_back(i);
@@ -183,4 +185,25 @@ namespace libsemigroups {
     return count;
   }
 
+  void UF::reset_next_rep() {
+    flatten();
+    _next_rep = 0;
+  }
+
+  // Returns the next representative of a block, invalidated by anything that
+  // changes the partition
+  size_t UF::next_rep() {
+    size_t current_rep = _next_rep;
+    while (_next_rep < _size && (*_table)[_next_rep] <= current_rep) {
+      _next_rep++;
+    }
+    return current_rep;
+  }
+
+  void UF::join(UF const& uf) {
+    assert(this->_size == uf._size);
+    for (size_t i = 0; i < _size; i++) {
+      unite((*_table)[i], (*uf._table)[i]);
+    }
+  }
 }  // namespace libsemigroups
