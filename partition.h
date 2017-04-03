@@ -35,6 +35,8 @@ namespace libsemigroups {
   // pointers to which are stored in the partition.
 
   template <typename T> class Partition {
+    // TODO: do something else instead of using this object?
+
    public:
     // 1 parameters (size_t)
     // @nr_parts a size_t (defaults to 0)
