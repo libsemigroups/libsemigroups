@@ -238,10 +238,9 @@ namespace libsemigroups {
 
   // compress the table
   void Congruence::TC::compress() {
+    assert(is_done());
     if (_is_compressed) {
       return;
-    } else if (!is_done()) {
-      run();
     }
     _is_compressed = true;
     if (_active == _table.nr_rows()) {

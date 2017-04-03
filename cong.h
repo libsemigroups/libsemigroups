@@ -499,11 +499,6 @@ namespace libsemigroups {
         }
       }
 
-      // Compress the data structure, this does nothing by default, but
-      // rewriting systems and the Todd-Coxeter data structures can be
-      // compressed, to use less memory.
-      virtual void compress() {}
-
      private:
       // This initialises the data structure, and can be run from inside a
       // thread after construction.  If already initialised, this does nothing.

@@ -57,10 +57,6 @@ namespace libsemigroups {
     result_t current_equals(word_t const& w1, word_t const& w2) final;
     result_t current_less_than(word_t const& w1, word_t const& w2) override;
 
-    void compress() override {
-      _rws->compress();
-    }
-
    private:
     void init() final;
 

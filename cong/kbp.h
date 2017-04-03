@@ -66,10 +66,6 @@ namespace libsemigroups {
 
     void init() final;
 
-    void compress() override {
-      _rws->compress();
-    }
-
    private:
     RWS*        _rws;
     Semigroup*  _semigroup;
