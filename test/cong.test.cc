@@ -156,6 +156,8 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   Congruence              cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
+
+  REQUIRE(cong.nontrivial_classes().size() == 0);
 }
 
 TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
@@ -726,4 +728,16 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
 
   cong.force_kbfp();  // clear data
   REQUIRE(cong.test_equals(x, y));
+}
+
+TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels;
+  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_t({0}, {1}));        // (a, b)
+  std::vector<relation_t> extra;
+
+  Congruence cong("left", 2, rels, extra);
+
+  REQUIRE(cong.nontrivial_classes().size() == 0);
 }
