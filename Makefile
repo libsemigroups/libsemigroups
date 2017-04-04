@@ -42,10 +42,8 @@ error:
 	@echo "testclean, or doclean"; \
 	exit 2
 doc:
-	@echo "Generating static documentation . . ."; \
-	cldoc generate $(CXXFLAGS) -- --static $(COMMON_DOC_FLAGS) $(DOC_SOURCES)
-	@echo "Fixing some bugs in cldoc . . ."; \
-	python docs/cldoc-fix
+	@echo "Generating documentation . . ."; \
+	doxygen Doxyfile
 	@echo "See: html/index.html"; \
 
 test: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG

@@ -32,38 +32,34 @@
 #include "semigroups.h"
 
 namespace libsemigroups {
-  //
-  // Type for letters for rewriting systems.
+  //! Type for letters for rewriting systems.
   typedef char rws_letter_t;
 
-  //
-  // Type for words for rewriting systems.
+  //! Type for words for rewriting systems.
   typedef std::string rws_word_t;
 
-  //
-  // Type for rules in rewriting systems.
+  //! Type for rules in rewriting systems.
   typedef std::pair<rws_word_t, rws_word_t> rws_rule_t;
 
-  // Reduction ordering
-  // This class provides a call operator which can be used to compare
-  // <rws_word_t>. A *reduction ordering* is a TODO
+  //!  This class provides a call operator which can be used to compare
+  //! libsemigroups::rws_word_t.
+  //!
+  //! A *reduction ordering* is a TODO
   class RO {
    public:
-    // 1 parameter (function)
-    // @func a binary function accepting <rws_word_t>s
-    //
-    // This constructs a reduction ordering object whose call operator uses the
-    // function <func> to compare <rws_word_t>s. It is the responsibility of
-    // the caller to verify that <func> specifies a reduction ordering.
+    //! A constructor.
+    //!
+    //! This constructs a reduction ordering object whose call operator uses
+    //! the function \p func to compare libsemigroups::rws_word_t's. It is the
+    //! responsibility of the caller to verify that \p func specifies a
+    //! reduction ordering.
     explicit RO(std::function<bool(rws_word_t const&, rws_word_t const&)> func)
         : _func(func) {}
 
-    // const
-    // @p an rws_word_t
-    // @q an rws_word_t
-    //
-    // @return **true** if the word <p> is greater than the word <q> in the
-    // reduction ordering.
+    //! Returns \c true if \p p is greater than the word \p q.
+    //!
+    //! This method returns \c true if the word \p p is greater than the word
+    //! \p q in the reduction ordering.
     size_t operator()(rws_word_t const& p, rws_word_t const& q) const {
       return _func(p, q);
     }
@@ -72,26 +68,23 @@ namespace libsemigroups {
     std::function<bool(rws_word_t const&, rws_word_t const&)> _func;
   };
 
-  // Short-lex reduction ordering
-  // This is a subclass of <RO> and implements the shortlex reduction ordering
-  // derived from an ordering on letters.
+  //! This class implements the shortlex reduction ordering derived from
+  //! an ordering on libsemigroups::rws_letter_t's.
+
   class SHORTLEX : public RO {
    public:
-    // 0 parameter
-    //
-    // This constructs a short-lex reduction ordering object derived from the
-    // order of on <rws_letter_t>s given by the operator &gt;.
+    //! Constructs a short-lex reduction ordering object derived from the
+    //! order of on libsemigroups::rws_letter_t's given by the operator <.
     SHORTLEX()
         : RO([](rws_word_t const& p, rws_word_t const& q) {
             return (p.size() > q.size() || (p.size() == q.size() && p > q));
           }) {}
 
-    // 1 parameter (function)
-    // @letter_order a binary function taking <rws_letter_t>s defining a total
-    // order on a set of letters.
-    //
-    // This constructs a short-lex reduction ordering object derived from the
-    // order on <rws_letter_t>s given by <letter_order>.
+    //! A constructor.
+    //!
+    //! This constructs a short-lex reduction ordering object derived from the
+    //! order on libsemigroups::rws_letter_t's given by the parameter
+    //! \p letter_order.
     explicit SHORTLEX(std::function<bool(rws_letter_t const&,
                                          rws_letter_t const&)> letter_order)
         : RO([this](rws_word_t const& p, rws_word_t const& q) {
@@ -118,24 +111,20 @@ namespace libsemigroups {
 
   // TODO add more reduction orderings
 
-  // Rewriting system
-  //
-  // This class is used to represent a
-  // [string rewriting system](https://en.wikipedia.org/wiki/Semi-Thue_system)
-  // defining a finitely presented monoid or semigroup.
+  //!  This class is used to represent a
+  //! [string rewriting system](https://en.wikipedia.org/wiki/Semi-Thue_system)
+  //! defining a finitely presented monoid or semigroup.
   class RWS {
    public:
-    // static
-    //
-    // This variable is used to indicate that no rule has been added by a call
-    // to <add_rule>, which returns the rule which was added.
+    //! This data member is used to indicate that no rule has been added by a
+    //! call to RWS::add_rule, which returns the rule which was added.
     static rws_rule_t const NONE;
 
-    // 1 param (reduction ordering)
-    // @order a pointer to a reduction ordering
-    //
-    // This constructs a rewriting system with no rules, and with the reduction
-    // ordering <RO> specifed by <order>.
+    //! Constructs rewriting system with no rules and the reduction ordering
+    //! \p order.
+    //!
+    //! This constructs a rewriting system with no rules, and with the reduction
+    //! ordering RO specifed by the parameter \p order.
     explicit RWS(RO* order)
         : _confluence_known(false),
           _is_confluent(),
@@ -146,139 +135,198 @@ namespace libsemigroups {
           _rules(),
           _stack() {}
 
-    // 0 params
-    //
-    // This constructs a rewriting system with no rules, and the <SHORTLEX>
-    // order.
+    //! Constructs a rewriting system with no rules, and the SHORTLEX
+    //! reduction ordering.
     RWS() : RWS(new SHORTLEX()) {}
 
-    // 1 param (relations)
-    // @relations const reference to a vector of <relation_t>s.
-    //
-    // This constructs a rewriting system with rules derived from <relations>,
-    // and with the reduction ordering equal to <SHORTLEX>.
+    //! Constructs a rewriting system with rules derived from the
+    //! parameter \p relations, and with the SHORTLEX reduction ordering.
     explicit RWS(std::vector<relation_t> const& relations) : RWS() {
       add_rules(relations);
     }
 
-    // 1 param (rules)
-    // @rules const reference to a vector of <rws_word_t>s.
-    //
-    // This constructs a rewriting system with rules derived from <rules>,
-    // and with the reduction ordering equal to <SHORTLEX>.
+    //! Constructs a rewriting system with rules \p rules,
+    //! and with the SHORTLEX reduction ordering.
     explicit RWS(std::vector<rws_rule_t> const& rules) : RWS() {
       add_rules(rules);
     }
 
-    // 2 params (reduction ordering, relations)
-    // @order a pointer to a reduction ordering
-    // @relations const reference to a vector of <relation_t>s.
-    //
-    // This constructs a rewriting system with rules derived from <relations>,
-    // and with the reduction ordering equal specified by <order>.
+    //! Constructs a rewriting system with rules derived from \p relations,
+    //! and with the reduction ordering specified by \p order.
     RWS(RO* order, std::vector<relation_t> const& relations) : RWS(order) {
       add_rules(relations);
     }
 
-    // 2 params (reduction ordering, rules)
-    // @order a pointer to a reduction ordering
-    // @rules const reference to a vector of <rws_word_t>s.
-    //
-    // This constructs a rewriting system with rules derived from <rules>,
-    // and with the reduction ordering equal specified by <order>.
+    //! Constructs a rewriting system with rules derived from \p rules,
+    //! and with the reduction ordering ecified by \p order.
     RWS(RO* order, std::vector<rws_rule_t> const& rules) : RWS(order) {
       add_rules(rules);
     }
 
-    // 1 param (congruence)
-    // @cong reference to a <Congruence>.
-    //
-    // This constructs a rewriting system with rules corresponding to the
-    // relations used to define <cong>, i.e. <Congruence::relations> and
-    // <Congruence::extra>, and with the reduction ordering equal to
-    // <SHORTLEX>.
+    //! Constructs a rewriting system from Congruence::relations and
+    //! Congruence::extra applied to \p cong.
+    //!
+    //! Constructs a rewriting system with rules corresponding to the
+    //! relations used to define \p cong, i.e. Congruence::relations and
+    //! Congruence::extra, and with the SHORTLEX reduction ordering.
     explicit RWS(Congruence& cong) : RWS() {
       add_rules(cong);
     }
 
-    // A default destructor
-    //
-    // This deletes the reduction order used to construct the object.
+    //! A default destructor
+    //!
+    //! This deletes the reduction order used to construct the object.
     ~RWS() {
       delete _order;
     }
 
-    // const
-    //
-    // A rewriting system is *confluent* ... TODO
-    // @return **true** if the rewriting system is
-    // [confluent](https://en.wikipedia.org/wiki/Confluence_(abstract_rewriting))
-    // and **false** if it is not.
+    //! Returns \c true if the rewriting system is
+    //! [confluent](https://en.wikipedia.org/wiki/Confluence_(abstract_rewriting))
+    //! and \c false if it is not.
     bool is_confluent() const {
       std::atomic<bool> killed(false);
       return is_confluent(killed);
     }
 
-    // const
-    //
-    // This method returns the total number of active rules in the rewriting
-    // system.
-    //
-    // @return the total number of active rules in the rewriting system.
+    //! Returns the current number of active rules in the rewriting system.
     size_t nr_rules() const {
       return _nr_active_rules;
     }
 
-    // const
-    // @w   a <rws_word_t> to rewrite
-    // @buf a buffer <rws_word_t> for use in the rewriting
-    //
-    // This method rewrites the first parameter <w> in-place according to the
-    // current rules in the rewriting system.
+    //! Rewrites \p w in-place according to the
+    //! current rules in the rewriting system.
+    //!
+    //! The second parameter \p buf is used a buffer during the rewriting.
     void rewrite(rws_word_t& w, rws_word_t& buf) const;
 
-    // const
-    // @w   a pointer to a <rws_word_t> to rewrite
-    // @buf a buffer <rws_word_t> for use in the rewriting
-    //
-    // This method rewrites the <rws_word_t> pointed to by <w> in-place
-    // according to the current rules in the rewriting system.
+    //! Rewrites the libsemigroups::rws_word_t pointed to by \p w
+    //! in-place according to the current rules in the rewriting system.
+    //!
+    //! The second parameter \p buf is used a buffer during the rewriting.
     void rewrite(rws_word_t* w, rws_word_t& buf) const {
       rewrite(*w, buf);
     }
 
-    // const
-    // @w   a <rws_word_t> to rewrite
-    //
-    // This method rewrites the <rws_word_t> by <w> in-place.
-    //
-    // @return the rewritten version of <w>.
+    //! Returns \p w rewritten according to the current rules in the rewriting
+    //! system.
     rws_word_t rewrite(rws_word_t w) const {
       rws_word_t buf;
       rewrite(w, buf);
       return w;
     }
 
-    // non-const
-    //
-    // Run the [Knuth-Bendix
-    // algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
-    // on the rewriting system.
-    //
-    // This will terminate when the rewriting system is confluent, which might
-    // be never.
+    //! Run the [Knuth-Bendix
+    //! algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
+    //! on the rewriting system.
+    //!
+    //! \warning This will terminate when the rewriting system is confluent,
+    //! which might be never.
     void knuth_bendix() {
       std::atomic<bool> killed(false);
       knuth_bendix(killed);
     }
 
-    // non-const
-    // @p      a word
-    // @q      a word
-    //
-    // @return **true** if the reduced form of the word <p> is less than
-    // the reduced form of the word <q>, with respect to the reduced ordering
-    // defined by this RWS; and **false** otherwise.
+    //! Run the [Knuth-Bendix
+    //! algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
+    //! on the rewriting system until it terminates or \p killed is set to
+    //! \c true.
+    //!
+    //! \warning This will terminate when the rewriting system is confluent,
+    //! which might be never.
+    void knuth_bendix(std::atomic<bool>& killed);
+
+    //! If you somehow magically know that the rewriting system is confluent,
+    //! or not, then you can set this using this method.
+    void set_confluent(bool val) {
+      _is_confluent     = val;
+      _confluence_known = true;
+    }
+
+    //! Add a rule to the rewriting system.
+    //!
+    //! The parameters \p p and \p q correspond to the rule being added.
+    //!
+    //! If \p p and \p q are not equal, then this method adds a rule to the
+    //! rewriting system, where the left-hand side of the rule is strictly
+    //! greater than the right-hand side in the reduction ordering used to
+    //! defined \c this. If \p p and \p q are equal, then the rewriting system
+    //! is unchanged.
+    //!
+    //! \return The rule added (either libsemigroups::rws_rule_t(\p p, \p q),
+    //! libsemigroups::rws_rule_t(\p q, \p p) or RWS::NONE).
+    rws_rule_t add_rule(rws_word_t const& p, rws_word_t const& q);
+
+    //! Add a rule to the rewriting system.
+    //!
+    //! See RWS::add_rule.
+    //!
+    //! \return The actual rule added, which may not equal \p rule.
+    rws_rule_t add_rule(rws_rule_t const& rule);
+
+    //! Add rules to the rewriting system.
+    //!
+    //! See RWS::add_rule.
+    void add_rules(std::vector<rws_rule_t> const& rules);
+
+    //! Adds rules derived from \p relations to the rewriting system.
+    //!
+    //! See RWS::add_rule.
+    void add_rules(std::vector<relation_t> const& relations);
+
+    //! Add rules derived from Congruence::relations and Congruence::extra
+    //! applied to \p cong.
+    void add_rules(Congruence& cong) {
+      add_rules(cong.relations());
+      add_rules(cong.extra());
+    }
+
+    //! Helper function for converting a libsemigroups::letter_t to a
+    //! libsemigroups::rws_letter_t.
+    //!
+    //! See also RWS::rws_letter_to_letter.
+    static rws_letter_t letter_to_rws_letter(letter_t const& a);
+
+    //! Helper function for converting a libsemigroups::letter_t to a
+    //! libsemigroups::rws_word_t.
+    static rws_word_t letter_to_rws_word(letter_t const& a);
+
+    //! Helper function for converting a libsemigroups::word_t to a
+    //! libsemigroups::rws_word_t.
+    //!
+    //! See also RWS::rws_word_to_word.
+    static rws_word_t word_to_rws_word(word_t const& w);
+
+    //! Helper function for converting a libsemigroups::rws_letter_t to a
+    //! libsemigroups::letter_t.
+    //!
+    //! See also RWS::letter_to_rws_letter.
+    static letter_t rws_letter_to_letter(rws_letter_t const& rws_letter);
+
+    //! Helper function for converting a libsemigroups::rws_word_t to a
+    //! libsemigroups::word_t.
+    //!
+    //! See also RWS::word_to_rws_word.
+    static word_t* rws_word_to_word(rws_word_t const* rws_word);
+
+    //! Turn reporting on or off.
+    //!
+    //! If \p val is true, then some methods for a RWS object may report
+    //! information about the progress of the computation.
+    void set_report(bool val) const {
+      glob_reporter.set_report(val);
+    }
+
+    //! Remove deactivated rules.
+    //!
+    //! This method removes all deactivated rules from the rewriting system, and
+    //! may reduce the amount of memory used.
+    void compress();
+
+    //! Returns \c true if the reduced form of \p p is less than
+    //! the reduced form of \p q, and \c false if not.
+    //!
+    //! This is done with respect to the reduced ordering used to defined \c
+    //! this.
     bool test_less_than(rws_word_t const& p, rws_word_t const& q) {
       assert(_order != nullptr);
       if (!is_confluent()) {
@@ -286,135 +334,6 @@ namespace libsemigroups {
       }
       return (*_order)(rewrite(q), rewrite(p));
     }
-
-    // non-const
-    // @killed an atomic boolean
-    //
-    // Run the [Knuth-Bendix
-    // algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
-    // on the rewriting system until it terminates or <killed> is set to
-    // **true** by another thread.
-    //
-    // This will terminate when the rewriting system is confluent, which might
-    // be never.
-    void knuth_bendix(std::atomic<bool>& killed);
-
-    // non-const
-    // @val a boolean value
-    //
-    // If you somehow magically know that the rewriting system is confluent,
-    // then you can set this using this method.
-    void set_confluent(bool val) {
-      _is_confluent     = val;
-      _confluence_known = true;
-    }
-
-    // non-const
-    // @p the one side of the rule being added
-    // @q the one side of the rule being added
-    //
-    // This method adds a rule to the rewriting system, where the left-hand
-    // side of the rule is strictly greater than the right-hand side in the
-    // reduction ordering used to defined **this**. If <p> and <q> are equal,
-    // then the rewriting system is unchanged, and <NONE> is returned.
-    //
-    // @return the actual rule added (either <p> -> <q>, or <q> -> <p> or
-    // <NONE>).
-    rws_rule_t add_rule(rws_word_t const& p, rws_word_t const& q);
-
-    // non-const
-    // @rule an <rws_rule_t>
-    //
-    // See <add_rule>.
-    //
-    // @return the actual rule added, which may not equel <rule>.
-    rws_rule_t add_rule(rws_rule_t const& rule);
-
-    // non-const
-    // @rules vector of <rws_rule_t>s to add to the rewriting system
-    //
-    // Adds rules derived from <rules> to the rewriting system;
-    // see <add_rule>.
-
-    void add_rules(std::vector<rws_rule_t> const& rules);
-
-    // non-const
-    // @relations vector of <relation_t>s
-    //
-    // Adds rules derived from <relations> to the rewriting system;
-    // see <add_rule>.
-    void add_rules(std::vector<relation_t> const& relations);
-
-    // non-const
-    // @cong a Congruence object
-    //
-    // Adds all the defining relations of the Congruence <cong>, i.e.
-    // <Congruence::relations> and <Congruence::extra>.
-    void add_rules(Congruence& cong) {
-      add_rules(cong.relations());
-      add_rules(cong.extra());
-    }
-
-    // static
-    // @a a <letter_t>
-    //
-    // This is a helper function for converting a <letter_t> to
-    // a <rws_letter_t>.
-    //
-    // @return an <rws_letter_t> corresponding to the <letter_t> <a>.
-    static rws_letter_t letter_to_rws_letter(letter_t const& a);
-
-    // static
-    // @a a letter
-    //
-    // This is a helper function for converting a <letter_t> to
-    // <rws_word_t>.
-    //
-    // @return an <rws_word_t> corresponding to the <letter_t> <a>.
-    static rws_word_t letter_to_rws_word(letter_t const& a);
-
-    // static
-    // @w a word
-    //
-    // This is a helper function for converting a <word_t> to
-    // <rws_word_t>.
-    //
-    // @return an <rws_word_t> corresponding to the <word_t> <w>.
-    static rws_word_t word_to_rws_word(word_t const& w);
-
-    // static
-    // @rws_letter a letter
-    //
-    // This is a helper function for converting a <rws_letter_t> to
-    // a <letter_t>.
-    //
-    // @return an <letter_t> corresponding to the <rws_letter_t> <rws_letter>.
-    static letter_t rws_letter_to_letter(rws_letter_t const& rws_letter);
-
-    // static
-    // @rws_word a word
-    //
-    // This is a helper function for converting a <rws_word_t> to
-    // a <word_t> pointer.
-    //
-    // @return an <word_t> pointer corresponding to the <rws_word_t>
-    // <rws_word>.
-    static word_t* rws_word_to_word(rws_word_t const* rws_word);
-
-    // const
-    // @val a boolean value
-    //
-    // If @val is true, then some methods for a RWS object may report
-    // information about the progress of the computation.
-    void set_report(bool val) const {
-      glob_reporter.set_report(val);
-    }
-
-    // non-const
-    //
-    // This method removes all deactivated rules from the rewriting system, and
-    // may reduce the amount of memory used.
-    void compress();
 
    private:
     bool is_confluent(std::atomic<bool>& killed) const;

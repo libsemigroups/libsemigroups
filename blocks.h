@@ -30,39 +30,38 @@
 
 namespace libsemigroups {
 
-  // Non-abstract
-  // Class for blocks, which are signed partitions of the set *{0, ..., n}*
-  // for some integer *n*. It is possible to associate to every <Bipartition>
-  // a pair of blocks which determine the Green's L- and R-class of the
-  // <Bipartition> in the monoid of all partitions. This is the purpose of this
-  // class.
-  //
-  // The **Blocks** class is not currently used by the algorithms for
-  // <Semigroup>s but the extra methods are used in the GAP package
-  // [Semigroups package for GAP](https://gap-packages.github.io/Semigroups/).
+  //! Class for signed partitions of the set \f$\{0, \ldots, n - 1\}\f$
+  //!
+  //! It is possible to associate to every Bipartition a pair of blocks,
+  //! Bipartition::left_blocks and Bipartition::right_blocks, which determine
+  //! the Green's \f$\mathscr{L}\f$- and \f$\mathscr{R}\f$-class of the
+  //! Bipartition in the monoid of all partitions. This is the purpose of this
+  //! class.
+  //!
+  //! The Blocks class is not currently used by any of the methods for the
+  //! Semigroup class but the extra methods are used in the GAP package
+  //! [Semigroups package for GAP](https://gap-packages.github.io/Semigroups/).
 
   class Blocks {
    public:
-    // 0 parameters
-    //
-    // Constructs a blocks object of size 0.
+    //! A constructor.
+    //!
+    //! Constructs a blocks object of size 0.
     Blocks() : _blocks(nullptr), _lookup(nullptr), _nr_blocks(0), _rank(0) {}
 
-    // 2 parameters
-    // @blocks lookup table for the partition being defined.
-    // @lookup lookup table for which blocks are signed.
-    //
-    // The argument <blocks> must have length *n* for some integer *n > 0*,
-    // consist of non-negative integers, and have the property that if *i*, *i
-    // > 0* occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
-    // of this is checked.  The argument <blocks> is not copied, and is deleted
-    // by the destructor.
-    //
-    // The argument <lookup> must have length equal to the maximum value in
-    // <blocks>, this maximum is also the number of blocks in the partition. A
-    // value **true** in position *i* indicates that the *i*th block is signed
-    // and
-    // **false** that it is unsigned.
+    //! A constructor.
+    //!
+    //! The parameter \p blocks must have length \f$n\f$ for some integer
+    //! \f$n > 0\f$, consist of non-negative integers, and have the property
+    //! that if \f$i\f$, \f$i > 0\f$ occurs in \p blocks, then \f$i - 1\f$
+    //! occurs earlier in \p blocks. None of this is checked.  The parameter
+    //! \p blocks is not copied, and is deleted by the destructor
+    //! Blocks::~Blocks.
+    //!
+    //! The parameter \p lookup must have length equal to the maximum value in
+    //! \p blocks, this maximum is also the number of blocks in the partition. A
+    //! value \c true in position \f$i\f$ indicates that the \f$i\f$th block is
+    //! signed! and \c false that it is unsigned.
     Blocks(std::vector<u_int32_t>* blocks, std::vector<bool>* lookup)
         : _blocks(blocks), _lookup(lookup), _nr_blocks(), _rank(UNDEFINED) {
       assert(_blocks->size() != 0);
@@ -70,26 +69,25 @@ namespace libsemigroups {
       assert(_nr_blocks == _lookup->size());
     }
 
-    // 3 parameters
-    // @blocks     lookup table for the partition being defined.
-    // @lookup     lookup table for which blocks are signed.
-    // @nr_blocks the number of blocks in <blocks>.
-    //
-    // The argument <blocks> must have length *n* for some integer *n > 0*,
-    // consist of non-negative integers, and have the property that if *i*, *i
-    // > 0* occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
-    // of this is checked.  The argument <blocks> is not copied, and is deleted
-    // by the destructor.
-    //
-    // The argument <lookup> must have length equal to the maximum value in
-    // <blocks>, this maximum is also the number of blocks in the partition. A
-    // value **true** in position *i* indicates that the *i*th block is signed
-    // and
-    // **false** that it is unsigned.
-    //
-    // This constructor is provided for the situation where the number of blocks
-    // in <blocks> is known *a priori* and so does not need to be calculated in
-    // the constructor.
+    //! A constructor.
+    //!
+    //! The parameter \p blocks must have length \f$n\f$ for some integer
+    //! \f$n > 0\f$, consist of non-negative integers, and have the property
+    //! that if \f$i\f$, \f$i > 0\f$ occurs in \p blocks, then \f$i - 1\f$
+    //! occurs earlier in \p blocks. None of this is checked.  The parameter \p
+    //! blocks is not copied, and is deleted by the destructor Blocks::~Blocks.
+    //!
+    //! The parameter \p lookup must have length equal to the maximum value in
+    //! \p blocks, this maximum is also the number of blocks in the partition. A
+    //! value \c true in position \f$i\f$ indicates that the \f$i\f$th block is
+    //! signed and \c false that it is unsigned.
+    //!
+    //! The parameter \p nr_blocks must be the number of block (i.e. the
+    //! maximum value in the first parameter \p blocks.
+    //!
+    //! This constructor is provided for the situation where the number of
+    //! blocks in blocks is known *a priori* and so does not need to be
+    //! calculated in the constructor.
     Blocks(std::vector<u_int32_t>* blocks,
            std::vector<bool>*      lookup,
            u_int32_t               nr_blocks)
@@ -101,119 +99,106 @@ namespace libsemigroups {
       assert(_nr_blocks == _lookup->size());
     }
 
-    // deleted
-    // @copy a **Blocks** object
-    // The assignment operator is deleted for **Blocks** to avoid unintended
-    // copying.
-    //
-    // @return nothing as it cannot be invoked.
+    //! The assignment operator is deleted for Blocks to avoid unintended
+    //! copying.
     Blocks& operator=(Blocks const& copy) = delete;
 
-    // Copy
-    // @copy   the blocks to copy.
-    //
-    // Copies all the information in <copy> and returns a new instance of
-    // **Blocks**.
+    //! Copy constructor
+    //!
+    //! Copies all the information in copy and returns a new instance of
+    //! Blocks.
     Blocks(Blocks const& copy);
 
-    // Default
-    //
-    // Deletes the blocks and lookup provided at construction time.
+    //! Default destructor.
+    //!
+    //! Deletes the blocks and lookup provided at construction time.
     ~Blocks() {
       delete _blocks;
       delete _lookup;
     }
 
-    // const
-    // @that another blocks object.
-    //
-    // Two **Blocks** objects are equal if and only if their underlying signed
-    // partitions are equal. It is ok to compare blocks of different
-    // <degree> with this operator.
-    // @return **true** or **false**.
+    //! Returns \c true if \c this equals \p that.
+    //!
+    //! Two Blocks objects are equal if and only if their underlying signed
+    //! partitions are equal. It is ok to compare blocks of different
+    //! degree with this operator.
     bool operator==(const Blocks& that) const;
 
-    // const
-    // @that another blocks object.
-    //
-    // This operator defines a total order on the set of all blocks (including
-    // those of different <degree>).
-    // @return **true** or **false**.
+    //! Returns \c true if \c this is less than \p that.
+    //!
+    //! This operator defines a total order on the set of all blocks (including
+    //! those of different degree).
     bool operator<(const Blocks& that) const;
 
-    // const
-    //
-    // @return the degree of a **Blocks** object which is the size of the set on
-    // which it is a partition.
+    //! Returns the degree of a Blocks object
+    //!
+    //! The *degree* of a Blocks object is the size of the set of
+    //! which it is a partition.
     inline u_int32_t degree() const {
       return (_nr_blocks == 0 ? 0 : _blocks->size());
     }
 
-    // const
-    // @pos an integer less than <degree>.
-    //
-    // This method asserts that the argument is valid.
-    //
-    // @return the index of the block containing <pos>.
+    //! Returns the index of the block containing pos.
+    //!
+    //! This method asserts that \p pos is valid, i.e. that it is less than the
+    //! degree of \c this.
     inline u_int32_t block(size_t pos) const {
       assert(pos < _blocks->size());
       return (*_blocks)[pos];
     }
 
-    // const
-    // @index an integer less than <nr_blocks>.
-    //
-    // This method asserts that the argument is valid.
-    //
-    // @return whether or not the block with index <index> is a transverse
-    // (signed) block or not.
+    //! Returns \c true if the block with index \p index is transverse
+    //!
+    //! This method returns \c true if the block with index \p index is a
+    //! transverse (or signed) block and it returns \c false if it is not
+    //! transverse (or unsigned).  This method asserts that the parameter \p
+    //! index is valid, i.e. that it is less than the degree of \c this.
     inline bool is_transverse_block(size_t index) const {
       assert(index < _nr_blocks);
       return (*_lookup)[index];
     }
 
-    // const
-    //
-    // @return a pointer to the lookup table for block indices.
-    inline const std::vector<bool>* lookup() const {
+    //! Returns a pointer to the lookup table for block indices.
+    //!
+    //! The vector pointed to by the return value of this method has value
+    //! \c true in position \c i if the \c i th block of \c this is a
+    //! transverse block; the entry in position \c i is \c false otherwise.
+    // FIXME better to have lookup_begin/end methods
+    inline std::vector<bool> const* lookup() const {
       return _lookup;
     }
 
-    // const
-    //
-    // @return the number of blocks in the **Blocks** object.
+    //! Returns the number of blocks in the Blocks object.
+    //!
+    //! This method returns the number of parts in the partition that instances
+    //! of this class represent.
     inline u_int32_t nr_blocks() const {
       return _nr_blocks;
     }
 
-    // non-const
-    //
-    // @return the number of signed (transverse) blocks in the **Blocks**
-    // object.
+    //! Returns the number of signed (transverse) blocks in \c this.
+    //!
+    //! Equivalently, this method returns the number of \c true values in
+    //! Blocks::lookup().
     u_int32_t rank();
 
-    // const
-    //
-    // @return a hash value for a **Blocks** object.
+    //! Returns a hash value for a \c this.
+    //!
+    //! This method returns a hash value for an instance of Blocks.  This value
+    //! is recomputed every time this method is called.
     size_t hash_value() const;
 
-    // const
-    //
-    // This method asserts that <degree> is not 0.
-    //
-    // @return A const_iterator pointing to the first value in the blocks
-    // lookup.
+    //! Returns a const_iterator pointing to the index of the first block
+    //!
+    //! This method asserts that degree is not 0.
     inline typename std::vector<u_int32_t>::const_iterator cbegin() const {
       assert(_blocks != nullptr);
       return _blocks->cbegin();
     }
 
-    // const
-    //
-    // This method asserts that <degree> is not 0.
-    //
-    // @return A const_iterator referring to the past-the-end element in
-    // blocks lookup.
+    //! Returns a const_iterator referring to past-the-end of the last block.
+    //!
+    //! This method asserts that degree is not 0.
     inline typename std::vector<u_int32_t>::const_iterator cend() const {
       assert(_blocks != nullptr);
       return _blocks->cend();

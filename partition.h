@@ -25,23 +25,18 @@
 #include <vector>
 
 namespace libsemigroups {
-
-  // Non-abstract
-  // @T type of the objects contained in the parts of the partition (via
-  // pointers)
-  //
-  // This class is for representing a partition of a set, i.e. an equivalence
-  // relation on that set.  The template parameter <T> is the type of objects,
-  // pointers to which are stored in the partition.
-
+  //! Class for partitions of a set used by Congruence::nontrivial_classes.
+  //!
+  //! This class is for representing a partition of a set, i.e. an equivalence
+  //! relation on that set.  The template parameter \p T is the type of objects,
+  //! pointers to which are stored in the partition.
   template <typename T> class Partition {
     // TODO: do something else instead of using this object?
 
    public:
-    // 1 parameters (size_t)
-    // @nr_parts a size_t (defaults to 0)
-    //
-    // This constructor returns a partition with <nr_parts> empty parts.
+    //! A constructor.
+    //!
+    //! This constructor returns a partition with \p nr_parts empty parts.
     explicit Partition(size_t nr_parts = 0)
         : _parts(new std::vector<std::vector<T*>*>()) {
       for (size_t i = 0; i < nr_parts; i++) {
@@ -49,18 +44,17 @@ namespace libsemigroups {
       }
     }
 
-    // 1 parameter (pointer)
-    // @parts pointer to a vector describing the parts of the partition
-    //
-    // This constructor returns the partition defined by the given vector, by
-    // storing all the pointers it contains.  The pointers will all be deleted
-    // by the destructor when this Partition object is deleted.
-    //
+    //! A constructor.
+    //!
+    //! This constructor returns the Partition defined by the given vector,
+    //! which is not copied, and is deleted by the destructor of this class.
     // FIXME delete if not used
     explicit Partition(std::vector<std::vector<T*>*>* parts) : _parts(parts) {}
 
-    //
-    // A default destructor.
+    //! A default destructor.
+    //!
+    //! Deletes the vector and all of its contents passed to the constructor,
+    //! if any.
     ~Partition() {
       for (std::vector<T*>* block : *_parts) {
         for (T* elm : *block) {
@@ -71,46 +65,34 @@ namespace libsemigroups {
       delete _parts;
     }
 
-    // deleted
-    // @part const reference to a partition that cannot be assigned.
-    //
-    // The Partition class does not support an assignment contructor to avoid
-    // accidental copying. A copy constructor is provided in case such a copy
-    // should be required anyway.
-    //
-    // @return nothing it is deleted.
+    //! The assignment operator is deleted for Partition to avoid unintended
+    //! copying.
     Partition& operator=(Partition const& part) = delete;
 
-    // const
-    //
-    // @return the number of parts in the partition.
+    //! Returns the number of parts in the partition.
+    // FIXME rename this to nr_parts
     inline size_t size() const {
       return _parts->size();
     }
 
-    // const
-    // @part_index an integer
-    //
-    // @return the vector containing the elements of the given part of the
-    // partition.
+    //! Returns the part with index \p part_index.
+    //!
+    //! This method asserts that the parameter \p part_index is less than the
+    //! number of parts.
     inline std::vector<T*>* operator[](size_t part_index) const {
       assert(part_index < size());
       return (*_parts)[part_index];
     }
 
-    // const
-    // @part_index index of a part in the partition
-    //
-    // @return the vector containing the elements of the given part.
+    //! Returns the part with index \p part_index.
+    //!
+    //! This uses the \c at method of the underlying std::vector, and so
+    //! performs out-of-bounds checks.
     inline std::vector<T*>* at(size_t part_index) const {
       return _parts->at(part_index);
     }
 
-    // const
-    // @part_index index of a part in the partition
-    // @elm_nr index of an object in the specified part
-    //
-    // @return the element in the given position in the given part.
+    //! Returns the element with index \p elm_nr in part \p part_index.
     T* at(size_t part_index, size_t elm_nr) const {
       return _parts->at(part_index)->at(elm_nr);
     }

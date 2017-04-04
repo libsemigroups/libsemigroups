@@ -38,95 +38,100 @@
 
 namespace libsemigroups {
 
-  // Abstract
-  //
-  // Abstract base class for elements of a semigroup.
+  //! Abstract base class for semigroup elements
+  //!
+  //! The Semigroup class consists of Element objects. Every derived class of
+  //! Element implements the deleted methods of Element, which are used by the
+  //! methods of the Semigroup class.
   class Element {
    public:
-    // The different types of element.
+    //! This enum contains some different types of Element.
+    //!
+    //! This exists so that the type of a subclass of Element can be determined
+    //! from a pointer to the base class. Currently, it is only necessary
+    //! within **libsemigroups** to distiguish RWSE objects from other Element
+    //! objects and so there are only two values in here.
     enum elm_t {
-      // Type for <Element>s arising from a rewriting system <RWS>.
+      //! Type for Element objects arising from a rewriting system RWS.
       RWSE = 0,
-      // Type for <Element>s not arising from a rewriting system <RWS>.
+      //! Type for Element objects not arising from a rewriting system RWS.
       NOT_RWSE = 1
     };
 
-    // 0 or 1 parameter (hash value)
-    // @hv the hash value (for caching) of the element being created (defaults
-    // to <libsemigroups::Element::UNDEFINED>).
-    // @type the type <elm_t> of the element being created (defaults to
-    // <libsemigroups::Element::NOT_RWSE>).
+    //! A constructor.
+    //!
+    //! The parameter \p hv is the hash value (for caching) of the element being
+    //! created (defaults to libsemigroups::Element::UNDEFINED). This value
+    //! should only be set if it is known *a priori* that \p hv is the correct
+    //! value (such as when copying an Element object).
+    //!
+    //! The parameter \p type should be the type elm_t of the element being
+    //! created (defaults to libsemigroups::Element::NOT_RWSE).
     explicit Element(size_t hv   = Element::UNDEFINED,
                      elm_t  type = Element::elm_t::NOT_RWSE)
         : _hash_value(hv), _type(type) {}
 
-    //
-    // A default destructor.
+    //! A default destructor.
+    //!
+    //! This does not properly delete the underlying data of the object, this
+    //! should be done using Element::really_delete.
     virtual ~Element() {}
 
-    // const
-    //
-    // This method returns the type <elm_t> of an <Element> object.
-    //
-    // @return the type of **this**.
+    //! Returns the type libsemigroups::Element::elm_t of an Element object.
+    //!
+    //! There are currently only two types libsemigroups::Element::RWSE
+    //! and libsemigroups::Element::NOT_RWSE distinguished by
+    //! the return value of this method.
     elm_t get_type() const {
       return _type;
     }
 
-    // const
-    // @that Another element of the same type
-    //
-    // This method checks the mathematical equality of two objects in the same
-    // subclass of <Element>.
-    //
-    // @return **true** if **this** equals <that>.
+    //! Returns \c true if \c this equals \p that.
+    //!
+    //! This method checks the mathematical equality of two Element objects in
+    //! the same subclass of Element.
     virtual bool operator==(const Element& that) const = 0;
 
-    // const
-    // @that Another element of the same type
-    //
-    // This method defines a total order on the set of objects in the same
-    // subclass of <Element> with a given <degree>. The definition of this total
-    // order depends on the method for the operator < in the subclass.
-    //
-    // @return **true** if **this** is less than <that>.
+    //! Returns \c true if \c this is less than \p that.
+    //!
+    //! This method defines a total order on the set of objects in a given
+    //! subclass of Element with a given Element::degree. The definition of
+    //! this total order depends on the method for the operator < in the
+    //! subclass.
     virtual bool operator<(const Element& that) const = 0;
 
-    // const
-    //
-    // This method returns an integer which represents the complexity of
-    // multiplying two objects in the same subclass of <Element> which have the
-    // same <degree>. For example, the complexity of multiplying two *3* by *3*
-    // matrices over a common semiring is *O(3 ^ 3)*, and 27 is returned by
-    // <MatrixOverSemiring::complexity>.
-    //
-    // The returned value is used in, for example, <Semigroup::fast_product> and
-    // <Semigroup::nr_idempotents> to decide if it is better to multiply
-    // elements or follow a path in the Cayley graph.
-    //
-    // @return the complexity of multiplying two elements.
+    //!  Returns the approximate time complexity of multiplying two
+    //! Elements in a given subclass.
+    //!
+    //! This method returns an integer which represents the approximate time
+    //! complexity of multiplying two objects in the same subclass of Element
+    //! which have the same Element::degree. For example, the approximate time
+    //! complexity of multiplying two \f$3\times 3\f$ matrices over a common
+    //! semiring is \f$O(3 ^ 3)\f$, and 27 is returned by
+    //! MatrixOverSemiring::complexity.
+    //!
+    //! The returned value is used in, for example, Semigroup::fast_product and
+    //! Semigroup::nr_idempotents to decide if it is better to multiply
+    //! elements or follow a path in the Cayley graph.
     virtual size_t complexity() const = 0;
 
-    // const
-    //
-    // This method returns an integer which represents the size of the element,
-    // and is used to determine whether or not two elements are compatible for
-    // multiplication. For example, two <Transformation>s of different degrees
-    // cannot be multiplied, or a <Bipartition> of degree 10 cannot be an
-    // element of a monoid of bipartitions of degree 3.
-    //
-    // See the relevant subclass for the particular meaning of the return value
-    // of this method for each subclass.
-    //
-    // @return the degree of an element.
+    //! Returns the degree of an Element.
+    //!
+    //! This method returns an integer which represents the size of the
+    //! element, and is used to determine whether or not two elements are
+    //! compatible for multiplication. For example, two Transformation objects
+    //! of different degrees cannot be multiplied, or a Bipartition of degree
+    //! 10 cannot be an element of a monoid of bipartitions of degree 3.
+    //!
+    //! See the relevant subclass for the particular meaning of the return value
+    //! of this method for each subclass.
     virtual size_t degree() const = 0;
 
-    // const
-    //
-    // This method returns a hash value for an object in a subclass of
-    // <Element>.
-    //
-    // @return the hash value of an element.
+    //! Return the hash value of an Element.
+    //!
+    //! This method returns a hash value for an object in a subclass of
+    //! Element. This value is only computed the first time this method is
+    //! called.
     inline size_t hash_value() const {
       if (_hash_value == UNDEFINED) {
         this->cache_hash_value();
@@ -134,207 +139,225 @@ namespace libsemigroups {
       return this->_hash_value;
     }
 
-    // const
-    //
-    // This method returns the multiplicative identity element for an object in
-    // a subclass of <Element>. The returned identity belongs to the same
-    // subclass and has the same <degree> as **this**.
-    //
-    // @return the identity element.
+    //! Returns the identity element.
+    //!
+    //! This method returns the multiplicative identity element for an object
+    //! in a subclass of Element. The returned identity belongs to the same
+    //! subclass and has the same degree as \c this.
     virtual Element* identity() const = 0;
 
-    // const
-    // @increase_deg_by increase the size of the container of the defining data
-    // of **this** by this amount.
-    //
-    // This method really copies an <Element>. To minimise the amount of copying
-    // when <Element>s are inserted in unordered_maps and other containers,
-    // <Element>s behave somewhat like pointers, in that the actual data in an
-    // <Element> is only copied when this method is called. Otherwise, if an
-    // <Element> is copied, then its defining data is only stored once.
-    //
-    // See also <really_delete>.
-    //
-    // @return a new element completely independent of **this**.
+    //! Returns a new element completely independent of \c this.
+    //!
+    //! The parameter \p increase_deg_by increase the size of the container of
+    //! the defining data of \c this by this amount.
+    //!
+    //! This method really copies an Element. To minimise the amount of copying
+    //! when Elements are inserted in a std::unordered_map and other
+    //! containers, an Element behaves somewhat like a pointer, in that the
+    //! actual data in an Element is only copied when this method is called.
+    //! Otherwise, if an Element is copied, then its defining data is only
+    //! stored once.
+    //!
+    //! See also Element::really_delete.
     virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
 
-    // non-const
-    // @x an element.
-    //
-    // This method copies <x> into **this** by changing **this** in-place.
+    //! Copy another Element into \c this.
+    //!
+    //! This method copies \p x into \c this by changing \c this in-place.
     virtual void copy(Element const* x) = 0;
 
-    // non-const
-    //
-    // This method really deletes an <Element>. To minimise the amount of
-    // copying when <Element>s are inserted in unordered_maps and other
-    // containers, <Element>s behave somewhat like pointers, in that the actual
-    // data in an <Element> is only deleted when this method is called.
-    // Otherwise, if an <Element> is deleted, then its defining data is not
-    // deleted, since it may be contained in multiple copies of the element.
-    //
-    // See also <really_copy>.
-    //
-    // @return deletes the data defining an element.
+    //! Deletes the defining data of an Element.
+    //!
+    //! This method really deletes an Element. To minimise the amount of
+    //! copying when Elements are inserted in an std::unordered_map or other
+    //! containers, an Element behaves somewhat like a pointer, in that the
+    //! actual data in an Element is only deleted when this method is called.
+    //! Otherwise, if an Element is deleted, then its defining data is not
+    //! deleted, since it may be contained in multiple copies of the Element.
+    //!
+    //! See also Element::really_copy.
     virtual void really_delete() = 0;
 
-    // non-const
-    // @x an element
-    // @y an element
-    //
-    // Redefine **this** to be the product of <x> and <y>. This is in-place
-    // multiplication to avoid allocation of memory for products which do not
-    // require to be stored for future use.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! Redefine \c this to be the product of \p x and \p y. This is in-place
+    //! multiplication to avoid allocation of memory for products which do not
+    //! require to be stored for future use.
+    //!
+    //! The implementation of this method in the Element base class simply
+    //! calls the 3 parameter version with third parameter 0. Any subclass of
+    //! Element can implement either a two or three parameter version of this
+    //! method and the base class method implements the other method.
     virtual void redefine(Element const* x, Element const* y) {
       redefine(x, y, 0);
     }
 
-    // non-const
-    // @x an element
-    // @y an element
-    // @thread_id the id number of the thread calling the method
-    //
-    // See <redefine>.
-    //
-    // Note that if different threads call this method with the same value of
-    // <thread_id> then bad things will happen.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! Redefine \c this to be the product of \p x and \p y. This is in-place
+    //! multiplication to avoid allocation of memory for products which do not
+    //! require to be stored for future use.
+    //!
+    //! The implementation of this method in the Element base class simply
+    //! calls the 2 parameter version and ignores the third parameter \p
+    //! thread_id. Any subclass of Element can implement either a two or three
+    //! parameter version of this method and the base class method implements
+    //! the other method.
+    //!
+    //! The parameter \p thread_id is required in some derived classes of
+    //! Element because some temporary storage is required to find the product
+    //! of \p x and \p y.
+    //!
+    //! Note that if different threads call this method, on a derived class of
+    //! Element where static temporary storage is used in the redefine method
+    //! with the same value of \p thread_id, then bad things may happen.
     virtual void
     redefine(Element const* x, Element const* y, size_t const& thread_id) {
       (void) thread_id;
       redefine(x, y);
     }
 
-    // Provides a call operator for comparing <Element>s via pointers.
-    //
-    // This struct is has a call operator for comparing const <Element>
-    // pointers (by comparing the <Element>s they point to). This is used by
-    // <Semigroup::enumerate> in certain methods for congruences.
+    //! Provides a call operator for comparing Elements via pointers.
+    //!
+    //! This struct provides a call operator for comparing const Element
+    //! pointers (by comparing the Elements they point to). This is used by
+    //! various methods of the Semigroup class.
     struct Equal {
-      // const
-      // @x a pointer to a const Element
-      // @y a pointer to a const Element
-      //
-      // @return **true** or **false**
+      //! Returns \c true if \p x and \p y point to equal Element's.
       size_t operator()(Element const* x, Element const* y) const {
         return *x == *y;
       }
     };
 
-    // Provides a call operator returning a hash value via a pointer.
-    //
-    //
-    // This struct is has a call operator for obtaining a hash value for the
-    // <Element> from a const <Element> pointer. This is used by
-    // <Semigroup::enumerate> in certain methods for congruences.
+    //!  Provides a call operator returning a hash value for an Element
+    //! via a pointer.
+    //!
+    //! This struct provides a call operator for obtaining a hash value for the
+    //! Element from a const Element pointer. This is used by
+    //! various methods of the Semigroup class.
     struct Hash {
-      // const
-      // @x a pointer to a const Element
-      //
-      // @return **true** or **false**
+      //!  Returns the value of Element::hash_value applied to the
+      //! Element pointed to by \p x.
       size_t operator()(Element const* x) const {
         return x->hash_value();
       }
     };
 
    protected:
-    // const
-    //
-    // This method is used to compute and cache the hash value of an element.
+    //! Calculate and cache a hash value.
+    //!
+    //! This method is used to compute and cache the hash value of \c this.
     virtual void cache_hash_value() const = 0;
 
-    // const
-    //
-    // This method is used to reset the cached hash value to
-    // <libsemigroups::Element::UNDEFINED>.
+    //! Reset the cached value used by Element::hash_value.
+    //!
+    //! This method is used to reset the cached hash value to
+    //! libsemigroups::Element::UNDEFINED. This is required after running
+    //! Element::redefine, Element::copy, or any other method that changes the
+    //! defining data of \c this.
     void reset_hash_value() const {
       _hash_value = UNDEFINED;
     }
 
-    // static
-    //
-    // This variable is used to indicate that a value is undefined, such as,
-    // the cached hash value.
+    //! UNDEFINED value.
+    //!
+    //! This variable is used to indicate that a value is undefined, such as,
+    //! the cached hash value.
     static size_t const UNDEFINED;
 
-    //
-    // This data member holds a cached version of the hash value of an Element.
-    // It is stored here if it is ever computed. It is invalidated by
-    // <libsemigroups::Element::redefine> and sometimes by
-    // <libsemigroups::Element::really_copy>.
+    //! This data member holds a cached version of the hash value of an Element.
+    //! It is stored here if it is ever computed. It is invalidated by
+    //! libsemigroups::Element::redefine and sometimes by
+    //! libsemigroups::Element::really_copy.
     mutable size_t _hash_value;
 
    private:
     elm_t _type;
   };
 
-  // Abstract
-  // @S Type of the entries in <_vector>
-  // @T Subclass of <ElementWithVectorData>.
-  //
-  // Abstract base class for elements using a vector to store their defining
-  // data. For example, <Transformation>&lt;u_int128_t&gt; is a subclass of
-  // <ElementWithVectorData>&lt;u_int128_t,
-  // Transformation&lt;u_int128_t&gt;&gt;.
+  //!  Abstract base class for elements using a vector to store their
+  //! defining data.
+  //!
+  //! The template parameter \p S is the type entries in the vector containing
+  //! the defining data.  The value of the template parameter \p S can be used
+  //! to reduce (or increase) the amount of memory required by instances of
+  //! this class.
+  //!
+  //! The template parameter \p T is the subclass of ElementWithVectorData used
+  //! by certain methods to construct new instances of subclasses of
+  //! ElementWithVectorData.
+  //!
+  //! For example, Transformation&lt;u_int128_t&gt; is a subclass of
+  //! ElementWithVectorData&lt;u_int128_t,
+  //! Transformation&lt;u_int128_t&gt;&gt;.
 
   template <typename S, class T> class ElementWithVectorData : public Element {
    public:
-    // 1 parameter (integer)
-    // @size  Reserve <size> for <_vector>.
-    //
-    // Constructs an object with an uninitialised <_vector> which has size
-    // <size> (defaults to 0).
+    //! A constructor.
+    //!
+    //! The parameter \p size is used to reserve the size of the underlying
+    //! std::vector.
+    //!
+    //! Returns an object with an uninitialised vector which has size
+    //! \p size (defaults to 0).
     explicit ElementWithVectorData(size_t size = 0)
         : Element(), _vector(new std::vector<S>()) {
       _vector->resize(size);
     }
 
-    // 1 or 2 parameter (vector pointer)
-    // @vector Pointer to defining data of the element.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs an object with <_vector> equal to <vector>, <vector> is not
-    // copied, and should be deleted using <really_delete>.
+    //! A constructor.
+    //!
+    //! The parameter \p vector should be a pointer to defining data of the
+    //! element The parameter \p hv must be the hash value of the element being
+    //! created (this defaults to Element::UNDEFINED). This should only be set
+    //! if it is guaranteed that \p hv is the correct value.
+    //!
+    //! Returns an object whose defining data is stored in \p vector, which
+    //! is not copied, and should be deleted using Element::really_delete.
     explicit ElementWithVectorData(std::vector<S>* vector,
                                    size_t          hv = Element::UNDEFINED)
         : Element(hv), _vector(vector) {}
 
-    // 1 parameter (vector const reference)
-    // @vector Defining data of the element.
-    //
-    // Constructs an object with <_vector> equal to a new copy of <vector>.
+    //! A constructor.
+    //!
+    //! The parameter \p vector should be a const reference to defining data of
+    //! the element.
+    //!
+    //! Returns an object whose defining data is stored in \p vector, which
+    //! is copied.
     explicit ElementWithVectorData(std::vector<S> const& vector)
         : ElementWithVectorData(new std::vector<S>(vector)) {}
 
-    // const
-    // @pos An integer.
-    //
-    // @return The <pos> position of <_vector>.
+    //! Returns the \p pos entry in the vector containing the defining data.
+    //!
+    //! This method returns the \p pos entry in the vector used to construct \c
+    //! this. No checks are performed that \p pos in within the bounds of this
+    //! vector.
     inline S operator[](size_t pos) const {
       return (*_vector)[pos];
     }
 
-    // const
-    // @pos An integer.
-    //
-    // @return The <pos> position of <_vector>.
+    //! Returns the \p pos entry in the vector containing the defining data.
+    //!
+    //! This method returns the \p pos entry in the vector used to construct \c
+    //! this.
     inline S at(size_t pos) const {
       return _vector->at(pos);
     }
 
-    // const
-    // @that Compare **this** and <that>.
-    //
-    // @return **true** if the underlying <_vector>s are equal and **false**
-    // otherwise.
+    //! Returns \c true if \c this equals \p that.
+    //!
+    //! This method checks that the underlying vectors of \c this and \p that
+    //! are equal.
     bool operator==(Element const& that) const override {
       return *(static_cast<T const&>(that)._vector) == *(this->_vector);
     }
 
-    // const
-    // @that Compare **this** and <that>.
-    //
-    // @return **true** if the <_vector> of **this** is short-lex less than the
-    // <_vector> of <that>.
+    //! Returns \c true if \c this is less than \p that.
+    //!
+    //! This method defines a total order on the set of objects in
+    //! ElementWithVectorData of a given Element::degree, which is the
+    //! short-lex order.
     bool operator<(const Element& that) const override {
       T const& ewvd = static_cast<T const&>(that);
       if (this->_vector->size() != ewvd._vector->size()) {
@@ -348,16 +371,13 @@ namespace libsemigroups {
       return false;
     }
 
-    // const
-    // @increase_deg_by increase the size of the <_vector> by this amount.
-    //
-    // See <Element::really_copy>.
-    //
-    // If <increase_deg_by> is not 0, then this method must be overridden since
-    // there is no way of knowing how a subclass is defined by the data in
-    // <_vector>.
-    //
-    // @return A pointer to a copy of **this**.
+    //! Returns a pointer to a copy of \c this.
+    //!
+    //! The size of the vector containing the defining data of \c this will be
+    //! increased by \p increase_deg_by.  If \p increase_deg_by is not 0, then
+    //! this method must be overridden by any subclass of ElementWithVectorData
+    //! since there is no way of knowing how a subclass is defined by the data
+    //! in the vector.
     Element* really_copy(size_t increase_deg_by) const override {
       assert(increase_deg_by == 0);
       (void) increase_deg_by;
@@ -365,10 +385,13 @@ namespace libsemigroups {
       return new T(vector, this->_hash_value);
     }
 
-    // non-const
-    // @x an element.
-    //
-    // This method copies <x> into **this** by changing **this** in-place.
+    //! Copy another Element into \c this.
+    //!
+    //! This method copies \p x into \c this by changing \c this in-place. This
+    //! method asserts that the degrees of \c this and \p x are equal and then
+    //! replaces the underlying vector of \c this with the underlying vector of
+    //! \p x. Any method overriding this one must call
+    //! Element::reset_hash_value.
     void copy(Element const* x) override {
       assert(x->degree() == this->degree());
       auto   xx  = static_cast<ElementWithVectorData const*>(x);
@@ -379,128 +402,130 @@ namespace libsemigroups {
       this->reset_hash_value();
     }
 
-    // non-const
-    //
-    // See <Element::really_delete>.
-    //
-    // Deletes <_vector>.
+    //! Deletes the defining data of an ElementWithVectorData.
     void really_delete() override {
       delete _vector;
     }
 
-    // const
-    //
-    // @return An iterator pointing to the first value in <_vector>.
     inline typename std::vector<u_int32_t>::iterator begin() const {
+    //! Returns an iterator.
+    //!
+    //! This method returns an iterator pointing at the first entry in the
+    //! vector that is the underlying defining data of \c this.
       return _vector->begin();
     }
 
-    // const
-    //
-    // @return An iterator referring to the past-the-end element in <_vector>.
     inline typename std::vector<u_int32_t>::iterator end() const {
+    //! Returns an iterator.
+    //!
+    //! This method returns an iterator referring to the past-the-end element
+    //! of the vector that is the underlying defining data of \c this.
       return _vector->end();
     }
 
-    // const
-    //
-    // @return A const_iterator pointing to the first value in <_vector>.
     inline typename std::vector<u_int32_t>::iterator cbegin() const {
+    //! Returns a const iterator.
+    //!
+    //! This method returns a const_iterator pointing at the first entry in the
+    //! vector that is the underlying defining data of \c this.
       return _vector->cbegin();
     }
 
-    // const
-    //
-    // @return A const_iterator referring to the past-the-end element in
-    // <_vector>.
     inline typename std::vector<u_int32_t>::iterator cend() const {
+    //! Returns a const iterator.
+    //!
+    //! This method returns a const iterator referring to the past-the-end
+    //! element of the vector that is the underlying defining data of \c this.
       return _vector->cend();
     }
 
    protected:
-    //
-    // The actual data defining of **this** is stored in this <_vector>.
+    //! The vector containing the defining data of \c this.
+    //!
+    //! The actual data defining of \c this is stored in _vector.
     std::vector<S>* _vector;
   };
 
-  // Abstract, template
-  // @S Type of image values
-  // @T Subclass of <PartialTransformation>.
-  //
-  // Template class for partial transformations, which is a subclass of
-  // <ElementWithVectorData>. For example, <Transformation>&lt;u_int128_t&gt; is
-  // a
-  // subclass of <PartialTransformation>&lt;u_int128_t,
-  // Transformation&lt;u_int128_t&gt;&gt;.
-  //
-  // The value of the template parameter <S> can be used to reduce the amount of
-  // memory required by instances of this class.
-  //
-  // This class is abstract since it does not implement all methods required by
-  // the <Element> class, it exists to provide common methods for its
-  // subclasses.
-  //
-  // A *partial transformation* *f* is just a function defined on a subset of
-  // *{0, 1, ..., n - 1}* for some integer *n* called the *degree* of *f*.
-  // A partial transformation is stored as a vector of the images of *{0, 1,
-  // ...,
-  // n
-  // -1}*, i.e. *[(0)f, (1)f, ..., (n - 1)f]* where the value <UNDEFINED> is
-  // used
-  // to indicate that *(i)f* is, you guessed it, undefined (i.e. not among the
-  // points where *f* is defined).
+  //! Abstract class for partial transformations.
+  //!
+  //! This is a template class for partial transformations, which is a subclass
+  //! of ElementWithVectorData. For example, Transformation<u_int128_t> is a
+  //! subclass of PartialTransformation<u_int128_t,
+  //! Transformation<u_int128_t>>.
+  //!
+  //! The template parameter \p S is the type of image values, i.e. u_int16_t,
+  //! and so on.  The value of the template parameter \p S can be used to
+  //! reduce (or increase) the amount of memory required by instances of this
+  //! class.
+  //!
+  //! The template parameter \p T is the subclass of PartialTransformation used
+  //! by the PartialTransformation::identity method to construct an identity.
+  //!
+  //! This class is abstract since it does not implement all methods required by
+  //! the Element class, it exists to provide common methods for its
+  //! subclasses.
+  //!
+  //! A *partial transformation* \f$f\f$ is just a function defined on a subset
+  //! of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called the
+  //! *degree*  of *f*.
+  //! A partial transformation is stored as a vector of the images of
+  //! \f$\{0, 1, \ldots, n -1\}\f$, i.e. \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$
+  //! where the value PartialTransformation::UNDEFINED is used to indicate that
+  //! \f$(i)f\f$ is, you guessed it, undefined (i.e. not among the points where
+  //! \f$f\f$ is defined).
 
   template <typename S, typename T>
   class PartialTransformation : public ElementWithVectorData<S, T> {
    public:
-    // Uninitialised
-    //
-    // Constructs a partial transformation with no data at all.
+    //! A constructor.
+    //!
+    //! Constructs a partial transformation with no data at all.
     PartialTransformation() : ElementWithVectorData<S, T>() {}
 
-    // 1 or 2 parameters (vector pointer, hash value)
-    // @vector Pointer to defining data of the element.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs a partial transformation with list of images equal to
-    // <vector>, <vector> is not copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>.
+    //! A constructor.
+    //!
+    //! Constructs a partial transformation with list of images equal to
+    //! \p vector, which is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p hv must be the hash value of the element
+    //! being created (this defaults to Element::UNDEFINED). This should only
+    //! be set if it is guaranteed that \p hv is the correct value. See
+    //! Element::Element for more details.
     explicit PartialTransformation(std::vector<S>* vector,
                                    size_t          hv = Element::UNDEFINED)
         : ElementWithVectorData<S, T>(vector, hv) {}
 
-    // 1 parameter (vector const ref)
-    // @vector Defining data of the element.
-    //
-    // Constructs a partial transformation with list of images equal to
-    // <vector>,
-    // which is copied into the constructed object.
+    //! A constructor.
+    //!
+    //! Constructs a partial transformation with list of images equal to
+    //! \p vector, which is copied into the constructed object.
     explicit PartialTransformation(std::vector<S> const& vector)
         : ElementWithVectorData<S, T>(vector) {}
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return the degree of a partial transformation.
+    //! Returns the approximate time complexity of multiplying two
+    //! partial transformations.
+    //!
+    //! The approximate time complexity of multiplying partial transformations
+    //! is just their degree.
     size_t complexity() const override {
       return this->_vector->size();
     }
 
-    // const
-    //
-    // @return the degree of a partial transformation.
+    //! Returns the degree of a partial transformation.
+    //!
+    //! The *degree* of a partial transformation is the number of points used
+    //! in its definition, which is equal to the length of
+    //! ElementWithVectorData::_vector.
     size_t degree() const override {
       return this->_vector->size();
     }
 
-    // const
-    //
-    // The *rank* of a partial transformation is the number of its distinct
-    // image
-    // values, not including <UNDEFINED>.
-    //
-    // @return the rank of a partial transformation.
+    //! Returns the rank of a partial transformation.
+    //!
+    //! The *rank* of a partial transformation is the number of its distinct
+    //! image values, not including PartialTransformation::UNDEFINED. This
+    //! method recomputes the return value every time it is called.
     size_t crank() const {
       _lookup.clear();
       _lookup.resize(degree(), false);
@@ -514,11 +539,9 @@ namespace libsemigroups {
       return r;
     }
 
-    // const
-    //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a partial transformation.
+    //! Find the hash value of a partial transformation.
+    //!
+    //! See also Element::hash_value for more details.
     void cache_hash_value() const override {
       size_t seed = 0;
       size_t deg  = this->degree();
@@ -529,12 +552,11 @@ namespace libsemigroups {
       this->_hash_value = seed;
     }
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new partial transformation with degree equal to <degree> that
-    // fixes every value from *1* to <degree>.
+    //! Returns the identity transformation with degrees of \c this.
+    //!
+    //! This method returns a new partial transformation with degree equal to
+    //! the degree of \c this that fixes every value from *0* to the degree of
+    //! \c this.
     Element* identity() const override {
       std::vector<S>* vector(new std::vector<S>());
       vector->reserve(this->degree());
@@ -544,13 +566,14 @@ namespace libsemigroups {
       return new T(vector);
     }
 
-    // static
-    //
-    // This value is used to indicate that a partial transformation is not
-    // defined on a value. The value of this is a cast to <S> of -1.
+    //! Undefined image value.
+    //!
+    //! This value is used to indicate that a partial transformation is not
     static S UNDEFINED;
+    //! defined on a value.
 
    private:
+    // Used for determining rank, this is not thread safe FIXME
     static std::vector<bool> _lookup;
   };
 
@@ -558,54 +581,51 @@ namespace libsemigroups {
   std::vector<bool> PartialTransformation<S, T>::_lookup = std::vector<bool>();
 
   template <typename S, typename T>
-  S PartialTransformation<S, T>::UNDEFINED = (S) -1;
+  S const
+      PartialTransformation<S, T>::UNDEFINED = std::numeric_limits<S>::max();
 
-  // Template, non-abstract
-  // @T Integer type
-  //
-  // Template class for transformations, which is a subclass of
-  // <PartialTransformation>.
-  //
-  // The value of the template parameter <T> can be used to reduce the amount of
-  // memory required by instances of this class.
-  //
-  // A *transformation* *f* is just a function defined on the whole of
-  // *{0, 1, ..., n - 1}* for some integer *n* called the *degree* of *f*.
-  // A transformation is stored as a vector of the images of *{0, 1, ..., n
-  // -1}*, i.e. *[(0)f, (1)f, ..., (n - 1)f]*.
-
+  //! Template class for transformations.
+  //!
+  //! The value of the template parameter \p T can be used to reduce the amount
+  //! of memory required by instances of this class; see PartialTransformation
+  //! and ElementWithVectorData for more details.
+  //!
+  //! A *transformation* \f$f\f$ is just a function defined on the whole of
+  //! \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called the
+  //! *degree* of \f$f\f$.
+  //! A transformation is stored as a vector of the images of
+  //! \f$\{0, 1, \ldots, n - 1\}\f$,
+  //! i.e. \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$.
   template <typename T>
   class Transformation : public PartialTransformation<T, Transformation<T>> {
    public:
-    // 1 or 2 parameters (vector pointer, hash value)
-    // @vector Pointer to image of the transformation.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs a transformation with list of images equal to <vector>,
-    // <vector> is not copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>.
+    //! A constructor.
+    //!
+    //! Constructs a transformation with list of images equal to \p vector,
+    //! \p vector is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p hv must be the hash value of the element
+    //! being created (this defaults to Element::UNDEFINED). This should only
+    //! be set if it is guaranteed that \p hv is the correct value. See
+    //! Element::Element for more details.
     explicit Transformation(std::vector<T>* vector,
                             size_t          hv = Element::UNDEFINED)
         : PartialTransformation<T, Transformation<T>>(vector, hv) {}
 
-    // 1 parameters (vector const ref)
-    // @vector The image of the transformation.
-    //
-    // Constructs a partial transformation with list of images equal to
-    // <vector>,
-    // which is copied into the constructed object.
+    //! A constructor.
+    //!
+    //! Constructs a transformation with list of images equal to
+    //! \p vector, which is copied into the constructed object.
     explicit Transformation(std::vector<T> const& vector)
         : PartialTransformation<T, Transformation<T>>(vector) {}
 
-    // const
-    // @increase_deg_by increase the degree by this amount (defaults to 0).
-    //
-    // See <Element::really_copy>.
-    //
-    // The copy returned by this method fixes all the values between the
-    // <PartialTransformation::degree> of **this** and <increase_deg_by>.
-    //
-    // @return A pointer to a copy of **this**.
+    //! Returns a pointer to a copy of \c this.
+    //!
+    //! See Element::really_copy for more details about this method.
+    //!
+    //! The copy returned by this method fixes all the values between the
+    //! Transformation::degree of \c this and \p increase_deg_by.
     Element* really_copy(size_t increase_deg_by = 0) const override {
       std::vector<T>* vector_copy = new std::vector<T>(*this->_vector);
       if (increase_deg_by == 0) {
@@ -620,15 +640,12 @@ namespace libsemigroups {
       }
     }
 
-    // non-const
-    // @x transformation
-    // @y transformation
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
-    // that neither <x> nor <y> equals **this**.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! See Element::redefine for more details about this method.
+    //!
+    //! This method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -643,50 +660,50 @@ namespace libsemigroups {
     }
   };
 
-  // Template, non-abstract
-  // @T Integer type
-  //
-  // Template class for partial permutations, which is a subclass of
-  // <PartialTransformation>.
-  //
-  // The value of the template parameter <T> can be used to reduce the amount of
-  // memory required by instances of this class.
-  //
-  // A *partial permutation* *f* is just an injective partial transformation,
-  // which is stored as a vector of the images of *{0, 1, ..., n -1}*, i.e.
-  // *[(0)f, (1)f, ..., (n - 1)f]* where the value UNDEFINED (a cast to type
-  // <T> of -1) is used to indicate that *(i)f* is, you guessed it, undefined
-  // (i.e. not among the points where *f* is defined).
-
+  //! Template class for partial permutations.
+  //!
+  //! The value of the template parameter \p T can be used to reduce the amount
+  //! of memory required by instances of this class; see PartialTransformation
+  //! and ElementWithVectorData for more details.
+  //!
+  //! A *partial permutation* \f$f\f$ is just an injective partial
+  //! transformation, which is stored as a vector of the images of
+  //! \f$\{0, 1, \ldots, n - 1\}\f$, i.e.
+  //! i.e. \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$ where the value
+  //! PartialTransformation::UNDEFINED is
+  //! used to indicate that \f$(i)f\f$ is undefined (i.e. not among
+  //! the points where \f$f\f$ is defined).
   template <typename T>
   class PartialPerm : public PartialTransformation<T, PartialPerm<T>> {
    public:
-    // 1 or 2 parameters (vector pointer, hash value)
-    // @vector Pointer to image of the partial perm.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs a partial perm with list of images equal to <vector>,
-    // <vector> is not copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>.
+    //! A constructor.
+    //!
+    //! Constructs a partial perm with list of images equal to vector,
+    //! vector is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p hv must be the hash value of the element
+    //! being created (this defaults to Element::UNDEFINED). This should only
+    //! be set if it is guaranteed that \p hv is the correct value. See
+    //! Element::Element for more details.
     explicit PartialPerm(std::vector<T>* vector, size_t hv = Element::UNDEFINED)
         : PartialTransformation<T, PartialPerm<T>>(vector, hv) {}
 
-    // 1 parameter (vector const ref)
-    // @vector Image of the partial perm.
-    //
-    // Constructs a partial perm with list of images equal to <vector>,
-    // which is copied into the constructed object.
+    //! A constructor.
+    //!
+    //! Constructs a partial perm with list of images equal to vector,
+    //! which is copied into the constructed object.
     explicit PartialPerm(std::vector<T> const& vector)
         : PartialTransformation<T, PartialPerm<T>>(vector) {}
 
-    // 3 parameters
-    // @dom The domain
-    // @ran The range
-    // @deg The intended degree of the partial perm. This must be at least the
-    // maximum element occurring in <dom> or <ran>.
-    //
-    // Constructs a partial perm such that (<dom>[i])f = <ran>[i] and which is
-    // undefined on every other value.
+    //! A constructor.
+    //!
+    //! Constructs a partial perm of degree \p deg such that
+    //! \code (dom[i])f = ran[i] \endcode
+    //! for all \c i and which is undefined on every other value in the range 0
+    //! to (strictly less than \p deg). This method asserts that \p dom and \p
+    //! ran have equal size and that \p deg is greater than or equal to the
+    //! maximum value in \p dom or \p ran.
     explicit PartialPerm(std::vector<T> const& dom,
                          std::vector<T> const& ran,
                          size_t                deg)
@@ -700,14 +717,13 @@ namespace libsemigroups {
       }
     }
 
-    // const
-    // @that Compare **this** and <that>.
-    //
-    // This defines a total order on partial permutations that is equivalent to
-    // that used by GAP. It is not short-lex on the list of images.
-    //
-    // @return **true** if something complicated is **true** and **false** if
-    // it is not.
+    //! Returns \c true if \c this is less than \p that.
+    //!
+    //! This defines a total order on partial permutations that is equivalent to
+    //! that used by GAP. It is not short-lex on the list of images.
+    //!
+    //! Returns \c true if something complicated is \c true and \c false if
+    //! it is not.
     bool operator<(const Element& that) const override {
       auto pp_this = static_cast<const PartialPerm<T>*>(this);
       auto pp_that = static_cast<const PartialPerm<T>&>(that);
@@ -746,15 +762,12 @@ namespace libsemigroups {
       return false;
     }
 
-    // const
-    // @increase_deg_by increase the degree by this amount (defaults to 0).
-    //
-    // See <Element::really_copy>.
-    //
-    // The copy returned by this method is undefined on all the values between
-    // the <PartialTransformation::degree> of **this** and <increase_deg_by>.
-    //
-    // @return A pointer to a copy of **this**.
+    //! Returns a pointer to a copy of \c this.
+    //!
+    //! See Element::really_copy for more details about this method.
+    //!
+    //! The copy returned by this method is undefined on all the values between
+    //! the PartialPerm::degree of \c this and \p increase_deg_by.
     Element* really_copy(size_t increase_deg_by = 0) const override {
       std::vector<T>* vector_copy = new std::vector<T>(*this->_vector);
       if (increase_deg_by == 0) {
@@ -769,15 +782,12 @@ namespace libsemigroups {
       }
     }
 
-    // non-const
-    // @x partial perm
-    // @y partial perm
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
-    // that neither <x> nor <y> equals **this**.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! See Element::redefine for more details about this method.
+    //!
+    //! This method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this.
     void redefine(Element const* x, Element const* y) override {
       assert(x->degree() == y->degree());
       assert(x->degree() == this->degree());
@@ -792,14 +802,14 @@ namespace libsemigroups {
       this->reset_hash_value();
     }
 
-    // const
-    //
-    // The *rank* of a partial permutation is the number of its distinct image
-    // values, not including UNDEFINED. This method involves slightly less work
-    // than <PartialTransformation::crank> since a partial permutation is
-    // injective, and so every image value occurs precisely once.
-    //
-    // @return the rank of a partial permutation.
+    //! Returns the rank of a partial permutation.
+    //!
+    //! The *rank* of a partial permutation is the number of its distinct image
+    //! values, not including PartialTransformation::UNDEFINED. This method
+    //! involves slightly less work than PartialTransformation::crank since a
+    //! partial permutation is injective, and so every image value occurs
+    //! precisely once. This method recomputes the return value every time it
+    //! is called.
     size_t crank() const {
       size_t nr_defined = 0;
       for (auto const& x : *this->_vector) {
@@ -811,90 +821,93 @@ namespace libsemigroups {
     }
   };
 
-  // Non-abstract
-  // Class for square matrices over the Boolean semiring, which is a subclass of
-  // <ElementWithVectorData>.
-
+  //! Class for square boolean matrices.
+  //!
+  //! A *boolean matrix* is a square matrix over the Boolean semiring, under
+  //! the usual multiplication of matrices.
   class BooleanMat : public ElementWithVectorData<bool, BooleanMat> {
+    // FIXME why is this not a subclass of MatrixOverSemiring?
    public:
-    // 1 parameter (vector pointer)
-    // @matrix Pointer to defining data of the matrix.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs a Boolean matrix defined by <matrix>, <matrix> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <matrix> should be a vector of boolean values of length *n ^
-    // 2* for some integer *n*, so that the value in position *in + j* is the
-    // entry in the *i*th row and *j*th column of the constructed matrix.
+    //! A constructor.
+    //!
+    //! Constructs a Boolean matrix defined by \p matrix, \p matrix is not
+    //! copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p matrix should be a vector of boolean values of length
+    //! \f$n ^  2\f$ for some integer \f$n\f$, so that the value in position
+    //! \f$in + j\f$ is the entry in the \f$i\f$th row and \f$j\f$th column of
+    //! the constructed matrix.
+    //!
+    //! The parameter \p hv must be the hash value of the element
+    //! being created (this defaults to Element::UNDEFINED). This should only
+    //! be set if it is guaranteed that \p hv is the correct value. See
+    //! Element::Element for more details.
     explicit BooleanMat(std::vector<bool>* matrix,
                         size_t             hv = Element::UNDEFINED)
         : ElementWithVectorData<bool, BooleanMat>(matrix, hv) {}
 
-    // 1 parameter (vector of vectors ref)
-    // @matrix The matrix.
-    //
-    // Constructs a boolean matrix defined by <matrix>, which is copied into the
-    // constructed boolean matrix.
+    //! A constructor.
+    //!
+    //! Constructs a boolean matrix defined by matrix, which is copied into the
+    //! constructed boolean matrix; see BooleanMat::BooleanMat for more
+    //! details.
     explicit BooleanMat(std::vector<std::vector<bool>> const& matrix);
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return *n ^ 3* where *n* is the dimension of the matrix.
+    //!  Returns the approximate time complexity of multiplying two
+    //! boolean matrices.
+    //!
+    //! See Element::complexity for more details.
+    //!
+    //! The approximate time complexity of multiplying boolean matrices is
+    //! \f$n ^ 3\f$ where \f$n\f$ is the dimension of the matrix.
     size_t complexity() const override;
 
-    // const
-    //
-    // See <Element::degree> for more details.
-    //
-    // @return the dimension of the matrix.
+    //! Returns the dimension of the boolean matrix.
+    //!
+    //! The *dimension* of a boolean matrix is just the number of rows (or,
+    //! equivalently columns).
+    //!
+    //! See Element::degree for more details.
     size_t degree() const override;
 
-    // const
-    //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a boolean matrix.
+    //! Find the hash value of a boolean matrix.
+    //!
+    //! See Element::hash_value or Element::cache_hash_value for more details.
     void cache_hash_value() const override;
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new boolean matrix with dimension equal to that of **this**,
-    // where the main diagonal consists of the value **true** and every other
-    // entry
-    // is **false**.
+    //! Returns the identity boolean matrix with dimension of \c this.
+    //!
+    //! This method returns a new boolean matrix with dimension equal to that
+    //! of \c this, where the main diagonal consists of the value \c true and
+    //! every other entry is \c false.
     Element* identity() const override;
 
-    // non-const
-    // @x a Boolean matrix
-    // @y a Boolean matrix
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be the product of <x> and <y>. This method asserts
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! This method asserts that the dimensions of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this.
     void redefine(Element const* x, Element const* y) override;
   };
 
-  // Non-abstract
-  // Class for bipartitions, which are partitions of the set *{0, ..., 2n -1}*
-  // for some integer *n*, which is a subclass of <ElementWithVectorData>.
-  //
-  // The <Bipartition> class is more complex (i.e. has more methods) than
-  // strictly required by the algorithms for <Semigroup>s because the extra
-  // methods are used in the GAP package [Semigroups package for
-  // GAP](https://gap-packages.github.io/Semigroups/).
+  //! Class for bipartitions.
+  //!
+  //! A *bipartition* is a partition of the set
+  //! \f$\{0, ..., 2n - 1\}\f$ for some integer \f$n\f$; see [TODO](TODO) for
+  //! more details.
+  // FIXME Reference the Semigroups in GAP manual.
+
+  //! The Bipartition class is more complex (i.e. has more methods) than
+  //! strictly required by the algorithms for a Semigroup object because the
+  //! extra methods are used in the GAP package [Semigroups package for
+  //! GAP](https://gap-packages.github.io/Semigroups/).
 
   class Bipartition : public ElementWithVectorData<u_int32_t, Bipartition> {
     // TODO(JDM) add more explanation to the doc here
    public:
-    // 1 parameters (integer)
-    // @degree Degree of bipartition being constructed.
-    //
-    // Constructs a uninitialised bipartition of degree <degree>.
+    //! A constructor.
+    //!
+    //! Constructs a uninitialised bipartition of degree \p degree.
     explicit Bipartition(size_t degree)
         : ElementWithVectorData<u_int32_t, Bipartition>(2 * degree),
           _nr_blocks(Bipartition::UNDEFINED),
@@ -902,16 +915,18 @@ namespace libsemigroups {
           _trans_blocks_lookup(),
           _rank(Bipartition::UNDEFINED) {}
 
-    // 1 parameter (vector pointer)
-    // @blocks lookup table for the bipartition being defined.
-    // @hv     The hash value of the element being created (defaults to
-    // Element::UNDEFINED).
-    //
-    // The argument <blocks> must have length *2n* for some integer *n*,
-    // consist of non-negative integers, and have the property that if *i*, *i
-    // > 0*, occurs in <blocks>, then *i - 1* occurs earlier in <blocks>.  None
-    // of this is checked.  The argument <blocks> is not copied, and should be
-    // deleted using <ElementWithVectorData::really_delete>
+    //! A constructor.
+    //!
+    //! The parameter \p blocks must have length *2n* for some positive integer
+    //! *n*, consist of non-negative integers, and have the property that if
+    //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
+    //! blocks.  None of this is checked.
+    //!
+    //! The parameter \p blocks is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p hv can be the hash value of the element being created,
+    //! if it is known (defaults to  Element::UNDEFINED).
     explicit Bipartition(std::vector<u_int32_t>* blocks,
                          size_t                  hv = Element::UNDEFINED)
         : ElementWithVectorData<u_int32_t, Bipartition>(blocks, hv),
@@ -920,153 +935,147 @@ namespace libsemigroups {
           _trans_blocks_lookup(),
           _rank(Bipartition::UNDEFINED) {}
 
-    // 1 parameter (vector const reference)
-    // @blocks lookup table for the bipartition being defined.
-    //
-    // The argument <blocks> must have length *2n* for some integer *n*,
-    // consist of non-negative integers, and have the property that *i*, *i >
-    // 0*,  occurs in <blocks>, then *i - 1* occurs earlier in <blocks>. None
-    // of this is checked. The argument <blocks> is copied into the newly
-    // constructed bipartition.
+    //! A constructor.
+    //!
+    //! The parameter \p blocks must have length *2n* for some positive integer
+    //! *n*, consist of non-negative integers, and have the property that if
+    //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
+    //! blocks.  None of this is checked.
+    //!
+    //! The parameter \p blocks is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
     explicit Bipartition(std::vector<u_int32_t> const& blocks)
         : Bipartition(new std::vector<u_int32_t>(blocks)) {}
 
     // TODO(JDM) another constructor that accepts an actual partition
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return *2n ^ 2* where *n* is the degree of the bipartition.
+    //! Returns the approximate time complexity of multiplication.
+    //!
+    //! In the case of a Bipartition of degree *n* the value *2n ^ 2* is
+    //! returned.
     size_t complexity() const override;
 
-    // const
-    //
-    // A bipartition is of degree *n* if it is a partition of *{0, ..., 2n -
-    // 1}*.  See <Element::degree> for more details.
-    //
-    // @return the degree of the bipartition.
+    //! Returns the degree of the bipartition.
+    //!
+    //! A bipartition is of degree *n* if it is a partition of
+    //! \f$\{0, \ldots, 2n -  1\}\f$.
     size_t degree() const override;
 
-    // const
-    //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a bipartition.
     void cache_hash_value() const override;
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new bipartition with degree equal to that of **this**,
-    // whose blocks are *{i, -i}* for all *i* in *{0, ..., n - 1}*.
+    //! Returns an identity bipartition.
+    //!
+    //! The *identity bipartition* of degree \f$n\f$ has blocks \f$\{i, -i\}\f$
+    //! for all \f$i\in \{0, \ldots, n - 1\}\f$. This method returns a new
+    //! identity bipartition of degree equal to the degree of \c this.
     Element* identity() const override;
 
-    // non-const
-    // @x a bipartition
-    // @y a bipartition
-    // @thread_id the id number of the thread calling the method
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine this to be the product (as defined at the top of this page) of
-    // <x> and <y>. This method asserts that the dimensions of <x>, <y>, and
-    // this, are all equal, and that neither <x> nor <y> equals **this**.
-    //
-    // Note that if different threads call this method with the same value of
-    // <thread_id> then bad things will happen.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! This method redefines \c this to be the product (as defined at the top
+    //! of this page) of the parameters  \p x and \p y. This method asserts
+    //! that the degrees of \p x, \p y, and \c this, are all equal, and that
+    //! neither \p x nor  \p y equals \c this.
+    //!
+    //! The parameter \p thread_id is required since some temporary storage is
+    //! required to find the product of \p x and \p y.
+    //! Note that if different threads call this method with the same value of
+    //! \p thread_id then bad things will happen.
     void redefine(Element const* x,
                   Element const* y,
                   size_t const&  thread_id) override;
 
-    // non-const
-    //
-    // The *rank* of a bipartition is the number of blocks containing both
-    // positive and negative values.
-    //
-    // This value is cached after it is first computed.
-    // @return the rank of a bipartition.
+    //! Returns the number of transverse blocks.
+    //!
+    //! The *rank* of a bipartition is the number of blocks containing both
+    //! positive and negative values.  This value is cached after it is first
+    //! computed.
     size_t rank();
 
-    // const
-    // @pos a value between *0* and *2n - 1* where *n* is the degree
-    //
-    // This method asserts that <pos> is in the correct range of values.
-    //
-    // @return the index of the block containing <pos>.
+    //! Returns the index of the block containing \p pos.
+    //!
+    //! The parameter \p pos must be a value between *0* and *2n - 1* where *n*
+    //! is the degree of this. This method asserts that pos is in the correct
+    //! range of values.
+
+    // FIXME remove this it is redundant: the method for [] or at of
+    // ElementWithVectorData makes this unnecessary
     u_int32_t block(size_t pos) const;
 
-    // const
-    //
-    // @return the number of blocks in a bipartition.
+    //! Returns the number of blocks in a bipartition.
+    //!
+    //! This method differs for Bipartition::nr_blocks in that the number of
+    //! blocks is not cached if it has not been previously computed.
     u_int32_t const_nr_blocks() const;
 
-    // non-const
-    //
-    // @return the number of blocks in a bipartition.
+    //! Returns the number of blocks in a bipartition.
+    //!
+    //! This value is cached the first time it is computed.
     u_int32_t nr_blocks();
 
-    // non-const
-    //
-    // @return the number of blocks in a bipartition containing positive
-    // integers.
+    //! Returns the number of blocks containing a positive integer.
+    //!
+    //! The *left blocks* of a bipartition is the partition of
+    //! \f$\{0, \ldots, n - 1\}\f$ induced by the bipartition. This method
+    //! returns the number of blocks in this partition.
     u_int32_t nr_left_blocks();
 
-    // non-const
-    //
-    // @return the number of blocks in a bipartition containing negative
-    // integers.
+    //! Returns the number of blocks containing a negative integer.
+    //!
+    //! The *right blocks* of a bipartition is the partition of
+    //! \f$\{n, \ldots, 2n - 1\}\f$ induced by the bipartition. This method
+    //! returns the number of blocks in this partition.
     u_int32_t nr_right_blocks();
 
-    // non-const
-    // @index index of a block in **this**
-    //
-    // @return **true** if the <index>th block of **this** contains both
-    // positive and
-    // negative values, and **false** otherwise.
+    //! Returns \c true if the block with index \p index is transverse.
+    //!
+    //! A block of a biparition is *transverse* if it contains integers less
+    //! than and greater than \f$n\f$, which is the degree of the bipartition.
+    //! This method asserts that the parameter \p index is less than the number
+    //! of blocks in the bipartition.
     bool is_transverse_block(size_t index);
 
-    // non-const
-    //
-    // @return the left blocks of a bipartition.
+    //! Return the left blocks of a bipartition
+    //!
+    //! The *left blocks* of a bipartition is the partition of
+    //! \f$\{0, \ldots, n - 1\}\f$ induced by the bipartition. This method
+    //! returns a Blocks object representing this partition.
     Blocks* left_blocks();
 
-    // non-const
-    //
-    // @return the right blocks of a bipartition.
+    //! Return the left blocks of a bipartition
+    //!
+    //! The *right blocks* of a bipartition is the partition of
+    //! \f$\{n, \ldots, 2n - 1\}\f$ induced by the bipartition. This method
+    //! returns a Blocks object representing this partition.
     Blocks* right_blocks();
 
-    // non-const
-    // @nr_blocks an integer
-    //
-    // This method sets the cached value of the number of blocks of **this** to
-    // <nr_blocks>. It asserts that either there is no existing cached value or
-    // <nr_blocks> equals the existing cached value.
+    //! Set the cached number of blocks
+    //!
+    //! This method sets the cached value of the number of blocks of \c this
+    //! to \p nr_blocks. It asserts that either there is no existing cached
+    //! value or \p nr_blocks equals the existing cached value.
     inline void set_nr_blocks(size_t nr_blocks) {
       assert(_nr_blocks == Bipartition::UNDEFINED || _nr_blocks == nr_blocks);
       _nr_blocks = nr_blocks;
     }
 
-    // non-const
-    // @nr_left_blocks an integer
-    //
-    // This method sets the cached value of the number of left blocks of
-    // **this** to <nr_left_blocks>. It asserts that either there is no
-    // existing cached value or <nr_left_blocks> equals the existing cached
-    // value.
+    //! Set the cached number of left blocks
+    //!
+    //! This method sets the cached value of the number of left blocks of
+    //! \c this to \p nr_left_blocks. It asserts that either there is no
+    //! existing cached value or \p nr_left_blocks equals the existing cached
+    //! value.
     inline void set_nr_left_blocks(size_t nr_left_blocks) {
       assert(_nr_left_blocks == Bipartition::UNDEFINED
              || _nr_left_blocks == nr_left_blocks);
       _nr_left_blocks = nr_left_blocks;
     }
 
-    // non-const
-    // @rank an integer
-    //
-    // This method sets the cached value of the rank of **this** to <rank>. It
-    // asserts that either there is no existing cached value or
-    // <rank> equals the existing cached value.
+    //! Set the cached rank
+    //!
+    //! This method sets the cached value of the rank of \c this to \p rank.
+    //! It asserts that either there is no existing cached value or
+    //! \p rank equals the existing cached value.
     inline void set_rank(size_t rank) {
       assert(_rank == Bipartition::UNDEFINED || _rank == rank);
       _rank = rank;
@@ -1087,141 +1096,142 @@ namespace libsemigroups {
     static u_int32_t const UNDEFINED;
   };
 
-  // Non-abstract
-  // Class for square matrices over semirings, which is a subclass of
-  // <ElementWithVectorData>. See <Semiring>.
-  //
-  // This class is abstract since it does not implement all methods required by
-  // the <Element> class, it exists to provide common methods for its
-  // subclasses.
-
+  //! Class for square matrices over a Semiring.
+  //!
+  //! This class is abstract since it does not implement all methods required by
+  //! the Element class, it exists to provide common methods for its
+  //! subclasses.
   class MatrixOverSemiring
       : public ElementWithVectorData<int64_t, MatrixOverSemiring> {
    public:
-    // 2 or 3 parameters
-    // @matrix    Pointer to defining data of the matrix.
-    // @hv        The hash value of the element being created
-    // @semiring  The semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, <matrix> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <matrix> should be a vector of integer values of length *n ^
-    // 2* for some integer *n*, so that the value in position *i * n + j* is the
-    // entry in the *i*th row and *j*th column of the constructed matrix.
-
+    //! A constructor.
+    //!
+    //! Constructs a matrix defined by \p matrix, \p matrix is not copied,
+    //! and should be deleted using ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p matrix should be a vector of integer values of length
+    //! \f$n ^ 2\f$ for some integer \f$n\f$, so that the value in position
+    //! \f$in + j\f$ is the entry in the \f$i\f$th row and \f$j\f$th column of
+    //! the constructed matrix.
+    //!
+    //! The parameter \p hv must be the hash value of the element being
+    //! created. It is the responsibility of the caller to ensure that \p hv is
+    //! the correct value. See Element::Element for more details.
+    //!
+    //! The parameter \p semiring should be a pointer to a Semiring, which
+    //! is the semiring over which the matrix is defined (this defaults to \c
+    //! nullptr).
     explicit MatrixOverSemiring(std::vector<int64_t>* matrix,
                                 size_t                hv,
                                 Semiring*             semiring = nullptr)
         : ElementWithVectorData<int64_t, MatrixOverSemiring>(matrix, hv),
           _semiring(semiring) {}
 
-    // 2 parameters (vector pointer, semiring pointer)
-    // @matrix    Pointer to defining data of the matrix.
-    // @semiring  The semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, <matrix> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <matrix> should be a vector of integer values of length *n ^
-    // 2* for some integer *n*, so that the value in position *i * n + j* is the
-    // entry in the *i*th row and *j*th column of the constructed matrix.
-
+    //! A constructor.
+    //!
+    //! Constructs a matrix defined by \p matrix, \p matrix is not copied,
+    //! and should be deleted using ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p matrix should be a vector of integer values of length
+    //! \f$n ^ 2\f$ for some integer \f$n\f$, so that the value in position
+    //! \f$in + j\f$ is the entry in the \f$i\f$th row and \f$j\f$th column of
+    //! the constructed matrix.
+    //!
+    //! The parameter \p semiring should be a pointer to a Semiring, which
+    //! is the semiring over which the matrix is defined (this defaults to \c
+    //! nullptr).
     explicit MatrixOverSemiring(std::vector<int64_t>* matrix,
                                 Semiring*             semiring = nullptr)
         : ElementWithVectorData<int64_t, MatrixOverSemiring>(matrix),
           _semiring(semiring) {}
 
-    // 2 parameters (matrix const ref, semiring pointer)
-    // @matrix    The matrix.
-    // @semiring  A pointer to the semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, which is copied into the
-    // constructed matrix.
+    //! A constructor.
+    //!
+    //! Constructs a matrix defined by \p matrix, which is copied into the
+    //! constructed object.
+    //!
+    //! The parameter \p matrix should be a vector of integer values of length
+    //! \f$n ^ 2\f$ for some integer \f$n\f$, so that the value in position
+    //! \f$in + j\f$ is the entry in the \f$i\f$th row and \f$j\f$th column of
+    //! the constructed matrix.
+    //!
+    //! The parameter \p semiring should be a pointer to a Semiring, which
+    //! is the semiring over which the matrix is defined.
     explicit MatrixOverSemiring(std::vector<std::vector<int64_t>> const& matrix,
                                 Semiring* semiring);
 
-    // const
-    //
-    // @return the <Semiring> over which the matrix is defined.
+    //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring* semiring() const;
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return *n ^ 3* where *n* is the dimension of the matrix.
+    //! Returns the approximate time complexity of multiplying two matrices.
+    //!
+    //! The approximate time complexity of multiplying matrices is \f$n ^ 3\f$
+    //! where \f$n\f$ is the dimension of the matrix.
     size_t complexity() const override;
 
-    // const
-    //
-    // See <Element::degree> for more details.
-    //
-    // @return the dimension of the matrix.
+    //! Returns the dimension of the matrix.
+    //!
+    //! The *dimension* of a matrix is just the number of rows (or,
+    //! equivalently columns).
+    //!
     size_t degree() const override;
 
-    // const
-    //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a matrix.
+    //! Find the hash value of a matrix over a semiring.
+    //!
+    //! See also Element::hash_value.
     void cache_hash_value() const override;
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new matrix with dimension equal to that of **this**, where the
-    // main diagonal consists of the value <Semiring::one> and every other entry
-    // <Semiring::zero>.
+    //! Returns the identity matrix with dimension of \c this.
+    //!
+    //! This method returns a new matrix with dimension equal to that of \c
+    //! this, where the main diagonal consists of the value Semiring::one and
+    //! every other entry Semiring::zero.
     Element* identity() const override;
 
-    // const
-    // @increase_deg_by this must be 0, since it does not make sense to increase
-    // the degree of a matrix.
-    //
-    // See <Element::really_copy>.
-    //
-    // @return A pointer to a copy of **this**.
+    //! Returns a pointer to a copy of \c this.
+    //!
+    //! The parameter \p increase_deg_by must be 0, since it does not make
+    //! sense to increase the degree of a matrix. The semiring of the \c this
+    //! and the returned copy are equal, so if the method
+    //! Element::really_delete is called on either, then the other will become
+    //! invalid.
     Element* really_copy(size_t increase_deg_by = 0) const override;
 
-    // non-const
-    // @x a matrix
-    // @y a matrix
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be the product of <x> and <y>. This method asserts
-    // that the dimensions of <x>, <y>, and **this**, are all equal, and that
-    // neither <x> nor <y> equals **this**.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! This method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this. It does not
+    //! currently verify that \c x, \c y, and \c this are defined over the same
+    //! semiring.
+
+    // FIXME verify that x, y, and this are defined over the same semiring.
     void redefine(Element const* x, Element const* y) override;
 
    private:
-    // a function applied after redefinition
+    //! a function applied after redefinition
     virtual void after() {}
 
     Semiring* _semiring;
   };
 
-  // Non-abstract
-  // Class for projective square matrices  <MaxPlusSemiring> semiring, which is
-  // a subclass of <ElementWithVectorData>. See <Semiring>.
-  // Two projective matrices are equal if they differ by a scalar multiple.
-
+  //! Class for projective max-plus matrices.
+  //!
+  //! These matrices belong to the quotient of the monoid of all max-plus
+  //! matrices by the congruence where two matrices are related if they differ
+  //! by a scalar multiple. See also MaxPlusSemiring and MatrixOverSemiring.
+  //!
+  //! Matrices in this class are modified when constructed to be in a normal
+  //! form which is obtained by subtracting the maximum finite entry in
+  //! the matrix from the every finite entry.
   class ProjectiveMaxPlusMatrix : public MatrixOverSemiring {
    public:
-    // 2 or 3 parameters
-    // @matrix    Pointer to defining data of the matrix.
-    // @hv        Hash value of the element being created (defaults to
-    //            Element::UNDEFINED)
-    // @semiring  Pointer to the semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, <matrix> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <matrix> should be a vector of integer values of length *n ^
-    // 2* for some integer *n*, so that the value in position *i * n + j* is the
-    // entry in the *i*th row and *j*th column of the constructed matrix.
+    //! A constructor.
+    //!
+    //! See MatrixOverSemiring::MatrixOverSemiring for details about this
+    //! method.
+    //!
+    //! The parameter \p matrix is converted into its normal form when
+    //! when the object is constructed.
     explicit ProjectiveMaxPlusMatrix(std::vector<int64_t>* matrix,
                                      size_t    hv       = Element::UNDEFINED,
                                      Semiring* semiring = nullptr)
@@ -1229,28 +1239,26 @@ namespace libsemigroups {
       after();  // this is to put the matrix in normal form
     }
 
-    // 2 parameters (vector pointer, hash value)
-    // @matrix    Pointer to defining data of the matrix.
-    // @semiring  Pointer to the semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, <matrix> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <matrix> should be a vector of integer values of length *n ^
-    // 2* for some integer *n*, so that the value in position *i * n + j* is the
-    // entry in the *i*th row and *j*th column of the constructed matrix.
+    //! A constructor.
+    //!
+    //! See MatrixOverSemiring::MatrixOverSemiring for details about this
+    //! method.
+    //!
+    //! The parameter \p matrix is converted into its normal form when
+    //! when the object is constructed.
     explicit ProjectiveMaxPlusMatrix(std::vector<int64_t>* matrix,
                                      Semiring*             semiring = nullptr)
         : MatrixOverSemiring(matrix, semiring) {
       after();  // this is to put the matrix in normal form
     }
 
-    // 2 parameters (vector const ref, semiring pointer)
-    // @matrix The matrix
-    // @semiring  Pointer to the semiring over which the matrix is defined.
-    //
-    // Constructs a matrix defined by <matrix>, which is copied into the
-    // constructed matrix.
+    //! A constructor.
+    //!
+    //! See MatrixOverSemiring::MatrixOverSemiring for details about this
+    //! method.
+    //!
+    //! The copy of the parameter \p matrix is converted into its normal form
+    //! when the object is constructed.
     explicit ProjectiveMaxPlusMatrix(
         std::vector<std::vector<int64_t>> const& matrix,
         Semiring*                                semiring = nullptr)
@@ -1258,82 +1266,74 @@ namespace libsemigroups {
       after();  // this is to put the matrix in normal form
     }
 
-    // const
-    //
-    // See <Element::hash_value>.
-    //
-    // @return a hash value for a matrix.
+    //! Find the hash value of a projective max-plus matrix.
+    //!
+    //! See also Element::hash_value.
     void cache_hash_value() const override;
 
    private:
-    // a function applied after redefinition
+    //! a function applied after redefinition
     void after() override;
   };
 
-  // Non-abstract
-  // Partitioned binary relations are a generalisation of bipartitions, which
-  // were introduced by [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
-  // This is a subclass of <ElementWithVectorData>.
-
+  //! Class for partitioned binary relations (PBR).
+  //!
+  //! Partitioned binary relations (PBRs) are a generalisation of bipartitions,
+  //! which were introduced by
+  //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
   class PBR : public ElementWithVectorData<std::vector<u_int32_t>, PBR> {
    public:
-    // Default
-    // @vector    Pointer to defining data of the matrix.
-    // @hv     The hash value of the element being created.
-    //
-    // Constructs a PBR defined by <vector>, <vector> is not copied,
-    // and should be deleted using <ElementWithVectorData::really_delete>.
-    //
-    // The argument <vector> should be a vector of vectors of non-negative
-    // integer values of length *2n* for some integer *n*, the vector in
-    // position *i* is the list of points adjacent to *i* in the PBR.
+    //! A constructor.
+    //!
+    //! Constructs a PBR defined by \p vector, \p vector is not copied,
+    //! and should be deleted using ElementWithVectorData::really_delete.
+    //!
+    //! The parameter \p vector should be a vector of vectors of non-negative
+    //! integer values of length \f$2n\f$ for some integer \f$n\f$, the vector
+    //! in position \f$i\f$ is the list of points adjacent to \f$i\f$ in the
+    //! PBR.
     explicit PBR(std::vector<std::vector<u_int32_t>>* vector,
                  size_t                               hv = Element::UNDEFINED)
         : ElementWithVectorData<std::vector<u_int32_t>, PBR>(vector, hv) {}
     // TODO(JDM) a more convenient constructor
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return two times <ElementWithVectorData::degree> all cubed.
+    //! Returns the approximate time complexity of multiplying PBRs.
+    //!
+    //! The approximate time complexity of multiplying PBRs is \f$2n ^ 3\f$
+    //! where \f$n\f$ is the degree.
     size_t complexity() const override;
 
-    // const
-    //
-    // See <Element::degree> for more details.
-    //
-    // @return half the number of points in the PBR, which is also half the
-    // length of the underlying vector <ElementWithVectorData::_vector>.
+    //! Returns the degree of a PBR.
+    //!
+    //! The *degree* of a PBR is half the number of points in the PBR, which is
+    //! also half the length of the underlying vector
+    //! ElementWithVectorData::_vector.
     size_t degree() const override;
 
-    // const
-    //
-    // Calculates a hash value; see <Element::hash_value>.
+    //! Find the hash value of a PBR.
+    //!
+    //! See also Element::hash_value.
     void cache_hash_value() const override;
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new PBR with degree equal to <degree> where every value is
-    // adjacent to its negative (or *i* is adjacent *i +* <degree> and vice
-    // versa for every *i* less than <degree>).
+    //! Returns the identity PBR with degree equal to that of \c this.
+    //!
+    //! This method returns a new PBR with degree equal to the degree of \c
+    //! this where every value is adjacent to its negative. Equivalently,
+    //! \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every \f$i\f$ less
+    //! than the degree \f$n\f$.
     Element* identity() const override;
 
-    // non-const
-    // @x PBR
-    // @y PBR
-    // @thread_id the id number of the thread calling the method
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be the composition of <x> and <y>. This method
-    // asserts that the degrees of <x>, <y>, and **this**, are all equal, and
-    // that neither <x> nor <y> equals **this**.
-    //
-    // Note that if different threads call this method with the same value of
-    // <thread_id> then bad things will happen.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! This method redefines \c this to be the product
+    //! of the parameters  \p x and \p y. This method asserts
+    //! that the degrees of \p x, \p y, and \c this, are all equal, and that
+    //! neither \p x nor  \p y equals \c this.
+    //!
+    //! The parameter \p thread_id is required since some temporary storage is
+    //! required to find the product of \p x and \p y.  Note that if different
+    //! threads call this method with the same value of \p thread_id then bad
+    //! things will happen.
     void redefine(Element const* x,
                   Element const* y,
                   size_t const&  thread_id) override;

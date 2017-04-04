@@ -30,10 +30,10 @@
 
 namespace libsemigroups {
 
-  // Non-abstract
-  //
-  // This is a subclass of <Element> and is really just a wrapper for an
-  // <rws_word_t>.
+  //! Subclass of Element that wraps an libsemigroups::rws_word_t.
+  //!
+  //! This class is used to wrap libsemigroups::rws_word_t into an Element so
+  //! that it is possible to use them as generators for a Semigroup object.
   class RWSE : public Element {
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce, size_t hv)
@@ -45,155 +45,132 @@ namespace libsemigroups {
     }
 
    public:
-    // 2 parameters (pointers)
-    // @rws a rewriting system
-    // @w   a pointer to an <rws_word_t>
-    //
-    // Constructs a RWSE which is essentially the word <w>, whose
-    // multiplication with other RWSEs is defined with respect to the rewriting
-    // system <rws>.
-    //
-    // The <rws_word_t> <w> is not copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>.
-    //
-    // The rewriting <rws> is not copied either, but it is the responsibility
-    // of the caller to delete this.
+    //! Constructor from a rewriting system and a word.
+    //!
+    //! Constructs a RWSE which is essentially the word \p w, whose
+    //! multiplication with other RWSE's is defined with respect to the
+    //! rewriting system \p rws.
+    //!
+    //! The rws_word_t w is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
+    //!
+    //! The rewriting system \p rws is not copied either, and it is the
+    //! responsibility of the caller to delete it.
     RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true, Element::UNDEFINED) {}
 
-    // 2 parameters (refs)
-    // @rws a rewriting system
-    // @w   a const reference to a <rws_word_t>
-    //
-    // Constructs a RWSE which is essentially the word <w>, whose
-    // multiplication with other RWSEs is defined with respect to the rewriting
-    // system <rws>.
-    //
-    // The <rws_word_t> <w> is copied, and should be deleted using
-    // <ElementWithVectorData::really_delete>.
+    //! Constructor from a rewriting system and a word.
+    //!
+    //! Constructs a RWSE which is essentially the word \p w, whose
+    //! multiplication with other RWSE's is defined with respect to the
+    //! rewriting system \p rws.
+    //!
+    //! The rws_word_t \p w is copied, but the rewriting system \p rws is
+    //! not.
     RWSE(RWS& rws, rws_word_t const& w) : RWSE(&rws, new rws_word_t(w)) {}
 
-    // 2 parameters (ref, letter)
-    // @rws a rewriting system
-    // @a   a letter <letter_t>
-    //
-    // Constructs a RWSE which is essentially the word with single letter <a>,
-    // whose multiplication with other RWSEs is defined with respect to the
-    // rewriting system <rws>.
+    //! Constructor from a rewriting system and a letter.
+    //!
+    //! Calls RWSE::RWSE with RWS::letter_to_rws_word of \p a.
     RWSE(RWS& rws, letter_t a)
         : RWSE(&rws, new rws_word_t(RWS::letter_to_rws_word(a))) {}
 
-    // 2 parameters (ref, word)
-    // @rws a rewriting system
-    // @w   a word <word_t>
-    //
-    // Constructs a RWSE which is essentially an <rws_word_t> word
-    // corresponding to the <word_t> <w>, whose multiplication with other RWSEs
-    // is defined with respect to the rewriting system <rws>.
+    //! Constructor from a rewriting system and a word.
+    //!
+    //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
     RWSE(RWS& rws, word_t w)
         : RWSE(&rws, new rws_word_t(RWS::word_to_rws_word(w))) {}
 
-    // const
-    // @that RWSE
-    //
-    // This method checks the mathematical equality of two RWSE, in other
-    // words whether or not they represent that the same reduced word of the
-    // rewriting system they are defined over.
-    //
-    // @return **true** if **this** equals <that>.
+    //! Returns \c true if \c this equals \p that.
+    //!
+    //! This method checks the mathematical equality of two RWSE, in other
+    //! words whether or not they represent that the same reduced word of the
+    //! rewriting system they are defined over.
     bool operator==(Element const& that) const override {
       return *(static_cast<RWSE const&>(that)._rws_word) == *(this->_rws_word);
     }
 
-    // const
-    // @that Compare **this** and <that>.
-    //
-    // This defines a total order on RWSEs that is the short-lex order on all
-    // words.
-    //
-    // @return **true** if **this** is less than <that> and **false** if it is
-    // not.
+    //! Returns \c true if \c this is less than that and \c false if it is
+    //! not.
+    //!
+    //! This defines a total order on RWSEs that is the short-lex order on all
+    //! words.
+    // TODO should use the reduction ordering of RWS.
     bool operator<(const Element& that) const override;
 
-    // const
-    // @increase_deg_by this is not used.
-    //
-    // See <Element::really_copy>.
-    //
-    // @return A pointer to a copy of **this**.
+    //! Returns a pointer to a copy of \c this.
+    //!
+    //! The parameter \p increase_deg_by is not used
+    //!
+    //! See Element::really_copy.
     Element* really_copy(size_t increase_deg_by) const override;
 
-    // non-const
-    // @x a pointer to an element.
-    //
-    // This method copies the element pointed to by <x> into **this** by
-    // changing **this** in-place.
+    //! Copy \p x into \c this.
+    //!
+    //! This method copies the RWSE pointed to by \p x into \c this by
+    //! changing \c this in-place.
     void copy(Element const* x) override;
 
-    // non-const
-    //
-    // See <Element::really_delete>.
-    //
-    // Deletes the underlying <rws_word_t> that this object wraps.
+    //! Deletes the underlying rws_word_t that this object wraps.
+    //!
+    //! See Element::really_delete.
     void really_delete() override {
       delete _rws_word;
     }
 
-    // const
-    //
-    // See <Element::complexity> for more details.
-    //
-    // @return <Semigroup::LIMIT_MAX>.
+    //! Returns the approximate time complexity of multiplying two
+    //! RWSE's.
+    //!
+    //! See Element::complexity for more details.
+    //!
+    //! Returns Semigroup::LIMIT_MAX since the complexity of multiplying words
+    //! in a rewriting system is higher than the cost of tracing a path in the
+    //! left or right Cayley graph of a Semigroup.
     size_t complexity() const override {
       return Semigroup::LIMIT_MAX;
     }
 
-    // const
-    //
-    // See <Element::degree> for more details.
-    //
-    // @return the integer 0
+    //! Returns the degree of an RWSE.
+    //!
+    //! See Element::degree for more details.
+    //!
+    //! Returns the integer 0 since the notion of degree is not really
+    //! meaningful in this context.
     size_t degree() const override {
-      return 0;  // TODO(JDM): Ok?
+      return 0;
     }
 
-    // const
-    //
-    // See <Element::identity>.
-    //
-    // @return a new RWSE wrapping the empty word and over the same rewriting
-    // system as **this**.
+    //! Return the identity RWSE.
+    //!
+    //! See Element::identity.
+    //!
+    //! Returns a new RWSE wrapping the empty word and over the same rewriting
+    //! system as \c this.
     Element* identity() const override {
       return new RWSE(_rws, new rws_word_t());
     }
 
-    // const
-    //
-    // Calculates a hash value for this object which is cached; see
-    // <Element::hash_value>.
+    //! Calculates a hash value for this object which is cached; see
+    //! Element::hash_value and Element::cache_hash_value.
     void cache_hash_value() const override {
       this->_hash_value = std::hash<rws_word_t>()(*_rws_word);
     }
 
-    // non-const
-    // @x RWSE
-    // @y RWSE
-    // @thread_id the id number of the thread calling the method
-    //
-    // See <Element::redefine>.
-    //
-    // Redefine **this** to be a reduced word with respect to the rewriting
-    // system of <x> and <y> which is equivalent to the concatenation of <x>
-    // and <y>.  This method asserts that <x> and <y> have the same rewriting
-    // system.
-    //
-    // Note that if different threads call this method with the same value of
-    // <thread_id> then bad things will happen.
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! Redefine \c this to be a reduced word with respect to the rewriting
+    //! system of \p x and \p y which is equivalent to the concatenation of
+    //! \p x and \p y. This method asserts that \p x and \p y have the same
+    //! rewriting system.
+    //!
+    //! The parameter \p thread_id is required since some temporary storage is
+    //! required to find the product of \p x and \p y.  Note that if different
+    //! threads call this method with the same value of \p thread_id then bad
+    //! things will happen.
     void redefine(Element const* x,
                   Element const* y,
                   size_t const&  thread_id) override;
-    // const
-    //
-    // @return a pointer to the <rws_word_t> used to create **this**.
+
+    //! Returns a pointer to the rws_word_t used to create \c this.
     rws_word_t* get_rws_word() const {
       return _rws_word;
     }

@@ -35,16 +35,22 @@
 
 namespace libsemigroups {
 
-  // Non-abstract
-  // Class for representing a congruence on a semigroup defined either as an
-  // instance of a <Semigroup> object or as a finitely presented semigroup
-  // defined by generators and relations.
-  //
-  // This class and its implemented methods are rather rudimentary in the
-  // current version of libsemigroups.
-  //
-  // The word "coset" is used throughout this section to mean "congruence
-  // class".
+  //! Class for congruence on a semigroup or fintely presented semigroup.
+  //!
+  //! This class represents a congruence on a semigroup defined either as an
+  //! instance of a Semigroup object or as a finitely presented semigroup
+  //! defined by generators and relations.
+  //!
+  //! The structure of a Congruence is determined by running several different
+  //! methods concurrently until one method returns an answer. The number of
+  //! different threads used can be controlled, in part, by the value passed to
+  //! Congruence::set_max_threads. The use of multiple threads to find the
+  //! structure of a Congruence can cause the return values of certain
+  //! methods to differ for different instances of mathematically equal
+  //! objects.
+  //!
+  //! This class and its implemented methods are somewhat rudimentary in
+  //! the current version of libsemigroups.
   class Congruence {
    private:
     // The different types of congruence.
@@ -58,81 +64,107 @@ namespace libsemigroups {
     };
 
    public:
-    //
-    // Type for indices of congruence classes in a Congruence object.
+    //! Type for indices of congruence classes in a Congruence object.
     typedef size_t class_index_t;
 
-    // The maximum number of steps that can be done in one batch when processing
-    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
-
-    // 5 parameters (for finitely presented semigroup)
-    // @type string describing the type of congruence (left/right/twosided)
-    // @nrgens the number of generators
-    // @relations a vector of <relation_t>
-    // @extra     a vector of extra <relation_t> (such as those used to define a
-    // congruence on a finitely presented semigroup)
-    //
-    // This constructor returns an instance of a congruence object whose type
-    // is described by the string <type>. The congruence is defined over the
-    // semigroup defined by the generators <nrgens> and relations <relations>
-    // and is the least congruence containing the generating pairs in <extra>.
-    //
-    // Note that cldoc mangles the types of the parameters <relations> and
-    // <extra>, which are both **std::vector&lt;&lt;relation_t&gt;&gt;**.
+    //! Constructor for congruences over a finitely presented semigroup.
+    //!
+    //! The parameters are as follows:
+    //!
+    //! * \p type: a std::string describing the type of congruence, must be one
+    //!   of \c "left", \c "right", or \c "twosided".
+    //!
+    //! * \p nrgens: the number of generators.
+    //!
+    //! * \p relations: the defining relations of the semigroup over which the
+    //! congruence being constructed is defined. Every relation_t in this
+    //! parameter must consist of positive integers less than \p nrgens.
+    //!
+    //! * \p extra: additional relations corresponding to the generating pairs
+    //! of the congruence being constructed.  Every relation_t in this
+    //! parameter must consist of positive integers less than \p nrgens.
+    //!
+    //! This constructor returns an instance of a Congruence object whose type
+    //! is described by the string type. The congruence is defined over the
+    //! semigroup defined by the generators \p nrgens and relations \p relations
+    //! and is the least congruence containing the generating pairs in \p extra.
+    //!
+    //! For example, to compute a congruence over the free semigroup the
+    //! parameter \p relations should be empty, and the relations defining the
+    //! congruence to be constructed should be passed as the parameter \p
+    //! extra. To compute a congruence over a finitely presented semigroup the
+    //! relations defining the fintely presented semigroup must be passed as
+    //! the parameter \p relations and the the relations defining the
+    //! congruence to be constructed should be passed as the parameter \p
+    //! extra.
     Congruence(std::string                    type,
                size_t                         nrgens,
                std::vector<relation_t> const& relations,
                std::vector<relation_t> const& extra);
 
-    // 6 parameters (for a <Semigroup>)
-    // @type      string describing the type of congruence (left/right/twosided)
-    // @semigroup pointer to a <Semigroup>
-    // @genpairs  a vector of <relation_t> used to define a congruence on
-    //            <semigroup>.
-    //
-    // This constructor returns an instance of a congruence object whose type is
-    // described by the string <type>. The congruence is defined over the
-    // semigroup <semigroup> and is the least congruence containing the
-    // generating pairs in <genpairs>.
-    //
-    // Note that cldoc mangles the types of the parameter <genpairs>, which is
-    // **std::vector&lt;&lt;relation_t&gt;&gt;**.
+    //! Constructor for congruences over a Semigroup object.
+    //!
+    //! The parameters are as follows:
+    //!
+    //! * \p type: a std::string describing the type of congruence, must be one
+    //!   of \c "left", \c "right", or \c "twosided".
+    //!
+    //! * \p semigroup: a pointer to an instance of Semigroup. It is the
+    //! responsibility of the caller to delete \p semigroup.
+    //!
+    //! * \p genpairs: additional relations corresponding to the generating
+    //! pairs
+    //! of the congruence being constructed.  Every relation_t in this
+    //! parameter must consist of positive integers less than the number of
+    //! generators of \p semigroup (Semigroup::nrgens()).
+    //!
+    //! This constructor returns an instance of a Congruence object whose type
+    //! is described by the string type. The congruence is defined over the
+    //! Semigroup \p semigroup and is the least congruence containing the
+    //! generating pairs in \p extra.
     Congruence(std::string                    type,
                Semigroup*                     semigroup,
                std::vector<relation_t> const& genpairs);
 
-    //
-    // A default destructor.
+    //! A default destructor.
+    //!
+    //! The caller is responsible for deleting the semigroup used to construct
+    //! \c this, if any.
     ~Congruence() {
-      delete _data;
-      // The caller is responsible for deleting the _semigroup (if any)
+      delete_data();
     }
 
-    // non-const
-    // @word   a <word_t> in the (indices of) the generators of the semigroup
-    //         that **this** is defined over.
-    //
-    // This method is non-const because it may fully compute a data structure
-    // for the congruence.
-    //
-    // @return the index of the coset corresponding to <word>.
+    //! Returns the index of the congruence class corresponding to \p word.
+    //!
+    //! The parameter \p word must be a libsemigroups::word_t consisting of
+    //! indices of the generators of the semigroup over which \c this is
+    //! defined.
+    //!
+    //! If \c this has finitely many congruence classes and is defined over a
+    //! semigroup with generators \f$A\f$, then Congruence::word_to_class_index
+    //! defines a surjective function from the set of all words over \f$A\f$ to
+    //! \f$\{0, 1, \ldots, n - 1\}\f$, where \f$n\f$ is the number of classes.
+    //!
+    //! \warning The method for finding the structure of a congruence is
+    //! non-deterministic, and the return value of this method may vary
+    //! between different instances of the same congruence.
+
+    // FIXME what about when the congruence has infinitely many classes.
     class_index_t word_to_class_index(word_t const& word) {
       DATA* data = get_data();
       assert(data->is_done());
       return data->word_to_class_index(word);
     }
 
-    // non-const
-    // @w1     a <word_t> in the (indices of) the generators of the semigroup
-    //         that **this** is defined over.
-    // @w2     a <word_t> in the (indices of) the generators of the semigroup
-    //         that **this** is defined over.
-    //
-    // This method is non-const because it may fully compute a data structure
-    // for the congruence.
-    //
-    // @return a bool describing whether the two words are in the same
-    //         equivalence class of this congruence
+    //!  Returns \c true if the words \p w1 and \p w2 belong to the
+    //! same congruence class.
+    //!
+    //! The parameters  \p w1  and \p w2 must be libsemigroups::word_t's
+    //! consisting of indices of generators of the semigroup over which \c this
+    //! is defined over.
+    //!
+    //! \warning The problem of determining the return value of this method is
+    //! undecidable in general, and this method may never terminate.
     bool test_equals(word_t const& w1, word_t const& w2) {
       DATA* data;
       if (is_done()) {
@@ -148,17 +180,23 @@ namespace libsemigroups {
       return result == DATA::result_t::TRUE;
     }
 
-    // non-const
-    // @w1     a <word_t> in the (indices of) the generators of the semigroup
-    //         that **this** is defined over.
-    // @w2     a <word_t> in the (indices of) the generators of the semigroup
-    //         that **this** is defined over.
-    //
-    // This method is non-const because it may fully compute a data structure
-    // for the congruence.
-    //
-    // @return a bool describing whether the class of w1 is less than the class
-    //         of w2 in a total ordering of congruence classes
+    //!  Returns \c true if the congruence class of \p w1 is less than
+    //! that of \p w2.
+    //!
+    //! This method returns \c true if the congruence class of \p w1 is less
+    //! than
+    //! the class of \p w2 in a total ordering of congruence classes.
+    //!
+    //! The parameters \p w1 and \p w2 should be libsemigroups::word_t's
+    //! consisting of indices of the generators of the semigroup over which \c
+    //! this is defined.
+    //!
+    //! \warning The method for finding the structure of a congruence is
+    //! non-deterministic, and the total order of congruences classes may vary
+    //! between different instances of the same congruence.
+    //!
+    //! \warning The problem of determining the return value of this method is
+    //! undecidable in general, and this method may never terminate.
     bool test_less_than(word_t const& w1, word_t const& w2) {
       DATA* data;
       if (is_done()) {
@@ -174,36 +212,35 @@ namespace libsemigroups {
       return result == DATA::result_t::TRUE;
     }
 
-    // non-const
-    //
-    // This method is non-const because it may fully compute a data structure
-    // for the congruence.
-    //
-    // @return the number of congruences classes (or cosets) of the congruence.
+    //! Returns the number of congruences classes of \c this.
+    //!
+    //! This method is non-const because it may fully compute a data structure
+    //! for the congruence.
+    //!
+    //! \warning The problem of determining the number of classes of a
+    //! congruence over a finitely presented semigroup is undecidable in
+    //! general, and this method may never terminate.
     size_t nr_classes() {
       DATA* data = get_data();
       assert(data->is_done());
       return data->nr_classes();
     }
 
-    // non-const
-    //
-    // This method is non-const because it involves fully computing the
-    // congruence.
-    //
-    // @return this method returns the non-trivial classes of the congruence,
-    // the elements in these classes are represented as words in the
-    // generators of the semigroup over which the congruence is defined.
+    //! Returns the non-trivial classes of the congruence.
+    //!
+    //! The elements in these classes are represented as words in the
+    //! generators of the semigroup over which the congruence is defined.
+    //!
+    //! \warning If \c this has infinitely many non-trivial congruence classes,
+    //! then this method will only terminate when it can no longer allocate
+    //! memory.
     Partition<word_t> nontrivial_classes() {
       DATA* data = get_data();
       assert(data->is_done());
       return data->nontrivial_classes();
     }
 
-    // non-const
-    //
-    // @return **true** if the congruence is fully determined, and **false** if
-    // it is not.
+    //! Returns \c true if the structure of the congruence is known.
     bool is_done() const {
       if (_data == nullptr) {
         return false;
@@ -211,71 +248,77 @@ namespace libsemigroups {
       return _data->is_done();
     }
 
-    // non-const
-    //
-    // This method is non-const since if the congruence is defined over a
-    // <Semigroup> object, then we may have to obtain the relations of
-    // <Semigroup>.
-    //
-    // @return the vector of relations (or equivalently, generating
-    // pairs) used to define the congruence.
+    //!  Returns the vector of relations used to define the semigroup
+    //! over which the congruence is defined.
+    //!
+    //! This method is non-const since if the congruence is defined over a
+    //! Semigroup object, then we may have to obtain the relations of
+    //! Semigroup.
     std::vector<relation_t> const& relations() {
       init_relations(_semigroup);
       return _relations;
     }
 
-    // const
-    //
-    // @return the vector of extra relations (or equivalently, generating
-    // pairs) used to define the congruence.
+    //!  Returns the vector of extra relations (or equivalently,
+    //! generating pairs) used to define the congruence.
     std::vector<relation_t> const& extra() const {
       return _extra;
     }
 
-    // non-const
-    // @relations defining relations of the semigroup over which the congruence
-    // is defined.
-    //
-    // This method allows the relations of the semigroup over which the
-    // congruence is defined to be specified. This method asserts that the
-    // relations have not previously be specified.
+    //!  Define the relations defining the semigroup over which \c this
+    //! is defined.
+    //!
+    //! This method allows the relations of the semigroup over which the
+    //! congruence is defined to be specified. This method asserts that the
+    //! relations have not previously be specified.
+
+    // FIXME it would be better to provide a constructor from another
+    // congruence that copied the relations.
     void set_relations(std::vector<relation_t> const& relations) {
       assert(_relations.empty());  // _extra can be non-empty!
       _relations = relations;
     }
 
-    // const
-    // @val a boolean value
+    //! Turn reporting on or off.
     //
-    // If @val is true, then some methods for a Congruence object may report
-    // information about the progress of the computation.
+    //!  If \p val is true, then some methods for a Congruence object may
+    //! report information about the progress of the computation.
     void set_report(bool val) const {
       glob_reporter.set_report(val);
       assert(glob_reporter.get_report() == val);
     }
 
-    // non-const
-    // @table a partial coset table for Todd-Coxeter
-    //
-    // This method allows a partial coset table, for the Todd-Coxeter
-    // algorithm, to be specified. This must be done before anything is
-    // computed about the congruence, otherwise it has not effect.
+    //! Specify a partial coset table for the Todd-Coxeter algorithm.
+    //!
+    //! The parameter \p table should be a partial coset table for use in the
+    //! Todd-Coxeter algorithm:
+    //!
+    //! * \p table should have RecVec::nr_cols equal to the number of generators
+    //! of the semigroup over which \c this is defined
+    //!
+    //! * every entry in \p table must be less than RecVec::nr_rows applied to
+    //! \p table
+    //!
+    //! For example, \p table can represent the right Cayley graph of a
+    //! finite semigroup.
+    //!
+    //! If this method is called after anything has been computed about the
+    //! congruence, it has no effect.
     void set_prefill(RecVec<class_index_t> const& table) {
       if (_data == nullptr) {
         _prefill = table;
       }
     }
 
-    // non-const
-    // @nr_threads the maximum number of threads
-    //
-    // This method sets the maximum number of threads to be used by any method
-    // of a Congruence object which is defined over a <Semigroup>. The
-    // number of threads is limited to the minimum of <nr_threads> and the
-    // number of threads supported by the hardware.
-    //
-    // If the congruence is not defined over a <Semigroup>, then the number of
-    // threads is not limited by this method.
+    //! Set the maximum number of threads for a Congruence over a Semigroup.
+    //!
+    //! This method sets the maximum number of threads to be used by any method
+    //! of a Congruence object which is defined over a Semigroup. The
+    //! number of threads is limited to the maximum of 1 and the minimum of
+    //! \p nr_threads and the number of threads supported by the hardware.
+    //!
+    //! If the congruence is not defined over a Semigroup, then the number of
+    //! threads is not limited by this method.
     void set_max_threads(size_t nr_threads) {
       unsigned int n =
           static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
@@ -285,86 +328,119 @@ namespace libsemigroups {
     // non-const
     // This deletes all DATA objects stored in this congruence, including
     // finished objects and partially-enumerated objects.
-    void clear_data();
+    void delete_data();
 
-    // non-const
-    // This forces the congruence to use the [Todd-Coxeter
-    // algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm)
-    // to compute the congruence. This is non-const because any existing data
-    // structure for the congruence will be deleted, and replaced with a
-    // Todd-Coxeter data structure.
-    //
-    // Note that when applied to an arbitrary finitely presented semigroup this
-    // may never terminate.
-    //
-    // The implementation is based on one by Goetz Pfeiffer in GAP.
+    //! Use the Todd-Coxeter algorithm.
+    //!
+    //! This methods forces the use of the
+    //! [Todd-Coxeter
+    //! algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm) to
+    //! compute the congruence.  The implementation is based on one by Goetz
+    //! Pfeiffer in GAP.
+    //!
+    //! \warning Any existing data for the congruence is deleted by this
+    //! method, and may have to be recomputed. The return values and runtimes
+    //! of other methods applied to \c this may also be effected.
+    //!
+    //! \warning The Todd-Coxeter Algorithm may never terminate when applied to
+    //! a finitely presented semigroup.
     void force_tc();
 
-    // non-const
-    // This forces the congruence to use the [Todd-Coxeter
-    // algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm)
-    // to compute the congruence. This is non-const because any existing data
-    // structure for the congruence will be deleted, and replaced with a
-    // Todd-Coxeter data structure.
-    //
-    // When applied to a congruence defined over a <Semigroup> denoted *S*,
-    // this method differs from <force_tc> in that the so-called coset table
-    // used in the Todd-Coxeter algorithm is initialised to contain the right
-    // (or left) Cayley graph of *S*.
-    //
-    // If the congruence is not defined over a finite semigroup, then this
-    // method does the same as <force_tc>.
-    //
-    // Note that when applied to an arbitrary finitely presented semigroup this
-    // may never terminate.
+    //! Use the Todd-Coxeter algorithm after prefilling the table.
+    //!
+    //! This methods forces the use of the
+    //! [Todd-Coxeter
+    //! algorithm](https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm) to
+    //! compute the congruence.
+    //!
+    //! When applied to a congruence defined over a Semigroup,
+    //! this method differs from Congruence::force_tc in that the so-called
+    //! coset table used in the Todd-Coxeter algorithm is initialised to
+    //! contain the right (or left) Cayley graph of the semigroup over which
+    //! \c this is defined.
+    //!
+    //! If \c this is not defined over a Semigroup (i.e. it is defined over a
+    //! finitely presented semigroup), then this method does the same as
+    //! force_tc.
+    //!
+    //! \warning Any existing data for the congruence is deleted by this
+    //! method, and may have to be recomputed. The return values and runtimes
+    //! of other methods applied to \c this may also be effected.
+    //!
+    //! \warning The Todd-Coxeter Algorithm may never terminate when applied to
+    //! a finitely presented semigroup.
     void force_tc_prefill();
 
-    // non-const
-    // This forces the congruence to use an elementary orbit algorithm which
-    // enumerates pairs of <Element>s that are related in the congruence.
-    //
-    // This method is unlikely to terminate, or to be faster than the other
-    // methods, unless there are a relatively few pairs of elements related by
-    // the congruence.
-    //
-    // This is non-const because any existing data structure for the congruence
-    // will be deleted, and replaced with a data structure specific to the
-    // orbit algorithm mentioned above.
-    //
-    // Note that when applied to an arbitrary finitely presented semigroup this
-    // may never terminate.
+    //!  Use an elementary orbit algorithm which enumerates pairs of
+    //! Element's that are related in \c this.
+    //!
+    //! The method that this method forces the Congruence to use, is unlikely
+    //! to terminate, or to be faster than the other methods, unless there are
+    //! a relatively few pairs of elements related by the congruence.
+    //!
+    //! \warning Any existing data for the congruence is deleted by this
+    //! method, and may have to be recomputed. The return values and runtimes
+    //! of other methods applied to \c this may also be effected.
+    //!
+    //! \warning The algorithms that this method forces a Congruence to use
+    //! will only terminate if there are finitely many pairs of elements
+    //! related by \c this. The worst case space complexity of these algorithms
+    //! is the square of the size of the semigroup over which \c this is
+    //! defined.
     void force_p();
 
-    // non-const
-    // This forces the congruence to use the [Knuth-Bendix
-    // algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
-    // to compute the congruence defined by the generators and <relations> of
-    // **this** followed by an elementary orbit algorithm which
-    // enumerates pairs of <Element>s of this semigroup that are
-    // related in **this**.
-    //
-    // This is non-const because any existing data structure for the congruence
-    // will be deleted, and replaced with a data structure specific to this
-    // method.
-    //
-    // Note that when applied to an arbitrary finitely presented semigroup this
-    // may never terminate.
+    //!  Use the Knuth-Bendix algorithm on a rewriting system RWS with
+    //! rules
+    //! obtained from Congruence::relations followed by an elementary orbit on
+    //! pairs method on the resulting semigroup.
+    //!
+    //! This method forces the use of the [Knuth-Bendix
+    //! algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
+    //! to compute the congruence defined by the generators and relations of \c
+    //! this followed by an elementary orbit algorithm which enumerates pairs
+    //! of Element's of that semigroup which are related in \c this.
+    //! Knuth-Bendix is applied to a rewriting system obtained from
+    //! Congruence::relations.
+    //!
+    //! At present the Knuth-Bendix algorithm can only be applied to two-sided
+    //! congruences, and this method asserts that \c this is a two-sided
+    //! congruence.
+    //!
+    //! \warning Any existing data for the congruence is deleted by this
+    //! method, and may have to be recomputed. The return values and runtimes
+    //! of other methods applied to \c this may also be effected.
+    //!
+    //! \warning The Knuth-Bendix Algorithm may never terminate when applied to
+    //! a finitely presented semigroup. Even if Knuth-Bendix completes
+    //! the other algorithm that this method forces a Congruence to use
+    //! will only terminate if there are finitely many pairs of elements
+    //! related by \c this. The worst case space complexity of these algorithms
+    //! is the square of the size of the semigroup over which \c this is
+    //! defined.
     void force_kbp();
 
-    // non-const
-    // This forces the congruence to use the [Knuth-Bendix
-    // algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
-    // to compute the congruence defined by the generators, <relations> and
-    // <extra> of **this** followed by the Froidure-Pin algorithm (implemented
-    // in
-    // <Semigroup::enumerate>) on this semigroup.
-    //
-    // This is non-const because any existing data structure for the congruence
-    // will be deleted, and replaced with a data structure specific to this
-    // method.
-    //
-    // Note that when applied to an arbitrary finitely presented semigroup this
-    // will only terminate if the finitely presented semigroup is finite.
+    //! Use the Knuth-Bendix algorithm on a rewriting system RWS with ! rules
+    //! obtained from Congruence::relations and Congruence::extra, followed by
+    //! the Froidure-Pin algorithm on the resulting semigroup.
+    //!
+    //! This method forces the use of the [Knuth-Bendix
+    //! algorithm](https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm)
+    //! to compute the congruence defined by the generators,
+    //! Congruence::relations, and Congruence::extra of \c this followed by the
+    //! Froidure-Pin algorithm on the resulting semigroup. The resulting
+    //! semigroup consists of RWSE's and is enumerated using
+    //! Semigroup::enumerate.
+    //!
+    //! At present the Knuth-Bendix algorithm can only be applied to two-sided
+    //! congruences, and this method asserts that \c this is a two-sided
+    //! congruence.
+    //!
+    //! \warning Any existing data for the congruence is deleted by this
+    //! method, and may have to be recomputed. The return values and runtimes
+    //! of other methods applied to \c this may also be effected.
+    //!
+    //! \warning The Knuth-Bendix Algorithm may never terminate when applied to
+    //! a finitely presented semigroup.
     void force_kbfp();
 
    private:
@@ -384,8 +460,6 @@ namespace libsemigroups {
 
      public:
       // Default constructor
-      // @cong keeping cldoc happy
-      // @report_interval keeping cldoc happy
       explicit DATA(Congruence& cong,
                     size_t      default_nr_steps,
                     size_t      report_interval = 1000)
@@ -399,53 +473,40 @@ namespace libsemigroups {
       virtual ~DATA() {}
 
       // This method runs the algorithm used to determine the congruence, i.e.
-      // Todd-Coxeter, Knuth-Bendix, etc., until completion
+      // Todd-Coxeter, Knuth-Bendix, etc., until completion.
       virtual void run() = 0;
 
-      // This method runs the algorithm for a while, then stops after a certain
-      // amount of work or when done
-      // @steps the amount of work to do before returning
+      // This method runs the algorithm for a while, then stops after a
+      // certain amount of work or when done \p steps the amount of work to do
+      // before returning.
       virtual void run(size_t steps) = 0;
 
       // This method returns true if a DATA object's run method has been run to
       // conclusion, i.e. that it has not been killed by another instance.
-      // @return keeping cldoc happy
       virtual bool is_done() const = 0;
 
       // This method returns the number of classes of the congruence.
-      //
-      // @return keeping cldoc happy
       virtual size_t nr_classes() = 0;
 
-      //
-      // @word keeping cldoc happy
       // This method returns the index of the congruence class containing the
-      // element of the semigroup defined by <word>.
-      //
-      // @return keeping cldoc happy
+      // element of the semigroup defined by word.
       virtual class_index_t word_to_class_index(word_t const& word) = 0;
 
-      // Possible result of questions that might not yet be answerable
+      // Possible result of questions that might not be answerable.
       enum result_t { TRUE = 0, FALSE = 1, UNKNOWN = 2 };
 
-      // This method returns **TRUE** if the two words are known to describe
-      // elements in the same congruence class, **FALSE** if they are known to
+      // This method returns \c true if the two words are known to describe
+      // elements in the same congruence class, \c false if they are known to
       // lie in different classes, and **UNKNOWN** if the information has not
       // yet been discovered.
-      // @w1 const reference to the first word
-      // @w2 const reference to the second word
-      //
-      // @return keeping cldoc happy
       virtual result_t current_equals(word_t const& w1, word_t const& w2) = 0;
 
-      // This method returns **TRUE** if the two words are known to be in
+      // This method returns \c true if the two words are known to be in
       // distinct classes, where w1's class is less than w2's class by some
-      // total ordering; **FALSE** if this is known to be untrue; and
+      // total ordering; \c false if this is known to be untrue; and
       // **UNKNOWN** if the information has not yet been discovered.
-      // @w1 const reference to the first word
-      // @w2 const reference to the second word
-      //
-      // @return keeping cldoc happy
+      // \p w1 const reference to the first word
+      // \p w2 const reference to the second word
       virtual result_t current_less_than(word_t const& w1, word_t const& w2) {
         if (is_done()) {
           return word_to_class_index(w1) < word_to_class_index(w2)
@@ -458,8 +519,6 @@ namespace libsemigroups {
       }
 
       // This method returns the non-trivial classes of the congruence.
-      //
-      // @return keeping cldoc happy
       virtual Partition<word_t> nontrivial_classes();
 
       // This method kills a given instance of a DATA object.
@@ -475,17 +534,15 @@ namespace libsemigroups {
 
       // This method can be used to tell whether or not a given DATA object has
       // been killed by another instance.
-      // @return keeping cldoc happy
       std::atomic<bool>& is_killed() {
         return _killed;
       }
 
-      // Non-const
-      // @goal_func a function to test whether we can stop running
+      // \p goal_func a function to test whether we can stop running
       //
-      // This function calls **run** on the DATA object in batches until
-      // goal_func returns true.  If goal_func is RETURN_FALSE, then the object
-      // is instead run to completion.
+      // This function calls DATA::run in batches until goal_func returns
+      // true.  If goal_func is RETURN_FALSE, then the object ! is instead run
+      // to completion.
       void run_until(std::function<bool(DATA*)> goal_func) {
         if (is_done()) {
           return;

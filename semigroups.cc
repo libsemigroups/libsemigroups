@@ -329,7 +329,6 @@ namespace libsemigroups {
   }
 
   // Product by tracing in the left or right Cayley graph
-
   Semigroup::pos_t Semigroup::product_by_reduction(pos_t i, pos_t j) const {
     assert(i < _nr && j < _nr);
     if (length_const(i) <= length_const(j)) {
