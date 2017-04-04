@@ -273,21 +273,6 @@ namespace libsemigroups {
     }
 
     // non-const
-    // @p      a word
-    // @q      a word
-    //
-    // @return **true** if the reduced form of the word <p> is less than
-    // the reduced form of the word <q>, with respect to the reduced ordering
-    // defined by this RWS; and **false** otherwise.
-    bool test_less_than(rws_word_t const& p, rws_word_t const& q) {
-      assert(_order != nullptr);
-      if (!is_confluent()) {
-        knuth_bendix();
-      }
-      return (*_order)(rewrite(q), rewrite(p));
-    }
-
-    // non-const
     // @killed an atomic boolean
     //
     // Run the [Knuth-Bendix

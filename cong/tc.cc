@@ -30,8 +30,7 @@
       _already_reported_killed = true; \
       REPORT("killed")                 \
     }                                  \
-    _stop_packing = true;              \
-    _steps        = 1;                 \
+    return;                            \
   }
 
 namespace libsemigroups {
@@ -78,7 +77,7 @@ namespace libsemigroups {
   // Now the new preimage and all the old preimages are stored.
 
   Congruence::TC::TC(Congruence& cong)
-      : DATA(cong, 1000, 2000000),
+      : DATA(cong, 2000000),
         _active(1),
         _already_reported_killed(false),
         _bckwd(1, 0),
@@ -99,22 +98,6 @@ namespace libsemigroups {
         _stop_packing(false),
         _table(cong._nrgens, 1, UNDEFINED),
         _tc_done(false) {}
-
-  void Congruence::TC::init() {
-    if (_relations.empty() && _extra.empty()) {
-      // This is the first run
-      init_tc_relations();
-      // Apply each "extra" relation to the first coset only
-      for (relation_t const& rel : _extra) {
-        trace(_id_coset, rel);  // Allow new cosets
-      }
-      if (_relations.empty()) {
-        _tc_done = true;
-        compress();
-        return;
-      }
-    }
-  }
 
   void Congruence::TC::prefill() {
     Semigroup* semigroup = _cong._semigroup;
@@ -182,9 +165,9 @@ namespace libsemigroups {
   }
 
   void Congruence::TC::init_tc_relations() {
-    // This should not have been run before
-    assert(_relations.empty() && _extra.empty());
-
+    if (!_relations.empty() || !_extra.empty()) {
+      return;  // This method was called already
+    }
     // Handle _extra first!
     switch (_cong._type) {
       case LEFT:
@@ -215,6 +198,7 @@ namespace libsemigroups {
     // call relations() here so that we can pass _killed.
 
     _cong.init_relations(_cong._semigroup, _killed);
+    TC_KILLED
 
     // Must insert at _relations.end() since it might be non-empty
     _relations.insert(
@@ -226,6 +210,7 @@ namespace libsemigroups {
       case TWOSIDED:
         break;
       case LEFT:
+        TC_KILLED
         for (relation_t& rel : _relations) {
           std::reverse(rel.first.begin(), rel.first.end());
           std::reverse(rel.second.begin(), rel.second.end());
@@ -238,9 +223,10 @@ namespace libsemigroups {
 
   // compress the table
   void Congruence::TC::compress() {
-    assert(is_done());
     if (_is_compressed) {
       return;
+    } else if (!is_done()) {
+      run();
     }
     _is_compressed = true;
     if (_active == _table.nr_rows()) {
@@ -288,48 +274,25 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::TC::word_to_class_index(word_t const& w) {
+    assert(is_done());
     class_index_t c = _id_coset;
     if (_cong._type == LEFT) {
       // Iterate in reverse order
-      for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED; ++rit) {
+      for (auto rit = w.crbegin(); rit != w.crend(); ++rit) {
         c = _table.get(c, *rit);
+        // assert(c != UNDEFINED);
       }
     } else {
       // Iterate in sequential order
-      for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
+      for (auto it = w.cbegin(); it != w.cend(); ++it) {
         c = _table.get(c, *it);
+        // assert(c != UNDEFINED);
       }
     }
     // c in {1 .. n} (where 0 is the id coset)
-    assert(c < _active || c == UNDEFINED);
+    assert(c <= nr_classes());
     // Convert to {0 .. n-1}
-    return (c == UNDEFINED ? c : c - 1);
-  }
-
-  Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
-                                                            word_t const& w2) {
-    init();
-    if (is_killed()) {
-      return result_t::UNKNOWN;
-    }
-
-    class_index_t c1 = word_to_class_index(w1);
-    class_index_t c2 = word_to_class_index(w2);
-
-    if (c1 == UNDEFINED || c2 == UNDEFINED) {
-      return result_t::UNKNOWN;
-    }
-
-    // c in {1 .. n} (where 0 is the id coset)
-    assert(c1 < _active);
-    assert(c2 < _active);
-    if (c1 == c2) {
-      return result_t::TRUE;
-    } else if (is_done()) {
-      return result_t::FALSE;
-    } else {
-      return result_t::UNKNOWN;
-    }
+    return c - 1;
   }
 
   // Create a new active coset for coset c to map to under generator a
@@ -486,6 +449,8 @@ namespace libsemigroups {
   void Congruence::TC::trace(class_index_t const& c,
                              relation_t const&    rel,
                              bool                 add) {
+    TC_KILLED
+
     class_index_t lhs = c;
     for (auto it = rel.first.cbegin(); it < rel.first.cend() - 1; it++) {
       if (_table.get(lhs, *it) != UNDEFINED) {
@@ -509,6 +474,7 @@ namespace libsemigroups {
       } else {
         return;
       }
+      TC_KILLED
     }
     // <rhs> is the image of <c> under <rel>[2] (minus the last letter)
 
@@ -528,6 +494,7 @@ namespace libsemigroups {
       _report_next   = 0;
       _cosets_killed = _defined - _active;
     }
+    TC_KILLED
 
     letter_t      a = rel.first.back();
     letter_t      b = rel.second.back();
@@ -570,24 +537,23 @@ namespace libsemigroups {
 
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
-    while (!is_done() && !is_killed()) {
-      run(Congruence::LIMIT_MAX);
-      TC_KILLED
-    }
-  }
-
-  // Apply the Todd-Coxeter algorithm for the specified number of iterations
-  void Congruence::TC::run(size_t steps) {
-    _steps = steps;
-
-    init();
-
+    // If we have already run this before, then we are done
     if (_tc_done || _is_compressed) {
       return;
     }
+    init_tc_relations();
+    TC_KILLED
 
-    // Run a batch
-    REPORT("number of steps: " << _steps);
+    // Apply each "extra" relation to the first coset only
+    for (relation_t const& rel : _extra) {
+      trace(_id_coset, rel);  // Allow new cosets
+      TC_KILLED
+    }
+    if (_relations.empty()) {
+      _tc_done = true;
+      compress();
+      return;
+    }
     do {
       // Apply each relation to the "_current" coset
       for (relation_t const& rel : _relations) {
@@ -632,20 +598,17 @@ namespace libsemigroups {
 
       // Quit loop when we reach an inactive coset
       TC_KILLED
-    } while (_current != _next && --_steps > 0);
+    } while (_current != _next);
 
     // Final report
-    REPORT("stopping with " << _defined << " cosets defined,"
+    REPORT("finished with " << _defined << " cosets defined,"
                             << " maximum "
                             << _forwd.size()
                             << ", "
                             << _active
                             << " survived");
-    if (_current == _next) {
-      _tc_done = true;
-      compress();
-      REPORT("finished!");
-    }
+    _tc_done = true;
+    compress();
 
     // No return value: all info is now stored in the class
   }

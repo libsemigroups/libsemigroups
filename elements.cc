@@ -28,7 +28,7 @@
 
 namespace libsemigroups {
 
-  size_t const Element::UNDEFINED = std::numeric_limits<size_t>::max();
+  size_t const Element::UNDEFINED = -1;
 
   // BooleanMat
 
@@ -99,8 +99,7 @@ namespace libsemigroups {
 
   // Bipartition
 
-  u_int32_t const Bipartition::UNDEFINED =
-      std::numeric_limits<u_int32_t>::max();
+  u_int32_t const Bipartition::UNDEFINED = -1;
   std::vector<std::vector<u_int32_t>>
       Bipartition::_fuse(std::thread::hardware_concurrency());
   std::vector<std::vector<u_int32_t>>

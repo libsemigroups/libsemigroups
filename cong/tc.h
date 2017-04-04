@@ -38,7 +38,6 @@ namespace libsemigroups {
     ~TC() {}
 
     void run() final;
-    void run(size_t steps) final;
 
     bool is_done() const final {
       return _tc_done;
@@ -50,7 +49,6 @@ namespace libsemigroups {
     }
 
     class_index_t word_to_class_index(word_t const& word) final;
-    result_t current_equals(word_t const& w1, word_t const& w2) final;
 
     // This method compresses the coset table used by <todd_coxeter>.
     void compress();
@@ -59,8 +57,6 @@ namespace libsemigroups {
     void prefill(RecVec<class_index_t>& table);
 
    private:
-    void init() final;
-
     void init_after_prefill();
     void init_tc_relations();
 
@@ -89,10 +85,9 @@ namespace libsemigroups {
     RecVec<class_index_t>     _preim_next;
     std::vector<relation_t>   _relations;
     std::stack<class_index_t> _rhs_stack;     // Stack for identifying cosets
-    size_t                    _steps;
     size_t                    _stop_packing;  // TODO(JDM): make this a bool?
     RecVec<class_index_t>     _table;
-    bool                      _tc_done;  // Has Todd-Coxeter been completed?
+    bool                      _tc_done;  // Has todd_coxeter already been run?
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_TC_H_
