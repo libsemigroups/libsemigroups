@@ -31,6 +31,8 @@
 #include "semigroups.h"
 #include "util/report.h"
 
+#define RETURN_FALSE nullptr
+
 namespace libsemigroups {
 
   // Non-abstract
@@ -59,6 +61,9 @@ namespace libsemigroups {
     //
     // Type for indices of congruence classes in a Congruence object.
     typedef size_t class_index_t;
+
+    // The maximum number of steps that can be done in one batch when processing
+    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
 
     // 5 parameters (for finitely presented semigroup)
     // @type string describing the type of congruence (left/right/twosided)
@@ -113,10 +118,60 @@ namespace libsemigroups {
     // @return the index of the coset corresponding to <word>.
     class_index_t word_to_class_index(word_t const& word) {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->word_to_class_index(word);
+    }
+
+    // non-const
+    // @w1     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    // @w2     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    //
+    // This method is non-const because it may fully compute a data structure
+    // for the congruence.
+    //
+    // @return a bool describing whether the two words are in the same
+    //         equivalence class of this congruence
+    bool test_equals(word_t const& w1, word_t const& w2) {
+      DATA* data;
+      if (is_done()) {
+        data = cget_data();
+      } else {
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
+          return data->current_equals(w1, w2) != DATA::result_t::UNKNOWN;
+        };
+        data = get_data(words_func);
+      }
+      DATA::result_t result = data->current_equals(w1, w2);
+      assert(result != DATA::result_t::UNKNOWN);
+      return result == DATA::result_t::TRUE;
+    }
+
+    // non-const
+    // @w1     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    // @w2     a <word_t> in the (indices of) the generators of the semigroup
+    //         that **this** is defined over.
+    //
+    // This method is non-const because it may fully compute a data structure
+    // for the congruence.
+    //
+    // @return a bool describing whether the class of w1 is less than the class
+    //         of w2 in a total ordering of congruence classes
+    bool test_less_than(word_t const& w1, word_t const& w2) {
+      DATA* data;
+      if (is_done()) {
+        data = cget_data();
+      } else {
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
+          return data->current_less_than(w1, w2) != DATA::result_t::UNKNOWN;
+        };
+        data = get_data(words_func);
+      }
+      DATA::result_t result = data->current_less_than(w1, w2);
+      assert(result != DATA::result_t::UNKNOWN);
+      return result == DATA::result_t::TRUE;
     }
 
     // non-const
@@ -127,9 +182,7 @@ namespace libsemigroups {
     // @return the number of congruences classes (or cosets) of the congruence.
     size_t nr_classes() {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->nr_classes();
     }
 
@@ -143,9 +196,7 @@ namespace libsemigroups {
     // generators of the semigroup over which the congruence is defined.
     Partition<word_t> nontrivial_classes() {
       DATA* data = get_data();
-      if (!data->is_done()) {
-        data->run();
-      }
+      assert(data->is_done());
       return data->nontrivial_classes();
     }
 
@@ -153,13 +204,11 @@ namespace libsemigroups {
     //
     // @return **true** if the congruence is fully determined, and **false** if
     // it is not.
-    bool is_done() {
-      // FIXME this should really be const, but currently isn't because
-      // get_data isn't const
+    bool is_done() const {
       if (_data == nullptr) {
         return false;
       }
-      return get_data()->is_done();
+      return _data->is_done();
     }
 
     // non-const
@@ -232,6 +281,11 @@ namespace libsemigroups {
           static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
+
+    // non-const
+    // This deletes all DATA objects stored in this congruence, including
+    // finished objects and partially-enumerated objects.
+    void clear_data();
 
     // non-const
     // This forces the congruence to use the [Todd-Coxeter
@@ -332,8 +386,11 @@ namespace libsemigroups {
       // Default constructor
       // @cong keeping cldoc happy
       // @report_interval keeping cldoc happy
-      explicit DATA(Congruence& cong, size_t report_interval = 1000)
+      explicit DATA(Congruence& cong,
+                    size_t      default_nr_steps,
+                    size_t      report_interval = 1000)
           : _cong(cong),
+            _default_nr_steps(default_nr_steps),
             _killed(false),
             _report_interval(report_interval),
             _report_next(0) {}
@@ -342,8 +399,13 @@ namespace libsemigroups {
       virtual ~DATA() {}
 
       // This method runs the algorithm used to determine the congruence, i.e.
-      // Todd-Coxeter, Knuth-Bendix, etc
+      // Todd-Coxeter, Knuth-Bendix, etc., until completion
       virtual void run() = 0;
+
+      // This method runs the algorithm for a while, then stops after a certain
+      // amount of work or when done
+      // @steps the amount of work to do before returning
+      virtual void run(size_t steps) = 0;
 
       // This method returns true if a DATA object's run method has been run to
       // conclusion, i.e. that it has not been killed by another instance.
@@ -363,6 +425,38 @@ namespace libsemigroups {
       // @return keeping cldoc happy
       virtual class_index_t word_to_class_index(word_t const& word) = 0;
 
+      // Possible result of questions that might not yet be answerable
+      enum result_t { TRUE = 0, FALSE = 1, UNKNOWN = 2 };
+
+      // This method returns **TRUE** if the two words are known to describe
+      // elements in the same congruence class, **FALSE** if they are known to
+      // lie in different classes, and **UNKNOWN** if the information has not
+      // yet been discovered.
+      // @w1 const reference to the first word
+      // @w2 const reference to the second word
+      //
+      // @return keeping cldoc happy
+      virtual result_t current_equals(word_t const& w1, word_t const& w2) = 0;
+
+      // This method returns **TRUE** if the two words are known to be in
+      // distinct classes, where w1's class is less than w2's class by some
+      // total ordering; **FALSE** if this is known to be untrue; and
+      // **UNKNOWN** if the information has not yet been discovered.
+      // @w1 const reference to the first word
+      // @w2 const reference to the second word
+      //
+      // @return keeping cldoc happy
+      virtual result_t current_less_than(word_t const& w1, word_t const& w2) {
+        if (is_done()) {
+          return word_to_class_index(w1) < word_to_class_index(w2)
+                     ? result_t::TRUE
+                     : result_t::FALSE;
+        } else if (current_equals(w1, w2) == result_t::TRUE) {
+          return result_t::FALSE;  // elements are equal
+        }
+        return result_t::UNKNOWN;
+      }
+
       // This method returns the non-trivial classes of the congruence.
       //
       // @return keeping cldoc happy
@@ -374,20 +468,44 @@ namespace libsemigroups {
         _killed = true;
       }
 
+      // This method sets a given instance of a DATA object to "not killed"
+      void unkill() {
+        _killed = false;
+      }
+
       // This method can be used to tell whether or not a given DATA object has
       // been killed by another instance.
       // @return keeping cldoc happy
-      std::atomic<bool>& get_killed() {
+      std::atomic<bool>& is_killed() {
         return _killed;
       }
 
-      // Compress the data structure, this does nothing by default, but
-      // rewriting systems and the Todd-Coxeter data structures can be
-      // compressed, to use less memory.
-      virtual void compress() {}
+      // Non-const
+      // @goal_func a function to test whether we can stop running
+      //
+      // This function calls **run** on the DATA object in batches until
+      // goal_func returns true.  If goal_func is RETURN_FALSE, then the object
+      // is instead run to completion.
+      void run_until(std::function<bool(DATA*)> goal_func) {
+        if (is_done()) {
+          return;
+        }
+        if (goal_func != RETURN_FALSE) {
+          while (!_killed && !is_done() && !goal_func(this)) {
+            run(_default_nr_steps);
+          }
+        } else {
+          run();
+        }
+      }
 
      private:
+      // This initialises the data structure, and can be run from inside a
+      // thread after construction.  If already initialised, this does nothing.
+      virtual void init() = 0;
+
       Congruence&                   _cong;
+      size_t                        _default_nr_steps;
       std::atomic<bool>             _killed;
       size_t                        _report_interval;
       size_t                        _report_next;
@@ -405,10 +523,16 @@ namespace libsemigroups {
       init_relations(semigroup, killed);
     }
 
-    DATA* get_data();
+    DATA* cget_data() const {
+      return _data;
+    }
+
+    DATA* get_data(std::function<bool(DATA*)> goal_func = RETURN_FALSE);
+
     DATA* winning_data(std::vector<DATA*>&                      data,
                        std::vector<std::function<void(DATA*)>>& funcs,
-                       bool ignore_max_threads = false);
+                       bool                       ignore_max_threads = false,
+                       std::function<bool(DATA*)> goal_func = RETURN_FALSE);
 
     Congruence(cong_t                         type,
                size_t                         nrgens,
@@ -425,6 +549,7 @@ namespace libsemigroups {
     std::vector<relation_t> _extra;
     size_t                  _max_threads;
     size_t                  _nrgens;
+    std::vector<DATA*>      _partial_data;
     RecVec<class_index_t>   _prefill;
     std::vector<relation_t> _relations;
     std::atomic<bool>       _relations_done;

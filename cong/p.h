@@ -26,7 +26,7 @@
 #ifndef LIBSEMIGROUPS_CONG_P_H_
 #define LIBSEMIGROUPS_CONG_P_H_
 
-#include <stack>
+#include <queue>
 #include <utility>
 #include <vector>
 
@@ -52,15 +52,18 @@ namespace libsemigroups {
     size_t nr_classes() final;
 
     class_index_t word_to_class_index(word_t const& word) final;
+    result_t current_equals(word_t const& w1, word_t const& w2) final;
 
     Partition<word_t> nontrivial_classes() final;
 
-    void run() {
-      run(_killed);
-    }
+    void run() final;
+    void run(size_t steps) final;
     void run(std::atomic<bool>& killed);
+    void run(size_t steps, std::atomic<bool>& killed);
 
    private:
+    void init() final {}  // The constructor sets up everything
+
     struct PHash {
      public:
       size_t operator()(p_pair_const_t const& pair) const {
@@ -91,7 +94,7 @@ namespace libsemigroups {
     class_index_t               _next_class;
     p_index_t                   _nr_nontrivial_classes;
     p_index_t                   _nr_nontrivial_elms;
-    std::stack<p_pair_const_t>* _pairs_to_mult;
+    std::queue<p_pair_const_t>* _pairs_to_mult;
     std::vector<Element const*> _reverse_map;
     Element*                    _tmp1;
     Element*                    _tmp2;

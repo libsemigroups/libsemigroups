@@ -58,11 +58,15 @@ TEST_CASE("Congruence 01: Small fp semigroup",
 
   REQUIRE(cong.word_to_class_index({0, 0, 1})
           == cong.word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong.test_equals({0, 0, 1}, {0, 0, 0, 0, 1}));
   REQUIRE(cong.word_to_class_index({0, 0, 0, 0, 1})
           == cong.word_to_class_index({0, 1, 1, 0, 0, 1}));
+  REQUIRE(cong.test_equals({0, 0, 0, 0, 1}, {0, 1, 1, 0, 0, 1}));
   REQUIRE(cong.word_to_class_index({0, 0, 0})
           != cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(!cong.test_equals({0, 0, 0}, {0, 0, 1}));
   REQUIRE(cong.word_to_class_index({1}) != cong.word_to_class_index({0, 0, 0}));
+  REQUIRE(!cong.test_equals({1}, {0, 0, 0}));
 }
 
 TEST_CASE("Congruence 02: Small left congruence on free semigroup",
@@ -103,14 +107,12 @@ TEST_CASE(
 
   REQUIRE(cong.word_to_class_index({0, 0, 1})
           == cong.word_to_class_index({0, 0, 0, 0, 1}));
-  REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 1})
-          == cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(cong.test_equals({0, 1, 1, 0, 0, 1}, {0, 0, 1}));
   REQUIRE(cong.word_to_class_index({0, 0, 0})
           != cong.word_to_class_index({0, 0, 1}));
   REQUIRE(cong.word_to_class_index({1})
           != cong.word_to_class_index({0, 0, 0, 0}));
-  REQUIRE(cong.word_to_class_index({0, 0, 0, 0})
-          != cong.word_to_class_index({0, 0, 1}));
+  REQUIRE(!cong.test_equals({0, 0, 0, 0}, {0, 0, 1}));
 }
 
 TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
@@ -136,8 +138,7 @@ TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
 
   REQUIRE(cong2.word_to_class_index({0, 0, 0, 0})
           == cong2.word_to_class_index({0, 0}));
-  REQUIRE(cong2.word_to_class_index({0, 0, 0, 0})
-          == cong2.word_to_class_index({0, 1, 1, 0, 1, 1}));
+  REQUIRE(cong2.test_equals({0, 0, 0, 0}, {0, 1, 1, 0, 1, 1}));
 }
 
 TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
@@ -155,6 +156,8 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   Congruence              cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
+
+  REQUIRE(cong.nontrivial_classes().size() == 0);
 }
 
 TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
@@ -209,6 +212,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
+  REQUIRE(cong.test_equals(w3, w4));
 
   t1->really_delete();
   t2->really_delete();
@@ -253,6 +257,12 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
           != cong.word_to_class_index({1, 0, 0, 1}));
 
+  REQUIRE(cong.test_equals({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
+  REQUIRE(!cong.test_equals({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+
+  REQUIRE(!cong.test_less_than({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+  REQUIRE(cong.test_less_than({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+
   t3->really_delete();
   t4->really_delete();
   delete t3;
@@ -295,6 +305,10 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
+  REQUIRE(cong.test_equals(w1, w2));
+  REQUIRE(cong.test_equals(w5, w6));
+  REQUIRE(!cong.test_equals(w3, w5));
+
   t1->really_delete();
   t2->really_delete();
   t3->really_delete();
@@ -329,6 +343,9 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0, 1}));
+
+  REQUIRE(cong.test_equals({1}, {1, 1}));
+  REQUIRE(cong.test_equals({1, 0, 1}, {1, 0}));
 }
 
 TEST_CASE("Congruence 10: for an infinite fp semigroup",
@@ -352,6 +369,11 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0, 1}));
+
+  REQUIRE(cong.test_equals({1}, {1, 1}));
+  REQUIRE(cong.test_equals({1, 0, 1}, {1, 0}));
+
+  REQUIRE(!cong.test_less_than({1, 0, 1}, {1, 0}));
 }
 
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
@@ -394,6 +416,12 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
           != cong.word_to_class_index({0, 0, 3}));
   REQUIRE(cong.word_to_class_index({1, 1, 0})
           != cong.word_to_class_index({1, 3, 3, 2, 2, 1, 0}));
+
+  REQUIRE(cong.test_equals({1, 2, 1, 3, 3, 2, 1, 2}, {2, 1, 3, 3, 2, 1, 0}));
+  REQUIRE(!cong.test_equals({1, 1, 0}, {1, 3, 3, 2, 2, 1, 0}));
+
+  REQUIRE(cong.test_less_than({1, 3, 3, 2, 2, 1, 0}, {1, 1, 0}));
+  REQUIRE(!cong.test_less_than({1, 1, 0, 0}, {0, 0, 3}));
 
   REQUIRE(cong.nr_classes() == 525);
   REQUIRE(cong.nr_classes() == 525);
@@ -500,6 +528,7 @@ TEST_CASE("Congruence 14: Bicyclic monoid",
           == cong.word_to_class_index({1, 0, 2, 0, 1, 2}));
   REQUIRE(cong.word_to_class_index({2, 1})
           == cong.word_to_class_index({1, 2, 0, 2, 1, 1, 2}));
+  REQUIRE(cong.test_equals({2, 1}, {1, 2, 0, 2, 1, 1, 2}));
 }
 
 TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
@@ -675,4 +704,40 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
   REQUIRE(nt_classes[0]->size() == 5);
 
   REQUIRE(cong.is_done());
+}
+
+TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels = {relation_t({0, 0, 0}, {0}),
+                                  relation_t({0, 1}, {1, 0})};
+  std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
+  Congruence              cong("twosided", 2, rels, extra);
+  cong.set_report(CONG_REPORT);
+
+  word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+  REQUIRE(cong.test_equals(x, y));
+
+  REQUIRE(cong.test_less_than({0, 0, 0}, {1}));
+  REQUIRE(!cong.test_less_than({1}, {0, 0, 0}));
+  REQUIRE(!cong.test_less_than(x, y));
+  REQUIRE(!cong.test_less_than(y, x));
+
+  REQUIRE(!cong.is_done());
+
+  cong.force_kbfp();  // clear data
+  REQUIRE(cong.test_equals(x, y));
+}
+
+TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
+          "[quick][congruence][fpsemigroup][multithread]") {
+  std::vector<relation_t> rels;
+  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_t({0}, {1}));        // (a, b)
+  std::vector<relation_t> extra;
+
+  Congruence cong("left", 2, rels, extra);
+
+  REQUIRE(cong.nontrivial_classes().size() == 0);
 }
