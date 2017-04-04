@@ -14,4 +14,4 @@ install:
 build: off
 
 test_script:
-  - '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER ; make"'
+  - '%CYG_ROOT%/bin/bash -lc "export CYGWIN=winsymlinks:native; cd $APPVEYOR_BUILD_FOLDER ; make test"'
