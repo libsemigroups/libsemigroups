@@ -268,7 +268,8 @@ cdef class PartialPerm(Element):
 
             >>> from semigroups import *
 	    >>> PartialPerm([1,4,2],[2,3,4],6)
-	    PartialPerm([2, 4, -1, 3, -1, -1])
+	    PartialPerm([1, 4, 2], [2, 3, 4], 6)
+
 
         """
 
