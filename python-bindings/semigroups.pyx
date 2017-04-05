@@ -289,61 +289,46 @@ cdef class Bipartition(Element):
 
     cdef list blocks
 
-    def __init__(self,*args,intRep=False):
-
-        if not intRep:
-            self.blocks=[]
-            n=1
-            for sublist in args:
-                if not isinstance(sublist,list):
-                    raise TypeError
-                n=max(max(sublist),n)
-                self.blocks.append(sublist[:])
-
-            #Note that this assert ensures all entries are non-zero ints
-            if set().union(*args)!=set(range(1,n+1)).union(set(range(-1,-n-1,-1))):
-                raise ValueError
-
-            
-
-            dictOfSublistsWithMins={}
-            for sublist in args:
-                for i in range(len(sublist)):
-                    entry=sublist[i]
-                    if entry<0:
-                        sublist[i]=n+abs(entry)
-                dictOfSublistsWithMins[min(sublist)]=sublist
-            output=[0]*(n*2)
-            i=1
-
-            while len(dictOfSublistsWithMins)>0:
-                sublistKey=min(dictOfSublistsWithMins.keys())
-                for item in dictOfSublistsWithMins[sublistKey]:
-                    output[item-1]=i
-                i+=1
-                del dictOfSublistsWithMins[sublistKey]
-            self._handle = new cpp.Bipartition(output)
-        else:
-            if len(args)!=1:
+    def __init__(self,*args):        
+        self.blocks=[]
+        n=1
+        for sublist in args:
+            if not isinstance(sublist,list):
                 raise TypeError
-            tentativeList=[]
-            for i in args[0]:
-                if not isinstance(i,int):
-                    raise TypeError
-                if i<=0:
-                    raise ValueError
-                if i>1:
-                    if not i-1 in tentativeList:
-                        raise ValueError
-                tentativeList.append(i)
-                   
-            self._handle = new cpp.Bipartition(args[0])
+            n=max(max(sublist),n)
+            self.blocks.append(sublist[:])
+
+        #Note that this assert ensures all entries are non-zero ints
+        if set().union(*args)!=set(range(1,n+1)).union(set(range(-1,-n-1,-1))):
+            raise ValueError
+
+        
+
+        dictOfSublistsWithMins={}
+        for sublist in args:
+            for i in range(len(sublist)):
+                entry=sublist[i]
+                if entry<0:
+                    sublist[i]=n+abs(entry)
+            dictOfSublistsWithMins[min(sublist)]=sublist
+        output=[0]*(n*2)
+        i=1
+
+        while len(dictOfSublistsWithMins)>0:
+            sublistKey=min(dictOfSublistsWithMins.keys())
+            for item in dictOfSublistsWithMins[sublistKey]:
+                output[item-1]=i
+            i+=1
+            del dictOfSublistsWithMins[sublistKey]
+        self._handle = new cpp.Bipartition(output)
+
 
     def __iter__(self):
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         for x in e2[0]:
             yield x
+
 
     def IntRep(self):
         """
