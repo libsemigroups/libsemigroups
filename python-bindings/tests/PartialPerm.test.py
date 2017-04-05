@@ -59,6 +59,13 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual( list(PartialPerm([0,1,3],[1,2,4],5)), [1, 2, 65535, 4, 65535])
         self.assertEqual( list(PartialPerm([0, 3, 7, 2], [5, 7, 1, 3], 8)), [5, 65535, 3, 7, 65535, 65535, 65535, 1])
 
+    def test_rank(self):
+        self.assertEqual(PartialPerm([1,4,2],[2,3,4],6).rank(),3)
+        self.assertEqual(PartialPerm([1, 2, 4, 6, 7, 23], [0, 5, 2, 4, 6, 7], 26).rank(),6)
+        
+        with self.assertRaises(TypeError):
+            PartialPerm([1,2],[0,1],3).rank(2)
+
 
 
 
