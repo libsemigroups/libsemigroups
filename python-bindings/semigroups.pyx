@@ -295,12 +295,14 @@ cdef class Bipartition(Element):
             self.blocks=[]
             n=1
             for sublist in args:
-                assert isinstance(sublist,list)
+                if not isinstance(sublist,list):
+                    raise TypeError
                 n=max(max(sublist),n)
                 self.blocks.append(sublist[:])
 
             #Note that this assert ensures all entries are non-zero ints
-            assert set().union(*args)==set(range(1,n+1)).union(set(range(-1,-n-1,-1)))
+            if set().union(*args)!=set(range(1,n+1)).union(set(range(-1,-n-1,-1))):
+                raise ValueError
 
             
 
@@ -322,13 +324,17 @@ cdef class Bipartition(Element):
                 del dictOfSublistsWithMins[sublistKey]
             self._handle = new cpp.Bipartition(output)
         else:
-            assert len(args)==1
+            if len(args)!=1:
+                raise TypeError
             tentativeList=[]
             for i in args[0]:
-                assert isinstance(i,int)
-                assert i>0
+                if not isinstance(i,int):
+                    raise TypeError
+                if i<=0:
+                    raise ValueError
                 if i>1:
-                    assert i-1 in tentativeList
+                    if not i-1 in tentativeList:
+                        raise ValueError
                 tentativeList.append(i)
                    
             self._handle = new cpp.Bipartition(args[0])
