@@ -249,6 +249,17 @@ cdef class PartialPerm(Element):
         for x in e2[0]:
             yield x
 
+    def init_dom_ran_deg(self):
+        if self.dom==None or self.ran==None or self.deg==None:
+            L=list(self)
+            self.deg=len(L)
+            self.dom=[]
+            self.ran=[]
+            for i in range(self.deg):
+                if L[i]!=65535 and L[i]!=-1:
+                    self.dom.append(i)
+                    self.ran.append(L[i])
+
     def __repr__(self):
         """
         Return a string representation of `self`.
@@ -260,17 +271,9 @@ cdef class PartialPerm(Element):
 	    PartialPerm([2, 4, -1, 3, -1, -1])
 
         """
-        if self.dom==None or self.ran==None or self.deg==None:
-            L=list(self)
-            self.deg=len(L)
-            self.dom=[]
-            self.ran=[]
-            for i in range(self.deg):
-                if L[i]!=65535 and L[i]!=-1:
-                    self.dom.append(i)
-                    self.ran.append(L[i])
 
 
+        self.init_dom_ran_deg()
         return ("PartialPerm(%s, %s, %s)"%(self.dom,self.ran,self.deg)).replace('65535','-1')
 
     def rank(self):
