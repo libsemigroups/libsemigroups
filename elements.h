@@ -407,35 +407,35 @@ namespace libsemigroups {
       delete _vector;
     }
 
-    inline typename std::vector<u_int32_t>::iterator begin() const {
     //! Returns an iterator.
     //!
     //! This method returns an iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
+    inline typename std::vector<S>::iterator begin() const {
       return _vector->begin();
     }
 
-    inline typename std::vector<u_int32_t>::iterator end() const {
     //! Returns an iterator.
     //!
     //! This method returns an iterator referring to the past-the-end element
     //! of the vector that is the underlying defining data of \c this.
+    inline typename std::vector<S>::iterator end() const {
       return _vector->end();
     }
 
-    inline typename std::vector<u_int32_t>::iterator cbegin() const {
     //! Returns a const iterator.
     //!
     //! This method returns a const_iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
+    inline typename std::vector<S>::iterator cbegin() const {
       return _vector->cbegin();
     }
 
-    inline typename std::vector<u_int32_t>::iterator cend() const {
     //! Returns a const iterator.
     //!
     //! This method returns a const iterator referring to the past-the-end
     //! element of the vector that is the underlying defining data of \c this.
+    inline typename std::vector<S>::iterator cend() const {
       return _vector->cend();
     }
 
@@ -569,8 +569,8 @@ namespace libsemigroups {
     //! Undefined image value.
     //!
     //! This value is used to indicate that a partial transformation is not
-    static S UNDEFINED;
     //! defined on a value.
+    static S const UNDEFINED;
 
    private:
     // Used for determining rank, this is not thread safe FIXME
