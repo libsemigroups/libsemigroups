@@ -31,6 +31,7 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[T] _vector
         vector[T].iterator begin()
         vector[T].iterator end()
+        int crank()
     cdef cppclass Bipartition(Element):
         Bipartition(vector[uint32_t]) except +
         vector[uint32_t] _vector

@@ -273,6 +273,11 @@ cdef class PartialPerm(Element):
 
         return ("PartialPerm(%s, %s, %s)"%(self.dom,self.ran,self.deg)).replace('65535','-1')
 
+    def rank(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.PartialPerm[uint16_t] *>e
+        return e2.crank()
+
 cdef class Bipartition(Element):
     """
     A class for handles to libsemigroups bipartition.
