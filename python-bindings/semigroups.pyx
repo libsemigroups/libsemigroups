@@ -273,64 +273,71 @@ cdef class PartialPerm(Element):
 
         return ("PartialPerm(%s, %s, %s)"%(self.dom,self.ran,self.deg)).replace('65535','-1')
 
-#cdef class Bipartition(Element):
-#    """
-#    A class for handles to libsemigroups bipartition.
-#    """
+cdef class Bipartition(Element):
+    """
+    A class for handles to libsemigroups bipartition.
+    """
 
-#    def __init__(self,list List):
+    cdef list blocks
 
-#        if isinstance(List[0],list):
-#            n=1
-#            for sublist in List:
-#                assert isinstance(sublist,list)
-#                n=max(max(sublist),n)
+    def __init__(self,list List):
 
-#            #Note that this assert ensures all entries are non-zero ints
-#            assert set().union(*List)==set(range(1,n+1)).union(set(range(-1,-n-1,-1)))
+        if isinstance(List[0],list):
+            n=1
+            for sublist in List:
+                assert isinstance(sublist,list)
+                n=max(max(sublist),n)
+
+            #Note that this assert ensures all entries are non-zero ints
+            assert set().union(*List)==set(range(1,n+1)).union(set(range(-1,-n-1,-1)))
+
+            self.blocks=List
+
+            dictOfSublistsWithMins={}
+            for sublist in List:
+                for i in range(len(sublist)):
+                    entry=sublist[i]
+                    if entry<0:
+                        sublist[i]=n+abs(entry)
+                dictOfSublistsWithMins[min(sublist)]=sublist
+            output=[0]*(n*2)
+            i=1
+
+            while len(dictOfSublistsWithMins)>0:
+                sublistKey=min(dictOfSublistsWithMins.keys())
+                for item in dictOfSublistsWithMins[sublistKey]:
+                    output[item-1]=i
+                i+=1
+                del dictOfSublistsWithMins[sublistKey]
+            self._handle = new cpp.Bipartition(output)
+        else:
+            self._handle = new cpp.Bipartition(List)
+
+    def __iter__(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.Bipartition *>e
+        for x in e2[0]:
+            yield x
+
+    def IntRep(self):
+        """
+        Return a string representation of `self`.
+
+        EXAMPLES::
+
+            >>> from semigroups import *
+            >>> p.IntRep()
+            'Bipartition([1, 2, 2, 1, 2, 3])'
 
 
-#            dictOfSublistsWithMins={}
-#            for sublist in List:
-#                for i in range(len(sublist)):
-#                    entry=sublist[i]
-#                    if entry<0:
-#                        sublist[i]=n+abs(entry)
-#                dictOfSublistsWithMins[min(sublist)]=sublist
-#            output=[0]*(n*2)
-#            i=1
+        """
+        return "Bipartition(" + str(list(self)) + ")"
 
-#            while len(dictOfSublistsWithMins)>0:
-#                sublistKey=min(dictOfSublistsWithMins.keys())
-#                for item in dictOfSublistsWithMins[sublistKey]:
-#                    output[item-1]=i
-#                i+=1
-#                del dictOfSublistsWithMins[sublistKey]
-#            self._handle = new cpp.Bipartition(output)
-#        else:
-#            self._handle = new cpp.Bipartition(List)
+    def __repr__(self):
+        if self.blocks is None:
+            pass
+        return 'Bipartition(%s)'%self.blocks.__repr__()
 
-#    def __iter__(self):
-#        cdef cpp.Element* e = self._handle
-#        e2 = <cpp.Bipartition *>e
-#        for x in e2[0]:
-#            yield x
-
-#    def IntRep(self):
-#        """
-#        Return a string representation of `self`.
-
-#        EXAMPLES::
-
-#            >>> from semigroups import *
-#            >>> p.IntRep()
-#            'Bipartition([1, 2, 2, 1, 2, 3])'
-
-
-#        """
-#        return "Bipartition(" + str(list(self)) + ")"
-
-##    def __repr__(self):
 
 
 
