@@ -289,9 +289,9 @@ cdef class Bipartition(Element):
 
     cdef list blocks
 
-    def __init__(self,*args):
+    def __init__(self,*args,intRep=False):
 
-        if isinstance(args[0],list):
+        if not intRep:
             n=1
             for sublist in args:
                 assert isinstance(sublist,list)
@@ -300,7 +300,7 @@ cdef class Bipartition(Element):
             #Note that this assert ensures all entries are non-zero ints
             assert set().union(*args)==set(range(1,n+1)).union(set(range(-1,-n-1,-1)))
 
-            self.blocks=args
+            self.blocks=list(args)
 
             dictOfSublistsWithMins={}
             for sublist in args:
@@ -320,7 +320,7 @@ cdef class Bipartition(Element):
                 del dictOfSublistsWithMins[sublistKey]
             self._handle = new cpp.Bipartition(output)
         else:
-            self._handle = new cpp.Bipartition(args)
+            self._handle = new cpp.Bipartition(args[0])
 
     def __iter__(self):
         cdef cpp.Element* e = self._handle
