@@ -88,7 +88,7 @@ namespace libsemigroups {
     RecVec<class_index_t>     _preim_init;
     RecVec<class_index_t>     _preim_next;
     std::vector<relation_t>   _relations;
-    std::stack<class_index_t> _rhs_stack;     // Stack for identifying cosets
+    std::stack<class_index_t> _rhs_stack;  // Stack for identifying cosets
     size_t                    _steps;
     size_t                    _stop_packing;  // TODO(JDM): make this a bool?
     RecVec<class_index_t>     _table;

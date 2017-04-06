@@ -150,8 +150,8 @@ namespace libsemigroups {
               // Find longest common prefix of suffix B of rule1.first defined
               // by it and R = rule2.first
               // FIXME the following is not valid
-              auto prefix =
-                  std::mismatch(it, rule1.first.cend(), rule2.first.cbegin());
+              auto prefix
+                  = std::mismatch(it, rule1.first.cend(), rule2.first.cbegin());
               if (prefix.first != it || prefix.second != rule2.first.cbegin()) {
                 // FIXME this first if-condition redundant?
                 // There was a match

@@ -39,9 +39,9 @@ template <typename T> static inline void really_delete_cont(T cont) {
 
 TEST_CASE("RWS 01: for a transformation semigroup of size 4",
           "[quick][rws][fpsemigroup]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({1, 0}),
-      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup S = Semigroup(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
@@ -208,8 +208,8 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", ""), rws_rule_t("bbb", ""), rws_rule_t("ababab", "")};
+  std::vector<rws_rule_t> rules
+      = {rws_rule_t("aa", ""), rws_rule_t("bbb", ""), rws_rule_t("ababab", "")};
   RWS rws(rules);
   rws.set_report(RWS_REPORT);
 

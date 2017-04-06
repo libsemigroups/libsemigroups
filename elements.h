@@ -581,8 +581,8 @@ namespace libsemigroups {
   std::vector<bool> PartialTransformation<S, T>::_lookup = std::vector<bool>();
 
   template <typename S, typename T>
-  S const
-      PartialTransformation<S, T>::UNDEFINED = std::numeric_limits<S>::max();
+  S const PartialTransformation<S, T>::UNDEFINED
+      = std::numeric_limits<S>::max();
 
   //! Template class for transformations.
   //!
@@ -796,8 +796,8 @@ namespace libsemigroups {
       PartialPerm<T> const* yy(static_cast<PartialPerm<T> const*>(y));
       size_t const          n = this->degree();
       for (T i = 0; i < n; i++) {
-        (*this->_vector)[i] =
-            ((*xx)[i] == PP_UNDEFINED ? PP_UNDEFINED : (*yy)[(*xx)[i]]);
+        (*this->_vector)[i]
+            = ((*xx)[i] == PP_UNDEFINED ? PP_UNDEFINED : (*yy)[(*xx)[i]]);
       }
       this->reset_hash_value();
     }

@@ -783,8 +783,8 @@ namespace libsemigroups {
     //! of 1 and the minimum of \p nr_threads and the number of threads
     //! supported by the hardware.
     void set_max_threads(size_t nr_threads) {
-      unsigned int n =
-          static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+      unsigned int n
+          = static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
 

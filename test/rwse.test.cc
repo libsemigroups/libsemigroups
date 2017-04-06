@@ -34,9 +34,9 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 TEST_CASE("RWSE 01:", "[quick][rwse]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({1, 0}),
-      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup S = Semigroup(gens);
   S.set_report(RWSE_REPORT);
   really_delete_cont(gens);
@@ -71,9 +71,9 @@ TEST_CASE("RWSE 01:", "[quick][rwse]") {
 }
 
 TEST_CASE("RWSE 02: factorisation", "[quick][rwse]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({1, 0}),
-      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup S = Semigroup(gens);
   S.set_report(RWSE_REPORT);
   really_delete_cont(gens);

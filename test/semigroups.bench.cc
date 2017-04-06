@@ -97,17 +97,17 @@ TEST_CASE("Benchmark 01: add_generators versus enumerate example 1",
   std::cout << "Performing " << 597369 / example1_step << " runs . . ."
             << std::endl;
 
-  std::vector<Element*> gens = {
-      new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
-      new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
-      new Transformation<uint_fast8_t>({3, 0, 7, 2, 4, 6, 2, 4}),
-      new Transformation<uint_fast8_t>({3, 2, 3, 4, 5, 3, 0, 1}),
-      new Transformation<uint_fast8_t>({4, 3, 7, 7, 4, 5, 0, 4}),
-      new Transformation<uint_fast8_t>({5, 6, 3, 0, 3, 0, 5, 1}),
-      new Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4})};
+  std::vector<Element*> gens
+      = {new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
+         new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
+         new Transformation<uint_fast8_t>({3, 0, 7, 2, 4, 6, 2, 4}),
+         new Transformation<uint_fast8_t>({3, 2, 3, 4, 5, 3, 0, 1}),
+         new Transformation<uint_fast8_t>({4, 3, 7, 7, 4, 5, 0, 4}),
+         new Transformation<uint_fast8_t>({5, 6, 3, 0, 3, 0, 5, 1}),
+         new Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4})};
 
-  std::vector<Element*> coll = {
-      new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
+  std::vector<Element*> coll
+      = {new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
 
   std::vector<size_t> ag_times;
   std::vector<size_t> en_times;

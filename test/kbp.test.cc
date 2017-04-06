@@ -93,19 +93,19 @@ TEST_CASE("KBP 02: for an infinite fp semigroup",
 
 TEST_CASE("KBP 03: for an infinite fp semigroup",
           "[quick][congruence][kbp][fpsemigroup]") {
-  std::vector<relation_t> rels = {
-      relation_t({0, 1}, {0}), relation_t({1, 0}, {0}),
-      relation_t({0, 2}, {0}), relation_t({2, 0}, {0}),
-      relation_t({0, 3}, {0}), relation_t({3, 0}, {0}),
-      relation_t({0, 0}, {0}), relation_t({1, 1}, {0}),
-      relation_t({2, 2}, {0}), relation_t({3, 3}, {0}),
-      relation_t({1, 2}, {0}), relation_t({2, 1}, {0}),
-      relation_t({1, 3}, {0}), relation_t({3, 1}, {0}),
-      relation_t({2, 3}, {0}), relation_t({3, 2}, {0}),
-      relation_t({4, 0}, {0}), relation_t({4, 1}, {1}),
-      relation_t({4, 2}, {2}), relation_t({4, 3}, {3}),
-      relation_t({0, 4}, {0}), relation_t({1, 4}, {1}),
-      relation_t({2, 4}, {2}), relation_t({3, 4}, {3})};
+  std::vector<relation_t> rels
+      = {relation_t({0, 1}, {0}), relation_t({1, 0}, {0}),
+         relation_t({0, 2}, {0}), relation_t({2, 0}, {0}),
+         relation_t({0, 3}, {0}), relation_t({3, 0}, {0}),
+         relation_t({0, 0}, {0}), relation_t({1, 1}, {0}),
+         relation_t({2, 2}, {0}), relation_t({3, 3}, {0}),
+         relation_t({1, 2}, {0}), relation_t({2, 1}, {0}),
+         relation_t({1, 3}, {0}), relation_t({3, 1}, {0}),
+         relation_t({2, 3}, {0}), relation_t({3, 2}, {0}),
+         relation_t({4, 0}, {0}), relation_t({4, 1}, {1}),
+         relation_t({4, 2}, {2}), relation_t({4, 3}, {3}),
+         relation_t({0, 4}, {0}), relation_t({1, 4}, {1}),
+         relation_t({2, 4}, {2}), relation_t({3, 4}, {3})};
   std::vector<relation_t> extra = {{{1}, {2}}};
   Congruence              cong("twosided", 5, rels, extra);
   cong.force_kbp();
@@ -123,19 +123,19 @@ TEST_CASE("KBP 03: for an infinite fp semigroup",
 
 TEST_CASE("KBP 04: for an infinite fp semigroup",
           "[quick][congruence][kbp][fpsemigroup]") {
-  std::vector<relation_t> rels = {
-      relation_t({0, 1}, {0}), relation_t({1, 0}, {0}),
-      relation_t({0, 2}, {0}), relation_t({2, 0}, {0}),
-      relation_t({0, 3}, {0}), relation_t({3, 0}, {0}),
-      relation_t({0, 0}, {0}), relation_t({1, 1}, {0}),
-      relation_t({2, 2}, {0}), relation_t({3, 3}, {0}),
-      relation_t({1, 2}, {0}), relation_t({2, 1}, {0}),
-      relation_t({1, 3}, {0}), relation_t({3, 1}, {0}),
-      relation_t({2, 3}, {0}), relation_t({3, 2}, {0}),
-      relation_t({4, 0}, {0}), relation_t({4, 1}, {2}),
-      relation_t({4, 2}, {3}), relation_t({4, 3}, {1}),
-      relation_t({0, 4}, {0}), relation_t({1, 4}, {2}),
-      relation_t({2, 4}, {3}), relation_t({3, 4}, {1})};
+  std::vector<relation_t> rels
+      = {relation_t({0, 1}, {0}), relation_t({1, 0}, {0}),
+         relation_t({0, 2}, {0}), relation_t({2, 0}, {0}),
+         relation_t({0, 3}, {0}), relation_t({3, 0}, {0}),
+         relation_t({0, 0}, {0}), relation_t({1, 1}, {0}),
+         relation_t({2, 2}, {0}), relation_t({3, 3}, {0}),
+         relation_t({1, 2}, {0}), relation_t({2, 1}, {0}),
+         relation_t({1, 3}, {0}), relation_t({3, 1}, {0}),
+         relation_t({2, 3}, {0}), relation_t({3, 2}, {0}),
+         relation_t({4, 0}, {0}), relation_t({4, 1}, {2}),
+         relation_t({4, 2}, {3}), relation_t({4, 3}, {1}),
+         relation_t({0, 4}, {0}), relation_t({1, 4}, {2}),
+         relation_t({2, 4}, {3}), relation_t({3, 4}, {1})};
   std::vector<relation_t> extra = {{{2}, {3}}};
   Congruence              cong("twosided", 5, rels, extra);
   cong.force_kbp();
@@ -190,8 +190,8 @@ TEST_CASE("KBP 06: universal congruence on a finite fp semigroup",
                                   relation_t({0, 1, 0, 0, 0}, {0, 1, 0, 1}),
                                   relation_t({0, 1, 0, 1, 0}, {0, 1, 0, 0}),
                                   relation_t({0, 1, 0, 1, 1}, {0, 1, 0, 1})};
-  std::vector<relation_t> extra = {relation_t({0}, {1}),
-                                   relation_t({0, 0}, {0})};
+  std::vector<relation_t> extra
+      = {relation_t({0}, {1}), relation_t({0, 0}, {0})};
   Congruence cong("twosided", 2, rels, extra);
   cong.force_kbp();
   cong.set_report(KBP_REPORT);
@@ -224,8 +224,8 @@ TEST_CASE("KBP 06: left congruence with even chunks on a finite fp semigroup",
                                   relation_t({0, 1, 0, 0, 0}, {0, 1, 0, 1}),
                                   relation_t({0, 1, 0, 1, 0}, {0, 1, 0, 0}),
                                   relation_t({0, 1, 0, 1, 1}, {0, 1, 0, 1})};
-  std::vector<relation_t> extra = {relation_t({0}, {1}),
-                                   relation_t({0, 0}, {0})};
+  std::vector<relation_t> extra
+      = {relation_t({0}, {1}), relation_t({0, 0}, {0})};
   Congruence cong("left", 2, rels, extra);
   cong.force_kbp();
   cong.set_report(KBP_REPORT);
@@ -256,19 +256,19 @@ TEST_CASE("KBP 06: left congruence with even chunks on a finite fp semigroup",
 
 TEST_CASE("KBP 07: finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR",
           "[quick][congruence][kbp][fpsemigroup]") {
-  std::vector<relation_t> rels = {
-      relation_t({0, 0}, {0}),
-      relation_t({0, 1}, {1}),
-      relation_t({1, 0}, {1}),
-      relation_t({0, 2}, {2}),
-      relation_t({2, 0}, {2}),
-      relation_t({0, 3}, {3}),
-      relation_t({3, 0}, {3}),
-      relation_t({2, 3}, {0}),
-      relation_t({3, 2}, {0}),
-      relation_t({1, 1}, {0}),
-      relation_t({2, 2, 2, 2}, {0}),
-      relation_t({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0})};
+  std::vector<relation_t> rels
+      = {relation_t({0, 0}, {0}),
+         relation_t({0, 1}, {1}),
+         relation_t({1, 0}, {1}),
+         relation_t({0, 2}, {2}),
+         relation_t({2, 0}, {2}),
+         relation_t({0, 3}, {3}),
+         relation_t({3, 0}, {3}),
+         relation_t({2, 3}, {0}),
+         relation_t({3, 2}, {0}),
+         relation_t({1, 1}, {0}),
+         relation_t({2, 2, 2, 2}, {0}),
+         relation_t({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0})};
 
   std::vector<relation_t> extra = {};
   Congruence              cong("twosided", 3, rels, extra);
@@ -435,8 +435,8 @@ TEST_CASE("KBP 11: finite fp-semigroup, size 16",
 
 TEST_CASE("KBP 12: Infinite fp semigroup with infinite classes",
           "[quick][congruence][fpsemigroup][kbp]") {
-  std::vector<relation_t> rels = {relation_t({0, 0, 0}, {0}),
-                                  relation_t({0, 1}, {1, 0})};
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
   Congruence              cong("twosided", 2, rels, extra);
   cong.force_kbp();

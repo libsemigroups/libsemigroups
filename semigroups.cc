@@ -24,10 +24,10 @@ namespace libsemigroups {
   Reporter glob_reporter;
 
   // Static data members
-  Semigroup::pos_t const Semigroup::UNDEFINED =
-      std::numeric_limits<size_t>::max();
-  Semigroup::pos_t const Semigroup::LIMIT_MAX =
-      std::numeric_limits<size_t>::max();
+  Semigroup::pos_t const Semigroup::UNDEFINED
+      = std::numeric_limits<size_t>::max();
+  Semigroup::pos_t const Semigroup::LIMIT_MAX
+      = std::numeric_limits<size_t>::max();
 
   Semigroup::Semigroup(std::vector<Element*> const* gens)
       : _batch_size(8192),

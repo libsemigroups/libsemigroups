@@ -75,9 +75,8 @@ namespace libsemigroups {
     // nr_blocks
     size_t nr_blocks();
 
-    void reset_next_rep();
+    void   reset_next_rep();
     size_t next_rep();
-
 
    private:
     size_t    _size;

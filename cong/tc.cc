@@ -429,8 +429,8 @@ namespace libsemigroups {
           class_index_t v = _preim_init.get(rhs, i);
           while (v != UNDEFINED) {
             _table.set(v, i, lhs);  // Replace <rhs> by <lhs> in the table
-            class_index_t u =
-                _preim_next.get(v, i);  // Get <rhs>'s next preimage
+            class_index_t u
+                = _preim_next.get(v, i);  // Get <rhs>'s next preimage
             _preim_next.set(v, i, _preim_init.get(lhs, i));
             _preim_init.set(lhs, i, v);
             // v is now a preimage of <lhs>, not <rhs>

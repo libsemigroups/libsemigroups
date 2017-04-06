@@ -62,8 +62,8 @@ TEST_CASE("Blocks: non-empty blocks", "[quick][blocks]") {
 }
 
 TEST_CASE("Blocks: left blocks of bipartition", "[quick][blocks]") {
-  Bipartition x =
-      Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
+  Bipartition x = Bipartition(
+      {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   Blocks* b = x.left_blocks();
   REQUIRE(b == b);
   REQUIRE(!(b < b));
@@ -85,8 +85,8 @@ TEST_CASE("Blocks: left blocks of bipartition", "[quick][blocks]") {
 }
 
 TEST_CASE("Blocks: right blocks of bipartition", "[quick][blocks]") {
-  Bipartition x =
-      Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
+  Bipartition x = Bipartition(
+      {0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
   Blocks* b = x.right_blocks();
   REQUIRE(b == b);
   REQUIRE(!(b < b));
@@ -131,9 +131,9 @@ TEST_CASE("Blocks: copy [empty blocks]", "[quick][blocks]") {
 }
 
 TEST_CASE("Blocks: copy [non-empty blocks]", "[quick][blocks]") {
-  Blocks* b =
-      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-                 new std::vector<bool>({false, true, false}));
+  Blocks* b = new Blocks(
+      new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+      new std::vector<bool>({false, true, false}));
   Blocks c(*b);
 
   REQUIRE(b->degree() == 11);
@@ -150,12 +150,12 @@ TEST_CASE("Blocks: copy [non-empty blocks]", "[quick][blocks]") {
 }
 
 TEST_CASE("Blocks: hash value", "[quick][blocks]") {
-  Blocks* b =
-      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-                 new std::vector<bool>({false, true, false}));
-  Blocks* c =
-      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-                 new std::vector<bool>({false, true, true}));
+  Blocks* b = new Blocks(
+      new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+      new std::vector<bool>({false, true, false}));
+  Blocks* c = new Blocks(
+      new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+      new std::vector<bool>({false, true, true}));
   REQUIRE(b->hash_value() != c->hash_value());
   delete b;
   delete c;
@@ -166,12 +166,12 @@ TEST_CASE("Blocks: hash value", "[quick][blocks]") {
 }
 
 TEST_CASE("Blocks: operator<", "[quick][blocks]") {
-  Blocks* b =
-      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-                 new std::vector<bool>({false, true, false}));
-  Blocks* c =
-      new Blocks(new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-                 new std::vector<bool>({false, true, true}));
+  Blocks* b = new Blocks(
+      new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+      new std::vector<bool>({false, true, false}));
+  Blocks* c = new Blocks(
+      new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+      new std::vector<bool>({false, true, true}));
   REQUIRE(*c < *b);
   REQUIRE(!(*b < *c));
   delete c;

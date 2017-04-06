@@ -379,11 +379,11 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
 
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
           "[standard][congruence][multithread][finite]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
-      new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
-      new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
-      new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
+         new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
+         new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup S = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
@@ -486,16 +486,16 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 
 TEST_CASE("Congruence 13: partial perm example",
           "[standard][congruence][multithread][finite]") {
-  std::vector<Element*> gens = {
-      new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
-      new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-      new PartialPerm<u_int16_t>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-      new PartialPerm<u_int16_t>({0, 2, 5}, {3, 4, 1}, 6),
-      new PartialPerm<u_int16_t>({0, 2, 5}, {0, 2, 5}, 6),
-      new PartialPerm<u_int16_t>({0, 1, 4}, {1, 2, 0}, 6),
-      new PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-      new PartialPerm<u_int16_t>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-      new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)};
+  std::vector<Element*> gens
+      = {new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
+         new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+         new PartialPerm<u_int16_t>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+         new PartialPerm<u_int16_t>({0, 2, 5}, {3, 4, 1}, 6),
+         new PartialPerm<u_int16_t>({0, 2, 5}, {0, 2, 5}, 6),
+         new PartialPerm<u_int16_t>({0, 1, 4}, {1, 2, 0}, 6),
+         new PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+         new PartialPerm<u_int16_t>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+         new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)};
 
   Semigroup S = Semigroup(gens);
   S.set_report(CONG_REPORT);
@@ -504,8 +504,8 @@ TEST_CASE("Congruence 13: partial perm example",
   // REQUIRE(S.size() == 712);
   // REQUIRE(S.nrrules() == 1121);
 
-  std::vector<relation_t> extra = {relation_t({5, 3, 1}, {3, 3}),
-                                   relation_t({2, 7}, {1, 6, 6, 1})};
+  std::vector<relation_t> extra
+      = {relation_t({5, 3, 1}, {3, 3}), relation_t({2, 7}, {1, 6, 6, 1})};
   Congruence cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
 
@@ -709,8 +709,8 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
 
 TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
           "[quick][congruence][fpsemigroup][multithread]") {
-  std::vector<relation_t> rels = {relation_t({0, 0, 0}, {0}),
-                                  relation_t({0, 1}, {1, 0})};
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
   Congruence              cong("twosided", 2, rels, extra);
   cong.set_report(CONG_REPORT);
