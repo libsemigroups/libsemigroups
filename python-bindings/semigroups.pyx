@@ -282,6 +282,18 @@ cdef class PartialPerm(Element):
         e2 = <cpp.PartialPerm[uint16_t] *>e
         return e2.crank()
 
+    def domain(self):
+        self.init_dom_ran_deg()
+        return self.dom
+
+    def range(self):
+        self.init_dom_ran_deg()
+        return self.ran
+
+    def degree(self):
+        self.init_dom_ran_deg()
+        return self.deg
+
 cdef class Bipartition(Element):
     """
     A class for handles to libsemigroups bipartition.
