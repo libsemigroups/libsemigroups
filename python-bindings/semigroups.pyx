@@ -347,7 +347,6 @@ cdef class Bipartition(Element):
                 self.blocks.append(block)
                 i+=1
                             
-                        
     def blocksList(self):
         self.init_blocks()
         return self.blocks
