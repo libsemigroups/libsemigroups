@@ -313,7 +313,7 @@ cdef class Bipartition(Element):
                         sublist[i]=n+abs(entry)
                 dictOfSublistsWithMins[min(sublist)]=sublist
             output=[0]*(n*2)
-            i=1
+            i=0
 
             while len(dictOfSublistsWithMins)>0:
                 sublistKey=min(dictOfSublistsWithMins.keys())
@@ -364,11 +364,13 @@ cdef class Bipartition(Element):
 
 
         """
+
+        #TODO Work out why some defined Biparitions have IntRep involving 0s
         return "Bipartition(" + str(list(self)) + ")"
 
     def __repr__(self):
         self.init_blocks()
-        return 'Bipartition(%s)'%self.blocks.__repr__()
+        return 'Bipartition(%s)'%self.blocks.__repr__()[1:-1]
 
 
 
