@@ -66,9 +66,26 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             PartialPerm([1,2],[0,1],3).rank(2)
 
+    def test_domain(self):
+        self.assertEqual(set(PartialPerm([1,4,2],[2,3,4],6).domain()),set([1,4,2]))
+        self.assertEqual(set(PartialPerm([7,26,3,5],[23,13,19,11],29).domain()),set([7,26,3,5]))
 
+        with self.assertRaises(TypeError):
+            PartialPerm([1,2],[0,1],3).domain('a')
 
+    def test_range(self):
+        self.assertEqual(set(PartialPerm([1,4,2],[2,3,4],6).range()),set([2,3,4]))
+        self.assertEqual(set(PartialPerm([7,26,3,5],[23,13,19,11],29).range()),set([23,13,19,11]))
 
+        with self.assertRaises(TypeError):
+            PartialPerm([1,2],[0,1],3).range([3])
+
+    def test_degree(self):
+        self.assertEqual(PartialPerm([1,4,2],[2,3,4],6).degree(),6)
+        self.assertEqual(PartialPerm([7,26,3,5],[23,13,19,11],29).degree(),29)
+
+        with self.assertRaises(TypeError):
+            PartialPerm([1,2],[0,1],3).degree(8.5)
 
 
 
