@@ -225,7 +225,7 @@ namespace libsemigroups {
     return winner;
   }
 
-  void Congruence::clear_data() {
+  void Congruence::delete_data() {
     if (_data != nullptr) {
       delete _data;
     }
@@ -238,31 +238,31 @@ namespace libsemigroups {
   }
 
   void Congruence::force_tc() {
-    clear_data();
+    delete_data();
     _data = new TC(*this);
   }
 
   void Congruence::force_tc_prefill() {
-    clear_data();
+    delete_data();
     _data = new TC(*this);
     static_cast<TC*>(_data)->prefill();
   }
 
   void Congruence::force_p() {
     assert(_semigroup != nullptr);
-    clear_data();
+    delete_data();
     _data = new P(*this);
   }
 
   void Congruence::force_kbp() {
     assert(_semigroup == nullptr);
-    clear_data();
+    delete_data();
     _data = new KBP(*this);
   }
 
   void Congruence::force_kbfp() {
     assert(_type == TWOSIDED);
-    clear_data();
+    delete_data();
     _data = new KBFP(*this);
   }
 

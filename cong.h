@@ -170,6 +170,9 @@ namespace libsemigroups {
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
     bool test_equals(word_t const& w1, word_t const& w2) {
+      if (w1 == w2) {
+        return true;
+      }
       DATA* data;
       if (is_done()) {
         data = cget_data();
@@ -328,11 +331,6 @@ namespace libsemigroups {
           static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
-
-    // non-const
-    // This deletes all DATA objects stored in this congruence, including
-    // finished objects and partially-enumerated objects.
-    void delete_data();
 
     //! Use the Todd-Coxeter algorithm.
     //!
@@ -573,6 +571,10 @@ namespace libsemigroups {
       typedef std::vector<word_t*>  class_t;
       typedef std::vector<class_t*> partition_t;
     };
+
+    // This deletes all DATA objects stored in this congruence, including
+    // finished objects and partially-enumerated objects.
+    void delete_data();
 
     // Set the relations of a Congruence object to the relations of the
     // semigroup over which the Congruence is defined (if any). Report is here
