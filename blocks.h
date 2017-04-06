@@ -209,7 +209,7 @@ namespace libsemigroups {
     std::vector<bool>*      _lookup;
     u_int32_t               _nr_blocks;
     u_int32_t               _rank;
-    static u_int32_t        UNDEFINED;
+    static u_int32_t const  UNDEFINED = std::numeric_limits<u_int32_t>::max();
   };
 }  // namespace libsemigroups
 

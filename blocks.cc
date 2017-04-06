@@ -31,8 +31,6 @@
 
 namespace libsemigroups {
 
-  u_int32_t Blocks::UNDEFINED = -1;
-
   Blocks::Blocks(Blocks const& copy)
       : _blocks(nullptr),
         _lookup(nullptr),
