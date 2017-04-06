@@ -334,16 +334,16 @@ cdef class Bipartition(Element):
         if self.blocks is None:
             self.blocks=[]
             List=list(self)
-            i=1
+            i=0
             n=len(List)
             while i in List:
                 block=[]
                 for ind,j in enumerate(List):
                     if j==i:
                         if ind<n/2:
-                            block.append(ind)
+                            block.append(ind+1)
                         else:
-                            block.append(ind-n)
+                            block.append(n/2-ind-1)
                 self.blocks.append(block)
                 i+=1
                             
@@ -365,7 +365,7 @@ cdef class Bipartition(Element):
 
         """
 
-        #TODO Work out why some defined Biparitions have IntRep involving 0s
+
         return "Bipartition(" + str(list(self)) + ")"
 
     def __repr__(self):
