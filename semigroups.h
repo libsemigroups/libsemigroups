@@ -763,8 +763,8 @@ namespace libsemigroups {
     //! semigroup.
     static size_t const UNDEFINED;
 
-    //!! This variable is used to indicate the maximum possible limit that can
-    //!! be used with Semigroup::enumerate.
+    //! This variable is used to indicate the maximum possible limit that can
+    //! be used with Semigroup::enumerate.
     static size_t const LIMIT_MAX;
 
     //! Turn reporting on or off.
