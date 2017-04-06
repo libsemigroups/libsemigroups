@@ -63,6 +63,10 @@ namespace libsemigroups {
       TWOSIDED = 2
     };
 
+    //! The maximum number of steps that can be done in one run of
+    //! Congruence::run.
+    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
+
    public:
     //! Type for indices of congruence classes in a Congruence object.
     typedef size_t class_index_t;
