@@ -330,9 +330,28 @@ cdef class Bipartition(Element):
         for x in e2[0]:
             yield x
 
-
+    def init_blocks(self):
+        if self.blocks is None:
+            self.blocks=[]
+            List=list(self)
+            i=1
+            n=len(List)
+            while i in List:
+                block=[]
+                for ind,j in enumerate(List):
+                    if j==i:
+                        if ind<n/2:
+                            block.append(ind)
+                        else:
+                            block.append(ind-n)
+                self.blocks.append(block)
+                i+=1
                             
                         
+    def blocksList(self):
+        self.init_blocks()
+        return self.blocks
+
 
     def IntRep(self):
         """
