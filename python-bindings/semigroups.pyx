@@ -367,8 +367,7 @@ cdef class Bipartition(Element):
         return "Bipartition(" + str(list(self)) + ")"
 
     def __repr__(self):
-        if self.blocks is None:
-            pass
+        self.init_blocks()
         return 'Bipartition(%s)'%self.blocks.__repr__()
 
 
