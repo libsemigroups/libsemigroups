@@ -17,6 +17,11 @@ CXXFLAGS = -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
 COMMON_DOC_FLAGS = --report --merge docs --output html  $(wildcard *.h) $(wildcard *.cc)
 
+CLANG_FORMAT = $(shell command -v clang-format 2> /dev/null)
+LCOV = $(shell command -v lcov 2> /dev/null)
+CPPLINT = $(shell command -v cpplint 2> /dev/null)
+DOXY = $(shell command -v doxygen 2> /dev/null)
+
 ifneq ($(CXX),clang++)
   ifneq ($(CXX), c++) 
     CXXFLAGS += -pthread
@@ -40,11 +45,7 @@ endif
 error:
 	@echo "Please choose one of the following: doc, test, testdebug, "
 	@echo "testclean, or doclean"; \
-	exit 2
-doc:
-	@echo "Generating documentation . . ."; \
-	doxygen Doxyfile
-	@echo "See: html/index.html"; \
+	@exit 2
 
 test: CXXFLAGS += -O2 -g -DNDEBUG -UDEBUG
 test: $(CLEAN) testbuild testrun
@@ -58,6 +59,11 @@ testcov: CXXFLAGS += -O0 -g --coverage
 testcov: LDFLAGS = -O0 -g --coverage
 testcov: TEST_FLAGS = [quick],[standard]
 testcov: testclean testdebug testrun
+ifndef LCOV
+	@echo "lcov is not available, please install it! On OSX try:"
+	@echo "brew install lcov"; \
+	@exit 2
+endif
 	lcov --capture --directory test/bin --output-file test/lcov/$(TODAY).info
 	genhtml test/lcov/$(TODAY).info --output-directory test/lcov/$(TODAY)-html/
 	@echo "See: " test/lcov/$(TODAY)-html/index.html
@@ -90,10 +96,30 @@ testrun:
 	$(TEST_PROG) $(TEST_FLAGS) | tee -a $(LOG_DIR)/$(TODAY).log
 	@( ! grep -q -E "FAILED|failed" $(LOG_DIR)/$(TODAY).log )
 
-format: 
+doc:
+ifndef DOXY
+	@echo "doxygen is not available, please install it!"
+	@echo "See: https://www.stack.nl/~dimitri/doxygen/manual/install.html"
+	@exit 2
+endif
+	@echo "Generating documentation . . ."; \
+	doxygen Doxyfile
+	@echo "See: html/index.html"; \
+
+format:
+ifndef CLANG_FORMAT
+	@echo "clang-format is not available, please install it! On OSX try:"
+	@echo "brew install clang-format"; \
+	@exit 2
+endif
 	clang-format -i *.cc *.h test/*.cc util/*.h util/*.cc cong/*.h cong/*.cc
 
 lint: 
+ifndef CPPLINT
+	@echo "cpplint  is not available, please install it! Try:"
+	@echo "pip install cpplint"; \
+	@exit 2
+endif
 	cpplint *.cc *.h util/*.h util/*.cc cong/*.h cong/*.cc test/*.cc
 
 .PHONY: error doc test testdebug testcov testclean doclean testdirs testbuild testrun testsuperclean
