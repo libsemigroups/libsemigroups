@@ -229,7 +229,7 @@ cdef class PartialPerm(Element):
             if self.deg<0:#Seperate checking from definition
                 raise ValueError
             if len(self.dom) != len(self.ran):
-                raise IndexError#Check error type
+                raise ValueError
             if len(self.dom)!=0:
                 if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
                     raise ValueError
