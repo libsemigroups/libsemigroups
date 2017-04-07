@@ -26,12 +26,17 @@ from libcpp.vector cimport vector
 cimport semigroups_cpp as cpp
 from libcpp cimport bool
 
+
+#Add _handle.right_cayley_graph
+#Add Gabow's algm
+#Change _handle to _cpp_semigroup or _cpp_trans,.. etc
+
 #cdef class MyCppElement(cpp.Element):
 #    pass
 
-cdef class Nothing:
+cdef class __Nothing:#Change name
     def __init__(self):
-        assert False
+        pass
    
 
 cdef class Element:
@@ -143,11 +148,13 @@ cdef class Element:
         Construct a new element from a specified handle and with the
         same class as ``self``.
         """
-        cdef Element result = self.__class__(Nothing)
+        cdef Element result = self.__class__(__Nothing)
         result._handle = handle[0].really_copy()
         return result
 
-cdef class Transformation(Element):
+cdef class Transformation(Element):#Add dealloc
+
+#Python googlestyle docstrings for examples
     """
     A class for handles to libsemigroups transformations.
 
@@ -159,7 +166,7 @@ cdef class Transformation(Element):
     """
     def __init__(self, List):
         
-        if List is not Nothing:
+        if List is not __Nothing:
             if not isinstance(List,list):
                 raise TypeError
             if max(List)+1>len(List):
@@ -208,25 +215,25 @@ cdef class PartialPerm(Element):
     def __init__(self, *args):
 
         if len(args) == 1:
-            if args[0] == Nothing:
+            if args[0] == __Nothing:
                 return
             self._handle = new cpp.PartialPerm[uint16_t](list(args)[0])
         else:
 
             if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
-                raise TypeError
+                raise TypeError#Add error msgs
 
             self.dom, self.ran, self.deg = args[0], args[1], args[2]
             
 
-            if self.deg<0:
+            if self.deg<0:#Seperate checking from definition
                 raise ValueError
             if len(self.dom) != len(self.ran):
-                raise IndexError
+                raise IndexError#Check error type
             if len(self.dom)!=0:
                 if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
                     raise ValueError
-            imglist = [65535] * self.deg
+            imglist = [65535] * self.deg#Make imglist self.
             for i in range(len(self.dom)):
                 if not (isinstance(self.dom[i],int) and isinstance(self.ran[i],int)):
                     raise TypeError
@@ -243,7 +250,7 @@ cdef class PartialPerm(Element):
 
             self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
-    def __iter__(self):
+    def __iter__(self):#Remove
         cdef cpp.Element* e = self._handle
         e2 = <cpp.PartialPerm[uint16_t] *>e
         for x in e2[0]:
@@ -252,11 +259,9 @@ cdef class PartialPerm(Element):
     def init_dom_ran_deg(self):
         if self.dom==None or self.ran==None or self.deg==None:
             L=list(self)
-            self.deg=len(L)
-            self.dom=[]
-            self.ran=[]
+            self.deg, self.dom, self.ran = len(L), [] ,[]
             for i in range(self.deg):
-                if L[i]!=65535 and L[i]!=-1:
+                if L[i] != 65535 and L[i] != -1:
                     self.dom.append(i)
                     self.ran.append(L[i])
 
@@ -301,8 +306,8 @@ cdef class Bipartition(Element):
 
     cdef list blocks
 
-    def __init__(self,*args):
-        if args[0] is not Nothing:
+    def __init__(self,*args):#Copy args. Seperate.
+        if args[0] is not __Nothing:
             self.blocks=[]
             n=1
             for sublist in args:
@@ -336,7 +341,7 @@ cdef class Bipartition(Element):
             self._handle = new cpp.Bipartition(output)
 
 
-    def __iter__(self):
+    def __iter__(self):#Remove
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         for x in e2[0]:
@@ -359,12 +364,12 @@ cdef class Bipartition(Element):
                 self.blocks.append(block)
                 i+=1
                             
-    def blocksList(self):
+    def blocksList(self):#Rename blocks
         self.init_blocks()
         return self.blocks
 
 
-    def IntRep(self):
+    def IntRep(self):#Remove
         """
         Return a string representation of `self`.
 
@@ -445,7 +450,7 @@ cdef class PythonElement(Element):
     def __repr__(self):
         return repr(self.get_value())
 
-cdef class Semigroup:
+cdef class Semigroup:# Add asserts
     """
     A class for handles to libsemigroups semigroups
 
