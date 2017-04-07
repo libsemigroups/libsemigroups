@@ -34,7 +34,7 @@ from libcpp cimport bool
 #cdef class MyCppElement(cpp.Element):
 #    pass
 
-cdef class __Nothing:#Change name
+cdef class __dummyClass:
     def __init__(self):
         pass
    
@@ -148,7 +148,7 @@ cdef class Element:
         Construct a new element from a specified handle and with the
         same class as ``self``.
         """
-        cdef Element result = self.__class__(__Nothing)
+        cdef Element result = self.__class__(__dummyClass)
         result._handle = handle[0].really_copy()
         return result
 
@@ -166,7 +166,7 @@ cdef class Transformation(Element):#Add dealloc
     """
     def __init__(self, List):
         
-        if List is not __Nothing:
+        if List is not __dummyClass:
             if not isinstance(List,list):
                 raise TypeError
             if max(List)+1>len(List):
@@ -215,7 +215,7 @@ cdef class PartialPerm(Element):
     def __init__(self, *args):
 
         if len(args) == 1:
-            if args[0] == __Nothing:
+            if args[0] == __dummyClass:
                 return
             self._handle = new cpp.PartialPerm[uint16_t](list(args)[0])
         else:
@@ -307,7 +307,7 @@ cdef class Bipartition(Element):
     cdef list blocks
 
     def __init__(self,*args):#Copy args. Seperate.
-        if args[0] is not __Nothing:
+        if args[0] is not __dummyClass:
             self.blocks=[]
             n=1
             for sublist in args:
