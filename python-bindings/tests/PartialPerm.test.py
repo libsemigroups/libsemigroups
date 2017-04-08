@@ -26,16 +26,13 @@ class TestPartialPerm(unittest.TestCase):
             PartialPerm([1,2],[2,2],3)
             PartialPerm([1,1],[0,2],3)
             PartialPerm([],[],-1)
+            PartialPerm([1,2],[0,1,2],3)
 
         with self.assertRaises(TypeError):
             PartialPerm([1,2],[0,'i'],3)
             PartialPerm([1,[0]],[1,2],3)
             PartialPerm([0,1],[2,3],[4])
             PartialPerm([0,1],[2,3],4.3)
-
-        with self.assertRaises(IndexError):
-            PartialPerm([1,2],[0,1,2],3)
-
 
     def test_mul(self):
         self.assertEqual( PartialPerm([0, 1], [0, 1], 2)*PartialPerm([0, 1], [0, 1], 2), PartialPerm([0, 1], [0, 1], 2))
