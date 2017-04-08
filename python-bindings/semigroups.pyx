@@ -168,9 +168,9 @@ cdef class Transformation(Element):#Add dealloc
         
         if List is not __dummyClass:
             if not isinstance(List,list):
-                raise TypeError
+                raise TypeError('Input must be a list')
             if max(List)+1>len(List):
-                raise ValueError
+                raise ValueError('Not a valid Transformation')
             self._handle = new cpp.Transformation[uint16_t](List)
 
 
