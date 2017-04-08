@@ -209,8 +209,8 @@ cdef class PartialPerm(Element):
     A class for handles to libsemigroups partial perm.
     """
     
-    cdef list dom,ran
-    cdef int deg    #Note that it converts floats to ints
+    cdef list _domain,_range
+    cdef int _degree
     
     def __init__(self, *args):
 
@@ -223,30 +223,30 @@ cdef class PartialPerm(Element):
             if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
                 raise TypeError#Add error msgs
 
-            self.dom, self.ran, self.deg = args[0], args[1], args[2]
+            self._domain, self._range, self._degree = args[0], args[1], args[2]
             
 
-            if self.deg<0:#Seperate checking from definition
+            if self._degree<0:#Seperate checking from definition
                 raise ValueError
-            if len(self.dom) != len(self.ran):
+            if len(self._domain) != len(self._range):
                 raise ValueError
-            if len(self.dom)!=0:
-                if not(max(self.dom) < self.deg and max(self.ran) < self.deg):
+            if len(self._domain)!=0:
+                if not(max(self._domain) < self._degree and max(self._range) < self._degree):
                     raise ValueError
-            imglist = [65535] * self.deg#Make imglist self.
-            for i in range(len(self.dom)):
-                if not (isinstance(self.dom[i],int) and isinstance(self.ran[i],int)):
+            imglist = [65535] * self._degree#Make imglist self.
+            for i in range(len(self._domain)):
+                if not (isinstance(self._domain[i],int) and isinstance(self._range[i],int)):
                     raise TypeError
-                if self.dom[i]<0 or self.ran[i]<0:
+                if self._domain[i]<0 or self._range[i]<0:
                     raise ValueError
                 
                 #Ensures range and domain have no repeats
-                if self.ran[i] in imglist:
+                if self._range[i] in imglist:
                     raise ValueError
-                if self.dom.count(i)>1:
+                if self._domain.count(i)>1:
                     raise ValueError
 
-                imglist[self.dom[i]]=self.ran[i]
+                imglist[self._domain[i]]=self._range[i]
 
             self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
@@ -257,13 +257,13 @@ cdef class PartialPerm(Element):
             yield x
 
     def init_dom_ran_deg(self):
-        if self.dom==None or self.ran==None or self.deg==None:
+        if self._domain==None or self._range==None or self._degree==None:
             L=list(self)
-            self.deg, self.dom, self.ran = len(L), [] ,[]
+            self._degree, self._domain, self._range = len(L), [] ,[]
             for i in range(self.deg):
                 if L[i] != 65535 and L[i] != -1:
-                    self.dom.append(i)
-                    self.ran.append(L[i])
+                    self._domain.append(i)
+                    self._range.append(L[i])
 
     def __repr__(self):
         """
@@ -280,7 +280,7 @@ cdef class PartialPerm(Element):
 
 
         self.init_dom_ran_deg()
-        return ("PartialPerm(%s, %s, %s)"%(self.dom,self.ran,self.deg)).replace('65535','-1')
+        return ("PartialPerm(%s, %s, %s)"%(self._domain,self._range,self._degree)).replace('65535','-1')
 
     def rank(self):
         cdef cpp.Element* e = self._handle
@@ -289,15 +289,15 @@ cdef class PartialPerm(Element):
 
     def domain(self):
         self.init_dom_ran_deg()
-        return self.dom
+        return self._domain
 
     def range(self):
         self.init_dom_ran_deg()
-        return self.ran
+        return self._range
 
     def degree(self):
         self.init_dom_ran_deg()
-        return self.deg
+        return self._degree
 
 cdef class Bipartition(Element):
     """
