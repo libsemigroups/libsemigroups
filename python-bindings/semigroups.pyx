@@ -260,7 +260,7 @@ cdef class PartialPerm(Element):
         if self._domain==None or self._range==None or self._degree==None:
             L=list(self)
             self._degree, self._domain, self._range = len(L), [] ,[]
-            for i in range(self.deg):
+            for i in range(self._degree):
                 if L[i] != 65535 and L[i] != -1:
                     self._domain.append(i)
                     self._range.append(L[i])
