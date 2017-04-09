@@ -308,27 +308,29 @@ cdef class Bipartition(Element):
 
     def __init__(self, *args):
         if args[0] is not __dummyClass:
-            self._blocks = []
+
             n = 1
-            argsCopy=[]
 
             for sublist in args:
                 if not isinstance(sublist, list):
                     raise TypeError
                 n = max(max(sublist), n)
-                
-            for sublist in args:
-                self._blocks.append(sublist[:])
-                argsCopy.append(sublist[:])
 
             #Note that this assert ensures all entries are non-zero ints
             if set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
                 raise ValueError
 
+            argsCopy = []
+            self._blocks = []
+
+            for sublist in args:
+                self._blocks.append(sublist[:])
+                argsCopy.append(sublist[:])
+
             for sublist in argsCopy:
                 for i in range(len(sublist)):
                     entry = sublist[i]
-                    sublist[i] = n + abs(entry) - 1 if entry < 0 else entry -1
+                    sublist[i] = n + abs(entry) - 1 if entry < 0 else entry - 1
                 sublist.sort()
 
             argsCopy.sort()
