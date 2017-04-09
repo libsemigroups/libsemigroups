@@ -306,18 +306,20 @@ cdef class Bipartition(Element):
 
     cdef list _blocks
 
-    def __init__(self,*args):#Copy args. Seperate.
+    def __init__(self, *args):#Copy args
         if args[0] is not __dummyClass:
-            self._blocks=[]
-            n=1
+            self._blocks = []
+            n = 1
             for sublist in args:
-                if not isinstance(sublist,list):
+                if not isinstance(sublist, list):
                     raise TypeError
-                n=max(max(sublist),n)
+                
+            for sublist in args:
+                n = max(max(sublist), n)
                 self._blocks.append(sublist[:])
 
             #Note that this assert ensures all entries are non-zero ints
-            if set().union(*args)!=set(range(1,n+1)).union(set(range(-1,-n-1,-1))):
+            if set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
                 raise ValueError
 
             
@@ -349,20 +351,20 @@ cdef class Bipartition(Element):
 
     def init_blocks(self):
         if self._blocks is None:
-            self._blocks=[]
-            List=list(self)
-            i=0
-            n=len(List)
+            self._blocks = []
+            List = list(self)
+            i = 0
+            n = len(List)
             while i in List:
-                block=[]
+                block = []
                 for ind,j in enumerate(List):
                     if j==i:
-                        if ind<n/2:
-                            block.append(ind+1)
+                        if ind < n/2:
+                            block.append(ind + 1)
                         else:
-                            block.append(n/2-ind-1)
+                            block.append(n/2 - ind - 1)
                 self._blocks.append(block)
-                i+=1
+                i += 1
                             
     def blocks(self):
         self.init_blocks()
