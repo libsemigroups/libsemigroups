@@ -219,8 +219,12 @@ cdef class PartialPerm(Element):
             self._handle = new cpp.PartialPerm[uint16_t](list(args)[0])
         else:
 
-            if not (isinstance(args[0],list) and isinstance(args[1],list) and isinstance(args[2],int)):
-                raise TypeError#Add error msgs
+            if not isinstance(args[0],list):
+                raise TypeError('Domain must be a list')
+            if not isinstance(args[1],list):
+                raise TypeError('Range must be a list')
+            if not isinstance(args[2],int):
+                raise TypeError('Degree must be an int')
 
             self._domain, self._range, self._degree = args[0], args[1], args[2]
             
