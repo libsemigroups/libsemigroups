@@ -127,20 +127,19 @@ cdef class Element:
         Transformation([0, 1, 2])'''
     
     def __richcmp__(Element self, Element other, int op):
-        """Ref: http://docs.cython.org/src/userguide/special_methods.html#rich-comparisons"""
-        if op==2:
-            # op==2 is __eq__() in pure python
-            if self._handle[0] == other._handle[0]:
-                return True
-            return False
-        elif op==0:
-            if self._handle[0] < other._handle[0]:
-                return True
-            return False
-        # TODO more comparisons!
-        else:
-            err_msg = "op {0} isn't implemented yet".format(op)
-            raise NotImplementedError(err_msg)
+        if op == 0:
+            return self._handle[0] < other._handle[0]
+        elif op == 1:
+            return self._handle[0] < other._handle[0] or self._handle[0] == other._handle[0]
+        elif op == 2:
+            return self._handle[0] == other._handle[0]
+        elif op == 3:
+            return not self._handle[0] == other._handle[0]
+        elif op == 4:
+            return not (self._handle[0] < other._handle[0] or self._handle[0] == other._handle[0])
+        elif op == 5:
+            return not self._handle[0] < other._handle[0]
+
     
     # TODO: Make this a class method
     cdef new_from_handle(self, cpp.Element* handle):
