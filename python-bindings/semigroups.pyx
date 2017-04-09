@@ -304,17 +304,17 @@ cdef class Bipartition(Element):
     A class for handles to libsemigroups bipartition.
     """
 
-    cdef list blocks
+    cdef list _blocks
 
     def __init__(self,*args):#Copy args. Seperate.
         if args[0] is not __dummyClass:
-            self.blocks=[]
+            self._blocks=[]
             n=1
             for sublist in args:
                 if not isinstance(sublist,list):
                     raise TypeError
                 n=max(max(sublist),n)
-                self.blocks.append(sublist[:])
+                self._blocks.append(sublist[:])
 
             #Note that this assert ensures all entries are non-zero ints
             if set().union(*args)!=set(range(1,n+1)).union(set(range(-1,-n-1,-1))):
@@ -348,8 +348,8 @@ cdef class Bipartition(Element):
             yield x
 
     def init_blocks(self):
-        if self.blocks is None:
-            self.blocks=[]
+        if self._blocks is None:
+            self._blocks=[]
             List=list(self)
             i=0
             n=len(List)
@@ -361,12 +361,12 @@ cdef class Bipartition(Element):
                             block.append(ind+1)
                         else:
                             block.append(n/2-ind-1)
-                self.blocks.append(block)
+                self._blocks.append(block)
                 i+=1
                             
-    def blocksList(self):#Rename blocks
+    def blocks(self):
         self.init_blocks()
-        return self.blocks
+        return self._blocks
 
 
     def IntRep(self):#Remove
@@ -387,7 +387,7 @@ cdef class Bipartition(Element):
 
     def __repr__(self):
         self.init_blocks()
-        return 'Bipartition(%s)'%self.blocks.__repr__()[1:-1]
+        return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
 
 
 
