@@ -84,7 +84,11 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             PartialPerm([1,2],[0,1],3).degree(8.5)
 
-
+    def test_dealloc(self):
+        t = PartialPerm([0, 1], [1, 0], 2)
+        del t
+        with self.assertRaises(NameError):
+            t
 
 if __name__ == '__main__':
     unittest.main()
