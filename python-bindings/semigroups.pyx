@@ -313,12 +313,12 @@ cdef class Bipartition(Element):
 
             for sublist in args:
                 if not isinstance(sublist, list):
-                    raise TypeError
+                    raise TypeError('Arguments must be lists')
                 n = max(max(sublist), n)
 
             #Note that this assert ensures all entries are non-zero ints
             if set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
-                raise ValueError
+                raise ValueError('Not a valid Biparition')
 
             argsCopy = []
             self._blocks = []
