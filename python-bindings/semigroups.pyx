@@ -310,6 +310,8 @@ cdef class Bipartition(Element):
         if args[0] is not __dummyClass:
             self._blocks = []
             n = 1
+            argsCopy=[]
+
             for sublist in args:
                 if not isinstance(sublist, list):
                     raise TypeError
@@ -317,6 +319,7 @@ cdef class Bipartition(Element):
             for sublist in args:
                 n = max(max(sublist), n)
                 self._blocks.append(sublist[:])
+                argsCopy.append(sublist[:])
 
             #Note that this assert ensures all entries are non-zero ints
             if set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
@@ -325,7 +328,7 @@ cdef class Bipartition(Element):
             
 
             dictOfSublistsWithMins={}
-            for sublist in args:
+            for sublist in argsCopy:
                 for i in range(len(sublist)):
                     entry=sublist[i]
                     if entry<0:
