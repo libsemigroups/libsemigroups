@@ -387,11 +387,11 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   Semiring*             sr = new TropicalMaxPlusSemiring(33);
   std::vector<Element*> gens
       = {new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr),
-         new MatrixOverSemiring({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr)};
+         new MatrixOverSemiring({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.size() == 121);
+  REQUIRE(S.size() == 119);
   REQUIRE(S.degree() == 3);
   REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nrgens() == 2);
@@ -401,13 +401,13 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);

@@ -46,6 +46,15 @@ namespace libsemigroups {
   //! [Wikipedia](https://en.wikipedia.org/wiki/Semiring).
   class Semiring {
    public:
+    //! Value representing an undefined quantity.
+    static const int64_t UNDEFINED = -1;
+
+    //! Value representing \f$-\infty\f$.
+    static const int64_t MINUS_INFTY = std::numeric_limits<int64_t>::min();
+
+    //! Value representing \f$\infty\f$.
+    static const int64_t INFTY = std::numeric_limits<int64_t>::max();
+
     //! A default destructor.
     virtual ~Semiring() {}
 
@@ -88,9 +97,9 @@ namespace libsemigroups {
     }
   };
 
-  //! The *max-plus semiring* consists of the set of natural numbers together
-  //! with negative infinity with operations max and plus. Negative infinity is
-  //! represented by Semiring::MINUS_INFTY.
+  //! The *max-plus semiring* consists of the integers together with negative
+  //! infinity with operations max and plus. Negative infinity is represented
+  //! by Semiring::MINUS_INFTY.
   class MaxPlusSemiring : public Semiring {
    public:
     MaxPlusSemiring() : Semiring() {}
@@ -108,8 +117,6 @@ namespace libsemigroups {
     //! Returns Semiring::MINUS_INFTY if \p x or \p y equals
     //! Semiring::MINUS_INFTY, otherwise returns \p x + \p y.
     int64_t prod(int64_t x, int64_t y) const override {
-      assert(x >= 0 || x == Semiring::MINUS_INFTY);
-      assert(y >= 0 || y == Semiring::MINUS_INFTY);
       if (x == MINUS_INFTY || y == MINUS_INFTY) {
         return MINUS_INFTY;
       }
@@ -118,13 +125,11 @@ namespace libsemigroups {
 
     //! Returns the maximum of \p x and \p y.
     int64_t plus(int64_t x, int64_t y) const override {
-      assert(x >= 0 || x == Semiring::MINUS_INFTY);
-      assert(y >= 0 || y == Semiring::MINUS_INFTY);
       return std::max(x, y);
     }
   };
 
-  //! The *min-plus semiring* consists of the set of natural numbers together
+  //! The *min-plus semiring* consists of the integers together
   //! with infinity with operations min and plus. Infinity is represented by
   //! Semiring::INFTY.
   class MinPlusSemiring : public Semiring {
@@ -144,7 +149,6 @@ namespace libsemigroups {
     //! Returns Semiring::INFTY if \p x or \p y equals Semiring::INFTY,
     //! otherwise returns \p x + \p y.
     int64_t prod(int64_t x, int64_t y) const override {
-      assert(x >= 0 && y >= 0);
       if (x == INFTY || y == INFTY) {
         return INFTY;
       }
@@ -153,7 +157,6 @@ namespace libsemigroups {
 
     // Returns the minimum of \p x and \p y.
     int64_t plus(int64_t x, int64_t y) const override {
-      assert(x >= 0 && y >= 0);
       return std::min(x, y);
     }
   };
@@ -178,17 +181,17 @@ namespace libsemigroups {
     int64_t _threshold;
   };
 
-  class TropicalMaxPlusSemiring : public TropicalSemiring {
   //! The **tropical max-plus semiring** consists of the integers
-  //! \f$\{0, \ldots , t - 1\}\f$ for some value \f$t\f$ (called the
+  //! \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
   //! **threshold** of the semiring) and \f$-\infty\f$. Negative infinity is
   //! represented by Semiring::MINUS_INFTY.
+  class TropicalMaxPlusSemiring : public SemiringWithThreshold {
    public:
     //! Construct from threshold.
     //!
     //! The threshold is the largest integer in the semiring.
     explicit TropicalMaxPlusSemiring(int64_t threshold)
-        : TropicalSemiring(threshold) {}
+        : SemiringWithThreshold(threshold) {}
 
     // Returns the integer 0.
     int64_t one() const override {
@@ -197,15 +200,17 @@ namespace libsemigroups {
 
     //! Returns the Semiring::MINUS_INFTY.
     int64_t zero() const override {
-      return LONG_MIN;
+      return MINUS_INFTY;
     }
 
     //! Returns Semiring::MINUS_INFTY if \p x or \p y equals
     //! Semiring::MINUS_INFTY, otherwise returns the minimum of \p x + \p y and
     //! the threshold of the semiring.
     int64_t prod(int64_t x, int64_t y) const override {
-      if (x == LONG_MIN || y == LONG_MIN) {
-        return LONG_MIN;
+      assert((x >= 0 && x <= this->threshold()) || x == Semiring::MINUS_INFTY);
+      assert((y >= 0 && y <= this->threshold()) || y == Semiring::MINUS_INFTY);
+      if (x == MINUS_INFTY || y == MINUS_INFTY) {
+        return MINUS_INFTY;
       }
       return std::min(x + y, threshold());
     }
@@ -213,6 +218,8 @@ namespace libsemigroups {
     //! Returns the minimum of (the maximum of \p x and \p y) and the threshold
     //! of the semiring.
     int64_t plus(int64_t x, int64_t y) const override {
+      assert((x >= 0 && x <= this->threshold()) || x == Semiring::MINUS_INFTY);
+      assert((y >= 0 && y <= this->threshold()) || y == Semiring::MINUS_INFTY);
       return std::min((std::max(x, y)), threshold());
     }
   };
@@ -221,12 +228,13 @@ namespace libsemigroups {
   //! \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the **threshold**
   //! of the semiring) and \f$\infty\f$. Infinity is represented
   //! by Semiring::INFTY.
+  class TropicalMinPlusSemiring : public SemiringWithThreshold {
    public:
     //! Construct from threshold.
     //!
     //! The threshold is the largest integer in the semiring.
     explicit TropicalMinPlusSemiring(int64_t threshold)
-        : TropicalSemiring(threshold) {}
+        : SemiringWithThreshold(threshold) {}
 
     //! Returns the integer 0.
     int64_t one() const override {
@@ -235,15 +243,17 @@ namespace libsemigroups {
 
     //! Returns the Semiring::INFTY.
     int64_t zero() const override {
-      return LONG_MAX;
+      return INFTY;
     }
 
     //! Returns Semiring::INFTY if \p x or \p y equals Semiring::INFTY,
     //! otherwise return the minimum of \p x + \p y and the threshold of the
     //! semiring.
     int64_t prod(int64_t x, int64_t y) const override {
-      if (x == LONG_MAX || y == LONG_MAX) {
-        return LONG_MAX;
+      assert((x >= 0 && x <= this->threshold()) || x == Semiring::INFTY);
+      assert((y >= 0 && y <= this->threshold()) || y == Semiring::INFTY);
+      if (x == INFTY || y == INFTY) {
+        return INFTY;
       }
       return std::min(x + y, threshold());
     }
@@ -251,29 +261,31 @@ namespace libsemigroups {
     //! Returns Semiring::INFTY if either of \p x and \p y is Semiring::INFTY,
     //! and otherwise the minimum of x, y, and the threshold of the semiring.
     int64_t plus(int64_t x, int64_t y) const override {
-      if (x == LONG_MAX && y == LONG_MAX) {
-        return LONG_MAX;
+      assert((x >= 0 && x <= this->threshold()) || x == Semiring::INFTY);
+      assert((y >= 0 && y <= this->threshold()) || y == Semiring::INFTY);
+      if (x == INFTY && y == INFTY) {
+        return INFTY;
       }
       return std::min((std::min(x, y)), threshold());
     }
   };
 
-  class NaturalSemiring : public Semiring {
   //! This class implements the *semiring* consisting of
   //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$ for some **threshold**
   //! \f$t\f$ and **period** \f$p\f$ with operations addition and
   //! multiplication modulo the congruence \f$t = t + p\f$.
+  class NaturalSemiring : public SemiringWithThreshold {
    public:
-    NaturalSemiring(int64_t threshold, int64_t period)
-        : Semiring(), _threshold(threshold), _period(period) {
     //! Construct from threshold and period.
     //!
     //! This method constructs a Semiring whose elements are
     //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$
     //! with operations addition and multiplication modulo the congruence
     //! \f$t = t + p\f$.
+    NaturalSemiring(int64_t t, int64_t p)
+        : SemiringWithThreshold(t), _period(p) {
       assert(_period > 0);
-      assert(_threshold > 0);
+      assert(this->threshold() > 0);
     }
 
     //! Return the integer 1.
@@ -289,38 +301,33 @@ namespace libsemigroups {
     //! Returns \p x * \p y modulo the congruence \f$t = t + p\f$ where \f$t\f$
     //! and \f$p\f$ are the threshold and period of the semiring, respectively.
     int64_t prod(int64_t x, int64_t y) const override {
+      assert(x >= 0 && x <= _period + this->threshold() - 1);
+      assert(y >= 0 && y <= _period + this->threshold() - 1);
       return thresholdperiod(x * y);
     }
 
     //! Returns \p x + \p y modulo the congruence \f$t = t + p\f$ where \f$t\f$
     //! and \f$p\f$ are the threshold and period of the semiring, respectively.
     int64_t plus(int64_t x, int64_t y) const override {
+      assert(x >= 0 && x <= _period + this->threshold() - 1);
+      assert(y >= 0 && y <= _period + this->threshold() - 1);
       return thresholdperiod(x + y);
     }
 
-    // Threshold of the semiring.
-    // The semiring consists of *0, 1, ..., t, t + 1,
-    // ..., t + p - 1* for some **threshold** *t* and **period** *p* with
-    // operations addition and multiplication modulo the congruence *t = t + p*.
-    //
-    // @return the threshold of the semiring.
-    int64_t threshold() const override {
-      return _threshold;
-    }
-
-    int64_t period() const override {
+    //! Returns the period of the semiring.
+    int64_t period() const {
       return _period;
     }
 
    private:
     int64_t thresholdperiod(int64_t x) const {
-      if (x > _threshold) {
-        return _threshold + (x - _threshold) % _period;
+      int64_t threshold = this->threshold();
+      if (x > threshold) {
+        return threshold + (x - threshold) % _period;
       }
       return x;
     }
 
-    int64_t _threshold;
     int64_t _period;
   };
 }  // namespace libsemigroups

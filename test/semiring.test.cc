@@ -21,17 +21,9 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Semiring 01: threshold/period [undefined]", "[quick][semiring]") {
-  Semiring* sr = new MaxPlusSemiring();
-
-  REQUIRE(sr->threshold() == -1);  // UNDEFINED
-  REQUIRE(sr->period() == -1);     // UNDEFINED
-  delete sr;
-}
-
-TEST_CASE("Semiring 02: threshold/period [NaturalSemiring]",
+TEST_CASE("Semiring 01: threshold/period [NaturalSemiring]",
           "[quick][semiring") {
-  Semiring* sr = new NaturalSemiring(10, 314);
+  NaturalSemiring* sr = new NaturalSemiring(10, 314);
 
   REQUIRE(sr->threshold() == 10);
   REQUIRE(sr->period() == 314);
