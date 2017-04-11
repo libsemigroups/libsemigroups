@@ -376,30 +376,9 @@ cdef class Bipartition(Element):
         self.init_blocks()
         return self._blocks
 
-
-    def IntRep(self):#Remove
-        """
-        Return a string representation of `self`.
-
-        EXAMPLES::
-
-            >>> from semigroups import *
-            >>> p.IntRep()
-            'Bipartition([1, 2, 2, 1, 2, 3])'
-
-
-        """
-
-
-        return "Bipartition(" + str(list(self)) + ")"
-
     def __repr__(self):
         self.init_blocks()
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
-
-
-
-
 
 cdef class PythonElement(Element):
     """
