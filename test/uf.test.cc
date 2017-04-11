@@ -201,7 +201,7 @@ TEST_CASE("UF 14: next_rep", "[quick][uf]") {
   REQUIRE(uf.next_rep() == 8);
 }
 
-TEST_CASE("UF 14: join", "[quick][uf]") {
+TEST_CASE("UF 15: join", "[quick][uf]") {
   UF uf1(10);
   uf1.unite(2, 4);
   uf1.unite(4, 9);
