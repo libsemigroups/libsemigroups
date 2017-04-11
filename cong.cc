@@ -307,6 +307,8 @@ namespace libsemigroups {
     _mtx.unlock();
   }
 
+  // This is the default method used by a DATA object, there are more
+  // specialised methods for some subclasses of DATA.
   Partition<word_t> Congruence::DATA::nontrivial_classes() {
     assert(is_done());
     partition_t* classes = new partition_t();
@@ -315,8 +317,14 @@ namespace libsemigroups {
       if (_cong._extra.empty()) {
         return Partition<word_t>(classes);  // no nontrivial classes
       }
-      assert(!_cong._relations.empty());  // TODO: fail gracefully?
+      assert(!_cong._relations.empty());
+      // FIXME remove this assertion, this is the wrong place to check this,
+      // since it is inobvious why this should be the case at this point.
+      // Better put this assertion in the constructor, or a more appropriate
+      // place.
     }
+    // FIXME what is supposed to happen when _cong._semigroup == nullptr and
+    // _cong._extra is not empty?
 
     // Note: we assume classes are numbered contiguously {0 .. n-1}
     partition_t* all_classes = new partition_t();
@@ -328,6 +336,8 @@ namespace libsemigroups {
     word_t* word;
     for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
       word = _cong._semigroup->factorisation(pos);
+      // FIXME use the two argument version of factorisation to avoid
+      // unnecessary memory allocations in the previous line.
       assert(word_to_class_index(*word) < nr_classes());
       (*all_classes)[word_to_class_index(*word)]->push_back(word);
     }

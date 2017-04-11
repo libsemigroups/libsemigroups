@@ -757,3 +757,28 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
 
   REQUIRE(cong.nr_classes() == S.size());
 }
+
+// FIXME the following test should run, and does not.
+/*TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
+          "[quick][congruence][finite][fpsemigroup]") {
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 0, 0}, {1, 0}),
+         relation_t({1, 0, 1, 1, 1}, {1, 0}),
+         relation_t({1, 1, 1, 1, 1}, {1, 1}),
+         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+
+  Congruence cong(
+      "twosided", 2, rels, std::vector<relation_t>({relation_t({0}, {1})}));
+  cong.set_report(CONG_REPORT);
+  REQUIRE(cong.nontrivial_classes().size() == 1);
+}*/
