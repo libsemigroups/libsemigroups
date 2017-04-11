@@ -53,7 +53,7 @@ namespace libsemigroups {
         _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
-        _nr_idempotents(0),
+        _nridempotents(0),
         _nrrules(0),
         _pos(0),
         _pos_one(0),
@@ -138,7 +138,7 @@ namespace libsemigroups {
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nr_idempotents(copy._nr_idempotents),
+        _nridempotents(copy._nridempotents),
         _nrrules(copy._nrrules),
         _pos(copy._pos),
         _pos_one(copy._pos_one),
@@ -186,7 +186,7 @@ namespace libsemigroups {
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nr_idempotents(copy._nr_idempotents),
+        _nridempotents(copy._nridempotents),
         _nrrules(0),
         _pos(copy._pos),
         _pos_one(copy._pos_one),  // copy in case degree doesn't change in
@@ -364,11 +364,11 @@ namespace libsemigroups {
 
   // Get the number of idempotents
 
-  size_t Semigroup::nr_idempotents() {
+  size_t Semigroup::nridempotents() {
     if (!_idempotents_found) {
       find_idempotents();
     }
-    return _nr_idempotents;
+    return _nridempotents;
   }
 
   bool Semigroup::is_idempotent(pos_t pos) {
@@ -1043,7 +1043,7 @@ namespace libsemigroups {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
           _tmp_product->redefine((*_elements)[i], (*_elements)[i]);
           if (*_tmp_product == *(*_elements)[i]) {
-            _nr_idempotents++;
+            _nridempotents++;
             _idempotents.push_back(i);
             _is_idempotent.push_back(true);
           } else {
@@ -1054,7 +1054,7 @@ namespace libsemigroups {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
           // TODO(JDM) redo this to not use product_by_reduction
           if (product_by_reduction(i, i) == i) {
-            _nr_idempotents++;
+            _nridempotents++;
             _idempotents.push_back(i);
             _is_idempotent.push_back(true);
           } else {
@@ -1104,9 +1104,9 @@ namespace libsemigroups {
 
       for (size_t i = 0; i < _max_threads; i++) {
         threads[i].join();
-        _nr_idempotents += nr[i];
+        _nridempotents += nr[i];
       }
-      _idempotents.reserve(_nr_idempotents);
+      _idempotents.reserve(_nridempotents);
       _is_idempotent.reserve(size());
       for (size_t i = 0; i < _max_threads; i++) {
         _idempotents.insert(

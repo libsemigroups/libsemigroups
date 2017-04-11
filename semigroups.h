@@ -386,7 +386,7 @@ namespace libsemigroups {
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.  The value of the positions, and number, of
     //! idempotents is stored after they are first computed.
-    size_t nr_idempotents();
+    size_t nridempotents();
 
     //! Returns \c true if the element in position \p pos is an idempotent
     //! and \c false if it is not.
@@ -876,7 +876,7 @@ namespace libsemigroups {
     std::mutex           _mtx;
     size_t               _nr;
     size_t               _nrgens;
-    size_t               _nr_idempotents;
+    size_t               _nridempotents;
     size_t               _nrrules;
     index_t              _pos;
     pos_t                _pos_one;

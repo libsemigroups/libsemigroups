@@ -111,7 +111,7 @@ namespace libsemigroups {
     //! MatrixOverSemiring::complexity.
     //!
     //! The returned value is used in, for example, Semigroup::fast_product and
-    //! Semigroup::nr_idempotents to decide if it is better to multiply
+    //! Semigroup::nridempotents to decide if it is better to multiply
     //! elements or follow a path in the Cayley graph.
     virtual size_t complexity() const = 0;
 
