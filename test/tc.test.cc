@@ -574,3 +574,35 @@ TEST_CASE("TC 15: test prefilling of the table manually",
   // coset at the start of the table. This is why there is a - 1 in the REQUIRE
   // above. Anyway, this tests the relevant parts of the code.
 }
+
+TEST_CASE("TC 16: test packing phase", "[quick][tc][finite][TC16]") {
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 0, 0}, {1, 0}),
+         relation_t({1, 0, 1, 1, 1}, {1, 0}),
+         relation_t({1, 1, 1, 1, 1}, {1, 1}),
+         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+
+  Congruence cong1("twosided", 2, rels, std::vector<relation_t>());
+  cong1.set_report(TC_REPORT);
+  cong1.force_tc();
+  cong1.set_pack(10);
+  cong1.set_report_interval(10);
+  REQUIRE(cong1.nr_classes() == 78);
+
+  Congruence cong2("left", 2, rels, std::vector<relation_t>());
+  cong2.set_report(TC_REPORT);
+  cong2.force_tc();
+  cong2.set_pack(10);
+  cong2.set_report_interval(10);
+  REQUIRE(cong2.nr_classes() == 78);
+}

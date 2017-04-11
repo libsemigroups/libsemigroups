@@ -332,6 +332,26 @@ namespace libsemigroups {
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
 
+    //! Set the maximum number of active cosets in Todd-Coxeter before entering
+    //! packing phase.
+    //!
+    //! This method only has any effect if used after Congruence::force_tc.
+    void set_pack(size_t val) {
+      if (_data != nullptr) {
+        _data->set_pack(val);
+      }
+    }
+
+    //! Sets how often the core methods of Congruence report.
+    //!
+    //! The smaller this value the more will be reported, and the larger the
+    //! less.
+    void set_report_interval(size_t val) {
+      if (_data != nullptr) {
+        _data->set_report_interval(val);
+      }
+    }
+
     //! Use the Todd-Coxeter algorithm.
     //!
     //! This methods forces the use of the
@@ -556,6 +576,14 @@ namespace libsemigroups {
         } else {
           run();
         }
+      }
+
+      virtual void set_pack(size_t val) {
+        (void) val;
+      }
+
+      void set_report_interval(size_t val) {
+        _report_interval = val;
       }
 
      private:

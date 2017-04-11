@@ -58,6 +58,10 @@ namespace libsemigroups {
     void prefill();  // no args means use the semigroup used to define this
     void prefill(RecVec<class_index_t>& table);
 
+    void set_pack(size_t val) override {
+      _pack = val;
+    }
+
    private:
     void init();
     void init_after_prefill();
