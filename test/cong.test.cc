@@ -742,3 +742,18 @@ TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
 
   REQUIRE(cong.nontrivial_classes().size() == 0);
 }
+
+TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
+          "[quick][congruence][finite][multithread]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
+  Semigroup S = Semigroup(gens);
+  S.set_report(CONG_REPORT);
+  really_delete_cont(gens);
+  Congruence cong("twosided", &S, std::vector<relation_t>());
+
+  REQUIRE(cong.nr_classes() == S.size());
+}
