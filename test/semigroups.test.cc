@@ -2592,6 +2592,7 @@ TEST_CASE("Semigroup 63: minimal_factorisation ",
   S.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(*(S.minimal_factorisation(gens[0])) == word_t({0}));
+  REQUIRE(*(S.factorisation(gens[0])) == word_t({0}));
   really_delete_cont(gens);
 
   Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
