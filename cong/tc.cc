@@ -247,9 +247,7 @@ namespace libsemigroups {
     class_index_t pos = _id_coset;
     // old number to new numbers lookup
     std::unordered_map<class_index_t, class_index_t> lookup;
-    lookup.insert(std::make_pair(_id_coset, 0));
-
-    size_t next_index = 1;
+    size_t next_index = 0;
 
     while (pos != _next) {
       size_t curr_index;
