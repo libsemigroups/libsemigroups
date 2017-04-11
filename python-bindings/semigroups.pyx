@@ -218,50 +218,54 @@ cdef class PartialPerm(Element):
                 return
             self._handle = new cpp.PartialPerm[uint16_t](list(args)[0])
         else:
-
-            if not isinstance(args[0],list):
+            if not isinstance(args[0], list):
                 raise TypeError('Domain must be a list')
-            if not isinstance(args[1],list):
+            if not isinstance(args[1], list):
                 raise TypeError('Range must be a list')
-            if not isinstance(args[2],int):
+            if not isinstance(args[2], int):
                 raise TypeError('Degree must be an int')
 
-            self._domain, self._range, self._degree = args[0], args[1], args[2]
-            
 
-            if self._degree<0:#Seperate checking from definition
+            self._domain, self._range, self._degree = args[0], args[1], args[2]
+
+            if self._degree < 0:   #Seperate checking from definition
                 raise ValueError
             if len(self._domain) != len(self._range):
                 raise ValueError
-            if len(self._domain)!=0:
+            if len(self._domain) != 0:
                 if not(max(self._domain) < self._degree and max(self._range) < self._degree):
                     raise ValueError
-            imglist = [65535] * self._degree#Make imglist self.
-            for i in range(len(self._domain)):
-                if not (isinstance(self._domain[i],int) and isinstance(self._range[i],int)):
+
+            n = len(self._domain)
+            imglist = [65535] * self._degree    #Make imglist self.
+
+            for i in range(n):
+                if not (isinstance(self._domain[i], int) and isinstance(self._range[i], int)):
                     raise TypeError
-                if self._domain[i]<0 or self._range[i]<0:
+                if self._domain[i] < 0 or self._range[i] < 0:
                     raise ValueError
                 
                 #Ensures range and domain have no repeats
                 if self._range[i] in imglist:
                     raise ValueError
-                if self._domain.count(i)>1:
+                if self._domain.count(i) > 1:
                     raise ValueError
 
-                imglist[self._domain[i]]=self._range[i]
+
+            for i in range(n):
+                imglist[self._domain[i]] = self._range[i]
 
             self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
-    def __iter__(self):#Remove
+    def __iter__(self):   #Remove
         cdef cpp.Element* e = self._handle
         e2 = <cpp.PartialPerm[uint16_t] *>e
         for x in e2[0]:
             yield x
 
     def init_dom_ran_deg(self):
-        if self._domain==None or self._range==None or self._degree==None:
-            L=list(self)
+        if self._domain == None or self._range == None or self._degree == None:
+            L = list(self)
             self._degree, self._domain, self._range = len(L), [] ,[]
             for i in range(self._degree):
                 if L[i] != 65535 and L[i] != -1:
@@ -283,7 +287,7 @@ cdef class PartialPerm(Element):
 
 
         self.init_dom_ran_deg()
-        return ("PartialPerm(%s, %s, %s)"%(self._domain,self._range,self._degree)).replace('65535','-1')
+        return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self._degree)).replace('65535', '-1')
 
     def rank(self):
         cdef cpp.Element* e = self._handle
