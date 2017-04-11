@@ -559,10 +559,6 @@ namespace libsemigroups {
       }
 
      private:
-      // This initialises the data structure, and can be run from inside a
-      // thread after construction.  If already initialised, this does nothing.
-      virtual void init() = 0;
-
       Congruence&                   _cong;
       size_t                        _default_nr_steps;
       std::atomic<bool>             _killed;

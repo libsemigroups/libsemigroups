@@ -58,7 +58,7 @@ namespace libsemigroups {
     result_t current_less_than(word_t const& w1, word_t const& w2) override;
 
    private:
-    void init() final;
+    void init();
 
     RWS*       _rws;
     Semigroup* _semigroup;
