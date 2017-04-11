@@ -228,28 +228,28 @@ cdef class PartialPerm(Element):
 
             self._domain, self._range, self._degree = args[0], args[1], args[2]
 
-            if self._degree < 0:   #Seperate checking from definition
-                raise ValueError
+            if self._degree < 0:
+                raise ValueError('Degree must be non-negative')
             if len(self._domain) != len(self._range):
-                raise ValueError
+                raise ValueError('Domain and range must be same size')
             if len(self._domain) != 0:
                 if not(max(self._domain) < self._degree and max(self._range) < self._degree):
-                    raise ValueError
+                    raise ValueError('The max of the domain and range must be strictly less than the degree')
 
             n = len(self._domain)
             imglist = [65535] * self._degree    #Make imglist self.
 
             for i in range(n):
                 if not (isinstance(self._domain[i], int) and isinstance(self._range[i], int)):
-                    raise TypeError
+                    raise TypeError('Elements of domain and range must be ints')
                 if self._domain[i] < 0 or self._range[i] < 0:
-                    raise ValueError
+                    raise ValueError('Elements of domain and range must be non-negative')
                 
                 #Ensures range and domain have no repeats
                 if self._range[i] in imglist:
-                    raise ValueError
+                    raise ValueError('Range cannot have repeats')
                 if self._domain.count(i) > 1:
-                    raise ValueError
+                    raise ValueError('Domain cannot have repeats')
 
 
             for i in range(n):
