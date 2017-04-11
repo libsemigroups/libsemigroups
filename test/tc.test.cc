@@ -536,3 +536,41 @@ TEST_CASE("TC 14: finite fp-semigroup, size 16",
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
 }
+
+TEST_CASE("TC 15: test prefilling of the table manually",
+          "[quick][tc][finite]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
+  Semigroup S = Semigroup(gens);
+  S.set_report(TC_REPORT);
+  really_delete_cont(gens);
+
+  // Copy the right Cayley graph of S for prefilling
+  cayley_graph_t right(*S.right_cayley_graph());
+
+  // These are defining relations for S
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 0, 0}, {1, 0}),
+         relation_t({1, 0, 1, 1, 1}, {1, 0}),
+         relation_t({1, 1, 1, 1, 1}, {1, 1}),
+         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+
+  Congruence cong("twosided", 2, rels, std::vector<relation_t>());
+  cong.set_report(TC_REPORT);
+  cong.set_prefill(right);
+  REQUIRE(cong.nr_classes() == S.size() - 1);
+  // This is not really a valid way of prefilling, since there is no "identity"
+  // coset at the start of the table. This is why there is a - 1 in the REQUIRE
+  // above. Anyway, this tests the relevant parts of the code.
+}
