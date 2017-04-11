@@ -77,7 +77,6 @@ namespace libsemigroups {
     std::vector<relation_t>           _extra;
     std::vector<class_index_t>        _forwd;
     class_index_t                     _id_coset;  // TODO(JDM) Remove?
-    bool                              _is_compressed;
     class_index_t                     _last;
     std::stack<class_index_t> _lhs_stack;  // Stack for identifying cosets
     class_index_t             _next;
