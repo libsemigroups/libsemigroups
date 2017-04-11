@@ -364,7 +364,7 @@ cdef class Bipartition(Element):
             while i in List:
                 block = []
                 for ind,j in enumerate(List):
-                    if j==i:
+                    if j == i:
                         if ind < n/2:
                             block.append(ind + 1)
                         else:
