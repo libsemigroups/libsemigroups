@@ -164,11 +164,21 @@ cdef class Transformation(Element):
     """
     A class for handles to libsemigroups transformations.
 
-    EXAMPLES::
+    A transformation f is just a function defined on the whole of 
+    {0, 1, ..., n - 1} for some integer n called the degree of f. A
+    transformation is stored as a vector of the images of {0, 1, ..., n   -1},
+    i.e. [(0)f, (1)f, ..., (n - 1)f].
 
-        >>> from semigroups import Semigroup, PythonElement, Transformation
-        >>> Transformation([2,1,1])
-        [2, 1, 1]
+    Args:
+        List (list): Image list of the Transformation when applied to [0, 1, ..., n]
+
+    Raises:
+        
+
+    Example:
+        >>> from semigroups import Transformation
+        >>> Transformation([2, 1, 1])
+        Transformation([2, 1, 1])        
     """
     def __init__(self, List):
         
@@ -184,16 +194,19 @@ cdef class Transformation(Element):
                 raise ValueError('Not a valid Transformation')
             self._handle = new cpp.Transformation[uint16_t](List)
 
-
-
     def __iter__(self):
         """
-        Return an iterator over ``self``
+        Function for iterating through the image list of 'self'.
 
-        EXAMPLES::
+        Args:
+            None
 
+        Returns:
+            generator: A generator of the image list
+
+        Example:
             >>> from semigroups import Transformation
-            >>> list(Transformation([1,2,0]))
+            >>> list(Transformation([1, 2, 0]))
             [1, 2, 0]
         """
         cdef cpp.Element* e = self._handle
@@ -203,17 +216,20 @@ cdef class Transformation(Element):
 
     def __repr__(self):
         """
-        Return a string representation of `self`.
+        Function for printing a string representation of 'self'.
+        
+        Args:
+            None
 
-        EXAMPLES::
+        Returns
+            str: 'Transformation' then the image list in brackets
 
+        Example:
             >>> from semigroups import Transformation
-            >>> Transformation([1,2,0])
-            [1, 2, 0]
+            >>> Transformation([1, 2, 0])
+            Transformation([1, 2, 0])
         """
         return "Transformation(" + str(list(self)) + ")"
-
-
 
 cdef class PartialPerm(Element):
     """
@@ -366,7 +382,7 @@ cdef class Bipartition(Element):
             gen = self._generator
             i = 0
             n = 2 * self.degree() + 1
-            while i in List:
+            while i in gen:
                 block = []
                 for ind,j in enumerate(gen):
                     if j == i:
