@@ -386,13 +386,17 @@ cdef class Bipartition(Element):
         e2 = <cpp.Bipartition *>e
         return e2.const_nr_blocks()
 
-#    def block(self, element):#Finish
-#        if not element in set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
-#            raise ValueError('Element not in Bipartition')
-#        
-#        cdef cpp.Element* e = self._handle
-#        e2 = <cpp.Bipartition *>e
-#        return e2.block(element)
+    def block(self, element):
+        n = self.degree()
+        if not element in set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
+            raise ValueError('Element not in Bipartition')
+        
+        if element > n:
+            element = n - element        
+        
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.Bipartition *>e
+        return e2.block(element)
 
     def isTransverseBlock(self, index):
         if not isinstance(index, int):
