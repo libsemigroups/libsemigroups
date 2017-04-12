@@ -758,8 +758,7 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
   REQUIRE(cong.nr_classes() == S.size());
 }
 
-// FIXME the following test should run, and does not.
-/*TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
+TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
           "[quick][congruence][finite][fpsemigroup]") {
   std::vector<relation_t> rels
       = {relation_t({0, 0, 0}, {0}),
@@ -781,4 +780,4 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
       "twosided", 2, rels, std::vector<relation_t>({relation_t({0}, {1})}));
   cong.set_report(CONG_REPORT);
   REQUIRE(cong.nontrivial_classes().size() == 1);
-}*/
+}
