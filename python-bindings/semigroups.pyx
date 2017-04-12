@@ -102,8 +102,10 @@ cdef class Element:
         return self.new_from_handle(product)
 	
     def __pow__(self, power, modulo):#It works, but don't understand why it needs 'modulo' argument aal20
-        assert isinstance(power, int)
-        assert power > 0
+        if not(isinstance(power, int)):
+            raise TypeError('Can only power by int')
+        if power < 0:
+            raise ValueError('Power must be positive')
 
         #Converts power to binary, then constructs element to the power of 2^n for needed n.
         binaryString = bin(power - 1)[2:]

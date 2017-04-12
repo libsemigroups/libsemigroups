@@ -49,7 +49,7 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual( PartialPerm([1, 2, 4, 6, 7, 23], [0, 5, 2, 4, 6, 7], 26)**5, PartialPerm([4, 6, 7, 23], [5, 2, 4, 6], 26))
         self.assertEqual( PartialPerm([0, 3, 7, 2], [5, 7, 1, 3], 8)**10, PartialPerm([], [], 8))
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             PartialPerm([1,2],[0,1],3)**-1
 
     def test_iter(self):
