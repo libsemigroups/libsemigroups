@@ -144,16 +144,15 @@ namespace libsemigroups {
     //! indices of the generators of the semigroup over which \c this is
     //! defined.
     //!
-    //! If \c this has finitely many congruence classes and is defined over a
-    //! semigroup with generators \f$A\f$, then Congruence::word_to_class_index
-    //! defines a surjective function from the set of all words over \f$A\f$ to
-    //! \f$\{0, 1, \ldots, n - 1\}\f$, where \f$n\f$ is the number of classes.
+    //! If \c this is defined over a semigroup with generators \f$A\f$, then
+    //! Congruence::word_to_class_index defines a surjective function from the
+    //! set of all words over \f$A\f$ to either \f$\{0, 1, \ldots, n - 1\}\f$,
+    //! where \f$n\f$ is the number of classes, or to the non-negative integers
+    //! \f$\{0, 1, \ldots\}\f$ if \c this has infinitely many classes.
     //!
     //! \warning The method for finding the structure of a congruence is
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
-
-    // FIXME what about when the congruence has infinitely many classes.
     class_index_t word_to_class_index(word_t const& word) {
       DATA* data = get_data();
       assert(data->is_done());
