@@ -38,6 +38,8 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[uint32_t].iterator begin()
         vector[uint32_t].iterator end()
         int const_nr_blocks()
+        int block(uint32_t)
+        bool is_transverse_block(size_t)
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +

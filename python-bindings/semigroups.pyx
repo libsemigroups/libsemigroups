@@ -39,7 +39,7 @@ cdef class __dummyClass:
         pass
    
 
-cdef class Element:
+cdef class Element:# Add identity
     """
     An abstract base class for handles to libsemigroups elements.
 
@@ -158,7 +158,7 @@ cdef class Element:
     def degree(self):
         return self._handle.degree()
 
-cdef class Transformation(Element):#Add dealloc
+cdef class Transformation(Element):
 
 #Python googlestyle docstrings for examples
     """
@@ -221,7 +221,6 @@ cdef class PartialPerm(Element):
     """
     
     cdef list _domain,_range
-    cdef int _degree
     
     def __init__(self, *args):
 
@@ -237,18 +236,18 @@ cdef class PartialPerm(Element):
             if not isinstance(args[2], int):
                 raise TypeError('Degree must be an int')
 
-            self._domain, self._range, self._degree = args[0], args[1], args[2]
+            self._domain, self._range, _degree = args[0], args[1], args[2]
 
-            if self._degree < 0:
+            if _degree < 0:
                 raise ValueError('Degree must be non-negative')
             if len(self._domain) != len(self._range):
                 raise ValueError('Domain and range must be same size')
             if len(self._domain) != 0:
-                if not(max(self._domain) < self._degree and max(self._range) < self._degree):
+                if not(max(self._domain) < _degree and max(self._range) < _degree):
                     raise ValueError('The max of the domain and range must be strictly less than the degree')
 
             n = len(self._domain)
-            imglist = [65535] * self._degree    #Make imglist self.
+            imglist = [65535] * _degree
 
             for i in range(n):
                 if not (isinstance(self._domain[i], int) and isinstance(self._range[i], int)):
@@ -267,17 +266,17 @@ cdef class PartialPerm(Element):
 
             self._handle = new cpp.PartialPerm[uint16_t](imglist)
 
-    def __iter__(self):   #Remove
+    def _generator(self):
         cdef cpp.Element* e = self._handle
         e2 = <cpp.PartialPerm[uint16_t] *>e
         for x in e2[0]:
             yield x
 
-    def init_dom_ran_deg(self):
-        if self._domain == None or self._range == None or self._degree == None:
-            L = list(self)
-            self._degree, self._domain, self._range = len(L), [] ,[]
-            for i in range(self._degree):
+    def init_dom_ran(self):
+        if self._domain == None or self._range == None:
+            L = self._generator()
+            self._domain, self._range = [], []
+            for i in range(self.degree()):
                 if L[i] != 65535 and L[i] != -1:
                     self._domain.append(i)
                     self._range.append(L[i])
@@ -297,7 +296,7 @@ cdef class PartialPerm(Element):
 
 
         self.init_dom_ran_deg()
-        return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self._degree)).replace('65535', '-1')
+        return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self.degree())).replace('65535', '-1')
 
     def rank(self):
         cdef cpp.Element* e = self._handle
@@ -305,11 +304,11 @@ cdef class PartialPerm(Element):
         return e2.crank()
 
     def domain(self):
-        self.init_dom_ran_deg()
+        self.init_dom_ran()
         return self._domain
 
     def range(self):
-        self.init_dom_ran_deg()
+        self.init_dom_ran()
         return self._range
 
 cdef class Bipartition(Element):
@@ -387,10 +386,23 @@ cdef class Bipartition(Element):
         e2 = <cpp.Bipartition *>e
         return e2.const_nr_blocks()
 
-    def block(self, element):
+#    def block(self, element):#Finish
+#        if not element in set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
+#            raise ValueError('Element not in Bipartition')
+#        
+#        cdef cpp.Element* e = self._handle
+#        e2 = <cpp.Bipartition *>e
+#        return e2.block(element)
+
+    def isTransverseBlock(self, index):
+        if not isinstance(index, int):
+            raise TypeError("Index must be 'int' type")
+
+        if index < 0 or abs(index) > self.numberOfBlocks() - 1:
+            raise IndexError('Index out of range')
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
-        return e2.block(element)
+        return e2.is_transverse_block(index)
 
     def __repr__(self):
         self.init_blocks()
