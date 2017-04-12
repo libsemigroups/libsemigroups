@@ -393,6 +393,8 @@ cdef class Bipartition(Element):
         
         if element < 1:
             element = n - element - 1
+        else:
+            element -= 1
         
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
