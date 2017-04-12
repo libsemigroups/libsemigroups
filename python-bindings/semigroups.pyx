@@ -391,8 +391,8 @@ cdef class Bipartition(Element):
         if not element in set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
             raise ValueError('Element not in Bipartition')
         
-        if element > n:
-            element = n - element        
+        if element < 1:
+            element = n - element - 1
         
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
