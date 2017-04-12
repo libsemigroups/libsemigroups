@@ -7,7 +7,7 @@ if not path in sys.path:
     sys.path.insert(1, path)
 del path
 
-from semigroups import Transformation, PartialPerm
+from semigroups import Transformation, PartialPerm, Bipartition
 import semigroups
 
 class TestTransformation(unittest.TestCase):
@@ -33,6 +33,8 @@ class TestTransformation(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             Transformation([0, 2, 1]) * PartialPerm([0, 1], [1, 2], 3)
+            Transformation([0, 2, 1]) * Bipartition([1, -1], [2, 3, -3], [-2])
+            Transformation([0, 1, 2, 3, 4, 5]) * 8
 
         with self.assertRaises(ValueError):
             Transformation([0, 2, 1]) * Transformation([1, 2, 3, 0])
