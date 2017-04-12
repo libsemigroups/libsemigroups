@@ -37,6 +37,7 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[uint32_t] _vector
         vector[uint32_t].iterator begin()
         vector[uint32_t].iterator end()
+        int const_nr_blocks()
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
