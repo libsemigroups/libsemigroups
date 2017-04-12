@@ -25,6 +25,7 @@ class TestTransformation(unittest.TestCase):
         with self.assertRaises(TypeError):
             Transformation(26)
             Transformation(['a', 'b'])
+            Transformation([0.1, 1.0])
 
     def test_mul(self):
         self.assertEqual(Transformation([1, 3, 2, 1]) * Transformation([0, 3, 2, 2]), Transformation([3, 2, 2, 3]))
