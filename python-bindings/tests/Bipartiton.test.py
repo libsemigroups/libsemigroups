@@ -56,5 +56,10 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(NameError):
             A; B
 
+    def test_blocks(self):
+        self.assertEqual(Bipartition([1,2],[-2,-1]).blocks(), [[1, 2], [-2, -1]])
+        self.assertEqual(Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7]).blocks(), [[-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7]])
+        self.assertEqual(Bipartition([-1, -2], [2, -3], [1, 3]).blocks(), [[-1, -2], [2, -3], [1, 3]])
+
 if __name__ == '__main__':
     unittest.main()
