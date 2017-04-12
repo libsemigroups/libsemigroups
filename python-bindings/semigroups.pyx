@@ -155,6 +155,9 @@ cdef class Element:
         result._handle = handle[0].really_copy()
         return result
 
+    def degree(self):
+        return self._handle.degree()
+
 cdef class Transformation(Element):#Add dealloc
 
 #Python googlestyle docstrings for examples
@@ -309,10 +312,6 @@ cdef class PartialPerm(Element):
         self.init_dom_ran_deg()
         return self._range
 
-    def degree(self):
-        self.init_dom_ran_deg()
-        return self._degree
-
 cdef class Bipartition(Element):
     """
     A class for handles to libsemigroups bipartition.
@@ -387,6 +386,11 @@ cdef class Bipartition(Element):
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         return e2.const_nr_blocks()
+
+    def block(self, element):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.Bipartition *>e
+        return e2.block(element)
 
     def __repr__(self):
         self.init_blocks()
