@@ -7,7 +7,7 @@ if not path in sys.path:
     sys.path.insert(1, path)
 del path
 
-from semigroups import Bipartition
+from semigroups import Bipartition, Transformation, PartialPerm
 
 class TestPartialPerm(unittest.TestCase):
     def test_init(self):
@@ -23,6 +23,19 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             Bipartition([1, 2, 3], (-1, -2, -3))
             Bipartition(1, 2, -1, -2)
+
+    def test_mul(self):
+        self.assertEqual(Bipartition([1, -1, 2, -2]) * Bipartition([1, -1, 2, -2]), Bipartition([1, 2, -1, -2]))
+        self.assertEqual(Bipartition([1, 2], [-1], [-2]) * Bipartition([1, -1], [2, -2]), Bipartition([1, 2], [-1], [-2]))
+        self.assertEqual(Bipartition([1, -1], [2, 3, -2], [-3]) * Bipartition([1, 3, 2, -3], [-2], [-1]), Bipartition([1, 2, 3, -3], [-1], [-2]))
+
+        with self.assertRaises(TypeError):
+            Bipartition([1, -1], [2, 3, -3], [-2]) * PartialPerm([0, 1], [1, 2], 3)
+            Transformation([0, 2, 1]) * Bipartition([1, -1], [2, 3, -3], [-2])
+            Bipartition([1, -1], [2, 3, -3], [-2]) * 26
+
+        with self.assertRaises(ValueError):
+            Bipartition([1, -1], [2, 3, -3], [-2]) * Bipartition([1, -1, 2, -2])
 
 if __name__ == '__main__':
     unittest.main()
