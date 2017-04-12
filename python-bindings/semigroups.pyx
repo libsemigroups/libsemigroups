@@ -95,9 +95,11 @@ cdef class Element:
             >>> y * x
             [1, 1, 2]
         """
-        assert isinstance(self,type(other))
+        if not isinstance(self, type(other)):
+            raise TypeError('Elements must be same type')
         cdef cpp.Element* product = self._handle.identity()
-        assert self._handle.degree() == other._handle.degree()
+        if self._handle.degree() != other._handle.degree():
+            raise ValueError('Element degrees must be equal')
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
 	
