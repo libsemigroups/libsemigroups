@@ -19,11 +19,12 @@ class TestTransformation(unittest.TestCase):
 
     def test_init_fail(self):
         with self.assertRaises(ValueError):
-            Transformation([1,5,26])
+            Transformation([1, 5, 26])
             Transformation([1])
 
         with self.assertRaises(TypeError):
             Transformation(26)
+            Transformation(['a', 'b'])
 
     def test_mul(self):
         self.assertEqual(Transformation([1, 3, 2, 1]) * Transformation([0, 3, 2, 2]), Transformation([3, 2, 2, 3]))
