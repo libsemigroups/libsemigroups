@@ -7,7 +7,7 @@ if not path in sys.path:
     sys.path.insert(1, path)
 del path
 
-from semigroups import PartialPerm,Transformation
+from semigroups import PartialPerm, Transformation, Bipartition
 
 
 class TestPartialPerm(unittest.TestCase):
@@ -42,6 +42,7 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(AssertionError):
             PartialPerm([1,2],[0,1],3)*PartialPerm([1,2],[0,1],4)
             PartialPerm([0,1],[0,1],2)*Transformation([0,1])
+            PartialPerm([0, 1],[0, 1], 2) * Bipartition([-2, 1], [-1, 2])
 
     def test_pow(self):
         self.assertEqual( PartialPerm([0, 1], [0, 1], 2)**20, PartialPerm([0, 1], [0, 1], 2))
