@@ -49,5 +49,11 @@ class TestTransformation(unittest.TestCase):
             Transformation([1, 0, 1, 2]) ** 1.5
             Transformation([3, 2, 0, 0]) ** 'l'
 
+    def test_dealloc(self):
+        U, V = Transformation([1, 0, 1, 2]), Transformation([1, 1, 3, 2, 4, 3])
+        del U,V
+        with self.assertRaises(NameError):
+            U; V
+
 if __name__ == '__main__':
     unittest.main()
