@@ -354,7 +354,7 @@ cdef class Bipartition(Element):
             self._handle = new cpp.Bipartition(output)
 
 
-    def __iter__(self):#Remove
+    def _generator(self):
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         for x in e2[0]:
@@ -363,12 +363,12 @@ cdef class Bipartition(Element):
     def init_blocks(self):
         if self._blocks is None:
             self._blocks = []
-            List = list(self)
+            gen = self._generator
             i = 0
-            n = len(List)
+            n = 2 * self.degree() + 1
             while i in List:
                 block = []
-                for ind,j in enumerate(List):
+                for ind,j in enumerate(gen):
                     if j == i:
                         if ind < n/2:
                             block.append(ind + 1)
