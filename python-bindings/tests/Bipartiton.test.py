@@ -71,5 +71,10 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual(Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7]).degree(), 7)
         self.assertEqual(Bipartition([-1, -2], [2, -3], [1, 3]).degree(), 3)
 
+    def test_block(self):
+        self.assertEqual(Bipartition([1, 2], [-2, -1]).block(-2), 1)
+        self.assertEqual(Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7]).block(3), 0)
+        self.assertEqual(Bipartition([-1, -2], [2, -3], [1, 3]).block(-1), 2)
+
 if __name__ == '__main__':
     unittest.main()
