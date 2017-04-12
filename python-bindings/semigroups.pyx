@@ -383,6 +383,11 @@ cdef class Bipartition(Element):
         self.init_blocks()
         return self._blocks
 
+    def numberOfBlocks(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.Bipartition *>e
+        return e2.const_nr_blocks()
+
     def __repr__(self):
         self.init_blocks()
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
