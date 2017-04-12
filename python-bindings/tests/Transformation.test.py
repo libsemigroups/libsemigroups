@@ -10,7 +10,6 @@ del path
 from semigroups import Transformation, PartialPerm
 import semigroups
 
-
 class TestTransformation(unittest.TestCase):
     def test_init(self):
         Transformation([0, 1, 2, 3])
@@ -44,7 +43,7 @@ class TestTransformation(unittest.TestCase):
         self.assertEqual(Transformation([1, 2, 3, 3]) ** 8, Transformation([3, 3, 3, 3]))
  
         with self.assertRaises(ValueError):
-            Transformation([1, 2, 3, 0])**-1
+            Transformation([1, 2, 3, 0]) ** -1
             Transformation([1, 1, 3, 2, 4, 3]) ** 0
 
         with self.assertRaises(TypeError):
@@ -53,7 +52,7 @@ class TestTransformation(unittest.TestCase):
 
     def test_dealloc(self):
         U, V = Transformation([1, 0, 1, 2]), Transformation([1, 1, 3, 2, 4, 3])
-        del U,V
+        del U, V
         with self.assertRaises(NameError):
             U; V
 
