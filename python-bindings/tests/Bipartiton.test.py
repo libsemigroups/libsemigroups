@@ -50,5 +50,11 @@ class TestPartialPerm(unittest.TestCase):
             Bipartition([1, 2], [-1], [-2]) ** 3.1415926535897932384626433832795028841971693993751058209
             Bipartition([1, 2], [-1], [-2]) ** 'c'
 
+    def test_dealloc(self):
+        A, B = Bipartition([1, -1, 2, -2]), Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7])
+        del A, B
+        with self.assertRaises(NameError):
+            A; B
+
 if __name__ == '__main__':
     unittest.main()
