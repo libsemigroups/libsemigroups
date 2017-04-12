@@ -234,7 +234,6 @@ cdef class PartialPerm(Element):
             if not isinstance(args[2], int):
                 raise TypeError('Degree must be an int')
 
-
             self._domain, self._range, self._degree = args[0], args[1], args[2]
 
             if self._degree < 0:
@@ -259,7 +258,6 @@ cdef class PartialPerm(Element):
                     raise ValueError('Range cannot have repeats')
                 if self._domain.count(i) > 1:
                     raise ValueError('Domain cannot have repeats')
-
 
             for i in range(n):
                 imglist[self._domain[i]] = self._range[i]
