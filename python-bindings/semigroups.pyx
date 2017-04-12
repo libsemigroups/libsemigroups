@@ -101,20 +101,20 @@ cdef class Element:
         product.redefine(self._handle, other._handle)
         return self.new_from_handle(product)
 	
-    def __pow__(self,power,modulo):#It works, but don't understand why it needs 'modulo' argument aal20
-        assert isinstance(power,int)
-        assert power>0
+    def __pow__(self, power, modulo):#It works, but don't understand why it needs 'modulo' argument aal20
+        assert isinstance(power, int)
+        assert power > 0
 
         #Converts power to binary, then constructs element to the power of 2^n for needed n.
-        binaryString=bin(power-1)[2:]
-        powerOf2List=[self]
+        binaryString = bin(power - 1)[2:]
+        powerOf2List = [self]
         for x in binaryString:
             powerOf2List.append(powerOf2List[-1].__mul__(powerOf2List[-1]))
-        output=self
+        output = self 
 
 	#generates answer using element to the power of powers of 2 (binary tells you which ones to multiply)
         for i in range(len(binaryString)):
-            if binaryString[i]=="1":
+            if binaryString[i] == "1":
                  output=output.__mul__(powerOf2List[i])
         return output
 
