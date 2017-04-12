@@ -170,6 +170,11 @@ cdef class Transformation(Element):#Add dealloc
     def __init__(self, List):
         
         if List is not __dummyClass:
+            for i in List:
+                if not isinstance(i, int):
+                    raise TypeError('Image list must only contain ints')
+                if i < 0:
+                    raise ValueError('Image list cannot contain negative values')
             if not isinstance(List, list):
                 raise TypeError('Input must be a list')
             if max(List) + 1 > len(List):
