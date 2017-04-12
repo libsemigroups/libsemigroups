@@ -303,6 +303,10 @@ namespace libsemigroups {
                                                             word_t const& w2) {
     init();
     if (is_killed()) {
+      // This cannot be reliably tested since it relies on a race condition:
+      // if this has been killed since the start of the function, then we return
+      // immediately to run_until with an inconclusive answer.  run_until will
+      // then quit, and allow the winning DATA to answer the equality test.
       return result_t::UNKNOWN;
     }
 

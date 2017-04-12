@@ -99,6 +99,7 @@ namespace libsemigroups {
   Congruence::KBFP::current_equals(word_t const& w1, word_t const& w2) {
     init();
     if (is_killed()) {
+      // This cannot be reliably tested: see TC::current_equals for more info
       return result_t::UNKNOWN;
     }
     assert(_rws->is_confluent());
