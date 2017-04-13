@@ -59,5 +59,19 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(ValueError):
             BooleanMat([False, True, True], [True, True, False], [False, False, False]) * BooleanMat([True, False], [False, True])
 
+    def test_pow(self):
+        self.assertEqual(BooleanMat([True, False], [False, True]) ** 30, BooleanMat([True, False], [False, True]))
+        self.assertEqual(BooleanMat([True, False], [True, True]) ** 7, BooleanMat([True, False], [True, True]))
+        self.assertEqual(BooleanMat([True]) ** 26, BooleanMat([True]))
+
+        with self.assertRaises(TypeError):
+            BooleanMat([True, False], [True, True]) ** 'i'
+            BooleanMat([True]) ** range(10)
+            BooleanMat([True]) ** BooleanMat([True])
+
+        with self.assertRaises(ValueError):
+            BooleanMat([True, False], [True, True]) ** 0
+            BooleanMat([False, True, True], [True, True, False], [False, False, False]) ** -7
+
 if __name__ == '__main__':
     unittest.main()
