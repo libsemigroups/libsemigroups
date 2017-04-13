@@ -9,7 +9,6 @@ del path
 
 from semigroups import PartialPerm, Transformation, Bipartition
 
-
 class TestPartialPerm(unittest.TestCase):
     def test_init(self):
         PartialPerm([1, 0, 2], [2, 0, 1], 3)
@@ -32,6 +31,23 @@ class TestPartialPerm(unittest.TestCase):
             PartialPerm([1, [0]], [1, 2], 3)
             PartialPerm([0, 1], [2, 3], [4])
             PartialPerm([0, 1], [2, 3], 4.3)
+
+    def test_richcmp(self):
+        assert PartialPerm([1, 2, 3], [2, 1, 0], 5) == PartialPerm([1, 2, 3], [2, 1, 0], 5)
+        assert not PartialPerm([1, 2, 3], [2, 1, 0], 5) != PartialPerm([1, 2, 3], [2, 1, 0], 5)
+        assert not PartialPerm([1, 2, 4], [2, 1, 0], 5) == PartialPerm([1, 2, 3], [2, 3, 0], 5)
+        assert PartialPerm([1, 2, 4], [2, 1, 0], 5) != PartialPerm([1, 2, 3], [2, 3, 0], 5)
+        assert not PartialPerm([1, 2, 4], [2, 1, 0], 5) < PartialPerm([1, 2, 3], [2, 3, 0], 5)
+        assert PartialPerm([1, 2], [0, 1], 3) < PartialPerm([2, 0], [0, 1], 3)
+        assert not PartialPerm([1, 2], [0, 1], 3) > PartialPerm([2, 0], [0, 1], 3)
+        assert PartialPerm([1, 2], [1, 2], 3) > PartialPerm([1, 2], [0, 1], 3)
+        assert PartialPerm([1, 2], [1, 2], 3) >= PartialPerm([1, 2], [0, 1], 3)
+        assert PartialPerm([1, 2, 3], [2, 1, 0], 5) <= PartialPerm([1, 2, 3], [2, 1, 0], 5)
+
+        with self.assertRaises(TypeError):
+            PartialPerm([1, 2], [2, 1], 3) == Bipartition([1, -1], [2, -3, -2], [-3])
+            PartialPerm([0, 1], [0, 1], 2) < Transformation([0, 1])
+            PartialPerm([0, 1], [0, 1], 2) != Transformation([0, 1])
 
     def test_mul(self):
         self.assertEqual(PartialPerm([0, 1], [0, 1], 2) * PartialPerm([0, 1], [0, 1], 2), PartialPerm([0, 1], [0, 1], 2))
