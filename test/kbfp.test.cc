@@ -115,9 +115,10 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 68);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE((*ntc)[0]->size() == 68);
+  delete ntc;
 
   t1->really_delete();
   t2->really_delete();

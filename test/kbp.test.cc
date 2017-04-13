@@ -57,10 +57,11 @@ TEST_CASE("KBP 01: for an infinite fp semigroup",
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0, 1}));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 5);
-  REQUIRE(*nontrivial_classes.at(0, 0) == word_t({0}));
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 5);
+  REQUIRE(*(ntc->at(0, 0)) == word_t({0}));
+  delete ntc;
 }
 
 TEST_CASE("KBP 02: for an infinite fp semigroup",
@@ -113,9 +114,10 @@ TEST_CASE("KBP 03: for an infinite fp semigroup",
 
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 2);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 2);
+  delete ntc;
 
   cong.force_kbp();  // clear data
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
@@ -143,9 +145,10 @@ TEST_CASE("KBP 04: for an infinite fp semigroup",
 
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({2}));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 3);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 3);
+  delete ntc;
 }
 
 TEST_CASE("KBP 05: trivial congruence on a finite fp semigroup",
@@ -167,16 +170,18 @@ TEST_CASE("KBP 05: trivial congruence on a finite fp semigroup",
   REQUIRE(cong.nr_classes() == 27);
   REQUIRE(cong.word_to_class_index({0}) == 0);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 0);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 0);
+  delete ntc;
 
   REQUIRE(cong.word_to_class_index({0, 0, 0, 0}) == 1);
   REQUIRE(cong.word_to_class_index({0}) == 0);
   REQUIRE(cong.word_to_class_index({1, 0, 1}) == 2);
   REQUIRE(cong.word_to_class_index({0, 1, 1, 0}) == 1);
 
-  Partition<word_t> nontrivial_classes_2 = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes_2.size() == 0);
+  ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 0);
+  delete ntc;
 }
 
 TEST_CASE("KBP 06: universal congruence on a finite fp semigroup",
@@ -199,18 +204,20 @@ TEST_CASE("KBP 06: universal congruence on a finite fp semigroup",
   REQUIRE(cong.nr_classes() == 1);
   REQUIRE(cong.word_to_class_index({0}) == 0);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 27);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 27);
+  delete ntc;
 
   REQUIRE(cong.word_to_class_index({0, 0, 0, 0}) == 0);
   REQUIRE(cong.word_to_class_index({0}) == 0);
   REQUIRE(cong.word_to_class_index({1, 0, 1}) == 0);
   REQUIRE(cong.word_to_class_index({0, 1, 1, 0}) == 0);
 
-  Partition<word_t> nontrivial_classes_2 = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes_2.size() == 1);
-  REQUIRE(nontrivial_classes_2[0]->size() == 27);
+  ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 27);
+  delete ntc;
 }
 
 TEST_CASE("KBP 06: left congruence with even chunks on a finite fp semigroup",
@@ -230,14 +237,15 @@ TEST_CASE("KBP 06: left congruence with even chunks on a finite fp semigroup",
   cong.force_kbp();
   cong.set_report(KBP_REPORT);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 6);
-  REQUIRE(nontrivial_classes[0]->size() == 5);
-  REQUIRE(nontrivial_classes[1]->size() == 5);
-  REQUIRE(nontrivial_classes[2]->size() == 4);
-  REQUIRE(nontrivial_classes[3]->size() == 5);
-  REQUIRE(nontrivial_classes[4]->size() == 4);
-  REQUIRE(nontrivial_classes[5]->size() == 4);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 6);
+  REQUIRE(ntc->at(0)->size() == 5);
+  REQUIRE(ntc->at(1)->size() == 5);
+  REQUIRE(ntc->at(2)->size() == 4);
+  REQUIRE(ntc->at(3)->size() == 5);
+  REQUIRE(ntc->at(4)->size() == 4);
+  REQUIRE(ntc->at(5)->size() == 4);
+  delete ntc;
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({0, 0, 0}));
   REQUIRE(cong.word_to_class_index({1, 0, 1, 1})
@@ -299,9 +307,10 @@ TEST_CASE(
   REQUIRE(cong.word_to_class_index({1, 2, 2, 1})
           == cong.word_to_class_index({1, 1, 2, 1, 2}));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 2);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 2);
+  delete ntc;
 }
 
 TEST_CASE("KBP 09: finite fp-semigroup, dihedral group of order 6",

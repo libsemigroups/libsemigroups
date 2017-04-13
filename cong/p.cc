@@ -288,17 +288,17 @@ namespace libsemigroups {
                                                       : result_t::UNKNOWN;
   }
 
-  Partition<word_t> Congruence::P::nontrivial_classes() {
+  Partition<word_t>* Congruence::P::nontrivial_classes() {
     assert(is_done());
     assert(_reverse_map.size() >= _nr_nontrivial_elms);
     assert(_class_lookup.size() >= _nr_nontrivial_elms);
 
-    Partition<word_t> classes(_nr_nontrivial_classes);
+    Partition<word_t>* classes = new Partition<word_t>(_nr_nontrivial_classes);
 
     for (p_index_t ind = 0; ind < _nr_nontrivial_elms; ind++) {
       Element* elm  = const_cast<Element*>(_reverse_map[ind]);
       word_t*  word = _cong._semigroup->factorisation(elm);
-      classes[_class_lookup[ind]]->push_back(word);
+      (*classes)[_class_lookup[ind]]->push_back(word);
     }
     return classes;
   }

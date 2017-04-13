@@ -240,7 +240,7 @@ namespace libsemigroups {
     //! \warning If \c this has infinitely many non-trivial congruence classes,
     //! then this method will only terminate when it can no longer allocate
     //! memory.
-    Partition<word_t> nontrivial_classes();
+    Partition<word_t>* nontrivial_classes();
 
     //! Returns \c true if the structure of the congruence is known.
     bool is_done() const {
@@ -536,7 +536,7 @@ namespace libsemigroups {
       }
 
       // This method returns the non-trivial classes of the congruence.
-      virtual Partition<word_t> nontrivial_classes();
+      virtual Partition<word_t>* nontrivial_classes();
 
       // This method kills a given instance of a DATA object.
       void kill() {

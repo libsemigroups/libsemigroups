@@ -92,7 +92,7 @@ namespace libsemigroups {
     return _P_cong->cget_data()->current_equals(w1, w2);
   }
 
-  Partition<word_t> Congruence::KBP::nontrivial_classes() {
+  Partition<word_t>* Congruence::KBP::nontrivial_classes() {
     assert(is_done());
     return _P_cong->nontrivial_classes();
   }

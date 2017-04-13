@@ -69,6 +69,10 @@ namespace libsemigroups {
     //! copying.
     Partition& operator=(Partition const& part) = delete;
 
+    //! The copy constructor is deleted for Partition to avoid unintended
+    //! copying.
+    Partition(Partition const& copy) = delete;
+
     //! Returns the number of parts in the partition.
     // FIXME rename this to nr_parts
     inline size_t size() const {

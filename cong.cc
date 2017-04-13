@@ -266,7 +266,7 @@ namespace libsemigroups {
     _data = new KBFP(*this);
   }
 
-  Partition<word_t> Congruence::nontrivial_classes() {
+  Partition<word_t>* Congruence::nontrivial_classes() {
     DATA* data;
     if (_semigroup == nullptr) {
       // If this is an fp semigroup congruence, then KBP is the only DATA
@@ -275,15 +275,19 @@ namespace libsemigroups {
       // differently in future.
       data = new KBP(*this);
       data->run();
+      Partition<word_t>* out = data->nontrivial_classes();
       if (_data == nullptr) {
         delete_data();
         _data = data;
+      } else {
+        delete data;
       }
+      return out;
     } else {
       data = get_data();
+      assert(data->is_done());
+      return data->nontrivial_classes();
     }
-    assert(data->is_done());
-    return data->nontrivial_classes();
   }
 
   void Congruence::init_relations(Semigroup*         semigroup,
@@ -331,14 +335,14 @@ namespace libsemigroups {
   // and KBFP; the P and KBP subclasses override with their own superior method.
   // This method requires a Semigroup pointer and therefore does not allow fp
   // semigroup congruences.
-  Partition<word_t> Congruence::DATA::nontrivial_classes() {
+  Partition<word_t>* Congruence::DATA::nontrivial_classes() {
     assert(is_done());
     assert(_cong._semigroup != nullptr);
 
     partition_t* classes = new partition_t();
 
     if (_cong._extra.empty()) {
-      return Partition<word_t>(classes);  // no nontrivial classes
+      return new Partition<word_t>(classes);  // no nontrivial classes
     }
 
     // Note: we assume classes are numbered contiguously {0 .. n-1}
@@ -372,7 +376,7 @@ namespace libsemigroups {
     }
     delete all_classes;
 
-    return Partition<word_t>(classes);
+    return new Partition<word_t>(classes);
   }
 
 }  // namespace libsemigroups

@@ -174,9 +174,10 @@ TEST_CASE("TC 06: transformation semigroup size 88",
 
   REQUIRE(cong.word_to_class_index(w1) == cong.word_to_class_index(w2));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 68);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 68);
+  delete ntc;
 
   really_delete_cont(vec);
 }
@@ -205,9 +206,10 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0]->size() == 20);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 20);
+  delete ntc;
 
   really_delete_cont(vec);
 }
@@ -250,11 +252,11 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 4);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 4);
   std::vector<size_t> sizes({0, 0, 0});
-  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
-    switch (nontrivial_classes.at(i)->size()) {
+  for (size_t i = 0; i < ntc->size(); i++) {
+    switch (ntc->at(i)->size()) {
       case 3:
         sizes[0]++;
         break;
@@ -269,7 +271,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
-
+  delete ntc;
   really_delete_cont(vec);
 }
 

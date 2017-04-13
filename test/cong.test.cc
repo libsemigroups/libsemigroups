@@ -158,7 +158,9 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   cong.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
 
-  REQUIRE(cong.nontrivial_classes().size() == 0);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 0);
+  delete ntc;
 }
 
 TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
@@ -460,11 +462,11 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 577);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
-    switch (nontrivial_classes.at(i)->size()) {
+  for (size_t i = 0; i < ntc->size(); i++) {
+    switch (ntc->at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -482,6 +484,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
+  delete ntc;
 }
 
 TEST_CASE("Congruence 13: partial perm example",
@@ -598,11 +601,11 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 577);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
-    switch (nontrivial_classes.at(i)->size()) {
+  for (size_t i = 0; i < ntc->size(); i++) {
+    switch (ntc->at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -620,6 +623,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
+  delete ntc;
 }
 
 TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
@@ -655,11 +659,11 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t> nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 577);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
-  for (size_t i = 0; i < nontrivial_classes.size(); i++) {
-    switch (nontrivial_classes.at(i)->size()) {
+  for (size_t i = 0; i < ntc->size(); i++) {
+    switch (ntc->at(i)->size()) {
       case 4:
         sizes[0]++;
         break;
@@ -677,6 +681,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
     }
   }
   REQUIRE(sizes == std::vector<size_t>({384, 176, 16, 1}));
+  delete ntc;
 }
 
 TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
@@ -700,9 +705,10 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
 
   REQUIRE(!cong.is_done());
 
-  Partition<word_t> nt_classes = cong.nontrivial_classes();
-  REQUIRE(nt_classes.size() == 1);
-  REQUIRE(nt_classes[0]->size() == 5);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE((*ntc)[0]->size() == 5);
+  delete ntc;
 
   REQUIRE(cong.is_done());
 }
@@ -740,7 +746,9 @@ TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
 
   Congruence cong("left", 2, rels, extra);
 
-  REQUIRE(cong.nontrivial_classes().size() == 0);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 0);
+  delete ntc;
 }
 
 TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
@@ -779,5 +787,8 @@ TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
   Congruence cong(
       "twosided", 2, rels, std::vector<relation_t>({relation_t({0}, {1})}));
   cong.set_report(CONG_REPORT);
-  REQUIRE(cong.nontrivial_classes().size() == 1);
+
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  delete ntc;
 }
