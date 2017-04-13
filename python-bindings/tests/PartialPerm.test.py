@@ -108,5 +108,10 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(NameError):
             t
 
+    def test_identity(self):
+        self.assertEqual(PartialPerm([0, 1], [1, 0], 2).identity(), PartialPerm([0, 1], [0, 1], 2))
+        self.assertEqual(PartialPerm([1, 2, 4, 6, 7, 3], [0, 5, 2, 4, 6, 7], 8).identity(), PartialPerm([0, 1, 2, 3, 4, 5, 6, 7], [0, 1, 2, 3, 4, 5, 6, 7], 8))
+        self.assertEqual(PartialPerm([0, 3, 4, 2], [2, 4, 1, 3], 5).identity(), PartialPerm([0, 1, 2, 3, 4], [0, 1, 2, 3, 4], 5))
+
 if __name__ == '__main__':
     unittest.main()
