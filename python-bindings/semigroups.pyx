@@ -218,7 +218,7 @@ cdef class Element:# Add identity
             None
 
         Returns:
-            int: The degree of the partial permutation
+            int: The degree of the element
 
         Raises:
             TypeError:  If any argument is given.
