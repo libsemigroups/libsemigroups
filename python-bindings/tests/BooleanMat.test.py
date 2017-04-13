@@ -45,5 +45,18 @@ class TestPartialPerm(unittest.TestCase):
             BooleanMat([False, False], [True, False]) < Transformation([0, 1])
             BooleanMat([True, False], [False, True]) == PartialPerm([0], [1], 2)
 
+    def test_mul(self):
+        self.assertEqual(BooleanMat([True, False], [False, True]) * BooleanMat([False, False], [False, True]), BooleanMat([False, False], [False, True]))
+        self.assertEqual(BooleanMat([False]) * BooleanMat([True]), BooleanMat([False]))
+        self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]) * BooleanMat([False, True, False], [True, False, False], [False, False, True]), BooleanMat([True, False, True], [True, True, False], [False, False, False]))
+
+        with self.assertRaises(TypeError):
+            BooleanMat([True, True], [False, False]) * Transformation([1, 1])
+            BooleanMat([False, True, True], [True, True, False], [False, False, False]) * PartialPerm([0, 1], [1, 2], 3)
+            BooleanMat([True]) * [True]
+            BooleanMat([True, False], [False, True]) * Bipartition([1, 2], [-1], [-2])
+
+
+
 if __name__ == '__main__':
     unittest.main()
