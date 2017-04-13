@@ -79,5 +79,10 @@ class TestTransformation(unittest.TestCase):
         self.assertEqual(Transformation([2, 2, 2]).identity(), Transformation([0, 1, 2]))
         self.assertEqual(Transformation([1, 2, 3, 3]).identity(), Transformation([0, 1, 2, 3]))
 
+    def test_degree(self):
+        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]).degree(), 10)
+        self.assertEqual(Transformation([2, 2, 2]).degree(), 3)
+        self.assertEqual(Transformation([1, 2, 3, 3]).degree(), 4)
+
 if __name__ == '__main__':
     unittest.main()
