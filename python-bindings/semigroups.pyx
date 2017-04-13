@@ -739,9 +739,12 @@ cdef class BooleanMat(Element):
     def __init__(self, *args):
         
         if args[0] is not __dummyClass:
+            n = len(args)
             for row in args:
                 if not isinstance(row, list):
                     raise TypeError
+                if len(row) != n:
+                    raise ValueError
                 for entry in row:
                     if not isinstance(entry, type(True)):
                         raise TypeError
