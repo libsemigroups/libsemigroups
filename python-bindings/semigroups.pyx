@@ -166,7 +166,7 @@ cdef class Transformation(Element):
 
     A transformation f is a function defined on the set {0, 1, ..., n - 1}
     for some integer n called the degree of f. A transformation is stored as a
-    vector of the images of {0, 1, ..., n   -1},
+    list of the images of {0, 1, ..., n   -1},
     i.e. [(0)f, (1)f, ..., (n - 1)f].
 
     Args:
@@ -246,7 +246,7 @@ cdef class PartialPerm(Element):
     A class for handles to libsemigroups partial perm.
 
     A partial permutation f is an injective partial transformation, which is
-    stored as a vector of the images of {0, 1, ..., n -1}, i.e. 
+    stored as a list of the images of {0, 1, ..., n -1}, i.e. 
     [(0)f, (1)f, ..., (n - 1)f] where the value -1 is used to indicate i(f) is
     undefined.
 
@@ -353,7 +353,6 @@ cdef class PartialPerm(Element):
 	        PartialPerm([1, 4, 2], [2, 3, 4], 6)
         """
 
-
         self.init_dom_ran()
         return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self.degree())).replace('65535', '-1')
 
@@ -424,7 +423,24 @@ cdef class PartialPerm(Element):
 
 cdef class Bipartition(Element):
     """
-    A class for handles to libsemigroups bipartition.
+    A class for handles to libsemigroups bipartition. 
+
+    A bipartition is a partition of the set {-n, ..., -1} union {1, ..., n}
+    for some integer n. This can be stored as a list of blocks, the subsets
+    of the bipartition
+
+    Args: Can pass either of the following
+        args (lists):   The blocks of the bipartition as lists.
+
+    Raises:
+        TypeError:  If any of the blocks are not lists
+        ValueError: If the union of the blocks is not the set {-n, ..., -1}
+                    union {1, ..., n}
+
+    Example:
+        >>> from semigroups import Bipartition
+        >>> Bipartition([1, -1], [2, 3, -2], [-3])
+        Bipartition([1, -1], [2, 3, -2], [-3])
     """
 
     cdef list _blocks
@@ -464,14 +480,13 @@ cdef class Bipartition(Element):
 
             self._handle = new cpp.Bipartition(output)
 
-
     def _generator(self):
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         for x in e2[0]:
             yield x
 
-    def init_blocks(self):
+    def _init_blocks(self):
         if self._blocks is None:
             self._blocks = []
             gen = self._generator
@@ -489,15 +504,70 @@ cdef class Bipartition(Element):
                 i += 1
                             
     def blocks(self):
-        self.init_blocks()
+        """
+        Function for finding the blocks of a bipartition
+
+        Args:
+            None
+
+        Returns:
+            list: The blocks of the bipartition
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import Bipartition
+            >>> Bipartition([1, 2], [-2, -1, 3], [-3]).blocks()
+            [[1, 2], [-2, -1, 3], [-3]]
+        """
+        self._init_blocks()
         return self._blocks
 
     def numberOfBlocks(self):
+        """
+        Function for finding the number of blocks of a bipartition.
+
+        Args:
+            None
+
+        Returns:
+            int: The number blocks of the bipartition
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import Bipartition
+            >>> Bipartition([1, 2], [-2, -1, 3], [-3]).numberOfBlocks()
+            3
+        """
         cdef cpp.Element* e = self._handle
         e2 = <cpp.Bipartition *>e
         return e2.const_nr_blocks()
 
     def block(self, element):
+        """
+        Function for finding the index of the block that a given element is in.
+
+        The blocks are ordered by lowest element absolute value,
+        where all negative elements are greater than all positive elements.
+
+        Args:
+            element (int): The element in question
+
+        Returns:
+            int: The index of the block that the element is in
+
+        Raises:
+            ValueError: If the element is not in the bipartition
+
+        Example:
+            >>> from semigroups import Bipartition
+            >>> Bipartition([1, 2], [-2, -1, 3], [-3]).block(-2)
+            1
+        """
+
         n = self.degree()
         if not element in set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
             raise ValueError('Element not in Bipartition')
@@ -512,6 +582,28 @@ cdef class Bipartition(Element):
         return e2.block(element)
 
     def isTransverseBlock(self, index):
+        """
+        Function for finding whether a given block is transverse.
+
+        A block is transverse if it contains both positive and negative
+        elements. The blocks are ordered by lowest element absolute value,
+        where all negative elements are greater than all positive elements.
+
+        Args:
+            index (int): The index of the block in question
+
+        Returns:
+            list: The blocks of the bipartition
+
+        Raises:
+            TypeError:  If index is not an int.
+            IndexError: If index does not relate to the index of a block in the partition
+
+        Example:
+            >>> from semigroups import Bipartition
+            >>> Bipartition([1, 2], [-2, -1, 3], [-3]).isTransverseBlock(1)
+            True
+        """
         if not isinstance(index, int):
             raise TypeError("Index must be 'int' type")
 
@@ -522,7 +614,24 @@ cdef class Bipartition(Element):
         return e2.is_transverse_block(index)
 
     def __repr__(self):
-        self.init_blocks()
+        """
+        Function for printing a string representation of the bipartition.
+        
+        Args:
+            None
+
+        Returns:
+            str: 'Bipartition' then the blocks in parenthesis.
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import Bipartition
+            >>> Bipartition([1, -1], [2], [-2])
+            Bipartition([1, -1], [2], [-2])
+        """
+        self._init_blocks()
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
 
 cdef class PythonElement(Element):
