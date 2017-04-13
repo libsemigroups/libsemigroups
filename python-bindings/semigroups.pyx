@@ -164,16 +164,20 @@ cdef class Transformation(Element):
     """
     A class for handles to libsemigroups transformations.
 
-    A transformation f is just a function defined on the whole of 
-    {0, 1, ..., n - 1} for some integer n called the degree of f. A
-    transformation is stored as a vector of the images of {0, 1, ..., n   -1},
+    A transformation f is a function defined on the set {0, 1, ..., n - 1}
+    for some integer n called the degree of f. A transformation is stored as a
+    vector of the images of {0, 1, ..., n   -1},
     i.e. [(0)f, (1)f, ..., (n - 1)f].
 
     Args:
-        List (list): Image list of the Transformation when applied to [0, 1, ..., n]
+        List (list): Image list of the Transformation when applied to
+        [0, 1, ..., n]
 
     Raises:
-        
+        TypeError:  If the arg is not a list of ints, or if there is more than
+                    one arg.
+        ValueError: If the elements of the list are negative, or the max of the
+                    list + 1 is greater than the length of the list. 
 
     Example:
         >>> from semigroups import Transformation
@@ -202,7 +206,10 @@ cdef class Transformation(Element):
             None
 
         Returns:
-            generator: A generator of the image list
+            generator:  A generator of the image list.
+
+        Raises:
+            TypeError:  If any argument is given.
 
         Example:
             >>> from semigroups import Transformation
@@ -221,8 +228,11 @@ cdef class Transformation(Element):
         Args:
             None
 
-        Returns
-            str: 'Transformation' then the image list in brackets
+        Returns:
+            str: 'Transformation' then the image list in parenthesis.
+
+        Raises:
+            TypeError:  If any argument is given.
 
         Example:
             >>> from semigroups import Transformation
@@ -234,6 +244,33 @@ cdef class Transformation(Element):
 cdef class PartialPerm(Element):
     """
     A class for handles to libsemigroups partial perm.
+
+    A partial permutation f is an injective partial transformation, which is
+    stored as a vector of the images of {0, 1, ..., n -1}, i.e. 
+    [(0)f, (1)f, ..., (n - 1)f] where the value -1 is used to indicate i(f) is
+    undefined.
+
+    Args: Can pass either of the following
+        args (list):    Image list of the partial permutation when applied to
+                        [0, 1, ..., n], -1 being used to indicate the image is
+                        undefined.
+
+        args (list):    List containing the domain, as a list of ints, then the
+                        range, as a list of ints, then the degree.
+
+    Raises:
+        TypeError:  During the second arg format, if the domain or range are
+                    not both lists, the degree is not an int, or the elements
+                    of the domain and range are not ints.
+        ValueError: If the domain and range are of different lengths, if the
+                    degree is negative, if the domain or range contains an
+                    element greater than or equal to the degree, or if the
+                    domain or range have repeats.
+
+    Example:
+        >>> from semigroups import PartialPerm
+        >>> PartialPerm([1, 2, 5], [2, 3, 5], 6)
+        PartialPerm([1, 2, 5], [2, 3, 5], 6)
     """
     
     cdef list _domain,_range
@@ -299,31 +336,89 @@ cdef class PartialPerm(Element):
 
     def __repr__(self):
         """
-        Return a string representation of `self`.
+        Function for printing a string representation of the partial permutation.
+        
+        Args:
+            None
 
-        EXAMPLES::
+        Returns:
+            str: 'PartialPerm' then the domain, range, degree in parenthesis.
 
-            >>> from semigroups import *
-	    >>> PartialPerm([1,4,2],[2,3,4],6)
-	    PartialPerm([1, 4, 2], [2, 3, 4], 6)
+        Raises:
+            TypeError:  If any argument is given.
 
-
+        Example:
+            >>> from semigroups import PartialPerm
+	        >>> PartialPerm([1, 4, 2], [2, 3, 4], 6)
+	        PartialPerm([1, 4, 2], [2, 3, 4], 6)
         """
 
 
-        self.init_dom_ran_deg()
+        self.init_dom_ran()
         return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self.degree())).replace('65535', '-1')
 
     def rank(self):
+        """
+        Function for finding the rank of the partial permutation.
+
+        Args:
+            None
+
+        Returns:
+            int: The rank of the partial permutation
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).rank()
+            3
+        """
         cdef cpp.Element* e = self._handle
         e2 = <cpp.PartialPerm[uint16_t] *>e
         return e2.crank()
 
     def domain(self):
+        """
+        Function for finding the domain of the partial permutation, that
+        maps to defined elements.
+
+        Args:
+            None
+
+        Returns:
+            list: The domain of the partial permutation
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).domain()
+            [1, 2, 5]
+        """
         self.init_dom_ran()
         return self._domain
 
     def range(self):
+        """
+        Function for finding the range of the partial permutation.
+
+        Args:
+            None
+
+        Returns:
+            list: The range of the partial permutation
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).range()
+            [2, 3, 5]
+        """
         self.init_dom_ran()
         return self._range
 
