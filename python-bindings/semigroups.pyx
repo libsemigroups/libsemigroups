@@ -388,7 +388,7 @@ cdef class PartialPerm(Element):
             if len(self._domain) != len(self._range):
                 raise ValueError('Domain and range must be same size')
             if len(self._domain) != 0:
-                if max(max(self._domain),max(self._range)) >= _degree):
+                if max(max(self._domain),max(self._range)) >= _degree:
                     raise ValueError('The max of the domain and range must \
                     be strictly less than the degree')
 
@@ -731,6 +731,48 @@ cdef class Bipartition(Element):
         """
         self._init_blocks()
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
+
+cdef class BooleanMat(Element):
+    
+    cdef list _rows
+
+    def __init__(self, *args):
+        
+        if args[0] is not __dummyClass:
+            for row in args:
+                if not isinstance(row, list):
+                    raise TypeError
+                for entry in row:
+                    if not isinstance(entry, type(True)):
+                        raise TypeError
+
+            self._rows = []
+            for row in args:
+                self._rows.append(row[:])
+            self._handle = new cpp.BooleanMat(self._rows)
+
+    def _generator(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.BooleanMat *>e
+        for x in e2[0]:
+            yield x
+
+    def _init_rows(self):
+        if self._rows is not None:
+            return
+        n = self.degree()
+        self._rows = []
+        row = []
+        for i,entry in enumerate(self._generator()):
+            if i % n == 0 and i !=0:
+                self._rows.append(row)
+                row = []
+            row.append(entry)
+        self._rows.append(row)
+
+    def __repr__(self):
+        self._init_rows()
+        return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
 
 cdef class PythonElement(Element):
     """

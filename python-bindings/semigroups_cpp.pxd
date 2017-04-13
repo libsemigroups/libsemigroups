@@ -40,6 +40,14 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         int const_nr_blocks()
         int block(uint32_t)
         bool is_transverse_block(size_t)
+    cdef cppclass BooleanMat(Element):
+        BooleanMat(vector[vector[bool]]) except +
+        vector[vector[bool]] _vector
+        vector[vector[bool]].iterator begin()
+        vector[vector[bool]].iterator end()
+        vector[bool] _vector
+        vector[bool].iterator begin()
+        vector[bool].iterator end()
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
