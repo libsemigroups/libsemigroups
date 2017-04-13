@@ -255,8 +255,6 @@ cdef class Element:# Add identity
         return self.new_from_handle(identity)
 
 cdef class Transformation(Element):
-
-#Python googlestyle docstrings for examples
     """
     A class for handles to libsemigroups transformations.
 
@@ -585,17 +583,17 @@ cdef class Bipartition(Element):
     def _init_blocks(self):
         if self._blocks is None:
             self._blocks = []
-            gen = self._generator
+            gen = set(self._generator())
             i = 0
-            n = 2 * self.degree() + 1
+            n = 2 * self.degree()
             while i in gen:
                 block = []
-                for ind,j in enumerate(gen):
+                for ind, j in enumerate(self._generator()):
                     if j == i:
                         if ind < n/2:
                             block.append(ind + 1)
                         else:
-                            block.append(n/2 - ind - 1)
+                            block.append(int(n/2 - ind - 1))
                 self._blocks.append(block)
                 i += 1
                             
