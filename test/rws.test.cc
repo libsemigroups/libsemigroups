@@ -185,20 +185,23 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
                                    rws_rule_t("bB", ""),
                                    rws_rule_t("Bb", ""),
                                    rws_rule_t("ba", "ab")};
-  RWS rws(new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
-            if (y == x) {
-              return false;
-            } else if (y == 'a') {
-              return false;
-            } else if (y == 'A' && x != 'a') {
-              return false;
-            } else if (y == 'b' && x == 'B') {
-              return false;
-            } else {
-              return true;
-            }
-          }),
-          rules);
+  SHORTLEX* ro = new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
+    if (y == x) {
+      return false;
+    } else if (y == 'a') {
+      return false;
+    } else if (y == 'A' && x != 'a') {
+      return false;
+    } else if (y == 'b' && x == 'B') {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  REQUIRE(!(*ro)("aaaaab", "aaaaaa"));
+
+  RWS rws(ro, rules);
   rws.set_report(RWS_REPORT);
 
   REQUIRE(!rws.is_confluent());
