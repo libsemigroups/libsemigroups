@@ -736,7 +736,26 @@ cdef class Bipartition(Element):
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
 
 cdef class BooleanMat(Element):
-    
+    """
+    A class for handles to libsemigroups BooleanMat. 
+
+    A boolean matrix is a matrix with entries either True or False.
+
+    Args: Can pass either of the following
+        args (lists):   The rows of the matrix as lists.
+
+    Raises:
+        TypeError:  If any of the rows are not lists
+
+        ValueError: If the number of lists given does not equal the length of 
+                    every list
+
+    Example:
+        >>> from semigroups import BooleanMat
+        >>> BooleanMat([True, True], [False, True])
+        BooleanMat([True, True], [False, True])
+    """
+
     cdef list _rows
 
     def __init__(self, *args):
@@ -777,6 +796,24 @@ cdef class BooleanMat(Element):
         self._rows.append(row)
 
     def __repr__(self):
+        """
+        Function for printing a string representation of the boolean matrix.
+        
+        Args:
+            None
+
+        Returns:
+            str: 'BooleanMat' then the rows in parenthesis.
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import BooleanMat
+            >>> BooleanMat([True, True], [False, False])
+            BooleanMat([True, True], [False, False])
+        """
+
         self._init_rows()
         return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
 
