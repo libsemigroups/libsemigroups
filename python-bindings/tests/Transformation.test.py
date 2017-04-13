@@ -26,6 +26,17 @@ class TestTransformation(unittest.TestCase):
             Transformation(['a', 'b'])
             Transformation([0.1, 1.0])
 
+    def test_richcmp(self):
+        assert Transformation([1, 2, 2, 0]) == Transformation([1, 2, 2, 0])
+        assert not Transformation([1, 2, 2, 0]) == Transformation([1, 2, 1, 3])
+        assert Transformation([1, 2, 2, 0]) != Transformation([1, 2, 1, 3])
+        assert not Transformation([2, 2, 1]) < Transformation([0, 1, 2])
+        assert Transformation([2, 2, 1]) > Transformation([0, 1, 2])
+        assert Transformation([2, 2, 1]) <= Transformation([2, 2, 2])
+        assert Transformation([2, 2, 2]) <= Transformation([2, 2, 2])
+        assert Transformation([2, 2, 2]) >= Transformation([2, 2, 0])
+        assert Transformation([3, 2, 3, 0]) >= Transformation([3, 2, 0, 1])
+
     def test_mul(self):
         self.assertEqual(Transformation([1, 3, 2, 1]) * Transformation([0, 3, 2, 2]), Transformation([3, 2, 2, 3]))
         self.assertEqual(Transformation([2, 2, 2]) * Transformation([1, 0, 1]), Transformation([1, 1, 1]))
