@@ -37,7 +37,6 @@ from libcpp cimport bool
 cdef class __dummyClass:
     def __init__(self):
         pass
-   
 
 cdef class Element:# Add identity
     """
@@ -195,7 +194,6 @@ cdef class Element:# Add identity
         elif op == 5:
             return not self._handle[0] < other._handle[0]
 
-    
     # TODO: Make this a class method
     cdef new_from_handle(self, cpp.Element* handle):
         """
@@ -390,17 +388,20 @@ cdef class PartialPerm(Element):
             if len(self._domain) != len(self._range):
                 raise ValueError('Domain and range must be same size')
             if len(self._domain) != 0:
-                if not(max(self._domain) < _degree and max(self._range) < _degree):
-                    raise ValueError('The max of the domain and range must be strictly less than the degree')
+                if max(max(self._domain),max(self._range)) >= _degree):
+                    raise ValueError('The max of the domain and range must \
+                    be strictly less than the degree')
 
             n = len(self._domain)
             imglist = [65535] * _degree
 
             for i in range(n):
-                if not (isinstance(self._domain[i], int) and isinstance(self._range[i], int)):
+                if not (isinstance(self._domain[i], int) and \
+                isinstance(self._range[i], int)):
                     raise TypeError('Elements of domain and range must be ints')
                 if self._domain[i] < 0 or self._range[i] < 0:
-                    raise ValueError('Elements of domain and range must be non-negative')
+                    raise ValueError('Elements of domain and range must be \
+                    non-negative')
                 
                 #Ensures range and domain have no repeats
                 if self._range[i] in imglist:
@@ -430,7 +431,7 @@ cdef class PartialPerm(Element):
 
     def __repr__(self):
         """
-        Function for printing a string representation of the partial permutation.
+        Function for printing a string representation of a partial permutation.
         
         Args:
             None
@@ -448,7 +449,8 @@ cdef class PartialPerm(Element):
         """
 
         self._init_dom_ran()
-        return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self.degree())).replace('65535', '-1')
+        return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range,\
+        self.degree())).replace('65535', '-1')
 
     def rank(self):
         """
@@ -550,7 +552,8 @@ cdef class Bipartition(Element):
                 n = max(max(sublist), n)
 
             #Note that this assert ensures all entries are non-zero ints
-            if set().union(*args) != set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
+            if set().union(*args) != \
+            set(range(1, n + 1)).union(set(range(-1, -n - 1, -1))):
                 raise ValueError('Not a valid Biparition')
 
             argsCopy = []
@@ -691,7 +694,8 @@ cdef class Bipartition(Element):
 
         Raises:
             TypeError:  If index is not an int.
-            IndexError: If index does not relate to the index of a block in the partition
+            IndexError: If index does not relate to the index of a block in the
+                        partition
 
         Example:
             >>> from semigroups import Bipartition
@@ -798,7 +802,8 @@ cdef class Semigroup:# Add asserts
         >>> S.size()
         6
     """
-    cdef cpp.Semigroup* _handle      # holds a pointer to the C++ instance which we're wrapping
+    cdef cpp.Semigroup* _handle      
+    # holds a pointer to the C++ instance which we're wrapping
     cdef Element _an_element
 
     def __cinit__(self):
