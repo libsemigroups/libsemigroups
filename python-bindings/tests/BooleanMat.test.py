@@ -56,7 +56,8 @@ class TestPartialPerm(unittest.TestCase):
             BooleanMat([True]) * [True]
             BooleanMat([True, False], [False, True]) * Bipartition([1, 2], [-1], [-2])
 
-
+        with self.assertRaises(ValueError):
+            BooleanMat([False, True, True], [True, True, False], [False, False, False]) * BooleanMat([True, False], [False, True])
 
 if __name__ == '__main__':
     unittest.main()
