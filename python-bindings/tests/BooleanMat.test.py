@@ -77,7 +77,12 @@ class TestPartialPerm(unittest.TestCase):
         A, B = BooleanMat([True, False], [True, True]), BooleanMat([False, False], [False, True])
         del A, B
         assert not 'A' in globals()
-        assert not 'B' in globals()        
+        assert not 'B' in globals()       
+
+    def test_degree(self):
+        self.assertEqual(BooleanMat([True, True], [False, False]).degree(), 2)
+        self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]).degree(), 3)
+        self.assertEqual(BooleanMat([True]).degree(), 1)
 
 if __name__ == '__main__':
     unittest.main()
