@@ -84,5 +84,10 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]).degree(), 3)
         self.assertEqual(BooleanMat([True]).degree(), 1)
 
+    def test_identity(self):
+        self.assertEqual(BooleanMat([True, True], [False, False]).identity(), BooleanMat([True, False], [False, True]))
+        self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]).identity(), BooleanMat([True, False, False], [False, True, False], [False, False, True]))
+        self.assertEqual(BooleanMat([False]).identity(), BooleanMat([True]))
+
 if __name__ == '__main__':
     unittest.main()
