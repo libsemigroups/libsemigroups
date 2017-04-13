@@ -325,7 +325,7 @@ cdef class PartialPerm(Element):
         for x in e2[0]:
             yield x
 
-    def init_dom_ran(self):
+    def _init_dom_ran(self):
         if self._domain == None or self._range == None:
             L = self._generator()
             self._domain, self._range = [], []
@@ -353,7 +353,7 @@ cdef class PartialPerm(Element):
 	        PartialPerm([1, 4, 2], [2, 3, 4], 6)
         """
 
-        self.init_dom_ran()
+        self._init_dom_ran()
         return ("PartialPerm(%s, %s, %s)"%(self._domain, self._range, self.degree())).replace('65535', '-1')
 
     def rank(self):
@@ -397,7 +397,7 @@ cdef class PartialPerm(Element):
             >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).domain()
             [1, 2, 5]
         """
-        self.init_dom_ran()
+        self._init_dom_ran()
         return self._domain
 
     def range(self):
@@ -418,7 +418,7 @@ cdef class PartialPerm(Element):
             >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).range()
             [2, 3, 5]
         """
-        self.init_dom_ran()
+        self._init_dom_ran()
         return self._range
 
 cdef class Bipartition(Element):
