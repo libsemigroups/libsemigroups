@@ -266,6 +266,26 @@ namespace libsemigroups {
     _data = new KBFP(*this);
   }
 
+  Partition<word_t> Congruence::nontrivial_classes() {
+    DATA* data;
+    if (_semigroup == nullptr) {
+      // If this is an fp semigroup congruence, then KBP is the only DATA
+      // subtype which can return a sensible answer.  Forcing KBP is not an
+      // ideal solution; perhaps fp semigroup congruences should be handled
+      // differently in future.
+      data = new KBP(*this);
+      data->run();
+      if (_data == nullptr) {
+        delete_data();
+        _data = data;
+      }
+    } else {
+      data = get_data();
+    }
+    assert(data->is_done());
+    return data->nontrivial_classes();
+  }
+
   void Congruence::init_relations(Semigroup*         semigroup,
                                   std::atomic<bool>& killed) {
     _mtx.lock();
@@ -307,24 +327,19 @@ namespace libsemigroups {
     _mtx.unlock();
   }
 
-  // This is the default method used by a DATA object, there are more
-  // specialised methods for some subclasses of DATA.
+  // This is the default method used by a DATA object, and is used only by TC
+  // and KBFP; the P and KBP subclasses override with their own superior method.
+  // This method requires a Semigroup pointer and therefore does not allow fp
+  // semigroup congruences.
   Partition<word_t> Congruence::DATA::nontrivial_classes() {
     assert(is_done());
+    assert(_cong._semigroup != nullptr);
+
     partition_t* classes = new partition_t();
 
-    if (_cong._semigroup == nullptr) {
-      if (_cong._extra.empty()) {
-        return Partition<word_t>(classes);  // no nontrivial classes
-      }
-      assert(!_cong._relations.empty());
-      // FIXME remove this assertion, this is the wrong place to check this,
-      // since it is inobvious why this should be the case at this point.
-      // Better put this assertion in the constructor, or a more appropriate
-      // place.
+    if (_cong._extra.empty()) {
+      return Partition<word_t>(classes);  // no nontrivial classes
     }
-    // FIXME what is supposed to happen when _cong._semigroup == nullptr and
-    // _cong._extra is not empty?
 
     // Note: we assume classes are numbered contiguously {0 .. n-1}
     partition_t* all_classes = new partition_t();
