@@ -73,5 +73,11 @@ class TestPartialPerm(unittest.TestCase):
             BooleanMat([True, False], [True, True]) ** 0
             BooleanMat([False, True, True], [True, True, False], [False, False, False]) ** -7
 
+    def test_dealloc(self):
+        A, B = BooleanMat([True, False], [True, True]), BooleanMat([False, False], [False, True])
+        del A, B
+        assert not 'A' in globals()
+        assert not 'B' in globals()        
+
 if __name__ == '__main__':
     unittest.main()
