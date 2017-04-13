@@ -33,6 +33,11 @@ class TestPartialPerm(unittest.TestCase):
         assert Bipartition([1, -1, 3], [-3, 2, -2]) >= Bipartition([1, -2], [2, -1])
         assert not Bipartition([1, -1, 3], [-3, 2, -2]) > Bipartition([1, -1], [2, 3, -2], [-3])
 
+        with self.assertRaises(TypeError):
+            PartialPerm([1, 2], [2, 1], 3) == Bipartition([1, -1], [2, -3, -2], [-3])
+            Bipartition([1, -1], [2, -2]) < Transformation([0, 1])
+            Bipartition([1, -1], [2, -2]) != Transformation([0, 1])
+
     def test_mul(self):
         self.assertEqual(Bipartition([1, -1, 2, -2]) * Bipartition([1, -1, 2, -2]), Bipartition([1, 2, -1, -2]))
         self.assertEqual(Bipartition([1, 2], [-1], [-2]) * Bipartition([1, -1], [2, -2]), Bipartition([1, 2], [-1], [-2]))
