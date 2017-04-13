@@ -108,5 +108,10 @@ class TestPartialPerm(unittest.TestCase):
             Bipartition([-1, -2], [2, -3], [1, 3]).isTransverseBlock('a')
             Bipartition([-1, -2], [2, -3], [1, 3]).isTransverseBlock([7, 26])
 
+    def test_identity(self):
+        self.assertEqual(Bipartition([1, 2], [-2, -1]).identity(), Bipartition([1, -1], [2, -2]))
+        self.assertEqual(Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7]).identity(), Bipartition([1, -1], [2, -2], [3, -3], [4, -4], [5, -5], [6, -6], [7, -7]))
+        self.assertEqual(Bipartition([-1, -2], [2, -3], [1, 3]).identity(), Bipartition([1, -1], [2, -2], [3, -3]))
+
 if __name__ == '__main__':
     unittest.main()
