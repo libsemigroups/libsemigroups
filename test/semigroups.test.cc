@@ -2561,7 +2561,9 @@ TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite]") {
   S.set_report(SEMIGROUPS_REPORT);
   really_delete_cont(gens);
 
-  REQUIRE(*(S.factorisation(2)) == word_t({0, 1}));
+  word_t* w = S.factorisation(2);
+  REQUIRE(*w == word_t({0, 1}));
+  delete w;
 }
 
 TEST_CASE("Semigroup 62: performance", "[standard][semigroup][finite]") {
@@ -2591,8 +2593,13 @@ TEST_CASE("Semigroup 63: minimal_factorisation ",
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(*(S.minimal_factorisation(gens[0])) == word_t({0}));
-  REQUIRE(*(S.factorisation(gens[0])) == word_t({0}));
+  word_t* w = S.minimal_factorisation(gens[0]);
+  REQUIRE(*w == word_t({0}));
+  delete w;
+
+  w = S.factorisation(gens[0]);
+  REQUIRE(*w == word_t({0}));
+  delete w;
   really_delete_cont(gens);
 
   Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
