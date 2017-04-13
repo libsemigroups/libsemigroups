@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['zero',['zero',['../classlibsemigroups_1_1_semiring.html#aee566c4bde8a5b344a4bfb5837fdc959',1,'libsemigroups::Semiring::zero()'],['../classlibsemigroups_1_1_integers.html#a69a4dec6764fb54566ca96538064cbc3',1,'libsemigroups::Integers::zero()'],['../classlibsemigroups_1_1_max_plus_semiring.html#aee4adfcb6028376a5254bc737d7f1d79',1,'libsemigroups::MaxPlusSemiring::zero()'],['../classlibsemigroups_1_1_min_plus_semiring.html#a5e93cbbc7549e4a23b367491db6b06c4',1,'libsemigroups::MinPlusSemiring::zero()'],['../classlibsemigroups_1_1_tropical_max_plus_semiring.html#a53b804252b2f806b8c3cf80eeedb5d50',1,'libsemigroups::TropicalMaxPlusSemiring::zero()'],['../classlibsemigroups_1_1_tropical_min_plus_semiring.html#a0aee99e3c460496b8935a398e634c849',1,'libsemigroups::TropicalMinPlusSemiring::zero()'],['../classlibsemigroups_1_1_natural_semiring.html#a207af462afe8dff0e97f1b6e04bf7d9b',1,'libsemigroups::NaturalSemiring::zero()']]]
+];
