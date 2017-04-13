@@ -169,6 +169,7 @@ cdef class Element:# Add identity
 
         Raises:
             TypeError:  If elements are not of the same type.
+            ValueError: If elements have different degree
 
         Examples:
             >>> from semigroups import Transformation, PartialPerm
@@ -179,7 +180,9 @@ cdef class Element:# Add identity
         """
 
         if not isinstance(self, type(other)):
-            raise TypeError('Elements must be same type') 
+            raise TypeError('Elements must be same type')
+        if self._handle.degree() != other._handle.degree():
+            raise ValueError('Element must have same degree')
 
         if op == 0:
             return self._handle[0] < other._handle[0]
