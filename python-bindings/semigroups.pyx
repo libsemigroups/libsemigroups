@@ -360,7 +360,7 @@ cdef class PartialPerm(Element):
 
     def _init_dom_ran(self):
         if self._domain == None or self._range == None:
-            L = self._generator()
+            L = list(self._generator())
             self._domain, self._range = [], []
             for i in range(self.degree()):
                 if L[i] != 65535 and L[i] != -1:
