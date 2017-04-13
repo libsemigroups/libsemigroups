@@ -153,12 +153,18 @@ namespace libsemigroups {
 
     //! Constructs a rewriting system with rules derived from \p relations,
     //! and with the reduction ordering specified by \p order.
+    //!
+    //! The RWS instance constructed here owns the parameter \p order, and
+    //! deletes it in its destructor.
     RWS(RO* order, std::vector<relation_t> const& relations) : RWS(order) {
       add_rules(relations);
     }
 
     //! Constructs a rewriting system with rules derived from \p rules,
-    //! and with the reduction ordering ecified by \p order.
+    //! and with the reduction ordering specified by \p order.
+    //!
+    //! The RWS instance constructed here owns the parameter \p order, and
+    //! deletes it in its destructor.
     RWS(RO* order, std::vector<rws_rule_t> const& rules) : RWS(order) {
       add_rules(rules);
     }
