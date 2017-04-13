@@ -230,6 +230,30 @@ cdef class Element:# Add identity
         """
         return self._handle.degree()
 
+    def identity(self):
+        """
+        Function for finding the mutliplicative identity
+
+        This function finds the multiplicative identity of the same element
+        type and degree as the current element.
+
+        Args:
+            None
+
+        Returns:
+            Element: The identity element of the Element subclass
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([0, 2], [1, 2], 3).identity()
+            PartialPerm([0, 1, 2], [0, 1, 2], 3)
+        """
+        cdef cpp.Element* identity = self._handle.identity()
+        return self.new_from_handle(identity)
+
 cdef class Transformation(Element):
 
 #Python googlestyle docstrings for examples
