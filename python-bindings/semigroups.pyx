@@ -178,7 +178,10 @@ cdef class Element:# Add identity
             >>> PartialPerm([1, 2], [1, 2], 3) == PartialPerm([1, 2], [2, 1], 3)
             False
         """
-    
+
+        if not isinstance(self, type(other)):
+            raise TypeError('Elements must be same type') 
+
         if op == 0:
             return self._handle[0] < other._handle[0]
         elif op == 1:
