@@ -88,7 +88,7 @@ class TestPartialPerm(unittest.TestCase):
 
     def test_dealloc(self):
         t = PartialPerm([0, 1], [1, 0], 2)
-        del ts
+        del t
         with self.assertRaises(NameError):
             t
 
