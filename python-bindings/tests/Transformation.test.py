@@ -74,5 +74,10 @@ class TestTransformation(unittest.TestCase):
         with self.assertRaises(NameError):
             U; V
 
+    def test_identity(self):
+        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]).identity(), Transformation([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(Transformation([2, 2, 2]).identity(), Transformation([0, 1, 2]))
+        self.assertEqual(Transformation([1, 2, 3, 3]).identity(), Transformation([0, 1, 2, 3]))
+
 if __name__ == '__main__':
     unittest.main()
