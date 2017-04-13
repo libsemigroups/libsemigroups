@@ -45,7 +45,7 @@ class TestPartialPerm(unittest.TestCase):
         assert PartialPerm([1, 2, 3], [2, 1, 0], 5) <= PartialPerm([1, 2, 3], [2, 1, 0], 5)
 
         with self.assertRaises(TypeError):
-            PartialPerm([1, 2], [2, 1], 3) == Bipartition([1, -1], [2, -3, -2], [-3])
+            PartialPerm([1, 2], [2, 1], 3) == Bipartition([1, -1], [2, 3, -2], [-3])
             PartialPerm([0, 1], [0, 1], 2) < Transformation([0, 1])
             PartialPerm([0, 1], [0, 1], 2) != Transformation([0, 1])
 

@@ -38,7 +38,7 @@ class TestTransformation(unittest.TestCase):
         assert Transformation([3, 2, 3, 0]) >= Transformation([3, 2, 0, 1])
 
         with self.assertRaises(TypeError):
-            Transformation([2, 2, 0]) == Bipartition([1, -1], [2, -3, -2], [-3])
+            Transformation([2, 2, 0]) == Bipartition([1, -1], [2, 3, -2], [-3])
             Bipartition([1, -1], [2, -2]) < Transformation([0, 1])
             Bipartition([1, -1], [2, -2]) != Transformation([0, 1])
 
