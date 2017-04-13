@@ -43,21 +43,8 @@ cdef class Element:# Add identity
     """
     An abstract base class for handles to libsemigroups elements.
 
-    Any subclass shall implement an ``__init__`` method which
+    Any subclass shall implement an ''__init__'' method which
     initializes _handle.
-
-    .. WARNING::
-
-        For now, the ``__init__`` method should also accept to be
-        called with ``None`` as argument, in which case it *should
-        not* initialize the handle.
-
-        This is used by ``new_from_handle``.
-
-    .. TODO::
-
-        Find a better protocol to create an instance from a class and
-        a handle.
     """
     cdef cpp.Element* _handle
 
@@ -66,16 +53,26 @@ cdef class Element:# Add identity
 
     def __dealloc__(self):
         """
-        Deallocate the handle of ``self``.
+        Deallocate the memory of the element.
 
-        TESTS::
+        Args:
+            None (although if using the usual 'del' format, the element must
+            be given after 'del').
 
-            >>> from semigroups import Semigroup, PythonElement, Transformation
-            >>> x = PythonElement(-1)
-            >>> x = 3
+        Returns:
+            None
 
-            >>> x = Transformation([1,2,0])
-            >>> del x
+        Raises:
+            TypeError:  If any args given.
+
+        Example:
+            >>> from semigroups import Transformation, PartialPerm
+            >>> p = PartialPerm([0, 1, 3], [2, 1, 0], 4)
+            >>> del p
+            >>> p in globals()
+            >>> 'p' in globals()
+            False
+
         """
         if self._handle != NULL:
             self._handle[0].really_delete()
@@ -83,13 +80,25 @@ cdef class Element:# Add identity
 
     def __mul__(Element self, Element other):
         """
-        Return the product of ``self`` and ``other``.
+        Function for computing the product of two elements
 
-        EXAMPLES::
+        Args:
+            other (Element):    The element to be multiplied by. If using the
+                                usual a * b format, then the args will be two
+                                objects of Element class.
 
-            >>> from semigroups import Semigroup, PythonElement, Transformation
-            >>> x = Transformation([2,1,1])
-            >>> y = Transformation([2,1,0])
+        Returns:
+            Element:    The product of the two elements given. This will be the
+                        same type as the two elements.
+
+        Raises:
+            TypeError:  If elements are not the same type
+            ValueError: If elements have different degrees
+
+        Example:
+            >>> from semigroups import Transformation
+            >>> x = Transformation([2, 1, 1])
+            >>> y = Transformation([2, 1, 0])
             >>> x * y
             [0, 1, 1]
             >>> y * x
@@ -104,6 +113,30 @@ cdef class Element:# Add identity
         return self.new_from_handle(product)
 	
     def __pow__(self, power, modulo):#It works, but don't understand why it needs 'modulo' argument aal20
+        """
+        Function for multiplying an element by itself a number of times.
+
+        Args:
+            power (int):    The number of times to multiply the element by
+                            itself.
+
+        Returns:
+            Element:    The product of the elements when multiplied by istelf
+                        power times.
+
+        Raises:
+            TypeError:  If power is not an 'int'.
+            ValueError: If power is not positive.
+
+        Example:
+            >>> from semigroups import Transformation
+            >>> x = Transformation([2, 1, 1])
+            >>> y = Transformation([2, 1, 0])
+            >>> x * y
+            [0, 1, 1]
+            >>> y * x
+            [1, 1, 2]
+        """
         if not(isinstance(power, int)):
             raise TypeError('Can only power by int')
         if power < 0:
