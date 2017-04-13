@@ -120,6 +120,8 @@ cdef class Element:# Add identity
             power (int):    The number of times to multiply the element by
                             itself.
 
+            modulo:         This argument is not used.
+
         Returns:
             Element:    The product of the elements when multiplied by istelf
                         power times.
@@ -129,13 +131,9 @@ cdef class Element:# Add identity
             ValueError: If power is not positive.
 
         Example:
-            >>> from semigroups import Transformation
-            >>> x = Transformation([2, 1, 1])
-            >>> y = Transformation([2, 1, 0])
-            >>> x * y
-            [0, 1, 1]
-            >>> y * x
-            [1, 1, 2]
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1, 2, 4], [0, 2, 3], 5) ** 3
+            PartialPerm([2], [2], 5)
         """
         if not(isinstance(power, int)):
             raise TypeError('Can only power by int')
@@ -152,18 +150,35 @@ cdef class Element:# Add identity
 	#generates answer using element to the power of powers of 2 (binary tells you which ones to multiply)
         for i in range(len(binaryString)):
             if binaryString[i] == "1":
-                 output=output.__mul__(powerOf2List[i])
+                 output = output.__mul__(powerOf2List[i])
         return output
-
-        '''
-        >>> from semigroups import Semigroup, PythonElement, Transformation
-        >>> y=Transformation([2,1,0])
-        >>> y**2
-        Transformation([0, 1, 2])
-        >>> y*y
-        Transformation([0, 1, 2])'''
     
     def __richcmp__(Element self, Element other, int op):
+        """
+        Function for comparing elements using the total order defined on the
+        elements of a semigroup.
+
+        Args:
+            other (Element):    The element to be compared with.
+
+            op (int):           The type of comparison used. Note that in the
+                                usual format a < b, a == b, etc., this will be
+                                calculated automatically.
+
+        Returns:
+            bool:    Whether or not the given comparison is true.
+
+        Raises:
+            TypeError:  If elements are not of the same type.
+
+        Examples:
+            >>> from semigroups import Transformation, PartialPerm
+            >>> Transformation([1, 2, 2, 3]) < Transformation([1, 3, 2, 2])
+            True
+            >>> PartialPerm([1, 2], [1, 2], 3) == PartialPerm([1, 2], [2, 1], 3)
+            False
+        """
+    
         if op == 0:
             return self._handle[0] < other._handle[0]
         elif op == 1:
@@ -189,6 +204,27 @@ cdef class Element:# Add identity
         return result
 
     def degree(self):
+        """
+        Function for finding the degree of an element.
+
+        This method returns an integer which represents the size of an element,
+        and is used to determine whether or not two elements are compatible for
+        multiplication.
+
+        Args:
+            None
+
+        Returns:
+            int: The degree of the partial permutation
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import PartialPerm
+            >>> PartialPerm([1, 2, 5], [2, 3, 5], 6).degree()
+            6
+        """
         return self._handle.degree()
 
 cdef class Transformation(Element):
