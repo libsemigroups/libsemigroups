@@ -89,5 +89,10 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]).identity(), BooleanMat([True, False, False], [False, True, False], [False, False, True]))
         self.assertEqual(BooleanMat([False]).identity(), BooleanMat([True]))
 
+    def test_rows(self):
+        self.assertEqual(BooleanMat([True, True], [False, False]).rows(), [[True, True], [False, False]])
+        self.assertEqual(BooleanMat([False, True, True], [True, True, False], [False, False, False]).rows(), [[False, True, True], [True, True, False], [False, False, False]])
+        self.assertEqual(BooleanMat([False]).rows(), [[False]])
+
 if __name__ == '__main__':
     unittest.main()
