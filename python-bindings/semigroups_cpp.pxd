@@ -50,6 +50,12 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         vector[bool].iterator end()
     cdef cppclass PBR(Element):
         PBR(vector[vector[uint32_t]]) except +
+        vector[vector[uint32_t]]  _vector
+        vector[vector[uint32_t]].iterator begin()
+        vector[vector[uint32_t]].iterator end()
+        vector[uint32_t] _vector
+        vector[uint32_t].iterator begin()
+        vector[uint32_t].iterator end()
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +

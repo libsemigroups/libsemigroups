@@ -843,16 +843,61 @@ cdef class BooleanMat(Element):#Add 0s, 1s
 
 cdef class PBR(Element):
 
-    def __init__(self, List):
+    cdef list _negativeAdjacencies, _positiveAdjacencies
 
-        if List[0] is not __dummyClass:
-            self._handle = new cpp.PBR(List)
+    def __init__(self, *args):
+
+        if args[0] is not __dummyClass:
+            
+            if len(args) != 2:
+                raise TypeError
+
+            if not (isinstance(args[0], list) and isinstance(args[1], list)):
+                raise TypeError
+
+            n = len(args[0])
+
+            if n != len(args[1]):
+                raise ValueError
+
+            for sublist in args[0] + args[1]:
+                if max(abs(min(sublist)), max(sublist)) > n:
+                    raise ValueError
+
+            output = [0] * 2 * n
+            self._positiveAdjacencies = []
+            self._negativeAdjacencies = []
+
+            for i,sublist in enumerate(args[1]):
+                self._positiveAdjacencies.append(sublist[:])
+                tempSublist = sublist[:]
+                for j,entry in enumerate(sublist):
+                    if entry < 0:
+                        tempSublist[j] = n - entry - 1
+                    else:
+                        tempSublist[j] = entry - 1
+                output[i - 1] = tempSublist
+
+            for i,sublist in enumerate(args[0]):
+                self._negativeAdjacencies.append(sublist[:])
+                tempSublist = sublist[:]
+                for j,entry in enumerate(sublist):
+                    if entry < 0:
+                        tempSublist[j] = n - entry - 1
+                    else:
+                        tempSublist[j] = entry - 1
+                output[i + n - 1] = tempSublist
+
+            self._handle = new cpp.PBR(output)
 
 #    def _generator(self):
 #        cdef cpp.Element* e = self._handle
-#        e2 = <cpp.BooleanMat *>e
+#        e2 = <cpp.PBR *>e
 #        for x in e2[0]:
 #            yield x
+
+    def __repr__(self):
+        return "PBR(%s, %s)"%(self._negativeAdjacencies.__repr__(), self._positiveAdjacencies.__repr__())
     
 
 cdef class PythonElement(Element):
