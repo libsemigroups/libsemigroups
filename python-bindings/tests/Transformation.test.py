@@ -43,9 +43,14 @@ class TestTransformation(unittest.TestCase):
             Bipartition([1, -1], [2, -2]) != Transformation([0, 1])
 
     def test_mul(self):
-        self.assertEqual(Transformation([1, 3, 2, 1]) * Transformation([0, 3, 2, 2]), Transformation([3, 2, 2, 3]))
-        self.assertEqual(Transformation([2, 2, 2]) * Transformation([1, 0, 1]), Transformation([1, 1, 1]))
-        self.assertEqual(Transformation([0, 1, 2, 3, 4, 5]) * Transformation([3, 2, 2, 3, 1, 4]), Transformation([3, 2, 2, 3, 1, 4]))
+        self.assertEqual(Transformation([1, 3, 2, 1]) * \
+                         Transformation([0, 3, 2, 2]), 
+                         Transformation([3, 2, 2, 3]))
+        self.assertEqual(Transformation([2, 2, 2]) * Transformation([1, 0, 1]),
+                         Transformation([1, 1, 1]))
+        self.assertEqual(Transformation([0, 1, 2, 3, 4, 5]) * \
+                         Transformation([3, 2, 2, 3, 1, 4]), 
+                         Transformation([3, 2, 2, 3, 1, 4]))
 
         with self.assertRaises(TypeError):
             Transformation([0, 2, 1]) * PartialPerm([0, 1], [1, 2], 3)
@@ -56,9 +61,12 @@ class TestTransformation(unittest.TestCase):
             Transformation([0, 2, 1]) * Transformation([1, 2, 3, 0])
 
     def test_pow(self):
-        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]) ** 6, Transformation([5, 1, 2, 3, 9, 0, 2, 3, 9, 8]))
-        self.assertEqual(Transformation([2, 2, 2]) ** 30, Transformation([2, 2, 2]))
-        self.assertEqual(Transformation([1, 2, 3, 3]) ** 8, Transformation([3, 3, 3, 3]))
+        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]) ** 6,
+                         Transformation([5, 1, 2, 3, 9, 0, 2, 3, 9, 8]))
+        self.assertEqual(Transformation([2, 2, 2]) ** 30, 
+                         Transformation([2, 2, 2]))
+        self.assertEqual(Transformation([1, 2, 3, 3]) ** 8, 
+                         Transformation([3, 3, 3, 3]))
  
         with self.assertRaises(ValueError):
             Transformation([1, 2, 3, 0]) ** -1
@@ -75,12 +83,17 @@ class TestTransformation(unittest.TestCase):
             U; V
 
     def test_identity(self):
-        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]).identity(), Transformation([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-        self.assertEqual(Transformation([2, 2, 2]).identity(), Transformation([0, 1, 2]))
-        self.assertEqual(Transformation([1, 2, 3, 3]).identity(), Transformation([0, 1, 2, 3]))
+        self.assertEqual(Transformation([9, 3, 1, 2, 0, 
+                                         8, 1, 2, 0, 5]).identity(),
+                         Transformation([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(Transformation([2, 2, 2]).identity(), 
+                         Transformation([0, 1, 2]))
+        self.assertEqual(Transformation([1, 2, 3, 3]).identity(), 
+                         Transformation([0, 1, 2, 3]))
 
     def test_degree(self):
-        self.assertEqual(Transformation([9, 3, 1, 2, 0, 8, 1, 2, 0, 5]).degree(), 10)
+        self.assertEqual(Transformation([9, 3, 1, 2, 0, 
+                                         8, 1, 2, 0, 5]).degree(), 10)
         self.assertEqual(Transformation([2, 2, 2]).degree(), 3)
         self.assertEqual(Transformation([1, 2, 3, 3]).degree(), 4)
 
