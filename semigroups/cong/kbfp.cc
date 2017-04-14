@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,15 @@ namespace libsemigroups {
   }
 
   void Congruence::KBFP::run() {
-    // Initialise the rewriting system
+    while (!_killed && !is_done()) {
+      run(Congruence::LIMIT_MAX);
+    }
+  }
+
+  void Congruence::KBFP::init() {
+    if (_semigroup != nullptr) {
+      return;
+    }
     _cong.init_relations(_cong._semigroup, _killed);
     _rws->add_rules(_cong.relations());
     _rws->add_rules(_cong.extra());
@@ -44,20 +52,31 @@ namespace libsemigroups {
     assert(_cong._semigroup == nullptr || !_cong.extra().empty());
 
     REPORT("running Knuth-Bendix . . .")
-
     _rws->knuth_bendix(_killed);
+    if (_killed) {
+      REPORT("killed");
+      return;
+    }
+
+    assert(_rws->is_confluent());
+    std::vector<Element*> gens;
+    for (size_t i = 0; i < _cong._nrgens; i++) {
+      gens.push_back(new RWSE(*_rws, i));
+    }
+    _semigroup = new Semigroup(gens);
+    really_delete_cont(gens);
+  }
+
+  void Congruence::KBFP::run(size_t steps) {
+    assert(!is_done());
+
+    init();
+
     if (!_killed) {
-      assert(_rws->is_confluent());
-      std::vector<Element*> gens;
-      for (size_t i = 0; i < _cong._nrgens; i++) {
-        gens.push_back(new RWSE(*_rws, i));
-      }
-      _semigroup = new Semigroup(gens);
-      really_delete_cont(gens);
-
       REPORT("running Froidure-Pin . . .")
-
-      _semigroup->enumerate(_killed, Semigroup::LIMIT_MAX);
+      // The default batch_size is too large and can take a long time
+      _semigroup->set_batch_size(steps);
+      _semigroup->enumerate(_killed, _semigroup->current_size() + 1);
     }
     if (_killed) {
       REPORT("killed")
@@ -66,9 +85,6 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::KBFP::word_to_class_index(word_t const& word) {
-    if (!is_done()) {
-      run();
-    }
     assert(is_done());  // so that _semigroup != nullptr
 
     Element* x   = new RWSE(*_rws, word);
@@ -79,49 +95,27 @@ namespace libsemigroups {
     return pos;
   }
 
-  Congruence::partition_t Congruence::KBFP::nontrivial_classes() {
-    assert(is_done());
-    partition_t classes;
-
-    if (_cong._semigroup == nullptr) {
-      // Assert appropriate for JDM's long comment in cong.cc
-      assert(_cong._relations.empty() || _cong._extra.empty());
-      if (_cong._extra.empty()) {
-        return classes;  // trivial congruence - no nontrivial classes
-      }
-      // nontrivial congruence on free semigroup - answer is infinite
-      assert(!_cong._relations.empty());  // TODO: fail gracefully?
+  Congruence::DATA::result_t
+  Congruence::KBFP::current_equals(word_t const& w1, word_t const& w2) {
+    init();
+    if (is_killed()) {
+      // This cannot be reliably tested: see TC::current_equals for more info
+      return result_t::UNKNOWN;
     }
-
-    word_t word;
-    // Note: we assume classes are numbered contiguously {0 .. n-1}
-    std::vector<std::vector<size_t>> pos_classes(nr_classes(),
-                                                 std::vector<size_t>());
-    // Look up the class number of each element of the parent semigroup
-    for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
-      _cong._semigroup->factorisation(word, pos);
-      assert(word_to_class_index(word) < nr_classes());
-      pos_classes[word_to_class_index(word)].push_back(pos);
-    }
-
-    // Look up these element positions and store the Element pointers
-    size_t next_nontrivial_class = 0;
-    assert(pos_classes.size() == nr_classes());
-    for (size_t class_nr = 0; class_nr < pos_classes.size(); class_nr++) {
-      // Use only the classes with at least 2 elements
-      if (pos_classes[class_nr].size() > 1) {
-        classes.push_back(std::vector<Element const*>());
-        for (size_t pos : pos_classes[class_nr]) {
-          assert(pos < _cong._semigroup->size());
-          // Push each element into classes
-          classes[next_nontrivial_class].push_back(
-              _cong._semigroup->at(pos)->really_copy());
-        }
-        next_nontrivial_class++;
-      }
-    }
-
-    return classes;
+    assert(_rws->is_confluent());
+    return _rws->rewrite(RWS::word_to_rws_word(w1))
+                   == _rws->rewrite(RWS::word_to_rws_word(w2))
+               ? result_t::TRUE
+               : result_t::FALSE;
   }
 
+  Congruence::DATA::result_t
+  Congruence::KBFP::current_less_than(word_t const& w1, word_t const& w2) {
+    init();
+    assert(_rws->is_confluent());
+    return _rws->test_less_than(RWS::word_to_rws_word(w1),
+                                RWS::word_to_rws_word(w2))
+               ? result_t::TRUE
+               : result_t::FALSE;
+  }
 }  // namespace libsemigroups

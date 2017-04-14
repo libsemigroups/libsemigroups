@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 Michael Torpey
 //
 // This program is free software: you can redistribute it and/or modify
@@ -36,15 +36,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-}
-
 TEST_CASE(
     "TC 01: Small fp semigroup",
     "[quick][congruence][quick][congruence][tc][noprefill][fpsemigroup]") {
@@ -62,11 +53,12 @@ TEST_CASE(
   REQUIRE(cong->nr_classes() == 5);
   REQUIRE(cong->is_done());
 
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({1}));
 
   delete cong;
 }
@@ -111,12 +103,14 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
   Congruence* cong = new Congruence("left", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) == 2);
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({1})
+          != cong->word_to_class_index({0, 0, 0, 0}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({0, 0, 0, 0}));
   delete cong;
 }
 
@@ -130,17 +124,18 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1}) == 5);
-  REQUIRE(cong->word_to_class_index({0, 0, 0}) == 1);
-  REQUIRE(cong->word_to_class_index({1}) == 3);
+  REQUIRE(cong->word_to_class_index({0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
+          == cong->word_to_class_index({0, 0, 0, 0, 1}));
+  REQUIRE(cong->word_to_class_index({0, 0, 0})
+          != cong->word_to_class_index({1}));
   delete cong;
 
   cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
-  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) == 2);
+  REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) < cong->nr_classes());
   delete cong;
 }
 
@@ -179,10 +174,10 @@ TEST_CASE("TC 06: transformation semigroup size 88",
 
   REQUIRE(cong.word_to_class_index(w1) == cong.word_to_class_index(w2));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 68);
-  really_delete_partition(nontrivial_classes);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 68);
+  delete ntc;
 
   really_delete_cont(vec);
 }
@@ -211,10 +206,10 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 20);
-  really_delete_partition(nontrivial_classes);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE(ntc->at(0)->size() == 20);
+  delete ntc;
 
   really_delete_cont(vec);
 }
@@ -257,14 +252,26 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 4);
-  REQUIRE(nontrivial_classes[0].size() == 3);
-  REQUIRE(nontrivial_classes[1].size() == 5);
-  REQUIRE(nontrivial_classes[2].size() == 5);
-  REQUIRE(nontrivial_classes[3].size() == 7);
-  really_delete_partition(nontrivial_classes);
-
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 4);
+  std::vector<size_t> sizes({0, 0, 0});
+  for (size_t i = 0; i < ntc->size(); i++) {
+    switch (ntc->at(i)->size()) {
+      case 3:
+        sizes[0]++;
+        break;
+      case 5:
+        sizes[1]++;
+        break;
+      case 7:
+        sizes[2]++;
+        break;
+      default:
+        REQUIRE(false);
+    }
+  }
+  REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
+  delete ntc;
   really_delete_cont(vec);
 }
 
@@ -530,4 +537,74 @@ TEST_CASE("TC 14: finite fp-semigroup, size 16",
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({6}));
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
+}
+
+TEST_CASE("TC 15: test prefilling of the table manually",
+          "[quick][tc][finite]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
+         new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
+  Semigroup S = Semigroup(gens);
+  S.set_report(TC_REPORT);
+  really_delete_cont(gens);
+
+  // Copy the right Cayley graph of S for prefilling
+  cayley_graph_t right(*S.right_cayley_graph());
+
+  // These are defining relations for S
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 0, 0}, {1, 0}),
+         relation_t({1, 0, 1, 1, 1}, {1, 0}),
+         relation_t({1, 1, 1, 1, 1}, {1, 1}),
+         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+
+  Congruence cong("twosided", 2, rels, std::vector<relation_t>());
+  cong.set_report(TC_REPORT);
+  cong.set_prefill(right);
+  REQUIRE(cong.nr_classes() == S.size() - 1);
+  // This is not really a valid way of prefilling, since there is no "identity"
+  // coset at the start of the table. This is why there is a - 1 in the REQUIRE
+  // above. Anyway, this tests the relevant parts of the code.
+}
+
+TEST_CASE("TC 16: test packing phase", "[quick][tc][finite][TC16]") {
+  std::vector<relation_t> rels
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 0, 0}, {1, 0}),
+         relation_t({1, 0, 1, 1, 1}, {1, 0}),
+         relation_t({1, 1, 1, 1, 1}, {1, 1}),
+         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+
+  Congruence cong1("twosided", 2, rels, std::vector<relation_t>());
+  cong1.set_report(TC_REPORT);
+  cong1.force_tc();
+  cong1.set_pack(10);
+  cong1.set_report_interval(10);
+  REQUIRE(cong1.nr_classes() == 78);
+
+  Congruence cong2("left", 2, rels, std::vector<relation_t>());
+  cong2.set_report(TC_REPORT);
+  cong2.force_tc();
+  cong2.set_pack(10);
+  cong2.set_report_interval(10);
+  REQUIRE(cong2.nr_classes() == 78);
 }

@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 Michael Torpey
 //
 // This program is free software: you can redistribute it and/or modify
@@ -29,10 +29,12 @@
 
 #include <utility>
 
+#include "../util/uf.h"
+
 namespace libsemigroups {
 
   Congruence::P::P(Congruence& cong)
-      : DATA(cong, 40000),
+      : DATA(cong, 2000, 40000),
         _class_lookup(),
         _done(false),
         _found_pairs(new std::unordered_set<p_pair_const_t, PHash, PEqual>()),
@@ -40,7 +42,7 @@ namespace libsemigroups {
         _map(),
         _map_next(0),
         _next_class(0),
-        _pairs_to_mult(new std::stack<p_pair_const_t>()),
+        _pairs_to_mult(new std::queue<p_pair_const_t>()),
         _reverse_map(),
         _tmp1(nullptr),
         _tmp2(nullptr) {
@@ -69,11 +71,27 @@ namespace libsemigroups {
     }
   }
 
+  void Congruence::P::run() {
+    run(_killed);
+  }
+
   void Congruence::P::run(std::atomic<bool>& killed) {
+    while (!killed && !is_done()) {
+      run(Congruence::LIMIT_MAX, killed);
+    }
+  }
+
+  // This cannot currently be tested
+  void Congruence::P::run(size_t steps) {
+    run(steps, _killed);
+  }
+
+  void Congruence::P::run(size_t steps, std::atomic<bool>& killed) {
+    REPORT("number of steps = " << steps);
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
     while (!_pairs_to_mult->empty()) {
       // Get the next pair
-      p_pair_const_t current_pair = _pairs_to_mult->top();
+      p_pair_const_t current_pair = _pairs_to_mult->front();
 
       _pairs_to_mult->pop();
 
@@ -109,8 +127,12 @@ namespace libsemigroups {
           killed = true;
           return;
         }
-      } else if (killed) {
+      }
+      if (killed) {
         REPORT("killed");
+        return;
+      }
+      if (--steps == 0) {
         return;
       }
     }
@@ -247,14 +269,36 @@ namespace libsemigroups {
     return _class_lookup[ind_x];
   }
 
-  Congruence::partition_t Congruence::P::nontrivial_classes() {
+  Congruence::DATA::result_t Congruence::P::current_equals(word_t const& w1,
+                                                           word_t const& w2) {
+    if (is_done()) {
+      return word_to_class_index(w1) == word_to_class_index(w2)
+                 ? result_t::TRUE
+                 : result_t::FALSE;
+    }
+    Element*  x     = _cong._semigroup->word_to_element(w1);
+    Element*  y     = _cong._semigroup->word_to_element(w2);
+    p_index_t ind_x = get_index(x);
+    p_index_t ind_y = get_index(y);
+    x->really_delete();
+    y->really_delete();
+    delete x;
+    delete y;
+    return _lookup.find(ind_x) == _lookup.find(ind_y) ? result_t::TRUE
+                                                      : result_t::UNKNOWN;
+  }
+
+  Partition<word_t>* Congruence::P::nontrivial_classes() {
     assert(is_done());
     assert(_reverse_map.size() >= _nr_nontrivial_elms);
     assert(_class_lookup.size() >= _nr_nontrivial_elms);
 
-    partition_t classes(_nr_nontrivial_classes, class_t());
+    Partition<word_t>* classes = new Partition<word_t>(_nr_nontrivial_classes);
+
     for (p_index_t ind = 0; ind < _nr_nontrivial_elms; ind++) {
-      classes[_class_lookup[ind]].push_back(_reverse_map[ind]->really_copy());
+      Element* elm  = const_cast<Element*>(_reverse_map[ind]);
+      word_t*  word = _cong._semigroup->factorisation(elm);
+      (*classes)[_class_lookup[ind]]->push_back(word);
     }
     return classes;
   }

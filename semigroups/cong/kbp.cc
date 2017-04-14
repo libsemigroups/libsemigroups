@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -29,19 +29,18 @@
 
 namespace libsemigroups {
 
-  template <typename T> static inline void really_delete_cont(T cont) {
-    for (Element* x : cont) {
-      x->really_delete();
-      delete x;
+  void Congruence::KBP::init() {
+    if (_semigroup != nullptr) {
+      return;
     }
-  }
+    assert(_P_cong == nullptr);
 
-  void Congruence::KBP::run() {
     // Initialise the rewriting system
     _rws->add_rules(_cong.relations());
     REPORT("running Knuth-Bendix . . .");
     _rws->knuth_bendix(_killed);
 
+    // Setup the P cong
     if (!_killed) {
       assert(_rws->is_confluent());
       std::vector<Element*> gens;
@@ -54,12 +53,22 @@ namespace libsemigroups {
       _P_cong = new Congruence(_cong._type, _semigroup, _cong._extra);
       _P_cong->set_relations(_cong.relations());
       _P_cong->force_p();
+    }
+  }
 
-      // only need _semigroup here to know the generators, and how to hash
-      // things etc
+  void Congruence::KBP::run() {
+    while (!_killed && !is_done()) {
+      run(Congruence::LIMIT_MAX);
+    }
+  }
+
+  void Congruence::KBP::run(size_t steps) {
+    init();
+    if (!_killed) {
       REPORT("running P . . .")
-      P* p = static_cast<P*>(_P_cong->get_data());
-      p->run(_killed);
+      P* p = static_cast<P*>(_P_cong->cget_data());
+      assert(p != nullptr);
+      p->run(steps, _killed);
     }
     if (_killed) {
       REPORT("killed")
@@ -72,9 +81,19 @@ namespace libsemigroups {
     return _P_cong->word_to_class_index(word);
   }
 
-  Congruence::partition_t Congruence::KBP::nontrivial_classes() {
+  Congruence::DATA::result_t Congruence::KBP::current_equals(word_t const& w1,
+                                                             word_t const& w2) {
+    init();
+    if (is_killed()) {
+      // This cannot be reliably tested: see TC::current_equals for more info
+      return result_t::UNKNOWN;
+    }
+    assert(_P_cong != nullptr);
+    return _P_cong->cget_data()->current_equals(w1, w2);
+  }
+
+  Partition<word_t>* Congruence::KBP::nontrivial_classes() {
     assert(is_done());
-    // TODO: should these classes be processed in some way?
     return _P_cong->nontrivial_classes();
   }
 

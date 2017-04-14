@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 Michael Torpey
 //
 // This program is free software: you can redistribute it and/or modify
@@ -33,15 +33,6 @@ template <typename T> static inline void really_delete_cont(T cont) {
   for (Element* x : cont) {
     x->really_delete();
     delete x;
-  }
-}
-
-static inline void really_delete_partition(Congruence::partition_t part) {
-  for (auto& cont : part) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
   }
 }
 
@@ -124,10 +115,10 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
 
-  Congruence::partition_t nontrivial_classes = cong.nontrivial_classes();
-  REQUIRE(nontrivial_classes.size() == 1);
-  REQUIRE(nontrivial_classes[0].size() == 68);
-  really_delete_partition(nontrivial_classes);
+  Partition<word_t>* ntc = cong.nontrivial_classes();
+  REQUIRE(ntc->size() == 1);
+  REQUIRE((*ntc)[0]->size() == 68);
+  delete ntc;
 
   t1->really_delete();
   t2->really_delete();

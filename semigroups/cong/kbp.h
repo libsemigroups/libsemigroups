@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,10 @@ namespace libsemigroups {
   class Congruence::KBP : public Congruence::DATA {
    public:
     explicit KBP(Congruence& cong)
-        : DATA(cong), _rws(new RWS()), _semigroup(nullptr), _P_cong(nullptr) {}
+        : DATA(cong, 200),
+          _rws(new RWS()),
+          _semigroup(nullptr),
+          _P_cong(nullptr) {}
 
     ~KBP() {
       delete _rws;
@@ -44,6 +47,7 @@ namespace libsemigroups {
     }
 
     void run() final;
+    void run(size_t steps) final;
 
     bool is_done() const final {
       return (_semigroup != nullptr) && (_P_cong != nullptr)
@@ -56,14 +60,12 @@ namespace libsemigroups {
     }
 
     class_index_t word_to_class_index(word_t const& word) final;
-
-    partition_t nontrivial_classes() final;
-
-    void compress() override {
-      _rws->compress();
-    }
+    result_t current_equals(word_t const& w1, word_t const& w2) final;
+    Partition<word_t>* nontrivial_classes() final;
 
    private:
+    void init();
+
     RWS*        _rws;
     Semigroup*  _semigroup;
     Congruence* _P_cong;

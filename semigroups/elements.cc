@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 namespace libsemigroups {
 
-  size_t const Element::UNDEFINED = -1;
+  size_t const Element::UNDEFINED = std::numeric_limits<size_t>::max();
 
   // BooleanMat
 
@@ -99,7 +99,8 @@ namespace libsemigroups {
 
   // Bipartition
 
-  u_int32_t const Bipartition::UNDEFINED = -1;
+  u_int32_t const Bipartition::UNDEFINED
+      = std::numeric_limits<u_int32_t>::max();
   std::vector<std::vector<u_int32_t>>
       Bipartition::_fuse(std::thread::hardware_concurrency());
   std::vector<std::vector<u_int32_t>>
@@ -237,10 +238,10 @@ namespace libsemigroups {
       if (degree() == 0) {
         _nr_left_blocks = 0;
       } else {
-        _nr_left_blocks =
-            *std::max_element(_vector->begin(),
-                              _vector->begin() + (_vector->size() / 2))
-            + 1;
+        _nr_left_blocks
+            = *std::max_element(_vector->begin(),
+                                _vector->begin() + (_vector->size() / 2))
+              + 1;
       }
     }
     return _nr_left_blocks;
@@ -304,8 +305,8 @@ namespace libsemigroups {
     std::vector<bool>*      blocks_lookup = new std::vector<bool>();
 
     // must reindex the blocks
-    std::vector<u_int32_t>& lookup =
-        _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+    std::vector<u_int32_t>& lookup
+        = _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
 
     lookup.clear();
     lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
@@ -383,8 +384,8 @@ namespace libsemigroups {
 
   Element* MatrixOverSemiring::really_copy(size_t increase_degree_by) const {
     (void) increase_degree_by;
-    MatrixOverSemiring* copy =
-        static_cast<MatrixOverSemiring*>(ElementWithVectorData::really_copy(0));
+    MatrixOverSemiring* copy = static_cast<MatrixOverSemiring*>(
+        ElementWithVectorData::really_copy(0));
     assert(copy->_semiring == nullptr);
     copy->_semiring = _semiring;
     return copy;

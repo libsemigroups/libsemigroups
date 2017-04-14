@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -218,7 +218,10 @@ namespace libsemigroups {
       if (it != _map.end()) {
         return (*it).second;
       } else {
-        assert(_next_tid <= std::thread::hardware_concurrency());
+        // Don't check the assert below because on a single thread machine
+        // (such as those used by appveyor), for an fp-semigroup more than 1
+        // thread will be used, and this assertion will fail.
+        // assert(_next_tid <= std::thread::hardware_concurrency());
         _map.emplace(tid, _next_tid++);
         return _next_tid - 1;
       }

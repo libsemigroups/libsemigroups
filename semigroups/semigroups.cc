@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -17,14 +17,17 @@
 //
 
 #include "semigroups.h"
+#include "rwse.h"
 
 namespace libsemigroups {
 
   Reporter glob_reporter;
 
   // Static data members
-  Semigroup::pos_t Semigroup::UNDEFINED = -1;
-  Semigroup::pos_t Semigroup::LIMIT_MAX = -1;
+  Semigroup::pos_t const Semigroup::UNDEFINED
+      = std::numeric_limits<size_t>::max();
+  Semigroup::pos_t const Semigroup::LIMIT_MAX
+      = std::numeric_limits<size_t>::max();
 
   Semigroup::Semigroup(std::vector<Element*> const* gens)
       : _batch_size(8192),
@@ -35,7 +38,7 @@ namespace libsemigroups {
         _first(),
         _found_one(false),
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(),
+        _id(),
         _idempotents(),
         _idempotents_found(false),
         _idempotents_start_pos(0),
@@ -44,12 +47,13 @@ namespace libsemigroups {
         _left(new cayley_graph_t(gens->size())),
         _length(),
         _lenindex(),
+        _letter_to_pos(),
         _map(),
         _max_threads(std::thread::hardware_concurrency()),
         _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
-        _nr_idempotents(0),
+        _nridempotents(0),
         _nrrules(0),
         _pos(0),
         _pos_one(0),
@@ -63,6 +67,8 @@ namespace libsemigroups {
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
     assert(_nrgens != 0);
+
+    reserve(_nrgens);
 
     _degree = (*gens)[0]->degree();
 
@@ -92,18 +98,17 @@ namespace libsemigroups {
         // _gens
         _first.push_back(i);
         _final.push_back(i);
+        _index.push_back(_nr);
         _letter_to_pos.push_back(_nr);
         _length.push_back(1);
         _map.insert(std::make_pair(_elements->back(), _nr));
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
-        _index.push_back(_nr);
         _nr++;
       }
     }
     expand(_nr);
     _lenindex.push_back(_index.size());
-    _map.reserve(_batch_size);
   }
 
   Semigroup::Semigroup(std::vector<Element*> const& gens) : Semigroup(&gens) {}
@@ -119,7 +124,6 @@ namespace libsemigroups {
         _first(copy._first),
         _found_one(copy._found_one),
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(copy._letter_to_pos),
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
@@ -129,11 +133,12 @@ namespace libsemigroups {
         _left(new cayley_graph_t(*copy._left)),
         _length(copy._length),
         _lenindex(copy._lenindex),
+        _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nr_idempotents(copy._nr_idempotents),
+        _nridempotents(copy._nridempotents),
         _nrrules(copy._nrrules),
         _pos(copy._pos),
         _pos_one(copy._pos_one),
@@ -171,17 +176,17 @@ namespace libsemigroups {
         _found_one(copy._found_one),  // copy in case degree doesn't change in
                                       // add_generators
         _gens(new std::vector<Element*>()),
-        _letter_to_pos(copy._letter_to_pos),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
         _left(new cayley_graph_t(*copy._left)),
+        _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nr_idempotents(copy._nr_idempotents),
+        _nridempotents(copy._nridempotents),
         _nrrules(0),
         _pos(copy._pos),
         _pos_one(copy._pos_one),  // copy in case degree doesn't change in
@@ -277,6 +282,25 @@ namespace libsemigroups {
     delete _elements;
   }
 
+  void Semigroup::reserve(size_t n) {
+    _elements->reserve(n);
+    _final.reserve(n);
+    _first.reserve(n);
+    _gens->reserve(n);
+    _index.reserve(n);
+    _length.reserve(n);
+    _letter_to_pos.reserve(n);
+    _map.reserve(n);
+    _prefix.reserve(n);
+    _suffix.reserve(n);
+
+    // TODO the analogue of the below using RecVec::reserve, which currently
+    // does not exist
+    // if (n > _right->nr_rows()) {
+    //  expand(n - _right->nr_rows());
+    // }
+  }
+
   // w is a word in the generators (i.e. a vector of letter_t's)
   Semigroup::pos_t Semigroup::word_to_pos(word_t const& w) const {
     assert(w.size() > 0);
@@ -307,7 +331,6 @@ namespace libsemigroups {
   }
 
   // Product by tracing in the left or right Cayley graph
-
   Semigroup::pos_t Semigroup::product_by_reduction(pos_t i, pos_t j) const {
     assert(i < _nr && j < _nr);
     if (length_const(i) <= length_const(j)) {
@@ -341,11 +364,11 @@ namespace libsemigroups {
 
   // Get the number of idempotents
 
-  size_t Semigroup::nr_idempotents() {
+  size_t Semigroup::nridempotents() {
     if (!_idempotents_found) {
       find_idempotents();
     }
-    return _nr_idempotents;
+    return _nridempotents;
   }
 
   bool Semigroup::is_idempotent(pos_t pos) {
@@ -429,7 +452,24 @@ namespace libsemigroups {
     }
   }
 
-  word_t* Semigroup::factorisation(pos_t pos) {
+  word_t* Semigroup::minimal_factorisation(Element* x) {
+    pos_t pos = this->position(x);
+    if (pos == Semigroup::UNDEFINED) {
+      return nullptr;
+    }
+    return factorisation(pos);
+  }
+
+  word_t* Semigroup::factorisation(Element* x) {
+    if (x->get_type() == Element::elm_t::RWSE) {
+      return RWS::rws_word_to_word(
+          (reinterpret_cast<RWSE*>(x))->get_rws_word());
+    }
+    assert(x->get_type() == Element::elm_t::NOT_RWSE);
+    return minimal_factorisation(x);
+  }
+
+  word_t* Semigroup::minimal_factorisation(pos_t pos) {
     if (pos >= _nr && !is_done()) {
       enumerate(pos + 1);
     }
@@ -445,7 +485,7 @@ namespace libsemigroups {
     return word;
   }
 
-  void Semigroup::factorisation(word_t& word, pos_t pos) {
+  void Semigroup::minimal_factorisation(word_t& word, pos_t pos) {
     if (pos >= _nr && !is_done()) {
       enumerate(pos + 1);
     }
@@ -824,7 +864,8 @@ namespace libsemigroups {
             closure_update(i, j, b, s, old_new, old_nr, tid);
           }
         } else {
-          // _elements[i] is not in old
+          // _elements[i] is either not in old, or it is in old but its
+          // descendants are not known
           _multiplied[i] = true;
           for (size_t j = 0; j < _nrgens; j++) {
             closure_update(i, j, b, s, old_new, old_nr, tid);
@@ -1002,7 +1043,7 @@ namespace libsemigroups {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
           _tmp_product->redefine((*_elements)[i], (*_elements)[i]);
           if (*_tmp_product == *(*_elements)[i]) {
-            _nr_idempotents++;
+            _nridempotents++;
             _idempotents.push_back(i);
             _is_idempotent.push_back(true);
           } else {
@@ -1013,7 +1054,7 @@ namespace libsemigroups {
         for (size_t i = _idempotents_start_pos; i < _nr; i++) {
           // TODO(JDM) redo this to not use product_by_reduction
           if (product_by_reduction(i, i) == i) {
-            _nr_idempotents++;
+            _nridempotents++;
             _idempotents.push_back(i);
             _is_idempotent.push_back(true);
           } else {
@@ -1063,9 +1104,9 @@ namespace libsemigroups {
 
       for (size_t i = 0; i < _max_threads; i++) {
         threads[i].join();
-        _nr_idempotents += nr[i];
+        _nridempotents += nr[i];
       }
-      _idempotents.reserve(_nr_idempotents);
+      _idempotents.reserve(_nridempotents);
       _is_idempotent.reserve(size());
       for (size_t i = 0; i < _max_threads; i++) {
         _idempotents.insert(

@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -30,8 +30,6 @@
 #include "blocks.h"
 
 namespace libsemigroups {
-
-  u_int32_t Blocks::UNDEFINED = -1;
 
   Blocks::Blocks(Blocks const& copy)
       : _blocks(nullptr),

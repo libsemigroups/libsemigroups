@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 TEST_CASE("RWSE 01:", "[quick][rwse]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({1, 0}),
-      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup S = Semigroup(gens);
   S.set_report(RWSE_REPORT);
   really_delete_cont(gens);
@@ -61,6 +61,42 @@ TEST_CASE("RWSE 01:", "[quick][rwse]") {
   REQUIRE(!(b < ab));
   REQUIRE(b == ab);
   REQUIRE(!(ab < b));
+  REQUIRE(!(ab < b));
   ab.really_delete();
+
+  RWSE aba(rws, word_t({0, 1, 0}));
+  REQUIRE(b < aba);
+  aba.really_delete();
   b.really_delete();
+}
+
+TEST_CASE("RWSE 02: factorisation", "[quick][rwse]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  Semigroup S = Semigroup(gens);
+  S.set_report(RWSE_REPORT);
+  really_delete_cont(gens);
+
+  std::vector<relation_t> extra;
+  Congruence              cong("twosided", &S, extra);
+  RWS                     rws(cong);
+  REQUIRE(rws.is_confluent());
+
+  gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
+  Semigroup T = Semigroup(gens);
+  really_delete_cont(gens);
+  T.set_report(RWSE_REPORT);
+
+  RWSE    ab(rws, word_t({0, 1}));
+  word_t* w = T.factorisation(&ab);
+  REQUIRE(*w == word_t({1}));
+  delete w;
+  ab.really_delete();
+
+  RWSE aaa(rws, word_t({0, 0, 0}));
+  w = T.factorisation(&aaa);
+  REQUIRE(*w == word_t({0}));
+  delete w;
+  aaa.really_delete();
 }

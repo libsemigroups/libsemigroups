@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ template <typename T> static inline void really_delete_cont(T cont) {
 
 TEST_CASE("RWS 01: for a transformation semigroup of size 4",
           "[quick][rws][fpsemigroup]") {
-  std::vector<Element*> gens = {
-      new Transformation<u_int16_t>({1, 0}),
-      new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 0}),
+         new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup S = Semigroup(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
@@ -185,20 +185,23 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
                                    rws_rule_t("bB", ""),
                                    rws_rule_t("Bb", ""),
                                    rws_rule_t("ba", "ab")};
-  RWS rws(new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
-            if (y == x) {
-              return false;
-            } else if (y == 'a') {
-              return false;
-            } else if (y == 'A' && x != 'a') {
-              return false;
-            } else if (y == 'b' && x == 'B') {
-              return false;
-            } else {
-              return true;
-            }
-          }),
-          rules);
+  SHORTLEX* ro = new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
+    if (y == x) {
+      return false;
+    } else if (y == 'a') {
+      return false;
+    } else if (y == 'A' && x != 'a') {
+      return false;
+    } else if (y == 'b' && x == 'B') {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  REQUIRE(!(*ro)("aaaaab", "aaaaaa"));
+
+  RWS rws(ro, rules);
   rws.set_report(RWS_REPORT);
 
   REQUIRE(!rws.is_confluent());
@@ -208,8 +211,8 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", ""), rws_rule_t("bbb", ""), rws_rule_t("ababab", "")};
+  std::vector<rws_rule_t> rules
+      = {rws_rule_t("aa", ""), rws_rule_t("bbb", ""), rws_rule_t("ababab", "")};
   RWS rws(rules);
   rws.set_report(RWS_REPORT);
 
@@ -309,7 +312,7 @@ TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
 }
 
 TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
-          "[standard][rws][fpsemigroup]") {
+          "[extreme][rws][fpsemigroup]") {
   std::vector<rws_rule_t> rules = {
       rws_rule_t("aaaaaaa", ""),
       rws_rule_t("bb", "ababab"),
@@ -510,6 +513,14 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
   REQUIRE(rws.rewrite("bbbbaabbbbaa") == rws.rewrite("bbbbaa"));
   REQUIRE(rws.rewrite("bbbaa") == rws.rewrite("baabb"));
   REQUIRE(rws.rewrite("abbbaabbba") == rws.rewrite("bbbbaa"));
+
+  REQUIRE(!rws.test_less_than("abbbaabbba", "bbbbaa"));
+  REQUIRE(!rws.test_less_than("abba", "abba"));
+
+  // Call test_less_than without knuth_bendix first
+  RWS rws2(rules);
+  rws2.set_report(RWS_REPORT);
+  REQUIRE(!rws2.test_less_than("abbbaabbba", "bbbbaa"));
 }
 
 TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
@@ -541,6 +552,8 @@ TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
   REQUIRE(rws.rewrite("bbbbbbbbaabbbbbbbbaa") == rws.rewrite("bbbbbbbbaa"));
   REQUIRE(rws.rewrite("bbbaa") == rws.rewrite("baabb"));
   REQUIRE(rws.rewrite("abbbbbaabbbbba") == rws.rewrite("bbbbbbbbaa"));
+
+  REQUIRE(rws.test_less_than("aaa", "bbbbbbbbb"));
 }
 
 TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
@@ -595,4 +608,7 @@ TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 8);
   REQUIRE(rws.is_confluent());
+
+  REQUIRE(!rws.test_less_than("bababababab", "aaaaa"));
+  REQUIRE(rws.test_less_than("aaaaa", "bababababab"));
 }

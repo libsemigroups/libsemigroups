@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -21,16 +21,9 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Semiring: threshold/period [undefined]", "[quick][semiring]") {
-  Semiring* sr = new MaxPlusSemiring();
-
-  REQUIRE(sr->threshold() == -1);  // UNDEFINED
-  REQUIRE(sr->period() == -1);     // UNDEFINED
-  delete sr;
-}
-
-TEST_CASE("Semiring: threshold/period [NaturalSemiring]", "[quick][semiring") {
-  Semiring* sr = new NaturalSemiring(10, 314);
+TEST_CASE("Semiring 01: threshold/period [NaturalSemiring]",
+          "[quick][semiring") {
+  NaturalSemiring* sr = new NaturalSemiring(10, 314);
 
   REQUIRE(sr->threshold() == 10);
   REQUIRE(sr->period() == 314);

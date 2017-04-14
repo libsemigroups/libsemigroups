@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,9 @@
 #include <string>
 
 namespace libsemigroups {
-  rws_word_t RWSE::_buf;
+  // The number 5 in the next line is the current maximum thread_id.
+  // There should be a better way of finding this out.
+  std::vector<rws_word_t> RWSE::_buf(5, rws_word_t());
 
   bool RWSE::operator<(const Element& that) const {
     rws_word_t u = *(this->_rws_word);
@@ -49,14 +51,16 @@ namespace libsemigroups {
     reset_hash_value();
   }
 
-  void RWSE::redefine(Element const* x, Element const* y) {
+  void
+  RWSE::redefine(Element const* x, Element const* y, size_t const& thread_id) {
     RWSE const* xx = static_cast<RWSE const*>(x);
     RWSE const* yy = static_cast<RWSE const*>(y);
     assert(xx->_rws == yy->_rws);
+    rws_word_t buf = _buf[thread_id];
     _rws_word->clear();
     _rws_word->append(*(xx->_rws_word));
     _rws_word->append(*(yy->_rws_word));
-    _rws->rewrite(_rws_word, _buf);
+    _rws->rewrite(_rws_word, buf);
     this->reset_hash_value();
   }
 }  // namespace libsemigroups

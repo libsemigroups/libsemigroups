@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,8 @@
       _already_reported_killed = true; \
       REPORT("killed")                 \
     }                                  \
-    return;                            \
+    _stop_packing = true;              \
+    _steps        = 1;                 \
   }
 
 namespace libsemigroups {
@@ -77,7 +78,7 @@ namespace libsemigroups {
   // Now the new preimage and all the old preimages are stored.
 
   Congruence::TC::TC(Congruence& cong)
-      : DATA(cong, 2000000),
+      : DATA(cong, 1000, 2000000),
         _active(1),
         _already_reported_killed(false),
         _bckwd(1, 0),
@@ -88,7 +89,6 @@ namespace libsemigroups {
         _extra(),
         _forwd(1, UNDEFINED),
         _id_coset(0),
-        _is_compressed(false),
         _last(0),
         _next(UNDEFINED),
         _pack(120000),
@@ -99,9 +99,27 @@ namespace libsemigroups {
         _table(cong._nrgens, 1, UNDEFINED),
         _tc_done(false) {}
 
+  void Congruence::TC::init() {
+    if (_relations.empty() && _extra.empty()) {
+      // This is the first run
+      init_tc_relations();
+      // Apply each "extra" relation to the first coset only
+      for (relation_t const& rel : _extra) {
+        trace(_id_coset, rel);  // Allow new cosets
+      }
+      if (_relations.empty()) {
+        _tc_done = true;
+        compress();
+        return;
+      }
+    }
+  }
+
   void Congruence::TC::prefill() {
     Semigroup* semigroup = _cong._semigroup;
-    assert(semigroup != nullptr);
+    if (semigroup == nullptr) {
+      return;
+    }
     if (_cong._type == LEFT) {
       _table.append(*semigroup->left_cayley_graph());
     } else {
@@ -163,9 +181,9 @@ namespace libsemigroups {
   }
 
   void Congruence::TC::init_tc_relations() {
-    if (!_relations.empty() || !_extra.empty()) {
-      return;  // This method was called already
-    }
+    // This should not have been run before
+    assert(_relations.empty() && _extra.empty());
+
     // Handle _extra first!
     switch (_cong._type) {
       case LEFT:
@@ -196,7 +214,6 @@ namespace libsemigroups {
     // call relations() here so that we can pass _killed.
 
     _cong.init_relations(_cong._semigroup, _killed);
-    TC_KILLED
 
     // Must insert at _relations.end() since it might be non-empty
     _relations.insert(
@@ -208,7 +225,6 @@ namespace libsemigroups {
       case TWOSIDED:
         break;
       case LEFT:
-        TC_KILLED
         for (relation_t& rel : _relations) {
           std::reverse(rel.first.begin(), rel.first.end());
           std::reverse(rel.second.begin(), rel.second.end());
@@ -221,12 +237,7 @@ namespace libsemigroups {
 
   // compress the table
   void Congruence::TC::compress() {
-    if (_is_compressed) {
-      return;
-    } else if (!is_done()) {
-      run();
-    }
-    _is_compressed = true;
+    assert(is_done());
     if (_active == _table.nr_rows()) {
       return;
     }
@@ -236,9 +247,7 @@ namespace libsemigroups {
     class_index_t pos = _id_coset;
     // old number to new numbers lookup
     std::unordered_map<class_index_t, class_index_t> lookup;
-    lookup.insert(std::make_pair(_id_coset, 0));
-
-    size_t next_index = 1;
+    size_t next_index = 0;
 
     while (pos != _next) {
       size_t curr_index;
@@ -272,22 +281,52 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::TC::word_to_class_index(word_t const& w) {
-    assert(is_done());
     class_index_t c = _id_coset;
     if (_cong._type == LEFT) {
       // Iterate in reverse order
-      for (auto rit = w.crbegin(); rit != w.crend(); ++rit) {
+      for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED; ++rit) {
         c = _table.get(c, *rit);
-        // assert(c != UNDEFINED);
       }
     } else {
       // Iterate in sequential order
-      for (auto it = w.cbegin(); it != w.cend(); ++it) {
+      for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
         c = _table.get(c, *it);
-        // assert(c != UNDEFINED);
       }
     }
-    return c;
+    // c in {1 .. n} (where 0 is the id coset)
+    assert(c < _active || c == UNDEFINED);
+    // Convert to {0 .. n-1}
+    return (c == UNDEFINED ? c : c - 1);
+  }
+
+  Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
+                                                            word_t const& w2) {
+    init();
+    if (is_killed()) {
+      // This cannot be reliably tested since it relies on a race condition:
+      // if this has been killed since the start of the function, then we return
+      // immediately to run_until with an inconclusive answer.  run_until will
+      // then quit, and allow the winning DATA to answer the equality test.
+      return result_t::UNKNOWN;
+    }
+
+    class_index_t c1 = word_to_class_index(w1);
+    class_index_t c2 = word_to_class_index(w2);
+
+    if (c1 == UNDEFINED || c2 == UNDEFINED) {
+      return result_t::UNKNOWN;
+    }
+
+    // c in {1 .. n} (where 0 is the id coset)
+    assert(c1 < _active);
+    assert(c2 < _active);
+    if (c1 == c2) {
+      return result_t::TRUE;
+    } else if (is_done()) {
+      return result_t::FALSE;
+    } else {
+      return result_t::UNKNOWN;
+    }
   }
 
   // Create a new active coset for coset c to map to under generator a
@@ -387,8 +426,8 @@ namespace libsemigroups {
           class_index_t v = _preim_init.get(rhs, i);
           while (v != UNDEFINED) {
             _table.set(v, i, lhs);  // Replace <rhs> by <lhs> in the table
-            class_index_t u =
-                _preim_next.get(v, i);  // Get <rhs>'s next preimage
+            class_index_t u
+                = _preim_next.get(v, i);  // Get <rhs>'s next preimage
             _preim_next.set(v, i, _preim_init.get(lhs, i));
             _preim_init.set(lhs, i, v);
             // v is now a preimage of <lhs>, not <rhs>
@@ -444,8 +483,6 @@ namespace libsemigroups {
   void Congruence::TC::trace(class_index_t const& c,
                              relation_t const&    rel,
                              bool                 add) {
-    TC_KILLED
-
     class_index_t lhs = c;
     for (auto it = rel.first.cbegin(); it < rel.first.cend() - 1; it++) {
       if (_table.get(lhs, *it) != UNDEFINED) {
@@ -469,7 +506,6 @@ namespace libsemigroups {
       } else {
         return;
       }
-      TC_KILLED
     }
     // <rhs> is the image of <c> under <rel>[2] (minus the last letter)
 
@@ -489,7 +525,6 @@ namespace libsemigroups {
       _report_next   = 0;
       _cosets_killed = _defined - _active;
     }
-    TC_KILLED
 
     letter_t      a = rel.first.back();
     letter_t      b = rel.second.back();
@@ -532,22 +567,24 @@ namespace libsemigroups {
 
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
-    // If we have already run this before, then we are done
-    if (_tc_done || _is_compressed) {
-      return;
-    }
-    init_tc_relations();
-    TC_KILLED
-
-    // Apply each "extra" relation to the first coset only
-    for (relation_t const& rel : _extra) {
-      trace(_id_coset, rel);  // Allow new cosets
+    while (!is_done() && !is_killed()) {
+      run(Congruence::LIMIT_MAX);
       TC_KILLED
     }
-    if (_relations.empty()) {
-      _tc_done = true;
+  }
+
+  // Apply the Todd-Coxeter algorithm for the specified number of iterations
+  void Congruence::TC::run(size_t steps) {
+    _steps = steps;
+
+    init();
+
+    if (_tc_done) {
       return;
     }
+
+    // Run a batch
+    REPORT("number of steps: " << _steps);
     do {
       // Apply each relation to the "_current" coset
       for (relation_t const& rel : _relations) {
@@ -592,64 +629,22 @@ namespace libsemigroups {
 
       // Quit loop when we reach an inactive coset
       TC_KILLED
-    } while (_current != _next);
+    } while (_current != _next && --_steps > 0);
 
     // Final report
-    REPORT("finished with " << _defined << " cosets defined,"
+    REPORT("stopping with " << _defined << " cosets defined,"
                             << " maximum "
                             << _forwd.size()
                             << ", "
                             << _active
                             << " survived");
-    _tc_done = true;
+    if (_current == _next) {
+      _tc_done = true;
+      compress();
+      REPORT("finished!");
+    }
 
     // No return value: all info is now stored in the class
-  }
-
-  Congruence::partition_t Congruence::TC::nontrivial_classes() {
-    assert(is_done());
-    partition_t classes;
-
-    if (_cong._semigroup == nullptr) {
-      // Assert appropriate for JDM's long comment in cong.cc
-      assert(_cong._relations.empty() || _cong._extra.empty());
-      if (_cong._extra.empty()) {
-        return classes;  // trivial congruence - no nontrivial classes
-      }
-      // nontrivial congruence on free semigroup - answer is infinite
-      assert(!_cong._relations.empty());  // TODO: fail gracefully?
-    }
-
-    word_t word;
-    // TODO: This may create many empty vectors that won't be used,
-    //       because the classes are not numbered contiguously {0 .. n-1}
-    std::vector<std::vector<size_t>> pos_classes(_table.nr_rows(),
-                                                 std::vector<size_t>());
-    // Look up each semigroup element's position in the table
-    for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
-      _cong._semigroup->factorisation(word, pos);
-      assert(word_to_class_index(word) < _table.nr_rows());
-      pos_classes[word_to_class_index(word)].push_back(pos);
-    }
-
-    // Look up these element positions and store the Element pointers
-    size_t next_nontrivial_class = 0;
-    assert(pos_classes.size() == _table.nr_rows());
-    for (size_t class_nr = 0; class_nr < pos_classes.size(); class_nr++) {
-      // Use only the classes with at least 2 elements
-      if (pos_classes[class_nr].size() > 1) {
-        classes.push_back(std::vector<Element const*>());
-        for (size_t pos : pos_classes[class_nr]) {
-          assert(pos < _cong._semigroup->size());
-          // Push each element into classes
-          classes[next_nontrivial_class].push_back(
-              _cong._semigroup->at(pos)->really_copy());
-        }
-        next_nontrivial_class++;
-      }
-    }
-
-    return classes;
   }
 
 }  // namespace libsemigroups

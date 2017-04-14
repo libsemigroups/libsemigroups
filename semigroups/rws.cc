@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for computing with semigroups and monoids
+// libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2016 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
@@ -51,6 +51,19 @@ namespace libsemigroups {
       ww += letter_to_rws_letter(a);
     }
     return ww;
+  }
+
+  letter_t RWS::rws_letter_to_letter(rws_letter_t const& rws_letter) {
+    return static_cast<letter_t>(rws_letter - 1);
+  }
+
+  word_t* RWS::rws_word_to_word(rws_word_t const* rws_word) {
+    word_t* w = new word_t();
+    w->reserve(rws_word->size());
+    for (rws_letter_t const& rws_letter : *rws_word) {
+      w->push_back(rws_letter_to_letter(rws_letter));
+    }
+    return w;
   }
 
   rws_rule_t RWS::add_rule(rws_word_t const& p, rws_word_t const& q) {
@@ -137,8 +150,8 @@ namespace libsemigroups {
               // Find longest common prefix of suffix B of rule1.first defined
               // by it and R = rule2.first
               // FIXME the following is not valid
-              auto prefix =
-                  std::mismatch(it, rule1.first.cend(), rule2.first.cbegin());
+              auto prefix
+                  = std::mismatch(it, rule1.first.cend(), rule2.first.cbegin());
               if (prefix.first != it || prefix.second != rule2.first.cbegin()) {
                 // FIXME this first if-condition redundant?
                 // There was a match
