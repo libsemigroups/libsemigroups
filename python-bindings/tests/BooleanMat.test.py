@@ -31,43 +31,42 @@ class TestPartialPerm(unittest.TestCase):
             BooleanMat([True, True, False], [False, False])
 
     def test_richcmp(self):
-        assert BooleanMat([True, False], [False, True]) == 
+        assert BooleanMat([True, False], [False, True]) == \
                BooleanMat([True, False], [False, True])
-        assert not BooleanMat([True, False], [False, True]) != 
+        assert not BooleanMat([True, False], [False, True]) != \
                    BooleanMat([True, False], [False, True])
-        assert not BooleanMat([True, False], [False, True]) == 
+        assert not BooleanMat([True, False], [False, True]) == \
                    BooleanMat([False, False], [False, True])
         assert BooleanMat([False]) < BooleanMat([True])
         assert not BooleanMat([False, True, True], 
                               [True, True, False], 
-                              [False, False, False]) < 
+                              [False, False, False]) < \
                    BooleanMat([False, True, False], 
                               [True, False, False],
                               [False, False, True])
         assert BooleanMat([False]) <= BooleanMat([False])
-        assert BooleanMat([True, False], [False, True]) > 
+        assert BooleanMat([True, False], [False, True]) > \
                BooleanMat([True, False], [False, False])
-        assert not BooleanMat([True, False], [False, True]) > 
+        assert not BooleanMat([True, False], [False, True]) > \
                    BooleanMat([True, False], [False, True])
         assert BooleanMat([False]) >= BooleanMat([False])
 
         with self.assertRaises(TypeError):
-            Bipartition([1, -2], [-1, 2]) >= 
+            Bipartition([1, -2], [-1, 2]) >= \
             BooleanMat([False, False], [True, False])
             BooleanMat([False, False], [True, False]) < Transformation([0, 1])
-            BooleanMat([True, False], [False, True]) == 
+            BooleanMat([True, False], [False, True]) == \
             PartialPerm([0], [1], 2)
 
     def test_mul(self):
-        self.assertEqual(BooleanMat([True, False], [False, True]) * 
+        self.assertEqual(BooleanMat([True, False], [False, True]) * \
                          BooleanMat([False, False], [False, True]), 
                          BooleanMat([False, False], [False, True]))
         self.assertEqual(BooleanMat([False]) * BooleanMat([True]), 
                          BooleanMat([False]))
         self.assertEqual(BooleanMat([False, True, True], 
                                     [True, True, False], 
-                                    [False, False, False]) 
-                         * 
+                                    [False, False, False]) * \
                          BooleanMat([False, True, False],
                                     [True, False, False],
                                     [False, False, True]),
@@ -86,7 +85,7 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(ValueError):
             BooleanMat([False, True, True], 
                        [True, True, False], 
-                       [False, False, False]) * 
+                       [False, False, False]) * \
             BooleanMat([True, False], [False, True])
 
     def test_pow(self):
@@ -108,7 +107,7 @@ class TestPartialPerm(unittest.TestCase):
                        [False, False, False]) ** -7
 
     def test_dealloc(self):
-        A, B = BooleanMat([True, False], [True, True]), 
+        A, B = BooleanMat([True, False], [True, True]), \
         BooleanMat([False, False], [False, True])
         del A, B
         assert not 'A' in globals()
