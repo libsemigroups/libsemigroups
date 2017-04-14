@@ -795,6 +795,28 @@ cdef class BooleanMat(Element):
             row.append(entry)
         self._rows.append(row)
 
+    def rows(self):
+        """
+        Function for finding the rows of a boolean matrix.
+
+        Args:
+            None
+
+        Returns:
+            list: The rows of the boolean matrix.
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import BooleanMat
+            >>> BooleanMat([True, False], [True, True]).rows()
+            [[True, False], [True, True]]
+        """
+
+        self._init_rows()
+        return self._rows
+
     def __repr__(self):
         """
         Function for printing a string representation of the boolean matrix.
