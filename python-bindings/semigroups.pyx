@@ -735,7 +735,9 @@ cdef class Bipartition(Element):
         self._init_blocks()
         return 'Bipartition(%s)'%self._blocks.__repr__()[1:-1]
 
-cdef class BooleanMat(Element):
+#Write semiring class in python.
+
+cdef class BooleanMat(Element):#Add 0s, 1s
     """
     A class for handles to libsemigroups BooleanMat. 
 
@@ -838,6 +840,20 @@ cdef class BooleanMat(Element):
 
         self._init_rows()
         return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
+
+cdef class PBR(Element):
+
+    def __init__(self, List):
+
+        if List[0] is not __dummyClass:
+            self._handle = new cpp.PBR(List)
+
+#    def _generator(self):
+#        cdef cpp.Element* e = self._handle
+#        e2 = <cpp.BooleanMat *>e
+#        for x in e2[0]:
+#            yield x
+    
 
 cdef class PythonElement(Element):
     """
