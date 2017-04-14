@@ -29,7 +29,7 @@
 
 #include <utility>
 
-#include "../util/uf.cc"
+#include "../util/uf.h"
 
 namespace libsemigroups {
 
