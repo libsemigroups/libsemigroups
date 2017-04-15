@@ -6,50 +6,61 @@ AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 
 ACLOCAL_AMFLAGS	= -I m4
 
-nobase_include_HEADERS =    semigroups/blocks.h        semigroups/cong.h 
-nobase_include_HEADERS +=   semigroups/elements.h      semigroups/semigroups.h 
-nobase_include_HEADERS +=   semigroups/rws.h 	       semigroups/rwse.h 
-nobase_include_HEADERS +=   semigroups/semiring.h      semigroups/partition.h
+## libsemigroups headers
 
-nobase_include_HEADERS +=   semigroups/util/recvec.h   semigroups/util/report.h	
-nobase_include_HEADERS +=   semigroups/util/timer.h    semigroups/util/uf.h
+include_HEADERS =  semigroups/blocks.h      semigroups/cong.h 
+include_HEADERS += semigroups/elements.h    semigroups/semigroups.h 
+include_HEADERS += semigroups/rws.h 	    semigroups/rwse.h 
+include_HEADERS += semigroups/semiring.h    semigroups/partition.h
 
-nobase_include_HEADERS =    semigroups/cong/kbfp.h     semigroups/cong/kbp.h 
-nobase_include_HEADERS +=   semigroups/cong/p.h        semigroups/cong/tc.h
+include_HEADERS += semigroups/util/recvec.h semigroups/util/report.h	
+include_HEADERS += semigroups/util/timer.h  semigroups/util/uf.h
+
+dist_include_HEADERS =  semigroups/cong/kbfp.h semigroups/cong/kbp.h 
+dist_include_HEADERS += semigroups/cong/p.h    semigroups/cong/tc.h
+dist_include_HEADERS += test/catch.hpp
 
 lib_LTLIBRARIES = libsemigroups.la
 
-libsemigroups_la_SOURCES =  semigroups/blocks.cc       semigroups/cong.cc
-libsemigroups_la_SOURCES += semigroups/elements.cc     semigroups/semigroups.cc
-libsemigroups_la_SOURCES += semigroups/rws.cc	       semigroups/rwse.cc
+## libsemigroups sources
 
-libsemigroups_la_SOURCES += semigroups/cong/kbfp.cc    semigroups/cong/kbp.cc 
-libsemigroups_la_SOURCES += semigroups/cong/p.cc       semigroups/cong/tc.cc
+libsemigroups_la_SOURCES =  semigroups/blocks.cc   semigroups/cong.cc
+libsemigroups_la_SOURCES += semigroups/elements.cc semigroups/semigroups.cc
+libsemigroups_la_SOURCES += semigroups/rws.cc	   semigroups/rwse.cc
 
 libsemigroups_la_SOURCES += semigroups/util/uf.cc
 
-#libsemigroups_la_CPPFLAGS = -DCONFIG_H
-#libsemigroups_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
+EXTRA_DIST =  semigroups/cong/kbfp.cc semigroups/cong/kbp.cc 
+EXTRA_DIST += semigroups/cong/p.cc    semigroups/cong/tc.cc
 
-check_PROGRAMS = libsemitest
+libsemigroups_la_CPPFLAGS = -DCONFIG_H
+libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS) -O3 -DNDEBUG -UDEBUG
 
-libsemitest_SOURCES =  test/blocks.test.cc	test/recvec.test.cc
-libsemitest_SOURCES += test/cong.test.cc	test/rws.test.cc
-libsemitest_SOURCES += test/elements.test.cc	test/rwse.test.cc
-libsemitest_SOURCES += test/kbfp.test.cc	test/semigroups.test.cc
-libsemitest_SOURCES += test/kbp.test.cc		test/semiring.test.cc
-libsemitest_SOURCES += test/p.test.cc		test/tc.test.cc
-libsemitest_SOURCES += test/uf.test.cc
+## libsemigroups-check sources 
 
-libsemitest_CXXFLAGS = $(AM_CXXFLAGS) -O3 -DNDEBUG -UDEBUG
-libsemitest_CPPFLAGS = -DCONFIG_H
-libsemitest_LDFLAGS  = -avoid-version -module -shared -export-dynamic
+check_PROGRAMS = lstest
 
-libsemitest_LDADD = libsemigroups.la
+lstest_SOURCES =  test/blocks.test.cc	test/recvec.test.cc
+lstest_SOURCES += test/cong.test.cc	test/rws.test.cc
+lstest_SOURCES += test/elements.test.cc	test/rwse.test.cc
+lstest_SOURCES += test/kbfp.test.cc	test/semigroups.test.cc
+lstest_SOURCES += test/kbp.test.cc      test/semiring.test.cc
+lstest_SOURCES += test/p.test.cc	test/tc.test.cc
+lstest_SOURCES += test/uf.test.cc
+
+lstest_CXXFLAGS = $(AM_CXXFLAGS)
+lstest_CPPFLAGS = -DCONFIG_H
+
+lstest_LDADD = libsemigroups.la
 
 CHECK_LOG_DIR = test/logs
-CHECK_PROG    = libsemitest 
+CHECK_PROG    = lstest
 CHECK_FLAGS   = -d yes --force-colour --order lex --abort [quick]
+
+clean-local: clean-local-check
+.PHONY: clean-local-check
+clean-local-check:
+	rm -rf $(CHECK_LOG_DIR) $(CHECK_PROG) 
 
 check:
 	@$(mkdir_p) $(CHECK_LOG_DIR)
@@ -58,19 +69,15 @@ check:
 	$(CHECK_PROG) $(CHECK_FLAGS) | tee -a $(CHECK_LOG_DIR)/$$today.log; \
 	( ! grep -q -E "FAILED|failed" $(CHECK_LOG_DIR)/$$today.log )
 
-checkclean:
-	rm -rf test/*.o $(CHECK_LOG_DIR) $(CHECK_PROG) 
-
-checkdebug: libsemitest_CXXFLAGS = $(AM_CXXFLAGS) -O0 -g -UNDEBUG -DDEBUG
-checkdebug: check
-
 format:
-	clang-format -i $(nobase_include_HEADERS) $(libsemigroups_la_SOURCES) 
-	clang-format -i $(libsemitest_SOURCES)
+	clang-format -i $(include_HEADERS) $(dist_include_HEADERS) 
+	clang-format -i $(libsemigroups_la_SOURCES) 
+	clang-format -i $(EXTRA_DIST) $(lstest_SOURCES)
 
 lint: 
-	cpplint $(nobase_include_HEADERS) $(libsemigroups_la_SOURCES)
-	cpplint $(libsemitest_SOURCES)
+	cpplint $(include_HEADERS) $(dist_include_HEADERS) 
+	cpplint $(libsemigroups_la_SOURCES)
+	cpplint $(EXTRA_DIST) $(lstest_SOURCES)
 	
 doc:
 	@echo "Generating documentation . . ."; \
