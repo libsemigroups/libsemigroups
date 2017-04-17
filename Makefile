@@ -6,7 +6,7 @@ LCOV_DIR = test/lcov
 TODAY = $(shell date "+%Y-%m-%d-%H-%M-%S")
 
 HEADERS = $(wildcard *.h)  $(wildcard util/*.h) 
-SOURCES = $(wildcard *.cc) $(wildcard test/*.cc)
+SOURCES = $(wildcard *.cc) $(wildcard test/*.cc) util/uf.cc
 
 OBJECTS = $(SOURCES:%.cc=$(OBJ_DIR)/%.o)
 
@@ -83,7 +83,7 @@ superclean: testclean docclean
 	rm -rf $(LOG_DIR) $(LCOV_DIR)
 
 testdirs:
-	mkdir -p $(OBJ_DIR) $(TEST_OBJ_DIR) $(LOG_DIR) $(LCOV_DIR)
+	mkdir -p $(OBJ_DIR) $(TEST_OBJ_DIR) $(LOG_DIR) $(LCOV_DIR) $(OBJ_DIR)/util
 
 $(OBJ_DIR)/%.o: %.cc $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDFLAGS)
