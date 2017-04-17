@@ -6,11 +6,8 @@
 html
 *.swo
 *.swp
-test/test
-test/logs
 *.o
 gh-pages
-test/lcov
 *.gcno
 *.gcda
 config.status
@@ -21,15 +18,9 @@ README
 aclocal.m4
 autom4te.cache/
 config/
-configure
-libtool
 m4/
 Makefile
 test.trs
-libsemitest
-.!*
-DEBUG
-LCOV
 *.m4
 *.status
 configure
@@ -39,7 +30,6 @@ libtool
 autom4te.cache
 config
 .!*
-libsemitest
-docs-new/doxyxml
-docs-new/sphinx/build
 lstest
+.coverage_build
+.debug_build

@@ -8,7 +8,13 @@ addons:
     packages:
     - gcc-5
     - g++-5
+before_script:
+  - sudo add-apt-repository ppa:dns/gnu -y
+  - sudo apt-get update -q
+  - sudo apt-get install --only-upgrade autoconf
+  - sudo pip install cpplint
+
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 script:
-  - make test
+  - ci/travis.sh

@@ -14,4 +14,5 @@ install:
 build: off
 
 test_script:
-  - '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER ; make test"'
+  - '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER ; ./autogen.sh ; ./configure ; make check"'
+
