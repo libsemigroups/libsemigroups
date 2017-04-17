@@ -372,7 +372,8 @@ namespace libsemigroups {
   void Congruence::TC::identify_cosets(class_index_t lhs, class_index_t rhs) {
     TC_KILLED
 
-    assert(_lhs_stack.empty() && _rhs_stack.empty());
+    // Note that _lhs_stack and _rhs_stack may not be empty, if this was killed
+    // before and has been restarted.
 
     // Make sure lhs < rhs
     if (lhs == rhs) {
@@ -466,6 +467,7 @@ namespace libsemigroups {
         }
       }
       if (_lhs_stack.empty()) {
+        assert(_rhs_stack.empty());
         break;
       }
       // Get the next pair to be identified
@@ -474,6 +476,8 @@ namespace libsemigroups {
       rhs = _rhs_stack.top();
       _rhs_stack.pop();
     }
+
+    assert((_lhs_stack.empty() && _rhs_stack.empty()) || _killed);
   }
 
   // Take the two words of the relation <rel>, apply them both to the coset
