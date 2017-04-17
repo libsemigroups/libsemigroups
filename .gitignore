@@ -42,3 +42,4 @@ config
 libsemitest
 docs-new/doxyxml
 docs-new/sphinx/build
+lstest
