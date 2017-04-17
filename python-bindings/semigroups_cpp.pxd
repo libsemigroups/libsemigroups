@@ -50,6 +50,12 @@ cdef extern from "semigroups/semigroups.h" namespace "libsemigroups":
         bool test_membership(Element* x)
         vector[size_t]* factorisation(size_t pos)
         void enumerate(size_t limit)
+    cdef cppclass Congruence:
+        Congruence(string, 
+                   int, 
+                   vector[pair[vector[int], vector[int]]],
+                   vector[pair[vector[int], vector[int]]])
+        int nr_classes()
 
 cdef extern from "semigroups/cong.h" namespace "libsemigroups":
     cdef cppclass Congruence:
