@@ -7,7 +7,13 @@ mkdir -p m4
 ./configure
 make check-standard -j
 
-#etc/ndebug.sh
-#make check-standard -j
-#etc/debug.sh
-##make check-standard -j
+# Check make 
+make distcheck
+
+# Check standard tests with assertions on
+etc/debug.sh
+make check-standard -j
+
+# Check standard tests with assertions on
+etc/ndebug.sh
+make check-standard -j
