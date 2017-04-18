@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
-if [ ! -f .coverage_build ]; then
-  make clean
+if [ ! -f .coverage_build ] || [ ! -f Makefile ]; then
+  if [ -f Makefile ]; then 
+    make clean
+  fi
   touch .coverage_build
   ./configure CPPFLAGS='-DDEBUG -UNDEBUG' CXXFLAGS='-O0 -g --coverage' LDFLAGS='-O0 -g --coverage'
 fi

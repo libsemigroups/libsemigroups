@@ -13,8 +13,11 @@ before_script:
   - sudo apt-get update -q
   - sudo apt-get install --only-upgrade autoconf
   - sudo pip install cpplint
+#  - sudo apt-get install ggcov 
+#  - sudo ln -sf /usr/bin/gcov-5 /usr/bin/gcov
+#  - sudo apt-get install -y lcov
 
 install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
   - ci/travis.sh
