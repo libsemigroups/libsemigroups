@@ -1,0 +1,54 @@
+# TODO
+
+## Automatic generation of the .pxd file?
+
+  xdress maybe? did not manage to install: complaining when trying to
+  link against clang libraries that are provided as static libraries.
+
+## Automatic generation of the Python wrappers?
+
+## Fetch features from Sage's experimental interface to Semigroupe
+
+  https://trac.sagemath.org/attachment/ticket/8360/trac_8360_semigroupe-interface-nt.patch
+
+## Use pos_t rather than size_t everywhere relevant
+
+Problem: pos_t is a private typedef in the Semigroup class; this makes
+it harder to use it elsewhere
+
+## new_from_handle would naturally be a class method
+
+Question: how to achieve this in Cython?
+
+## libsemigroups configuration
+
+- DEFAULT_REPORT_VALUE : is there a gain in making it a const?
+- DEFAULT_NR_THREADS : make a new default value? or an attribute of the semigroup?
+
+## Fix memory management
+
+Problem: when we get back a pointer to an Element from libsemigroup;
+when shall we consider that we own it or not?
+
+At this stage when semigroups.pyx returns a wrapper around a
+libsemigroup element, it is always assumed that libsemigroup owns that
+element. Which is wrong when the element is part of the internal data
+structure for the semigroup. This quickly leads to segmentation faults
+with the following backtrace:
+
+    #1  0x00007ffef6343ef3 in __pyx_pf_10semigroups_7Element_2__dealloc__ (__pyx_v_self=0x7ffff011baf0) at semigroups.cpp:1382
+    #2  __pyx_pw_10semigroups_7Element_3__dealloc__ (__pyx_v_self=) at semigroups.cpp:1354
+    #3  __pyx_tp_dealloc_10semigroups_Element (o=) at semigroups.cpp:3240
+    #4  0x00007ffff7a44711 in list_dealloc (op=) at Objects/listobject.c:309
+    #5  0x00007ffff7a56c13 in PyDict_Clear (op=<optimized out>) at Objects/dictobject.c:946
+    #6  0x00007ffff7a56c99 in dict_clear (mp=<optimized out>) at Objects/dictobject.c:2028
+    #7  0x00007ffff7ac9ef2 in call_function (oparg=<optimized out>, pp_stack=0x7fffffffc370) at Python/ceval.c:4336
+
+How to fix this?
+
+Plausibly, we should
+
+- have a parameter in new_from_handle to decide whether the instance
+  owns the handle or is just a view on it.
+
+- review all methods of Semigroup, and call new_from_handle appropriately
