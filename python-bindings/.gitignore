@@ -1,0 +1,4 @@
+semigroups.cpp
+*.so
+build
+*.egg-info
