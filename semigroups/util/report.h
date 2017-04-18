@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef LIBSEMIGROUPS_UTIL_REPORT_H_
-#define LIBSEMIGROUPS_UTIL_REPORT_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_UTIL_REPORT_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_UTIL_REPORT_H_
 
 #include <assert.h>
 #include <cxxabi.h>
@@ -263,4 +263,4 @@ namespace libsemigroups {
 
   extern Reporter glob_reporter;  // defined in semigroups.cc
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_UTIL_REPORT_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_UTIL_REPORT_H_

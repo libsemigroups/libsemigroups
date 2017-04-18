@@ -23,8 +23,8 @@
 // fully enumerated, and when the congruence contains a very small number of
 // related pairs.
 
-#ifndef LIBSEMIGROUPS_CONG_P_H_
-#define LIBSEMIGROUPS_CONG_P_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_CONG_P_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_CONG_P_H_
 
 #include <queue>
 #include <utility>
@@ -98,4 +98,4 @@ namespace libsemigroups {
     Element*                    _tmp2;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_P_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_CONG_P_H_

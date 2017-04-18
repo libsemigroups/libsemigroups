@@ -18,8 +18,8 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
-#ifndef LIBSEMIGROUPS_ELEMENTS_H_
-#define LIBSEMIGROUPS_ELEMENTS_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_ELEMENTS_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_ELEMENTS_H_
 
 #include <assert.h>
 #include <math.h>
@@ -1368,4 +1368,4 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_ELEMENTS_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_ELEMENTS_H_

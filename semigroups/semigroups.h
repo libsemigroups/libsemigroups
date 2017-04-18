@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SEMIGROUPS_H_
-#define LIBSEMIGROUPS_SEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_SEMIGROUPS_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_SEMIGROUPS_H_
 
 #include <assert.h>
 
@@ -894,4 +894,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_SEMIGROUPS_H_

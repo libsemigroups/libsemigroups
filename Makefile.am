@@ -80,10 +80,12 @@ check-all: CHECK_FLAGS2 =
 check-all: check
 .PHONY: check-standard, check-all
 
-format:
-	clang-format -i $(include_HEADERS) $(dist_include_HEADERS) 
-	clang-format -i $(libsemigroups_la_SOURCES) 
-	clang-format -i $(EXTRA_DIST) $(lstest_SOURCES)
+format: 
+	@echo "Running clang-format . . .";  
+	@clang-format -i $(include_HEADERS) $(dist_include_HEADERS) 
+	@clang-format -i $(libsemigroups_la_SOURCES) 
+	@clang-format -i $(EXTRA_DIST) $(lstest_SOURCES)
+	@git checkout HEAD -- test/catch.hpp
 
 lint: 
 	cpplint $(include_HEADERS) $(dist_include_HEADERS) 

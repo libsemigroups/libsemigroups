@@ -20,8 +20,8 @@
 // called TC, which is a subclass of Congruence::DATA.  This class is for
 // performing the Todd-Coxeter algorithm.
 
-#ifndef LIBSEMIGROUPS_CONG_TC_H_
-#define LIBSEMIGROUPS_CONG_TC_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_CONG_TC_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_CONG_TC_H_
 
 #include <stack>
 #include <vector>
@@ -97,4 +97,4 @@ namespace libsemigroups {
     bool                      _tc_done;  // Has Todd-Coxeter been completed?
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_TC_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_CONG_TC_H_

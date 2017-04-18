@@ -21,8 +21,8 @@
 // performing Knuth-Bendix followed by the Froidure-Pin algorithm on the
 // quotient.
 
-#ifndef LIBSEMIGROUPS_CONG_KBFP_H_
-#define LIBSEMIGROUPS_CONG_KBFP_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_CONG_KBFP_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_CONG_KBFP_H_
 
 #include "../cong.h"
 #include "../rws.h"
@@ -65,4 +65,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_CONG_KBFP_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_CONG_KBFP_H_

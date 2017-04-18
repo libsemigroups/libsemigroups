@@ -21,8 +21,8 @@
 // performing Knuth-Bendix followed by the P inner class of Congruence on the
 // quotient.
 
-#ifndef LIBSEMIGROUPS_CONG_KBP_H_
-#define LIBSEMIGROUPS_CONG_KBP_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_CONG_KBP_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_CONG_KBP_H_
 
 #include "../cong.h"
 #include "../rws.h"
@@ -72,4 +72,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_CONG_KBP_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_CONG_KBP_H_

@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_CONG_H_
-#define LIBSEMIGROUPS_CONG_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_CONG_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_CONG_H_
 
 #include <algorithm>
 #include <atomic>
@@ -643,4 +643,4 @@ namespace libsemigroups {
     static size_t const UNDEFINED;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_CONG_H_

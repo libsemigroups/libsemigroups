@@ -19,8 +19,8 @@
 // TODO add max word length etc, number of unique lhs, max stack length, max
 // number of active rules
 
-#ifndef LIBSEMIGROUPS_RWS_H_
-#define LIBSEMIGROUPS_RWS_H_
+#ifndef LIBSEMIGROUPS_SEMIGROUPS_RWS_H_
+#define LIBSEMIGROUPS_SEMIGROUPS_RWS_H_
 
 #include <atomic>
 #include <stack>
@@ -365,4 +365,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_RWS_H_
+#endif  // LIBSEMIGROUPS_SEMIGROUPS_RWS_H_
