@@ -23,8 +23,8 @@
 
 #include "catch.hpp"
 
-#include "../cong.h"
-#include "../rws.h"
+#include "../src/cong.h"
+#include "../src/rws.h"
 
 #define RWS_REPORT false
 

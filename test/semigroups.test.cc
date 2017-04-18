@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../semigroups.h"
+#include "../src/semigroups.h"
 #include "catch.hpp"
 
 #define SEMIGROUPS_REPORT false

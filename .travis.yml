@@ -8,7 +8,17 @@ addons:
     packages:
     - gcc-5
     - g++-5
+before_script:
+  - sudo add-apt-repository ppa:dns/gnu -y
+  - sudo apt-get update -q
+  - sudo apt-get install --only-upgrade autoconf
+  - sudo pip install cpplint
+#  - sudo apt-get install doxygen
+#  - sudo apt-get install ggcov 
+#  - sudo ln -sf /usr/bin/gcov-5 /usr/bin/gcov
+#  - sudo apt-get install -y lcov
+
 install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
-  - make test
+  - ci/travis.sh

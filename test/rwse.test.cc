@@ -18,8 +18,8 @@
 
 #include <utility>
 
-#include "../cong.h"
-#include "../rwse.h"
+#include "../src/cong.h"
+#include "../src/rwse.h"
 #include "catch.hpp"
 
 #define RWSE_REPORT false

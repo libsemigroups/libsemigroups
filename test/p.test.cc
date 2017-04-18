@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "../cong.h"
+#include "../src/cong.h"
 #include "catch.hpp"
 
 #define P_REPORT false

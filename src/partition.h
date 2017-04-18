@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_PARTITION_H_
-#define LIBSEMIGROUPS_PARTITION_H_
+#ifndef LIBSEMIGROUPS_SRC_PARTITION_H_
+#define LIBSEMIGROUPS_SRC_PARTITION_H_
 
 #include <assert.h>
 
@@ -105,4 +105,4 @@ namespace libsemigroups {
     std::vector<std::vector<T*>*>* _parts;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_PARTITION_H_
+#endif  // LIBSEMIGROUPS_SRC_PARTITION_H_

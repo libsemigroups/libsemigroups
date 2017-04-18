@@ -23,15 +23,15 @@
 // fully enumerated, and when the congruence contains a very small number of
 // related pairs.
 
-#ifndef LIBSEMIGROUPS_CONG_P_H_
-#define LIBSEMIGROUPS_CONG_P_H_
+#ifndef LIBSEMIGROUPS_SRC_CONG_P_H_
+#define LIBSEMIGROUPS_SRC_CONG_P_H_
 
 #include <queue>
 #include <utility>
 #include <vector>
 
 #include "../cong.h"
-#include "../util/uf.h"
+#include "../uf.h"
 
 namespace libsemigroups {
   class Congruence::P : public DATA {
@@ -98,4 +98,4 @@ namespace libsemigroups {
     Element*                    _tmp2;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_P_H_
+#endif  // LIBSEMIGROUPS_SRC_CONG_P_H_

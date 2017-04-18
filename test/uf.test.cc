@@ -1,5 +1,5 @@
 //
-// Semigroups++ - C/C++ library for semigroups and monoids
+// libsemigroups - C/C++ library for semigroups and monoids
 // Copyright (C) 2017 Michael Torpey
 //
 // This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 #include <utility>
 
-#include "../util/uf.h"
+#include "../src/uf.h"
 #include "catch.hpp"
 
 #define UF_REPORT false

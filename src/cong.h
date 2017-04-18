@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_CONG_H_
-#define LIBSEMIGROUPS_CONG_H_
+#ifndef LIBSEMIGROUPS_SRC_CONG_H_
+#define LIBSEMIGROUPS_SRC_CONG_H_
 
 #include <algorithm>
 #include <atomic>
@@ -28,8 +28,8 @@
 #include <vector>
 
 #include "partition.h"
+#include "report.h"
 #include "semigroups.h"
-#include "util/report.h"
 
 #define RETURN_FALSE nullptr
 
@@ -643,4 +643,4 @@ namespace libsemigroups {
     static size_t const UNDEFINED;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_H_
+#endif  // LIBSEMIGROUPS_SRC_CONG_H_

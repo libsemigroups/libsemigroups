@@ -18,8 +18,8 @@
 
 #include <utility>
 
-#include "../partition.h"
-#include "../semigroups.h"
+#include "../src/partition.h"
+#include "../src/semigroups.h"
 #include "catch.hpp"
 
 using namespace libsemigroups;

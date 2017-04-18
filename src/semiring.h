@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SEMIRING_H_
-#define LIBSEMIGROUPS_SEMIRING_H_
+#ifndef LIBSEMIGROUPS_SRC_SEMIRING_H_
+#define LIBSEMIGROUPS_SRC_SEMIRING_H_
 
 #include <assert.h>
 #include <limits.h>
@@ -332,4 +332,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SEMIRING_H_
+#endif  // LIBSEMIGROUPS_SRC_SEMIRING_H_

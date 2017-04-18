@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SEMIGROUPS_H_
-#define LIBSEMIGROUPS_SEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
+#define LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
 
 #include <assert.h>
 
@@ -30,8 +30,8 @@
 #include <vector>
 
 #include "elements.h"
-#include "util/recvec.h"
-#include "util/report.h"
+#include "recvec.h"
+#include "report.h"
 
 //! Namespace for everything in the libsemigroups library.
 
@@ -894,4 +894,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_

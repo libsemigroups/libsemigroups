@@ -18,8 +18,8 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
-#ifndef LIBSEMIGROUPS_ELEMENTS_H_
-#define LIBSEMIGROUPS_ELEMENTS_H_
+#ifndef LIBSEMIGROUPS_SRC_ELEMENTS_H_
+#define LIBSEMIGROUPS_SRC_ELEMENTS_H_
 
 #include <assert.h>
 #include <math.h>
@@ -31,8 +31,8 @@
 #include <vector>
 
 #include "blocks.h"
+#include "recvec.h"
 #include "semiring.h"
-#include "util/recvec.h"
 
 #define PP_UNDEFINED PartialTransformation<T, PartialPerm<T>>::UNDEFINED
 
@@ -1368,4 +1368,4 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_ELEMENTS_H_
+#endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_

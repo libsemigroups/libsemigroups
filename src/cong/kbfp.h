@@ -17,59 +17,52 @@
 //
 
 // This file contains the declaration for the private inner class of Congruence
-// called KBP, which is a subclass of Congruence::DATA.  This class is for
-// performing Knuth-Bendix followed by the P inner class of Congruence on the
+// called KBFP, which is a subclass of Congruence::DATA.  This class is for
+// performing Knuth-Bendix followed by the Froidure-Pin algorithm on the
 // quotient.
 
-#ifndef LIBSEMIGROUPS_CONG_KBP_H_
-#define LIBSEMIGROUPS_CONG_KBP_H_
+#ifndef LIBSEMIGROUPS_SRC_CONG_KBFP_H_
+#define LIBSEMIGROUPS_SRC_CONG_KBFP_H_
 
 #include "../cong.h"
 #include "../rws.h"
 #include "../semigroups.h"
-#include "p.h"
 
 namespace libsemigroups {
 
-  // Knuth-Bendix followed by the orbit on pairs algorithm
-  class Congruence::KBP : public Congruence::DATA {
+  // Knuth-Bendix followed by Froidure-Pin
+  class Congruence::KBFP : public Congruence::DATA {
    public:
-    explicit KBP(Congruence& cong)
-        : DATA(cong, 200),
-          _rws(new RWS()),
-          _semigroup(nullptr),
-          _P_cong(nullptr) {}
+    explicit KBFP(Congruence& cong)
+        : DATA(cong, 200), _rws(new RWS()), _semigroup(nullptr) {}
 
-    ~KBP() {
+    ~KBFP() {
       delete _rws;
       delete _semigroup;
-      delete _P_cong;
     }
 
     void run() final;
     void run(size_t steps) final;
 
     bool is_done() const final {
-      return (_semigroup != nullptr) && (_P_cong != nullptr)
-             && (_P_cong->is_done());
+      return (_semigroup != nullptr && _semigroup->is_done());
     }
 
     size_t nr_classes() final {
       assert(is_done());
-      return _P_cong->nr_classes();
+      return _semigroup->size();
     }
 
     class_index_t word_to_class_index(word_t const& word) final;
     result_t current_equals(word_t const& w1, word_t const& w2) final;
-    Partition<word_t>* nontrivial_classes() final;
+    result_t current_less_than(word_t const& w1, word_t const& w2) override;
 
    private:
     void init();
 
-    RWS*        _rws;
-    Semigroup*  _semigroup;
-    Congruence* _P_cong;
+    RWS*       _rws;
+    Semigroup* _semigroup;
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_CONG_KBP_H_
+#endif  // LIBSEMIGROUPS_SRC_CONG_KBFP_H_

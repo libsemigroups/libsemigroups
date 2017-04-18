@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_UTIL_RECVEC_H_
-#define LIBSEMIGROUPS_UTIL_RECVEC_H_
+#ifndef LIBSEMIGROUPS_SRC_RECVEC_H_
+#define LIBSEMIGROUPS_SRC_RECVEC_H_
 
 #include <assert.h>
 
@@ -304,4 +304,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_UTIL_RECVEC_H_
+#endif  // LIBSEMIGROUPS_SRC_RECVEC_H_

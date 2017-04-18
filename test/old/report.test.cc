@@ -21,7 +21,7 @@
 
 #include "catch.hpp"
 
-#include "../util/report.h"
+#include "../src/report.h"
 
 using namespace libsemigroups;
 
@@ -495,11 +495,11 @@ TEST_CASE("Reporter: report, 1 parameter, threads", "[quick][util][reporter]") {
 
   std::string expected;
   if (winner == 0) {
-    expected =
-        "Thread #0: Class::func: Something!Thread #1: Class::func: Something!";
+    expected = "Thread #0: Class::func: Something!Thread #1: Class::func: "
+               "Something!";
   } else {
-    expected =
-        "Thread #1: Class::func: Something!Thread #0: Class::func: Something!";
+    expected = "Thread #1: Class::func: Something!Thread #0: Class::func: "
+               "Something!";
   }
 
   REQUIRE(os->str() == expected);
