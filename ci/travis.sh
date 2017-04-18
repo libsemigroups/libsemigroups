@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+
 mkdir -p m4
 ./autogen.sh
 
@@ -17,3 +18,6 @@ make check-standard -j
 # Check standard tests with assertions on
 etc/ndebug.sh
 make check-standard -j
+
+echo -e "\nRunning cpplint . . ."
+make lint

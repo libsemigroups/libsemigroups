@@ -33,3 +33,5 @@ config
 lstest
 .coverage_build
 .debug_build
+log
+*.gz
