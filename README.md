@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/james-d-mitchell/libsemigroups.svg?branch=master)](https://travis-ci.org/james-d-mitchell/libsemigroups)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/libsemigroups)](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/libsemigroups) 
 
-This is the source code documentation for libsemigroups.
 The current version of libsemigroups is 0.1.0.
 libsemigroups requires a C++ compiler supporting the c++11 standard.
 
