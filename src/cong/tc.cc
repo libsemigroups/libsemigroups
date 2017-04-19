@@ -104,6 +104,8 @@ namespace libsemigroups {
       // This is the first run
       init_tc_relations();
       // Apply each "extra" relation to the first coset only
+      // FIXME couldn't we be prefilled here, in which case the next line
+      // performs a potentially costly computation
       for (relation_t const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
       }
@@ -301,14 +303,15 @@ namespace libsemigroups {
 
   Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
                                                             word_t const& w2) {
-    init();
-    if (is_killed()) {
+    if (!is_done() && is_killed()) {
       // This cannot be reliably tested since it relies on a race condition:
       // if this has been killed since the start of the function, then we return
       // immediately to run_until with an inconclusive answer.  run_until will
       // then quit, and allow the winning DATA to answer the equality test.
       return result_t::UNKNOWN;
     }
+
+    init();
 
     class_index_t c1 = word_to_class_index(w1);
     class_index_t c2 = word_to_class_index(w2);
