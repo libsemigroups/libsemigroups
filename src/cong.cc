@@ -134,7 +134,7 @@ namespace libsemigroups {
       t.at(i).join();
     }
     for (auto winner = data.begin(); winner < data.end(); winner++) {
-      if (!(*winner)->is_killed()) {
+      if ((*winner)->is_done() || !(*winner)->is_killed()) {
         size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
         REPORT("Thread #" << tid << " is the winner!");
         if ((*winner)->is_done()) {

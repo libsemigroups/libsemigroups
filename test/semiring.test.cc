@@ -29,3 +29,14 @@ TEST_CASE("Semiring 01: threshold/period [NaturalSemiring]",
   REQUIRE(sr->period() == 314);
   delete sr;
 }
+
+TEST_CASE("Semiring 02: threshold 0 [NaturalSemiring]", "[quick][semiring") {
+  NaturalSemiring* sr = new NaturalSemiring(0, 7);
+
+  REQUIRE(sr->threshold() == 0);
+  REQUIRE(sr->period() == 7);
+  REQUIRE(sr->plus(5, 6) == 4);
+  REQUIRE(sr->prod(5, 6) == 2);
+
+  delete sr;
+}
