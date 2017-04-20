@@ -15,7 +15,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     version = "0.2.1",
     name = "libsemigroups-python-bindings",
-    description='Python bindings for the libsemigroup mathematics library',
+    description='Python bindings for the libsemigroups mathematics library',
     long_description=long_description,
     url='https://github.com/james-d-mitchell/libsemigroups/tree/master/python-bindings',
     author='James Mitchell and Nicolas M. Thiéry',
