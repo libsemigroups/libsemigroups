@@ -17,5 +17,17 @@ class TestPBR(unittest.TestCase):
         PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], [[2], [-2], [1, -1, 2]])
         PBR([[1, 2], [-2, 1, 2], [3, -3]], [[2, 1], [-2, 2, 1], [1, -1]])
 
+    def test_init_fail(self):
+        with self.assertRaises(TypeError):
+            PBR([[1, -1]], [[1]], [[1]])
+            PBR(set([(1, -1)]), set([(1)]))
+            PBR('a', 2)
+
+        with self.assertRaises(ValueError):
+            PBR([[1, -1], [2, -1]], [[1]])
+            PBR([[1, -1], [-2, -1]], [[0], [-2, -1]])
+            PBR([[1, -1], [-2, -1, 2]], [[3], [-2]])
+            PBR([[1, -1, 3], [-2, -1, 2], [3, 3, -2]], [[2], [-2], [1, -1, 2]])
+
 if __name__ == '__main__':
     unittest.main()
