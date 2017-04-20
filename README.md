@@ -68,6 +68,35 @@ libsemigroups also has some advantages over
   compute congruence of a (not necessarily finitely presented) semigroup or
   monoid.
 
+## Installation
+
+### Installing from source
+
+Installing the C++ library follows the standard steps:
+
+    ./configure
+    make
+    make install
+
+### Installing binary conda package
+
+This installation method assumes that you have anaconda or miniconda
+installed. See the [getting started](https://conda.io/docs/get-started.html)
+and [miniconda download page](https://conda.io/miniconda.html)
+on the [conda](https://conda.io/) web site.
+
+Activate the [conda-forge](https://conda-forge.github.io/) package repository:
+
+    conda config --add channels conda-forge
+
+Install the C++ library (headers, static and shared library):
+
+    conda install libsemigroups
+
+Install the Python bindings (not yet implemented):
+
+    conda install libsemigroups-python-bindings
+
 ## Issues
 If you find any problems with libsemigroups or have any suggestions for features
 that you'd like to see please use the 
