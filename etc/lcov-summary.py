@@ -8,7 +8,7 @@ from os import listdir
 from os.path import isfile, join
 
 _SOURCE_DIRS = ['src', 'src/cong']
-_THRESHOLD = 94.7
+_THRESHOLD = 95.0
 
 _ERR_PREFIX = '\033[31mlcov-summary.py: error: '
 

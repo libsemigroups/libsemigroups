@@ -282,10 +282,14 @@ namespace libsemigroups {
     //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$
     //! with operations addition and multiplication modulo the congruence
     //! \f$t = t + p\f$.
+    //!
+    //! The parameter \p t should be greater than or equal to 0, and the
+    //! parameter \p p must be strictly greater than 0, both which are asserted
+    //! in the constructor.
     NaturalSemiring(int64_t t, int64_t p)
         : SemiringWithThreshold(t), _period(p) {
       assert(_period > 0);
-      assert(this->threshold() > 0);
+      assert(this->threshold() >= 0);
     }
 
     //! Return the integer 1.

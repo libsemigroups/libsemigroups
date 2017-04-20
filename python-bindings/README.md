@@ -18,6 +18,9 @@ Install the python bindings::
 
 Try it out:
 
+    cd python-bindings
+    pip3 install --user . --upgrade
+
     python3
 
     >>> from semigroups import Semigroup, Transformation
