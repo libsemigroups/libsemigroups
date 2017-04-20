@@ -104,12 +104,10 @@ namespace libsemigroups {
       // This is the first run
       init_tc_relations();
       // Apply each "extra" relation to the first coset only
-      // FIXME couldn't we be prefilled here, in which case the next line
-      // performs a potentially costly computation
       for (relation_t const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
       }
-      if (_relations.empty()) {
+      if (_relations.empty() && !_killed) {
         _tc_done = true;
         compress();
         return;
