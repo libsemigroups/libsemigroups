@@ -13,7 +13,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    version = "0.2.0",
+    version = "0.2.1",
     name = "libsemigroups-python-bindings",
     description='Python bindings for the libsemigroup mathematics library',
     long_description=long_description,
