@@ -21,9 +21,15 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 ###Complete the following steps to make a release
 
-1. Make sure that `make check-standard` runs ok and that all changes are committed. 
+1. For a bugfix release be in the `stable-x.y` branch, and for a non-bugfix be in the `master` branch
 
-2. For a bugfix release be in the `stable-x.y` branch, and for a non-bugfix be in the `master` branch
+2. Do the following just to be on the safe side:
+ 
+        make distclean; ./autogen.sh; ./configure
+    
+    just to be on the safe side.
+
+2. Make sure that `make check-standard` runs ok and that all changes are committed. 
 
 3. Check code coverage by running:
 
@@ -37,9 +43,9 @@ add tests to improve the coverage (and start again if necessary).
 5. Update the version numbers in `README.md`, and in `configure.ac`
    and run:
     
-        ./autogen.sh ; ./configure
+        make distclean ; ./autogen.sh ; ./configure
     
-6. Commit the changed version numbers: `git commit -a` 
+6. Commit the changed version numbers: `git commit -a -m "Update version numbers"` 
 
 7. Push to `origin/stable-x.y` (bugfix release) or `origin/master` (non-bugfix release)
 
@@ -65,7 +71,7 @@ add tests to improve the coverage (and start again if necessary).
 
         make dist 
 
-14. Go to github and make a release announcement and add the archive produced at step 13
+14. Go to github and make a release announcement and add the archive produced at step 14
 
 15. If doing a bugfix release then merge `stable-x.y` into `master`, and if doing a non-bugfix release make a new `stable-x.y` branch push it github and delete the old stable branch.
 
