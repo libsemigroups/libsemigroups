@@ -840,6 +840,32 @@ cdef class BooleanMat(Element):#Add 0s, 1s
         return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
 
 cdef class PBR(Element):
+     """
+    A class for handles to libsemigroups PBR. 
+
+    A partitioned binary relation is a generalisation of a Bipartition, where
+    elements are adjacent to some other elements, but a adjacent to b need not
+    imply b adjacent to a.
+
+    Args: Can pass either of the following
+        args (lists):   The adjacencies of the negative elements as a list of
+                        lists followed by the positive elements as a list of
+                        lists
+
+    Raises:
+        TypeError:  If more less than two argments are given, if the given
+                    arguments are not lists.
+
+        ValueError: If there are a different number of positive and negative
+                    elements included in the adjacencies, if any element is
+                    adjacent to another element twice, if an element is
+                    adjacent to an element not in the set.
+
+    Example:
+        >>> from semigroups import PBR
+        >>> PBR([[1], [1, 2, -1]], [[1], [2, -1, 1]])
+        PBR([[1], [1, 2, -1]], [[1], [2, -1, 1]])
+    """
 
     cdef list _negativeAdjacencies, _positiveAdjacencies
 
