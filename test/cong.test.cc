@@ -795,36 +795,34 @@ TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
 
 TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
           "[standard][congruence][multithread]") {
-  std::vector<Element*> gens = {
-    new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7}),
-    new Transformation<u_int16_t>({1, 2, 3, 4, 5, 0, 6, 7}),
-    new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6, 7}),
-    new Transformation<u_int16_t>({0, 1, 2, 3, 4, 0, 6, 7}),
-    new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})
-  };
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7}),
+         new Transformation<u_int16_t>({1, 2, 3, 4, 5, 0, 6, 7}),
+         new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6, 7}),
+         new Transformation<u_int16_t>({0, 1, 2, 3, 4, 0, 6, 7}),
+         new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
   Semigroup S = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
 
-  std::vector<Element*> elms = {
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({1, 1, 1, 1, 1, 1, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({2, 2, 2, 2, 2, 2, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({3, 3, 3, 3, 3, 3, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({4, 4, 4, 4, 4, 4, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
-    new Transformation<u_int16_t>({5, 5, 5, 5, 5, 5, 6, 7}),
-    new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
-    new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})
-  };
+  std::vector<Element*> elms
+      = {new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({1, 1, 1, 1, 1, 1, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({2, 2, 2, 2, 2, 2, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({3, 3, 3, 3, 3, 3, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({4, 4, 4, 4, 4, 4, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 6, 7}),
+         new Transformation<u_int16_t>({5, 5, 5, 5, 5, 5, 6, 7}),
+         new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
+         new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
 
   std::vector<relation_t> extra;
-  word_t   w1, w2;
+  word_t                  w1, w2;
   for (size_t i = 0; i < elms.size(); i += 2) {
     S.factorisation(w1, S.position(elms[i]));
     S.factorisation(w2, S.position(elms[i + 1]));
