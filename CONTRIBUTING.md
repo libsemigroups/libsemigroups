@@ -78,30 +78,28 @@ add tests to improve the coverage (and start again if necessary).
 
 # Information for the maintainer
 
-## Updating the conda package
+## Updating the conda packages
 
-The relevant files are:
-- [meta.yaml](meta.yaml)
-- [build.sh](build.sh)
+The conda recipe for libsemigroups are maintained on a dedicated
+[repository](https://github.com/conda-forge/libsemigroups-feedstock)
+(called feedstock) on [conda forge](https://conda-forge.github.io/).
 
-To update the package:
-- Update the version and md5sum in [meta.yaml](meta.yaml)
+To update the package, compute the new checksum:
 
-- Install conda and go into your conda environment.
-  See the getting started section in the
-  [Conda documentation](https://conda.io/docs/index.html) for details.
+   sha256sum libsemigroups-0.2.1.tar.gz
+   c953f8856af92132f75f182dbc195af68384c1d76c79eaf12bd7ce164c6b7beb
 
-- Run:
+And update the version and sha256sum in meta.yaml.
 
-    ```conda build .```
+You may want to first test the new package locally by cloning the
+feedstock repository and running within:
 
-- Try it with:
-
+    conda build .
     conda install --use-local libsemigroups
-
-- Publish it: See https://conda-forge.github.io/
 
 References:
 
+- [Getting started with Conda](https://conda.io/docs/get-started.html)
 - [Conda's Tutorials on building packages](https://conda.io/docs/build_tutorials.html)
-- A [repository of conda recipes for classical programs](https://github.com/conda/conda-recipes); nice source of inspiration
+- A [repository of conda recipes for classical programs](https://github.com/conda/conda-recipes); nice sources of inspiration
+- [The pull request ]
