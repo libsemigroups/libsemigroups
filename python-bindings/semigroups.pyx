@@ -848,19 +848,23 @@ cdef class PBR(Element):
         if args[0] is not __dummyClass:
             
             if len(args) != 2:
-                raise TypeError
+                raise TypeError('Expected two arguments, the negative and'\
+                                +'positive adjacencies, received %s'%len(args))
 
             if not (isinstance(args[0], list) and isinstance(args[1], list)):
-                raise TypeError
+                raise TypeError('Adjacencies must be lists')
 
             n = len(args[0])
 
             if n != len(args[1]):
-                raise ValueError
+                raise ValueError('Must have same number of positive and' +\
+                                 'negative adjacencies')
 
             for sublist in args[0] + args[1]:
-                if max(abs(min(sublist)), max(sublist)) > n:
-                    raise ValueError
+                if max(abs(min(sublist)), max(sublist)) > n or 0 in sublist:
+                    raise ValueError('Adjacency given outside possible set')
+                if len(sublist) != len(set(sublist)):
+                    raise ValueError('Ajacencies cannot be repeated')
 
             output = [0] * 2 * n
             self._positiveAdjacencies = []
