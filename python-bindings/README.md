@@ -2,15 +2,21 @@
 
 ## Basic instructions
 
-    git clone ...
+Install the libsemigroups C++ library, e.g. from sources:
+
+    git clone https://github.com/james-d-mitchell/libsemigroups/ python-bindings
 
     cd libsemigroups
     make
     sudo make install
     sudo ldconfig
 
+Install the python bindings::
+
     cd python-bindings
     pip3 install --user . --upgrade
+
+Try it out:
 
     python3
 
