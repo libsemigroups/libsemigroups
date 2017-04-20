@@ -152,5 +152,26 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual(Bipartition([-1, -2], [2, -3], [1, 3]).identity(), 
                          Bipartition([1, -1], [2, -2], [3, -3]))
 
+    def test_repr(self):
+        self.assertEqual(eval(Bipartition([1, 2], [-2, -1]).__repr__()),
+                         Bipartition([1, 2], [-2, -1]))
+        self.assertEqual(eval(Bipartition([-1, -2], [2, -3], 
+                                          [1, 3]).__repr__()),
+                         Bipartition([-1, -2], [2, -3], [1, 3]))
+        self.assertEqual(eval(Bipartition([-7, -6, -5, -4], [3, 2, 1], 
+                                     [-3, -2, -1, 4, 5, 6, 7]).__repr__()),
+                         Bipartition([-7, -6, -5, -4], [3, 2, 1], 
+                                     [-3, -2, -1, 4, 5, 6, 7]))
+
+    def test_generator(self):
+        self.assertEqual(list(Bipartition([1, 2], [-2, -1])._generator()),
+                         list([0, 0, 1, 1]))
+        self.assertEqual(list(Bipartition([-1, -2], [2, -3], 
+                                          [1, 3])._generator()),
+                         list([0, 1, 0, 2, 2, 1]))
+        self.assertEqual(list(Bipartition([-7, -6, -5, -4], [3, 2, 1], 
+                                     [-3, -2, -1, 4, 5, 6, 7])._generator()),
+                         list([0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2]))
+
 if __name__ == '__main__':
     unittest.main()

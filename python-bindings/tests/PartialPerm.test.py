@@ -150,5 +150,14 @@ class TestPartialPerm(unittest.TestCase):
         self.assertEqual(PartialPerm([0, 3, 4, 2], [2, 4, 1, 3], 5).identity(),
                          PartialPerm([0, 1, 2, 3, 4], [0, 1, 2, 3, 4], 5))
 
+    def test_repr(self):
+        self.assertEqual(eval(PartialPerm([0, 3, 4, 2], 
+                                          [2, 4, 1, 3], 5).__repr__()),
+                         PartialPerm([0, 3, 4, 2], [2, 4, 1, 3], 5))
+        self.assertEqual(eval(PartialPerm([1, 4, 2], [2, 3, 4], 6).__repr__()),
+                         PartialPerm([1, 4, 2], [2, 3, 4], 6))
+        self.assertEqual(eval(PartialPerm([1, 2, 3], [2, 1, 0], 5).__repr__()),
+                         PartialPerm([1, 2, 3], [2, 1, 0], 5))
+
 if __name__ == '__main__':
     unittest.main()

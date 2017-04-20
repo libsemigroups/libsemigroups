@@ -142,5 +142,21 @@ class TestPartialPerm(unittest.TestCase):
                           [False, False, False]])
         self.assertEqual(BooleanMat([False]).rows(), [[False]])
 
+    def test_repr(self):
+        self.assertEqual(eval(BooleanMat([True, True], [False, False]).__repr__()),
+                         BooleanMat([True, True], [False, False]))
+        self.assertEqual(eval(BooleanMat([False, True, True],
+                                    [True, True, False],
+                                    [False, False, False]).__repr__()),
+                         BooleanMat([False, True, True],
+                                    [True, True, False],
+                                    [False, False, False]))
+        self.assertEqual(eval(BooleanMat([True, False, False],
+                                    [False, True, False],
+                                    [False, False, True]).__repr__()),
+                         BooleanMat([True, False, False],
+                                    [False, True, False],
+                                    [False, False, True]))
+
 if __name__ == '__main__':
     unittest.main()
