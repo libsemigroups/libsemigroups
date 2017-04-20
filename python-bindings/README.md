@@ -6,6 +6,10 @@ Install the libsemigroups C++ library, e.g. from sources:
 
     git clone https://github.com/james-d-mitchell/libsemigroups/ python-bindings
 
+    git checkout autotools
+    ./autogen.sh
+    ./configure
+
     cd libsemigroups
     make
     sudo make install
