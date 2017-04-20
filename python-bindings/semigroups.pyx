@@ -888,13 +888,31 @@ cdef class PBR(Element):
 
             self._handle = new cpp.PBR(output)
 
-#    def _generator(self):
-#        cdef cpp.Element* e = self._handle
-#        e2 = <cpp.PBR *>e
-#        for x in e2[0]:
-#            yield x
+    def _generator(self):
+        cdef cpp.Element* e = self._handle
+        e2 = <cpp.PBR *>e
+        for x in e2[0]:
+            yield x
+
+    def _init_adjacencies(self):
+        if self._negativeAdjacencies is None or \
+           self._positiveAdjacencies is None:
+            n = self.degree()
+            self._negativeAdjacencies, self._positiveAdjacencies = [], []
+            for i,sublist in enumerate(self._generator()):
+                newSublist = []
+                for entry in sublist:
+                    if entry < n:
+                        newSublist.append(entry + 1)
+                    else:
+                        newSublist.append(n - entry - 1)
+                if i < n:
+                    self._positiveAdjacencies.append(newSublist)
+                else:
+                    self._negativeAdjacencies.append(newSublist)
 
     def __repr__(self):
+        self._init_adjacencies()
         return "PBR(%s, %s)"%(self._negativeAdjacencies.__repr__(), self._positiveAdjacencies.__repr__())
     
 

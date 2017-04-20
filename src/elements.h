@@ -1295,6 +1295,8 @@ namespace libsemigroups {
     explicit PBR(std::vector<std::vector<u_int32_t>>* vector,
                  size_t                               hv = Element::UNDEFINED)
         : ElementWithVectorData<std::vector<u_int32_t>, PBR>(vector, hv) {}
+    explicit PBR(std::vector<std::vector<u_int32_t>> const& vector)
+       : PBR(new std::vector<std::vector<u_int32_t>>(vector)) {}
     // TODO(JDM) a more convenient constructor
 
     //! Returns the approximate time complexity of multiplying PBRs.
