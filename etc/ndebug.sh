@@ -2,6 +2,8 @@
 set -e
 
 if [ -f .debug_build ] || [ -f .coverage_build ]; then
-  make clean
+  if [ -f Makefile ]; then 
+    make clean
+  fi
   ./configure
 fi
