@@ -151,7 +151,7 @@ namespace libsemigroups {
         }
       }
     }
-    u.erase(v_end, u.cend());
+    u.erase(v_end - u.cbegin());
   }
 
   // CONFLUENT from Sims, p62
