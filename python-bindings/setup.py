@@ -1,5 +1,6 @@
-from setuptools import setup
-from distutils.extension import Extension
+# -*- coding: utf-8 -*-
+
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 from codecs import open
 from os import path
@@ -11,20 +12,20 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    version = "0.2.0",
+    version = "0.2.1.2",
     name = "libsemigroups-python-bindings",
-    description='Python bindings for the libsemigroup mathematics library',
+    description='Python bindings for the libsemigroups mathematics library',
     long_description=long_description,
     url='https://github.com/james-d-mitchell/libsemigroups/tree/master/python-bindings',
     author='James Mitchell and Nicolas M. Thiéry',
     author_email='TODO',
-    license='GPLv2+',
+    license='GPLv3',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Mathematics',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
     ],
@@ -40,4 +41,6 @@ setup(
 
     setup_requires=['pytest-runner', 'pytest-cython'],
     tests_require=['pytest'],
+    # Shouldn't setuptools automatically include the .pyx in the source distribution?
+    data_files=['README.md','semigroups.pyx'],
 )
