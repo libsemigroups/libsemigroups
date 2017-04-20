@@ -28,16 +28,19 @@ libsemigroups_la_SOURCES += src/elements.cc src/semigroups.cc
 libsemigroups_la_SOURCES += src/rws.cc	    src/rwse.cc
 libsemigroups_la_SOURCES += src/uf.cc
 
+libsemigroups_la_CPPFLAGS = -DCONFIG_H
+
 ## Extra files for the distribution
 
-EXTRA_DIST =  src/cong/kbfp.h src/cong/kbp.h 
-EXTRA_DIST += src/cong/p.h    src/cong/tc.h
-EXTRA_DIST += test/catch.hpp
+LINT_FORMAT_FILES_EXTRA = src/cong/kbfp.h src/cong/kbp.h 
+LINT_FORMAT_FILES_EXTRA += src/cong/p.h    src/cong/tc.h
+LINT_FORMAT_FILES_EXTRA += test/catch.hpp
 
-EXTRA_DIST += src/cong/kbfp.cc src/cong/kbp.cc 
-EXTRA_DIST += src/cong/p.cc    src/cong/tc.cc
+LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc src/cong/kbp.cc 
+LINT_FORMAT_FILES_EXTRA += src/cong/p.cc    src/cong/tc.cc
 
-libsemigroups_la_CPPFLAGS = -DCONFIG_H
+EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
+EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 
 ## lstest sources 
 
@@ -88,15 +91,16 @@ check-all: check
 format: 
 	@echo "Running clang-format . . .";  
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@clang-format -i $(EXTRA_DIST) $(lstest_SOURCES)
+	@clang-format -i $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
 	@git checkout HEAD -- test/catch.hpp
 
 lint: 
 	@echo "Running cpplint . . .";  
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@cpplint $(EXTRA_DIST) $(lstest_SOURCES)
+	@cpplint $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
 	
 doc:
 	@echo "Generating documentation . . ."; \
 	doxygen Doxyfile
 	@echo "See: html/index.html";
+

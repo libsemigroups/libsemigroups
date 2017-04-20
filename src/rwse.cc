@@ -22,10 +22,6 @@
 #include <string>
 
 namespace libsemigroups {
-  // The number 5 in the next line is the current maximum thread_id.
-  // There should be a better way of finding this out.
-  std::vector<rws_word_t> RWSE::_buf(5, rws_word_t());
-
   bool RWSE::operator<(const Element& that) const {
     rws_word_t u = *(this->_rws_word);
     rws_word_t v = *(static_cast<RWSE const&>(that)._rws_word);
@@ -51,16 +47,14 @@ namespace libsemigroups {
     reset_hash_value();
   }
 
-  void
-  RWSE::redefine(Element const* x, Element const* y, size_t const& thread_id) {
+  void RWSE::redefine(Element const* x, Element const* y) {
     RWSE const* xx = static_cast<RWSE const*>(x);
     RWSE const* yy = static_cast<RWSE const*>(y);
     assert(xx->_rws == yy->_rws);
-    rws_word_t buf = _buf[thread_id];
     _rws_word->clear();
     _rws_word->append(*(xx->_rws_word));
     _rws_word->append(*(yy->_rws_word));
-    _rws->rewrite(_rws_word, buf);
+    _rws->rewrite(_rws_word);
     this->reset_hash_value();
   }
 }  // namespace libsemigroups

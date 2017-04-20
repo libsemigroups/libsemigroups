@@ -39,8 +39,7 @@ namespace libsemigroups {
     RWSE(RWS* rws, rws_word_t* w, bool reduce, size_t hv)
         : Element(hv, Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
       if (reduce) {
-        rws_word_t buf;
-        _rws->rewrite(_rws_word, buf);
+        _rws->rewrite(_rws_word);
       }
     }
 
@@ -166,9 +165,7 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const* x,
-                  Element const* y,
-                  size_t const&  thread_id) override;
+    void redefine(Element const* x, Element const* y) override;
 
     //! Returns a pointer to the rws_word_t used to create \c this.
     rws_word_t* get_rws_word() const {
@@ -177,9 +174,8 @@ namespace libsemigroups {
 
    private:
     // TODO const!
-    RWS*                           _rws;
-    rws_word_t*                    _rws_word;
-    static std::vector<rws_word_t> _buf;
+    RWS*        _rws;
+    rws_word_t* _rws_word;
   };
 }  // namespace libsemigroups
 

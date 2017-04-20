@@ -100,35 +100,58 @@ namespace libsemigroups {
     }
   }
 
+  // Replace [it1_begin .. it1_begin + (it2_end - it2_begin)] by
+  // [it2_begin .. it2_end], no checks performed.
+  static inline void
+  string_replace(typename std::string::iterator       it1_begin,
+                 typename std::string::const_iterator it2_begin,
+                 typename std::string::const_iterator it2_end) {
+    while (it2_begin < it2_end) {
+      *it1_begin = *it2_begin;
+      it1_begin++;
+      it2_begin++;
+    }
+  }
+  // TODO collect minimum active rule length and just don't do anything if we
+  // are trying to rewrite a shorter word
+  //
+
   // REWRITE_FROM_LEFT from Sims, p67
-  void RWS::rewrite(rws_word_t& w, rws_word_t& buf) const {
-    buf.swap(w);
-    w.clear();
-    while (!buf.empty()) {
-      w.push_back(buf[0]);
-      buf.erase(buf.begin());
+  // Caution: this contains the assumption that rules are length reducing!
+  void RWS::rewrite(rws_word_t& u) const {
+    auto v_begin = u.begin();
+    auto v_end   = u.begin();
+    auto w_begin = u.begin();
+    auto w_end   = u.end();
+
+    while (w_begin != w_end) {
+      *v_end = *w_begin;
+      v_end++;
+      w_begin++;
       for (std::pair<rws_rule_t, bool> const& x : _rules) {
-        if (x.second) {
-          rws_rule_t rule = x.first;
-          if (rule.first.size() <= w.size()) {
-            // Check if rule.first is a suffix of v
-            auto it     = w.end() - 1;
-            auto first1 = rule.first.cend() - 1;
-            auto last1  = rule.first.cbegin();
-            while ((first1 > last1) && (*first1 == *it)) {
-              --first1;
-              --it;
-            }
-            if (*first1 == *it) {  // rule.first is suffix of v
-              w.erase(it, w.end());
-              buf.insert(buf.begin(), rule.second.cbegin(), rule.second.cend());
-              break;
-            }
+        // TODO use minimum active rule length here for v, if v is too short
+        // then skip this entire loop
+        if (x.second
+            && x.first.first.size() <= static_cast<size_t>(v_end - v_begin)) {
+          // x.first is an active rule, and isn't too long to be a suffix of v
+          auto rule_cbegin = x.first.first.cbegin();
+          auto rule_pos    = x.first.first.cend() - 1;
+          auto v_pos       = v_end - 1;
+          while ((rule_pos > rule_cbegin) && (*rule_pos == *v_pos)) {
+            --rule_pos;
+            --v_pos;
+          }
+          if (*rule_pos == *v_pos) {  // x.first.first is suffix of v
+            v_end = v_pos;
+            w_begin -= x.first.second.size();
+            string_replace(
+                w_begin, x.first.second.cbegin(), x.first.second.cend());
+            break;
           }
         }
       }
     }
-    // std::cout << v << std::endl;
+    u.erase(v_end - u.cbegin());
   }
 
   // CONFLUENT from Sims, p62
@@ -136,8 +159,6 @@ namespace libsemigroups {
     if (_confluence_known) {
       return _is_confluent;
     }
-
-    rws_word_t buf;
 
     for (size_t i = 0; i < _rules.size() && !killed; i++) {
       if (_rules[i].second) {  // _rules[i] is active
@@ -160,11 +181,11 @@ namespace libsemigroups {
                   rws_word_t v = rws_word_t(rule1.first.cbegin(), it);  // A
                   v.append(rule2.second);                               // S
                   v.append(prefix.first, rule1.first.cend());           // D
-                  rewrite(v, buf);
+                  rewrite(v);
 
                   rws_word_t w = rule1.second;                  // Q
                   w.append(prefix.second, rule2.first.cend());  // E
-                  rewrite(w, buf);
+                  rewrite(w);
                   if (v != w) {
                     _confluence_known = true;
                     _is_confluent     = false;
@@ -186,12 +207,12 @@ namespace libsemigroups {
   }
 
   // TEST_2 from Sims, p76
-  void RWS::clear_stack(std::atomic<bool>& killed, rws_word_t& buf) {
+  void RWS::clear_stack(std::atomic<bool>& killed) {
     while (!_stack.empty() && !killed) {
-      rws_rule_t uv = _stack.top();
+      rws_rule_t uv = _stack.top();  // FIXME copy!
       _stack.pop();
-      rewrite(uv.first, buf);
-      rewrite(uv.second, buf);
+      rewrite(uv.first);
+      rewrite(uv.second);
       if (uv.first != uv.second) {
         rws_rule_t ab = add_rule(uv);
         // a -> b must be added at the end of _rules
@@ -207,7 +228,7 @@ namespace libsemigroups {
             } else {
               pos = rule.second.find(a);
               if (pos != std::string::npos) {
-                rewrite(rule.second, buf);
+                rewrite(rule.second);
               }
             }
           }
@@ -222,8 +243,7 @@ namespace libsemigroups {
   }
 
   // OVERLAP_2 from Sims, p77
-  void
-  RWS::overlap(size_t i, size_t j, std::atomic<bool>& killed, rws_word_t& buf) {
+  void RWS::overlap(size_t i, size_t j, std::atomic<bool>& killed) {
     // Assert both rules are active
     assert(_rules[i].second && _rules[j].second);
     rws_rule_t u = _rules[i].first;
@@ -249,7 +269,7 @@ namespace libsemigroups {
         rws_word_t b = u.second;                                          // Q_i
         b.append(it, v.first.cend());                                     // C
         _stack.emplace(rws_rule_t(a, b));
-        clear_stack(killed, buf);
+        clear_stack(killed);
       }
     }
   }
@@ -260,12 +280,11 @@ namespace libsemigroups {
       REPORT("the system is confluent already");
       return;
     }
-    rws_word_t buf;
     // Reduce the rules
     for (size_t i = 0; i < _rules.size() && !killed; i++) {
       if (_rules[i].second) {
         _stack.push(_rules[i].first);
-        clear_stack(killed, buf);
+        clear_stack(killed);
       }
     }
     size_t nr = 0;
@@ -274,11 +293,11 @@ namespace libsemigroups {
       for (size_t j = 0; j <= i && _rules[i].second && !killed; j++) {
         if (_rules[j].second) {  // _rules[j] is active
           nr++;
-          overlap(i, j, killed, buf);
+          overlap(i, j, killed);
         }
         if (j < i && _rules[i].second && _rules[j].second) {
           nr++;
-          overlap(j, i, killed, buf);
+          overlap(j, i, killed);
         }
       }
       if (nr > 1024) {
