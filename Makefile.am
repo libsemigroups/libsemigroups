@@ -28,6 +28,8 @@ libsemigroups_la_SOURCES += src/elements.cc src/semigroups.cc
 libsemigroups_la_SOURCES += src/rws.cc	    src/rwse.cc
 libsemigroups_la_SOURCES += src/uf.cc
 
+libsemigroups_la_CPPFLAGS = -DCONFIG_H
+
 ## Extra files for the distribution
 
 EXTRA_DIST =  src/cong/kbfp.h src/cong/kbp.h 
@@ -37,7 +39,7 @@ EXTRA_DIST += test/catch.hpp
 EXTRA_DIST += src/cong/kbfp.cc src/cong/kbp.cc 
 EXTRA_DIST += src/cong/p.cc    src/cong/tc.cc
 
-libsemigroups_la_CPPFLAGS = -DCONFIG_H
+EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 
 ## lstest sources 
 
