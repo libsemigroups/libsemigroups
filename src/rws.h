@@ -56,12 +56,17 @@ namespace libsemigroups {
     explicit RO(std::function<bool(rws_word_t const&, rws_word_t const&)> func)
         : _func(func) {}
 
-    //! Returns \c true if \p p is greater than the word \p q.
-    //!
-    //! This method returns \c true if the word \p p is greater than the word
+    //! Returns \c true if the word \p p is greater than the word
     //! \p q in the reduction ordering.
     size_t operator()(rws_word_t const& p, rws_word_t const& q) const {
       return _func(p, q);
+    }
+
+    //! Returns \c true if the libsemigroups::rws_word_t pointed to by \p p is
+    //! greater than the libsemigroups::rws_word_t pointed to by \p q in the
+    //! reduction ordering.
+    size_t operator()(rws_word_t const* p, rws_word_t const* q) const {
+      return _func(*p, *q);
     }
 
    private:
@@ -199,26 +204,22 @@ namespace libsemigroups {
       return _nr_active_rules;
     }
 
-    //! Rewrites \p w in-place according to the
-    //! current rules in the rewriting system.
-    //!
-    //! The second parameter \p buf is used a buffer during the rewriting.
-    void rewrite(rws_word_t& w, rws_word_t& buf) const;
+    //! Rewrites the parameter \p w in-place according to the current rules in
+    //! the rewriting system.
+    void rewrite(rws_word_t& w) const;
 
     //! Rewrites the libsemigroups::rws_word_t pointed to by \p w
     //! in-place according to the current rules in the rewriting system.
-    //!
-    //! The second parameter \p buf is used a buffer during the rewriting.
-    void rewrite(rws_word_t* w, rws_word_t& buf) const {
-      rewrite(*w, buf);
+    void rewrite(rws_word_t* w) const {
+      rewrite(*w);
     }
 
-    //! Returns \p w rewritten according to the current rules in the rewriting
-    //! system.
-    rws_word_t rewrite(rws_word_t w) const {
-      rws_word_t buf;
-      rewrite(w, buf);
-      return w;
+    //! Rewrites the parameter \p w  according to the current rules in
+    //! the rewriting system.
+    rws_word_t rewrite(rws_word_t const& w) const {
+      rws_word_t ww(w);
+      rewrite(ww);
+      return ww;
     }
 
     //! Run the [Knuth-Bendix
@@ -350,9 +351,8 @@ namespace libsemigroups {
       _rules[i].second = false;
     }
 
-    void clear_stack(std::atomic<bool>& killed, rws_word_t& buf);
-    void
-    overlap(size_t i, size_t j, std::atomic<bool>& killed, rws_word_t& buf);
+    void clear_stack(std::atomic<bool>& killed);
+    void overlap(size_t i, size_t j, std::atomic<bool>& killed);
 
     mutable bool _confluence_known;
     mutable bool _is_confluent;
