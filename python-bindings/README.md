@@ -25,6 +25,21 @@ Try it out:
     >>> S.size()
     5
 
+## Uploading the package to pipy
+
+Build the binary wheel:
+
+    rm -rf dist
+    python setup.py sdist bdist_wheel
+
+The first time:
+
+    twine register dist/*
+
+For latter releases:
+
+    twine upload -s dist/*
+
 ## Trick to debug segmentation faults
 
 Install Sage
