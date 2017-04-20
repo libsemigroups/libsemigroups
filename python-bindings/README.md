@@ -34,7 +34,7 @@ Build the binary wheel:
 
 The first time:
 
-    twine register dist/*
+    twine register dist/*.tar.gz
 
 For latter releases:
 
