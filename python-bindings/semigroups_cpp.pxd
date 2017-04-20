@@ -31,9 +31,31 @@ cdef extern from "libsemigroups/semigroups.h" namespace "libsemigroups":
         vector[T] _vector
         vector[T].iterator begin()
         vector[T].iterator end()
+        int crank()
     cdef cppclass Bipartition(Element):
         Bipartition(vector[uint32_t]) except +
         vector[uint32_t] _vector
+        vector[uint32_t].iterator begin()
+        vector[uint32_t].iterator end()
+        int const_nr_blocks()
+        int block(uint32_t)
+        bool is_transverse_block(size_t)
+    cdef cppclass BooleanMat(Element):
+        BooleanMat(vector[vector[bool]]) except +
+        vector[vector[bool]] _vector
+        vector[vector[bool]].iterator begin()
+        vector[vector[bool]].iterator end()
+        vector[bool] _vector
+        vector[bool].iterator begin()
+        vector[bool].iterator end()
+    cdef cppclass PBR(Element):
+        PBR(vector[vector[uint32_t]]) except +
+        vector[vector[uint32_t]]  _vector
+        vector[vector[uint32_t]].iterator begin()
+        vector[vector[uint32_t]].iterator end()
+        vector[uint32_t] _vector
+        vector[uint32_t].iterator begin()
+        vector[uint32_t].iterator end()
     cdef cppclass Semigroup:
         # ctypedef pos_t # can't declare it here; this is private!
         Semigroup(vector[Element*]) except +
