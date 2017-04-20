@@ -30,7 +30,7 @@ Try it out:
 Build the binary wheel:
 
     rm -rf dist
-    python setup.py sdist bdist_wheel
+    python setup.py sdist
 
 The first time:
 
@@ -38,7 +38,7 @@ The first time:
 
 For latter releases:
 
-    twine upload -s dist/*
+    twine upload -s dist/*.tar.gz
 
 ## Trick to debug segmentation faults
 
