@@ -42,4 +42,5 @@ setup(
 
     setup_requires=['pytest-runner', 'pytest-cython'],
     tests_require=['pytest'],
+    data_files=['README.md'], 
 )
