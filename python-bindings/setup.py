@@ -41,5 +41,6 @@ setup(
 
     setup_requires=['pytest-runner', 'pytest-cython'],
     tests_require=['pytest'],
-    data_files=['README.md'], 
+    # Shouldn't setuptools automatically include the .pyx in the source distribution?
+    data_files=['README.md','semigroups.pyx'],
 )
