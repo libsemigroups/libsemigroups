@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/james-d-mitchell/libsemigroups.svg?branch=master)](https://travis-ci.org/james-d-mitchell/libsemigroups)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/libsemigroups)](https://ci.appveyor.com/api/projects/status/github/james-d-mitchell/libsemigroups) 
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/metpy/badges/installer/conda.svg)](https://conda.anaconda.org/conda-forge)
 
 The current version of libsemigroups is 0.2.2.
 libsemigroups requires a C++ compiler supporting the c++11 standard.
