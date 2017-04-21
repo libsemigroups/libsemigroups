@@ -136,7 +136,7 @@ cdef class Element:# Add identity
         """
         if not(isinstance(power, int)):
             raise TypeError('Can only power by int')
-        if power < 0:
+        if power <= 0:
             raise ValueError('Power must be positive')
 
         #Converts power to binary, then constructs element to the power of 2^n for needed n.
