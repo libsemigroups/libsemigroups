@@ -20,13 +20,18 @@ class TestPBR(unittest.TestCase):
     def test_init_fail(self):
         with self.assertRaises(TypeError):
             PBR([[1, -1]], [[1]], [[1]])
+        with self.assertRaises(TypeError):
             PBR(set([(1, -1)]), set([(1)]))
+        with self.assertRaises(TypeError):
             PBR('a', 2)
 
         with self.assertRaises(ValueError):
             PBR([[1, -1], [2, -1]], [[1]])
+        with self.assertRaises(ValueError):
             PBR([[1, -1], [-2, -1]], [[0], [-2, -1]])
+        with self.assertRaises(ValueError):
             PBR([[1, -1], [-2, -1, 2]], [[3], [-2]])
+        with self.assertRaises(ValueError):
             PBR([[1, -1, 3], [-2, -1, 2], [3, 3, -2]], [[2], [-2], [1, -1, 2]])
 
     def test_richcmp(self):
@@ -51,10 +56,43 @@ class TestPBR(unittest.TestCase):
             PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], 
                 [[2], [-2], [1, -1, 2]]) == \
             Bipartition([1, -1], [2, 3, -2], [-3])
+        with self.assertRaises(TypeError):
             PBR([[1, -1], [-2, -1]], [[1], [-2, -1]]) < Transformation([0, 1])
+        with self.assertRaises(TypeError):
             PBR([[1, -1], [-2, -1]], [[1], [-2, -1]]) != \
             PartialPerm([0, 1], [1, 0], 2)
+        with self.assertRaises(TypeError):
             PBR([[1, -1]], [[1]]) < 3
+
+    def test_mul(self):
+        self.assertEqual(PBR([[1, -1]], [[1]]) * PBR([[1, -1]], [[1]]),
+                         PBR([[1, -1]], [[1]]))
+        self.assertEqual(PBR([[1, -1], [-2, -1]], [[1], [-2, -1]]) * \
+                         PBR([[-1, 1, 2], [2]], [[-1, 1], [-2, 2]]),
+                         PBR([[1, -1, -2], [1, -1, -2]], [[1], [1, -1, -2]]))
+        self.assertEqual(PBR([[-1, 1, 2], [2]], [[-1, 1], [-2, 2]]) * \
+                         PBR([[1, -1], [-2, -1]], [[1], [-2, -1]]),
+                         PBR([[1, 2, -1], [-1, -2]], [[1, 2], [2, -1, -2]]))
+        self.assertEqual(PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], 
+                             [[2], [-2], [1, -1, 2]]) * \
+                         PBR([[1, -1, 3], [-2, -1, 2], [3, -3, -2]], 
+                             [[1, 2], [-2, 3, -3], [1, -1]]),
+                         PBR([[1, 2, 3, -1, -2, -3], 
+                              [1, 2, 3, -1, -2, -3], [3, -2, -3]], 
+                              [[2], [3, -2, -3], [1, 2, 3, -2, -3]]))
+
+        with self.assertRaises(TypeError):
+            Transformation([0, 2, 1]) * \
+            PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], [[2], [-2], [1, -1, 2]])
+        with self.assertRaises(TypeError):
+            PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], [[2], [-2], [1, -1, 2]]) * \
+            Bipartition([1, -1], [2, 3, -3], [-2])
+        with self.assertRaises(TypeError):
+            PBR([[1, -1]], [[1]]) * 0.142857
+
+        with self.assertRaises(ValueError):
+            PBR([[1, -1, 3], [-2, -1, 2], [3, -2]], [[2], [-2], [1, -1, 2]]) * \
+            PBR([[1, -1]], [[1]])
 
 if __name__ == '__main__':
     unittest.main()
