@@ -77,8 +77,9 @@ that you'd like to see please use the
 The documentation is generated using
 [doxygen](https://www.doxygen.org) and is available
 [here](http://james-d-mitchell.github.io/libsemigroups/).
-This documentation can be compiled by running `make doc` in the `libsemigroups`
-directory, and the tests can be run by doing `make test` in the `libsemigroups`
+This documentation can be compiled by running `./autogen.sh ; ./configure ;
+make doc` in the `libsemigroups` directory, and the tests can be run by doing
+`make check` in the `libsemigroups`
 directory.
 
 
