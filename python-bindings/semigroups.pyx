@@ -826,14 +826,14 @@ cdef class BooleanMat(Element):#Add 0s, 1s
         if self._int_rows is not None:
             return
         n = self.degree()
-        self._rows = []
+        self._int_rows = []
         row = []
         for i,entry in enumerate(self._generator()):
             if i % n == 0 and i !=0:
-                self._rows.append(row)
+                self._int_rows.append(row)
                 row = []
             row.append(int(entry))
-        self._rows.append(row)
+        self._int_rows.append(row)
 
     def rows(self):
         """
