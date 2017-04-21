@@ -771,6 +771,8 @@ cdef class BooleanMat(Element):#Add 0s, 1s
                     raise ValueError
 
             t = type(args[0][0])
+            if not t in set([type(True), int]):
+                raise TypeError
 
             for row in args:
                 for entry in row:
