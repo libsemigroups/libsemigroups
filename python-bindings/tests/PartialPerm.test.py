@@ -19,18 +19,28 @@ class TestPartialPerm(unittest.TestCase):
     def test_init_fail(self):
         with self.assertRaises(ValueError):
             PartialPerm([1, 3], [0, 1], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([1, 2], [3, 2], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([-2, 2], [0, 1], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([1, 2], [-1, 2], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([1, 2], [2, 2], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([1, 1], [0, 2], 3)
+        with self.assertRaises(ValueError):
             PartialPerm([], [], -1)
+        with self.assertRaises(ValueError):
             PartialPerm([1, 2], [0, 1, 2], 3)
 
         with self.assertRaises(TypeError):
             PartialPerm([1, 2], [0, 'i'], 3)
+        with self.assertRaises(TypeError):
             PartialPerm([1, [0]], [1, 2], 3)
+        with self.assertRaises(TypeError):
             PartialPerm([0, 1], [2, 3], [4])
+        with self.assertRaises(TypeError):
             PartialPerm([0, 1], [2, 3], 4.3)
 
     def test_richcmp(self):
@@ -58,7 +68,9 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             PartialPerm([1, 2], [2, 1], 3) == \
             Bipartition([1, -1], [2, 3, -2], [-3])
+        with self.assertRaises(TypeError):
             PartialPerm([0, 1], [0, 1], 2) < Transformation([0, 1])
+        with self.assertRaises(TypeError):
             PartialPerm([0, 1], [0, 1], 2) != Transformation([0, 1])
 
     def test_mul(self):
@@ -76,6 +88,7 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             PartialPerm([0, 1], [0, 1], 2) * Transformation([0, 1])
+        with self.assertRaises(TypeError):
             PartialPerm([0, 1], [0, 1], 2) * Bipartition([-2, 1], [-1, 2])
 
         with self.assertRaises(ValueError):
@@ -92,10 +105,12 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             PartialPerm([1,2],[0,1],3)**-1
+        with self.assertRaises(ValueError):
             PartialPerm([1, 2, 4, 6, 7, 23], [0, 5, 2, 4, 6, 7], 26) ** 0
 
         with self.assertRaises(TypeError):
             PartialPerm([0, 1], [0, 1], 2) ** 1.5
+        with self.assertRaises(TypeError):
             PartialPerm([1, 4, 2], [2, 3, 4], 6) ** 'a'
 
     def test_rank(self):

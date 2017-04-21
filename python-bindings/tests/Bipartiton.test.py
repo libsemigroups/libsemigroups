@@ -18,10 +18,12 @@ class TestPartialPerm(unittest.TestCase):
     def test_init_fail(self):
         with self.assertRaises(ValueError):
             Bipartition([1, -1, 2])
+        with self.assertRaises(ValueError):
             Bipartition([1, 2, 3], [-3, -2])
 
         with self.assertRaises(TypeError):
             Bipartition([1, 2, 3], (-1, -2, -3))
+        with self.assertRaises(TypeError):
             Bipartition(1, 2, -1, -2)
 
     def test_richcmp(self):
@@ -41,7 +43,9 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             PartialPerm([1, 2], [2, 1], 3) == \
             Bipartition([1, -1], [2, 3, -2], [-3])
+        with self.assertRaises(TypeError):
             Bipartition([1, -1], [2, -2]) < Transformation([0, 1])
+        with self.assertRaises(TypeError):
             Bipartition([1, -1], [2, -2]) != Transformation([0, 1])
 
     def test_mul(self):
@@ -58,7 +62,9 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             Bipartition([1, -1], [2, 3, -3], [-2]) * \
             PartialPerm([0, 1], [1, 2], 3)
+        with self.assertRaises(TypeError):
             Transformation([0, 2, 1]) * Bipartition([1, -1], [2, 3, -3], [-2])
+        with self.assertRaises(TypeError):
             Bipartition([1, -1], [2, 3, -3], [-2]) * 26
 
         with self.assertRaises(ValueError):
@@ -77,10 +83,12 @@ class TestPartialPerm(unittest.TestCase):
  
         with self.assertRaises(ValueError):
             Bipartition([1, -1, 2, -2]) ** -26
+        with self.assertRaises(ValueError):
             Bipartition([1], [-1, 2, -2]) ** 0
 
         with self.assertRaises(TypeError):
             Bipartition([1, 2], [-1], [-2]) ** 3.141592653589793238462643383279
+        with self.assertRaises(TypeError):
             Bipartition([1, 2], [-1], [-2]) ** 'c'
 
     def test_dealloc(self):
@@ -88,7 +96,9 @@ class TestPartialPerm(unittest.TestCase):
         B = Bipartition([-7, -6, -5, -4], [3, 2, 1], [-3, -2, -1, 4, 5, 6, 7])
         del A, B
         with self.assertRaises(NameError):
-            A; B
+            A
+        with self.assertRaises(NameError):
+            B
 
     def test_blocks(self):
         self.assertEqual(Bipartition([1,2],[-2,-1]).blocks(), 
@@ -121,8 +131,10 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Bipartition([1, 2], [-2, -1]).block(-3)
+        with self.assertRaises(ValueError):
             Bipartition([-7, -6, -5, -4], [3, 2, 1], 
                         [-3, -2, -1, 4, 5, 6, 7]).block(26)
+        with self.assertRaises(ValueError):
             Bipartition([-1, -2], [2, -3], [1, 3]).block('a')
 
     def test_isTransverseBlock(self):
@@ -135,11 +147,13 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(IndexError):
             Bipartition([1, 2], [-2, -1]).isTransverseBlock(-3)
+        with self.assertRaises(IndexError):
             Bipartition([-7, -6, -5, -4], [3, 2, 1], 
                         [-3, -2, -1, 4, 5, 6, 7]).isTransverseBlock(26)
 
         with self.assertRaises(TypeError):
             Bipartition([-1, -2], [2, -3], [1, 3]).isTransverseBlock('a')
+        with self.assertRaises(TypeError):
             Bipartition([-1, -2], [2, -3], [1, 3]).isTransverseBlock([7, 26])
 
     def test_identity(self):

@@ -20,14 +20,20 @@ class TestPartialPerm(unittest.TestCase):
     def test_init_fail(self):
         with self.assertRaises(TypeError):
             BooleanMat(True)
+        with self.assertRaises(TypeError):
             BooleanMat(set([True, False]), set([False, True]))
+        with self.assertRaises(TypeError):
             BooleanMat(26)
-            BooleanMat([1, 0], [0, 1])
+        with self.assertRaises(TypeError):
+            BooleanMat([1., 0.], [0., 1.])
+        with self.assertRaises(TypeError):
             BooleanMat([True, False], ["i", range(10)])
 
         with self.assertRaises(ValueError):
             BooleanMat([True], [False])
+        with self.assertRaises(ValueError):
             BooleanMat([True, False], [False, False], [True, True])
+        with self.assertRaises(ValueError):
             BooleanMat([True, True, False], [False, False])
 
     def test_richcmp(self):
@@ -54,7 +60,9 @@ class TestPartialPerm(unittest.TestCase):
         with self.assertRaises(TypeError):
             Bipartition([1, -2], [-1, 2]) >= \
             BooleanMat([False, False], [True, False])
+        with self.assertRaises(TypeError):
             BooleanMat([False, False], [True, False]) < Transformation([0, 1])
+        with self.assertRaises(TypeError):
             BooleanMat([True, False], [False, True]) == \
             PartialPerm([0], [1], 2)
 
@@ -76,10 +84,13 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             BooleanMat([True, True], [False, False]) * Transformation([1, 1])
+        with self.assertRaises(TypeError):
             BooleanMat([False, True, True], 
                        [True, True, False], 
                        [False, False, False]) * PartialPerm([0, 1], [1, 2], 3)
+        with self.assertRaises(TypeError):
             BooleanMat([True]) * [True]
+        with self.assertRaises(TypeError):
             BooleanMat([True, False], [False, True]) * Bipartition([1, 2], [-1], [-2])
 
         with self.assertRaises(ValueError):
@@ -97,11 +108,14 @@ class TestPartialPerm(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             BooleanMat([True, False], [True, True]) ** 'i'
+        with self.assertRaises(TypeError):
             BooleanMat([True]) ** range(10)
+        with self.assertRaises(TypeError):
             BooleanMat([True]) ** BooleanMat([True])
 
         with self.assertRaises(ValueError):
             BooleanMat([True, False], [True, True]) ** 0
+        with self.assertRaises(ValueError):
             BooleanMat([False, True, True], 
                        [True, True, False], 
                        [False, False, False]) ** -7
