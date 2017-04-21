@@ -404,11 +404,11 @@ cdef class PartialPerm(Element):
                     raise ValueError('Elements of domain and range must be \
                     non-negative')
                 
-                #Ensures range and domain have no repeats
-                if self._range[i] in imglist:
-                    raise ValueError('Range cannot have repeats')
-                if self._domain.count(i) > 1:
-                    raise ValueError('Domain cannot have repeats')
+            #Ensures range and domain have no repeats
+            if len(self._range) > len(set(self._range)):
+                raise ValueError('Range cannot have repeats')
+            if len(self._domain) > len(set(self._domain)):
+                raise ValueError('Domain cannot have repeats')
 
             for i in range(n):
                 imglist[self._domain[i]] = self._range[i]
