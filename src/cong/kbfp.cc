@@ -35,11 +35,6 @@ namespace libsemigroups {
     }
   }
 
-  void Congruence::KBFP::run() {
-    while (!_killed && !is_done()) {
-      run(Congruence::LIMIT_MAX);
-    }
-  }
 
   void Congruence::KBFP::init() {
     if (_semigroup != nullptr) {
@@ -67,6 +62,12 @@ namespace libsemigroups {
     really_delete_cont(gens);
   }
 
+  void Congruence::KBFP::run() {
+    while (!_killed && !is_done()) {
+      run(Congruence::LIMIT_MAX);
+    }
+  }
+
   void Congruence::KBFP::run(size_t steps) {
     assert(!is_done());
 
@@ -74,8 +75,12 @@ namespace libsemigroups {
 
     if (!_killed) {
       REPORT("running Froidure-Pin . . .")
-      // The default batch_size is too large and can take a long time
-      _semigroup->set_batch_size(steps);
+      if (steps != Congruence::LIMIT_MAX) {
+        // The default batch_size is too large and can take a long time, but if
+        // we are running Congruence::LIMIT_MAX steps, then the usual batch
+        // size is ok.
+        _semigroup->set_batch_size(steps);
+      }
       _semigroup->enumerate(_killed, _semigroup->current_size() + 1);
     }
     if (_killed) {
