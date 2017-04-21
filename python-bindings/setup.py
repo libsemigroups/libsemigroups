@@ -44,7 +44,7 @@ setup(
                       extra_compile_args=["-std=c++11"],
                       )]),
 
-    setup_requires=['pytest-runner', 'pytest-cython'],
+    #setup_requires=['pytest-runner', 'pytest-cython'], # temporarilly disabled to build conda package
     tests_require=['pytest'],
 )
 
