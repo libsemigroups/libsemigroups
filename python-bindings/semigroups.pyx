@@ -753,27 +753,54 @@ cdef class BooleanMat(Element):#Add 0s, 1s
     Example:
         >>> from semigroups import BooleanMat
         >>> BooleanMat([True, True], [False, True])
-        BooleanMat([True, True], [False, True])
+        BooleanMat([1, 1], [0, 1])
     """
 
-    cdef list _rows
+    cdef list _rows, _int_rows
 
     def __init__(self, *args):
         
         if args[0] is not __dummyClass:
             n = len(args)
+            S = set([0, 1])
+
             for row in args:
                 if not isinstance(row, list):
                     raise TypeError
                 if len(row) != n:
                     raise ValueError
+
+            t = type(args[0][0])
+
+            for row in args:
                 for entry in row:
-                    if not isinstance(entry, type(True)):
+                    if not entry in S:
+                        raise TypeError
+                    if not isinstance(entry, t):
                         raise TypeError
 
             self._rows = []
-            for row in args:
-                self._rows.append(row[:])
+            self._int_rows = []
+            
+            booldict = {0: False, 1: True}
+            #Have to use dict, since python bool function doesn't seem to work
+
+            if t == int:
+                for row in args:
+                    self._int_rows.append(row[:])
+                    tempRow = []
+                    for entry in row:
+                        tempRow.append(booldict[entry])
+                    self._rows.append(tempRow)
+
+            else:
+                for row in args:
+                    self._rows.append(row[:])
+                    tempRow = []
+                    for entry in row:
+                        tempRow.append(int(entry))
+                    self._int_rows.append(tempRow)
+
             self._handle = new cpp.BooleanMat(self._rows)
 
     def _generator(self):
@@ -793,6 +820,19 @@ cdef class BooleanMat(Element):#Add 0s, 1s
                 self._rows.append(row)
                 row = []
             row.append(entry)
+        self._rows.append(row)
+
+    def _init_int_rows(self):
+        if self._int_rows is not None:
+            return
+        n = self.degree()
+        self._rows = []
+        row = []
+        for i,entry in enumerate(self._generator()):
+            if i % n == 0 and i !=0:
+                self._rows.append(row)
+                row = []
+            row.append(int(entry))
         self._rows.append(row)
 
     def rows(self):
@@ -817,6 +857,28 @@ cdef class BooleanMat(Element):#Add 0s, 1s
         self._init_rows()
         return self._rows
 
+    def int_rows(self):
+        """
+        Function for finding the rows (as 0s or 1s) of a boolean matrix.
+
+        Args:
+            None
+
+        Returns:
+            list: The rows of the boolean matrix.
+
+        Raises:
+            TypeError:  If any argument is given.
+
+        Example:
+            >>> from semigroups import BooleanMat
+            >>> BooleanMat([True, False], [True, True]).rows()
+            [[1, 0], [1, 1]]
+        """
+
+        self._init_int_rows()
+        return self._int_rows
+
     def __repr__(self):
         """
         Function for printing a string representation of the boolean matrix.
@@ -832,12 +894,12 @@ cdef class BooleanMat(Element):#Add 0s, 1s
 
         Example:
             >>> from semigroups import BooleanMat
-            >>> BooleanMat([True, True], [False, False])
-            BooleanMat([True, True], [False, False])
+            >>> BooleanMat([1, 1], [0, 0])
+            BooleanMat([1, 1], [0, 0])
         """
 
-        self._init_rows()
-        return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
+        self._init_int_rows()
+        return "BooleanMat(%s)"%self._int_rows.__repr__()[1:-1]
 
 cdef class PBR(Element):
     """
