@@ -261,14 +261,14 @@ namespace libsemigroups {
     //!
     //! \return The rule added (either libsemigroups::rws_rule_t(\p p, \p q),
     //! libsemigroups::rws_rule_t(\p q, \p p) or RWS::NONE).
-    rws_rule_t add_rule(rws_word_t const& p, rws_word_t const& q);
+    rws_rule_t const& add_rule(rws_word_t const& p, rws_word_t const& q);
 
     //! Add a rule to the rewriting system.
     //!
     //! See RWS::add_rule.
     //!
     //! \return The actual rule added, which may not equal \p rule.
-    rws_rule_t add_rule(rws_rule_t const& rule);
+    rws_rule_t const& add_rule(rws_rule_t const& rule);
 
     //! Add rules to the rewriting system.
     //!

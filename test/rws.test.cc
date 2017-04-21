@@ -263,7 +263,7 @@ TEST_CASE("RWS 13: Example 6.6 in Sims", "[hide][extreme][rws][fpsemigroup]") {
       rws_rule_t("abacabacabacabacabacabacabacabac", ""),
   };
   RWS rws(rules);
-  rws.set_report(RWS_REPORT);
+  rws.set_report(true);
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -392,6 +392,8 @@ TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
   REQUIRE(rws.nr_rules() == 9);
   REQUIRE(rws.is_confluent());
 }
+
+// See KBFP 07 also.
 
 TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
           "[rws][quick][fpsemigroup]") {

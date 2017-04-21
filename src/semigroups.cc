@@ -555,7 +555,7 @@ namespace libsemigroups {
     }
     if (Semigroup::LIMIT_MAX - _batch_size > _nr) {
       limit = std::max(limit, _nr + _batch_size);
-    } else { // _batch_size is very big for some reason
+    } else {  // _batch_size is very big for some reason
       limit = _batch_size;
     }
 

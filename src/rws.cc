@@ -24,7 +24,7 @@
 #include <string>
 
 namespace libsemigroups {
-  rws_rule_t const RWS::NONE = std::make_pair("", "");
+  rws_rule_t const RWS::NONE = rws_rule_t("", "");
 
   void RWS::compress() {
     for (auto it = _rules.begin(); it < _rules.end(); it++) {
@@ -66,25 +66,23 @@ namespace libsemigroups {
     return w;
   }
 
-  rws_rule_t RWS::add_rule(rws_word_t const& p, rws_word_t const& q) {
+  rws_rule_t const& RWS::add_rule(rws_word_t const& p, rws_word_t const& q) {
     if (p == q) {
       return NONE;
     }
     _nr_active_rules++;
 
-    std::pair<rws_word_t, rws_word_t> pq;
     if ((*_order)(p, q)) {
-      pq = std::make_pair(p, q);
+      _rules.emplace_back(std::make_pair(rws_rule_t(p, q), true));
     } else {
-      pq = std::make_pair(q, p);
+      _rules.emplace_back(std::make_pair(rws_rule_t(q, p), true));
     }
 
-    _rules.emplace_back(std::make_pair(pq, true));
     _confluence_known = false;
-    return pq;
+    return _rules.back().first;
   }
 
-  rws_rule_t RWS::add_rule(rws_rule_t const& rule) {
+  rws_rule_t const& RWS::add_rule(rws_rule_t const& rule) {
     return add_rule(rule.first, rule.second);
   }
 
@@ -162,10 +160,10 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < _rules.size() && !killed; i++) {
       if (_rules[i].second) {  // _rules[i] is active
-        rws_rule_t rule1 = _rules[i].first;
+        rws_rule_t const& rule1 = _rules[i].first;
         for (size_t j = 0; j < _rules.size() && !killed; j++) {
           if (_rules[j].second) {
-            rws_rule_t rule2 = _rules[j].first;
+            rws_rule_t const& rule2 = _rules[j].first;
             for (auto it = rule1.first.cend() - 1; it >= rule1.first.cbegin();
                  it--) {
               // Find longest common prefix of suffix B of rule1.first defined
@@ -209,19 +207,18 @@ namespace libsemigroups {
   // TEST_2 from Sims, p76
   void RWS::clear_stack(std::atomic<bool>& killed) {
     while (!_stack.empty() && !killed) {
-      rws_rule_t uv = _stack.top();  // FIXME copy!
+      rws_rule_t uv = _stack.top();  // FIXME use pointers in _stack
       _stack.pop();
       rewrite(uv.first);
       rewrite(uv.second);
       if (uv.first != uv.second) {
-        rws_rule_t ab = add_rule(uv);
+        rws_rule_t const& ab = add_rule(uv);
         // a -> b must be added at the end of _rules
-        rws_word_t a = ab.first;
-        rws_word_t b = ab.second;
+        rws_word_t const& a = ab.first;
         for (size_t i = 0; i < _rules.size() - 1; i++) {
           if (_rules[i].second) {  // _rules[i] is active
-            rws_rule_t rule = _rules[i].first;
-            size_t     pos  = rule.first.find(a);
+            rws_rule_t& rule = _rules[i].first;
+            size_t      pos  = rule.first.find(a);
             if (pos != std::string::npos) {
               _stack.push(rule);
               deactivate_rule(i);
@@ -246,8 +243,8 @@ namespace libsemigroups {
   void RWS::overlap(size_t i, size_t j, std::atomic<bool>& killed) {
     // Assert both rules are active
     assert(_rules[i].second && _rules[j].second);
-    rws_rule_t u = _rules[i].first;
-    rws_rule_t v = _rules[j].first;
+    rws_rule_t        u = _rules[i].first;
+    rws_rule_t const& v = _rules[j].first;
 
     size_t m = std::min(u.first.size(), v.first.size()) - 1;
 
@@ -289,7 +286,6 @@ namespace libsemigroups {
     }
     size_t nr = 0;
     for (size_t i = 0; i < _rules.size() && !killed; i++) {
-      rws_rule_t rule1 = _rules[i].first;
       for (size_t j = 0; j <= i && _rules[i].second && !killed; j++) {
         if (_rules[j].second) {  // _rules[j] is active
           nr++;

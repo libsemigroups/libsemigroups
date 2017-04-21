@@ -259,3 +259,19 @@ TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
 }
+
+TEST_CASE("KBFP 07: fp semigroup, size 240",
+          "[quick][fpsemigroup][kbfp][finite]") {
+  std::vector<relation_t> extra
+      = {relation_t({0, 0, 0}, {0}),
+         relation_t({1, 1, 1, 1}, {1}),
+         relation_t({0, 1, 1, 1, 0}, {0, 0}),
+         relation_t({1, 0, 0, 1}, {1, 1}),
+         relation_t({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0})};
+
+  Congruence cong("twosided", 2, std::vector<relation_t>(), extra);
+  cong.force_kbfp();
+  cong.set_report(KBFP_REPORT);
+
+  REQUIRE(cong.nr_classes() == 240);
+}

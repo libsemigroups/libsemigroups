@@ -35,7 +35,6 @@ namespace libsemigroups {
     }
   }
 
-
   void Congruence::KBFP::init() {
     if (_semigroup != nullptr) {
       return;
