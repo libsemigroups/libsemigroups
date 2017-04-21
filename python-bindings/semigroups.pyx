@@ -766,20 +766,22 @@ cdef class BooleanMat(Element):#Add 0s, 1s
 
             for row in args:
                 if not isinstance(row, list):
-                    raise TypeError
+                    raise TypeError('Rows must be lists')
                 if len(row) != n:
-                    raise ValueError
+                    raise ValueError('The matrix must be square; all rows' + \
+                                     'must be the same length as the columns')
 
             t = type(args[0][0])
             if not t in set([type(True), int]):
-                raise TypeError
+                raise TypeError('Entries must be bools or ints')
 
             for row in args:
                 for entry in row:
                     if not entry in S:
-                        raise TypeError
+                        raise TypeError('Entries must be either 0, 1, True' + \
+                                        ', False')
                     if not isinstance(entry, t):
-                        raise TypeError
+                        raise TypeError('All entries must be the same type')
 
             self._rows = []
             self._int_rows = []
