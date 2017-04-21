@@ -417,7 +417,7 @@ def FullTransformationMonoid(n):
                       Transformation([0, 0] + list(range(2, n))), 
                       Transformation([n - 1] + list(range(n - 1)))])
 
-cdef class FpSemigroup:
+cdef class FpSemigroup(Semigroup):
     """FpSemigroup Object
 
     Examples:
@@ -429,6 +429,7 @@ cdef class FpSemigroup:
     Todo:
          write == method  
          write normal_form method
+         test compatability with existing semigroup member functions
          add link to documentation for functions when it becomes available.
     """    
 
@@ -874,10 +875,10 @@ cdef class FpMonoid(FpSemigroup):
                             + "then relations should be pairs of strings")
                         rels[i][j] = list(rels[i][j])
                         for k in xrange(len(rels[i][j])):
-                            if not rels[i][j][k] in alphabet:
+                            if not rels[i][j][k] in ['e']+alphabet:
                                 raise ValueError("elements referenced in "+
                                 "relations should be in the given alphabet")
-                            rels[i][j][k]=alphabet.index(rels[i][j][k])+1
+                            rels[i][j][k]=(['e']+alphabet).index(rels[i][j][k])
             else:
                 if 0 in alphabet:
                     raise ValueError("alphabet can't contain 0 as this"+
@@ -897,10 +898,10 @@ cdef class FpMonoid(FpSemigroup):
                             if not isinstance(rels[i][j][k],int):
                                 raise TypeError("elements referenced in "+
                                 "relations should be in the given alphabet")
-                            if not rels[i][j][k] in alphabet:
+                            if not rels[i][j][k] in [0]+alphabet:
                                 raise ValueError("elements referenced in "+
                                 "relations should be in the given alphabet")
-                            rels[i][j][k]=alphabet.index(rels[i][j][k])+1
+                            rels[i][j][k]=([0]+alphabet).index(rels[i][j][k])
         else:
             # Checks that not attempting to define relations on trivial monoid.
             if not len(rels)==0:

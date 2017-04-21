@@ -147,11 +147,13 @@ class TestFpMonoid(unittest.TestCase):
         FpMonoid([1,2], [])
         FpMonoid([1,2], [[[1], [1, 1]]])
         FpMonoid([1,2,3], [[[2], [1, 1]]])
+        FpMonoid([1,2,3], [[[0], [1, 1]]])
 
         FpMonoid([], [])
         FpMonoid(["a"], [])
         FpMonoid(["a"], [["a", "aa"]])
         FpMonoid(["a","b"], [["b", "aa"]])
+        FpMonoid(["a","b"], [["e", "aa"]])
 
     def test_alphabet(self):
         with self.assertRaises(ValueError):
