@@ -936,8 +936,8 @@ cdef class PBR(Element):
         if args[0] is not __dummyClass:
             
             if len(args) != 2:
-                raise TypeError('Expected two arguments, the negative and'\
-                                +'positive adjacencies, received %s'%len(args))
+                raise TypeError('Expected two arguments, the negative and' + \
+                                'positive adjacencies, received %s'%len(args))
 
             if not (isinstance(args[0], list) and isinstance(args[1], list)):
                 raise TypeError('Adjacencies must be lists')
@@ -945,7 +945,7 @@ cdef class PBR(Element):
             n = len(args[0])
 
             if n != len(args[1]):
-                raise ValueError('Must have same number of positive and' +\
+                raise ValueError('Must have same number of positive and' + \
                                  'negative adjacencies')
 
             for sublist in args[0] + args[1]:
@@ -954,7 +954,7 @@ cdef class PBR(Element):
                 if len(sublist) != len(set(sublist)):
                     raise ValueError('Ajacencies cannot be repeated')
 
-            output = [0] * 2 * n
+            output = []
             self._positiveAdjacencies = []
             self._negativeAdjacencies = []
 
@@ -966,7 +966,7 @@ cdef class PBR(Element):
                         tempSublist[j] = n - entry - 1
                     else:
                         tempSublist[j] = entry - 1
-                output[i - 1] = tempSublist
+                output.append(tempSublist)
 
             for i,sublist in enumerate(args[0]):
                 self._negativeAdjacencies.append(sublist[:])
@@ -976,7 +976,7 @@ cdef class PBR(Element):
                         tempSublist[j] = n - entry - 1
                     else:
                         tempSublist[j] = entry - 1
-                output[i + n - 1] = tempSublist
+                output.append(tempSublist)
 
             self._handle = new cpp.PBR(output)
 
