@@ -12,7 +12,7 @@ from libcpp.pair cimport pair
 from libcpp cimport bool
 from libcpp cimport string
 
-cdef extern from "libsemigroups/semigroups.h" namespace "libsemigroups":
+cdef extern from "<libsemigroups/semigroups.h>" namespace "libsemigroups":
     cdef cppclass Element:
         Element* identity()
         void redefine(Element *, Element *)
