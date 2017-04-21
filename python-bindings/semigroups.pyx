@@ -25,7 +25,7 @@ from libc.stdint cimport uint32_t
 from libcpp.vector cimport vector
 cimport semigroups_cpp as cpp
 from libcpp cimport bool
-
+import math
 
 #Add _handle.right_cayley_graph
 #Add Gabow's algm
@@ -840,7 +840,7 @@ cdef class BooleanMat(Element):#Add 0s, 1s
         return "BooleanMat(%s)"%self._rows.__repr__()[1:-1]
 
 cdef class PBR(Element):
-     """
+    """
     A class for handles to libsemigroups PBR. 
 
     A partitioned binary relation is a generalisation of a Bipartition, where
@@ -1156,6 +1156,77 @@ cdef class Semigroup:# Add asserts
             else:
                 yield self.new_from_handle(element)
             pos += 1
+
+cdef class Semiring:
+
+    cdef float _minus_infinity, _plus_infinity
+
+    def __init__(self):
+        self._minus_infinity = -math.inf
+        self._plus_infinity = math.inf
+
+cdef class Integers(Semiring):
+    
+    def __init___(self):
+        pass
+
+    def plus(self, x, y):
+        if not (isinstance(x, int) and isinstance(y, int)):
+            raise TypeError 
+        return x + y
+
+    def prod(self, x, y):
+        if not (isinstance(x, int) and isinstance(y, int)):
+            raise TypeError
+        return x * y
+
+    def zero(self):
+        return 0
+
+    def one(self):
+        return 1
+
+cdef class MaxPlusSemiring(Semiring):
+    
+    def __init___(self):
+        pass
+
+    def plus(self, x, y):
+        if not ((isinstance(x, int) or x == -math.inf)  and (isinstance(y, int) or y == -math.inf)):
+            raise TypeError
+        return max(x, y)
+
+    def prod(self, x, y):
+        if not ((isinstance(x, int) or x == -math.inf)  and (isinstance(y, int) or y == -math.inf)):
+            raise TypeError
+        return x + y
+
+    def zero(self):
+        return self._minus_infinity
+
+    def one(self):
+        return 0
+
+cdef class MinPlusSemiring(Semiring):
+    
+    def __init___(self):
+        pass
+
+    def plus(self, x, y):
+        if not ((isinstance(x, int) or x == math.inf)  and (isinstance(y, int) or y == math.inf)):
+            raise TypeError
+        return min(x, y)
+
+    def prod(self, x, y):
+        if not ((isinstance(x, int) or x == math.inf)  and (isinstance(y, int) or y == math.inf)):
+            raise TypeError
+        return x + y
+
+    def zero(self):
+        return self._plus_infinity
+
+    def one(self):
+        return 0
 
 def FullTransformationMonoid(n):
     assert isinstance(n, int) and n >= 1
