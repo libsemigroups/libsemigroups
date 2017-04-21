@@ -1,0 +1,1 @@
+global-include *.rst *.pyx *.pxd *.h
