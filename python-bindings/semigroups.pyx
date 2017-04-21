@@ -744,6 +744,8 @@ cdef class FpSemigroup(Semigroup):
         for i in xrange(len(word)):
             word[i]=self.alphabet().index(word[i])
 
+
+
         cdef vector[uint64_t] Word = word
         return self._congruence.word_to_class_index(Word)
 
@@ -924,7 +926,6 @@ cdef class FpMonoid(FpSemigroup):
         self._e_relations = rels + [[[0,0],[0]]] + lefteq + righteq
         self._congruence = new cpp.Congruence(self._cong,self._size + 1,
                                                 self._e_relations,self._extra)
-
 
     def alphabet(self):
         '''
@@ -1135,6 +1136,36 @@ cdef class FpSemigroupElement(Element):
             return self.semigroup().word_to_class_index(FpSemigroupElement(
                             self.semigroup(),self.word() + other.word()))
 
+    def word_to_class_index(self):
+        '''
+        returns the class index of self
+
+        Examples:
+        >>> FpMonoid(["a","b"],[["aa","a"],["bbb","b"],["ab","ba"]])
+        <FpMonoid <a,b|aa=a,bbb=b,ab=ba>>
+        >>> E=FpMonoidElement(_,"")
+        >>> E.word_to_class_index()
+        0
+        >>> A=FpMonoidElement(E.monoid(),"a")
+        >>> A.word_to_class_index()
+        1
+        >>> B=FpMonoidElement(E.monoid(),"b")
+        >>> B.word_to_class_index()
+        2
+
+        Args:
+            None.
+
+        Returns:
+            int: class index of self.
+
+        Raises:
+            None.
+
+        '''
+
+        return self.semigroup().word_to_class_index(self)
+
     def __repr__(self):
         '''
         displays the FpSemigroup element
@@ -1228,15 +1259,21 @@ cdef class FpMonoidElement(FpSemigroupElement):
                 raise ValueError("given word is not in the given FpMonoid")
 
         if self._FpS._is_string_alphabet:
-            if word =="":
-                self._Word ="e".encode('UTF-8')
+            if word == []:
+                raise ValueError("given word is not in the given FpMonoid")
             else:
-                self._Word = word.encode('UTF-8')
+                if word =="":
+                    self._Word ="e".encode('UTF-8')
+                else:
+                    self._Word = word.encode('UTF-8')
         else:
             if word =="":
-                self._Word ="0".encode('UTF-8')
+                raise ValueError("given word is not in the given FpMonoid")
             else:
-                self._Word = str(word).encode('UTF-8')
+                if word == []:
+                    self._Word ="[0]".encode('UTF-8')
+                else:
+                    self._Word = str(word).encode('UTF-8')
 
 
     def monoid(self):

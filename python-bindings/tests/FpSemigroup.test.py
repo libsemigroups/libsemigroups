@@ -23,11 +23,31 @@ class TestFpSemigroup(unittest.TestCase):
         FpSemigroup(["a"], [["a", "aa"]])
         FpSemigroup(["a","b"], [["b", "aa"]])
 
-    def test_alphabet(self):
+    def test_alphabet_str(self):
+        with self.assertRaises(ValueError):
+            FpSemigroup([], [["a", "aa"]])
+        with self.assertRaises(ValueError):
+            FpSemigroup(["a"], [["b", "aa"]])
+        with self.assertRaises(ValueError):
+            FpSemigroup(["a","a"], [["b", "aa"]])
+
+    def test_alphabet_int(self):
         with self.assertRaises(ValueError):
             FpSemigroup([], [[[1], [0, 0]]])
         with self.assertRaises(TypeError):
             FpSemigroup(1, [[[1], [0, 0]]])
+
+    def test_rels_str(self):
+        with self.assertRaises(TypeError):
+            FpSemigroup(["a","b"], "['a', 'aa']")
+        with self.assertRaises(TypeError):
+            FpSemigroup(["a","b"], ["'b', 'aa'"])
+        with self.assertRaises(ValueError):
+            FpSemigroup(["a","b"], [['a', 'aa', 'b']])
+        with self.assertRaises(TypeError):
+            FpSemigroup(["a","b"], [['b', ['a','a']]])
+        with self.assertRaises(ValueError):
+            FpSemigroup(["a","b"], [['b', 'ca']])
 
     def test_rels_int(self):
         with self.assertRaises(TypeError):
@@ -43,52 +63,57 @@ class TestFpSemigroup(unittest.TestCase):
         with self.assertRaises(ValueError):
             FpSemigroup([0,1], [[[1], [2, 0]]])
 
-    def test_alphabet_str(self):
-        with self.assertRaises(ValueError):
-            FpSemigroup([], [["a", "aa"]])
-        with self.assertRaises(ValueError):
-            FpSemigroup(["a"], [["b", "aa"]])
-        with self.assertRaises(ValueError):
-            FpSemigroup(["a","a"], [["b", "aa"]])
+    def test_set_report_str(self):
+        S=FpSemigroup(["a"], [["a", "aa"]])
+        S.set_report(True)
+        S.set_report(False)
+        with self.assertRaises(TypeError):
+            S.set_report('False')
 
-    def test_rels_str(self):
-        with self.assertRaises(TypeError):
-            FpSemigroup(["a","b"], "['a', 'aa']")
-        with self.assertRaises(TypeError):
-            FpSemigroup(["a","b"], ["'b', 'aa'"])
-        with self.assertRaises(ValueError):
-            FpSemigroup(["a","b"], [['a', 'aa', 'b']])
-        with self.assertRaises(TypeError):
-            FpSemigroup(["a","b"], [['b', ['a','a']]])
-        with self.assertRaises(ValueError):
-            FpSemigroup(["a","b"], [['b', 'ca']])
-
-    def test_set_report(self):
+    def test_set_report_int(self):
         S=FpSemigroup([0], [[[0], [0, 0]]])
         S.set_report(True)
         S.set_report(False)
         with self.assertRaises(TypeError):
             S.set_report('False')
 
-    def test_size(self):
+    def test_size_str(self):
         self.assertEqual(FpSemigroup(["a"], [["a", "aa"]]).size(),1)
         self.assertEqual(FpSemigroup(["a","b"], [["a", "aa"],['b','bb'],\
         ['ab','ba']]).size(),3)
+
+    def test_size_int(self):
         self.assertEqual(FpSemigroup([0], [[[0], [0,0]]]).size(),1)
         self.assertEqual(FpSemigroup([0,1], [[[0], [0,0]],[[1],[1,1]],\
         [[0,1],[1,0]]]).size(),3)
 
-    def test_word_to_class_index(self):
+    def test_word_to_class_index_str(self):
         FpS=FpSemigroup(["a","b"], [["a", "aa"],['b','bb'],['ab','ba']])
         FpS2=FpSemigroup([],[])
         e=FpSemigroupElement(FpS,"aba")
         FpS.word_to_class_index(e)
         with self.assertRaises(TypeError):
-            FpS.word_to_class_index(1)
+            FpS.word_to_class_index("a")
+        with self.assertRaises(TypeError):
             FpS.word_to_class_index([1,'0'])
+        with self.assertRaises(ValueError):
             FpS.word_to_class_index(FpSemigroupElement(FpS2,"aba"))
         self.assertEqual(FpS.word_to_class_index(e),
         FpS.word_to_class_index(FpSemigroupElement(FpS,"abaaabb")))
+
+    def test_word_to_class_index_int(self):
+        FpS=FpSemigroup([1,2], [[[1], [1,1]],[[2],[2,2]],[[1,2],[2,1]]])
+        FpS2=FpSemigroup([],[])
+        e=FpSemigroupElement(FpS,[1,2,1])
+        FpS.word_to_class_index(e)
+        with self.assertRaises(TypeError):
+            FpS.word_to_class_index(1)
+        with self.assertRaises(TypeError):
+            FpS.word_to_class_index([1,'0'])
+        with self.assertRaises(ValueError):
+            FpS.word_to_class_index(FpSemigroupElement(FpS2,[1,2,1]))
+        self.assertEqual(FpS.word_to_class_index(e),
+        FpS.word_to_class_index(FpSemigroupElement(FpS,[1,2,1,1,2,1])))
 
     def test_repr(self):
         self.assertEqual(FpSemigroup([1,2],[[[1,1],[1]],[[2,2,2],[2]],\
@@ -102,7 +127,7 @@ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","b"],["ab","ba"]]).__repr__(),\
 
 class TestFpSemigroupElement(unittest.TestCase):
 
-    def test_valid_init(self):
+    def test_valid_init_str(self):
         FpS=FpSemigroup(["a","b"],[["aa","a"],["bbb","b"],["ba","ab"]])
         FpSemigroupElement(FpS,"aba")
         FpSemigroupElement(FpS,"a")
@@ -120,7 +145,20 @@ class TestFpSemigroupElement(unittest.TestCase):
         with self.assertRaises(ValueError):
             FpSemigroupElement(FpS,"abc")
 
-    def test_mul(self):
+    def test_valid_init_int(self):
+        FpS=FpSemigroup([1,2],[[[1,1],[1]],[[2,2,2],[2]],[[2,1],[1,2]]])
+        FpSemigroupElement(FpS,[1,2,1])
+        FpSemigroupElement(FpS,[1])
+        with self.assertRaises(ValueError):
+            FpSemigroupElement(FpS,"")
+        with self.assertRaises(TypeError):
+            FpSemigroupElement([1,2,1],[1,2,1])
+        with self.assertRaises(TypeError):
+            FpSemigroupElement(FpS,FpS)
+        with self.assertRaises(ValueError):
+            FpSemigroupElement(FpS,[1,2,3])
+
+    def test_mul_str(self):
         FpS=FpSemigroup(["a","b"],[["aa","a"],["bbb","b"],["ba","ab"]])
         other = "aa"
         a=FpSemigroupElement(FpS,"aba")
@@ -132,6 +170,18 @@ class TestFpSemigroupElement(unittest.TestCase):
         self.assertEqual(a*a,FpS.word_to_class_index( \
                         FpSemigroupElement(FpS,"abaaba")))
 
+    def test_mul_int(self):
+        FpS=FpSemigroup([1,2],[[[1,1],[1]],[[2,2,2],[2]],[[2,1],[1,2]]])
+        other = [1,1]
+        a=FpSemigroupElement(FpS,[1,2,1])
+        a*a
+        with self.assertRaises(TypeError):
+            a*other
+        with self.assertRaises(TypeError):
+            FpSemigroupElement(FpSemigroup([1,2],[]),[1,2,1])*a
+        self.assertEqual(a*a,FpS.word_to_class_index( \
+                        FpSemigroupElement(FpS,[1,2,1,1,2,1])))
+
     def test_repr(self):
         FpS = FpSemigroup([1,2],[[[1,1],[1]],[[2,2,2],[2]]])
         self.assertEqual(FpSemigroupElement(FpS,[1,2]).__repr__(),
@@ -140,6 +190,42 @@ class TestFpSemigroupElement(unittest.TestCase):
         self.assertEqual(FpSemigroupElement(FpS,"ab").__repr__(),
                                         "<FpSemigroup Element 'ab'>")
 
+    def test_word_to_class_index_str(self):
+        A=FpSemigroupElement(FpSemigroup(["a","b"],[["aa","a"],["bbb","b"],
+                                    ["ab","ba"]]),"a")
+        self.assertEqual(A.word_to_class_index(),0)
+        B=FpSemigroupElement(A.semigroup(),"b")
+        self.assertEqual(B.word_to_class_index(),1)
+        AB=FpSemigroupElement(A.semigroup(),"ab")
+        self.assertEqual(AB.word_to_class_index(),2)
+
+
+        E=FpMonoidElement(FpMonoid(["a","b"],[["aa","a"],["bbb","b"],
+                                    ["ab","ba"]]),"")
+        self.assertEqual(E.word_to_class_index(),0)
+        A=FpMonoidElement(E.monoid(),"a")
+        self.assertEqual(A.word_to_class_index(),1)
+        B=FpMonoidElement(E.monoid(),"b")
+        self.assertEqual(B.word_to_class_index(),2)
+
+
+    def test_word_to_class_index_int(self):
+        A=FpSemigroupElement(FpSemigroup([1,2],[[[1,1],[1]],[[2,2,2],[2]],
+                                    [[1,2],[2,1]]]),[1])
+        self.assertEqual(A.word_to_class_index(),0)
+        B=FpSemigroupElement(A.semigroup(),[2])
+        self.assertEqual(B.word_to_class_index(),1)
+        AB=FpSemigroupElement(A.semigroup(),[1,2])
+        self.assertEqual(AB.word_to_class_index(),2)
+
+
+        E=FpMonoidElement(FpMonoid([1,2],[[[1,1],[1]],[[2,2,2],[2]],
+                                    [[1,2],[2,1]]]),[])
+        self.assertEqual(E.word_to_class_index(),0)
+        A=FpMonoidElement(E.monoid(),[1])
+        self.assertEqual(A.word_to_class_index(),1)
+        B=FpMonoidElement(E.monoid(),[2])
+        self.assertEqual(B.word_to_class_index(),2)
 
 class TestFpMonoid(unittest.TestCase):
 
@@ -155,11 +241,31 @@ class TestFpMonoid(unittest.TestCase):
         FpMonoid(["a","b"], [["b", "aa"]])
         FpMonoid(["a","b"], [["e", "aa"]])
 
-    def test_alphabet(self):
+    def test_alphabet_str(self):
+        with self.assertRaises(ValueError):
+            FpMonoid([], [["a", "aa"]])
+        with self.assertRaises(ValueError):
+            FpMonoid(["a"], [["b", "aa"]])
+        with self.assertRaises(ValueError):
+            FpMonoid(["a","a"], [["b", "aa"]])
+
+    def test_alphabet_int(self):
         with self.assertRaises(ValueError):
             FpMonoid([], [[[1], [2, 2]]])
         with self.assertRaises(TypeError):
             FpMonoid(1, [[[1], [2, 2]]])
+
+    def test_rels_str(self):
+        with self.assertRaises(TypeError):
+            FpMonoid(["a","b"], "['a', 'aa']")
+        with self.assertRaises(TypeError):
+            FpMonoid(["a","b"], ["'b', 'aa'"])
+        with self.assertRaises(ValueError):
+            FpMonoid(["a","b"], [['a', 'aa', 'b']])
+        with self.assertRaises(TypeError):
+            FpMonoid(["a","b"], [['b', ['a','a']]])
+        with self.assertRaises(ValueError):
+            FpMonoid(["a","b"], [['b', 'ca']])
 
     def test_rels_int(self):
         with self.assertRaises(TypeError):
@@ -175,27 +281,14 @@ class TestFpMonoid(unittest.TestCase):
         with self.assertRaises(ValueError):
             FpMonoid([1,2], [[[1], [3, 2]]])
 
-    def test_alphabet_str(self):
-        with self.assertRaises(ValueError):
-            FpMonoid([], [["a", "aa"]])
-        with self.assertRaises(ValueError):
-            FpMonoid(["a"], [["b", "aa"]])
-        with self.assertRaises(ValueError):
-            FpMonoid(["a","a"], [["b", "aa"]])
+    def test_set_report_str(self):
+        M=FpMonoid(["a"], [["a", "aa"]])
+        M.set_report(True)
+        M.set_report(False)
+        with self.assertRaises(TypeError):
+            M.set_report('False')
 
-    def test_rels_str(self):
-        with self.assertRaises(TypeError):
-            FpMonoid(["a","b"], "['a', 'aa']")
-        with self.assertRaises(TypeError):
-            FpMonoid(["a","b"], ["'b', 'aa'"])
-        with self.assertRaises(ValueError):
-            FpMonoid(["a","b"], [['a', 'aa', 'b']])
-        with self.assertRaises(TypeError):
-            FpMonoid(["a","b"], [['b', ['a','a']]])
-        with self.assertRaises(ValueError):
-            FpMonoid(["a","b"], [['b', 'ca']])
-
-    def test_set_report(self):
+    def test_set_report_int(self):
         M=FpMonoid([1], [[[1], [1, 1]]])
         M.set_report(True)
         M.set_report(False)
@@ -210,20 +303,26 @@ class TestFpMonoid(unittest.TestCase):
         self.assertEqual(FpMonoid([1,2], [[[2], [2,2]],[[1],[1,1]],
         [[2,1],[1,2]]]).size(),4)
 
-    def test_word_to_class_index(self):
+    def test_word_to_class_index_str(self):
         FpM=FpMonoid(["a","b"], [["a", "aa"],['b','bb'],['ab','ba']])
+        self.assertEqual(FpMonoidElement(FpM,"").word_to_class_index(),0)
         FpM2=FpMonoid([],[])
-        FpM.word_to_class_index(FpSemigroupElement(FpM,"aba"))
+        FpMonoidElement(FpM,"aba").word_to_class_index()
         a=FpMonoidElement(FpM,"aba")
-        FpM.word_to_class_index(a)
-        with self.assertRaises(TypeError):
-            FpM.word_to_class_index(1)
-        with self.assertRaises(TypeError):
-            FpM.word_to_class_index([2,'1'])
-        with self.assertRaises(ValueError):
-            FpM.word_to_class_index(FpSemigroupElement(FpM2,"aba"))
-        self.assertEqual(FpM.word_to_class_index(a),
-        FpM.word_to_class_index(FpMonoidElement(FpM,"abaaabb")))
+        a.word_to_class_index()
+        self.assertEqual(a*a,
+        FpMonoidElement(FpM,"abaaabb").word_to_class_index())
+
+    def test_word_to_class_index_int(self):
+        FpM=FpMonoid([1,2], [[[1], [1,1]],[[2],[2,2]],[[1,2],[2,1]]])
+        self.assertEqual(FpMonoidElement(FpM,[]).word_to_class_index(),0)
+        FpM2=FpMonoid([],[])
+        FpMonoidElement(FpM,[1,2,1]).word_to_class_index()
+        a=FpMonoidElement(FpM,[1,2,1])
+        a.word_to_class_index()
+        self.assertEqual(a*a,
+        FpMonoidElement(FpM,[1,2,1,1,2,1]).word_to_class_index())
+
 
     def test_repr(self):
         self.assertEqual(FpMonoid([1,2],[[[1,1],[1]],[[2,2,2],[2]],\
@@ -249,6 +348,22 @@ class TestFpMonoidElement(unittest.TestCase):
             FpMonoidElement(FpM,FpM)
         with self.assertRaises(ValueError):
             FpMonoidElement(FpM,"abc")
+        with self.assertRaises(ValueError):
+            FpMonoidElement(FpM,[])
+
+    def test_valid_init_int(self):
+        FpM=FpMonoid([1,2],[[[1,1],[1]],[[2,2,2],[2]],[[2,1],[1,2]]])
+        FpMonoidElement(FpM,[1,2,1])
+        FpMonoidElement(FpM,[1])
+        FpMonoidElement(FpM,[])
+        with self.assertRaises(TypeError):
+            FpMonoidElement([1,2,1],[1,2,1])
+        with self.assertRaises(TypeError):
+            FpMonoidElement(FpM,FpM)
+        with self.assertRaises(ValueError):
+            FpMonoidElement(FpM,[1,2,3])
+        with self.assertRaises(ValueError):
+            FpMonoidElement(FpM,"")
 
     def test_mul(self):
         FpM=FpMonoid(["a","b"],[["aa","a"],["bbb","b"],["ba","ab"]])
@@ -260,8 +375,24 @@ class TestFpMonoidElement(unittest.TestCase):
             a*other
         with self.assertRaises(TypeError):
             FpMonoidElement(FpMonoid(["a","b"],[]),"aba")*a
-        self.assertEqual(a*a,FpM.word_to_class_index(FpMonoidElement(FpM,"abaaba")))
+
+        self.assertEqual(a*a,
+         FpM.word_to_class_index(FpMonoidElement(FpM,"abaaba")))
         self.assertEqual(a*e,FpM.word_to_class_index(a))
+
+    def test_mul_int(self):
+        FpM=FpMonoid([1,2],[[[1,1],[1]],[[2,2,2],[2]],[[2,1],[1,2]]])
+        other = [1,1]
+        a=FpMonoidElement(FpM,[1,2,1])
+        a*a
+        e=FpMonoidElement(FpM,[])
+        with self.assertRaises(TypeError):
+            a*other
+        with self.assertRaises(TypeError):
+            FpMonoidElement(FpMonoid([1,2],[]),[1,2,1])*a
+        self.assertEqual(a*a,
+            FpMonoidElement(FpM,[1,2,1,1,2,1]).word_to_class_index())
+        self.assertEqual(a*e,a.word_to_class_index())
 
 if __name__ == '__main__':
     unittest.main()
