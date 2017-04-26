@@ -34,7 +34,8 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 3. Check code coverage by running:
 
         etc/coverage.sh
-add tests to improve the coverage (and start again if necessary).
+
+    add tests to improve the coverage (and start again if necessary).
     
 4. Resolve any warnings, or errors produced by (and start again if necessary):
 
