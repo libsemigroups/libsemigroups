@@ -480,6 +480,11 @@ namespace libsemigroups {
     //! this.
     size_t sorted_position(Element* x);
 
+    //! Returns the position of \c this->at(pos) in the sorted array of
+    //! elements of the semigroup, or Semigroup::UNDEFINED if \p pos is greater
+    //! than the size of the semigroup.
+    size_t position_to_sorted_position(pos_t pos);
+
     //! Returns the vector consisting of pointers to all of the elements of the
     //! semigroup.
     // TODO(JDM) replace this with a method for cbegin and cend, don't allow

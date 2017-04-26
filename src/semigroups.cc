@@ -417,10 +417,9 @@ namespace libsemigroups {
     }
   }
 
-  size_t Semigroup::sorted_position(Element* x) {
-    pos_t pos = position(x);
-
-    if (pos == UNDEFINED) {
+  size_t Semigroup::position_to_sorted_position(pos_t pos) {
+    enumerate(LIMIT_MAX);
+    if (pos >= _nr) {
       return UNDEFINED;
     } else if (_pos_sorted == nullptr) {
       sort_elements();
@@ -431,6 +430,10 @@ namespace libsemigroups {
       }
     }
     return (*_pos_sorted)[pos];
+  }
+
+  size_t Semigroup::sorted_position(Element* x) {
+    return position_to_sorted_position(position(x));
   }
 
   Element* Semigroup::at(pos_t pos) {

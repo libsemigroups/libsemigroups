@@ -1129,11 +1129,14 @@ TEST_CASE("Semigroup 29: sorted_position, sorted_at",
   REQUIRE(S.is_done());
 
   REQUIRE(S.sorted_position(S.at(1024)) == 6810);
+  REQUIRE(S.position_to_sorted_position(1024) == 6810);
+
   REQUIRE(*S.sorted_at(6810) == *S.at(1024));
   REQUIRE(S.sorted_at(6810) == S.at(1024));
 
   Element* x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5});
   REQUIRE(S.sorted_position(x) == 6908);
+  REQUIRE(S.position_to_sorted_position(S.position(x)) == 6908);
   REQUIRE(*S.sorted_at(6908) == *x);
   REQUIRE(S.sorted_at(6908) == S.at(S.position(x)));
   x->really_delete();
@@ -1146,6 +1149,7 @@ TEST_CASE("Semigroup 29: sorted_position, sorted_at",
 
   REQUIRE(S.sorted_at(100000) == nullptr);
   REQUIRE(S.at(100000) == nullptr);
+  REQUIRE(S.position_to_sorted_position(100000) == Semigroup::UNDEFINED);
 
   really_delete_cont(gens);
 }
@@ -2608,4 +2612,19 @@ TEST_CASE("Semigroup 63: minimal_factorisation ",
   delete x;
 
   REQUIRE(S.minimal_factorisation(10000000) == nullptr);
+}
+
+TEST_CASE("Semigroup 64: batch_size (for an extremely large value)",
+          "[quick][semigroup][finite]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
+         new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+
+  S.set_report(SEMIGROUPS_REPORT);
+  S.set_batch_size(Semigroup::LIMIT_MAX);
+  S.enumerate();
+
+  REQUIRE(S.size() == 5);
 }
