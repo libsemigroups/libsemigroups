@@ -174,10 +174,10 @@ namespace libsemigroups {
       }
       DATA* data;
       if (is_done()) {
-        data = cget_data();
+        data = _data;
       } else {
-        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
-          return data->current_equals(w1, w2) != DATA::result_t::UNKNOWN;
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* d) {
+          return d->current_equals(w1, w2) != DATA::result_t::UNKNOWN;
         };
         data = get_data(words_func);
       }
@@ -206,10 +206,10 @@ namespace libsemigroups {
     bool test_less_than(word_t const& w1, word_t const& w2) {
       DATA* data;
       if (is_done()) {
-        data = cget_data();
+        data = _data;
       } else {
-        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* data) {
-          return data->current_less_than(w1, w2) != DATA::result_t::UNKNOWN;
+        std::function<bool(DATA*)> words_func = [&w1, &w2](DATA* d) {
+          return d->current_less_than(w1, w2) != DATA::result_t::UNKNOWN;
         };
         data = get_data(words_func);
       }
@@ -477,9 +477,9 @@ namespace libsemigroups {
 
      public:
       // Default constructor
-      explicit DATA(Congruence& cong,
-                    size_t      default_nr_steps,
-                    size_t      report_interval = 1000)
+      DATA(Congruence& cong,
+           size_t      default_nr_steps,
+           size_t      report_interval = 1000)
           : _cong(cong),
             _default_nr_steps(default_nr_steps),
             _killed(false),
