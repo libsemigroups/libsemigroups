@@ -1283,19 +1283,27 @@ namespace libsemigroups {
   //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
   class PBR : public ElementWithVectorData<std::vector<u_int32_t>, PBR> {
    public:
-    //! A constructor.
+    //! Constructs a PBR defined by the vector pointed to by \p vector, which
+    //! is not copied, and should be deleted using
+    //! ElementWithVectorData::really_delete.
     //!
-    //! Constructs a PBR defined by \p vector, \p vector is not copied,
-    //! and should be deleted using ElementWithVectorData::really_delete.
+    //! The parameter \p vector should be a pointer to a vector of vectors of
+    //! non-negative integer values of length \f$2n\f$ for some integer
+    //! \f$n\f$, the vector in position \f$i\f$ is the list of points adjacent
+    //! to \f$i\f$ in the PBR.
+    explicit PBR(std::vector<std::vector<u_int32_t>>* vector,
+                 size_t                               hv = Element::UNDEFINED)
+        : ElementWithVectorData<std::vector<u_int32_t>, PBR>(vector, hv) {}
+
+    //! Constructs a PBR defined by \p vector, where \p vector is copied into
+    //! the PBR being constructed.
     //!
     //! The parameter \p vector should be a vector of vectors of non-negative
     //! integer values of length \f$2n\f$ for some integer \f$n\f$, the vector
     //! in position \f$i\f$ is the list of points adjacent to \f$i\f$ in the
     //! PBR.
-    explicit PBR(std::vector<std::vector<u_int32_t>>* vector,
-                 size_t                               hv = Element::UNDEFINED)
-        : ElementWithVectorData<std::vector<u_int32_t>, PBR>(vector, hv) {}
-    // TODO(JDM) a more convenient constructor
+    explicit PBR(std::vector<std::vector<u_int32_t>> const& vector)
+        : PBR(new std::vector<std::vector<u_int32_t>>(vector)) {}
 
     //! Returns the approximate time complexity of multiplying PBRs.
     //!
