@@ -18,6 +18,7 @@ before_script:
 env:
   matrix:
     - TEST_SUITE=standard
+    - TEST_SUITE=lint
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
