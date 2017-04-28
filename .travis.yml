@@ -16,12 +16,23 @@ before_script:
   - sudo apt-get install --only-upgrade autoconf
   - sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
 env:
+  global:
+    - GAP_FORK=gap-system
+    - GAP_BRANCH=master
+    - IO=io-4.4.6
+    - GAPDOC=GAPDoc-1.5.1
+    - ORB=orb-4.7.6
+    - PROFILING=1.3.0
+    - GENSS=genss-1.6.4
+    - SEMIGROUPS_BR=master
+    - DIGRAPHS_BR=master
   matrix:
     - TEST_SUITE=standard
     - TEST_SUITE=lint
     - TEST_SUITE=doc
     - TEST_SUITE=coverage
     - TEST_SUITE=valgrind
+    - TEST_SUITE=gap
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
