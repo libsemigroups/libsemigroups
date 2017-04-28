@@ -21,6 +21,7 @@ env:
     - TEST_SUITE=lint
     - TEST_SUITE=doc
     - TEST_SUITE=coverage
+    - TEST_SUITE=valgrind
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
