@@ -57,7 +57,7 @@ if not (os.path.exists(covdir) and os.path.isdir(covdir)):
 
 # Find the main coverage file
 for i in xrange(len(_SOURCE_DIRS)):
-    fname = 'libsemigroups/' + _SOURCE_DIRS[i] + '/index.html'
+    fname = _SOURCE_DIRS[i] + '/index.html'
     fname = find(fname, covdir)
     covfile = file(fname, 'r').read()
     for f in _SOURCES[i]:
