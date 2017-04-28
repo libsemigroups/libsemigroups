@@ -15,6 +15,9 @@ before_script:
   - sudo apt-get update -q
   - sudo apt-get install --only-upgrade autoconf
   - sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
+env:
+  matrix:
+    - TEST_SUITE=standard
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
