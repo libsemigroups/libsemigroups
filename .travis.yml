@@ -1,4 +1,6 @@
 language: cpp
+dist: trusty
+sudo: required
 compiler:
   - gcc
 addons:
@@ -12,13 +14,8 @@ before_script:
   - sudo add-apt-repository ppa:dns/gnu -y
   - sudo apt-get update -q
   - sudo apt-get install --only-upgrade autoconf
-  - sudo pip install cpplint
-#  - sudo apt-get install doxygen
-#  - sudo apt-get install ggcov 
-#  - sudo ln -sf /usr/bin/gcov-5 /usr/bin/gcov
-#  - sudo apt-get install -y lcov
-
+  - sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
 script:
-  - ci/travis.sh
+  - ci/travis-$TEST_SUITE.sh
