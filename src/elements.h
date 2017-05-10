@@ -158,7 +158,7 @@ namespace libsemigroups {
     //! Otherwise, if an Element is copied, then its defining data is only
     //! stored once.
     //!
-    //! See also Element::really_delete.
+    //! \sa Element::really_delete.
     virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
 
     //! Copy another Element into \c this.
@@ -175,7 +175,7 @@ namespace libsemigroups {
     //! Otherwise, if an Element is deleted, then its defining data is not
     //! deleted, since it may be contained in multiple copies of the Element.
     //!
-    //! See also Element::really_copy.
+    //! \sa Element::really_copy.
     virtual void really_delete() = 0;
 
     //! Multiply \p x and \p y and stores the result in \c this.
@@ -541,7 +541,7 @@ namespace libsemigroups {
 
     //! Find the hash value of a partial transformation.
     //!
-    //! See also Element::hash_value for more details.
+    //! \sa Element::hash_value for more details.
     void cache_hash_value() const override {
       size_t seed = 0;
       size_t deg  = this->degree();
@@ -1178,7 +1178,7 @@ namespace libsemigroups {
 
     //! Find the hash value of a matrix over a semiring.
     //!
-    //! See also Element::hash_value.
+    //! \sa Element::hash_value.
     void cache_hash_value() const override;
 
     //! Returns the identity matrix with dimension of \c this.
@@ -1218,7 +1218,7 @@ namespace libsemigroups {
   //!
   //! These matrices belong to the quotient of the monoid of all max-plus
   //! matrices by the congruence where two matrices are related if they differ
-  //! by a scalar multiple. See also MaxPlusSemiring and MatrixOverSemiring.
+  //! by a scalar multiple. \sa MaxPlusSemiring and MatrixOverSemiring.
   //!
   //! Matrices in this class are modified when constructed to be in a normal
   //! form which is obtained by subtracting the maximum finite entry in
@@ -1268,7 +1268,7 @@ namespace libsemigroups {
 
     //! Find the hash value of a projective max-plus matrix.
     //!
-    //! See also Element::hash_value.
+    //! \sa Element::hash_value.
     void cache_hash_value() const override;
 
    private:
@@ -1320,7 +1320,7 @@ namespace libsemigroups {
 
     //! Find the hash value of a PBR.
     //!
-    //! See also Element::hash_value.
+    //! \sa Element::hash_value.
     void cache_hash_value() const override;
 
     //! Returns the identity PBR with degree equal to that of \c this.

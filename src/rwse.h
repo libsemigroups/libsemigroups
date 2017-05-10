@@ -100,7 +100,7 @@ namespace libsemigroups {
     //!
     //! The parameter \p increase_deg_by is not used
     //!
-    //! See Element::really_copy.
+    //! \sa Element::really_copy.
     Element* really_copy(size_t increase_deg_by) const override;
 
     //! Copy \p x into \c this.
@@ -111,7 +111,7 @@ namespace libsemigroups {
 
     //! Deletes the underlying rws_word_t that this object wraps.
     //!
-    //! See Element::really_delete.
+    //! \sa Element::really_delete.
     void really_delete() override {
       delete _rws_word;
     }
@@ -119,7 +119,7 @@ namespace libsemigroups {
     //! Returns the approximate time complexity of multiplying two
     //! RWSE's.
     //!
-    //! See Element::complexity for more details.
+    //! \sa Element::complexity.
     //!
     //! Returns Semigroup::LIMIT_MAX since the complexity of multiplying words
     //! in a rewriting system is higher than the cost of tracing a path in the
@@ -130,7 +130,7 @@ namespace libsemigroups {
 
     //! Returns the degree of an RWSE.
     //!
-    //! See Element::degree for more details.
+    //! \sa Element::degree.
     //!
     //! Returns the integer 0 since the notion of degree is not really
     //! meaningful in this context.
@@ -140,7 +140,7 @@ namespace libsemigroups {
 
     //! Return the identity RWSE.
     //!
-    //! See Element::identity.
+    //! \sa Element::identity.
     //!
     //! Returns a new RWSE wrapping the empty word and over the same rewriting
     //! system as \c this.
@@ -148,8 +148,9 @@ namespace libsemigroups {
       return new RWSE(_rws, new rws_word_t());
     }
 
-    //! Calculates a hash value for this object which is cached; see
-    //! Element::hash_value and Element::cache_hash_value.
+    //! Calculates a hash value for this object which is cached.
+    //!
+    //! \sa Element::hash_value and Element::cache_hash_value.
     void cache_hash_value() const override {
       this->_hash_value = std::hash<rws_word_t>()(*_rws_word);
     }

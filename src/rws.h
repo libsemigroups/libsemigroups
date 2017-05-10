@@ -265,19 +265,19 @@ namespace libsemigroups {
 
     //! Add a rule to the rewriting system.
     //!
-    //! See RWS::add_rule.
+    //! \sa RWS::add_rule.
     //!
     //! \return The actual rule added, which may not equal \p rule.
     rws_rule_t const& add_rule(rws_rule_t const& rule);
 
     //! Add rules to the rewriting system.
     //!
-    //! See RWS::add_rule.
+    //! \sa RWS::add_rule.
     void add_rules(std::vector<rws_rule_t> const& rules);
 
     //! Adds rules derived from \p relations to the rewriting system.
     //!
-    //! See RWS::add_rule.
+    //! \sa RWS::add_rule.
     void add_rules(std::vector<relation_t> const& relations);
 
     //! Add rules derived from Congruence::relations and Congruence::extra
@@ -290,7 +290,7 @@ namespace libsemigroups {
     //! Helper function for converting a libsemigroups::letter_t to a
     //! libsemigroups::rws_letter_t.
     //!
-    //! See also RWS::rws_letter_to_letter.
+    //! \sa RWS::rws_letter_to_letter.
     static rws_letter_t letter_to_rws_letter(letter_t const& a);
 
     //! Helper function for converting a libsemigroups::letter_t to a
@@ -300,19 +300,19 @@ namespace libsemigroups {
     //! Helper function for converting a libsemigroups::word_t to a
     //! libsemigroups::rws_word_t.
     //!
-    //! See also RWS::rws_word_to_word.
+    //! \sa RWS::rws_word_to_word.
     static rws_word_t word_to_rws_word(word_t const& w);
 
     //! Helper function for converting a libsemigroups::rws_letter_t to a
     //! libsemigroups::letter_t.
     //!
-    //! See also RWS::letter_to_rws_letter.
+    //! \sa RWS::letter_to_rws_letter.
     static letter_t rws_letter_to_letter(rws_letter_t const& rws_letter);
 
     //! Helper function for converting a libsemigroups::rws_word_t to a
     //! libsemigroups::word_t.
     //!
-    //! See also RWS::word_to_rws_word.
+    //! \sa RWS::word_to_rws_word.
     static word_t* rws_word_to_word(rws_word_t const* rws_word);
 
     //! Turn reporting on or off.

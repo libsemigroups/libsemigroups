@@ -145,7 +145,7 @@ namespace libsemigroups {
     //! product \c x of the generators Semigroup::gens(\c w[i]) and then
     //! calling Semigroup::position with argument \c x.
     //!
-    //! See also Semigroup::word_to_element.
+    //! \sa Semigroup::word_to_element.
     pos_t word_to_pos(word_t const& w) const;
 
     //! Returns a pointer to the element of \c this represented by the word
@@ -156,7 +156,7 @@ namespace libsemigroups {
     //! \c this obtained by evaluating \p w. This is equivalent to finding the
     //! product \c x of the generators Semigroup::gens(\c w[i]).
     //!
-    //! See also Semigroup::word_to_pos.
+    //! \sa Semigroup::word_to_pos.
     Element* word_to_element(word_t const& w) const;
 
     //! Returns the maximum length of a word in the generators so far computed.
@@ -224,9 +224,10 @@ namespace libsemigroups {
     //! libsemigroups::Semigroup::UNDEFINED if not. If the semigroup is
     //! not fully enumerated, then this method may return
     //! libsemigroups::Semigroup::UNDEFINED when \p x is in the semigroup,
-    //! but not this is not yet known. See also Semigroup::position and
-    //! Semigroup::sorted_position.
-    // FIXME these should be Element const*
+    //! but not this is not yet known.
+    //!
+    //! \sa Semigroup::position and Semigroup::sorted_position.
+    //! FIXME these should be Element const*
     pos_t current_position(Element* x) const {
       if (x->degree() != _degree) {
         return UNDEFINED;
@@ -416,7 +417,7 @@ namespace libsemigroups {
     //! Returns  the total number of relations in the presentation defining the
     //! semigroup.
     //!
-    //! See also Semigroup::next_relation.
+    //! \sa Semigroup::next_relation.
     size_t nrrules() {
       enumerate();
       return _nrrules;
@@ -640,7 +641,7 @@ namespace libsemigroups {
     //! This method can be used in conjunction with Semigroup::factorisation to
     //! obtain a presentation defining the semigroup.
     //!
-    //! See also Semigroup::reset_next_relation.
+    //! \sa Semigroup::reset_next_relation.
     void next_relation(std::vector<size_t>& relation);
 
     //! Enumerate the semigroup until \p limit elements are found or \p killed
