@@ -70,14 +70,13 @@ namespace libsemigroups {
     //! Constructor from a rewriting system and a letter.
     //!
     //! Calls RWSE::RWSE with RWS::letter_to_rws_word of \p a.
-    RWSE(RWS& rws, letter_t a)
-        : RWSE(&rws, new rws_word_t(RWS::letter_to_rws_word(a))) {}
+    RWSE(RWS& rws, letter_t const& a)
+        : RWSE(&rws, RWS::letter_to_rws_word(a)) {}
 
     //! Constructor from a rewriting system and a word.
     //!
     //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
-    RWSE(RWS& rws, word_t w)
-        : RWSE(&rws, new rws_word_t(RWS::word_to_rws_word(w))) {}
+    RWSE(RWS& rws, word_t const& w) : RWSE(&rws, RWS::word_to_rws_word(w)) {}
 
     //! Returns \c true if \c this equals \p that.
     //!
@@ -169,7 +168,7 @@ namespace libsemigroups {
     void redefine(Element const* x, Element const* y) override;
 
     //! Returns a pointer to the rws_word_t used to create \c this.
-    rws_word_t* get_rws_word() const {
+    rws_word_t const* get_rws_word() const {
       return _rws_word;
     }
 

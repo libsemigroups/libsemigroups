@@ -106,20 +106,16 @@ namespace libsemigroups {
       // This cannot be reliably tested: see TC::current_equals for more info
       return result_t::UNKNOWN;
     }
-    assert(_rws->is_confluent());
-    return _rws->rewrite(RWS::word_to_rws_word(w1))
-                   == _rws->rewrite(RWS::word_to_rws_word(w2))
-               ? result_t::TRUE
-               : result_t::FALSE;
+    return (_rws->test_equals(w1, w2) ? result_t::TRUE : result_t::FALSE);
   }
 
   Congruence::DATA::result_t
   Congruence::KBFP::current_less_than(word_t const& w1, word_t const& w2) {
     init();
-    assert(_rws->is_confluent());
-    return _rws->test_less_than(RWS::word_to_rws_word(w1),
-                                RWS::word_to_rws_word(w2))
-               ? result_t::TRUE
-               : result_t::FALSE;
+    if (!is_done() && is_killed()) {
+      // This cannot be reliably tested: see TC::current_equals for more info
+      return result_t::UNKNOWN;
+    }
+    return (_rws->test_less_than(w1, w2) ? result_t::TRUE : result_t::FALSE);
   }
 }  // namespace libsemigroups

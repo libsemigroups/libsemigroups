@@ -135,29 +135,30 @@ TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
 
 TEST_CASE("RWS 06: for an infinite confluent fp semigroup 3",
           "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {rws_rule_t("01", "10"),
-                                   rws_rule_t("02", "20"),
-                                   rws_rule_t("00", "0"),
-                                   rws_rule_t("02", "0"),
-                                   rws_rule_t("20", "0"),
-                                   rws_rule_t("11", "11"),
-                                   rws_rule_t("12", "21"),
-                                   rws_rule_t("111", "1"),
-                                   rws_rule_t("12", "1"),
-                                   rws_rule_t("21", "1"),
-                                   rws_rule_t("0", "1")};
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("01", "10");
+  rws.add_rule("02", "20");
+  rws.add_rule("00", "0");
+  rws.add_rule("02", "0");
+  rws.add_rule("20", "0");
+  rws.add_rule("11", "11");
+  rws.add_rule("12", "21");
+  rws.add_rule("111", "1");
+  rws.add_rule("12", "1");
+  rws.add_rule("21", "1");
+  rws.add_rule("0", "1");
+
   REQUIRE(rws.is_confluent());
 }
 
 TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
           "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("000", ""), rws_rule_t("111", ""), rws_rule_t("010101", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("000", "");
+  rws.add_rule("111", "");
+  rws.add_rule("010101", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -166,13 +167,14 @@ TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
 }
 
 TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {rws_rule_t("ab", ""),
-                                   rws_rule_t("ba", ""),
-                                   rws_rule_t("cd", ""),
-                                   rws_rule_t("dc", ""),
-                                   rws_rule_t("ca", "ac")};
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("ab", "");
+  rws.add_rule("ba", "");
+  rws.add_rule("cd", "");
+  rws.add_rule("dc", "");
+  rws.add_rule("ca", "ac");
+
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 8);
@@ -180,11 +182,6 @@ TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {rws_rule_t("aA", ""),
-                                   rws_rule_t("Aa", ""),
-                                   rws_rule_t("bB", ""),
-                                   rws_rule_t("Bb", ""),
-                                   rws_rule_t("ba", "ab")};
   SHORTLEX* ro = new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
     if (y == x) {
       return false;
@@ -199,10 +196,16 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
     }
   });
 
-  REQUIRE(!(*ro)("aaaaab", "aaaaaa"));
-
-  RWS rws(ro, rules);
+  RWS rws(ro);
   rws.set_report(RWS_REPORT);
+
+  rws.add_rule("aA", "");
+  rws.add_rule("Aa", "");
+  rws.add_rule("bB", "");
+  rws.add_rule("Bb", "");
+  rws.add_rule("ba", "ab");
+
+  REQUIRE(!(*ro)("aaaaab", "aaaaaa"));
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -211,10 +214,11 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules
-      = {rws_rule_t("aa", ""), rws_rule_t("bbb", ""), rws_rule_t("ababab", "")};
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aa", "");
+  rws.add_rule("bbb", "");
+  rws.add_rule("ababab", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -223,12 +227,12 @@ TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {rws_rule_t("aa", ""),
-                                   rws_rule_t("bB", ""),
-                                   rws_rule_t("bbb", ""),
-                                   rws_rule_t("ababab", "")};
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aa", "");
+  rws.add_rule("bB", "");
+  rws.add_rule("bbb", "");
+  rws.add_rule("ababab", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -237,15 +241,13 @@ TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", ""),
-      rws_rule_t("bc", ""),
-      rws_rule_t("bbb", ""),
-      rws_rule_t("ababababababab", ""),
-      rws_rule_t("abacabacabacabac", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aa", "");
+  rws.add_rule("bc", "");
+  rws.add_rule("bbb", "");
+  rws.add_rule("ababababababab", "");
+  rws.add_rule("abacabacabacabac", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -254,33 +256,32 @@ TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup]") {
 }
 
 // The next test takes too long to run
-TEST_CASE("RWS 13: Example 6.6 in Sims", "[hide][extreme][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", ""),
-      rws_rule_t("bc", ""),
-      rws_rule_t("bbb", ""),
-      rws_rule_t("ababababababab", ""),
-      rws_rule_t("abacabacabacabacabacabacabacabac", ""),
-  };
-  RWS rws(rules);
-  rws.set_report(true);
+/*TEST_CASE("RWS 13: Example 6.6 in Sims", "[hide][extreme][rws][fpsemigroup]")
+{
+  RWS rws;
+  rws.set_report(RWS_REPORT);
+
+  rws.add_rule("aa", "");
+  rws.add_rule("bc", "");
+  rws.add_rule("bbb", "");
+  rws.add_rule("ababababababab", "");
+  rws.add_rule("abacabacabacabacabacabacabacabac", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 1026);
   REQUIRE(rws.is_confluent());
-}
+}*/
 
 TEST_CASE("RWS 14: Chapter 10, Section 4 in NR", "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaaa", "a"),
-      rws_rule_t("bbbb", "b"),
-      rws_rule_t("cccc", "c"),
-      rws_rule_t("abab", "aaa"),
-      rws_rule_t("bcbc", "bbb"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+
+  rws.add_rule("aaaa", "a");
+  rws.add_rule("bbbb", "b");
+  rws.add_rule("cccc", "c");
+  rws.add_rule("abab", "aaa");
+  rws.add_rule("bcbc", "bbb");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -290,20 +291,18 @@ TEST_CASE("RWS 14: Chapter 10, Section 4 in NR", "[rws][quick][fpsemigroup]") {
 
 TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", ""),
-      rws_rule_t("bbbbb", ""),
-      rws_rule_t("babababa", ""),
-      rws_rule_t("bB", ""),
-      rws_rule_t("Bb", ""),
-      rws_rule_t("BabBabBab", ""),
-      rws_rule_t("aBBabbaBBabb", ""),
-      rws_rule_t("aBBBabbbaBBBabbb", ""),
-      rws_rule_t("aA", ""),
-      rws_rule_t("Aa", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aa", "");
+  rws.add_rule("bbbbb", "");
+  rws.add_rule("babababa", "");
+  rws.add_rule("bB", "");
+  rws.add_rule("Bb", "");
+  rws.add_rule("BabBabBab", "");
+  rws.add_rule("aBBabbaBBabb", "");
+  rws.add_rule("aBBBabbbaBBBabbb", "");
+  rws.add_rule("aA", "");
+  rws.add_rule("Aa", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -313,17 +312,15 @@ TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
 
 TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
           "[extreme][rws][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaaaaaa", ""),
-      rws_rule_t("bb", "ababab"),
-      rws_rule_t("bb", "aaaabaaaabaaaabaaaab"),
-      rws_rule_t("aA", ""),
-      rws_rule_t("Aa", ""),
-      rws_rule_t("bB", ""),
-      rws_rule_t("Bb", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaaaaaa", "");
+  rws.add_rule("bb", "ababab");
+  rws.add_rule("bb", "aaaabaaaabaaaabaaaab");
+  rws.add_rule("aA", "");
+  rws.add_rule("Aa", "");
+  rws.add_rule("bB", "");
+  rws.add_rule("Bb", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -332,11 +329,9 @@ TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
 }
 
 TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("ab", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("ab", "");
 
   REQUIRE(rws.is_confluent());
   rws.knuth_bendix();
@@ -346,16 +341,14 @@ TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup]") {
 
 TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aba", "baa"),
-      rws_rule_t("bba", "bab"),
-      rws_rule_t("ac", ""),
-      rws_rule_t("ca", ""),
-      rws_rule_t("bc", ""),
-      rws_rule_t("cb", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aba", "baa");
+  rws.add_rule("bba", "bab");
+  rws.add_rule("ac", "");
+  rws.add_rule("ca", "");
+  rws.add_rule("bc", "");
+  rws.add_rule("cb", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -365,11 +358,10 @@ TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
 
 TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aa", "a"), rws_rule_t("bb", "b"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aa", "a");
+  rws.add_rule("bb", "b");
 
   REQUIRE(rws.is_confluent());
   rws.knuth_bendix();
@@ -379,13 +371,11 @@ TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
 
 TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbb", "b"),
-      rws_rule_t("abababab", "aa"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbb", "b");
+  rws.add_rule("abababab", "aa");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -397,15 +387,13 @@ TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
 
 TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbb", "b"),
-      rws_rule_t("abbba", "aa"),
-      rws_rule_t("baab", "bb"),
-      rws_rule_t("aabababababa", "aa"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbb", "b");
+  rws.add_rule("abbba", "aa");
+  rws.add_rule("baab", "bb");
+  rws.add_rule("aabababababa", "aa");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -413,17 +401,15 @@ TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 22: F(2, 5), size 11, from Chapter 9, Section 1 in NR",
+TEST_CASE("RWS 22: F(2, 5); size 11, from Chapter 9, Section 1 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("ab", "c"),
-      rws_rule_t("bc", "d"),
-      rws_rule_t("cd", "e"),
-      rws_rule_t("de", "a"),
-      rws_rule_t("ea", "b"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("ab", "c");
+  rws.add_rule("bc", "d");
+  rws.add_rule("cd", "e");
+  rws.add_rule("de", "a");
+  rws.add_rule("ea", "b");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -431,18 +417,16 @@ TEST_CASE("RWS 22: F(2, 5), size 11, from Chapter 9, Section 1 in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 23: F(2, 6), infinite, from Chapter 9, Section 1 in NR",
+TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("ab", ""),
-      rws_rule_t("bc", "d"),
-      rws_rule_t("cd", "e"),
-      rws_rule_t("de", "f"),
-      rws_rule_t("ef", "a"),
-      rws_rule_t("fa", "b"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("ab", "");
+  rws.add_rule("bc", "d");
+  rws.add_rule("cd", "e");
+  rws.add_rule("de", "f");
+  rws.add_rule("ef", "a");
+  rws.add_rule("fa", "b");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -465,41 +449,39 @@ TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup]") {
 
   RWS rws;
   for (relation_t rel : rels) {
-    rws.add_rule(rws_rule_t(rws.word_to_rws_word(rel.first),
-                            rws.word_to_rws_word(rel.second)));
+    rws.add_rule(rws.word_to_rws_word(rel.first),
+                 rws.word_to_rws_word(rel.second));
   }
   rws.add_rules(extra);
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.is_confluent());
-
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[3].first))
-          == rws.rewrite(rws.word_to_rws_word(rels[3].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[6].first))
-          == rws.rewrite(rws.word_to_rws_word(rels[6].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(rels[7].first))
-          == rws.rewrite(rws.word_to_rws_word(rels[7].second)));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0})))
-          == rws.rewrite(rws.word_to_rws_word(word_t({2, 2, 0, 1, 2}))));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({2, 1})))
-          == rws.rewrite(rws.word_to_rws_word(word_t({1, 1, 1, 2}))));
-  REQUIRE(rws.rewrite(rws.word_to_rws_word(word_t({1, 0})))
-          != rws.rewrite(rws.word_to_rws_word(word_t({2}))));
+  // We could rewrite here and check equality by this is simpler since all
+  // allocation and deletion is handled in test_equals
+  REQUIRE(rws.test_equals(rels[3].first, rels[3].second));
+  REQUIRE(rws.test_equals(rels[6].first, rels[6].second));
+  REQUIRE(rws.test_equals(rels[7].first, rels[7].second));
+  REQUIRE(rws.test_equals(word_t({1, 0}), word_t({2, 2, 0, 1, 2})));
+  REQUIRE(rws.test_equals(word_t({2, 1}), word_t({1, 1, 1, 2})));
+  REQUIRE(!rws.test_equals(word_t({1, 0}), word_t({2})));
 }
 
 TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbbb", "b"),
-      rws_rule_t("abbbabb", "bba"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbbb", "b");
+  rws.add_rule("abbbabb", "bba");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 20);
   REQUIRE(rws.is_confluent());
+
+  // Check that rewrite to a non-pointer argument does not rewrite its argument
+  rws_word_t w = "aaa";
+  REQUIRE(rws.rewrite(w) == "a");
+  REQUIRE(w == "aaa");
 
   // defining relations
   REQUIRE(rws.rewrite("aaa") == rws.rewrite("a"));
@@ -520,20 +502,21 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
   REQUIRE(!rws.test_less_than("abba", "abba"));
 
   // Call test_less_than without knuth_bendix first
-  RWS rws2(rules);
+  RWS rws2;
   rws2.set_report(RWS_REPORT);
+  rws2.add_rule("aaa", "a");
+  rws2.add_rule("bbbbb", "b");
+  rws2.add_rule("abbbabb", "bba");
   REQUIRE(!rws2.test_less_than("abbbaabbba", "bbbbaa"));
 }
 
 TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
           "[rws][fpsemigroup][extreme]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbbbbbbb", "b"),
-      rws_rule_t("abbbbbabb", "bba"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbbbbbbb", "b");
+  rws.add_rule("abbbbbabb", "bba");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -560,19 +543,17 @@ TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
 
 TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aA", ""),
-      rws_rule_t("Aa", ""),
-      rws_rule_t("bB", ""),
-      rws_rule_t("Bb", ""),
-      rws_rule_t("cC", ""),
-      rws_rule_t("Cc", ""),
-      rws_rule_t("aa", ""),
-      rws_rule_t("bbb", ""),
-      rws_rule_t("abaBaBabaBab", ""),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aA", "");
+  rws.add_rule("Aa", "");
+  rws.add_rule("bB", "");
+  rws.add_rule("Bb", "");
+  rws.add_rule("cC", "");
+  rws.add_rule("Cc", "");
+  rws.add_rule("aa", "");
+  rws.add_rule("bbb", "");
+  rws.add_rule("abaBaBabaBab", "");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -580,15 +561,13 @@ TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 27: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
+TEST_CASE("RWS 28: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
           "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbbbbb", "b"),
-      rws_rule_t("abaabba", "bb"),
-  };
-  RWS rws(rules);
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbbbbb", "b");
+  rws.add_rule("abaabba", "bb");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -596,15 +575,13 @@ TEST_CASE("RWS 27: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
-  std::vector<rws_rule_t> rules = {
-      rws_rule_t("aaa", "a"),
-      rws_rule_t("bbbb", "b"),
-      rws_rule_t("bababababab", "b"),
-      rws_rule_t("baab", "babbbab"),
-  };
-  RWS rws(rules);
+TEST_CASE("RWS 29: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
+  RWS rws;
   rws.set_report(RWS_REPORT);
+  rws.add_rule("aaa", "a");
+  rws.add_rule("bbbb", "b");
+  rws.add_rule("bababababab", "b");
+  rws.add_rule("baab", "babbbab");
 
   REQUIRE(!rws.is_confluent());
   rws.knuth_bendix();
@@ -613,4 +590,38 @@ TEST_CASE("RWS 28: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
 
   REQUIRE(!rws.test_less_than("bababababab", "aaaaa"));
   REQUIRE(rws.test_less_than("aaaaa", "bababababab"));
+}
+
+TEST_CASE("RWS 30: test_equals", "[quick][rws][fpsemigroup]") {
+  std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
+                                  relation_t({0, 2}, {2, 0}),
+                                  relation_t({0, 0}, {0}),
+                                  relation_t({0, 2}, {0}),
+                                  relation_t({2, 0}, {0}),
+                                  relation_t({1, 1}, {1, 1}),
+                                  relation_t({1, 2}, {2, 1}),
+                                  relation_t({1, 1, 1}, {1}),
+                                  relation_t({1, 2}, {1}),
+                                  relation_t({2, 1}, {1})};
+  std::vector<relation_t> extra = {{{0}, {1}}};
+
+  RWS rws;
+  rws.add_rule("ab", "ba");
+  rws.add_rule("ac", "ca");
+  rws.add_rule("aa", "a");
+  rws.add_rule("ac", "a");
+  rws.add_rule("ca", "a");
+  rws.add_rule("bb", "bb");
+  rws.add_rule("bc", "cb");
+  rws.add_rule("bbb", "b");
+  rws.add_rule("bc", "b");
+  rws.add_rule("cb", "b");
+  rws.add_rule("a", "b");
+
+  REQUIRE(rws.test_equals("aa", "a"));
+  REQUIRE(rws.test_equals("bb", "bb"));
+  REQUIRE(rws.test_equals("bc", "cb"));
+  REQUIRE(rws.test_equals("ba", "ccabc"));
+  REQUIRE(rws.test_equals("cb", "bbbc"));
+  REQUIRE(!rws.test_equals("ba", "c"));
 }

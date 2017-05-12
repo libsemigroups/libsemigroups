@@ -465,8 +465,8 @@ namespace libsemigroups {
 
   word_t* Semigroup::factorisation(Element* x) {
     if (x->get_type() == Element::elm_t::RWSE) {
-      return RWS::rws_word_to_word(
-          (reinterpret_cast<RWSE*>(x))->get_rws_word());
+      return const_cast<word_t*>(
+          RWS::rws_word_to_word((reinterpret_cast<RWSE*>(x))->get_rws_word()));
     }
     assert(x->get_type() == Element::elm_t::NOT_RWSE);
     return minimal_factorisation(x);

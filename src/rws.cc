@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2016 James D. Mitchell
+// Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,21 +16,41 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO add more reporting
-
 #include "rws.h"
 
 #include <algorithm>
 #include <string>
 
-namespace libsemigroups {
-  rws_rule_t const RWS::NONE = rws_rule_t("", "");
+#ifdef RWS_STATS
+static size_t                                        MAX_STACK_DEPTH        = 0;
+static size_t                                        MAX_WORD_LENGTH        = 0;
+static size_t                                        MAX_ACTIVE_WORD_LENGTH = 0;
+static size_t                                        MAX_ACTIVE_RULES       = 0;
+static std::unordered_set<libsemigroups::rws_word_t> UNIQUE_LHS_RULES;
 
-  void RWS::compress() {
-    for (auto it = _rules.begin(); it < _rules.end(); it++) {
-      while (!(*it).second) {
-        it = _rules.erase(it);
-      }
+static size_t max_active_word_length(libsemigroups::RWS* rws) {
+  auto comp
+      = [](libsemigroups::RWS::Rule* p, libsemigroups::RWS::Rule* q) -> bool {
+    return p->lhs()->size() < q->lhs()->size();
+  };
+  auto max = std::max_element(rws->rules_cbegin(), rws->rules_cend(), comp);
+  if (max != rws->rules_cend()) {
+    MAX_ACTIVE_WORD_LENGTH
+        = std::max(MAX_ACTIVE_WORD_LENGTH, (*max)->lhs()->size());
+  }
+  return MAX_ACTIVE_WORD_LENGTH;
+}
+#endif
+
+namespace libsemigroups {
+
+  RWS::~RWS() {
+    delete _order;
+    for (Rule const* rule : _active_rules) {
+      delete const_cast<Rule*>(rule);
+    }
+    for (Rule* rule : _inactive_rules) {
+      delete rule;
     }
   }
 
@@ -39,16 +59,16 @@ namespace libsemigroups {
     // return std::to_string(a).c_str()[0];
   }
 
-  rws_word_t RWS::letter_to_rws_word(letter_t const& a) {
-    return {letter_to_rws_letter(a)};
+  rws_word_t* RWS::letter_to_rws_word(letter_t const& a) {
+    return new rws_word_t(1, letter_to_rws_letter(a));
     // return std::to_string(a);
   }
 
   // numbers to letters
-  rws_word_t RWS::word_to_rws_word(word_t const& w) {
-    rws_word_t ww;
+  rws_word_t* RWS::word_to_rws_word(word_t const& w) {
+    rws_word_t* ww = new rws_word_t();
     for (letter_t const& a : w) {
-      ww += letter_to_rws_letter(a);
+      (*ww) += letter_to_rws_letter(a);
     }
     return ww;
   }
@@ -66,36 +86,98 @@ namespace libsemigroups {
     return w;
   }
 
-  rws_rule_t const& RWS::add_rule(rws_word_t const& p, rws_word_t const& q) {
-    if (p == q) {
-      return NONE;
-    }
-    _nr_active_rules++;
-
-    if ((*_order)(p, q)) {
-      _rules.emplace_back(std::make_pair(rws_rule_t(p, q), true));
+  // Don't use new_rule here because this does not copy its args, and we don't
+  // want it to, because it is used by add_rules, which creates the
+  // rws_word_t's passed here.
+  void RWS::add_rule(rws_word_t* p, rws_word_t* q) {
+    if (*p != *q) {
+      add_rule(new Rule(this, p, q));
     } else {
-      _rules.emplace_back(std::make_pair(rws_rule_t(q, p), true));
+      // Since the RWS takes responsibility for deleting p and q, if we don't
+      // actually add a rule we must delete p and q here, otherwise they are
+      // never deleted.
+      delete p;
+      delete q;
     }
+  }
 
+  void RWS::add_rule(rws_word_t const& p, rws_word_t const& q) {
+    if (p != q) {
+      add_rule(new rws_word_t(p), new rws_word_t(q));
+    }
+  }
+
+  void RWS::add_rule(Rule* rule) {
+#ifdef RWS_STATS
+    MAX_WORD_LENGTH  = std::max(MAX_WORD_LENGTH, rule->lhs()->size());
+    MAX_ACTIVE_RULES = std::max(MAX_ACTIVE_RULES, _active_rules.size());
+    UNIQUE_LHS_RULES.insert(*rule->lhs());
+#endif
+    assert(rule->lhs() != rule->rhs());
+    rule->activate();
+    _active_rules.push_back(rule);
+    // clear_stack relies on the fact that new rules are added to the end of
+    // _active_rules
+    if (_next_rule_it1 == _active_rules.end()) {
+      _next_rule_it1--;
+    }
+    if (_next_rule_it2 == _active_rules.end()) {
+      _next_rule_it2--;
+    }
     _confluence_known = false;
-    return _rules.back().first;
   }
 
-  rws_rule_t const& RWS::add_rule(rws_rule_t const& rule) {
-    return add_rule(rule.first, rule.second);
-  }
-
-  void RWS::add_rules(std::vector<rws_rule_t> const& rules) {
-    for (rws_rule_t const& rule : rules) {
-      add_rule(rule.first, rule.second);
+  std::list<RWS::Rule const*>::iterator
+  RWS::remove_rule(std::list<RWS::Rule const*>::iterator it) {
+#ifdef RWS_STATS
+    UNIQUE_LHS_RULES.erase(*((*it)->lhs()));
+#endif
+    Rule* rule = const_cast<Rule*>(*it);
+    rule->deactivate();
+    if (it != _next_rule_it1 && it != _next_rule_it2) {
+      it = _active_rules.erase(it);
+    } else if (it == _next_rule_it1 && it != _next_rule_it2) {
+      _next_rule_it1 = _active_rules.erase(it);
+      it             = _next_rule_it1;
+    } else if (it != _next_rule_it1 && it == _next_rule_it2) {
+      _next_rule_it2 = _active_rules.erase(it);
+      it             = _next_rule_it2;
+    } else {
+      _next_rule_it1 = _active_rules.erase(it);
+      _next_rule_it2 = _next_rule_it1;
+      it             = _next_rule_it1;
     }
+    return it;
   }
 
-  void RWS::add_rules(std::vector<relation_t> const& relations) {
-    for (relation_t const& rel : relations) {
-      add_rule(word_to_rws_word(rel.first), word_to_rws_word(rel.second));
+  RWS::Rule* RWS::new_rule() const {
+    _total_rules++;
+    Rule* rule;
+    if (!_inactive_rules.empty()) {
+      rule = _inactive_rules.front();
+      rule->clear();
+      _inactive_rules.erase(_inactive_rules.begin());
+    } else {
+      rule = new Rule(this);
     }
+    return rule;
+  }
+
+  RWS::Rule* RWS::new_rule(Rule const* rule1) const {
+    Rule* rule2 = new_rule();
+    rule2->_lhs->append(*rule1->lhs());  // copies lhs
+    rule2->_rhs->append(*rule1->rhs());  // copies rhs
+    return rule2;
+  }
+
+  RWS::Rule* RWS::new_rule(rws_word_t::const_iterator begin_lhs,
+                           rws_word_t::const_iterator end_lhs,
+                           rws_word_t::const_iterator begin_rhs,
+                           rws_word_t::const_iterator end_rhs) const {
+    Rule* rule = new_rule();
+    rule->_lhs->append(begin_lhs, end_lhs);
+    rule->_rhs->append(begin_rhs, end_rhs);
+    return rule;
   }
 
   // Replace [it1_begin .. it1_begin + (it2_end - it2_begin)] by
@@ -110,46 +192,44 @@ namespace libsemigroups {
       it2_begin++;
     }
   }
+
   // TODO collect minimum active rule length and just don't do anything if we
   // are trying to rewrite a shorter word
-  //
 
   // REWRITE_FROM_LEFT from Sims, p67
   // Caution: this contains the assumption that rules are length reducing!
-  void RWS::rewrite(rws_word_t& u) const {
-    auto v_begin = u.begin();
-    auto v_end   = u.begin();
-    auto w_begin = u.begin();
-    auto w_end   = u.end();
+  void RWS::rewrite(rws_word_t* u) const {
+    auto v_begin = u->begin();
+    auto v_end   = u->begin();
+    auto w_begin = u->begin();
+    auto w_end   = u->end();
 
     while (w_begin != w_end) {
       *v_end = *w_begin;
       v_end++;
       w_begin++;
-      for (std::pair<rws_rule_t, bool> const& x : _rules) {
+      for (Rule const* rule : _active_rules) {
         // TODO use minimum active rule length here for v, if v is too short
         // then skip this entire loop
-        if (x.second
-            && x.first.first.size() <= static_cast<size_t>(v_end - v_begin)) {
-          // x.first is an active rule, and isn't too long to be a suffix of v
-          auto rule_cbegin = x.first.first.cbegin();
-          auto rule_pos    = x.first.first.cend() - 1;
+        if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+          // x->first is an active rule, and isn't too long to be a suffix of v
+          auto rule_cbegin = rule->lhs()->cbegin();
+          auto rule_pos    = rule->lhs()->cend() - 1;
           auto v_pos       = v_end - 1;
           while ((rule_pos > rule_cbegin) && (*rule_pos == *v_pos)) {
             --rule_pos;
             --v_pos;
           }
-          if (*rule_pos == *v_pos) {  // x.first.first is suffix of v
+          if (*rule_pos == *v_pos) {  // x->first.first is suffix of v
             v_end = v_pos;
-            w_begin -= x.first.second.size();
-            string_replace(
-                w_begin, x.first.second.cbegin(), x.first.second.cend());
+            w_begin -= rule->rhs()->size();
+            string_replace(w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
             break;
           }
         }
       }
     }
-    u.erase(v_end - u.cbegin());
+    u->erase(v_end - u->cbegin());
   }
 
   // CONFLUENT from Sims, p62
@@ -157,45 +237,51 @@ namespace libsemigroups {
     if (_confluence_known) {
       return _is_confluent;
     }
-
-    for (size_t i = 0; i < _rules.size() && !killed; i++) {
-      if (_rules[i].second) {  // _rules[i] is active
-        rws_rule_t const& rule1 = _rules[i].first;
-        for (size_t j = 0; j < _rules.size() && !killed; j++) {
-          if (_rules[j].second) {
-            rws_rule_t const& rule2 = _rules[j].first;
-            for (auto it = rule1.first.cend() - 1; it >= rule1.first.cbegin();
-                 it--) {
-              // Find longest common prefix of suffix B of rule1.first defined
-              // by it and R = rule2.first
-              // FIXME the following is not valid
-              auto prefix
-                  = std::mismatch(it, rule1.first.cend(), rule2.first.cbegin());
-              if (prefix.first != it || prefix.second != rule2.first.cbegin()) {
-                // FIXME this first if-condition redundant?
-                // There was a match
-                if (prefix.first == rule1.first.cend()
-                    || prefix.second == rule2.first.cend()) {
-                  rws_word_t v = rws_word_t(rule1.first.cbegin(), it);  // A
-                  v.append(rule2.second);                               // S
-                  v.append(prefix.first, rule1.first.cend());           // D
-                  rewrite(v);
-
-                  rws_word_t w = rule1.second;                  // Q
-                  w.append(prefix.second, rule2.first.cend());  // E
-                  rewrite(w);
-                  if (v != w) {
-                    _confluence_known = true;
-                    _is_confluent     = false;
-                    return false;
-                  }
-                }
+    rws_word_t* v = new rws_word_t();
+    rws_word_t* w = new rws_word_t();
+    for (Rule const* rule1 : _active_rules) {
+      if (killed) {
+        break;
+      }
+      for (Rule const* rule2 : _active_rules) {
+        if (killed) {
+          break;
+        }
+        for (auto it = rule1->lhs()->cend() - 1; it >= rule1->lhs()->cbegin();
+             it--) {
+          // Find longest common prefix of suffix B of rule1.first defined
+          // by it and R = rule2.first
+          // FIXME the following is not valid
+          auto prefix
+              = std::mismatch(it, rule1->lhs()->cend(), rule2->lhs()->cbegin());
+          if (prefix.first != it || prefix.second != rule2->lhs()->cbegin()) {
+            // FIXME this first if-condition redundant?
+            // There was a match
+            if (prefix.first == rule1->lhs()->cend()
+                || prefix.second == rule2->lhs()->cend()) {
+              v->append(rule1->lhs()->cbegin(), it);          // A
+              v->append(*rule2->rhs());                       // S
+              v->append(prefix.first, rule1->lhs()->cend());  // D
+              rewrite(v);
+              w->append(*rule1->rhs());                        // Q
+              w->append(prefix.second, rule2->lhs()->cend());  // E
+              rewrite(w);
+              if (*v != *w) {
+                _confluence_known = true;
+                _is_confluent     = false;
+                delete v;
+                delete w;
+                return false;
               }
+              v->clear();
+              w->clear();
             }
           }
         }
       }
     }
+    delete v;
+    delete w;
     if (!killed) {
       _confluence_known = true;
       _is_confluent     = true;
@@ -207,65 +293,76 @@ namespace libsemigroups {
   // TEST_2 from Sims, p76
   void RWS::clear_stack(std::atomic<bool>& killed) {
     while (!_stack.empty() && !killed) {
-      rws_rule_t uv = _stack.top();  // FIXME use pointers in _stack
+#ifdef RWS_STATS
+      MAX_STACK_DEPTH = std::max(MAX_STACK_DEPTH, _stack.size());
+#endif
+
+      Rule* rule1 = _stack.top();
       _stack.pop();
-      rewrite(uv.first);
-      rewrite(uv.second);
-      if (uv.first != uv.second) {
-        rws_rule_t const& ab = add_rule(uv);
-        // a -> b must be added at the end of _rules
-        rws_word_t const& a = ab.first;
-        for (size_t i = 0; i < _rules.size() - 1; i++) {
-          if (_rules[i].second) {  // _rules[i] is active
-            rws_rule_t& rule = _rules[i].first;
-            size_t      pos  = rule.first.find(a);
-            if (pos != std::string::npos) {
-              _stack.push(rule);
-              deactivate_rule(i);
-            } else {
-              pos = rule.second.find(a);
-              if (pos != std::string::npos) {
-                rewrite(rule.second);
-              }
+      // Rewrite both sides and reorder if necessary . . .
+      assert(!rule1->is_active());
+      rule1->rewrite();
+      if (*rule1->lhs() != *rule1->rhs()) {
+        add_rule(rule1);  // rule1 is activated
+        rws_word_t const* lhs = rule1->lhs();
+        for (auto it = _active_rules.begin(); it != --_active_rules.end();) {
+          Rule* rule2 = const_cast<Rule*>(*it);
+          if (rule2->lhs()->find(*lhs) != std::string::npos) {
+            it = remove_rule(it);
+            _stack.push(rule2);
+          } else {
+            if (rule2->rhs()->find(*lhs) != std::string::npos) {
+              rule2->rewrite_rhs();
             }
+            it++;
           }
         }
+      } else {
+        _inactive_rules.push_back(rule1);
       }
       if (_report_next++ > _report_interval) {
-        REPORT("total rules = " << _rules.size() << ", active rules = "
-                                << _nr_active_rules);
+        REPORT("active rules = " << _active_rules.size()
+                                 << ", inactive rules = "
+                                 << _inactive_rules.size()
+                                 << ", rules defined = "
+                                 << _total_rules);
+#ifdef RWS_STATS
+        REPORT("max stack depth        = " << MAX_STACK_DEPTH);
+        REPORT("max word length        = " << MAX_WORD_LENGTH);
+        REPORT("max active word length = " << max_active_word_length(this));
+        REPORT("max active rules       = " << MAX_ACTIVE_RULES);
+        REPORT("number of unique lhs   = " << UNIQUE_LHS_RULES.size());
+#endif
         _report_next = 0;
       }
     }
   }
 
   // OVERLAP_2 from Sims, p77
-  void RWS::overlap(size_t i, size_t j, std::atomic<bool>& killed) {
-    // Assert both rules are active
-    assert(_rules[i].second && _rules[j].second);
-    rws_rule_t        u = _rules[i].first;
-    rws_rule_t const& v = _rules[j].first;
+  void RWS::overlap(Rule const* u, Rule const* v, std::atomic<bool>& killed) {
+    assert(u->is_active() && v->is_active());
+    size_t m = std::min(u->lhs()->size(), v->lhs()->size()) - 1;
 
-    size_t m = std::min(u.first.size(), v.first.size()) - 1;
-
-    for (size_t k = 1;
-         k <= m && _rules[i].second && _rules[j].second && !killed;
+    for (size_t k = 1; k <= m && u->is_active() && v->is_active() && !killed;
          k++) {
-      // Check if b = std::string(u.first.cend() - k, u.first.cend()) is a
-      // prefix of v.first
-      auto first1 = u.first.cend() - k;
-      auto last1  = u.first.cend();
-      auto it     = v.first.cbegin();
+      // Check if b = std::string(u->lhs()->cend() - k, u->lhs()->cend()) is a
+      // prefix of v->lhs()
+      auto first1 = u->lhs()->cend() - k;
+      auto last1  = u->lhs()->cend();
+      auto it     = v->lhs()->cbegin();
       while ((first1 < last1) && (*first1 == *it)) {
         ++first1;
         ++it;
       }
       if (first1 == last1) {  // b is a prefix of v.first
-        rws_word_t a = rws_word_t(u.first.cbegin(), u.first.cend() - k);  // A
-        a.append(v.second);                                               // Q_j
-        rws_word_t b = u.second;                                          // Q_i
-        b.append(it, v.first.cend());                                     // C
-        _stack.emplace(rws_rule_t(a, b));
+        Rule* rule = new_rule(u->lhs()->cbegin(),
+                              u->lhs()->cend() - k,
+                              u->rhs()->cbegin(),
+                              u->rhs()->cend());
+        rule->_lhs->append(*v->rhs());             // Q_j
+        rule->_rhs->append(it, v->lhs()->cend());  // C
+        assert(rule->lhs() != rule->rhs());
+        _stack.emplace(rule);
         clear_stack(killed);
       }
     }
@@ -277,26 +374,34 @@ namespace libsemigroups {
       REPORT("the system is confluent already");
       return;
     }
+
     // Reduce the rules
-    for (size_t i = 0; i < _rules.size() && !killed; i++) {
-      if (_rules[i].second) {
-        _stack.push(_rules[i].first);
-        clear_stack(killed);
-      }
+    _next_rule_it1 = _active_rules.begin();
+    while (_next_rule_it1 != _active_rules.end() && !killed) {
+      // Copy *_next_rule_it1 and push into _stack so that it is not modified by
+      // the call to clear_stack.
+      _stack.push(new_rule(*_next_rule_it1));
+      _next_rule_it1++;
+      clear_stack(killed);
     }
-    size_t nr = 0;
-    for (size_t i = 0; i < _rules.size() && !killed; i++) {
-      for (size_t j = 0; j <= i && _rules[i].second && !killed; j++) {
-        if (_rules[j].second) {  // _rules[j] is active
+    _next_rule_it1 = _active_rules.begin();
+    size_t nr      = 0;
+    while (_next_rule_it1 != _active_rules.end() && !killed) {
+      Rule const* rule1 = *_next_rule_it1;
+      _next_rule_it2    = _next_rule_it1;
+      _next_rule_it1++;
+      overlap(rule1, rule1, killed);
+      while (_next_rule_it2 != _active_rules.begin() && rule1->is_active()) {
+        _next_rule_it2--;
+        Rule const* rule2 = *_next_rule_it2;
+        overlap(rule1, rule2, killed);
+        nr++;
+        if (rule1->is_active() && rule2->is_active()) {
           nr++;
-          overlap(i, j, killed);
-        }
-        if (j < i && _rules[i].second && _rules[j].second) {
-          nr++;
-          overlap(j, i, killed);
+          overlap(rule2, rule1, killed);
         }
       }
-      if (nr > 1024) {
+      if (nr > 256) {
         nr = 0;
         if (is_confluent(killed)) {
           break;
@@ -306,9 +411,34 @@ namespace libsemigroups {
     if (killed) {
       REPORT("killed");
     } else {
-      REPORT("finished, total rules = " << _rules.size() << ", active rules = "
-                                        << _nr_active_rules);
-      compress();
+      _confluence_known = true;
+      _is_confluent     = true;
+      REPORT("finished, active rules = " << _active_rules.size()
+                                         << ", inactive rules = "
+                                         << _inactive_rules.size()
+                                         << ", rules defined = "
+                                         << _total_rules);
+#ifdef RWS_STATS
+      REPORT("max stack depth = " << MAX_STACK_DEPTH);
+#endif
     }
+  }
+
+  bool RWS::test_equals(word_t const& p, word_t const& q) {
+    auto eq = [](rws_word_t* pp, rws_word_t* qq) -> bool { return *pp == *qq; };
+    return test(word_to_rws_word(p), word_to_rws_word(q), eq);
+  }
+
+  bool RWS::test_equals(rws_word_t const& p, rws_word_t const& q) {
+    auto eq = [](rws_word_t* pp, rws_word_t* qq) -> bool { return *pp == *qq; };
+    return test(new rws_word_t(p), new rws_word_t(q), eq);
+  }
+
+  bool RWS::test_less_than(word_t const& p, word_t const& q) {
+    return test(word_to_rws_word(p), word_to_rws_word(q), *_order);
+  }
+
+  bool RWS::test_less_than(rws_word_t const& p, rws_word_t const& q) {
+    return test(new rws_word_t(p), new rws_word_t(q), *_order);
   }
 }  // namespace libsemigroups
