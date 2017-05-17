@@ -32,7 +32,7 @@ libsemigroups_la_CPPFLAGS = -DCONFIG_H
 
 ## Extra files for the distribution
 
-LINT_FORMAT_FILES_EXTRA = src/cong/kbfp.h src/cong/kbp.h 
+LINT_FORMAT_FILES_EXTRA =  src/cong/kbfp.h src/cong/kbp.h 
 LINT_FORMAT_FILES_EXTRA += src/cong/p.h    src/cong/tc.h
 LINT_FORMAT_FILES_EXTRA += test/catch.hpp
 
@@ -71,7 +71,7 @@ clean-local: clean-local-check
 clean-local-check:
 	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
 	rm -f test/*.gcda test/*.gcno
-	rm -f src/*.gcno
+	rm -f src/*.gcno src/.libs/*.gcda src/.libs/*.gcno
 	rm -f .debug_build .coverage_build
 
 check:	
