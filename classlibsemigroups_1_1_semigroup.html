@@ -233,6 +233,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad17f71621a3b4284c262357f07f39f48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e">pos_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semigroup.html#ad17f71621a3b4284c262357f07f39f48">position</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *x)</td></tr>
 <tr class="memdesc:ad17f71621a3b4284c262357f07f39f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position of <code>x</code> in <code>this</code>, or <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">Semigroup::UNDEFINED</a> if <code>x</code> is not an element of <code>this</code>.  <a href="#ad17f71621a3b4284c262357f07f39f48">More...</a><br /></td></tr>
 <tr class="separator:ad17f71621a3b4284c262357f07f39f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11e32e198ccc06a9cc6522d736ba1a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semigroup.html#a4f11e32e198ccc06a9cc6522d736ba1a">position_to_sorted_position</a> (<a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e">pos_t</a> pos)</td></tr>
+<tr class="memdesc:a4f11e32e198ccc06a9cc6522d736ba1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position of <code>this-&gt;at(pos)</code> in the sorted array of elements of the semigroup, or <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">Semigroup::UNDEFINED</a> if <code>pos</code> is greater than the size of the semigroup.  <a href="#a4f11e32e198ccc06a9cc6522d736ba1a">More...</a><br /></td></tr>
+<tr class="separator:a4f11e32e198ccc06a9cc6522d736ba1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7540020f78f586a9ca5a4251ecc6251"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e">pos_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semigroup.html#af7540020f78f586a9ca5a4251ecc6251">prefix</a> (<a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e">pos_t</a> pos) const</td></tr>
 <tr class="memdesc:af7540020f78f586a9ca5a4251ecc6251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position of the prefix of the element <code>x</code> in position <code>pos</code> (of the semigroup) of length one less than the length of <code>x</code>.  <a href="#af7540020f78f586a9ca5a4251ecc6251">More...</a><br /></td></tr>
 <tr class="separator:af7540020f78f586a9ca5a4251ecc6251"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -682,7 +685,8 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the position of the element <code>x</code> in the semigroup if it is already known to belong to the semigroup. </p>
-<p>This method finds the position of the element <code>x</code> in the semigroup if it is already known to belong to the semigroup, and <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">libsemigroups::Semigroup::UNDEFINED</a> if not. If the semigroup is not fully enumerated, then this method may return <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">libsemigroups::Semigroup::UNDEFINED</a> when <code>x</code> is in the semigroup, but not this is not yet known. See also <a class="el" href="classlibsemigroups_1_1_semigroup.html#ad17f71621a3b4284c262357f07f39f48" title="Returns the position of x in this, or Semigroup::UNDEFINED if x is not an element of this...">Semigroup::position</a> and <a class="el" href="classlibsemigroups_1_1_semigroup.html#adf7a9a7f34a166fb6fb24908fe545fa1" title="Returns the position of x in the sorted array of elements of the semigroup, or Semigroup::UNDEFINED i...">Semigroup::sorted_position</a>. </p>
+<p>This method finds the position of the element <code>x</code> in the semigroup if it is already known to belong to the semigroup, and <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">libsemigroups::Semigroup::UNDEFINED</a> if not. If the semigroup is not fully enumerated, then this method may return <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">libsemigroups::Semigroup::UNDEFINED</a> when <code>x</code> is in the semigroup, but not this is not yet known.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_semigroup.html#ad17f71621a3b4284c262357f07f39f48" title="Returns the position of x in this, or Semigroup::UNDEFINED if x is not an element of this...">Semigroup::position</a> and <a class="el" href="classlibsemigroups_1_1_semigroup.html#adf7a9a7f34a166fb6fb24908fe545fa1" title="Returns the position of x in the sorted array of elements of the semigroup, or Semigroup::UNDEFINED i...">Semigroup::sorted_position</a>. FIXME these should be <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> const* </dd></dl>
 
 </div>
 </div>
@@ -1408,7 +1412,7 @@ Static Public Attributes</h2></td></tr>
 </ul>
 <p><a class="el" href="classlibsemigroups_1_1_semigroup.html#ab5aef49c839f223984032c0eda481bb5" title="This method changes relation in-place to contain the next relation of the presentation defining this...">Semigroup::next_relation</a> is guaranteed to output all relations of length 2 before any relations of length 3. If called repeatedly after <a class="el" href="classlibsemigroups_1_1_semigroup.html#ae3debdbc4c4feb1330fcea98f8ed5951" title="This method resets Semigroup::next_relation so that when it is next called the resulting relation is ...">Semigroup::reset_next_relation</a>, and until relation is empty, the values placed in <code>relation</code> correspond to a length-reducing confluent rewriting system that defines the semigroup.</p>
 <p>This method can be used in conjunction with <a class="el" href="classlibsemigroups_1_1_semigroup.html#a52b662e18122e2fea27899c86ffc5e6d" title="Changes word in-place to contain a word in the generators equal to the pos element of the semigroup...">Semigroup::factorisation</a> to obtain a presentation defining the semigroup.</p>
-<p>See also <a class="el" href="classlibsemigroups_1_1_semigroup.html#ae3debdbc4c4feb1330fcea98f8ed5951" title="This method resets Semigroup::next_relation so that when it is next called the resulting relation is ...">Semigroup::reset_next_relation</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_semigroup.html#ae3debdbc4c4feb1330fcea98f8ed5951" title="This method resets Semigroup::next_relation so that when it is next called the resulting relation is ...">Semigroup::reset_next_relation</a>. </dd></dl>
 
 </div>
 </div>
@@ -1483,7 +1487,7 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the total number of relations in the presentation defining the semigroup. </p>
-<p>See also <a class="el" href="classlibsemigroups_1_1_semigroup.html#ab5aef49c839f223984032c0eda481bb5" title="This method changes relation in-place to contain the next relation of the presentation defining this...">Semigroup::next_relation</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_semigroup.html#ab5aef49c839f223984032c0eda481bb5" title="This method changes relation in-place to contain the next relation of the presentation defining this...">Semigroup::next_relation</a>. </dd></dl>
 
 </div>
 </div>
@@ -1563,6 +1567,26 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the position of <code>x</code> in <code>this</code>, or <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">Semigroup::UNDEFINED</a> if <code>x</code> is not an element of <code>this</code>. </p>
 <p>This method can be used to find the <a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e" title="Type for the position of an element in an instance of Semigroup. ">Semigroup::pos_t</a> position of the element <code>x</code> if it belongs to the semigroup. The semigroup is enumerated in batches until <code>x</code> is found or the semigroup is fully enumerated but <code>x</code> was not found (see <a class="el" href="classlibsemigroups_1_1_semigroup.html#a4436d9a50e5b92299765e0ea1865988d" title="Set a new value for the batch size. ">Semigroup::set_batch_size</a>). </p>
+
+</div>
+</div>
+<a id="a4f11e32e198ccc06a9cc6522d736ba1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f11e32e198ccc06a9cc6522d736ba1a">&#9670;&nbsp;</a></span>position_to_sorted_position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t libsemigroups::Semigroup::position_to_sorted_position </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e">pos_t</a>&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the position of <code>this-&gt;at(pos)</code> in the sorted array of elements of the semigroup, or <a class="el" href="classlibsemigroups_1_1_semigroup.html#aac61b2bd6ef49a7659c3dca9e1f205cf" title="This variable is used to indicate that a value is undefined, such as, for example, the position of an element that does not belong to a semigroup. ">Semigroup::UNDEFINED</a> if <code>pos</code> is greater than the size of the semigroup. </p>
 
 </div>
 </div>
@@ -1963,7 +1987,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns a pointer to the element of <code>this</code> represented by the word <code>w</code>. </p>
 <p>The parameter <code>w</code> must consist of non-negative integers less than <a class="el" href="classlibsemigroups_1_1_semigroup.html#a0bdd64f5292f19094cb58b7e747d8e2a" title="Returns the number of generators of the semigroup. ">Semigroup::nrgens</a>. This method returns a pointer to the element of <code>this</code> obtained by evaluating <code>w</code>. This is equivalent to finding the product <code>x</code> of the generators <a class="el" href="classlibsemigroups_1_1_semigroup.html#aa7b1fd15757b76f06fa86e51f3e4f159" title="Returns a pointer to the vector containing the generators of the semigroup. ">Semigroup::gens</a>(<code>w</code>[i]).</p>
-<p>See also <a class="el" href="classlibsemigroups_1_1_semigroup.html#ae13dd8c536b6eeaa4330596112e37d68" title="Returns the position in the semigroup corresponding to the element represented by the word w...">Semigroup::word_to_pos</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_semigroup.html#ae13dd8c536b6eeaa4330596112e37d68" title="Returns the position in the semigroup corresponding to the element represented by the word w...">Semigroup::word_to_pos</a>. </dd></dl>
 
 </div>
 </div>
@@ -1985,7 +2009,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the position in the semigroup corresponding to the element represented by the word <code>w</code>. </p>
 <p>The parameter <code>w</code> must consist of non-negative integers less than <a class="el" href="classlibsemigroups_1_1_semigroup.html#a0bdd64f5292f19094cb58b7e747d8e2a" title="Returns the number of generators of the semigroup. ">Semigroup::nrgens</a>. This method returns the position in <code>this</code> of the element obtained by evaluating <code>w</code>. This is equivalent to finding the product <code>x</code> of the generators <a class="el" href="classlibsemigroups_1_1_semigroup.html#aa7b1fd15757b76f06fa86e51f3e4f159" title="Returns a pointer to the vector containing the generators of the semigroup. ">Semigroup::gens</a>(<code>w</code>[i]) and then calling <a class="el" href="classlibsemigroups_1_1_semigroup.html#ad17f71621a3b4284c262357f07f39f48" title="Returns the position of x in this, or Semigroup::UNDEFINED if x is not an element of this...">Semigroup::position</a> with argument <code>x</code>.</p>
-<p>See also <a class="el" href="classlibsemigroups_1_1_semigroup.html#a60b8731b07a29256f4e56f88258a56e9" title="Returns a pointer to the element of this represented by the word w. ">Semigroup::word_to_element</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_semigroup.html#a60b8731b07a29256f4e56f88258a56e9" title="Returns a pointer to the element of this represented by the word w. ">Semigroup::word_to_element</a>. </dd></dl>
 
 </div>
 </div>
@@ -2045,7 +2069,7 @@ Static Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 20 2017 16:48:23 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 18 2017 09:36:05 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

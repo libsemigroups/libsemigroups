@@ -125,8 +125,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_projective_max_plus_matrix.html">ProjectiveMaxPlusMatrix</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for projective max-plus matrices.  <a href="classlibsemigroups_1_1_projective_max_plus_matrix.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_o.html">RO</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class provides a call operator which can be used to compare <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>.  <a href="classlibsemigroups_1_1_r_o.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_reduction_ordering.html">ReductionOrdering</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class provides a call operator which can be used to compare <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>.  <a href="classlibsemigroups_1_1_reduction_ordering.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html">RWS</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class is used to represent a <a href="https://en.wikipedia.org/wiki/Semi-Thue_system">string rewriting system</a> defining a finitely presented monoid or semigroup.  <a href="classlibsemigroups_1_1_r_w_s.html#details">More...</a><br /></td></tr>
@@ -170,9 +170,6 @@ Typedefs</h2></td></tr>
 <tr class="memitem:aead3248bfb7f7f76a5e25ce940a7a515"><td class="memItemLeft" align="right" valign="top">typedef char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515">rws_letter_t</a></td></tr>
 <tr class="memdesc:aead3248bfb7f7f76a5e25ce940a7a515"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type for letters for rewriting systems.  <a href="#aead3248bfb7f7f76a5e25ce940a7a515">More...</a><br /></td></tr>
 <tr class="separator:aead3248bfb7f7f76a5e25ce940a7a515"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae74f83006f63172d5026053df9a81dc"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a>, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelibsemigroups.html#aae74f83006f63172d5026053df9a81dc">rws_rule_t</a></td></tr>
-<tr class="memdesc:aae74f83006f63172d5026053df9a81dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type for rules in rewriting systems.  <a href="#aae74f83006f63172d5026053df9a81dc">More...</a><br /></td></tr>
-<tr class="separator:aae74f83006f63172d5026053df9a81dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0509e1fb40826d2e75c0769223de795"><td class="memItemLeft" align="right" valign="top">typedef std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a></td></tr>
 <tr class="memdesc:ae0509e1fb40826d2e75c0769223de795"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type for words for rewriting systems.  <a href="#ae0509e1fb40826d2e75c0769223de795">More...</a><br /></td></tr>
 <tr class="separator:ae0509e1fb40826d2e75c0769223de795"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -247,22 +244,6 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="aae74f83006f63172d5026053df9a81dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae74f83006f63172d5026053df9a81dc">&#9670;&nbsp;</a></span>rws_rule_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef std::pair&lt;<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a>, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a>&gt; <a class="el" href="namespacelibsemigroups.html#aae74f83006f63172d5026053df9a81dc">libsemigroups::rws_rule_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Type for rules in rewriting systems. </p>
-
-</div>
-</div>
 <a id="ae0509e1fb40826d2e75c0769223de795"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae0509e1fb40826d2e75c0769223de795">&#9670;&nbsp;</a></span>rws_word_t</h2>
 
@@ -298,7 +279,7 @@ Typedefs</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 20 2017 16:48:23 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 18 2017 09:36:05 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

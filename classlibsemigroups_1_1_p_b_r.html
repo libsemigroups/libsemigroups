@@ -94,8 +94,11 @@ Inheritance diagram for libsemigroups::PBR:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aae3566fa25dd9aa8d48f5ba81f39f8a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_p_b_r.html#aae3566fa25dd9aa8d48f5ba81f39f8a3">PBR</a> (std::vector&lt; std::vector&lt; u_int32_t &gt;&gt; *vector, size_t hv=<a class="el" href="classlibsemigroups_1_1_element.html#a5211f2c852d18b9aa83fe729851d0fe6">Element::UNDEFINED</a>)</td></tr>
-<tr class="memdesc:aae3566fa25dd9aa8d48f5ba81f39f8a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#aae3566fa25dd9aa8d48f5ba81f39f8a3">More...</a><br /></td></tr>
+<tr class="memdesc:aae3566fa25dd9aa8d48f5ba81f39f8a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> defined by the vector pointed to by <code>vector</code>, which is not copied, and should be deleted using <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a640ab24ac458e4197ba65f116b21c5de" title="Deletes the defining data of an ElementWithVectorData. ">ElementWithVectorData::really_delete</a>.  <a href="#aae3566fa25dd9aa8d48f5ba81f39f8a3">More...</a><br /></td></tr>
 <tr class="separator:aae3566fa25dd9aa8d48f5ba81f39f8a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace9579770d3501e1e8dad4e1296274a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_p_b_r.html#ace9579770d3501e1e8dad4e1296274a0">PBR</a> (std::vector&lt; std::vector&lt; u_int32_t &gt;&gt; const &amp;vector)</td></tr>
+<tr class="memdesc:ace9579770d3501e1e8dad4e1296274a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> defined by <code>vector</code>, where <code>vector</code> is copied into the <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> being constructed.  <a href="#ace9579770d3501e1e8dad4e1296274a0">More...</a><br /></td></tr>
+<tr class="separator:ace9579770d3501e1e8dad4e1296274a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95308103073c9e9003e3659d4b461270"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_p_b_r.html#a95308103073c9e9003e3659d4b461270">cache_hash_value</a> () const override</td></tr>
 <tr class="memdesc:a95308103073c9e9003e3659d4b461270"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the hash value of a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a>.  <a href="#a95308103073c9e9003e3659d4b461270">More...</a><br /></td></tr>
 <tr class="separator:a95308103073c9e9003e3659d4b461270"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,7 +204,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Partitioned binary relations (PBRs) are a generalisation of bipartitions, which were introduced by <a href="https://arxiv.org/abs/1102.0862">Martin and Mazorchuk</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aae3566fa25dd9aa8d48f5ba81f39f8a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae3566fa25dd9aa8d48f5ba81f39f8a3">&#9670;&nbsp;</a></span>PBR()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aae3566fa25dd9aa8d48f5ba81f39f8a3">&#9670;&nbsp;</a></span>PBR() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,8 +237,36 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>A constructor. </p>
-<p>Constructs a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> defined by <code>vector</code>, <code>vector</code> is not copied, and should be deleted using <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a640ab24ac458e4197ba65f116b21c5de" title="Deletes the defining data of an ElementWithVectorData. ">ElementWithVectorData::really_delete</a>.</p>
+<p>Constructs a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> defined by the vector pointed to by <code>vector</code>, which is not copied, and should be deleted using <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a640ab24ac458e4197ba65f116b21c5de" title="Deletes the defining data of an ElementWithVectorData. ">ElementWithVectorData::really_delete</a>. </p>
+<p>The parameter <code>vector</code> should be a pointer to a vector of vectors of non-negative integer values of length \(2n\) for some integer \(n\), the vector in position \(i\) is the list of points adjacent to \(i\) in the <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a>. </p>
+
+</div>
+</div>
+<a id="ace9579770d3501e1e8dad4e1296274a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace9579770d3501e1e8dad4e1296274a0">&#9670;&nbsp;</a></span>PBR() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">libsemigroups::PBR::PBR </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; u_int32_t &gt;&gt; const &amp;&#160;</td>
+          <td class="paramname"><em>vector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructs a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> defined by <code>vector</code>, where <code>vector</code> is copied into the <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a> being constructed. </p>
 <p>The parameter <code>vector</code> should be a vector of vectors of non-negative integer values of length \(2n\) for some integer \(n\), the vector in position \(i\) is the list of points adjacent to \(i\) in the <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a>. </p>
 
 </div>
@@ -265,7 +296,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Find the hash value of a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for partitioned binary relations (PBR). ">PBR</a>. </p>
-<p>See also <a class="el" href="classlibsemigroups_1_1_element.html#a5f0550b30e74bf8c2369ebd244e0101d" title="Return the hash value of an Element. ">Element::hash_value</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_element.html#a5f0550b30e74bf8c2369ebd244e0101d" title="Return the hash value of an Element. ">Element::hash_value</a>. </dd></dl>
 
 <p>Implements <a class="el" href="classlibsemigroups_1_1_element.html#a4728a734638c82ab334607d4d0e252d9">libsemigroups::Element</a>.</p>
 
@@ -416,7 +447,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 20 2017 16:48:23 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 18 2017 09:36:05 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
