@@ -836,7 +836,7 @@ namespace libsemigroups {
     //!
     //! The parameter \p matrix should be a vector of boolean values of length
     //! \f$n ^  2\f$ for some integer \f$n\f$, so that the value in position
-    //! \f$in + j\f$ is the entry in the \f$i\f$th row and \f$j\f$th column of
+    //! \f$ni + j\f$ is the entry in row \f$i\f$ and column \f$j\f$ of
     //! the constructed matrix.
     //!
     //! The parameter \p hv must be the hash value of the element
@@ -883,7 +883,7 @@ namespace libsemigroups {
     //! every other entry is \c false.
     Element* identity() const override;
 
-    //! Multiply \p x and \p y and stores the result in \c this.
+    //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! This method asserts that the dimensions of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
