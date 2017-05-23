@@ -148,8 +148,9 @@ namespace libsemigroups {
 
     //! Returns a new element completely independent of \c this.
     //!
-    //! The parameter \p increase_deg_by increase the size of the container of
-    //! the defining data of \c this by this amount.
+    //! If \p increase_deg_by is non-zero, then the degree (the size of the
+    //! container) of the defining data of \c this will be increased by this
+    //! amount.
     //!
     //! This method really copies an Element. To minimise the amount of copying
     //! when Elements are inserted in a std::unordered_map and other
@@ -173,16 +174,16 @@ namespace libsemigroups {
     //! containers, an Element behaves somewhat like a pointer, in that the
     //! actual data in an Element is only deleted when this method is called.
     //! Otherwise, if an Element is deleted, then its defining data is not
-    //! deleted, since it may be contained in multiple copies of the Element.
+    //! deleted, since it may be contained in several copies of the Element.
     //!
     //! \sa Element::really_copy.
     virtual void really_delete() = 0;
 
-    //! Multiply \p x and \p y and stores the result in \c this.
+    //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! Redefine \c this to be the product of \p x and \p y. This is in-place
     //! multiplication to avoid allocation of memory for products which do not
-    //! require to be stored for future use.
+    //! need to be stored for future use.
     //!
     //! The implementation of this method in the Element base class simply
     //! calls the 3 parameter version with third parameter 0. Any subclass of
@@ -192,11 +193,11 @@ namespace libsemigroups {
       redefine(x, y, 0);
     }
 
-    //! Multiply \p x and \p y and stores the result in \c this.
+    //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! Redefine \c this to be the product of \p x and \p y. This is in-place
     //! multiplication to avoid allocation of memory for products which do not
-    //! require to be stored for future use.
+    //! need to be stored for future use.
     //!
     //! The implementation of this method in the Element base class simply
     //! calls the 2 parameter version and ignores the third parameter \p
