@@ -208,8 +208,12 @@ namespace libsemigroups {
         assert(winner->is_done());
       } else {  // Congruence is defined over an fp semigroup
         if (_type == TWOSIDED) {
-          std::vector<DATA*> data
-              = {new TC(*this), new KBFP(*this), new KBP(*this)};
+          std::vector<DATA*> data = {new TC(*this), new KBFP(*this)};
+          if (!_relations.empty()) {
+            // If _relations is empty, KBP is useless since any pair in _extra
+            // would imply an infinite number of pairs for KBP to find.
+            data.push_back(new KBP(*this));
+          }
           std::vector<std::function<void(DATA*)>> funcs = {};
           winner = winning_data(data, funcs, true, goal_func);
         } else {
