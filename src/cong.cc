@@ -209,19 +209,16 @@ namespace libsemigroups {
         winner->run();
         assert(winner->is_done());
       } else {  // Congruence is defined over an fp semigroup
+        std::vector<DATA*>                      data  = {new KBP(*this)};
+        std::vector<std::function<void(DATA*)>> funcs = {};
         if (_type == TWOSIDED) {
-          std::vector<DATA*> data = {new TC(*this), new KBFP(*this)};
-          if (!_relations.empty()) {
-            // If _relations is empty, KBP is useless since any pair in _extra
-            // would imply an infinite number of pairs for KBP to find.
-            data.push_back(new KBP(*this));
-          }
-          std::vector<std::function<void(DATA*)>> funcs = {};
-          winner = winning_data(data, funcs, true, goal_func);
-        } else {
-          winner = new TC(*this);
-          winner->run_until(goal_func);
+          data.push_back(new KBFP(*this));
         }
+        // TC will be invalid/useless in certain cases; we check these here.
+        if (!is_obviously_infinite()) {
+          data.push_back(new TC(*this));
+        }
+        winner = winning_data(data, funcs, true, goal_func);
       }
     }
     REPORT(timer.string("elapsed time = "));
@@ -243,7 +240,60 @@ namespace libsemigroups {
     }
   }
 
+  bool Congruence::is_obviously_infinite() {
+    // We apply some simple, quick checks that may establish that the congruence
+    // has an infinite number of classes; if so, Todd-Coxeter should not be run.
+    // If this returns false, it is safe to run Todd-Coxeter, although of course
+    // Todd-Coxeter may still run forever.
+
+    // If we have a concrete semigroup, it should be finite.
+    if (_semigroup != nullptr) {
+      return false;
+    }
+
+    // If there are no rels, or more gens than rels, it must be infinite
+    if (_nrgens > _relations.size() + _extra.size()) {
+      return true;
+    }
+
+    // Does there exist a generator which appears in no relation?
+    bool found;
+    for (size_t gen = 0; gen < _nrgens; gen++) {
+      found = false;
+      for (const relation_t& rel : _relations) {
+        if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
+            != rel.first.cend()) {
+          found = true;
+          break;
+        }
+        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
+            != rel.second.cend()) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        continue;
+      }
+      for (const relation_t& rel : _extra) {
+        if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
+            != rel.first.cend()) {
+          break;
+        }
+        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
+            != rel.second.cend()) {
+          break;
+        }
+        return true;
+      }
+    }
+
+    // Otherwise, it may be infinite or finite (undecidable in general)
+    return false;
+  }
+
   void Congruence::force_tc() {
+    assert(!is_obviously_infinite());
     delete_data();
     _data = new TC(*this);
   }

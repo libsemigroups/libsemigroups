@@ -616,6 +616,8 @@ namespace libsemigroups {
                        bool                       ignore_max_threads = false,
                        std::function<bool(DATA*)> goal_func = RETURN_FALSE);
 
+    bool is_obviously_infinite();
+
     Congruence(cong_t                         type,
                size_t                         nrgens,
                std::vector<relation_t> const& relations,
