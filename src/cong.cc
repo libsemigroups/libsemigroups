@@ -101,6 +101,7 @@ namespace libsemigroups {
         REPORT("allocation failed: " << e.what())
         return;
       }
+      _kill_mtx.lock();  // stop two DATA objects from killing each other
       if (!data.at(pos)->is_killed()) {
         for (auto it = data.begin(); it < data.begin() + pos; it++) {
           (*it)->kill();
@@ -109,6 +110,7 @@ namespace libsemigroups {
           (*it)->kill();
         }
       }
+      _kill_mtx.unlock();
     };
 
     size_t nr_threads;
@@ -296,9 +298,9 @@ namespace libsemigroups {
 
   void Congruence::init_relations(Semigroup*         semigroup,
                                   std::atomic<bool>& killed) {
-    _mtx.lock();
+    _init_mtx.lock();
     if (_relations_done || semigroup == nullptr) {
-      _mtx.unlock();
+      _init_mtx.unlock();
       _relations_done = true;
       return;
     }
@@ -332,7 +334,7 @@ namespace libsemigroups {
       }
       _relations_done = true;
     }
-    _mtx.unlock();
+    _init_mtx.unlock();
   }
 
   // This is the default method used by a DATA object, and is used only by TC

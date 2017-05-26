@@ -629,6 +629,8 @@ namespace libsemigroups {
 
     DATA*                   _data;
     std::vector<relation_t> _extra;
+    std::mutex              _init_mtx;
+    std::mutex              _kill_mtx;
     size_t                  _max_threads;
     size_t                  _nrgens;
     std::vector<DATA*>      _partial_data;
@@ -637,7 +639,6 @@ namespace libsemigroups {
     std::atomic<bool>       _relations_done;
     Semigroup*              _semigroup;
     cong_t                  _type;
-    std::mutex              _mtx;
 
     static size_t const INFTY;
     static size_t const UNDEFINED;
