@@ -213,6 +213,19 @@ namespace libsemigroups {
         };
         data = get_data(words_func);
       }
+
+      if (!_partial_data.empty()) {
+        assert(_data == nullptr);
+        // Delete the losers and clear _partial_data
+        for (size_t i = 0; i < _partial_data.size(); i++) {
+          if (_partial_data[i] != data) {
+            delete _partial_data[i];
+          }
+        }
+        _partial_data.clear();
+      }
+      _data = data;
+
       DATA::result_t result = data->current_less_than(w1, w2);
       assert(result != DATA::result_t::UNKNOWN);
       return result == DATA::result_t::TRUE;
