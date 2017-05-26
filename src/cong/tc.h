@@ -80,7 +80,8 @@ namespace libsemigroups {
     size_t                            _defined;
     std::vector<relation_t>           _extra;
     std::vector<class_index_t>        _forwd;
-    class_index_t                     _id_coset;  // TODO(JDM) Remove?
+    class_index_t                     _id_coset;   // TODO(JDM) Remove?
+    bool                              _init_done;  // Has init() been run yet?
     class_index_t                     _last;
     std::stack<class_index_t> _lhs_stack;  // Stack for identifying cosets
     class_index_t             _next;

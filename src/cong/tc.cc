@@ -89,6 +89,7 @@ namespace libsemigroups {
         _extra(),
         _forwd(1, UNDEFINED),
         _id_coset(0),
+        _init_done(false),
         _last(0),
         _next(UNDEFINED),
         _pack(120000),
@@ -100,19 +101,15 @@ namespace libsemigroups {
         _tc_done(false) {}
 
   void Congruence::TC::init() {
-    if (_relations.empty() && _extra.empty()) {
+    if (!_init_done) {
       // This is the first run
       init_tc_relations();
       // Apply each "extra" relation to the first coset only
       for (relation_t const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
       }
-      if (_relations.empty() && !_killed) {
-        _tc_done = true;
-        compress();
-        return;
-      }
     }
+    _init_done = true;
   }
 
   void Congruence::TC::prefill() {
@@ -182,7 +179,7 @@ namespace libsemigroups {
 
   void Congruence::TC::init_tc_relations() {
     // This should not have been run before
-    assert(_relations.empty() && _extra.empty());
+    assert(!_init_done);
 
     // Handle _extra first!
     switch (_cong._type) {
