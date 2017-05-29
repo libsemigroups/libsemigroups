@@ -2,9 +2,14 @@
 set -e
 
 # Install doxygen
-echo "deb http://us.archive.ubuntu.com/ubuntu/ yakkety main" | sudo tee -a /etc/apt/sources.list
-sudo apt-get update -qq
-sudo apt-get install -y doxygen
+wget -q ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.linux.bin.tar.gz
+tar -xf doxygen-1.8.13.linux.bin.tar.gz
+cd doxygen-1.8.13/
+./configure
+head -n 15 Makefile > temp.txt
+mv temp.txt Makefile
+sudo make install
+cd ..
 
 # Setup
 ci/travis-setup.sh

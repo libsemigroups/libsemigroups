@@ -21,6 +21,14 @@
 // performing Knuth-Bendix followed by the Froidure-Pin algorithm on the
 // quotient.
 
+// Note that the KBFP run method does not meaningfully use the steps argument at
+// the moment.  This is because the only goal_func currently used is to test
+// pair membership or ordering, questions which are answered without running
+// Froidure-Pin at all.  Hence run is only ever called with steps set to
+// LIMIT_MAX.  If other goal_funcs are added later, run might use steps and we
+// could increase test coverage.  This only applies here in KBFP, and not to
+// other DATA subclasses.
+
 #include <vector>
 
 #include "../rwse.h"
@@ -74,6 +82,7 @@ namespace libsemigroups {
 
     if (!_killed) {
       REPORT("running Froidure-Pin . . .")
+      // This if statement will never be entered - see top of file for details
       if (steps != Congruence::LIMIT_MAX) {
         // The default batch_size is too large and can take a long time, but if
         // we are running Congruence::LIMIT_MAX steps, then the usual batch

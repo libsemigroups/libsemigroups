@@ -1,5 +1,6 @@
 # libsemigroups - C++ library for semigroups and monoids - Version 0.3.0
-### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/), [N. Thiery](http://nicolas.thiery.name), and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/)
+### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/)
+and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [N. Thiery](http://nicolas.thiery.name)
 
 The current version of libsemigroups is 0.3.0.
 libsemigroups requires a C++ compiler supporting the c++11 standard.
@@ -12,7 +13,8 @@ libsemigroups is a C++ library for semigroups and monoids; it is partly based on
 The libsemigroups library is used in the 
 [Semigroups package for GAP](http://gap-packages.github.io/Semigroups/).
 The development version is available on 
-[Github](https://github.com/james-d-mitchell/libsemigroups).
+[Github](https://github.com/james-d-mitchell/libsemigroups), and there are
+[python bindings](http://github.com/james-d-mitchell/libsemigroups-python-bindings/) (for Python 2 and 3). 
 
 Some of the features of 
 [Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) 
@@ -65,10 +67,30 @@ libsemigroups also has some advantages over
   compute congruence of a (not necessarily finitely presented) semigroup or
   monoid.
 
-## Issues
-If you find any problems with libsemigroups or have any suggestions for features
-that you'd like to see please use the 
-[issue tracker](https://github.com/james-d-mitchell/libsemigroups/issues).
+## Installation
+
+### Installing with conda
+
+This installation method assumes that you have anaconda or miniconda
+installed. See the [getting started](https://conda.io/docs/get-started.html)
+and [miniconda download page](https://conda.io/miniconda.html)
+on the [conda](https://conda.io/) website.
+
+Activate the [conda-forge](https://conda-forge.github.io/) package repository:
+
+    conda config --add channels conda-forge
+
+Install libsemigroups
+
+    conda install libsemigroups
+
+### From the sources
+
+To install libsemigroups from the sources (this requires `autoconf` and `automake`): 
+
+    git clone https://github.com/james-d-mitchell/libsemigroups
+    cd libsemigroups
+    ./autogen.sh ; make ; sudo make install
 
 ## Documentation
 The documentation is generated using
@@ -78,6 +100,15 @@ This documentation can be compiled by running `./autogen.sh ; ./configure ;
 make doc` in the `libsemigroups` directory, and the tests can be run by doing
 `make check` in the `libsemigroups`
 directory.
+
+## Python bindings
+There are 
+[python bindings](http://github.com/james-d-mitchell/libsemigroups-python-bindings/) (for Python 2 and 3) for most of the functionality of libsemigroups. 
+
+## Issues
+If you find any problems with libsemigroups or have any suggestions for features
+that you'd like to see please use the 
+[issue tracker](https://github.com/james-d-mitchell/libsemigroups/issues).
 
 ## Acknowledgements
 
