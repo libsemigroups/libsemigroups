@@ -838,3 +838,17 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
 
   REQUIRE(cong.nr_classes() == 1);
 }
+
+TEST_CASE("Congruence 25: free semigroup with redundant relations",
+          "[standard][congruence][multithread][fpsemigroup]") {
+  std::vector<relation_t> extra = {relation_t({0, 0}, {0, 0})};
+  Congruence              cong("twosided", 1, {}, extra);
+  REQUIRE(cong.test_equals({0, 0}, {0, 0}));
+}
+
+TEST_CASE("Congruence 26: free semigroup with redundant relations",
+          "[standard][congruence][multithread][fpsemigroup]") {
+  Congruence cong("twosided", 1, {}, {});
+  REQUIRE(cong.test_equals({0, 0}, {0, 0}));
+  REQUIRE(!cong.test_equals({0, 0}, {0}));
+}

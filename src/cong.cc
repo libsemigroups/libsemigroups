@@ -101,6 +101,7 @@ namespace libsemigroups {
         REPORT("allocation failed: " << e.what())
         return;
       }
+      _kill_mtx.lock();  // stop two DATA objects from killing each other
       if (!data.at(pos)->is_killed()) {
         for (auto it = data.begin(); it < data.begin() + pos; it++) {
           (*it)->kill();
@@ -109,6 +110,7 @@ namespace libsemigroups {
           (*it)->kill();
         }
       }
+      _kill_mtx.unlock();
     };
 
     size_t nr_threads;
@@ -207,19 +209,16 @@ namespace libsemigroups {
         winner->run();
         assert(winner->is_done());
       } else {  // Congruence is defined over an fp semigroup
+        std::vector<DATA*>                      data  = {new KBP(*this)};
+        std::vector<std::function<void(DATA*)>> funcs = {};
         if (_type == TWOSIDED) {
-          std::vector<DATA*> data = {new TC(*this), new KBFP(*this)};
-          if (!_relations.empty()) {
-            // If _relations is empty, KBP is useless since any pair in _extra
-            // would imply an infinite number of pairs for KBP to find.
-            data.push_back(new KBP(*this));
-          }
-          std::vector<std::function<void(DATA*)>> funcs = {};
-          winner = winning_data(data, funcs, true, goal_func);
-        } else {
-          winner = new TC(*this);
-          winner->run_until(goal_func);
+          data.push_back(new KBFP(*this));
         }
+        // TC will be invalid/useless in certain cases; we check these here.
+        if (!is_obviously_infinite()) {
+          data.push_back(new TC(*this));
+        }
+        winner = winning_data(data, funcs, true, goal_func);
       }
     }
     REPORT(timer.string("elapsed time = "));
@@ -241,7 +240,60 @@ namespace libsemigroups {
     }
   }
 
+  bool Congruence::is_obviously_infinite() {
+    // We apply some simple, quick checks that may establish that the congruence
+    // has an infinite number of classes; if so, Todd-Coxeter should not be run.
+    // If this returns false, it is safe to run Todd-Coxeter, although of course
+    // Todd-Coxeter may still run forever.
+
+    // If we have a concrete semigroup, it should be finite.
+    if (_semigroup != nullptr) {
+      return false;
+    }
+
+    // If there are no rels, or more gens than rels, it must be infinite
+    if (_nrgens > _relations.size() + _extra.size()) {
+      return true;
+    }
+
+    // Does there exist a generator which appears in no relation?
+    bool found;
+    for (size_t gen = 0; gen < _nrgens; gen++) {
+      found = false;
+      for (const relation_t& rel : _relations) {
+        if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
+            != rel.first.cend()) {
+          found = true;
+          break;
+        }
+        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
+            != rel.second.cend()) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        continue;
+      }
+      for (const relation_t& rel : _extra) {
+        if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
+            != rel.first.cend()) {
+          break;
+        }
+        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
+            != rel.second.cend()) {
+          break;
+        }
+        return true;
+      }
+    }
+
+    // Otherwise, it may be infinite or finite (undecidable in general)
+    return false;
+  }
+
   void Congruence::force_tc() {
+    assert(!is_obviously_infinite());
     delete_data();
     _data = new TC(*this);
   }
@@ -276,7 +328,8 @@ namespace libsemigroups {
       // If this is an fp semigroup congruence, then KBP is the only DATA
       // subtype which can return a sensible answer.  Forcing KBP is not an
       // ideal solution; perhaps fp semigroup congruences should be handled
-      // differently in future.
+      // differently in future.  In particular, we should use _data if it
+      // happens to be a KBP object already.
       data = new KBP(*this);
       data->run();
       Partition<word_t>* out = data->nontrivial_classes();
@@ -296,9 +349,9 @@ namespace libsemigroups {
 
   void Congruence::init_relations(Semigroup*         semigroup,
                                   std::atomic<bool>& killed) {
-    _mtx.lock();
+    _init_mtx.lock();
     if (_relations_done || semigroup == nullptr) {
-      _mtx.unlock();
+      _init_mtx.unlock();
       _relations_done = true;
       return;
     }
@@ -332,7 +385,7 @@ namespace libsemigroups {
       }
       _relations_done = true;
     }
-    _mtx.unlock();
+    _init_mtx.unlock();
   }
 
   // This is the default method used by a DATA object, and is used only by TC

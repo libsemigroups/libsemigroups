@@ -213,6 +213,19 @@ namespace libsemigroups {
         };
         data = get_data(words_func);
       }
+
+      if (!_partial_data.empty()) {
+        assert(_data == nullptr);
+        // Delete the losers and clear _partial_data
+        for (size_t i = 0; i < _partial_data.size(); i++) {
+          if (_partial_data[i] != data) {
+            delete _partial_data[i];
+          }
+        }
+        _partial_data.clear();
+      }
+      _data = data;
+
       DATA::result_t result = data->current_less_than(w1, w2);
       assert(result != DATA::result_t::UNKNOWN);
       return result == DATA::result_t::TRUE;
@@ -616,6 +629,8 @@ namespace libsemigroups {
                        bool                       ignore_max_threads = false,
                        std::function<bool(DATA*)> goal_func = RETURN_FALSE);
 
+    bool is_obviously_infinite();
+
     Congruence(cong_t                         type,
                size_t                         nrgens,
                std::vector<relation_t> const& relations,
@@ -629,6 +644,8 @@ namespace libsemigroups {
 
     DATA*                   _data;
     std::vector<relation_t> _extra;
+    std::mutex              _init_mtx;
+    std::mutex              _kill_mtx;
     size_t                  _max_threads;
     size_t                  _nrgens;
     std::vector<DATA*>      _partial_data;
@@ -637,7 +654,6 @@ namespace libsemigroups {
     std::atomic<bool>       _relations_done;
     Semigroup*              _semigroup;
     cong_t                  _type;
-    std::mutex              _mtx;
 
     static size_t const INFTY;
     static size_t const UNDEFINED;
