@@ -328,7 +328,8 @@ namespace libsemigroups {
       // If this is an fp semigroup congruence, then KBP is the only DATA
       // subtype which can return a sensible answer.  Forcing KBP is not an
       // ideal solution; perhaps fp semigroup congruences should be handled
-      // differently in future.
+      // differently in future.  In particular, we should use _data if it
+      // happens to be a KBP object already.
       data = new KBP(*this);
       data->run();
       Partition<word_t>* out = data->nontrivial_classes();
