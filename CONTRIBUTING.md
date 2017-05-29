@@ -77,30 +77,16 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
     doing a non-bugfix release make a new `stable-x.y` branch push it github
     and delete the old stable branch.
 
-# Information for the maintainer
+14. Update the conda-forge feedstock:
 
-## Updating the conda package
+    https://github.com/conda-forge/libsemigroups-feedstock
 
-The relevant files are:
-- [meta.yaml](meta.yaml)
-- [build.sh](build.sh)
-
-To update the package:
-- Update the version and md5sum in [meta.yaml](meta.yaml)
-
-- Install conda and go into your conda environment.
-  See the getting started section in the
-  [Conda documentation](https://conda.io/docs/index.html) for details.
-
-- Run:
-
-    ```conda build .```
-
-- Try it with:
-
-    conda install --use-local libsemigroups
-
-- Publish it: See https://conda-forge.github.io/
+    ***in your own fork***, by modifying `recipe/meta.yml` to increment the version
+    number and sha256 variables at the top of the file. To obtain the sha256
+    value, using the archive from step 11 (uploaded to github), do 
+    `sha2 libsemigroups-x.y.z.tar.gz` at the command line. 
+    
+    Commit and push these changes to your fork, then make a PR to conda-forge. 
 
 References:
 
