@@ -63,7 +63,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
     
 10. Push to gh-pages
 
-        cd gh-pages ; git commit -a -m "Version x.y.z" ; git push 
+        cd gh-pages ; git add * ; git commit -a -m "Version x.y.z" ; git push 
 
 11. Make a release archive (note that `make distcheck` is currently done by
     travis so no need to do it again here):
