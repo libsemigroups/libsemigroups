@@ -220,7 +220,7 @@ namespace libsemigroups {
     int64_t plus(int64_t x, int64_t y) const override {
       assert((x >= 0 && x <= this->threshold()) || x == Semiring::MINUS_INFTY);
       assert((y >= 0 && y <= this->threshold()) || y == Semiring::MINUS_INFTY);
-      return std::min((std::max(x, y)), threshold());
+      return std::max(x, y);
     }
   };
 
@@ -266,7 +266,7 @@ namespace libsemigroups {
       if (x == INFTY && y == INFTY) {
         return INFTY;
       }
-      return std::min((std::min(x, y)), threshold());
+      return std::min(x, y);
     }
   };
 
