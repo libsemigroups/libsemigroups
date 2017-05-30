@@ -840,15 +840,32 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
 }
 
 TEST_CASE("Congruence 25: free semigroup with redundant relations",
-          "[standard][congruence][multithread][fpsemigroup]") {
+          "[quick][congruence][multithread][fpsemigroup]") {
   std::vector<relation_t> extra = {relation_t({0, 0}, {0, 0})};
   Congruence              cong("twosided", 1, {}, extra);
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
 }
 
 TEST_CASE("Congruence 26: free semigroup with redundant relations",
-          "[standard][congruence][multithread][fpsemigroup]") {
+          "[quick][congruence][multithread][fpsemigroup]") {
   Congruence cong("twosided", 1, {}, {});
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
   REQUIRE(!cong.test_equals({0, 0}, {0}));
+}
+
+TEST_CASE("Congruence 27: is_obviously_infinite",
+          "[quick][congruence][fpsemigroup]") {
+  Congruence cong1(
+      "twosided", 3, {relation_t({0, 1}, {0})}, {relation_t({2, 2}, {2})});
+  REQUIRE(cong1.is_obviously_infinite());
+  Congruence cong2("twosided",
+                   3,
+                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
+                   {relation_t({1, 1}, {1})});
+  REQUIRE(cong2.is_obviously_infinite());
+  Congruence cong3("twosided",
+                   3,
+                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
+                   {relation_t({1, 2}, {1})});
+  REQUIRE(!cong3.is_obviously_infinite());
 }

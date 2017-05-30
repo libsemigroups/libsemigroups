@@ -474,6 +474,14 @@ namespace libsemigroups {
     //! a finitely presented semigroup.
     void force_kbfp();
 
+    //! This method tries to quickly determine whether or not the Congruence
+    //! has infinitely many classes.
+    //!
+    //! If \c true is returned, then there are infinitely many classes in the
+    //! congruence, but if \c false is returned, then the method could not
+    //! determine whether or not there are infinitely many classes.
+    bool is_obviously_infinite();
+
    private:
     // Subclasses of DATA
     class KBFP;  // Knuth-Bendix followed by Froidure-Pin
@@ -629,8 +637,6 @@ namespace libsemigroups {
                        std::vector<std::function<void(DATA*)>>& funcs,
                        bool                       ignore_max_threads = false,
                        std::function<bool(DATA*)> goal_func = RETURN_FALSE);
-
-    bool is_obviously_infinite();
 
     Congruence(cong_t                         type,
                size_t                         nrgens,

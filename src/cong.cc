@@ -198,6 +198,8 @@ namespace libsemigroups {
 
         std::vector<DATA*> data = {new TC(*this), new TC(*this)};
         std::vector<std::function<void(DATA*)>> funcs = {prefillit};
+        // The next 4 lines are commented out because they do not seem to
+        // improve the performance at present.
         /*if (_type == TWOSIDED) {
           data.push_back(new KBFP(*this));
         }
@@ -240,51 +242,48 @@ namespace libsemigroups {
     }
   }
 
+  // We apply some simple, quick checks that may establish that the congruence
+  // has an infinite number of classes; if so, Todd-Coxeter should not be run.
+  // If this returns false, it is safe to run Todd-Coxeter, although of course
+  // Todd-Coxeter may still run forever.
   bool Congruence::is_obviously_infinite() {
-    // We apply some simple, quick checks that may establish that the congruence
-    // has an infinite number of classes; if so, Todd-Coxeter should not be run.
-    // If this returns false, it is safe to run Todd-Coxeter, although of course
-    // Todd-Coxeter may still run forever.
-
-    // If we have a concrete semigroup, it should be finite.
+    // If we have a concrete semigroup, it is probably finite, or if it is not,
+    // then we will never get any answers out of anything here.
     if (_semigroup != nullptr) {
       return false;
     }
 
-    // If there are no rels, or more gens than rels, it must be infinite
+    // If there are no relations, or more generators than relations, it must
+    // be infinite
     if (_nrgens > _relations.size() + _extra.size()) {
       return true;
     }
 
     // Does there exist a generator which appears in no relation?
-    bool found;
     for (size_t gen = 0; gen < _nrgens; gen++) {
-      found = false;
-      for (const relation_t& rel : _relations) {
+      bool found = false;
+      for (relation_t const& rel : _relations) {
         if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
-            != rel.first.cend()) {
-          found = true;
-          break;
-        }
-        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
-            != rel.second.cend()) {
+                != rel.first.cend()
+            || std::find(rel.second.cbegin(), rel.second.cend(), gen)
+                   != rel.second.cend()) {
           found = true;
           break;
         }
       }
-      if (found) {
-        continue;
+      if (!found) {
+        for (relation_t const& rel : _extra) {
+          if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
+                  != rel.first.cend()
+              || std::find(rel.second.cbegin(), rel.second.cend(), gen)
+                     != rel.second.cend()) {
+            found = true;
+            break;
+          }
+        }
       }
-      for (const relation_t& rel : _extra) {
-        if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
-            != rel.first.cend()) {
-          break;
-        }
-        if (std::find(rel.second.cbegin(), rel.second.cend(), gen)
-            != rel.second.cend()) {
-          break;
-        }
-        return true;
+      if (!found) {
+        return true; // we found a generator not in any relation.
       }
     }
 
