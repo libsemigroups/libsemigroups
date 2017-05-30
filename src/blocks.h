@@ -33,10 +33,10 @@ namespace libsemigroups {
   //! Class for signed partitions of the set \f$\{0, \ldots, n - 1\}\f$
   //!
   //! It is possible to associate to every Bipartition a pair of blocks,
-  //! Bipartition::left_blocks and Bipartition::right_blocks, which (together
-  //! with information on which blocks are transverse) determine the Green's
-  //! \f$\mathscr{L}\f$- and \f$\mathscr{R}\f$-classes of the Bipartition in the
-  //! monoid of all bipartitions. This is the purpose of this class.
+  //! Bipartition::left_blocks and Bipartition::right_blocks, which determine
+  //! the Green's \f$\mathscr{L}\f$- and \f$\mathscr{R}\f$-classes of the
+  //! Bipartition in the monoid of all bipartitions. This is the purpose of this
+  //! class.
   //!
   //! The Blocks class is not currently used by any of the methods for the
   //! Semigroup class but the extra methods are used in the GAP package
@@ -58,9 +58,10 @@ namespace libsemigroups {
     //! destructor Blocks::~Blocks.
     //!
     //! The parameter \p lookup must have length equal to the number of
-    //! different values in \p blocks (this is equal to the number of blocks in
-    //! the partition). A value \c true in position \f$i\f$ indicates that the
-    //! \f$i\f$th block is signed (transverse) and \c false that it is unsigned.
+    //! different values in \p blocks (or one more than the maximum value in the
+    //! list); this is equal to the number of blocks in the partition. A value
+    //! \c true in position \f$i\f$ indicates that the \f$i\f$th block is signed
+    //! (transverse) and \c false that it is unsigned.
     Blocks(std::vector<u_int32_t>* blocks, std::vector<bool>* lookup)
         : _blocks(blocks), _lookup(lookup), _nr_blocks(), _rank(UNDEFINED) {
       assert(_blocks->size() != 0);
@@ -77,12 +78,13 @@ namespace libsemigroups {
     //! blocks is not copied, and is deleted by the destructor Blocks::~Blocks.
     //!
     //! The parameter \p lookup must have length equal to the number of
-    //! different values in \p blocks (this is equal to the number of blocks in
-    //! the partition). A value \c true in position \f$i\f$ indicates that the
-    //! \f$i\f$th block is signed (transverse) and \c false that it is unsigned.
+    //! different values in \p blocks (or one more than the maximum value in the
+    //! list); this is equal to the number of blocks in the partition. A value
+    //! \c true in position \f$i\f$ indicates that the \f$i\f$th block is signed
+    //! (transverse) and \c false that it is unsigned.
     //!
-    //! The parameter \p nr_blocks must be the number of blocks (i.e. the
-    //! number of different values in the first parameter \p blocks.
+    //! The parameter \p nr_blocks must be the number of blocks (i.e. one more
+    //! than the maximum value in \p blocks).
     //!
     //! This constructor is provided for the situation where the number of
     //! blocks in blocks is known *a priori* and so does not need to be
