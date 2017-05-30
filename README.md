@@ -1,6 +1,6 @@
 # libsemigroups - C++ library for semigroups and monoids - Version 0.3.0
-### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/)
-and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [N. Thiery](http://nicolas.thiery.name)
+### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) 
+with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [N. Thiery](http://nicolas.thiery.name)
 
 The current version of libsemigroups is 0.3.0.
 libsemigroups requires a C++ compiler supporting the c++11 standard.
