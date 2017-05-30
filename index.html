@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>libsemigroups: libsemigroups - C++ library for semigroups and monoids - Version 0.3.0</title>
+<title>libsemigroups: libsemigroups - C++ library for semigroups and monoids - Version 0.3.1</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -65,13 +65,14 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">libsemigroups - C++ library for semigroups and monoids - Version 0.3.0 </div>  </div>
+<div class="title">libsemigroups - C++ library for semigroups and monoids - Version 0.3.1 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h3>by <a href="http://www-groups.mcs.st-andrews.ac.uk/~jamesm/">J. D. Mitchell</a> with contributions by <a href="http://www-circa.mcs.st-andrews.ac.uk/~julius/">J. Jonusas</a>, <a href="http://nicolas.thiery.name">N. Thiery</a>, and <a href="http://www-circa.mcs.st-andrews.ac.uk/~mct25/">M. Torpey</a></h3>
-<p>The current version of libsemigroups is 0.3.0. libsemigroups requires a C++ compiler supporting the c++11 standard.</p>
+<div class="textblock"><h3>by <a href="http://www-groups.mcs.st-andrews.ac.uk/~jamesm/">J. D. Mitchell</a> and <a href="http://www-circa.mcs.st-andrews.ac.uk/~mct25/">M. Torpey</a></h3>
+<p>with contributions by <a href="http://www-circa.mcs.st-andrews.ac.uk/~julius/">J. Jonusas</a> and <a href="http://nicolas.thiery.name">N. Thiery</a></p>
+<p>The current version of libsemigroups is 0.3.1. libsemigroups requires a C++ compiler supporting the c++11 standard.</p>
 <p>libsemigroups is a C++ library for semigroups and monoids; it is partly based on <a href="https://www.irif.fr/~jep/PDF/Rio.pdf">Algorithms for computing finite semigroups</a>, <a href="https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf">Expository Slides</a>, and <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> by Jean-Eric Pin.</p>
-<p>The libsemigroups library is used in the <a href="http://gap-packages.github.io/Semigroups/">Semigroups package for GAP</a>. The development version is available on <a href="https://github.com/james-d-mitchell/libsemigroups">Github</a>.</p>
+<p>The libsemigroups library is used in the <a href="http://gap-packages.github.io/Semigroups/">Semigroups package for GAP</a>. The development version is available on <a href="https://github.com/james-d-mitchell/libsemigroups">Github</a>, and there are <a href="http://github.com/james-d-mitchell/libsemigroups-python-bindings/">python bindings</a> (for Python 2 and 3).</p>
 <p>Some of the features of <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> are not yet implemented in libsemigroups, this is a work in progress. Missing features include those for:</p>
 <ul>
 <li>Green's relations, or classes</li>
@@ -86,20 +87,31 @@ $(function() {
 <p>libsemigroups performs roughly the same as <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> when there is a known upper bound on the size of the semigroup being enumerated, and this is used to initialise the data structures for the semigroup; see <a class="el" href="classlibsemigroups_1_1_semigroup.html#a0bc125204bf434124c1ca0200aec25cf" title="Requests that the capacity (i.e. number of elements) of the semigroup be at least enough to contain n...">libsemigroups::Semigroup::reserve</a> for more details. Note that in <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> it is always necessary to provide such an upper bound, but in libsemigroups it is not.</p>
 <p>libsemigroups also has some advantages over <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a>:</p>
 <ul>
-<li>there is a (hopefully) convenient C++ API, which makes it relatively easy to create, and manipulate semigroups and monoids</li>
+<li>there is a (hopefully) convenient C++ API, which makes it relatively easy to create and manipulate semigroups and monoids</li>
 <li>there are some multithreaded methods for semigroups and their congruences</li>
 <li>you do not have to know/guess the size of a semigroup or monoid before you begin</li>
 <li>libsemigroups supports more types of elements than <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a></li>
 <li>it is relatively straightforward to add support for further types of elements and semigroups</li>
-<li>it is possible to enumerate a certain number of elements of a semigroup or monoid (say if you are looking for an element with a particular property), to stop, and then start the enumeration again at a later point</li>
+<li>it is possible to enumerate a certain number of elements of a semigroup or monoid (say if you are looking for an element with a particular property), to stop, and then to start the enumeration again at a later point</li>
 <li>you can instantiate as many semigroups and monoids as you can fit in memory</li>
 <li>it is possible to add more generators after a semigroup or monoid has been constructed, without losing or having to recompute any information that was previously known</li>
-<li>libsemigroups contains a rudimentary implementations of the <a href="https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm">Todd-Coxeter</a> and <a href="https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm">Knuth-Bendix</a> algorithms for finitely presented semigroups, which can also be used to compute congruence of a (not necessarily finitely presented) semigroup or monoid.</li>
+<li>libsemigroups contains rudimentary implementations of the <a href="https://en.wikipedia.org/wiki/Todd–Coxeter_algorithm">Todd-Coxeter</a> and <a href="https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm">Knuth-Bendix</a> algorithms for finitely presented semigroups, which can also be used to compute congruences of a (not necessarily finitely presented) semigroup or monoid.</li>
 </ul>
+<h2>Installation</h2>
+<h3>Installing with conda</h3>
+<p>This installation method assumes that you have anaconda or miniconda installed. See the <a href="https://conda.io/docs/get-started.html">getting started</a> and <a href="https://conda.io/miniconda.html">miniconda download page</a> on the <a href="https://conda.io/">conda</a> website.</p>
+<p>Activate the <a href="https://conda-forge.github.io/">conda-forge</a> package repository: </p><pre class="fragment">conda config --add channels conda-forge
+</pre><p>Install libsemigroups </p><pre class="fragment">conda install libsemigroups
+</pre><h3>From the sources</h3>
+<p>To install libsemigroups from the sources (this requires <code>autoconf</code> and <code>automake</code>): </p><pre class="fragment">git clone https://github.com/james-d-mitchell/libsemigroups
+cd libsemigroups
+./autogen.sh ; make ; sudo make install
+</pre><h2>Documentation</h2>
+<p>The documentation is generated using <a href="http://www.doxygen.org">doxygen</a> and is available <a href="http://james-d-mitchell.github.io/libsemigroups/">here</a>. This documentation can be compiled by running <code>./autogen.sh ; ./configure ; make doc</code> in the <code>libsemigroups</code> directory, and the tests can be run by doing <code>make check</code> in the <code>libsemigroups</code> directory.</p>
+<h2>Python bindings</h2>
+<p>There are <a href="http://github.com/james-d-mitchell/libsemigroups-python-bindings/">python bindings</a> (for Python 2 and 3) for most of the functionality of libsemigroups.</p>
 <h2>Issues</h2>
-<p>If you find any problems with libsemigroups or have any suggestions for features that you'd like to see please use the <a href="https://github.com/james-d-mitchell/libsemigroups/issues">issue tracker</a>.</p>
-<h2>Documentation</h2>
-<p>The documentation is generated using <a href="https://www.doxygen.org">doxygen</a> and is available <a href="http://james-d-mitchell.github.io/libsemigroups/">here</a>. This documentation can be compiled by running <code>./autogen.sh ; ./configure ; make doc</code> in the <code>libsemigroups</code> directory, and the tests can be run by doing <code>make check</code> in the <code>libsemigroups</code> directory.</p>
+<p>If you find any problems with libsemigroups, or have any suggestions for features that you'd like to see, please use the <a href="https://github.com/james-d-mitchell/libsemigroups/issues">issue tracker</a>.</p>
 <h2>Acknowledgements</h2>
 <p>We acknowledge financial support from the OpenDreamKit Horizon 2020 European Research Infrastructures project (#676541) (primarily for the python bindings).</p>
 <p>We thank the Carnegie Trust for the Universities of Scotland for funding the PhD scholarship of J. Jonušas when he worked on this project.</p>
@@ -107,7 +119,7 @@ $(function() {
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 18 2017 09:36:05 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 30 2017 15:37:49 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
