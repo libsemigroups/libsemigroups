@@ -266,7 +266,7 @@ namespace libsemigroups {
       if (x == INFTY && y == INFTY) {
         return INFTY;
       }
-      return std::min(x, y));
+      return std::min(x, y);
     }
   };
 
