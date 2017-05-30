@@ -434,6 +434,9 @@ namespace libsemigroups {
     //! semigroups, and does not apply to a congruence defined using a concrete
     //! Semigroup object.
     //!
+    //! Note that this algorithm can be applied to left, right, and two-sided
+    //! congruences (unlike KBFP).
+    //!
     //! \warning Any existing data for the congruence is deleted by this
     //! method, and may have to be recomputed. The return values and runtimes
     //! of other methods applied to \c this may also be affected.
