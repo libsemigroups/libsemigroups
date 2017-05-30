@@ -870,8 +870,7 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
   REQUIRE(!cong3.is_obviously_infinite());
 }
 
-TEST_CASE("Congruence 27: test_less_than",
-          "[quick][congruence][fpsemigroup]") {
+TEST_CASE("Congruence 27: test_less_than", "[quick][congruence][fpsemigroup]") {
   Congruence cong("twosided", 2, {relation_t({0, 0}, {0})}, {});
   REQUIRE(!cong.test_less_than({0, 0}, {0}));
 }

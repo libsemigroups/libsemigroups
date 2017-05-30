@@ -283,7 +283,7 @@ namespace libsemigroups {
         }
       }
       if (!found) {
-        return true; // we found a generator not in any relation.
+        return true;  // we found a generator not in any relation.
       }
     }
 
