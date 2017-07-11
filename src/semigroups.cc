@@ -69,6 +69,9 @@ namespace libsemigroups {
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
     LIBSEMIGROUPS_ASSERT(_nrgens != 0);
+#ifdef LIBSEMIGROUPS_STATS
+    _nr_products = 0;
+#endif
 
     reserve(_nrgens);
 
@@ -105,6 +108,8 @@ namespace libsemigroups {
         _length.push_back(1);
         _map.insert(std::make_pair(_elements->back(), _nr));
         _prefix.push_back(UNDEFINED);
+        // _prefix.push_back(_nr) and get rid of _letter_to_pos, and
+        // the extra clause in the enumerate method!
         _suffix.push_back(UNDEFINED);
         _nr++;
       }
@@ -150,6 +155,9 @@ namespace libsemigroups {
         _sorted(),  // TODO(JDM) copy this if set
         _suffix(copy._suffix),
         _wordlen(copy._wordlen) {
+#ifdef LIBSEMIGROUPS_STATS
+    _nr_products = 0;
+#endif
     _elements->reserve(_nr);
     _map.reserve(_nr);
     _tmp_product = copy._id->really_copy();
@@ -201,6 +209,9 @@ namespace libsemigroups {
     for (Element const* x : *coll) {
       LIBSEMIGROUPS_ASSERT(x->degree() == (*coll)[0]->degree());
     }
+#endif
+#ifdef LIBSEMIGROUPS_STATS
+    _nr_products = 0;
 #endif
 
     _elements->reserve(copy._nr);
@@ -544,6 +555,9 @@ namespace libsemigroups {
         _multiplied[i]    = true;
         for (letter_t j = 0; j != _nrgens; ++j) {
           _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
+#ifdef LIBSEMIGROUPS_STATS
+          _nr_products++;
+#endif
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
@@ -600,6 +614,9 @@ namespace libsemigroups {
             }
           } else {
             _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
+#ifdef LIBSEMIGROUPS_STATS
+            _nr_products++;
+#endif
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
@@ -655,6 +672,9 @@ namespace libsemigroups {
     if (killed) {
       REPORT("killed");
     }
+#ifdef LIBSEMIGROUPS_STATS
+    REPORT("number of products = " << _nr_products);
+#endif
     _mtx.unlock();
   }
 
@@ -1023,6 +1043,15 @@ namespace libsemigroups {
     for (size_t i = 1; i <= threshold_length; ++i) {
       total_load += i * (_lenindex[i] - _lenindex[i - 1]);
     }
+
+#ifdef LIBSEMIGROUPS_STATS
+    REPORT("complexity of multiplication = " << complexity);
+    REPORT("multiple words longer than " << threshold_length + 1);
+    REPORT("number of paths traced in Cayley graph = " << threshold_index);
+    REPORT("mean path length = " << total_load / threshold_index);
+    REPORT("number of products = " << _nr - threshold_index);
+#endif
+
     total_load += complexity * (_nr - _lenindex[threshold_length - 1]);
 
     size_t concurrency_threshold = 823543;

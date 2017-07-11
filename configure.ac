@@ -63,6 +63,14 @@ AS_IF([test "x$enable_debug" = xyes],
 AS_IF([test "x$enable_debug" = xyes],
     [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer')])
 
+AC_ARG_ENABLE([stats],
+    [AS_HELP_STRING([--enable-stats], [enable stats mode])],
+    [AC_DEFINE([LIBSEMIGROUPS_STATS], [1], [define if building in stats mode])],
+    [enable_stats=no]
+    )
+AC_MSG_CHECKING([whether to enable stats mode])
+AC_MSG_RESULT([$enable_stats])
+
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 

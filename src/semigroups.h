@@ -33,7 +33,6 @@
 #include "report.h"
 
 //! Namespace for everything in the libsemigroups library.
-
 namespace libsemigroups {
 
   class RWSE;
@@ -1142,6 +1141,9 @@ namespace libsemigroups {
     size_t                       _wordlen;
 
     static std::vector<element_index_t> _tmp_inverter;
+#ifdef LIBSEMIGROUPS_STATS
+    size_t _nr_products;
+#endif
   };
 
   //! This is just for backwards compatibility and will disappear in the next
