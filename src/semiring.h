@@ -155,7 +155,7 @@ namespace libsemigroups {
       return x + y;
     }
 
-    // Returns the minimum of \p x and \p y.
+    //! Returns the minimum of \p x and \p y.
     int64_t plus(int64_t x, int64_t y) const override {
       return std::min(x, y);
     }
