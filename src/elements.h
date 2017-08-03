@@ -567,6 +567,17 @@ namespace libsemigroups {
       return new T(vector);
     }
 
+    //! Returns boolean representing whether or not a partial transformation is
+    //! the identity.
+    bool is_identity() {
+      for (size_t i = 0; i < this->_vector->size(); i++) {
+        if (((*(this->_vector)))[i] != i) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     //! Undefined image value.
     //!
     //! This value is used to indicate that a partial transformation is not
