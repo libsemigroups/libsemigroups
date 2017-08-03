@@ -3432,3 +3432,776 @@ TEST_CASE("Sims 48: group_mem [C2 x C2 x C2 x C2]",
   really_delete_cont<uint8_t>(gens);
   delete gens;
 }
+
+TEST_CASE("Sims 49: point_stabilizer [Trivial Group on 1 point]",
+          "[quick][sims][49][point_stabilizer]") {
+  std::vector<uint8_t>                v = {0};
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({new Permutation<uint8_t>(v)});
+  REQUIRE(group_size(gens) == 1);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 1);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 50: point_stabilizer [Trivial Group on 2 points]",
+          "[quick][sims][50][point_stabilizer]") {
+  std::vector<uint8_t>                v = {0, 1};
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({new Permutation<uint8_t>(v)});
+  REQUIRE(group_size(gens) == 1);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 1);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 51: point_stabilizer [Trivial Group on 500 points]",
+          "[quick][sims][51][point_stabilizer]") {
+  std::vector<uint16_t> v = {};
+  for (uint16_t i = 0; i < 500; i++)
+    v.push_back(i);
+  std::vector<Permutation<uint16_t>*>* gens
+      = new std::vector<Permutation<uint16_t>*>({new Permutation<uint16_t>(v)});
+  REQUIRE(group_size(gens) == 1);
+
+  std::vector<Permutation<uint16_t>*>* newgens
+      = new std::vector<Permutation<uint16_t>*>({});
+
+  point_stabilizer(gens, (uint16_t) 0, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 1, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 26, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[26] == 26);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 73, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[73] == 73);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 6, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 28, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[28] == 28);
+  REQUIRE(group_size(newgens) == 1);
+
+  point_stabilizer(gens, (uint16_t) 496, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[496] == 496);
+  REQUIRE(group_size(newgens) == 1);
+
+  really_delete_cont<uint16_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint16_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 52: point_stabilizer [Symmetric Group on 8 points]",
+          "[quick][sims][52][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({0, 6, 2, 3, 4, 5, 1, 7}));
+  gens->push_back(new Permutation<uint8_t>({1, 2, 3, 4, 5, 6, 7, 0}));
+  REQUIRE(group_size(gens) == 40320);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 2, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[2] == 2);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 4, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[4] == 4);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 5, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[5] == 5);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 5040);
+
+  point_stabilizer(gens, (uint8_t) 7, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[7] == 7);
+  REQUIRE(group_size(newgens) == 5040);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 53: point_stabilizer [Alternating group on 16 points]",
+          "[quick][sims][53][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>(
+      {1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+  gens->push_back(new Permutation<uint8_t>(
+      {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
+  gens->push_back(new Permutation<uint8_t>(
+      {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+  REQUIRE(group_size(gens) == static_cast<uint64_t>(10461394944000));
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 8, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[8] == 8);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 15, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[15] == 15);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 10, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[10] == 10);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 11, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[11] == 11);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 9, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[9] == 9);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(653837184000));
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 54: point_stabilizer [Dihedral Group of order 16]",
+          "[quick][sims][54][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({0, 7, 6, 5, 4, 3, 2, 1}));
+  gens->push_back(new Permutation<uint8_t>({1, 2, 3, 4, 5, 6, 7, 0}));
+  REQUIRE(group_size(gens) == 16);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 2, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[2] == 2);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 4, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[4] == 4);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 5, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[5] == 5);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 7, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[7] == 7);
+  REQUIRE(group_size(newgens) == 2);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 55: point_stabilizer [Cyclic Group of order 14 on 9 points]",
+          "[quick][sims][55][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({1, 0, 3, 4, 5, 6, 7, 8, 2}));
+  REQUIRE(group_size(gens) == 14);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 7);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 7);
+
+  point_stabilizer(gens, (uint8_t) 2, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[2] == 2);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 4, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[4] == 4);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 5, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[5] == 5);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 7, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[7] == 7);
+  REQUIRE(group_size(newgens) == 2);
+
+  point_stabilizer(gens, (uint8_t) 8, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[8] == 8);
+  REQUIRE(group_size(newgens) == 2);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 56: point_stabilizer [Cyclic Group of order 30 on 10 points]",
+          "[quick][sims][56][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({1, 0, 3, 4, 2, 6, 7, 8, 9, 5}));
+  REQUIRE(group_size(gens) == 30);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 15);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 15);
+
+  point_stabilizer(gens, (uint8_t) 2, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[2] == 2);
+  REQUIRE(group_size(newgens) == 10);
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == 10);
+
+  point_stabilizer(gens, (uint8_t) 4, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[4] == 4);
+  REQUIRE(group_size(newgens) == 10);
+
+  point_stabilizer(gens, (uint8_t) 5, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[5] == 5);
+  REQUIRE(group_size(newgens) == 6);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 6);
+
+  point_stabilizer(gens, (uint8_t) 7, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[7] == 7);
+  REQUIRE(group_size(newgens) == 6);
+
+  point_stabilizer(gens, (uint8_t) 8, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[8] == 8);
+  REQUIRE(group_size(newgens) == 6);
+
+  point_stabilizer(gens, (uint8_t) 9, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[9] == 9);
+  REQUIRE(group_size(newgens) == 6);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 57: point_stabilizer [C2 x C2 x C2 x C2]",
+          "[quick][sims][57][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({1, 0, 2, 3, 4, 5, 6, 7}));
+  gens->push_back(new Permutation<uint8_t>({0, 1, 3, 2, 4, 5, 6, 7}));
+  gens->push_back(new Permutation<uint8_t>({0, 1, 2, 3, 5, 4, 6, 7}));
+  gens->push_back(new Permutation<uint8_t>({0, 1, 2, 3, 4, 5, 7, 6}));
+  REQUIRE(group_size(gens) == 16);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 1, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[1] == 1);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 2, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[2] == 2);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 3, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[3] == 3);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 4, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[4] == 4);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 5, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[5] == 5);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 8);
+
+  point_stabilizer(gens, (uint8_t) 7, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[7] == 7);
+  REQUIRE(group_size(newgens) == 8);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 58: point_stabilizer [SL(3, 5)]",
+          "[quick][sims][58][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>(
+      {0,   1,   76,  101, 26,  51,  6,   81,  106, 31,  56,  11,  86,  111,
+       36,  61,  16,  91,  116, 41,  66,  21,  96,  121, 46,  71,  2,   77,
+       102, 27,  52,  7,   82,  107, 32,  57,  12,  87,  112, 37,  62,  17,
+       92,  117, 42,  67,  22,  97,  122, 47,  72,  3,   78,  103, 28,  53,
+       8,   83,  108, 33,  58,  13,  88,  113, 38,  63,  18,  93,  118, 43,
+       68,  23,  98,  123, 48,  73,  4,   79,  104, 29,  54,  9,   84,  109,
+       34,  59,  14,  89,  114, 39,  64,  19,  94,  119, 44,  69,  24,  99,
+       124, 49,  74,  5,   80,  105, 30,  55,  10,  85,  110, 35,  60,  15,
+       90,  115, 40,  65,  20,  95,  120, 45,  70,  25,  100, 125, 50,  75}));
+  gens->push_back(new Permutation<uint8_t>(
+      {0,   1,   77,  103, 29,  55,  6,   82,  108, 34,  60,  11,  87,  113,
+       39,  65,  16,  92,  118, 44,  70,  21,  97,  123, 49,  75,  2,   78,
+       105, 26,  54,  7,   83,  110, 31,  59,  12,  88,  115, 36,  64,  17,
+       93,  120, 41,  69,  22,  98,  125, 46,  74,  3,   80,  104, 27,  51,
+       8,   85,  109, 32,  56,  13,  90,  114, 37,  61,  18,  95,  119, 42,
+       66,  23,  100, 124, 47,  71,  4,   76,  102, 30,  53,  9,   81,  107,
+       35,  58,  14,  86,  112, 40,  63,  19,  91,  117, 45,  68,  24,  96,
+       122, 50,  73,  5,   79,  101, 28,  52,  10,  84,  106, 33,  57,  15,
+       89,  111, 38,  62,  20,  94,  116, 43,  67,  25,  99,  121, 48,  72}));
+  gens->push_back(new Permutation<uint8_t>(
+      {0,   1,   81,  111, 41,  71,  6,   86,  121, 26,  66,  11,  96,  116,
+       31,  51,  16,  76,  106, 46,  61,  21,  91,  101, 36,  56,  2,   82,
+       112, 42,  72,  7,   87,  122, 27,  67,  12,  97,  117, 32,  52,  17,
+       77,  107, 47,  62,  22,  92,  102, 37,  57,  3,   83,  113, 43,  73,
+       8,   88,  123, 28,  68,  13,  98,  118, 33,  53,  18,  78,  108, 48,
+       63,  23,  93,  103, 38,  58,  4,   84,  114, 44,  74,  9,   89,  124,
+       29,  69,  14,  99,  119, 34,  54,  19,  79,  109, 49,  64,  24,  94,
+       104, 39,  59,  5,   85,  115, 45,  75,  10,  90,  125, 30,  70,  15,
+       100, 120, 35,  55,  20,  80,  110, 50,  65,  25,  95,  105, 40,  60}));
+  gens->push_back(new Permutation<uint8_t>(
+      {0,   1,   76,  101, 26,  51,  7,   82,  107, 32,  57,  13,  88,  113,
+       38,  63,  19,  94,  119, 44,  69,  25,  100, 125, 50,  75,  2,   77,
+       102, 27,  52,  8,   83,  108, 33,  58,  15,  90,  115, 40,  65,  16,
+       91,  116, 41,  66,  24,  99,  124, 49,  74,  3,   78,  103, 28,  53,
+       10,  85,  110, 35,  60,  14,  89,  114, 39,  64,  17,  92,  117, 42,
+       67,  21,  96,  121, 46,  71,  4,   79,  104, 29,  54,  6,   81,  106,
+       31,  56,  12,  87,  112, 37,  62,  20,  95,  120, 45,  70,  23,  98,
+       123, 48,  73,  5,   80,  105, 30,  55,  9,   84,  109, 34,  59,  11,
+       86,  111, 36,  61,  18,  93,  118, 43,  68,  22,  97,  122, 47,  72}));
+  REQUIRE(group_size(gens) == 372000);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 372000);
+
+  point_stabilizer(gens, (uint8_t) 70, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[70] == 70);
+  REQUIRE(group_size(newgens) == 3000);
+
+  point_stabilizer(gens, (uint8_t) 36, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[36] == 36);
+  REQUIRE(group_size(newgens) == 3000);
+
+  point_stabilizer(gens, (uint8_t) 104, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[104] == 104);
+  REQUIRE(group_size(newgens) == 3000);
+
+  point_stabilizer(gens, (uint8_t) 97, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[97] == 97);
+  REQUIRE(group_size(newgens) == 3000);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 59: point_stabilizer [PSL(3, 7)]",
+          "[quick][sims][59][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>(
+      {1,  8,  15, 22, 29, 36, 43, 50, 12, 19, 26, 33, 40, 47, 54,
+       10, 45, 52, 17, 24, 31, 38, 14, 35, 42, 49, 56, 21, 28, 11,
+       53, 18, 25, 32, 39, 46, 0,  5,  4,  3,  2,  7,  6,  13, 27,
+       34, 41, 48, 55, 20, 9,  37, 44, 51, 16, 23, 30}));
+  gens->push_back(new Permutation<uint8_t>(
+      {0,  1,  3,  4,  5,  6,  7,  2,  8,  14, 9,  10, 11, 12, 13,
+       43, 49, 44, 45, 46, 47, 48, 50, 56, 51, 52, 53, 54, 55, 15,
+       21, 16, 17, 18, 19, 20, 22, 28, 23, 24, 25, 26, 27, 29, 35,
+       30, 31, 32, 33, 34, 36, 42, 37, 38, 39, 40, 41}));
+  REQUIRE(group_size(gens) == 1876896);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 56, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[56] == 56);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 15, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[15] == 15);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 30, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[30] == 30);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 11, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[11] == 11);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 9, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[9] == 9);
+  REQUIRE(group_size(newgens) == 32928);
+
+  point_stabilizer(gens, (uint8_t) 39, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[39] == 39);
+  REQUIRE(group_size(newgens) == 32928);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 60: point_stabilizer [Mathieu Group M24]",
+          "[quick][sims][60][point_stabilizer]") {
+  std::vector<Permutation<uint8_t>*>* gens
+      = new std::vector<Permutation<uint8_t>*>({});
+  gens->push_back(new Permutation<uint8_t>({1,  2,  3,  4,  5,  6,  7,  8,
+                                            9,  10, 11, 12, 13, 14, 15, 16,
+                                            17, 18, 19, 20, 21, 22, 0,  23}));
+  gens->push_back(
+      new Permutation<uint8_t>({0,  1,  16, 12, 3, 5,  8, 17, 2,  6,  11, 22,
+                                13, 18, 19, 14, 9, 10, 4, 21, 15, 20, 7,  23}));
+
+  gens->push_back(
+      new Permutation<uint8_t>({23, 22, 11, 15, 17, 9, 19, 13, 20, 5,  16, 2,
+                                21, 7,  18, 3,  10, 4, 14, 6,  8,  12, 1,  0}));
+  REQUIRE(group_size(gens) == 244823040);
+
+  std::vector<Permutation<uint8_t>*>* newgens
+      = new std::vector<Permutation<uint8_t>*>({});
+
+  point_stabilizer(gens, (uint8_t) 0, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 8, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[8] == 8);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 17, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[17] == 17);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 6, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[6] == 6);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 10, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[10] == 10);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 11, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[11] == 11);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 18, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[18] == 18);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 22, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[22] == 22);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  point_stabilizer(gens, (uint8_t) 23, newgens);
+  for (Permutation<uint8_t>* gen : *newgens)
+    REQUIRE((*gen)[23] == 23);
+  REQUIRE(group_size(newgens) == 10200960);
+
+  really_delete_cont<uint8_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint8_t>(gens);
+  delete gens;
+}
+
+TEST_CASE("Sims 61: point_stabilizer [Conway Group Co3]",
+          "[quick][sims][61][point_stabilizer]") {
+  std::vector<Permutation<uint16_t>*>* gens
+      = new std::vector<Permutation<uint16_t>*>({});
+  gens->push_back(new Permutation<uint16_t>(
+      {0,   245, 42,  112, 15,  131, 7,   188, 75,  132, 10,  11,  187, 186,
+       265, 22,  159, 256, 43,  101, 123, 134, 4,   32,  209, 238, 35,  45,
+       235, 126, 5,   19,  60,  66,  80,  154, 251, 117, 206, 71,  118, 93,
+       87,  167, 271, 221, 261, 182, 155, 47,  230, 172, 236, 109, 191, 76,
+       156, 73,  116, 147, 23,  127, 231, 38,  53,  122, 210, 24,  68,  86,
+       255, 196, 139, 149, 21,  111, 203, 252, 72,  262, 114, 214, 9,   181,
+       174, 85,  95,  2,   250, 257, 243, 90,  158, 170, 148, 69,  105, 249,
+       263, 16,  54,  31,  115, 51,  104, 125, 219, 92,  46,  64,  204, 8,
+       266, 225, 34,  175, 145, 161, 180, 237, 241, 224, 169, 269, 12,  96,
+       129, 189, 190, 29,  17,  30,  82,  143, 74,  168, 13,  227, 217, 78,
+       258, 220, 178, 228, 146, 58,  254, 273, 215, 57,  106, 77,  110, 50,
+       26,  248, 260, 274, 107, 99,  253, 37,  25,  272, 44,  52,  119, 18,
+       201, 65,  41,  233, 103, 246, 200, 102, 160, 198, 207, 157, 40,  223,
+       49,  267, 79,  1,   136, 124, 6,   61,  268, 100, 70,  98,  171, 121,
+       39,  62,  211, 208, 84,  135, 97,  55,  152, 141, 63,  142, 259, 67,
+       33,  177, 173, 14,  242, 94,  113, 240, 264, 150, 205, 27,  183, 83,
+       195, 216, 163, 247, 133, 36,  153, 197, 140, 194, 120, 270, 165, 166,
+       162, 218, 138, 234, 81,  91,  89,  185, 212, 137, 48,  202, 276, 229,
+       151, 176, 144, 192, 130, 244, 232, 199, 56,  108, 184, 193, 239, 213,
+       3,   222, 128, 20,  28,  164, 226, 59,  179, 275, 88}));
+  gens->push_back(new Permutation<uint16_t>(
+      {0,   204, 203, 33,  236, 5,   172, 77,  76,  47,  146, 133, 224, 229,
+       53,  84,  16,  223, 228, 130, 131, 252, 190, 13,  263, 242, 10,  32,
+       196, 199, 65,  246, 209, 40,  99,  241, 198, 269, 251, 75,  118, 176,
+       271, 183, 116, 197, 238, 22,  29,  178, 26,  174, 129, 2,   153, 272,
+       257, 41,  12,  59,  20,  27,  175, 106, 159, 218, 259, 137, 258, 261,
+       164, 262, 189, 45,  177, 260, 85,  25,  15,  226, 96,  24,  1,   274,
+       148, 264, 132, 48,  117, 36,  60,  171, 201, 101, 253, 95,  120, 142,
+       213, 165, 51,  115, 44,  103, 167, 243, 66,  141, 108, 88,  97,  276,
+       30,  139, 222, 166, 173, 231, 3,   73,  239, 56,  170, 82,  162, 163,
+       207, 145, 128, 52,  104, 90,  216, 220, 155, 74,  237, 28,  4,   113,
+       273, 230, 270, 248, 180, 206, 50,  250, 78,  127, 150, 54,  232, 217,
+       121, 69,  156, 6,   125, 210, 86,  89,  46,  184, 211, 265, 93,  19,
+       138, 23,  126, 43,  188, 102, 244, 219, 192, 256, 83,  58,  144, 181,
+       187, 91,  158, 205, 235, 147, 157, 114, 9,   152, 57,  39,  64,  143,
+       67,  119, 161, 87,  200, 111, 79,  14,  123, 21,  149, 122, 191, 61,
+       194, 266, 225, 31,  81,  62,  160, 151, 112, 215, 254, 234, 72,  17,
+       179, 105, 267, 227, 18,  169, 249, 109, 208, 275, 68,  233, 168, 55,
+       124, 80,  240, 35,  7,   212, 100, 245, 98,  195, 247, 107, 182, 42,
+       185, 94,  11,  255, 135, 154, 221, 63,  193, 134, 71,  214, 8,   34,
+       70,  202, 268, 37,  110, 38,  136, 140, 49,  186, 92}));
+  REQUIRE(group_size(gens) == static_cast<uint64_t>(495766656000));
+
+  std::vector<Permutation<uint16_t>*>* newgens
+      = new std::vector<Permutation<uint16_t>*>({});
+
+  point_stabilizer(gens, (uint16_t) 0, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[0] == 0);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(495766656000));
+
+  point_stabilizer(gens, (uint16_t) 56, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[56] == 56);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 73, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[73] == 73);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 167, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[167] == 167);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 26, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[26] == 26);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 100, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[100] == 100);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 216, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[216] == 216);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  point_stabilizer(gens, (uint16_t) 28, newgens);
+  for (Permutation<uint16_t>* gen : *newgens)
+    REQUIRE((*gen)[28] == 28);
+  REQUIRE(group_size(newgens) == static_cast<uint64_t>(1796256000));
+
+  really_delete_cont<uint16_t>(newgens);
+  delete newgens;
+  really_delete_cont<uint16_t>(gens);
+  delete gens;
+}
