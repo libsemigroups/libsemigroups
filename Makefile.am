@@ -18,6 +18,7 @@ pkginclude_HEADERS += src/semiring.h src/partition.h
 
 pkginclude_HEADERS += src/recvec.h src/report.h	
 pkginclude_HEADERS += src/timer.h  src/uf.h
+pkginclude_HEADERS += src/sims.h
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -58,6 +59,7 @@ lstest_SOURCES += test/kbfp.test.cc	 test/semigroups.test.cc
 lstest_SOURCES += test/kbp.test.cc       test/semiring.test.cc
 lstest_SOURCES += test/p.test.cc       	 test/tc.test.cc
 lstest_SOURCES += test/partition.test.cc test/uf.test.cc
+lstest_SOURCES += test/sims.test.cc
 
 lstest_CXXFLAGS = $(AM_CXXFLAGS)
 lstest_CPPFLAGS = -DCONFIG_H
