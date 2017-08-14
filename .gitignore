@@ -34,3 +34,8 @@ log
 *.gz
 .ipynb_checkpoints
 libsemigroups-*-coverage*
+*.pyc
+benchmark/src/build
+benchmark/logs
+benchmark/CMakeFiles
+benchmark/CMakeCache.txt
