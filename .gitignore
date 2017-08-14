@@ -36,3 +36,5 @@ lstest
 log
 *.gz
 .ipynb_checkpoints
+benchmark/bench/build
+*.pyc

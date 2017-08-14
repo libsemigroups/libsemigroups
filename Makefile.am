@@ -73,6 +73,9 @@ clean-local-check:
 	rm -f test/*.gcda test/*.gcno
 	rm -f src/*.gcno src/.libs/*.gcda src/.libs/*.gcno
 	rm -f .debug_build .coverage_build
+	rm -rf benchmark/bench/build benchmark/logs
+	rm -f benchmark/gbench/*.pyc
+	rm -f benchmark/gbench/__py_cache__/*.pyc
 
 check:	
 	@$(mkdir_p) $(CHECK_LOG_DIR)
@@ -104,3 +107,6 @@ doc:
 	doxygen Doxyfile
 	@echo "See: html/index.html";
 
+benchmark: install
+	@etc/benchmark.sh
+.PHONY: benchmark

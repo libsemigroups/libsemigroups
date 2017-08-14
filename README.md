@@ -90,7 +90,7 @@ To install libsemigroups from the sources (this requires `autoconf` and `automak
 
     git clone https://github.com/james-d-mitchell/libsemigroups
     cd libsemigroups
-    ./autogen.sh ; make ; sudo make install
+    ./autogen.sh ; ./configure; make ; sudo make install
 
 ## Documentation
 The documentation is generated using
