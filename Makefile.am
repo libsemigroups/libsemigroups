@@ -36,13 +36,16 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 LINT_FORMAT_FILES_EXTRA =  src/cong/kbfp.h src/cong/kbp.h 
 LINT_FORMAT_FILES_EXTRA += src/cong/p.h    src/cong/tc.h
-LINT_FORMAT_FILES_EXTRA += test/catch.hpp
 
 LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc src/cong/kbp.cc 
 LINT_FORMAT_FILES_EXTRA += src/cong/p.cc    src/cong/tc.cc
 
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
+EXTRA_DIST += test/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
+
+BENCHMARK_LINT_FORMAT =  benchmark/bench/cong.cpp
+BENCHMARK_LINT_FORMAT += benchmark/bench/semigroups.cpp
 
 ## lstest sources 
 
@@ -76,6 +79,9 @@ clean-local: clean-local-check
 .PHONY: clean-local-check
 clean-local-check:
 	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
+	rm -rf benchmark/bench/build benchmark/logs
+	rm -f benchmark/gbench/*.pyc
+	rm -f benchmark/gbench/__py_cache__/*.pyc
 
 superclean: distclean
 	git clean -xdf --exclude *.swp --exclude *.swo
@@ -99,15 +105,15 @@ format:
 	@echo "Running clang-format . . .";  
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
 	@clang-format -i $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 
-	@git checkout HEAD -- test/catch.hpp
+	@clang-format -i $(BENCHMARK_LINT_FORMAT)
 
 lint: 
 	@echo "Running cpplint . . .";  
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
 	@cpplint $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 	
-
+	@cpplint $(BENCHMARK_LINT_FORMAT)
+	
 doc:
 	@echo "Generating documentation . . ."; \
 	doxygen Doxyfile
 	@echo "See: html/index.html";
-

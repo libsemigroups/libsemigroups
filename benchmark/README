@@ -1,0 +1,41 @@
+To run the benchmarks in this directory you should ensure that you have the
+prerequisites install (see below), and then do:
+
+    ./autogen.sh ; ./configure ; make ; sudo make install
+    benchmark/benchmark.sh
+
+in the libsemigroups directory. 
+
+This produces some files in json format in the directory
+libsemigroups/benchmark/logs, and you can compare the output in two files by
+doing:
+
+    benchmark/compare_bench.py <json_file1> <json_file2> 
+
+in the libsemigroups directory.
+
+PREREQUISITES
+
+For the above to work you should follow the steps below.
+
+1) Ensure that cmake (version 3.5 or higher) is installed. 
+
+   On a debian-like operating system this do:
+    
+       sudo apt-get install cmake
+
+   On Mac OSX do:
+
+       brew install cmake
+
+2) Install google benchmark:
+
+    https://github.com/google/benchmark
+
+by doing the following (somewhere probably outside the libsemigroups folder):
+
+    git clone https://github.com/google/benchmark
+    cd benchmark
+    cmake -DCMAKE_BUILD_TYPE=Release  .
+    make 
+    sudo make install
