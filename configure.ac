@@ -47,6 +47,14 @@ if `$CXX -v 2>&1 | grep 'gcc version' >/dev/null 2>&1` ; then
 fi
 AC_SUBST(GCC_SPECIFIC_CXXFLAGS, $GCC_SPECIFIC_CXXFLAGS)
 
+AC_ARG_ENABLE([system-malloc],
+    [AS_HELP_STRING([--enable-system-malloc], [enable system malloc instead of rpmalloc])],
+    [AC_DEFINE([LIBSEMIGROUPS_SYSTEM_MALLOC], [1], [define if using the system malloc instead of rpmalloc])],
+    [enable_system_malloc=no]
+    )
+AC_MSG_CHECKING([whether to use the system malloc instead of rpmalloc])
+AC_MSG_RESULT([$enable_system_malloc])
+
 dnl Output configured files
 
 AC_CONFIG_FILES([Makefile])
