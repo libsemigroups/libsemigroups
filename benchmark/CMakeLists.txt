@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.5.0)
 project(Libsemigroups_Benchmarks LANGUAGES CXX)
 
 # Location of additional cmake modules
