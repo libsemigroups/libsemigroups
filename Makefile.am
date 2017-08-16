@@ -39,6 +39,9 @@ LINT_FORMAT_FILES_EXTRA += test/catch.hpp
 LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc src/cong/kbp.cc 
 LINT_FORMAT_FILES_EXTRA += src/cong/p.cc    src/cong/tc.cc
 
+LINT_FORMAT_FILES_EXTRA += benchmark/bench/cong.cpp
+LINT_FORMAT_FILES_EXTRA += benchmark/bench/semigroups.cpp
+
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 
