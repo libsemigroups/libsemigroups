@@ -5,7 +5,7 @@
 AM_CPPFLAGS     = -DNDEBUG -UDEBUG
 AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
 AM_CXXFLAGS     += $(GCC_SPECIFIC_CXXFLAGS)
-AM_LDFLAGS      = -no-undefined
+AM_LDFLAGS      = -no-undefined -ldl
 
 ACLOCAL_AMFLAGS	= -I m4
 
@@ -18,6 +18,7 @@ pkginclude_HEADERS += src/semiring.h src/partition.h
 
 pkginclude_HEADERS += src/recvec.h src/report.h	
 pkginclude_HEADERS += src/timer.h  src/uf.h
+pkginclude_HEADERS += src/rpmalloc/rpmalloc.h
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -27,6 +28,9 @@ libsemigroups_la_SOURCES =  src/blocks.cc   src/cong.cc
 libsemigroups_la_SOURCES += src/elements.cc src/semigroups.cc
 libsemigroups_la_SOURCES += src/rws.cc	    src/rwse.cc
 libsemigroups_la_SOURCES += src/uf.cc
+libsemigroups_la_SOURCES += src/rpmalloc/rpmalloc.c
+libsemigroups_la_SOURCES += src/rpmalloc/malloc.c
+libsemigroups_la_SOURCES += src/rpmalloc/new.cc
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H
 
@@ -72,7 +76,12 @@ clean-local-check:
 	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
 	rm -f test/*.gcda test/*.gcno
 	rm -f src/*.gcno src/.libs/*.gcda src/.libs/*.gcno
+	rm -f src/rpmalloc/*gcno
 	rm -f .debug_build .coverage_build
+
+superclean: distclean
+	git clean -xd --exclude *.swp --exclude *.swo
+.PHONY: superclean
 
 check:	
 	@$(mkdir_p) $(CHECK_LOG_DIR)
@@ -93,6 +102,7 @@ format:
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
 	@clang-format -i $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
 	@git checkout HEAD -- test/catch.hpp
+	@git checkout HEAD -- src/rpmalloc/*
 
 lint: 
 	@echo "Running cpplint . . .";  

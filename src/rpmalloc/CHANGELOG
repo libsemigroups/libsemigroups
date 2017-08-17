@@ -1,0 +1,51 @@
+1.2
+
+Dual license under MIT
+
+Fix init/fini checks in malloc entry points for preloading into binaries that does malloc/free in init or fini sections
+
+Fixed an issue where freeing a block which had been realigned during allocation due to alignment request greater than 16 caused the free block link to be written in the wrong place in the block, causing next allocation from the size class to return a bad pointer
+
+Improve mmap 64KiB granularity enforcement loop to avoid excessive iterations
+
+Fix undersized adaptive cache counter array for large block in heap structure, causing potential abort on exit
+
+Avoid hysteresis in realloc by overallocating on small size increases
+
+Add entry point for realloc with alignment and optional flags to avoid preserving content
+
+Add valloc/pvalloc/cfree wrappers
+
+Add C++ new/delete wrappers
+
+
+1.1
+
+Add four cache presets (unlimited, performance priority, size priority and no cache)
+
+Slight performance improvement by dependent class index lookup for merged size classes
+
+Adaptive cache size per thread and per size class for improved memory efficiency, and release thread caches to global cache in fixed size batches
+
+Merged caches for small/medium classes using 64KiB spans with 64KiB large blocks
+
+Require thread initialization with rpmalloc_thread_initialize, add pthread hooks for automatic init/fini
+
+Added rpmalloc_usable_size query entry point
+
+Fix invalid old size in memory copy during realloc
+
+Optional statistics and integer overflow guards
+
+Optional asserts for easier debugging
+
+Provide malloc entry point replacements and automatic init/fini hooks, and a LD_PRELOAD:able dynamic library build
+
+Improve documentation and additional code comments
+
+Move benchmarks to separate repo, https://github.com/rampantpixels/rpmalloc-benchmark
+
+
+1.0
+
+Initial release
