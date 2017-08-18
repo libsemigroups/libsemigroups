@@ -679,8 +679,8 @@ namespace libsemigroups {
    public:
     //! A constructor.
     //!
-    //! Constructs a partial perm with list of images equal to vector,
-    //! vector is not copied, and should be deleted using
+    //! Constructs a partial perm with list of images equal to \p vector,
+    //! \p vector is not copied, and should be deleted using
     //! ElementWithVectorData::really_delete.
     //!
     //! The parameter \p hv must be the hash value of the element
@@ -692,7 +692,7 @@ namespace libsemigroups {
 
     //! A constructor.
     //!
-    //! Constructs a partial perm with list of images equal to vector,
+    //! Constructs a partial perm with list of images equal to \p vector,
     //! which is copied into the constructed object.
     explicit PartialPerm(std::vector<T> const& vector)
         : PartialTransformation<T, PartialPerm<T>>(vector) {}
@@ -1275,7 +1275,7 @@ namespace libsemigroups {
     void cache_hash_value() const override;
 
    private:
-    //! a function applied after redefinition
+    // A function applied after redefinition
     void after() override;
   };
 
