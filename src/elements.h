@@ -1269,11 +1269,6 @@ namespace libsemigroups {
       after();  // this is to put the matrix in normal form
     }
 
-    //! Find the hash value of a projective max-plus matrix.
-    //!
-    //! \sa Element::hash_value.
-    void cache_hash_value() const override;
-
    private:
     // A function applied after redefinition
     void after() override;

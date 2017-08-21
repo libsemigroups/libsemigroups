@@ -364,9 +364,9 @@ namespace libsemigroups {
   }
 
   void MatrixOverSemiring::cache_hash_value() const {
-    int64_t seed = 0;
-    for (int64_t const& x : *_vector) {
-      seed += ((seed << 4) + x);
+    size_t seed = this->_vector->size();
+    for (auto const& x : *this->_vector) {
+      seed ^= x + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
     this->_hash_value = seed;
   }
@@ -424,14 +424,6 @@ namespace libsemigroups {
   // Projective max-plus matrices
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
-
-  void ProjectiveMaxPlusMatrix::cache_hash_value() const {
-    size_t seed = 0;
-    for (auto const& x : *_vector) {
-      seed = ((seed << 4) + x);
-    }
-    this->_hash_value = seed;
-  }
 
   void ProjectiveMaxPlusMatrix::after() {
     int64_t norm = *std::max_element(_vector->begin(), _vector->end());
