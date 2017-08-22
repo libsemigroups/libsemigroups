@@ -33,7 +33,7 @@ namespace libsemigroups {
     if (_semigroup != nullptr) {
       return;
     }
-    assert(_P_cong == nullptr);
+    LIBSEMIGROUPS_ASSERT(_P_cong == nullptr);
 
     // Initialise the rewriting system
     _rws->add_rules(_cong.relations());
@@ -42,7 +42,7 @@ namespace libsemigroups {
 
     // Setup the P cong
     if (!_killed) {
-      assert(_rws->is_confluent());
+      LIBSEMIGROUPS_ASSERT(_rws->is_confluent());
       std::vector<Element*> gens;
       for (size_t i = 0; i < _cong._nrgens; i++) {
         gens.push_back(new RWSE(*_rws, i));
@@ -67,7 +67,7 @@ namespace libsemigroups {
     if (!_killed) {
       REPORT("running P . . .")
       P* p = static_cast<P*>(_P_cong->cget_data());
-      assert(p != nullptr);
+      LIBSEMIGROUPS_ASSERT(p != nullptr);
       p->run(steps, _killed);
     }
     if (_killed) {
@@ -77,7 +77,7 @@ namespace libsemigroups {
 
   Congruence::class_index_t
   Congruence::KBP::word_to_class_index(word_t const& word) {
-    assert(is_done());
+    LIBSEMIGROUPS_ASSERT(is_done());
     return _P_cong->word_to_class_index(word);
   }
 
@@ -88,12 +88,12 @@ namespace libsemigroups {
       // This cannot be reliably tested: see TC::current_equals for more info
       return result_t::UNKNOWN;
     }
-    assert(_P_cong != nullptr);
+    LIBSEMIGROUPS_ASSERT(_P_cong != nullptr);
     return _P_cong->cget_data()->current_equals(w1, w2);
   }
 
   Partition<word_t>* Congruence::KBP::nontrivial_classes() {
-    assert(is_done());
+    LIBSEMIGROUPS_ASSERT(is_done());
     return _P_cong->nontrivial_classes();
   }
 

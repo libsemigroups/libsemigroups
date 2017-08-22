@@ -44,7 +44,7 @@ namespace libsemigroups {
         _reverse_map(),
         _tmp1(nullptr),
         _tmp2(nullptr) {
-    assert(cong._semigroup != nullptr);
+    LIBSEMIGROUPS_ASSERT(cong._semigroup != nullptr);
 
     _tmp1 = cong._semigroup->gens(0)->really_copy();
     _tmp2 = _tmp1->really_copy();
@@ -141,7 +141,7 @@ namespace libsemigroups {
       _next_class = 1;
       size_t nr;
       size_t max = 0;
-      assert(_lookup.find(0) == 0);
+      LIBSEMIGROUPS_ASSERT(_lookup.find(0) == 0);
       _class_lookup.push_back(0);
       for (p_index_t i = 1; i < _lookup.get_size(); i++) {
         nr = _lookup.find(i);
@@ -210,7 +210,7 @@ namespace libsemigroups {
         j = it_y->second;
       }
 
-      assert(i != j);
+      LIBSEMIGROUPS_ASSERT(i != j);
       p_pair_const_t pair;
       if (xx != nullptr || yy != nullptr) {  // it's a new pair
         xx   = (xx == nullptr ? it_x->first : xx);
@@ -238,8 +238,8 @@ namespace libsemigroups {
   }
 
   Congruence::P::p_index_t Congruence::P::add_index(Element const* x) {
-    assert(_reverse_map.size() == _map_next);
-    assert(_map.size() == _map_next);
+    LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
+    LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
     _map.emplace(x, _map_next);
     _reverse_map.push_back(x);
     _lookup.add_entry();
@@ -250,20 +250,20 @@ namespace libsemigroups {
   }
 
   size_t Congruence::P::nr_classes() {
-    assert(is_done());
+    LIBSEMIGROUPS_ASSERT(is_done());
     return _cong._semigroup->size() - _class_lookup.size() + _next_class;
   }
 
   Congruence::class_index_t
   Congruence::P::word_to_class_index(word_t const& w) {
-    assert(is_done());
+    LIBSEMIGROUPS_ASSERT(is_done());
 
     Element*  x     = _cong._semigroup->word_to_element(w);
     p_index_t ind_x = get_index(x);
     x->really_delete();
     delete x;
-    assert(ind_x < _class_lookup.size());
-    assert(_class_lookup.size() == _map.size());
+    LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
+    LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
     return _class_lookup[ind_x];
   }
 
@@ -287,9 +287,9 @@ namespace libsemigroups {
   }
 
   Partition<word_t>* Congruence::P::nontrivial_classes() {
-    assert(is_done());
-    assert(_reverse_map.size() >= _nr_nontrivial_elms);
-    assert(_class_lookup.size() >= _nr_nontrivial_elms);
+    LIBSEMIGROUPS_ASSERT(is_done());
+    LIBSEMIGROUPS_ASSERT(_reverse_map.size() >= _nr_nontrivial_elms);
+    LIBSEMIGROUPS_ASSERT(_class_lookup.size() >= _nr_nontrivial_elms);
 
     Partition<word_t>* classes = new Partition<word_t>(_nr_nontrivial_classes);
 

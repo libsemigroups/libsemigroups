@@ -19,10 +19,11 @@
 #ifndef LIBSEMIGROUPS_SRC_TIMER_H_
 #define LIBSEMIGROUPS_SRC_TIMER_H_
 
-#include <assert.h>
 #include <chrono>
 #include <iostream>
 #include <string>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 

@@ -438,7 +438,7 @@ namespace libsemigroups {
     // them in its destructor.
     Rule(RWS const* rws, rws_word_t* p, rws_word_t* q)
         : _rws(rws), _lhs(p), _rhs(q), _active(false) {
-      assert(*_lhs != *_rhs);
+      LIBSEMIGROUPS_ASSERT(*_lhs != *_rhs);
       reorder();
     }
 

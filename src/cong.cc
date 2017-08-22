@@ -39,7 +39,7 @@ namespace libsemigroups {
     } else if (type == "right") {
       return cong_t::RIGHT;
     } else {
-      assert(type == "twosided");
+      LIBSEMIGROUPS_ASSERT(type == "twosided");
       return cong_t::TWOSIDED;
     }
   }
@@ -153,7 +153,7 @@ namespace libsemigroups {
           if (_partial_data.empty()) {
             _partial_data = data;
           }
-          assert(_partial_data == data);
+          LIBSEMIGROUPS_ASSERT(_partial_data == data);
         }
         return *winner;
       }
@@ -189,7 +189,7 @@ namespace libsemigroups {
       winner = new TC(*this);
       static_cast<TC*>(winner)->prefill();
       winner->run();
-      assert(winner->is_done());
+      LIBSEMIGROUPS_ASSERT(winner->is_done());
     } else {
       if (_semigroup != nullptr) {
         auto prefillit = [this](Congruence::DATA* data) {
@@ -209,7 +209,7 @@ namespace libsemigroups {
         winner = new TC(*this);
         static_cast<TC*>(winner)->prefill(_prefill);
         winner->run();
-        assert(winner->is_done());
+        LIBSEMIGROUPS_ASSERT(winner->is_done());
       } else {  // Congruence is defined over an fp semigroup
         std::vector<DATA*>                      data  = {new KBP(*this)};
         std::vector<std::function<void(DATA*)>> funcs = {};
@@ -292,7 +292,7 @@ namespace libsemigroups {
   }
 
   void Congruence::force_tc() {
-    assert(!is_obviously_infinite());
+    LIBSEMIGROUPS_ASSERT(!is_obviously_infinite());
     delete_data();
     _data = new TC(*this);
   }
@@ -304,19 +304,19 @@ namespace libsemigroups {
   }
 
   void Congruence::force_p() {
-    assert(_semigroup != nullptr);
+    LIBSEMIGROUPS_ASSERT(_semigroup != nullptr);
     delete_data();
     _data = new P(*this);
   }
 
   void Congruence::force_kbp() {
-    assert(_semigroup == nullptr);
+    LIBSEMIGROUPS_ASSERT(_semigroup == nullptr);
     delete_data();
     _data = new KBP(*this);
   }
 
   void Congruence::force_kbfp() {
-    assert(_type == TWOSIDED);
+    LIBSEMIGROUPS_ASSERT(_type == TWOSIDED);
     delete_data();
     _data = new KBFP(*this);
   }
@@ -341,7 +341,7 @@ namespace libsemigroups {
       return out;
     } else {
       data = get_data();
-      assert(data->is_done());
+      LIBSEMIGROUPS_ASSERT(data->is_done());
       return data->nontrivial_classes();
     }
   }
@@ -355,7 +355,7 @@ namespace libsemigroups {
       return;
     }
 
-    assert(semigroup != nullptr);
+    LIBSEMIGROUPS_ASSERT(semigroup != nullptr);
     semigroup->enumerate(killed);
 
     if (!killed) {
@@ -392,8 +392,8 @@ namespace libsemigroups {
   // This method requires a Semigroup pointer and therefore does not allow fp
   // semigroup congruences.
   Partition<word_t>* Congruence::DATA::nontrivial_classes() {
-    assert(is_done());
-    assert(_cong._semigroup != nullptr);
+    LIBSEMIGROUPS_ASSERT(is_done());
+    LIBSEMIGROUPS_ASSERT(_cong._semigroup != nullptr);
 
     partition_t* classes = new partition_t();
 
@@ -413,19 +413,19 @@ namespace libsemigroups {
       word = _cong._semigroup->factorisation(pos);
       // FIXME use the two argument version of factorisation to avoid
       // unnecessary memory allocations in the previous line.
-      assert(word_to_class_index(*word) < nr_classes());
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(*word) < nr_classes());
       (*all_classes)[word_to_class_index(*word)]->push_back(word);
     }
 
     // Store the words
-    assert(all_classes->size() == nr_classes());
+    LIBSEMIGROUPS_ASSERT(all_classes->size() == nr_classes());
     for (size_t class_nr = 0; class_nr < all_classes->size(); class_nr++) {
       // Use only the classes with at least 2 elements
       if ((*all_classes)[class_nr]->size() > 1) {
         classes->push_back((*all_classes)[class_nr]);
       } else {
         // Delete the unused class
-        assert((*all_classes)[class_nr]->size() == 1);
+        LIBSEMIGROUPS_ASSERT((*all_classes)[class_nr]->size() == 1);
         delete (*(*all_classes)[class_nr])[0];
         delete (*all_classes)[class_nr];
       }

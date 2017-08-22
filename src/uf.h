@@ -23,8 +23,6 @@
 #ifndef LIBSEMIGROUPS_SRC_UF_H_
 #define LIBSEMIGROUPS_SRC_UF_H_
 
-#include <assert.h>
-
 #include <algorithm>
 #include <functional>
 #include <vector>

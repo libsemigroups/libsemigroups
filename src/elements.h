@@ -21,7 +21,6 @@
 #ifndef LIBSEMIGROUPS_SRC_ELEMENTS_H_
 #define LIBSEMIGROUPS_SRC_ELEMENTS_H_
 
-#include <assert.h>
 #include <math.h>
 
 #include <algorithm>
@@ -31,6 +30,7 @@
 #include <vector>
 
 #include "blocks.h"
+#include "libsemigroups-debug.h"
 #include "recvec.h"
 #include "semiring.h"
 
@@ -380,7 +380,7 @@ namespace libsemigroups {
     //! since there is no way of knowing how a subclass is defined by the data
     //! in the vector.
     Element* really_copy(size_t increase_deg_by) const override {
-      assert(increase_deg_by == 0);
+      LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
       (void) increase_deg_by;
       std::vector<S>* vector(new std::vector<S>(*_vector));
       return new T(vector, this->_hash_value);
@@ -394,7 +394,7 @@ namespace libsemigroups {
     //! \p x. Any method overriding this one must call
     //! Element::reset_hash_value.
     void copy(Element const* x) override {
-      assert(x->degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
       auto   xx  = static_cast<ElementWithVectorData const*>(x);
       size_t deg = _vector->size();
       for (size_t i = 0; i < deg; i++) {
@@ -648,9 +648,9 @@ namespace libsemigroups {
     //! This method asserts that the degrees of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
     void redefine(Element const* x, Element const* y) override {
-      assert(x->degree() == y->degree());
-      assert(x->degree() == this->degree());
-      assert(x != this && y != this);
+      LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
+      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(x != this && y != this);
       Transformation<T> const* xx(static_cast<Transformation<T> const*>(x));
       Transformation<T> const* yy(static_cast<Transformation<T> const*>(y));
       size_t const             n = this->_vector->size();
@@ -709,8 +709,9 @@ namespace libsemigroups {
                          std::vector<T> const& ran,
                          size_t                deg)
         : PartialTransformation<T, PartialPerm<T>>() {
-      assert(dom.size() == ran.size());
-      assert(dom.empty() || deg >= *std::max_element(dom.begin(), dom.end()));
+      LIBSEMIGROUPS_ASSERT(dom.size() == ran.size());
+      LIBSEMIGROUPS_ASSERT(dom.empty()
+                           || deg >= *std::max_element(dom.begin(), dom.end()));
 
       this->_vector->resize(deg + 1, PP_UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
@@ -790,9 +791,9 @@ namespace libsemigroups {
     //! This method asserts that the degrees of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
     void redefine(Element const* x, Element const* y) override {
-      assert(x->degree() == y->degree());
-      assert(x->degree() == this->degree());
-      assert(x != this && y != this);
+      LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
+      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(x != this && y != this);
       PartialPerm<T> const* xx(static_cast<PartialPerm<T> const*>(x));
       PartialPerm<T> const* yy(static_cast<PartialPerm<T> const*>(y));
       size_t const          n = this->degree();
@@ -1056,7 +1057,8 @@ namespace libsemigroups {
     //! to \p nr_blocks. It asserts that either there is no existing cached
     //! value or \p nr_blocks equals the existing cached value.
     inline void set_nr_blocks(size_t nr_blocks) {
-      assert(_nr_blocks == Bipartition::UNDEFINED || _nr_blocks == nr_blocks);
+      LIBSEMIGROUPS_ASSERT(_nr_blocks == Bipartition::UNDEFINED
+                           || _nr_blocks == nr_blocks);
       _nr_blocks = nr_blocks;
     }
 
@@ -1067,8 +1069,8 @@ namespace libsemigroups {
     //! existing cached value or \p nr_left_blocks equals the existing cached
     //! value.
     inline void set_nr_left_blocks(size_t nr_left_blocks) {
-      assert(_nr_left_blocks == Bipartition::UNDEFINED
-             || _nr_left_blocks == nr_left_blocks);
+      LIBSEMIGROUPS_ASSERT(_nr_left_blocks == Bipartition::UNDEFINED
+                           || _nr_left_blocks == nr_left_blocks);
       _nr_left_blocks = nr_left_blocks;
     }
 
@@ -1078,7 +1080,7 @@ namespace libsemigroups {
     //! It asserts that either there is no existing cached value or
     //! \p rank equals the existing cached value.
     inline void set_rank(size_t rank) {
-      assert(_rank == Bipartition::UNDEFINED || _rank == rank);
+      LIBSEMIGROUPS_ASSERT(_rank == Bipartition::UNDEFINED || _rank == rank);
       _rank = rank;
     }
 
