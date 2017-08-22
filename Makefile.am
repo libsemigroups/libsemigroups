@@ -74,6 +74,10 @@ clean-local-check:
 	rm -f src/*.gcno src/.libs/*.gcda src/.libs/*.gcno
 	rm -f .debug_build .coverage_build
 
+superclean: distclean
+	git clean -xd --exclude *.swp --exclude *.swo
+.PHONY: superclean
+
 check:	
 	@$(mkdir_p) $(CHECK_LOG_DIR)
 	@today=`date +%Y-%m-%d-%H-%M-%S`;                                   \
