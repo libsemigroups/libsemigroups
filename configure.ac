@@ -57,6 +57,12 @@ AC_ARG_ENABLE([debug],
 AC_MSG_CHECKING([whether to enable debug mode])
 AC_MSG_RESULT([$enable_debug])
 
+AS_IF([test "x$enable_debug" = xyes],
+    [AC_SUBST(CXXFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer -Wno-c++11-extensions')])
+
+AS_IF([test "x$enable_debug" = xyes],
+    [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer')])
+
 dnl Output configured files
 
 AC_CONFIG_FILES([Makefile])
