@@ -15,10 +15,10 @@ echo "gcov version:"
 gcov --version
 
 # Check code coverage
-etc/coverage.sh
+./configure --enable-coverage ; make coverage
 for d in log; do
   if [ -d $d ]; then
-    etc/lcov-summary.py $d | tee log/coverage-log.txt
+    ci/lcov-summary.py $d | tee log/coverage-log.txt
     break
   fi;
 done;
