@@ -37,11 +37,11 @@ namespace libsemigroups {
         _nr_blocks(copy._nr_blocks),
         _rank(copy._rank) {
     if (copy._blocks != nullptr) {
-      assert(copy._lookup != nullptr);
+      LIBSEMIGROUPS_ASSERT(copy._lookup != nullptr);
       _blocks = new std::vector<u_int32_t>(*copy._blocks);
       _lookup = new std::vector<bool>(*copy._lookup);
     } else {
-      assert(copy._lookup == nullptr);
+      LIBSEMIGROUPS_ASSERT(copy._lookup == nullptr);
     }
   }
 

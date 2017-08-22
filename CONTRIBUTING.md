@@ -3,7 +3,8 @@
 ## Debugging and valgrinding after switching to autohell
 
 To run `lldb` after switching to autohell we have to do 
-
+    
+    ./configure --enable-debug ; make check-am 
     libtool --mode=execute lldb lstest
 
 because of the way the executable is linked. `lstest` is the name of the
@@ -26,7 +27,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 2. Do the following just to be on the safe side:
  
-        make distclean; ./autogen.sh; ./configure
+        make distclean ; ./autogen.sh ; ./configure
     
     just to be on the safe side.
 
@@ -35,7 +36,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 3. Check code coverage by running:
 
-        etc/coverage.sh
+        ./configure --enable-coverage ; make coverage
 
     add tests to improve the coverage (and start again if necessary).
     

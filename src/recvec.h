@@ -19,10 +19,10 @@
 #ifndef LIBSEMIGROUPS_SRC_RECVEC_H_
 #define LIBSEMIGROUPS_SRC_RECVEC_H_
 
-#include <assert.h>
-
 #include <algorithm>
 #include <vector>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -158,7 +158,7 @@ namespace libsemigroups {
     // <RecVec>.
 
     void inline set(size_t i, size_t j, T val) {
-      assert(i < _nr_rows && j < _nr_used_cols);
+      LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
       _vec[i * (_nr_used_cols + _nr_unused_cols) + j] = val;
     }
 
@@ -173,7 +173,7 @@ namespace libsemigroups {
     // <RecVec>.
 
     T inline get(size_t i, size_t j) const {
-      assert(i < _nr_rows && j < _nr_used_cols);
+      LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
       return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
     }
 
@@ -217,7 +217,7 @@ namespace libsemigroups {
     // Asserts that the numbers of columns are equal.
 
     void append(const RecVec<T>& copy) {
-      assert(copy._nr_used_cols == _nr_used_cols);
+      LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
 
       size_t old_nr_rows = _nr_rows;
       add_rows(copy._nr_rows);
@@ -241,7 +241,7 @@ namespace libsemigroups {
     // @return the number of occurrences of **val** in the **i**th row.
 
     size_t count(size_t i, T val) const {
-      assert(i < _nr_rows);
+      LIBSEMIGROUPS_ASSERT(i < _nr_rows);
       return std::count(row_cbegin(i), row_cend(i), val);
     }
 
@@ -251,7 +251,7 @@ namespace libsemigroups {
 
     template <class UnaryPredicate>
     size_t all_of(size_t i, UnaryPredicate pred) {
-      assert(i < _nr_rows);
+      LIBSEMIGROUPS_ASSERT(i < _nr_rows);
       return std::all_of(row_cbegin(i), row_cend(i), pred);
     }
 

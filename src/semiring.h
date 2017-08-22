@@ -19,11 +19,12 @@
 #ifndef LIBSEMIGROUPS_SRC_SEMIRING_H_
 #define LIBSEMIGROUPS_SRC_SEMIRING_H_
 
-#include <assert.h>
 #include <limits.h>
 
 #include <algorithm>
 #include <cstdint>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -207,8 +208,10 @@ namespace libsemigroups {
     //! Semiring::MINUS_INFTY, otherwise returns the minimum of \p x + \p y and
     //! the threshold of the semiring.
     int64_t prod(int64_t x, int64_t y) const override {
-      assert((x >= 0 && x <= this->threshold()) || x == Semiring::MINUS_INFTY);
-      assert((y >= 0 && y <= this->threshold()) || y == Semiring::MINUS_INFTY);
+      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= this->threshold())
+                           || x == Semiring::MINUS_INFTY);
+      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= this->threshold())
+                           || y == Semiring::MINUS_INFTY);
       if (x == MINUS_INFTY || y == MINUS_INFTY) {
         return MINUS_INFTY;
       }
@@ -218,8 +221,10 @@ namespace libsemigroups {
     //! Returns the minimum of (the maximum of \p x and \p y) and the threshold
     //! of the semiring.
     int64_t plus(int64_t x, int64_t y) const override {
-      assert((x >= 0 && x <= this->threshold()) || x == Semiring::MINUS_INFTY);
-      assert((y >= 0 && y <= this->threshold()) || y == Semiring::MINUS_INFTY);
+      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= this->threshold())
+                           || x == Semiring::MINUS_INFTY);
+      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= this->threshold())
+                           || y == Semiring::MINUS_INFTY);
       return std::max(x, y);
     }
   };
@@ -250,8 +255,10 @@ namespace libsemigroups {
     //! otherwise return the minimum of \p x + \p y and the threshold of the
     //! semiring.
     int64_t prod(int64_t x, int64_t y) const override {
-      assert((x >= 0 && x <= this->threshold()) || x == Semiring::INFTY);
-      assert((y >= 0 && y <= this->threshold()) || y == Semiring::INFTY);
+      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= this->threshold())
+                           || x == Semiring::INFTY);
+      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= this->threshold())
+                           || y == Semiring::INFTY);
       if (x == INFTY || y == INFTY) {
         return INFTY;
       }
@@ -261,8 +268,10 @@ namespace libsemigroups {
     //! Returns Semiring::INFTY if either of \p x and \p y is Semiring::INFTY,
     //! and otherwise the minimum of x, y, and the threshold of the semiring.
     int64_t plus(int64_t x, int64_t y) const override {
-      assert((x >= 0 && x <= this->threshold()) || x == Semiring::INFTY);
-      assert((y >= 0 && y <= this->threshold()) || y == Semiring::INFTY);
+      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= this->threshold())
+                           || x == Semiring::INFTY);
+      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= this->threshold())
+                           || y == Semiring::INFTY);
       if (x == INFTY && y == INFTY) {
         return INFTY;
       }
@@ -288,8 +297,8 @@ namespace libsemigroups {
     //! in the constructor.
     NaturalSemiring(int64_t t, int64_t p)
         : SemiringWithThreshold(t), _period(p) {
-      assert(_period > 0);
-      assert(this->threshold() >= 0);
+      LIBSEMIGROUPS_ASSERT(_period > 0);
+      LIBSEMIGROUPS_ASSERT(this->threshold() >= 0);
     }
 
     //! Return the integer 1.
@@ -305,16 +314,16 @@ namespace libsemigroups {
     //! Returns \p x * \p y modulo the congruence \f$t = t + p\f$ where \f$t\f$
     //! and \f$p\f$ are the threshold and period of the semiring, respectively.
     int64_t prod(int64_t x, int64_t y) const override {
-      assert(x >= 0 && x <= _period + this->threshold() - 1);
-      assert(y >= 0 && y <= _period + this->threshold() - 1);
+      LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + this->threshold() - 1);
+      LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + this->threshold() - 1);
       return thresholdperiod(x * y);
     }
 
     //! Returns \p x + \p y modulo the congruence \f$t = t + p\f$ where \f$t\f$
     //! and \f$p\f$ are the threshold and period of the semiring, respectively.
     int64_t plus(int64_t x, int64_t y) const override {
-      assert(x >= 0 && x <= _period + this->threshold() - 1);
-      assert(y >= 0 && y <= _period + this->threshold() - 1);
+      LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + this->threshold() - 1);
+      LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + this->threshold() - 1);
       return thresholdperiod(x + y);
     }
 

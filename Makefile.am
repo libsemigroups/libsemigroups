@@ -2,22 +2,20 @@
 # Automake configuration
 ##############################################################################
 
-AM_CPPFLAGS     = -DNDEBUG -UDEBUG
-AM_CXXFLAGS	= -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
-AM_CXXFLAGS     += $(GCC_SPECIFIC_CXXFLAGS)
-AM_LDFLAGS      = -no-undefined
+AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
+AM_CXXFLAGS += -g -O3 $(GCC_SPECIFIC_CXXFLAGS)
+AM_LDFLAGS  =  -no-undefined
 
 ACLOCAL_AMFLAGS	= -I m4
 
 ## libsemigroups headers
-
-pkginclude_HEADERS =  src/blocks.h   src/cong.h 
-pkginclude_HEADERS += src/elements.h src/semigroups.h 
-pkginclude_HEADERS += src/rws.h      src/rwse.h 
-pkginclude_HEADERS += src/semiring.h src/partition.h
-
-pkginclude_HEADERS += src/recvec.h src/report.h	
-pkginclude_HEADERS += src/timer.h  src/uf.h
+pkginclude_HEADERS =  src/libsemigroups-debug.h 
+pkginclude_HEADERS += src/blocks.h               src/cong.h 
+pkginclude_HEADERS += src/elements.h             src/semigroups.h 
+pkginclude_HEADERS += src/rws.h                  src/rwse.h 
+pkginclude_HEADERS += src/semiring.h             src/partition.h
+pkginclude_HEADERS += src/recvec.h               src/report.h	
+pkginclude_HEADERS += src/timer.h                src/uf.h
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -59,7 +57,6 @@ lstest_SOURCES += test/kbp.test.cc       test/semiring.test.cc
 lstest_SOURCES += test/p.test.cc       	 test/tc.test.cc
 lstest_SOURCES += test/partition.test.cc test/uf.test.cc
 
-lstest_CXXFLAGS = $(AM_CXXFLAGS)
 lstest_CPPFLAGS = -DCONFIG_H
 
 lstest_LDADD = libsemigroups.la
@@ -72,7 +69,11 @@ clean-local-check:
 	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
 	rm -f test/*.gcda test/*.gcno
 	rm -f src/*.gcno src/.libs/*.gcda src/.libs/*.gcno
-	rm -f .debug_build .coverage_build
+	rm -f .coverage_build
+
+superclean: distclean
+	git clean -xd --exclude *.swp --exclude *.swo
+.PHONY: superclean
 
 check:	
 	@$(mkdir_p) $(CHECK_LOG_DIR)
@@ -88,17 +89,24 @@ check-all: CHECK_FLAGS2 =
 check-all: check
 .PHONY: check-standard, check-all
 
+coverage: check-standard
+	@today=`date +%Y-%m-%d-%H-%M-%S` ;                                    \
+	lcov --capture --directory . --output-file log/$$today.info ;        \
+        genhtml log/$$today.info --output-directory log/$$today-coverage/ ; \
+        rm -f log/$$today.info ;                                             \
+        echo "See: " log/$$today-coverage/index.html
+
 format: 
 	@echo "Running clang-format . . .";  
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@clang-format -i $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
+	@clang-format -i $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 
 	@git checkout HEAD -- test/catch.hpp
 
 lint: 
 	@echo "Running cpplint . . .";  
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@cpplint $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
-	
+	@cpplint $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 	
+
 doc:
 	@echo "Generating documentation . . ."; \
 	doxygen Doxyfile

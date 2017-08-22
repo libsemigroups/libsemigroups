@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# This is required to generate the config/config.h file which is included in
+# libsemigroups-debug.h
+./autogen.sh ; ./configure
+
 # Install libtool and GMP
 echo "deb http://us.archive.ubuntu.com/ubuntu/ vivid main" | sudo tee -a /etc/apt/sources.list
 sudo apt-get update -qq

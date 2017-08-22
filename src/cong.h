@@ -155,7 +155,7 @@ namespace libsemigroups {
     //! between different instances of the same congruence.
     class_index_t word_to_class_index(word_t const& word) {
       DATA* data = get_data();
-      assert(data->is_done());
+      LIBSEMIGROUPS_ASSERT(data->is_done());
       return data->word_to_class_index(word);
     }
 
@@ -182,7 +182,7 @@ namespace libsemigroups {
         data = get_data(words_func);
       }
       DATA::result_t result = data->current_equals(w1, w2);
-      assert(result != DATA::result_t::UNKNOWN);
+      LIBSEMIGROUPS_ASSERT(result != DATA::result_t::UNKNOWN);
       return result == DATA::result_t::TRUE;
     }
 
@@ -215,7 +215,7 @@ namespace libsemigroups {
       }
 
       if (!_partial_data.empty()) {
-        assert(_data == nullptr);
+        LIBSEMIGROUPS_ASSERT(_data == nullptr);
         // Delete the losers and clear _partial_data
         for (size_t i = 0; i < _partial_data.size(); i++) {
           if (_partial_data[i] != data) {
@@ -227,7 +227,7 @@ namespace libsemigroups {
       _data = data;
 
       DATA::result_t result = data->current_less_than(w1, w2);
-      assert(result != DATA::result_t::UNKNOWN);
+      LIBSEMIGROUPS_ASSERT(result != DATA::result_t::UNKNOWN);
       return result == DATA::result_t::TRUE;
     }
 
@@ -241,7 +241,7 @@ namespace libsemigroups {
     //! general, and this method may never terminate.
     size_t nr_classes() {
       DATA* data = get_data();
-      assert(data->is_done());
+      LIBSEMIGROUPS_ASSERT(data->is_done());
       return data->nr_classes();
     }
 
@@ -289,7 +289,7 @@ namespace libsemigroups {
     // FIXME it would be better to provide a constructor from another
     // congruence that copied the relations.
     void set_relations(std::vector<relation_t> const& relations) {
-      assert(_relations.empty());  // _extra can be non-empty!
+      LIBSEMIGROUPS_ASSERT(_relations.empty());  // _extra can be non-empty!
       _relations = relations;
     }
 
@@ -299,7 +299,7 @@ namespace libsemigroups {
     //! report information about the progress of the computation.
     void set_report(bool val) const {
       glob_reporter.set_report(val);
-      assert(glob_reporter.get_report() == val);
+      LIBSEMIGROUPS_ASSERT(glob_reporter.get_report() == val);
     }
 
     //! Specify a partial coset table for the Todd-Coxeter algorithm.
