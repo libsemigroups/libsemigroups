@@ -3,12 +3,15 @@
 with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [N. Thiery](http://nicolas.thiery.name)
 
 The current version of libsemigroups is 0.3.1.
-libsemigroups requires a C++ compiler supporting the c++11 standard.
 
-libsemigroups is a C++ library for semigroups and monoids; it is partly based on 
-[Algorithms for computing finite semigroups](https://www.irif.fr/~jep/PDF/Rio.pdf), 
-[Expository Slides](https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf), and 
-[Semigroupe 2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) by Jean-Eric Pin.
+libsemigroups is a C++ library for semigroups and monoids using C++11; it is
+partly based on [Algorithms for computing finite
+semigroups](https://www.irif.fr/~jep/PDF/Rio.pdf), [Expository
+Slides](https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf), and [Semigroupe
+2.01](https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html) by
+Jean-Eric Pin. 
+libsemigroups uses
+[catch](https://github.com/philsquared/Catch) for its unit tests.
 
 The libsemigroups library is used in the 
 [Semigroups package for GAP](http://gap-packages.github.io/Semigroups/).
@@ -86,11 +89,15 @@ Install libsemigroups
 
 ### From the sources
 
-To install libsemigroups from the sources (this requires `autoconf` and `automake`): 
+libsemigroups requires a C++ compiler supporting the C++11 standard.
+To install libsemigroups from the sources (this also requires `autoconf` and
+`automake`): 
 
     git clone https://github.com/james-d-mitchell/libsemigroups
     cd libsemigroups
-    ./autogen.sh ; make ; sudo make install
+    ./autogen.sh ; ./configure ; make ; sudo make install
+
+TODO: document configure options here
 
 ## Documentation
 The documentation is generated using
