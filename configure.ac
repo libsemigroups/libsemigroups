@@ -63,6 +63,27 @@ AS_IF([test "x$enable_debug" = xyes],
 AS_IF([test "x$enable_debug" = xyes],
     [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer')])
 
+# Check if coverage mode is enabled
+AC_ARG_ENABLE([coverage],
+    [AS_HELP_STRING([--enable-coverage], [enable coverage mode])],
+    [enable_coverage=yes],
+    [enable_coverage=no]
+    )
+AC_MSG_CHECKING([whether to enable coverage mode])
+AC_MSG_RESULT([$enable_coverage])
+  
+AS_IF([test "x$enable_coverage" = xyes && test "x$enable_debug" = xyes],
+    [AC_MSG_ERROR([cannot use both --enable-debug and --enable-coverage.])])
+
+AS_IF([test "x$enable_coverage" = xyes],
+    [AC_SUBST(CFLAGS, '-g -O0 --coverage')]) 
+
+AS_IF([test "x$enable_coverage" = xyes],
+    [AC_SUBST(CXXFLAGS, '-g -O0 --coverage')])
+
+AS_IF([test "x$enable_coverage" = xyes],
+    [AC_SUBST(LDFLAGS, '-g -O0 --coverage')])
+
 dnl Output configured files
 
 AC_CONFIG_FILES([Makefile])

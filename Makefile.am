@@ -89,6 +89,13 @@ check-all: CHECK_FLAGS2 =
 check-all: check
 .PHONY: check-standard, check-all
 
+coverage: check-standard
+	@today=`date +%Y-%m-%d-%H-%M-%S` ;                                    \
+	lcov --capture --directory . --output-file log/$$today.info ;        \
+        genhtml log/$$today.info --output-directory log/$$today-coverage/ ; \
+        rm -f log/$$today.info ;                                             \
+        echo "See: " log/$$today-coverage/index.html
+
 format: 
 	@echo "Running clang-format . . .";  
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
