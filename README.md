@@ -97,7 +97,9 @@ To install libsemigroups from the sources (this also requires `autoconf` and
     cd libsemigroups
     ./autogen.sh ; ./configure ; make ; sudo make install
 
-TODO: document configure options here
+To enable assertions and other debugging checks enabled do:
+
+    ./autogen.sh ; ./configure --enable-debug ; make ; sudo make install
 
 ## Documentation
 The documentation is generated using

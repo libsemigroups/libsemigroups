@@ -66,14 +66,14 @@ namespace libsemigroups {
         _sorted(nullptr),
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
-    assert(_nrgens != 0);
+    LIBSEMIGROUPS_ASSERT(_nrgens != 0);
 
     reserve(_nrgens);
 
     _degree = (*gens)[0]->degree();
 
     for (Element* x : *gens) {
-      assert(x->degree() == _degree);
+      LIBSEMIGROUPS_ASSERT(x->degree() == _degree);
       _gens->push_back(x->really_copy());
     }
 
@@ -198,12 +198,12 @@ namespace libsemigroups {
         _right(new cayley_graph_t(*copy._right)),
         _sorted(nullptr),
         _wordlen(0) {
-    assert(!coll->empty());
-    assert(coll->at(0)->degree() >= copy.degree());
+    LIBSEMIGROUPS_ASSERT(!coll->empty());
+    LIBSEMIGROUPS_ASSERT(coll->at(0)->degree() >= copy.degree());
 
-#ifdef DEBUG
+#ifdef LIBSEMIGROUPS_DEBUG
     for (Element* x : *coll) {
-      assert(x->degree() == (*coll)[0]->degree());
+      LIBSEMIGROUPS_ASSERT(x->degree() == (*coll)[0]->degree());
     }
 #endif
 
@@ -303,27 +303,27 @@ namespace libsemigroups {
 
   // w is a word in the generators (i.e. a vector of letter_t's)
   Semigroup::pos_t Semigroup::word_to_pos(word_t const& w) const {
-    assert(w.size() > 0);
+    LIBSEMIGROUPS_ASSERT(w.size() > 0);
     if (w.size() == 1) {
       return letter_to_pos(w[0]);
     }
     pos_t out = letter_to_pos(w[0]);
     for (auto it = w.begin() + 1; it < w.end(); it++) {
-      assert(*it < nrgens());
+      LIBSEMIGROUPS_ASSERT(*it < nrgens());
       out = fast_product(out, letter_to_pos(*it));
     }
     return out;
   }
 
   Element* Semigroup::word_to_element(word_t const& w) const {
-    assert(w.size() > 0);
+    LIBSEMIGROUPS_ASSERT(w.size() > 0);
     if (is_done() || w.size() == 1) {
       return (*_elements)[word_to_pos(w)]->really_copy();
     }
     Element* out = _tmp_product->really_copy();
     out->redefine((*_gens)[w[0]], (*_gens)[w[1]]);
     for (auto it = w.begin() + 2; it < w.end(); it++) {
-      assert(*it < nrgens());
+      LIBSEMIGROUPS_ASSERT(*it < nrgens());
       _tmp_product->copy(out);
       out->redefine(_tmp_product, (*_gens)[*it]);
     }
@@ -332,7 +332,7 @@ namespace libsemigroups {
 
   // Product by tracing in the left or right Cayley graph
   Semigroup::pos_t Semigroup::product_by_reduction(pos_t i, pos_t j) const {
-    assert(i < _nr && j < _nr);
+    LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
     if (length_const(i) <= length_const(j)) {
       while (i != UNDEFINED) {
         j = _left->get(j, _final[i]);
@@ -352,7 +352,7 @@ namespace libsemigroups {
   // faster
 
   Semigroup::pos_t Semigroup::fast_product(pos_t i, pos_t j) const {
-    assert(i < _nr && j < _nr);
+    LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
     if (length_const(i) < 2 * _tmp_product->complexity()
         || length_const(j) < 2 * _tmp_product->complexity()) {
       return product_by_reduction(i, j);
@@ -375,7 +375,7 @@ namespace libsemigroups {
     if (!_idempotents_found) {
       find_idempotents();
     }
-    assert(pos < size());
+    LIBSEMIGROUPS_ASSERT(pos < size());
     return _is_idempotent[pos];
   }
 
@@ -468,7 +468,7 @@ namespace libsemigroups {
       return const_cast<word_t*>(
           RWS::rws_word_to_word((reinterpret_cast<RWSE*>(x))->get_rws_word()));
     }
-    assert(x->get_type() == Element::elm_t::NOT_RWSE);
+    LIBSEMIGROUPS_ASSERT(x->get_type() == Element::elm_t::NOT_RWSE);
     return minimal_factorisation(x);
   }
 
@@ -747,7 +747,7 @@ namespace libsemigroups {
     timer.start();
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
-    assert(degree() == (*coll->begin())->degree());
+    LIBSEMIGROUPS_ASSERT(degree() == (*coll->begin())->degree());
 
     // get some parameters from the old semigroup
     size_t old_nrgens  = _nrgens;
@@ -767,7 +767,7 @@ namespace libsemigroups {
 
     // add the new generators to new _gens, _elements, and _index
     for (Element const* x : *coll) {
-      assert(x->degree() == degree());
+      LIBSEMIGROUPS_ASSERT(x->degree() == degree());
       auto it = _map.find(x);
       if (it == _map.end()) {  // new generator
         _gens->push_back(x->really_copy());
@@ -1130,7 +1130,7 @@ namespace libsemigroups {
   // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
   // initialised for this to work, and _gens must point to an empty vector.
   void Semigroup::copy_gens() {
-    assert(_gens->empty());
+    LIBSEMIGROUPS_ASSERT(_gens->empty());
     _gens->resize(_nrgens, nullptr);
     // really copy duplicate gens from _elements
     for (auto const& x : _duplicate_gens) {

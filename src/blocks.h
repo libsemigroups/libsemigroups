@@ -22,11 +22,11 @@
 #ifndef LIBSEMIGROUPS_SRC_BLOCKS_H_
 #define LIBSEMIGROUPS_SRC_BLOCKS_H_
 
-#include <assert.h>
-
 #include <algorithm>
 #include <functional>
 #include <vector>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -64,9 +64,9 @@ namespace libsemigroups {
     //! (transverse) and \c false that it is unsigned.
     Blocks(std::vector<u_int32_t>* blocks, std::vector<bool>* lookup)
         : _blocks(blocks), _lookup(lookup), _nr_blocks(), _rank(UNDEFINED) {
-      assert(_blocks->size() != 0);
+      LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
       _nr_blocks = *(std::max_element(_blocks->begin(), _blocks->end())) + 1;
-      assert(_nr_blocks == _lookup->size());
+      LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
     }
 
     //! A constructor.
@@ -96,8 +96,8 @@ namespace libsemigroups {
           _lookup(lookup),
           _nr_blocks(nr_blocks),
           _rank(UNDEFINED) {
-      assert(_blocks->size() != 0);
-      assert(_nr_blocks == _lookup->size());
+      LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
+      LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
     }
 
     //! The assignment operator is deleted for Blocks to avoid unintended
@@ -144,7 +144,7 @@ namespace libsemigroups {
     //! This method asserts that \p pos is valid, i.e. that it is less than the
     //! degree of \c this.
     inline u_int32_t block(size_t pos) const {
-      assert(pos < _blocks->size());
+      LIBSEMIGROUPS_ASSERT(pos < _blocks->size());
       return (*_blocks)[pos];
     }
 
@@ -155,7 +155,7 @@ namespace libsemigroups {
     //! transverse (or unsigned).  This method asserts that the parameter \p
     //! index is valid, i.e. that it is less than the degree of \c this.
     inline bool is_transverse_block(size_t index) const {
-      assert(index < _nr_blocks);
+      LIBSEMIGROUPS_ASSERT(index < _nr_blocks);
       return (*_lookup)[index];
     }
 
@@ -193,7 +193,7 @@ namespace libsemigroups {
     //!
     //! This method asserts that degree is not 0.
     inline typename std::vector<u_int32_t>::const_iterator cbegin() const {
-      assert(_blocks != nullptr);
+      LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
       return _blocks->cbegin();
     }
 
@@ -201,7 +201,7 @@ namespace libsemigroups {
     //!
     //! This method asserts that degree is not 0.
     inline typename std::vector<u_int32_t>::const_iterator cend() const {
-      assert(_blocks != nullptr);
+      LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
       return _blocks->cend();
     }
 
