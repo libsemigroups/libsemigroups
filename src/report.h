@@ -21,7 +21,6 @@
 #ifndef LIBSEMIGROUPS_SRC_REPORT_H_
 #define LIBSEMIGROUPS_SRC_REPORT_H_
 
-#include <assert.h>
 #include <cxxabi.h>
 
 #include <atomic>
@@ -32,6 +31,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "libsemigroups-debug.h"
 #include "timer.h"
 
 #define REPORT(message)                                                 \
@@ -203,7 +203,7 @@ namespace libsemigroups {
 
     void reset_thread_ids() {
       // Only do this from the main thread
-      assert(thread_id(std::this_thread::get_id()) == 0);
+      LIBSEMIGROUPS_ASSERT(thread_id(std::this_thread::get_id()) == 0);
       // Delete all thread_ids
       _map.clear();
       _next_tid = 0;
@@ -221,7 +221,8 @@ namespace libsemigroups {
         // Don't check the assert below because on a single thread machine
         // (such as those used by appveyor), for an fp-semigroup more than 1
         // thread will be used, and this assertion will fail.
-        // assert(_next_tid <= std::thread::hardware_concurrency());
+        // LIBSEMIGROUPS_ASSERT(_next_tid <=
+        // std::thread::hardware_concurrency());
         _map.emplace(tid, _next_tid++);
         return _next_tid - 1;
       }

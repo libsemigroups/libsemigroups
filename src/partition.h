@@ -19,10 +19,10 @@
 #ifndef LIBSEMIGROUPS_SRC_PARTITION_H_
 #define LIBSEMIGROUPS_SRC_PARTITION_H_
 
-#include <assert.h>
-
 #include <algorithm>
 #include <vector>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
   //! Class for partitions of a set used by Congruence::nontrivial_classes.
@@ -84,7 +84,7 @@ namespace libsemigroups {
     //! This method asserts that the parameter \p part_index is less than the
     //! number of parts.
     inline std::vector<T*>* operator[](size_t part_index) const {
-      assert(part_index < size());
+      LIBSEMIGROUPS_ASSERT(part_index < size());
       return (*_parts)[part_index];
     }
 

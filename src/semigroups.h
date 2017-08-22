@@ -19,8 +19,6 @@
 #ifndef LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
 #define LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
 
-#include <assert.h>
-
 #include <algorithm>
 #include <mutex>
 #include <string>
@@ -30,6 +28,7 @@
 #include <vector>
 
 #include "elements.h"
+#include "libsemigroups-debug.h"
 #include "recvec.h"
 #include "report.h"
 
@@ -196,7 +195,7 @@ namespace libsemigroups {
     //! Return a pointer to the generator with index \p pos.
     // FIXME these should be Element const*
     Element* gens(size_t pos) const {
-      assert(pos < _gens->size());
+      LIBSEMIGROUPS_ASSERT(pos < _gens->size());
       return (*_gens)[pos];
     }
 
@@ -212,7 +211,7 @@ namespace libsemigroups {
     //! Returns  \c true if no elements other than the generators have
     //! been enumerated so far and \c false otherwise.
     bool is_begun() const {
-      assert(_lenindex.size() > 1);
+      LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
       return (_pos >= _lenindex[1]);
     }
 
@@ -261,7 +260,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     pos_t prefix(pos_t pos) const {
-      assert(pos < _nr);
+      LIBSEMIGROUPS_ASSERT(pos < _nr);
       return _prefix[pos];
     }
 
@@ -271,7 +270,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     pos_t suffix(pos_t pos) const {
-      assert(pos < _nr);
+      LIBSEMIGROUPS_ASSERT(pos < _nr);
       return _suffix[pos];
     }
 
@@ -288,7 +287,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     letter_t first_letter(pos_t pos) const {
-      assert(pos < _nr);
+      LIBSEMIGROUPS_ASSERT(pos < _nr);
       return _first[pos];
     }
 
@@ -305,7 +304,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     letter_t final_letter(pos_t pos) const {
-      assert(pos < _nr);
+      LIBSEMIGROUPS_ASSERT(pos < _nr);
       return _final[pos];
     }
 
@@ -321,7 +320,7 @@ namespace libsemigroups {
     //! element of the semigroup, this is asserted in the method. This method
     //! causes no enumeration of the semigroup.
     size_t length_const(pos_t pos) const {
-      assert(pos < _nr);
+      LIBSEMIGROUPS_ASSERT(pos < _nr);
       return _length[pos];
     }
 
@@ -378,7 +377,7 @@ namespace libsemigroups {
     //! * Semigroup::add_generators was called after the semigroup was already
     //! partially enumerated.
     pos_t letter_to_pos(letter_t i) const {
-      assert(i < _nrgens);
+      LIBSEMIGROUPS_ASSERT(i < _nrgens);
       return _letter_to_pos[i];
     }
 

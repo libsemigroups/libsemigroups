@@ -34,8 +34,8 @@ namespace libsemigroups {
 
   BooleanMat::BooleanMat(std::vector<std::vector<bool>> const& matrix)
       : ElementWithVectorData<bool, BooleanMat>() {
-    assert(matrix.size() != 0);
-    assert(
+    LIBSEMIGROUPS_ASSERT(matrix.size() != 0);
+    LIBSEMIGROUPS_ASSERT(
         all_of(matrix.begin(), matrix.end(), [matrix](std::vector<bool> row) {
           return row.size() == matrix.size();
         }));
@@ -75,9 +75,9 @@ namespace libsemigroups {
 
   // multiply x and y into this
   void BooleanMat::redefine(Element const* x, Element const* y) {
-    assert(x->degree() == y->degree());
-    assert(x->degree() == this->degree());
-    assert(x != this && y != this);
+    LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
+    LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(x != this && y != this);
 
     size_t             k;
     size_t             dim = this->degree();
@@ -107,7 +107,7 @@ namespace libsemigroups {
       Bipartition::_lookup(std::thread::hardware_concurrency());
 
   u_int32_t Bipartition::block(size_t pos) const {
-    assert(pos < 2 * degree());
+    LIBSEMIGROUPS_ASSERT(pos < 2 * degree());
     return (*_vector)[pos];
   }
 
@@ -145,9 +145,9 @@ namespace libsemigroups {
   void Bipartition::redefine(Element const* x,
                              Element const* y,
                              size_t const&  thread_id) {
-    assert(x->degree() == y->degree());
-    assert(x->degree() == this->degree());
-    assert(x != this && y != this);
+    LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
+    LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(x != this && y != this);
     u_int32_t n = this->degree();
 
     Bipartition const* xx = static_cast<Bipartition const*>(x);
@@ -337,8 +337,8 @@ namespace libsemigroups {
       Semiring*                                semiring)
       : ElementWithVectorData<int64_t, MatrixOverSemiring>(),
         _semiring(semiring) {
-    assert(matrix.size() != 0);
-    assert(all_of(
+    LIBSEMIGROUPS_ASSERT(matrix.size() != 0);
+    LIBSEMIGROUPS_ASSERT(all_of(
         matrix.begin(), matrix.end(), [matrix](std::vector<int64_t> row) {
           return row.size() == matrix.size();
         }));
@@ -386,7 +386,7 @@ namespace libsemigroups {
     (void) increase_degree_by;
     MatrixOverSemiring* copy = static_cast<MatrixOverSemiring*>(
         ElementWithVectorData::really_copy(0));
-    assert(copy->_semiring == nullptr);
+    LIBSEMIGROUPS_ASSERT(copy->_semiring == nullptr);
     copy->_semiring = _semiring;
     return copy;
   }
@@ -395,13 +395,13 @@ namespace libsemigroups {
     MatrixOverSemiring const* xx(static_cast<MatrixOverSemiring const*>(x));
     MatrixOverSemiring const* yy(static_cast<MatrixOverSemiring const*>(y));
 
-    assert(xx->degree() == yy->degree());
-    assert(xx->degree() == this->degree());
-    assert(xx != this && yy != this);
+    LIBSEMIGROUPS_ASSERT(xx->degree() == yy->degree());
+    LIBSEMIGROUPS_ASSERT(xx->degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(xx != this && yy != this);
     // It can be that the elements are defined over semirings that are distinct
     // in memory but equal (for example, when one element comes from a
     // semigroup and another from an ideal of that semigroup).
-    // assert(xx->semiring() == yy->semiring()
+    // LIBSEMIGROUPS_ASSERT(xx->semiring() == yy->semiring()
     //       && xx->semiring() == this->semiring());
     size_t deg = this->degree();
 
@@ -492,9 +492,9 @@ namespace libsemigroups {
 
   void
   PBR::redefine(Element const* xx, Element const* yy, size_t const& thread_id) {
-    assert(xx->degree() == yy->degree());
-    assert(xx->degree() == this->degree());
-    assert(xx != this && yy != this);
+    LIBSEMIGROUPS_ASSERT(xx->degree() == yy->degree());
+    LIBSEMIGROUPS_ASSERT(xx->degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(xx != this && yy != this);
 
     PBR const* x(static_cast<PBR const*>(xx));
     PBR const* y(static_cast<PBR const*>(yy));

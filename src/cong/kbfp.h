@@ -49,7 +49,7 @@ namespace libsemigroups {
     }
 
     size_t nr_classes() final {
-      assert(is_done());
+      LIBSEMIGROUPS_ASSERT(is_done());
       return _semigroup->size();
     }
 
