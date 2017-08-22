@@ -11,7 +11,7 @@ ci/travis-setup.sh
 echo "Valgrind version:"
 valgrind --version
 
-etc/debug.sh
+./configure --enable-debug
 make lstest
 
 if [ ! -e log ]

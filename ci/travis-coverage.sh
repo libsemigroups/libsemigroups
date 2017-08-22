@@ -15,14 +15,16 @@ echo "gcov version:"
 gcov --version
 
 # Check code coverage
-etc/coverage.sh
-for d in log; do
-  if [ -d $d ]; then
-    etc/lcov-summary.py $d | tee log/coverage-log.txt
-    break
-  fi;
-done;
-
+make clean
+./configure CXXFLAGS='-O0 -g --coverage' LDFLAGS='-O0 -g --coverage' --enable-code-coverage
+make check-code-coverage
+DIR=$(find . -maxdepth 1 -type d | grep "libsemigroups-.*-coverage")
+if [ -z DIR ] ; then 
+  echo "Cannot find the libsemigroups-x.y.z-coverage directory"
+  exit 1
+fi
+mkdir -p log
+ci/lcov-summary.py $DIR | tee log/coverage-log.txt
 echo
 
 # Exclude timer.h and report.h from coverage checks
