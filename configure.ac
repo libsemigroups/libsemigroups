@@ -63,6 +63,9 @@ AS_IF([test "x$enable_debug" = xyes],
 AS_IF([test "x$enable_debug" = xyes],
     [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer')])
 
+# Check if code coverage mode is enabled
+AX_CODE_COVERAGE()
+
 dnl Output configured files
 
 AC_CONFIG_FILES([Makefile])
