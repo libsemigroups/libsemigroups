@@ -42,55 +42,72 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
         ./configure CXXFLAGS='-O0 -g --coverage' LDFLAGS='-O0 -g --coverage' --enable-code-coverage
         make check-code-coverage
+
+4. Run the benchmarks and check there is no performance regression:
+
+        make uninstall
+        git checkout <last_release_version>
+        ./autogen.sh ; ./configure ; make ; make install
+        benchmark/benchmark.sh
+        make uninstall
+        git checkout <stable-x.y or master>
+        ./autogen.sh ; ./configure ; make ; make install
+        benchmark/benchmark.sh
+        benchmark/compare_bench.py <json_file1> <json_file2> 
     
-4. Update the version numbers in `README.md`, and in `configure.ac`
+5. Update the version numbers in `README.md`, and in `configure.ac`
    and run:
     
         make distclean ; ./autogen.sh ; ./configure
     
-5. Commit the changed version numbers: 
+6. Commit the changed version numbers: 
    `git commit -a -m "Update version numbers"` 
 
-6. Push to `origin/stable-x.y` (bugfix release) or `origin/master` (non-bugfix
+7. Push to `origin/stable-x.y` (bugfix release) or `origin/master` (non-bugfix
    release)
 
-7. Wait for the continuous integration and valgrind to complete. If something
+8. Wait for the continuous integration to complete. If something
    goes wrong, then go back to the start of the process.
     
-8. Tag the release:
+9. Tag the release:
 
         git tag vx.y.z ; git push origin --tags
     
-9. Update gh-pages:
+10. Update gh-pages:
 
         make doc ; cp -r html/* gh-pages
     
-10. Push to gh-pages
+11. Push to gh-pages
 
         cd gh-pages ; git add * ; git commit -a -m "Version x.y.z" ; git push 
 
-11. Make a release archive (note that `make distcheck` is currently done by
+12. Make a release archive (note that `make distcheck` is currently done by
     travis so no need to do it again here):
 
         make dist 
 
-12. Go to github and make a release announcement and add the archive produced
-    at step 11
+13. Go to github and make a release announcement and add the archive produced
+    at step 12
 
-13. If doing a bugfix release then merge `stable-x.y` into `master`, and if
+14. If doing a bugfix release then merge `stable-x.y` into `master`, and if
     doing a non-bugfix release make a new `stable-x.y` branch push it github
     and delete the old stable branch.
 
-14. Update the conda-forge feedstock:
+15. Update the conda-forge feedstock:
 
     https://github.com/conda-forge/libsemigroups-feedstock
 
-    ***in your own fork***, by modifying `recipe/meta.yml` to increment the version
-    number and sha256 variables at the top of the file. To obtain the sha256
-    value, using the archive from step 11 (uploaded to github), do 
-    `sha2 libsemigroups-x.y.z.tar.gz` at the command line. 
+    ***in your own fork***, by modifying `recipe/meta.yml` to increment the
+    version number and sha256 variables at the top of the file. To obtain the
+    sha256 value, using the archive from step 12 (uploaded to github), do `sha2
+    libsemigroups-x.y.z.tar.gz` at the command line. 
     
-    Commit and push these changes to your fork, then make a PR to conda-forge. 
+    Make sure to pull from 
+
+    https://github.com/conda-forge/libsemigroups-feedstock.git
+  
+    Then commit and push these changes to your fork, then make a PR to
+    conda-forge. 
 
 References:
 
