@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['libsemigroups_20_2d_20c_2b_2b_20library_20for_20semigroups_20and_20monoids_20_2d_20version_200_2e3_2e1',['libsemigroups - C++ library for semigroups and monoids - Version 0.3.1',['../index.html',1,'']]],
+  ['libsemigroups_20_2d_20c_2b_2b_20library_20for_20semigroups_20and_20monoids_20_2d_20version_200_2e3_2e2',['libsemigroups - C++ library for semigroups and monoids - Version 0.3.2',['../index.html',1,'']]],
   ['left_5fblocks',['left_blocks',['../classlibsemigroups_1_1_bipartition.html#a37a71b314e8f23f133c31833d243f73f',1,'libsemigroups::Bipartition']]],
   ['left_5fcayley_5fgraph',['left_cayley_graph',['../classlibsemigroups_1_1_semigroup.html#a6110cb130054d6c1844c5a3c4a8eae4e',1,'libsemigroups::Semigroup']]],
   ['length_5fconst',['length_const',['../classlibsemigroups_1_1_semigroup.html#ad9eeda3519d29dde31d365537b71339d',1,'libsemigroups::Semigroup']]],
