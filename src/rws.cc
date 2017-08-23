@@ -113,7 +113,7 @@ namespace libsemigroups {
     MAX_ACTIVE_RULES = std::max(MAX_ACTIVE_RULES, _active_rules.size());
     UNIQUE_LHS_RULES.insert(*rule->lhs());
 #endif
-    assert(rule->lhs() != rule->rhs());
+    LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
     rule->activate();
     _active_rules.push_back(rule);
     // clear_stack relies on the fact that new rules are added to the end of
@@ -300,7 +300,7 @@ namespace libsemigroups {
       Rule* rule1 = _stack.top();
       _stack.pop();
       // Rewrite both sides and reorder if necessary . . .
-      assert(!rule1->is_active());
+      LIBSEMIGROUPS_ASSERT(!rule1->is_active());
       rule1->rewrite();
       if (*rule1->lhs() != *rule1->rhs()) {
         add_rule(rule1);  // rule1 is activated
@@ -340,7 +340,7 @@ namespace libsemigroups {
 
   // OVERLAP_2 from Sims, p77
   void RWS::overlap(Rule const* u, Rule const* v, std::atomic<bool>& killed) {
-    assert(u->is_active() && v->is_active());
+    LIBSEMIGROUPS_ASSERT(u->is_active() && v->is_active());
     size_t m = std::min(u->lhs()->size(), v->lhs()->size()) - 1;
 
     for (size_t k = 1; k <= m && u->is_active() && v->is_active() && !killed;
@@ -361,7 +361,7 @@ namespace libsemigroups {
                               u->rhs()->cend());
         rule->_lhs->append(*v->rhs());             // Q_j
         rule->_rhs->append(it, v->lhs()->cend());  // C
-        assert(rule->lhs() != rule->rhs());
+        LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
         _stack.emplace(rule);
         clear_stack(killed);
       }

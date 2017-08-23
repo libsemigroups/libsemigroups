@@ -5,15 +5,17 @@ set -e
 ci/travis-setup.sh
 
 # Check standard tests standard build
-make check-standard -j
+make check
 
 # Check that different calls to make work
 make distcheck
 
 # Check standard tests with assertions on
-etc/debug.sh
-make check-standard -j
+make clean
+./configure --enable-debug
+make check
 
 # Check standard tests with assertions off
-etc/ndebug.sh
-make check-standard -j
+make clean
+./configure --disable-debug
+make check

@@ -136,8 +136,8 @@ namespace libsemigroups {
 
   void Congruence::TC::prefill(RecVec<class_index_t>& table) {
     // TODO(JDM) check table is valid
-    assert(table.nr_cols() == _cong._nrgens);
-    assert(table.nr_rows() > 0);
+    LIBSEMIGROUPS_ASSERT(table.nr_cols() == _cong._nrgens);
+    LIBSEMIGROUPS_ASSERT(table.nr_rows() > 0);
 
     _table = table;
     init_after_prefill();
@@ -179,7 +179,7 @@ namespace libsemigroups {
 
   void Congruence::TC::init_tc_relations() {
     // This should not have been run before
-    assert(!_init_done);
+    LIBSEMIGROUPS_ASSERT(!_init_done);
 
     // Handle _extra first!
     switch (_cong._type) {
@@ -198,7 +198,7 @@ namespace libsemigroups {
             _relations.end(), _cong._extra.begin(), _cong._extra.end());
         break;
       default:
-        assert(false);
+        LIBSEMIGROUPS_ASSERT(false);
     }
 
     if (_prefilled) {
@@ -228,13 +228,13 @@ namespace libsemigroups {
         }
         break;
       default:
-        assert(false);
+        LIBSEMIGROUPS_ASSERT(false);
     }
   }
 
   // compress the table
   void Congruence::TC::compress() {
-    assert(is_done());
+    LIBSEMIGROUPS_ASSERT(is_done());
     if (_active == _table.nr_rows()) {
       return;
     }
@@ -291,7 +291,7 @@ namespace libsemigroups {
       }
     }
     // c in {1 .. n} (where 0 is the id coset)
-    assert(c < _active || c == UNDEFINED);
+    LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
     // Convert to {0 .. n-1}
     return (c == UNDEFINED ? c : c - 1);
   }
@@ -316,8 +316,8 @@ namespace libsemigroups {
     }
 
     // c in {1 .. n} (where 0 is the id coset)
-    assert(c1 < _active);
-    assert(c2 < _active);
+    LIBSEMIGROUPS_ASSERT(c1 < _active);
+    LIBSEMIGROUPS_ASSERT(c2 < _active);
     if (c1 == c2) {
       return result_t::TRUE;
     } else if (is_done()) {
@@ -402,7 +402,7 @@ namespace libsemigroups {
           _current_no_add = _bckwd[_current_no_add];
         }
 
-        assert(rhs != _next);
+        LIBSEMIGROUPS_ASSERT(rhs != _next);
         if (rhs == _last) {
           // Simply move the start of the free list back by 1
           _last = _bckwd[_last];
@@ -437,7 +437,7 @@ namespace libsemigroups {
           v = _table.get(rhs, i);
           if (v != UNDEFINED) {
             class_index_t u = _preim_init.get(v, i);
-            assert(u != UNDEFINED);
+            LIBSEMIGROUPS_ASSERT(u != UNDEFINED);
             if (u == rhs) {
               // Remove <rhs> from the start of the list of <v>'s preimages
               _preim_init.set(v, i, _preim_next.get(rhs, i));
@@ -465,7 +465,7 @@ namespace libsemigroups {
         }
       }
       if (_lhs_stack.empty()) {
-        assert(_rhs_stack.empty());
+        LIBSEMIGROUPS_ASSERT(_rhs_stack.empty());
         break;
       }
       // Get the next pair to be identified
@@ -475,7 +475,7 @@ namespace libsemigroups {
       _rhs_stack.pop();
     }
 
-    assert((_lhs_stack.empty() && _rhs_stack.empty()) || _killed);
+    LIBSEMIGROUPS_ASSERT((_lhs_stack.empty() && _rhs_stack.empty()) || _killed);
   }
 
   // Take the two words of the relation <rel>, apply them both to the coset

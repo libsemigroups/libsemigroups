@@ -21,7 +21,8 @@
 // and the appropriate classes combined quickly.
 
 #include "uf.h"
-#include <assert.h>
+
+#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -124,10 +125,10 @@ namespace libsemigroups {
   // find
   size_t UF::find(size_t i) {
     size_t ii;
-    assert(_size == _table->size());
+    LIBSEMIGROUPS_ASSERT(_size == _table->size());
     do {
       ii = i;
-      assert(ii < _size);
+      LIBSEMIGROUPS_ASSERT(ii < _size);
       i = (*_table)[ii];
     } while (ii != i);
     return i;
@@ -136,14 +137,14 @@ namespace libsemigroups {
   // union
   void UF::unite(size_t i, size_t j) {
     size_t ii, jj;
-    assert(_size == _table->size());
+    LIBSEMIGROUPS_ASSERT(_size == _table->size());
     ii = find(i);
     jj = find(j);
     if (ii < jj) {
-      assert(jj < _size);
+      LIBSEMIGROUPS_ASSERT(jj < _size);
       (*_table)[jj] = ii;
     } else {
-      assert(ii < _size);
+      LIBSEMIGROUPS_ASSERT(ii < _size);
       (*_table)[ii] = jj;
     }
     _haschanged = true;
@@ -151,7 +152,7 @@ namespace libsemigroups {
 
   // flatten
   void UF::flatten() {
-    assert(_size == _table->size());
+    LIBSEMIGROUPS_ASSERT(_size == _table->size());
     for (size_t i = 0; i < _size; i++) {
       (*_table)[i] = find(i);
     }
@@ -168,14 +169,14 @@ namespace libsemigroups {
 
   // nr_blocks
   size_t UF::nr_blocks() {
-    assert(_size == _table->size());
+    LIBSEMIGROUPS_ASSERT(_size == _table->size());
     if (_size == 0) {
       return 0;
     }
     size_t count = 1;
     size_t max   = 0;
     flatten();  // So we can use [i] instead of ->find(i)
-    assert((*_table)[0] == 0);
+    LIBSEMIGROUPS_ASSERT((*_table)[0] == 0);
     for (size_t i = 1; i < _size; i++) {
       if ((*_table)[i] > max) {
         max = (*_table)[i];
@@ -201,7 +202,7 @@ namespace libsemigroups {
   }
 
   void UF::join(UF const& uf) {
-    assert(this->_size == uf._size);
+    LIBSEMIGROUPS_ASSERT(this->_size == uf._size);
     for (size_t i = 0; i < _size; i++) {
       unite((*_table)[i], (*uf._table)[i]);
     }

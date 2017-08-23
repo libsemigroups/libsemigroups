@@ -21,7 +21,6 @@ config/
 m4/
 Makefile
 test.trs
-*.m4
 *.status
 configure
 *.la
@@ -31,8 +30,7 @@ autom4te.cache
 config
 .!*
 lstest
-.coverage_build
-.debug_build
 log
 *.gz
 .ipynb_checkpoints
+libsemigroups-*-coverage*
