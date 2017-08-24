@@ -868,6 +868,16 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
                    {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
                    {relation_t({1, 2}, {1})});
   REQUIRE(!cong3.is_obviously_infinite());
+
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
+                                new Transformation<u_int16_t>({0, 1, 2})};
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(CONG_REPORT);
+  really_delete_cont(gens);
+
+  Congruence cong4("twosided", &S, {relation_t({1}, {0})});
+  REQUIRE(!cong4.is_obviously_infinite());
 }
 
 TEST_CASE("Congruence 28: test_less_than",
