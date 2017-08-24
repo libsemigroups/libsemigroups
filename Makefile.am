@@ -58,7 +58,8 @@ CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
 
-lstest_SOURCES =  tests/blocks.test.cc	  tests/recvec.test.cc
+lstest_SOURCES =  tests/main.test.cc
+lstest_SOURCES += tests/blocks.test.cc	  tests/recvec.test.cc
 lstest_SOURCES += tests/cong.test.cc	  tests/rws.test.cc
 lstest_SOURCES += tests/elements.test.cc  tests/rwse.test.cc
 lstest_SOURCES += tests/kbfp.test.cc	  tests/semigroups.test.cc
