@@ -23,7 +23,7 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Blocks: empty blocks", "[quick][blocks]") {
+TEST_CASE("Blocks 01: empty blocks", "[quick][blocks][01]") {
   Blocks b1;
   Blocks b2 = Blocks(new std::vector<u_int32_t>({0, 1, 2, 1, 0, 2}),
                      new std::vector<bool>({true, false, true}));
@@ -37,7 +37,7 @@ TEST_CASE("Blocks: empty blocks", "[quick][blocks]") {
   REQUIRE(b1.rank() == 0);
 }
 
-TEST_CASE("Blocks: non-empty blocks", "[quick][blocks]") {
+TEST_CASE("Blocks 02: non-empty blocks", "[quick][blocks][02]") {
   Blocks b = Blocks(new std::vector<u_int32_t>({0, 1, 2, 1, 0, 2}),
                     new std::vector<bool>({true, false, true}));
   REQUIRE(b == b);
@@ -61,7 +61,7 @@ TEST_CASE("Blocks: non-empty blocks", "[quick][blocks]") {
   }
 }
 
-TEST_CASE("Blocks: left blocks of bipartition", "[quick][blocks]") {
+TEST_CASE("Blocks 03: left blocks of bipartition", "[quick][blocks][03]") {
   Bipartition x = Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   Blocks* b = x.left_blocks();
@@ -84,7 +84,7 @@ TEST_CASE("Blocks: left blocks of bipartition", "[quick][blocks]") {
   x.really_delete();
 }
 
-TEST_CASE("Blocks: right blocks of bipartition", "[quick][blocks]") {
+TEST_CASE("Blocks 04: right blocks of bipartition", "[quick][blocks][04]") {
   Bipartition x = Bipartition(
       {0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
   Blocks* b = x.right_blocks();
@@ -113,7 +113,7 @@ TEST_CASE("Blocks: right blocks of bipartition", "[quick][blocks]") {
   x.really_delete();
 }
 
-TEST_CASE("Blocks: copy [empty blocks]", "[quick][blocks]") {
+TEST_CASE("Blocks 05: copy [empty blocks]", "[quick][blocks][05]") {
   Blocks* b = new Blocks();
   Blocks  c(*b);
 
@@ -130,7 +130,7 @@ TEST_CASE("Blocks: copy [empty blocks]", "[quick][blocks]") {
   delete b;
 }
 
-TEST_CASE("Blocks: copy [non-empty blocks]", "[quick][blocks]") {
+TEST_CASE("Blocks 06: copy [non-empty blocks]", "[quick][blocks][06]") {
   Blocks* b = new Blocks(
       new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
       new std::vector<bool>({false, true, false}));
@@ -149,7 +149,7 @@ TEST_CASE("Blocks: copy [non-empty blocks]", "[quick][blocks]") {
   delete b;
 }
 
-TEST_CASE("Blocks: hash value", "[quick][blocks]") {
+TEST_CASE("Blocks 07: hash value", "[quick][blocks][07]") {
   Blocks* b = new Blocks(
       new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
       new std::vector<bool>({false, true, false}));
@@ -165,7 +165,7 @@ TEST_CASE("Blocks: hash value", "[quick][blocks]") {
   delete b;
 }
 
-TEST_CASE("Blocks: operator<", "[quick][blocks]") {
+TEST_CASE("Blocks 08: operator<", "[quick][blocks][08]") {
   Blocks* b = new Blocks(
       new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
       new std::vector<bool>({false, true, false}));

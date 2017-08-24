@@ -28,13 +28,13 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("UF 01: constructor by size", "[quick][uf]") {
+TEST_CASE("UF 01: constructor by size", "[quick][uf][01]") {
   UF uf(7);
   REQUIRE(uf.get_size() == 7);
   REQUIRE(*uf.get_table() == UF::table_t({0, 1, 2, 3, 4, 5, 6}));
 }
 
-TEST_CASE("UF 02: constructor by table", "[quick][uf]") {
+TEST_CASE("UF 02: constructor by table", "[quick][uf][02]") {
   UF::table_t* tab = new UF::table_t({0, 1, 2, 2, 3, 4, 2, 2, 6, 5, 0});
   UF           uf(*tab);
   REQUIRE(uf.get_size() == 11);
@@ -43,7 +43,7 @@ TEST_CASE("UF 02: constructor by table", "[quick][uf]") {
   REQUIRE(*uf.get_table() == UF::table_t({0, 1, 2, 2, 3, 4, 2, 2, 6, 5, 0}));
 }
 
-TEST_CASE("UF 03: copy constructor", "[quick][uf]") {
+TEST_CASE("UF 03: copy constructor", "[quick][uf][03]") {
   UF::table_t tab = {0, 1, 2, 2, 3, 4, 2, 2, 6, 5, 0};
   UF          uf(tab);
   REQUIRE(uf.get_size() == 11);
@@ -52,7 +52,7 @@ TEST_CASE("UF 03: copy constructor", "[quick][uf]") {
   REQUIRE(*uf2.get_table() == UF::table_t({0, 1, 2, 2, 3, 4, 2, 2, 6, 5, 0}));
 }
 
-TEST_CASE("UF 04: copy constructor with blocks", "[quick][uf]") {
+TEST_CASE("UF 04: copy constructor with blocks", "[quick][uf][04]") {
   UF            uf({0, 0, 1, 2, 4, 5, 3});
   UF::blocks_t* b = uf.get_blocks();
 
@@ -69,12 +69,12 @@ TEST_CASE("UF 04: copy constructor with blocks", "[quick][uf]") {
   }
 }
 
-TEST_CASE("UF 05: nr_blocks", "[quick][uf]") {
+TEST_CASE("UF 05: nr_blocks", "[quick][uf][05]") {
   UF uf({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9});
   REQUIRE(uf.nr_blocks() == 6);
 }
 
-TEST_CASE("UF 06: get_blocks", "[quick][uf]") {
+TEST_CASE("UF 06: get_blocks", "[quick][uf][06]") {
   UF            uf({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9});
   UF::blocks_t* b = uf.get_blocks();
   REQUIRE(b->size() == 12);
@@ -87,7 +87,7 @@ TEST_CASE("UF 06: get_blocks", "[quick][uf]") {
   REQUIRE(b->at(11) == nullptr);
 }
 
-TEST_CASE("UF 07: find", "[quick][uf]") {
+TEST_CASE("UF 07: find", "[quick][uf][07]") {
   UF uf({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9});
   REQUIRE(uf.find(0) == 0);
   REQUIRE(uf.find(1) == 0);
@@ -97,7 +97,7 @@ TEST_CASE("UF 07: find", "[quick][uf]") {
   REQUIRE(uf.find(11) == 8);
 }
 
-TEST_CASE("UF 08: unite", "[quick][uf]") {
+TEST_CASE("UF 08: unite", "[quick][uf][08]") {
   UF uf({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9});
   REQUIRE(uf.find(0) == 0);
   REQUIRE(uf.find(8) == 8);
@@ -119,7 +119,7 @@ TEST_CASE("UF 08: unite", "[quick][uf]") {
   REQUIRE(uf.find(11) == 0);
 }
 
-TEST_CASE("UF 09: flatten", "[quick][uf]") {
+TEST_CASE("UF 09: flatten", "[quick][uf][09]") {
   UF uf1({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9});
   REQUIRE(*uf1.get_table()
           == UF::table_t({0, 0, 2, 1, 2, 5, 6, 7, 8, 8, 4, 9}));
@@ -133,7 +133,7 @@ TEST_CASE("UF 09: flatten", "[quick][uf]") {
   REQUIRE(*uf2.get_table() == UF::table_t({0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0}));
 }
 
-TEST_CASE("UF 10: add_entry", "[quick][uf]") {
+TEST_CASE("UF 10: add_entry", "[quick][uf][10]") {
   UF uf({0, 0, 2, 3, 3, 5});
   REQUIRE(uf.get_size() == 6);
   uf.add_entry();
@@ -146,7 +146,7 @@ TEST_CASE("UF 10: add_entry", "[quick][uf]") {
   REQUIRE(uf.find(7) == 0);
 }
 
-TEST_CASE("UF 11: add_entry with blocks", "[quick][uf]") {
+TEST_CASE("UF 11: add_entry with blocks", "[quick][uf][11]") {
   UF            uf({0, 0, 2, 3, 3, 5});
   UF::blocks_t* b = uf.get_blocks();
   REQUIRE(b->size() == 6);
@@ -155,7 +155,7 @@ TEST_CASE("UF 11: add_entry with blocks", "[quick][uf]") {
   REQUIRE(*b->at(6) == UF::table_t({6}));
 }
 
-TEST_CASE("UF 12: big chain", "[quick][uf]") {
+TEST_CASE("UF 12: big chain", "[quick][uf][12]") {
   UF::table_t tab;
   tab.push_back(0);
   for (size_t i = 0; i < 100000; i++) {
@@ -173,7 +173,7 @@ TEST_CASE("UF 12: big chain", "[quick][uf]") {
   }
 }
 
-TEST_CASE("UF 13: empty table", "[quick][uf]") {
+TEST_CASE("UF 13: empty table", "[quick][uf][13]") {
   UF            uf(0);
   UF::blocks_t* b = uf.get_blocks();
   REQUIRE(b->size() == 0);
@@ -183,7 +183,7 @@ TEST_CASE("UF 13: empty table", "[quick][uf]") {
   REQUIRE(uf.nr_blocks() == 1);
 }
 
-TEST_CASE("UF 14: next_rep", "[quick][uf]") {
+TEST_CASE("UF 14: next_rep", "[quick][uf][14]") {
   UF uf(10);
   uf.unite(2, 4);
   uf.unite(4, 9);
@@ -201,7 +201,7 @@ TEST_CASE("UF 14: next_rep", "[quick][uf]") {
   REQUIRE(uf.next_rep() == 8);
 }
 
-TEST_CASE("UF 15: join", "[quick][uf]") {
+TEST_CASE("UF 15: join", "[quick][uf][15]") {
   UF uf1(10);
   uf1.unite(2, 4);
   uf1.unite(4, 9);

@@ -22,7 +22,7 @@
 using namespace libsemigroups;
 
 TEST_CASE("Semiring 01: threshold/period [NaturalSemiring]",
-          "[quick][semiring") {
+          "[quick][semiring][01]") {
   NaturalSemiring* sr = new NaturalSemiring(10, 314);
 
   REQUIRE(sr->threshold() == 10);
@@ -30,7 +30,8 @@ TEST_CASE("Semiring 01: threshold/period [NaturalSemiring]",
   delete sr;
 }
 
-TEST_CASE("Semiring 02: threshold 0 [NaturalSemiring]", "[quick][semiring") {
+TEST_CASE("Semiring 02: threshold 0 [NaturalSemiring]",
+          "[quick][semiring][02]") {
   NaturalSemiring* sr = new NaturalSemiring(0, 7);
 
   REQUIRE(sr->threshold() == 0);
