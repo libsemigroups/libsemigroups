@@ -17,6 +17,8 @@ pkginclude_HEADERS += src/semiring.h             src/partition.h
 pkginclude_HEADERS += src/recvec.h               src/report.h	
 pkginclude_HEADERS += src/timer.h                src/uf.h
 
+nodist_include_HEADERS = config/libsemigroups-config.h
+
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
