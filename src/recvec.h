@@ -29,10 +29,13 @@ namespace libsemigroups {
   //
   // Template class for *rectangular vectors* i.e. two dimensional vectors.
   // The unique template parameter **T** is the type of the objects stored in
-  // the
-  // <RecVec>.
+  // the <RecVec>.
 
   template <typename T> class RecVec {
+    // So that RecVec<T> can access private data members of RecVec<S> and vice
+    // versa.
+    template <typename S> friend class RecVec;
+
    public:
     // Default constructor
     // @nr_cols the number of columns in the <RecVec> being constructed
@@ -59,14 +62,18 @@ namespace libsemigroups {
     // Constructs a copy of the given <RecVec> with the same number of rows as
     // the original and with some additional columns.
 
-    RecVec(const RecVec& copy, size_t nr_cols_to_add = 0)
+    template <typename S>
+    RecVec(RecVec<S> const& copy, size_t nr_cols_to_add)
         : _vec(),
           _nr_used_cols(copy._nr_used_cols),
           _nr_unused_cols(copy._nr_unused_cols),
           _nr_rows(copy.nr_rows()),
           _default_val(copy._default_val) {
       if (nr_cols_to_add <= _nr_unused_cols) {
-        _vec = copy._vec;
+        _vec.reserve(copy._vec.size());
+        for (auto const& x : copy._vec) {
+          _vec.push_back(static_cast<T>(x));
+        }
         _nr_used_cols += nr_cols_to_add;
         _nr_unused_cols -= nr_cols_to_add;
         return;
@@ -215,8 +222,7 @@ namespace libsemigroups {
     // <nr_cols> of **this** and **copy** are equal.
     //
     // Asserts that the numbers of columns are equal.
-
-    void append(const RecVec<T>& copy) {
+    template <typename S> void append(const RecVec<S>& copy) {
       LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
 
       size_t old_nr_rows = _nr_rows;
