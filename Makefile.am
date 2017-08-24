@@ -43,7 +43,7 @@ LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc src/cong/kbp.cc
 LINT_FORMAT_FILES_EXTRA += src/cong/p.cc    src/cong/tc.cc
 
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
-EXTRA_DIST += test/catch.hpp
+EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 
 BENCHMARK_LINT_FORMAT =  benchmark/src/cong.cpp
@@ -58,13 +58,13 @@ CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
 
-lstest_SOURCES =  test/blocks.test.cc	 test/recvec.test.cc
-lstest_SOURCES += test/cong.test.cc	 test/rws.test.cc
-lstest_SOURCES += test/elements.test.cc	 test/rwse.test.cc
-lstest_SOURCES += test/kbfp.test.cc	 test/semigroups.test.cc
-lstest_SOURCES += test/kbp.test.cc       test/semiring.test.cc
-lstest_SOURCES += test/p.test.cc       	 test/tc.test.cc
-lstest_SOURCES += test/partition.test.cc test/uf.test.cc
+lstest_SOURCES =  tests/blocks.test.cc	  tests/recvec.test.cc
+lstest_SOURCES += tests/cong.test.cc	  tests/rws.test.cc
+lstest_SOURCES += tests/elements.test.cc  tests/rwse.test.cc
+lstest_SOURCES += tests/kbfp.test.cc	  tests/semigroups.test.cc
+lstest_SOURCES += tests/kbp.test.cc       tests/semiring.test.cc
+lstest_SOURCES += tests/p.test.cc         tests/tc.test.cc
+lstest_SOURCES += tests/partition.test.cc tests/uf.test.cc
 
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
