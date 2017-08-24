@@ -549,7 +549,7 @@ TEST_CASE("TC 15: test prefilling of the table manually",
   really_delete_cont(gens);
 
   // Copy the right Cayley graph of S for prefilling
-  cayley_graph_t right(*S.right_cayley_graph());
+  Semigroup::cayley_graph_t right(*S.right_cayley_graph());
 
   // These are defining relations for S
   std::vector<relation_t> rels
