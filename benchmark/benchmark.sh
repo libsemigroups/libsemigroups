@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-LOG_DIR=$(pwd)/benchmark/logs
-mkdir -p $LOG_DIR
-LOG_FILE_SUFFIX=`date +%Y%m%d%H%M%S`.json
+benchmark/build.sh
 
+LOG_DIR=$(pwd)/benchmark/logs
+LOG_FILE_SUFFIX=`date +%Y%m%d%H%M%S`.json
 FLAGS="--benchmark_min_time=0 --benchmark_report_aggregates_only=true --benchmark_format=console"
 
-benchmark/build.sh
+mkdir -p $LOG_DIR
 cd benchmark/src/build
 
 nr_files=$(ls -1 ../*.cpp | wc -l)
