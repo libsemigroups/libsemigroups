@@ -76,6 +76,15 @@ TEST_CASE("RecVec 06: copy constructor with 0 default args",
   REQUIRE(copy.nr_rows() == 7);
   REQUIRE(
       all_of(copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
+
+  // Check when there are available extra columns already in rv.
+  rv.add_cols(10);
+  RecVec<size_t> copy2(rv, 0);
+  REQUIRE(copy2.size() == 91);
+  REQUIRE(copy2.nr_cols() == 13);
+  REQUIRE(copy2.nr_rows() == 7);
+  REQUIRE(all_of(
+      copy2.begin(), copy2.end(), [](size_t val) { return val == 666; }));
 }
 
 TEST_CASE("RecVec 07: method add_rows with 1 default args",
