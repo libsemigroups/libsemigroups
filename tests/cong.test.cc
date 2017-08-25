@@ -33,7 +33,7 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 TEST_CASE("Congruence 00: 5-parameter constructor",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][00]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -43,7 +43,7 @@ TEST_CASE("Congruence 00: 5-parameter constructor",
 }
 
 TEST_CASE("Congruence 01: Small fp semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][01]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -71,7 +71,7 @@ TEST_CASE("Congruence 01: Small fp semigroup",
 }
 
 TEST_CASE("Congruence 02: Small left congruence on free semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][02]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -83,7 +83,7 @@ TEST_CASE("Congruence 02: Small left congruence on free semigroup",
 }
 
 TEST_CASE("Congruence 03: Small right congruence on free semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][03]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -97,7 +97,7 @@ TEST_CASE("Congruence 03: Small right congruence on free semigroup",
 
 TEST_CASE(
     "Congruence 04: word_to_class_index for left congruence on free semigroup",
-    "[quick][congruence][fpsemigroup][multithread]") {
+    "[quick][congruence][fpsemigroup][multithread][04]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -117,7 +117,7 @@ TEST_CASE(
 }
 
 TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][05]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -143,7 +143,7 @@ TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
 }
 
 TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
-          "[quick][congruence][multithread]") {
+          "[quick][congruence][multithread][06]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -164,7 +164,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
 }
 
 TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
-          "[quick][congruence][multithread]") {
+          "[quick][congruence][multithread][07]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -327,7 +327,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
 }
 
 TEST_CASE("Congruence 09: for an infinite fp semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][09]") {
   std::vector<relation_t> relations = {relation_t({0, 1}, {1, 0}),
                                        relation_t({0, 2}, {2, 2}),
                                        relation_t({0, 2}, {0}),
@@ -352,7 +352,7 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
 }
 
 TEST_CASE("Congruence 10: for an infinite fp semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][10]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
@@ -380,7 +380,7 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
 }
 
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
-          "[standard][congruence][multithread][finite]") {
+          "[standard][congruence][multithread][finite][11]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
@@ -431,7 +431,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 }
 
 TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
-          "[extreme][congruence][multithread][finite][pbr]") {
+          "[extreme][congruence][multithread][finite][pbr][12]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
       new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
@@ -488,7 +488,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 }
 
 TEST_CASE("Congruence 13: partial perm example",
-          "[standard][congruence][multithread][finite]") {
+          "[standard][congruence][multithread][finite][13]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
          new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
@@ -516,7 +516,7 @@ TEST_CASE("Congruence 13: partial perm example",
 }
 
 TEST_CASE("Congruence 14: Bicyclic monoid",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][14]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
                                   relation_t({1, 0}, {1}),
                                   relation_t({0, 0}, {0}),
@@ -536,7 +536,7 @@ TEST_CASE("Congruence 14: Bicyclic monoid",
 }
 
 TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
-          "[fixme][quick][congruence][fpsemigroup][multithread]") {
+          "[fixme][quick][congruence][fpsemigroup][multithread][15]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
                                   relation_t({1, 0}, {1}),
                                   relation_t({0, 0}, {0}),
@@ -552,7 +552,7 @@ TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
 }
 
 TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][16]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
                                   relation_t({1, 0}, {1}),
                                   relation_t({0, 0}, {0}),
@@ -569,7 +569,7 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
 }
 
 TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
-          "[extreme][congruence][multithread][finite][pbr]") {
+          "[extreme][congruence][multithread][finite][pbr][17]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
       new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
@@ -627,7 +627,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
 }
 
 TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
-          "[extreme][congruence][multithread][finite][pbr]") {
+          "[extreme][congruence][multithread][finite][pbr][18]") {
   std::vector<Element*> gens = {
       new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
       new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
@@ -685,7 +685,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
 }
 
 TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][19]") {
   std::vector<relation_t> rels = {relation_t({0, 0}, {0, 0}),
                                   relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
@@ -714,7 +714,7 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
 }
 
 TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][20]") {
   std::vector<relation_t> rels
       = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
@@ -738,7 +738,7 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
 }
 
 TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
-          "[quick][congruence][fpsemigroup][multithread]") {
+          "[quick][congruence][fpsemigroup][multithread][21]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1}));        // (a, b)
@@ -752,7 +752,7 @@ TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
 }
 
 TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
-          "[quick][congruence][finite][multithread]") {
+          "[quick][congruence][finite][multithread][22]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -767,7 +767,7 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
 }
 
 TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
-          "[quick][congruence][finite][fpsemigroup]") {
+          "[quick][congruence][finite][fpsemigroup][23]") {
   std::vector<relation_t> rels
       = {relation_t({0, 0, 0}, {0}),
          relation_t({1, 0, 0}, {1, 0}),
@@ -794,7 +794,7 @@ TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
 }
 
 TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
-          "[standard][congruence][multithread]") {
+          "[standard][congruence][multithread][24]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7}),
          new Transformation<u_int16_t>({1, 2, 3, 4, 5, 0, 6, 7}),
@@ -840,21 +840,21 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
 }
 
 TEST_CASE("Congruence 25: free semigroup with redundant relations",
-          "[quick][congruence][multithread][fpsemigroup]") {
+          "[quick][congruence][multithread][fpsemigroup][25]") {
   std::vector<relation_t> extra = {relation_t({0, 0}, {0, 0})};
   Congruence              cong("twosided", 1, {}, extra);
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
 }
 
 TEST_CASE("Congruence 26: free semigroup with redundant relations",
-          "[quick][congruence][multithread][fpsemigroup]") {
+          "[quick][congruence][multithread][fpsemigroup][26]") {
   Congruence cong("twosided", 1, {}, {});
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
   REQUIRE(!cong.test_equals({0, 0}, {0}));
 }
 
 TEST_CASE("Congruence 27: is_obviously_infinite",
-          "[quick][congruence][fpsemigroup]") {
+          "[quick][congruence][fpsemigroup][27]") {
   Congruence cong1(
       "twosided", 3, {relation_t({0, 1}, {0})}, {relation_t({2, 2}, {2})});
   REQUIRE(cong1.is_obviously_infinite());
@@ -868,9 +868,20 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
                    {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
                    {relation_t({1, 2}, {1})});
   REQUIRE(!cong3.is_obviously_infinite());
+
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
+                                new Transformation<u_int16_t>({0, 1, 2})};
+
+  Semigroup S = Semigroup(gens);
+  S.set_report(CONG_REPORT);
+  really_delete_cont(gens);
+
+  Congruence cong4("twosided", &S, {relation_t({1}, {0})});
+  REQUIRE(!cong4.is_obviously_infinite());
 }
 
-TEST_CASE("Congruence 27: test_less_than", "[quick][congruence][fpsemigroup]") {
+TEST_CASE("Congruence 28: test_less_than",
+          "[quick][congruence][fpsemigroup][28]") {
   Congruence cong("twosided", 2, {relation_t({0, 0}, {0})}, {});
   REQUIRE(!cong.test_less_than({0, 0}, {0}));
 }

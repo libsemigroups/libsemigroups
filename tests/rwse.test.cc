@@ -33,7 +33,7 @@ template <typename T> static inline void really_delete_cont(T cont) {
   }
 }
 
-TEST_CASE("RWSE 01:", "[quick][rwse]") {
+TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
@@ -70,7 +70,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse]") {
   b.really_delete();
 }
 
-TEST_CASE("RWSE 02: factorisation", "[quick][rwse]") {
+TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};

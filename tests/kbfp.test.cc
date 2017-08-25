@@ -37,7 +37,7 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 TEST_CASE("KBFP 01: Small fp semigroup",
-          "[quick][congruence][kbfp][fpsemigroup]") {
+          "[quick][congruence][kbfp][fpsemigroup][01]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -59,7 +59,7 @@ TEST_CASE("KBFP 01: Small fp semigroup",
 }
 
 TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
-          "[quick][congruence][kbfp][fpsemigroup]") {
+          "[quick][congruence][kbfp][fpsemigroup][02]") {
   std::vector<relation_t> rels;
   rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
@@ -83,7 +83,7 @@ TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
 }
 
 TEST_CASE("KBFP 03: for a finite semigroup",
-          "[quick][congruence][kbfp][finite]") {
+          "[quick][congruence][kbfp][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -131,7 +131,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
 }
 
 TEST_CASE("KBFP 04: finite fp-semigroup, dihedral group of order 6",
-          "[quick][fpsemigroup][kbfp][finite]") {
+          "[quick][fpsemigroup][kbfp][finite][04]") {
   std::vector<relation_t> rels = {relation_t({0, 0}, {0}),
                                   relation_t({0, 1}, {1}),
                                   relation_t({1, 0}, {1}),
@@ -160,7 +160,7 @@ TEST_CASE("KBFP 04: finite fp-semigroup, dihedral group of order 6",
 }
 
 TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
-          "[quick][fpsemigroup][kbfp][finite]") {
+          "[quick][fpsemigroup][kbfp][finite][05]") {
   std::vector<relation_t> rels = {relation_t({3}, {2}),
                                   relation_t({0, 3}, {0, 2}),
                                   relation_t({1, 1}, {1}),
@@ -193,7 +193,7 @@ TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
 }
 
 TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
-          "[quick][fpsemigroup][kbfp][finite]") {
+          "[quick][fpsemigroup][kbfp][finite][06]") {
   std::vector<relation_t> rels = {relation_t({2}, {1}),
                                   relation_t({4}, {3}),
                                   relation_t({5}, {0}),
@@ -261,7 +261,7 @@ TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
 }
 
 TEST_CASE("KBFP 07: fp semigroup, size 240",
-          "[quick][fpsemigroup][kbfp][finite]") {
+          "[quick][fpsemigroup][kbfp][finite][07]") {
   std::vector<relation_t> extra
       = {relation_t({0, 0, 0}, {0}),
          relation_t({1, 1, 1, 1}, {1}),

@@ -38,7 +38,7 @@ template <typename T> static inline void really_delete_cont(T cont) {
 }
 
 TEST_CASE("RWS 01: for a transformation semigroup of size 4",
-          "[quick][rws][fpsemigroup]") {
+          "[quick][rws][fpsemigroup][01]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
@@ -57,7 +57,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
 }
 
 TEST_CASE("RWS 02: for a transformation semigroup of size 9",
-          "[quick][rws][finite]") {
+          "[quick][rws][finite][02]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
   Semigroup S = Semigroup(gens);
@@ -75,7 +75,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
 }
 
 TEST_CASE("RWS 03: for a transformation semigroup of size 88",
-          "[quick][rws][finite]") {
+          "[quick][rws][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup S = Semigroup(gens);
@@ -93,7 +93,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
 }
 
 TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
-          "[quick][rws][fpsemigroup]") {
+          "[quick][rws][fpsemigroup][04]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
@@ -113,7 +113,7 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
 }
 
 TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
-          "[quick][rws][fpsemigroup]") {
+          "[quick][rws][fpsemigroup][05]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
@@ -134,7 +134,7 @@ TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
 }
 
 TEST_CASE("RWS 06: for an infinite confluent fp semigroup 3",
-          "[quick][rws][fpsemigroup]") {
+          "[quick][rws][fpsemigroup][06]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("01", "10");
@@ -153,7 +153,7 @@ TEST_CASE("RWS 06: for an infinite confluent fp semigroup 3",
 }
 
 TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
-          "[quick][rws][fpsemigroup]") {
+          "[quick][rws][fpsemigroup][07]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("000", "");
@@ -166,7 +166,7 @@ TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup][08]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
@@ -181,7 +181,7 @@ TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup][09]") {
   SHORTLEX* ro = new SHORTLEX([](rws_letter_t x, rws_letter_t y) {
     if (y == x) {
       return false;
@@ -213,7 +213,7 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup]") {
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup][10]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
@@ -226,7 +226,7 @@ TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup]") {
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup][11]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
@@ -240,7 +240,7 @@ TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup]") {
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup]") {
+TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup][12]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
@@ -256,7 +256,8 @@ TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup]") {
 }
 
 // The next test takes too long to run
-/*TEST_CASE("RWS 13: Example 6.6 in Sims", "[hide][extreme][rws][fpsemigroup]")
+/*TEST_CASE("RWS 13: Example 6.6 in Sims",
+"[hide][extreme][rws][fpsemigroup][13]")
 {
   RWS rws;
   rws.set_report(RWS_REPORT);
@@ -273,7 +274,8 @@ TEST_CASE("RWS 12: Example 6.4 in Sims", "[standard][rws][fpsemigroup]") {
   REQUIRE(rws.is_confluent());
 }*/
 
-TEST_CASE("RWS 14: Chapter 10, Section 4 in NR", "[rws][quick][fpsemigroup]") {
+TEST_CASE("RWS 14: Chapter 10, Section 4 in NR",
+          "[rws][quick][fpsemigroup][14]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
 
@@ -290,7 +292,7 @@ TEST_CASE("RWS 14: Chapter 10, Section 4 in NR", "[rws][quick][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][15]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
@@ -311,7 +313,7 @@ TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
 }
 
 TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
-          "[extreme][rws][fpsemigroup]") {
+          "[extreme][rws][fpsemigroup][16]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaaaaaa", "");
@@ -328,7 +330,7 @@ TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup]") {
+TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup][17]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
@@ -340,7 +342,7 @@ TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][18]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aba", "baa");
@@ -357,7 +359,7 @@ TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
 }
 
 TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][19]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aa", "a");
@@ -370,7 +372,7 @@ TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
 }
 
 TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][20]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -386,7 +388,7 @@ TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
 // See KBFP 07 also.
 
 TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][21]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -402,7 +404,7 @@ TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
 }
 
 TEST_CASE("RWS 22: F(2, 5); size 11, from Chapter 9, Section 1 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][22]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("ab", "c");
@@ -418,7 +420,7 @@ TEST_CASE("RWS 22: F(2, 5); size 11, from Chapter 9, Section 1 in NR",
 }
 
 TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][23]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
@@ -434,7 +436,7 @@ TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
@@ -466,7 +468,7 @@ TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup]") {
 }
 
 TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][25]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -511,7 +513,7 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
 }
 
 TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
-          "[rws][fpsemigroup][extreme]") {
+          "[rws][fpsemigroup][extreme][26]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -542,7 +544,7 @@ TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
 }
 
 TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][27]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aA", "");
@@ -562,7 +564,7 @@ TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
 }
 
 TEST_CASE("RWS 28: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
-          "[rws][quick][fpsemigroup]") {
+          "[rws][quick][fpsemigroup][28]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -575,7 +577,8 @@ TEST_CASE("RWS 28: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
   REQUIRE(rws.is_confluent());
 }
 
-TEST_CASE("RWS 29: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
+TEST_CASE("RWS 29: Chapter 8, Theorem 4.2 in NR",
+          "[rws][quick][fpsemigroup][29]") {
   RWS rws;
   rws.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
@@ -592,7 +595,7 @@ TEST_CASE("RWS 29: Chapter 8, Theorem 4.2 in NR", "[rws][quick][fpsemigroup]") {
   REQUIRE(rws.test_less_than("aaaaa", "bababababab"));
 }
 
-TEST_CASE("RWS 30: test_equals", "[quick][rws][fpsemigroup]") {
+TEST_CASE("RWS 30: test_equals", "[quick][rws][fpsemigroup][30]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),

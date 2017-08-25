@@ -5,7 +5,7 @@ dnl Autoconf and automake initialization.
 AC_PREREQ([2.69])
 AC_INIT([libsemigroups],[0.3.2],[jdm3@st-andrews.ac.uk])
 AC_CONFIG_SRCDIR(src/semigroups.cc)
-AC_CONFIG_HEADERS([config/config.h])
+AC_CONFIG_HEADERS([config/libsemigroups-config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
 

@@ -16,24 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file declares debugging functionality.
-
-#ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
-#define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
-
-#include <assert.h>
-
-// Do not include config/config.h if we are compiling inside the Semigroups
-// package for GAP since this includes gap/gen/config.h where the PACKAGE_*
-// macros are redefined, causing compiler warnings.
-#ifndef DO_NOT_INCLUDE_CONFIG_H
-#include <libsemigroups-config.h>
-#endif
-
-#ifdef LIBSEMIGROUPS_DEBUG
-#define LIBSEMIGROUPS_ASSERT(x) assert(x)
-#else
-#define LIBSEMIGROUPS_ASSERT(x)
-#endif
-
-#endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
+#define CATCH_CONFIG_FAST_COMPILE
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"

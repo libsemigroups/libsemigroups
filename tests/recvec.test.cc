@@ -16,31 +16,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include "../src/recvec.h"
 
 using namespace libsemigroups;
 
-TEST_CASE("RecVec: default constructor with 3 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 01: default constructor with 3 default args",
+          "[quick][util][recvec][01]") {
   RecVec<bool> rv = RecVec<bool>();
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_rows() == 0);
   REQUIRE(rv.nr_cols() == 0);
 }
 
-TEST_CASE("RecVec: default constructor with 2 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 02: default constructor with 2 default args",
+          "[quick][util][recvec][02]") {
   RecVec<size_t> rv = RecVec<size_t>(5);
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_cols() == 5);
   REQUIRE(rv.nr_rows() == 0);
 }
 
-TEST_CASE("RecVec: default constructor with 1 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 03: default constructor with 1 default args",
+          "[quick][util][recvec][03]") {
   RecVec<bool> rv = RecVec<bool>(5, 5);
   REQUIRE(rv.size() == 25);
   REQUIRE(rv.nr_cols() == 5);
@@ -48,8 +47,8 @@ TEST_CASE("RecVec: default constructor with 1 default args",
   REQUIRE(all_of(rv.begin(), rv.end(), [](bool val) { return val == false; }));
 }
 
-TEST_CASE("RecVec: default constructor with 0 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 04: default constructor with 0 default args",
+          "[quick][util][recvec][04]") {
   RecVec<bool> rv = RecVec<bool>(2, 7, true);
   REQUIRE(rv.size() == 14);
   REQUIRE(rv.nr_cols() == 2);
@@ -57,8 +56,8 @@ TEST_CASE("RecVec: default constructor with 0 default args",
   REQUIRE(all_of(rv.begin(), rv.end(), [](bool val) { return val == true; }));
 }
 
-TEST_CASE("RecVec: copy constructor with 1 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 05: copy constructor with 1 default args",
+          "[quick][util][recvec][05]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv);
   REQUIRE(copy.size() == 21);
@@ -68,8 +67,8 @@ TEST_CASE("RecVec: copy constructor with 1 default args",
       all_of(copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: copy constructor with 0 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 06: copy constructor with 0 default args",
+          "[quick][util][recvec][06]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv, 2);
   REQUIRE(copy.size() == 35);
@@ -77,10 +76,19 @@ TEST_CASE("RecVec: copy constructor with 0 default args",
   REQUIRE(copy.nr_rows() == 7);
   REQUIRE(
       all_of(copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
+
+  // Check when there are available extra columns already in rv.
+  rv.add_cols(10);
+  RecVec<size_t> copy2(rv, 0);
+  REQUIRE(copy2.size() == 91);
+  REQUIRE(copy2.nr_cols() == 13);
+  REQUIRE(copy2.nr_rows() == 7);
+  REQUIRE(all_of(
+      copy2.begin(), copy2.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method add_rows with 1 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 07: method add_rows with 1 default args",
+          "[quick][util][recvec][07]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows();
   REQUIRE(rv.size() == 24);
@@ -99,8 +107,8 @@ TEST_CASE("RecVec: method add_rows with 1 default args",
   REQUIRE(all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method add_rows with 0 default args",
-          "[quick][util][recvec]") {
+TEST_CASE("RecVec 08: method add_rows with 0 default args",
+          "[quick][util][recvec][08]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows(10);
   REQUIRE(rv.size() == 51);
@@ -114,7 +122,7 @@ TEST_CASE("RecVec: method add_rows with 0 default args",
   REQUIRE(all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method add_cols", "[quick][util][recvec]") {
+TEST_CASE("RecVec 09: method add_cols", "[quick][util][recvec][09]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2, 666);
   rv.add_cols(10);
   REQUIRE(rv.size() == 220);
@@ -128,7 +136,7 @@ TEST_CASE("RecVec: method add_cols", "[quick][util][recvec]") {
   REQUIRE(all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec: method set/get", "[quick][util][recvec]") {
+TEST_CASE("RecVec 10: method set/get", "[quick][util][recvec][10]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 50, 666);
   rv.set(0, 98, 0);
   REQUIRE(rv.get(0, 98) == 0);
@@ -156,7 +164,7 @@ TEST_CASE("RecVec: method set/get", "[quick][util][recvec]") {
   REQUIRE(check_it());
 }
 
-TEST_CASE("RecVec: method append 1/2", "[quick][util][recvec]") {
+TEST_CASE("RecVec 11: method append 1/2", "[quick][util][recvec][11]") {
   RecVec<size_t> rv1 = RecVec<size_t>(100, 50, 555);
   RecVec<size_t> rv2 = RecVec<size_t>(100, 50, 666);
   REQUIRE(rv1.size() == 5000);
@@ -188,7 +196,7 @@ TEST_CASE("RecVec: method append 1/2", "[quick][util][recvec]") {
   REQUIRE(check_it(50, 100, 666));
 }
 
-TEST_CASE("RecVec: method append 2/2", "[quick][util][recvec]") {
+TEST_CASE("RecVec 12: method append 2/2", "[quick][util][recvec][12]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10, 555);
   REQUIRE(rv1.size() == 100);
   REQUIRE(rv1.nr_cols() == 10);
@@ -231,7 +239,7 @@ TEST_CASE("RecVec: method append 2/2", "[quick][util][recvec]") {
   REQUIRE(check_it(50, 100, 666));
 }
 
-TEST_CASE("RecVec: method count", "[quick][util][recvec]") {
+TEST_CASE("RecVec 13: method count", "[quick][util][recvec][13]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10);
   for (size_t i = 0; i < 9; i++) {
     rv.set(i, i, 1);
@@ -254,7 +262,7 @@ TEST_CASE("RecVec: method count", "[quick][util][recvec]") {
   REQUIRE(rv.count(7, 2) == 9);
 }
 
-TEST_CASE("RecVec: method clear", "[quick][util][recvec]") {
+TEST_CASE("RecVec 14: method clear", "[quick][util][recvec][14]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10);
   REQUIRE(rv.size() == 100);
   REQUIRE(rv.nr_cols() == 10);
@@ -265,7 +273,8 @@ TEST_CASE("RecVec: method clear", "[quick][util][recvec]") {
   REQUIRE(rv.nr_rows() == 0);
 }
 
-TEST_CASE("RecVec: method row_begin and row_end", "[quick][util][recvec]") {
+TEST_CASE("RecVec 15: method row_begin and row_end",
+          "[quick][util][recvec][15]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2);
   for (size_t i = 0; i < rv.nr_rows(); i++) {
     for (auto it = rv.row_begin(i); it < rv.row_end(i); it++) {
@@ -280,7 +289,8 @@ TEST_CASE("RecVec: method row_begin and row_end", "[quick][util][recvec]") {
   REQUIRE(rv.count(1, 666) == 0);
 }
 
-TEST_CASE("RecVec: method row_cbegin and row_cend", "[quick][util][recvec]") {
+TEST_CASE("RecVec 16: method row_cbegin and row_cend",
+          "[quick][util][recvec][16]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10, 66);
   for (size_t i = 0; i < rv.nr_rows(); i++) {
     for (auto it = rv.row_cbegin(i); it < rv.row_cend(i); it++) {
