@@ -532,7 +532,9 @@ namespace libsemigroups {
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);
         }
-        if (out.all_of(i, [](bool val) { return val; })) {
+        if (std::all_of(out.begin_row(i), out.end_row(i), [](bool val) {
+              return val;
+            })) {
           break;
         }
       }
@@ -555,7 +557,9 @@ namespace libsemigroups {
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);
         }
-        if (out.all_of(i, [](bool val) { return val; })) {
+        if (std::all_of(out.begin_row(i), out.end_row(i), [](bool val) {
+              return val;
+            })) {
           break;
         }
       }

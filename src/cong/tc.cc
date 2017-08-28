@@ -341,9 +341,9 @@ namespace libsemigroups {
       _forwd[_last] = _next;
       _forwd.push_back(UNDEFINED);
       _bckwd.push_back(_last);
-      _table.add_rows();
-      _preim_init.add_rows();
-      _preim_next.add_rows();
+      _table.add_rows(1);
+      _preim_init.add_rows(1);
+      _preim_next.add_rows(1);
     } else {
       _bckwd[_next] = _last;
     }
