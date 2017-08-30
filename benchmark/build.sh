@@ -6,7 +6,7 @@ set -e
 
 # Build the benchmark executables
 if [ -d benchmark/src/build ]; then
-  make install
+  make -j4 ; make install
   cd benchmark/src/build
 else
   # Build and install libsemigroups, required since the benchmark executables
@@ -16,7 +16,7 @@ else
   elif [ -f Makefile ]; then
     make clean
   fi
-  ./configure --disable-debug ; make ; make install
+  ./configure --disable-debug ; make -j4 ; make install
   mkdir -p benchmark/src/build
   cd benchmark/src/build
   cmake -DCMAKE_BUILD_TYPE=Release  ..
