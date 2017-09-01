@@ -26,10 +26,9 @@
 
 namespace libsemigroups {
 
-  //
-  // Template class for *rectangular vectors* i.e. two dimensional vectors.
-  // The unique template parameter **T** is the type of the objects stored in
-  // the <RecVec>.
+  //! Template class for *rectangular vectors* i.e. two dimensional vectors.
+  //! The unique template parameter **T** is the type of the objects stored in
+  //! the <RecVec>.
 
   template <typename T, class A = std::allocator<T>> class RecVec {
     // So that RecVec<T> can access private data members of RecVec<S> and vice
@@ -44,12 +43,6 @@ namespace libsemigroups {
     typedef typename std::vector<T, A>::difference_type difference_type;
     typedef typename std::vector<T, A>::size_type       size_type;
 
-    // Default constructor
-    // @nr_cols the number of columns in the <RecVec> being constructed
-    // @nr_rows the number of rows (defaults to 0) in the <RecVec> being
-    // constructed
-    // @default_val the default value (defaults to 0)
-    //
     // Constructs a <RecVec> with the specified number of columns and rows and
     // initialises every position with the default value.
     explicit RecVec(size_t nr_cols = 0, size_t nr_rows = 0, T default_val = 0)
@@ -61,10 +54,6 @@ namespace libsemigroups {
       this->add_rows(nr_rows);
     }
 
-    // Copy and add columns
-    // @copy the <RecVec> which will be copied
-    // @nr_cols_to_add the number of columns to be added
-    //
     // Constructs a copy of the given <RecVec> with the same number of rows as
     // the original and with some additional columns.
     template <typename S, class B>
@@ -107,11 +96,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    // Default destructor
     ~RecVec() {}
 
     // Required methods to make RecVec STL container like
-
     bool operator==(RecVec<T, A> const& that) const {
       if (_nr_used_cols != that._nr_used_cols || _nr_rows != that._nr_rows) {
         return false;
@@ -149,9 +136,6 @@ namespace libsemigroups {
       _vec.clear();
     }
 
-    // Add rows
-    // @nr the number of rows to add (defaults to 1)
-    //
     // Adds the specified number of rows to the <RecVec>. Every new position is
     // initialised with the default value specified when the <RecVec> was
     // constructed.
@@ -163,16 +147,13 @@ namespace libsemigroups {
       }
     }
 
-    // Add columns
-    // @nr the number of columns to add (no default value)
-    //
     // Adds the specified number of columns to the <RecVec>. Every new position
     // is initialised with the default value specified when the <RecVec> was
     // constructed.
     //
     // The underlying vector reserves more space than is required to add the
-    // specified number of columns so that repeated calls to this method require
-    // fewer reallocations.
+    // specified number of columns so that repeated calls to this method
+    // require fewer reallocations.
     void add_cols(size_t nr) {
       if (nr <= _nr_unused_cols) {
         _nr_used_cols += nr;
@@ -200,11 +181,6 @@ namespace libsemigroups {
       _nr_unused_cols = new_nr_cols - _nr_used_cols;
     }
 
-    // Set a value
-    // @i the row
-    // @j the column
-    // @val the value
-    //
     // Sets the position specified by the row and column to the given value.
     //
     // Asserts whether the specified row and column are within the bounds of the
@@ -214,12 +190,7 @@ namespace libsemigroups {
       _vec[i * (_nr_used_cols + _nr_unused_cols) + j] = val;
     }
 
-    // Get a value (const)
-    // @i the row
-    // @j the column
-    //
-    // This method is const.
-    // @return the value in the specified row and column.
+    // Returns the value in the specified row and column.
     //
     // Asserts whether the specified row and column are within the bounds of the
     // <RecVec>.
@@ -228,27 +199,21 @@ namespace libsemigroups {
       return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
     }
 
-    // Number of rows (const)
-    //
-    // This method is const.
-    // @return the number of rows (first dimension).
+    // Returns the number of rows (first dimension).
     size_t nr_rows() const {
       return _nr_rows;
     }
 
-    // Number of columns (const)
-    //
-    // This method is const.
-    // @return the number of columns (second dimension).
+    // Returns the number of columns (second dimension).
     size_t nr_cols() const {
       return _nr_used_cols;
     }
 
-    // Append
-    // @copy a <RecVec> of the same type as this with equal number of columns
+    // The parameter \p copy must be a compatible RecVec with equal number of
+    // columns.
     //
-    // Appends **copy** to the end of **this** given that the number of columns
-    // <nr_cols> of **this** and **copy** are equal.
+    // Appends \p copy to the end of \c this given that the number of columns
+    // of \c this and \p copy are equal.
     //
     // Asserts that the numbers of columns are equal.
     template <typename S, class B> void append(const RecVec<S, B>& copy) {
