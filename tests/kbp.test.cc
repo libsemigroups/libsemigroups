@@ -29,13 +29,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("KBP 01: for an infinite fp semigroup",
           "[quick][congruence][kbp][fpsemigroup][01]") {
   std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),

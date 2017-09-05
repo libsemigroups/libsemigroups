@@ -26,13 +26,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 typedef std::vector<std::vector<u_int32_t>> PBR_Input;
 
 // The first few examples cover all different types of Element's and benchmark

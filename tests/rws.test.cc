@@ -30,13 +30,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("RWS 01: for a transformation semigroup of size 4",
           "[quick][rws][fpsemigroup][01]") {
   std::vector<Element*> gens

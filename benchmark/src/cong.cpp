@@ -23,13 +23,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 static void BM_Congruence_full_PBR_monoid(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {

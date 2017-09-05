@@ -29,13 +29,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("TC 01: Small fp semigroup",
           "[quick][congruence][tc][fpsemigroup][01]") {
   std::vector<relation_t> rels;

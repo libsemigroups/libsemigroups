@@ -23,13 +23,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 static inline size_t evaluate_reduct(Semigroup& S, word_t const& word) {
   letter_t out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
@@ -1173,8 +1166,7 @@ TEST_CASE("Semigroup 30: right/left Cayley graph",
   really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 31: elements, sorted_elements",
-          "[quick][semigroup][finite][31]") {
+TEST_CASE("Semigroup 31: iterator", "[quick][semigroup][finite][31]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1182,12 +1174,171 @@ TEST_CASE("Semigroup 31: elements, sorted_elements",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.elements() != nullptr);
-  REQUIRE(S.sorted_elements() != nullptr);
-  // TODO(JDM) more tests
+  REQUIRE(S.current_size() == 5);
+  size_t size = S.current_size();
+  for (auto it = S.cbegin(); it < S.cend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.current_size());
+  REQUIRE(5 == S.current_size());
+
+  S.set_batch_size(1024);
+  S.enumerate(1000);
+  REQUIRE(S.current_size() < 7776);
+
+  size = S.current_size();
+  for (auto it = S.cbegin(); it < S.cend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.current_size());
+  REQUIRE(S.current_size() < 7776);
+
+  REQUIRE(S.size() == 7776);
+  size = S.size();
+  for (auto it = S.cbegin(); it < S.cend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.size());
+}
+
+TEST_CASE("Semigroup 66: reverse iterator", "[quick][semigroup][finite][66]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+         new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+  Semigroup S = Semigroup(gens);
   really_delete_cont(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  REQUIRE(S.current_size() == 5);
+  size_t size = S.current_size();
+  for (auto it = S.crbegin(); it < S.crend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.current_size());
+  REQUIRE(5 == S.current_size());
+
+  S.set_batch_size(1024);
+  S.enumerate(1000);
+  REQUIRE(S.current_size() < 7776);
+
+  size = S.current_size();
+  for (auto it = S.crbegin(); it < S.crend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.current_size());
+  REQUIRE(S.current_size() < 7776);
+
+  REQUIRE(S.size() == 7776);
+  size = S.size();
+  for (auto it = S.crbegin(); it < S.crend(); it++) {
+    size--;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == 0);
+
+  for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    size++;
+    REQUIRE(S.test_membership(*it));
+  }
+  REQUIRE(size == S.size());
+}
+
+TEST_CASE("Semigroup 67: iterator arithmetic",
+          "[quick][semigroup][finite][67]") {
+  std::vector<Element*> gens
+      = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+         new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  REQUIRE(S.size() == 7776);
+  auto it = S.cbegin();
+  // The next line should not compile (and does not).
+  // (*it)->really_delete();
+
+  for (int64_t i = 0; i < static_cast<int64_t>(S.size()); i++) {
+    // *it = reinterpret_cast<Element*>(0);
+    // This does not and should not compile
+    REQUIRE(*(it + i) == S.at(i));
+    it += i;
+    REQUIRE(*it == S.at(i));
+    it -= i;
+    REQUIRE(*it == S.at(0));
+    REQUIRE(it == S.cbegin());
+    auto tmp(it);
+    REQUIRE((tmp + i) - i == tmp);
+    REQUIRE((i + tmp) - i == tmp);
+    tmp += i;
+    REQUIRE(tmp - it == i);
+    REQUIRE(it - tmp == -i);
+    tmp -= i;
+    REQUIRE(tmp - it == 0);
+    tmp -= i;
+    REQUIRE(tmp - it == -i);
+    REQUIRE(it - tmp == i);
+  }
+  for (int64_t i = S.size(); i < static_cast<int64_t>(2 * S.size()); i++) {
+    it += i;
+    it -= i;
+    REQUIRE(*it == S.at(0));
+    REQUIRE(it == S.cbegin());
+    auto tmp(it);
+    REQUIRE((tmp + i) - i == tmp);
+    REQUIRE((i + tmp) - i == tmp);
+    tmp += i;
+    REQUIRE(tmp - it == i);
+    REQUIRE(it - tmp == -i);
+    tmp -= i;
+    REQUIRE(tmp - it == 0);
+    tmp -= i;
+    REQUIRE(tmp - it == -i);
+    REQUIRE(it - tmp == i);
+  }
 }
 
 TEST_CASE("Semigroup 32: copy [not enumerated]",

@@ -1373,5 +1373,20 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _out;
     static std::vector<RecVec<bool>>      _tmp;
   };
+
+  template <typename T> static inline void really_delete_cont(T cont) {
+    for (Element const* x : cont) {
+      const_cast<Element*>(x)->really_delete();
+      delete x;
+    }
+  }
+
+  template <typename T> static inline void really_delete_cont(T* cont) {
+    for (Element const* x : *cont) {
+      const_cast<Element*>(x)->really_delete();
+      delete x;
+    }
+    delete cont;
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_

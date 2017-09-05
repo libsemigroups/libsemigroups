@@ -26,13 +26,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),

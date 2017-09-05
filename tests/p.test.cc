@@ -29,13 +29,6 @@
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("P 01: congruence on finite semigroup",
           "[quick][congruence][p][finite][01]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),

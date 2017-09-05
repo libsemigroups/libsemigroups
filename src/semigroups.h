@@ -119,12 +119,29 @@ namespace libsemigroups {
     //!
     //! The generators \p gens are copied by the constructor, and so it is the
     //! responsibility of the caller to delete \p gens.
-    explicit Semigroup(std::vector<Element*> const* gens);
+    explicit Semigroup(std::vector<Element const*> const* gens);
+
+    explicit Semigroup(std::vector<Element*> const* gens)
+        : Semigroup(
+              reinterpret_cast<std::vector<Element const*> const*>(gens)) {}
+
+    explicit Semigroup(std::vector<Element*>* gens)
+        : Semigroup(const_cast<std::vector<Element*> const*>(gens)) {}
+
+    explicit Semigroup(std::vector<Element const*>* gens)
+        : Semigroup(const_cast<std::vector<Element const*> const*>(gens)) {}
 
     //! Construct from generators.
     //!
     //! See Semigroup::Semigroup.
-    explicit Semigroup(std::vector<Element*> const& gens);
+    explicit Semigroup(std::vector<Element const*> const& gens);
+
+    explicit Semigroup(std::vector<Element*> const& gens)
+        : Semigroup(
+              reinterpret_cast<std::vector<Element const*> const&>(gens)) {}
+
+    explicit Semigroup(std::initializer_list<Element*> gens)
+        : Semigroup(static_cast<std::vector<Element*>>(gens)) {}
 
     //! Copy constructor.
     //!
@@ -151,7 +168,7 @@ namespace libsemigroups {
     // copy that add_generators invalidates anyway. If copy has not been
     // enumerated at all, then these two routes for adding more generators are
     // equivalent.
-    Semigroup(Semigroup const& copy, std::vector<Element*> const* coll);
+    Semigroup(Semigroup const& copy, std::vector<Element const*> const* coll);
 
    public:
     //! A default destructor.
@@ -209,14 +226,13 @@ namespace libsemigroups {
 
     //! Returns a pointer to the vector containing the generators of the
     //! semigroup.
-    // FIXME these should be Element const*
-    std::vector<Element*>* gens() const {
+    // FIXME these should be an iterator
+    std::vector<Element const*> const* gens() const {
       return _gens;
     }
 
     //! Return a pointer to the generator with index \p pos.
-    // FIXME these should be Element const*
-    Element* gens(element_index_t pos) const {
+    Element const* gens(element_index_t pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _gens->size());
       return (*_gens)[pos];
     }
@@ -248,8 +264,7 @@ namespace libsemigroups {
     //! but not this is not yet known.
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
-    //! FIXME these should be Element const*
-    element_index_t current_position(Element* x) const {
+    element_index_t current_position(Element const* x) const {
       if (x->degree() != _degree) {
         return UNDEFINED;
       }
@@ -484,8 +499,7 @@ namespace libsemigroups {
     //! the semigroup. The semigroup is enumerated in batches until \p x is
     //! found or the semigroup is fully enumerated but \p x was not found (see
     //! Semigroup::set_batch_size).
-    // FIXME Element const*
-    bool test_membership(Element* x) {
+    bool test_membership(Element const* x) {
       return (position(x) != UNDEFINED);
     }
 
@@ -498,33 +512,25 @@ namespace libsemigroups {
     //! element \p x if it belongs to the semigroup. The semigroup is
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
-    element_index_t position(Element* x);
+    element_index_t position(Element const* x);
 
     //! Returns the position of \p x in the sorted array of elements of the
     //! semigroup, or Semigroup::UNDEFINED if \p x is not an element of \c
     //! this.
-    element_index_t sorted_position(Element* x);
+    element_index_t sorted_position(Element const* x);
 
     //! Returns the position of \c this->at(pos) in the sorted array of
     //! elements of the semigroup, or Semigroup::UNDEFINED if \p pos is greater
     //! than the size of the semigroup.
     element_index_t position_to_sorted_position(element_index_t pos);
 
-    //! Returns the vector consisting of pointers to all of the elements of the
-    //! semigroup.
-    // TODO(JDM) replace this with a method for cbegin and cend, don't allow
-    // direct access to _elements.
-    std::vector<Element*>* elements() {
-      enumerate();
-      return _elements;
-    }
-
     //! Returns a vector consisting of pairs \c pair where \c pair.first is a
     //! pointer to an element of the semigroup and \c pair.second is the
     //! position of that element in the semigroup. This vector is sorted
     //! according to the Element::operator< method of the elements.
     // TODO(JDM) replace this with a method for sorted_cbegin and sorted_cend.
-    std::vector<std::pair<Element*, element_index_t>>* sorted_elements() {
+    std::vector<std::pair<Element const*, element_index_t>> const*
+    sorted_elements() {
       sort_elements();
       return _sorted;
     }
@@ -535,14 +541,13 @@ namespace libsemigroups {
     //! This method attempts to enumerate the semigroup until at least
     //! \c pos + 1 elements have been found. If \p pos is greater than
     //! Semigroup::size, then this method returns \c nullptr.
-    Element* at(element_index_t pos);
+    Element const* at(element_index_t pos);
 
     //! Returns the element of the semigroup in position \p pos.
     //!
     //! This method performs no checks on its argument, and performs no
     //! enumeration of the semigroup.
-    // FIXME const
-    Element* operator[](element_index_t pos) const {
+    Element const* operator[](element_index_t pos) const {
       return (*_elements)[pos];
     }
 
@@ -550,7 +555,7 @@ namespace libsemigroups {
     //! array of elements, or \c nullptr in \p pos is not valid (i.e. too big).
     //!
     //! This method fully enumerates the semigroup.
-    Element* sorted_at(element_index_t pos);
+    Element const* sorted_at(element_index_t pos);
 
     //! Returns a pointer to the right Cayley graph of the semigroup.
     //!
@@ -596,7 +601,7 @@ namespace libsemigroups {
     //!
     //! This is the same as the method taking a Semigroup::element_index_t, but
     //! it factorises an Element instead of using the position of an element.
-    word_t* minimal_factorisation(Element* x);
+    word_t* minimal_factorisation(Element const* x);
 
     //! Changes \p word in-place to contain a word in the generators equal to
     //! the \p pos element of the semigroup.
@@ -622,9 +627,9 @@ namespace libsemigroups {
     //! Returns a pointer to a libsemigroups::word_t which evaluates to
     //!
     //! The key difference between this method and
-    //! Semigroup::minimal_factorisation(Element* x), is that the resulting
-    //! factorisation may not be minimal.
-    word_t* factorisation(Element* x);
+    //! Semigroup::minimal_factorisation(Element const* x), is that the
+    //! resulting factorisation may not be minimal.
+    word_t* factorisation(Element const* x);
 
     //! This method resets Semigroup::next_relation so that when it is next
     //! called the resulting relation is the first one.
@@ -731,12 +736,26 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    void add_generators(const std::vector<Element*>* coll);
+    void add_generators(std::vector<Element const*> const* coll);
+
+    void add_generators(std::vector<Element*> const* coll) {
+      add_generators(
+          reinterpret_cast<std::vector<Element const*> const*>(coll));
+    }
 
     //! Add copies of the generators \p coll to the generators of \c this.
     //!
     //! See Semigroup::add_generators for more details.
-    void add_generators(std::vector<Element*> const& coll);
+    void add_generators(std::vector<Element const*> const& coll);
+
+    void add_generators(std::vector<Element*> const& coll) {
+      add_generators(
+          reinterpret_cast<std::vector<Element const*> const&>(coll));
+    }
+
+    void add_generators(std::initializer_list<Element*> coll) {
+      add_generators(static_cast<std::vector<Element*>>(coll));
+    }
 
     //! Returns a new semigroup generated by \c this->gens() and \p coll.
     //!
@@ -748,7 +767,13 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    Semigroup* copy_add_generators(const std::vector<Element*>* coll) const;
+    Semigroup*
+    copy_add_generators(std::vector<Element const*> const* coll) const;
+
+    Semigroup* copy_add_generators(std::vector<Element*> const* coll) const {
+      return copy_add_generators(
+          reinterpret_cast<std::vector<Element const*> const*>(coll));
+    }
 
     //! Add copies of the non-redundant generators in \p coll to the generators
     //! of \c this.
@@ -770,13 +795,21 @@ namespace libsemigroups {
     //!
     //! The elements the parameter \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    void closure(const std::vector<Element*>* coll);
+    void closure(std::vector<Element const*> const* coll);
 
     //! Add copies of the non-redundant generators in \p coll to the
     //! generators of \c this.
     //!
     //! See Semigroup::closure for more details.
-    void closure(std::vector<Element*> const& coll);
+    void closure(std::vector<Element const*> const& coll);
+
+    void closure(std::vector<Element*> const& coll) {
+      closure(reinterpret_cast<std::vector<Element const*> const&>(coll));
+    }
+
+    void closure(std::initializer_list<Element*> coll) {
+      closure(static_cast<std::vector<Element*>>(coll));
+    }
 
     //! Returns a new semigroup generated by \c this->gens() and copies of the
     //! non-redundant elements of \p coll.
@@ -788,7 +821,12 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    Semigroup* copy_closure(std::vector<Element*> const* coll);
+    Semigroup* copy_closure(std::vector<Element const*> const* coll);
+
+    Semigroup* copy_closure(std::vector<Element*> const* gens) {
+      return copy_closure(
+          reinterpret_cast<std::vector<Element const*> const*>(gens));
+    }
 
     //! This variable is used to indicate that a value is undefined, such as,
     //! for example, the position of an element that does not belong to a
@@ -820,13 +858,150 @@ namespace libsemigroups {
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
 
+    class const_iterator {
+     public:
+      typedef typename std::vector<Element const*>::size_type size_type;
+      typedef
+          typename std::vector<Element const*>::difference_type difference_type;
+      typedef typename std::vector<Element const*>::value_type  value_type;
+      typedef typename std::vector<Element const*>::const_reference reference;
+      typedef typename std::vector<Element const*>::const_pointer   pointer;
+      typedef std::random_access_iterator_tag iterator_category;
+
+      explicit const_iterator(
+          typename std::vector<Element const*>::const_iterator it_vec)
+          : _it_vec(it_vec) {}
+
+      const_iterator(const_iterator const& that)
+          : const_iterator(that._it_vec) {}
+
+      const_iterator& operator=(const_iterator const& that) {
+        _it_vec = that._it_vec;
+        return *this;
+      }
+
+      bool operator==(const_iterator const& that) const {
+        return _it_vec == that._it_vec;
+      }
+
+      bool operator!=(const_iterator const& that) const {
+        return _it_vec != that._it_vec;
+      }
+
+      bool operator<(const_iterator const& that) const {
+        return _it_vec < that._it_vec;
+      }
+
+      bool operator>(const_iterator const& that) const {
+        return _it_vec > that._it_vec;
+      }
+
+      bool operator<=(const_iterator const& that) const {
+        return operator<(that) || operator==(that);
+      }
+
+      bool operator>=(const_iterator const& that) const {
+        return operator>(that) || operator==(that);
+      }
+
+      const_iterator operator++(int) {  // postfix
+        const_iterator tmp(*this);
+        operator++();
+        return tmp;
+      }
+
+      const_iterator operator--(int) {
+        const_iterator tmp(*this);
+        operator--();
+        return tmp;
+      }
+
+      const_iterator operator+(size_type val) const {
+        const_iterator out(*this);
+        return out += val;
+      }
+
+      friend const_iterator operator+(size_type val, const_iterator const& it) {
+        return it + val;
+      }
+
+      const_iterator operator-(size_type val) const {
+        const_iterator out(*this);
+        return out -= val;
+      }
+
+      reference operator*() const {
+        return *_it_vec;
+      }
+
+      pointer operator->() const {
+        return &(*_it_vec);
+      }
+
+      reference operator[](size_type pos) const {
+        return *(*this + pos);
+      }
+
+      const_iterator& operator++() {  // prefix
+        ++_it_vec;
+        return *this;
+      }
+
+      const_iterator& operator--() {
+        --_it_vec;
+        return *this;
+      }
+
+      const_iterator& operator+=(size_type val) {
+        _it_vec += val;
+        return *this;
+      }
+
+      const_iterator& operator-=(size_type val) {
+        _it_vec -= val;
+        return *this;
+      }
+
+      difference_type operator-(const_iterator that) const {
+        return _it_vec - that._it_vec;
+      }
+
+     private:
+      typename std::vector<Element const*>::const_iterator _it_vec;
+    };  // const_iterator definition ends
+
+    const_iterator cbegin() const {
+      return const_iterator(_elements->cbegin());
+    }
+
+    const_iterator begin() const {
+      return cbegin();
+    }
+
+    const_iterator cend() const {
+      return const_iterator(_elements->cend());
+    }
+
+    const_iterator end() const {
+      return cend();
+    }
+
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+    const_reverse_iterator crbegin() const {
+      return const_reverse_iterator(cend());
+    }
+
+    const_reverse_iterator crend() const {
+      return const_reverse_iterator(cbegin());
+    }
+
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
     // of an Element* and element_index_t which is sorted on the first entry
-    // using
-    // the myless subclass. This is done so that we can both get the elements
-    // in sorted order, and find the position of an element in the sorted list
-    // of elements.
+    // using the myless subclass. This is done so that we can both get the
+    // elements in sorted order, and find the position of an element in the
+    // sorted list of elements.
     void sort_elements();
 
     // Find the idempotents and store their positions and their number
@@ -886,12 +1061,12 @@ namespace libsemigroups {
     element_index_t _batch_size;
     element_index_t _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
-    std::vector<Element*>*         _elements;
+    std::vector<Element const*>*   _elements;
     std::vector<letter_t>          _final;
     std::vector<letter_t>          _first;
     bool                           _found_one;
-    std::vector<Element*>*         _gens;
-    Element*                       _id;
+    std::vector<Element const*>*   _gens;
+    Element const*                 _id;
     std::vector<element_index_t>   _idempotents;
     bool                           _idempotents_found;
     element_index_t                _idempotents_start_pos;
@@ -901,7 +1076,7 @@ namespace libsemigroups {
     std::vector<index_t>           _length;
     std::vector<enumerate_index_t> _lenindex;
     std::vector<element_index_t>   _letter_to_pos;
-    std::unordered_map<const Element*,
+    std::unordered_map<Element const*,
                        element_index_t,
                        Element::Hash,
                        Element::Equal>
@@ -921,7 +1096,7 @@ namespace libsemigroups {
     letter_t                      _relation_gen;
     enumerate_index_t             _relation_pos;
     cayley_graph_t*               _right;
-    std::vector<std::pair<Element*, element_index_t>>* _sorted;
+    std::vector<std::pair<Element const*, element_index_t>>* _sorted;
     std::vector<element_index_t> _suffix;
     Element*                     _tmp_product;
     size_t                       _wordlen;

@@ -95,7 +95,7 @@ namespace libsemigroups {
 
       // Add its left and/or right multiples
       for (size_t i = 0; i < _cong._nrgens; i++) {
-        Element* gen = _cong._semigroup->gens(i);
+        Element const* gen = _cong._semigroup->gens(i);
         if (_cong._type == LEFT || _cong._type == TWOSIDED) {
           _tmp1->redefine(gen, current_pair.first, tid);
           _tmp2->redefine(gen, current_pair.second, tid);

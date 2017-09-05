@@ -24,14 +24,6 @@
 #define CONG_REPORT false
 
 using namespace libsemigroups;
-
-template <typename T> static inline void really_delete_cont(T cont) {
-  for (Element* x : cont) {
-    x->really_delete();
-    delete x;
-  }
-}
-
 TEST_CASE("Congruence 00: 5-parameter constructor",
           "[quick][congruence][fpsemigroup][multithread][00]") {
   std::vector<relation_t> rels;

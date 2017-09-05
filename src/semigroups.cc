@@ -29,15 +29,15 @@ namespace libsemigroups {
   Semigroup::index_t const Semigroup::LIMIT_MAX
       = std::numeric_limits<index_t>::max();
 
-  Semigroup::Semigroup(std::vector<Element*> const* gens)
+  Semigroup::Semigroup(std::vector<Element const*> const* gens)
       : _batch_size(8192),
         _degree(UNDEFINED),
         _duplicate_gens(),
-        _elements(new std::vector<Element*>()),
+        _elements(new std::vector<Element const*>()),
         _final(),
         _first(),
         _found_one(false),
-        _gens(new std::vector<Element*>()),
+        _gens(new std::vector<Element const*>()),
         _id(),
         _idempotents(),
         _idempotents_found(false),
@@ -72,7 +72,7 @@ namespace libsemigroups {
 
     _degree = (*gens)[0]->degree();
 
-    for (Element* x : *gens) {
+    for (Element const* x : *gens) {
       LIBSEMIGROUPS_ASSERT(x->degree() == _degree);
       _gens->push_back(x->really_copy());
     }
@@ -111,19 +111,19 @@ namespace libsemigroups {
     _lenindex.push_back(_enumerate_order.size());
   }
 
-  Semigroup::Semigroup(std::vector<Element*> const& gens) : Semigroup(&gens) {}
+  Semigroup::Semigroup(std::vector<Element const*> const& gens)
+      : Semigroup(&gens) {}
 
   // Copy constructor
-
-  Semigroup::Semigroup(const Semigroup& copy)
+  Semigroup::Semigroup(Semigroup const& copy)
       : _batch_size(copy._batch_size),
         _degree(copy._degree),
         _duplicate_gens(copy._duplicate_gens),
-        _elements(new std::vector<Element*>()),
+        _elements(new std::vector<Element const*>()),
         _final(copy._final),
         _first(copy._first),
         _found_one(copy._found_one),
-        _gens(new std::vector<Element*>()),
+        _gens(new std::vector<Element const*>()),
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
@@ -167,15 +167,15 @@ namespace libsemigroups {
   // Private - partial copy
   //
   // <add_generators> or <closure> should usually be called after this.
-  Semigroup::Semigroup(Semigroup const& copy, std::vector<Element*> const* coll)
-      // TODO(JDM) Element const*
+  Semigroup::Semigroup(Semigroup const&                   copy,
+                       std::vector<Element const*> const* coll)
       : _batch_size(copy._batch_size),
         _degree(copy._degree),  // copy for comparison in add_generators
         _duplicate_gens(copy._duplicate_gens),
-        _elements(new std::vector<Element*>()),
+        _elements(new std::vector<Element const*>()),
         _found_one(copy._found_one),  // copy in case degree doesn't change in
                                       // add_generators
-        _gens(new std::vector<Element*>()),
+        _gens(new std::vector<Element const*>()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _idempotents_start_pos(copy._idempotents_start_pos),
@@ -260,7 +260,7 @@ namespace libsemigroups {
     _tmp_product->really_delete();
     delete _tmp_product;
 
-    _id->really_delete();
+    const_cast<Element*>(_id)->really_delete();
     delete _id;
 
     delete _left;
@@ -270,16 +270,11 @@ namespace libsemigroups {
 
     // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
-      (*_gens)[x.first]->really_delete();
+      const_cast<Element*>((*_gens)[x.first])->really_delete();
       delete (*_gens)[x.first];
     }
     delete _gens;
-
-    for (Element* x : *_elements) {
-      x->really_delete();
-      delete x;
-    }
-    delete _elements;
+    really_delete_cont(_elements);
   }
 
   void Semigroup::reserve(size_t n) {
@@ -405,7 +400,7 @@ namespace libsemigroups {
 
   // Get the position of an element in the semigroup
 
-  Semigroup::element_index_t Semigroup::position(Element* x) {
+  Semigroup::element_index_t Semigroup::position(Element const* x) {
     if (x->degree() != _degree) {
       return UNDEFINED;
     }
@@ -439,11 +434,11 @@ namespace libsemigroups {
     return (*_pos_sorted)[pos];
   }
 
-  Semigroup::element_index_t Semigroup::sorted_position(Element* x) {
+  Semigroup::element_index_t Semigroup::sorted_position(Element const* x) {
     return position_to_sorted_position(position(x));
   }
 
-  Element* Semigroup::at(element_index_t pos) {
+  Element const* Semigroup::at(element_index_t pos) {
     enumerate(pos + 1);
 
     if (pos < _elements->size()) {
@@ -453,7 +448,7 @@ namespace libsemigroups {
     }
   }
 
-  Element* Semigroup::sorted_at(element_index_t pos) {
+  Element const* Semigroup::sorted_at(element_index_t pos) {
     sort_elements();
     if (pos < _sorted->size()) {
       return (*_sorted)[pos].first;
@@ -462,7 +457,7 @@ namespace libsemigroups {
     }
   }
 
-  word_t* Semigroup::minimal_factorisation(Element* x) {
+  word_t* Semigroup::minimal_factorisation(Element const* x) {
     element_index_t pos = this->position(x);
     if (pos == Semigroup::UNDEFINED) {
       return nullptr;
@@ -470,10 +465,10 @@ namespace libsemigroups {
     return factorisation(pos);
   }
 
-  word_t* Semigroup::factorisation(Element* x) {
+  word_t* Semigroup::factorisation(Element const* x) {
     if (x->get_type() == Element::elm_t::RWSE) {
-      return const_cast<word_t*>(
-          RWS::rws_word_to_word((reinterpret_cast<RWSE*>(x))->get_rws_word()));
+      return const_cast<word_t*>(RWS::rws_word_to_word(
+          (reinterpret_cast<RWSE const*>(x))->get_rws_word()));
     }
     LIBSEMIGROUPS_ASSERT(x->get_type() == Element::elm_t::NOT_RWSE);
     return minimal_factorisation(x);
@@ -699,7 +694,7 @@ namespace libsemigroups {
     _mtx.unlock();
   }
 
-  Semigroup* Semigroup::copy_closure(std::vector<Element*> const* coll) {
+  Semigroup* Semigroup::copy_closure(std::vector<Element const*> const* coll) {
     if (coll->empty()) {
       return new Semigroup(*this);
     } else {
@@ -715,15 +710,15 @@ namespace libsemigroups {
     }
   }
 
-  void Semigroup::closure(std::vector<Element*> const& coll) {
+  void Semigroup::closure(std::vector<Element const*> const& coll) {
     closure(&coll);
   }
 
-  void Semigroup::closure(std::vector<Element*> const* coll) {
+  void Semigroup::closure(std::vector<Element const*> const* coll) {
     if (coll->empty()) {
       return;
     } else {
-      std::vector<Element*> singleton(1, nullptr);
+      std::vector<Element const*> singleton(1, nullptr);
 
       for (auto const& x : *coll) {
         if (!test_membership(x)) {
@@ -734,8 +729,8 @@ namespace libsemigroups {
     }
   }
 
-  Semigroup*
-  Semigroup::copy_add_generators(std::vector<Element*> const* coll) const {
+  Semigroup* Semigroup::copy_add_generators(
+      std::vector<Element const*> const* coll) const {
     if (coll->empty()) {
       return new Semigroup(*this);
     } else {
@@ -746,11 +741,11 @@ namespace libsemigroups {
     }
   }
 
-  void Semigroup::add_generators(std::vector<Element*> const& coll) {
+  void Semigroup::add_generators(std::vector<Element const*> const& coll) {
     add_generators(&coll);
   }
 
-  void Semigroup::add_generators(const std::vector<Element*>* coll) {
+  void Semigroup::add_generators(std::vector<Element const*> const* coll) {
     if (coll->empty()) {
       return;
     }
@@ -941,7 +936,7 @@ namespace libsemigroups {
       return;
     }
     enumerate();
-    _sorted = new std::vector<std::pair<Element*, element_index_t>>();
+    _sorted = new std::vector<std::pair<Element const*, element_index_t>>();
     _sorted->reserve(_elements->size());
     for (element_index_t i = 0; i < _elements->size(); i++) {
       _sorted->push_back(std::make_pair((*_elements)[i], i));

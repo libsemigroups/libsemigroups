@@ -36,13 +36,6 @@
 
 namespace libsemigroups {
 
-  template <typename T> static inline void really_delete_cont(T cont) {
-    for (Element* x : cont) {
-      x->really_delete();
-      delete x;
-    }
-  }
-
   void Congruence::KBFP::init() {
     if (_semigroup != nullptr) {
       return;
@@ -61,7 +54,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_ASSERT(_rws->is_confluent());
-    std::vector<Element*> gens;
+    std::vector<Element const*> gens;
     for (size_t i = 0; i < _cong._nrgens; i++) {
       gens.push_back(new RWSE(*_rws, i));
     }
