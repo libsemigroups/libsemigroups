@@ -29,6 +29,8 @@ namespace libsemigroups {
   Semigroup::index_t const Semigroup::LIMIT_MAX
       = std::numeric_limits<index_t>::max();
 
+  std::vector<Semigroup::element_index_t> Semigroup::_tmp_inverter;
+
   Semigroup::Semigroup(std::vector<Element const*> const* gens)
       : _batch_size(8192),
         _degree(UNDEFINED),
@@ -57,7 +59,6 @@ namespace libsemigroups {
         _nrrules(0),
         _pos(0),
         _pos_one(0),
-        _pos_sorted(nullptr),
         _prefix(),
         _reduced(gens->size()),
         _relation_gen(0),
@@ -142,7 +143,6 @@ namespace libsemigroups {
         _nrrules(copy._nrrules),
         _pos(copy._pos),
         _pos_one(copy._pos_one),
-        _pos_sorted(nullptr),  // TODO(JDM) copy this if set
         _prefix(copy._prefix),
         _reduced(copy._reduced),
         _relation_gen(copy._relation_gen),
@@ -191,7 +191,6 @@ namespace libsemigroups {
         _pos(copy._pos),
         _pos_one(copy._pos_one),  // copy in case degree doesn't change in
                                   // add_generators
-        _pos_sorted(nullptr),
         _reduced(copy._reduced),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
@@ -266,7 +265,6 @@ namespace libsemigroups {
     delete _left;
     delete _right;
     delete _sorted;
-    delete _pos_sorted;
 
     // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
@@ -423,15 +421,9 @@ namespace libsemigroups {
     enumerate(LIMIT_MAX);
     if (pos >= _nr) {
       return UNDEFINED;
-    } else if (_pos_sorted == nullptr) {
-      sort_elements();
-      _pos_sorted = new std::vector<element_index_t>();
-      _pos_sorted->resize(_sorted->size());
-      for (element_index_t i = 0; i < _sorted->size(); i++) {
-        (*_pos_sorted)[(*_sorted)[i].second] = i;
-      }
     }
-    return (*_pos_sorted)[pos];
+    init_sorted();
+    return (*_sorted)[pos].second;
   }
 
   Semigroup::element_index_t Semigroup::sorted_position(Element const* x) {
@@ -440,7 +432,6 @@ namespace libsemigroups {
 
   Element const* Semigroup::at(element_index_t pos) {
     enumerate(pos + 1);
-
     if (pos < _elements->size()) {
       return (*_elements)[pos];
     } else {
@@ -449,7 +440,7 @@ namespace libsemigroups {
   }
 
   Element const* Semigroup::sorted_at(element_index_t pos) {
-    sort_elements();
+    init_sorted();
     if (pos < _sorted->size()) {
       return (*_sorted)[pos].first;
     } else {
@@ -931,17 +922,26 @@ namespace libsemigroups {
 
   // Private methods
 
-  void Semigroup::sort_elements() {
+  void Semigroup::init_sorted() {
     if (_sorted != nullptr) {
       return;
     }
-    enumerate();
-    _sorted = new std::vector<std::pair<Element const*, element_index_t>>();
-    _sorted->reserve(_elements->size());
-    for (element_index_t i = 0; i < _elements->size(); i++) {
+    size_t n = size();
+    _sorted  = new std::vector<std::pair<Element const*, element_index_t>>();
+    _sorted->reserve(n);
+    for (element_index_t i = 0; i < n; i++) {
       _sorted->push_back(std::make_pair((*_elements)[i], i));
     }
     std::sort(_sorted->begin(), _sorted->end(), myless(*this));
+
+    // Invert the permutation in _sorted[*].second
+    _tmp_inverter.resize(n);
+    for (element_index_t i = 0; i < n; i++) {
+      _tmp_inverter[(*_sorted)[i].second] = i;
+    }
+    for (element_index_t i = 0; i < n; i++) {
+      (*_sorted)[i].second = _tmp_inverter[i];
+    }
   }
 
   // FIXME(JDM) improve this to either multiply or product_by_reduction

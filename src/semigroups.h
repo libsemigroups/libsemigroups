@@ -531,7 +531,7 @@ namespace libsemigroups {
     // TODO(JDM) replace this with a method for sorted_cbegin and sorted_cend.
     std::vector<std::pair<Element const*, element_index_t>> const*
     sorted_elements() {
-      sort_elements();
+      init_sorted();
       return _sorted;
     }
 
@@ -1002,7 +1002,7 @@ namespace libsemigroups {
     // using the myless subclass. This is done so that we can both get the
     // elements in sorted order, and find the position of an element in the
     // sorted list of elements.
-    void sort_elements();
+    void init_sorted();
 
     // Find the idempotents and store their positions and their number
     void find_idempotents();
@@ -1090,7 +1090,6 @@ namespace libsemigroups {
     size_t                        _nrrules;
     enumerate_index_t             _pos;
     element_index_t               _pos_one;
-    std::vector<element_index_t>* _pos_sorted;
     std::vector<element_index_t>  _prefix;
     flags_t                       _reduced;
     letter_t                      _relation_gen;
@@ -1100,6 +1099,8 @@ namespace libsemigroups {
     std::vector<element_index_t> _suffix;
     Element*                     _tmp_product;
     size_t                       _wordlen;
+
+    static std::vector<element_index_t> _tmp_inverter;
   };
 
   //! This is just for backwards compatibility and will disappear in the next
