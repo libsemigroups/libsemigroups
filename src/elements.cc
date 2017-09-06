@@ -112,7 +112,7 @@ namespace libsemigroups {
   }
 
   size_t Bipartition::complexity() const {
-    return (_vector->empty() ? 0 : pow(_vector->size(), 2));
+    return (_vector->empty() ? 0 : pow(degree(), 2));
   }
 
   size_t Bipartition::degree() const {

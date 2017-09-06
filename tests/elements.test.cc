@@ -429,9 +429,9 @@ TEST_CASE("Bipartition 01: overridden methods",
   REQUIRE(x->degree() == 10);
   REQUIRE(y->degree() == 10);
   REQUIRE(z->degree() == 10);
-  REQUIRE(x->complexity() == 400);
-  REQUIRE(y->complexity() == 400);
-  REQUIRE(z->complexity() == 400);
+  REQUIRE(x->complexity() == 100);
+  REQUIRE(y->complexity() == 100);
+  REQUIRE(z->complexity() == 100);
 
   Element* id = x->identity();
   z->redefine(id, x, 0);

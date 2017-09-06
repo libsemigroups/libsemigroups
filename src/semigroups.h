@@ -433,24 +433,6 @@ namespace libsemigroups {
     //! already fully enumerated.
     bool is_idempotent(element_index_t pos);
 
-    //! Returns a const iterator pointing at the first position of an
-    //! idempotent in the semigroup.
-    //!
-    //! If the returned iterator is incremented, then it points to the second
-    //! position of an idempotent in the semigroup (if it exists), and every
-    //! subsequent increment points to the next position of an idempotent.
-    //!
-    //! This method involves fully enumerating the semigroup, if it is not
-    //! already fully enumerated.
-    std::vector<element_index_t>::const_iterator idempotents_cbegin();
-
-    //! Returns a const iterator referring to past the end of the position of
-    //! the last idempotent in the semigroup.
-    //!
-    //! This method involves fully enumerating the semigroup, if it is not
-    //! already fully enumerated.
-    std::vector<element_index_t>::const_iterator idempotents_cend();
-
     //! Returns  the total number of relations in the presentation defining the
     //! semigroup.
     //!
@@ -1044,27 +1026,32 @@ namespace libsemigroups {
       return const_reverse_iterator_pair_first(cbegin_sorted());
     }
 
+    //! Returns a const iterator pointing at the first idempotent in the
+    //! semigroup.
+    //!
+    //! If the returned iterator is incremented, then it points to the second
+    //! idempotent in the semigroup (if it exists), and every subsequent
+    //! increment points to the next idempotent.
+    //!
+    //! This method involves fully enumerating the semigroup, if it is not
+    //! already fully enumerated.
+    const_iterator_pair_first cbegin_idempotents() {
+      init_idempotents();
+      return const_iterator_pair_first(_idempotents.cbegin());
+    }
+
+    //! Returns a const iterator referring to past the end of the last
+    //! idempotent in the semigroup.
+    //!
+    //! This method involves fully enumerating the semigroup, if it is not
+    //! already fully enumerated.
+    const_iterator_pair_first cend_idempotents() {
+      init_idempotents();
+      return const_iterator_pair_first(_idempotents.cend());
+    }
+
    private:
-    // Initialise the data member _sorted. We store a list of pairs consisting
-    // of an Element* and element_index_t which is sorted on the first entry
-    // using the operator< of the Element class. The second component is then
-    // inverted (as a permutation) so that we can then find the position of an
-    // element in the sorted list of elements.
-    void init_sorted();
-
-    // Find the idempotents and store their positions and their number
-    void find_idempotents();
-
-    // Function for counting idempotents in a thread, changes the parameter nr
-    // in place.
-    void idempotents_thread(size_t&                       nr,
-                            std::vector<element_index_t>& idempotents,
-                            std::vector<bool>&            is_idempotent,
-                            element_index_t               begin,
-                            element_index_t               end);
-
     // Expand the data structures in the semigroup with space for nr elements
-
     void inline expand(index_t nr) {
       _left->add_rows(nr);
       _reduced.add_rows(nr);
@@ -1074,7 +1061,6 @@ namespace libsemigroups {
 
     // Check if an element is the identity, x should be in the position pos
     // of _elements.
-
     void inline is_one(Element const* x, element_index_t pos) {
       if (!_found_one && *x == *_id) {
         _pos_one   = pos;
@@ -1082,7 +1068,8 @@ namespace libsemigroups {
       }
     }
 
-    // Update the data structure in add_generators
+    void copy_gens();
+
     void inline closure_update(element_index_t    i,
                                letter_t           j,
                                letter_t           b,
@@ -1091,26 +1078,46 @@ namespace libsemigroups {
                                index_t            old_nr,
                                size_t const&      thread_id);
 
-    void copy_gens();
+    // Initialise the data member _sorted. We store a list of pairs consisting
+    // of an Element* and element_index_t which is sorted on the first entry
+    // using the operator< of the Element class. The second component is then
+    // inverted (as a permutation) so that we can then find the position of an
+    // element in the sorted list of elements.
+    void init_sorted();
 
-    element_index_t _batch_size;
+    typedef std::pair<Element const*, element_index_t> idempotent_value_t;
+
+    // Find the idempotents and store their pointers and positions in a
+    // std::pair of type idempotent_value_t.
+    void init_idempotents();
+
+    // Find the idempotents in the range [first, last) and store
+    // the corresponding std::pair of type idempotent_value_t in the 4th
+    // parameter. The parameter threshold is the point, calculated in
+    // init_idempotents, at which it is better to simply multiply elements
+    // rather than trace in the left/right Cayley graph.
+    void idempotents(enumerate_index_t const          first,
+                     enumerate_index_t const          last,
+                     enumerate_index_t const          threshold,
+                     std::vector<idempotent_value_t>& idempotents);
+
+    size_t          _batch_size;
     element_index_t _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
-    std::vector<Element const*>*   _elements;
-    std::vector<letter_t>          _final;
-    std::vector<letter_t>          _first;
-    bool                           _found_one;
-    std::vector<Element const*>*   _gens;
-    Element const*                 _id;
-    std::vector<element_index_t>   _idempotents;
-    bool                           _idempotents_found;
-    element_index_t                _idempotents_start_pos;
-    std::vector<bool>              _is_idempotent;
-    std::vector<element_index_t>   _enumerate_order;
-    cayley_graph_t*                _left;
-    std::vector<index_t>           _length;
-    std::vector<enumerate_index_t> _lenindex;
-    std::vector<element_index_t>   _letter_to_pos;
+    std::vector<Element const*>*    _elements;
+    std::vector<element_index_t>    _enumerate_order;
+    std::vector<letter_t>           _final;
+    std::vector<letter_t>           _first;
+    bool                            _found_one;
+    std::vector<Element const*>*    _gens;
+    Element const*                  _id;
+    std::vector<idempotent_value_t> _idempotents;
+    bool                            _idempotents_found;
+    std::vector<bool>               _is_idempotent;
+    cayley_graph_t*                 _left;
+    std::vector<index_t>            _length;
+    std::vector<enumerate_index_t>  _lenindex;
+    std::vector<element_index_t>    _letter_to_pos;
     std::unordered_map<Element const*,
                        element_index_t,
                        Element::Hash,
@@ -1121,7 +1128,6 @@ namespace libsemigroups {
     std::mutex                   _mtx;
     index_t                      _nr;
     letter_t                     _nrgens;
-    index_t                      _nridempotents;
     size_t                       _nrrules;
     enumerate_index_t            _pos;
     element_index_t              _pos_one;

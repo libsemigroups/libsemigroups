@@ -17,6 +17,9 @@
 //
 
 #include "semigroups.h"
+
+#include <numeric>
+
 #include "rwse.h"
 
 namespace libsemigroups {
@@ -36,6 +39,7 @@ namespace libsemigroups {
         _degree(UNDEFINED),
         _duplicate_gens(),
         _elements(new std::vector<Element const*>()),
+        _enumerate_order(),
         _final(),
         _first(),
         _found_one(false),
@@ -43,9 +47,7 @@ namespace libsemigroups {
         _id(),
         _idempotents(),
         _idempotents_found(false),
-        _idempotents_start_pos(0),
         _is_idempotent(),
-        _enumerate_order(),
         _left(new cayley_graph_t(gens->size())),
         _length(),
         _lenindex(),
@@ -55,7 +57,6 @@ namespace libsemigroups {
         _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
-        _nridempotents(0),
         _nrrules(0),
         _pos(0),
         _pos_one(0),
@@ -121,6 +122,7 @@ namespace libsemigroups {
         _degree(copy._degree),
         _duplicate_gens(copy._duplicate_gens),
         _elements(new std::vector<Element const*>()),
+        _enumerate_order(copy._enumerate_order),
         _final(copy._final),
         _first(copy._first),
         _found_one(copy._found_one),
@@ -128,9 +130,7 @@ namespace libsemigroups {
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
-        _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
-        _enumerate_order(copy._enumerate_order),
         _left(new cayley_graph_t(*copy._left)),
         _length(copy._length),
         _lenindex(copy._lenindex),
@@ -139,7 +139,6 @@ namespace libsemigroups {
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nridempotents(copy._nridempotents),
         _nrrules(copy._nrrules),
         _pos(copy._pos),
         _pos_one(copy._pos_one),
@@ -178,7 +177,6 @@ namespace libsemigroups {
         _gens(new std::vector<Element const*>()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
-        _idempotents_start_pos(copy._idempotents_start_pos),
         _is_idempotent(copy._is_idempotent),
         _left(new cayley_graph_t(*copy._left)),
         _letter_to_pos(copy._letter_to_pos),
@@ -186,7 +184,6 @@ namespace libsemigroups {
         _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
-        _nridempotents(copy._nridempotents),
         _nrrules(0),
         _pos(copy._pos),
         _pos_one(copy._pos_one),  // copy in case degree doesn't change in
@@ -362,36 +359,14 @@ namespace libsemigroups {
 
   // Get the number of idempotents
   size_t Semigroup::nridempotents() {
-    if (!_idempotents_found) {
-      find_idempotents();
-    }
-    return _nridempotents;
+    init_idempotents();
+    return _idempotents.size();
   }
 
   bool Semigroup::is_idempotent(element_index_t pos) {
-    if (!_idempotents_found) {
-      find_idempotents();
-    }
     LIBSEMIGROUPS_ASSERT(pos < size());
+    init_idempotents();
     return _is_idempotent[pos];
-  }
-
-  // Const iterator to the first position of an idempotent
-
-  typename std::vector<Semigroup::element_index_t>::const_iterator
-  Semigroup::idempotents_cbegin() {
-    if (!_idempotents_found) {
-      find_idempotents();
-    }
-    return _idempotents.cbegin();
-  }
-
-  typename std::vector<Semigroup::element_index_t>::const_iterator
-  Semigroup::idempotents_cend() {
-    if (!_idempotents_found) {
-      find_idempotents();
-    }
-    return _idempotents.cend();
   }
 
   // Get the position of an element in the semigroup
@@ -920,62 +895,24 @@ namespace libsemigroups {
 
   // Private methods
 
-  void Semigroup::init_sorted() {
-    if (_sorted.size() == size()) {
-      return;
+  // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
+  // initialised for this to work, and _gens must point to an empty vector.
+  void Semigroup::copy_gens() {
+    LIBSEMIGROUPS_ASSERT(_gens->empty());
+    _gens->resize(_nrgens, nullptr);
+    // really copy duplicate gens from _elements
+    for (auto const& x : _duplicate_gens) {
+      // The degree of everything in _elements has already been increased (if
+      // it needs to be at all), and so we do not need to increase the degree
+      // in the copy below.
+      (*_gens)[x.first] = (*_elements)[_letter_to_pos[x.second]]->really_copy();
     }
-    size_t n = size();
-    _sorted.reserve(n);
-    for (element_index_t i = 0; i < n; i++) {
-      _sorted.push_back(std::make_pair((*_elements)[i], i));
-    }
-    std::sort(_sorted.begin(),
-              _sorted.end(),
-              [](std::pair<Element const*, element_index_t> const& x,
-                 std::pair<Element const*, element_index_t> const& y) -> bool {
-                return *(x.first) < *(y.first);
-              });
-
-    // Invert the permutation in _sorted[*].second
-    _tmp_inverter.resize(n);
-    for (element_index_t i = 0; i < n; i++) {
-      _tmp_inverter[_sorted[i].second] = i;
-    }
-    for (element_index_t i = 0; i < n; i++) {
-      _sorted[i].second = _tmp_inverter[i];
-    }
-  }
-
-  // FIXME(JDM) improve this to either multiply or product_by_reduction
-  // depending on which will be quickest. It is actually slow because of not
-  // doing this
-
-  void Semigroup::idempotents_thread(size_t&                       nr,
-                                     std::vector<element_index_t>& idempotents,
-                                     std::vector<bool>& is_idempotent,
-                                     element_index_t    begin,
-                                     element_index_t    end) {
-    Timer timer;
-    timer.start();
-
-    for (element_index_t k = begin; k < end; k++) {
-      // this is product_by_reduction, don't have to consider lengths because
-      // they are equal!!
-      element_index_t i = k, j = k;
-      while (j != UNDEFINED) {
-        i = _right->get(i, _first[j]);
-        j = _suffix[j];
-      }
-      if (i == k) {
-        idempotents.push_back(k);
-        is_idempotent.push_back(true);
-        nr++;
-      } else {
-        is_idempotent.push_back(false);
+    // the non-duplicate gens are already in _elements, so don't really copy
+    for (letter_t i = 0; i < _nrgens; i++) {
+      if ((*_gens)[i] == nullptr) {
+        (*_gens)[i] = (*_elements)[_letter_to_pos[i]];
       }
     }
-
-    REPORT(timer.string("elapsed time = "));
   }
 
   void inline Semigroup::closure_update(element_index_t    i,
@@ -1038,124 +975,171 @@ namespace libsemigroups {
     }
   }
 
-  // TODO(JDM) improve this if R/L-classes are known to stop performing the
-  // product if we fall out of the R-class of the initial element.
+  void Semigroup::init_sorted() {
+    if (_sorted.size() == size()) {
+      return;
+    }
+    size_t n = size();
+    _sorted.reserve(n);
+    for (element_index_t i = 0; i < n; i++) {
+      _sorted.push_back(std::make_pair((*_elements)[i], i));
+    }
+    std::sort(_sorted.begin(),
+              _sorted.end(),
+              [](std::pair<Element const*, element_index_t> const& x,
+                 std::pair<Element const*, element_index_t> const& y) -> bool {
+                return *(x.first) < *(y.first);
+              });
 
-  void Semigroup::find_idempotents() {
+    // Invert the permutation in _sorted[*].second
+    _tmp_inverter.resize(n);
+    for (element_index_t i = 0; i < n; i++) {
+      _tmp_inverter[_sorted[i].second] = i;
+    }
+    for (element_index_t i = 0; i < n; i++) {
+      _sorted[i].second = _tmp_inverter[i];
+    }
+  }
+
+  void Semigroup::init_idempotents() {
+    if (_idempotents_found) {
+      return;
+    }
     _idempotents_found = true;
     enumerate();
+    _is_idempotent.resize(_nr, false);
 
     Timer timer;
     timer.start();
 
-    size_t sum_word_lengths = 0;
-    for (size_t i = length_non_const(_idempotents_start_pos);
-         i < _lenindex.size();
-         i++) {
-      sum_word_lengths += i * (_lenindex[i] - _lenindex[i - 1]);
+    // Find the threshold beyond which it is quicker to simply multiply
+    // elements rather than follow a path in the Cayley graph. This is the
+    // enumerate_index_t i for which length(i) >= 2 * complexity.
+    size_t complexity       = _tmp_product->complexity();
+    size_t threshold_length = std::min(_lenindex.size() - 2, complexity - 1);
+    enumerate_index_t threshold_index = _lenindex[threshold_length];
+
+    size_t total_load = 0;
+    for (size_t i = 1; i <= threshold_length; ++i) {
+      total_load += i * (_lenindex[i] - _lenindex[i - 1]);
     }
+    total_load += complexity * (_nr - _lenindex[threshold_length - 1]);
 
-    if (_max_threads == 1 || size() < 823543) {
-      if ((_nr - _idempotents_start_pos) * _tmp_product->complexity()
-          < sum_word_lengths) {
-        for (element_index_t i = _idempotents_start_pos; i < _nr; i++) {
-          _tmp_product->redefine((*_elements)[i], (*_elements)[i]);
-          if (*_tmp_product == *(*_elements)[i]) {
-            _nridempotents++;
-            _idempotents.push_back(i);
-            _is_idempotent.push_back(true);
-          } else {
-            _is_idempotent.push_back(false);
-          }
-        }
-      } else {
-        for (size_t i = _idempotents_start_pos; i < _nr; i++) {
-          // TODO(JDM) redo this to not use product_by_reduction
-          if (product_by_reduction(i, i) == i) {
-            _nridempotents++;
-            _idempotents.push_back(i);
-            _is_idempotent.push_back(true);
-          } else {
-            _is_idempotent.push_back(false);
-          }
-        }
-      }
+    size_t concurrency_threshold = 823543;
+
+    if (_max_threads == 1 || size() < concurrency_threshold) {
+      // Use only 1 thread
+      idempotents(0, _nr, threshold_index, _idempotents);
     } else {
-      size_t          av_load    = sum_word_lengths / _max_threads;
-      element_index_t begin      = _idempotents_start_pos;
-      element_index_t end        = _idempotents_start_pos;
-      size_t          total_load = 0;
-
-      std::vector<size_t>                       nr(_max_threads, 0);
-      std::vector<std::vector<element_index_t>> idempotents(
-          _max_threads, std::vector<element_index_t>());
-      std::vector<std::vector<bool>> is_idempotent(_max_threads,
-                                                   std::vector<bool>());
+      // Use > 1 threads
+      size_t                         mean_load = total_load / _max_threads;
+      size_t                         len       = 1;
+      std::vector<enumerate_index_t> first(_max_threads, 0);
+      std::vector<enumerate_index_t> last(_max_threads, _nr);
+      std::vector<std::vector<idempotent_value_t>> tmp(
+          _max_threads, std::vector<idempotent_value_t>());
       std::vector<std::thread> threads;
       glob_reporter.reset_thread_ids();
 
-      // TODO(JDM) use less threads if the av_load is too low
-      for (size_t i = 0; i < _max_threads; i++) {
+      for (size_t i = 0; i < _max_threads - 1; i++) {
         size_t thread_load = 0;
-        if (i != _max_threads - 1) {
-          while (thread_load < av_load) {
-            thread_load += length_const(end);
-            end++;
+        last[i]            = first[i];
+        while (thread_load < mean_load && last[i] < threshold_index) {
+          if (last[i] >= _lenindex[len]) {
+            ++len;
           }
-          total_load += thread_load;
-        } else {
-          end         = size();
-          thread_load = sum_word_lengths - total_load;
+          thread_load += len;
+          ++last[i];
         }
-
+        while (thread_load < mean_load) {
+          thread_load += complexity;
+          ++last[i];
+        }
+        total_load -= thread_load;
         REPORT("thread " << i + 1 << " has load " << thread_load)
+        first[i + 1] = last[i];
 
-        threads.push_back(std::thread(&Semigroup::idempotents_thread,
+        threads.push_back(std::thread(&Semigroup::idempotents,
                                       this,
-                                      std::ref(nr[i]),
-                                      std::ref(idempotents[i]),
-                                      std::ref(is_idempotent[i]),
-                                      begin,
-                                      end));
-        begin = end;
+                                      first[i],
+                                      last[i],
+                                      threshold_index,
+                                      std::ref(tmp[i])));
       }
+      // TODO use less threads if the av_load is too low
 
+      REPORT("thread " << _max_threads << " has load " << total_load)
+      threads.push_back(std::thread(&Semigroup::idempotents,
+                                    this,
+                                    first[_max_threads - 1],
+                                    last[_max_threads - 1],
+                                    threshold_index,
+                                    std::ref(tmp[_max_threads - 1])));
+
+      size_t nridempotents = 0;
       for (size_t i = 0; i < _max_threads; i++) {
         threads[i].join();
-        _nridempotents += nr[i];
+        nridempotents += tmp[i].size();
       }
-      _idempotents.reserve(_nridempotents);
-      _is_idempotent.reserve(size());
+      _idempotents.reserve(nridempotents);
       for (size_t i = 0; i < _max_threads; i++) {
-        _idempotents.insert(
-            _idempotents.end(), idempotents[i].begin(), idempotents[i].end());
-        _is_idempotent.insert(_is_idempotent.end(),
-                              is_idempotent[i].begin(),
-                              is_idempotent[i].end());
+        _idempotents.insert(_idempotents.end(), tmp[i].begin(), tmp[i].end());
       }
     }
-    _idempotents_start_pos = _nr;
     REPORT(timer.string("elapsed time = "));
   }
 
-  // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
-  // initialised for this to work, and _gens must point to an empty vector.
-  void Semigroup::copy_gens() {
-    LIBSEMIGROUPS_ASSERT(_gens->empty());
-    _gens->resize(_nrgens, nullptr);
-    // really copy duplicate gens from _elements
-    for (auto const& x : _duplicate_gens) {
-      // The degree of everything in _elements has already been increased (if
-      // it needs to be at all), and so we do not need to increase the degree
-      // in the copy below.
-      (*_gens)[x.first] = (*_elements)[_letter_to_pos[x.second]]->really_copy();
-    }
-    // the non-duplicate gens are already in _elements, so don't really copy
-    for (letter_t i = 0; i < _nrgens; i++) {
-      if ((*_gens)[i] == nullptr) {
-        (*_gens)[i] = (*_elements)[_letter_to_pos[i]];
+  void Semigroup::idempotents(enumerate_index_t const          first,
+                              enumerate_index_t const          last,
+                              enumerate_index_t const          threshold,
+                              std::vector<idempotent_value_t>& idempotents) {
+    REPORT("first = " << first << ", last = " << last << ", diff = "
+                      << last - first);
+    Timer timer;
+    timer.start();
+
+    enumerate_index_t pos = first;
+
+    for (; pos < std::min(threshold, last); pos++) {
+      element_index_t k = _enumerate_order[pos];
+      if (!_is_idempotent[k]) {
+        // The following is product_by_reduction, don't have to consider lengths
+        // because they are equal!!
+        element_index_t i = k, j = k;
+        while (j != UNDEFINED) {
+          i = _right->get(i, _first[j]);
+          // TODO improve this if R/L-classes are known to stop performing the
+          // product if we fall out of the R/L-class of the initial element.
+          j = _suffix[j];
+        }
+        if (i == k) {
+          idempotents.push_back(std::make_pair((*_elements)[k], k));
+          _is_idempotent[k] = true;
+        }
       }
     }
-  }
 
+    if (pos >= last) {
+      REPORT(timer.string("elapsed time = "));
+      return;
+    }
+
+    // Cannot use _tmp_product itself since there are multiple threads here!
+    Element* tmp_product = _tmp_product->really_copy();
+    size_t   tid         = glob_reporter.thread_id(std::this_thread::get_id());
+
+    for (; pos < last; pos++) {
+      element_index_t k = _enumerate_order[pos];
+      if (!_is_idempotent[k]) {
+        tmp_product->redefine(_elements[k], _elements[k], tid);
+        if (*tmp_product == *_elements[k]) {
+          idempotents.push_back(std::make_pair(_elements[k], k));
+          _is_idempotent[k] = true;
+        }
+      }
+    }
+    tmp_product->really_delete();
+    delete tmp_product;
+    REPORT(timer.string("elapsed time = "));
+  }
 }  // namespace libsemigroups
