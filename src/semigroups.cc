@@ -930,7 +930,12 @@ namespace libsemigroups {
     for (element_index_t i = 0; i < n; i++) {
       _sorted.push_back(std::make_pair((*_elements)[i], i));
     }
-    std::sort(_sorted.begin(), _sorted.end(), myless(*this));
+    std::sort(_sorted.begin(),
+              _sorted.end(),
+              [](std::pair<Element const*, element_index_t> const& x,
+                 std::pair<Element const*, element_index_t> const& y) -> bool {
+                return *(x.first) < *(y.first);
+              });
 
     // Invert the permutation in _sorted[*].second
     _tmp_inverter.resize(n);
@@ -1034,7 +1039,7 @@ namespace libsemigroups {
     }
   }
 
-  // TOOD(JDM) improve this if R/L-classes are known to stop performing the
+  // TODO(JDM) improve this if R/L-classes are known to stop performing the
   // product if we fall out of the R-class of the initial element.
 
   void Semigroup::find_idempotents() {

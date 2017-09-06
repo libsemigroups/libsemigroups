@@ -1047,9 +1047,9 @@ namespace libsemigroups {
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
     // of an Element* and element_index_t which is sorted on the first entry
-    // using the myless subclass. This is done so that we can both get the
-    // elements in sorted order, and find the position of an element in the
-    // sorted list of elements.
+    // using the operator< of the Element class. The second component is then
+    // inverted (as a permutation) so that we can then find the position of an
+    // element in the sorted list of elements.
     void init_sorted();
 
     // Find the idempotents and store their positions and their number
@@ -1090,18 +1090,6 @@ namespace libsemigroups {
                                std::vector<bool>& old_new,
                                index_t            old_nr,
                                size_t const&      thread_id);
-
-    struct myless {
-      // For sorting the elements of \c this.
-      explicit myless(Semigroup const& semigroup) : _semigroup(semigroup) {}
-
-      bool operator()(std::pair<Element const*, element_index_t> const& x,
-                      std::pair<Element const*, element_index_t> const& y) {
-        return *(x.first) < *(y.first);
-      }
-
-      Semigroup const& _semigroup;
-    };
 
     void copy_gens();
 
