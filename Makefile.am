@@ -106,6 +106,7 @@ check-all: check
 
 format: 
 	@echo "Running clang-format . . .";  
+	@clang-format --version
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
 	@clang-format -i $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 
 	@clang-format -i $(BENCHMARK_LINT_FORMAT)

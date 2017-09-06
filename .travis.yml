@@ -7,9 +7,11 @@ addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
+    - llvm-toolchain-trusty-4.0
     packages:
     - gcc-5
     - g++-5
+    - clang-format-4.0
 before_script:
   - sudo add-apt-repository ppa:dns/gnu -y
   - sudo apt-get update -q
@@ -29,6 +31,7 @@ env:
   matrix:
     - TEST_SUITE=standard
     - TEST_SUITE=lint
+    - TEST_SUITE=format
     - TEST_SUITE=doc
     - TEST_SUITE=coverage
     - TEST_SUITE=valgrind
