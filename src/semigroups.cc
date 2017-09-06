@@ -64,7 +64,7 @@ namespace libsemigroups {
         _relation_gen(0),
         _relation_pos(UNDEFINED),
         _right(new cayley_graph_t(gens->size())),
-        _sorted(nullptr),
+        _sorted(),
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
     LIBSEMIGROUPS_ASSERT(_nrgens != 0);
@@ -148,7 +148,7 @@ namespace libsemigroups {
         _relation_gen(copy._relation_gen),
         _relation_pos(copy._relation_pos),
         _right(new cayley_graph_t(*copy._right)),
-        _sorted(nullptr),  // TODO(JDM) copy this if set
+        _sorted(),  // TODO(JDM) copy this if set
         _suffix(copy._suffix),
         _wordlen(copy._wordlen) {
     _elements->reserve(_nr);
@@ -195,13 +195,13 @@ namespace libsemigroups {
         _relation_gen(0),
         _relation_pos(UNDEFINED),
         _right(new cayley_graph_t(*copy._right)),
-        _sorted(nullptr),
+        _sorted(),
         _wordlen(0) {
     LIBSEMIGROUPS_ASSERT(!coll->empty());
     LIBSEMIGROUPS_ASSERT(coll->at(0)->degree() >= copy.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
-    for (Element* x : *coll) {
+    for (Element const* x : *coll) {
       LIBSEMIGROUPS_ASSERT(x->degree() == (*coll)[0]->degree());
     }
 #endif
@@ -264,7 +264,6 @@ namespace libsemigroups {
 
     delete _left;
     delete _right;
-    delete _sorted;
 
     // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
@@ -423,7 +422,7 @@ namespace libsemigroups {
       return UNDEFINED;
     }
     init_sorted();
-    return (*_sorted)[pos].second;
+    return _sorted[pos].second;
   }
 
   Semigroup::element_index_t Semigroup::sorted_position(Element const* x) {
@@ -441,8 +440,8 @@ namespace libsemigroups {
 
   Element const* Semigroup::sorted_at(element_index_t pos) {
     init_sorted();
-    if (pos < _sorted->size()) {
-      return (*_sorted)[pos].first;
+    if (pos < _sorted.size()) {
+      return _sorted[pos].first;
     } else {
       return nullptr;
     }
@@ -923,24 +922,23 @@ namespace libsemigroups {
   // Private methods
 
   void Semigroup::init_sorted() {
-    if (_sorted != nullptr) {
+    if (_sorted.size() == size()) {
       return;
     }
     size_t n = size();
-    _sorted  = new std::vector<std::pair<Element const*, element_index_t>>();
-    _sorted->reserve(n);
+    _sorted.reserve(n);
     for (element_index_t i = 0; i < n; i++) {
-      _sorted->push_back(std::make_pair((*_elements)[i], i));
+      _sorted.push_back(std::make_pair((*_elements)[i], i));
     }
-    std::sort(_sorted->begin(), _sorted->end(), myless(*this));
+    std::sort(_sorted.begin(), _sorted.end(), myless(*this));
 
     // Invert the permutation in _sorted[*].second
     _tmp_inverter.resize(n);
     for (element_index_t i = 0; i < n; i++) {
-      _tmp_inverter[(*_sorted)[i].second] = i;
+      _tmp_inverter[_sorted[i].second] = i;
     }
     for (element_index_t i = 0; i < n; i++) {
-      (*_sorted)[i].second = _tmp_inverter[i];
+      _sorted[i].second = _tmp_inverter[i];
     }
   }
 

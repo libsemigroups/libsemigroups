@@ -524,17 +524,6 @@ namespace libsemigroups {
     //! than the size of the semigroup.
     element_index_t position_to_sorted_position(element_index_t pos);
 
-    //! Returns a vector consisting of pairs \c pair where \c pair.first is a
-    //! pointer to an element of the semigroup and \c pair.second is the
-    //! position of that element in the semigroup. This vector is sorted
-    //! according to the Element::operator< method of the elements.
-    // TODO(JDM) replace this with a method for sorted_cbegin and sorted_cend.
-    std::vector<std::pair<Element const*, element_index_t>> const*
-    sorted_elements() {
-      init_sorted();
-      return _sorted;
-    }
-
     //! Returns  the element of the semigroup in position \p pos, or a
     //! \c nullptr if there is no such element.
     //!
@@ -858,117 +847,153 @@ namespace libsemigroups {
       _max_threads = std::min(n, std::thread::hardware_concurrency());
     }
 
-    class const_iterator {
+   public:
+    template <typename T, class C> class iterator_base {
      public:
-      typedef typename std::vector<Element const*>::size_type size_type;
-      typedef
-          typename std::vector<Element const*>::difference_type difference_type;
-      typedef typename std::vector<Element const*>::value_type  value_type;
+      typedef typename std::vector<Element const*>::size_type  size_type;
+      typedef typename std::vector<T>::difference_type         difference_type;
+      typedef typename std::vector<Element const*>::value_type value_type;
       typedef typename std::vector<Element const*>::const_reference reference;
       typedef typename std::vector<Element const*>::const_pointer   pointer;
       typedef std::random_access_iterator_tag iterator_category;
 
-      explicit const_iterator(
-          typename std::vector<Element const*>::const_iterator it_vec)
+      explicit iterator_base(typename std::vector<T>::const_iterator it_vec)
           : _it_vec(it_vec) {}
 
-      const_iterator(const_iterator const& that)
-          : const_iterator(that._it_vec) {}
+      iterator_base(iterator_base const& that) : iterator_base(that._it_vec) {}
 
-      const_iterator& operator=(const_iterator const& that) {
+      iterator_base& operator=(iterator_base const& that) {
         _it_vec = that._it_vec;
         return *this;
       }
 
-      bool operator==(const_iterator const& that) const {
+      virtual ~iterator_base() {}
+
+      bool operator==(iterator_base const& that) const {
         return _it_vec == that._it_vec;
       }
 
-      bool operator!=(const_iterator const& that) const {
+      bool operator!=(iterator_base const& that) const {
         return _it_vec != that._it_vec;
       }
 
-      bool operator<(const_iterator const& that) const {
+      bool operator<(iterator_base const& that) const {
         return _it_vec < that._it_vec;
       }
 
-      bool operator>(const_iterator const& that) const {
+      bool operator>(iterator_base const& that) const {
         return _it_vec > that._it_vec;
       }
 
-      bool operator<=(const_iterator const& that) const {
+      bool operator<=(iterator_base const& that) const {
         return operator<(that) || operator==(that);
       }
 
-      bool operator>=(const_iterator const& that) const {
+      bool operator>=(iterator_base const& that) const {
         return operator>(that) || operator==(that);
       }
 
-      const_iterator operator++(int) {  // postfix
-        const_iterator tmp(*this);
+      iterator_base operator++(int) {  // postfix
+        iterator_base tmp(*this);
         operator++();
         return tmp;
       }
 
-      const_iterator operator--(int) {
-        const_iterator tmp(*this);
+      iterator_base operator--(int) {
+        iterator_base tmp(*this);
         operator--();
         return tmp;
       }
 
-      const_iterator operator+(size_type val) const {
-        const_iterator out(*this);
+      iterator_base operator+(size_type val) const {
+        iterator_base out(*this);
         return out += val;
       }
 
-      friend const_iterator operator+(size_type val, const_iterator const& it) {
+      friend iterator_base operator+(size_type val, iterator_base const& it) {
         return it + val;
       }
 
-      const_iterator operator-(size_type val) const {
-        const_iterator out(*this);
+      iterator_base operator-(size_type val) const {
+        iterator_base out(*this);
         return out -= val;
-      }
-
-      reference operator*() const {
-        return *_it_vec;
-      }
-
-      pointer operator->() const {
-        return &(*_it_vec);
       }
 
       reference operator[](size_type pos) const {
         return *(*this + pos);
       }
 
-      const_iterator& operator++() {  // prefix
+      iterator_base& operator++() {  // prefix
         ++_it_vec;
         return *this;
       }
 
-      const_iterator& operator--() {
+      iterator_base& operator--() {
         --_it_vec;
         return *this;
       }
 
-      const_iterator& operator+=(size_type val) {
+      iterator_base& operator+=(size_type val) {
         _it_vec += val;
         return *this;
       }
 
-      const_iterator& operator-=(size_type val) {
+      iterator_base& operator-=(size_type val) {
         _it_vec -= val;
         return *this;
       }
 
-      difference_type operator-(const_iterator that) const {
+      difference_type operator-(iterator_base that) const {
         return _it_vec - that._it_vec;
       }
 
-     private:
-      typename std::vector<Element const*>::const_iterator _it_vec;
-    };  // const_iterator definition ends
+      reference operator*() const {
+        return _methods.indirection(_it_vec);
+      }
+
+      pointer operator->() const {
+        return _methods.addressof(_it_vec);
+      }
+
+     protected:
+      typename std::vector<T>::const_iterator _it_vec;
+      static C const                          _methods;
+    };  // iterator_base definition ends
+
+   private:
+    struct IteratorMethods {
+      typename std::vector<Element const*>::const_reference indirection(
+          typename std::vector<Element const*>::const_iterator it) const {
+        return *it;
+      }
+      typename std::vector<Element const*>::const_pointer
+      addressof(typename std::vector<Element const*>::const_iterator it) const {
+        return &(*it);
+      }
+    };
+
+    struct IteratorMethodsPairFirst {
+      typename std::vector<Element const*>::const_reference indirection(
+          typename std::vector<std::pair<Element const*, element_index_t>>::
+              const_iterator it) const {
+        return (*it).first;
+      }
+
+      typename std::vector<Element const*>::const_pointer addressof(
+          typename std::vector<std::pair<Element const*, element_index_t>>::
+              const_iterator it) const {
+        return &((*it).first);
+      }
+    };
+
+   public:
+    typedef iterator_base<Element const*, IteratorMethods> const_iterator;
+
+    //! An iterator of the elements sorted according to the Element::operator<
+    //! method of the elements.
+    typedef iterator_base<std::pair<Element const*, element_index_t>,
+                          IteratorMethodsPairFirst>
+        const_iterator_pair_first;
 
     const_iterator cbegin() const {
       return const_iterator(_elements->cbegin());
@@ -996,6 +1021,29 @@ namespace libsemigroups {
       return const_reverse_iterator(cbegin());
     }
 
+    const_iterator_pair_first cbegin_sorted() {
+      init_sorted();
+      return const_iterator_pair_first(_sorted.cbegin());
+    }
+
+    const_iterator_pair_first cend_sorted() {
+      init_sorted();
+      return const_iterator_pair_first(_sorted.cend());
+    }
+
+    typedef std::reverse_iterator<const_iterator_pair_first>
+        const_reverse_iterator_pair_first;
+
+    const_reverse_iterator_pair_first crbegin_sorted() {
+      init_sorted();
+      return const_reverse_iterator_pair_first(cend_sorted());
+    }
+
+    const_reverse_iterator_pair_first crend_sorted() {
+      init_sorted();
+      return const_reverse_iterator_pair_first(cbegin_sorted());
+    }
+
    private:
     // Initialise the data member _sorted. We store a list of pairs consisting
     // of an Element* and element_index_t which is sorted on the first entry
@@ -1009,7 +1057,6 @@ namespace libsemigroups {
 
     // Function for counting idempotents in a thread, changes the parameter nr
     // in place.
-
     void idempotents_thread(size_t&                       nr,
                             std::vector<element_index_t>& idempotents,
                             std::vector<bool>&            is_idempotent,
@@ -1080,22 +1127,22 @@ namespace libsemigroups {
                        element_index_t,
                        Element::Hash,
                        Element::Equal>
-                                  _map;
-    size_t                        _max_threads;
-    std::vector<bool>             _multiplied;
-    std::mutex                    _mtx;
-    index_t                       _nr;
-    letter_t                      _nrgens;
-    index_t                       _nridempotents;
-    size_t                        _nrrules;
-    enumerate_index_t             _pos;
-    element_index_t               _pos_one;
-    std::vector<element_index_t>  _prefix;
-    flags_t                       _reduced;
-    letter_t                      _relation_gen;
-    enumerate_index_t             _relation_pos;
-    cayley_graph_t*               _right;
-    std::vector<std::pair<Element const*, element_index_t>>* _sorted;
+                                 _map;
+    size_t                       _max_threads;
+    std::vector<bool>            _multiplied;
+    std::mutex                   _mtx;
+    index_t                      _nr;
+    letter_t                     _nrgens;
+    index_t                      _nridempotents;
+    size_t                       _nrrules;
+    enumerate_index_t            _pos;
+    element_index_t              _pos_one;
+    std::vector<element_index_t> _prefix;
+    flags_t                      _reduced;
+    letter_t                     _relation_gen;
+    enumerate_index_t            _relation_pos;
+    cayley_graph_t*              _right;
+    std::vector<std::pair<Element const*, element_index_t>> _sorted;
     std::vector<element_index_t> _suffix;
     Element*                     _tmp_product;
     size_t                       _wordlen;
@@ -1108,6 +1155,8 @@ namespace libsemigroups {
   // TODO Remove this when releasing 0.4.0
   typedef Semigroup::cayley_graph_t cayley_graph_t;
 
+  template <typename T, typename C>
+  C const Semigroup::iterator_base<T, C>::_methods;
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_

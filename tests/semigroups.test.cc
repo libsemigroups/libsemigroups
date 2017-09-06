@@ -1341,6 +1341,111 @@ TEST_CASE("Semigroup 67: iterator arithmetic",
   }
 }
 
+TEST_CASE("Semigroup 68: iterator sorted", "[quick][semigroup][finite][68]") {
+  std::vector<Element const*> gens
+      = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+         new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  // Calling cbegin/cend_sorted fully enumerates the semigroup
+  auto it = S.cbegin_sorted();
+  REQUIRE(S.is_done());
+
+  size_t pos = 0;
+  for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); it++) {
+    REQUIRE(S.sorted_position(*it) == pos);
+    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+    pos++;
+  }
+  REQUIRE(pos == S.size());
+
+  pos = 0;
+  for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); ++it) {
+    REQUIRE(S.sorted_position(*it) == pos);
+    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+    pos++;
+  }
+  REQUIRE(pos == S.size());
+
+  pos = S.size();
+  for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); it++) {
+    pos--;
+    REQUIRE(S.sorted_position(*it) == pos);
+    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+  }
+  REQUIRE(pos == 0);
+
+  pos = S.size();
+  for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); ++it) {
+    pos--;
+    REQUIRE(S.sorted_position(*it) == pos);
+    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+  }
+  REQUIRE(pos == 0);
+}
+
+TEST_CASE("Semigroup 69: iterator sorted arithmetic",
+          "[quick][semigroup][finite][69]") {
+  std::vector<Element const*> gens
+      = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
+         new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
+         new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+  Semigroup S = Semigroup(gens);
+  really_delete_cont(gens);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  REQUIRE(S.size() == 7776);
+  auto it = S.cbegin_sorted();
+  // The next line should not compile (and does not).
+  // (*it)->really_delete();
+
+  for (int64_t i = 0; i < static_cast<int64_t>(S.size()); i++) {
+    // The next line does not and should not compile
+    // *it = reinterpret_cast<Element const*>(0);
+    REQUIRE(*(it + i) == S.sorted_at(i));
+    it += i;
+    REQUIRE(*it == S.sorted_at(i));
+    it -= i;
+    REQUIRE(*it == S.sorted_at(0));
+    REQUIRE(it == S.cbegin_sorted());
+    auto tmp(it);
+    REQUIRE((tmp + i) - i == tmp);
+    REQUIRE((i + tmp) - i == tmp);
+    tmp += i;
+    REQUIRE(tmp - it == i);
+    REQUIRE(it - tmp == -i);
+    tmp -= i;
+    REQUIRE(tmp - it == 0);
+    tmp -= i;
+    REQUIRE(tmp - it == -i);
+    REQUIRE(it - tmp == i);
+  }
+  for (int64_t i = S.size(); i < static_cast<int64_t>(2 * S.size()); i++) {
+    it += i;
+    it -= i;
+    REQUIRE(*it == S.sorted_at(0));
+    REQUIRE(it == S.cbegin_sorted());
+    auto tmp(it);
+    REQUIRE((tmp + i) - i == tmp);
+    REQUIRE((i + tmp) - i == tmp);
+    tmp += i;
+    REQUIRE(tmp - it == i);
+    REQUIRE(it - tmp == -i);
+    tmp -= i;
+    REQUIRE(tmp - it == 0);
+    tmp -= i;
+    REQUIRE(tmp - it == -i);
+    REQUIRE(it - tmp == i);
+  }
+}
+
 TEST_CASE("Semigroup 32: copy [not enumerated]",
           "[quick][semigroup][finite][32]") {
   std::vector<Element*> gens
