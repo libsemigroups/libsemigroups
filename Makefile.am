@@ -46,12 +46,14 @@ EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 
-BENCHMARK_LINT_FORMAT =  benchmark/src/cong.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.cpp
+BENCHMARK_LINT_FORMAT =  benchmark/src/cong.bm.cpp
+BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
+BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
+BENCHMARK_LINT_FORMAT += benchmark/src/examples.h
 
 ## lstest sources 
 
-CHECK_LOG_DIR = log
+CHECK_LOG_DIR = tests/log
 CHECK_PROG    = ./lstest$(EXEEXT)
 CHECK_FLAGS1  = -d yes --force-colour --order lex --abort 
 CHECK_FLAGS2  = [quick],[standard]
@@ -82,7 +84,7 @@ clean-local: clean-local-check
 .PHONY: clean-local-check
 clean-local-check:
 	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
-	rm -rf benchmark/src/build benchmark/logs
+	rm -rf benchmark/src/build
 	rm -f benchmark/gbench/*.pyc
 	rm -f benchmark/gbench/__py_cache__/*.pyc
 

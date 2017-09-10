@@ -15,7 +15,7 @@ i=0
 for cpp_file in ../*.cpp
 do
     i=$((i+1))
-    exe_file=$(echo $cpp_file | sed 's/^\.\.\///g; s/\.cpp$//g')
+    exe_file=$(echo $cpp_file | sed 's/^\.\.\///g; s/\.bm.cpp$//g')
     LOG_FILE=$LOG_DIR/$exe_file-$LOG_FILE_SUFFIX
     echo
     echo Executing file $i of $nr_files: $exe_file . . .
