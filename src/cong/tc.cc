@@ -117,18 +117,23 @@ namespace libsemigroups {
     if (semigroup == nullptr) {
       return;
     }
-    if (_cong._type == LEFT) {
-      _table.append(*semigroup->left_cayley_graph());
-    } else {
-      _table.append(*semigroup->right_cayley_graph());
-    }
-    TC_KILLED
-    for (auto it = _table.begin(); it < _table.end(); it++) {
-      (*it)++;
-    }
-    TC_KILLED
+    _table.add_rows(semigroup->size());
     for (size_t i = 0; i < _cong._nrgens; i++) {
       _table.set(0, i, semigroup->letter_to_pos(i) + 1);
+    }
+    TC_KILLED
+    if (_cong._type == LEFT) {
+      for (size_t row = 0; row < semigroup->size(); ++row) {
+        for (size_t col = 0; col < _cong._nrgens; ++col) {
+          _table.set(row + 1, col, semigroup->left(row, col) + 1);
+        }
+      }
+    } else {
+      for (size_t row = 0; row < semigroup->size(); ++row) {
+        for (size_t col = 0; col < _cong._nrgens; ++col) {
+          _table.set(row + 1, col, semigroup->right(row, col) + 1);
+        }
+      }
     }
     TC_KILLED
     init_after_prefill();

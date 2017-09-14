@@ -531,18 +531,28 @@ namespace libsemigroups {
     //!
     //! This method fully enumerates the semigroup.
     // TODO expand this doc
-    cayley_graph_t* right_cayley_graph() {
+    inline element_index_t right(element_index_t i, letter_t j) {
       enumerate();
-      return _right;
+      return _right->get(i, j);
+    }
+
+    cayley_graph_t const* right_cayley_graph_copy() {
+      enumerate();
+      return new cayley_graph_t(*_right);
     }
 
     //! Returns a pointer to the left Cayley graph of the semigroup.
     //!
     //! This method fully enumerates the semigroup.
     // TODO expand this doc
-    cayley_graph_t* left_cayley_graph() {
+    inline element_index_t left(element_index_t i, letter_t j) {
       enumerate();
-      return _left;
+      return _left->get(i, j);
+    }
+
+    cayley_graph_t const* left_cayley_graph_copy() {
+      enumerate();
+      return new cayley_graph_t(*_left);
     }
 
     //! Changes \p word in-place to contain a minimal word with respect to the

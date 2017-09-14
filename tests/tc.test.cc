@@ -541,7 +541,7 @@ TEST_CASE("TC 15: test prefilling of the table manually",
   really_delete_cont(gens);
 
   // Copy the right Cayley graph of S for prefilling
-  Semigroup::cayley_graph_t right(*S.right_cayley_graph());
+  Semigroup::cayley_graph_t const* right = S.right_cayley_graph_copy();
 
   // These are defining relations for S
   std::vector<relation_t> rels
@@ -562,7 +562,8 @@ TEST_CASE("TC 15: test prefilling of the table manually",
 
   Congruence cong("twosided", 2, rels, std::vector<relation_t>());
   cong.set_report(TC_REPORT);
-  cong.set_prefill(right);
+  cong.set_prefill(*right);
+  delete right;
   REQUIRE(cong.nr_classes() == S.size() - 1);
   // This is not really a valid way of prefilling, since there is no "identity"
   // coset at the start of the table. This is why there is a - 1 in the REQUIRE

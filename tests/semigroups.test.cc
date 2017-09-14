@@ -26,7 +26,7 @@ using namespace libsemigroups;
 static inline size_t evaluate_reduct(Semigroup& S, word_t const& word) {
   letter_t out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
-    out = S.right_cayley_graph()->get(out, *it);
+    out = S.right(out, *it);
   }
   return out;
 }
@@ -1169,8 +1169,20 @@ TEST_CASE("Semigroup 30: right/left Cayley graph",
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.right_cayley_graph() != nullptr);
-  REQUIRE(S.left_cayley_graph() != nullptr);
+  REQUIRE(S.right(0, 0) == 0);
+  REQUIRE(S.left(0, 0) == 0);
+
+  Element* tmp = new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5});
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    for (size_t i = 0; i < 5; ++i) {
+      tmp->redefine(*it, S.gens(i));
+      REQUIRE(S.position(tmp) == S.right(S.position(*it), i));
+      tmp->redefine(S.gens(i), *it);
+      REQUIRE(S.position(tmp) == S.left(S.position(*it), i));
+    }
+  }
+  tmp->really_delete();
+  delete tmp;
   // TODO(JDM) more tests
   really_delete_cont(gens);
 }
