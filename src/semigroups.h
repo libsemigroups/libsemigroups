@@ -1082,7 +1082,6 @@ namespace libsemigroups {
                                letter_t           j,
                                letter_t           b,
                                element_index_t    s,
-                               std::vector<bool>& old_new,
                                index_t            old_nr,
                                size_t const&      thread_id);
 
@@ -1149,6 +1148,7 @@ namespace libsemigroups {
     size_t                       _wordlen;
 
     static std::vector<element_index_t> _tmp_inverter;
+    static std::vector<bool>            _old_new;
 #ifdef LIBSEMIGROUPS_STATS
     size_t _nr_products;
 #endif

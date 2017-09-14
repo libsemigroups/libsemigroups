@@ -33,6 +33,7 @@ namespace libsemigroups {
       = std::numeric_limits<index_t>::max();
 
   std::vector<Semigroup::element_index_t> Semigroup::_tmp_inverter;
+  std::vector<bool>                       Semigroup::_old_new;
 
   Semigroup::Semigroup(std::vector<Element const*> const* gens)
       : _batch_size(8192),
@@ -739,16 +740,15 @@ namespace libsemigroups {
     index_t  old_nr      = _nr;
     index_t  nr_old_left = _pos;
 
-    std::vector<bool> old_new;  // have we seen _elements->at(i) yet in new?
-
     // erase the old index
     _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
                            _enumerate_order.end());
 
-    // set up old_new
-    old_new.resize(old_nr, false);
+    // _old_new[i] indicates if we have seen _elements->at(i) yet in new.
+    _old_new.clear();
+    _old_new.resize(old_nr, false);
     for (letter_t i = 0; i < _letter_to_pos.size(); i++) {
-      old_new[_letter_to_pos[i]] = true;
+      _old_new[_letter_to_pos[i]] = true;
     }
 
     // add the new generators to new _gens, _elements, and _enumerate_order
@@ -791,7 +791,7 @@ namespace libsemigroups {
         _suffix[it->second] = UNDEFINED;
         _length[it->second] = UNDEFINED;
 
-        old_new[it->second] = true;
+        _old_new[it->second] = true;
       }
     }
 
@@ -833,7 +833,7 @@ namespace libsemigroups {
           // known
           for (letter_t j = 0; j < old_nrgens; j++) {
             element_index_t k = _right->get(i, j);
-            if (!old_new[k]) {  // it's new!
+            if (!_old_new[k]) {  // it's new!
               is_one((*_elements)[k], k);
               _first[k]  = _first[i];
               _final[k]  = j;
@@ -846,20 +846,20 @@ namespace libsemigroups {
                 _suffix[k] = _right->get(s, j);
               }
               _enumerate_order.push_back(k);
-              old_new[k] = true;
+              _old_new[k] = true;
             } else if (s == UNDEFINED || _reduced.get(s, j)) {
               // this clause could be removed if _nrrules wasn't necessary
               _nrrules++;
             }
           }
           for (letter_t j = old_nrgens; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr, tid);
+            closure_update(i, j, b, s, old_nr, tid);
           }
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
           for (letter_t j = 0; j < _nrgens; j++) {
-            closure_update(i, j, b, s, old_new, old_nr, tid);
+            closure_update(i, j, b, s, old_nr, tid);
           }
         }
         _pos++;
@@ -932,7 +932,6 @@ namespace libsemigroups {
                                         letter_t           j,
                                         letter_t           b,
                                         element_index_t    s,
-                                        std::vector<bool>& old_new,
                                         element_index_t    old_nr,
                                         size_t const&      tid) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
@@ -964,7 +963,7 @@ namespace libsemigroups {
         }
         _enumerate_order.push_back(_nr);
         _nr++;
-      } else if (it->second < old_nr && !old_new[it->second]) {
+      } else if (it->second < old_nr && !_old_new[it->second]) {
         // we didn't process it yet!
         is_one(_tmp_product, it->second);
         _first[it->second]  = b;
@@ -979,8 +978,8 @@ namespace libsemigroups {
           _suffix[it->second] = _right->get(s, j);
         }
         _enumerate_order.push_back(it->second);
-        old_new[it->second] = true;
-      } else {  // it->second >= old->_nr || old_new[it->second]
+        _old_new[it->second] = true;
+      } else {  // it->second >= old->_nr || _old_new[it->second]
         // it's old
         _right->set(i, j, it->second);
         _nrrules++;
