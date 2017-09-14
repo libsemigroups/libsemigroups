@@ -147,6 +147,10 @@ namespace libsemigroups {
       }
     }
 
+    void inline set_default_value(T val) {
+      _default_val = val;
+    }
+
     // Adds the specified number of columns to the <RecVec>. Every new position
     // is initialised with the default value specified when the <RecVec> was
     // constructed.

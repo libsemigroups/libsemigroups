@@ -54,7 +54,6 @@ namespace libsemigroups {
         _letter_to_pos(),
         _map(),
         _max_threads(std::thread::hardware_concurrency()),
-        _multiplied(),
         _nr(0),
         _nrgens(gens->size()),
         _nrrules(0),
@@ -72,7 +71,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_STATS
     _nr_products = 0;
 #endif
-
+    _right->set_default_value(UNDEFINED);
     reserve(_nrgens);
 
     _degree = (*gens)[0]->degree();
@@ -141,7 +140,6 @@ namespace libsemigroups {
         _lenindex(copy._lenindex),
         _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
-        _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
         _nrrules(copy._nrrules),
@@ -189,7 +187,6 @@ namespace libsemigroups {
         _left(new cayley_graph_t(*copy._left)),
         _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
-        _multiplied(copy._multiplied),
         _nr(copy._nr),
         _nrgens(copy._nrgens),
         _nrrules(0),
@@ -552,7 +549,6 @@ namespace libsemigroups {
       index_t nr_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_t i = _enumerate_order[_pos];
-        _multiplied[i]    = true;
         for (letter_t j = 0; j != _nrgens; ++j) {
           _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
@@ -600,7 +596,6 @@ namespace libsemigroups {
         element_index_t i = _enumerate_order[_pos];
         letter_t        b = _first[i];
         element_index_t s = _suffix[i];
-        _multiplied[i]    = true;
         for (letter_t j = 0; j != _nrgens; ++j) {
           if (!_reduced.get(s, j)) {
             element_index_t r = _right->get(s, j);
@@ -772,7 +767,6 @@ namespace libsemigroups {
         _enumerate_order.push_back(_nr);
 
         is_one(x, _nr);
-        _multiplied.push_back(false);
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
         _length.push_back(1);
@@ -833,7 +827,7 @@ namespace libsemigroups {
         element_index_t i = _enumerate_order[_pos];  // position in _elements
         letter_t        b = _first[i];
         element_index_t s = _suffix[i];
-        if (_multiplied[i]) {
+        if (_right->get(i, 0) != UNDEFINED) {
           nr_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
@@ -864,7 +858,6 @@ namespace libsemigroups {
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
-          _multiplied[i] = true;
           for (letter_t j = 0; j < _nrgens; j++) {
             closure_update(i, j, b, s, old_new, old_nr, tid);
           }

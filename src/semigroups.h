@@ -1065,7 +1065,6 @@ namespace libsemigroups {
       _left->add_rows(nr);
       _reduced.add_rows(nr);
       _right->add_rows(nr);
-      _multiplied.resize(_multiplied.size() + nr, false);
     }
 
     // Check if an element is the identity, x should be in the position pos
@@ -1133,7 +1132,6 @@ namespace libsemigroups {
                        Element::Equal>
                                  _map;
     size_t                       _max_threads;
-    std::vector<bool>            _multiplied;
     std::mutex                   _mtx;
     index_t                      _nr;
     letter_t                     _nrgens;
