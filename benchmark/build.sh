@@ -16,7 +16,7 @@ else
   elif [ -f Makefile ]; then
     make clean
   fi
-  ./configure --disable-debug ; make -j4 ; make install
+  ./configure ; make -j4 ; make install
   mkdir -p benchmark/src/build
   cd benchmark/src/build
   cmake -DCMAKE_BUILD_TYPE=Release  ..

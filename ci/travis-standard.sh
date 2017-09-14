@@ -17,5 +17,5 @@ make check
 
 # Check standard tests with assertions off
 make clean
-./configure --disable-debug
+./configure
 make check
