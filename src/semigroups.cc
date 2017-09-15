@@ -39,17 +39,17 @@ namespace libsemigroups {
       : _batch_size(8192),
         _degree(UNDEFINED),
         _duplicate_gens(),
-        _elements(new std::vector<Element const*>()),
+        _elements(),
         _enumerate_order(),
         _final(),
         _first(),
         _found_one(false),
-        _gens(new std::vector<Element const*>()),
+        _gens(),
         _id(),
         _idempotents(),
         _idempotents_found(false),
         _is_idempotent(),
-        _left(new cayley_graph_t(gens->size())),
+        _left(gens->size()),
         _length(),
         _lenindex(),
         _letter_to_pos(),
@@ -64,7 +64,7 @@ namespace libsemigroups {
         _reduced(gens->size()),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
-        _right(new cayley_graph_t(gens->size())),
+        _right(gens->size()),
         _sorted(),
         _suffix(),
         _wordlen(0) {  // (length of the current word) - 1
@@ -72,23 +72,23 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_STATS
     _nr_products = 0;
 #endif
-    _right->set_default_value(UNDEFINED);
+    _right.set_default_value(UNDEFINED);
     reserve(_nrgens);
 
     _degree = (*gens)[0]->degree();
 
     for (Element const* x : *gens) {
       LIBSEMIGROUPS_ASSERT(x->degree() == _degree);
-      _gens->push_back(x->really_copy());
+      _gens.push_back(x->really_copy());
     }
 
-    _tmp_product = (*_gens)[0]->identity();
+    _tmp_product = _gens[0]->identity();
     _lenindex.push_back(0);
-    _id = (*_gens)[0]->identity();
+    _id = _gens[0]->identity();
 
     // add the generators
     for (letter_t i = 0; i < _nrgens; i++) {
-      auto it = _map.find((*_gens)[i]);
+      auto it = _map.find(_gens[i]);
       if (it != _map.end()) {  // duplicate generator
         _letter_to_pos.push_back(it->second);
         _nrrules++;
@@ -96,8 +96,8 @@ namespace libsemigroups {
         // i.e. _gens[i] = _gens[_first[it->second]]
         // _first maps from element_index_t -> letter_t :)
       } else {
-        is_one((*_gens)[i], _nr);
-        _elements->push_back((*_gens)[i]);
+        is_one(_gens[i], _nr);
+        _elements.push_back(_gens[i]);
         // Note that every non-duplicate generator is *really* stored in
         // _elements, and so must be *really_delete*d from _elements but not
         // _gens
@@ -106,7 +106,7 @@ namespace libsemigroups {
         _enumerate_order.push_back(_nr);
         _letter_to_pos.push_back(_nr);
         _length.push_back(1);
-        _map.insert(std::make_pair(_elements->back(), _nr));
+        _map.insert(std::make_pair(_elements.back(), _nr));
         _prefix.push_back(UNDEFINED);
         // _prefix.push_back(_nr) and get rid of _letter_to_pos, and
         // the extra clause in the enumerate method!
@@ -126,17 +126,17 @@ namespace libsemigroups {
       : _batch_size(copy._batch_size),
         _degree(copy._degree),
         _duplicate_gens(copy._duplicate_gens),
-        _elements(new std::vector<Element const*>()),
+        _elements(),
         _enumerate_order(copy._enumerate_order),
         _final(copy._final),
         _first(copy._first),
         _found_one(copy._found_one),
-        _gens(new std::vector<Element const*>()),
+        _gens(),
         _id(copy._id->really_copy()),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _is_idempotent(copy._is_idempotent),
-        _left(new cayley_graph_t(*copy._left)),
+        _left(copy._left),
         _length(copy._length),
         _lenindex(copy._lenindex),
         _letter_to_pos(copy._letter_to_pos),
@@ -150,21 +150,21 @@ namespace libsemigroups {
         _reduced(copy._reduced),
         _relation_gen(copy._relation_gen),
         _relation_pos(copy._relation_pos),
-        _right(new cayley_graph_t(*copy._right)),
+        _right(copy._right),
         _sorted(),  // TODO(JDM) copy this if set
         _suffix(copy._suffix),
         _wordlen(copy._wordlen) {
 #ifdef LIBSEMIGROUPS_STATS
     _nr_products = 0;
 #endif
-    _elements->reserve(_nr);
+    _elements.reserve(_nr);
     _map.reserve(_nr);
     _tmp_product = copy._id->really_copy();
 
     element_index_t i = 0;
-    for (Element const* x : *(copy._elements)) {
+    for (Element const* x : copy._elements) {
       Element* y = x->really_copy();
-      _elements->push_back(y);
+      _elements.push_back(y);
       _map.insert(std::make_pair(y, i++));
     }
     copy_gens();
@@ -178,14 +178,14 @@ namespace libsemigroups {
       : _batch_size(copy._batch_size),
         _degree(copy._degree),  // copy for comparison in add_generators
         _duplicate_gens(copy._duplicate_gens),
-        _elements(new std::vector<Element const*>()),
+        _elements(),
         _found_one(copy._found_one),  // copy in case degree doesn't change in
                                       // add_generators
-        _gens(new std::vector<Element const*>()),
+        _gens(),
         _idempotents(copy._idempotents),
         _idempotents_found(copy._idempotents_found),
         _is_idempotent(copy._is_idempotent),
-        _left(new cayley_graph_t(*copy._left)),
+        _left(copy._left),
         _letter_to_pos(copy._letter_to_pos),
         _max_threads(copy._max_threads),
         _nr(copy._nr),
@@ -197,7 +197,7 @@ namespace libsemigroups {
         _reduced(copy._reduced),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
-        _right(new cayley_graph_t(*copy._right)),
+        _right(copy._right),
         _sorted(),
         _wordlen(0) {
     LIBSEMIGROUPS_ASSERT(!coll->empty());
@@ -212,7 +212,7 @@ namespace libsemigroups {
     _nr_products = 0;
 #endif
 
-    _elements->reserve(copy._nr);
+    _elements.reserve(copy._nr);
     _map.reserve(copy._nr);
 
     // the following are required for assignment to specific positions in
@@ -249,9 +249,9 @@ namespace libsemigroups {
     _tmp_product = copy._id->really_copy(deg_plus);
 
     element_index_t i = 0;
-    for (Element const* x : *(copy._elements)) {
+    for (Element const* x : copy._elements) {
       Element* y = x->really_copy(deg_plus);
-      _elements->push_back(y);
+      _elements.push_back(y);
       _map.insert(std::make_pair(y, i));
       is_one(y, i++);
     }
@@ -268,15 +268,11 @@ namespace libsemigroups {
     const_cast<Element*>(_id)->really_delete();
     delete _id;
 
-    delete _left;
-    delete _right;
-
     // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
-      const_cast<Element*>((*_gens)[x.first])->really_delete();
-      delete (*_gens)[x.first];
+      const_cast<Element*>(_gens[x.first])->really_delete();
+      delete _gens[x.first];
     }
-    delete _gens;
     really_delete_cont(_elements);
   }
 
@@ -285,7 +281,7 @@ namespace libsemigroups {
     // value of an element_index_t, we cast the argument here to this integer
     // type.
     element_index_t nn = static_cast<element_index_t>(n);
-    _elements->reserve(nn);
+    _elements.reserve(nn);
     _final.reserve(nn);
     _first.reserve(nn);
     _enumerate_order.reserve(nn);
@@ -297,8 +293,8 @@ namespace libsemigroups {
 
     // TODO 1: the analogue of the below using RecVec::reserve, which currently
     // does not exist
-    // if (n > _right->nr_rows()) {
-    //  expand(n - _right->nr_rows());
+    // if (n > _right.nr_rows()) {
+    //  expand(n - _right.nr_rows());
     // }
     // TODO 2: could reserve memory for the Elements themselves too
   }
@@ -320,14 +316,14 @@ namespace libsemigroups {
   Element* Semigroup::word_to_element(word_t const& w) const {
     LIBSEMIGROUPS_ASSERT(w.size() > 0);
     if (is_done() || w.size() == 1) {
-      return (*_elements)[word_to_pos(w)]->really_copy();
+      return _elements[word_to_pos(w)]->really_copy();
     }
     Element* out = _tmp_product->really_copy();
-    out->redefine((*_gens)[w[0]], (*_gens)[w[1]]);
+    out->redefine(_gens[w[0]], _gens[w[1]]);
     for (auto it = w.begin() + 2; it < w.end(); it++) {
       LIBSEMIGROUPS_ASSERT(*it < nrgens());
       _tmp_product->copy(out);
-      out->redefine(_tmp_product, (*_gens)[*it]);
+      out->redefine(_tmp_product, _gens[*it]);
     }
     return out;
   }
@@ -338,13 +334,13 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
     if (length_const(i) <= length_const(j)) {
       while (i != UNDEFINED) {
-        j = _left->get(j, _final[i]);
+        j = _left.get(j, _final[i]);
         i = _prefix[i];
       }
       return j;
     } else {
       while (j != UNDEFINED) {
-        i = _right->get(i, _first[j]);
+        i = _right.get(i, _first[j]);
         j = _suffix[j];
       }
       return i;
@@ -361,7 +357,7 @@ namespace libsemigroups {
         || length_const(j) < 2 * _tmp_product->complexity()) {
       return product_by_reduction(i, j);
     } else {
-      _tmp_product->redefine((*_elements)[i], (*_elements)[j]);
+      _tmp_product->redefine(_elements[i], _elements[j]);
       return _map.find(_tmp_product)->second;
     }
   }
@@ -414,8 +410,8 @@ namespace libsemigroups {
 
   Element const* Semigroup::at(element_index_t pos) {
     enumerate(pos + 1);
-    if (pos < _elements->size()) {
-      return (*_elements)[pos];
+    if (pos < _elements.size()) {
+      return _elements[pos];
     } else {
       return nullptr;
     }
@@ -498,7 +494,7 @@ namespace libsemigroups {
             relation.push_back(_enumerate_order[_relation_pos]);
             relation.push_back(_relation_gen);
             relation.push_back(
-                _right->get(_enumerate_order[_relation_pos], _relation_gen));
+                _right.get(_enumerate_order[_relation_pos], _relation_gen));
             break;
           }
           _relation_gen++;
@@ -551,26 +547,26 @@ namespace libsemigroups {
       while (_pos < _lenindex[1]) {
         element_index_t i = _enumerate_order[_pos];
         for (letter_t j = 0; j != _nrgens; ++j) {
-          _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
+          _tmp_product->redefine(_elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
           _nr_products++;
 #endif
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
-            _right->set(i, j, it->second);
+            _right.set(i, j, it->second);
             _nrrules++;
           } else {
             is_one(_tmp_product, _nr);
-            _elements->push_back(_tmp_product->really_copy());
+            _elements.push_back(_tmp_product->really_copy());
             _first.push_back(_first[i]);
             _final.push_back(j);
             _enumerate_order.push_back(_nr);
             _length.push_back(2);
-            _map.insert(std::make_pair(_elements->back(), _nr));
+            _map.insert(std::make_pair(_elements.back(), _nr));
             _prefix.push_back(i);
             _reduced.set(i, j, true);
-            _right->set(i, j, _nr);
+            _right.set(i, j, _nr);
             _suffix.push_back(_letter_to_pos[j]);
             _nr++;
           }
@@ -580,7 +576,7 @@ namespace libsemigroups {
       for (enumerate_index_t i = 0; i != _pos; ++i) {
         letter_t b = _final[_enumerate_order[i]];
         for (letter_t j = 0; j != _nrgens; ++j) {
-          _left->set(_enumerate_order[i], j, _right->get(_letter_to_pos[j], b));
+          _left.set(_enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
@@ -599,42 +595,41 @@ namespace libsemigroups {
         element_index_t s = _suffix[i];
         for (letter_t j = 0; j != _nrgens; ++j) {
           if (!_reduced.get(s, j)) {
-            element_index_t r = _right->get(s, j);
+            element_index_t r = _right.get(s, j);
             if (_found_one && r == _pos_one) {
-              _right->set(i, j, _letter_to_pos[b]);
+              _right.set(i, j, _letter_to_pos[b]);
             } else if (_prefix[r] != UNDEFINED) {  // r is not a generator
-              _right->set(
-                  i, j, _right->get(_left->get(_prefix[r], b), _final[r]));
+              _right.set(i, j, _right.get(_left.get(_prefix[r], b), _final[r]));
             } else {
-              _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
+              _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
             }
           } else {
-            _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
+            _tmp_product->redefine(_elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
             _nr_products++;
 #endif
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
-              _right->set(i, j, it->second);
+              _right.set(i, j, it->second);
               _nrrules++;
             } else {
               is_one(_tmp_product, _nr);
-              _elements->push_back(_tmp_product->really_copy());
+              _elements.push_back(_tmp_product->really_copy());
               _first.push_back(b);
               _final.push_back(j);
               _length.push_back(_wordlen + 2);
-              _map.insert(std::make_pair(_elements->back(), _nr));
+              _map.insert(std::make_pair(_elements.back(), _nr));
               _prefix.push_back(i);
               _reduced.set(i, j, true);
-              _right->set(i, j, _nr);
-              _suffix.push_back(_right->get(s, j));
+              _right.set(i, j, _nr);
+              _suffix.push_back(_right.get(s, j));
               _enumerate_order.push_back(_nr);
               _nr++;
               stop = (_nr >= limit || killed);
             }
           }
-        }  // finished applying gens to <_elements->at(_pos)>
+        }  // finished applying gens to <_elements.at(_pos)>
         _pos++;
       }  // finished words of length <wordlen> + 1
       expand(_nr - nr_shorter_elements);
@@ -644,8 +639,7 @@ namespace libsemigroups {
           element_index_t p = _prefix[_enumerate_order[i]];
           letter_t        b = _final[_enumerate_order[i]];
           for (letter_t j = 0; j != _nrgens; ++j) {
-            _left->set(
-                _enumerate_order[i], j, _right->get(_left->get(p, j), b));
+            _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
           }
         }
         _wordlen++;
@@ -744,7 +738,7 @@ namespace libsemigroups {
     _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
                            _enumerate_order.end());
 
-    // _old_new[i] indicates if we have seen _elements->at(i) yet in new.
+    // _old_new[i] indicates if we have seen _elements.at(i) yet in new.
     _old_new.clear();
     _old_new.resize(old_nr, false);
     for (letter_t i = 0; i < _letter_to_pos.size(); i++) {
@@ -756,12 +750,12 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x->degree() == degree());
       auto it = _map.find(x);
       if (it == _map.end()) {  // new generator
-        _gens->push_back(x->really_copy());
-        _elements->push_back(_gens->back());
-        _map.insert(std::make_pair(_gens->back(), _nr));
+        _gens.push_back(x->really_copy());
+        _elements.push_back(_gens.back());
+        _map.insert(std::make_pair(_gens.back(), _nr));
 
-        _first.push_back(_gens->size() - 1);
-        _final.push_back(_gens->size() - 1);
+        _first.push_back(_gens.size() - 1);
+        _final.push_back(_gens.size() - 1);
 
         _letter_to_pos.push_back(_nr);
         _enumerate_order.push_back(_nr);
@@ -772,21 +766,21 @@ namespace libsemigroups {
         _length.push_back(1);
         _nr++;
       } else if (_letter_to_pos[_first[it->second]] == it->second) {
-        _gens->push_back(x->really_copy());
+        _gens.push_back(x->really_copy());
         // x is one of the existing generators
         _duplicate_gens.push_back(
-            std::make_pair(_gens->size() - 1, _first[it->second]));
+            std::make_pair(_gens.size() - 1, _first[it->second]));
         // _gens[_gens.size() - 1] = _gens[_first[it->second])]
         // since _first maps element_index_t -> letter_t
         _letter_to_pos.push_back(it->second);
       } else {
         // x is an old element that will now be a generator
-        _gens->push_back((*_elements)[it->second]);
+        _gens.push_back(_elements[it->second]);
         _letter_to_pos.push_back(it->second);
         _enumerate_order.push_back(it->second);
 
-        _first[it->second]  = _gens->size() - 1;
-        _final[it->second]  = _gens->size() - 1;
+        _first[it->second]  = _gens.size() - 1;
+        _final[it->second]  = _gens.size() - 1;
         _prefix[it->second] = UNDEFINED;
         _suffix[it->second] = UNDEFINED;
         _length[it->second] = UNDEFINED;
@@ -800,7 +794,7 @@ namespace libsemigroups {
     _nrrules           = _duplicate_gens.size();
     _pos               = 0;
     _wordlen           = 0;
-    _nrgens            = _gens->size();
+    _nrgens            = _gens.size();
     _lenindex.clear();
     _lenindex.push_back(0);
     _lenindex.push_back(_nrgens - _duplicate_gens.size());
@@ -809,12 +803,12 @@ namespace libsemigroups {
     // FIXME isn't this a bit wasteful, we could recycle the old _reduced, to
     // avoid reallocation
     _reduced = flags_t(_nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
-    _left->add_cols(_nrgens - _left->nr_cols());
-    _right->add_cols(_nrgens - _right->nr_cols());
+    _left.add_cols(_nrgens - _left.nr_cols());
+    _right.add_cols(_nrgens - _right.nr_cols());
 
     // Add rows in for newly added generators
-    _left->add_rows(_nrgens - old_nrgens);
-    _right->add_rows(_nrgens - old_nrgens);
+    _left.add_rows(_nrgens - old_nrgens);
+    _right.add_rows(_nrgens - old_nrgens);
 
     index_t nr_shorter_elements;
 
@@ -827,14 +821,14 @@ namespace libsemigroups {
         element_index_t i = _enumerate_order[_pos];  // position in _elements
         letter_t        b = _first[i];
         element_index_t s = _suffix[i];
-        if (_right->get(i, 0) != UNDEFINED) {
+        if (_right.get(i, 0) != UNDEFINED) {
           nr_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
           for (letter_t j = 0; j < old_nrgens; j++) {
-            element_index_t k = _right->get(i, j);
+            element_index_t k = _right.get(i, j);
             if (!_old_new[k]) {  // it's new!
-              is_one((*_elements)[k], k);
+              is_one(_elements[k], k);
               _first[k]  = _first[i];
               _final[k]  = j;
               _length[k] = _wordlen + 2;
@@ -843,7 +837,7 @@ namespace libsemigroups {
               if (_wordlen == 0) {
                 _suffix[k] = _letter_to_pos[j];
               } else {
-                _suffix[k] = _right->get(s, j);
+                _suffix[k] = _right.get(s, j);
               }
               _enumerate_order.push_back(k);
               _old_new[k] = true;
@@ -872,8 +866,8 @@ namespace libsemigroups {
             size_t b = _final[_enumerate_order[i]];
             for (letter_t j = 0; j < _nrgens; j++) {
               // TODO(JDM) reuse old info here!
-              _left->set(
-                  _enumerate_order[i], j, _right->get(_letter_to_pos[j], b));
+              _left.set(
+                  _enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
             }
           }
         } else {
@@ -882,8 +876,7 @@ namespace libsemigroups {
             letter_t        b = _final[_enumerate_order[i]];
             for (letter_t j = 0; j < _nrgens; j++) {
               // TODO(JDM) reuse old info here!
-              _left->set(
-                  _enumerate_order[i], j, _right->get(_left->get(p, j), b));
+              _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
             }
           }
         }
@@ -911,55 +904,55 @@ namespace libsemigroups {
   // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
   // initialised for this to work, and _gens must point to an empty vector.
   void Semigroup::copy_gens() {
-    LIBSEMIGROUPS_ASSERT(_gens->empty());
-    _gens->resize(_nrgens, nullptr);
+    LIBSEMIGROUPS_ASSERT(_gens.empty());
+    _gens.resize(_nrgens, nullptr);
     // really copy duplicate gens from _elements
     for (auto const& x : _duplicate_gens) {
       // The degree of everything in _elements has already been increased (if
       // it needs to be at all), and so we do not need to increase the degree
       // in the copy below.
-      (*_gens)[x.first] = (*_elements)[_letter_to_pos[x.second]]->really_copy();
+      _gens[x.first] = _elements[_letter_to_pos[x.second]]->really_copy();
     }
     // the non-duplicate gens are already in _elements, so don't really copy
     for (letter_t i = 0; i < _nrgens; i++) {
-      if ((*_gens)[i] == nullptr) {
-        (*_gens)[i] = (*_elements)[_letter_to_pos[i]];
+      if (_gens[i] == nullptr) {
+        _gens[i] = _elements[_letter_to_pos[i]];
       }
     }
   }
 
-  void inline Semigroup::closure_update(element_index_t    i,
-                                        letter_t           j,
-                                        letter_t           b,
-                                        element_index_t    s,
-                                        element_index_t    old_nr,
-                                        size_t const&      tid) {
+  void inline Semigroup::closure_update(element_index_t i,
+                                        letter_t        j,
+                                        letter_t        b,
+                                        element_index_t s,
+                                        element_index_t old_nr,
+                                        size_t const&   tid) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
-      element_index_t r = _right->get(s, j);
+      element_index_t r = _right.get(s, j);
       if (_found_one && r == _pos_one) {
-        _right->set(i, j, _letter_to_pos[b]);
+        _right.set(i, j, _letter_to_pos[b]);
       } else if (_prefix[r] != UNDEFINED) {
-        _right->set(i, j, _right->get(_left->get(_prefix[r], b), _final[r]));
+        _right.set(i, j, _right.get(_left.get(_prefix[r], b), _final[r]));
       } else {
-        _right->set(i, j, _right->get(_letter_to_pos[b], _final[r]));
+        _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
       }
     } else {
-      _tmp_product->redefine((*_elements)[i], (*_gens)[j], tid);
+      _tmp_product->redefine(_elements[i], _gens[j], tid);
       auto it = _map.find(_tmp_product);
       if (it == _map.end()) {  // it's new!
         is_one(_tmp_product, _nr);
-        _elements->push_back(_tmp_product->really_copy());
+        _elements.push_back(_tmp_product->really_copy());
         _first.push_back(b);
         _final.push_back(j);
         _length.push_back(_wordlen + 2);
-        _map.insert(std::make_pair(_elements->back(), _nr));
+        _map.insert(std::make_pair(_elements.back(), _nr));
         _prefix.push_back(i);
         _reduced.set(i, j, true);
-        _right->set(i, j, _nr);
+        _right.set(i, j, _nr);
         if (_wordlen == 0) {
           _suffix.push_back(_letter_to_pos[j]);
         } else {
-          _suffix.push_back(_right->get(s, j));
+          _suffix.push_back(_right.get(s, j));
         }
         _enumerate_order.push_back(_nr);
         _nr++;
@@ -971,17 +964,17 @@ namespace libsemigroups {
         _length[it->second] = _wordlen + 2;
         _prefix[it->second] = i;
         _reduced.set(i, j, true);
-        _right->set(i, j, it->second);
+        _right.set(i, j, it->second);
         if (_wordlen == 0) {
           _suffix[it->second] = _letter_to_pos[j];
         } else {
-          _suffix[it->second] = _right->get(s, j);
+          _suffix[it->second] = _right.get(s, j);
         }
         _enumerate_order.push_back(it->second);
         _old_new[it->second] = true;
       } else {  // it->second >= old->_nr || _old_new[it->second]
         // it's old
-        _right->set(i, j, it->second);
+        _right.set(i, j, it->second);
         _nrrules++;
       }
     }
@@ -994,7 +987,7 @@ namespace libsemigroups {
     size_t n = size();
     _sorted.reserve(n);
     for (element_index_t i = 0; i < n; i++) {
-      _sorted.push_back(std::make_pair((*_elements)[i], i));
+      _sorted.push_back(std::make_pair(_elements[i], i));
     }
     std::sort(_sorted.begin(),
               _sorted.end(),
@@ -1128,13 +1121,13 @@ namespace libsemigroups {
         // because they are equal!!
         element_index_t i = k, j = k;
         while (j != UNDEFINED) {
-          i = _right->get(i, _first[j]);
+          i = _right.get(i, _first[j]);
           // TODO improve this if R/L-classes are known to stop performing the
           // product if we fall out of the R/L-class of the initial element.
           j = _suffix[j];
         }
         if (i == k) {
-          idempotents.push_back(std::make_pair((*_elements)[k], k));
+          idempotents.push_back(std::make_pair(_elements[k], k));
           _is_idempotent[k] = true;
         }
       }

@@ -1497,7 +1497,7 @@ TEST_CASE("Semigroup 32: copy [not enumerated]",
   REQUIRE(T.current_size() == 5);
   REQUIRE(T.current_nrrules() == 0);
   REQUIRE(T.current_max_word_length() == 1);
-  REQUIRE(T.current_position(S.gens()->at(1)) == 1);
+  REQUIRE(T.current_position(S.gens(1)) == 1);
 
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nridempotents() == 537);
@@ -1539,7 +1539,7 @@ TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
   REQUIRE(T->current_size() == 7719);
   REQUIRE(T->current_nrrules() == 2418);
   REQUIRE(T->current_max_word_length() == 14);
-  REQUIRE(T->current_position(S.gens()->at(1)) == 1);
+  REQUIRE(T->current_position(S.gens(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
@@ -1611,7 +1611,7 @@ TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
   REQUIRE(T->current_size() == 5);
   REQUIRE(T->current_nrrules() == 0);
   REQUIRE(T->current_max_word_length() == 1);
-  REQUIRE(T->current_position(S.gens()->at(1)) == 1);
+  REQUIRE(T->current_position(S.gens(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
@@ -1725,8 +1725,8 @@ TEST_CASE("Semigroup 36: copy_closure [partly enumerated]",
 
   Semigroup* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   REQUIRE(T->is_begun());
@@ -1770,8 +1770,8 @@ TEST_CASE("Semigroup 37: copy_add_generators [partly enumerated]",
 
   Semigroup* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   REQUIRE(T->is_begun());
@@ -1846,8 +1846,8 @@ TEST_CASE("Semigroup 39: copy_closure [fully enumerated]",
 
   Semigroup* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   REQUIRE(T->is_begun());
@@ -1890,8 +1890,8 @@ TEST_CASE("Semigroup 40: copy_add_generators [fully enumerated]",
 
   Semigroup* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   REQUIRE(T->is_begun());
@@ -2241,8 +2241,8 @@ TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
 
   Semigroup* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   std::vector<size_t> result;
@@ -2301,8 +2301,8 @@ TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
 
   Semigroup* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens()->at(3)));
-  REQUIRE(*coll[1] == *(T->gens()->at(4)));
+  REQUIRE(*coll[0] == *(T->gens(3)));
+  REQUIRE(*coll[1] == *(T->gens(4)));
   really_delete_cont(coll);
 
   std::vector<size_t> result;

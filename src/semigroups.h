@@ -220,20 +220,13 @@ namespace libsemigroups {
 
     //! Returns the number of generators of the semigroup.
     size_t nrgens() const {
-      return _gens->size();
-    }
-
-    //! Returns a pointer to the vector containing the generators of the
-    //! semigroup.
-    // FIXME these should be an iterator
-    std::vector<Element const*> const* gens() const {
-      return _gens;
+      return _gens.size();
     }
 
     //! Return a pointer to the generator with index \p pos.
-    Element const* gens(element_index_t pos) const {
-      LIBSEMIGROUPS_ASSERT(pos < _gens->size());
-      return (*_gens)[pos];
+    Element const* gens(letter_t pos) const {
+      LIBSEMIGROUPS_ASSERT(pos < _gens.size());
+      return _gens[pos];
     }
 
     //! Returns \c true if the semigroup is fully enumerated and \c false if
@@ -278,7 +271,7 @@ namespace libsemigroups {
     //! This is only the actual size of the semigroup if the semigroup is fully
     //! enumerated.
     size_t current_size() const {
-      return _elements->size();
+      return _elements.size();
     }
 
     //! Returns the number of relations in the presentation for the semigroup
@@ -470,7 +463,7 @@ namespace libsemigroups {
     //! Returns the size of the semigroup.
     size_t size() {
       enumerate();
-      return _elements->size();
+      return _elements.size();
     }
 
     //! Returns \c true if \p x is an element of \c this and \c false if it is
@@ -518,7 +511,7 @@ namespace libsemigroups {
     //! This method performs no checks on its argument, and performs no
     //! enumeration of the semigroup.
     Element const* operator[](element_index_t pos) const {
-      return (*_elements)[pos];
+      return _elements[pos];
     }
 
     //! Returns the element of the semigroup in position \p pos of the sorted
@@ -533,12 +526,12 @@ namespace libsemigroups {
     // TODO expand this doc
     inline element_index_t right(element_index_t i, letter_t j) {
       enumerate();
-      return _right->get(i, j);
+      return _right.get(i, j);
     }
 
-    cayley_graph_t const* right_cayley_graph_copy() {
+    cayley_graph_t* right_cayley_graph_copy() {
       enumerate();
-      return new cayley_graph_t(*_right);
+      return new cayley_graph_t(_right);
     }
 
     //! Returns a pointer to the left Cayley graph of the semigroup.
@@ -547,12 +540,12 @@ namespace libsemigroups {
     // TODO expand this doc
     inline element_index_t left(element_index_t i, letter_t j) {
       enumerate();
-      return _left->get(i, j);
+      return _left.get(i, j);
     }
 
-    cayley_graph_t const* left_cayley_graph_copy() {
+    cayley_graph_t* left_cayley_graph_copy() {
       enumerate();
-      return new cayley_graph_t(*_left);
+      return new cayley_graph_t(_left);
     }
 
     //! Changes \p word in-place to contain a minimal word with respect to the
@@ -987,7 +980,7 @@ namespace libsemigroups {
         const_iterator_pair_first;
 
     const_iterator cbegin() const {
-      return const_iterator(_elements->cbegin());
+      return const_iterator(_elements.cbegin());
     }
 
     const_iterator begin() const {
@@ -995,7 +988,7 @@ namespace libsemigroups {
     }
 
     const_iterator cend() const {
-      return const_iterator(_elements->cend());
+      return const_iterator(_elements.cend());
     }
 
     const_iterator end() const {
@@ -1062,9 +1055,9 @@ namespace libsemigroups {
    private:
     // Expand the data structures in the semigroup with space for nr elements
     void inline expand(index_t nr) {
-      _left->add_rows(nr);
+      _left.add_rows(nr);
       _reduced.add_rows(nr);
-      _right->add_rows(nr);
+      _right.add_rows(nr);
     }
 
     // Check if an element is the identity, x should be in the position pos
@@ -1078,12 +1071,12 @@ namespace libsemigroups {
 
     void copy_gens();
 
-    void inline closure_update(element_index_t    i,
-                               letter_t           j,
-                               letter_t           b,
-                               element_index_t    s,
-                               index_t            old_nr,
-                               size_t const&      thread_id);
+    void inline closure_update(element_index_t i,
+                               letter_t        j,
+                               letter_t        b,
+                               element_index_t s,
+                               index_t         old_nr,
+                               size_t const&   thread_id);
 
     // Initialise the data member _sorted. We store a list of pairs consisting
     // of an Element* and element_index_t which is sorted on the first entry
@@ -1111,17 +1104,17 @@ namespace libsemigroups {
     size_t          _batch_size;
     element_index_t _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
-    std::vector<Element const*>*    _elements;
+    std::vector<Element const*>     _elements;
     std::vector<element_index_t>    _enumerate_order;
     std::vector<letter_t>           _final;
     std::vector<letter_t>           _first;
     bool                            _found_one;
-    std::vector<Element const*>*    _gens;
+    std::vector<Element const*>     _gens;
     Element const*                  _id;
     std::vector<idempotent_value_t> _idempotents;
     bool                            _idempotents_found;
     std::vector<bool>               _is_idempotent;
-    cayley_graph_t*                 _left;
+    cayley_graph_t                  _left;
     std::vector<index_t>            _length;
     std::vector<enumerate_index_t>  _lenindex;
     std::vector<element_index_t>    _letter_to_pos;
@@ -1141,7 +1134,7 @@ namespace libsemigroups {
     flags_t                      _reduced;
     letter_t                     _relation_gen;
     enumerate_index_t            _relation_pos;
-    cayley_graph_t*              _right;
+    cayley_graph_t               _right;
     std::vector<std::pair<Element const*, element_index_t>> _sorted;
     std::vector<element_index_t> _suffix;
     Element*                     _tmp_product;
