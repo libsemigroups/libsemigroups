@@ -468,9 +468,9 @@ TEST_CASE("Bipartition 03: non-overridden methods",
       {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
   REQUIRE(x->rank() == 3);
-  REQUIRE(x->block(0) == 0);
-  REQUIRE(x->block(6) == 1);
-  REQUIRE(x->block(10) == 0);
+  REQUIRE(x->at(0) == 0);
+  REQUIRE(x->at(6) == 1);
+  REQUIRE(x->at(10) == 0);
   REQUIRE(x->const_nr_blocks() == 5);
   REQUIRE(x->nr_blocks() == 5);
   REQUIRE(x->const_nr_blocks() == 5);

@@ -106,11 +106,6 @@ namespace libsemigroups {
   std::vector<std::vector<u_int32_t>>
       Bipartition::_lookup(std::thread::hardware_concurrency());
 
-  u_int32_t Bipartition::block(size_t pos) const {
-    LIBSEMIGROUPS_ASSERT(pos < 2 * degree());
-    return (*_vector)[pos];
-  }
-
   size_t Bipartition::complexity() const {
     return (_vector->empty() ? 0 : pow(degree(), 2));
   }

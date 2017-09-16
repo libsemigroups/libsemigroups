@@ -994,16 +994,6 @@ namespace libsemigroups {
     //! computed.
     size_t rank();
 
-    //! Returns the index of the block containing \p pos.
-    //!
-    //! The parameter \p pos must be a value between *0* and *2n - 1* where *n*
-    //! is the degree of this. This method asserts that pos is in the correct
-    //! range of values.
-
-    // FIXME remove this it is redundant: the method for [] or at of
-    // ElementWithVectorData makes this unnecessary
-    u_int32_t block(size_t pos) const;
-
     //! Returns the number of blocks in a bipartition.
     //!
     //! This method differs for Bipartition::nr_blocks in that the number of
