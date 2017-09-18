@@ -183,7 +183,7 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < n; i++) {
       u_int32_t j = fuseit(fuse, (*xblocks)[i]);
-      if (lookup[j] == (u_int32_t) -1) {
+      if (lookup[j] == static_cast<u_int32_t>(-1)) {
         lookup[j] = next;
         next++;
       }
@@ -192,7 +192,7 @@ namespace libsemigroups {
 
     for (size_t i = n; i < 2 * n; i++) {
       u_int32_t j = fuseit(fuse, (*yblocks)[i] + nrx);
-      if (lookup[j] == (u_int32_t) -1) {
+      if (lookup[j] == static_cast<u_int32_t>(-1)) {
         lookup[j] = next;
         next++;
       }
