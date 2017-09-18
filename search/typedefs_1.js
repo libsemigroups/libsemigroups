@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['letter_5ft',['letter_t',['../namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2',1,'libsemigroups']]]
+  ['element_5findex_5ft',['element_index_t',['../classlibsemigroups_1_1_semigroup.html#a9dfa78f4ec2daeee9ae98dbfbaced077',1,'libsemigroups::Semigroup']]]
 ];

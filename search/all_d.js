@@ -1,7 +1,7 @@
 var searchData=
 [
   ['naturalsemiring',['NaturalSemiring',['../classlibsemigroups_1_1_natural_semiring.html',1,'libsemigroups::NaturalSemiring'],['../classlibsemigroups_1_1_natural_semiring.html#a28d50165b4edcaabad3c5e3377d4e309',1,'libsemigroups::NaturalSemiring::NaturalSemiring()']]],
-  ['next_5frelation',['next_relation',['../classlibsemigroups_1_1_semigroup.html#ab5aef49c839f223984032c0eda481bb5',1,'libsemigroups::Semigroup']]],
+  ['next_5frelation',['next_relation',['../classlibsemigroups_1_1_semigroup.html#a255474c37d0e80f014cd9dba31e588f9',1,'libsemigroups::Semigroup']]],
   ['nontrivial_5fclasses',['nontrivial_classes',['../classlibsemigroups_1_1_congruence.html#a630579855342bd38f92892e55bed8ba3',1,'libsemigroups::Congruence']]],
   ['not_5frwse',['NOT_RWSE',['../classlibsemigroups_1_1_element.html#a3e78b103837362d309f8459b1c7d7ff4a622b60bc16032e42f32a648fb7c81930',1,'libsemigroups::Element']]],
   ['nr_5fblocks',['nr_blocks',['../classlibsemigroups_1_1_blocks.html#a48532c2e036635ffa87cc6f17bbe00c9',1,'libsemigroups::Blocks::nr_blocks()'],['../classlibsemigroups_1_1_bipartition.html#ac9639f4eff9f17fa53b4cd5451a4e34a',1,'libsemigroups::Bipartition::nr_blocks()']]],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pos_5ft',['pos_t',['../classlibsemigroups_1_1_semigroup.html#afeab9f00f93f7f506487eb784244e20e',1,'libsemigroups::Semigroup']]]
+  ['letter_5ft',['letter_t',['../namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2',1,'libsemigroups']]]
 ];

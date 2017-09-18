@@ -102,9 +102,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae8f10cb7f48832247dc1d7ee1eb0e04e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_bipartition.html#ae8f10cb7f48832247dc1d7ee1eb0e04e">Bipartition</a> (std::vector&lt; u_int32_t &gt; const &amp;blocks)</td></tr>
 <tr class="memdesc:ae8f10cb7f48832247dc1d7ee1eb0e04e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#ae8f10cb7f48832247dc1d7ee1eb0e04e">More...</a><br /></td></tr>
 <tr class="separator:ae8f10cb7f48832247dc1d7ee1eb0e04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f4c1dc0361183947b88b68c0e6be2aa"><td class="memItemLeft" align="right" valign="top">u_int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_bipartition.html#a3f4c1dc0361183947b88b68c0e6be2aa">block</a> (size_t pos) const</td></tr>
-<tr class="memdesc:a3f4c1dc0361183947b88b68c0e6be2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the index of the block containing <code>pos</code>.  <a href="#a3f4c1dc0361183947b88b68c0e6be2aa">More...</a><br /></td></tr>
-<tr class="separator:a3f4c1dc0361183947b88b68c0e6be2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea191f080966c591daa1bd975ff603e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_bipartition.html#aea191f080966c591daa1bd975ff603e5">cache_hash_value</a> () const override</td></tr>
 <tr class="memdesc:aea191f080966c591daa1bd975ff603e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate and cache a hash value.  <a href="#aea191f080966c591daa1bd975ff603e5">More...</a><br /></td></tr>
 <tr class="separator:aea191f080966c591daa1bd975ff603e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,27 +340,6 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3f4c1dc0361183947b88b68c0e6be2aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f4c1dc0361183947b88b68c0e6be2aa">&#9670;&nbsp;</a></span>block()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">u_int32_t libsemigroups::Bipartition::block </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>pos</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the index of the block containing <code>pos</code>. </p>
-<p>The parameter <code>pos</code> must be a value between <em>0</em> and <em>2n - 1</em> where <em>n</em> is the degree of this. This method asserts that pos is in the correct range of values. </p>
-
-</div>
-</div>
 <a id="aea191f080966c591daa1bd975ff603e5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aea191f080966c591daa1bd975ff603e5">&#9670;&nbsp;</a></span>cache_hash_value()</h2>
 
@@ -787,7 +763,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 23 2017 15:55:18 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 18 2017 18:32:20 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
