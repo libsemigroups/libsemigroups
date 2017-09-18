@@ -1374,7 +1374,7 @@ TEST_CASE("Semigroup 68: iterator sorted", "[quick][semigroup][finite][68]") {
   S.set_report(SEMIGROUPS_REPORT);
 
   // Calling cbegin/cend_sorted fully enumerates the semigroup
-  auto it = S.cbegin_sorted();
+  { auto it = S.cbegin_sorted(); }
   REQUIRE(S.is_done());
 
   size_t pos = 0;

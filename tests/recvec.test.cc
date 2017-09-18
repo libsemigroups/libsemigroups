@@ -1123,7 +1123,6 @@ TEST_CASE("RecVec 32: const_iterator operator++/--", "[quick][recvec][32]") {
 
 TEST_CASE("RecVec 33: column iterators", "[quick][recvec][33]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 3);
-  auto           it = rv.begin_column(1);
   for (size_t i = 0; i < rv.nr_cols(); i++) {
     std::fill(rv.begin_column(i), rv.end_column(i), i);
   }
