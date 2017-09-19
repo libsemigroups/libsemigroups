@@ -27,51 +27,10 @@
 #include "report.h"
 
 namespace libsemigroups {
-
   size_t const Element::UNDEFINED = std::numeric_limits<size_t>::max();
 
-  // BooleanMat
-
-  BooleanMat::BooleanMat(std::vector<std::vector<bool>> const& matrix)
-      : ElementWithVectorData<bool, BooleanMat>() {
-    LIBSEMIGROUPS_ASSERT(matrix.size() != 0);
-    LIBSEMIGROUPS_ASSERT(
-        all_of(matrix.begin(), matrix.end(), [matrix](std::vector<bool> row) {
-          return row.size() == matrix.size();
-        }));
-    this->_vector->reserve(matrix.size() * matrix.size());
-    for (auto const& row : matrix) {
-      for (auto entry : row) {
-        this->_vector->push_back(entry);
-      }
-    }
-  }
-
-  size_t BooleanMat::complexity() const {
-    return pow(this->degree(), 3);
-  }
-
-  size_t BooleanMat::degree() const {
-    return sqrt(_vector->size());
-  }
-
-  void BooleanMat::cache_hash_value() const {
-    size_t seed = 0;
-    for (auto x : *this->_vector) {
-      seed ^= x + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    }
-    this->_hash_value = seed;
-  }
-
-  Element* BooleanMat::identity() const {
-    std::vector<bool>* matrix(new std::vector<bool>());
-    matrix->resize(_vector->size(), false);
-    size_t const n = this->degree();
-    for (size_t i = 0; i < n; i++) {
-      (*matrix)[i * n + i] = true;
-    }
-    return new BooleanMat(matrix);
-  }
+  // Boolean matrices
+  BooleanSemiring const* const BooleanMat::_semiring = new BooleanSemiring();
 
   // multiply x and y into this
   void BooleanMat::redefine(Element const* x, Element const* y) {
@@ -97,8 +56,7 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
-  // Bipartition
-
+  // Bipartitions
   u_int32_t const Bipartition::UNDEFINED
       = std::numeric_limits<u_int32_t>::max();
   std::vector<std::vector<u_int32_t>>
@@ -112,16 +70,6 @@ namespace libsemigroups {
 
   size_t Bipartition::degree() const {
     return (_vector->empty() ? 0 : _vector->size() / 2);
-  }
-
-  void Bipartition::cache_hash_value() const {
-    size_t seed = 0;
-    size_t deg  = this->_vector->size();
-    for (auto const& val : *(this->_vector)) {
-      seed *= deg;
-      seed += val;
-    }
-    this->_hash_value = seed;
   }
 
   // the identity of this
@@ -321,120 +269,7 @@ namespace libsemigroups {
     return new Blocks(blocks, blocks_lookup, nr_blocks);
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-  // Matrices over semirings
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-
-  MatrixOverSemiring::MatrixOverSemiring(
-      std::vector<std::vector<int64_t>> const& matrix,
-      Semiring*                                semiring)
-      : ElementWithVectorData<int64_t, MatrixOverSemiring>(),
-        _semiring(semiring) {
-    LIBSEMIGROUPS_ASSERT(matrix.size() != 0);
-    LIBSEMIGROUPS_ASSERT(all_of(
-        matrix.begin(), matrix.end(), [matrix](std::vector<int64_t> row) {
-          return row.size() == matrix.size();
-        }));
-
-    this->_vector->reserve(matrix.size() * matrix.size());
-    for (auto const& row : matrix) {
-      for (auto const& entry : row) {
-        this->_vector->push_back(entry);
-      }
-    }
-  }
-
-  Semiring* MatrixOverSemiring::semiring() const {
-    return _semiring;
-  }
-
-  size_t MatrixOverSemiring::complexity() const {
-    return pow(this->degree(), 3);
-  }
-
-  size_t MatrixOverSemiring::degree() const {
-    return sqrt(_vector->size());
-  }
-
-  void MatrixOverSemiring::cache_hash_value() const {
-    size_t seed = this->_vector->size();
-    for (auto const& x : *this->_vector) {
-      seed ^= x + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-    }
-    this->_hash_value = seed;
-  }
-
-  // the identity
-  Element* MatrixOverSemiring::identity() const {
-    std::vector<int64_t>* matrix(new std::vector<int64_t>());
-    matrix->resize(_vector->size(), _semiring->zero());
-    size_t n = this->degree();
-    for (size_t i = 0; i < n; i++) {
-      (*matrix)[i * n + i] = _semiring->one();
-    }
-    return new MatrixOverSemiring(matrix, _semiring);
-  }
-
-  Element* MatrixOverSemiring::really_copy(size_t increase_degree_by) const {
-    (void) increase_degree_by;
-    MatrixOverSemiring* copy = static_cast<MatrixOverSemiring*>(
-        ElementWithVectorData::really_copy(0));
-    LIBSEMIGROUPS_ASSERT(copy->_semiring == nullptr);
-    copy->_semiring = _semiring;
-    return copy;
-  }
-
-  void MatrixOverSemiring::redefine(Element const* x, Element const* y) {
-    MatrixOverSemiring const* xx(static_cast<MatrixOverSemiring const*>(x));
-    MatrixOverSemiring const* yy(static_cast<MatrixOverSemiring const*>(y));
-
-    LIBSEMIGROUPS_ASSERT(xx->degree() == yy->degree());
-    LIBSEMIGROUPS_ASSERT(xx->degree() == this->degree());
-    LIBSEMIGROUPS_ASSERT(xx != this && yy != this);
-    // It can be that the elements are defined over semirings that are distinct
-    // in memory but equal (for example, when one element comes from a
-    // semigroup and another from an ideal of that semigroup).
-    // LIBSEMIGROUPS_ASSERT(xx->semiring() == yy->semiring()
-    //       && xx->semiring() == this->semiring());
-    size_t deg = this->degree();
-
-    for (size_t i = 0; i < deg; i++) {
-      for (size_t j = 0; j < deg; j++) {
-        int64_t v = _semiring->zero();
-        for (size_t k = 0; k < deg; k++) {
-          v = _semiring->plus(
-              v, _semiring->prod((*xx)[i * deg + k], (*yy)[k * deg + j]));
-        }
-        (*_vector)[i * deg + j] = v;
-      }
-    }
-    after();  // post process this
-    this->reset_hash_value();
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-  // Projective max-plus matrices
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void ProjectiveMaxPlusMatrix::after() {
-    int64_t norm = *std::max_element(_vector->begin(), _vector->end());
-    for (auto& x : *_vector) {
-      if (x != LONG_MIN) {
-        x -= norm;
-      }
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
   // Partitioned binary relations (PBRs)
-  ////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////
-
   std::vector<std::vector<bool>>
       PBR::_x_seen(std::thread::hardware_concurrency());
   std::vector<std::vector<bool>>
@@ -451,15 +286,10 @@ namespace libsemigroups {
   }
 
   void PBR::cache_hash_value() const {
-    size_t       seed = 0;
-    size_t const pow  = 101;
+    this->_hash_value = 0;
     for (auto const& row : *this->_vector) {
-      for (auto const& val : row) {
-        seed *= pow;
-        seed += val;
-      }
+      this->_hash_value += vector_hash(&row);
     }
-    this->_hash_value = seed;
   }
 
   Element* PBR::identity() const {

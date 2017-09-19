@@ -236,7 +236,7 @@ TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
 
 TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
           "[quick][semigroup][finite][05]") {
-  Semiring* sr = new MaxPlusSemiring();
+  Semiring<int64_t>* sr = new MaxPlusSemiring();
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
   x->really_delete();
@@ -266,9 +266,10 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
 
 TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
           "[quick][semigroup][finite][06]") {
-  Semiring*             sr   = new Integers();
-  std::vector<Element*> gens = {new MatrixOverSemiring({{0, 0}, {0, 1}}, sr),
-                                new MatrixOverSemiring({{0, 1}, {-1, 0}}, sr)};
+  Semiring<int64_t>*    sr = new Integers();
+  std::vector<Element*> gens
+      = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
+         new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -286,7 +287,7 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
   REQUIRE(S.position(gens[1]) == 1);
   REQUIRE(S.test_membership(gens[1]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
 
@@ -296,7 +297,7 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
@@ -308,10 +309,10 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
 
 TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
           "[quick][semigroup][finite][07]") {
-  Semiring*             sr = new MaxPlusSemiring();
+  Semiring<int64_t>*    sr = new MaxPlusSemiring();
   std::vector<Element*> gens
-      = {new MatrixOverSemiring({{0, -4}, {-4, -1}}, sr),
-         new MatrixOverSemiring({{0, -3}, {-3, -1}}, sr)};
+      = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
+         new MatrixOverSemiring<int64_t>({{0, -3}, {-3, -1}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -329,7 +330,7 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
   REQUIRE(S.position(gens[1]) == 1);
   REQUIRE(S.test_membership(gens[1]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[1]);
@@ -338,7 +339,7 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
@@ -350,9 +351,9 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
 
 TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
           "[quick][semigroup][finite][08]") {
-  Semiring*             sr = new MinPlusSemiring();
+  Semiring<int64_t>*    sr = new MinPlusSemiring();
   std::vector<Element*> gens
-      = {new MatrixOverSemiring({{1, 0}, {0, LONG_MAX}}, sr)};
+      = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, LONG_MAX}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -366,7 +367,7 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
@@ -375,7 +376,7 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
@@ -387,10 +388,11 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
 
 TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
           "[quick][semigroup][finite][09]") {
-  Semiring*             sr = new TropicalMaxPlusSemiring(33);
-  std::vector<Element*> gens
-      = {new MatrixOverSemiring({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr),
-         new MatrixOverSemiring({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
+  Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
+                                      sr),
+      new MatrixOverSemiring<int64_t>({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -404,13 +406,13 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring({{2, 2}, {1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
@@ -425,10 +427,10 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
 
 TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
           "[quick][semigroup][finite][10]") {
-  Semiring*             sr = new TropicalMinPlusSemiring(11);
-  std::vector<Element*> gens
-      = {new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-         new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
+  Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
+      new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -442,13 +444,13 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
@@ -463,10 +465,10 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
 
 TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
           "[quick][semigroup][finite][11]") {
-  Semiring*             sr = new NaturalSemiring(11, 3);
-  std::vector<Element*> gens
-      = {new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-         new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
+  Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
+      new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup S = Semigroup(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -480,13 +482,13 @@ TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[0]);
@@ -2931,13 +2933,13 @@ TEST_CASE("Semigroup 65: my favourite example without reserve",
 
 TEST_CASE("Semigroup 70: number of idempotents",
           "[extreme][semigroup][finite][70]") {
-  Semiring* sr = new NaturalSemiring(0, 6);
+  Semiring<int64_t>* sr = new NaturalSemiring(0, 6);
 
-  std::vector<Element*> gens
-      = {new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}, sr),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
+  std::vector<Element*> gens = {
+      new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}, sr),
+      new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr),
+      new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
+      new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
   Semigroup S(gens);
   really_delete_cont(gens);
   S.reserve(10077696);

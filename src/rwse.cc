@@ -37,14 +37,19 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
     (void) increase_deg_by;  // to keep the compiler happy
     rws_word_t* rws_word(new rws_word_t(*(this->_rws_word)));
-    return new RWSE(_rws, rws_word, false, this->_hash_value);
+    return new RWSE(_rws, rws_word, false);
   }
 
   void RWSE::copy(Element const* x) {
     RWSE const* xx(static_cast<RWSE const*>(x));
-    delete _rws_word;
-    _rws_word = new rws_word_t(*(xx->_rws_word));
+    _rws_word->assign(xx->_rws_word->cbegin(), xx->_rws_word->cend());
     reset_hash_value();
+  }
+
+  void RWSE::swap(Element* x) {
+    RWSE* xx = static_cast<RWSE*>(x);
+    _rws_word->swap(*(xx->_rws_word));
+    std::swap(this->_hash_value, xx->_hash_value);
   }
 
   void RWSE::redefine(Element const* x, Element const* y) {
