@@ -998,6 +998,7 @@ namespace libsemigroups {
     };  // iterator_base definition ends
 
     struct IteratorMethods {
+      IteratorMethods() {}
       typename std::vector<Element const*>::const_reference indirection(
           typename std::vector<Element const*>::const_iterator it) const {
         return *it;
@@ -1009,6 +1010,7 @@ namespace libsemigroups {
     };
 
     struct IteratorMethodsPairFirst {
+      IteratorMethodsPairFirst() {}
       typename std::vector<Element const*>::const_reference indirection(
           typename std::vector<std::pair<Element const*, element_index_t>>::
               const_iterator it) const {
