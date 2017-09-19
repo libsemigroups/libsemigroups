@@ -1264,7 +1264,6 @@ namespace libsemigroups {
 
   //! This is just for backwards compatibility and will disappear in the next
   //! non-bugfix release.
-  // TODO Remove this when releasing 0.4.0
   typedef Semigroup::cayley_graph_t cayley_graph_t;
 
   template <typename T, typename C>
