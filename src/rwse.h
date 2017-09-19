@@ -36,8 +36,8 @@ namespace libsemigroups {
   //! that it is possible to use them as generators for a Semigroup object.
   class RWSE : public Element {
    private:
-    RWSE(RWS* rws, rws_word_t* w, bool reduce, size_t hv)
-        : Element(hv, Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
+    RWSE(RWS* rws, rws_word_t* w, bool reduce)
+        : Element(Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
       if (reduce) {
         _rws->rewrite(_rws_word);
       }
@@ -55,7 +55,7 @@ namespace libsemigroups {
     //!
     //! The rewriting system \p rws is not copied either, and it is the
     //! responsibility of the caller to delete it.
-    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true, Element::UNDEFINED) {}
+    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true) {}
 
     //! Constructor from a rewriting system and a word.
     //!
@@ -107,6 +107,7 @@ namespace libsemigroups {
     //! This method copies the RWSE pointed to by \p x into \c this by
     //! changing \c this in-place.
     void copy(Element const* x) override;
+    void swap(Element* x) override;
 
     //! Deletes the underlying rws_word_t that this object wraps.
     //!

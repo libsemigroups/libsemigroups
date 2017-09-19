@@ -98,12 +98,14 @@ using namespace libsemigroups;
       ->Unit(benchmark::kMillisecond)                                          \
       ->UseManualTime()
 
-Semiring* sr1 = new TropicalMinPlusSemiring(11);
+Semiring<int64_t>* sr1 = new TropicalMinPlusSemiring(11);
 BM_NRIDEMPOTENTS_NO_THREADS(
     BM_nridempotents_10,
     std::vector<Element*>(
-        {new MatrixOverSemiring({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr1),
-         new MatrixOverSemiring({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr1)}),
+        {new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}},
+                                         sr1),
+         new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}},
+                                         sr1)}),
     1039,
     5);
 
@@ -130,14 +132,18 @@ BM_NRIDEMPOTENTS_THREADS(
     std::pow(8, 8),
     41393);
 
-Semiring* sr2 = new NaturalSemiring(0, 6);
+Semiring<int64_t>* sr2 = new NaturalSemiring(0, 6);
 BM_NRIDEMPOTENTS_THREADS(
     BM_nridempotents_nat_mat,
     std::vector<Element*>(
-        {new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}, sr2),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr2),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr2),
-         new MatrixOverSemiring({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr2)}),
+        {new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}},
+                                         sr2),
+         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}},
+                                         sr2),
+         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}},
+                                         sr2),
+         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}},
+                                         sr2)}),
     10077696,
     13688);
 

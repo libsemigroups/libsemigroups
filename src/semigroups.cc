@@ -321,7 +321,7 @@ namespace libsemigroups {
     out->redefine(_gens[w[0]], _gens[w[1]]);
     for (auto it = w.begin() + 2; it < w.end(); it++) {
       LIBSEMIGROUPS_ASSERT(*it < nrgens());
-      _tmp_product->copy(out);
+      _tmp_product->swap(out);
       out->redefine(_tmp_product, _gens[*it]);
     }
     return out;

@@ -85,11 +85,15 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   word_t* w = T.factorisation(&ab);
   REQUIRE(*w == word_t({1}));
   delete w;
-  ab.really_delete();
 
   RWSE aaa(rws, word_t({0, 0, 0}));
   w = T.factorisation(&aaa);
   REQUIRE(*w == word_t({0}));
   delete w;
+
+  aaa.copy(&ab);
+  REQUIRE(aaa == ab);
+
   aaa.really_delete();
+  ab.really_delete();
 }
