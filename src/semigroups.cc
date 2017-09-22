@@ -286,7 +286,6 @@ namespace libsemigroups {
     _first.reserve(nn);
     _enumerate_order.reserve(nn);
     _length.reserve(nn);
-    _letter_to_pos.reserve(nn);
     _map.reserve(nn);
     _prefix.reserve(nn);
     _suffix.reserve(nn);

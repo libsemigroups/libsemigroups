@@ -1032,6 +1032,12 @@ namespace libsemigroups {
     typedef std::reverse_iterator<const_iterator_pair_first>
         const_reverse_iterator_pair_first;
 
+    typedef const_iterator_pair_first         const_iterator_sorted;
+    typedef const_iterator_pair_first         const_iterator_idempotents;
+    typedef const_reverse_iterator_pair_first const_reverse_iterator_sorted;
+    typedef const_reverse_iterator_pair_first
+        const_reverse_iterator_idempotents;
+
    public:
     //! Returns a const iterator pointing to the first element of the
     //! semigroup.
@@ -1105,7 +1111,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! Semigroup class.
-    const_iterator_pair_first cbegin_sorted() {
+    const_iterator_sorted cbegin_sorted() {
       init_sorted();
       return const_iterator_pair_first(_sorted.cbegin());
     }
@@ -1116,7 +1122,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! Semigroup class.
-    const_iterator_pair_first cend_sorted() {
+    const_iterator_sorted cend_sorted() {
       init_sorted();
       return const_iterator_pair_first(_sorted.cend());
     }
@@ -1127,7 +1133,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! Semigroup class.
-    const_reverse_iterator_pair_first crbegin_sorted() {
+    const_reverse_iterator_sorted crbegin_sorted() {
       init_sorted();
       return const_reverse_iterator_pair_first(cend_sorted());
     }
@@ -1138,7 +1144,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! Semigroup class.
-    const_reverse_iterator_pair_first crend_sorted() {
+    const_reverse_iterator_sorted crend_sorted() {
       init_sorted();
       return const_reverse_iterator_pair_first(cbegin_sorted());
     }
@@ -1152,7 +1158,7 @@ namespace libsemigroups {
     //!
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
-    const_iterator_pair_first cbegin_idempotents() {
+    const_iterator_idempotents cbegin_idempotents() {
       init_idempotents();
       return const_iterator_pair_first(_idempotents.cbegin());
     }
@@ -1162,7 +1168,7 @@ namespace libsemigroups {
     //!
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
-    const_iterator_pair_first cend_idempotents() {
+    const_iterator_idempotents cend_idempotents() {
       init_idempotents();
       return const_iterator_pair_first(_idempotents.cend());
     }
@@ -1262,8 +1268,8 @@ namespace libsemigroups {
 #endif
   };
 
-  //! This is just for backwards compatibility and will disappear in the next
-  //! non-bugfix release.
+  //! This is just for backwards compatibility and should disappear at some
+  //! point.
   typedef Semigroup::cayley_graph_t cayley_graph_t;
 
   template <typename T, typename C>
