@@ -55,7 +55,9 @@ namespace libsemigroups {
     //!
     //! The rewriting system \p rws is not copied either, and it is the
     //! responsibility of the caller to delete it.
-    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true) {}
+    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true) {
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
+    }
 
     //! Constructor from a rewriting system and a word.
     //!
@@ -84,6 +86,8 @@ namespace libsemigroups {
     //! words whether or not they represent that the same reduced word of the
     //! rewriting system they are defined over.
     bool operator==(Element const& that) const override {
+      LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
+      LIBSEMIGROUPS_ASSERT(static_cast<RWSE const&>(that)._rws_word != nullptr);
       return *(static_cast<RWSE const&>(that)._rws_word) == *(this->_rws_word);
     }
 
@@ -114,6 +118,7 @@ namespace libsemigroups {
     //! \sa Element::really_delete.
     void really_delete() override {
       delete _rws_word;
+      _rws_word = nullptr;
     }
 
     //! Returns the approximate time complexity of multiplying two
@@ -152,6 +157,7 @@ namespace libsemigroups {
     //!
     //! \sa Element::hash_value and Element::cache_hash_value.
     void cache_hash_value() const override {
+      LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
       this->_hash_value = std::hash<rws_word_t>()(*_rws_word);
     }
 
