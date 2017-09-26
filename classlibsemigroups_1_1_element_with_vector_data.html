@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>libsemigroups: libsemigroups::ElementWithVectorData&lt; S, T &gt; Class Template Reference</title>
+<title>libsemigroups: libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,10 +70,11 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classlibsemigroups_1_1_element_with_vector_data-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">libsemigroups::ElementWithVectorData&lt; S, T &gt; Class Template Reference</div>  </div>
+<div class="title">libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -82,69 +83,81 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="elements_8h_source.html">elements.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for libsemigroups::ElementWithVectorData&lt; S, T &gt;:</div>
+Inheritance diagram for libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt;:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classlibsemigroups_1_1_element_with_vector_data.png" usemap="#libsemigroups::ElementWithVectorData_3C_20S_2C_20T_20_3E_map" alt=""/>
-  <map id="libsemigroups::ElementWithVectorData_3C_20S_2C_20T_20_3E_map" name="libsemigroups::ElementWithVectorData_3C_20S_2C_20T_20_3E_map">
-<area href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="libsemigroups::Element" shape="rect" coords="0,0,275,24"/>
-<area href="classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations. " alt="libsemigroups::PartialTransformation&lt; S, T &gt;" shape="rect" coords="0,112,275,136"/>
+<div class="center"><img src="classlibsemigroups_1_1_element_with_vector_data__inherit__graph.png" border="0" usemap="#libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_inherit__map" id="libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_inherit__map">
+<area shape="rect" id="node3" href="classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="448,40,634,92"/>
+<area shape="rect" id="node2" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,53,165,79"/>
+<area shape="rect" id="node4" href="classlibsemigroups_1_1_matrix_over_semiring_base.html" title="Matrices over a semiring. " alt="" coords="707,5,896,57"/>
+<area shape="rect" id="node5" href="classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations. " alt="" coords="682,81,920,120"/>
 </map>
- </div></div>
+</div>
+<div class="dynheader">
+Collaboration diagram for libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlibsemigroups_1_1_element_with_vector_data__coll__graph.png" border="0" usemap="#libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_coll__map" alt="Collaboration graph"/></div>
+<map name="libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_coll__map" id="libsemigroups_1_1_element_with_vector_data_3_01_t_value_type_00_01_t_subclass_01_4_coll__map">
+<area shape="rect" id="node2" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="19,5,179,31"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a266e144d51fd4fb4a0f1f0be0329a7c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a266e144d51fd4fb4a0f1f0be0329a7c1">ElementWithVectorData</a> (size_t size=0)</td></tr>
-<tr class="memdesc:a266e144d51fd4fb4a0f1f0be0329a7c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#a266e144d51fd4fb4a0f1f0be0329a7c1">More...</a><br /></td></tr>
-<tr class="separator:a266e144d51fd4fb4a0f1f0be0329a7c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0742cf8baf222d05e5a8850279186d38"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a0742cf8baf222d05e5a8850279186d38">ElementWithVectorData</a> (std::vector&lt; S &gt; *vector, size_t hv=<a class="el" href="classlibsemigroups_1_1_element.html#a5211f2c852d18b9aa83fe729851d0fe6">Element::UNDEFINED</a>)</td></tr>
-<tr class="memdesc:a0742cf8baf222d05e5a8850279186d38"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#a0742cf8baf222d05e5a8850279186d38">More...</a><br /></td></tr>
-<tr class="separator:a0742cf8baf222d05e5a8850279186d38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85ba49a9514baadc3bbb8fd0464a33b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a85ba49a9514baadc3bbb8fd0464a33b4">ElementWithVectorData</a> (std::vector&lt; S &gt; const &amp;vector)</td></tr>
-<tr class="memdesc:a85ba49a9514baadc3bbb8fd0464a33b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#a85ba49a9514baadc3bbb8fd0464a33b4">More...</a><br /></td></tr>
-<tr class="separator:a85ba49a9514baadc3bbb8fd0464a33b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac805cc5221a731718a1be471988dd58e"><td class="memItemLeft" align="right" valign="top">S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ac805cc5221a731718a1be471988dd58e">at</a> (size_t pos) const</td></tr>
-<tr class="memdesc:ac805cc5221a731718a1be471988dd58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the <code>pos</code> entry in the vector containing the defining data.  <a href="#ac805cc5221a731718a1be471988dd58e">More...</a><br /></td></tr>
-<tr class="separator:ac805cc5221a731718a1be471988dd58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a91b43518058e87bb627560fec4f5cc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; S &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a5a91b43518058e87bb627560fec4f5cc">begin</a> () const</td></tr>
-<tr class="memdesc:a5a91b43518058e87bb627560fec4f5cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator.  <a href="#a5a91b43518058e87bb627560fec4f5cc">More...</a><br /></td></tr>
-<tr class="separator:a5a91b43518058e87bb627560fec4f5cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade88c3b41e573b5655ef156bb1d6dbdf"><td class="memItemLeft" align="right" valign="top">std::vector&lt; S &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ade88c3b41e573b5655ef156bb1d6dbdf">cbegin</a> () const</td></tr>
-<tr class="memdesc:ade88c3b41e573b5655ef156bb1d6dbdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator.  <a href="#ade88c3b41e573b5655ef156bb1d6dbdf">More...</a><br /></td></tr>
-<tr class="separator:ade88c3b41e573b5655ef156bb1d6dbdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a457675ba742802bc1f84bcc24b0b58e2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; S &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a457675ba742802bc1f84bcc24b0b58e2">cend</a> () const</td></tr>
-<tr class="memdesc:a457675ba742802bc1f84bcc24b0b58e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator.  <a href="#a457675ba742802bc1f84bcc24b0b58e2">More...</a><br /></td></tr>
-<tr class="separator:a457675ba742802bc1f84bcc24b0b58e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d6354078317595a125535c9751b3b1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a8d6354078317595a125535c9751b3b1c">copy</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const *x) override</td></tr>
-<tr class="memdesc:a8d6354078317595a125535c9751b3b1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy another <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> into <code>this</code>.  <a href="#a8d6354078317595a125535c9751b3b1c">More...</a><br /></td></tr>
-<tr class="separator:a8d6354078317595a125535c9751b3b1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10bbe724a2da6be87e0d3d34eadbc559"><td class="memItemLeft" align="right" valign="top">std::vector&lt; S &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a10bbe724a2da6be87e0d3d34eadbc559">end</a> () const</td></tr>
-<tr class="memdesc:a10bbe724a2da6be87e0d3d34eadbc559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator.  <a href="#a10bbe724a2da6be87e0d3d34eadbc559">More...</a><br /></td></tr>
-<tr class="separator:a10bbe724a2da6be87e0d3d34eadbc559"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad03ccbdf4813b2e565ed765cdc5e395e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ad03ccbdf4813b2e565ed765cdc5e395e">operator&lt;</a> (const <a class="el" href="classlibsemigroups_1_1_element.html">Element</a> &amp;that) const override</td></tr>
-<tr class="memdesc:ad03ccbdf4813b2e565ed765cdc5e395e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>this</code> is less than <code>that</code>.  <a href="#ad03ccbdf4813b2e565ed765cdc5e395e">More...</a><br /></td></tr>
-<tr class="separator:ad03ccbdf4813b2e565ed765cdc5e395e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa759d9cb77f5733a03e901541a4e8d43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#aa759d9cb77f5733a03e901541a4e8d43">operator==</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const &amp;that) const override</td></tr>
-<tr class="memdesc:aa759d9cb77f5733a03e901541a4e8d43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>this</code> equals <code>that</code>.  <a href="#aa759d9cb77f5733a03e901541a4e8d43">More...</a><br /></td></tr>
-<tr class="separator:aa759d9cb77f5733a03e901541a4e8d43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30b010eb82688eed30e1e82726733066"><td class="memItemLeft" align="right" valign="top">S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a30b010eb82688eed30e1e82726733066">operator[]</a> (size_t pos) const</td></tr>
-<tr class="memdesc:a30b010eb82688eed30e1e82726733066"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the <code>pos</code> entry in the vector containing the defining data.  <a href="#a30b010eb82688eed30e1e82726733066">More...</a><br /></td></tr>
-<tr class="separator:a30b010eb82688eed30e1e82726733066"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a6c98268b74fa13bb8ff13d1566f004"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a0a6c98268b74fa13bb8ff13d1566f004">really_copy</a> (size_t increase_deg_by) const override</td></tr>
-<tr class="memdesc:a0a6c98268b74fa13bb8ff13d1566f004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to a copy of <code>this</code>.  <a href="#a0a6c98268b74fa13bb8ff13d1566f004">More...</a><br /></td></tr>
-<tr class="separator:a0a6c98268b74fa13bb8ff13d1566f004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a640ab24ac458e4197ba65f116b21c5de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a640ab24ac458e4197ba65f116b21c5de">really_delete</a> () override</td></tr>
-<tr class="memdesc:a640ab24ac458e4197ba65f116b21c5de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the defining data of an <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>.  <a href="#a640ab24ac458e4197ba65f116b21c5de">More...</a><br /></td></tr>
-<tr class="separator:a640ab24ac458e4197ba65f116b21c5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0905349f53e0b88ed4b513d4e43179e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ae0905349f53e0b88ed4b513d4e43179e">ElementWithVectorData</a> ()</td></tr>
+<tr class="memdesc:ae0905349f53e0b88ed4b513d4e43179e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#ae0905349f53e0b88ed4b513d4e43179e">More...</a><br /></td></tr>
+<tr class="separator:ae0905349f53e0b88ed4b513d4e43179e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48f10cb97d74321ee9d1689aede6d527"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a48f10cb97d74321ee9d1689aede6d527">ElementWithVectorData</a> (std::vector&lt; TValueType &gt; *vector)</td></tr>
+<tr class="memdesc:a48f10cb97d74321ee9d1689aede6d527"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#a48f10cb97d74321ee9d1689aede6d527">More...</a><br /></td></tr>
+<tr class="separator:a48f10cb97d74321ee9d1689aede6d527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af10e2a99e40b9fcacd20c715aa4a6d5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#af10e2a99e40b9fcacd20c715aa4a6d5e">ElementWithVectorData</a> (std::vector&lt; TValueType &gt; const &amp;vector)</td></tr>
+<tr class="memdesc:af10e2a99e40b9fcacd20c715aa4a6d5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="#af10e2a99e40b9fcacd20c715aa4a6d5e">More...</a><br /></td></tr>
+<tr class="separator:af10e2a99e40b9fcacd20c715aa4a6d5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80a9e5eef46ea56e2aa55b0062cda885"><td class="memItemLeft" align="right" valign="top">TValueType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a80a9e5eef46ea56e2aa55b0062cda885">at</a> (size_t pos) const</td></tr>
+<tr class="memdesc:a80a9e5eef46ea56e2aa55b0062cda885"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the <code>pos</code> entry in the vector containing the defining data.  <a href="#a80a9e5eef46ea56e2aa55b0062cda885">More...</a><br /></td></tr>
+<tr class="separator:a80a9e5eef46ea56e2aa55b0062cda885"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9797b6b46cfd665f190729ae5760e34f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; TValueType &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a9797b6b46cfd665f190729ae5760e34f">begin</a> () const</td></tr>
+<tr class="memdesc:a9797b6b46cfd665f190729ae5760e34f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator.  <a href="#a9797b6b46cfd665f190729ae5760e34f">More...</a><br /></td></tr>
+<tr class="separator:a9797b6b46cfd665f190729ae5760e34f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a655deeca82b1514463e8ea09f31f2099"><td class="memItemLeft" align="right" valign="top">std::vector&lt; TValueType &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a655deeca82b1514463e8ea09f31f2099">cbegin</a> () const</td></tr>
+<tr class="memdesc:a655deeca82b1514463e8ea09f31f2099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator.  <a href="#a655deeca82b1514463e8ea09f31f2099">More...</a><br /></td></tr>
+<tr class="separator:a655deeca82b1514463e8ea09f31f2099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d3b0a94d7bd283da3ae94d00adc46cd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; TValueType &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a7d3b0a94d7bd283da3ae94d00adc46cd">cend</a> () const</td></tr>
+<tr class="memdesc:a7d3b0a94d7bd283da3ae94d00adc46cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator.  <a href="#a7d3b0a94d7bd283da3ae94d00adc46cd">More...</a><br /></td></tr>
+<tr class="separator:a7d3b0a94d7bd283da3ae94d00adc46cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2526b31b7ac53ed4ad7226db4fccfc73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a2526b31b7ac53ed4ad7226db4fccfc73">copy</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const *x) override</td></tr>
+<tr class="memdesc:a2526b31b7ac53ed4ad7226db4fccfc73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy another <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> into <code>this</code>.  <a href="#a2526b31b7ac53ed4ad7226db4fccfc73">More...</a><br /></td></tr>
+<tr class="separator:a2526b31b7ac53ed4ad7226db4fccfc73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33dc93536a69e300056a2f908040fe48"><td class="memItemLeft" align="right" valign="top">std::vector&lt; TValueType &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a33dc93536a69e300056a2f908040fe48">end</a> () const</td></tr>
+<tr class="memdesc:a33dc93536a69e300056a2f908040fe48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator.  <a href="#a33dc93536a69e300056a2f908040fe48">More...</a><br /></td></tr>
+<tr class="separator:a33dc93536a69e300056a2f908040fe48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad67eb351c351edc9d485ce25172c931e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ad67eb351c351edc9d485ce25172c931e">operator&lt;</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const &amp;that) const override</td></tr>
+<tr class="memdesc:ad67eb351c351edc9d485ce25172c931e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>this</code> is less than <code>that</code>.  <a href="#ad67eb351c351edc9d485ce25172c931e">More...</a><br /></td></tr>
+<tr class="separator:ad67eb351c351edc9d485ce25172c931e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1d65b514cff79dd7f33ea0c6459c017"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ac1d65b514cff79dd7f33ea0c6459c017">operator==</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const &amp;that) const override</td></tr>
+<tr class="memdesc:ac1d65b514cff79dd7f33ea0c6459c017"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>this</code> equals <code>that</code>.  <a href="#ac1d65b514cff79dd7f33ea0c6459c017">More...</a><br /></td></tr>
+<tr class="separator:ac1d65b514cff79dd7f33ea0c6459c017"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba5c0adf85e0e11632e84a12b76f0b5"><td class="memItemLeft" align="right" valign="top">TValueType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#aeba5c0adf85e0e11632e84a12b76f0b5">operator[]</a> (size_t pos) const</td></tr>
+<tr class="memdesc:aeba5c0adf85e0e11632e84a12b76f0b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the <code>pos</code> entry in the vector containing the defining data.  <a href="#aeba5c0adf85e0e11632e84a12b76f0b5">More...</a><br /></td></tr>
+<tr class="separator:aeba5c0adf85e0e11632e84a12b76f0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72f340f4b58c7f82c8fff7636af34657"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a72f340f4b58c7f82c8fff7636af34657">really_copy</a> (size_t increase_deg_by=0) const override</td></tr>
+<tr class="memdesc:a72f340f4b58c7f82c8fff7636af34657"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to a copy of <code>this</code>.  <a href="#a72f340f4b58c7f82c8fff7636af34657">More...</a><br /></td></tr>
+<tr class="separator:a72f340f4b58c7f82c8fff7636af34657"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a426b7c1e1c18388fbffe0daf2a62a3e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a426b7c1e1c18388fbffe0daf2a62a3e4">really_delete</a> () override</td></tr>
+<tr class="memdesc:a426b7c1e1c18388fbffe0daf2a62a3e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the defining data of an <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>.  <a href="#a426b7c1e1c18388fbffe0daf2a62a3e4">More...</a><br /></td></tr>
+<tr class="separator:a426b7c1e1c18388fbffe0daf2a62a3e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35953b86b9c5d0ce070cad5ffbb735fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a35953b86b9c5d0ce070cad5ffbb735fe">swap</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *x) override</td></tr>
+<tr class="memdesc:a35953b86b9c5d0ce070cad5ffbb735fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap another <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> with <code>this</code>.  <a href="#a35953b86b9c5d0ce070cad5ffbb735fe">More...</a><br /></td></tr>
+<tr class="separator:a35953b86b9c5d0ce070cad5ffbb735fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classlibsemigroups_1_1_element"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classlibsemigroups_1_1_element')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classlibsemigroups_1_1_element.html">libsemigroups::Element</a></td></tr>
-<tr class="memitem:a9bd4fc034cea35990c0cfdcbe3eea61c inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#a9bd4fc034cea35990c0cfdcbe3eea61c">Element</a> (size_t hv=<a class="el" href="classlibsemigroups_1_1_element.html#a5211f2c852d18b9aa83fe729851d0fe6">Element::UNDEFINED</a>, <a class="el" href="classlibsemigroups_1_1_element.html#a3e78b103837362d309f8459b1c7d7ff4">elm_t</a> type=Element::elm_t::NOT_RWSE)</td></tr>
-<tr class="memdesc:a9bd4fc034cea35990c0cfdcbe3eea61c inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="classlibsemigroups_1_1_element.html#a9bd4fc034cea35990c0cfdcbe3eea61c">More...</a><br /></td></tr>
-<tr class="separator:a9bd4fc034cea35990c0cfdcbe3eea61c inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf57e554749e9ff7c31ef66b1d061007 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#adf57e554749e9ff7c31ef66b1d061007">Element</a> (<a class="el" href="classlibsemigroups_1_1_element.html#a3e78b103837362d309f8459b1c7d7ff4">elm_t</a> type=Element::elm_t::NOT_RWSE)</td></tr>
+<tr class="memdesc:adf57e554749e9ff7c31ef66b1d061007 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">A constructor.  <a href="classlibsemigroups_1_1_element.html#adf57e554749e9ff7c31ef66b1d061007">More...</a><br /></td></tr>
+<tr class="separator:adf57e554749e9ff7c31ef66b1d061007 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac58bb53f6bc9f2ff727561149806a4e1 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#ac58bb53f6bc9f2ff727561149806a4e1">~Element</a> ()</td></tr>
 <tr class="memdesc:ac58bb53f6bc9f2ff727561149806a4e1 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">A default destructor.  <a href="classlibsemigroups_1_1_element.html#ac58bb53f6bc9f2ff727561149806a4e1">More...</a><br /></td></tr>
 <tr class="separator:ac58bb53f6bc9f2ff727561149806a4e1 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7d80fabf8c999e505980ec0cf64a55a inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#ac7d80fabf8c999e505980ec0cf64a55a">complexity</a> () const =0</td></tr>
-<tr class="memdesc:ac7d80fabf8c999e505980ec0cf64a55a inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the approximate time complexity of multiplying two Elements in a given subclass.  <a href="classlibsemigroups_1_1_element.html#ac7d80fabf8c999e505980ec0cf64a55a">More...</a><br /></td></tr>
+<tr class="memdesc:ac7d80fabf8c999e505980ec0cf64a55a inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the approximate time complexity of multiplying two <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> objects in a given subclass.  <a href="classlibsemigroups_1_1_element.html#ac7d80fabf8c999e505980ec0cf64a55a">More...</a><br /></td></tr>
 <tr class="separator:ac7d80fabf8c999e505980ec0cf64a55a inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a737a5e72977f33f609b0e6f63032a5f2 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#a737a5e72977f33f609b0e6f63032a5f2">degree</a> () const =0</td></tr>
 <tr class="memdesc:a737a5e72977f33f609b0e6f63032a5f2 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the degree of an <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a>.  <a href="classlibsemigroups_1_1_element.html#a737a5e72977f33f609b0e6f63032a5f2">More...</a><br /></td></tr>
@@ -156,7 +169,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a5f0550b30e74bf8c2369ebd244e0101d inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the hash value of an <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a>.  <a href="classlibsemigroups_1_1_element.html#a5f0550b30e74bf8c2369ebd244e0101d">More...</a><br /></td></tr>
 <tr class="separator:a5f0550b30e74bf8c2369ebd244e0101d inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae743eb1ec1f58c3eb0692bc375855782 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#ae743eb1ec1f58c3eb0692bc375855782">identity</a> () const =0</td></tr>
-<tr class="memdesc:ae743eb1ec1f58c3eb0692bc375855782 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the identity element.  <a href="classlibsemigroups_1_1_element.html#ae743eb1ec1f58c3eb0692bc375855782">More...</a><br /></td></tr>
+<tr class="memdesc:ae743eb1ec1f58c3eb0692bc375855782 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a new copy of the identity element.  <a href="classlibsemigroups_1_1_element.html#ae743eb1ec1f58c3eb0692bc375855782">More...</a><br /></td></tr>
 <tr class="separator:ae743eb1ec1f58c3eb0692bc375855782 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a411bfadc8f2e9def9b916fe742c11d37 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#a411bfadc8f2e9def9b916fe742c11d37">redefine</a> (<a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const *x, <a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const *y)</td></tr>
 <tr class="memdesc:a411bfadc8f2e9def9b916fe742c11d37 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplies <code>x</code> and <code>y</code> and stores the result in <code>this</code>.  <a href="classlibsemigroups_1_1_element.html#a411bfadc8f2e9def9b916fe742c11d37">More...</a><br /></td></tr>
@@ -165,14 +178,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a9705463d4f873f2b4e30d0d05a043065 inherit pub_methods_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplies <code>x</code> and <code>y</code> and stores the result in <code>this</code>.  <a href="classlibsemigroups_1_1_element.html#a9705463d4f873f2b4e30d0d05a043065">More...</a><br /></td></tr>
 <tr class="separator:a9705463d4f873f2b4e30d0d05a043065 inherit pub_methods_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:a8129a6b55198ff7210991dc4e3c6f6a9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8129a6b55198ff7210991dc4e3c6f6a9"><td class="memTemplItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a8129a6b55198ff7210991dc4e3c6f6a9">vector_hash</a> (std::vector&lt; T &gt; const *vec)</td></tr>
+<tr class="memdesc:a8129a6b55198ff7210991dc4e3c6f6a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a hash value for a vector provided there is a specialization of std::hash for the template type <code>T</code>.  <a href="#a8129a6b55198ff7210991dc4e3c6f6a9">More...</a><br /></td></tr>
+<tr class="separator:a8129a6b55198ff7210991dc4e3c6f6a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a48c112d12003d5d6dc5d4e47eb4e5b56"><td class="memItemLeft" align="right" valign="top">std::vector&lt; S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#a48c112d12003d5d6dc5d4e47eb4e5b56">_vector</a></td></tr>
-<tr class="memdesc:a48c112d12003d5d6dc5d4e47eb4e5b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector containing the defining data of <code>this</code>.  <a href="#a48c112d12003d5d6dc5d4e47eb4e5b56">More...</a><br /></td></tr>
-<tr class="separator:a48c112d12003d5d6dc5d4e47eb4e5b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac17ecf3cecb90414228d273023c288f6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; TValueType &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html#ac17ecf3cecb90414228d273023c288f6">_vector</a></td></tr>
+<tr class="memdesc:ac17ecf3cecb90414228d273023c288f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector containing the defining data of <code>this</code>.  <a href="#ac17ecf3cecb90414228d273023c288f6">More...</a><br /></td></tr>
+<tr class="separator:ac17ecf3cecb90414228d273023c288f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classlibsemigroups_1_1_element"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classlibsemigroups_1_1_element')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classlibsemigroups_1_1_element.html">libsemigroups::Element</a></td></tr>
 <tr class="memitem:aafbd07bf58665f3effcae84d0d04181c inherit pro_attribs_classlibsemigroups_1_1_element"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_element.html#aafbd07bf58665f3effcae84d0d04181c">_hash_value</a></td></tr>
-<tr class="memdesc:aafbd07bf58665f3effcae84d0d04181c inherit pro_attribs_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">This data member holds a cached version of the hash value of an <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a>. It is stored here if it is ever computed. It is invalidated by <a class="el" href="classlibsemigroups_1_1_element.html#a411bfadc8f2e9def9b916fe742c11d37" title="Multiplies x and y and stores the result in this. ">libsemigroups::Element::redefine</a> and sometimes by <a class="el" href="classlibsemigroups_1_1_element.html#a0a1f3eccf338d58746123e8a0e5e5998" title="Returns a new element completely independent of this. ">libsemigroups::Element::really_copy</a>.  <a href="classlibsemigroups_1_1_element.html#aafbd07bf58665f3effcae84d0d04181c">More...</a><br /></td></tr>
+<tr class="memdesc:aafbd07bf58665f3effcae84d0d04181c inherit pro_attribs_classlibsemigroups_1_1_element"><td class="mdescLeft">&#160;</td><td class="mdescRight">This data member holds a cached version of the hash value of an <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a>. It is stored here if it is ever computed. It is invalidated by <a class="el" href="classlibsemigroups_1_1_element.html#a411bfadc8f2e9def9b916fe742c11d37" title="Multiplies x and y and stores the result in this. ">libsemigroups::Element::redefine</a> and sometimes by <a class="el" href="classlibsemigroups_1_1_element.html#a0a1f3eccf338d58746123e8a0e5e5998" title="Returns a new element completely independent of this. ">libsemigroups::Element::really_copy</a>, and potentially any other non-const data member of <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> or any of its subclasses.  <a href="classlibsemigroups_1_1_element.html#aafbd07bf58665f3effcae84d0d04181c">More...</a><br /></td></tr>
 <tr class="separator:aafbd07bf58665f3effcae84d0d04181c inherit pro_attribs_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
@@ -196,30 +216,60 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a5211f2c852d18b9aa83fe729851d0fe6 inherit pro_static_attribs_classlibsemigroups_1_1_element"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename S, class T&gt;<br />
-class libsemigroups::ElementWithVectorData&lt; S, T &gt;</h3>
+<div class="textblock"><h3>template&lt;typename TValueType, class TSubclass&gt;<br />
+class libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt;</h3>
 
 <p>Abstract base class for elements using a vector to store their defining data. </p>
-<p>The template parameter <code>S</code> is the type entries in the vector containing the defining data. The value of the template parameter <code>S</code> can be used to reduce (or increase) the amount of memory required by instances of this class.</p>
-<p>The template parameter <code>T</code> is the subclass of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a> used by certain methods to construct new instances of subclasses of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>.</p>
-<p>For example, <a class="el" href="classlibsemigroups_1_1_transformation.html" title="Template class for transformations. ">Transformation</a>&lt;u_int128_t&gt; is a subclass of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>&lt;u_int128_t, <a class="el" href="classlibsemigroups_1_1_transformation.html" title="Template class for transformations. ">Transformation</a>&lt;u_int128_t&gt;&gt;. </p>
+<p>The template parameter <code>TValueType</code> is the type entries in the vector containing the defining data.</p>
+<p>The template parameter <code>TSubclass</code> is the subclass of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a> used by certain methods to construct new instances of subclasses of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>.</p>
+<p>For example, <a class="el" href="classlibsemigroups_1_1_transformation.html" title="Template class for transformations. ">Transformation</a>&lt;u_int128_t&gt; is a subclass of <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>&lt;u_int128_t, <a class="el" href="classlibsemigroups_1_1_transformation.html" title="Template class for transformations. ">Transformation</a>&lt;u_int128_t&gt;&gt; so that when the identity method in this class is called it returns a <a class="el" href="classlibsemigroups_1_1_transformation.html" title="Template class for transformations. ">Transformation</a> and not an <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. ">ElementWithVectorData</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a266e144d51fd4fb4a0f1f0be0329a7c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a266e144d51fd4fb4a0f1f0be0329a7c1">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[1/3]</span></h2>
+<a id="ae0905349f53e0b88ed4b513d4e43179e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0905349f53e0b88ed4b513d4e43179e">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em> = <code>0</code></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A constructor. </p>
+<p>Returns an object with an uninitialised vector. </p>
+
+</div>
+</div>
+<a id="a48f10cb97d74321ee9d1689aede6d527"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48f10cb97d74321ee9d1689aede6d527">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TValueType, class TSubclass&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; TValueType &gt; *&#160;</td>
+          <td class="paramname"><em>vector</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -231,68 +281,26 @@ template&lt;typename S, class T&gt; </div>
 </div><div class="memdoc">
 
 <p>A constructor. </p>
-<p>The parameter <code>size</code> is used to reserve the size of the underlying std::vector.</p>
-<p>Returns an object with an uninitialised vector which has size <code>size</code> (defaults to 0). </p>
+<p>The parameter <code>vector</code> should be a pointer to defining data of the element.</p>
+<p>Returns an object whose defining data is stored in <code>vector</code>, which is not copied, and is deleted using <a class="el" href="classlibsemigroups_1_1_element.html#a0744b0fbe4cc4bd34b03a006731c0ab2" title="Deletes the defining data of an Element. ">Element::really_delete</a>. </p>
 
 </div>
 </div>
-<a id="a0742cf8baf222d05e5a8850279186d38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0742cf8baf222d05e5a8850279186d38">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[2/3]</span></h2>
+<a id="af10e2a99e40b9fcacd20c715aa4a6d5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af10e2a99e40b9fcacd20c715aa4a6d5e">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
           <td>(</td>
-          <td class="paramtype">std::vector&lt; S &gt; *&#160;</td>
-          <td class="paramname"><em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>hv</em> = <code><a class="el" href="classlibsemigroups_1_1_element.html#a5211f2c852d18b9aa83fe729851d0fe6">Element::UNDEFINED</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>A constructor. </p>
-<p>The parameter <code>vector</code> should be a pointer to defining data of the element The parameter <code>hv</code> must be the hash value of the element being created (this defaults to <a class="el" href="classlibsemigroups_1_1_element.html#a5211f2c852d18b9aa83fe729851d0fe6" title="UNDEFINED value. ">Element::UNDEFINED</a>). This should only be set if it is guaranteed that <code>hv</code> is the correct value.</p>
-<p>Returns an object whose defining data is stored in <code>vector</code>, which is not copied, and should be deleted using <a class="el" href="classlibsemigroups_1_1_element.html#a0744b0fbe4cc4bd34b03a006731c0ab2" title="Deletes the defining data of an Element. ">Element::really_delete</a>. </p>
-
-</div>
-</div>
-<a id="a85ba49a9514baadc3bbb8fd0464a33b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85ba49a9514baadc3bbb8fd0464a33b4">&#9670;&nbsp;</a></span>ElementWithVectorData() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::<a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">ElementWithVectorData</a> </td>
-          <td>(</td>
-          <td class="paramtype">std::vector&lt; S &gt; const &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; TValueType &gt; const &amp;&#160;</td>
           <td class="paramname"><em>vector</em></td><td>)</td>
           <td></td>
         </tr>
@@ -306,24 +314,24 @@ template&lt;typename S, class T&gt; </div>
 
 <p>A constructor. </p>
 <p>The parameter <code>vector</code> should be a const reference to defining data of the element.</p>
-<p>Returns an object whose defining data is stored in <code>vector</code>, which is copied. </p>
+<p>Returns an object whose defining data is a copy of <code>vector</code>. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac805cc5221a731718a1be471988dd58e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac805cc5221a731718a1be471988dd58e">&#9670;&nbsp;</a></span>at()</h2>
+<a id="a80a9e5eef46ea56e2aa55b0062cda885"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80a9e5eef46ea56e2aa55b0062cda885">&#9670;&nbsp;</a></span>at()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">S <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::at </td>
+          <td class="memname">TValueType <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::at </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>pos</em></td><td>)</td>
@@ -342,19 +350,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="a5a91b43518058e87bb627560fec4f5cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a91b43518058e87bb627560fec4f5cc">&#9670;&nbsp;</a></span>begin()</h2>
+<a id="a9797b6b46cfd665f190729ae5760e34f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9797b6b46cfd665f190729ae5760e34f">&#9670;&nbsp;</a></span>begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;S&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::begin </td>
+          <td class="memname">std::vector&lt;TValueType&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -372,19 +380,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="ade88c3b41e573b5655ef156bb1d6dbdf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade88c3b41e573b5655ef156bb1d6dbdf">&#9670;&nbsp;</a></span>cbegin()</h2>
+<a id="a655deeca82b1514463e8ea09f31f2099"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a655deeca82b1514463e8ea09f31f2099">&#9670;&nbsp;</a></span>cbegin()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;S&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::cbegin </td>
+          <td class="memname">std::vector&lt;TValueType&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::cbegin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -402,19 +410,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="a457675ba742802bc1f84bcc24b0b58e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a457675ba742802bc1f84bcc24b0b58e2">&#9670;&nbsp;</a></span>cend()</h2>
+<a id="a7d3b0a94d7bd283da3ae94d00adc46cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d3b0a94d7bd283da3ae94d00adc46cd">&#9670;&nbsp;</a></span>cend()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;S&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::cend </td>
+          <td class="memname">std::vector&lt;TValueType&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::cend </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -432,19 +440,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="a8d6354078317595a125535c9751b3b1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d6354078317595a125535c9751b3b1c">&#9670;&nbsp;</a></span>copy()</h2>
+<a id="a2526b31b7ac53ed4ad7226db4fccfc73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2526b31b7ac53ed4ad7226db4fccfc73">&#9670;&nbsp;</a></span>copy()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::copy </td>
+          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::copy </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const *&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -459,25 +467,25 @@ template&lt;typename S, class T&gt; </div>
 </div><div class="memdoc">
 
 <p>Copy another <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> into <code>this</code>. </p>
-<p>This method copies <code>x</code> into <code>this</code> by changing <code>this</code> in-place. This method asserts that the degrees of <code>this</code> and <code>x</code> are equal and then replaces the underlying vector of <code>this</code> with the underlying vector of <code>x</code>. Any method overriding this one must call <a class="el" href="classlibsemigroups_1_1_element.html#a19e53333fad80c753b2a0918595b8f9e" title="Reset the cached value used by Element::hash_value. ">Element::reset_hash_value</a>. </p>
+<p>This method copies <code>x</code> into <code>this</code> by changing <code>this</code> in-place. This method asserts that the degrees of <code>this</code> and <code>x</code> are equal and then replaces the underlying vector of <code>this</code> with the underlying vector of <code>x</code>. Any method overriding this one must define _hash_value correctly or call <a class="el" href="classlibsemigroups_1_1_element.html#a19e53333fad80c753b2a0918595b8f9e" title="Reset the cached value used by Element::hash_value. ">Element::reset_hash_value</a> on <code>this</code>. </p>
 
 <p>Implements <a class="el" href="classlibsemigroups_1_1_element.html#a97454c369aa06190a065ff07f7b4d305">libsemigroups::Element</a>.</p>
 
 </div>
 </div>
-<a id="a10bbe724a2da6be87e0d3d34eadbc559"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10bbe724a2da6be87e0d3d34eadbc559">&#9670;&nbsp;</a></span>end()</h2>
+<a id="a33dc93536a69e300056a2f908040fe48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33dc93536a69e300056a2f908040fe48">&#9670;&nbsp;</a></span>end()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;S&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::end </td>
+          <td class="memname">std::vector&lt;TValueType&gt;::iterator <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -495,21 +503,21 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="ad03ccbdf4813b2e565ed765cdc5e395e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad03ccbdf4813b2e565ed765cdc5e395e">&#9670;&nbsp;</a></span>operator<()</h2>
+<a id="ad67eb351c351edc9d485ce25172c931e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67eb351c351edc9d485ce25172c931e">&#9670;&nbsp;</a></span>operator<()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::operator&lt; </td>
+          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::operator&lt; </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classlibsemigroups_1_1_element.html">Element</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const &amp;&#160;</td>
           <td class="paramname"><em>that</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -528,19 +536,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="aa759d9cb77f5733a03e901541a4e8d43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa759d9cb77f5733a03e901541a4e8d43">&#9670;&nbsp;</a></span>operator==()</h2>
+<a id="ac1d65b514cff79dd7f33ea0c6459c017"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1d65b514cff79dd7f33ea0c6459c017">&#9670;&nbsp;</a></span>operator==()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::operator== </td>
+          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::operator== </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> const &amp;&#160;</td>
           <td class="paramname"><em>that</em></td><td>)</td>
@@ -561,19 +569,19 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="a30b010eb82688eed30e1e82726733066"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30b010eb82688eed30e1e82726733066">&#9670;&nbsp;</a></span>operator[]()</h2>
+<a id="aeba5c0adf85e0e11632e84a12b76f0b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba5c0adf85e0e11632e84a12b76f0b5">&#9670;&nbsp;</a></span>operator[]()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">S <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::operator[] </td>
+          <td class="memname">TValueType <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::operator[] </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>pos</em></td><td>)</td>
@@ -592,22 +600,22 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<a id="a0a6c98268b74fa13bb8ff13d1566f004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a6c98268b74fa13bb8ff13d1566f004">&#9670;&nbsp;</a></span>really_copy()</h2>
+<a id="a72f340f4b58c7f82c8fff7636af34657"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72f340f4b58c7f82c8fff7636af34657">&#9670;&nbsp;</a></span>really_copy()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a>* <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::really_copy </td>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a>* <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::really_copy </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>increase_deg_by</em></td><td>)</td>
+          <td class="paramname"><em>increase_deg_by</em> = <code>0</code></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -623,21 +631,23 @@ template&lt;typename S, class T&gt; </div>
 
 <p>Implements <a class="el" href="classlibsemigroups_1_1_element.html#a0a1f3eccf338d58746123e8a0e5e5998">libsemigroups::Element</a>.</p>
 
+<p>Reimplemented in <a class="el" href="classlibsemigroups_1_1_matrix_over_semiring_base.html#a432f2a97ddaa83b84501121407a455aa">libsemigroups::MatrixOverSemiringBase&lt; TValueType, TSubclass &gt;</a>, <a class="el" href="classlibsemigroups_1_1_matrix_over_semiring_base.html#a432f2a97ddaa83b84501121407a455aa">libsemigroups::MatrixOverSemiringBase&lt; bool, BooleanMat &gt;</a>, <a class="el" href="classlibsemigroups_1_1_matrix_over_semiring_base.html#a432f2a97ddaa83b84501121407a455aa">libsemigroups::MatrixOverSemiringBase&lt; TValueType, MatrixOverSemiring&lt; TValueType &gt; &gt;</a>, and <a class="el" href="classlibsemigroups_1_1_matrix_over_semiring_base.html#a432f2a97ddaa83b84501121407a455aa">libsemigroups::MatrixOverSemiringBase&lt; int64_t, ProjectiveMaxPlusMatrix &gt;</a>.</p>
+
 </div>
 </div>
-<a id="a640ab24ac458e4197ba65f116b21c5de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a640ab24ac458e4197ba65f116b21c5de">&#9670;&nbsp;</a></span>really_delete()</h2>
+<a id="a426b7c1e1c18388fbffe0daf2a62a3e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a426b7c1e1c18388fbffe0daf2a62a3e4">&#9670;&nbsp;</a></span>really_delete()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::really_delete </td>
+          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::really_delete </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -656,20 +666,85 @@ template&lt;typename S, class T&gt; </div>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a48c112d12003d5d6dc5d4e47eb4e5b56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48c112d12003d5d6dc5d4e47eb4e5b56">&#9670;&nbsp;</a></span>_vector</h2>
+<a id="a35953b86b9c5d0ce070cad5ffbb735fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35953b86b9c5d0ce070cad5ffbb735fe">&#9670;&nbsp;</a></span>swap()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename S, class T&gt; </div>
+template&lt;typename TValueType, class TSubclass&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;S&gt;* <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; S, T &gt;::_vector</td>
+          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::swap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_element.html">Element</a> *&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Swap another <a class="el" href="classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. ">Element</a> with <code>this</code>. </p>
+<p>This method swaps the defining data of <code>x</code> and <code>this</code>. This method asserts that the degrees of <code>this</code> and <code>x</code> are equal and then swaps the underlying vector of <code>this</code> with the underlying vector of <code>x</code>. Any method overriding should swap the hash_value of <code>this</code> and <code>x</code>, or call <a class="el" href="classlibsemigroups_1_1_element.html#a19e53333fad80c753b2a0918595b8f9e" title="Reset the cached value used by Element::hash_value. ">Element::reset_hash_value</a> on <code>this</code> and <code>x</code>. </p>
+
+<p>Implements <a class="el" href="classlibsemigroups_1_1_element.html#a5eed806d86c86750e26ff865e7b0694c">libsemigroups::Element</a>.</p>
+
+</div>
+</div>
+<a id="a8129a6b55198ff7210991dc4e3c6f6a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8129a6b55198ff7210991dc4e3c6f6a9">&#9670;&nbsp;</a></span>vector_hash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TValueType, class TSubclass&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static size_t <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::vector_hash </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; T &gt; const *&#160;</td>
+          <td class="paramname"><em>vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a hash value for a vector provided there is a specialization of std::hash for the template type <code>T</code>. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac17ecf3cecb90414228d273023c288f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac17ecf3cecb90414228d273023c288f6">&#9670;&nbsp;</a></span>_vector</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TValueType, class TSubclass&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;TValueType&gt;* <a class="el" href="classlibsemigroups_1_1_element_with_vector_data.html">libsemigroups::ElementWithVectorData</a>&lt; TValueType, TSubclass &gt;::_vector</td>
         </tr>
       </table>
   </td>
@@ -690,7 +765,7 @@ template&lt;typename S, class T&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 19 2017 13:21:21 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 10:11:27 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

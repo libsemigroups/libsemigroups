@@ -1,5 +1,6 @@
 <map id="libsemigroups::PartialPerm&lt; T &gt;" name="libsemigroups::PartialPerm&lt; T &gt;">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_partial_transformation.html" title="libsemigroups::PartialTransformation\l\&lt; T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="5,165,243,204"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="12,79,237,117"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="44,5,204,31"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_partial_transformation.html" title="libsemigroups::PartialTransformation\l\&lt; T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="5,265,243,304"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="31,165,218,217"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="12,79,237,117"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="44,5,204,31"/>
 </map>

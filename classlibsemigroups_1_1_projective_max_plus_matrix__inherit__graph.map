@@ -1,5 +1,6 @@
 <map id="libsemigroups::ProjectiveMaxPlusMatrix" name="libsemigroups::ProjectiveMaxPlusMatrix">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_matrix_over_semiring.html" title="Class for square matrices over a Semiring. " alt="" coords="23,179,199,217"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; int64_t, MatrixOver\lSemiring \&gt;" alt="" coords="5,79,217,131"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="31,5,191,31"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; int64_t,\l ProjectiveMaxPlusMatrix \&gt;" alt="" coords="744,5,926,57"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l int64_t, ProjectiveMaxPlusMatrix \&gt;" alt="" coords="466,5,696,57"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; int64_t, Projective\lMaxPlusMatrix \&gt;" alt="" coords="213,5,418,57"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,19,165,44"/>
 </map>

@@ -1,4 +1,6 @@
-<map id="libsemigroups::MatrixOverSemiring" name="libsemigroups::MatrixOverSemiring">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; int64_t, MatrixOver\lSemiring \&gt;" alt="" coords="5,79,217,131"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="31,5,191,31"/>
+<map id="libsemigroups::MatrixOverSemiring&lt; TValueType &gt;" name="libsemigroups::MatrixOverSemiring&lt; TValueType &gt;">
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="777,12,1024,64"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l TValueType, MatrixOverSemiring\l\&lt; TValueType \&gt; \&gt;" alt="" coords="508,5,729,71"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="213,12,460,64"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,25,165,51"/>
 </map>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>libsemigroups: libsemigroups::Semiring Class Reference</title>
+<title>libsemigroups: libsemigroups::Semiring&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,7 +73,7 @@ $(function() {
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classlibsemigroups_1_1_semiring-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">libsemigroups::Semiring Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">libsemigroups::Semiring&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -82,53 +82,46 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="semiring_8h_source.html">semiring.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for libsemigroups::Semiring:</div>
+Collaboration diagram for libsemigroups::Semiring&lt; T &gt;:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classlibsemigroups_1_1_semiring.png" usemap="#libsemigroups::Semiring_map" alt=""/>
-  <map id="libsemigroups::Semiring_map" name="libsemigroups::Semiring_map">
-<area href="classlibsemigroups_1_1_integers.html" title="The usual ring of integers. " alt="libsemigroups::Integers" shape="rect" coords="0,56,238,80"/>
-<area href="classlibsemigroups_1_1_max_plus_semiring.html" title="The max-plus semiring consists of the integers together with negative infinity with operations max an..." alt="libsemigroups::MaxPlusSemiring" shape="rect" coords="248,56,486,80"/>
-<area href="classlibsemigroups_1_1_min_plus_semiring.html" title="The min-plus semiring consists of the integers together with infinity with operations min and plus..." alt="libsemigroups::MinPlusSemiring" shape="rect" coords="496,56,734,80"/>
-<area href="classlibsemigroups_1_1_semiring_with_threshold.html" title="This abstract class provides common methods for its subclasses TropicalMaxPlusSemiring, TropicalMinPlusSemiring, and NaturalSemiring. " alt="libsemigroups::SemiringWithThreshold" shape="rect" coords="744,56,982,80"/>
-<area href="classlibsemigroups_1_1_natural_semiring.html" title="This class implements the semiring consisting of  for some threshold  and period  with operations add..." alt="libsemigroups::NaturalSemiring" shape="rect" coords="496,112,734,136"/>
-<area href="classlibsemigroups_1_1_tropical_max_plus_semiring.html" title="The tropical max-plus semiring consists of the integers  for some value  (called the threshold of the..." alt="libsemigroups::TropicalMaxPlusSemiring" shape="rect" coords="744,112,982,136"/>
-<area href="classlibsemigroups_1_1_tropical_min_plus_semiring.html" title="The tropical min-plus semiring consists of the integers  for some value  (called the threshold of the..." alt="libsemigroups::TropicalMinPlusSemiring" shape="rect" coords="992,112,1230,136"/>
-</map>
- </div></div>
+<div class="center"><img src="classlibsemigroups_1_1_semiring__coll__graph.png" border="0" usemap="#libsemigroups_1_1_semiring_3_01_t_01_4_coll__map" alt="Collaboration graph"/></div>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad392f49223efc4bfaf68531842a5b81f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#ad392f49223efc4bfaf68531842a5b81f">~Semiring</a> ()</td></tr>
-<tr class="memdesc:ad392f49223efc4bfaf68531842a5b81f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A default destructor.  <a href="#ad392f49223efc4bfaf68531842a5b81f">More...</a><br /></td></tr>
-<tr class="separator:ad392f49223efc4bfaf68531842a5b81f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c0cd05b71ddb134f3c08bb9f0e736b4"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a1c0cd05b71ddb134f3c08bb9f0e736b4">one</a> () const =0</td></tr>
-<tr class="memdesc:a1c0cd05b71ddb134f3c08bb9f0e736b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the multiplicative identity, or one, of the semiring.  <a href="#a1c0cd05b71ddb134f3c08bb9f0e736b4">More...</a><br /></td></tr>
-<tr class="separator:a1c0cd05b71ddb134f3c08bb9f0e736b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbc0aacceea6f25bd84fac71c54a6e0f"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#afbc0aacceea6f25bd84fac71c54a6e0f">plus</a> (int64_t x, int64_t y) const =0</td></tr>
-<tr class="memdesc:afbc0aacceea6f25bd84fac71c54a6e0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the sum of <code>x</code> and <code>y</code>.  <a href="#afbc0aacceea6f25bd84fac71c54a6e0f">More...</a><br /></td></tr>
-<tr class="separator:afbc0aacceea6f25bd84fac71c54a6e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a597f4f894f26ce6a33f32a89251522ea"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a597f4f894f26ce6a33f32a89251522ea">prod</a> (int64_t x, int64_t y) const =0</td></tr>
-<tr class="memdesc:a597f4f894f26ce6a33f32a89251522ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the product of <code>x</code> and <code>y</code>.  <a href="#a597f4f894f26ce6a33f32a89251522ea">More...</a><br /></td></tr>
-<tr class="separator:a597f4f894f26ce6a33f32a89251522ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee566c4bde8a5b344a4bfb5837fdc959"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#aee566c4bde8a5b344a4bfb5837fdc959">zero</a> () const =0</td></tr>
-<tr class="memdesc:aee566c4bde8a5b344a4bfb5837fdc959"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the additive identity, or zero, of the semiring.  <a href="#aee566c4bde8a5b344a4bfb5837fdc959">More...</a><br /></td></tr>
-<tr class="separator:aee566c4bde8a5b344a4bfb5837fdc959"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4817406c9d2cd96309bd94150a94642e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a4817406c9d2cd96309bd94150a94642e">~Semiring</a> ()</td></tr>
+<tr class="memdesc:a4817406c9d2cd96309bd94150a94642e"><td class="mdescLeft">&#160;</td><td class="mdescRight">A default destructor.  <a href="#a4817406c9d2cd96309bd94150a94642e">More...</a><br /></td></tr>
+<tr class="separator:a4817406c9d2cd96309bd94150a94642e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ac1c58a9e4de40fecd3d8193a244867"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a4ac1c58a9e4de40fecd3d8193a244867">one</a> () const =0</td></tr>
+<tr class="memdesc:a4ac1c58a9e4de40fecd3d8193a244867"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the multiplicative identity, or one, of the semiring.  <a href="#a4ac1c58a9e4de40fecd3d8193a244867">More...</a><br /></td></tr>
+<tr class="separator:a4ac1c58a9e4de40fecd3d8193a244867"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8268dcbdb28cd3eb4b10ea78a769a9f1"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a8268dcbdb28cd3eb4b10ea78a769a9f1">plus</a> (T x, T y) const =0</td></tr>
+<tr class="memdesc:a8268dcbdb28cd3eb4b10ea78a769a9f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the sum of <code>x</code> and <code>y</code>.  <a href="#a8268dcbdb28cd3eb4b10ea78a769a9f1">More...</a><br /></td></tr>
+<tr class="separator:a8268dcbdb28cd3eb4b10ea78a769a9f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0840a9334c665500c6ff3d805d0fe8fb"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a0840a9334c665500c6ff3d805d0fe8fb">prod</a> (T x, T y) const =0</td></tr>
+<tr class="memdesc:a0840a9334c665500c6ff3d805d0fe8fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the product of <code>x</code> and <code>y</code>.  <a href="#a0840a9334c665500c6ff3d805d0fe8fb">More...</a><br /></td></tr>
+<tr class="separator:a0840a9334c665500c6ff3d805d0fe8fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a709cba3bf33c6dbcfe3a860080609f"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a1a709cba3bf33c6dbcfe3a860080609f">zero</a> () const =0</td></tr>
+<tr class="memdesc:a1a709cba3bf33c6dbcfe3a860080609f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the additive identity, or zero, of the semiring.  <a href="#a1a709cba3bf33c6dbcfe3a860080609f">More...</a><br /></td></tr>
+<tr class="separator:a1a709cba3bf33c6dbcfe3a860080609f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a4116cb394c2e0f2c2887ceaa726baced"><td class="memItemLeft" align="right" valign="top">static const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a4116cb394c2e0f2c2887ceaa726baced">INFTY</a> = std::numeric_limits&lt;int64_t&gt;::max()</td></tr>
-<tr class="memdesc:a4116cb394c2e0f2c2887ceaa726baced"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing \(\infty\).  <a href="#a4116cb394c2e0f2c2887ceaa726baced">More...</a><br /></td></tr>
-<tr class="separator:a4116cb394c2e0f2c2887ceaa726baced"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace242317b4fa44826949788339b0b79a"><td class="memItemLeft" align="right" valign="top">static const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#ace242317b4fa44826949788339b0b79a">MINUS_INFTY</a> = std::numeric_limits&lt;int64_t&gt;::min()</td></tr>
-<tr class="memdesc:ace242317b4fa44826949788339b0b79a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing \(-\infty\).  <a href="#ace242317b4fa44826949788339b0b79a">More...</a><br /></td></tr>
-<tr class="separator:ace242317b4fa44826949788339b0b79a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0fef12f42625b7aa2986d9225baf9e8"><td class="memItemLeft" align="right" valign="top">static const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#aa0fef12f42625b7aa2986d9225baf9e8">UNDEFINED</a> = -1</td></tr>
-<tr class="memdesc:aa0fef12f42625b7aa2986d9225baf9e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing an undefined quantity.  <a href="#aa0fef12f42625b7aa2986d9225baf9e8">More...</a><br /></td></tr>
-<tr class="separator:aa0fef12f42625b7aa2986d9225baf9e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92b3188684cc57c7436fad4e43a2ee16"><td class="memItemLeft" align="right" valign="top">static const T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a92b3188684cc57c7436fad4e43a2ee16">INFTY</a> = std::numeric_limits&lt;T&gt;::max()</td></tr>
+<tr class="memdesc:a92b3188684cc57c7436fad4e43a2ee16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing \(\infty\).  <a href="#a92b3188684cc57c7436fad4e43a2ee16">More...</a><br /></td></tr>
+<tr class="separator:a92b3188684cc57c7436fad4e43a2ee16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e5c5791a1719a2d13160f17caff4249"><td class="memItemLeft" align="right" valign="top">static const T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a7e5c5791a1719a2d13160f17caff4249">MINUS_INFTY</a> = std::numeric_limits&lt;T&gt;::min()</td></tr>
+<tr class="memdesc:a7e5c5791a1719a2d13160f17caff4249"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing \(-\infty\).  <a href="#a7e5c5791a1719a2d13160f17caff4249">More...</a><br /></td></tr>
+<tr class="separator:a7e5c5791a1719a2d13160f17caff4249"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a48ccff628c8cbd90e1542f48b0110a"><td class="memItemLeft" align="right" valign="top">static const T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_semiring.html#a2a48ccff628c8cbd90e1542f48b0110a">UNDEFINED</a> = std::numeric_limits&lt;T&gt;::max()</td></tr>
+<tr class="memdesc:a2a48ccff628c8cbd90e1542f48b0110a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value representing an undefined quantity.  <a href="#a2a48ccff628c8cbd90e1542f48b0110a">More...</a><br /></td></tr>
+<tr class="separator:a2a48ccff628c8cbd90e1542f48b0110a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class its subclasses provide very basic functionality for creating semirings. </p>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class libsemigroups::Semiring&lt; T &gt;</h3>
+
+<p>This class its subclasses provide very basic functionality for creating semirings. </p>
 <p>A <em>semiring</em> is a set \(R\) together with two binary operations \(+\) and \(\times\) (called <em>addition</em> and <em>multiplication</em>) such that \((R, +)\) is a commutative monoid with identity \(0\), \((R, \times)\) is a monoid with identity \(1\), and the following hold:</p>
 <ul>
 <li>Mulitplication is left and right distributive over addition, i.e. \(a \times (b + c) = a \times b + a \times c\) and \((a + b) \times c = (a \times c) + (b \times c)\) for all \(a,b,c\in R\);</li>
@@ -136,17 +129,19 @@ Static Public Attributes</h2></td></tr>
 </ul>
 <p>More information about semirings can be found on <a href="https://en.wikipedia.org/wiki/Semiring">Wikipedia</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad392f49223efc4bfaf68531842a5b81f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad392f49223efc4bfaf68531842a5b81f">&#9670;&nbsp;</a></span>~Semiring()</h2>
+<a id="a4817406c9d2cd96309bd94150a94642e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4817406c9d2cd96309bd94150a94642e">&#9670;&nbsp;</a></span>~Semiring()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual libsemigroups::Semiring::~Semiring </td>
+          <td class="memname">virtual <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::~<a class="el" href="classlibsemigroups_1_1_semiring.html">Semiring</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -164,17 +159,19 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a1c0cd05b71ddb134f3c08bb9f0e736b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c0cd05b71ddb134f3c08bb9f0e736b4">&#9670;&nbsp;</a></span>one()</h2>
+<a id="a4ac1c58a9e4de40fecd3d8193a244867"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ac1c58a9e4de40fecd3d8193a244867">&#9670;&nbsp;</a></span>one()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int64_t libsemigroups::Semiring::one </td>
+          <td class="memname">virtual T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::one </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -189,29 +186,31 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the multiplicative identity, or one, of the semiring. </p>
 
-<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#a4a6ed2418e42075314d5b3cabb543870">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#adf3945e2e3660adbcf035cb7f14f2167">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#aa4399c630b85dccd55723f7aec5eb36d">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#aebd93d884a65c4103b0205e187272f79">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#a2ef2c57c5105ba8e3ef894c99f1a0811">libsemigroups::MaxPlusSemiring</a>, and <a class="el" href="classlibsemigroups_1_1_integers.html#a6a6df7012e9b55ed8d0a03983aedf290">libsemigroups::Integers</a>.</p>
+<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#a4a6ed2418e42075314d5b3cabb543870">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#adf3945e2e3660adbcf035cb7f14f2167">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#aa4399c630b85dccd55723f7aec5eb36d">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#aebd93d884a65c4103b0205e187272f79">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#a2ef2c57c5105ba8e3ef894c99f1a0811">libsemigroups::MaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_integers.html#a6a6df7012e9b55ed8d0a03983aedf290">libsemigroups::Integers</a>, and <a class="el" href="classlibsemigroups_1_1_boolean_semiring.html#a204070674dd77394fb78805bd8074271">libsemigroups::BooleanSemiring</a>.</p>
 
 </div>
 </div>
-<a id="afbc0aacceea6f25bd84fac71c54a6e0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbc0aacceea6f25bd84fac71c54a6e0f">&#9670;&nbsp;</a></span>plus()</h2>
+<a id="a8268dcbdb28cd3eb4b10ea78a769a9f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8268dcbdb28cd3eb4b10ea78a769a9f1">&#9670;&nbsp;</a></span>plus()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int64_t libsemigroups::Semiring::plus </td>
+          <td class="memname">virtual T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::plus </td>
           <td>(</td>
-          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>y</em>&#160;</td>
         </tr>
         <tr>
@@ -229,29 +228,31 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the sum of <code>x</code> and <code>y</code>. </p>
 
-<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#aa0c4db945c1c462a189d6438d3d2a652">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#add232fd577e1d6896aa1dcd0ca5c296e">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a810835814e261615abee7e6af4b75603">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#ab15c6276236f3e879887fc528b58343e">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#a46e13ae2d5b12cea03cc5b9e859d0fc8">libsemigroups::MaxPlusSemiring</a>, and <a class="el" href="classlibsemigroups_1_1_integers.html#a3f259ae77b7fe715fac94db74c5884e2">libsemigroups::Integers</a>.</p>
+<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#aa0c4db945c1c462a189d6438d3d2a652">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#add232fd577e1d6896aa1dcd0ca5c296e">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a810835814e261615abee7e6af4b75603">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#ab15c6276236f3e879887fc528b58343e">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#a46e13ae2d5b12cea03cc5b9e859d0fc8">libsemigroups::MaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_integers.html#a3f259ae77b7fe715fac94db74c5884e2">libsemigroups::Integers</a>, and <a class="el" href="classlibsemigroups_1_1_boolean_semiring.html#ae11b725fd37230fbc9d2e6dbce99bf1b">libsemigroups::BooleanSemiring</a>.</p>
 
 </div>
 </div>
-<a id="a597f4f894f26ce6a33f32a89251522ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a597f4f894f26ce6a33f32a89251522ea">&#9670;&nbsp;</a></span>prod()</h2>
+<a id="a0840a9334c665500c6ff3d805d0fe8fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0840a9334c665500c6ff3d805d0fe8fb">&#9670;&nbsp;</a></span>prod()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int64_t libsemigroups::Semiring::prod </td>
+          <td class="memname">virtual T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::prod </td>
           <td>(</td>
-          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>y</em>&#160;</td>
         </tr>
         <tr>
@@ -269,21 +270,23 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the product of <code>x</code> and <code>y</code>. </p>
 
-<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#abf714093161b6ebb78bddce8bf5c8503">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#ad8161abb7ac3cd79c0ed45511420f59d">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a510772e78d13e83b5f559e168d5ab825">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#ad6a02b8b3e3aec39f9d3448a410cf9a9">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#ac2b4e113e081619812f5d5c2d86c29b7">libsemigroups::MaxPlusSemiring</a>, and <a class="el" href="classlibsemigroups_1_1_integers.html#aead0cfe38d22298c69a528eee4ada5a7">libsemigroups::Integers</a>.</p>
+<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#abf714093161b6ebb78bddce8bf5c8503">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#ad8161abb7ac3cd79c0ed45511420f59d">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a510772e78d13e83b5f559e168d5ab825">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#ad6a02b8b3e3aec39f9d3448a410cf9a9">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#ac2b4e113e081619812f5d5c2d86c29b7">libsemigroups::MaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_integers.html#aead0cfe38d22298c69a528eee4ada5a7">libsemigroups::Integers</a>, and <a class="el" href="classlibsemigroups_1_1_boolean_semiring.html#a71826ae808c241009a1ee44ad13814d8">libsemigroups::BooleanSemiring</a>.</p>
 
 </div>
 </div>
-<a id="aee566c4bde8a5b344a4bfb5837fdc959"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee566c4bde8a5b344a4bfb5837fdc959">&#9670;&nbsp;</a></span>zero()</h2>
+<a id="a1a709cba3bf33c6dbcfe3a860080609f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a709cba3bf33c6dbcfe3a860080609f">&#9670;&nbsp;</a></span>zero()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int64_t libsemigroups::Semiring::zero </td>
+          <td class="memname">virtual T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::zero </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -298,22 +301,24 @@ Static Public Attributes</h2></td></tr>
 
 <p>Returns the additive identity, or zero, of the semiring. </p>
 
-<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#a207af462afe8dff0e97f1b6e04bf7d9b">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#a0aee99e3c460496b8935a398e634c849">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a53b804252b2f806b8c3cf80eeedb5d50">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#a5e93cbbc7549e4a23b367491db6b06c4">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#aee4adfcb6028376a5254bc737d7f1d79">libsemigroups::MaxPlusSemiring</a>, and <a class="el" href="classlibsemigroups_1_1_integers.html#a69a4dec6764fb54566ca96538064cbc3">libsemigroups::Integers</a>.</p>
+<p>Implemented in <a class="el" href="classlibsemigroups_1_1_natural_semiring.html#a207af462afe8dff0e97f1b6e04bf7d9b">libsemigroups::NaturalSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_min_plus_semiring.html#a0aee99e3c460496b8935a398e634c849">libsemigroups::TropicalMinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_tropical_max_plus_semiring.html#a53b804252b2f806b8c3cf80eeedb5d50">libsemigroups::TropicalMaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_min_plus_semiring.html#a5e93cbbc7549e4a23b367491db6b06c4">libsemigroups::MinPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_max_plus_semiring.html#aee4adfcb6028376a5254bc737d7f1d79">libsemigroups::MaxPlusSemiring</a>, <a class="el" href="classlibsemigroups_1_1_integers.html#a69a4dec6764fb54566ca96538064cbc3">libsemigroups::Integers</a>, and <a class="el" href="classlibsemigroups_1_1_boolean_semiring.html#af11caf26a884e0dfb84df6022d4c4511">libsemigroups::BooleanSemiring</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a4116cb394c2e0f2c2887ceaa726baced"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4116cb394c2e0f2c2887ceaa726baced">&#9670;&nbsp;</a></span>INFTY</h2>
+<a id="a92b3188684cc57c7436fad4e43a2ee16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92b3188684cc57c7436fad4e43a2ee16">&#9670;&nbsp;</a></span>INFTY</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int64_t libsemigroups::Semiring::INFTY = std::numeric_limits&lt;int64_t&gt;::max()</td>
+          <td class="memname">const T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::INFTY = std::numeric_limits&lt;T&gt;::max()</td>
         </tr>
       </table>
   </td>
@@ -327,17 +332,19 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ace242317b4fa44826949788339b0b79a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace242317b4fa44826949788339b0b79a">&#9670;&nbsp;</a></span>MINUS_INFTY</h2>
+<a id="a7e5c5791a1719a2d13160f17caff4249"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e5c5791a1719a2d13160f17caff4249">&#9670;&nbsp;</a></span>MINUS_INFTY</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int64_t libsemigroups::Semiring::MINUS_INFTY = std::numeric_limits&lt;int64_t&gt;::min()</td>
+          <td class="memname">const T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::MINUS_INFTY = std::numeric_limits&lt;T&gt;::min()</td>
         </tr>
       </table>
   </td>
@@ -351,17 +358,19 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa0fef12f42625b7aa2986d9225baf9e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0fef12f42625b7aa2986d9225baf9e8">&#9670;&nbsp;</a></span>UNDEFINED</h2>
+<a id="a2a48ccff628c8cbd90e1542f48b0110a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a48ccff628c8cbd90e1542f48b0110a">&#9670;&nbsp;</a></span>UNDEFINED</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int64_t libsemigroups::Semiring::UNDEFINED = -1</td>
+          <td class="memname">const T <a class="el" href="classlibsemigroups_1_1_semiring.html">libsemigroups::Semiring</a>&lt; T &gt;::UNDEFINED = std::numeric_limits&lt;T&gt;::max()</td>
         </tr>
       </table>
   </td>
@@ -381,7 +390,7 @@ Static Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 19 2017 13:21:21 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 10:11:27 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

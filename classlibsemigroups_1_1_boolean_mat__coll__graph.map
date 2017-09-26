@@ -1,4 +1,6 @@
 <map id="libsemigroups::BooleanMat" name="libsemigroups::BooleanMat">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; bool, BooleanMat \&gt;" alt="" coords="5,79,219,117"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="32,5,192,31"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; bool, BooleanMat \&gt;" alt="" coords="5,265,236,304"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l bool, BooleanMat \&gt;" alt="" coords="28,165,214,217"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; bool, BooleanMat \&gt;" alt="" coords="14,79,228,117"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="41,5,201,31"/>
 </map>

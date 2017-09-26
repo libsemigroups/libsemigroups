@@ -1,4 +1,5 @@
-<map id="libsemigroups::PartialTransformation&lt; S, T &gt;" name="libsemigroups::PartialTransformation&lt; S, T &gt;">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. " alt="" coords="5,80,192,119"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="19,5,179,31"/>
+<map id="libsemigroups::PartialTransformation&lt; TValueType, TSubclass &gt;" name="libsemigroups::PartialTransformation&lt; TValueType, TSubclass &gt;">
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="450,5,637,57"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. " alt="" coords="215,5,401,57"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,19,165,44"/>
 </map>

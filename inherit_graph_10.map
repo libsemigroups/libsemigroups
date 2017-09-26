@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classlibsemigroups_1_1_semigroup_1_1const__iterator.html" title="libsemigroups::Semigroup\l::const_iterator" alt="" coords="5,5,181,44"/>
+<area shape="rect" id="node1" href="$classlibsemigroups_1_1_semiring.html" title="libsemigroups::Semiring\l\&lt; bool \&gt;" alt="" coords="5,5,169,44"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_boolean_semiring.html" title="The usual Boolean semiring. " alt="" coords="217,12,429,37"/>
 </map>

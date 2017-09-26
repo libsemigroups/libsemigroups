@@ -1,10 +1,4 @@
 var searchData=
 [
-  ['_7eblocks',['~Blocks',['../classlibsemigroups_1_1_blocks.html#a68f0ebf7dad1cc30f678f3f48d162534',1,'libsemigroups::Blocks']]],
-  ['_7econgruence',['~Congruence',['../classlibsemigroups_1_1_congruence.html#ae621bcc207c8ca59009774b4bb632252',1,'libsemigroups::Congruence']]],
-  ['_7eelement',['~Element',['../classlibsemigroups_1_1_element.html#ac58bb53f6bc9f2ff727561149806a4e1',1,'libsemigroups::Element']]],
-  ['_7epartition',['~Partition',['../classlibsemigroups_1_1_partition.html#a98344179957c245b7170ef197d079688',1,'libsemigroups::Partition']]],
-  ['_7erws',['~RWS',['../classlibsemigroups_1_1_r_w_s.html#acf41ccf045d547b3f3ba196818dffdf8',1,'libsemigroups::RWS']]],
-  ['_7esemigroup',['~Semigroup',['../classlibsemigroups_1_1_semigroup.html#a1ad56c6cad6baba69ae4c3e1c133b428',1,'libsemigroups::Semigroup']]],
-  ['_7esemiring',['~Semiring',['../classlibsemigroups_1_1_semiring.html#ad392f49223efc4bfaf68531842a5b81f',1,'libsemigroups::Semiring']]]
+  ['zero',['zero',['../classlibsemigroups_1_1_semiring.html#a1a709cba3bf33c6dbcfe3a860080609f',1,'libsemigroups::Semiring::zero()'],['../classlibsemigroups_1_1_boolean_semiring.html#af11caf26a884e0dfb84df6022d4c4511',1,'libsemigroups::BooleanSemiring::zero()'],['../classlibsemigroups_1_1_integers.html#a69a4dec6764fb54566ca96538064cbc3',1,'libsemigroups::Integers::zero()'],['../classlibsemigroups_1_1_max_plus_semiring.html#aee4adfcb6028376a5254bc737d7f1d79',1,'libsemigroups::MaxPlusSemiring::zero()'],['../classlibsemigroups_1_1_min_plus_semiring.html#a5e93cbbc7549e4a23b367491db6b06c4',1,'libsemigroups::MinPlusSemiring::zero()'],['../classlibsemigroups_1_1_tropical_max_plus_semiring.html#a53b804252b2f806b8c3cf80eeedb5d50',1,'libsemigroups::TropicalMaxPlusSemiring::zero()'],['../classlibsemigroups_1_1_tropical_min_plus_semiring.html#a0aee99e3c460496b8935a398e634c849',1,'libsemigroups::TropicalMinPlusSemiring::zero()'],['../classlibsemigroups_1_1_natural_semiring.html#a207af462afe8dff0e97f1b6e04bf7d9b',1,'libsemigroups::NaturalSemiring::zero()']]]
 ];
