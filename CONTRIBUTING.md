@@ -45,14 +45,14 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 4. Run the benchmarks and check there is no performance regression:
 
-        make uninstall
         git checkout <last_release_version>
-        ./autogen.sh ; ./configure ; make ; make install
+        make uninstall ; make distclean
         benchmark/benchmark.sh
-        make uninstall
+
         git checkout <stable-x.y or master>
-        ./autogen.sh ; ./configure ; make ; make install
+        make uninstall ; make distclean
         benchmark/benchmark.sh
+
         benchmark/compare_bench.py <json_file1> <json_file2> 
     
 5. Update the version numbers in `README.md`, and in `configure.ac`
@@ -61,7 +61,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
         make distclean ; ./autogen.sh ; ./configure
     
 6. Commit the changed version numbers: 
-   `git commit -a -m "Update version numbers"` 
+   `git commit -am "Update version numbers"` 
 
 7. Push to `origin/stable-x.y` (bugfix release) or `origin/master` (non-bugfix
    release)
@@ -79,7 +79,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
     
 11. Push to gh-pages
 
-        cd gh-pages ; git add * ; git commit -a -m "Version x.y.z" ; git push 
+        cd gh-pages ; git add * ; git commit -am "Version x.y.z" ; git push 
 
 12. Make a release archive (note that `make distcheck` is currently done by
     travis so no need to do it again here):
