@@ -23,12 +23,7 @@
 
 #include <assert.h>
 
-// Do not include config/config.h if we are compiling inside the Semigroups
-// package for GAP since this includes gap/gen/config.h where the PACKAGE_*
-// macros are redefined, causing compiler warnings.
-#ifndef DO_NOT_INCLUDE_CONFIG_H
-#include <libsemigroups-config.h>
-#endif
+#include "libsemigroups-config.h"
 
 #ifdef LIBSEMIGROUPS_DEBUG
 #define LIBSEMIGROUPS_ASSERT(x) assert(x)
