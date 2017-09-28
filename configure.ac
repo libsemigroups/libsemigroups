@@ -5,13 +5,15 @@ dnl Autoconf and automake initialization.
 AC_PREREQ([2.69])
 AC_INIT([libsemigroups],[0.5.0],[jdm3@st-andrews.ac.uk])
 AC_CONFIG_SRCDIR(src/semigroups.cc)
-AC_CONFIG_HEADERS([config/libsemigroups-config.h])
+AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
 
 AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
+
+AX_PREFIX_CONFIG_H([src/libsemigroups-config.h],[],[config/config.h])
 
 AC_PROG_CXX
 AC_LANG([C++])
@@ -51,7 +53,7 @@ AC_SUBST(GCC_SPECIFIC_CXXFLAGS, $GCC_SPECIFIC_CXXFLAGS)
 # Check if debug mode is enabled
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [enable debug mode])],
-    [AC_DEFINE([LIBSEMIGROUPS_DEBUG], [1], [define if building in debug mode])],
+    [AC_DEFINE([DEBUG], [1], [define if building in debug mode])],
     [enable_debug=no]
     )
 AC_MSG_CHECKING([whether to enable debug mode])
@@ -63,9 +65,11 @@ AS_IF([test "x$enable_debug" = xyes],
 AS_IF([test "x$enable_debug" = xyes],
     [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wsizeof-array-argument -Wunused-label -fno-omit-frame-pointer -Wold-style-cast -Wshadow')])
 
+AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
+
 AC_ARG_ENABLE([stats],
     [AS_HELP_STRING([--enable-stats], [enable stats mode])],
-    [AC_DEFINE([LIBSEMIGROUPS_STATS], [1], [define if building in stats mode])],
+    [AC_DEFINE([STATS], [1], [define if building in stats mode])],
     [enable_stats=no]
     )
 AC_MSG_CHECKING([whether to enable stats mode])
