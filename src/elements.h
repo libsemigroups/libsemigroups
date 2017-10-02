@@ -1267,6 +1267,36 @@ namespace libsemigroups {
     }
   };
 
+  //! Template class for permutations.
+  //!
+  //! The value of the template parameter \p T can be used to reduce the amount
+  //! of memory required by instances of this class; see PartialTransformation
+  //! and ElementWithVectorData for more details.
+  //!
+  //! A *permutation* \f$f\f$ is an injective transformation defined on the
+  //! whole of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called the
+  //! *degree* of \f$f\f$.
+  //! A permutation is stored as a vector of the images of
+  //! \f$(0, 1, \ldots, n - 1)\f$,
+  //! i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$.
+  template <typename T>
+  class Permutation : public Transformation<T> {
+   public:
+    using Transformation<T>::Transformation;
+    //! Returns the inverse of a permutation.
+    //!
+    //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
+    //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
+    Permutation* inverse() {
+      size_t const n  = this->_vector->size();
+      Permutation* id = static_cast<Permutation<T>*>(this->identity());
+      for (T i = 0; i < n; i++) {
+        (*id->_vector)[(*this->_vector)[i]] = i;
+      }
+      return id;
+    }
+  };
+
   //! Matrices over the boolean semiring.
   //!
   //! A *boolean matrix* is a square matrix over the boolean semiring, under
