@@ -34,6 +34,15 @@
 #include "recvec.h"
 #include "semiring.h"
 
+// It appears that GCC 4.8.1 (at least) has a bug that causes an internal
+// compiler error when trying to compile templated static thread_local storage,
+// see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58624
+#ifdef __GNUC_PREREQ
+#if !(__GNUC_PREREQ(4, 9))
+#define DO_NOT_USE_THREAD_LOCAL
+#endif
+#endif
+
 namespace libsemigroups {
 
   //! Abstract base class for semigroup elements
@@ -575,13 +584,20 @@ namespace libsemigroups {
     static TValueType const UNDEFINED;
 
    private:
-    // Used for determining rank
+// Used for determining rank
+#ifdef DO_NOT_USE_THREAD_LOCAL
+    static std::vector<bool> _lookup;
+#else
     static thread_local std::vector<bool> _lookup;
+#endif
   };
 
   template <typename TValueType, typename TSubclass>
-  thread_local std::vector<bool>
-      PartialTransformation<TValueType, TSubclass>::_lookup
+#ifndef DO_NOT_USE_THREAD_LOCAL
+  thread_local
+#endif
+      std::vector<bool>
+          PartialTransformation<TValueType, TSubclass>::_lookup
       = std::vector<bool>();
 
   template <typename TValueType, typename TSubclass>
