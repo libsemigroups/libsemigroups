@@ -41,6 +41,10 @@
 #if !(__GNUC_PREREQ(4, 9))
 #define DO_NOT_USE_THREAD_LOCAL
 #endif
+#elif defined(__clang__)
+#if !(__has_feature(cxx_thread_local))
+#define DO_NOT_USE_THREAD_LOCAL
+#endif
 #endif
 
 namespace libsemigroups {
