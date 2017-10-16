@@ -50,7 +50,8 @@ namespace libsemigroups {
 
   std::vector<Element*>* upper_triangular_boolean_mat(size_t n) {
     if (n == 1) {
-      return new std::vector<Element*>({new BooleanMat({{true}})});
+      return new std::vector<Element*>(
+          {new BooleanMat(std::vector<std::vector<bool>>({true}))});
     }
     std::vector<Element*>* gens = uni_triangular_boolean_mat(n);
     gens->reserve(gens->size() + n);
@@ -64,7 +65,8 @@ namespace libsemigroups {
 
   std::vector<Element*>* gossip(size_t n) {
     if (n == 1) {
-      return new std::vector<Element*>({new BooleanMat({{true}})});
+      return new std::vector<Element*>(
+          {new BooleanMat(std::vector<std::vector<bool>>({true}))});
     }
     std::vector<Element*>* gens = new std::vector<Element*>();
     for (size_t i = 0; i < n - 1; ++i) {
