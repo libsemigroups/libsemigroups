@@ -231,7 +231,7 @@ namespace libsemigroups {
     //! by various methods of the Semigroup class.
     struct Equal {
       //! Returns \c true if \p x and \p y point to equal Element's.
-      size_t operator()(Element const* x, Element const* y) const {
+      bool operator()(Element const* x, Element const* y) const {
         return *x == *y;
       }
     };
