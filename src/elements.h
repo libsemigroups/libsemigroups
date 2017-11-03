@@ -34,19 +34,6 @@
 #include "recvec.h"
 #include "semiring.h"
 
-// It appears that GCC 4.8.1 (at least) has a bug that causes an internal
-// compiler error when trying to compile templated static thread_local storage,
-// see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58624
-#ifdef __GNUC_PREREQ
-#if !(__GNUC_PREREQ(4, 9))
-#define DO_NOT_USE_THREAD_LOCAL
-#endif
-#elif defined(__clang__)
-#if !(__has_feature(cxx_thread_local))
-#define DO_NOT_USE_THREAD_LOCAL
-#endif
-#endif
-
 namespace libsemigroups {
 
   //! Abstract base class for semigroup elements
@@ -588,20 +575,12 @@ namespace libsemigroups {
     static TValueType const UNDEFINED;
 
    private:
-// Used for determining rank
-#ifdef DO_NOT_USE_THREAD_LOCAL
+    // Used for determining rank
     static std::vector<bool> _lookup;
-#else
-    static thread_local std::vector<bool> _lookup;
-#endif
   };
 
   template <typename TValueType, typename TSubclass>
-#ifndef DO_NOT_USE_THREAD_LOCAL
-  thread_local
-#endif
-      std::vector<bool>
-          PartialTransformation<TValueType, TSubclass>::_lookup
+  std::vector<bool> PartialTransformation<TValueType, TSubclass>::_lookup
       = std::vector<bool>();
 
   template <typename TValueType, typename TSubclass>
@@ -1283,8 +1262,7 @@ namespace libsemigroups {
   //! A permutation is stored as a vector of the images of
   //! \f$(0, 1, \ldots, n - 1)\f$,
   //! i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$.
-  template <typename T>
-  class Permutation : public Transformation<T> {
+  template <typename T> class Permutation : public Transformation<T> {
    public:
     using Transformation<T>::Transformation;
     //! Returns the inverse of a permutation.
