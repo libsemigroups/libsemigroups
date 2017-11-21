@@ -70,7 +70,7 @@ BENCHMARK_LINT_FORMAT += benchmark/src/examples.h
 
 CHECK_LOG_DIR = tests/log
 CHECK_PROG    = ./lstest$(EXEEXT)
-CHECK_FLAGS1  = -d yes --force-colour --order lex --abort 
+CHECK_FLAGS1  = --durations yes --use-colour yes --order lex --abort 
 CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
