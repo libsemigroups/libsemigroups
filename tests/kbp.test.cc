@@ -436,7 +436,7 @@ TEST_CASE("KBP 11: finite fp-semigroup, size 16",
 }
 
 TEST_CASE("KBP 12: Infinite fp semigroup with infinite classes",
-          "[quick][congruence][fpsemigroup][kbp][12]") {
+          "[quick][fpsemigroup][kbp][12]") {
   std::vector<relation_t> rels
       = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};

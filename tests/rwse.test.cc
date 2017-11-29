@@ -41,7 +41,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   Congruence              cong("twosided", &S, extra);
 
   RWS rws(cong);
-  REQUIRE(rws.is_confluent());
+  REQUIRE(rws.confluent());
 
   gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup T = Semigroup(gens);
@@ -74,7 +74,7 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   std::vector<relation_t> extra;
   Congruence              cong("twosided", &S, extra);
   RWS                     rws(cong);
-  REQUIRE(rws.is_confluent());
+  REQUIRE(rws.confluent());
 
   gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup T = Semigroup(gens);

@@ -372,7 +372,7 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
 }
 
 TEST_CASE("Congruence 11: congruence on big finite semigroup",
-          "[standard][congruence][multithread][finite][11]") {
+          "[quick][congruence][multithread][finite][11]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
@@ -480,7 +480,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
 }
 
 TEST_CASE("Congruence 13: partial perm example",
-          "[standard][congruence][multithread][finite][13]") {
+          "[quick][congruence][multithread][finite][13]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 2}, {4, 0, 1}, 6),
          new PartialPerm<u_int16_t>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
@@ -786,7 +786,7 @@ TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
 }
 
 TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
-          "[standard][congruence][multithread][24]") {
+          "[quick][congruence][multithread][24]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7}),
          new Transformation<u_int16_t>({1, 2, 3, 4, 5, 0, 6, 7}),

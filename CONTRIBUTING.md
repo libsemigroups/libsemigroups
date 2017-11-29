@@ -11,7 +11,18 @@ because of the way the executable is linked. `lstest` is the name of the
 check program produced by `make check`. Similarly to run valgrind you have
 to do:
 
-    libtool --mode=execute valgrind ... 
+    ./configure --enable-debug ; make check-am 
+    libtool --mode=execute valgrind --leak-check=full ./lstest -d yes [quick],[standard] 2>&1 | tee --append valgrind.txt
+
+## Adding new test cases
+
+Any new tests should be tagged with one of the following:
+
+Tag | Runtime 
+---------|:----------
+quick         | < 200ms
+standard      | < 3s
+extreme       | > 3s
 
 ## Making a release
 

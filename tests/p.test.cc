@@ -372,7 +372,7 @@ TEST_CASE("P 09: congruence on big finite semigroup",
 }
 
 TEST_CASE("P 10: left congruence on big finite semigroup",
-          "[standard][congruence][p][finite][10]") {
+          "[quick][congruence][p][finite][10]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),

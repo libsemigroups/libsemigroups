@@ -601,3 +601,26 @@ TEST_CASE("TC 16: test packing phase", "[quick][tc][finite][16]") {
   cong2.set_report_interval(10);
   REQUIRE(cong2.nr_classes() == 78);
 }
+
+TEST_CASE("TC 17: Example 6.6 in Sims (see also RWS 13)",
+          "[quick][tc][finite][17]") {
+  std::vector<relation_t> rels
+      = {relation_t({0, 0}, {0}),
+         relation_t({1, 0}, {1}),
+         relation_t({0, 1}, {1}),
+         relation_t({2, 0}, {2}),
+         relation_t({0, 2}, {2}),
+         relation_t({3, 0}, {3}),
+         relation_t({0, 3}, {3}),
+         relation_t({1, 1}, {0}),
+         relation_t({2, 3}, {0}),
+         relation_t({2, 2, 2}, {0}),
+         relation_t({1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0}),
+         relation_t({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
+                     1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
+                    {0})};
+  Congruence cong("twosided", 4, rels, std::vector<relation_t>());
+  cong.set_report(TC_REPORT);
+  cong.force_tc();
+  REQUIRE(cong.nr_classes() == 10752);  // Verified with GAP
+}

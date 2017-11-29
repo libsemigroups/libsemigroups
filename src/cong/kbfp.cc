@@ -53,7 +53,7 @@ namespace libsemigroups {
       return;
     }
 
-    LIBSEMIGROUPS_ASSERT(_rws->is_confluent());
+    LIBSEMIGROUPS_ASSERT(_rws->confluent());
     std::vector<Element const*> gens;
     for (size_t i = 0; i < _cong._nrgens; i++) {
       gens.push_back(new RWSE(*_rws, i));

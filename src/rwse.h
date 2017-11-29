@@ -35,6 +35,8 @@ namespace libsemigroups {
   //! This class is used to wrap libsemigroups::rws_word_t into an Element so
   //! that it is possible to use them as generators for a Semigroup object.
   class RWSE : public Element {
+    using rws_word_t = RWS::rws_word_t;
+
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce)
         : Element(Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
@@ -71,9 +73,8 @@ namespace libsemigroups {
 
     //! Constructor from a rewriting system and a letter.
     //!
-    //! Calls RWSE::RWSE with RWS::letter_to_rws_word of \p a.
-    RWSE(RWS& rws, letter_t const& a)
-        : RWSE(&rws, RWS::letter_to_rws_word(a)) {}
+    //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
+    RWSE(RWS& rws, letter_t const& a) : RWSE(&rws, RWS::uint_to_rws_word(a)) {}
 
     //! Constructor from a rewriting system and a word.
     //!
