@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(Libsemigroups_Benchmarks LANGUAGES CXX)
+include_directories(/usr/local/include/)
 
 # Location of additional cmake modules
 #

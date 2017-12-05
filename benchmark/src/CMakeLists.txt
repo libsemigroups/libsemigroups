@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5.0)
 find_package(Threads REQUIRED)
+include_directories(/usr/local/include/)
+link_directories(/usr/local/lib/)
 
 #~~~~~~~~~~~~~~~~
 
