@@ -41,3 +41,20 @@ TEST_CASE("Semiring 02: threshold 0 [NaturalSemiring]",
 
   delete sr;
 }
+
+TEST_CASE("Semiring 03: boolean semiring", "[quick][semiring][03]") {
+  BooleanSemiring* sr = new BooleanSemiring();
+
+  REQUIRE(sr->one());
+  REQUIRE(!sr->zero());
+  REQUIRE(sr->prod(true, true));
+  REQUIRE(!sr->prod(true, false));
+  REQUIRE(!sr->prod(false, true));
+  REQUIRE(!sr->prod(false, false));
+  REQUIRE(sr->plus(true, true));
+  REQUIRE(sr->plus(true, false));
+  REQUIRE(sr->plus(false, true));
+  REQUIRE(!sr->plus(false, false));
+
+  delete sr;
+}
