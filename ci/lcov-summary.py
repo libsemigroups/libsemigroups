@@ -8,18 +8,16 @@ from os import listdir
 from os.path import isfile, join
 
 _SOURCE_DIRS = ['src', 'src/cong']
-_THRESHOLD = 95.0
+_THRESHOLD = 87 # Some lines in kbfp.cc are not testable
 
 _ERR_PREFIX = '\033[31mlcov-summary.py: error: '
 
 def get_prefix(covpercent):
     covpercent = float(covpercent)
     if covpercent >= _THRESHOLD:
-        return '\033[40;38;5;82m'
-    elif covpercent >= _THRESHOLD - 5.0:
+        return '\033[32m'
+    elif covpercent >= _THRESHOLD - 10.0:
         return '\033[33m'
-    elif covpercent >= _THRESHOLD - 15.0:
-        return '\033[40;38;5;208m'
     else:
         return '\033[31m'
 

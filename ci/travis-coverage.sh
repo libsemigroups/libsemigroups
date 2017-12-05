@@ -28,4 +28,4 @@ ci/lcov-summary.py $DIR | tee log/coverage-log.txt
 echo
 
 # Exclude timer.h and report.h from coverage checks
-( ! grep 31m log/coverage-log.txt | sed 's/^.*\([0-9 ][0-9]\.[0-9]\%\).*src/LOW COVERAGE: src/' | grep --invert-match -E "timer|report" )
+( ! grep '31m\|33m' log/coverage-log.txt | sed 's/^.*\([0-9 ][0-9]\.[0-9]\%\).*src/LOW COVERAGE: src/' | grep --invert-match -E "timer|report" )

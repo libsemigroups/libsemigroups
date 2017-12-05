@@ -6,7 +6,7 @@ set -e
 ./autogen.sh ; ./configure
 
 # Install libtool and GMP
-echo "deb http://us.archive.ubuntu.com/ubuntu/ vivid main" | sudo tee -a /etc/apt/sources.list
+echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial main" | sudo tee -a /etc/apt/sources.list
 sudo apt-get update -qq
 sudo apt-get install libtool libgmp-dev
 
