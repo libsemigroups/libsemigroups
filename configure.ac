@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Autoconf and automake initialization.
 
 AC_PREREQ([2.69])
-AC_INIT([libsemigroups],[0.5.2],[jdm3@st-andrews.ac.uk])
+AC_INIT([libsemigroups],[0.6.0],[jdm3@st-andrews.ac.uk])
 AC_CONFIG_SRCDIR(src/semigroups.cc)
 AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
