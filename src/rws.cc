@@ -582,8 +582,7 @@ namespace libsemigroups {
 
   // KBS_2 from Sims, p77-78
   void RWS::knuth_bendix(std::atomic<bool>& killed) {
-    Timer t;
-    t.start();
+    Timer timer;
     if (_stack.empty() && confluent(killed) && !killed) {
       // _stack can be non-empty if non-reduced rules were used to define the
       // RWS.  If _stack is non-empty, then it means that the rules in
@@ -653,7 +652,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_STATS
       REPORT("max stack depth = " << _max_stack_depth);
 #endif
-      REPORT(t.string("elapsed time = "));
+      REPORT("elapsed time = " << timer);
     }
   }
 

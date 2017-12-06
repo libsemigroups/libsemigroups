@@ -23,106 +23,68 @@
 #include <iostream>
 #include <string>
 
-#include "libsemigroups-debug.h"
-
 namespace libsemigroups {
 
-  //
-  // This is a simple class to which can be used to send timing information to
-  // the standard output.
-
+  // This is a simple class which can be used to send timing information in a
+  // somewhat human readable format to the standard output.
   class Timer {
-    typedef std::chrono::duration<int64_t, std::nano> nano_t;
-    typedef std::chrono::steady_clock::time_point time_point_t;
-
    public:
-    // Default constructor
-    Timer() : _start(), _end(), _running(false) {}
+    // Default constructor, timer starts when object is created
+    Timer() : _start(std::chrono::high_resolution_clock::now()) {}
 
-    // Is the timer running?
-    //
-    // This method can be used to check if the timer is running.
-    bool is_running() const {
-      return _running;
+    // Reset the timer (i.e. time from this point on)
+    void reset() {
+      _start = std::chrono::high_resolution_clock::now();
     }
 
-    // Start the timer
-    //
-    // This starts the timer running if it is not already running. If it is
-    // already running, then it is reset.
-    void start() {
-      _running = true;
-      _start   = std::chrono::steady_clock::now();
+    // The elapsed time in nanoseconds since last reset
+    std::chrono::nanoseconds elapsed() const {
+      return std::chrono::duration_cast<std::chrono::nanoseconds>(
+          std::chrono::high_resolution_clock::now() - _start);
     }
 
-    // Stop the timer
-    // @str prepend this to the printed statement (defaults to "")
-    //
-    // Stops the timer regardless of its state..
-    void stop() {
-      _running = false;
-      _end     = std::chrono::steady_clock::now();
-    }
-
-    // Print elapsed time
-    // @str prepend this to the printed statement (defaults to "")
-    //
-    // If the timer is running, then this prints the time elapsed since <start>
-    // was called. The format of the returned value is the time in some
-    // (hopefully) human readable format.
-
-    void print(std::string prefix = "") {
-      if (_running) {
-        std::cout << string(prefix);
-      }
-    }
-
-    std::string string(std::string prefix = "") {
-      nano_t elapsed;
-      if (_running) {
-        time_point_t end = std::chrono::steady_clock::now();
-        elapsed          = std::chrono::duration_cast<nano_t>(end - _start);
-      } else {
-        elapsed = std::chrono::duration_cast<nano_t>(_end - _start);
-      }
-
-      if (string_it<std::chrono::hours>(elapsed, prefix, "h ", 0)) {
-        string_it<std::chrono::minutes>(elapsed, prefix, "m", 0);
-        return prefix;
-      } else if (string_it<std::chrono::minutes>(elapsed, prefix, "m ", 0)) {
-        string_it<std::chrono::seconds>(elapsed, prefix, "s", 0);
-        return prefix;
-      } else if (string_it<std::chrono::milliseconds>(
-                     elapsed, prefix, "ms ", 9)) {
-        return prefix;
+    // String containing the somewhat human readable amount of time, this is
+    // primarily intended for testing purposes
+    std::string string(std::chrono::nanoseconds elapsed) const {
+      std::string out;
+      if (string_it<std::chrono::hours>(out, elapsed, "h ", 0)) {
+        string_it<std::chrono::minutes>(out, elapsed, "m", 0);
+        return out;
+      } else if (string_it<std::chrono::minutes>(out, elapsed, "m ", 0)) {
+        string_it<std::chrono::seconds>(out, elapsed, "s", 0);
+        return out;
+      } else if (string_it<std::chrono::milliseconds>(out, elapsed, "ms", 9)) {
+        return out;
       } else if (string_it<std::chrono::microseconds>(
-                     elapsed, prefix, "\u03BCs ", 9)) {
-        return prefix;
-      } else if (string_it<std::chrono::nanoseconds>(
-                     elapsed, prefix, "ns ", 0)) {
-        return prefix;
+                     out, elapsed, "\u03BCs", 9)) {
+        return out;
+      } else if (string_it<std::chrono::nanoseconds>(out, elapsed, "ns", 0)) {
+        return out;
       }
-      return prefix;
+      return out;
     }
 
-    int64_t elapsed() {  // in nanoseconds?
-      if (_running) {
-        return (std::chrono::steady_clock::now() - _start).count();
-      } else {
-        return (_end - _start).count();
-      }
+    // String containing the somewhat human readable amount of time since the
+    // last reset
+    std::string string() const {
+      return string(elapsed());
+    }
+
+    // Left shift the string containing the somewhat human readable amount of
+    // time since last reset to an ostream
+    friend std::ostream& operator<<(std::ostream& os, Timer const& t) {
+      os << t.string();
+      return os;
     }
 
    private:
-    std::chrono::steady_clock::time_point _start;
-    std::chrono::steady_clock::time_point _end;
-    bool                                  _running;
+    std::chrono::high_resolution_clock::time_point _start;
 
     template <typename T>
-    bool string_it(nano_t&      elapsed,
-                   std::string& str,
-                   std::string  unit,
-                   size_t       threshold) {
+    bool string_it(std::string&              str,
+                   std::chrono::nanoseconds& elapsed,
+                   std::string               unit,
+                   size_t                    threshold) const {
       T x = std::chrono::duration_cast<T>(elapsed);
       if (x > T(threshold)) {
         str += std::to_string(x.count()) + unit;

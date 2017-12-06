@@ -176,7 +176,6 @@ namespace libsemigroups {
     }
 
     Timer timer;
-    timer.start();
     DATA* winner;
     if (!_partial_data.empty()) {
       // Continue the already-existing data objects
@@ -223,7 +222,7 @@ namespace libsemigroups {
         winner = winning_data(data, funcs, true, goal_func);
       }
     }
-    REPORT(timer.string("elapsed time = "));
+    REPORT("elapsed time = " << timer);
     if (winner->is_done()) {
       _data = winner;
     }

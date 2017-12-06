@@ -536,8 +536,7 @@ namespace libsemigroups {
     }
 
     REPORT("limit = " << limit);
-    Timer timer;
-    timer.start();
+    Timer  timer;
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     // multiply the generators by every generator
@@ -657,7 +656,7 @@ namespace libsemigroups {
                         << ", finished")
       }
     }
-    REPORT(timer.string("elapsed time = "));
+    REPORT("elapsed time = " << timer);
     if (killed) {
       REPORT("killed");
     }
@@ -722,8 +721,7 @@ namespace libsemigroups {
     if (coll->empty()) {
       return;
     }
-    Timer timer;
-    timer.start();
+    Timer  timer;
     size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
     LIBSEMIGROUPS_ASSERT(degree() == (*coll->begin())->degree());
@@ -895,7 +893,7 @@ namespace libsemigroups {
                         << ", finished")
       }
     }
-    REPORT(timer.string("elapsed time = "));
+    REPORT("elapsed time = " << timer);
   }
 
   // Private methods
@@ -1014,7 +1012,6 @@ namespace libsemigroups {
     _is_idempotent.resize(_nr, false);
 
     Timer timer;
-    timer.start();
 
     // Find the threshold beyond which it is quicker to simply multiply
     // elements rather than follow a path in the Cayley graph. This is the
@@ -1099,7 +1096,7 @@ namespace libsemigroups {
         _idempotents.insert(_idempotents.end(), tmp[i].begin(), tmp[i].end());
       }
     }
-    REPORT(timer.string("elapsed time = "));
+    REPORT("elapsed time = " << timer);
   }
 
   void Semigroup::idempotents(enumerate_index_t const          first,
@@ -1109,7 +1106,6 @@ namespace libsemigroups {
     REPORT("first = " << first << ", last = " << last << ", diff = "
                       << last - first);
     Timer timer;
-    timer.start();
 
     enumerate_index_t pos = first;
 
@@ -1133,7 +1129,7 @@ namespace libsemigroups {
     }
 
     if (pos >= last) {
-      REPORT(timer.string("elapsed time = "));
+      REPORT("elapsed time = " << timer);
       return;
     }
 
@@ -1153,6 +1149,6 @@ namespace libsemigroups {
     }
     tmp_product->really_delete();
     delete tmp_product;
-    REPORT(timer.string("elapsed time = "));
+    REPORT("elapsed time = " << timer);
   }
 }  // namespace libsemigroups

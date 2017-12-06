@@ -306,8 +306,7 @@ namespace libsemigroups {
     //! \sa RWS::knuth_bendix.
     // TODO a version that also accepts killed.
     void knuth_bendix_by_overlap_length() {
-      Timer t;
-      t.start();
+      Timer  timer;
       size_t max_overlap               = _max_overlap;
       size_t check_confluence_interval = _check_confluence_interval;
       _max_overlap                     = 1;
@@ -319,7 +318,7 @@ namespace libsemigroups {
       }
       _max_overlap               = max_overlap;
       _check_confluence_interval = check_confluence_interval;
-      REPORT(t.string("elapsed time = "));
+      REPORT("elapsed time = " << timer);
     }
 
     //! Add a rule to the rewriting system.
