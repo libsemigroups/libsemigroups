@@ -5,10 +5,10 @@
 <area shape="rect" id="node10" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; std::vector\l\&lt; u_int32_t \&gt;, PBR \&gt;" alt="" coords="244,155,430,207"/>
 <area shape="rect" id="node12" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; T, PartialPerm\&lt; T \&gt; \&gt;" alt="" coords="225,231,449,269"/>
 <area shape="rect" id="node16" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="215,293,459,332"/>
-<area shape="rect" id="node20" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="213,356,460,408"/>
-<area shape="rect" id="node24" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; u_int32_t,\l Bipartition \&gt;" alt="" coords="244,432,430,484"/>
-<area shape="rect" id="node27" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. " alt="" coords="244,508,430,560"/>
-<area shape="rect" id="node31" href="$classlibsemigroups_1_1_r_w_s_e.html" title="Subclass of Element that wraps an libsemigroups::rws_word_t. " alt="" coords="261,584,412,609"/>
+<area shape="rect" id="node21" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="213,356,460,408"/>
+<area shape="rect" id="node25" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; u_int32_t,\l Bipartition \&gt;" alt="" coords="244,432,430,484"/>
+<area shape="rect" id="node28" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. " alt="" coords="244,508,430,560"/>
+<area shape="rect" id="node32" href="$classlibsemigroups_1_1_r_w_s_e.html" title="Subclass of Element that wraps an libsemigroups::rws_word_t. " alt="" coords="261,584,412,609"/>
 <area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l bool, BooleanMat \&gt;" alt="" coords="530,5,717,57"/>
 <area shape="rect" id="node4" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; bool, BooleanMat \&gt;" alt="" coords="795,12,1026,51"/>
 <area shape="rect" id="node5" href="$classlibsemigroups_1_1_boolean_mat.html" title="Matrices over the boolean semiring. " alt="" coords="1106,19,1288,44"/>
@@ -22,12 +22,13 @@
 <area shape="rect" id="node17" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="530,283,717,335"/>
 <area shape="rect" id="node18" href="$classlibsemigroups_1_1_partial_transformation.html" title="libsemigroups::PartialTransformation\l\&lt; T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="791,289,1029,328"/>
 <area shape="rect" id="node19" href="$classlibsemigroups_1_1_transformation.html" title="Template class for transformations. " alt="" coords="1082,296,1313,321"/>
-<area shape="rect" id="node21" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l TValueType, MatrixOverSemiring\l\&lt; TValueType \&gt; \&gt;" alt="" coords="513,359,734,424"/>
-<area shape="rect" id="node22" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="786,365,1034,417"/>
-<area shape="rect" id="node23" href="$classlibsemigroups_1_1_matrix_over_semiring.html" title="Matrices over a semiring. " alt="" coords="1109,372,1285,411"/>
-<area shape="rect" id="node25" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l u_int32_t, Bipartition \&gt;" alt="" coords="530,448,717,500"/>
-<area shape="rect" id="node26" href="$classlibsemigroups_1_1_bipartition.html" title="Class for bipartitions. " alt="" coords="825,461,995,487"/>
-<area shape="rect" id="node28" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="530,524,717,576"/>
-<area shape="rect" id="node29" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="Matrices over a semiring. " alt="" coords="815,517,1005,569"/>
-<area shape="rect" id="node30" href="$classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations. " alt="" coords="791,593,1029,632"/>
+<area shape="rect" id="node20" href="$classlibsemigroups_1_1_permutation.html" title="Template class for permutations. " alt="" coords="1361,296,1574,321"/>
+<area shape="rect" id="node22" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l TValueType, MatrixOverSemiring\l\&lt; TValueType \&gt; \&gt;" alt="" coords="513,359,734,424"/>
+<area shape="rect" id="node23" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="libsemigroups::MatrixOver\lSemiringBase\&lt; TValueType,\l MatrixOverSemiring\&lt; TValueType \&gt; \&gt;" alt="" coords="786,365,1034,417"/>
+<area shape="rect" id="node24" href="$classlibsemigroups_1_1_matrix_over_semiring.html" title="Matrices over a semiring. " alt="" coords="1109,372,1285,411"/>
+<area shape="rect" id="node26" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l u_int32_t, Bipartition \&gt;" alt="" coords="530,448,717,500"/>
+<area shape="rect" id="node27" href="$classlibsemigroups_1_1_bipartition.html" title="Class for bipartitions. " alt="" coords="825,461,995,487"/>
+<area shape="rect" id="node29" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="530,524,717,576"/>
+<area shape="rect" id="node30" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="Matrices over a semiring. " alt="" coords="815,517,1005,569"/>
+<area shape="rect" id="node31" href="$classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations. " alt="" coords="791,593,1029,632"/>
 </map>

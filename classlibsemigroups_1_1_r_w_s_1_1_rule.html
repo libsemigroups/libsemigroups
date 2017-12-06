@@ -70,6 +70,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classlibsemigroups_1_1_r_w_s_1_1_rule-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">libsemigroups::RWS::Rule Class Reference</div>  </div>
@@ -83,12 +84,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acdcb04ce28e5f307b2ee5a5ed3bddae2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#acdcb04ce28e5f307b2ee5a5ed3bddae2">lhs</a> () const</td></tr>
+<tr class="memitem:acdcb04ce28e5f307b2ee5a5ed3bddae2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c6fd5c5515f32267db912053db5c084">rws_word_t</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#acdcb04ce28e5f307b2ee5a5ed3bddae2">lhs</a> () const</td></tr>
 <tr class="memdesc:acdcb04ce28e5f307b2ee5a5ed3bddae2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the left hand side of the rule, which is guaranteed to be greater than its right hand side according to the reduction ordering of the <a class="el" href="classlibsemigroups_1_1_r_w_s.html" title="This class is used to represent a string rewriting system defining a finitely presented monoid or sem...">RWS</a> used to construct this.  <a href="#acdcb04ce28e5f307b2ee5a5ed3bddae2">More...</a><br /></td></tr>
 <tr class="separator:acdcb04ce28e5f307b2ee5a5ed3bddae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6eb364cf7aeb401c09264e9c7b4e85e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#a6eb364cf7aeb401c09264e9c7b4e85e1">rhs</a> () const</td></tr>
+<tr class="memitem:a6eb364cf7aeb401c09264e9c7b4e85e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c6fd5c5515f32267db912053db5c084">rws_word_t</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#a6eb364cf7aeb401c09264e9c7b4e85e1">rhs</a> () const</td></tr>
 <tr class="memdesc:a6eb364cf7aeb401c09264e9c7b4e85e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the right hand side of the rule, which is guaranteed to be less than its left hand side according to the reduction ordering of the <a class="el" href="classlibsemigroups_1_1_r_w_s.html" title="This class is used to represent a string rewriting system defining a finitely presented monoid or sem...">RWS</a> used to construct this.  <a href="#a6eb364cf7aeb401c09264e9c7b4e85e1">More...</a><br /></td></tr>
 <tr class="separator:a6eb364cf7aeb401c09264e9c7b4e85e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a85c21c7b9b492046315d2ea625f3b76f"><td class="memItemLeft" align="right" valign="top"><a id="a85c21c7b9b492046315d2ea625f3b76f"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a> const &amp;rule)</td></tr>
+<tr class="separator:a85c21c7b9b492046315d2ea625f3b76f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class for rules in rewriting systems, which supports only two methods, <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#acdcb04ce28e5f307b2ee5a5ed3bddae2" title="Returns the left hand side of the rule, which is guaranteed to be greater than its right hand side ac...">Rule::lhs</a> and <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#a6eb364cf7aeb401c09264e9c7b4e85e1" title="Returns the right hand side of the rule, which is guaranteed to be less than its left hand side accor...">Rule::rhs</a>, which return the left and right hand sides of the rule. </p>
@@ -103,7 +110,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const* libsemigroups::RWS::Rule::lhs </td>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c6fd5c5515f32267db912053db5c084">rws_word_t</a> const* libsemigroups::RWS::Rule::lhs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -130,7 +137,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const* libsemigroups::RWS::Rule::rhs </td>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c6fd5c5515f32267db912053db5c084">rws_word_t</a> const* libsemigroups::RWS::Rule::rhs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -153,7 +160,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Oct 2 2017 20:13:49 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Dec 5 2017 10:10:23 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

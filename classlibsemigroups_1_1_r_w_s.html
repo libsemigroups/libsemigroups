@@ -69,9 +69,11 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classlibsemigroups_1_1_r_w_s-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">libsemigroups::RWS Class Reference</div>  </div>
@@ -83,20 +85,26 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="rws_8h_source.html">rws.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for rules in rewriting systems, which supports only two methods, <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#acdcb04ce28e5f307b2ee5a5ed3bddae2" title="Returns the left hand side of the rule, which is guaranteed to be greater than its right hand side ac...">Rule::lhs</a> and <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#a6eb364cf7aeb401c09264e9c7b4e85e1" title="Returns the right hand side of the rule, which is guaranteed to be less than its left hand side accor...">Rule::rhs</a>, which return the left and right hand sides of the rule.  <a href="classlibsemigroups_1_1_r_w_s_1_1_rule.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a92f70494de02a8e9db6f8dc002f8f1c0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0">overlap_measure</a> { <b>ABC</b> = 0, 
+<b>AB_BC</b> = 1, 
+<b>max_AB_BC</b> = 2
+ }<tr class="memdesc:a92f70494de02a8e9db6f8dc002f8f1c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The values in this enum determine how a rewriting system measures the length \(d(AB, BC)\) of the overlap of two words \(AB\) and \(BC\):  <a href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0">More...</a><br /></td></tr>
+</td></tr>
+<tr class="separator:a92f70494de02a8e9db6f8dc002f8f1c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d2c83900afe73c678890061871e6ebf"><td class="memItemLeft" align="right" valign="top">typedef char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0d2c83900afe73c678890061871e6ebf">rws_letter_t</a></td></tr>
+<tr class="memdesc:a0d2c83900afe73c678890061871e6ebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type for letters for rewriting systems.  <a href="#a0d2c83900afe73c678890061871e6ebf">More...</a><br /></td></tr>
+<tr class="separator:a0d2c83900afe73c678890061871e6ebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af39796ffe6a4016a9cfbe324be0adc62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#af39796ffe6a4016a9cfbe324be0adc62">RWS</a> (<a class="el" href="classlibsemigroups_1_1_reduction_ordering.html">ReductionOrdering</a> *order)</td></tr>
-<tr class="memdesc:af39796ffe6a4016a9cfbe324be0adc62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs rewriting system with no rules and the reduction ordering <code>order</code>.  <a href="#af39796ffe6a4016a9cfbe324be0adc62">More...</a><br /></td></tr>
-<tr class="separator:af39796ffe6a4016a9cfbe324be0adc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5db49ed901143b65fb634d1a3f211b08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a5db49ed901143b65fb634d1a3f211b08">RWS</a> ()</td></tr>
-<tr class="memdesc:a5db49ed901143b65fb634d1a3f211b08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a rewriting system with no rules, and the <a class="el" href="classlibsemigroups_1_1_s_h_o_r_t_l_e_x.html" title="This class implements the shortlex reduction ordering derived from an ordering on libsemigroups::rws_...">SHORTLEX</a> reduction ordering.  <a href="#a5db49ed901143b65fb634d1a3f211b08">More...</a><br /></td></tr>
-<tr class="separator:a5db49ed901143b65fb634d1a3f211b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa578bbd69ebbf35a8d7d5d289761ca24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#aa578bbd69ebbf35a8d7d5d289761ca24">RWS</a> (<a class="el" href="classlibsemigroups_1_1_reduction_ordering.html">ReductionOrdering</a> *order, std::string alphabet=STANDARD_ALPHABET)</td></tr>
+<tr class="memdesc:aa578bbd69ebbf35a8d7d5d289761ca24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs rewriting system with no rules and the reduction ordering <code>order</code>.  <a href="#aa578bbd69ebbf35a8d7d5d289761ca24">More...</a><br /></td></tr>
+<tr class="separator:aa578bbd69ebbf35a8d7d5d289761ca24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4849c263f574bd6284eda88e7e8a7337"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a4849c263f574bd6284eda88e7e8a7337">RWS</a> (std::string alphabet=STANDARD_ALPHABET)</td></tr>
+<tr class="memdesc:a4849c263f574bd6284eda88e7e8a7337"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a rewriting system with no rules, and the <a class="el" href="classlibsemigroups_1_1_s_h_o_r_t_l_e_x.html" title="This class implements the shortlex reduction ordering derived from an ordering on libsemigroups::rws_...">SHORTLEX</a> reduction ordering.  <a href="#a4849c263f574bd6284eda88e7e8a7337">More...</a><br /></td></tr>
+<tr class="separator:a4849c263f574bd6284eda88e7e8a7337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a01e5c70f95fad332f8db267b1e59b9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a1a01e5c70f95fad332f8db267b1e59b9">RWS</a> (std::vector&lt; <a class="el" href="namespacelibsemigroups.html#abd1267c44db1f411a1f6004cd3d15908">relation_t</a> &gt; const &amp;relations)</td></tr>
 <tr class="memdesc:a1a01e5c70f95fad332f8db267b1e59b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a rewriting system with rules derived from the parameter <code>relations</code>, and with the <a class="el" href="classlibsemigroups_1_1_s_h_o_r_t_l_e_x.html" title="This class implements the shortlex reduction ordering derived from an ordering on libsemigroups::rws_...">SHORTLEX</a> reduction ordering.  <a href="#a1a01e5c70f95fad332f8db267b1e59b9">More...</a><br /></td></tr>
 <tr class="separator:a1a01e5c70f95fad332f8db267b1e59b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,84 +117,154 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acf41ccf045d547b3f3ba196818dffdf8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#acf41ccf045d547b3f3ba196818dffdf8">~RWS</a> ()</td></tr>
 <tr class="memdesc:acf41ccf045d547b3f3ba196818dffdf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">A default destructor.  <a href="#acf41ccf045d547b3f3ba196818dffdf8">More...</a><br /></td></tr>
 <tr class="separator:acf41ccf045d547b3f3ba196818dffdf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f5c4d4d7656957493aa4e9049a50b35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3f5c4d4d7656957493aa4e9049a50b35">add_rule</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *p, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *q)</td></tr>
-<tr class="memdesc:a3f5c4d4d7656957493aa4e9049a50b35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the rewriting system.  <a href="#a3f5c4d4d7656957493aa4e9049a50b35">More...</a><br /></td></tr>
-<tr class="separator:a3f5c4d4d7656957493aa4e9049a50b35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a742d7f1ba6225ee74ba0d4ca7bbb0ca6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a742d7f1ba6225ee74ba0d4ca7bbb0ca6">add_rule</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;p, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;q)</td></tr>
-<tr class="memdesc:a742d7f1ba6225ee74ba0d4ca7bbb0ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the rewriting system.  <a href="#a742d7f1ba6225ee74ba0d4ca7bbb0ca6">More...</a><br /></td></tr>
-<tr class="separator:a742d7f1ba6225ee74ba0d4ca7bbb0ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0877f2e282f11bc93771f82fdd70c05f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0877f2e282f11bc93771f82fdd70c05f">add_rule</a> (std::string const &amp;p, std::string const &amp;q)</td></tr>
+<tr class="memdesc:a0877f2e282f11bc93771f82fdd70c05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the rewriting system.  <a href="#a0877f2e282f11bc93771f82fdd70c05f">More...</a><br /></td></tr>
+<tr class="separator:a0877f2e282f11bc93771f82fdd70c05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae07bff2d77150fff875ffe5ec961c9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#aae07bff2d77150fff875ffe5ec961c9f">add_rules</a> (std::vector&lt; <a class="el" href="namespacelibsemigroups.html#abd1267c44db1f411a1f6004cd3d15908">relation_t</a> &gt; const &amp;relations)</td></tr>
-<tr class="memdesc:aae07bff2d77150fff875ffe5ec961c9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds rules derived from <code>relations</code> via <a class="el" href="classlibsemigroups_1_1_r_w_s.html#aa03283d37d08d03d3d4a62f8e5934214" title="Helper function for converting a libsemigroups::word_t to a libsemigroups::rws_word_t. ">RWS::word_to_rws_word</a> to the rewriting system.  <a href="#aae07bff2d77150fff875ffe5ec961c9f">More...</a><br /></td></tr>
+<tr class="memdesc:aae07bff2d77150fff875ffe5ec961c9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds rules derived from <code>relations</code> via <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c5378745d978de1e71e4ffe760f0682" title="This method converts a vector of unsigned integers to a string which represents a word in the rewriti...">RWS::word_to_rws_word</a> to the rewriting system.  <a href="#aae07bff2d77150fff875ffe5ec961c9f">More...</a><br /></td></tr>
 <tr class="separator:aae07bff2d77150fff875ffe5ec961c9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ad74a8d70090b8948f72136cc96a92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a10ad74a8d70090b8948f72136cc96a92">add_rules</a> (<a class="el" href="classlibsemigroups_1_1_congruence.html">Congruence</a> &amp;cong)</td></tr>
 <tr class="memdesc:a10ad74a8d70090b8948f72136cc96a92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add rules derived from <a class="el" href="classlibsemigroups_1_1_congruence.html#aa16ba212d40ee46241ddaf61e1ccb9f6" title="Returns the vector of relations used to define the semigroup over which the congruence is defined...">Congruence::relations</a> and <a class="el" href="classlibsemigroups_1_1_congruence.html#a5986461f0fff0c1f099f1cc3fa5b4006" title="Returns the vector of extra relations (or equivalently, generating pairs) used to define the congruen...">Congruence::extra</a> applied to <code>cong</code>.  <a href="#a10ad74a8d70090b8948f72136cc96a92">More...</a><br /></td></tr>
 <tr class="separator:a10ad74a8d70090b8948f72136cc96a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a703164194e6b1f94ae70a2a53f8a3c77"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a703164194e6b1f94ae70a2a53f8a3c77">is_confluent</a> () const</td></tr>
-<tr class="memdesc:a703164194e6b1f94ae70a2a53f8a3c77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the rewriting system is <a href="https://en.wikipedia.org/wiki/Confluence_(abstract_rewriting)">confluent</a> and <code>false</code> if it is not.  <a href="#a703164194e6b1f94ae70a2a53f8a3c77">More...</a><br /></td></tr>
-<tr class="separator:a703164194e6b1f94ae70a2a53f8a3c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a372d5a21a588be7aba9a0432bc75a040"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a372d5a21a588be7aba9a0432bc75a040">confluent</a> () const</td></tr>
+<tr class="memdesc:a372d5a21a588be7aba9a0432bc75a040"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the rewriting system is <a href="https://en.wikipedia.org/wiki/Confluence_(abstract_rewriting)">confluent</a> and <code>false</code> if it is not.  <a href="#a372d5a21a588be7aba9a0432bc75a040">More...</a><br /></td></tr>
+<tr class="separator:a372d5a21a588be7aba9a0432bc75a040"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82efcac80e8ed153e2aa2af86ef0ab3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b">knuth_bendix</a> ()</td></tr>
 <tr class="memdesc:a82efcac80e8ed153e2aa2af86ef0ab3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the <a href="https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm">Knuth-Bendix algorithm</a> on the rewriting system.  <a href="#a82efcac80e8ed153e2aa2af86ef0ab3b">More...</a><br /></td></tr>
 <tr class="separator:a82efcac80e8ed153e2aa2af86ef0ab3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addd52e5edbaf219714fbc6dcdbad2206"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#addd52e5edbaf219714fbc6dcdbad2206">knuth_bendix</a> (std::atomic&lt; bool &gt; &amp;killed)</td></tr>
 <tr class="memdesc:addd52e5edbaf219714fbc6dcdbad2206"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the <a href="https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm">Knuth-Bendix algorithm</a> on the rewriting system until it terminates or <code>killed</code> is set to <code>true</code>.  <a href="#addd52e5edbaf219714fbc6dcdbad2206">More...</a><br /></td></tr>
 <tr class="separator:addd52e5edbaf219714fbc6dcdbad2206"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeda086a19c63b8747eded6bc357bd0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c">knuth_bendix_by_overlap_length</a> ()</td></tr>
+<tr class="memdesc:abeda086a19c63b8747eded6bc357bd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a given length \(n\) (according to the <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0" title="The values in this enum determine how a rewriting system measures the length  of the overlap of two w...">RWS::overlap_measure</a>) before those overlaps of length \(n + 1\).  <a href="#abeda086a19c63b8747eded6bc357bd0c">More...</a><br /></td></tr>
+<tr class="separator:abeda086a19c63b8747eded6bc357bd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42857dac79a8289ae354daa8f3c91f86"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a42857dac79a8289ae354daa8f3c91f86">nr_rules</a> () const</td></tr>
 <tr class="memdesc:a42857dac79a8289ae354daa8f3c91f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of active rules in the rewriting system.  <a href="#a42857dac79a8289ae354daa8f3c91f86">More...</a><br /></td></tr>
 <tr class="separator:a42857dac79a8289ae354daa8f3c91f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79370f41a41a4e51168c509a131535e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a79370f41a41a4e51168c509a131535e8">rewrite</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *w) const</td></tr>
-<tr class="memdesc:a79370f41a41a4e51168c509a131535e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rewrites the word pointed to by <code>w</code> in-place according to the current rules in the rewriting system.  <a href="#a79370f41a41a4e51168c509a131535e8">More...</a><br /></td></tr>
-<tr class="separator:a79370f41a41a4e51168c509a131535e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a583f9070e911250d659a635b84cf88a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a583f9070e911250d659a635b84cf88a5">rewrite</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> w) const</td></tr>
-<tr class="memdesc:a583f9070e911250d659a635b84cf88a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rewrites a copy of the word <code>w</code> according to the current rules in the rewriting system.  <a href="#a583f9070e911250d659a635b84cf88a5">More...</a><br /></td></tr>
-<tr class="separator:a583f9070e911250d659a635b84cf88a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6f3bae649b3395c410c360d846b9019"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a> const  * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ac6f3bae649b3395c410c360d846b9019">rules_cbegin</a> () const</td></tr>
-<tr class="memdesc:ac6f3bae649b3395c410c360d846b9019"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing at the first <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html" title="Class for rules in rewriting systems, which supports only two methods, Rule::lhs and Rule::rhs...">Rule</a> of <code>this</code>.  <a href="#ac6f3bae649b3395c410c360d846b9019">More...</a><br /></td></tr>
-<tr class="separator:ac6f3bae649b3395c410c360d846b9019"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4322a87b4111e5f32bb9c30c3e8eb513"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a> const  * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a4322a87b4111e5f32bb9c30c3e8eb513">rules_cend</a> () const</td></tr>
-<tr class="memdesc:a4322a87b4111e5f32bb9c30c3e8eb513"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing past the last <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html" title="Class for rules in rewriting systems, which supports only two methods, Rule::lhs and Rule::rhs...">Rule</a> of <code>this</code>.  <a href="#a4322a87b4111e5f32bb9c30c3e8eb513">More...</a><br /></td></tr>
-<tr class="separator:a4322a87b4111e5f32bb9c30c3e8eb513"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a338f66d7cb1cb877b0cd5d27f2080408"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a338f66d7cb1cb877b0cd5d27f2080408">set_confluent</a> (bool val)</td></tr>
-<tr class="memdesc:a338f66d7cb1cb877b0cd5d27f2080408"><td class="mdescLeft">&#160;</td><td class="mdescRight">If you somehow magically know that the rewriting system is confluent, or not, then you can set this using this method.  <a href="#a338f66d7cb1cb877b0cd5d27f2080408">More...</a><br /></td></tr>
-<tr class="separator:a338f66d7cb1cb877b0cd5d27f2080408"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37c421016dd03c1a0a9b004b1ccc274c"><td class="memItemLeft" align="right" valign="top">std::string *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a37c421016dd03c1a0a9b004b1ccc274c">rewrite</a> (std::string *w) const</td></tr>
+<tr class="memdesc:a37c421016dd03c1a0a9b004b1ccc274c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rewrites the word <code>w</code> in-place according to the current rules in the rewriting system.  <a href="#a37c421016dd03c1a0a9b004b1ccc274c">More...</a><br /></td></tr>
+<tr class="separator:a37c421016dd03c1a0a9b004b1ccc274c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade1d0559f7ab73323075868ac0c3f6d9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ade1d0559f7ab73323075868ac0c3f6d9">rewrite</a> (std::string w) const</td></tr>
+<tr class="memdesc:ade1d0559f7ab73323075868ac0c3f6d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rewrites a copy of the word <code>w</code> according to the current rules in the rewriting system.  <a href="#ade1d0559f7ab73323075868ac0c3f6d9">More...</a><br /></td></tr>
+<tr class="separator:ade1d0559f7ab73323075868ac0c3f6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3277fbd45d6913969e4378a4e8167deb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3277fbd45d6913969e4378a4e8167deb">rule</a> (std::string p, std::string q) const</td></tr>
+<tr class="memdesc:a3277fbd45d6913969e4378a4e8167deb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method returns <code>true</code> if the strings <code>p</code> and <code>q</code> represent an active rule of the rewriting system, i.e. if either \( p \to q\) or \( q \to p \) is a currently active rule of the system.  <a href="#a3277fbd45d6913969e4378a4e8167deb">More...</a><br /></td></tr>
+<tr class="separator:a3277fbd45d6913969e4378a4e8167deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a976158da9f3dd6d6023f5bbc849bc702"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a976158da9f3dd6d6023f5bbc849bc702">rules</a> () const</td></tr>
+<tr class="memdesc:a976158da9f3dd6d6023f5bbc849bc702"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method returns a vector consisting of the pairs of strings which represent the rules of the rewriting system. The <code>first</code> entry in every such pair is greater than the <code>second</code> according to the reduction ordering of the rewriting system. The rules are sorted according to the reduction ordering used by the rewriting system, on the first entry.  <a href="#a976158da9f3dd6d6023f5bbc849bc702">More...</a><br /></td></tr>
+<tr class="separator:a976158da9f3dd6d6023f5bbc849bc702"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7e0b5218203ed49c93058839b7dc41c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ac7e0b5218203ed49c93058839b7dc41c">set_check_confluence_interval</a> (size_t interval)</td></tr>
+<tr class="memdesc:ac7e0b5218203ed49c93058839b7dc41c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The method <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> periodically checks if the system is already confluent. This method can be used to set how frequently this happens, it is the number of new overlaps that should be considered before checking confluence. Setting this value too low can adversely affect the performance of <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>.  <a href="#ac7e0b5218203ed49c93058839b7dc41c">More...</a><br /></td></tr>
+<tr class="separator:ac7e0b5218203ed49c93058839b7dc41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a485f896a757987f0e44b2ac99c815257"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a485f896a757987f0e44b2ac99c815257">set_max_overlap</a> (size_t val)</td></tr>
+<tr class="memdesc:a485f896a757987f0e44b2ac99c815257"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method can be used to specify the maximum length of the overlap of two left hand sides of rules that should be considered in <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>.  <a href="#a485f896a757987f0e44b2ac99c815257">More...</a><br /></td></tr>
+<tr class="separator:a485f896a757987f0e44b2ac99c815257"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b387ffa5b98bf7b3a7974e1f50476f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a1b387ffa5b98bf7b3a7974e1f50476f5">set_max_rules</a> (size_t val)</td></tr>
+<tr class="memdesc:a1b387ffa5b98bf7b3a7974e1f50476f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method sets the (approximate) maximum number of rules that the system should contain. If this is number is exceeded in calls to <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> or <a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c" title="This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a ...">RWS::knuth_bendix_by_overlap_length</a>, then these methods will terminate and the system may not be confluent.  <a href="#a1b387ffa5b98bf7b3a7974e1f50476f5">More...</a><br /></td></tr>
+<tr class="separator:a1b387ffa5b98bf7b3a7974e1f50476f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a475db19f936de6b641c74c1186023086"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a475db19f936de6b641c74c1186023086">set_overlap_measure</a> (<a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0">overlap_measure</a> measure)</td></tr>
+<tr class="memdesc:a475db19f936de6b641c74c1186023086"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method can be used to determine the way that the length of an overlap of two words in the system is meaasured.  <a href="#a475db19f936de6b641c74c1186023086">More...</a><br /></td></tr>
+<tr class="separator:a475db19f936de6b641c74c1186023086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43e27533705042bcfc67aefbeb088268"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a43e27533705042bcfc67aefbeb088268">set_report</a> (bool val) const</td></tr>
 <tr class="memdesc:a43e27533705042bcfc67aefbeb088268"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn reporting on or off.  <a href="#a43e27533705042bcfc67aefbeb088268">More...</a><br /></td></tr>
 <tr class="separator:a43e27533705042bcfc67aefbeb088268"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7480e806efb5fe1d6978cc32672844c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a7480e806efb5fe1d6978cc32672844c7">set_report_interval</a> (size_t interval)</td></tr>
+<tr class="memdesc:a7480e806efb5fe1d6978cc32672844c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some information can be sent to std::cout during calls to <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and <a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c" title="This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a ...">RWS::knuth_bendix_by_overlap_length</a>. This method can be used to determine the frequency with which this information is given, where a larger value means less frequently.  <a href="#a7480e806efb5fe1d6978cc32672844c7">More...</a><br /></td></tr>
+<tr class="separator:a7480e806efb5fe1d6978cc32672844c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1d2165ba89632cafd26516afc9b92e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ab1d2165ba89632cafd26516afc9b92e6">test_equals</a> (<a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;p, <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;q)</td></tr>
 <tr class="memdesc:ab1d2165ba89632cafd26516afc9b92e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> equal the reduced form of <code>RWS::word_to_rws_word(q)</code>, and <code>false</code> if not.  <a href="#ab1d2165ba89632cafd26516afc9b92e6">More...</a><br /></td></tr>
 <tr class="separator:ab1d2165ba89632cafd26516afc9b92e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4f0a70facbf359bdabde7683b4917d0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae4f0a70facbf359bdabde7683b4917d0">test_equals</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;p, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;q)</td></tr>
-<tr class="memdesc:ae4f0a70facbf359bdabde7683b4917d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> equals <code>RWS::rewrite(q)</code>, and <code>false</code> if not.  <a href="#ae4f0a70facbf359bdabde7683b4917d0">More...</a><br /></td></tr>
-<tr class="separator:ae4f0a70facbf359bdabde7683b4917d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade2da2f20b02cea89071d23b63807336"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ade2da2f20b02cea89071d23b63807336">test_equals</a> (std::initializer_list&lt; size_t &gt; const &amp;p, std::initializer_list&lt; size_t &gt; const &amp;q)</td></tr>
+<tr class="memdesc:ade2da2f20b02cea89071d23b63807336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> equal the reduced form of <code>RWS::word_to_rws_word(q)</code>, and <code>false</code> if not.  <a href="#ade2da2f20b02cea89071d23b63807336">More...</a><br /></td></tr>
+<tr class="separator:ade2da2f20b02cea89071d23b63807336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5af36b69c545bb50841e3ba298920ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae5af36b69c545bb50841e3ba298920ed">test_equals</a> (std::string const &amp;p, std::string const &amp;q)</td></tr>
+<tr class="memdesc:ae5af36b69c545bb50841e3ba298920ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> equals <code>RWS::rewrite(q)</code>, and <code>false</code> if not.  <a href="#ae5af36b69c545bb50841e3ba298920ed">More...</a><br /></td></tr>
+<tr class="separator:ae5af36b69c545bb50841e3ba298920ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a305b6b531c0a18022e59d5820197e408"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a305b6b531c0a18022e59d5820197e408">test_equals</a> (std::string *p, std::string *q)</td></tr>
+<tr class="memdesc:a305b6b531c0a18022e59d5820197e408"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> equals <code>RWS::rewrite(q)</code>, and <code>false</code> if not.  <a href="#a305b6b531c0a18022e59d5820197e408">More...</a><br /></td></tr>
+<tr class="separator:a305b6b531c0a18022e59d5820197e408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9c348979a879fdb0097b8fd065ccedd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ab9c348979a879fdb0097b8fd065ccedd">test_less_than</a> (<a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;p, <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;q)</td></tr>
 <tr class="memdesc:ab9c348979a879fdb0097b8fd065ccedd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> is less than the reduced form of <code>RWS::word_to_rws_word(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not.  <a href="#ab9c348979a879fdb0097b8fd065ccedd">More...</a><br /></td></tr>
 <tr class="separator:ab9c348979a879fdb0097b8fd065ccedd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17605c40b448cc394dbbde86243b71a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a17605c40b448cc394dbbde86243b71a1">test_less_than</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;p, <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;q)</td></tr>
-<tr class="memdesc:a17605c40b448cc394dbbde86243b71a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> is less than <code>RWS::rewrite(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not.  <a href="#a17605c40b448cc394dbbde86243b71a1">More...</a><br /></td></tr>
-<tr class="separator:a17605c40b448cc394dbbde86243b71a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4970eaeaec6d62257609353c12d0779"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ac4970eaeaec6d62257609353c12d0779">test_less_than</a> (std::string const &amp;p, std::string const &amp;q)</td></tr>
+<tr class="memdesc:ac4970eaeaec6d62257609353c12d0779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> is less than <code>RWS::rewrite(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not.  <a href="#ac4970eaeaec6d62257609353c12d0779">More...</a><br /></td></tr>
+<tr class="separator:ac4970eaeaec6d62257609353c12d0779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3e7842adaf99ffc06f4bd20e3d08379"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae3e7842adaf99ffc06f4bd20e3d08379">test_less_than</a> (std::string *p, std::string *q)</td></tr>
+<tr class="memdesc:ae3e7842adaf99ffc06f4bd20e3d08379"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>RWS::rewrite(p)</code> is less than <code>RWS::rewrite(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not.  <a href="#ae3e7842adaf99ffc06f4bd20e3d08379">More...</a><br /></td></tr>
+<tr class="separator:ae3e7842adaf99ffc06f4bd20e3d08379"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a1ea3da013f7f99e8b489a23d5d1015c2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515">rws_letter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a1ea3da013f7f99e8b489a23d5d1015c2">letter_to_rws_letter</a> (<a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a> const &amp;a)</td></tr>
-<tr class="memdesc:a1ea3da013f7f99e8b489a23d5d1015c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515" title="Type for letters for rewriting systems. ">libsemigroups::rws_letter_t</a>.  <a href="#a1ea3da013f7f99e8b489a23d5d1015c2">More...</a><br /></td></tr>
-<tr class="separator:a1ea3da013f7f99e8b489a23d5d1015c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15949db2814cae3319a43de450655cdd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a15949db2814cae3319a43de450655cdd">letter_to_rws_word</a> (<a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a> const &amp;a)</td></tr>
-<tr class="memdesc:a15949db2814cae3319a43de450655cdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>.  <a href="#a15949db2814cae3319a43de450655cdd">More...</a><br /></td></tr>
-<tr class="separator:a15949db2814cae3319a43de450655cdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a216a75f998b42e90d1b10e7ba64680c1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a216a75f998b42e90d1b10e7ba64680c1">rws_letter_to_letter</a> (<a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515">rws_letter_t</a> const &amp;rws_letter)</td></tr>
-<tr class="memdesc:a216a75f998b42e90d1b10e7ba64680c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for converting a <a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515" title="Type for letters for rewriting systems. ">libsemigroups::rws_letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a>.  <a href="#a216a75f998b42e90d1b10e7ba64680c1">More...</a><br /></td></tr>
-<tr class="separator:a216a75f998b42e90d1b10e7ba64680c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23dba58eeb0b67f7de878fdf81ad67cf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a23dba58eeb0b67f7de878fdf81ad67cf">rws_word_to_word</a> (<a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const *rws_word)</td></tr>
-<tr class="memdesc:a23dba58eeb0b67f7de878fdf81ad67cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for converting a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a> to a <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6" title="Type for a word over the generators of a semigroup. ">libsemigroups::word_t</a>.  <a href="#a23dba58eeb0b67f7de878fdf81ad67cf">More...</a><br /></td></tr>
-<tr class="separator:a23dba58eeb0b67f7de878fdf81ad67cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa03283d37d08d03d3d4a62f8e5934214"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#aa03283d37d08d03d3d4a62f8e5934214">word_to_rws_word</a> (<a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;w)</td></tr>
-<tr class="memdesc:aa03283d37d08d03d3d4a62f8e5934214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6" title="Type for a word over the generators of a semigroup. ">libsemigroups::word_t</a> to a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>.  <a href="#aa03283d37d08d03d3d4a62f8e5934214">More...</a><br /></td></tr>
-<tr class="separator:aa03283d37d08d03d3d4a62f8e5934214"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76b13cfa822508d87a7daf5211bb25e9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a76b13cfa822508d87a7daf5211bb25e9">rws_word_to_word</a> (rws_word_t const *rws_word)</td></tr>
+<tr class="memdesc:a76b13cfa822508d87a7daf5211bb25e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method converts a string in the rewriting system into a vector of unsigned integers. This method is the inverse of <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a4dbcc24a5e687062046b0a85d0b9959d" title="This method converts an unsigned integer to the corresponding rws_word_t. For example, the integer 0 is converted to the word with single letter which is the 1st ASCII character. ">RWS::uint_to_rws_word</a>.  <a href="#a76b13cfa822508d87a7daf5211bb25e9">More...</a><br /></td></tr>
+<tr class="separator:a76b13cfa822508d87a7daf5211bb25e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dbcc24a5e687062046b0a85d0b9959d"><td class="memItemLeft" align="right" valign="top">static rws_word_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a4dbcc24a5e687062046b0a85d0b9959d">uint_to_rws_word</a> (size_t const &amp;a)</td></tr>
+<tr class="memdesc:a4dbcc24a5e687062046b0a85d0b9959d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method converts an unsigned integer to the corresponding rws_word_t. For example, the integer 0 is converted to the word with single letter which is the 1st ASCII character.  <a href="#a4dbcc24a5e687062046b0a85d0b9959d">More...</a><br /></td></tr>
+<tr class="separator:a4dbcc24a5e687062046b0a85d0b9959d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c5378745d978de1e71e4ffe760f0682"><td class="memItemLeft" align="right" valign="top">static rws_word_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c5378745d978de1e71e4ffe760f0682">word_to_rws_word</a> (<a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;w, rws_word_t *ww)</td></tr>
+<tr class="memdesc:a0c5378745d978de1e71e4ffe760f0682"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method converts a vector of unsigned integers to a string which represents a word in the rewriting system. The second parameter <code>ww</code> is modified in-place to contain the string version of the vector of unsigned integers <code>w</code>.  <a href="#a0c5378745d978de1e71e4ffe760f0682">More...</a><br /></td></tr>
+<tr class="separator:a0c5378745d978de1e71e4ffe760f0682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a090c712f8edd846b469ae8ea59ff52f5"><td class="memItemLeft" align="right" valign="top">static rws_word_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a090c712f8edd846b469ae8ea59ff52f5">word_to_rws_word</a> (<a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;w)</td></tr>
+<tr class="memdesc:a090c712f8edd846b469ae8ea59ff52f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method converts a vector of unsigned integers to a string which represents a word in the rewriting system.  <a href="#a090c712f8edd846b469ae8ea59ff52f5">More...</a><br /></td></tr>
+<tr class="separator:a090c712f8edd846b469ae8ea59ff52f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a5e8f76453acc060c323b80e992b3c044"><td class="memItemLeft" align="right" valign="top">static size_t const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a5e8f76453acc060c323b80e992b3c044">UNBOUNDED</a> = static_cast&lt;size_t&gt;(-2)</td></tr>
+<tr class="memdesc:a5e8f76453acc060c323b80e992b3c044"><td class="mdescLeft">&#160;</td><td class="mdescRight">The constant value represents an UNBOUNDED quantity.  <a href="#a5e8f76453acc060c323b80e992b3c044">More...</a><br /></td></tr>
+<tr class="separator:a5e8f76453acc060c323b80e992b3c044"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a3bc8666a861824eef973c99859e5df44"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3bc8666a861824eef973c99859e5df44">operator&lt;&lt;</a> (std::ostream &amp;os, <a class="el" href="classlibsemigroups_1_1_r_w_s.html">RWS</a> const &amp;rws)</td></tr>
+<tr class="memdesc:a3bc8666a861824eef973c99859e5df44"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method allows a <a class="el" href="classlibsemigroups_1_1_r_w_s.html" title="This class is used to represent a string rewriting system defining a finitely presented monoid or sem...">RWS</a> object to be left shifted into a std::ostream, such as std::cout. The currently active rules of the system are represented in the output.  <a href="#a3bc8666a861824eef973c99859e5df44">More...</a><br /></td></tr>
+<tr class="separator:a3bc8666a861824eef973c99859e5df44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is used to represent a <a href="https://en.wikipedia.org/wiki/Semi-Thue_system">string rewriting system</a> defining a finitely presented monoid or semigroup. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af39796ffe6a4016a9cfbe324be0adc62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af39796ffe6a4016a9cfbe324be0adc62">&#9670;&nbsp;</a></span>RWS() <span class="overload">[1/5]</span></h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a0d2c83900afe73c678890061871e6ebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2c83900afe73c678890061871e6ebf">&#9670;&nbsp;</a></span>rws_letter_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef char <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0d2c83900afe73c678890061871e6ebf">libsemigroups::RWS::rws_letter_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type for letters for rewriting systems. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a92f70494de02a8e9db6f8dc002f8f1c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92f70494de02a8e9db6f8dc002f8f1c0">&#9670;&nbsp;</a></span>overlap_measure</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0">libsemigroups::RWS::overlap_measure</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The values in this enum determine how a rewriting system measures the length \(d(AB, BC)\) of the overlap of two words \(AB\) and \(BC\): </p>
+<ul>
+<li><em><b>ABC</b></em>: \(d(AB, BC) = |A| + |B| + |C|\)</li>
+<li><em><b>AB_BC</b></em>: \(d(AB, BC) = |AB| + |BC|\)</li>
+<li><em><b>max_AB_BC</b></em>: \(d(AB, BC) = max(|AB|, |BC|)\)</li>
+</ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a475db19f936de6b641c74c1186023086" title="This method can be used to determine the way that the length of an overlap of two words in the system...">RWS::set_overlap_measure</a>. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aa578bbd69ebbf35a8d7d5d289761ca24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa578bbd69ebbf35a8d7d5d289761ca24">&#9670;&nbsp;</a></span>RWS() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,8 +276,18 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">libsemigroups::RWS::RWS </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_reduction_ordering.html">ReductionOrdering</a> *&#160;</td>
-          <td class="paramname"><em>order</em></td><td>)</td>
+          <td class="paramname"><em>order</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>alphabet</em> = <code>STANDARD_ALPHABET</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -214,8 +302,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5db49ed901143b65fb634d1a3f211b08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5db49ed901143b65fb634d1a3f211b08">&#9670;&nbsp;</a></span>RWS() <span class="overload">[2/5]</span></h2>
+<a id="a4849c263f574bd6284eda88e7e8a7337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4849c263f574bd6284eda88e7e8a7337">&#9670;&nbsp;</a></span>RWS() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -226,13 +314,14 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">libsemigroups::RWS::RWS </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>alphabet</em> = <code>STANDARD_ALPHABET</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -358,8 +447,8 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3f5c4d4d7656957493aa4e9049a50b35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f5c4d4d7656957493aa4e9049a50b35">&#9670;&nbsp;</a></span>add_rule() <span class="overload">[1/2]</span></h2>
+<a id="a0877f2e282f11bc93771f82fdd70c05f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0877f2e282f11bc93771f82fdd70c05f">&#9670;&nbsp;</a></span>add_rule()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -367,13 +456,13 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void libsemigroups::RWS::add_rule </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *&#160;</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *&#160;</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>q</em>&#160;</td>
         </tr>
         <tr>
@@ -385,41 +474,8 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Add a rule to the rewriting system. </p>
-<p>The parameters <code>p</code> and <code>q</code> correspond to the rule being added.</p>
-<p>If <code>p</code> and <code>q</code> are not equal, then this method adds a rule to the rewriting system, where the left-hand side of the rule is strictly greater than the right-hand side in the reduction ordering used to defined <code>this</code>. If <code>p</code> and <code>q</code> are equal, then the rewriting system is unchanged and <code>p</code> and <code>q</code> are deleted.</p>
-<p>The parameters <code>p</code> and <code>q</code> are not copied and will be deleted by the <code>this</code>. </p>
-
-</div>
-</div>
-<a id="a742d7f1ba6225ee74ba0d4ca7bbb0ca6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a742d7f1ba6225ee74ba0d4ca7bbb0ca6">&#9670;&nbsp;</a></span>add_rule() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void libsemigroups::RWS::add_rule </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
-          <td class="paramname"><em>p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
-          <td class="paramname"><em>q</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add a rule to the rewriting system. </p>
-<p>The principal difference between this method and <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3f5c4d4d7656957493aa4e9049a50b35" title="Add a rule to the rewriting system. ">RWS::add_rule(rws_word_t* p, rws_word_t* q)</a> is that the arguments are copied by this method.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3f5c4d4d7656957493aa4e9049a50b35" title="Add a rule to the rewriting system. ">RWS::add_rule</a>. </dd></dl>
+<p>The principal difference between this method and RWS::add_rule(std::string* p, std::string* q) is that the arguments are copied by this method.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0877f2e282f11bc93771f82fdd70c05f" title="Add a rule to the rewriting system. ">RWS::add_rule</a>. </dd></dl>
 
 </div>
 </div>
@@ -428,9 +484,6 @@ Static Public Member Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void libsemigroups::RWS::add_rules </td>
@@ -440,15 +493,10 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Adds rules derived from <code>relations</code> via <a class="el" href="classlibsemigroups_1_1_r_w_s.html#aa03283d37d08d03d3d4a62f8e5934214" title="Helper function for converting a libsemigroups::word_t to a libsemigroups::rws_word_t. ">RWS::word_to_rws_word</a> to the rewriting system. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a3f5c4d4d7656957493aa4e9049a50b35" title="Add a rule to the rewriting system. ">RWS::add_rule</a>. </dd></dl>
+<p>Adds rules derived from <code>relations</code> via <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0c5378745d978de1e71e4ffe760f0682" title="This method converts a vector of unsigned integers to a string which represents a word in the rewriti...">RWS::word_to_rws_word</a> to the rewriting system. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a0877f2e282f11bc93771f82fdd70c05f" title="Add a rule to the rewriting system. ">RWS::add_rule</a>. </dd></dl>
 
 </div>
 </div>
@@ -480,8 +528,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a703164194e6b1f94ae70a2a53f8a3c77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a703164194e6b1f94ae70a2a53f8a3c77">&#9670;&nbsp;</a></span>is_confluent()</h2>
+<a id="a372d5a21a588be7aba9a0432bc75a040"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a372d5a21a588be7aba9a0432bc75a040">&#9670;&nbsp;</a></span>confluent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -490,7 +538,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool libsemigroups::RWS::is_confluent </td>
+          <td class="memname">bool libsemigroups::RWS::confluent </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -552,12 +600,13 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Run the <a href="https://en.wikipedia.org/wiki/Knuth–Bendix_completion_algorithm">Knuth-Bendix algorithm</a> on the rewriting system until it terminates or <code>killed</code> is set to <code>true</code>. </p>
-<dl class="section warning"><dt>Warning</dt><dd>This will terminate when the rewriting system is confluent, which might be never. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This will terminate when the rewriting system is confluent, which might be never.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c" title="This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a ...">knuth_bendix_by_overlap_length</a>. </dd></dl>
 
 </div>
 </div>
-<a id="a1ea3da013f7f99e8b489a23d5d1015c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ea3da013f7f99e8b489a23d5d1015c2">&#9670;&nbsp;</a></span>letter_to_rws_letter()</h2>
+<a id="abeda086a19c63b8747eded6bc357bd0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abeda086a19c63b8747eded6bc357bd0c">&#9670;&nbsp;</a></span>knuth_bendix_by_overlap_length()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -566,50 +615,22 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515">rws_letter_t</a> libsemigroups::RWS::letter_to_rws_letter </td>
+          <td class="memname">void libsemigroups::RWS::knuth_bendix_by_overlap_length </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a> const &amp;&#160;</td>
-          <td class="paramname"><em>a</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515" title="Type for letters for rewriting systems. ">libsemigroups::rws_letter_t</a>. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a216a75f998b42e90d1b10e7ba64680c1" title="Helper function for converting a libsemigroups::rws_letter_t to a libsemigroups::letter_t. ">RWS::rws_letter_to_letter</a>. </dd></dl>
-
-</div>
-</div>
-<a id="a15949db2814cae3319a43de450655cdd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a15949db2814cae3319a43de450655cdd">&#9670;&nbsp;</a></span>letter_to_rws_word()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> * libsemigroups::RWS::letter_to_rws_word </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a> const &amp;&#160;</td>
-          <td class="paramname"><em>a</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>. </p>
+<p>This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a given length \(n\) (according to the <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0" title="The values in this enum determine how a rewriting system measures the length  of the overlap of two w...">RWS::overlap_measure</a>) before those overlaps of length \(n + 1\). </p>
+<dl class="section warning"><dt>Warning</dt><dd>This will terminate when the rewriting system is confluent, which might be never.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </dd></dl>
 
 </div>
 </div>
@@ -640,28 +661,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a79370f41a41a4e51168c509a131535e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79370f41a41a4e51168c509a131535e8">&#9670;&nbsp;</a></span>rewrite() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void libsemigroups::RWS::rewrite </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> *&#160;</td>
-          <td class="paramname"><em>w</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Rewrites the word pointed to by <code>w</code> in-place according to the current rules in the rewriting system. </p>
-
-</div>
-</div>
-<a id="a583f9070e911250d659a635b84cf88a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a583f9070e911250d659a635b84cf88a5">&#9670;&nbsp;</a></span>rewrite() <span class="overload">[2/2]</span></h2>
+<a id="a37c421016dd03c1a0a9b004b1ccc274c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37c421016dd03c1a0a9b004b1ccc274c">&#9670;&nbsp;</a></span>rewrite() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -670,9 +671,37 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> libsemigroups::RWS::rewrite </td>
+          <td class="memname">std::string* libsemigroups::RWS::rewrite </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a>&#160;</td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>w</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Rewrites the word <code>w</code> in-place according to the current rules in the rewriting system. </p>
+
+</div>
+</div>
+<a id="ade1d0559f7ab73323075868ac0c3f6d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade1d0559f7ab73323075868ac0c3f6d9">&#9670;&nbsp;</a></span>rewrite() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string libsemigroups::RWS::rewrite </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>w</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -688,91 +717,57 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac6f3bae649b3395c410c360d846b9019"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6f3bae649b3395c410c360d846b9019">&#9670;&nbsp;</a></span>rules_cbegin()</h2>
+<a id="a3277fbd45d6913969e4378a4e8167deb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3277fbd45d6913969e4378a4e8167deb">&#9670;&nbsp;</a></span>rule()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::list&lt;<a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a> const*&gt;::const_iterator libsemigroups::RWS::rules_cbegin </td>
+          <td class="memname">bool libsemigroups::RWS::rule </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
         </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns an iterator pointing at the first <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html" title="Class for rules in rewriting systems, which supports only two methods, Rule::lhs and Rule::rhs...">Rule</a> of <code>this</code>. </p>
-
-</div>
-</div>
-<a id="a4322a87b4111e5f32bb9c30c3e8eb513"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4322a87b4111e5f32bb9c30c3e8eb513">&#9670;&nbsp;</a></span>rules_cend()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
         <tr>
-          <td class="memname">std::list&lt;<a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html">Rule</a> const*&gt;::const_iterator libsemigroups::RWS::rules_cend </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns an iterator pointing past the last <a class="el" href="classlibsemigroups_1_1_r_w_s_1_1_rule.html" title="Class for rules in rewriting systems, which supports only two methods, Rule::lhs and Rule::rhs...">Rule</a> of <code>this</code>. </p>
-
-</div>
-</div>
-<a id="a216a75f998b42e90d1b10e7ba64680c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a216a75f998b42e90d1b10e7ba64680c1">&#9670;&nbsp;</a></span>rws_letter_to_letter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2">letter_t</a> libsemigroups::RWS::rws_letter_to_letter </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515">rws_letter_t</a> const &amp;&#160;</td>
-          <td class="paramname"><em>rws_letter</em></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Helper function for converting a <a class="el" href="namespacelibsemigroups.html#aead3248bfb7f7f76a5e25ce940a7a515" title="Type for letters for rewriting systems. ">libsemigroups::rws_letter_t</a> to a <a class="el" href="namespacelibsemigroups.html#a38c2911ca7f82f35322c4b82e3c671e2" title="Type for the index of a generator of a semigroup. ">libsemigroups::letter_t</a>. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a1ea3da013f7f99e8b489a23d5d1015c2" title="Helper function for converting a libsemigroups::letter_t to a libsemigroups::rws_letter_t. ">RWS::letter_to_rws_letter</a>. </dd></dl>
+<p>This method returns <code>true</code> if the strings <code>p</code> and <code>q</code> represent an active rule of the rewriting system, i.e. if either \( p \to q\) or \( q \to p \) is a currently active rule of the system. </p>
 
 </div>
 </div>
-<a id="a23dba58eeb0b67f7de878fdf81ad67cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a23dba58eeb0b67f7de878fdf81ad67cf">&#9670;&nbsp;</a></span>rws_word_to_word()</h2>
+<a id="a976158da9f3dd6d6023f5bbc849bc702"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a976158da9f3dd6d6023f5bbc849bc702">&#9670;&nbsp;</a></span>rules()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt; libsemigroups::RWS::rules </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This method returns a vector consisting of the pairs of strings which represent the rules of the rewriting system. The <code>first</code> entry in every such pair is greater than the <code>second</code> according to the reduction ordering of the rewriting system. The rules are sorted according to the reduction ordering used by the rewriting system, on the first entry. </p>
+
+</div>
+</div>
+<a id="a76b13cfa822508d87a7daf5211bb25e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76b13cfa822508d87a7daf5211bb25e9">&#9670;&nbsp;</a></span>rws_word_to_word()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -781,27 +776,26 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> * libsemigroups::RWS::rws_word_to_word </td>
+          <td class="memname">static <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a>* libsemigroups::RWS::rws_word_to_word </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const *&#160;</td>
+          <td class="paramtype">rws_word_t const *&#160;</td>
           <td class="paramname"><em>rws_word</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Helper function for converting a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a> to a <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6" title="Type for a word over the generators of a semigroup. ">libsemigroups::word_t</a>. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#aa03283d37d08d03d3d4a62f8e5934214" title="Helper function for converting a libsemigroups::word_t to a libsemigroups::rws_word_t. ">RWS::word_to_rws_word</a>. </dd></dl>
+<p>This method converts a string in the rewriting system into a vector of unsigned integers. This method is the inverse of <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a4dbcc24a5e687062046b0a85d0b9959d" title="This method converts an unsigned integer to the corresponding rws_word_t. For example, the integer 0 is converted to the word with single letter which is the 1st ASCII character. ">RWS::uint_to_rws_word</a>. </p>
 
 </div>
 </div>
-<a id="a338f66d7cb1cb877b0cd5d27f2080408"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a338f66d7cb1cb877b0cd5d27f2080408">&#9670;&nbsp;</a></span>set_confluent()</h2>
+<a id="ac7e0b5218203ed49c93058839b7dc41c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7e0b5218203ed49c93058839b7dc41c">&#9670;&nbsp;</a></span>set_check_confluence_interval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -810,9 +804,39 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void libsemigroups::RWS::set_confluent </td>
+          <td class="memname">void libsemigroups::RWS::set_check_confluence_interval </td>
           <td>(</td>
-          <td class="paramtype">bool&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The method <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> periodically checks if the system is already confluent. This method can be used to set how frequently this happens, it is the number of new overlaps that should be considered before checking confluence. Setting this value too low can adversely affect the performance of <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </p>
+<p>The default value is 4096, and should be set to <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a5e8f76453acc060c323b80e992b3c044" title="The constant value represents an UNBOUNDED quantity. ">RWS::UNBOUNDED</a> if <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> should never check if the system is already confluent.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a485f896a757987f0e44b2ac99c815257"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a485f896a757987f0e44b2ac99c815257">&#9670;&nbsp;</a></span>set_max_overlap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void libsemigroups::RWS::set_max_overlap </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>val</em></td><td>)</td>
           <td></td>
         </tr>
@@ -824,7 +848,59 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>If you somehow magically know that the rewriting system is confluent, or not, then you can set this using this method. </p>
+<p>This method can be used to specify the maximum length of the overlap of two left hand sides of rules that should be considered in <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </p>
+<p>If this value is less than the longest left hand side of a rule, then <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> can terminate without the system being confluent.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a1b387ffa5b98bf7b3a7974e1f50476f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b387ffa5b98bf7b3a7974e1f50476f5">&#9670;&nbsp;</a></span>set_max_rules()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void libsemigroups::RWS::set_max_rules </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This method sets the (approximate) maximum number of rules that the system should contain. If this is number is exceeded in calls to <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> or <a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c" title="This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a ...">RWS::knuth_bendix_by_overlap_length</a>, then these methods will terminate and the system may not be confluent. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a475db19f936de6b641c74c1186023086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a475db19f936de6b641c74c1186023086">&#9670;&nbsp;</a></span>set_overlap_measure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void libsemigroups::RWS::set_overlap_measure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0">overlap_measure</a>&#160;</td>
+          <td class="paramname"><em>measure</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This method can be used to determine the way that the length of an overlap of two words in the system is meaasured. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a92f70494de02a8e9db6f8dc002f8f1c0" title="The values in this enum determine how a rewriting system measures the length  of the overlap of two w...">RWS::overlap_measure</a>. </dd></dl>
 
 </div>
 </div>
@@ -857,8 +933,37 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a7480e806efb5fe1d6978cc32672844c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7480e806efb5fe1d6978cc32672844c7">&#9670;&nbsp;</a></span>set_report_interval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void libsemigroups::RWS::set_report_interval </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Some information can be sent to std::cout during calls to <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and <a class="el" href="classlibsemigroups_1_1_r_w_s.html#abeda086a19c63b8747eded6bc357bd0c" title="This method runs the Knuth-Bendix algorithm on the rewriting system by considering all overlaps of a ...">RWS::knuth_bendix_by_overlap_length</a>. This method can be used to determine the frequency with which this information is given, where a larger value means less frequently. </p>
+<p>The default value is 1000. </p>
+
+</div>
+</div>
 <a id="ab1d2165ba89632cafd26516afc9b92e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1d2165ba89632cafd26516afc9b92e6">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1d2165ba89632cafd26516afc9b92e6">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -885,12 +990,12 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> equal the reduced form of <code>RWS::word_to_rws_word(q)</code>, and <code>false</code> if not. </p>
 <dl class="section warning"><dt>Warning</dt><dd>This method calls <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and so it may never terminate.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae4f0a70facbf359bdabde7683b4917d0" title="Returns true if RWS::rewrite(p) equals RWS::rewrite(q), and false if not. ">RWS::test_equals(rws_word_t const&amp; p, rws_word_t const&amp; q)</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae5af36b69c545bb50841e3ba298920ed" title="Returns true if RWS::rewrite(p) equals RWS::rewrite(q), and false if not. ">RWS::test_equals(std::string const&amp; p, std::string const&amp; q)</a> </dd></dl>
 
 </div>
 </div>
-<a id="ae4f0a70facbf359bdabde7683b4917d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4f0a70facbf359bdabde7683b4917d0">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[2/2]</span></h2>
+<a id="ade2da2f20b02cea89071d23b63807336"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade2da2f20b02cea89071d23b63807336">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -898,13 +1003,45 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">bool libsemigroups::RWS::test_equals </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; size_t &gt; const &amp;&#160;</td>
           <td class="paramname"><em>p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; size_t &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> equal the reduced form of <code>RWS::word_to_rws_word(q)</code>, and <code>false</code> if not. </p>
+<dl class="section warning"><dt>Warning</dt><dd>This method calls <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and so it may never terminate.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ae5af36b69c545bb50841e3ba298920ed" title="Returns true if RWS::rewrite(p) equals RWS::rewrite(q), and false if not. ">RWS::test_equals(std::string const&amp; p, std::string const&amp; q)</a> </dd></dl>
+
+</div>
+</div>
+<a id="ae5af36b69c545bb50841e3ba298920ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5af36b69c545bb50841e3ba298920ed">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool libsemigroups::RWS::test_equals </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>q</em>&#160;</td>
         </tr>
         <tr>
@@ -921,8 +1058,41 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a305b6b531c0a18022e59d5820197e408"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a305b6b531c0a18022e59d5820197e408">&#9670;&nbsp;</a></span>test_equals() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool libsemigroups::RWS::test_equals </td>
+          <td>(</td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns <code>true</code> if <code>RWS::rewrite(p)</code> equals <code>RWS::rewrite(q)</code>, and <code>false</code> if not. </p>
+<p>This method rewrites <code>p</code> and <code>q</code> in-place (unless they are already equal before rewriting). The caller responsible for deletion.</p>
+<dl class="section warning"><dt>Warning</dt><dd>This method calls <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and so it may never terminate.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ab1d2165ba89632cafd26516afc9b92e6" title="Returns true if the reduced form of RWS::word_to_rws_word(p) equal the reduced form of RWS::word_to_r...">RWS::test_equals(word_t const&amp; p, word_t const&amp; q)</a> </dd></dl>
+
+</div>
+</div>
 <a id="ab9c348979a879fdb0097b8fd065ccedd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9c348979a879fdb0097b8fd065ccedd">&#9670;&nbsp;</a></span>test_less_than() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9c348979a879fdb0097b8fd065ccedd">&#9670;&nbsp;</a></span>test_less_than() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -949,12 +1119,12 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Returns <code>true</code> if the reduced form of <code>RWS::word_to_rws_word(p)</code> is less than the reduced form of <code>RWS::word_to_rws_word(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not. </p>
 <dl class="section warning"><dt>Warning</dt><dd>This method calls <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and so it may never terminate.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a17605c40b448cc394dbbde86243b71a1" title="Returns true if RWS::rewrite(p) is less than RWS::rewrite(q), with respect to the reduction ordering ...">RWS::test_less_than(rws_word_t const&amp; p, rws_word_t const&amp; q)</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ac4970eaeaec6d62257609353c12d0779" title="Returns true if RWS::rewrite(p) is less than RWS::rewrite(q), with respect to the reduction ordering ...">RWS::test_less_than(std::string const&amp; p, std::string const&amp; q)</a> </dd></dl>
 
 </div>
 </div>
-<a id="a17605c40b448cc394dbbde86243b71a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17605c40b448cc394dbbde86243b71a1">&#9670;&nbsp;</a></span>test_less_than() <span class="overload">[2/2]</span></h2>
+<a id="ac4970eaeaec6d62257609353c12d0779"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4970eaeaec6d62257609353c12d0779">&#9670;&nbsp;</a></span>test_less_than() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -962,13 +1132,13 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">bool libsemigroups::RWS::test_less_than </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> const &amp;&#160;</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>q</em>&#160;</td>
         </tr>
         <tr>
@@ -985,8 +1155,41 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa03283d37d08d03d3d4a62f8e5934214"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa03283d37d08d03d3d4a62f8e5934214">&#9670;&nbsp;</a></span>word_to_rws_word()</h2>
+<a id="ae3e7842adaf99ffc06f4bd20e3d08379"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3e7842adaf99ffc06f4bd20e3d08379">&#9670;&nbsp;</a></span>test_less_than() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool libsemigroups::RWS::test_less_than </td>
+          <td>(</td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns <code>true</code> if <code>RWS::rewrite(p)</code> is less than <code>RWS::rewrite(q)</code>, with respect to the reduction ordering of <code>this</code>, and <code>false</code> if not. </p>
+<p>The parameters <code>p</code> and <code>q</code> are rewritten in-place, and the caller is responsible for their deletion.</p>
+<dl class="section warning"><dt>Warning</dt><dd>This method calls <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a82efcac80e8ed153e2aa2af86ef0ab3b" title="Run the Knuth-Bendix algorithm on the rewriting system. ">RWS::knuth_bendix</a> and so it may never terminate.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ab9c348979a879fdb0097b8fd065ccedd" title="Returns true if the reduced form of RWS::word_to_rws_word(p) is less than the reduced form of RWS::wo...">RWS::test_less_than(word_t const&amp; p, word_t const&amp; q)</a> </dd></dl>
+
+</div>
+</div>
+<a id="a4dbcc24a5e687062046b0a85d0b9959d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dbcc24a5e687062046b0a85d0b9959d">&#9670;&nbsp;</a></span>uint_to_rws_word()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -995,11 +1198,143 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795">rws_word_t</a> * libsemigroups::RWS::word_to_rws_word </td>
+          <td class="memname">static rws_word_t* libsemigroups::RWS::uint_to_rws_word </td>
+          <td>(</td>
+          <td class="paramtype">size_t const &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This method converts an unsigned integer to the corresponding rws_word_t. For example, the integer 0 is converted to the word with single letter which is the 1st ASCII character. </p>
+
+</div>
+</div>
+<a id="a0c5378745d978de1e71e4ffe760f0682"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c5378745d978de1e71e4ffe760f0682">&#9670;&nbsp;</a></span>word_to_rws_word() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static rws_word_t* libsemigroups::RWS::word_to_rws_word </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rws_word_t *&#160;</td>
+          <td class="paramname"><em>ww</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This method converts a vector of unsigned integers to a string which represents a word in the rewriting system. The second parameter <code>ww</code> is modified in-place to contain the string version of the vector of unsigned integers <code>w</code>. </p>
+<p>This method returns its second parameter <code>ww</code>. </p>
+
+</div>
+</div>
+<a id="a090c712f8edd846b469ae8ea59ff52f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a090c712f8edd846b469ae8ea59ff52f5">&#9670;&nbsp;</a></span>word_to_rws_word() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static rws_word_t* libsemigroups::RWS::word_to_rws_word </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6">word_t</a> const &amp;&#160;</td>
           <td class="paramname"><em>w</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This method converts a vector of unsigned integers to a string which represents a word in the rewriting system. </p>
+<p>This method returns a pointer to a new string, and it is the responsibility of the caller to delete it. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a3bc8666a861824eef973c99859e5df44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bc8666a861824eef973c99859e5df44">&#9670;&nbsp;</a></span>operator<<</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_r_w_s.html">RWS</a> const &amp;&#160;</td>
+          <td class="paramname"><em>rws</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This method allows a <a class="el" href="classlibsemigroups_1_1_r_w_s.html" title="This class is used to represent a string rewriting system defining a finitely presented monoid or sem...">RWS</a> object to be left shifted into a std::ostream, such as std::cout. The currently active rules of the system are represented in the output. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5e8f76453acc060c323b80e992b3c044"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e8f76453acc060c323b80e992b3c044">&#9670;&nbsp;</a></span>UNBOUNDED</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t const libsemigroups::RWS::UNBOUNDED = static_cast&lt;size_t&gt;(-2)</td>
         </tr>
       </table>
   </td>
@@ -1009,8 +1344,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Helper function for converting a <a class="el" href="namespacelibsemigroups.html#a70af4e1758957fcdbd183fffda4e78c6" title="Type for a word over the generators of a semigroup. ">libsemigroups::word_t</a> to a <a class="el" href="namespacelibsemigroups.html#ae0509e1fb40826d2e75c0769223de795" title="Type for words for rewriting systems. ">libsemigroups::rws_word_t</a>. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#a23dba58eeb0b67f7de878fdf81ad67cf" title="Helper function for converting a libsemigroups::rws_word_t to a libsemigroups::word_t. ">RWS::rws_word_to_word</a>. </dd></dl>
+<p>The constant value represents an UNBOUNDED quantity. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_r_w_s.html#ac7e0b5218203ed49c93058839b7dc41c" title="The method RWS::knuth_bendix periodically checks if the system is already confluent. This method can be used to set how frequently this happens, it is the number of new overlaps that should be considered before checking confluence. Setting this value too low can adversely affect the performance of RWS::knuth_bendix. ">RWS::set_check_confluence_interval</a>, <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a1b387ffa5b98bf7b3a7974e1f50476f5" title="This method sets the (approximate) maximum number of rules that the system should contain...">RWS::set_max_rules</a>, <a class="el" href="classlibsemigroups_1_1_r_w_s.html#a485f896a757987f0e44b2ac99c815257" title="This method can be used to specify the maximum length of the overlap of two left hand sides of rules ...">RWS::set_max_overlap</a>. </dd></dl>
 
 </div>
 </div>
@@ -1021,7 +1356,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Oct 2 2017 20:13:49 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Dec 6 2017 13:43:11 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
