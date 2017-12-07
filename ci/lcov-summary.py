@@ -8,7 +8,7 @@ from os import listdir
 from os.path import isfile, join
 
 _SOURCE_DIRS = ['src', 'src/cong']
-_THRESHOLD = 89 # Some lines in kbfp.cc are not testable
+_THRESHOLD = 87 # Some lines in kbfp.cc are not testable
 
 _ERR_PREFIX = '\033[31mlcov-summary.py: error: '
 
