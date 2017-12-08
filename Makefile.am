@@ -2,7 +2,7 @@
 # Automake configuration
 ##############################################################################
 
-AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
+AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
 AM_CXXFLAGS += -g -O3 $(GCC_SPECIFIC_CXXFLAGS)
 AM_LDFLAGS  =  -no-undefined
 
@@ -27,21 +27,22 @@ ACLOCAL_AMFLAGS	= -I m4
 ## libsemigroups headers
 pkginclude_HEADERS =  src/libsemigroups-config.h 
 pkginclude_HEADERS += src/libsemigroups-debug.h 
-pkginclude_HEADERS += src/blocks.h               src/cong.h 
-pkginclude_HEADERS += src/elements.h             src/semigroups.h 
-pkginclude_HEADERS += src/rws.h                  src/rwse.h 
-pkginclude_HEADERS += src/semiring.h             src/partition.h
-pkginclude_HEADERS += src/recvec.h               src/report.h	
-pkginclude_HEADERS += src/timer.h                src/uf.h
+pkginclude_HEADERS += src/bmat.h
+pkginclude_HEADERS += src/blocks.h    src/cong.h 
+pkginclude_HEADERS += src/elements.h  src/semigroups.h 
+pkginclude_HEADERS += src/rws.h       src/rwse.h 
+pkginclude_HEADERS += src/semiring.h  src/partition.h
+pkginclude_HEADERS += src/recvec.h    src/report.h	
+pkginclude_HEADERS += src/timer.h     src/uf.h
 
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
 
-libsemigroups_la_SOURCES =  src/blocks.cc   src/cong.cc
-libsemigroups_la_SOURCES += src/elements.cc src/semigroups.cc
-libsemigroups_la_SOURCES += src/rws.cc	    src/rwse.cc
-libsemigroups_la_SOURCES += src/uf.cc
+libsemigroups_la_SOURCES =  src/blocks.cc     src/bmat.cc
+libsemigroups_la_SOURCES += src/cong.cc       src/elements.cc 
+libsemigroups_la_SOURCES += src/semigroups.cc src/rws.cc	    
+libsemigroups_la_SOURCES += src/rwse.cc       src/uf.cc       
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 libsemigroups_la_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
@@ -62,10 +63,11 @@ EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION
 
-BENCHMARK_LINT_FORMAT =  benchmark/src/cong.bm.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
+BENCHMARK_LINT_FORMAT =  benchmark/src/bmat.bm.cpp
+BENCHMARK_LINT_FORMAT += benchmark/src/cong.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/examples.h
+BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
+BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
 
 ## lstest sources 
 
@@ -76,7 +78,7 @@ CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
 
-lstest_SOURCES =  tests/main.test.cc
+lstest_SOURCES =  tests/main.test.cc      tests/bmat.test.cc
 lstest_SOURCES += tests/blocks.test.cc	  tests/recvec.test.cc
 lstest_SOURCES += tests/cong.test.cc	  tests/rws.test.cc
 lstest_SOURCES += tests/elements.test.cc  tests/rwse.test.cc
@@ -84,7 +86,7 @@ lstest_SOURCES += tests/kbfp.test.cc	  tests/semigroups.test.cc
 lstest_SOURCES += tests/kbp.test.cc       tests/semiring.test.cc
 lstest_SOURCES += tests/p.test.cc         tests/tc.test.cc
 lstest_SOURCES += tests/partition.test.cc tests/uf.test.cc
-lstest_SOURCES += tests/timer.test.cc
+lstest_SOURCES += tests/timer.test.cc     
 
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
