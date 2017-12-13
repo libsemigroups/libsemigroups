@@ -63,6 +63,7 @@ namespace libsemigroups {
       return _data;
     }
     BMat8 row_space_basis() const;
+    BMat8 col_space_basis() const;
     BMat8 transpose() const;
     void redefine(BMat8 const& A, BMat8 const& B);
     void sort_rows();
@@ -79,6 +80,8 @@ namespace libsemigroups {
 
     static BMat8 random();
     static BMat8 random(size_t dim);
+
+    BMat8 lvalue(BMat8 rows, BMat8 tmp);
 
    private:
     uint64_t _data;

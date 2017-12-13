@@ -153,6 +153,10 @@ namespace libsemigroups {
     return bm;
   }
 
+  BMat8 BMat8::col_space_basis() const {
+    return this->transpose().row_space_basis().transpose();
+  }
+
   // Knuth AoCP Vol 4 Fasc 1A Page 13
   BMat8 BMat8::transpose() const {
     uint64_t x = _data;
@@ -228,6 +232,7 @@ namespace libsemigroups {
     return BMat8(0x8040201008040201);
   }
 
+<<<<<<< 2d9ec6482ff19da3c50f973dfca8fe8313b8edcf
   bool BMat8::operator()(size_t i, size_t j) const {
     LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
     uint64_t out = _data << (8 * i + j);
@@ -260,4 +265,11 @@ namespace libsemigroups {
     _data ^= y ^ (y << (j - i) * 8);
   }
 
+=======
+  BMat8 BMat8::lvalue(BMat8 cols, BMat8 tmp){
+    tmp.redefine(cols, *this);
+    tmp = tmp.col_space_basis();
+    return tmp;
+  }
+>>>>>>> lvalue for BMat8s
 }  // namespace libsemigroups
