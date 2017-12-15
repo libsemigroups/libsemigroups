@@ -1275,3 +1275,28 @@ TEST_CASE("RecVec 34: column iterator arithmetic", "[quick][recvec][34]") {
     }
   }
 }
+
+TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
+  RecVec<size_t> rv = RecVec<size_t>(100, 100);
+
+  for (size_t i = 0; i < 100; i++) {
+    for (size_t j = 0; j < 100; j++) {
+      rv.set(i, j, (i + j) % 31);
+    }
+  }
+
+  for (size_t i = 0; i < 99; i++) {
+    auto it = rv.begin_row(i);
+    auto it2 = rv.begin_row(i + 1);
+
+    it++;
+
+    // the thing we really want to test
+    it2 = it;
+
+    for (; it2 != rv.end_row(i); ++it2) {
+      REQUIRE(*it2 == *it);
+      ++it;
+    }
+  }
+}

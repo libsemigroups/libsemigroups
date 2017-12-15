@@ -281,7 +281,7 @@ namespace libsemigroups {
 
       iterator_base& operator=(iterator_base const& that) {
         _it_vec  = that._it_vec;
-        _methods = that._methods.copy();
+        _methods = that._methods->copy();
         return *this;
       }
 
