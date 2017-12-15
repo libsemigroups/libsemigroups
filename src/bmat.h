@@ -65,6 +65,8 @@ namespace libsemigroups {
     BMat8 row_space_basis() const;
     BMat8 col_space_basis() const;
     BMat8 transpose() const;
+    bool is_invertible() const;
+    BMat8 inverse() const;
     void redefine(BMat8 const& A, BMat8 const& B);
     void sort_rows();
     void swap_rows(size_t i, size_t j);

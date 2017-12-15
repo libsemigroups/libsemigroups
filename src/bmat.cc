@@ -197,6 +197,18 @@ namespace libsemigroups {
     return out;
   }
 
+  // returns the inverse of this matrix, if it is invertible
+  // TODO: what if not?
+  BMat8 BMat8::inverse() const {
+    LIBSEMIGROUPS_ASSERT(is_invertible());
+    // a boolean matrix has an inverse iff it is orthogonal
+    return transpose(); 
+  }
+
+  bool BMat8::is_invertible() const{
+    return *this * transpose() == one();
+  }
+
   void BMat8::sort_rows() {
     for (size_t i = 0; i < 8; ++i) {
       for_sorting[i] = (_data << 8 * i) & ROW_MASK[0];
