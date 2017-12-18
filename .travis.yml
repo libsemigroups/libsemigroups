@@ -19,11 +19,10 @@ env:
   global:
     - GAP_FORK=gap-system
     - GAP_BRANCH=master
-    - IO=io-4.4.6
-    - GAPDOC=GAPDoc-1.5.1
-    - ORB=orb-4.7.6
-    - PROFILING=1.3.0
-    - GENSS=genss-1.6.4
+    - IOVERS=4.5.0
+    - GAPDOCVERS=1.6
+    - ORBVERS=4.8.0
+    - GENSSVERS=1.6.4
     - SEMIGROUPS_BR=master
     - DIGRAPHS_BR=master
   matrix:

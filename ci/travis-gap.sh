@@ -43,20 +43,23 @@ make
 cd ..
 
 # GAPDoc
+GAPDOC=GAPDoc-$GAPDOCVERS
 echo "Downloading $GAPDOC..."
-curl -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GAPDOC.tar.gz
+curl -L -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GAPDOC.tar.gz
 tar xzf $GAPDOC.tar.gz
 rm $GAPDOC.tar.gz
 
 # GenSS
+GENSS=genss-$GENSSVERS
 echo "Downloading $GENSS..."
-curl -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GENSS.tar.gz
+curl -L -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GENSS.tar.gz
 tar xzf $GENSS.tar.gz
 rm $GENSS.tar.gz
 
 # IO
+IO=io-$IOVERS
 echo "Downloading $IO..."
-curl -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$IO.tar.gz
+curl -L -O https://github.com/gap-packages/io/releases/download/v$IOVERS/$IO.tar.gz
 tar xzf $IO.tar.gz
 rm $IO.tar.gz
 cd $IO
@@ -65,14 +68,22 @@ make
 cd ..
 
 # Orb
+ORB=orb-$ORBVERS
 echo "Downloading $ORB..."
-curl -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$ORB.tar.gz
+curl -L -O https://github.com/gap-packages/orb/releases/download/v$ORBVERS/$ORB.tar.gz
 tar xzf $ORB.tar.gz
 rm $ORB.tar.gz
 cd $ORB
 ./configure $PKG_FLAGS
 make
 cd ..
+
+################################################################################
+# Install required GAP packages
+
+curl -L -O http://www.gap-system.org/pub/gap/gap4pkgs/packages-required-master.tar.gz
+tar xf packages-required-master.tar.gz
+rm packages-required-master.tar.gz
 
 # Run the tests defined in Semigroups
 cd semigroups
