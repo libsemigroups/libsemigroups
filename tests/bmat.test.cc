@@ -220,3 +220,62 @@ TEST_CASE("BMat8 08: operator<<", "[quick][bmat][08]") {
   std::ostringstream os;
   os << BMat8::random();  // Does not do anything visible
 }
+
+TEST_CASE("BMat8 09: is_invertible", "[quick][bmat][09])") {
+ std::vector<std::vector<size_t>> mat = {{0, 0, 0, 1, 0, 0, 1},
+                                          {0, 1, 1, 1, 0, 1, 0},
+                                          {1, 1, 0, 1, 1, 1, 1},
+                                          {0, 0, 1, 0, 0, 1, 1},
+                                          {1, 1, 0, 0, 0, 0, 0},
+                                          {0, 1, 0, 0, 0, 0, 1},
+                                          {0, 1, 1, 1, 1, 0, 1}};
+  for (size_t i = 0; i < 7; ++i) {
+    for (size_t j = i + 1; j < 7; ++j) {
+      {
+        BMat8 bm(mat);
+        bm.swap_rows(i, j);
+        REQUIRE(!bm.is_invertible());
+      }
+    }
+  }
+
+  BMat8 bm = BMat8(mat).one();
+  for (size_t i = 0; i < 7; ++i) {
+    for (size_t j = i + 1; j < 7; ++j) {
+      {
+        bm.swap_rows(i, j);
+        REQUIRE(bm.is_invertible());
+        bm = bm.one();
+      }
+    }
+  }
+}
+
+
+TEST_CASE("BMat8 10: inverse", "[quick][bmat][10])") {
+   
+  BMat8 bm = BMat8().one();
+  for (size_t i = 0; i < 7; ++i) {
+    for (size_t j = i + 1; j < 7; ++j) {
+      {
+        bm.swap_rows(i, j);
+        REQUIRE(bm.inverse() * bm == bm.one());
+        REQUIRE(bm * bm.inverse() == bm.one());
+      }
+    }
+  }
+}
+
+TEST_CASE("BMat8 11: lvalue", "[quick][bmat][11]") {
+  
+  BMat8 tmp;
+  BMat8 tmp2;
+  for (size_t i = 0; i < 100; ++i) {
+    BMat8 bm = BMat8::random();
+    BMat8 bm2 = BMat8::random();
+    bm.lvalue(bm2, tmp);
+    bm.lvalue(bm2.col_space_basis(), tmp2);
+    REQUIRE(tmp == tmp2);
+  }
+
+}

@@ -83,7 +83,7 @@ namespace libsemigroups {
     static BMat8 random();
     static BMat8 random(size_t dim);
 
-    BMat8 lvalue(BMat8 rows, BMat8 tmp);
+    BMat8 lvalue(BMat8 cols, BMat8 tmp);
 
    private:
     uint64_t _data;
