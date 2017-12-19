@@ -116,6 +116,7 @@ TEST_CASE("BMat 03: row space basis", "[quick][bmat][03]") {
              {0, 0, 0, 0, 0, 0, 0, 1}});
 
   REQUIRE(bm.row_space_basis() == bm2);
+  REQUIRE(bm2.row_space_basis() == bm2);
 
   BMat8 bm3({{1, 1, 1, 1, 0, 1, 0, 1},
              {0, 1, 1, 1, 1, 1, 0, 1},
@@ -136,9 +137,81 @@ TEST_CASE("BMat 03: row space basis", "[quick][bmat][03]") {
              {0, 0, 0, 0, 0, 0, 0, 0}});
 
   REQUIRE(bm3.row_space_basis() == bm4);
+  REQUIRE(bm4.row_space_basis() == bm4);
+
+  BMat8 bm5({{1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1},
+             {1, 1, 1, 1, 1, 1, 1, 1}});
+
+  BMat8 bm6({{1, 1, 1, 1, 1, 1, 1, 1},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0},
+             {0, 0, 0, 0, 0, 0, 0, 0}});
+
+  REQUIRE(bm5.row_space_basis() == bm6);
+
+  for (size_t i = 0; i < 1000; ++i){
+    bm = BMat8::random();
+    REQUIRE(bm.row_space_basis().row_space_basis() == bm.row_space_basis());
+  }
 }
 
-TEST_CASE("BMat 04: identity matrix", "[quick][bmat][04]") {
+TEST_CASE("BMat 04: col space basis", "[quick][bmat][04]") {
+  BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
+            {0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1},
+            {1, 1, 0, 1, 1, 1, 1, 1},
+            {0, 0, 1, 0, 0, 1, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 1},
+            {0, 1, 0, 0, 0, 0, 1, 1},
+            {0, 1, 1, 1, 1, 0, 1, 0}});
+
+   BMat8 bm2({{1, 1, 1, 1, 1, 0, 0, 0},
+              {1, 0, 0, 0, 0, 0, 0, 0},
+              {1, 1, 1, 1, 1, 1, 1, 0},
+              {1, 1, 1, 1, 0, 1, 1, 1},
+              {1, 1, 0, 0, 1, 0, 0, 1},
+              {1, 0, 1, 0, 0, 1, 0, 0},
+              {1, 0, 1, 0, 0, 0, 0, 1},
+              {0, 0, 1, 1, 1, 0, 1, 1}});
+
+   REQUIRE(bm.col_space_basis() == bm2);
+
+   BMat8 bm3({{1, 1, 1, 1, 0, 1, 0, 1},
+              {0, 1, 1, 1, 1, 1, 0, 1},
+              {1, 1, 1, 1, 1, 1, 0, 1},
+              {1, 1, 1, 1, 1, 1, 0, 1},
+              {1, 1, 1, 0, 0, 1, 0, 1},
+              {1, 1, 0, 0, 0, 1, 1, 1},
+              {0, 1, 0, 0, 0, 0, 1, 1},
+              {1, 0, 0, 0, 0, 1, 0, 0}});
+
+   BMat8 bm4({{1, 1, 1, 0, 0, 0, 0, 0},
+              {1, 1, 0, 1, 0, 0, 0, 0},
+              {1, 1, 1, 1, 0, 0, 0, 0},
+              {1, 1, 1, 1, 0, 0, 0, 0},
+              {1, 0, 1, 0, 0, 0, 0, 0},
+              {0, 0, 1, 0, 1, 0, 0, 0},
+              {0, 0, 0, 0, 1, 0, 0, 0},
+              {0, 0, 1, 0, 0, 0, 0, 0}});
+
+   REQUIRE(bm3.col_space_basis() == bm4);
+
+   for (size_t i = 0; i < 1000; ++i) {
+     bm = BMat8::random();
+     REQUIRE(bm.col_space_basis().col_space_basis() == bm.col_space_basis());
+   }
+}
+TEST_CASE("BMat 05: identity matrix", "[quick][bmat][05]") {
   BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
             {0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 0, 1},
@@ -160,7 +233,7 @@ TEST_CASE("BMat 04: identity matrix", "[quick][bmat][04]") {
   REQUIRE(bm.one() == id);
 }
 
-TEST_CASE("BMat 05: random", "[quick][bmat][05]") {
+TEST_CASE("BMat 06: random", "[quick][bmat][06]") {
   for (size_t d = 1; d < 8; ++d) {
     BMat8 bm = BMat8::random(d);
     for (size_t i = d + 1; i < 8; ++i) {
@@ -172,7 +245,7 @@ TEST_CASE("BMat 05: random", "[quick][bmat][05]") {
   }
 }
 
-TEST_CASE("BMat 06: call operator", "[quick][bmat][06]") {
+TEST_CASE("BMat 07: call operator", "[quick][bmat][07]") {
   std::vector<std::vector<size_t>> mat = {{0, 0, 0, 1, 0, 0, 1},
                                           {0, 1, 1, 1, 0, 1, 0},
                                           {1, 1, 0, 1, 1, 1, 1},
@@ -189,7 +262,7 @@ TEST_CASE("BMat 06: call operator", "[quick][bmat][06]") {
   }
 }
 
-TEST_CASE("BMat 07: swap rows", "[quick][bmat][07]") {
+TEST_CASE("BMat 08: swap rows", "[quick][bmat][08]") {
   std::vector<std::vector<size_t>> mat = {{0, 0, 0, 1, 0, 0, 1},
                                           {0, 1, 1, 1, 0, 1, 0},
                                           {1, 1, 0, 1, 1, 1, 1},
@@ -216,12 +289,12 @@ TEST_CASE("BMat 07: swap rows", "[quick][bmat][07]") {
   }
 }
 
-TEST_CASE("BMat8 08: operator<<", "[quick][bmat][08]") {
+TEST_CASE("BMat8 09: operator<<", "[quick][bmat][09]") {
   std::ostringstream os;
   os << BMat8::random();  // Does not do anything visible
 }
 
-TEST_CASE("BMat8 09: is_invertible", "[quick][bmat][09])") {
+TEST_CASE("BMat8 10: is_invertible", "[quick][bmat][10])") {
  std::vector<std::vector<size_t>> mat = {{0, 0, 0, 1, 0, 0, 1},
                                           {0, 1, 1, 1, 0, 1, 0},
                                           {1, 1, 0, 1, 1, 1, 1},
@@ -252,7 +325,7 @@ TEST_CASE("BMat8 09: is_invertible", "[quick][bmat][09])") {
 }
 
 
-TEST_CASE("BMat8 10: inverse", "[quick][bmat][10])") {
+TEST_CASE("BMat8 11: inverse", "[quick][bmat][11])") {
    
   BMat8 bm = BMat8().one();
   for (size_t i = 0; i < 7; ++i) {
@@ -266,7 +339,7 @@ TEST_CASE("BMat8 10: inverse", "[quick][bmat][10])") {
   }
 }
 
-TEST_CASE("BMat8 11: lvalue", "[quick][bmat][11]") {
+TEST_CASE("BMat8 12: lvalue", "[quick][bmat][12]") {
   
   BMat8 tmp;
   BMat8 tmp2;
@@ -275,6 +348,8 @@ TEST_CASE("BMat8 11: lvalue", "[quick][bmat][11]") {
     BMat8 bm2 = BMat8::random();
     bm.lvalue(bm2, tmp);
     bm.lvalue(bm2.col_space_basis(), tmp2);
+    std::cout << bm2 * bm << std::endl;
+    std::cout << bm2.col_space_basis() * bm << std::endl;
     REQUIRE(tmp == tmp2);
   }
 
