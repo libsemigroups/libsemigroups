@@ -138,31 +138,20 @@ TEST_CASE("BMat 03: row space basis", "[quick][bmat][03]") {
 
   REQUIRE(bm3.row_space_basis() == bm4);
   REQUIRE(bm4.row_space_basis() == bm4);
+ 
+  BMat8 bm5(0xff00000000000000);
 
-  BMat8 bm5({{1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1},
-             {1, 1, 1, 1, 1, 1, 1, 1}});
-
-  BMat8 bm6({{1, 1, 1, 1, 1, 1, 1, 1},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0},
-             {0, 0, 0, 0, 0, 0, 0, 0}});
-
-  REQUIRE(bm5.row_space_basis() == bm6);
+  uint64_t data = 0xffffffffffffffff;
+  
+  for (size_t i = 0; i < 7; ++i){
+    REQUIRE(BMat8(data).row_space_basis() == bm5);
+    data = data >> 8;
+  }
 
   for (size_t i = 0; i < 1000; ++i){
     bm = BMat8::random();
     REQUIRE(bm.row_space_basis().row_space_basis() == bm.row_space_basis());
-  }
+  } 
 }
 
 TEST_CASE("BMat 04: col space basis", "[quick][bmat][04]") {
@@ -206,10 +195,20 @@ TEST_CASE("BMat 04: col space basis", "[quick][bmat][04]") {
 
    REQUIRE(bm3.col_space_basis() == bm4);
 
+   uint64_t col = 0x8080808080808080;
+   BMat8 bm5(col);
+
+   uint64_t data = 0xffffffffffffffff;
+
+   for (size_t i = 0; i < 7; ++i) {
+     REQUIRE(BMat8(data).col_space_basis() == bm5);
+     data &= ~(col >> i);
+   }
+   
    for (size_t i = 0; i < 1000; ++i) {
      bm = BMat8::random();
      REQUIRE(bm.col_space_basis().col_space_basis() == bm.col_space_basis());
-   }
+   } 
 }
 TEST_CASE("BMat 05: identity matrix", "[quick][bmat][05]") {
   BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
@@ -343,13 +342,11 @@ TEST_CASE("BMat8 12: lvalue", "[quick][bmat][12]") {
   
   BMat8 tmp;
   BMat8 tmp2;
-  for (size_t i = 0; i < 100; ++i) {
+  for (size_t i = 0; i < 1000; ++i) {
     BMat8 bm = BMat8::random();
     BMat8 bm2 = BMat8::random();
-    bm.lvalue(bm2, tmp);
-    bm.lvalue(bm2.col_space_basis(), tmp2);
-    std::cout << bm2 * bm << std::endl;
-    std::cout << bm2.col_space_basis() * bm << std::endl;
+    bm2.lvalue(bm, &tmp);
+    bm2.lvalue(bm.row_space_basis(), &tmp2);
     REQUIRE(tmp == tmp2);
   }
 

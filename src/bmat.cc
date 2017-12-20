@@ -135,21 +135,44 @@ namespace libsemigroups {
 
   BMat8 BMat8::row_space_basis() const {
     uint64_t out = 0;
-    uint64_t cm  = _data;
+    uint64_t combined_masks = 0;
+  
+    BMat8 bm(_data);
+    bm.sort_rows();
+
+    uint64_t no_dups = bm._data;
+
     for (size_t i = 0; i < 7; ++i) {
-      cm = cyclic_shift(cm);
-      out |= zero_if_row_not_contained(_data, cm);
-    }
-    for (size_t i = 0; i < 8; ++i) {
-      if ((out & ROW_MASK[i]) == (_data & ROW_MASK[i])) {
-        out &= ~ROW_MASK[i];
-      } else {
-        out |= (_data & ROW_MASK[i]);
+      combined_masks |= ROW_MASK[i];
+      while ((no_dups & ROW_MASK[i + 1]) << 8 == (no_dups & ROW_MASK[i]) &&
+             (no_dups & ROW_MASK[i]) != 0) {
+        no_dups = ((no_dups & combined_masks) |
+                   (no_dups & ~combined_masks & ~ROW_MASK[i + 1]) << 8);
       }
     }
-    BMat8 bm(out);
-    bm.sort_rows();
-    return bm;
+
+    uint64_t cm = no_dups;
+
+    for (size_t i = 0; i < 7; ++i) {
+      cm = cyclic_shift(cm);
+      out |= zero_if_row_not_contained(no_dups, cm);
+    }
+    for (size_t i = 0; i < 8; ++i) {
+      if ((out & ROW_MASK[i]) == (no_dups & ROW_MASK[i])) {
+        out &= ~ROW_MASK[i];
+      } else {
+        out |= (no_dups & ROW_MASK[i]);
+      }
+    }
+
+    combined_masks = 0;
+    for (size_t i = 0; i < 8; ++i) {
+      combined_masks |= ROW_MASK[i];
+      while ((out & ROW_MASK[i]) == 0 && ((out & ~combined_masks) != 0)) {
+        out = (out & combined_masks) | ((out & ~combined_masks) << 8);
+      }
+    }
+    return BMat8(out);
   }
 
   BMat8 BMat8::col_space_basis() const {
@@ -275,9 +298,11 @@ namespace libsemigroups {
     _data ^= y ^ (y << (j - i) * 8);
   }
 
-  BMat8 BMat8::lvalue(BMat8 cols, BMat8 tmp){
-    tmp.redefine(cols, *this);
-    tmp = tmp.col_space_basis();
-    return tmp;
+  void BMat8::assign(uint64_t data) { _data = data; }
+
+  BMat8 BMat8::lvalue(BMat8 rows, BMat8* tmp){
+    tmp->redefine(rows, *this);
+    *tmp = tmp->row_space_basis();
+    return *tmp;
   }
 }  // namespace libsemigroups
