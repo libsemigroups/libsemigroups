@@ -18,6 +18,8 @@
 
 // This file contains some benchmarks for libsemigroups/src/bmat.*.
 
+#include <chrono>
+
 #include <benchmark/benchmark.h>
 #include <libsemigroups/bmat.h>
 
