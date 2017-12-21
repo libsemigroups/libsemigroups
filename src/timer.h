@@ -23,6 +23,16 @@
 #include <iostream>
 #include <string>
 
+// It appears that GCC 4.9.1 (at least) do not have std::to_string implemented.
+#include <sstream>
+namespace std {
+  template <typename T> std::string to_string(const T& n) {
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+  }
+}
+
 namespace libsemigroups {
 
   // This is a simple class which can be used to send timing information in a
