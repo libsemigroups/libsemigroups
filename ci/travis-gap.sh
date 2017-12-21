@@ -42,13 +42,6 @@ cd digraphs
 make
 cd ..
 
-# GAPDoc
-GAPDOC=GAPDoc-$GAPDOCVERS
-echo "Downloading $GAPDOC..."
-curl -L -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GAPDOC.tar.gz
-tar xzf $GAPDOC.tar.gz
-rm $GAPDOC.tar.gz
-
 # GenSS
 GENSS=genss-$GENSSVERS
 echo "Downloading $GENSS..."
