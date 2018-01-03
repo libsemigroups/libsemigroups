@@ -205,8 +205,16 @@ namespace libsemigroups {
 
     //! Constructs a rewriting system with no rules, and the SHORTLEX
     //! reduction ordering.
-    explicit RWS(std::string alphabet = STANDARD_ALPHABET)
-        : RWS(new SHORTLEX(), alphabet) {}
+    RWS() : RWS(new SHORTLEX(), STANDARD_ALPHABET) {}
+
+    //! Constructs a rewriting system with no rules, and the SHORTLEX
+    //! reduction ordering and using the alphabet specified by the parameter
+    //! \p alphabet.
+    // Apparently old versions of GCC (4.8.2) don't like explicit constructors
+    // with single default parameters:
+    //    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
+    // and so we have two constructors instead.
+    explicit RWS(std::string alphabet) : RWS(new SHORTLEX(), alphabet) {}
 
     //! Constructs a rewriting system with rules derived from the
     //! parameter \p relations, and with the SHORTLEX reduction ordering.
