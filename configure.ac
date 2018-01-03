@@ -17,6 +17,7 @@ AX_PREFIX_CONFIG_H([src/libsemigroups-config.h],[],[config/config.h])
 
 AC_PROG_CXX
 AC_LANG([C++])
+AX_CXX_COMPILE_STDCXX_11(,[mandatory])
 AX_PTHREAD() # TODO remove this line
 
 AM_MAINTAINER_MODE
