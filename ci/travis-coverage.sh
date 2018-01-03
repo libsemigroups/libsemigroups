@@ -17,7 +17,7 @@ gcov --version
 # Check code coverage
 make clean
 ./configure CXXFLAGS='-O0 -g --coverage' LDFLAGS='-O0 -g --coverage' --enable-code-coverage
-make check-code-coverage
+make check-code-coverage -j2
 DIR=$(find . -maxdepth 1 -type d | grep "libsemigroups-.*-coverage")
 if [ -z DIR ] ; then 
   echo "Cannot find the libsemigroups-x.y.z-coverage directory"

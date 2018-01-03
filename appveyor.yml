@@ -14,5 +14,4 @@ install:
 build: off
 
 test_script:
-  - '%CYG_ROOT%/bin/bash -lc "gcc --version && cd $APPVEYOR_BUILD_FOLDER && ./autogen.sh && ./configure && make check"'
-
+  - '%CYG_ROOT%/bin/bash -lc "g++ --version && cd $APPVEYOR_BUILD_FOLDER && ./autogen.sh && ./configure && make check"'

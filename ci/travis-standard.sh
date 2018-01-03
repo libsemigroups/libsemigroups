@@ -2,10 +2,7 @@
 set -e
 
 # Setup
-ci/travis-setup.sh
-
-# Check standard tests standard build
-make check
+ci/travis-quick.sh
 
 # Check that different calls to make work
 make distcheck
@@ -13,14 +10,9 @@ make distcheck
 # Check standard tests with assertions on
 make clean
 ./configure --enable-debug
-make check
+make check -j2
 
 # Check standard tests with extra code for statistics 
 make clean
 ./configure --enable-stats
-make check
-
-# Check standard tests with assertions off
-make clean
-./configure
-make check
+make check -j2

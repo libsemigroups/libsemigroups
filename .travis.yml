@@ -3,35 +3,63 @@ dist: trusty
 sudo: required
 compiler:
   - gcc
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-5
-    - g++-5
-before_script:
-  - sudo add-apt-repository ppa:dns/gnu -y
-  - sudo apt-get update -q
-  - sudo apt-get install --only-upgrade autoconf
-  - sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
-env:
-  global:
-    - GAP_FORK=gap-system
-    - GAP_BRANCH=master
-    - IOVERS=4.5.0
-    - ORBVERS=4.8.0
-    - GENSSVERS=1.6.4
-    - SEMIGROUPS_BR=master
-    - DIGRAPHS_BR=master
-  matrix:
-    - TEST_SUITE=standard
-    - TEST_SUITE=lint
-    - TEST_SUITE=doc
-    - TEST_SUITE=coverage
-    - TEST_SUITE=valgrind
-    - TEST_SUITE=gap
-install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; GCOV="gcov-5"; fi
+matrix:
+  include:
+    - env: TEST_SUITE=lint
+    - env: TEST_SUITE=doc
+    - env: TEST_SUITE=coverage MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - g++-5
+    - env: TEST_SUITE=quick # Test with gcc-4
+    # - env: TEST_SUITE=gap GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.0 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
+    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.0 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - g++-5
+    - env: TEST_SUITE=standard MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - g++-5
+    - env: TEST_SUITE=valgrind MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - g++-5
+    - env: TEST_SUITE=quick MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+    - os: osx
+      env: TEST_SUITE=quick
+      compiler: clang
+      osx_image: xcode8
+    - os: osx
+      osx_image: xcode8
+      env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+before_install:
+    - eval "${MATRIX_EVAL}"
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
 script:
   - ci/travis-$TEST_SUITE.sh

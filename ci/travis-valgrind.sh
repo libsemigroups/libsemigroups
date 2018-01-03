@@ -12,7 +12,7 @@ echo "Valgrind version:"
 valgrind --version
 
 ./configure --enable-debug
-make lstest
+make lstest -j2
 
 if [ ! -e log ]
 then

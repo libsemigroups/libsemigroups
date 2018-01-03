@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-# This is required to generate the config/config.h file which is included in
-# libsemigroups-debug.h
-./autogen.sh ; ./configure
+# Setup
+ci/travis-setup.sh
 
 # Install libtool and GMP
 echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial main" | sudo tee -a /etc/apt/sources.list
@@ -18,7 +17,7 @@ git clone -b $GAP_BRANCH --depth=1 https://github.com/$GAP_FORK/gap.git gap
 cd gap
 ./autogen.sh
 ./configure --with-gmp=system $GAP_FLAGS
-make
+make -j2
 mkdir pkg
 cd pkg
 
@@ -31,7 +30,7 @@ cd semigroups
 mv $INITIALDIR src/libsemigroups
 ./autogen.sh
 ./configure $PKG_FLAGS
-make
+make -j2
 cd ..
 
 # Digraphs
@@ -39,7 +38,7 @@ git clone -b $DIGRAPHS_BR --depth=1 https://github.com/gap-packages/Digraphs.git
 cd digraphs
 ./autogen.sh
 ./configure $PKG_FLAGS
-make
+make -j2
 cd ..
 
 # GenSS
@@ -57,7 +56,7 @@ tar xzf $IO.tar.gz
 rm $IO.tar.gz
 cd $IO
 ./configure $PKG_FLAGS
-make
+make -j2
 cd ..
 
 # Orb
@@ -68,7 +67,7 @@ tar xzf $ORB.tar.gz
 rm $ORB.tar.gz
 cd $ORB
 ./configure $PKG_FLAGS
-make
+make -j2
 cd ..
 
 ################################################################################
