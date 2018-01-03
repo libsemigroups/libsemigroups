@@ -95,17 +95,17 @@ To install libsemigroups from the sources (this also requires `autoconf` and
 
     git clone https://github.com/james-d-mitchell/libsemigroups
     cd libsemigroups
-    ./autogen.sh ; ./configure ; make ; sudo make install
+    ./autogen.sh && ./configure && make && sudo make install
 
 To enable assertions and other debugging checks enabled do:
 
-    ./autogen.sh ; ./configure --enable-debug ; make ; sudo make install
+    ./autogen.sh && ./configure --enable-debug && make && sudo make install
 
 ## Documentation
 The documentation is generated using
 [doxygen](http://www.doxygen.org) and is available
 [here](http://james-d-mitchell.github.io/libsemigroups/).
-This documentation can be compiled by running `./autogen.sh ; ./configure ;
+This documentation can be compiled by running `./autogen.sh && ./configure &&
 make doc` in the `libsemigroups` directory, and the tests can be run by doing
 `make check` in the `libsemigroups`
 directory.
