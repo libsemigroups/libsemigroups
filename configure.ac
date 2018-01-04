@@ -18,7 +18,10 @@ AX_PREFIX_CONFIG_H([src/libsemigroups-config.h],[],[config/config.h])
 AC_PROG_CXX
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11(,[mandatory])
-AX_PTHREAD() # TODO remove this line
+
+dnl ## Check for pthread, this seems to be required to compile with GCC
+AX_PTHREAD(,[AC_MSG_ERROR([pthread is required])])
+AC_CHECK_LIB([pthread], [pthread_create])
 
 AM_MAINTAINER_MODE
 
@@ -44,12 +47,6 @@ AC_CHECK_TYPES([ptrdiff_t])
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday memset pow sqrt])
-
-# Check if -pthread is really required
-if `$CXX -v 2>&1 | grep 'gcc version' >/dev/null 2>&1` ; then
-  GCC_SPECIFIC_CXXFLAGS='-pthread'
-fi
-AC_SUBST(GCC_SPECIFIC_CXXFLAGS, $GCC_SPECIFIC_CXXFLAGS)
 
 # Check if debug mode is enabled
 AC_ARG_ENABLE([debug],
