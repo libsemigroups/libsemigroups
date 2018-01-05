@@ -32,6 +32,12 @@
 #include "recvec.h"
 #include "report.h"
 
+#if (defined(__GNUC__) && __GNUC__ < 5 \
+     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma message( \
+    "GCC version >=5.0 is recommended, some features may not work correctly")
+#endif
+
 //! Namespace for everything in the libsemigroups library.
 namespace libsemigroups {
 
