@@ -1240,7 +1240,7 @@ namespace libsemigroups {
     Element const*                  _id;
     std::vector<idempotent_value_t> _idempotents;
     bool                            _idempotents_found;
-    std::vector<bool>               _is_idempotent;
+    std::vector<uint8_t>            _is_idempotent;
     cayley_graph_t                  _left;
     std::vector<index_t>            _length;
     std::vector<enumerate_index_t>  _lenindex;
