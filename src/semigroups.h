@@ -1680,12 +1680,11 @@ namespace libsemigroups {
    private:
     template <typename T, class C> class iterator_base {
      public:
-      typedef typename std::vector<TConstElementType>::size_type size_type;
-      typedef typename std::vector<T>::difference_type difference_type;
-      typedef typename std::vector<TConstElementType>::value_type value_type;
-      typedef
-          typename std::vector<TConstElementType>::const_reference   reference;
-      typedef typename std::vector<TConstElementType>::const_pointer pointer;
+      typedef typename std::vector<TElementType>::size_type  size_type;
+      typedef typename std::vector<T>::difference_type       difference_type;
+      typedef typename std::vector<TElementType>::value_type value_type;
+      typedef typename std::vector<TElementType>::const_reference reference;
+      typedef typename std::vector<TElementType>::const_pointer   pointer;
       typedef std::random_access_iterator_tag iterator_category;
 
       explicit iterator_base(typename std::vector<T>::const_iterator it_vec)
@@ -1793,33 +1792,33 @@ namespace libsemigroups {
 
     struct IteratorMethods {
       IteratorMethods() {}
-      typename std::vector<TConstElementType>::const_reference indirection(
-          typename std::vector<TConstElementType>::const_iterator it) const {
+      typename std::vector<TElementType>::const_reference
+      indirection(typename std::vector<TElementType>::const_iterator it) const {
         return *it;
       }
-      typename std::vector<TConstElementType>::const_pointer addressof(
-          typename std::vector<TConstElementType>::const_iterator it) const {
+      typename std::vector<TElementType>::const_pointer
+      addressof(typename std::vector<TElementType>::const_iterator it) const {
         return &(*it);
       }
     };
 
     struct IteratorMethodsPairFirst {
       IteratorMethodsPairFirst() {}
-      typename std::vector<TConstElementType>::const_reference indirection(
-          typename std::vector<std::pair<TConstElementType, element_index_t>>::
+      typename std::vector<TElementType>::const_reference indirection(
+          typename std::vector<std::pair<TElementType, element_index_t>>::
               const_iterator it) const {
         return (*it).first;
       }
 
-      typename std::vector<TConstElementType>::const_pointer addressof(
-          typename std::vector<std::pair<TConstElementType, element_index_t>>::
-              const_iterator it) const {
+      typename std::vector<TElementType>::const_pointer
+      addressof(typename std::vector<std::pair<TElementType, element_index_t>>::
+                    const_iterator it) const {
         return &((*it).first);
       }
     };
 
-    typedef iterator_base<TConstElementType, IteratorMethods> const_iterator;
-    typedef iterator_base<std::pair<TConstElementType, element_index_t>,
+    typedef iterator_base<TElementType, IteratorMethods> const_iterator;
+    typedef iterator_base<std::pair<TElementType, element_index_t>,
                           IteratorMethodsPairFirst>
                                                   const_iterator_pair_first;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -2144,7 +2143,7 @@ namespace libsemigroups {
       }
     }
 
-    typedef std::pair<TConstElementType, element_index_t> idempotent_value_t;
+    typedef std::pair<TElementType, element_index_t> idempotent_value_t;
 
     // Find the idempotents and store their pointers and positions in a
     // std::pair of type idempotent_value_t.
@@ -2337,7 +2336,7 @@ namespace libsemigroups {
     letter_t                     _relation_gen;
     enumerate_index_t            _relation_pos;
     cayley_graph_t               _right;
-    std::vector<std::pair<TConstElementType, element_index_t>> _sorted;
+    std::vector<std::pair<TElementType, element_index_t>> _sorted;
     std::vector<element_index_t> _suffix;
     mutable TElementType         _tmp_product;
     size_t                       _wordlen;

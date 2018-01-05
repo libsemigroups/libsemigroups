@@ -2971,14 +2971,17 @@ TEST_CASE("Semigroup 71: number of idempotents",
 
 TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
           "[quick][semigroup][finite][72]") {
+  std::vector<BMat8> gens =
+{BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+ BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+ BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+ BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+
   Semigroup<BMat8,
             BMat8 const,
             std::hash<BMat8 const>,
             std::equal_to<BMat8 const>>
-      S({BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
+      S(gens);
   S.set_report(true);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
@@ -2997,4 +3000,6 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
   S.set_report(false);
+
+  //FIXME leaks
 }
