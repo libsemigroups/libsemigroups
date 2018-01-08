@@ -44,7 +44,6 @@ pkginclude_HEADERS += src/uf.h
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-
 libsemigroups_la_SOURCES =  src/blocks.cc
 libsemigroups_la_SOURCES += src/bmat.cc
 libsemigroups_la_SOURCES += src/cong.cc
@@ -92,23 +91,27 @@ CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
 
-lstest_SOURCES=  tests/main.test.cc
-lstest_SOURCES+= tests/bmat.test.cc
-lstest_SOURCES+= tests/blocks.test.cc
-lstest_SOURCES+= tests/cong.test.cc
-lstest_SOURCES+= tests/elements.test.cc
-lstest_SOURCES+= tests/kbfp.test.cc
-lstest_SOURCES+= tests/kbp.test.cc
-lstest_SOURCES+= tests/p.test.cc
-lstest_SOURCES+= tests/partition.test.cc
-lstest_SOURCES+= tests/recvec.test.cc
-lstest_SOURCES+= tests/rws.test.cc
-lstest_SOURCES+= tests/rwse.test.cc
-lstest_SOURCES+= tests/semigroups.test.cc
-lstest_SOURCES+= tests/semiring.test.cc
-lstest_SOURCES+= tests/tc.test.cc
-lstest_SOURCES+= tests/timer.test.cc
-lstest_SOURCES+= tests/uf.test.cc
+lstest_SOURCES =  tests/main.test.cc      
+lstest_SOURCES += tests/blocks.test.cc	  
+lstest_SOURCES += tests/bmat.test.cc
+lstest_SOURCES += tests/cong.test.cc	  
+lstest_SOURCES += tests/elements.test.cc  
+lstest_SOURCES += tests/kbp.test.cc       
+lstest_SOURCES += tests/kbfp.test.cc	  
+lstest_SOURCES += tests/p.test.cc         
+lstest_SOURCES += tests/partition.test.cc 
+lstest_SOURCES += tests/recvec.test.cc
+lstest_SOURCES += tests/rws.1.test.cc
+lstest_SOURCES += tests/rws.2.test.cc
+lstest_SOURCES += tests/rwse.test.cc
+lstest_SOURCES += tests/semigroups.1.test.cc
+lstest_SOURCES += tests/semigroups.2.test.cc
+lstest_SOURCES += tests/semigroups.3.test.cc
+lstest_SOURCES += tests/semigroups.4.test.cc
+lstest_SOURCES += tests/semiring.test.cc
+lstest_SOURCES += tests/timer.test.cc     
+lstest_SOURCES += tests/tc.test.cc
+lstest_SOURCES += tests/uf.test.cc
 
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
