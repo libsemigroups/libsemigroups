@@ -262,6 +262,6 @@ namespace libsemigroups {
     std::atomic<bool> _report;
   };
 
-  extern Reporter glob_reporter;  // defined in semigroups.cc
+  extern Reporter glob_reporter;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_REPORT_H_

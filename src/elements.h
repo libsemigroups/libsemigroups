@@ -43,36 +43,14 @@ namespace libsemigroups {
   //! Semigroup class.
   class Element {
    public:
-    //! This enum contains some different types of Element.
-    //!
-    //! This exists so that the type of a subclass of Element can be determined
-    //! from a pointer to the base class. Currently, it is only necessary
-    //! to distiguish RWSE objects from other Element objects and so there are
-    //! only two values.
-    enum elm_t {
-      //! Type for Element objects arising from a rewriting system RWS.
-      RWSE = 0,
-      //! Type for Element objects not arising from a rewriting system RWS.
-      NOT_RWSE = 1
-    };
-
     //! A constructor.
-    //!
-    //! The parameter \p type should be the type elm_t of the element being
-    //! created (defaults to libsemigroups::Element::NOT_RWSE).
-    explicit Element(elm_t type = Element::elm_t::NOT_RWSE)
-        : _hash_value(UNDEFINED), _type(type) {}
+    Element() : _hash_value(UNDEFINED) {}
 
     //! A default destructor.
     //!
     //! This does not properly delete the underlying data of the object, this
     //! should be done using Element::really_delete.
     virtual ~Element() {}
-
-    //! Returns the type libsemigroups::Element::elm_t of an Element object.
-    elm_t get_type() const {
-      return _type;
-    }
 
     //! Returns \c true if \c this equals \p that.
     //!
@@ -266,9 +244,6 @@ namespace libsemigroups {
     //! libsemigroups::Element::really_copy, and potentially any other
     //! non-const data member of Element or any of its subclasses.
     mutable size_t _hash_value;
-
-   private:
-    elm_t _type;
   };
 
   //! Abstract base class for elements using a vector to store their defining

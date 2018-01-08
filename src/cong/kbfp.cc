@@ -58,7 +58,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < _cong._nrgens; i++) {
       gens.push_back(new RWSE(*_rws, i));
     }
-    _semigroup = new Semigroup(gens);
+    _semigroup = new Semigroup<>(gens);
     really_delete_cont(gens);
   }
 

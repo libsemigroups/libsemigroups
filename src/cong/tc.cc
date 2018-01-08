@@ -113,7 +113,7 @@ namespace libsemigroups {
   }
 
   void Congruence::TC::prefill() {
-    Semigroup* semigroup = _cong._semigroup;
+    Semigroup<>* semigroup = _cong._semigroup;
     if (semigroup == nullptr) {
       return;
     }

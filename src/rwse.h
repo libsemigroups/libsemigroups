@@ -39,7 +39,7 @@ namespace libsemigroups {
 
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce)
-        : Element(Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
+        : Element(), _rws(rws), _rws_word(w) {
       if (reduce) {
         _rws->rewrite(_rws_word);
       }
@@ -131,7 +131,7 @@ namespace libsemigroups {
     //! in a rewriting system is higher than the cost of tracing a path in the
     //! left or right Cayley graph of a Semigroup.
     size_t complexity() const override {
-      return Semigroup::LIMIT_MAX;
+      return Semigroup<>::LIMIT_MAX;
     }
 
     //! Returns the degree of an RWSE.

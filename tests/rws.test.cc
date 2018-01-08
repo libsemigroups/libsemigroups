@@ -35,7 +35,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 4);
@@ -53,7 +53,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
           "[quick][rws][finite][02]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 9);
@@ -71,7 +71,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
           "[quick][rws][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 88);
