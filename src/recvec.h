@@ -240,6 +240,10 @@ namespace libsemigroups {
       }
     }
 
+    void reserve(size_t nr_rows) {
+      _vec.reserve(nr_rows * (_nr_unused_cols + _nr_used_cols));
+    }
+
    private:
     std::vector<T, A> _vec;
     size_t _nr_used_cols;

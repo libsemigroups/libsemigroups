@@ -127,7 +127,7 @@ namespace libsemigroups {
     //! Semigroup \p semigroup and is the least congruence containing the
     //! generating pairs in \p extra.
     Congruence(std::string                    type,
-               Semigroup*                     semigroup,
+               Semigroup<>*                   semigroup,
                std::vector<relation_t> const& genpairs);
 
     //! A default destructor.
@@ -620,9 +620,9 @@ namespace libsemigroups {
     // Set the relations of a Congruence object to the relations of the
     // semigroup over which the Congruence is defined (if any). Report is here
     // in case of any enumeration of the underlying semigroup.
-    void init_relations(Semigroup* semigroup, std::atomic<bool>& killed);
+    void init_relations(Semigroup<>* semigroup, std::atomic<bool>& killed);
 
-    void init_relations(Semigroup* semigroup) {
+    void init_relations(Semigroup<>* semigroup) {
       std::atomic<bool> killed(false);
       init_relations(semigroup, killed);
     }
@@ -644,7 +644,7 @@ namespace libsemigroups {
                std::vector<relation_t> const& extra);
 
     Congruence(cong_t                         type,
-               Semigroup*                     semigroup,
+               Semigroup<>*                   semigroup,
                std::vector<relation_t> const& extra);
 
     cong_t type_from_string(std::string);
@@ -659,7 +659,7 @@ namespace libsemigroups {
     RecVec<class_index_t>   _prefill;
     std::vector<relation_t> _relations;
     std::atomic<bool>       _relations_done;
-    Semigroup*              _semigroup;
+    Semigroup<>*            _semigroup;
     cong_t                  _type;
 
     static size_t const INFTY;

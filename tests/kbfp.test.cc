@@ -79,7 +79,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
           "[quick][congruence][kbfp][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(KBFP_REPORT);
   really_delete_cont(gens);
 

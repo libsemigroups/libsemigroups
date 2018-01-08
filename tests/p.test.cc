@@ -33,7 +33,7 @@ TEST_CASE("P 01: congruence on finite semigroup",
           "[quick][congruence][p][finite][01]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -64,7 +64,7 @@ TEST_CASE("P 02: left congruence on finite semigroup",
           "[quick][congruence][p][finite][02]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -94,7 +94,7 @@ TEST_CASE("P 03: right congruence on finite semigroup",
           "[quick][congruence][p][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -125,7 +125,7 @@ TEST_CASE("P 04: trivial congruence on finite semigroup",
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
          new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -165,7 +165,7 @@ TEST_CASE("P 05: trivial left congruence on finite semigroup",
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
          new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -205,7 +205,7 @@ TEST_CASE("P 06: trivial right congruence on finite semigroup",
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
          new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -245,7 +245,7 @@ TEST_CASE("P 07: universal congruence on finite semigroup",
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>({0, 1, 3}, {4, 1, 0}, 5),
          new PartialPerm<u_int16_t>({0, 1, 2, 3, 4}, {0, 2, 4, 1, 3}, 5)};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -287,7 +287,7 @@ TEST_CASE("P 08: congruence on big finite semigroup",
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
          new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -334,7 +334,7 @@ TEST_CASE("P 09: congruence on big finite semigroup",
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
          new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 
@@ -378,7 +378,7 @@ TEST_CASE("P 10: left congruence on big finite semigroup",
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
          new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(P_REPORT);
   really_delete_cont(gens);
 

@@ -22,6 +22,14 @@
 #include <string>
 
 namespace libsemigroups {
+  template <>
+  word_t*
+  Semigroup<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>::factorisation(
+      RWSE* x) {
+    return const_cast<word_t*>(RWS::rws_word_to_word(
+        (reinterpret_cast<RWSE const*>(x))->get_rws_word()));
+  }
+
   bool RWSE::operator<(Element const& that) const {
     LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
     LIBSEMIGROUPS_ASSERT(static_cast<RWSE const&>(that)._rws_word != nullptr);
@@ -35,7 +43,7 @@ namespace libsemigroups {
     }
   }
 
-  Element* RWSE::really_copy(size_t increase_deg_by) const {
+  RWSE* RWSE::really_copy(size_t increase_deg_by) const {
     LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
     LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
     (void) increase_deg_by;  // to keep the compiler happy
@@ -59,7 +67,8 @@ namespace libsemigroups {
     std::swap(this->_hash_value, xx->_hash_value);
   }
 
-  void RWSE::redefine(Element const* x, Element const* y) {
+  void RWSE::redefine(Element const* x, Element const* y, size_t const& tid) {
+    (void) tid;
     RWSE const* xx = static_cast<RWSE const*>(x);
     RWSE const* yy = static_cast<RWSE const*>(y);
     LIBSEMIGROUPS_ASSERT(xx->_rws_word != nullptr);
