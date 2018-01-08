@@ -1300,3 +1300,10 @@ TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
     }
   }
 }
+
+TEST_CASE("RecVec 36: reserve method", "[quick][recvec][36]") {
+  RecVec<size_t> rv = RecVec<size_t>(100, 100);
+  rv.reserve(1000);
+  REQUIRE(rv.nr_cols() == 100);
+  REQUIRE(rv.nr_rows() == 100);
+}

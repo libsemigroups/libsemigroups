@@ -68,7 +68,7 @@ namespace libsemigroups {
       : Congruence(type_from_string(type), nrgens, relations, extra) {}
 
   Congruence::Congruence(cong_t                         type,
-                         Semigroup*                     semigroup,
+                         Semigroup<>*                   semigroup,
                          std::vector<relation_t> const& genpairs)
       : Congruence(type,
                    semigroup->nrgens(),
@@ -79,7 +79,7 @@ namespace libsemigroups {
   }
 
   Congruence::Congruence(std::string                    type,
-                         Semigroup*                     semigroup,
+                         Semigroup<>*                   semigroup,
                          std::vector<relation_t> const& extra)
       : Congruence(type_from_string(type), semigroup, extra) {}
 
@@ -345,7 +345,7 @@ namespace libsemigroups {
     }
   }
 
-  void Congruence::init_relations(Semigroup*         semigroup,
+  void Congruence::init_relations(Semigroup<>*       semigroup,
                                   std::atomic<bool>& killed) {
     _init_mtx.lock();
     if (_relations_done || semigroup == nullptr) {

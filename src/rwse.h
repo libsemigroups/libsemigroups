@@ -27,6 +27,7 @@
 
 #include "elements.h"
 #include "rws.h"
+#include "semigroups.h"
 
 namespace libsemigroups {
 
@@ -35,11 +36,12 @@ namespace libsemigroups {
   //! This class is used to wrap libsemigroups::rws_word_t into an Element so
   //! that it is possible to use them as generators for a Semigroup object.
   class RWSE : public Element {
-    using rws_word_t = RWS::rws_word_t;
+    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
+    using rws_word_t              = RWS::rws_word_t;
 
    private:
     RWSE(RWS* rws, rws_word_t* w, bool reduce)
-        : Element(Element::elm_t::RWSE), _rws(rws), _rws_word(w) {
+        : Element(), _rws(rws), _rws_word(w) {
       if (reduce) {
         _rws->rewrite(_rws_word);
       }
@@ -105,7 +107,7 @@ namespace libsemigroups {
     //! The parameter \p increase_deg_by is not used
     //!
     //! \sa Element::really_copy.
-    Element* really_copy(size_t increase_deg_by) const override;
+    RWSE* really_copy(size_t increase_deg_by) const override;
 
     //! Copy \p x into \c this.
     //!
@@ -127,11 +129,11 @@ namespace libsemigroups {
     //!
     //! \sa Element::complexity.
     //!
-    //! Returns Semigroup::LIMIT_MAX since the complexity of multiplying words
+    //! Returns RWSE::LIMIT_MAX since the complexity of multiplying words
     //! in a rewriting system is higher than the cost of tracing a path in the
     //! left or right Cayley graph of a Semigroup.
     size_t complexity() const override {
-      return Semigroup::LIMIT_MAX;
+      return LIMIT_MAX;
     }
 
     //! Returns the degree of an RWSE.
@@ -173,7 +175,9 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const* x, Element const* y) override;
+    void redefine(Element const* x,
+                  Element const* y,
+                  size_t const&  tid = 0) override;
 
     //! Returns a pointer to the rws_word_t used to create \c this.
     rws_word_t const* get_rws_word() const {
@@ -185,6 +189,56 @@ namespace libsemigroups {
     RWS*        _rws;
     rws_word_t* _rws_word;
   };
+}  // namespace libsemigroups
+
+namespace std {
+  //! Provides a call operator returning a hash value for an Element
+  //! via a pointer.
+  //!
+  //! This struct provides a call operator for obtaining a hash value for the
+  //! Element from a const Element pointer. This is used by various methods
+  //! of the Semigroup class.
+  template <> struct hash<libsemigroups::RWSE*> {
+    size_t operator()(libsemigroups::RWSE* x) const {
+      return x->hash_value();
+    }
+  };
+  template <> struct hash<libsemigroups::RWSE const*> {
+    size_t operator()(libsemigroups::RWSE const* x) const {
+      return x->hash_value();
+    }
+  };
+
+  //! Provides a call operator for comparing Elements via pointers.
+  //!
+  //! This struct provides a call operator for comparing const Element
+  //! pointers (by comparing the Element objects they point to). This is used
+  //! by various methods of the Semigroup class.
+  template <> struct equal_to<libsemigroups::RWSE*> {
+    size_t operator()(libsemigroups::RWSE* x, libsemigroups::RWSE* y) const {
+      return *x == *y;
+    }
+  };
+  template <> struct equal_to<libsemigroups::RWSE const*> {
+    size_t operator()(libsemigroups::RWSE const* x,
+                      libsemigroups::RWSE const* y) const {
+      return *x == *y;
+    }
+  };  // class RWSE
+}  // namespace std
+
+namespace libsemigroups {
+  // Inherit methods required for ElementContainer's (Semigroup, Congruence
+  // etc) from the generic methods for Element*.
+  template <>
+  struct ElementContainer<RWSE*> : public ElementPointerContainer<RWSE*> {};
+
+  // Specialise the factorisation method for Semigroup's of RWSE's so that they
+  // just use the word inside the RWSE.
+  template <>
+  word_t*
+  Semigroup<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>::factorisation(
+      RWSE* x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_RWSE_H_

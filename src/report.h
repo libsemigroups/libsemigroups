@@ -51,7 +51,7 @@
   }
 
 namespace libsemigroups {
-
+  // CAUTION: The comments in this file are out of date.
   //
   // This is a simple class which can be used to print information to
   // the standard output, reporting the class and function name (if set), and
@@ -63,7 +63,7 @@ namespace libsemigroups {
   //    reporter("apples") << "the window is open";
   //
   // Then it will put the following to std::cout, if the class name is not set
-  // when the <Reporter> is constructed or by <Reporter::set_class_name>:
+  // when the <Reporter> is constructed.
   //
   //    Thread #2: "bananas": the dvd player is broken
   //    Thread #0: "apples": the window is open
@@ -143,22 +143,24 @@ namespace libsemigroups {
     //            printing
     template <class T>
     Reporter& operator()(T const* obj, char const* func, size_t tid) {
-      *_ostream << get_color_prefix(tid) << "Thread #" << tid << ": "
-                << get_class_name(obj) << "::" << func << ": ";
+      *_ostream << get_color_prefix(tid) << "#" << tid << ": "
+                << get_class_name(obj);
+      if (!std::string(func).empty()) {
+        *_ostream << "::" << func;
+      }
+      *_ostream << ": ";
       return *this;
     }
 
     Reporter& operator()(char const* func, size_t tid) {
-      *_ostream << get_color_prefix(tid) << "Thread #" << tid << ": " << func
-                << ": ";
+      *_ostream << get_color_prefix(tid) << "#" << tid << ": " << func << ": ";
       return *this;
     }
 
     // non-const
     //
     // This method locks the reporter so that if it is called by multiple
-    // threads
-    // it does not give garbled output.
+    // threads it does not give garbled output.
     void lock() {
       _mtx.lock();
     }
@@ -234,17 +236,24 @@ namespace libsemigroups {
       char* ptr = abi::__cxa_demangle(typeid(*obj).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
         std::string full = std::string(ptr);
-        // find the last :: in the class name <full>
-        size_t prev = 0, pos = 0;
-        while (pos != std::string::npos) {
-          prev = pos;
-          pos  = full.find("::", pos + 1);
+        size_t      last = full.size();
+        if (full.back() == '>') {
+          size_t bracket_count = 0;
+          do {
+            last = full.find_last_of("<>", last - 1);
+            if (last != std::string::npos) {
+              if (full.at(last) == '>') {
+                bracket_count++;
+              } else if (full.at(last) == '<') {
+                bracket_count--;
+              }
+            }
+          } while (bracket_count != 0);
         }
-        if (prev != 0) {
-          return full.substr(prev + 2, std::string::npos);
-        } else {
-          return full;
-        }
+        size_t first = full.rfind("::", last - 1);
+        first        = (first == std::string::npos ? 0 : first + 2);
+        free(ptr);
+        return full.substr(first, last - first);
       }
       free(ptr);
       return std::string();
@@ -262,6 +271,6 @@ namespace libsemigroups {
     std::atomic<bool> _report;
   };
 
-  extern Reporter glob_reporter;  // defined in semigroups.cc
+  extern Reporter glob_reporter;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_REPORT_H_
