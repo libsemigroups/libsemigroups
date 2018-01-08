@@ -40,9 +40,10 @@ lib_LTLIBRARIES = libsemigroups.la
 ## libsemigroups sources
 
 libsemigroups_la_SOURCES =  src/blocks.cc src/bmat.cc
-libsemigroups_la_SOURCES += src/cong.cc   src/elements.cc 
-libsemigroups_la_SOURCES += src/rws.cc
-libsemigroups_la_SOURCES += src/rwse.cc   src/uf.cc       
+libsemigroups_la_SOURCES += src/cong.cc   src/elements.cc  
+libsemigroups_la_SOURCES += src/report.cc src/rws.cc        
+libsemigroups_la_SOURCES += src/rwse.cc   src/semigroups.cc 
+libsemigroups_la_SOURCES += src/uf.cc
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 libsemigroups_la_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
