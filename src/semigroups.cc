@@ -20,31 +20,28 @@
 
 namespace libsemigroups {
   template <>
-  Element*
-  Semigroup<>::multiply(Element* xy, Element const* x, Element const* y) const {
+  Element* Semigroup<>::multiply(Element* xy, Element* x, Element* y) const {
     xy->redefine(x, y);
     return xy;
   }
 
   template <>
-  Element* Semigroup<>::multiply(Element*       xy,
-                                 Element const* x,
-                                 Element const* y,
-                                 size_t         tid) const {
+  Element*
+  Semigroup<>::multiply(Element* xy, Element* x, Element* y, size_t tid) const {
     xy->redefine(x, y, tid);
     return xy;
   }
 
-  template <> Element* Semigroup<>::copy(Element const* x) const {
+  template <> Element* Semigroup<>::copy(Element* x) const {
     return x->really_copy();
   }
 
   template <>
-  Element* Semigroup<>::copy(Element const* x, size_t increase_deg_by) const {
+  Element* Semigroup<>::copy(Element* x, size_t increase_deg_by) const {
     return x->really_copy(increase_deg_by);
   }
 
-  template <> void Semigroup<>::free(Element const* x) const {
+  template <> void Semigroup<>::free(Element* x) const {
     const_cast<Element*>(x)->really_delete();
     delete x;
   }
@@ -53,15 +50,15 @@ namespace libsemigroups {
     x->swap(y);
   }
 
-  template <> Element* Semigroup<>::one(Element const* x) const {
+  template <> Element* Semigroup<>::one(Element* x) const {
     return x->identity();
   }
 
-  template <> size_t Semigroup<>::degree(Element const* x) const {
+  template <> size_t Semigroup<>::degree(Element* x) const {
     return x->degree();
   }
 
-  template <> size_t Semigroup<>::complexity(Element const* x) const {
+  template <> size_t Semigroup<>::complexity(Element* x) const {
     return x->degree();
   }
 }  // namespace libsemigroups

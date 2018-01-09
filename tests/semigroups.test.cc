@@ -38,7 +38,7 @@ static inline size_t evaluate_reduct(Semigroup<>* S, word_t const& word) {
 }
 
 // TODO template
-static inline void test_idempotent(Semigroup<>& S, Element const* x) {
+static inline void test_idempotent(Semigroup<>& S, Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
   Element* y = x->really_copy();
   y->redefine(x, x);
@@ -1368,7 +1368,7 @@ TEST_CASE("Semigroup 67: iterator arithmetic",
 }
 
 TEST_CASE("Semigroup 68: iterator sorted", "[quick][semigroup][finite][68]") {
-  std::vector<Element const*> gens
+  std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
@@ -1417,7 +1417,7 @@ TEST_CASE("Semigroup 68: iterator sorted", "[quick][semigroup][finite][68]") {
 
 TEST_CASE("Semigroup 69: iterator sorted arithmetic",
           "[quick][semigroup][finite][69]") {
-  std::vector<Element const*> gens
+  std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
@@ -1434,7 +1434,7 @@ TEST_CASE("Semigroup 69: iterator sorted arithmetic",
 
   for (int64_t i = 0; i < static_cast<int64_t>(S.size()); i++) {
     // The next line does not and should not compile
-    // *it = reinterpret_cast<Element const*>(0);
+    // *it = reinterpret_cast<Element*>(0);
     REQUIRE(*(it + i) == S.sorted_at(i));
     it += i;
     REQUIRE(*it == S.sorted_at(i));
@@ -2971,17 +2971,13 @@ TEST_CASE("Semigroup 71: number of idempotents",
 
 TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
           "[quick][semigroup][finite][72]") {
-  std::vector<BMat8> gens =
-{BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
- BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
- BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
- BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+  std::vector<BMat8> gens
+      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-  Semigroup<BMat8,
-            BMat8 const,
-            std::hash<BMat8 const>,
-            std::equal_to<BMat8 const>>
-      S(gens);
+  Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(gens);
   S.set_report(true);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
@@ -3001,5 +2997,5 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
   REQUIRE(S.nridempotents() == 2360);
   S.set_report(false);
 
-  //FIXME leaks
+  // FIXME leaks
 }

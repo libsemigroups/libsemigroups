@@ -54,10 +54,9 @@ namespace libsemigroups {
   //! right Cayley graphs are determined, and a confluent terminating
   //! presentation for the semigroup is known.
   // TODO add index_t as template param
-  template <typename TElementType      = Element*,
-            typename TConstElementType = Element const*,
-            typename TElementHash      = Element::Hash,
-            typename TElementEqual     = Element::Equal>
+  template <typename TElementType  = Element*,
+            typename TElementHash  = Element::Hash,
+            typename TElementEqual = Element::Equal>
   class Semigroup {
 
     typedef RecVec<bool> flags_t;
@@ -119,7 +118,7 @@ namespace libsemigroups {
     //!
     //! The generators \p gens are copied by the constructor, and so it is the
     //! responsibility of the caller to delete \p gens.
-    explicit Semigroup(std::vector<TElementType> const& gens)
+    explicit Semigroup(std::vector<TElementType>* gens)
         : _batch_size(8192),
           _degree(UNDEFINED),
           _duplicate_gens(),
@@ -129,38 +128,38 @@ namespace libsemigroups {
           _first(),
           _found_one(false),
           _gens(),
-          _id(one(gens[0])),
+          _id(one((*gens)[0])),
           _idempotents(),
           _idempotents_found(false),
           _is_idempotent(),
-          _left(gens.size()),
+          _left(gens->size()),
           _length(),
           _lenindex(),
           _letter_to_pos(),
           _map(),
           _max_threads(std::thread::hardware_concurrency()),
           _nr(0),
-          _nrgens(gens.size()),
+          _nrgens(gens->size()),
           _nrrules(0),
           _pos(0),
           _pos_one(0),
           _prefix(),
-          _reduced(gens.size()),
+          _reduced(gens->size()),
           _relation_gen(0),
           _relation_pos(UNDEFINED),
-          _right(gens.size()),
+          _right(gens->size()),
           _sorted(),
           _suffix(),
-          _tmp_product(one(gens[0])),
+          _tmp_product(one((*gens)[0])),
           _wordlen(0) {  // (length of the current word) - 1
       LIBSEMIGROUPS_ASSERT(_nrgens != 0);
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
 #endif
 
-      _degree = degree(gens[0]);
+      _degree = degree((*gens)[0]);
 
-      for (TElementType x : gens) {
+      for (TElementType x : *gens) {
         LIBSEMIGROUPS_ASSERT(degree(x) == _degree);
         _gens.push_back(copy(x));
       }
@@ -201,59 +200,18 @@ namespace libsemigroups {
       _lenindex.push_back(_enumerate_order.size());
     }
 
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience only, and it simply
-    //! reinterpret_cast's the argument from std::vector<TElementType> const* to
-    //! std::vector<TConstElementType> const*.
+    explicit Semigroup(std::vector<TElementType> const& gens)
+        : Semigroup(&gens) {}
+
     explicit Semigroup(std::vector<TElementType> const* gens)
-        : Semigroup(
-              reinterpret_cast<std::vector<TConstElementType> const*>(gens)) {}
-
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience only, and it simply const_casts the
-    //! argument from std::vector<TElementType>* to std::vector<TElementType>
-    //! const*.
-    explicit Semigroup(std::vector<TElementType>* gens)
-        : Semigroup(const_cast<std::vector<TElementType> const*>(gens)) {}
-
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience only, and it simply
-    //! const_casts the argument from std::vector<TConstElementType>* to
-    //! std::vector<TConstElementType> const*.
-    explicit Semigroup(std::vector<TConstElementType>* gens)
-        : Semigroup(const_cast<std::vector<TConstElementType> const*>(gens)) {}
-
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience only, see Semigroup::Semigroup.
-    explicit Semigroup(std::vector<TConstElementType> const& gens)
-        : Semigroup(reinterpret_cast<std::vector<TElementType> const&>(gens)) {}
-
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience, and it simply reinterpret_casts
-    //! its argument to <std::vector<TConstElementType> const&.
-    //    explicit Semigroup(std::vector<TElementType> const& gens)
-    //        : Semigroup(
-    //              reinterpret_cast<std::vector<TConstElementType>
-    //              const&>(gens)) {}
-
-    //! Construct from generators.
-    //!
-    //! This constructor is for convenience, and it simply static_casts its
-    //! argument to std::vector<TElementType>.
-    explicit Semigroup(std::initializer_list<TElementType> gens)
-        : Semigroup(static_cast<std::vector<TElementType>>(gens)) {}
+        : Semigroup(const_cast<std::vector<TElementType>*>(gens)) {}
 
     //! Copy constructor.
     //!
     //! Constructs a new Semigroup which is an exact copy of \p copy. No
     //! enumeration is triggered for either \p copy or of the newly constructed
     //! semigroup.
-    Semigroup(const Semigroup& S)
+    Semigroup(Semigroup const& S)
         : _batch_size(S._batch_size),
           _degree(S._degree),
           _duplicate_gens(S._duplicate_gens),
@@ -293,7 +251,7 @@ namespace libsemigroups {
       _tmp_product = copy(S._id);
 
       element_index_t i = 0;
-      for (TConstElementType x : S._elements) {
+      for (TElementType x : S._elements) {
         TElementType y = copy(x);
         _elements.push_back(y);
         _map.insert(std::make_pair(y, i++));
@@ -321,7 +279,7 @@ namespace libsemigroups {
     // equivalent.
     //
     // <add_generators> or <closure> should usually be called after this.
-    Semigroup(Semigroup const& S, std::vector<TConstElementType> const* coll)
+    Semigroup(Semigroup const& S, std::vector<TElementType> const* coll)
         : _batch_size(S._batch_size),
           _degree(S._degree),  // copy for comparison in add_generators
           _duplicate_gens(S._duplicate_gens),
@@ -351,7 +309,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(degree(coll->at(0)) >= S.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
-      for (TConstElementType x : *coll) {
+      for (TElementType x : *coll) {
         LIBSEMIGROUPS_ASSERT(degree(x) == degree((*coll)[0]));
       }
 #endif
@@ -396,7 +354,7 @@ namespace libsemigroups {
       _tmp_product = copy(S._id, deg_plus);
 
       element_index_t i = 0;
-      for (TConstElementType x : S._elements) {
+      for (TElementType x : S._elements) {
         TElementType y = copy(x, deg_plus);
         _elements.push_back(y);
         _map.insert(std::make_pair(y, i));
@@ -416,7 +374,7 @@ namespace libsemigroups {
       for (auto& x : _duplicate_gens) {
         free(_gens[x.first]);
       }
-      for (TConstElementType x : _elements) {
+      for (TElementType x : _elements) {
         free(x);
       }
     }
@@ -496,7 +454,7 @@ namespace libsemigroups {
     }
 
     //! Return a pointer to the generator with index \p pos.
-    TConstElementType gens(letter_t pos) const {
+    TElementType gens(letter_t pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _gens.size());
       return _gens[pos];
     }
@@ -528,7 +486,7 @@ namespace libsemigroups {
     //! but not this is not yet known.
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
-    element_index_t current_position(TConstElementType x) const {
+    element_index_t current_position(TElementType x) const {
       if (x->degree() != _degree) {
         return UNDEFINED;
       }
@@ -800,7 +758,7 @@ namespace libsemigroups {
     //! the semigroup. The semigroup is enumerated in batches until \p x is
     //! found or the semigroup is fully enumerated but \p x was not found (see
     //! Semigroup::set_batch_size).
-    bool test_membership(TConstElementType x) {
+    bool test_membership(TElementType x) {
       return (position(x) != UNDEFINED);
     }
 
@@ -813,13 +771,13 @@ namespace libsemigroups {
     //! element \p x if it belongs to the semigroup. The semigroup is
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
-    element_index_t position(TConstElementType x) {
+    element_index_t position(TElementType x) {
       if (x->degree() != _degree) {
         return UNDEFINED;
       }
 
       while (true) {
-        auto it = _map.find(x);
+        auto it = _map.find(const_cast<TElementType>(x));
         if (it != _map.end()) {
           return it->second;
         }
@@ -834,7 +792,7 @@ namespace libsemigroups {
     //! Returns the position of \p x in the sorted array of elements of the
     //! semigroup, or Semigroup::UNDEFINED if \p x is not an element of \c
     //! this.
-    element_index_t sorted_position(TConstElementType x) {
+    element_index_t sorted_position(TElementType x) {
       return position_to_sorted_position(position(x));
     }
 
@@ -856,7 +814,7 @@ namespace libsemigroups {
     //! This method attempts to enumerate the semigroup until at least
     //! \c pos + 1 elements have been found. If \p pos is greater than
     //! Semigroup::size, then this method returns \c nullptr.
-    TConstElementType at(element_index_t pos) {
+    TElementType at(element_index_t pos) {
       enumerate(pos + 1);
       if (pos < _elements.size()) {
         return _elements[pos];
@@ -869,7 +827,7 @@ namespace libsemigroups {
     //!
     //! This method performs no checks on its argument, and performs no
     //! enumeration of the semigroup.
-    TConstElementType operator[](element_index_t pos) const {
+    TElementType operator[](element_index_t pos) const {
       return _elements[pos];
     }
 
@@ -877,7 +835,7 @@ namespace libsemigroups {
     //! array of elements, or \c nullptr in \p pos is not valid (i.e. too big).
     //!
     //! This method fully enumerates the semigroup.
-    TConstElementType sorted_at(element_index_t pos) {
+    TElementType sorted_at(element_index_t pos) {
       init_sorted();
       if (pos < _sorted.size()) {
         return _sorted[pos].first;
@@ -972,7 +930,7 @@ namespace libsemigroups {
     //!
     //! This is the same as the method taking a Semigroup::element_index_t, but
     //! it factorises an Element instead of using the position of an element.
-    word_t* minimal_factorisation(TConstElementType x) {
+    word_t* minimal_factorisation(TElementType x) {
       element_index_t pos = this->position(x);
       if (pos == UNDEFINED) {
         return nullptr;
@@ -1004,9 +962,9 @@ namespace libsemigroups {
     //! Returns a pointer to a libsemigroups::word_t which evaluates to
     //!
     //! The key difference between this method and
-    //! Semigroup::minimal_factorisation(TConstElementType x), is that the
+    //! Semigroup::minimal_factorisation(TElementType x), is that the
     //! resulting factorisation may not be minimal.
-    word_t* factorisation(TConstElementType x) {
+    word_t* factorisation(TElementType x) {
       /* if (x->get_type() == Element::elm_t::RWSE) {
         return const_cast<word_t*>(RWS::rws_word_to_word(
             (reinterpret_cast<RWSE const*>(x))->get_rws_word()));
@@ -1312,7 +1270,7 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    void add_generators(std::vector<TConstElementType> const* coll) {
+    void add_generators(std::vector<TElementType>* coll) {
       if (coll->empty()) {
         return;
       }
@@ -1339,7 +1297,7 @@ namespace libsemigroups {
       }
 
       // add the new generators to new _gens, _elements, and _enumerate_order
-      for (TConstElementType x : *coll) {
+      for (TElementType x : *coll) {
         LIBSEMIGROUPS_ASSERT(x->degree() == degree());
         auto it = _map.find(x);
         if (it == _map.end()) {  // new generator
@@ -1496,24 +1454,8 @@ namespace libsemigroups {
     //! Add copies of the generators \p coll to the generators of \c this.
     //!
     //! See Semigroup::add_generators for more details.
-    void add_generators(std::vector<TElementType> const* coll) {
-      add_generators(
-          reinterpret_cast<std::vector<TConstElementType> const*>(coll));
-    }
-
-    //! Add copies of the generators \p coll to the generators of \c this.
-    //!
-    //! See Semigroup::add_generators for more details.
-    void add_generators(std::vector<TConstElementType> const& coll) {
-      add_generators(&coll);
-    }
-
-    //! Add copies of the generators \p coll to the generators of \c this.
-    //!
-    //! See Semigroup::add_generators for more details.
     void add_generators(std::vector<TElementType> const& coll) {
-      add_generators(
-          reinterpret_cast<std::vector<TConstElementType> const&>(coll));
+      add_generators(const_cast<std::vector<TElementType>*>(&coll));
     }
 
     //! Add copies of the generators \p coll to the generators of \c this.
@@ -1533,8 +1475,7 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    Semigroup*
-    copy_add_generators(std::vector<TConstElementType> const* coll) const {
+    Semigroup* copy_add_generators(std::vector<TElementType>* coll) const {
       if (coll->empty()) {
         return new Semigroup(*this);
       } else {
@@ -1543,15 +1484,6 @@ namespace libsemigroups {
         out->add_generators(coll);
         return out;
       }
-    }
-
-    //! Returns a new semigroup generated by \c this and \p coll.
-    //!
-    //! See Semigroup::copy_add_generators for more details.
-    Semigroup*
-    copy_add_generators(std::vector<TElementType> const* coll) const {
-      return copy_add_generators(
-          reinterpret_cast<std::vector<TConstElementType> const*>(coll));
     }
 
     //! Add copies of the non-redundant generators in \p coll to the generators
@@ -1574,11 +1506,11 @@ namespace libsemigroups {
     //!
     //! The elements the parameter \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    void closure(std::vector<TConstElementType> const* coll) {
+    void closure(std::vector<TElementType> const* coll) {
       if (coll->empty()) {
         return;
       } else {
-        std::vector<TConstElementType> singleton(1, nullptr);
+        std::vector<TElementType> singleton(1, nullptr);
 
         for (auto const& x : *coll) {
           if (!test_membership(x)) {
@@ -1593,16 +1525,8 @@ namespace libsemigroups {
     //! generators of \c this.
     //!
     //! See Semigroup::closure for more details.
-    void closure(std::vector<TConstElementType> const& coll) {
-      closure(&coll);
-    }
-
-    //! Add copies of the non-redundant generators in \p coll to the
-    //! generators of \c this.
-    //!
-    //! See Semigroup::closure for more details.
     void closure(std::vector<TElementType> const& coll) {
-      closure(reinterpret_cast<std::vector<TConstElementType> const&>(coll));
+      closure(&coll);
     }
 
     //! Add copies of the non-redundant generators in \p coll to the
@@ -1623,7 +1547,7 @@ namespace libsemigroups {
     //!
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
-    Semigroup* copy_closure(std::vector<TConstElementType> const* coll) {
+    Semigroup* copy_closure(std::vector<TElementType>* coll) {
       if (coll->empty()) {
         return new Semigroup(*this);
       } else {
@@ -1645,7 +1569,7 @@ namespace libsemigroups {
     //! See Semigroup::copy_closure for more details.
     Semigroup* copy_closure(std::vector<TElementType> const* gens) {
       return copy_closure(
-          reinterpret_cast<std::vector<TConstElementType> const*>(gens));
+          reinterpret_cast<std::vector<TElementType> const*>(gens));
     }
 
     //! This variable is used to indicate that a value is undefined, such as,
@@ -1969,31 +1893,30 @@ namespace libsemigroups {
 
    private:
     inline TElementType
-    multiply(TElementType xy, TConstElementType x, TConstElementType y) const {
+    multiply(TElementType xy, TElementType x, TElementType y) const {
       (void) xy;
       return x * y;
     }
 
-    inline TElementType multiply(TElementType      xy,
-                                 TConstElementType x,
-                                 TConstElementType y,
-                                 size_t            tid) const {
+    inline TElementType multiply(TElementType xy,
+                                 TElementType x,
+                                 TElementType y,
+                                 size_t       tid) const {
       (void) xy;
       (void) tid;
       return x * y;
     }
 
-    inline TElementType copy(TConstElementType x) const {
+    inline TElementType copy(TElementType x) const {
       return x;
     }
 
-    inline TElementType copy(TConstElementType x,
-                             size_t            increase_deg_by) const {
+    inline TElementType copy(TElementType x, size_t increase_deg_by) const {
       (void) increase_deg_by;
       return x;
     }
 
-    inline void free(TConstElementType x) const {
+    inline void free(TElementType x) const {
       (void) x;
     }
 
@@ -2001,16 +1924,16 @@ namespace libsemigroups {
       std::swap(x, y);
     }
 
-    inline TElementType one(TConstElementType x) const {
+    inline TElementType one(TElementType x) const {
       return x.one();
     }
 
-    inline size_t degree(TConstElementType x) const {
+    inline size_t degree(TElementType x) const {
       (void) x;
       return 0;
     }
 
-    inline size_t complexity(TConstElementType x) const {
+    inline size_t complexity(TElementType x) const {
       (void) x;
       return 0;
     }
@@ -2024,7 +1947,7 @@ namespace libsemigroups {
 
     // Check if an element is the identity, x should be in the position pos
     // of _elements.
-    void inline is_one(TConstElementType x, element_index_t pos) {
+    void inline is_one(TElementType x, element_index_t pos) {
       if (!_found_one && TElementEqual()(x, _id)) {
         _pos_one   = pos;
         _found_one = true;
@@ -2125,13 +2048,12 @@ namespace libsemigroups {
       for (element_index_t i = 0; i < n; i++) {
         _sorted.push_back(std::make_pair(_elements[i], i));
       }
-      std::sort(
-          _sorted.begin(),
-          _sorted.end(),
-          [](std::pair<TConstElementType, element_index_t> const& x,
-             std::pair<TConstElementType, element_index_t> const& y) -> bool {
-            return *(x.first) < *(y.first);
-          });
+      std::sort(_sorted.begin(),
+                _sorted.end(),
+                [](std::pair<TElementType, element_index_t> const& x,
+                   std::pair<TElementType, element_index_t> const& y) -> bool {
+                  return *(x.first) < *(y.first);
+                });
 
       // Invert the permutation in _sorted[*].second
       std::vector<element_index_t> tmp_inverter;
@@ -2312,7 +2234,7 @@ namespace libsemigroups {
     std::vector<letter_t>           _first;
     bool                            _found_one;
     std::vector<TElementType>       _gens;
-    TConstElementType               _id;
+    TElementType                    _id;
     std::vector<idempotent_value_t> _idempotents;
     bool                            _idempotents_found;
     std::vector<bool>               _is_idempotent;
@@ -2320,7 +2242,7 @@ namespace libsemigroups {
     std::vector<index_t>            _length;
     std::vector<enumerate_index_t>  _lenindex;
     std::vector<element_index_t>    _letter_to_pos;
-    std::unordered_map<TConstElementType,
+    std::unordered_map<TElementType,
                        element_index_t,
                        TElementHash,
                        TElementEqual>
@@ -2348,74 +2270,42 @@ namespace libsemigroups {
 #endif
   };
 
-  // Partial template specialization to allow using without specifying const
-  // element type.
-  /*  template <typename TElementType>
-    class Semigroup<TElementType,
-                    TElementType const,
-                    std::hash<TElementType const>,
-                    std::equal_to<TElementType const>>;*/
-  // FIXME this does not work
-
-  // Static data members
-  //! This is just for backwards compatibility and should disappear at some
-  //! point.
-  // template <typename TElementType, typename TElementHash, typename
-  // TElementEqual>
-  // typedef typename Semigroup<TElementType, TElementHash, TElementEqual>::
-  //    cayley_graph_t cayley_graph_t;
-
   template <typename TElementType,
-            typename TConstElementType,
             typename TElementHash,
             typename TElementEqual>
   template <typename T, typename C>
-  C const
-      Semigroup<TElementType, TConstElementType, TElementHash, TElementEqual>::
-          iterator_base<T, C>::_methods;
+  C const Semigroup<TElementType, TElementHash, TElementEqual>::
+      iterator_base<T, C>::_methods;
 
   template <typename TElementType,
-            typename TConstElementType,
             typename TElementHash,
             typename TElementEqual>
-  typename Semigroup<TElementType,
-                     TConstElementType,
-                     TElementHash,
-                     TElementEqual>::index_t const
-      Semigroup<TElementType, TConstElementType, TElementHash, TElementEqual>::
-          UNDEFINED
+  typename Semigroup<TElementType, TElementHash, TElementEqual>::index_t const
+      Semigroup<TElementType, TElementHash, TElementEqual>::UNDEFINED
       = std::numeric_limits<index_t>::max();
 
   template <typename TElementType,
-            typename TConstElementType,
             typename TElementHash,
             typename TElementEqual>
-  typename Semigroup<TElementType,
-                     TConstElementType,
-                     TElementHash,
-                     TElementEqual>::index_t const
-      Semigroup<TElementType, TConstElementType, TElementHash, TElementEqual>::
-          LIMIT_MAX
+  typename Semigroup<TElementType, TElementHash, TElementEqual>::index_t const
+      Semigroup<TElementType, TElementHash, TElementEqual>::LIMIT_MAX
       = std::numeric_limits<index_t>::max();
+
+  template <>
+  Element* Semigroup<>::multiply(Element* xy, Element* x, Element* y) const;
 
   template <>
   Element*
-  Semigroup<>::multiply(Element* xy, Element const* x, Element const* y) const;
+  Semigroup<>::multiply(Element* xy, Element* x, Element* y, size_t tid) const;
 
+  template <> Element* Semigroup<>::copy(Element* x) const;
   template <>
-  Element* Semigroup<>::multiply(Element*       xy,
-                                 Element const* x,
-                                 Element const* y,
-                                 size_t         tid) const;
-
-  template <> Element* Semigroup<>::copy(Element const* x) const;
-  template <>
-  Element* Semigroup<>::copy(Element const* x, size_t increase_deg_by) const;
-  template <> void Semigroup<>::free(Element const* x) const;
+  Element* Semigroup<>::copy(Element* x, size_t increase_deg_by) const;
+  template <> void Semigroup<>::free(Element* x) const;
   template <> void Semigroup<>::swap(Element* x, Element* y) const;
-  template <> Element* Semigroup<>::one(Element const* x) const;
-  template <> size_t Semigroup<>::degree(Element const* x) const;
-  template <> size_t Semigroup<>::complexity(Element const* x) const;
+  template <> Element* Semigroup<>::one(Element* x) const;
+  template <> size_t Semigroup<>::degree(Element* x) const;
+  template <> size_t Semigroup<>::complexity(Element* x) const;
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
