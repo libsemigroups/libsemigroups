@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../src/semigroups.h"
+#include "../src/semispec.h"
 #include "catch.hpp"
 
 #define SEMIGROUPS_REPORT false
@@ -2966,5 +2966,35 @@ TEST_CASE("Semigroup 71: number of idempotents",
   S.set_report(true);
   REQUIRE(S.size() == 4213597);
   REQUIRE(S.nridempotents() == 541254);
+  S.set_report(false);
+}
+
+TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
+          "[quick][semigroup][finite][72]") {
+  Semigroup<BMat8,
+            BMat8 const,
+            std::hash<BMat8 const>,
+            std::equal_to<BMat8 const>>
+      S({BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
+  S.set_report(true);
+  REQUIRE(S.size() == 63904);
+  REQUIRE(S.nridempotents() == 2360);
+  S.set_report(false);
+}
+
+TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
+          "[quick][semigroup][finite][73]") {
+  Semigroup<> S(
+      {new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+       new BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+       new BooleanMat(
+           {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
+  S.set_report(true);
+  REQUIRE(S.size() == 63904);
+  REQUIRE(S.nridempotents() == 2360);
   S.set_report(false);
 }

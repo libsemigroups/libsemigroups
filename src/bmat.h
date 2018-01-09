@@ -22,41 +22,55 @@
 #ifndef LIBSEMIGROUPS_SRC_BMAT_H_
 #define LIBSEMIGROUPS_SRC_BMAT_H_
 
+#include <array>
+#include <climits>
 #include <functional>
 #include <iostream>
-#include <climits>
 #include <random>
-#include <array>
 
 #define intersect(A, B) ~(~A & B) & B
 
 namespace libsemigroups {
   class BMat8 {
-  public:
+   public:
     BMat8() = default;
     explicit BMat8(uint64_t mat) : _data(mat) {}
-    explicit BMat8(std::vector<std::vector<size_t>> const &mat);
+    explicit BMat8(std::vector<std::vector<size_t>> const& mat);
 
-    friend std::ostream &operator<<(std::ostream &os, BMat8 const &bm) {
+    friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
       os << bm.to_string();
       return os;
     }
 
-    BMat8 operator*(BMat8 const &that) const;
+    BMat8(BMat8 const&) = default;             // Copy constructor
+    BMat8(BMat8&&)      = default;             // Move constructor
+    BMat8& operator=(BMat8 const&) = default;  // Copy assignment operator
+    BMat8& operator=(BMat8&&) = default;       // Move assignment operator
+    ~BMat8()                  = default;       // Destructor
 
-    bool operator==(BMat8 const &that) const { return _data == that._data; }
+    BMat8 operator*(BMat8 const& that) const;
 
-    bool operator!=(BMat8 const &that) const { return _data != that._data; }
+    bool operator==(BMat8 const& that) const {
+      return _data == that._data;
+    }
 
-    bool operator<(BMat8 const &that) const { return _data < that._data; }
+    bool operator!=(BMat8 const& that) const {
+      return _data != that._data;
+    }
 
-    bool operator>(BMat8 const &that) const { return _data > that._data; }
+    bool operator<(BMat8 const& that) const {
+      return _data < that._data;
+    }
+
+    bool operator>(BMat8 const& that) const {
+      return _data > that._data;
+    }
 
     bool operator()(size_t i, size_t j) const;
 
     // Bit hacks
-    static std::vector<uint64_t> const ROW_MASK; 
-    static std::vector<uint64_t> const COL_MASK; 
+    static std::vector<uint64_t> const ROW_MASK;
+    static std::vector<uint64_t> const COL_MASK;
 
     static std::array<uint64_t, 8> for_sorting;
 
@@ -69,8 +83,8 @@ namespace libsemigroups {
     // Cyclically shifts bits to left by 8m
     // https://stackoverflow.com/a/776523
     static inline uint64_t cyclic_shift(uint64_t n, uint64_t m = 1) {
-      const unsigned int mask =
-          (CHAR_BIT * sizeof(n) - 1); // assumes width is a power of 2.
+      const unsigned int mask
+          = (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
 
       // assert ( (c<=mask) &&"rotate by type width or more");
       unsigned int c = 8 * m;
@@ -92,23 +106,27 @@ namespace libsemigroups {
       }
       return w;
     }
-    std::string to_string() const;
-    uint64_t to_int() const { return _data; }
+    std::string     to_string() const;
+    inline uint64_t to_int() const {
+      return _data;
+    }
     BMat8 row_space_basis() const;
     BMat8 col_space_basis() const;
 
     inline BMat8 transpose() const {
       uint64_t x = _data;
       uint64_t y = (x ^ (x >> 7)) & 0xAA00AA00AA00AA;
-      x = x ^ y ^ (y << 7);
-      y = (x ^ (x >> 14)) & 0xCCCC0000CCCC;
-      x = x ^ y ^ (y << 14);
-      y = (x ^ (x >> 28)) & 0xF0F0F0F0;
-      x = x ^ y ^ (y << 28);
+      x          = x ^ y ^ (y << 7);
+      y          = (x ^ (x >> 14)) & 0xCCCC0000CCCC;
+      x          = x ^ y ^ (y << 14);
+      y          = (x ^ (x >> 28)) & 0xF0F0F0F0;
+      x          = x ^ y ^ (y << 28);
       return BMat8(x);
     }
 
-    inline bool is_invertible() const { return *this * transpose() == one(); }
+    inline bool is_invertible() const {
+      return *this * transpose() == one();
+    }
 
     // returns the inverse of this matrix, if it is invertible
     // TODO: what if not?
@@ -120,10 +138,10 @@ namespace libsemigroups {
 
     // https://stackoverflow.com/a/18448513
 
-    void redefine(BMat8 const &A, BMat8 const &B) {
-      uint64_t y = B.transpose()._data;
-      _data = 0;
-      uint64_t tmp = 0;
+    void redefine(BMat8 const& A, BMat8 const& B) {
+      uint64_t y    = B.transpose()._data;
+      _data         = 0;
+      uint64_t tmp  = 0;
       uint64_t diag = 0x8040201008040201;
       for (int i = 0; i < 8; ++i) {
         tmp = A._data & y;
@@ -135,8 +153,8 @@ namespace libsemigroups {
         tmp &= diag;
         _data |= tmp;
 
-        y = cyclic_shift(y);
-        tmp = 0;
+        y    = cyclic_shift(y);
+        tmp  = 0;
         diag = cyclic_shift(diag);
       }
     }
@@ -172,35 +190,42 @@ namespace libsemigroups {
       _data |= for_sorting[7];
     }
 
-    inline BMat8 one() const { return BMat8(0x8040201008040201); }
+    inline BMat8 one() const {
+      return BMat8(0x8040201008040201);
+    }
 
     void swap_rows(size_t i, size_t j);
 
-    size_t complexity() const { return 0; }
-
-    size_t degree() const { return 8; }
+    // FIXME remove this
+    size_t complexity() const {
+      return 0;
+    }
+    // FIXME remove this
+    size_t degree() const {
+      return 8;
+    }
 
     static BMat8 random();
     static BMat8 random(size_t dim);
 
-    BMat8 lvalue(BMat8 cols, BMat8 *tmp);
+    // BMat8 lvalue(BMat8 cols, BMat8 *tmp);
 
-  private:
+   private:
     void assign(uint64_t data);
 
     uint64_t _data;
 
-    static std::mt19937 _gen;
+    static std::mt19937                          _gen;
     static std::uniform_int_distribution<size_t> _dist;
   };
 
-  } // namespace libsemigroups
+}  // namespace libsemigroups
 
-  namespace std {
-  template <> struct hash<libsemigroups::BMat8> {
-    inline size_t operator()(libsemigroups::BMat8 const &bm) const {
+namespace std {
+  template <> struct hash<libsemigroups::BMat8 const> {
+    inline size_t operator()(libsemigroups::BMat8 const& bm) const {
       return hash<uint64_t>()(bm.to_int());
     }
   };
-  } // namespace std
-#endif // LIBSEMIGROUPS_SRC_BMAT_H_
+}  // namespace std
+#endif  // LIBSEMIGROUPS_SRC_BMAT_H_

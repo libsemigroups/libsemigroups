@@ -97,7 +97,7 @@ namespace libsemigroups {
     size_t   pos = _semigroup->position(x);
     x->really_delete();
     delete x;
-    LIBSEMIGROUPS_ASSERT(pos != Semigroup::UNDEFINED);
+    LIBSEMIGROUPS_ASSERT(pos != Semigroup<>::UNDEFINED);
     return pos;
   }
 

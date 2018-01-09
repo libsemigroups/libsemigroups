@@ -29,21 +29,30 @@
 #include "libsemigroups-debug.h"
 #include "timer.h"
 
-
 namespace libsemigroups {
 
   static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
+  static_assert(std::is_trivially_copyable<BMat8>::value,
+                "BMat8 is not trivially copyable!");
+  std::vector<uint64_t> const BMat8::ROW_MASK = {0xff00000000000000,
+                                                 0xff000000000000,
+                                                 0xff0000000000,
+                                                 0xff00000000,
+                                                 0xff000000,
+                                                 0xff0000,
+                                                 0xff00,
+                                                 0xff};
 
-  std::vector<uint64_t> const BMat8::ROW_MASK = {
-      0xff00000000000000, 0xff000000000000, 0xff0000000000, 0xff00000000,
-      0xff000000,         0xff0000,         0xff00,         0xff};
+  std::vector<uint64_t> const BMat8::COL_MASK = {0x8080808080808080,
+                                                 0x4040404040404040,
+                                                 0x2020202020202020,
+                                                 0x1010101010101010,
+                                                 0x808080808080808,
+                                                 0x404040404040404,
+                                                 0x202020202020202,
+                                                 0x101010101010101};
 
-  std::vector<uint64_t> const BMat8::COL_MASK = {
-      0x8080808080808080, 0x4040404040404040, 0x2020202020202020,
-      0x1010101010101010, 0x808080808080808,  0x404040404040404,
-      0x202020202020202,  0x101010101010101};
-
-  std::array<uint64_t, 8> BMat8::for_sorting  = {0, 0, 0, 0, 0, 0, 0, 0};
+  std::array<uint64_t, 8> BMat8::for_sorting = {0, 0, 0, 0, 0, 0, 0, 0};
 
   // BMat methods
   std::random_device                    _rd;
@@ -88,9 +97,9 @@ namespace libsemigroups {
   }
 
   BMat8 BMat8::row_space_basis() const {
-    uint64_t out = 0;
+    uint64_t out            = 0;
     uint64_t combined_masks = 0;
-  
+
     BMat8 bm(_data);
     bm.sort_rows();
 
@@ -98,10 +107,10 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < 7; ++i) {
       combined_masks |= ROW_MASK[i];
-      while ((no_dups & ROW_MASK[i + 1]) << 8 == (no_dups & ROW_MASK[i]) &&
-             (no_dups & ROW_MASK[i]) != 0) {
-        no_dups = ((no_dups & combined_masks) |
-                   (no_dups & ~combined_masks & ~ROW_MASK[i + 1]) << 8);
+      while ((no_dups & ROW_MASK[i + 1]) << 8 == (no_dups & ROW_MASK[i])
+             && (no_dups & ROW_MASK[i]) != 0) {
+        no_dups = ((no_dups & combined_masks)
+                   | (no_dups & ~combined_masks & ~ROW_MASK[i + 1]) << 8);
       }
     }
 
@@ -171,11 +180,13 @@ namespace libsemigroups {
     _data ^= y ^ (y << (j - i) * 8);
   }
 
-  void BMat8::assign(uint64_t data) { _data = data; }
-
-  BMat8 BMat8::lvalue(BMat8 rows, BMat8* tmp){
-    tmp->redefine(rows, *this);
-    *tmp = tmp->row_space_basis();
-    return *tmp;
+  void BMat8::assign(uint64_t data) {
+    _data = data;
   }
+
+  /*  BMat8 BMat8::lvalue(BMat8 rows, BMat8* tmp){
+      tmp->redefine(rows, *this);
+      *tmp = tmp->row_space_basis();
+      return *tmp;
+    }*/
 }  // namespace libsemigroups

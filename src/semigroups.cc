@@ -44,12 +44,24 @@ namespace libsemigroups {
     return x->really_copy(increase_deg_by);
   }
 
-  template <> void Semigroup<>::free(Element* x) const {
-    x->really_delete();
+  template <> void Semigroup<>::free(Element const* x) const {
+    const_cast<Element*>(x)->really_delete();
     delete x;
   }
 
   template <> void Semigroup<>::swap(Element* x, Element* y) const {
     x->swap(y);
+  }
+
+  template <> Element* Semigroup<>::one(Element const* x) const {
+    return x->identity();
+  }
+
+  template <> size_t Semigroup<>::degree(Element const* x) const {
+    return x->degree();
+  }
+
+  template <> size_t Semigroup<>::complexity(Element const* x) const {
+    return x->degree();
   }
 }  // namespace libsemigroups

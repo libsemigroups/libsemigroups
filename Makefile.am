@@ -29,9 +29,11 @@ pkginclude_HEADERS =  src/libsemigroups-config.h
 pkginclude_HEADERS += src/libsemigroups-debug.h 
 pkginclude_HEADERS += src/bmat.h
 pkginclude_HEADERS += src/blocks.h    src/cong.h 
-pkginclude_HEADERS += src/elements.h  src/semigroups.h 
+pkginclude_HEADERS += src/elements.h   
 pkginclude_HEADERS += src/rws.h       src/rwse.h 
-pkginclude_HEADERS += src/semiring.h  src/partition.h
+pkginclude_HEADERS += src/semigroups.h
+pkginclude_HEADERS += src/semiring.h  src/semispec.h
+pkginclude_HEADERS += src/partition.h
 pkginclude_HEADERS += src/recvec.h    src/report.h	
 pkginclude_HEADERS += src/timer.h     src/uf.h
 
@@ -43,7 +45,7 @@ libsemigroups_la_SOURCES =  src/blocks.cc src/bmat.cc
 libsemigroups_la_SOURCES += src/cong.cc   src/elements.cc  
 libsemigroups_la_SOURCES += src/report.cc src/rws.cc        
 libsemigroups_la_SOURCES += src/rwse.cc   src/semigroups.cc 
-libsemigroups_la_SOURCES += src/uf.cc
+libsemigroups_la_SOURCES += src/semispec.cc src/uf.cc
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 libsemigroups_la_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
