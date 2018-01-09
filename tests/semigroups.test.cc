@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../src/semispec.h"
+#include "../src/bmat.h"
+#include "../src/semigroups.h"
 #include "catch.hpp"
 
 #define SEMIGROUPS_REPORT false
@@ -2978,7 +2979,7 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
   Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(gens);
-  S.set_report(true);
+  S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
   S.set_report(false);
@@ -2986,16 +2987,14 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
 
 TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
           "[quick][semigroup][finite][73]") {
-  Semigroup<> S(
-      {new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-       new BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-       new BooleanMat(
-           {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
-  S.set_report(true);
+  std::vector<Element*> gens = {
+      new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+      new BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+      new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+      new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+  Semigroup<> S(gens);
+  really_delete_cont(gens);
+  S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
-  S.set_report(false);
-
-  // FIXME leaks
 }
