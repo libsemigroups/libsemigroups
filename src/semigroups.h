@@ -119,7 +119,7 @@ namespace libsemigroups {
     //!
     //! The generators \p gens are copied by the constructor, and so it is the
     //! responsibility of the caller to delete \p gens.
-    explicit Semigroup(std::vector<TConstElementType> const* gens)
+    explicit Semigroup(std::vector<TElementType> const& gens)
         : _batch_size(8192),
           _degree(UNDEFINED),
           _duplicate_gens(),
@@ -129,38 +129,38 @@ namespace libsemigroups {
           _first(),
           _found_one(false),
           _gens(),
-          _id(one((*gens)[0])),
+          _id(one(gens[0])),
           _idempotents(),
           _idempotents_found(false),
           _is_idempotent(),
-          _left(gens->size()),
+          _left(gens.size()),
           _length(),
           _lenindex(),
           _letter_to_pos(),
           _map(),
           _max_threads(std::thread::hardware_concurrency()),
           _nr(0),
-          _nrgens(gens->size()),
+          _nrgens(gens.size()),
           _nrrules(0),
           _pos(0),
           _pos_one(0),
           _prefix(),
-          _reduced(gens->size()),
+          _reduced(gens.size()),
           _relation_gen(0),
           _relation_pos(UNDEFINED),
-          _right(gens->size()),
+          _right(gens.size()),
           _sorted(),
           _suffix(),
-          _tmp_product(one((*gens)[0])),
+          _tmp_product(one(gens[0])),
           _wordlen(0) {  // (length of the current word) - 1
       LIBSEMIGROUPS_ASSERT(_nrgens != 0);
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
 #endif
 
-      _degree = degree((*gens)[0]);
+      _degree = degree(gens[0]);
 
-      for (TConstElementType x : *gens) {
+      for (TElementType x : gens) {
         LIBSEMIGROUPS_ASSERT(degree(x) == _degree);
         _gens.push_back(copy(x));
       }
@@ -230,15 +230,16 @@ namespace libsemigroups {
     //!
     //! This constructor is for convenience only, see Semigroup::Semigroup.
     explicit Semigroup(std::vector<TConstElementType> const& gens)
-        : Semigroup(&gens) {}
+        : Semigroup(reinterpret_cast<std::vector<TElementType> const&>(gens)) {}
 
     //! Construct from generators.
     //!
     //! This constructor is for convenience, and it simply reinterpret_casts
     //! its argument to <std::vector<TConstElementType> const&.
-    explicit Semigroup(std::vector<TElementType> const& gens)
-        : Semigroup(
-              reinterpret_cast<std::vector<TConstElementType> const&>(gens)) {}
+    //    explicit Semigroup(std::vector<TElementType> const& gens)
+    //        : Semigroup(
+    //              reinterpret_cast<std::vector<TConstElementType>
+    //              const&>(gens)) {}
 
     //! Construct from generators.
     //!
