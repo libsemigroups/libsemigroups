@@ -32,8 +32,6 @@
 namespace libsemigroups {
 
   static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
-  static_assert(std::is_trivially_copyable<BMat8>::value,
-                "BMat8 is not trivially copyable!");
   std::vector<uint64_t> const BMat8::ROW_MASK = {0xff00000000000000,
                                                  0xff000000000000,
                                                  0xff0000000000,
@@ -52,7 +50,7 @@ namespace libsemigroups {
                                                  0x202020202020202,
                                                  0x101010101010101};
 
-  std::array<uint64_t, 8> BMat8::for_sorting = {0, 0, 0, 0, 0, 0, 0, 0};
+  std::array<uint64_t, 8> BMat8::for_sorting = {{0, 0, 0, 0, 0, 0, 0, 0}};
 
   // BMat methods
   std::random_device                    _rd;
