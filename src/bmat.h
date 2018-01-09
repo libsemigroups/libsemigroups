@@ -223,7 +223,12 @@ namespace libsemigroups {
 
 namespace std {
   template <> struct hash<libsemigroups::BMat8 const> {
-    inline size_t operator()(libsemigroups::BMat8 const& bm) const {
+    size_t operator()(libsemigroups::BMat8 const& bm) const {
+      return hash<uint64_t>()(bm.to_int());
+    }
+  };
+  template <> struct hash<libsemigroups::BMat8> {
+    size_t operator()(libsemigroups::BMat8 const& bm) const {
       return hash<uint64_t>()(bm.to_int());
     }
   };

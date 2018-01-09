@@ -25,14 +25,6 @@
 #include "bmat.h"
 #include "semigroups.h"
 
-namespace libsemigroups {
-
-  template <>
-  size_t Semigroup<BMat8,
-                   BMat8 const,
-                   std::hash<BMat8 const>,
-                   std::equal_to<BMat8 const>>::degree(BMat8 x) const;
-
-}  // namespace libsemigroups
+namespace libsemigroups {}  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMISPEC_H_
