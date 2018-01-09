@@ -19,11 +19,6 @@
 #include "semigroups.h"
 
 namespace libsemigroups {
-  template <>
-  Element* Semigroup<>::multiply(Element* xy, Element* x, Element* y) const {
-    xy->redefine(x, y);
-    return xy;
-  }
 
   template <>
   Element*

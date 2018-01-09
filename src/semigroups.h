@@ -1892,16 +1892,10 @@ namespace libsemigroups {
     }
 
    private:
-    inline TElementType
-    multiply(TElementType xy, TElementType x, TElementType y) const {
-      (void) xy;
-      return x * y;
-    }
-
     inline TElementType multiply(TElementType xy,
                                  TElementType x,
                                  TElementType y,
-                                 size_t       tid) const {
+                                 size_t       tid = 0) const {
       (void) xy;
       (void) tid;
       return x * y;
@@ -1935,7 +1929,7 @@ namespace libsemigroups {
 
     inline size_t complexity(TElementType x) const {
       (void) x;
-      return 0;
+      return 1;
     }
 
     // Expand the data structures in the semigroup with space for nr elements
@@ -2084,6 +2078,9 @@ namespace libsemigroups {
       // elements rather than follow a path in the Cayley graph. This is the
       // enumerate_index_t i for which length(i) >= 2 * complexity.
       size_t comp             = complexity(_tmp_product);
+      LIBSEMIGROUPS_ASSERT(comp > 0);
+      // Previous assertion because otherwise the next line doesn't work as
+      // intended
       size_t threshold_length = std::min(_lenindex.size() - 2, comp - 1);
       enumerate_index_t threshold_index = _lenindex[threshold_length];
 
@@ -2292,12 +2289,8 @@ namespace libsemigroups {
       = std::numeric_limits<index_t>::max();
 
   template <>
-  Element* Semigroup<>::multiply(Element* xy, Element* x, Element* y) const;
-
-  template <>
   Element*
   Semigroup<>::multiply(Element* xy, Element* x, Element* y, size_t tid) const;
-
   template <> Element* Semigroup<>::copy(Element* x) const;
   template <>
   Element* Semigroup<>::copy(Element* x, size_t increase_deg_by) const;
