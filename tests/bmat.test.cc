@@ -59,17 +59,15 @@ TEST_CASE("BMat 02: multiplication", "[quick][bmat][02]") {
             {0, 1, 0, 0, 0, 0, 1, 1},
             {0, 1, 1, 1, 1, 0, 1, 0}});
 
-  BMat8 tmp;
-
-  tmp.redefine(bm, bm.one());
+  BMat8 tmp = bm * bm.one();
   REQUIRE(tmp == bm);
   REQUIRE(tmp == bm * bm.one());
 
-  tmp.redefine(bm.one(), bm);
+  tmp = bm.one() * bm;
   REQUIRE(tmp == bm);
   REQUIRE(tmp == bm.one() * bm);
 
-  tmp.redefine(bm, BMat8(0));
+  tmp = bm * BMat8(0);
   REQUIRE(tmp == BMat8(0));
 
   BMat8 bm2({{0, 0, 0, 1, 0, 0, 1, 1},
@@ -81,7 +79,7 @@ TEST_CASE("BMat 02: multiplication", "[quick][bmat][02]") {
              {0, 1, 0, 1, 0, 1, 0, 1},
              {0, 1, 0, 0, 0, 0, 1, 0}});
 
-  tmp.redefine(bm, bm2);
+  tmp = bm * bm2;
 
   BMat8 bm3({{1, 1, 0, 1, 0, 1, 1, 1},
              {1, 1, 1, 1, 1, 1, 1, 1},

@@ -140,11 +140,6 @@ namespace libsemigroups {
     return this->transpose().row_space_basis().transpose();
   }
 
-  BMat8 BMat8::operator*(BMat8 const& bm) const {
-    BMat8 out;
-    out.redefine(*this, bm);
-    return out;
-  }
 
   bool BMat8::operator()(size_t i, size_t j) const {
     LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);

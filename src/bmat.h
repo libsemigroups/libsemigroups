@@ -37,18 +37,12 @@ namespace libsemigroups {
     explicit BMat8(uint64_t mat) : _data(mat) {}
     explicit BMat8(std::vector<std::vector<size_t>> const& mat);
 
-    friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << bm.to_string();
-      return os;
-    }
 
     BMat8(BMat8 const&) = default;             // Copy constructor
     BMat8(BMat8&&)      = default;             // Move constructor
     BMat8& operator=(BMat8 const&) = default;  // Copy assignment operator
     BMat8& operator=(BMat8&&) = default;       // Move assignment operator
     ~BMat8()                  = default;       // Destructor
-
-    BMat8 operator*(BMat8 const& that) const;
 
     bool operator==(BMat8 const& that) const {
       return _data == that._data;
@@ -67,6 +61,11 @@ namespace libsemigroups {
     }
 
     bool operator()(size_t i, size_t j) const;
+
+    friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
+      os << bm.to_string();
+      return os;
+    }
 
     // Bit hacks
     static std::vector<uint64_t> const ROW_MASK;
@@ -138,25 +137,25 @@ namespace libsemigroups {
 
     // https://stackoverflow.com/a/18448513
 
-    void redefine(BMat8 const& A, BMat8 const& B) {
-      uint64_t y    = B.transpose()._data;
-      _data         = 0;
+  inline BMat8 operator*(BMat8 const& that) const {
+      uint64_t y    = that.transpose()._data;
+      uint64_t data         = 0;
       uint64_t tmp  = 0;
       uint64_t diag = 0x8040201008040201;
       for (int i = 0; i < 8; ++i) {
-        tmp = A._data & y;
+        tmp = _data & y;
         tmp |= tmp >> 1;
         tmp |= tmp >> 2;
         tmp |= tmp >> 4;
         tmp &= 0x0101010101010101;
         tmp *= 255;
         tmp &= diag;
-        _data |= tmp;
-
+        data |= tmp;
         y    = cyclic_shift(y);
         tmp  = 0;
         diag = cyclic_shift(diag);
       }
+      return BMat8(data);
     }
 
     inline void sort_rows() {
@@ -195,15 +194,6 @@ namespace libsemigroups {
     }
 
     void swap_rows(size_t i, size_t j);
-
-    // FIXME remove this
-    size_t complexity() const {
-      return 0;
-    }
-    // FIXME remove this
-    size_t degree() const {
-      return 8;
-    }
 
     static BMat8 random();
     static BMat8 random(size_t dim);
