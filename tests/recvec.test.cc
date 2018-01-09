@@ -1286,7 +1286,7 @@ TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
   }
 
   for (size_t i = 0; i < 99; i++) {
-    auto it = rv.begin_row(i);
+    auto it  = rv.begin_row(i);
     auto it2 = rv.begin_row(i + 1);
 
     it++;
