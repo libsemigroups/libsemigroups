@@ -2,7 +2,7 @@
 # Automake configuration
 ##############################################################################
 
-AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11
+AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 -mavx -flax-vector-conversions
 AM_CXXFLAGS += -g -O3 $(GCC_SPECIFIC_CXXFLAGS)
 AM_LDFLAGS  =  -no-undefined
 
