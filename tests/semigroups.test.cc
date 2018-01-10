@@ -2978,13 +2978,10 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-  Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(gens);
-  S.set_report(true);
-  S.reserve(4);
-
+  Semigroup<BMat8> S(gens);
+  S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
-  S.set_report(false);
 }
 
 TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
@@ -3003,7 +3000,7 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
 
 TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
           "[extreme][semigroup][finite][74]") {
-  Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(
+  Semigroup<BMat8> S(
       {BMat8({{0, 1, 0, 0, 0},
               {1, 0, 0, 0, 0},
               {0, 0, 1, 0, 0},

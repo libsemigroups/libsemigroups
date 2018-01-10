@@ -54,9 +54,10 @@ namespace libsemigroups {
   //! right Cayley graphs are determined, and a confluent terminating
   //! presentation for the semigroup is known.
   // TODO add index_t as template param
+  // TODO remove Element* as default parameter ?
   template <typename TElementType  = Element*,
-            typename TElementHash  = Element::Hash,
-            typename TElementEqual = Element::Equal>
+            typename TElementHash  = std::hash<TElementType>,
+            typename TElementEqual = std::equal_to<TElementType>>
   class Semigroup {
 
     typedef RecVec<bool> flags_t;

@@ -86,7 +86,7 @@ namespace libsemigroups {
     bool                       _done;
     std::unordered_set<p_pair_const_t, PHash, PEqual>* _found_pairs;
     UF _lookup;
-    std::unordered_map<const Element*, p_index_t, Element::Hash, Element::Equal>
+    std::unordered_map<Element const*, p_index_t>
                                 _map;
     p_index_t                   _map_next;
     class_index_t               _next_class;

@@ -189,31 +189,6 @@ namespace libsemigroups {
       redefine(x, y);
     }
 
-    //! Provides a call operator for comparing Elements via pointers.
-    //!
-    //! This struct provides a call operator for comparing const Element
-    //! pointers (by comparing the Element objects they point to). This is used
-    //! by various methods of the Semigroup class.
-    struct Equal {
-      //! Returns \c true if \p x and \p y point to equal Element's.
-      bool operator()(Element const* x, Element const* y) const {
-        return *x == *y;
-      }
-    };
-
-    //! Provides a call operator returning a hash value for an Element
-    //! via a pointer.
-    //!
-    //! This struct provides a call operator for obtaining a hash value for the
-    //! Element from a const Element pointer. This is used by various methods
-    //! of the Semigroup class.
-    struct Hash {
-      //! Returns the value of Element::hash_value applied to the
-      //! Element pointed to by \p x.
-      size_t operator()(Element const* x) const {
-        return x->hash_value();
-      }
-    };
 
    protected:
     //! Calculate and cache a hash value.
@@ -1414,4 +1389,40 @@ namespace libsemigroups {
     delete cont;
   }
 }  // namespace libsemigroups
+
+
+namespace std {
+  //! Provides a call operator returning a hash value for an Element
+  //! via a pointer.
+  //!
+  //! This struct provides a call operator for obtaining a hash value for the
+  //! Element from a const Element pointer. This is used by various methods
+  //! of the Semigroup class.
+  template <> struct hash<libsemigroups::Element*> {
+    size_t operator()(libsemigroups::Element* x) const {
+      return x->hash_value();
+    }
+  };
+  template <> struct hash<libsemigroups::Element const*> {
+    size_t operator()(libsemigroups::Element const* x) const {
+      return x->hash_value();
+    }
+  };
+
+  //! Provides a call operator for comparing Elements via pointers.
+  //!
+  //! This struct provides a call operator for comparing const Element
+  //! pointers (by comparing the Element objects they point to). This is used
+  //! by various methods of the Semigroup class.
+  template <> struct equal_to<libsemigroups::Element*> {
+    size_t operator()(libsemigroups::Element* x, libsemigroups::Element* y) const {
+      return *x == *y;
+    }
+  };
+  template <> struct equal_to<libsemigroups::Element const*> {
+    size_t operator()(libsemigroups::Element const* x, libsemigroups::Element const* y) const {
+      return *x == *y;
+    }
+  };
+}  // namespace std
 #endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_
