@@ -69,6 +69,7 @@ AS_IF([test "x$enable_debug" = xyes],
 
 AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
 
+# Check if stats mode is enabled
 AC_ARG_ENABLE([stats],
     [AS_HELP_STRING([--enable-stats], [enable stats mode])],
     [AC_DEFINE([STATS], [1], [define if building in stats mode])],
@@ -88,6 +89,81 @@ AC_ARG_ENABLE([densehashmap],
 
 AC_MSG_CHECKING([whether to use google's dense_hash_map])
 AC_MSG_RESULT([$enable_densehashmap])
+
+# Check if HPCombi is enabled
+AC_ARG_ENABLE([hpcombi],
+    [AS_HELP_STRING([--enable-hpcombi], [enable HPCombi])],
+    [],
+    [enable_hpcombi=no]
+    )
+AC_MSG_CHECKING([whether to enable HPCombi])
+AC_MSG_RESULT([$enable_hpcombi])
+
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_CHECK_FILE([extern/HPCombi/VERSION], 
+                     [], 
+                     [AC_MSG_WARN([HPCombi is not available, ignoring --enable-hpcombi])
+                      [enable_hpcombi=no]])])
+
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_MSG_CHECKING([the present version of HPCombi])
+      [cat extern/HPCombi/VERSION]])
+
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_MSG_CHECKING([the required version of HPCombi])
+      [cat extern/.HPCombi_VERSION]])
+
+AS_IF([test "x$enable_hpcombi" = xyes],
+[AS_IF([! cmp -s extern/HPCombi/VERSION extern/.HPCombi_VERSION],
+       [AC_MSG_WARN([the version of HPCombi that is present is incorrect, ignoring --enable-hpcombi])
+        [enable_hpcombi=no]])])
+
+SAVED_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="-g -O2 -mavx -flax-vector-conversions"
+AC_DEFUN([CHECK_COMPILER_BUILTIN],
+[AC_MSG_CHECKING([for $1])
+    AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM(
+            [[#include <x86intrin.h>]],
+            [$1[($2)];
+            ]
+        )],
+        [],
+        [enable_hpcombi=no]
+        )
+    AC_MSG_RESULT([$enable_hpcombi])
+        ])
+
+dnl # TODO check that x86intrin.h exists and that __m128i exists
+AS_IF([test "x$enable_hpcombi" = xyes], 
+      [AC_MSG_NOTICE([compiler builtins required by HPCombi])
+       enable_hpcombi_before_builtin_check=yes])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_blendv_epi8],[__m128i{},__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpeq_epi8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpestri],[__m128i{},1,__m128i{},1,1])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpestrm],[__m128i{},1,__m128i{},1,1])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmplt_epi8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_extract_epi64],[__m128i{},1])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_max_epi8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_max_epu8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_min_epi8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_min_epu8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_movemask_epi8],[__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_popcnt_u32],[{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_set_epi64x],[1,1])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_shuffle_epi8],[__m128i{},__m128i{}])])
+AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_slli_epi32],[__m128i{},1])])
+CXXFLAGS=$SAVED_CXXFLAGS
+
+AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
+      [AS_IF([test "x$enable_hpcombi" = xno],
+       [AC_MSG_WARN([compiler builtin not supported, ignoring --enable-hpcombi])])])
+
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_DEFINE([USE_HPCOMBI], [1], [define if building with HPCombi])])
+
+dnl # the following is used in Makefile.am
+AM_CONDITIONAL([LIBSEMIGROUPS_USE_HPCOMBI], [test "x$enable_hpcombi" = xyes])
 
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
