@@ -89,7 +89,7 @@ lstest_SOURCES += tests/kbfp.test.cc	  tests/semigroups.test.cc
 lstest_SOURCES += tests/kbp.test.cc       tests/semiring.test.cc
 lstest_SOURCES += tests/p.test.cc         tests/tc.test.cc
 lstest_SOURCES += tests/partition.test.cc tests/uf.test.cc
-lstest_SOURCES += tests/timer.test.cc     
+lstest_SOURCES += tests/timer.test.cc     tests/hpcombi.test.cc 
 
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
