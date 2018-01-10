@@ -128,7 +128,7 @@ namespace libsemigroups {
           _first(),
           _found_one(false),
           _gens(),
-          _id(one((*gens)[0])),
+          _id(),
           _idempotents(),
           _idempotents_found(false),
           _is_idempotent(),
@@ -150,12 +150,16 @@ namespace libsemigroups {
           _right(gens->size()),
           _sorted(),
           _suffix(),
-          _tmp_product(one((*gens)[0])),
+          _tmp_product(),
           _wordlen(0) {  // (length of the current word) - 1
       LIBSEMIGROUPS_ASSERT(_nrgens != 0);
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
 #endif
+      _right.set_default_value(UNDEFINED);
+      // FIXME inclusion of the next line makes test Semigroup 72 extremely
+      // slow (~50ms to ~10s!!!!)
+      //reserve(_nrgens);
 
       _degree = degree((*gens)[0]);
 
@@ -164,8 +168,8 @@ namespace libsemigroups {
         _gens.push_back(copy(x));
       }
 
-      _right.set_default_value(UNDEFINED);
-      reserve(_nrgens);
+      _tmp_product = one(_gens[0]);
+      _id = one(_gens[0]);
       _lenindex.push_back(0);
 
       // add the generators
@@ -723,9 +727,8 @@ namespace libsemigroups {
     //! Semigroup::enumerate method, and consequently every other method too.
     void reserve(size_t n) {
       // Since the Semigroup we are enumerating is bounded in size by the
-      // maximum
-      // value of an element_index_t, we cast the argument here to this integer
-      // type.
+      // maximum value of an element_index_t, we cast the argument here to this
+      // integer type.
       element_index_t nn = static_cast<element_index_t>(n);
       _elements.reserve(nn);
       _final.reserve(nn);

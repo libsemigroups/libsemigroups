@@ -2970,7 +2970,7 @@ TEST_CASE("Semigroup 71: number of idempotents",
   S.set_report(false);
 }
 
-TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
+TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
           "[quick][semigroup][finite][72]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -2979,13 +2979,15 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid using BMat8",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
   Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  S.set_report(true);
+  S.reserve(4);
+
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
   S.set_report(false);
 }
 
-TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
+TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
           "[quick][semigroup][finite][73]") {
   std::vector<Element*> gens = {
       new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -2997,4 +2999,67 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid using BooleanMat",
   S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
+}
+
+TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
+          "[extreme][semigroup][finite][74]") {
+  Semigroup<BMat8, std::hash<BMat8>, std::equal_to<BMat8>> S(
+      {BMat8({{0, 1, 0, 0, 0},
+              {1, 0, 0, 0, 0},
+              {0, 0, 1, 0, 0},
+              {0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 1}}),
+       BMat8({{0, 1, 0, 0, 0},
+              {0, 0, 1, 0, 0},
+              {0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 1},
+              {1, 0, 0, 0, 0}}),
+       BMat8({{1, 0, 0, 0, 0},
+              {0, 1, 0, 0, 0},
+              {0, 0, 1, 0, 0},
+              {0, 0, 0, 1, 0},
+              {1, 0, 0, 0, 1}}),
+       BMat8({{1, 0, 0, 0, 0},
+              {0, 1, 0, 0, 0},
+              {0, 0, 1, 0, 0},
+              {0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 0}})});
+  S.set_report(true);
+  REQUIRE(S.size() == 32311832);
+  REQUIRE(S.nridempotents() == 73023);
+  // FIXME this demonstrates a very bad split with almost all the
+  // elements being put in the final thread by init_idempotents
+  S.set_report(false);
+}
+
+TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
+          "[extreme][semigroup][finite][75]") {
+  std::vector<Element*> gens = {new BooleanMat({{0, 1, 0, 0, 0},
+                                                {1, 0, 0, 0, 0},
+                                                {0, 0, 1, 0, 0},
+                                                {0, 0, 0, 1, 0},
+                                                {0, 0, 0, 0, 1}}),
+                                new BooleanMat({{0, 1, 0, 0, 0},
+                                                {0, 0, 1, 0, 0},
+                                                {0, 0, 0, 1, 0},
+                                                {0, 0, 0, 0, 1},
+                                                {1, 0, 0, 0, 0}}),
+                                new BooleanMat({{1, 0, 0, 0, 0},
+                                                {0, 1, 0, 0, 0},
+                                                {0, 0, 1, 0, 0},
+                                                {0, 0, 0, 1, 0},
+                                                {1, 0, 0, 0, 1}}),
+                                new BooleanMat({{1, 0, 0, 0, 0},
+                                                {0, 1, 0, 0, 0},
+                                                {0, 0, 1, 0, 0},
+                                                {0, 0, 0, 1, 0},
+                                                {0, 0, 0, 0, 0}})};
+  Semigroup<> S(gens);
+  really_delete_cont(gens);
+  S.set_report(true);
+  REQUIRE(S.size() == 32311832);
+  REQUIRE(S.nridempotents() == 73023);
+  // FIXME this demonstrates a very bad split with almost all the
+  // elements being put in the final thread by init_idempotents
+  S.set_report(false);
 }
