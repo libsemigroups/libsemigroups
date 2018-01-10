@@ -54,6 +54,6 @@ namespace libsemigroups {
   }
 
   template <> size_t Semigroup<>::complexity(Element* x) const {
-    return x->degree();
+    return x->complexity();
   }
 }  // namespace libsemigroups
