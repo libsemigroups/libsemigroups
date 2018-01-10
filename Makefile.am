@@ -105,6 +105,7 @@ lstest_SOURCES += tests/blocks.test.cc
 lstest_SOURCES += tests/bmat8.test.cc
 lstest_SOURCES += tests/cong.test.cc	  
 lstest_SOURCES += tests/elements.test.cc  
+lstest_SOURCES += tests/hpcombi.test.cc 
 lstest_SOURCES += tests/kbp.test.cc       
 lstest_SOURCES += tests/kbfp.test.cc	  
 lstest_SOURCES += tests/p.test.cc         
@@ -125,6 +126,9 @@ lstest_SOURCES += tests/uf.test.cc
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS) 
 lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
+if LIBSEMIGROUPS_USE_HPCOMBI
+lstest_CXXFLAGS += -mavx -flax-vector-conversions
+endif 
 
 lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 lstest_LDADD = libsemigroups.la
