@@ -45,3 +45,15 @@ TEST_CASE("HPCombi 02: Transf16", "[quick][hpcombi][finite][02]") {
   S.set_report(false);
   REQUIRE(S.size() == 597369);
 }
+
+TEST_CASE("HPCombi 03: full transformation monoid 8",
+          "[extreme][hpcombi][finite][03]") {
+  Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+      {Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
+       Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
+       Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
+  S.reserve(std::pow(8, 8));
+  S.set_report(true);
+  REQUIRE(S.size() == 16777216);
+  S.set_report(false);
+}
