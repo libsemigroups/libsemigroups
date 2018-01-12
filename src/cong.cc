@@ -216,6 +216,7 @@ namespace libsemigroups {
           data.push_back(new KBFP(*this));
         }
         // TC will be invalid/useless in certain cases; we check these here.
+        // FIXME if it is obviously_infinite, then KBFP won't terminate either!
         if (!is_obviously_infinite()) {
           data.push_back(new TC(*this));
         }
