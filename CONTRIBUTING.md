@@ -40,7 +40,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 3. Do the following just to be on the safe side:
  
-        make distclean ; ./autogen.sh ; ./configure
+        make distclean && ./autogen.sh && ./configure
     
     just to be on the safe side.
 
@@ -48,7 +48,7 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
 5. Check code coverage by running:
 
-        make clean ; ./configure --enable-code-coverage ; make check-code-coverage
+        make clean && ./configure --enable-code-coverage && make check-code-coverage -j4
 
     add tests to improve the coverage (and start again if necessary). This
     requires lcov, gcov, and genhtml. Under linux, you might need to do
@@ -68,10 +68,9 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 
         benchmark/compare_bench.py <json_file1> <json_file2> 
     
-7. Update the version numbers in `README.md`, and in `configure.ac`
-   and run:
+7. Update the version numbers in `README.md` and run:
     
-        make distclean ; ./autogen.sh ; ./configure
+        make distclean && ./autogen.sh && ./configure
     
 8. Commit the changed version numbers: 
    `git commit -am "Update version numbers"` 
