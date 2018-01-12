@@ -894,3 +894,77 @@ TEST_CASE("Congruence 28: test_less_than",
   REQUIRE(cong4.nr_classes() == 3);
   REQUIRE(cong4.word_to_class_index({1}) == 0);
 }*/
+
+std::vector<relation_t> GodelleTypeBMonoid(size_t l) {
+
+  std::vector<size_t> s;
+  std::vector<size_t> e;
+  for (size_t i = 0; i <= l; ++i) {
+    s.push_back(i);
+    e.push_back(i + l + 1);
+  }
+  size_t id = 2 * l + 1;
+
+  std::vector<relation_t> rels = {relation_t({id, id}, {id})};
+  // identity relations
+  for (size_t i = 0; i < l; ++i) {
+    rels.push_back({{s[i], id}, {s[i]}});
+    rels.push_back({{id, s[i]}, {s[i]}});
+    rels.push_back({{id, e[i]}, {e[i]}});
+    rels.push_back({{e[i], id}, {e[i]}});
+  }
+  rels.push_back({{id, e[l]}, {e[l]}});
+  rels.push_back({{e[l], id}, {e[l]}});
+
+  for (size_t i = 0; i < l; ++i) {
+    rels.push_back({{s[i], s[i]}, {id}});
+  }
+
+  for (int i = 0; i < l; ++i) {
+    for (int j = 0; j < l; ++j) {
+      if (std::abs(i - j) >= 2) {
+        rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+      }
+    }
+  }
+
+  for (size_t i = 1; i < l - 1; ++i) {
+    rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+  }
+
+  rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+
+  for (size_t i = 1; i < l; ++i) {
+    for (size_t j = 0; j < i; ++j) {
+      rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+    }
+  }
+
+  for (size_t i = 0; i < l; ++i) {
+    for (size_t j = i + 1; j < l + 1; ++j) {
+      rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+      rels.push_back({{s[i], e[j]}, {e[j]}});
+    }
+  }
+
+  for (size_t i = 0; i < l + 1; ++i) {
+    for (size_t j = 0; j < l + 1; ++j) {
+      rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
+      rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+    }
+  }
+
+  for (size_t i = 0; i < l; ++i) {
+    rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+  }
+
+  rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
+  return rels;
+}
+
+TEST_CASE("Congruence 29: Renner monoid type D4, q = 1",
+          "[congruence][fpsemigroup][29]") {
+  Congruence cong("twosided", 6, {}, GodelleTypeBMonoid(2));
+  cong.set_report(true);
+  REQUIRE(cong.nr_classes() == 1);
+}
