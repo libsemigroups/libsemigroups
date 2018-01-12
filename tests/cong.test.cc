@@ -899,9 +899,11 @@ std::vector<relation_t> GodelleTypeBMonoid(size_t l) {
 
   std::vector<size_t> s;
   std::vector<size_t> e;
-  for (size_t i = 0; i <= l; ++i) {
+  for (size_t i = 0; i < l; ++i) {
     s.push_back(i);
-    e.push_back(i + l + 1);
+  }
+  for (size_t i = l; i < 2 * l + 1; ++i) {
+    e.push_back(i);
   }
   size_t id = 2 * l + 1;
 
@@ -962,9 +964,18 @@ std::vector<relation_t> GodelleTypeBMonoid(size_t l) {
   return rels;
 }
 
-TEST_CASE("Congruence 29: Renner monoid type D4, q = 1",
+TEST_CASE("Congruence 29: Renner monoid type D2, q = 1",
           "[congruence][fpsemigroup][29]") {
   Congruence cong("twosided", 6, {}, GodelleTypeBMonoid(2));
   cong.set_report(true);
-  REQUIRE(cong.nr_classes() == 1);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 57);
 }
+
+/*TEST_CASE("Congruence 30: Renner monoid type D3, q = 1",
+          "[congruence][fpsemigroup][30]") {
+  Congruence cong("twosided", 8, {}, GodelleTypeBMonoid(3));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 57);
+}*/
