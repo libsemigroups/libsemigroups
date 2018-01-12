@@ -4,14 +4,14 @@
 
 To run `lldb` after switching to autohell we have to do 
 
-    ./configure --enable-debug ; make check-am 
+    ./configure --enable-debug && make check-am 
     libtool --mode=execute lldb lstest
 
 because of the way the executable is linked. `lstest` is the name of the
 check program produced by `make check`. Similarly to run valgrind you have
 to do:
 
-    ./configure --enable-debug ; make check-am 
+    ./configure --enable-debug && make check-am 
     libtool --mode=execute valgrind --leak-check=full ./lstest -d yes [quick],[standard] 2>&1 | tee --append valgrind.txt
 
 ## Adding new test cases
@@ -59,11 +59,11 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
 6. Run the benchmarks and check there is no performance regression:
 
         git checkout <last_release_version>
-        make uninstall ; make distclean
+        make uninstall && make distclean
         benchmark/benchmark.sh
 
         git checkout <stable-x.y or master>
-        make uninstall ; make distclean
+        make uninstall && make distclean
         benchmark/benchmark.sh
 
         benchmark/compare_bench.py <json_file1> <json_file2> 
@@ -83,15 +83,15 @@ a ***non-bugfix release*** is one of the form `x.y.z -> x+1.y.z` or `x.y+1.z`.
     
 11. Tag the release:
 
-        git tag vx.y.z ; git push origin --tags
+        git tag vx.y.z && git push origin --tags
     
 12. Update gh-pages:
 
-        make doc ; cp -r html/* gh-pages
+        make doc && cp -r html/* gh-pages
     
 13. Push to gh-pages
 
-        cd gh-pages ; git add * ; git commit -am "Version x.y.z" ; git push 
+        cd gh-pages && git add * && git commit -am "Version x.y.z" && git push 
 
 14. Make a release archive (note that `make distcheck` is currently done by
     travis so no need to do it again here):
