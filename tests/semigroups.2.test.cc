@@ -31,6 +31,9 @@ static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
   return out;
 }
 
+#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+
 static inline void test_idempotent(Semigroup<>& S, Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
   Element* y = x->really_copy();
@@ -40,6 +43,7 @@ static inline void test_idempotent(Semigroup<>& S, Element* x) {
   y->really_delete();
   delete y;
 }
+
 TEST_CASE("Semigroup 26: cbegin_idempotents/cend, is_idempotent [2 threads]",
           "[standard][semigroup][finite][multithread][26]") {
   std::vector<Element*> gens
@@ -69,6 +73,8 @@ TEST_CASE("Semigroup 26: cbegin_idempotents/cend, is_idempotent [2 threads]",
 
   really_delete_cont(gens);
 }
+
+#endif
 
 TEST_CASE("Semigroup 27: is_done, is_begun", "[quick][semigroup][finite][27]") {
   std::vector<Element*> gens
