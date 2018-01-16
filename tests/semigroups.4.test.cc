@@ -24,6 +24,9 @@
 
 using namespace libsemigroups;
 
+#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+
 TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
           "[quick][semigroup][finite][72]") {
   std::vector<BMat8> gens
@@ -382,3 +385,4 @@ TEST_CASE("Semigroup 77: iterators BMat8", "[quick][semigroup][finite][77]") {
   }
   REQUIRE(pos == 0);
 }
+#endif

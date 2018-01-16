@@ -33,6 +33,11 @@
 #include "recvec.h"
 #include "report.h"
 
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#include <sparsehash/dense_hash_map>
+#endif
+
 #if (defined(__GNUC__) && __GNUC__ < 5 \
      && !(defined(__clang__) || defined(__INTEL_COMPILER)))
 #pragma message( \
@@ -59,7 +64,6 @@ namespace libsemigroups {
   //! When the enumeration of the semigroup is complete, the size, the left and
   //! right Cayley graphs are determined, and a confluent terminating
   //! presentation for the semigroup is known.
-  // TODO add index_t as template param
   template <typename TElementType  = Element*,
             typename TElementHash  = std::hash<TElementType>,
             typename TElementEqual = std::equal_to<TElementType>>
@@ -175,6 +179,11 @@ namespace libsemigroups {
       _id          = one(_gens[0]);
       _lenindex.push_back(0);
 
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+      _map.set_empty_key(this->empty_key(_id));
+#endif
+
       // add the generators
       for (letter_t i = 0; i < _nrgens; i++) {
         auto it = _map.find(_gens[i]);
@@ -254,7 +263,14 @@ namespace libsemigroups {
       _nr_products = 0;
 #endif
       _elements.reserve(_nr);
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+      _map.set_empty_key(this->empty_key(_id));
+      _map.resize(_nr);
+#else
       _map.reserve(_nr);
+#endif
       _tmp_product = copy(S._id);
 
       element_index_t i = 0;
@@ -323,9 +339,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
 #endif
-
       _elements.reserve(S._nr);
-      _map.reserve(S._nr);
 
       // the following are required for assignment to specific positions in
       // add_generators
@@ -359,6 +373,14 @@ namespace libsemigroups {
 
       _id          = one(coll->at(0));
       _tmp_product = copy(S._id, deg_plus);
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+      _map.set_empty_key(this->empty_key(_id));
+      _map.resize(S._nr);
+#else
+      _map.reserve(S._nr);
+#endif
 
       element_index_t i = 0;
       for (TElementType x : S._elements) {
@@ -736,7 +758,14 @@ namespace libsemigroups {
       _enumerate_order.reserve(nn);
       _left.reserve(nn);
       _length.reserve(nn);
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+      _map.resize(nn);
+#else
       _map.reserve(nn);
+#endif
+
       _prefix.reserve(nn);
       _reduced.reserve(nn);
       _right.reserve(nn);
@@ -1925,6 +1954,14 @@ namespace libsemigroups {
       return x < y;
     }
 
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+    inline TElementType empty_key(TElementType x) const {
+      (void) x;
+      return TElementType(-1);
+    }
+#endif
+
     // Expand the data structures in the semigroup with space for nr elements
     void inline expand(index_t nr) {
       _left.add_rows(nr);
@@ -2237,11 +2274,20 @@ namespace libsemigroups {
     std::vector<index_t>            _length;
     std::vector<enumerate_index_t>  _lenindex;
     std::vector<element_index_t>    _letter_to_pos;
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+    google::dense_hash_map<TElementType,
+                           element_index_t,
+                           TElementHash,
+                           TElementEqual>
+        _map;
+#else
     std::unordered_map<TElementType,
                        element_index_t,
                        TElementHash,
                        TElementEqual>
-                                 _map;
+        _map;
+#endif
     size_t                       _max_threads;
     std::mutex                   _mtx;
     index_t                      _nr;
@@ -2296,6 +2342,10 @@ namespace libsemigroups {
   template <> size_t Semigroup<>::degree(Element* x) const;
   template <> size_t Semigroup<>::complexity(Element* x) const;
   template <> bool Semigroup<>::cmp(Element* x, Element* y) const;
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+  template <> Element* Semigroup<>::empty_key(Element* x) const;
+#endif
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_

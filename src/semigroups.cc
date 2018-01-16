@@ -56,4 +56,11 @@ namespace libsemigroups {
   template <> bool Semigroup<>::cmp(Element* x, Element* y) const {
     return *x < *y;
   }
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+  template <> Element* Semigroup<>::empty_key(Element* x) const {
+    return x->empty_key();
+  }
+#endif
 }  // namespace libsemigroups
