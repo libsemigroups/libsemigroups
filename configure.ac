@@ -35,6 +35,10 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h sys/time.h unistd.h pthread.h])
+AC_CHECK_HEADER([sparsehash/dense_hash_map], 
+                [AC_DEFINE([HAVE_DENSEHASHMAP], 
+                           [1], 
+                           [define if google dense_hash_map is available])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -72,6 +76,18 @@ AC_ARG_ENABLE([stats],
     )
 AC_MSG_CHECKING([whether to enable stats mode])
 AC_MSG_RESULT([$enable_stats])
+
+# Check if we should use google's dense_hash_map
+AC_ARG_ENABLE([densehashmap],
+    [AS_HELP_STRING([--enable-densehashmap], 
+                    [enable google's dense_hash_map])],
+                    [AC_DEFINE([USE_DENSEHASHMAP], 
+                               [1], 
+                               [define if building with google's dense_hash_map])],
+    [enable_densehashmap=no])
+
+AC_MSG_CHECKING([whether to use google's dense_hash_map])
+AC_MSG_RESULT([$enable_densehashmap])
 
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()

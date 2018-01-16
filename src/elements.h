@@ -189,6 +189,11 @@ namespace libsemigroups {
       redefine(x, y);
     }
 
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+    virtual Element* empty_key() const = 0;
+#endif
+
    protected:
     //! Calculate and cache a hash value.
     //!
@@ -354,6 +359,14 @@ namespace libsemigroups {
     void really_delete() override {
       delete _vector;
     }
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+    Element* empty_key() const override {
+      return new TSubclass(new std::vector<TValueType>(
+          {std::numeric_limits<TValueType>::max()}));
+    }
+#endif
 
     //! Returns an iterator.
     //!
@@ -612,9 +625,9 @@ namespace libsemigroups {
 
   //! Template class for partial permutations.
   //!
-  //! The value of the template parameter \p T can be used to reduce the !
-  //! amount ! of memory required by instances of this class; see
-  //! PartialTransformation ! and ElementWithVectorData for more details.
+  //! The value of the template parameter \p T can be used to reduce the
+  //! amount of memory required by instances of this class; see
+  //! PartialTransformation and ElementWithVectorData for more details.
   //!
   //! A *partial permutation* \f$f\f$ is just an injective partial
   //! transformation, which is stored as a vector of the images of
@@ -987,9 +1000,9 @@ namespace libsemigroups {
           _degree(sqrt(matrix->size())),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
-      // FIXME is the next assert ok?
-      LIBSEMIGROUPS_ASSERT(!matrix->empty());
-      LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
+      // FIXME uncomment??
+      // LIBSEMIGROUPS_ASSERT(!matrix->empty());
+      // LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
     }
 
     //! A constructor.

@@ -179,6 +179,10 @@ namespace libsemigroups {
                   Element const* y,
                   size_t const&  tid = 0) override;
 
+    Element* empty_key() const override {
+      return new RWSE(_rws, new rws_word_t("supercalifragilisticexpialidocious"));
+    }
+
     //! Returns a pointer to the rws_word_t used to create \c this.
     rws_word_t const* get_rws_word() const {
       return _rws_word;
