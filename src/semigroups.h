@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "elements.h"
+#include "eltcont.h"
 #include "libsemigroups-debug.h"
 #include "recvec.h"
 #include "report.h"
@@ -67,7 +68,7 @@ namespace libsemigroups {
   template <typename TElementType  = Element*,
             typename TElementHash  = std::hash<TElementType>,
             typename TElementEqual = std::equal_to<TElementType>>
-  class Semigroup {
+  class Semigroup : public ElementContainer<TElementType> {
     // Type used for indexing elements in a Semigroup, use this when not
     // specifically referring to a position in _elements. It should be possible
     // to change this type and everything will just work, provided the size of
@@ -168,15 +169,15 @@ namespace libsemigroups {
       // slow (~50ms to ~10s!!!!)
       // reserve(_nrgens);
 
-      _degree = degree((*gens)[0]);
+      _degree = this->element_degree((*gens)[0]);
 
       for (TElementType x : *gens) {
-        LIBSEMIGROUPS_ASSERT(degree(x) == _degree);
-        _gens.push_back(copy(x));
+        LIBSEMIGROUPS_ASSERT(this->element_degree(x) == _degree);
+        _gens.push_back(this->copy(x));
       }
 
-      _tmp_product = one(_gens[0]);
-      _id          = one(_gens[0]);
+      _tmp_product = this->one(_gens[0]);
+      _id          = this->one(_gens[0]);
       _lenindex.push_back(0);
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
@@ -237,7 +238,7 @@ namespace libsemigroups {
           _first(S._first),
           _found_one(S._found_one),
           _gens(),
-          _id(copy(S._id)),
+          _id(this->copy(S._id)),
           _idempotents(S._idempotents),
           _idempotents_found(S._idempotents_found),
           _is_idempotent(S._is_idempotent),
@@ -271,11 +272,11 @@ namespace libsemigroups {
 #else
       _map.reserve(_nr);
 #endif
-      _tmp_product = copy(S._id);
+      _tmp_product = this->copy(S._id);
 
       element_index_t i = 0;
       for (TElementType x : S._elements) {
-        TElementType y = copy(x);
+        TElementType y = this->copy(x);
         _elements.push_back(y);
         _map.insert(std::make_pair(y, i++));
       }
@@ -329,11 +330,12 @@ namespace libsemigroups {
           _sorted(),
           _wordlen(0) {
       LIBSEMIGROUPS_ASSERT(!coll->empty());
-      LIBSEMIGROUPS_ASSERT(degree(coll->at(0)) >= S.degree());
+      LIBSEMIGROUPS_ASSERT(this->element_degree(coll->at(0)) >= S.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
       for (TElementType x : *coll) {
-        LIBSEMIGROUPS_ASSERT(degree(x) == degree((*coll)[0]));
+        LIBSEMIGROUPS_ASSERT(this->element_degree(x)
+                             == this->element_degree((*coll)[0]));
       }
 #endif
 #ifdef LIBSEMIGROUPS_STATS
@@ -349,7 +351,7 @@ namespace libsemigroups {
       _prefix.resize(S._nr, 0);
       _suffix.resize(S._nr, 0);
 
-      size_t deg_plus = degree(coll->at(0)) - S.degree();
+      size_t deg_plus = this->element_degree(coll->at(0)) - S.degree();
 
       if (deg_plus != 0) {
         _degree += deg_plus;
@@ -371,8 +373,8 @@ namespace libsemigroups {
         _length[_enumerate_order[i]] = 1;
       }
 
-      _id          = one(coll->at(0));
-      _tmp_product = copy(S._id, deg_plus);
+      _id          = this->one(coll->at(0));
+      _tmp_product = this->copy(S._id, deg_plus);
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
@@ -384,7 +386,7 @@ namespace libsemigroups {
 
       element_index_t i = 0;
       for (TElementType x : S._elements) {
-        TElementType y = copy(x, deg_plus);
+        TElementType y = this->copy(x, deg_plus);
         _elements.push_back(y);
         _map.insert(std::make_pair(y, i));
         is_one(y, i++);
@@ -396,15 +398,15 @@ namespace libsemigroups {
    public:
     //! A default destructor.
     ~Semigroup() {
-      free(_tmp_product);
-      free(_id);
+      this->free(_tmp_product);
+      this->free(_id);
 
       // delete those generators not in _elements, i.e. the duplicate ones
       for (auto& x : _duplicate_gens) {
-        free(_gens[x.first]);
+        this->free(_gens[x.first]);
       }
       for (TElementType x : _elements) {
-        free(x);
+        this->free(x);
       }
     }
 
@@ -444,13 +446,14 @@ namespace libsemigroups {
     TElementType word_to_element(word_t const& w) const {
       LIBSEMIGROUPS_ASSERT(w.size() > 0);
       if (is_done() || w.size() == 1) {
-        return copy(_elements[word_to_pos(w)]);
+        return this->copy(_elements[word_to_pos(w)]);
       }
-      TElementType out = multiply(copy(_tmp_product), _gens[w[0]], _gens[w[1]]);
+      TElementType out
+          = this->multiply(this->copy(_tmp_product), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); it++) {
         LIBSEMIGROUPS_ASSERT(*it < nrgens());
-        swap(_tmp_product, out);
-        out = multiply(out, _tmp_product, _gens[*it]);
+        this->swap(_tmp_product, out);
+        out = this->multiply(out, _tmp_product, _gens[*it]);
       }
       return out;
     }
@@ -516,7 +519,7 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
     element_index_t current_position(TElementType x) const {
-      if (degree(x) != _degree) {
+      if (this->element_degree(x) != _degree) {
         return UNDEFINED;
       }
 
@@ -670,11 +673,11 @@ namespace libsemigroups {
     //! transformations together.
     element_index_t fast_product(element_index_t i, element_index_t j) const {
       LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
-      if (length_const(i) < 2 * complexity(_tmp_product)
-          || length_const(j) < 2 * complexity(_tmp_product)) {
+      if (length_const(i) < 2 * this->complexity(_tmp_product)
+          || length_const(j) < 2 * this->complexity(_tmp_product)) {
         return product_by_reduction(i, j);
       } else {
-        _tmp_product = multiply(_tmp_product, _elements[i], _elements[j]);
+        _tmp_product = this->multiply(_tmp_product, _elements[i], _elements[j]);
         return _map.find(_tmp_product)->second;
       }
     }
@@ -799,7 +802,7 @@ namespace libsemigroups {
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
     element_index_t position(TElementType x) {
-      if (degree(x) != _degree) {
+      if (this->element_degree(x) != _degree) {
         return UNDEFINED;
       }
 
@@ -973,8 +976,7 @@ namespace libsemigroups {
     //!
     //! The key difference between this method and
     //! Semigroup::minimal_factorisation(element_index_t pos), is that the
-    //! resulting
-    //! factorisation may not be minimal.
+    //! resulting factorisation may not be minimal.
     word_t* factorisation(element_index_t pos) {
       return minimal_factorisation(pos);
     }
@@ -985,12 +987,6 @@ namespace libsemigroups {
     //! Semigroup::minimal_factorisation(TElementType x), is that the
     //! resulting factorisation may not be minimal.
     word_t* factorisation(TElementType x) {
-      // FIXME remove this
-      /* if (x->get_type() == Element::elm_t::RWSE) {
-        return const_cast<word_t*>(RWS::rws_word_to_word(
-            (reinterpret_cast<RWSE const*>(x))->get_rws_word()));
-      }
-      LIBSEMIGROUPS_ASSERT(x->get_type() == Element::elm_t::NOT_RWSE);*/
       return minimal_factorisation(x);
     }
 
@@ -1130,7 +1126,8 @@ namespace libsemigroups {
         while (_pos < _lenindex[1]) {
           element_index_t i = _enumerate_order[_pos];
           for (letter_t j = 0; j != _nrgens; ++j) {
-            _tmp_product = multiply(_tmp_product, _elements[i], _gens[j], tid);
+            _tmp_product
+                = this->multiply(_tmp_product, _elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
             _nr_products++;
 #endif
@@ -1141,7 +1138,7 @@ namespace libsemigroups {
               _nrrules++;
             } else {
               is_one(_tmp_product, _nr);
-              _elements.push_back(copy(_tmp_product));
+              _elements.push_back(this->copy(_tmp_product));
               _first.push_back(_first[i]);
               _final.push_back(j);
               _enumerate_order.push_back(_nr);
@@ -1189,7 +1186,7 @@ namespace libsemigroups {
               }
             } else {
               _tmp_product
-                  = multiply(_tmp_product, _elements[i], _gens[j], tid);
+                  = this->multiply(_tmp_product, _elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
               _nr_products++;
 #endif
@@ -1200,7 +1197,7 @@ namespace libsemigroups {
                 _nrrules++;
               } else {
                 is_one(_tmp_product, _nr);
-                _elements.push_back(copy(_tmp_product));
+                _elements.push_back(this->copy(_tmp_product));
                 _first.push_back(b);
                 _final.push_back(j);
                 _length.push_back(_wordlen + 2);
@@ -1298,7 +1295,7 @@ namespace libsemigroups {
       Timer  timer;
       size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
 
-      LIBSEMIGROUPS_ASSERT(degree() == degree(*coll->begin()));
+      LIBSEMIGROUPS_ASSERT(degree() == this->element_degree(*coll->begin()));
 
       // get some parameters from the old semigroup
       letter_t old_nrgens  = _nrgens;
@@ -1319,10 +1316,10 @@ namespace libsemigroups {
 
       // add the new generators to new _gens, _elements, and _enumerate_order
       for (TElementType x : *coll) {
-        LIBSEMIGROUPS_ASSERT(degree(x) == degree());
+        LIBSEMIGROUPS_ASSERT(this->element_degree(x) == degree());
         auto it = _map.find(x);
         if (it == _map.end()) {  // new generator
-          _gens.push_back(copy(x));
+          _gens.push_back(this->copy(x));
           _elements.push_back(_gens.back());
           _map.insert(std::make_pair(_gens.back(), _nr));
 
@@ -1338,7 +1335,7 @@ namespace libsemigroups {
           _length.push_back(1);
           _nr++;
         } else if (_letter_to_pos[_first[it->second]] == it->second) {
-          _gens.push_back(copy(x));
+          _gens.push_back(this->copy(x));
           // x is one of the existing generators
           _duplicate_gens.push_back(
               std::make_pair(_gens.size() - 1, _first[it->second]));
@@ -1914,54 +1911,6 @@ namespace libsemigroups {
     }
 
    private:
-    inline TElementType multiply(TElementType xy,
-                                 TElementType x,
-                                 TElementType y,
-                                 size_t       tid = 0) const {
-      (void) xy;
-      (void) tid;
-      return x * y;
-    }
-
-    inline TElementType copy(TElementType x, size_t increase_deg_by = 0) const {
-      (void) increase_deg_by;
-      return x;
-    }
-
-    inline void free(TElementType x) const {
-      (void) x;
-    }
-
-    inline void swap(TElementType x, TElementType y) const {
-      std::swap(x, y);
-    }
-
-    inline TElementType one(TElementType x) const {
-      return x.one();
-    }
-
-    inline size_t degree(TElementType x) const {
-      (void) x;
-      return 0;
-    }
-
-    inline size_t complexity(TElementType x) const {
-      (void) x;
-      return 1;
-    }
-
-    inline bool cmp(TElementType x, TElementType y) const {
-      return x < y;
-    }
-
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    inline TElementType empty_key(TElementType x) const {
-      (void) x;
-      return TElementType(-1);
-    }
-#endif
-
     // Expand the data structures in the semigroup with space for nr elements
     void inline expand(index_t nr) {
       _left.add_rows(nr);
@@ -1989,7 +1938,7 @@ namespace libsemigroups {
         // The degree of everything in _elements has already been increased (if
         // it needs to be at all), and so we do not need to increase the degree
         // in the copy below.
-        _gens[x.first] = copy(_elements[_letter_to_pos[x.second]]);
+        _gens[x.first] = this->copy(_elements[_letter_to_pos[x.second]]);
         seen[x.first]  = true;
       }
       // the non-duplicate gens are already in _elements, so don't really copy
@@ -2017,11 +1966,12 @@ namespace libsemigroups {
           _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
         }
       } else {
-        _tmp_product = multiply(_tmp_product, _elements[i], _gens[j], tid);
-        auto it      = _map.find(_tmp_product);
+        _tmp_product
+            = this->multiply(_tmp_product, _elements[i], _gens[j], tid);
+        auto it = _map.find(_tmp_product);
         if (it == _map.end()) {  // it's new!
           is_one(_tmp_product, _nr);
-          _elements.push_back(copy(_tmp_product));
+          _elements.push_back(this->copy(_tmp_product));
           _first.push_back(b);
           _final.push_back(j);
           _length.push_back(_wordlen + 2);
@@ -2079,7 +2029,7 @@ namespace libsemigroups {
           _sorted.end(),
           [this](std::pair<TElementType, element_index_t> const& x,
                  std::pair<TElementType, element_index_t> const& y) -> bool {
-            return cmp(x.first, y.first);
+            return this->cmp(x.first, y.first);
           });
 
       // Invert the permutation in _sorted[*].second
@@ -2110,7 +2060,7 @@ namespace libsemigroups {
       // Find the threshold beyond which it is quicker to simply multiply
       // elements rather than follow a path in the Cayley graph. This is the
       // enumerate_index_t i for which length(i) >= 2 * complexity.
-      size_t comp = complexity(_tmp_product);
+      size_t comp = this->complexity(_tmp_product);
       LIBSEMIGROUPS_ASSERT(comp > 0);
       // Previous assertion because otherwise the next line doesn't work as
       // intended
@@ -2240,20 +2190,21 @@ namespace libsemigroups {
       }
 
       // Cannot use _tmp_product itself since there are multiple threads here!
-      TElementType tmp_product = copy(_tmp_product);
+      TElementType tmp_product = this->copy(_tmp_product);
       size_t       tid = glob_reporter.thread_id(std::this_thread::get_id());
 
       for (; pos < last; pos++) {
         element_index_t k = _enumerate_order[pos];
         if (!_is_idempotent[k]) {
-          tmp_product = multiply(tmp_product, _elements[k], _elements[k], tid);
+          tmp_product
+              = this->multiply(tmp_product, _elements[k], _elements[k], tid);
           if (TElementEqual()(tmp_product, _elements[k])) {
             idempotents.push_back(idempotent_value_t(_elements[k], k));
             _is_idempotent[k] = true;
           }
         }
       }
-      free(tmp_product);
+      this->free(tmp_product);
       REPORT("elapsed time = " << timer);
     }
 
@@ -2330,22 +2281,6 @@ namespace libsemigroups {
   typename Semigroup<TElementType, TElementHash, TElementEqual>::index_t const
       Semigroup<TElementType, TElementHash, TElementEqual>::LIMIT_MAX
       = std::numeric_limits<index_t>::max();
-
-  template <>
-  Element*
-  Semigroup<>::multiply(Element* xy, Element* x, Element* y, size_t tid) const;
-  template <>
-  Element* Semigroup<>::copy(Element* x, size_t increase_deg_by) const;
-  template <> void Semigroup<>::free(Element* x) const;
-  template <> void Semigroup<>::swap(Element* x, Element* y) const;
-  template <> Element* Semigroup<>::one(Element* x) const;
-  template <> size_t Semigroup<>::degree(Element* x) const;
-  template <> size_t Semigroup<>::complexity(Element* x) const;
-  template <> bool Semigroup<>::cmp(Element* x, Element* y) const;
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-  template <> Element* Semigroup<>::empty_key(Element* x) const;
-#endif
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_

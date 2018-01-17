@@ -45,7 +45,7 @@ TEST_CASE("P 01: congruence on finite semigroup",
 
   std::vector<relation_t> extra(
       {relation_t({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
-  Congruence cong("twosided", &S, extra);
+  Congruence<> cong("twosided", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -76,7 +76,7 @@ TEST_CASE("P 02: left congruence on finite semigroup",
 
   std::vector<relation_t> extra(
       {relation_t({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
-  Congruence cong("left", &S, extra);
+  Congruence<> cong("left", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -106,7 +106,7 @@ TEST_CASE("P 03: right congruence on finite semigroup",
 
   std::vector<relation_t> extra(
       {relation_t({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
-  Congruence cong("right", &S, extra);
+  Congruence<> cong("right", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -136,7 +136,7 @@ TEST_CASE("P 04: trivial congruence on finite semigroup",
   // REQUIRE(S.nrrules(false) == 20);
 
   std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  Congruence<>            cong("twosided", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -176,7 +176,7 @@ TEST_CASE("P 05: trivial left congruence on finite semigroup",
   // REQUIRE(S.nrrules(false) == 20);
 
   std::vector<relation_t> extra({});
-  Congruence              cong("left", &S, extra);
+  Congruence<>            cong("left", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -216,7 +216,7 @@ TEST_CASE("P 06: trivial right congruence on finite semigroup",
   // REQUIRE(S.nrrules(false) == 20);
 
   std::vector<relation_t> extra({});
-  Congruence              cong("right", &S, extra);
+  Congruence<>            cong("right", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -256,7 +256,7 @@ TEST_CASE("P 07: universal congruence on finite semigroup",
   // REQUIRE(S.nrrules(false) == 32);
 
   std::vector<relation_t> extra({relation_t({1}, {0, 0, 0, 1, 0})});
-  Congruence              cong("twosided", &S, extra);
+  Congruence<>            cong("twosided", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -299,7 +299,7 @@ TEST_CASE("P 08: congruence on big finite semigroup",
 
   std::vector<relation_t> extra(
       {relation_t({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
-  Congruence cong("twosided", &S, extra);
+  Congruence<> cong("twosided", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -346,7 +346,7 @@ TEST_CASE("P 09: congruence on big finite semigroup",
 
   std::vector<relation_t> extra(
       {relation_t({1, 3, 0, 1, 2, 2, 0, 2}, {1, 0, 0, 1, 3, 1})});
-  Congruence cong("twosided", &S, extra);
+  Congruence<> cong("twosided", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 
@@ -389,7 +389,7 @@ TEST_CASE("P 10: left congruence on big finite semigroup",
   // REQUIRE(S.nrrules(false) == 2460);
   std::vector<relation_t> extra(
       {relation_t({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
-  Congruence cong("left", &S, extra);
+  Congruence<> cong("left", &S, extra);
   cong.set_report(P_REPORT);
   cong.force_p();
 

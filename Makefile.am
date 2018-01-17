@@ -3,8 +3,14 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
-AM_CXXFLAGS += -g -O3 -march=native -DNDEBUG
+AM_CXXFLAGS += -g -O3 -march=native 
 AM_LDFLAGS  =  -no-undefined
+
+if LIBSEMIGROUPS_DEBUG
+AM_CPPFLAGS = -DDEBUG
+else
+AM_CPPFLAGS = -DNDEBUG
+endif
 
 ACLOCAL_AMFLAGS	= -I m4
 
@@ -25,32 +31,32 @@ ACLOCAL_AMFLAGS	= -I m4
 ## lines of code, and assertions. 
 
 ## libsemigroups headers
-pkginclude_HEADERS =  src/libsemigroups-config.h
-pkginclude_HEADERS += src/libsemigroups-debug.h
-pkginclude_HEADERS += src/blocks.h
-pkginclude_HEADERS += src/bmat.h
+pkginclude_HEADERS =  src/libsemigroups-config.h 
+pkginclude_HEADERS += src/libsemigroups-debug.h 
+pkginclude_HEADERS += src/blocks.h     
+pkginclude_HEADERS += src/bmat.h     
 pkginclude_HEADERS += src/cong.h
-pkginclude_HEADERS += src/elements.h
-pkginclude_HEADERS += src/partition.h
+pkginclude_HEADERS += src/elements.h   
+pkginclude_HEADERS += src/eltcont.h
+pkginclude_HEADERS += src/partition.h 
 pkginclude_HEADERS += src/recvec.h
-pkginclude_HEADERS += src/report.h
-pkginclude_HEADERS += src/rws.h
+pkginclude_HEADERS += src/report.h    
+pkginclude_HEADERS += src/rws.h       
 pkginclude_HEADERS += src/rwse.h
-pkginclude_HEADERS += src/semigroups.h
-pkginclude_HEADERS += src/semiring.h
-pkginclude_HEADERS += src/timer.h
-pkginclude_HEADERS += src/uf.h
+pkginclude_HEADERS += src/semigroups.h 
+pkginclude_HEADERS += src/semiring.h  
+pkginclude_HEADERS += src/timer.h 
+pkginclude_HEADERS += src/uf.h 
 
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_la_SOURCES =  src/blocks.cc
+libsemigroups_la_SOURCES =  src/blocks.cc 
 libsemigroups_la_SOURCES += src/bmat.cc
-libsemigroups_la_SOURCES += src/cong.cc
-libsemigroups_la_SOURCES += src/elements.cc
-libsemigroups_la_SOURCES += src/semigroups.cc
-libsemigroups_la_SOURCES += src/rws.cc
-libsemigroups_la_SOURCES += src/rwse.cc
+libsemigroups_la_SOURCES += src/elements.cc  
+libsemigroups_la_SOURCES += src/report.cc 
+libsemigroups_la_SOURCES += src/rws.cc        
+libsemigroups_la_SOURCES += src/rwse.cc   
 libsemigroups_la_SOURCES += src/uf.cc
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
@@ -60,19 +66,7 @@ libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
 libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 ## Extra files for the distribution
-
-LINT_FORMAT_FILES_EXTRA =  src/cong/kbfp.h
-LINT_FORMAT_FILES_EXTRA += src/cong/kbp.h
-LINT_FORMAT_FILES_EXTRA += src/cong/p.h
-LINT_FORMAT_FILES_EXTRA += src/cong/tc.h
-
-LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc
-LINT_FORMAT_FILES_EXTRA += src/cong/kbp.cc
-LINT_FORMAT_FILES_EXTRA += src/cong/p.cc
-LINT_FORMAT_FILES_EXTRA += src/cong/tc.cc
-
-EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
-EXTRA_DIST += tests/catch.hpp
+EXTRA_DIST =  tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION
 
@@ -165,14 +159,12 @@ check-all: check
 format: 
 	@echo "Running clang-format . . .";  
 	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@clang-format -i $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 
-	@clang-format -i $(BENCHMARK_LINT_FORMAT)
+	@clang-format -i $(lstest_SOURCES) $(BENCHMARK_LINT_FORMAT)
 
 lint: 
 	@echo "Running cpplint . . .";  
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES) 
-	@cpplint $(LINT_FORMAT_FILES_EXTRA) $(lstest_SOURCES) 	
-	@cpplint $(BENCHMARK_LINT_FORMAT)
+	@cpplint $(lstest_SOURCES) $(BENCHMARK_LINT_FORMAT)
 	
 doc:
 	@echo "Generating documentation . . ."; \
