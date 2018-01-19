@@ -146,6 +146,10 @@ TEST_CASE("BMat 05: call operator", "[quick][bmat][05]") {
 }
 
 TEST_CASE("BMat8 06: operator<<", "[quick][bmat][06]") {
-  std::ostringstream os;
-  os << BMat8::random();  // Does not do anything visible
+  std::ostringstream oss;
+  oss << BMat8::random();  // Does not do anything visible
+
+  std::stringbuf buff;
+  std::ostream os(&buff);
+  os << BMat8::random();   // Also does not do anything visible
 }

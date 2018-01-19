@@ -31,13 +31,15 @@
 
 namespace libsemigroups {
 
-  //! Class for fast boolean matrices of dimension up to 8x8
+  //! Class for fast boolean matrices of dimension up to 8 x 8
   //!
   //! The methods for these small matrices over the boolean semiring
   //! are more optimised than the generic methods for boolean matrices.
-  //! Note that all BMat8 are represented internally as an 8x8 matrix;
+  //! Note that all BMat8 are represented internally as an 8 x 8 matrix;
   //! any entries not defined by the user are taken to be 0. This does
   //! not affect the results of any calculations.
+  //!
+  //! BMat8 is a trivial class.
   class BMat8 {
    public:
     //! A default constructor.
@@ -47,8 +49,8 @@ namespace libsemigroups {
 
     //! A constructor.
     //!
-    //! The 8 8-bit chunks of the binary representation of \p mat
-    //! form the rows of the matrix initialized by this constructor.
+    //! This constructor initializes a BMat8 to have rows equal to the
+    //! 8 chunks, of 8 bits each, of the binary representation of \p mat.
     explicit BMat8(uint64_t mat) : _data(mat) {}
 
     //! A constructor.
@@ -105,7 +107,7 @@ namespace libsemigroups {
     //! Returns the entry in the (\p i, \p j)th position.
     //!
     //! This method returns the entry in the (\p i, \p j)th position.
-    //! Note that since all matrices are internally represented as 8x8, it
+    //! Note that since all matrices are internally represented as 8 x 8, it
     //! is possible to access entries that you might not believe exist.
     bool operator()(size_t i, size_t j) const {
       LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
@@ -115,14 +117,15 @@ namespace libsemigroups {
 
     //! Returns the integer representation of \c this.
     //!
-    //! Returns an unsigned integer obtained by interpreting an 8x8
+    //! Returns an unsigned integer obtained by interpreting an 8 x 8
     //! BMat8 as a sequence of 64 bits (reading rows left to right,
-    //! from top to bottom)and then this sequence as an unsigned int.
+    //! from top to bottom) and then this sequence as an unsigned int.
     inline uint64_t to_int() const { return _data; }
 
     //! Returns the transpose of \c this
     //!
     //! Returns the standard matrix transpose of a BMat8.
+    //! Uses the technique found in Knuth AoCP Vol. 4 Fasc. 1a, p. 15.
     inline BMat8 transpose() const {
       uint64_t x = _data;
       uint64_t y = (x ^ (x >> 7)) & 0xAA00AA00AA00AA;
@@ -137,8 +140,9 @@ namespace libsemigroups {
     //! Returns the matrix product of \c this and \p that
     //!
     //! This method returns the standard matrix product (over the
-    //! boolean semiring) of two BMat8.
-    // https://stackoverflow.com/a/18448513
+    //! boolean semiring) of two BMat8 objects.
+    //! Uses the technique given <a href="https://stackoverflow.com/a/18448513">
+    //! here</a>.
     inline BMat8 operator*(BMat8 const &that) const {
       uint64_t y = that.transpose()._data;
       uint64_t data = 0;
@@ -162,14 +166,36 @@ namespace libsemigroups {
 
     //! Returns the identity BMat8
     //!
-    //! This method returns the 8x8 BMat8 with 1s on the main diagonal.
+    //! This method returns the 8 x 8 BMat8 with 1s on the main diagonal.
     inline BMat8 one() const { return BMat8(0x8040201008040201); }
 
     //! Insertion operator
     //!
-    //! This method allows BMat8s to be inserted into a stream.
+    //! This method allows BMat8 objects to be inserted into an ostringstream
+    friend std::ostringstream &operator<<(std::ostringstream &os,
+                                          BMat8 const &bm) {
+      uint64_t x = bm._data;
+      uint64_t pow = 1;
+      pow = pow << 63;
+      for (size_t i = 0; i < 8; ++i) {
+        for (size_t j = 0; j < 8; ++j) {
+          if (pow & x) {
+            os << "1";
+          } else {
+            os << "0";
+          }
+          x = x << 1;
+        }
+        os << "\n";
+      }
+      return os;
+    }
+
+    //! Insertion operator
+    //!
+    //! This method allows BMat8 objects to be inserted into a ostream.
     friend std::ostream &operator<<(std::ostream &os, BMat8 const &bm) {
-      os << bm.to_string();
+      os << std::to_string(bm);
       return os;
     }
 

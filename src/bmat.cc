@@ -45,8 +45,6 @@ namespace libsemigroups {
                                                  0x202020202020202,
                                                  0x101010101010101};
 
-  // BMat methods
-  //
   std::random_device                    BMat8::_rd;
   std::mt19937                          BMat8::_gen(_rd());
   std::uniform_int_distribution<size_t> BMat8::_dist(0, 0xffffffffffffffff);
@@ -67,25 +65,6 @@ namespace libsemigroups {
       }
       pow = pow >> (8 - mat.size());
     }
-  }
-
-  std::string BMat8::to_string() const {
-    std::string out;
-    uint64_t    bm  = _data;
-    uint64_t    pow = 1;
-    pow             = pow << 63;
-    for (size_t i = 0; i < 8; ++i) {
-      for (size_t j = 0; j < 8; ++j) {
-        if (pow & bm) {
-          out += "1";
-        } else {
-          out += "0";
-        }
-        bm = bm << 1;
-      }
-      out += "\n";
-    }
-    return out;
   }
 
   BMat8 BMat8::random() {
