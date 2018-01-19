@@ -110,9 +110,20 @@ namespace libsemigroups {
     //! Note that since all matrices are internally represented as 8 x 8, it
     //! is possible to access entries that you might not believe exist.
     bool operator()(size_t i, size_t j) const {
-      LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
-      LIBSEMIGROUPS_ASSERT(0 <= j && j < 8);
+      LIBSEMIGROUPS_ASSERT(i < 8);
+      LIBSEMIGROUPS_ASSERT(j < 8);
       return (_data << (8 * i + j)) >> 63;
+    }
+
+    //! Sets the (\p i, \p j)th position to \p val.
+    //!
+    //! This method sets the (\p i, \p j)th entry of \c this to \p val.
+    //! Uses the bit twiddle for setting bits found
+    //! <a href=http://graphics.stanford.edu/~seander/bithacks>here</a>.
+    inline void set(size_t i, size_t j, bool val) {
+      LIBSEMIGROUPS_ASSERT(i < 8);
+      LIBSEMIGROUPS_ASSERT(j < 8);
+      _data ^= (-val ^ _data) & BIT_MASK[8 * i + j];
     }
 
     //! Returns the integer representation of \c this.
@@ -223,6 +234,7 @@ namespace libsemigroups {
     static std::uniform_int_distribution<size_t> _dist;
     static std::vector<uint64_t> const ROW_MASK;
     static std::vector<uint64_t> const COL_MASK;
+    static std::vector<uint64_t> const BIT_MASK;
 
     // Cyclically shifts bits to left by 8m
     // https://stackoverflow.com/a/776523
