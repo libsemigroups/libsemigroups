@@ -17,7 +17,7 @@ matrix:
             - g++-5
     - env: TEST_SUITE=quick # Test with gcc-4
     # - env: TEST_SUITE=gap GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.0 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
-    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.0 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
+    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.1 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
       addons:
         apt:
           sources:
