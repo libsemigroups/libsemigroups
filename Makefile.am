@@ -35,7 +35,7 @@ pkginclude_HEADERS =  src/libsemigroups-config.h
 pkginclude_HEADERS += src/libsemigroups-debug.h
 pkginclude_HEADERS += src/libsemigroups-exception.h
 pkginclude_HEADERS += src/blocks.h
-pkginclude_HEADERS += src/bmat.h
+pkginclude_HEADERS += src/bmat8.h     
 pkginclude_HEADERS += src/cong.h
 pkginclude_HEADERS += src/elements.h   
 pkginclude_HEADERS += src/eltcont.h
@@ -85,7 +85,7 @@ EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION
 
-BENCHMARK_LINT_FORMAT =  benchmark/src/bmat.bm.cpp
+BENCHMARK_LINT_FORMAT =  benchmark/src/bmat8.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/cong.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/examples.h
 BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
@@ -102,7 +102,7 @@ check_PROGRAMS = lstest
 
 lstest_SOURCES =  tests/main.test.cc      
 lstest_SOURCES += tests/blocks.test.cc	  
-lstest_SOURCES += tests/bmat.test.cc
+lstest_SOURCES += tests/bmat8.test.cc
 lstest_SOURCES += tests/cong.test.cc	  
 lstest_SOURCES += tests/elements.test.cc  
 lstest_SOURCES += tests/kbp.test.cc       

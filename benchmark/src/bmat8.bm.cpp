@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some benchmarks for libsemigroups/src/bmat.*.
+// This file contains some benchmarks for libsemigroups/src/bmat8.*.
 
 #include <chrono>
 
 #include <benchmark/benchmark.h>
-#include <libsemigroups/bmat.h>
+#include <libsemigroups/bmat8.h>
 
 using namespace libsemigroups;
 

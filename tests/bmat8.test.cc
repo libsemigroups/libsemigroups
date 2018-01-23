@@ -17,13 +17,13 @@
 
 #include "catch.hpp"
 
-#include "../src/bmat.h"
+#include "../src/bmat8.h"
 
 #define BMAT_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("BMat 01: transpose", "[quick][bmat][01]") {
+TEST_CASE("BMat8 01: transpose", "[quick][bmat][01]") {
   BMat8 bm1(0);
   REQUIRE(bm1.transpose() == bm1);
 
@@ -49,7 +49,7 @@ TEST_CASE("BMat 01: transpose", "[quick][bmat][01]") {
                                     {1, 1, 1, 1, 1, 1, 1, 0}}));
 }
 
-TEST_CASE("BMat 02: multiplication", "[quick][bmat][02]") {
+TEST_CASE("BMat8 02: multiplication", "[quick][bmat][02]") {
   BMat8 bm({{0, 0, 0, 1, 0, 0, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1},
             {0, 1, 1, 1, 0, 1, 0, 1},
@@ -94,7 +94,7 @@ TEST_CASE("BMat 02: multiplication", "[quick][bmat][02]") {
   REQUIRE(tmp == bm * bm2);
 }
 
-TEST_CASE("BMat 03: identity matrix", "[quick][bmat][03]") {
+TEST_CASE("BMat8 03: identity matrix", "[quick][bmat][03]") {
   BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
             {0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 0, 1},
@@ -116,7 +116,7 @@ TEST_CASE("BMat 03: identity matrix", "[quick][bmat][03]") {
   REQUIRE(bm.one() == id);
 }
 
-TEST_CASE("BMat 04: random", "[quick][bmat][04]") {
+TEST_CASE("BMat8 04: random", "[quick][bmat][04]") {
   for (size_t d = 1; d < 8; ++d) {
     BMat8 bm = BMat8::random(d);
     for (size_t i = d + 1; i < 8; ++i) {
@@ -128,7 +128,7 @@ TEST_CASE("BMat 04: random", "[quick][bmat][04]") {
   }
 }
 
-TEST_CASE("BMat 05: call operator", "[quick][bmat][05]") {
+TEST_CASE("BMat8 05: call operator", "[quick][bmat][05]") {
   std::vector<std::vector<size_t>> mat = {{0, 0, 0, 1, 0, 0, 1},
                                           {0, 1, 1, 1, 0, 1, 0},
                                           {1, 1, 0, 1, 1, 1, 1},
@@ -150,8 +150,8 @@ TEST_CASE("BMat8 06: operator<<", "[quick][bmat][06]") {
   oss << BMat8::random();  // Does not do anything visible
 
   std::stringbuf buff;
-  std::ostream os(&buff);
-  os << BMat8::random();   // Also does not do anything visible
+  std::ostream   os(&buff);
+  os << BMat8::random();  // Also does not do anything visible
 }
 
 TEST_CASE("BMat8 07: set", "[quick][bmat][07]") {
@@ -165,40 +165,40 @@ TEST_CASE("BMat8 07: set", "[quick][bmat][07]") {
             {0, 1, 1, 1, 1, 0, 1, 0}});
 
   BMat8 bm2({{1, 1, 1, 1, 0, 1, 0, 1},
-            {0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1},
-            {1, 1, 0, 1, 1, 1, 1, 1},
-            {0, 0, 1, 0, 0, 1, 1, 1},
-            {1, 1, 0, 0, 0, 0, 0, 1},
-            {0, 1, 0, 0, 0, 0, 1, 1},
-            {0, 1, 1, 1, 1, 0, 1, 0}});
+             {0, 0, 0, 0, 0, 0, 0, 1},
+             {1, 1, 1, 1, 1, 1, 0, 1},
+             {1, 1, 0, 1, 1, 1, 1, 1},
+             {0, 0, 1, 0, 0, 1, 1, 1},
+             {1, 1, 0, 0, 0, 0, 0, 1},
+             {0, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 1, 1, 1, 0, 1, 0}});
 
   BMat8 bm3({{1, 0, 1, 1, 0, 1, 0, 1},
-            {0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1},
-            {1, 1, 0, 1, 1, 1, 1, 1},
-            {0, 0, 1, 0, 0, 1, 1, 1},
-            {1, 1, 0, 0, 0, 0, 0, 1},
-            {0, 1, 0, 0, 0, 0, 1, 1},
-            {0, 1, 1, 1, 1, 0, 1, 0}});
+             {0, 0, 0, 0, 0, 0, 0, 1},
+             {1, 1, 1, 1, 1, 1, 0, 1},
+             {1, 1, 0, 1, 1, 1, 1, 1},
+             {0, 0, 1, 0, 0, 1, 1, 1},
+             {1, 1, 0, 0, 0, 0, 0, 1},
+             {0, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 1, 1, 1, 0, 1, 0}});
 
   BMat8 bm4({{1, 0, 1, 1, 0, 1, 0, 1},
-           {0, 0, 0, 0, 0, 0, 0, 1},
-           {1, 1, 1, 1, 1, 1, 0, 1},
-           {1, 1, 0, 1, 1, 1, 1, 1},
-           {0, 0, 1, 0, 0, 1, 1, 1},
-           {1, 1, 0, 0, 0, 0, 1, 1},
-           {0, 1, 0, 0, 0, 0, 1, 1},
-           {0, 1, 1, 1, 1, 0, 1, 0}});
+             {0, 0, 0, 0, 0, 0, 0, 1},
+             {1, 1, 1, 1, 1, 1, 0, 1},
+             {1, 1, 0, 1, 1, 1, 1, 1},
+             {0, 0, 1, 0, 0, 1, 1, 1},
+             {1, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 1, 1, 1, 0, 1, 0}});
 
   BMat8 bm5({{1, 0, 1, 1, 0, 1, 0, 1},
-            {0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1},
-            {1, 1, 0, 1, 1, 1, 1, 1},
-            {0, 0, 1, 0, 0, 1, 1, 1},
-            {1, 1, 0, 0, 0, 0, 1, 1},
-            {0, 1, 0, 0, 0, 0, 1, 1},
-            {0, 1, 1, 1, 1, 0, 1, 1}});
+             {0, 0, 0, 0, 0, 0, 0, 1},
+             {1, 1, 1, 1, 1, 1, 0, 1},
+             {1, 1, 0, 1, 1, 1, 1, 1},
+             {0, 0, 1, 0, 0, 1, 1, 1},
+             {1, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 0, 0, 0, 0, 1, 1},
+             {0, 1, 1, 1, 1, 0, 1, 1}});
 
   bm.set(0, 0, 1);
   REQUIRE(bm == bm2);
