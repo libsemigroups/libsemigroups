@@ -179,9 +179,13 @@ namespace libsemigroups {
                   Element const* y,
                   size_t const&  tid = 0) override;
 
-    Element* empty_key() const override {
-      return new RWSE(_rws, new rws_word_t("supercalifragilisticexpialidocious"));
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+    RWSE* empty_key() const override {
+      return new RWSE(_rws,
+                      new rws_word_t("supercalifragilisticexpialidocious"));
     }
+#endif
 
     //! Returns a pointer to the rws_word_t used to create \c this.
     rws_word_t const* get_rws_word() const {
