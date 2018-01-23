@@ -53,12 +53,12 @@ namespace std {
   };
 }
 
-template <>
-size_t libsemigroups::Semigroup<Renner0Element,
-                                std::hash<Renner0Element>,
-                                std::equal_to<Renner0Element>>::
-    complexity(Renner0Element) const {
-  return -1;
+namespace libsemigroups {
+  template <>
+  size_t libsemigroups::ElementContainer<Renner0Element>::complexity(
+      Renner0Element) const {
+    return -1;
+  }
 }
 
 TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
