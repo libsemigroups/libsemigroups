@@ -181,7 +181,7 @@ namespace libsemigroups {
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    Element* empty_key() const override {
+    RWSE* empty_key() const override {
       return new RWSE(_rws,
                       new rws_word_t("supercalifragilisticexpialidocious"));
     }
