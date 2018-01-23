@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "../src/bmat.h"
+#include "../src/bmat8.h"
 #include "../src/cong.h"
 #include "catch.hpp"
 
