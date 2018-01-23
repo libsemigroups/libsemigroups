@@ -18,8 +18,8 @@
 
 // This file contains a declaration of fast boolean matrices up to dimension 8.
 
-#ifndef LIBSEMIGROUPS_SRC_BMAT_H_
-#define LIBSEMIGROUPS_SRC_BMAT_H_
+#ifndef LIBSEMIGROUPS_SRC_BMAT8_H_
+#define LIBSEMIGROUPS_SRC_BMAT8_H_
 
 #include <climits>
 #include <functional>
@@ -57,27 +57,27 @@ namespace libsemigroups {
     //!
     //! This constructor initializes a matrix where the rows of the matrix
     //! are the vectors in \p mat.
-    explicit BMat8(std::vector<std::vector<size_t>> const &mat);
+    explicit BMat8(std::vector<std::vector<size_t>> const& mat);
 
     //! A constructor.
     //!
     //! This is the copy constructor.
-    BMat8(BMat8 const &) = default;
+    BMat8(BMat8 const&) = default;
 
     //! A constructor.
     //!
     //! This is the move constructor.
-    BMat8(BMat8 &&) = default;
+    BMat8(BMat8&&) = default;
 
     //! A constructor.
     //!
     //! This is the copy assignement constructor.
-    BMat8 &operator=(BMat8 const &) = default;
+    BMat8& operator=(BMat8 const&) = default;
 
     //! A constructor.
     //!
     //! This is the move assignment  constructor.
-    BMat8 &operator=(BMat8 &&) = default;
+    BMat8& operator=(BMat8&&) = default;
 
     //! A default destructor.
     ~BMat8() = default;
@@ -85,24 +85,32 @@ namespace libsemigroups {
     //! Returns \c true if \c this equals \p that.
     //!
     //! This method checks the mathematical equality of two BMat8 objects.
-    bool operator==(BMat8 const &that) const { return _data == that._data; }
+    bool operator==(BMat8 const& that) const {
+      return _data == that._data;
+    }
 
     //! Returns \c true if \c this does not equal \p that
     //!
     //! This method checks the mathematical inequality of two BMat8 objects.
-    bool operator!=(BMat8 const &that) const { return _data != that._data; }
+    bool operator!=(BMat8 const& that) const {
+      return _data != that._data;
+    }
 
     //! Returns \c true if \c this is less than \p that.
     //!
     //! This method checks whether a BMat8 objects is less than another.
     //! We order by the results of to_int() for each matrix.
-    bool operator<(BMat8 const &that) const { return _data < that._data; }
+    bool operator<(BMat8 const& that) const {
+      return _data < that._data;
+    }
 
     //! Returns \c true if \c this is greater than \p that.
     //!
     //! This method checks whether a BMat8 objects is greater than another.
     //! We order by the results of to_int() for each matrix.
-    bool operator>(BMat8 const &that) const { return _data > that._data; }
+    bool operator>(BMat8 const& that) const {
+      return _data > that._data;
+    }
 
     //! Returns the entry in the (\p i, \p j)th position.
     //!
@@ -131,7 +139,9 @@ namespace libsemigroups {
     //! Returns an unsigned integer obtained by interpreting an 8 x 8
     //! BMat8 as a sequence of 64 bits (reading rows left to right,
     //! from top to bottom) and then this sequence as an unsigned int.
-    inline uint64_t to_int() const { return _data; }
+    inline uint64_t to_int() const {
+      return _data;
+    }
 
     //! Returns the transpose of \c this
     //!
@@ -140,11 +150,11 @@ namespace libsemigroups {
     inline BMat8 transpose() const {
       uint64_t x = _data;
       uint64_t y = (x ^ (x >> 7)) & 0xAA00AA00AA00AA;
-      x = x ^ y ^ (y << 7);
-      y = (x ^ (x >> 14)) & 0xCCCC0000CCCC;
-      x = x ^ y ^ (y << 14);
-      y = (x ^ (x >> 28)) & 0xF0F0F0F0;
-      x = x ^ y ^ (y << 28);
+      x          = x ^ y ^ (y << 7);
+      y          = (x ^ (x >> 14)) & 0xCCCC0000CCCC;
+      x          = x ^ y ^ (y << 14);
+      y          = (x ^ (x >> 28)) & 0xF0F0F0F0;
+      x          = x ^ y ^ (y << 28);
       return BMat8(x);
     }
 
@@ -154,10 +164,10 @@ namespace libsemigroups {
     //! boolean semiring) of two BMat8 objects.
     //! Uses the technique given <a href="https://stackoverflow.com/a/18448513">
     //! here</a>.
-    inline BMat8 operator*(BMat8 const &that) const {
-      uint64_t y = that.transpose()._data;
+    inline BMat8 operator*(BMat8 const& that) const {
+      uint64_t y    = that.transpose()._data;
       uint64_t data = 0;
-      uint64_t tmp = 0;
+      uint64_t tmp  = 0;
       uint64_t diag = 0x8040201008040201;
       for (int i = 0; i < 8; ++i) {
         tmp = _data & y;
@@ -168,8 +178,8 @@ namespace libsemigroups {
         tmp *= 255;
         tmp &= diag;
         data |= tmp;
-        y = cyclic_shift(y);
-        tmp = 0;
+        y    = cyclic_shift(y);
+        tmp  = 0;
         diag = cyclic_shift(diag);
       }
       return BMat8(data);
@@ -178,16 +188,18 @@ namespace libsemigroups {
     //! Returns the identity BMat8
     //!
     //! This method returns the 8 x 8 BMat8 with 1s on the main diagonal.
-    inline BMat8 one() const { return BMat8(0x8040201008040201); }
+    inline BMat8 one() const {
+      return BMat8(0x8040201008040201);
+    }
 
     //! Insertion operator
     //!
     //! This method allows BMat8 objects to be inserted into an ostringstream
-    friend std::ostringstream &operator<<(std::ostringstream &os,
-                                          BMat8 const &bm) {
-      uint64_t x = bm._data;
+    friend std::ostringstream& operator<<(std::ostringstream& os,
+                                          BMat8 const&        bm) {
+      uint64_t x   = bm._data;
       uint64_t pow = 1;
-      pow = pow << 63;
+      pow          = pow << 63;
       for (size_t i = 0; i < 8; ++i) {
         for (size_t j = 0; j < 8; ++j) {
           if (pow & x) {
@@ -205,16 +217,10 @@ namespace libsemigroups {
     //! Insertion operator
     //!
     //! This method allows BMat8 objects to be inserted into a ostream.
-    friend std::ostream &operator<<(std::ostream &os, BMat8 const &bm) {
+    friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
       os << std::to_string(bm);
       return os;
     }
-
-    //! Returns a string representation of \c this
-    //!
-    //! This method returns a string which represents a BMat8, which may
-    //! for example be used to display the BMat8.
-    std::string to_string() const;
 
     //! Returns a random BMat8
     //!
@@ -228,19 +234,19 @@ namespace libsemigroups {
     static BMat8 random(size_t dim);
 
    private:
-    uint64_t _data;
-    static std::random_device _rd;
-    static std::mt19937 _gen;
+    uint64_t                                     _data;
+    static std::random_device                    _rd;
+    static std::mt19937                          _gen;
     static std::uniform_int_distribution<size_t> _dist;
-    static std::vector<uint64_t> const ROW_MASK;
-    static std::vector<uint64_t> const COL_MASK;
-    static std::vector<uint64_t> const BIT_MASK;
+    static std::vector<uint64_t> const           ROW_MASK;
+    static std::vector<uint64_t> const           COL_MASK;
+    static std::vector<uint64_t> const           BIT_MASK;
 
     // Cyclically shifts bits to left by 8m
     // https://stackoverflow.com/a/776523
     static inline uint64_t cyclic_shift(uint64_t n, uint64_t m = 1) {
-      const unsigned int mask =
-          (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
+      const unsigned int mask
+          = (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
 
       // assert ( (c<=mask) &&"rotate by type width or more");
       unsigned int c = 8 * m;
@@ -257,4 +263,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_SRC_BMAT_H_
+#endif  // LIBSEMIGROUPS_SRC_BMAT8_H_
