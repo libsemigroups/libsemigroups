@@ -222,12 +222,6 @@ namespace libsemigroups {
       return os;
     }
 
-    //! Returns a string representation of \c this
-    //!
-    //! This method returns a string which represents a BMat8, which may
-    //! for example be used to display the BMat8.
-    std::string to_string() const;
-
     //! Returns a random BMat8
     //!
     //! This method returns a BMat8 chosen at random.
