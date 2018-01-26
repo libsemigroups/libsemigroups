@@ -983,6 +983,7 @@ namespace libsemigroups {
           _degree(sqrt(matrix->size())),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
+      // FIXME is the next assert ok?
       LIBSEMIGROUPS_ASSERT(!matrix->empty());
       LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
     }
@@ -1404,6 +1405,11 @@ namespace std {
   template <> struct hash<libsemigroups::Element const*> {
     size_t operator()(libsemigroups::Element const* x) const {
       return x->hash_value();
+    }
+  };
+  template <> struct hash<libsemigroups::Element> {
+    size_t operator()(libsemigroups::Element const& x) const {
+      return x.hash_value();
     }
   };
 
