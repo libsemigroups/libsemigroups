@@ -149,6 +149,10 @@ namespace libsemigroups {
       delete_data();
     }
 
+    size_t nrgens() const {
+      return _nrgens;
+    }
+
     //! Returns the index of the congruence class corresponding to \p word.
     //!
     //! The parameter \p word must be a libsemigroups::word_t consisting of
