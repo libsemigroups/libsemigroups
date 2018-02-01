@@ -57,6 +57,7 @@ libsemigroups_la_SOURCES += src/elements.cc
 libsemigroups_la_SOURCES += src/report.cc 
 libsemigroups_la_SOURCES += src/rws.cc        
 libsemigroups_la_SOURCES += src/rwse.cc   
+libsemigroups_la_SOURCES += src/semigroups-base.cc 
 libsemigroups_la_SOURCES += src/uf.cc
 
 libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
