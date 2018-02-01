@@ -387,6 +387,10 @@ namespace libsemigroups {
       return _vector->cend();
     }
 
+    inline size_t size() const {
+      return _vector->size();
+    }
+
    protected:
     // Cannot declare cache_hash_value here, since PBR's are vectors of
     // vectors, and there is not std::hash<vector<whatever>>.
