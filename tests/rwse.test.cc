@@ -30,7 +30,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWSE_REPORT);
   really_delete_cont(gens);
 
@@ -38,13 +38,16 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
   std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
+  Congruence<>            cong("twosided", &S, extra);
 
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   REQUIRE(rws.confluent());
 
-  gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
-  Semigroup T = Semigroup(gens);
+  gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
+  Semigroup<> T = Semigroup<>(gens);
   really_delete_cont(gens);
   T.set_report(RWSE_REPORT);
   REQUIRE(T.size() == 4);
@@ -67,17 +70,20 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWSE_REPORT);
   really_delete_cont(gens);
 
   std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
-  RWS                     rws(cong);
+  Congruence<>            cong("twosided", &S, extra);
+  RWS                     rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   REQUIRE(rws.confluent());
 
-  gens        = {new RWSE(rws, 0), new RWSE(rws, 1)};
-  Semigroup T = Semigroup(gens);
+  gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
+  Semigroup<> T = Semigroup<>(gens);
   really_delete_cont(gens);
   T.set_report(RWSE_REPORT);
 

@@ -19,18 +19,32 @@
 #ifndef LIBSEMIGROUPS_SRC_RWS_H_
 #define LIBSEMIGROUPS_SRC_RWS_H_
 
+#include <algorithm>
 #include <atomic>
 #include <list>
 #include <set>
 #include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
-#include "cong.h"
-#include "semigroups.h"
+#include "libsemigroups-config.h"
+#include "libsemigroups-debug.h"
+#include "report.h"
+#include "timer.h"
 
 namespace libsemigroups {
+
+  //! Type for the index of a generator of a semigroup.
+  typedef size_t letter_t;
+
+  //! Type for a word over the generators of a semigroup.
+  typedef std::vector<letter_t> word_t;
+
+  //! Type for a pair of word_t (a *relation*) of a semigroup.
+  typedef std::pair<word_t, word_t> relation_t;
 
   //! This class provides a call operator which can be used to compare
   //! libsemigroups::rws_word_t.
@@ -238,9 +252,9 @@ namespace libsemigroups {
     //! Constructs a rewriting system with rules corresponding to the
     //! relations used to define \p cong, i.e. Congruence::relations and
     //! Congruence::extra, and with the SHORTLEX reduction ordering.
-    explicit RWS(Congruence& cong) : RWS() {
-      add_rules(cong);
-    }
+    // explicit RWS(Congruence<>& cong) : RWS() {
+    //  add_rules(cong);
+    //}
 
     //! A default destructor
     //!
@@ -346,10 +360,10 @@ namespace libsemigroups {
 
     //! Add rules derived from Congruence::relations and Congruence::extra
     //! applied to \p cong.
-    void add_rules(Congruence& cong) {
-      add_rules(cong.relations());
-      add_rules(cong.extra());
-    }
+    // void add_rules(Congruence<>& cong) {
+    //  add_rules(cong.relations());
+    //  add_rules(cong.extra());
+    //}
 
     //! This method returns \c true if the strings \p p and \p q represent an
     //! active rule of the rewriting system, i.e. if either \f$ p \to q\f$ or

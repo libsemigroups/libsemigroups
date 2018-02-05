@@ -36,7 +36,7 @@ TEST_CASE("KBFP 01: Small fp semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence cong("twosided", 2, rels, extra);
+  Congruence<> cong("twosided", 2, rels, extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 
@@ -58,7 +58,7 @@ TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence cong1("twosided", 2, rels, extra);
+  Congruence<> cong1("twosided", 2, rels, extra);
   cong1.force_kbfp();
   cong1.set_report(KBFP_REPORT);
 
@@ -68,7 +68,7 @@ TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
   REQUIRE(cong1.word_to_class_index({0, 0, 0}) == 0);
   REQUIRE(cong1.word_to_class_index({1}) == 1);
 
-  Congruence cong2("twosided", 2, rels, extra);
+  Congruence<> cong2("twosided", 2, rels, extra);
   cong2.force_kbfp();
   cong2.set_report(KBFP_REPORT);
 
@@ -79,7 +79,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
           "[quick][congruence][kbfp][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(KBFP_REPORT);
   really_delete_cont(gens);
 
@@ -94,7 +94,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
 
-  Congruence cong("twosided", &S, extra);
+  Congruence<> cong("twosided", &S, extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 
@@ -144,7 +144,7 @@ TEST_CASE("KBFP 04: finite fp-semigroup, dihedral group of order 6",
 
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 5, rels, extra);
+  Congruence<> cong("twosided", 5, rels, extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 
@@ -177,7 +177,7 @@ TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
                                   relation_t({2, 0, 2, 0}, {2, 0, 2})};
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 4, rels, extra);
+  Congruence<> cong("twosided", 4, rels, extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 
@@ -238,7 +238,7 @@ TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
                                   relation_t({3, 0, 3, 0}, {3, 0, 3})};
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 11, rels, extra);
+  Congruence<> cong("twosided", 11, rels, extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 
@@ -262,7 +262,7 @@ TEST_CASE("KBFP 07: fp semigroup, size 240",
          relation_t({1, 0, 0, 1}, {1, 1}),
          relation_t({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0})};
 
-  Congruence cong("twosided", 2, std::vector<relation_t>(), extra);
+  Congruence<> cong("twosided", 2, std::vector<relation_t>(), extra);
   cong.force_kbfp();
   cong.set_report(KBFP_REPORT);
 

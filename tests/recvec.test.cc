@@ -1286,7 +1286,7 @@ TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
   }
 
   for (size_t i = 0; i < 99; i++) {
-    auto it = rv.begin_row(i);
+    auto it  = rv.begin_row(i);
     auto it2 = rv.begin_row(i + 1);
 
     it++;
@@ -1299,4 +1299,11 @@ TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
       ++it;
     }
   }
+}
+
+TEST_CASE("RecVec 36: reserve method", "[quick][recvec][36]") {
+  RecVec<size_t> rv = RecVec<size_t>(100, 100);
+  rv.reserve(1000);
+  REQUIRE(rv.nr_cols() == 100);
+  REQUIRE(rv.nr_rows() == 100);
 }

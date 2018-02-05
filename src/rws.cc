@@ -288,8 +288,7 @@ namespace libsemigroups {
       it             = _next_rule_it1;
     }
 #ifdef LIBSEMIGROUPS_DEBUG
-    auto ret = _set_rules.erase(RuleLookup(rule));
-    LIBSEMIGROUPS_ASSERT(ret == 1);
+    LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)) == 1);
 #else
     _set_rules.erase(RuleLookup(rule));
 #endif

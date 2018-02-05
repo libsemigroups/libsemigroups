@@ -36,7 +36,7 @@ TEST_CASE("TC 01: Small fp semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence* cong = new Congruence("twosided", 2, rels, extra);
+  Congruence<>* cong = new Congruence<>("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
 
@@ -62,7 +62,7 @@ TEST_CASE("TC 02: Small left congruence on free semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence* cong = new Congruence("left", 2, rels, extra);
+  Congruence<>* cong = new Congruence<>("left", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
   REQUIRE(cong->nr_classes() == 5);
@@ -76,7 +76,7 @@ TEST_CASE("TC 03: Small right congruence on free semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence* cong = new Congruence("right", 2, rels, extra);
+  Congruence<>* cong = new Congruence<>("right", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
   REQUIRE(cong->nr_classes() == 5);
@@ -92,7 +92,7 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence* cong = new Congruence("left", 2, rels, extra);
+  Congruence<>* cong = new Congruence<>("left", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 1})
@@ -113,7 +113,7 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
   rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_t> extra;
 
-  Congruence* cong = new Congruence("twosided", 2, rels, extra);
+  Congruence<>* cong = new Congruence<>("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 1})
@@ -124,7 +124,7 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
           != cong->word_to_class_index({1}));
   delete cong;
 
-  cong = new Congruence("twosided", 2, rels, extra);
+  cong = new Congruence<>("twosided", 2, rels, extra);
   cong->force_tc();
   cong->set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) < cong->nr_classes());
@@ -135,7 +135,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
           "[quick][congruence][tc][finite][06]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(vec);
+  Semigroup<> S = Semigroup<>(vec);
   S.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -151,7 +151,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   S.factorisation(w2, S.position(vec.back()));
 
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  Congruence<>            cong("twosided", &S, extra);
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -178,7 +178,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
           "[quick][congruence][tc][finite][07]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(vec);
+  Semigroup<> S = Semigroup<>(vec);
   S.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -191,7 +191,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   word_t w2;
   S.factorisation(w2, S.position(vec.at(3)));
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence              cong("left", &S, extra);
+  Congruence<>            cong("left", &S, extra);
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -210,7 +210,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
           "[quick][congruence][tc][finite][08]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(vec);
+  Semigroup<> S = Semigroup<>(vec);
   S.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -223,7 +223,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   vec.push_back(new Transformation<u_int16_t>({3, 1, 3, 3, 3}));
   S.factorisation(w2, S.position(vec.back()));
 
-  Congruence cong("right", &S, {relation_t(w1, w2)});
+  Congruence<> cong("right", &S, {relation_t(w1, w2)});
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -273,7 +273,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][09]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(TC_REPORT);
   really_delete_cont(gens);
 
@@ -287,7 +287,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence*             cong = new Congruence("twosided", &S, extra);
+  Congruence<>*           cong = new Congruence<>("twosided", &S, extra);
   cong->force_tc_prefill();
   cong->set_report(TC_REPORT);
 
@@ -315,7 +315,7 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][10]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(TC_REPORT);
   really_delete_cont(gens);
 
@@ -327,7 +327,7 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence*             cong = new Congruence("left", &S, extra);
+  Congruence<>*           cong = new Congruence<>("left", &S, extra);
   cong->force_tc_prefill();
   cong->set_report(TC_REPORT);
 
@@ -354,7 +354,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][11]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(TC_REPORT);
   really_delete_cont(gens);
 
@@ -367,7 +367,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence*             cong = new Congruence("right", &S, extra);
+  Congruence<>*           cong = new Congruence<>("right", &S, extra);
   cong->force_tc_prefill();
   cong->set_report(TC_REPORT);
 
@@ -422,7 +422,7 @@ TEST_CASE("TC 12: finite fp-semigroup, dihedral group of order 6",
 
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 5, rels, extra);
+  Congruence<> cong("twosided", 5, rels, extra);
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -455,7 +455,7 @@ TEST_CASE("TC 13: finite fp-semigroup, size 16",
                                   relation_t({2, 0, 2, 0}, {2, 0, 2})};
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 4, rels, extra);
+  Congruence<> cong("twosided", 4, rels, extra);
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -516,7 +516,7 @@ TEST_CASE("TC 14: finite fp-semigroup, size 16",
                                   relation_t({3, 0, 3, 0}, {3, 0, 3})};
   std::vector<relation_t> extra = {};
 
-  Congruence cong("twosided", 11, rels, extra);
+  Congruence<> cong("twosided", 11, rels, extra);
   cong.force_tc();
   cong.set_report(TC_REPORT);
 
@@ -536,12 +536,12 @@ TEST_CASE("TC 15: test prefilling of the table manually",
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup S = Semigroup(gens);
+  Semigroup<> S = Semigroup<>(gens);
   S.set_report(TC_REPORT);
   really_delete_cont(gens);
 
   // Copy the right Cayley graph of S for prefilling
-  Semigroup::cayley_graph_t const* right = S.right_cayley_graph_copy();
+  Semigroup<>::cayley_graph_t const* right = S.right_cayley_graph_copy();
 
   // These are defining relations for S
   std::vector<relation_t> rels
@@ -560,7 +560,7 @@ TEST_CASE("TC 15: test prefilling of the table manually",
          relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
          relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
-  Congruence cong("twosided", 2, rels, std::vector<relation_t>());
+  Congruence<> cong("twosided", 2, rels, std::vector<relation_t>());
   cong.set_report(TC_REPORT);
   cong.set_prefill(*right);
   delete right;
@@ -587,14 +587,14 @@ TEST_CASE("TC 16: test packing phase", "[quick][tc][finite][16]") {
          relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
          relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
-  Congruence cong1("twosided", 2, rels, std::vector<relation_t>());
+  Congruence<> cong1("twosided", 2, rels, std::vector<relation_t>());
   cong1.set_report(TC_REPORT);
   cong1.force_tc();
   cong1.set_pack(10);
   cong1.set_report_interval(10);
   REQUIRE(cong1.nr_classes() == 78);
 
-  Congruence cong2("left", 2, rels, std::vector<relation_t>());
+  Congruence<> cong2("left", 2, rels, std::vector<relation_t>());
   cong2.set_report(TC_REPORT);
   cong2.force_tc();
   cong2.set_pack(10);
@@ -619,7 +619,7 @@ TEST_CASE("TC 17: Example 6.6 in Sims (see also RWS 13)",
          relation_t({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
                      1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                     {0})};
-  Congruence cong("twosided", 4, rels, std::vector<relation_t>());
+  Congruence<> cong("twosided", 4, rels, std::vector<relation_t>());
   cong.set_report(TC_REPORT);
   cong.force_tc();
   REQUIRE(cong.nr_classes() == 10752);  // Verified with GAP
