@@ -420,8 +420,8 @@ namespace libsemigroups {
   // CONFLUENT from Sims, p62
   bool RWS::confluent(std::atomic<bool>& killed) const {
     // FIXME if the stack is not empty then what happens here?
-    LIBSEMIGROUPS_ASSERT(_stack.empty());
-    if (!_confluence_known) {
+    if (!_confluence_known && !killed) {
+      LIBSEMIGROUPS_ASSERT(_stack.empty());
       _confluent        = true;
       _confluence_known = true;
       rws_word_t word1;

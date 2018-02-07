@@ -72,7 +72,6 @@ namespace libsemigroups {
     inline void trace(class_index_t const&, relation_t const&, bool add = true);
 
     size_t                            _active;  // Number of active cosets
-    bool                              _already_reported_killed;
     std::vector<signed_class_index_t> _bckwd;
     size_t                            _cosets_killed;
     class_index_t                     _current;
