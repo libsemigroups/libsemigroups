@@ -39,10 +39,11 @@ namespace libsemigroups {
   void Congruence::KBFP::init() {
     if (_semigroup != nullptr) {
       return;
+    } else if (_rws->nr_rules() == 0) {
+      _cong.init_relations(_cong._semigroup, _killed);
+      _rws->add_rules(_cong.relations());
+      _rws->add_rules(_cong.extra());
     }
-    _cong.init_relations(_cong._semigroup, _killed);
-    _rws->add_rules(_cong.relations());
-    _rws->add_rules(_cong.extra());
 
     LIBSEMIGROUPS_ASSERT(_cong._semigroup == nullptr || !_cong.extra().empty());
 
