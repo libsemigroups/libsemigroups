@@ -20,6 +20,7 @@
 #define LIBSEMIGROUPS_SRC_RECVEC_H_
 
 #include <algorithm>
+#include <stack>
 #include <vector>
 
 #include "libsemigroups-debug.h"
@@ -640,6 +641,7 @@ namespace libsemigroups {
   template <typename iterator_type,
             typename reference_type,
             typename pointer_type>
+<<<<<<< 0086aecb93083705afa4d2e97ff34ce72635f36f
   typename RecVec<T, A>::template iterator_base<
       iterator_type,
       reference_type,
@@ -649,5 +651,17 @@ namespace libsemigroups {
           iterator_type,
           reference_type,
           pointer_type>::fast_iterator_methods();
+=======
+  typename RecVec<T, A>::
+      template iterator_base<iterator_type, reference_type, pointer_type>::
+          iterator_methods const*
+              RecVec<T, A>::iterator_base<iterator_type,
+                                          reference_type,
+                                          pointer_type>::_fast_methods
+      = new typename RecVec<T, A>::
+          template iterator_base<iterator_type, reference_type, pointer_type>::
+              fast_iterator_methods();
+
+>>>>>>> Add (directed) graph class
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_RECVEC_H_
