@@ -24,16 +24,6 @@
 
 #include <algorithm>
 
-#define TC_KILLED                      \
-  if (_killed) {                       \
-    if (!_already_reported_killed) {   \
-      _already_reported_killed = true; \
-      REPORT("killed")                 \
-    }                                  \
-    _stop_packing = true;              \
-    _steps        = 1;                 \
-  }
-
 namespace libsemigroups {
 
   // COSET LISTS:
@@ -80,7 +70,6 @@ namespace libsemigroups {
   Congruence::TC::TC(Congruence& cong)
       : DATA(cong, 1000, 2000000),
         _active(1),
-        _already_reported_killed(false),
         _bckwd(1, 0),
         _cosets_killed(0),
         _current(0),
@@ -108,8 +97,8 @@ namespace libsemigroups {
       for (relation_t const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
       }
+      _init_done = true;
     }
-    _init_done = true;
   }
 
   void Congruence::TC::prefill() {
@@ -121,7 +110,6 @@ namespace libsemigroups {
     for (size_t i = 0; i < _cong._nrgens; i++) {
       _table.set(0, i, semigroup->letter_to_pos(i) + 1);
     }
-    TC_KILLED
     if (_cong._type == LEFT) {
       for (size_t row = 0; row < semigroup->size(); ++row) {
         for (size_t col = 0; col < _cong._nrgens; ++col) {
@@ -135,7 +123,6 @@ namespace libsemigroups {
         }
       }
     }
-    TC_KILLED
     init_after_prefill();
   }
 
@@ -161,8 +148,6 @@ namespace libsemigroups {
       _bckwd.push_back(i - 1);
     }
 
-    TC_KILLED
-
     _forwd[0]           = 1;
     _forwd[_active - 1] = UNDEFINED;
 
@@ -177,7 +162,6 @@ namespace libsemigroups {
         _preim_next.set(c, i, _preim_init.get(b, i));
         _preim_init.set(b, i, c);
       }
-      // TC_KILLED?
     }
     _defined = _active;
   }
@@ -295,15 +279,17 @@ namespace libsemigroups {
         c = _table.get(c, *it);
       }
     }
-    // c in {1 .. n} (where 0 is the id coset)
-    LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
+    // c in {1 .. n} (where 0 is the id coset) but only if we are finished
+    LIBSEMIGROUPS_ASSERT(!is_done() || c < _active || c == UNDEFINED);
     // Convert to {0 .. n-1}
     return (c == UNDEFINED ? c : c - 1);
   }
 
   Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
                                                             word_t const& w2) {
-    if (!is_done() && is_killed()) {
+    if (w1 == w2) {
+      return result_t::TRUE;
+    } else if (!is_done() && is_killed()) {
       // This cannot be reliably tested since it relies on a race condition:
       // if this has been killed since the start of the function, then we return
       // immediately to run_until with an inconclusive answer.  run_until will
@@ -320,9 +306,9 @@ namespace libsemigroups {
       return result_t::UNKNOWN;
     }
 
-    // c in {1 .. n} (where 0 is the id coset)
-    LIBSEMIGROUPS_ASSERT(c1 < _active);
-    LIBSEMIGROUPS_ASSERT(c2 < _active);
+    // c in {1 .. n} (where 0 is the id coset) but only if we are finished
+    LIBSEMIGROUPS_ASSERT(!is_done() || c1 < _active);
+    LIBSEMIGROUPS_ASSERT(!is_done() || c2 < _active);
     if (c1 == c2) {
       return result_t::TRUE;
     } else if (is_done()) {
@@ -334,8 +320,6 @@ namespace libsemigroups {
 
   // Create a new active coset for coset c to map to under generator a
   void Congruence::TC::new_coset(class_index_t const& c, letter_t const& a) {
-    TC_KILLED
-
     _active++;
     _defined++;
     _report_next++;
@@ -373,8 +357,6 @@ namespace libsemigroups {
 
   // Identify lhs with rhs, and process any further coincidences
   void Congruence::TC::identify_cosets(class_index_t lhs, class_index_t rhs) {
-    TC_KILLED
-
     // Note that _lhs_stack and _rhs_stack may not be empty, if this was killed
     // before and has been restarted.
 
@@ -387,7 +369,10 @@ namespace libsemigroups {
       rhs               = tmp;
     }
 
-    while (!_killed) {
+    // TODO Replace the following line with "while (!_killed)" and simply run
+    // identify_cosets if TC::run is called when _lhs_stack or _rhs_stack is
+    // not empty.
+    while (true) {
       // If <lhs> is not active, use the coset it was identified with
       while (_bckwd[lhs] < 0) {
         lhs = -_bckwd[lhs];
@@ -479,8 +464,7 @@ namespace libsemigroups {
       rhs = _rhs_stack.top();
       _rhs_stack.pop();
     }
-
-    LIBSEMIGROUPS_ASSERT((_lhs_stack.empty() && _rhs_stack.empty()) || _killed);
+    LIBSEMIGROUPS_ASSERT(_lhs_stack.empty() && _rhs_stack.empty());
   }
 
   // Take the two words of the relation <rel>, apply them both to the coset
@@ -576,7 +560,6 @@ namespace libsemigroups {
   void Congruence::TC::run() {
     while (!is_done() && !is_killed()) {
       run(Congruence::LIMIT_MAX);
-      TC_KILLED
     }
   }
 
@@ -620,8 +603,7 @@ namespace libsemigroups {
           _current_no_add = _forwd[_current_no_add];
 
           // Quit loop if we reach an inactive coset OR we get a "stop" signal
-          TC_KILLED
-        } while (_current_no_add != _next && !_stop_packing);
+        } while (!_killed && _current_no_add != _next && !_stop_packing);
 
         REPORT("Entering lookahead complete " << oldactive - _active
                                               << " killed");
@@ -635,8 +617,7 @@ namespace libsemigroups {
       _current = _forwd[_current];
 
       // Quit loop when we reach an inactive coset
-      TC_KILLED
-    } while (_current != _next && --_steps > 0);
+    } while (!_killed && _current != _next && --_steps > 0);
 
     // Final report
     REPORT("stopping with " << _defined << " cosets defined,"
