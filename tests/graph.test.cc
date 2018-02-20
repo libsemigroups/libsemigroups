@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,33 +24,30 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Graph 01: Default constructor with 1 default arg",
+TEST_CASE("Digraph 01: Default constructor with 1 default arg",
           "[quick][graph][02]") {
   for (size_t i = 0; i < 100; ++i) {
-    Graph g = Graph(i);
+    Digraph<size_t> g = Digraph<size_t>(i);
     REQUIRE(g.nr_nodes() == 0);
-    REQUIRE(g.nr_cols() == i);
     REQUIRE(g.nr_edges() == 0);
   }
 }
 
-TEST_CASE("Graph 03: Default constructor with 0 default args",
-          "[quick][graph][03]") {
+TEST_CASE("Digraph 02: Default constructor with 0 default args",
+          "[quick][graph][02]") {
   for (size_t i = 0; i < 100; ++i) {
     for (size_t j = 0; j < 100; ++j) {
-      Graph g = Graph(i, j);
+      Digraph<size_t> g = Digraph<size_t>(i, j);
       REQUIRE(g.nr_nodes() == j);
-      REQUIRE(g.nr_cols() == i);
       REQUIRE(g.nr_edges() == 0);
     }
   }
 }
 
-TEST_CASE("Graph 04: add nodes",
-          "[quick][graph][04]") {
-  Graph g = Graph(10, 7);
+TEST_CASE("Digraph 03: add nodes",
+          "[quick][graph][03]") {
+  Digraph<size_t> g = Digraph<size_t>(10, 7);
   REQUIRE(g.nr_nodes() == 7);
-  REQUIRE(g.nr_cols() == 10);
   REQUIRE(g.nr_edges() == 0);
 
   for (size_t i = 1; i < 100; ++i) {
@@ -60,14 +57,14 @@ TEST_CASE("Graph 04: add nodes",
 
   for (size_t i = 0; i < 100; ++i) {
     for (size_t j = 0; j < 10; ++j) {
-      REQUIRE(g.get(i, j) == Graph::UNDEFINED);
+      REQUIRE(g.get(i, j) == Digraph<size_t>::UNDEFINED);
     }
   }
 }
 
-TEST_CASE("Graph 05: add edges",
-          "[quick][graph][05]") {
-  Graph g = Graph(30, 17);
+TEST_CASE("Digraph 04: add edges",
+          "[quick][graph][04]") {
+  Digraph<size_t> g = Digraph<size_t>(31, 17);
 
   for (size_t i = 0; i < 17; ++i) {
     for (size_t j = 0; j < 30; ++j) {
@@ -75,43 +72,23 @@ TEST_CASE("Graph 05: add edges",
     }
   }
 
-  REQUIRE(g.nr_cols() == 30);
+  REQUIRE(g.degree_bound() == 31);
+  REQUIRE(g.max_degree() == 30);
+  REQUIRE(g.nr_edges() == 30 * 17);
   REQUIRE(g.nr_nodes() == 17);
 
   for (size_t i = 0; i < g.nr_nodes(); ++i) {
-    for (auto it = g.begin_row(i); it < g.end_row(i); ++it) {
-      size_t j = it - g.begin_row(i);
+    for (size_t j = 0; j < g.degree_bound() - 1; ++j) {
       REQUIRE(g.get(i, j) == (7 * i + 23 * j) % 17);
     }
+    REQUIRE(g.get(i, 30) == libsemigroups::Digraph<size_t>::UNDEFINED);
   }
 }
 
-TEST_CASE("Graph 07: tidy",
-          "[quick][graph][07]") {
-  Graph g = Graph(100, 100);
-
-  for (size_t i = 0; i < 100; ++i) {
-    for (size_t j = 0; j < 100; ++j) {
-      g.add_edge(i, (73 * i + 85 * j) % 100);
-      if (g.get(i, j) % 13 == 0) {
-        g.set(i, j, Graph::UNDEFINED);
-      }
-    }
-  }
-
-  g.tidy();
-
-  for (size_t i = 0; i < 100; ++i) {
-    for (auto it = g.begin_row(i); it < g.end_row(i) - 1; ++it) {
-      REQUIRE(*(it + 1) >= *it);
-    }
-  }
-}
-
-TEST_CASE("Graph 08: Strongly connected components - cycles",
-          "[quick][graph][08]") {
+TEST_CASE("Digraph 05: Strongly connected components - cycles",
+          "[quick][graph][05]") {
   for (size_t j = 2; j < 100; ++j) {
-    Graph cycle = Graph(1, j + 1);
+    Digraph<size_t> cycle = Digraph<size_t>(1, j + 1);
     for (size_t i = 0; i < j; ++i) {
       cycle.add_edge(i, i + 1);
     }
@@ -124,9 +101,9 @@ TEST_CASE("Graph 08: Strongly connected components - cycles",
   }
 }
 
-TEST_CASE("Graph 09: Strongly connected components - no edges",
-          "[quick][graph][09]") {
-  Graph graph = Graph(0);
+TEST_CASE("Digraph 06: Strongly connected components - no edges",
+          "[quick][graph][06]") {
+  Digraph<size_t> graph = Digraph<size_t>(0);
   for (size_t j = 2; j < 100; ++j) {
     graph.add_nodes(j);
     graph.gabow_scc();
@@ -137,10 +114,10 @@ TEST_CASE("Graph 09: Strongly connected components - no edges",
   }
 }
 
-TEST_CASE("Graph 10: Strongly connected components - disjoint cycles",
-          "[quick][graph][10]") {
+TEST_CASE("Digraph 07: Strongly connected components - disjoint cycles",
+          "[quick][graph][7]") {
   for (size_t j = 2; j < 50; ++j) {
-    Graph graph = Graph(1);
+    Digraph<size_t> graph = Digraph<size_t>(1);
 
     for (size_t k = 0; k < 10; ++k) {
       graph.add_nodes(j);
@@ -157,10 +134,10 @@ TEST_CASE("Graph 10: Strongly connected components - disjoint cycles",
   }
 }
 
-TEST_CASE("Graph 11: Strongly connected components - complete graphs",
-          "[quick][graph][11]") {
+TEST_CASE("Digraph 08: Strongly connected components - complete graphs",
+          "[quick][graph][8]") {
   for (size_t k = 2; k < 50; ++k) {
-    Graph graph = Graph(50);
+    Digraph<size_t> graph = Digraph<size_t>(50);
     graph.add_nodes(k);
 
     for (size_t i = 0; i < k; ++i) {
@@ -170,15 +147,14 @@ TEST_CASE("Graph 11: Strongly connected components - complete graphs",
       }
     }
 
-    graph.gabow_scc();
     for (size_t i = 0; i < k; ++i) {
       REQUIRE(graph.get_scc_id(i) == 0);
     }
   }
 }
 
-TEST_CASE("Graph 12: Strongly connected components - empty graph",
-          "[quick][graph][12]") {
-  Graph graph = Graph(0);
+TEST_CASE("Digraph 09: Strongly connected components - empty graph",
+          "[quick][graph][9]") {
+  Digraph<size_t> graph = Digraph<size_t>(0);
   graph.gabow_scc();
 }
