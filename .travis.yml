@@ -56,10 +56,10 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
-    - os: osx
-      env: TEST_SUITE=quick
-      compiler: clang
-      osx_image: xcode8
+    # - os: osx
+    #   env: TEST_SUITE=quick
+    #   compiler: clang
+    #   osx_image: xcode8
     - os: osx
       osx_image: xcode8
       env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
