@@ -37,15 +37,10 @@ pkginclude_HEADERS += src/libsemigroups-exception.h
 pkginclude_HEADERS += src/blocks.h
 pkginclude_HEADERS += src/bmat8.h     
 pkginclude_HEADERS += src/cong.h
-<<<<<<< 0086aecb93083705afa4d2e97ff34ce72635f36f
 pkginclude_HEADERS += src/elements.h   
 pkginclude_HEADERS += src/eltcont.h
-pkginclude_HEADERS += src/partition.h 
-=======
-pkginclude_HEADERS += src/elements.h
 pkginclude_HEADERS += src/graph.h
 pkginclude_HEADERS += src/partition.h
->>>>>>> Add (directed) graph class
 pkginclude_HEADERS += src/recvec.h
 pkginclude_HEADERS += src/report.h    
 pkginclude_HEADERS += src/rws.h       
