@@ -1437,4 +1437,147 @@ TEST_CASE("Congruence 54: Renner monoid type D5 (Gay-Hivert presentation), q = 0
 // }
 
 
+std::vector<relation_t> RookMonoid(size_t l, int q) {
+// q is supposed to be 0 or 1
 
+  std::vector<size_t> s;
+  for (size_t i = 0; i < l; ++i) {
+    s.push_back(i);     // 0 est \pi_0
+  }
+
+  // identity relations
+  size_t id = l;
+  std::vector<relation_t> rels = {relation_t({id, id}, {id})};
+  for (size_t i = 0; i < l; ++i) {
+    rels.push_back({{s[i], id}, {s[i]}});
+    rels.push_back({{id, s[i]}, {s[i]}});
+  }
+
+  switch (q) {
+  case 0:
+    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {s[i]}});
+    break;
+  case 1:
+    rels.push_back({{s[0], s[0]}, {s[0]}});
+    for (size_t i = 1; i < l; ++i) rels.push_back({{s[i], s[i]}, {id}});
+    break;
+    // default: assert(FALSE)
+  }
+  for (int i = 0; i < static_cast<int>(l); ++i) {
+    for (int j = 0; j < static_cast<int>(l); ++j) {
+      if (std::abs(i - j) >= 2) {
+        rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+      }
+    }
+  }
+
+  for (size_t i = 1; i < l - 1; ++i) {
+    rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+  }
+
+  rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+  rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0]}});
+
+  return rels;
+}
+
+TEST_CASE("Congruence 57: Rook monoid R5, q = 0",
+          "[congruence][fpsemigroup][57]") {
+  Congruence cong("twosided", 6, {}, RookMonoid(5, 0));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 1546);
+}
+
+TEST_CASE("Congruence 58: Rook monoid R5, q = 1",
+          "[congruence][fpsemigroup][58]") {
+  Congruence cong("twosided", 6, {}, RookMonoid(5, 1));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 1546);
+}
+
+TEST_CASE("Congruence 59: Rook monoid R6, q = 0",
+          "[congruence][fpsemigroup][59]") {
+  Congruence cong("twosided", 7, {}, RookMonoid(6, 0));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 13327);
+}
+
+TEST_CASE("Congruence 60: Rook monoid R6, q = 1",
+          "[congruence][fpsemigroup][60]") {
+  Congruence cong("twosided", 7, {}, RookMonoid(6, 1));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 13327);
+}
+
+template <typename T>
+std::vector<T> concat(std::vector<T> lhs, const std::vector<T> & rhs) {
+  lhs.insert(lhs.end(), rhs.begin(), rhs.end());
+  return lhs;
+}
+
+std::vector<relation_t> Stell(size_t l) {
+  std::vector<size_t> pi;
+  for (size_t i = 0; i < l; ++i) {
+    pi.push_back(i);     // 0 est \pi_0
+  }
+
+  std::vector<relation_t> rels {};
+  std::vector<size_t> t {pi[0]};
+  for (int i = 1; i < static_cast<int>(l); ++i) {
+    t.insert(t.begin(),pi[i]);
+    rels.push_back({concat(t, {pi[i]}), t});
+  }
+  return rels;
+}
+
+TEST_CASE("Congruence 61: Stellar S2",
+          "[congruence][fpsemigroup][61]") {
+  Congruence cong("twosided", 3, RookMonoid(2, 0), Stell(2));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 5);
+}
+
+TEST_CASE("Congruence 62: Stellar S3",
+          "[congruence][fpsemigroup][62]") {
+  Congruence cong("twosided", 4, RookMonoid(3, 0), Stell(3));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 16);
+}
+
+TEST_CASE("Congruence 63: Stellar S4",
+          "[congruence][fpsemigroup][63]") {
+  Congruence cong("twosided", 5, RookMonoid(4, 0), Stell(4));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 65);
+}
+
+TEST_CASE("Congruence 64: Stellar S5",
+          "[congruence][fpsemigroup][64]") {
+  Congruence cong("twosided", 6, RookMonoid(5, 0), Stell(5));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 326);
+}
+
+TEST_CASE("Congruence 65: Stellar S6",
+          "[congruence][fpsemigroup][65]") {
+  Congruence cong("twosided", 7, RookMonoid(6, 0), Stell(6));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 1957);
+}
+
+TEST_CASE("Congruence 66: Stellar S7",
+          "[congruence][fpsemigroup][66]") {
+  Congruence cong("twosided", 8, RookMonoid(7, 0), Stell(7));
+  cong.set_report(true);
+  REQUIRE(!cong.is_obviously_infinite());
+  REQUIRE(cong.nr_classes() == 13700);
+}
