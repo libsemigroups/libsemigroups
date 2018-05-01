@@ -64,6 +64,36 @@ namespace libsemigroups {
   std::vector<std::vector<u_int32_t>>
       Bipartition::_lookup(std::thread::hardware_concurrency());
 
+  Bipartition::Bipartition(std::vector<u_int32_t> const& blocks)
+      : Bipartition(new std::vector<u_int32_t>(blocks)) {
+    validate();
+  }
+
+  void Bipartition::validate() const {
+    if (this->_vector->empty()) {
+      return;
+    } else if (this->_vector->size() % 2 == 1) {
+      throw LibsemigroupsException(
+          "Bipartition: expected argument of even length");
+    }
+    std::vector<bool> seen(
+        *std::max_element(this->_vector->cbegin(), this->_vector->cend()) + 1,
+        false);
+    size_t next = 0;
+    for (size_t i = 0; i < this->_vector->size(); ++i) {
+      if (!seen[(*this->_vector)[i]]) {
+        if ((*this->_vector)[i] != next) {
+          throw LibsemigroupsException("Bipartition: expected "
+                                       + std::to_string(next) + " but found "
+                                       + std::to_string((*this->_vector)[i])
+                                       + ", in position " + std::to_string(i));
+        }
+        seen[(*this->_vector)[i]] = true;
+        next++;
+      }
+    }
+  }
+
   size_t Bipartition::complexity() const {
     return (_vector->empty() ? 0 : pow(degree(), 2));
   }
@@ -276,6 +306,28 @@ namespace libsemigroups {
                             PBR::_y_seen(std::thread::hardware_concurrency());
   std::vector<RecVec<bool>> PBR::_out(std::thread::hardware_concurrency());
   std::vector<RecVec<bool>> PBR::_tmp(std::thread::hardware_concurrency());
+
+  PBR::PBR(std::initializer_list<std::vector<u_int32_t>> vec)
+      : ElementWithVectorData<std::vector<u_int32_t>, PBR>(vec) {
+    validate();
+  }
+
+  void PBR::validate() const {
+    size_t n = this->_vector->size();
+    if (n % 2 == 1) {
+      throw LibsemigroupsException("PBR: expected argument of even length");
+    }
+    for (size_t u = 0; u < n; ++u) {
+      for (auto const& v : this->_vector->at(u)) {
+        if (v >= n) {
+          throw LibsemigroupsException(
+              "PBR: entry out of bounds, vertex " + std::to_string(u)
+              + " is adjacent to " + std::to_string(v)
+              + ", should be less than " + std::to_string(n));
+        }
+      }
+    }
+  }
 
   size_t PBR::complexity() const {
     return pow((2 * this->degree()), 3);

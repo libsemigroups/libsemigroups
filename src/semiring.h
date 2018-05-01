@@ -70,6 +70,10 @@ namespace libsemigroups {
 
     //! Returns the product of \p x and \p y.
     virtual T prod(T x, T y) const = 0;
+
+    virtual bool contains(T) const {
+      return true;
+    }
   };
 
   template <typename T>
@@ -264,6 +268,11 @@ namespace libsemigroups {
                            || y == Semiring<int64_t>::MINUS_INFTY);
       return std::max(x, y);
     }
+
+    bool contains(int64_t x) const override {
+      return ((x >= 0 && x <= this->threshold())
+              || x == Semiring<int64_t>::MINUS_INFTY);
+    }
   };
 
   //! The **tropical min-plus semiring** consists of the integers
@@ -314,6 +323,11 @@ namespace libsemigroups {
         return INFTY;
       }
       return std::min(x, y);
+    }
+
+    bool contains(int64_t x) const override {
+      return ((x >= 0 && x <= this->threshold())
+              || x == Semiring<int64_t>::INFTY);
     }
   };
 
@@ -368,6 +382,10 @@ namespace libsemigroups {
     //! Returns the period of the semiring.
     int64_t period() const {
       return _period;
+    }
+
+    bool contains(int64_t x) const override {
+      return x >= 0 && x <= _period + this->threshold() - 1;
     }
 
    private:

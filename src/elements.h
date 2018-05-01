@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2016 James D. Mitchell
+// Copyright (C) 2016-18 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "blocks.h"
 #include "libsemigroups-debug.h"
+#include "libsemigroups-exception.h"
 #include "recvec.h"
 #include "semiring.h"
 
@@ -484,6 +485,28 @@ namespace libsemigroups {
     using ElementWithVectorDataDefaultHash<TValueType, TSubclass>::
         ElementWithVectorDataDefaultHash;
 
+    explicit PartialTransformation(std::vector<TValueType> const& vec)
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(
+              new std::vector<TValueType>(vec)) {
+      // validate(); // FIXME uncommenting this line causes cppyy to crash on
+      // construction of a transformation.
+    }
+
+    PartialTransformation(std::initializer_list<TValueType> imgs)
+        : PartialTransformation<TValueType, TSubclass>(
+              std::vector<TValueType>(imgs)) {}
+
+    void validate() const {
+      for (auto const& val : *(this->_vector)) {
+        if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
+          throw LibsemigroupsException(
+              "PartialTransformation: image value out of bounds, found "
+              + std::to_string(val) + ", must be less than "
+              + std::to_string(this->degree()));
+        }
+      }
+    }
+
     //! Returns the approximate time complexity of multiplying two
     //! partial transformations.
     //!
@@ -569,6 +592,26 @@ namespace libsemigroups {
    public:
     using PartialTransformation<T, Transformation<T>>::PartialTransformation;
 
+    explicit Transformation(std::vector<T> const& vec)
+        : PartialTransformation<T, Transformation<T>>(vec) {
+      validate();
+    }
+
+    Transformation(std::initializer_list<T> imgs)
+        : Transformation<T>(std::vector<T>(imgs)) {}
+
+    void validate() const {
+      size_t max = this->_vector->size();
+      for (auto const& val : *(this->_vector)) {
+        if (val < 0 || val >= max) {
+          throw LibsemigroupsException(
+              "Transformation: image value out of bounds, found "
+              + std::to_string(val) + ", must be less than "
+              + std::to_string(max));
+        }
+      }
+    }
+
     //! Returns a pointer to a copy of \c this.
     //!
     //! See Element::really_copy for more details about this method.
@@ -642,24 +685,66 @@ namespace libsemigroups {
     using PartialTransformation<T, PartialPerm<T>>::PartialTransformation;
     using PartialTransformation<T, PartialPerm<T>>::UNDEFINED;
 
+    explicit PartialPerm(std::vector<T> const& vec)
+        : PartialTransformation<T, PartialPerm<T>>(vec) {
+      validate();
+    }
+
+    PartialPerm(std::initializer_list<T> imgs)
+        : PartialPerm<T>(std::vector<T>(imgs)) {}
+
     //! A constructor.
     //!
     //! Constructs a partial perm of degree \p deg such that \code (dom[i])f =
     //! ran[i] \endcode for all \c i and which is undefined on every other
     //! value in the range 0 to (strictly less than \p deg). This method
     //! asserts that \p dom and \p ran have equal size and that \p deg is
-    //! greater than or equal to the maximum value in \p dom or \p ran.
-    explicit PartialPerm(std::vector<T> const& dom,
-                         std::vector<T> const& ran,
-                         size_t                deg)
-        : PartialTransformation<T, PartialPerm<T>>() {
-      LIBSEMIGROUPS_ASSERT(dom.size() == ran.size());
-      LIBSEMIGROUPS_ASSERT(dom.empty()
-                           || deg >= *std::max_element(dom.begin(), dom.end()));
+    //! greater than to the maximum value in \p dom or \p ran.
+    PartialPerm(std::vector<T> const& dom,
+                std::vector<T> const& ran,
+                size_t                deg)
+      // The vector passed in the next line shouldn't be necessary, but with
+      // GCC5 PartialPerm fails to inherit the 0-param constructor from
+      // PartialTransformation.
+        : PartialTransformation<T, PartialPerm<T>>(new std::vector<T>()) {
+      if (dom.size() != ran.size()) {
+        throw LibsemigroupsException(
+            "PartialPerm: domain and range size mismatch");
+      } else if (!(dom.empty()
+                   || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
+        throw LibsemigroupsException(
+            "PartialPerm: domain value out of bounds, found "
+            + std::to_string(*std::max_element(dom.cbegin(), dom.cend()))
+            + ", must be less than " + std::to_string(deg));
+      }
 
-      this->_vector->resize(deg + 1, UNDEFINED);
+      this->_vector->resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
         (*this->_vector)[dom[i]] = ran[i];
+      }
+      validate();
+    }
+
+    PartialPerm(std::initializer_list<T> dom,
+                std::initializer_list<T> ran,
+                size_t                   deg)
+        : PartialPerm<T>(std::vector<T>(dom), std::vector<T>(ran), deg) {}
+
+    void validate() const {
+      std::vector<bool> present(this->degree(), false);
+      for (auto const& val : *(this->_vector)) {
+        if (val != UNDEFINED) {
+          if (val < 0 || val >= this->degree()) {
+            throw LibsemigroupsException(
+                "PartialPerm: image value out of bounds, found "
+                + std::to_string(val) + ", must be less than "
+                + std::to_string(this->degree()));
+          } else if (present[val]) {
+            throw LibsemigroupsException("PartialPerm: duplicate image value "
+                                         + std::to_string(val));
+          }
+          present[val] = true;
+        }
       }
     }
 
@@ -814,12 +899,16 @@ namespace libsemigroups {
     //! The parameter \p blocks must have length *2n* for some positive integer
     //! *n*, consist of non-negative integers, and have the property that if
     //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
-    //! blocks.  None of this is checked.
+    //! blocks, an exception is thrown if this is not the case.
     //!
     //! The parameter \p blocks is not copied, and should be deleted using
     //! ElementWithVectorData::really_delete.
-    explicit Bipartition(std::vector<u_int32_t> const& blocks)
-        : Bipartition(new std::vector<u_int32_t>(blocks)) {}
+    explicit Bipartition(std::vector<u_int32_t> const&);
+
+    Bipartition(std::initializer_list<u_int32_t> blocks)
+        : Bipartition(std::vector<u_int32_t>(blocks)) {}
+
+    void validate() const;
 
     // TODO another constructor that accepts an actual partition
 
@@ -1000,9 +1089,8 @@ namespace libsemigroups {
           _degree(sqrt(matrix->size())),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
-      // FIXME uncomment??
-      // LIBSEMIGROUPS_ASSERT(!matrix->empty());
-      // LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
+      LIBSEMIGROUPS_ASSERT(!matrix->empty());
+      LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
     }
 
     //! A constructor.
@@ -1029,18 +1117,36 @@ namespace libsemigroups {
     MatrixOverSemiringBase(std::vector<std::vector<TValueType>> const& matrix,
                            Semiring<TValueType> const*                 semiring)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(),
-          _degree(matrix[0].size()),
+          _degree(),
           _semiring(semiring) {
-      LIBSEMIGROUPS_ASSERT(semiring != nullptr);
-      LIBSEMIGROUPS_ASSERT(!matrix.empty());
-      LIBSEMIGROUPS_ASSERT(all_of(
-          matrix.begin(), matrix.end(), [matrix](std::vector<TValueType> row) {
-            return row.size() == matrix.size();
-          }));
-
+      if (semiring == nullptr) {
+        throw LibsemigroupsException("MatrixOverSemiring: semiring is nullptr");
+      } else if (matrix.empty()) {
+        throw LibsemigroupsException(
+            "MatrixOverSemiring: matrix has dimension 0");
+      } else if (!all_of(matrix.cbegin(),
+                         matrix.cend(),
+                         [&matrix](std::vector<TValueType> row) {
+                           return row.size() == matrix.size();
+                         })) {
+        throw LibsemigroupsException(
+            "MatrixOverSemiring: matrix is not square");
+      }
+      _degree = matrix[0].size();
       this->_vector->reserve(matrix.size() * matrix.size());
       for (auto const& row : matrix) {
         this->_vector->insert(this->_vector->end(), row.begin(), row.end());
+      }
+      validate();
+    }
+
+    void validate() const {
+      for (auto x : *this->_vector) {
+        if (!this->_semiring->contains(x)) {
+          throw LibsemigroupsException(
+              "MatrixOverSemiring: matrix contains entry " + std::to_string(x)
+              + " not in the underlying semiring");
+        }
       }
     }
 
@@ -1232,6 +1338,23 @@ namespace libsemigroups {
   template <typename T> class Permutation : public Transformation<T> {
    public:
     using Transformation<T>::Transformation;
+
+    void validate() const {
+      std::vector<bool> present(this->degree(), false);
+      for (auto const& val : *(this->_vector)) {
+        if (val < 0 || val >= this->degree()) {
+          throw LibsemigroupsException(
+              "Permutation: image value out of bounds, found "
+              + std::to_string(val) + ", must be less than "
+              + std::to_string(this->degree()));
+        } else if (present[val]) {
+          throw LibsemigroupsException("Permutation: duplicate image value "
+                                       + std::to_string(val));
+        }
+        present[val] = true;
+      }
+    }
+
     //! Returns the inverse of a permutation.
     //!
     //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
@@ -1297,8 +1420,7 @@ namespace libsemigroups {
     // The next constructor only exists to allow the identity method for
     // MatrixOverSemiringBase to work.
     friend class MatrixOverSemiringBase<bool, BooleanMat>;
-    explicit BooleanMat(std::vector<bool>*    matrix,
-                        Semiring<bool> const* semiring)
+    BooleanMat(std::vector<bool>* matrix, Semiring<bool> const* semiring)
         : MatrixOverSemiringBase<bool, BooleanMat>(matrix, semiring) {}
 
     static BooleanSemiring const* const _semiring;
@@ -1321,6 +1443,12 @@ namespace libsemigroups {
     //! to \f$i\f$ in the PBR.
     using ElementWithVectorData<std::vector<u_int32_t>,
                                 PBR>::ElementWithVectorData;
+
+    explicit PBR(std::initializer_list<std::vector<u_int32_t>> vec);
+
+    // TODO add a constructor like the one in GAP
+
+    void validate() const;
 
     //! Returns the approximate time complexity of multiplying PBRs.
     //!
@@ -1405,6 +1533,14 @@ namespace libsemigroups {
     }
     delete cont;
   }
+
+  // template <typename T, typename... Args>
+  // T inline make_element(Args&&... args) {
+  //   T res(std::forward<Args>(args)...);
+  //   res.validate();
+  //   return res;
+  // }
+
 }  // namespace libsemigroups
 
 namespace std {
