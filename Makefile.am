@@ -78,7 +78,6 @@ LINT_FORMAT_FILES_EXTRA += src/cong/tc.h
 
 LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc
 LINT_FORMAT_FILES_EXTRA += src/cong/kbp.cc
-LINT_FORMAT_FILES_EXTRA += src/cong/p.cc
 LINT_FORMAT_FILES_EXTRA += src/cong/tc.cc
 
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)

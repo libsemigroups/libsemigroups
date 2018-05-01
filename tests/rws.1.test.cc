@@ -42,9 +42,11 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
   std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
 
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
@@ -60,9 +62,12 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
   std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
 
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
@@ -78,9 +83,12 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);
   std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
 
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
@@ -98,9 +106,12 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
                                   relation_t({1, 2}, {1}),
                                   relation_t({2, 1}, {1})};
   std::vector<relation_t> extra = {{{0}, {1}}};
-  Congruence              cong("twosided", 3, rels, extra);
+  Congruence            cong("twosided", 3, rels, extra);
 
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
@@ -604,7 +615,10 @@ TEST_CASE("RWS 30: test_equals", "[quick][rws][fpsemigroup][30]") {
 TEST_CASE("RWS 31: for a free semigroup", "[quick][rws][smalloverlap][31]") {
   Congruence cong(
       "twosided", 2, std::vector<relation_t>(), std::vector<relation_t>());
-  RWS rws(cong);
+  RWS rws;
+  rws.add_rules(cong.relations());
+  rws.add_rules(cong.extra());
+
   REQUIRE(!rws.test_equals({0}, {1}));
   REQUIRE(rws.test_equals({0}, {0}));
   REQUIRE(rws.test_equals({0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}));
