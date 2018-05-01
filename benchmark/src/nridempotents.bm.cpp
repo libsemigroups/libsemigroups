@@ -37,8 +37,7 @@ using namespace libsemigroups;
       S.reserve(n);                                                            \
       if (S.size() != n) {                                                     \
         throw std::runtime_error("wrong reserve size, expected "               \
-                                 + std::to_string(S.size())                    \
-                                 + ", got "                                    \
+                                 + std::to_string(S.size()) + ", got "         \
                                  + std::to_string(n));                         \
       }                                                                        \
       S.set_max_threads(state.range(0));                                       \
@@ -52,8 +51,7 @@ using namespace libsemigroups;
       if (S.nridempotents() != m) {                                            \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got "                                                         \
-            + std::to_string(S.nridempotents()));                              \
+            + ", got " + std::to_string(S.nridempotents()));                   \
       }                                                                        \
     }                                                                          \
   }                                                                            \
@@ -73,8 +71,7 @@ using namespace libsemigroups;
       S.reserve(n);                                                            \
       if (S.size() != n) {                                                     \
         throw std::runtime_error("wrong reserve size, expected "               \
-                                 + std::to_string(S.size())                    \
-                                 + ", got "                                    \
+                                 + std::to_string(S.size()) + ", got "         \
                                  + std::to_string(n));                         \
       }                                                                        \
       auto start = std::chrono::high_resolution_clock::now();                  \
@@ -87,8 +84,7 @@ using namespace libsemigroups;
       if (S.nridempotents() != m) {                                            \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got "                                                         \
-            + std::to_string(S.nridempotents()));                              \
+            + ", got " + std::to_string(S.nridempotents()));                   \
       }                                                                        \
     }                                                                          \
   }                                                                            \

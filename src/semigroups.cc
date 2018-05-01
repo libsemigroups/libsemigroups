@@ -647,13 +647,11 @@ namespace libsemigroups {
       if (!is_done()) {
         REPORT("found " << _nr << " elements, " << _nrrules
                         << " rules, max word length "
-                        << current_max_word_length()
-                        << ", so far")
+                        << current_max_word_length() << ", so far")
       } else {
         REPORT("found " << _nr << " elements, " << _nrrules
                         << " rules, max word length "
-                        << current_max_word_length()
-                        << ", finished")
+                        << current_max_word_length() << ", finished")
       }
     }
     REPORT("elapsed time = " << timer);
@@ -884,13 +882,11 @@ namespace libsemigroups {
       if (!is_done()) {
         REPORT("found " << _nr << " elements, " << _nrrules
                         << " rules, max word length "
-                        << current_max_word_length()
-                        << ", so far")
+                        << current_max_word_length() << ", so far")
       } else {
         REPORT("found " << _nr << " elements, " << _nrrules
                         << " rules, max word length "
-                        << current_max_word_length()
-                        << ", finished")
+                        << current_max_word_length() << ", finished")
       }
     }
     REPORT("elapsed time = " << timer);
@@ -1103,8 +1099,8 @@ namespace libsemigroups {
                               enumerate_index_t const          last,
                               enumerate_index_t const          threshold,
                               std::vector<idempotent_value_t>& idempotents) {
-    REPORT("first = " << first << ", last = " << last << ", diff = "
-                      << last - first);
+    REPORT("first = " << first << ", last = " << last
+                      << ", diff = " << last - first);
     Timer timer;
 
     enumerate_index_t pos = first;

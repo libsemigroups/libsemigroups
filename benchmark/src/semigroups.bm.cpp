@@ -39,7 +39,7 @@ static void BM_size_small_trans_01(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                   new Transformation<u_int16_t>({0, 1, 2})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
 
     S.size();
@@ -465,7 +465,7 @@ static void BM_size_no_reserve_uppertri_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 0},
                                                   {0, 0, 0, 0, 0, 0}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -610,7 +610,7 @@ static void BM_size_reserve_uppertri_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 0},
                                                   {0, 0, 0, 0, 0, 0}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(2097152);
@@ -777,7 +777,7 @@ static void BM_size_no_reserve_unitri_7(benchmark::State& state) {
                                                   {0, 0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 0, 0, 1}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -943,7 +943,7 @@ static void BM_size_reserve_unitri_7(benchmark::State& state) {
                                                   {0, 0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 0, 0, 1}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(2097152);
@@ -1053,7 +1053,7 @@ static void BM_size_no_reserve_gossip_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 1, 1}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -1162,7 +1162,7 @@ static void BM_size_reserve_gossip_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 1, 1}})};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(1092473);
@@ -1852,7 +1852,7 @@ static void BM_size_no_reserve_proj_max_plus(benchmark::State& state) {
                                                                 MINUS_INFTY,
                                                                 MINUS_INFTY}},
                                                               sr)};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -2380,7 +2380,7 @@ static void BM_size_reserve_proj_max_plus(benchmark::State& state) {
                                                                 MINUS_INFTY,
                                                                 MINUS_INFTY}},
                                                               sr)};
-    Semigroup S = Semigroup(gens);
+    Semigroup             S    = Semigroup(gens);
     really_delete_cont(gens);
 
     auto start = std::chrono::high_resolution_clock::now();

@@ -121,8 +121,7 @@ namespace libsemigroups {
     }
 
     REPORT("using " << nr_threads << " / "
-                    << std::thread::hardware_concurrency()
-                    << " threads");
+                    << std::thread::hardware_concurrency() << " threads");
     glob_reporter.reset_thread_ids();
 
     std::vector<std::thread> t;
