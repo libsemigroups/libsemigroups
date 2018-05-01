@@ -3,6 +3,11 @@ dist: trusty
 sudo: required
 compiler:
   - gcc
+branches:
+  only:
+  - master
+  - stable-/\d+\.\d+/
+  - /^v\d+\.\d+\.\d+$/
 matrix:
   include:
     - env: TEST_SUITE=lint
