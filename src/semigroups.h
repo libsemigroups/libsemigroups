@@ -936,15 +936,16 @@ namespace libsemigroups {
         return operator>(that) || operator==(that);
       }
 
-      iterator_base operator++(int) {  // postfix
-        iterator_base tmp(*this);
-        operator++();
+      // postfix
+      iterator_base operator++(int) {
+        iterator_base  tmp(*this);
+        iterator_base::operator++();
         return tmp;
       }
 
       iterator_base operator--(int) {
         iterator_base tmp(*this);
-        operator--();
+        iterator_base::operator--();
         return tmp;
       }
 
@@ -1023,9 +1024,10 @@ namespace libsemigroups {
         return (*it).first;
       }
 
-      typename std::vector<Element const*>::const_pointer addressof(
-          typename std::vector<std::pair<Element const*, element_index_t>>::
-              const_iterator it) const {
+      typename std::vector<Element const*>::const_pointer
+      addressof(typename std::vector<
+                std::pair<Element const*, element_index_t>>::const_iterator it)
+          const {
         return &((*it).first);
       }
     };
@@ -1228,44 +1230,44 @@ namespace libsemigroups {
                      enumerate_index_t const          threshold,
                      std::vector<idempotent_value_t>& idempotents);
 
-    size_t          _batch_size;
-    element_index_t _degree;
+    size_t                                     _batch_size;
+    element_index_t                            _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
-    std::vector<Element const*>     _elements;
-    std::vector<element_index_t>    _enumerate_order;
-    std::vector<letter_t>           _final;
-    std::vector<letter_t>           _first;
-    bool                            _found_one;
-    std::vector<Element const*>     _gens;
-    Element const*                  _id;
-    std::vector<idempotent_value_t> _idempotents;
-    bool                            _idempotents_found;
-    std::vector<uint8_t>            _is_idempotent;
-    cayley_graph_t                  _left;
-    std::vector<index_t>            _length;
-    std::vector<enumerate_index_t>  _lenindex;
-    std::vector<element_index_t>    _letter_to_pos;
+    std::vector<Element const*>                _elements;
+    std::vector<element_index_t>               _enumerate_order;
+    std::vector<letter_t>                      _final;
+    std::vector<letter_t>                      _first;
+    bool                                       _found_one;
+    std::vector<Element const*>                _gens;
+    Element const*                             _id;
+    std::vector<idempotent_value_t>            _idempotents;
+    bool                                       _idempotents_found;
+    std::vector<uint8_t>                       _is_idempotent;
+    cayley_graph_t                             _left;
+    std::vector<index_t>                       _length;
+    std::vector<enumerate_index_t>             _lenindex;
+    std::vector<element_index_t>               _letter_to_pos;
     std::unordered_map<Element const*,
                        element_index_t,
                        Element::Hash,
                        Element::Equal>
-                                 _map;
-    size_t                       _max_threads;
-    std::mutex                   _mtx;
-    index_t                      _nr;
-    letter_t                     _nrgens;
-    size_t                       _nrrules;
-    enumerate_index_t            _pos;
-    element_index_t              _pos_one;
-    std::vector<element_index_t> _prefix;
-    flags_t                      _reduced;
-    letter_t                     _relation_gen;
-    enumerate_index_t            _relation_pos;
-    cayley_graph_t               _right;
+                                                            _map;
+    size_t                                                  _max_threads;
+    std::mutex                                              _mtx;
+    index_t                                                 _nr;
+    letter_t                                                _nrgens;
+    size_t                                                  _nrrules;
+    enumerate_index_t                                       _pos;
+    element_index_t                                         _pos_one;
+    std::vector<element_index_t>                            _prefix;
+    flags_t                                                 _reduced;
+    letter_t                                                _relation_gen;
+    enumerate_index_t                                       _relation_pos;
+    cayley_graph_t                                          _right;
     std::vector<std::pair<Element const*, element_index_t>> _sorted;
-    std::vector<element_index_t> _suffix;
-    Element*                     _tmp_product;
-    size_t                       _wordlen;
+    std::vector<element_index_t>                            _suffix;
+    Element*                                                _tmp_product;
+    size_t                                                  _wordlen;
 
     static std::vector<element_index_t> _tmp_inverter;
     static std::vector<bool>            _old_new;

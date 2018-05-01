@@ -138,7 +138,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
           "[quick][congruence][multithread][06]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup             S    = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
 
@@ -159,7 +159,7 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
           "[quick][congruence][multithread][07]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup             S    = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 88);
@@ -184,7 +184,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup             S    = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 88);
@@ -223,7 +223,7 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup             S    = Semigroup(gens);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
 
@@ -268,7 +268,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup S = Semigroup(gens);
+  Semigroup             S    = Semigroup(gens);
   S.set_report(CONG_REPORT);
   S.set_report(CONG_REPORT);
   really_delete_cont(gens);
@@ -330,7 +330,7 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
                                        relation_t({1, 2, 2}, {1}),
                                        relation_t({1, 2}, {1}),
                                        relation_t({2, 2}, {1})};
-  std::vector<relation_t> extra = {relation_t({0}, {1})};
+  std::vector<relation_t> extra     = {relation_t({0}, {1})};
   Congruence              cong("twosided", 3, relations, extra);
   cong.set_report(CONG_REPORT);
 
@@ -345,7 +345,7 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
 
 TEST_CASE("Congruence 10: for an infinite fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][10]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
+  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
                                   relation_t({0, 2}, {0}),
@@ -678,7 +678,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
 
 TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
           "[quick][congruence][fpsemigroup][multithread][19]") {
-  std::vector<relation_t> rels = {relation_t({0, 0}, {0, 0}),
+  std::vector<relation_t> rels  = {relation_t({0, 0}, {0, 0}),
                                   relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),

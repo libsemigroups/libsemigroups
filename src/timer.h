@@ -31,7 +31,7 @@ namespace std {
     stm << n;
     return stm.str();
   }
-}
+}  // namespace std
 
 namespace libsemigroups {
 

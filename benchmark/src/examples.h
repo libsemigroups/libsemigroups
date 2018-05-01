@@ -26,7 +26,7 @@
 
 namespace libsemigroups {
   typedef std::vector<std::vector<bool>> BooleanMatArg;
-  static BooleanMatArg id(size_t n) {
+  static BooleanMatArg                   id(size_t n) {
     BooleanMatArg x(n, std::vector<bool>(n, false));
     for (size_t k = 0; k < n; ++k) {
       x[k][k] = true;

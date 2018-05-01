@@ -109,10 +109,8 @@ namespace libsemigroups {
       }
       if (_report_next++ > _report_interval) {
         REPORT("found " << _found_pairs->size() << " pairs: " << _map_next
-                        << " elements in "
-                        << _lookup.nr_blocks()
-                        << " classes, "
-                        << _pairs_to_mult->size()
+                        << " elements in " << _lookup.nr_blocks()
+                        << " classes, " << _pairs_to_mult->size()
                         << " pairs on the stack");
         _report_next = 0;
         if (tid != 0 && _cong._semigroup->is_done()
@@ -160,8 +158,7 @@ namespace libsemigroups {
 
     if (!killed) {
       REPORT("finished with " << _found_pairs->size() << " pairs: " << _map_next
-                              << " elements in "
-                              << _lookup.nr_blocks()
+                              << " elements in " << _lookup.nr_blocks()
                               << " classes");
       _done = true;
       delete_tmp_storage();

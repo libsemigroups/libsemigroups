@@ -233,7 +233,7 @@ namespace libsemigroups {
     class_index_t pos = _id_coset;
     // old number to new numbers lookup
     std::unordered_map<class_index_t, class_index_t> lookup;
-    size_t next_index = 0;
+    size_t                                           next_index = 0;
 
     while (pos != _next) {
       size_t curr_index;
@@ -504,11 +504,9 @@ namespace libsemigroups {
     _report_next++;
     if (_report_next > _report_interval) {
       REPORT(_defined << " defined, " << _forwd.size() << " max, " << _active
-                      << " active, "
-                      << (_defined - _active) - _cosets_killed
+                      << " active, " << (_defined - _active) - _cosets_killed
                       << " killed, "
-                      << "current "
-                      << (add ? _current : _current_no_add))
+                      << "current " << (add ? _current : _current_no_add))
       // If we are killing cosets too slowly, then stop packing
       if ((_defined - _active) - _cosets_killed < 100) {
         _stop_packing = true;
@@ -584,11 +582,9 @@ namespace libsemigroups {
       // If the number of active cosets is too high, start a packing phase
       if (_active > _pack) {
         REPORT(_defined << " defined, " << _forwd.size() << " max, " << _active
-                        << " active, "
-                        << (_defined - _active) - _cosets_killed
+                        << " active, " << (_defined - _active) - _cosets_killed
                         << " killed, "
-                        << "current "
-                        << _current);
+                        << "current " << _current);
         REPORT("Entering lookahead phase . . .");
         _cosets_killed = _defined - _active;
 
@@ -621,10 +617,7 @@ namespace libsemigroups {
 
     // Final report
     REPORT("stopping with " << _defined << " cosets defined,"
-                            << " maximum "
-                            << _forwd.size()
-                            << ", "
-                            << _active
+                            << " maximum " << _forwd.size() << ", " << _active
                             << " survived");
     if (_current == _next) {
       _tc_done = true;

@@ -52,7 +52,7 @@ namespace libsemigroups {
     size_t nr_classes() final;
 
     class_index_t word_to_class_index(word_t const& word) final;
-    result_t current_equals(word_t const& w1, word_t const& w2) final;
+    result_t      current_equals(word_t const& w1, word_t const& w2) final;
 
     Partition<word_t>* nontrivial_classes() final;
 
@@ -82,10 +82,10 @@ namespace libsemigroups {
     p_index_t get_index(Element const* x);
     p_index_t add_index(Element const* x);
 
-    std::vector<class_index_t> _class_lookup;
-    bool                       _done;
+    std::vector<class_index_t>                         _class_lookup;
+    bool                                               _done;
     std::unordered_set<p_pair_const_t, PHash, PEqual>* _found_pairs;
-    UF _lookup;
+    UF                                                 _lookup;
     std::unordered_map<const Element*, p_index_t, Element::Hash, Element::Equal>
                                 _map;
     p_index_t                   _map_next;
