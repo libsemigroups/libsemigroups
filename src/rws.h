@@ -703,7 +703,7 @@ namespace libsemigroups {
     Rule(Rule const& copy) = delete;
 
     // Construct from RWS with new but empty rws_word_t's
-    explicit Rule(RWS const* rws, int64_t id)
+    Rule(RWS const* rws, int64_t id)
         : _rws(rws),
           _lhs(new rws_word_t()),
           _rhs(new rws_word_t()),

@@ -88,8 +88,8 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
           "[quick][semigroup][finite][02]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>(
-             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)};
+             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
+         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
   really_delete_cont(gens);
@@ -101,12 +101,12 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   REQUIRE(S.nrrules() == 9);
 
   Element* expected = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(*S[0] == *expected);
   expected->really_delete();
   delete expected;
 
-  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(*S[1] == *expected);
   expected->really_delete();
   delete expected;
@@ -117,7 +117,7 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   x->really_delete();
   delete x;
 
-  x = new PartialPerm<u_int16_t>({}, {}, 10);
+  x = new PartialPerm<u_int16_t>({}, {}, 11);
   REQUIRE(S.position(x) == 10);
   REQUIRE(S.test_membership(x));
   x->really_delete();
@@ -131,11 +131,11 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   delete x;
 
   x = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(S.position(x) == 0);
   REQUIRE(S.test_membership(x));
 
-  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(S.position(y) == 1);
   REQUIRE(S.test_membership(y));
 
@@ -440,13 +440,13 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
@@ -478,13 +478,13 @@ TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[0]);
