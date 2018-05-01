@@ -293,7 +293,7 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
                                                 {0, 0, 1, 0, 0},
                                                 {0, 0, 0, 1, 0},
                                                 {0, 0, 0, 0, 0}})};
-  Semigroup<> S(gens);
+  Semigroup<>           S(gens);
   really_delete_cont(gens);
   S.set_report(true);
   REQUIRE(S.size() == 32311832);

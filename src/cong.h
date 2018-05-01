@@ -127,7 +127,7 @@ namespace libsemigroups {
     //! Semigroup \p semigroup and is the least congruence containing the
     //! generating pairs in \p extra.
     Congruence(std::string                    type,
-               SemigroupBase*                   semigroup,
+               SemigroupBase*                 semigroup,
                std::vector<relation_t> const& genpairs);
 
     //! A default destructor.
@@ -489,8 +489,8 @@ namespace libsemigroups {
     template <typename TElementType,
               typename TElementHash,
               typename TElementEqual>
-    class P;     // Orbit of pairs
-    class TC;    // Todd-Coxeter
+    class P;   // Orbit of pairs
+    class TC;  // Todd-Coxeter
 
     // Abstract base class for nested classes containing methods for actually
     // enumerating the classes etc of a congruence
@@ -650,7 +650,7 @@ namespace libsemigroups {
                std::vector<relation_t> const& extra);
 
     Congruence(cong_t                         type,
-               SemigroupBase*                   semigroup,
+               SemigroupBase*                 semigroup,
                std::vector<relation_t> const& extra);
 
     cong_t type_from_string(std::string);
@@ -665,7 +665,7 @@ namespace libsemigroups {
     RecVec<class_index_t>   _prefill;
     std::vector<relation_t> _relations;
     std::atomic<bool>       _relations_done;
-    SemigroupBase*            _semigroup;
+    SemigroupBase*          _semigroup;
     cong_t                  _type;
 
     static size_t const INFTY;

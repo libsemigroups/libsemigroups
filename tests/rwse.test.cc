@@ -38,7 +38,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
   std::vector<relation_t> extra;
-  Congruence            cong("twosided", &S, extra);
+  Congruence              cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -75,7 +75,7 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   really_delete_cont(gens);
 
   std::vector<relation_t> extra;
-  Congruence            cong("twosided", &S, extra);
+  Congruence              cong("twosided", &S, extra);
   RWS                     rws;
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());

@@ -23,4 +23,4 @@ namespace libsemigroups {
       = std::numeric_limits<index_t>::max();
   SemigroupBase::index_t const SemigroupBase::LIMIT_MAX
       = std::numeric_limits<index_t>::max();
-}
+}  // namespace libsemigroups

@@ -758,9 +758,9 @@ namespace libsemigroups {
     //! precisely once. This method recomputes the return value every time it
     //! is called.
     size_t crank() const {
-      return this->_vector->size() - std::count(this->_vector->cbegin(),
-                                                this->_vector->cend(),
-                                                UNDEFINED);
+      return this->_vector->size()
+             - std::count(
+                   this->_vector->cbegin(), this->_vector->cend(), UNDEFINED);
     }
   };
 
@@ -947,7 +947,7 @@ namespace libsemigroups {
 
    private:
     u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
-    void init_trans_blocks_lookup();
+    void      init_trans_blocks_lookup();
 
     static std::vector<std::vector<u_int32_t>> _fuse;
     static std::vector<std::vector<u_int32_t>> _lookup;

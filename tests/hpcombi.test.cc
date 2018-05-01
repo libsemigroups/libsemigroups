@@ -51,7 +51,7 @@ namespace std {
       return hash<HPCombi::Vect16>()(ar);
     }
   };
-}
+}  // namespace std
 
 namespace libsemigroups {
   template <>
@@ -59,7 +59,7 @@ namespace libsemigroups {
       Renner0Element) const {
     return -1;
   }
-}
+}  // namespace libsemigroups
 
 TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
   Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(

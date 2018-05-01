@@ -68,7 +68,7 @@ namespace libsemigroups {
       : Congruence(type_from_string(type), nrgens, relations, extra) {}
 
   Congruence::Congruence(cong_t                         type,
-                         SemigroupBase*                   semigroup,
+                         SemigroupBase*                 semigroup,
                          std::vector<relation_t> const& genpairs)
       : Congruence(type,
                    semigroup->nrgens(),
@@ -79,7 +79,7 @@ namespace libsemigroups {
   }
 
   Congruence::Congruence(std::string                    type,
-                         SemigroupBase*                   semigroup,
+                         SemigroupBase*                 semigroup,
                          std::vector<relation_t> const& extra)
       : Congruence(type_from_string(type), semigroup, extra) {}
 
@@ -121,8 +121,7 @@ namespace libsemigroups {
     }
 
     REPORT("using " << nr_threads << " / "
-                    << std::thread::hardware_concurrency()
-                    << " threads");
+                    << std::thread::hardware_concurrency() << " threads");
     glob_reporter.reset_thread_ids();
 
     std::vector<std::thread> t;
@@ -345,7 +344,7 @@ namespace libsemigroups {
     }
   }
 
-  void Congruence::init_relations(SemigroupBase*       semigroup,
+  void Congruence::init_relations(SemigroupBase*     semigroup,
                                   std::atomic<bool>& killed) {
     _init_mtx.lock();
     if (_relations_done || semigroup == nullptr) {
