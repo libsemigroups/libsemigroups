@@ -102,7 +102,7 @@ namespace libsemigroups {
   }
 
   void Congruence::TC::prefill() {
-    Semigroup<>* semigroup = _cong._semigroup;
+    SemigroupBase* semigroup = _cong._semigroup;
     if (semigroup == nullptr) {
       return;
     }

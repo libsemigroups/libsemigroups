@@ -43,11 +43,11 @@ namespace libsemigroups {
     // Setup the P cong
     if (!_killed) {
       LIBSEMIGROUPS_ASSERT(_rws->confluent());
-      std::vector<Element*> gens;
+      std::vector<RWSE*> gens;
       for (size_t i = 0; i < _cong._nrgens; i++) {
         gens.push_back(new RWSE(*_rws, i));
       }
-      _semigroup = new Semigroup<>(gens);
+      _semigroup = new Semigroup<RWSE*>(gens);
       really_delete_cont(gens);
 
       _P_cong = new Congruence(_cong._type, _semigroup, _cong._extra);
@@ -66,7 +66,7 @@ namespace libsemigroups {
     init();
     if (!_killed) {
       REPORT("running P . . .")
-      P* p = static_cast<P*>(_P_cong->cget_data());
+      auto p = static_cast<P<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>*>(_P_cong->cget_data());
       LIBSEMIGROUPS_ASSERT(p != nullptr);
       p->run(steps, _killed);
     }

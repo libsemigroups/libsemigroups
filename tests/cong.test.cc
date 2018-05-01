@@ -18,6 +18,7 @@
 
 #include <utility>
 
+#include "../src/bmat.h"
 #include "../src/cong.h"
 #include "catch.hpp"
 
@@ -146,7 +147,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   REQUIRE(S.degree() == 5);
 
   std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
 
@@ -171,7 +172,7 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
 
   t1->really_delete();
@@ -196,7 +197,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  Congruence            cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
@@ -282,7 +283,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence              cong("right", &S, extra);
+  Congruence            cong("right", &S, extra);
   cong.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 72);
@@ -331,8 +332,9 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
                                        relation_t({1, 2}, {1}),
                                        relation_t({2, 2}, {1})};
   std::vector<relation_t> extra = {relation_t({0}, {1})};
-  Congruence              cong("twosided", 3, relations, extra);
-  cong.set_report(CONG_REPORT);
+  Congruence            cong("twosided", 3, relations, extra);
+  cong.set_report(true);
+  cong.force_kbfp();
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
@@ -355,7 +357,7 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
                                   relation_t({1, 2}, {1}),
                                   relation_t({2, 1}, {1})};
   std::vector<relation_t> extra = {{{0}, {1}}};
-  Congruence              cong("twosided", 3, rels, extra);
+  Congruence            cong("twosided", 3, rels, extra);
   cong.set_report(CONG_REPORT);
   // This line is here to make sure that the max_threads is ignored here, since
   // if we are limited to one thread here then this example doesn't run!
@@ -516,7 +518,7 @@ TEST_CASE("Congruence 14: Bicyclic monoid",
                                   relation_t({2, 0}, {2}),
                                   relation_t({1, 2}, {0})};
   std::vector<relation_t> extra;
-  Congruence              cong("twosided", 3, rels, extra);
+  Congruence            cong("twosided", 3, rels, extra);
   cong.set_report(CONG_REPORT);
   REQUIRE(cong.word_to_class_index({0})
           == cong.word_to_class_index({1, 2, 1, 1, 2, 2}));
@@ -536,7 +538,7 @@ TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
                                   relation_t({2, 0}, {2}),
                                   relation_t({1, 2}, {0})};
   std::vector<relation_t> extra({relation_t({1, 1, 1}, {0})});
-  Congruence              cong("twosided", 3, rels, extra);
+  Congruence            cong("twosided", 3, rels, extra);
 
   cong.set_report(CONG_REPORT);
 
@@ -710,7 +712,7 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
   std::vector<relation_t> rels
       = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
-  Congruence              cong("twosided", 2, rels, extra);
+  Congruence            cong("twosided", 2, rels, extra);
   cong.set_report(CONG_REPORT);
 
   word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -834,7 +836,7 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
 TEST_CASE("Congruence 25: free semigroup with redundant relations",
           "[quick][congruence][multithread][fpsemigroup][25]") {
   std::vector<relation_t> extra = {relation_t({0, 0}, {0, 0})};
-  Congruence              cong("twosided", 1, {}, extra);
+  Congruence            cong("twosided", 1, {}, extra);
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
 }
 
@@ -851,14 +853,14 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
       "twosided", 3, {relation_t({0, 1}, {0})}, {relation_t({2, 2}, {2})});
   REQUIRE(cong1.is_obviously_infinite());
   Congruence cong2("twosided",
-                   3,
-                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
-                   {relation_t({1, 1}, {1})});
+                     3,
+                     {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
+                     {relation_t({1, 1}, {1})});
   REQUIRE(cong2.is_obviously_infinite());
   Congruence cong3("twosided",
-                   3,
-                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
-                   {relation_t({1, 2}, {1})});
+                     3,
+                     {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
+                     {relation_t({1, 2}, {1})});
   REQUIRE(!cong3.is_obviously_infinite());
 
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
@@ -877,3 +879,34 @@ TEST_CASE("Congruence 28: test_less_than",
   Congruence cong("twosided", 2, {relation_t({0, 0}, {0})}, {});
   REQUIRE(!cong.test_less_than({0, 0}, {0}));
 }
+
+/*TEST_CASE("Congruence 29: test BMat8", "[quick][congruence][fpsemigroup][29]") {
+  std::vector<BMat8> gens
+      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+
+  Semigroup<BMat8> S(gens);
+  S.set_report(CONG_REPORT);
+
+  Congruence<BMat8> cong1("twosided", &S, {relation_t({1}, {0})});
+  REQUIRE(cong1.nr_classes() == 3);
+  REQUIRE(cong1.word_to_class_index({1}) == 0);
+
+  Congruence<BMat8> cong2("twosided", &S, {relation_t({1}, {0})});
+  cong2.force_kbfp();
+  REQUIRE(cong2.nr_classes() == 3);
+  REQUIRE(cong2.word_to_class_index({1}) == 0);
+
+  Semigroup<BMat8>  T({gens[0], gens[2], gens[3]});
+  Congruence<BMat8> cong3("twosided", &T, {relation_t({1}, {0})});
+  cong3.force_p();
+  REQUIRE(cong3.nr_classes() == 2);
+  REQUIRE(cong3.word_to_class_index({1}) == 0);
+
+  Congruence<BMat8> cong4("twosided", &S, {relation_t({1}, {0})});
+  cong2.force_tc();
+  REQUIRE(cong4.nr_classes() == 3);
+  REQUIRE(cong4.word_to_class_index({1}) == 0);
+}*/

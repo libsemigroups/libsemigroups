@@ -23,7 +23,7 @@
 
 #include "cong/kbfp.cc"
 #include "cong/kbp.cc"
-#include "cong/p.cc"
+#include "cong/p.h"
 #include "cong/tc.cc"
 
 namespace libsemigroups {
@@ -68,7 +68,7 @@ namespace libsemigroups {
       : Congruence(type_from_string(type), nrgens, relations, extra) {}
 
   Congruence::Congruence(cong_t                         type,
-                         Semigroup<>*                   semigroup,
+                         SemigroupBase*                   semigroup,
                          std::vector<relation_t> const& genpairs)
       : Congruence(type,
                    semigroup->nrgens(),
@@ -79,7 +79,7 @@ namespace libsemigroups {
   }
 
   Congruence::Congruence(std::string                    type,
-                         Semigroup<>*                   semigroup,
+                         SemigroupBase*                   semigroup,
                          std::vector<relation_t> const& extra)
       : Congruence(type_from_string(type), semigroup, extra) {}
 
@@ -305,7 +305,7 @@ namespace libsemigroups {
   void Congruence::force_p() {
     LIBSEMIGROUPS_ASSERT(_semigroup != nullptr);
     delete_data();
-    _data = new P(*this);
+    _data = new P<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>(*this);
   }
 
   void Congruence::force_kbp() {
@@ -345,7 +345,7 @@ namespace libsemigroups {
     }
   }
 
-  void Congruence::init_relations(Semigroup<>*       semigroup,
+  void Congruence::init_relations(SemigroupBase*       semigroup,
                                   std::atomic<bool>& killed) {
     _init_mtx.lock();
     if (_relations_done || semigroup == nullptr) {
