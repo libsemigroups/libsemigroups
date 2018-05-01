@@ -19,8 +19,8 @@
 #ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_EXCEPTION_H_
 #define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_EXCEPTION_H_
 
-#include <string>
 #include <exception>
+#include <string>
 
 struct LibsemigroupsException : public std::runtime_error {
   explicit LibsemigroupsException(std::string const& s)

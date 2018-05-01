@@ -79,7 +79,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
           "[quick][congruence][kbfp][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<> S = Semigroup<>(gens);
+  Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(KBFP_REPORT);
   really_delete_cont(gens);
 
@@ -154,7 +154,7 @@ TEST_CASE("KBFP 04: finite fp-semigroup, dihedral group of order 6",
 
 TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
           "[quick][fpsemigroup][kbfp][finite][05]") {
-  std::vector<relation_t> rels = {relation_t({3}, {2}),
+  std::vector<relation_t> rels  = {relation_t({3}, {2}),
                                   relation_t({0, 3}, {0, 2}),
                                   relation_t({1, 1}, {1}),
                                   relation_t({1, 3}, {1, 2}),
@@ -187,7 +187,7 @@ TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
 
 TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
           "[quick][fpsemigroup][kbfp][finite][06]") {
-  std::vector<relation_t> rels = {relation_t({2}, {1}),
+  std::vector<relation_t> rels  = {relation_t({2}, {1}),
                                   relation_t({4}, {3}),
                                   relation_t({5}, {0}),
                                   relation_t({6}, {3}),

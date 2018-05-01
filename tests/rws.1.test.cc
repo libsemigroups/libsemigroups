@@ -42,7 +42,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
   std::vector<relation_t> extra({});
-  Congruence            cong("twosided", &S, extra);
+  Congruence              cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -55,14 +55,14 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
           "[quick][rws][finite][02]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
-  Semigroup<> S = Semigroup<>(gens);
+  Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
   std::vector<relation_t> extra({});
-  Congruence            cong("twosided", &S, extra);
+  Congruence              cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -76,14 +76,14 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
           "[quick][rws][finite][03]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<> S = Semigroup<>(gens);
+  Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
   really_delete_cont(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);
   std::vector<relation_t> extra({});
-  Congruence            cong("twosided", &S, extra);
+  Congruence              cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -95,7 +95,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
 
 TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
           "[quick][rws][fpsemigroup][04]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
+  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
                                   relation_t({0, 2}, {0}),
@@ -106,7 +106,7 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
                                   relation_t({1, 2}, {1}),
                                   relation_t({2, 1}, {1})};
   std::vector<relation_t> extra = {{{0}, {1}}};
-  Congruence            cong("twosided", 3, rels, extra);
+  Congruence              cong("twosided", 3, rels, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -118,7 +118,7 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
 
 TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
           "[quick][rws][fpsemigroup][05]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
+  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
                                   relation_t({0, 2}, {0}),
@@ -433,7 +433,7 @@ TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
 }
 
 TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1, 0}),
+  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
                                   relation_t({0, 2}, {2, 0}),
                                   relation_t({0, 0}, {0}),
                                   relation_t({0, 2}, {0}),

@@ -263,12 +263,12 @@ namespace libsemigroups {
       return _color_prefix[tid % _color_prefix.size()];
     }
 
-    std::vector<std::string> _color_prefix;
+    std::vector<std::string>                    _color_prefix;
     std::unordered_map<std::thread::id, size_t> _map;
-    std::mutex        _mtx;
-    size_t            _next_tid;
-    std::ostream*     _ostream;  // For testing
-    std::atomic<bool> _report;
+    std::mutex                                  _mtx;
+    size_t                                      _next_tid;
+    std::ostream*                               _ostream;  // For testing
+    std::atomic<bool>                           _report;
   };
 
   extern Reporter glob_reporter;

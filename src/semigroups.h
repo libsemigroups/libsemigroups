@@ -1210,13 +1210,11 @@ namespace libsemigroups {
         if (!is_done()) {
           REPORT("found " << _nr << " elements, " << _nrrules
                           << " rules, max word length "
-                          << current_max_word_length()
-                          << ", so far")
+                          << current_max_word_length() << ", so far")
         } else {
           REPORT("found " << _nr << " elements, " << _nrrules
                           << " rules, max word length "
-                          << current_max_word_length()
-                          << ", finished")
+                          << current_max_word_length() << ", finished")
         }
       }
       REPORT("elapsed time = " << timer);
@@ -1437,13 +1435,11 @@ namespace libsemigroups {
         if (!is_done()) {
           REPORT("found " << _nr << " elements, " << _nrrules
                           << " rules, max word length "
-                          << current_max_word_length()
-                          << ", so far")
+                          << current_max_word_length() << ", so far")
         } else {
           REPORT("found " << _nr << " elements, " << _nrrules
                           << " rules, max word length "
-                          << current_max_word_length()
-                          << ", finished")
+                          << current_max_word_length() << ", finished")
         }
       }
       REPORT("elapsed time = " << timer);
@@ -1637,15 +1633,16 @@ namespace libsemigroups {
         return operator>(that) || operator==(that);
       }
 
-      iterator_base operator++(int) {  // postfix
-        iterator_base tmp(*this);
-        operator++();
+      // postfix
+      iterator_base operator++(int) {
+        iterator_base  tmp(*this);
+        iterator_base::operator++();
         return tmp;
       }
 
       iterator_base operator--(int) {
-        iterator_base tmp(*this);
-        operator--();
+        iterator_base  tmp(*this);
+        iterator_base::operator--();
         return tmp;
       }
 
@@ -1718,9 +1715,10 @@ namespace libsemigroups {
 
     struct IteratorMethodsPairFirst {
       IteratorMethodsPairFirst() {}
-      typename std::vector<TElementType>::const_reference indirection(
-          typename std::vector<std::pair<TElementType, element_index_t>>::
-              const_iterator it) const {
+      typename std::vector<TElementType>::const_reference
+      indirection(typename std::vector<
+                  std::pair<TElementType, element_index_t>>::const_iterator it)
+          const {
         return (*it).first;
       }
 
@@ -2050,9 +2048,11 @@ namespace libsemigroups {
       REPORT("number of products = " << _nr - threshold_index);
 #endif
 
-      total_load += comp * (_nr - (threshold_length == 0
-                                       ? 0
-                                       : _lenindex[threshold_length - 1]));
+      total_load
+          += comp
+             * (_nr
+                - (threshold_length == 0 ? 0
+                                         : _lenindex[threshold_length - 1]));
 
       size_t concurrency_threshold = 823543;
 
@@ -2128,8 +2128,8 @@ namespace libsemigroups {
                      enumerate_index_t const          last,
                      enumerate_index_t const          threshold,
                      std::vector<idempotent_value_t>& idempotents) {
-      REPORT("first = " << first << ", last = " << last << ", diff = "
-                        << last - first);
+      REPORT("first = " << first << ", last = " << last
+                        << ", diff = " << last - first);
       Timer timer;
 
       enumerate_index_t pos = first;
@@ -2178,23 +2178,23 @@ namespace libsemigroups {
       REPORT("elapsed time = " << timer);
     }
 
-    size_t          _batch_size;
-    element_index_t _degree;
+    size_t                                     _batch_size;
+    element_index_t                            _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
-    std::vector<TElementType>       _elements;
-    std::vector<element_index_t>    _enumerate_order;
-    std::vector<letter_t>           _final;
-    std::vector<letter_t>           _first;
-    bool                            _found_one;
-    std::vector<TElementType>       _gens;
-    TElementType                    _id;
-    std::vector<idempotent_value_t> _idempotents;
-    bool                            _idempotents_found;
-    std::vector<uint8_t>            _is_idempotent;
-    cayley_graph_t                  _left;
-    std::vector<index_t>            _length;
-    std::vector<enumerate_index_t>  _lenindex;
-    std::vector<element_index_t>    _letter_to_pos;
+    std::vector<TElementType>                  _elements;
+    std::vector<element_index_t>               _enumerate_order;
+    std::vector<letter_t>                      _final;
+    std::vector<letter_t>                      _first;
+    bool                                       _found_one;
+    std::vector<TElementType>                  _gens;
+    TElementType                               _id;
+    std::vector<idempotent_value_t>            _idempotents;
+    bool                                       _idempotents_found;
+    std::vector<uint8_t>                       _is_idempotent;
+    cayley_graph_t                             _left;
+    std::vector<index_t>                       _length;
+    std::vector<enumerate_index_t>             _lenindex;
+    std::vector<element_index_t>               _letter_to_pos;
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     google::dense_hash_map<TElementType,
@@ -2209,22 +2209,22 @@ namespace libsemigroups {
                        TElementEqual>
         _map;
 #endif
-    size_t                       _max_threads;
-    std::mutex                   _mtx;
-    index_t                      _nr;
-    letter_t                     _nrgens;
-    size_t                       _nrrules;
-    enumerate_index_t            _pos;
-    element_index_t              _pos_one;
-    std::vector<element_index_t> _prefix;
-    RecVec<bool>                 _reduced;
-    letter_t                     _relation_gen;
-    enumerate_index_t            _relation_pos;
-    cayley_graph_t               _right;
+    size_t                                                _max_threads;
+    std::mutex                                            _mtx;
+    index_t                                               _nr;
+    letter_t                                              _nrgens;
+    size_t                                                _nrrules;
+    enumerate_index_t                                     _pos;
+    element_index_t                                       _pos_one;
+    std::vector<element_index_t>                          _prefix;
+    RecVec<bool>                                          _reduced;
+    letter_t                                              _relation_gen;
+    enumerate_index_t                                     _relation_pos;
+    cayley_graph_t                                        _right;
     std::vector<std::pair<TElementType, element_index_t>> _sorted;
-    std::vector<element_index_t> _suffix;
-    mutable TElementType         _tmp_product;
-    size_t                       _wordlen;
+    std::vector<element_index_t>                          _suffix;
+    mutable TElementType                                  _tmp_product;
+    size_t                                                _wordlen;
 
 #ifdef LIBSEMIGROUPS_STATS
     size_t _nr_products;

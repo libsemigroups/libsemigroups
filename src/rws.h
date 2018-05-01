@@ -631,10 +631,10 @@ namespace libsemigroups {
     void push_stack(Rule* rule);
     void push_stack(Rule* rule, std::atomic<bool>& killed);
     void overlap(Rule const* u, Rule const* v, std::atomic<bool>& killed);
-    std::list<Rule const*> _active_rules;
-    std::string            _alphabet;
+    std::list<Rule const*>                 _active_rules;
+    std::string                            _alphabet;
     std::unordered_map<char, rws_letter_t> _alphabet_map;
-    size_t _check_confluence_interval;
+    size_t                                 _check_confluence_interval;
     // size_t                           _clear_stack_interval;
     mutable std::atomic<bool>        _confluence_known;
     mutable std::list<Rule*>         _inactive_rules;

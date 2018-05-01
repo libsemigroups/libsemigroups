@@ -513,8 +513,7 @@ namespace libsemigroups {
         REPORT("active rules = " << _active_rules.size()
                                  << ", inactive rules = "
                                  << _inactive_rules.size()
-                                 << ", rules defined = "
-                                 << _total_rules);
+                                 << ", rules defined = " << _total_rules);
 #ifdef LIBSEMIGROUPS_STATS
         REPORT("max stack depth        = " << _max_stack_depth);
         REPORT("max word length        = " << _max_word_length);
@@ -643,11 +642,9 @@ namespace libsemigroups {
         }
         _inactive_rules.clear();
       }
-      REPORT("finished, active rules = " << _active_rules.size()
-                                         << ", inactive rules = "
-                                         << _inactive_rules.size()
-                                         << ", rules defined = "
-                                         << _total_rules);
+      REPORT("finished, active rules = "
+             << _active_rules.size() << ", inactive rules = "
+             << _inactive_rules.size() << ", rules defined = " << _total_rules);
 #ifdef LIBSEMIGROUPS_STATS
       REPORT("max stack depth = " << _max_stack_depth);
 #endif

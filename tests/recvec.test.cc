@@ -543,9 +543,9 @@ TEST_CASE("RecVec 20: iterator operator-- (prefix)", "[quick][recvec][20]") {
 }
 
 TEST_CASE("RecVec 21: operator=", "[quick][recvec][21]") {
-  RecVec<size_t> rv1 = RecVec<size_t>(10, 10, 3);
-  RecVec<size_t> rv2 = RecVec<size_t>(9, 9, 2);
-  rv1.operator       =(rv2);
+  RecVec<size_t> rv1     = RecVec<size_t>(10, 10, 3);
+  RecVec<size_t> rv2     = RecVec<size_t>(9, 9, 2);
+  rv1.           operator=(rv2);
   REQUIRE(rv1.nr_cols() == 9);
   REQUIRE(rv1.nr_rows() == 9);
   REQUIRE(
@@ -555,9 +555,9 @@ TEST_CASE("RecVec 21: operator=", "[quick][recvec][21]") {
   REQUIRE(
       std::all_of(rv2.begin(), rv2.end(), [](size_t val) { return val == 2; }));
 
-  RecVec<bool> rv3 = RecVec<bool>(10, 10, false);
-  RecVec<bool> rv4 = RecVec<bool>(9, 9, true);
-  rv3.operator     =(rv4);
+  RecVec<bool> rv3     = RecVec<bool>(10, 10, false);
+  RecVec<bool> rv4     = RecVec<bool>(9, 9, true);
+  rv3.         operator=(rv4);
   REQUIRE(rv3.nr_cols() == 9);
   REQUIRE(rv3.nr_rows() == 9);
   REQUIRE(std::all_of(

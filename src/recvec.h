@@ -36,7 +36,7 @@ namespace libsemigroups {
     template <typename S, class B> friend class RecVec;
 
    public:
-    typedef A allocator_type;
+    typedef A                                           allocator_type;
     typedef typename std::vector<T, A>::value_type      value_type;
     typedef typename std::vector<T, A>::reference       reference;
     typedef typename std::vector<T, A>::const_reference const_reference;
@@ -246,10 +246,10 @@ namespace libsemigroups {
 
    private:
     std::vector<T, A> _vec;
-    size_t _nr_used_cols;
-    size_t _nr_unused_cols;
-    size_t _nr_rows;
-    T      _default_val;
+    size_t            _nr_used_cols;
+    size_t            _nr_unused_cols;
+    size_t            _nr_rows;
+    T                 _default_val;
 
    private:
     template <typename iterator_type,
@@ -262,11 +262,11 @@ namespace libsemigroups {
       typedef typename std::vector<T, A>::size_type       size_type;
       typedef typename std::vector<T, A>::difference_type difference_type;
       typedef typename std::vector<T, A>::value_type      value_type;
-      typedef reference_type                  reference;
-      typedef pointer_type                    pointer;
-      typedef reference_type                  const_reference;
-      typedef pointer_type                    const_pointer;
-      typedef std::random_access_iterator_tag iterator_category;
+      typedef reference_type                              reference;
+      typedef pointer_type                                pointer;
+      typedef reference_type                              const_reference;
+      typedef pointer_type                                const_pointer;
+      typedef std::random_access_iterator_tag             iterator_category;
 
       iterator_base(iterator_type it_vec, iterator_methods const* methods)
           : _it_vec(it_vec), _methods(methods) {}
@@ -290,7 +290,7 @@ namespace libsemigroups {
       }
 
       static iterator_base column_iterator(RecVec<T, A> const& rv,
-                                           iterator_type it_vec) {
+                                           iterator_type       it_vec) {
         return iterator_base(it_vec, new column_iterator_methods(rv));
       }
 
@@ -324,15 +324,16 @@ namespace libsemigroups {
         return operator>(that) || operator==(that);
       }
 
-      iterator_base operator++(int) {  // postfix
-        iterator_base tmp(*this);
-        operator++();
+      // postfix
+      iterator_base operator++(int) {
+        iterator_base  tmp(*this);
+        iterator_base::operator++();
         return tmp;
       }
 
       iterator_base operator--(int) {
-        iterator_base tmp(*this);
-        operator--();
+        iterator_base  tmp(*this);
+        iterator_base::operator--();
         return tmp;
       }
 
@@ -406,6 +407,7 @@ namespace libsemigroups {
 
         virtual void increment(iterator_base& it, size_type val) const = 0;
         virtual void decrement(iterator_base& it, size_type val) const = 0;
+
         virtual difference_type difference(iterator_base const& it,
                                            iterator_base        that) const = 0;
       };
@@ -638,14 +640,14 @@ namespace libsemigroups {
   template <typename iterator_type,
             typename reference_type,
             typename pointer_type>
-  typename RecVec<T, A>::
-      template iterator_base<iterator_type, reference_type, pointer_type>::
-          iterator_methods const*
-              RecVec<T, A>::iterator_base<iterator_type,
-                                          reference_type,
-                                          pointer_type>::_fast_methods
-      = new typename RecVec<T, A>::
-          template iterator_base<iterator_type, reference_type, pointer_type>::
-              fast_iterator_methods();
+  typename RecVec<T, A>::template iterator_base<
+      iterator_type,
+      reference_type,
+      pointer_type>::iterator_methods const* RecVec<T, A>::
+      iterator_base<iterator_type, reference_type, pointer_type>::_fast_methods
+      = new typename RecVec<T, A>::template iterator_base<
+          iterator_type,
+          reference_type,
+          pointer_type>::fast_iterator_methods();
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_RECVEC_H_
