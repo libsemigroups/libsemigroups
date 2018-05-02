@@ -239,14 +239,17 @@ namespace libsemigroups {
   //! ElementWithVectorData&lt;u_int128_t, Transformation&lt;u_int128_t&gt;&gt;
   //! so that when the identity method in this class is called it returns a
   //! Transformation and not an ElementWithVectorData.
-  template <typename TValueType, class TSubclass>
+  template <typename TValueType, class TSubclass,
+    class TAllocator = std::allocator<TValueType> >
   class ElementWithVectorData : public Element {
    public:
+    using Vector = std::vector<TValueType, TAllocator>;
+
     //! A constructor.
     //!
     //! Returns an object with an uninitialised vector.
     ElementWithVectorData()
-        : Element(), _vector(new std::vector<TValueType>()) {}
+   : Element(), _vector(new std::vector<TValueType, TAllocator>()) {}
 
     //! A constructor.
     //!
@@ -255,7 +258,7 @@ namespace libsemigroups {
     //!
     //! Returns an object whose defining data is stored in \p vector, which
     //! is not copied, and is deleted using Element::really_delete.
-    explicit ElementWithVectorData(std::vector<TValueType>* vector)
+    explicit ElementWithVectorData(std::vector<TValueType, TAllocator>* vector)
         : Element(), _vector(vector) {}
 
     //! A constructor.
@@ -264,8 +267,8 @@ namespace libsemigroups {
     //! the element.
     //!
     //! Returns an object whose defining data is a copy of \p vector.
-    explicit ElementWithVectorData(std::vector<TValueType> const& vector)
-        : ElementWithVectorData(new std::vector<TValueType>(vector)) {}
+    explicit ElementWithVectorData(std::vector<TValueType, TAllocator> const& vector)
+        : ElementWithVectorData(new std::vector<TValueType, TAllocator>(vector)) {}
 
     //! Returns the \p pos entry in the vector containing the defining data.
     //!
@@ -320,7 +323,7 @@ namespace libsemigroups {
     Element* really_copy(size_t increase_deg_by = 0) const override {
       LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
       (void) increase_deg_by;
-      std::vector<TValueType>* vector(new std::vector<TValueType>(*_vector));
+      std::vector<TValueType, TAllocator>* vector(new std::vector<TValueType, TAllocator>(*_vector));
       TSubclass*               copy = new TSubclass(vector);
       copy->_hash_value             = this->_hash_value;
       return copy;
@@ -363,7 +366,7 @@ namespace libsemigroups {
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     Element* empty_key() const override {
-      return new TSubclass(new std::vector<TValueType>(
+      return new TSubclass(new std::vector<TValueType, TAllocator>(
           {std::numeric_limits<TValueType>::max()}));
     }
 #endif
@@ -372,7 +375,7 @@ namespace libsemigroups {
     //!
     //! This method returns an iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator begin() const {
+    inline typename std::vector<TValueType, TAllocator>::iterator begin() const {
       return _vector->begin();
     }
 
@@ -380,7 +383,7 @@ namespace libsemigroups {
     //!
     //! This method returns an iterator referring to the past-the-end element
     //! of the vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator end() const {
+    inline typename std::vector<TValueType, TAllocator>::iterator end() const {
       return _vector->end();
     }
 
@@ -388,7 +391,7 @@ namespace libsemigroups {
     //!
     //! This method returns a const_iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator cbegin() const {
+    inline typename std::vector<TValueType, TAllocator>::iterator cbegin() const {
       return _vector->cbegin();
     }
 
@@ -396,7 +399,7 @@ namespace libsemigroups {
     //!
     //! This method returns a const iterator referring to the past-the-end
     //! element of the vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator cend() const {
+    inline typename std::vector<TValueType, TAllocator>::iterator cend() const {
       return _vector->cend();
     }
 
@@ -421,7 +424,7 @@ namespace libsemigroups {
     //! The vector containing the defining data of \c this.
     //!
     //! The actual data defining of \c this is stored in _vector.
-    std::vector<TValueType>* _vector;
+    std::vector<TValueType, TAllocator>* _vector;
   };
 
   //! Abstract base class for elements using a vector to store their defining
@@ -430,10 +433,10 @@ namespace libsemigroups {
   //! This class is almost the same as ElementWithVectorData, except that it
   //! also implements a method for cache_hash_value, which uses
   //! ElementWithVectorData::vector_hash.
-  template <typename TValueType, class TSubclass>
+  template <typename TValueType, class TSubclass, class TAllocator = std::allocator<TValueType>>
   class ElementWithVectorDataDefaultHash
-      : public ElementWithVectorData<TValueType, TSubclass> {
-    using ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData;
+    : public ElementWithVectorData<TValueType, TSubclass, TAllocator> {
+    using ElementWithVectorData<TValueType, TSubclass, TAllocator>::ElementWithVectorData;
 
    protected:
     //! This method implements the default hash function for an
@@ -477,11 +480,13 @@ namespace libsemigroups {
   //! where the value PartialTransformation::UNDEFINED is used to
   //! indicate that \f$(i)f\f$ is, you guessed it, undefined (i.e. not among
   //! the points where \f$f\f$ is defined).
-  template <typename TValueType, typename TSubclass>
+  template <typename TValueType,
+    typename TSubclass,
+    class TAllocator = std::allocator<TValueType>>
   class PartialTransformation
-      : public ElementWithVectorDataDefaultHash<TValueType, TSubclass> {
+    : public ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator> {
    public:
-    using ElementWithVectorDataDefaultHash<TValueType, TSubclass>::
+   using ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator>::
         ElementWithVectorDataDefaultHash;
 
     //! Returns the approximate time complexity of multiplying two
@@ -526,7 +531,7 @@ namespace libsemigroups {
     //! the degree of \c this that fixes every value from *0* to the degree of
     //! \c this.
     Element* identity() const override {
-      std::vector<TValueType>* vector(new std::vector<TValueType>());
+      std::vector<TValueType, TAllocator>* vector(new std::vector<TValueType, TAllocator>());
       vector->reserve(this->degree());
       for (size_t i = 0; i < this->degree(); i++) {
         vector->push_back(i);
@@ -545,12 +550,12 @@ namespace libsemigroups {
     static std::vector<bool> _lookup;
   };
 
-  template <typename TValueType, typename TSubclass>
-  std::vector<bool> PartialTransformation<TValueType, TSubclass>::_lookup
+  template <typename TValueType, typename TSubclass, class TAllocator>
+  std::vector<bool> PartialTransformation<TValueType, TSubclass, TAllocator>::_lookup
       = std::vector<bool>();
 
-  template <typename TValueType, typename TSubclass>
-  TValueType const PartialTransformation<TValueType, TSubclass>::UNDEFINED
+  template <typename TValueType, typename TSubclass, class TAllocator>
+  TValueType const PartialTransformation<TValueType, TSubclass, TAllocator>::UNDEFINED
       = std::numeric_limits<TValueType>::max();
 
   //! Template class for transformations.
@@ -975,9 +980,9 @@ namespace libsemigroups {
   //! MatrixOverSemiringBase, and it is used so that it can be passed to
   //! ElementWithVectorData, whose method ElementWithVectorData::identity
   //! returns an instance of \p TSubclass.
-  template <typename TValueType, class TSubclass>
+  template <typename TValueType, class TSubclass, class TAllocator = std::allocator<TValueType>>
   class MatrixOverSemiringBase
-      : public ElementWithVectorDataDefaultHash<TValueType, TSubclass> {
+      : public ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator> {
    public:
     //! A constructor.
     //!
@@ -996,7 +1001,7 @@ namespace libsemigroups {
     //! that the vector \p matrix has size a non-zero perfect square.
     MatrixOverSemiringBase(std::vector<TValueType>*    matrix,
                            Semiring<TValueType> const* semiring)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator>(matrix),
           _degree(sqrt(matrix->size())),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
@@ -1028,7 +1033,7 @@ namespace libsemigroups {
     //! has been deleted.
     MatrixOverSemiringBase(std::vector<std::vector<TValueType>> const& matrix,
                            Semiring<TValueType> const*                 semiring)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(),
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator>(),
           _degree(matrix[0].size()),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
@@ -1089,7 +1094,7 @@ namespace libsemigroups {
       (void) increase_deg_by;
       MatrixOverSemiringBase* copy = static_cast<MatrixOverSemiringBase*>(
           ElementWithVectorDataDefaultHash<TValueType,
-                                           TSubclass>::really_copy());
+          TSubclass, TAllocator>::really_copy());
       LIBSEMIGROUPS_ASSERT(copy->_semiring == nullptr
                            || copy->_semiring == this->_semiring);
       copy->_semiring = _semiring;
@@ -1131,12 +1136,12 @@ namespace libsemigroups {
     }
 
    protected:
-    friend class ElementWithVectorData<TValueType, TSubclass>;
+    friend class ElementWithVectorData<TValueType, TSubclass, TAllocator>;
     //! Constructs a MatrixOverSemiringBase with whose underlying semiring is
     //! not defined. The underlying semiring must be set by any class deriving
     //! from this one.
     explicit MatrixOverSemiringBase(std::vector<TValueType>* matrix)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass, TAllocator>(matrix),
           _degree(sqrt(matrix->size())),
           _semiring(nullptr) {}
 
