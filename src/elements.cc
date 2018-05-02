@@ -40,8 +40,10 @@ namespace libsemigroups {
 
     size_t             k;
     size_t             dim = this->degree();
-    std::vector<bool>* xx(static_cast<BooleanMat const*>(x)->_vector);
-    std::vector<bool>* yy(static_cast<BooleanMat const*>(y)->_vector);
+    std::shared_ptr<std::vector<bool>> xx(
+      static_cast<BooleanMat const*>(x)->_vector);
+    std::shared_ptr<std::vector<bool>> yy(
+      static_cast<BooleanMat const*>(y)->_vector);
 
     for (size_t i = 0; i < dim; i++) {
       for (size_t j = 0; j < dim; j++) {
@@ -96,8 +98,8 @@ namespace libsemigroups {
     Bipartition const* xx = static_cast<Bipartition const*>(x);
     Bipartition const* yy = static_cast<Bipartition const*>(y);
 
-    std::vector<u_int32_t>* xblocks(xx->_vector);
-    std::vector<u_int32_t>* yblocks(yy->_vector);
+    std::shared_ptr<std::vector<u_int32_t>> xblocks(xx->_vector);
+    std::shared_ptr<std::vector<u_int32_t>> yblocks(yy->_vector);
 
     u_int32_t nrx(xx->const_nr_blocks());
     u_int32_t nry(yy->const_nr_blocks());
@@ -288,7 +290,7 @@ namespace libsemigroups {
   void PBR::cache_hash_value() const {
     this->_hash_value = 0;
     for (auto const& row : *this->_vector) {
-      this->_hash_value += vector_hash(&row);
+      this->_hash_value += vector_hash(row);
     }
   }
 
