@@ -28,6 +28,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <vector>
+#include <memory>
 
 #include "blocks.h"
 #include "libsemigroups-debug.h"
@@ -148,7 +149,7 @@ namespace libsemigroups {
     //! deleted, since it may be contained in several copies of the Element.
     //!
     //! \sa Element::really_copy.
-    virtual void really_delete() = 0;
+    virtual void really_delete() {};
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -356,9 +357,9 @@ namespace libsemigroups {
     }
 
     //! Deletes the defining data of an ElementWithVectorData.
-    void really_delete() override {
-      delete _vector;
-    }
+    // void really_delete() override {
+    //   delete _vector;
+    // }
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
@@ -410,9 +411,9 @@ namespace libsemigroups {
     //! Returns a hash value for a vector provided there is a specialization of
     //! std::hash for the template type \p T.
     template <typename T>
-    static inline size_t vector_hash(std::vector<T> const* vec) {
+    static inline size_t vector_hash(std::vector<T> const &vec) {
       size_t seed = 0;
-      for (auto const& x : *vec) {
+      for (auto const& x : vec) {
         seed ^= std::hash<T>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
       }
       return seed;
@@ -421,7 +422,7 @@ namespace libsemigroups {
     //! The vector containing the defining data of \c this.
     //!
     //! The actual data defining of \c this is stored in _vector.
-    std::vector<TValueType>* _vector;
+    std::shared_ptr<std::vector<TValueType>> _vector;
   };
 
   //! Abstract base class for elements using a vector to store their defining
@@ -443,7 +444,7 @@ namespace libsemigroups {
     //! the template parameter \p TValueType, and you do not want to define a
     //! hash function explicitly in your derived class.
     void cache_hash_value() const override {
-      this->_hash_value = this->vector_hash(this->_vector);
+      this->_hash_value = this->vector_hash(*(this->_vector));
     }
   };
 
