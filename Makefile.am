@@ -34,6 +34,7 @@ ACLOCAL_AMFLAGS	= -I m4
 pkginclude_HEADERS =  src/libsemigroups-config.h
 pkginclude_HEADERS += src/libsemigroups-debug.h
 pkginclude_HEADERS += src/libsemigroups-exception.h
+pkginclude_HEADERS += src/alloc.h
 pkginclude_HEADERS += src/blocks.h
 pkginclude_HEADERS += src/bmat8.h     
 pkginclude_HEADERS += src/cong.h
@@ -101,6 +102,7 @@ CHECK_FLAGS2  = [quick],[standard]
 check_PROGRAMS = lstest
 
 lstest_SOURCES =  tests/main.test.cc      
+lstest_SOURCES+= tests/alloc.test.cc
 lstest_SOURCES += tests/blocks.test.cc	  
 lstest_SOURCES += tests/bmat8.test.cc
 lstest_SOURCES += tests/cong.test.cc	  
