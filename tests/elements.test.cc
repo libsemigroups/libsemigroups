@@ -18,6 +18,7 @@
 
 #include "catch.hpp"
 
+#include "../src/bmat8.h"
 #include "../src/elements.h"
 
 using namespace libsemigroups;
@@ -1268,4 +1269,23 @@ TEST_CASE("Permutation 02: exceptions", "[quick][element][permutation][02]") {
   REQUIRE_THROWS_AS(
       PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 5, 0, 3, 2})),
       LibsemigroupsException);
+}
+
+TEST_CASE("SmallestInteger 01", "[quick][helpers][01]") {
+  REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
+  REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
+  REQUIRE(sizeof(SmallestInteger<256>::type) == 2);
+  REQUIRE(sizeof(SmallestInteger<65535>::type) == 2);
+  REQUIRE(sizeof(SmallestInteger<65536>::type) == 4);
+#if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
+  REQUIRE(sizeof(SmallestInteger<4294967295>::type) == 4);
+  REQUIRE(sizeof(SmallestInteger<4294967296>::type) == 8);
+#endif
+}
+
+TEST_CASE("Transf 02", "[quick][helpers][02]") {
+  auto x = Transf<3>::type({0, 1, 2});
+  auto y = PPerm<3>::type({0, 1, 2});
+  auto z = Perm<3>::type({0, 1, 2});
+  auto a = BMat<3>::type({{0, 1}, {0, 1}});
 }

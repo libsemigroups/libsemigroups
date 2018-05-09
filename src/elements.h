@@ -35,6 +35,10 @@
 #include "recvec.h"
 #include "semiring.h"
 
+#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#include "../extern/HPCombi/include/perm16.hpp"
+#endif
+
 namespace libsemigroups {
 
   //! Abstract base class for semigroup elements
@@ -1501,6 +1505,55 @@ namespace libsemigroups {
   //   res.validate();
   //   return res;
   // }
+
+  template <size_t N> struct SmallestInteger {
+    using type = typename std::conditional<
+        N >= 0x100000000,
+        u_int64_t,
+        typename std::conditional<
+            N >= 0x10000,
+            u_int32_t,
+            typename std::conditional<N >= 0x100, u_int16_t, u_int8_t>::type>::
+            type>::type;
+  };
+
+  template <size_t N> struct Transf {
+#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+    using type = typename std::conditional<
+        N >= 16,
+        Transformation<typename SmallestInteger<N>::type>,
+        HPCombi::Transf16>::type;
+#else
+    using type = Transformation<typename SmallestInteger<N>::type>;
+#endif
+  };
+
+  template <size_t N> struct PPerm {
+#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+    using type = typename std::conditional<
+        N >= 16,
+        PartialPerm<typename SmallestInteger<N>::type>,
+        HPCombi::PTransf16>::type;
+#else
+    using type = PartialPerm<typename SmallestInteger<N>::type>;
+#endif
+  };
+
+  template <size_t N> struct Perm {
+#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+    using type = typename std::conditional<
+        N >= 16,
+        Permutation<typename SmallestInteger<N>::type>,
+        HPCombi::Perm16>::type;
+#else
+    using type = Permutation<typename SmallestInteger<N>::type>;
+#endif
+  };
+
+  class BMat8;
+  template <size_t N> struct BMat {
+    using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
+  };
 }  // namespace libsemigroups
 
 namespace std {
