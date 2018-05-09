@@ -40,10 +40,10 @@ namespace libsemigroups {
     using rws_word_t              = RWS::rws_word_t;
 
    private:
-    RWSE(RWS* rws, rws_word_t* w, bool reduce)
+    RWSE(RWS* rws, rws_word_t w, bool reduce)
         : Element(), _rws(rws), _rws_word(w) {
       if (reduce) {
-        _rws->rewrite(_rws_word);
+        _rws->rewrite(&_rws_word);
       }
     }
 
@@ -54,34 +54,23 @@ namespace libsemigroups {
     //! multiplication with other RWSE's is defined with respect to the
     //! rewriting system \p rws.
     //!
-    //! The rws_word_t w is not copied, and should be deleted using
-    //! ElementWithVectorData::really_delete.
-    //!
     //! The rewriting system \p rws is not copied either, and it is the
     //! responsibility of the caller to delete it.
-    RWSE(RWS* rws, rws_word_t* w) : RWSE(rws, w, true) {
-      LIBSEMIGROUPS_ASSERT(w != nullptr);
-    }
+    explicit RWSE(RWS* rws) : RWSE(rws, "", false) {}
 
-    //! Constructor from a rewriting system and a word.
-    //!
-    //! Constructs a RWSE which is essentially the word \p w, whose
-    //! multiplication with other RWSE's is defined with respect to the
-    //! rewriting system \p rws.
-    //!
-    //! The rws_word_t \p w is copied, but the rewriting system \p rws is
-    //! not.
-    RWSE(RWS& rws, rws_word_t const& w) : RWSE(&rws, new rws_word_t(w)) {}
+    RWSE(RWS* rws, rws_word_t const& w) : RWSE(rws, w, true) {}
 
     //! Constructor from a rewriting system and a letter.
     //!
     //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
-    RWSE(RWS& rws, letter_t const& a) : RWSE(&rws, RWS::uint_to_rws_word(a)) {}
+    RWSE(RWS* rws, letter_t const& a) : RWSE(rws, *RWS::uint_to_rws_word(a)) {}
+    RWSE(RWS& rws, letter_t const& a) : RWSE(&rws, a) {}
 
     //! Constructor from a rewriting system and a word.
     //!
     //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
-    RWSE(RWS& rws, word_t const& w) : RWSE(&rws, RWS::word_to_rws_word(w)) {}
+    RWSE(RWS* rws, word_t const& w) : RWSE(rws, *RWS::word_to_rws_word(w)) {}
+    RWSE(RWS& rws, word_t const& w) : RWSE(&rws, w) {}
 
     //! Returns \c true if \c this equals \p that.
     //!
@@ -89,9 +78,7 @@ namespace libsemigroups {
     //! words whether or not they represent that the same reduced word of the
     //! rewriting system they are defined over.
     bool operator==(Element const& that) const override {
-      LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-      LIBSEMIGROUPS_ASSERT(static_cast<RWSE const&>(that)._rws_word != nullptr);
-      return *(static_cast<RWSE const&>(that)._rws_word) == *(this->_rws_word);
+      return static_cast<RWSE const&>(that)._rws_word == this->_rws_word;
     }
 
     //! Returns \c true if \c this is less than that and \c false if it is
@@ -115,14 +102,6 @@ namespace libsemigroups {
     //! changing \c this in-place.
     void copy(Element const* x) override;
     void swap(Element* x) override;
-
-    //! Deletes the underlying rws_word_t that this object wraps.
-    //!
-    //! \sa Element::really_delete.
-    void really_delete() override {
-      delete _rws_word;
-      _rws_word = nullptr;
-    }
 
     //! Returns the approximate time complexity of multiplying two
     //! RWSE's.
@@ -153,15 +132,14 @@ namespace libsemigroups {
     //! Returns a new RWSE wrapping the empty word and over the same rewriting
     //! system as \c this.
     Element* identity() const override {
-      return new RWSE(_rws, new rws_word_t());
+      return new RWSE(_rws);
     }
 
     //! Calculates a hash value for this object which is cached.
     //!
     //! \sa Element::hash_value and Element::cache_hash_value.
     void cache_hash_value() const override {
-      LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-      this->_hash_value = std::hash<rws_word_t>()(*_rws_word);
+      this->_hash_value = std::hash<rws_word_t>{}(_rws_word);
     }
 
     //! Multiply \p x and \p y and stores the result in \c this.
@@ -188,14 +166,14 @@ namespace libsemigroups {
 #endif
 
     //! Returns a pointer to the rws_word_t used to create \c this.
-    rws_word_t const* get_rws_word() const {
+    rws_word_t const& get_rws_word() const {
       return _rws_word;
     }
 
    private:
     // TODO const!
-    RWS*        _rws;
-    rws_word_t* _rws_word;
+    RWS*       _rws;
+    rws_word_t _rws_word;
   };
 }  // namespace libsemigroups
 

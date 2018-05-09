@@ -45,10 +45,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_rws->confluent());
       std::vector<RWSE*> gens;
       for (size_t i = 0; i < _cong._nrgens; i++) {
-        gens.push_back(new RWSE(*_rws, i));
+        gens.push_back(new RWSE(_rws, i));
       }
       _semigroup = new Semigroup<RWSE*>(gens);
-      really_delete_cont(gens);
 
       _P_cong = new Congruence(_cong._type, _semigroup, _cong._extra);
       _P_cong->set_relations(_cong.relations());

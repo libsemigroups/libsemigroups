@@ -175,8 +175,7 @@ namespace libsemigroups {
           is_one(_gens[i], _nr);
           _elements.push_back(_gens[i]);
           // Note that every non-duplicate generator is *really* stored in
-          // _elements, and so must be *really_delete*d from _elements but not
-          // _gens
+          // _elements, and so must be deleted from _elements but not _gens.
           _first.push_back(i);
           _final.push_back(i);
           _enumerate_order.push_back(_nr);

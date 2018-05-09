@@ -37,7 +37,6 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
@@ -57,7 +56,6 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
@@ -78,7 +76,6 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);

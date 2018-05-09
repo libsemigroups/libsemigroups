@@ -32,7 +32,6 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWSE_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
@@ -48,7 +47,6 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
 
   gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup<> T = Semigroup<>(gens);
-  really_delete_cont(gens);
   T.set_report(RWSE_REPORT);
   REQUIRE(T.size() == 4);
 
@@ -58,12 +56,9 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   REQUIRE(b == ab);
   REQUIRE(!(ab < b));
   REQUIRE(!(ab < b));
-  ab.really_delete();
 
   RWSE aba(rws, word_t({0, 1, 0}));
   REQUIRE(b < aba);
-  aba.really_delete();
-  b.really_delete();
 }
 
 TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
@@ -72,7 +67,6 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWSE_REPORT);
-  really_delete_cont(gens);
 
   std::vector<relation_t> extra;
   Congruence              cong("twosided", &S, extra);
@@ -84,7 +78,6 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
 
   gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup<> T = Semigroup<>(gens);
-  really_delete_cont(gens);
   T.set_report(RWSE_REPORT);
 
   RWSE    ab(rws, word_t({0, 1}));
@@ -99,7 +92,4 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
 
   aaa.copy(&ab);
   REQUIRE(aaa == ab);
-
-  aaa.really_delete();
-  ab.really_delete();
 }

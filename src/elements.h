@@ -48,9 +48,6 @@ namespace libsemigroups {
     Element() : _hash_value(UNDEFINED) {}
 
     //! A default destructor.
-    //!
-    //! This does not properly delete the underlying data of the object, this
-    //! should be done using Element::really_delete.
     virtual ~Element() {}
 
     //! Returns \c true if \c this equals \p that.
@@ -125,8 +122,6 @@ namespace libsemigroups {
     //! actual data in an Element is only copied when this method is called.
     //! Otherwise, if an Element is copied, then its defining data is only
     //! stored once.
-    //!
-    //! \sa Element::really_delete.
     virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
 
     //! Copy another Element into \c this.
@@ -138,18 +133,6 @@ namespace libsemigroups {
     //!
     //! This method swaps the defining data of \p x and \c this.
     virtual void swap(Element* x) = 0;
-
-    //! Deletes the defining data of an Element.
-    //!
-    //! This method really deletes an Element. To minimise the amount of
-    //! copying when Elements are inserted in an std::unordered_map or other
-    //! containers, an Element behaves somewhat like a pointer, in that the
-    //! actual data in an Element is only deleted when this method is called.
-    //! Otherwise, if an Element is deleted, then its defining data is not
-    //! deleted, since it may be contained in several copies of the Element.
-    //!
-    //! \sa Element::really_copy.
-    virtual void really_delete() = 0;
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -246,18 +229,7 @@ namespace libsemigroups {
     //! A constructor.
     //!
     //! Returns an object with an uninitialised vector.
-    ElementWithVectorData()
-        : Element(), _vector(new std::vector<TValueType>()) {}
-
-    //! A constructor.
-    //!
-    //! The parameter \p vector should be a pointer to defining data of the
-    //! element.
-    //!
-    //! Returns an object whose defining data is stored in \p vector, which
-    //! is not copied, and is deleted using Element::really_delete.
-    explicit ElementWithVectorData(std::vector<TValueType>* vector)
-        : Element(), _vector(vector) {}
+    ElementWithVectorData() : Element(), _vector() {}
 
     //! A constructor.
     //!
@@ -266,7 +238,7 @@ namespace libsemigroups {
     //!
     //! Returns an object whose defining data is a copy of \p vector.
     explicit ElementWithVectorData(std::vector<TValueType> const& vector)
-        : ElementWithVectorData(new std::vector<TValueType>(vector)) {}
+        : Element(), _vector(vector) {}
 
     //! Returns the \p pos entry in the vector containing the defining data.
     //!
@@ -274,7 +246,7 @@ namespace libsemigroups {
     //! this. No checks are performed that \p pos in within the bounds of this
     //! vector.
     inline TValueType operator[](size_t pos) const {
-      return (*_vector)[pos];
+      return _vector[pos];
     }
 
     //! Returns the \p pos entry in the vector containing the defining data.
@@ -282,7 +254,7 @@ namespace libsemigroups {
     //! This method returns the \p pos entry in the vector used to construct \c
     //! this.
     inline TValueType at(size_t pos) const {
-      return _vector->at(pos);
+      return _vector.at(pos);
     }
 
     //! Returns \c true if \c this equals \p that.
@@ -290,7 +262,7 @@ namespace libsemigroups {
     //! This method checks that the underlying vectors of \c this and \p that
     //! are equal.
     bool operator==(Element const& that) const override {
-      return *(static_cast<TSubclass const&>(that)._vector) == *(this->_vector);
+      return static_cast<TSubclass const&>(that)._vector == this->_vector;
     }
 
     //! Returns \c true if \c this is less than \p that.
@@ -300,10 +272,10 @@ namespace libsemigroups {
     //! short-lex order.
     bool operator<(Element const& that) const override {
       TSubclass const& ewvd = static_cast<TSubclass const&>(that);
-      if (this->_vector->size() != ewvd._vector->size()) {
-        return this->_vector->size() < ewvd._vector->size();
+      if (this->_vector.size() != ewvd._vector.size()) {
+        return this->_vector.size() < ewvd._vector.size();
       }
-      for (size_t i = 0; i < this->_vector->size(); i++) {
+      for (size_t i = 0; i < this->_vector.size(); i++) {
         if ((*this)[i] != ewvd[i]) {
           return (*this)[i] < ewvd[i];
         }
@@ -321,9 +293,8 @@ namespace libsemigroups {
     Element* really_copy(size_t increase_deg_by = 0) const override {
       LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
       (void) increase_deg_by;
-      std::vector<TValueType>* vector(new std::vector<TValueType>(*_vector));
-      TSubclass*               copy = new TSubclass(vector);
-      copy->_hash_value             = this->_hash_value;
+      TSubclass* copy   = new TSubclass(this->_vector);
+      copy->_hash_value = this->_hash_value;
       return copy;
     }
 
@@ -338,7 +309,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
       ElementWithVectorData const* xx
           = static_cast<ElementWithVectorData const*>(x);
-      _vector->assign(xx->_vector->cbegin(), xx->_vector->cend());
+      _vector.assign(xx->_vector.cbegin(), xx->_vector.cend());
       this->_hash_value = xx->_hash_value;
     }
 
@@ -352,20 +323,14 @@ namespace libsemigroups {
     void swap(Element* x) override {
       LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
       ElementWithVectorData* xx = static_cast<ElementWithVectorData*>(x);
-      _vector->swap(*(xx->_vector));
+      _vector.swap(xx->_vector);
       std::swap(this->_hash_value, xx->_hash_value);
-    }
-
-    //! Deletes the defining data of an ElementWithVectorData.
-    void really_delete() override {
-      delete _vector;
     }
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     Element* empty_key() const override {
-      return new TSubclass(new std::vector<TValueType>(
-          {std::numeric_limits<TValueType>::max()}));
+      return new TSubclass({std::numeric_limits<TValueType>::max()});
     }
 #endif
 
@@ -373,16 +338,16 @@ namespace libsemigroups {
     //!
     //! This method returns an iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator begin() const {
-      return _vector->begin();
+    inline typename std::vector<TValueType>::const_iterator begin() const {
+      return _vector.begin();
     }
 
     //! Returns an iterator.
     //!
     //! This method returns an iterator referring to the past-the-end element
     //! of the vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator end() const {
-      return _vector->end();
+    inline typename std::vector<TValueType>::const_iterator end() const {
+      return _vector.end();
     }
 
     //! Returns a const iterator.
@@ -390,7 +355,7 @@ namespace libsemigroups {
     //! This method returns a const_iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
     inline typename std::vector<TValueType>::iterator cbegin() const {
-      return _vector->cbegin();
+      return _vector.cbegin();
     }
 
     //! Returns a const iterator.
@@ -398,11 +363,11 @@ namespace libsemigroups {
     //! This method returns a const iterator referring to the past-the-end
     //! element of the vector that is the underlying defining data of \c this.
     inline typename std::vector<TValueType>::iterator cend() const {
-      return _vector->cend();
+      return _vector.cend();
     }
 
     inline size_t size() const {
-      return _vector->size();
+      return _vector.size();
     }
 
    protected:
@@ -411,9 +376,9 @@ namespace libsemigroups {
     //! Returns a hash value for a vector provided there is a specialization of
     //! std::hash for the template type \p T.
     template <typename T>
-    static inline size_t vector_hash(std::vector<T> const* vec) {
+    static inline size_t vector_hash(std::vector<T> const& vec) {
       size_t seed = 0;
-      for (auto const& x : *vec) {
+      for (auto const& x : vec) {
         seed ^= std::hash<T>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
       }
       return seed;
@@ -422,7 +387,7 @@ namespace libsemigroups {
     //! The vector containing the defining data of \c this.
     //!
     //! The actual data defining of \c this is stored in _vector.
-    std::vector<TValueType>* _vector;
+    std::vector<TValueType> _vector;
   };
 
   //! Abstract base class for elements using a vector to store their defining
@@ -486,8 +451,7 @@ namespace libsemigroups {
         ElementWithVectorDataDefaultHash;
 
     explicit PartialTransformation(std::vector<TValueType> const& vec)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(
-              new std::vector<TValueType>(vec)) {
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(vec) {
       // validate(); // FIXME uncommenting this line causes cppyy to crash on
       // construction of a transformation.
     }
@@ -497,7 +461,7 @@ namespace libsemigroups {
               std::vector<TValueType>(imgs)) {}
 
     void validate() const {
-      for (auto const& val : *(this->_vector)) {
+      for (auto const& val : this->_vector) {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
           throw LibsemigroupsException(
               "PartialTransformation: image value out of bounds, found "
@@ -513,7 +477,7 @@ namespace libsemigroups {
     //! The approximate time complexity of multiplying partial transformations
     //! is just their degree.
     size_t complexity() const override {
-      return this->_vector->size();
+      return this->_vector.size();
     }
 
     //! Returns the degree of a partial transformation.
@@ -522,7 +486,7 @@ namespace libsemigroups {
     //! in its definition, which is equal to the size of
     //! ElementWithVectorData::_vector.
     size_t degree() const override {
-      return this->_vector->size();
+      return this->_vector.size();
     }
 
     //! Returns the rank of a partial transformation.
@@ -534,7 +498,7 @@ namespace libsemigroups {
       _lookup.clear();
       _lookup.resize(degree(), false);
       size_t r = 0;
-      for (auto const& x : *(this->_vector)) {
+      for (auto const& x : this->_vector) {
         if (x != UNDEFINED && !_lookup[x]) {
           _lookup[x] = true;
           r++;
@@ -549,10 +513,10 @@ namespace libsemigroups {
     //! the degree of \c this that fixes every value from *0* to the degree of
     //! \c this.
     Element* identity() const override {
-      std::vector<TValueType>* vector(new std::vector<TValueType>());
-      vector->reserve(this->degree());
+      std::vector<TValueType> vector;
+      vector.reserve(this->degree());
       for (size_t i = 0; i < this->degree(); i++) {
-        vector->push_back(i);
+        vector.push_back(i);
       }
       return new TSubclass(vector);
     }
@@ -601,8 +565,8 @@ namespace libsemigroups {
         : Transformation<T>(std::vector<T>(imgs)) {}
 
     void validate() const {
-      size_t max = this->_vector->size();
-      for (auto const& val : *(this->_vector)) {
+      size_t max = this->_vector.size();
+      for (auto const& val : this->_vector) {
         if (val < 0 || val >= max) {
           throw LibsemigroupsException(
               "Transformation: image value out of bounds, found "
@@ -619,15 +583,14 @@ namespace libsemigroups {
     //! The copy returned by this method fixes all the values between the
     //! Transformation::degree of \c this and \p increase_deg_by.
     Element* really_copy(size_t increase_deg_by = 0) const override {
-      Transformation<T>* copy
-          = new Transformation<T>(new std::vector<T>(*this->_vector));
+      Transformation<T>* copy = new Transformation<T>(this->_vector);
       if (increase_deg_by == 0) {
         copy->_hash_value = this->_hash_value;
       } else {
-        size_t n = copy->_vector->size();
-        copy->_vector->reserve(n + increase_deg_by);
+        size_t n = copy->_vector.size();
+        copy->_vector.reserve(n + increase_deg_by);
         for (size_t i = n; i < n + increase_deg_by; i++) {
-          copy->_vector->push_back(i);
+          copy->_vector.push_back(i);
         }
       }
       return copy;
@@ -645,9 +608,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x != this && y != this);
       Transformation<T> const* xx(static_cast<Transformation<T> const*>(x));
       Transformation<T> const* yy(static_cast<Transformation<T> const*>(y));
-      size_t const             n = this->_vector->size();
+      size_t const             n = this->_vector.size();
       for (T i = 0; i < n; i++) {
-        (*this->_vector)[i] = (*yy)[(*xx)[i]];
+        (this->_vector)[i] = (*yy)[(*xx)[i]];
       }
       this->reset_hash_value();
     }
@@ -657,8 +620,8 @@ namespace libsemigroups {
     //! in some benchmarks.
     void cache_hash_value() const override {
       size_t seed = 0;
-      size_t deg  = this->_vector->size();
-      for (auto const& val : *(this->_vector)) {
+      size_t deg  = this->_vector.size();
+      for (auto const& val : this->_vector) {
         seed *= deg;
         seed += val;
       }
@@ -703,10 +666,10 @@ namespace libsemigroups {
     PartialPerm(std::vector<T> const& dom,
                 std::vector<T> const& ran,
                 size_t                deg)
-      // The vector passed in the next line shouldn't be necessary, but with
-      // GCC5 PartialPerm fails to inherit the 0-param constructor from
-      // PartialTransformation.
-        : PartialTransformation<T, PartialPerm<T>>(new std::vector<T>()) {
+        // The vector passed in the next line shouldn't be necessary, but with
+        // GCC5 PartialPerm fails to inherit the 0-param constructor from
+        // PartialTransformation.
+        : PartialTransformation<T, PartialPerm<T>>(std::vector<T>()) {
       if (dom.size() != ran.size()) {
         throw LibsemigroupsException(
             "PartialPerm: domain and range size mismatch");
@@ -718,9 +681,9 @@ namespace libsemigroups {
             + ", must be less than " + std::to_string(deg));
       }
 
-      this->_vector->resize(deg, UNDEFINED);
+      this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
-        (*this->_vector)[dom[i]] = ran[i];
+        this->_vector[dom[i]] = ran[i];
       }
       validate();
     }
@@ -732,7 +695,7 @@ namespace libsemigroups {
 
     void validate() const {
       std::vector<bool> present(this->degree(), false);
-      for (auto const& val : *(this->_vector)) {
+      for (auto const& val : this->_vector) {
         if (val != UNDEFINED) {
           if (val < 0 || val >= this->degree()) {
             throw LibsemigroupsException(
@@ -760,8 +723,7 @@ namespace libsemigroups {
       auto pp_that = static_cast<const PartialPerm<T>&>(that);
 
       size_t deg_this = pp_this->degree();
-      for (auto it = pp_this->_vector->end() - 1;
-           it >= pp_this->_vector->begin();
+      for (auto it = pp_this->_vector.end() - 1; it >= pp_this->_vector.begin();
            it--) {
         if (*it == UNDEFINED) {
           deg_this--;
@@ -770,8 +732,8 @@ namespace libsemigroups {
         }
       }
       size_t deg_that = pp_that.degree();
-      for (auto it = pp_that._vector->end() - 1;
-           it >= pp_that._vector->begin() && deg_that >= deg_this;
+      for (auto it = pp_that._vector.end() - 1;
+           it >= pp_that._vector.begin() && deg_that >= deg_this;
            it--) {
         if (*it == UNDEFINED) {
           deg_that--;
@@ -800,15 +762,14 @@ namespace libsemigroups {
     //! The copy returned by this method is undefined on all the values between
     //! the PartialPerm::degree of \c this and \p increase_deg_by.
     Element* really_copy(size_t increase_deg_by = 0) const override {
-      PartialPerm<T>* copy
-          = new PartialPerm<T>(new std::vector<T>(*this->_vector));
+      PartialPerm<T>* copy = new PartialPerm<T>(this->_vector);
       if (increase_deg_by == 0) {
         copy->_hash_value = this->_hash_value;
       } else {
-        size_t n = copy->_vector->size();
-        copy->_vector->reserve(n + increase_deg_by);
+        size_t n = copy->_vector.size();
+        copy->_vector.reserve(n + increase_deg_by);
         for (size_t i = n; i < n + increase_deg_by; i++) {
-          copy->_vector->push_back(UNDEFINED);
+          copy->_vector.push_back(UNDEFINED);
         }
       }
       return copy;
@@ -828,7 +789,7 @@ namespace libsemigroups {
       PartialPerm<T> const* yy(static_cast<PartialPerm<T> const*>(y));
       size_t const          n = this->degree();
       for (T i = 0; i < n; i++) {
-        (*this->_vector)[i]
+        this->_vector[i]
             = ((*xx)[i] == UNDEFINED ? UNDEFINED : (*yy)[(*xx)[i]]);
       }
       this->reset_hash_value();
@@ -843,9 +804,9 @@ namespace libsemigroups {
     //! precisely once. This method recomputes the return value every time it
     //! is called.
     size_t crank() const {
-      return this->_vector->size()
+      return this->_vector.size()
              - std::count(
-                   this->_vector->cbegin(), this->_vector->cend(), UNDEFINED);
+                   this->_vector.cbegin(), this->_vector.cend(), UNDEFINED);
     }
   };
 
@@ -875,7 +836,7 @@ namespace libsemigroups {
           _nr_left_blocks(Bipartition::UNDEFINED),
           _trans_blocks_lookup(),
           _rank(Bipartition::UNDEFINED) {
-      this->_vector->resize(2 * degree);
+      this->_vector.resize(2 * degree);
     }
 
     //! A constructor.
@@ -885,25 +846,15 @@ namespace libsemigroups {
     //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
     //! blocks.  None of this is checked.
     //!
-    //! The parameter \p blocks is not copied, and should be deleted using
-    //! ElementWithVectorData::really_delete.
-    explicit Bipartition(std::vector<u_int32_t>* blocks)
+    //! The parameter \p blocks is copied.
+    explicit Bipartition(std::vector<u_int32_t> const& blocks)
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(blocks),
           _nr_blocks(Bipartition::UNDEFINED),
           _nr_left_blocks(Bipartition::UNDEFINED),
           _trans_blocks_lookup(),
-          _rank(Bipartition::UNDEFINED) {}
-
-    //! A constructor.
-    //!
-    //! The parameter \p blocks must have length *2n* for some positive integer
-    //! *n*, consist of non-negative integers, and have the property that if
-    //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
-    //! blocks, an exception is thrown if this is not the case.
-    //!
-    //! The parameter \p blocks is not copied, and should be deleted using
-    //! ElementWithVectorData::really_delete.
-    explicit Bipartition(std::vector<u_int32_t> const&);
+          _rank(Bipartition::UNDEFINED) {
+      validate();
+    }
 
     Bipartition(std::initializer_list<u_int32_t> blocks)
         : Bipartition(std::vector<u_int32_t>(blocks)) {}
@@ -1070,8 +1021,7 @@ namespace libsemigroups {
    public:
     //! A constructor.
     //!
-    //! Constructs a matrix defined by \p matrix, \p matrix is not copied,
-    //! and should be deleted using ElementWithVectorData::really_delete.
+    //! Constructs a matrix defined by \p matrix.
     //!
     //! The parameter \p matrix should be a vector of integer values of length
     //! \f$n ^ 2\f$ for some integer \f$n\f$, so that the value in position
@@ -1083,14 +1033,14 @@ namespace libsemigroups {
     //!
     //! This method asserts that the paramater \p semiring is not a nullptr,
     //! that the vector \p matrix has size a non-zero perfect square.
-    MatrixOverSemiringBase(std::vector<TValueType>*    matrix,
-                           Semiring<TValueType> const* semiring)
+    MatrixOverSemiringBase(std::vector<TValueType> const& matrix,
+                           Semiring<TValueType> const*    semiring)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
-          _degree(sqrt(matrix->size())),
+          _degree(sqrt(matrix.size())),
           _semiring(semiring) {
       LIBSEMIGROUPS_ASSERT(semiring != nullptr);
-      LIBSEMIGROUPS_ASSERT(!matrix->empty());
-      LIBSEMIGROUPS_ASSERT(matrix->size() == _degree * _degree);
+      LIBSEMIGROUPS_ASSERT(!matrix.empty());
+      LIBSEMIGROUPS_ASSERT(matrix.size() == _degree * _degree);
     }
 
     //! A constructor.
@@ -1133,15 +1083,15 @@ namespace libsemigroups {
             "MatrixOverSemiring: matrix is not square");
       }
       _degree = matrix[0].size();
-      this->_vector->reserve(matrix.size() * matrix.size());
+      this->_vector.reserve(matrix.size() * matrix.size());
       for (auto const& row : matrix) {
-        this->_vector->insert(this->_vector->end(), row.begin(), row.end());
+        this->_vector.insert(this->_vector.end(), row.begin(), row.end());
       }
       validate();
     }
 
     void validate() const {
-      for (auto x : *this->_vector) {
+      for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
           throw LibsemigroupsException(
               "MatrixOverSemiring: matrix contains entry " + std::to_string(x)
@@ -1177,13 +1127,13 @@ namespace libsemigroups {
     //! this, where the main diagonal consists of the value Semiring::one and
     //! every other entry Semiring::zero.
     Element* identity() const override {
-      std::vector<TValueType>* vec(new std::vector<TValueType>());
-      vec->resize(this->_vector->size(), _semiring->zero());
+      std::vector<TValueType> vector;
+      vector.resize(this->_vector.size(), _semiring->zero());
       size_t n = this->degree();
-      for (auto it = vec->begin(); it < vec->end(); it += n + 1) {
+      for (auto it = vector.begin(); it < vector.end(); it += n + 1) {
         (*it) = _semiring->one();
       }
-      return new TSubclass(vec, _semiring);
+      return new TSubclass(vector, _semiring);
     }
 
     //! Returns a pointer to a copy of \c this.
@@ -1229,7 +1179,7 @@ namespace libsemigroups {
             v = _semiring->plus(
                 v, _semiring->prod((*xx)[i * deg + k], (*yy)[k * deg + j]));
           }
-          (*this->_vector)[i * deg + j] = v;
+          (this->_vector)[i * deg + j] = v;
         }
       }
       after();  // post process this
@@ -1241,9 +1191,9 @@ namespace libsemigroups {
     //! Constructs a MatrixOverSemiringBase with whose underlying semiring is
     //! not defined. The underlying semiring must be set by any class deriving
     //! from this one.
-    explicit MatrixOverSemiringBase(std::vector<TValueType>* matrix)
+    explicit MatrixOverSemiringBase(std::vector<TValueType> matrix)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
-          _degree(sqrt(matrix->size())),
+          _degree(sqrt(matrix.size())),
           _semiring(nullptr) {}
 
    private:
@@ -1288,7 +1238,7 @@ namespace libsemigroups {
     //!
     //! The parameter \p matrix is converted into its normal form when
     //! when the object is constructed.
-    ProjectiveMaxPlusMatrix(std::vector<int64_t>*    matrix,
+    ProjectiveMaxPlusMatrix(std::vector<int64_t>     matrix,
                             Semiring<int64_t> const* semiring)
         : MatrixOverSemiringBase(matrix, semiring) {
       after();  // this is to put the matrix in normal form
@@ -1309,13 +1259,13 @@ namespace libsemigroups {
 
    private:
     friend class ElementWithVectorData<int64_t, ProjectiveMaxPlusMatrix>;
-    explicit ProjectiveMaxPlusMatrix(std::vector<int64_t>* matrix)
+    explicit ProjectiveMaxPlusMatrix(std::vector<int64_t> matrix)
         : MatrixOverSemiringBase(matrix) {}
 
     // A function applied after redefinition
     inline void after() final {
-      int64_t norm = *std::max_element(_vector->begin(), _vector->end());
-      for (auto& x : *_vector) {
+      int64_t norm = *std::max_element(_vector.begin(), _vector.end());
+      for (auto& x : _vector) {
         if (x != LONG_MIN) {
           x -= norm;
         }
@@ -1341,7 +1291,7 @@ namespace libsemigroups {
 
     void validate() const {
       std::vector<bool> present(this->degree(), false);
-      for (auto const& val : *(this->_vector)) {
+      for (auto const& val : this->_vector) {
         if (val < 0 || val >= this->degree()) {
           throw LibsemigroupsException(
               "Permutation: image value out of bounds, found "
@@ -1360,10 +1310,10 @@ namespace libsemigroups {
     //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
     //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
     Permutation* inverse() {
-      size_t const n  = this->_vector->size();
+      size_t const n  = this->_vector.size();
       Permutation* id = static_cast<Permutation<T>*>(this->identity());
       for (T i = 0; i < n; i++) {
-        (*id->_vector)[(*this->_vector)[i]] = i;
+        id->_vector[this->_vector[i]] = i;
       }
       return id;
     }
@@ -1380,15 +1330,13 @@ namespace libsemigroups {
    public:
     //! A constructor.
     //!
-    //! Constructs a boolean matrix defined by \p matrix, \p matrix is not
-    //! copied, and should be deleted using
-    //! ElementWithVectorData::really_delete.
+    //! Constructs a boolean matrix defined by \p matrix.
     //!
     //! The parameter \p matrix should be a vector of boolean values of length
     //! \f$n ^  2\f$ for some integer \f$n\f$, so that the value in position
     //! \f$ni + j\f$ is the entry in row \f$i\f$ and column \f$j\f$ of
     //! the constructed matrix.
-    explicit BooleanMat(std::vector<bool>* matrix)
+    explicit BooleanMat(std::vector<bool> matrix)
         : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
 
     //! A constructor.
@@ -1413,14 +1361,14 @@ namespace libsemigroups {
 
     // protected:
     // void cache_hash_value() const override {
-    //  this->_hash_value = std::hash<std::vector<bool>>{}(*this->_vector);
+    //  this->_hash_value = std::hash<std::vector<bool>>{}(this->_vector);
     // }
 
    private:
     // The next constructor only exists to allow the identity method for
     // MatrixOverSemiringBase to work.
     friend class MatrixOverSemiringBase<bool, BooleanMat>;
-    BooleanMat(std::vector<bool>* matrix, Semiring<bool> const* semiring)
+    BooleanMat(std::vector<bool> matrix, Semiring<bool> const* semiring)
         : MatrixOverSemiringBase<bool, BooleanMat>(matrix, semiring) {}
 
     static BooleanSemiring const* const _semiring;
@@ -1433,9 +1381,7 @@ namespace libsemigroups {
   //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
   class PBR : public ElementWithVectorData<std::vector<u_int32_t>, PBR> {
    public:
-    //! Constructs a PBR defined by the vector pointed to by \p vector, which
-    //! is not copied, and should be deleted using
-    //! ElementWithVectorData::really_delete.
+    //! Constructs a PBR defined by the vector pointed to by \p vector.
     //!
     //! The parameter \p vector should be a pointer to a vector of vectors of
     //! non-negative integer values of length \f$2n\f$ for some integer
@@ -1519,27 +1465,13 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 
-  template <typename T> static inline void really_delete_cont(T cont) {
-    for (Element const* x : cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-  }
-
-  template <typename T> static inline void really_delete_cont(T* cont) {
-    for (Element const* x : *cont) {
-      const_cast<Element*>(x)->really_delete();
-      delete x;
-    }
-    delete cont;
-  }
-
   // template <typename T, typename... Args>
   // T inline make_element(Args&&... args) {
   //   T res(std::forward<Args>(args)...);
   //   res.validate();
   //   return res;
   // }
+
   template <size_t N> struct Transf {
     using integer_type = typename std::conditional<
         N >= 0x100000000,

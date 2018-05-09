@@ -141,7 +141,6 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
@@ -162,7 +161,6 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
 
@@ -175,8 +173,6 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
   Congruence              cong("twosided", &S, extra);
   cong.set_report(CONG_REPORT);
 
-  t1->really_delete();
-  t2->really_delete();
   delete t1;
   delete t2;
 }
@@ -187,7 +183,6 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
   REQUIRE(S.degree() == 5);
@@ -210,10 +205,6 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
   REQUIRE(cong.test_equals(w3, w4));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
@@ -226,7 +217,6 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // REQUIRE(S.size() == 88);
   // REQUIRE(S.degree() == 5);
@@ -259,8 +249,6 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   REQUIRE(!cong.test_less_than({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
   REQUIRE(cong.test_less_than({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
 
-  t3->really_delete();
-  t4->really_delete();
   delete t3;
   delete t4;
 }
@@ -272,7 +260,6 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -305,12 +292,6 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   REQUIRE(cong.test_equals(w5, w6));
   REQUIRE(!cong.test_equals(w3, w5));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
-  t5->really_delete();
-  t6->really_delete();
   delete t1;
   delete t2;
   delete t3;
@@ -382,7 +363,6 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // The following lines are intentionally commented out so that we can check
   // that P does not enumerate the semigroup, they remain to remind us of the
@@ -426,24 +406,21 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
 
 TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
           "[extreme][congruence][multithread][finite][pbr][12]") {
-  std::vector<Element*> gens = {
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-      new PBR(
-          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+  std::vector<Element*> gens = {new PBR({{2}, {3}, {0}, {1}}),
+                                new PBR({{}, {2}, {1}, {0, 3}}),
+                                new PBR({{0, 3}, {2}, {1}, {}}),
+                                new PBR({{1, 2}, {3}, {0}, {1}}),
+                                new PBR({{2}, {3}, {0}, {1, 3}}),
+                                new PBR({{3}, {1}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {0, 1}}),
+                                new PBR({{3}, {2}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {3}}),
+                                new PBR({{3}, {2}, {1}, {0}}),
+                                new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
@@ -496,7 +473,6 @@ TEST_CASE("Congruence 13: partial perm example",
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // REQUIRE(S.size() == 712);
   // REQUIRE(S.nrrules() == 1121);
@@ -564,24 +540,21 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
 
 TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
           "[extreme][congruence][multithread][finite][pbr][17]") {
-  std::vector<Element*> gens = {
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-      new PBR(
-          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+  std::vector<Element*> gens = {new PBR({{2}, {3}, {0}, {1}}),
+                                new PBR({{}, {2}, {1}, {0, 3}}),
+                                new PBR({{0, 3}, {2}, {1}, {}}),
+                                new PBR({{1, 2}, {3}, {0}, {1}}),
+                                new PBR({{2}, {3}, {0}, {1, 3}}),
+                                new PBR({{3}, {1}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {0, 1}}),
+                                new PBR({{3}, {2}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {3}}),
+                                new PBR({{3}, {2}, {1}, {0}}),
+                                new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
@@ -622,24 +595,21 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
 
 TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
           "[extreme][congruence][multithread][finite][pbr][18]") {
-  std::vector<Element*> gens = {
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-      new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-      new PBR(
-          new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+  std::vector<Element*> gens = {new PBR({{2}, {3}, {0}, {1}}),
+                                new PBR({{}, {2}, {1}, {0, 3}}),
+                                new PBR({{0, 3}, {2}, {1}, {}}),
+                                new PBR({{1, 2}, {3}, {0}, {1}}),
+                                new PBR({{2}, {3}, {0}, {1, 3}}),
+                                new PBR({{3}, {1}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {0, 1}}),
+                                new PBR({{3}, {2}, {0}, {1}}),
+                                new PBR({{3}, {2}, {0}, {3}}),
+                                new PBR({{3}, {2}, {1}, {0}}),
+                                new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
@@ -754,7 +724,6 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
   Congruence cong("twosided", &S, std::vector<relation_t>());
 
   REQUIRE(cong.nr_classes() == S.size());
@@ -797,7 +766,6 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   std::vector<Element*> elms
       = {new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
@@ -821,8 +789,6 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
     S.factorisation(w1, S.position(elms[i]));
     S.factorisation(w2, S.position(elms[i + 1]));
     extra.push_back(std::make_pair(w1, w2));
-    elms[i]->really_delete();
-    elms[i + 1]->really_delete();
     delete elms[i];
     delete elms[i + 1];
   }
@@ -868,7 +834,6 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(CONG_REPORT);
-  really_delete_cont(gens);
 
   Congruence cong4("twosided", &S, {relation_t({1}, {0})});
   REQUIRE(!cong4.is_obviously_infinite());
