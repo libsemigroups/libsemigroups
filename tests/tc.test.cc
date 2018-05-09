@@ -29,6 +29,13 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 TEST_CASE("TC 01: Small fp semigroup",
           "[quick][congruence][tc][fpsemigroup][01]") {
   std::vector<relation_t> rels;
@@ -170,8 +177,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   REQUIRE(ntc->size() == 1);
   REQUIRE(ntc->at(0)->size() == 68);
   delete ntc;
-
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
@@ -202,8 +208,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(ntc->size() == 1);
   REQUIRE(ntc->at(0)->size() == 20);
   delete ntc;
-
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
@@ -264,7 +269,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   }
   REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
   delete ntc;
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 // Testing prefilled TC
@@ -275,7 +280,6 @@ TEST_CASE("TC 09: transformation semigroup size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(TC_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -300,15 +304,12 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong->word_to_class_index(w3) == cong->word_to_class_index(w4));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
   delete t4;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
@@ -317,7 +318,6 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(TC_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
@@ -339,15 +339,12 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
   delete t4;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
@@ -356,7 +353,6 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(TC_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -386,12 +382,6 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   //  REQUIRE(cong->word_to_class_index(w5) == cong->word_to_class_index(w6));
   REQUIRE(cong->word_to_class_index(w3) != cong->word_to_class_index(w6));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
-  t5->really_delete();
-  t6->really_delete();
   delete t1;
   delete t2;
   delete t3;
@@ -399,6 +389,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   delete t5;
   delete t6;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 12: finite fp-semigroup, dihedral group of order 6",
@@ -538,7 +529,7 @@ TEST_CASE("TC 15: test prefilling of the table manually",
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(TC_REPORT);
-  really_delete_cont(gens);
+  delete_gens(gens);
 
   // Copy the right Cayley graph of S for prefilling
   Semigroup<>::cayley_graph_t const* right = S.right_cayley_graph_copy();

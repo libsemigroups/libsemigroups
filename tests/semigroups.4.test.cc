@@ -24,6 +24,13 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 #if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
 
@@ -234,10 +241,10 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
   Semigroup<> S(gens);
-  really_delete_cont(gens);
   S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
@@ -294,13 +301,13 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
                                                 {0, 0, 0, 1, 0},
                                                 {0, 0, 0, 0, 0}})};
   Semigroup<>           S(gens);
-  really_delete_cont(gens);
   S.set_report(true);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
   // FIXME this demonstrates a very bad split with almost all the
   // elements being put in the final thread by init_idempotents
   S.set_report(false);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 76: add_generators BMat8",

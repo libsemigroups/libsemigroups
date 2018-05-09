@@ -27,6 +27,13 @@
 
 #define RWS_REPORT false
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 using namespace libsemigroups;
 size_t UNBOUNDED1 = RWS::UNBOUNDED;
 
@@ -37,7 +44,6 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
@@ -49,6 +55,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   rws.add_rules(cong.extra());
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
+  delete_gens(gens);
 }
 
 TEST_CASE("RWS 02: for a transformation semigroup of size 9",
@@ -57,7 +64,6 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
@@ -70,6 +76,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
 
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
+  delete_gens(gens);
 }
 
 TEST_CASE("RWS 03: for a transformation semigroup of size 88",
@@ -78,7 +85,6 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(RWS_REPORT);
-  really_delete_cont(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);
@@ -91,6 +97,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
 
   rws.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
+  delete_gens(gens);
 }
 
 TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",

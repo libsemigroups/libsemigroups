@@ -35,6 +35,13 @@ static inline size_t evaluate_reduct(Semigroup<>* S, word_t const& word) {
   return evaluate_reduct(*S, word);
 }
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 TEST_CASE("Semigroup 43: relations [copy_closure, duplicate gens]",
           "[quick][semigroup][finite][43]") {
   std::vector<Element*> gens
@@ -45,7 +52,6 @@ TEST_CASE("Semigroup 43: relations [copy_closure, duplicate gens]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.enumerate(Semigroup<>::LIMIT_MAX);
   REQUIRE(S.is_begun());
@@ -66,12 +72,13 @@ TEST_CASE("Semigroup 43: relations [copy_closure, duplicate gens]",
 
   Semigroup<>* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nridempotents() == 537);
   delete T;
+  delete_gens(gens);
+  delete_gens(coll);
 }
 
 TEST_CASE("Semigroup 44: relations [copy_add_generators, duplicate gens]",
@@ -84,7 +91,6 @@ TEST_CASE("Semigroup 44: relations [copy_add_generators, duplicate gens]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.enumerate(Semigroup<>::LIMIT_MAX);
   REQUIRE(S.is_begun());
@@ -105,12 +111,13 @@ TEST_CASE("Semigroup 44: relations [copy_add_generators, duplicate gens]",
 
   Semigroup<>* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nridempotents() == 537);
   delete T;
+  delete_gens(gens);
+  delete_gens(coll);
 }
 
 TEST_CASE("Semigroup 45: relations [from copy, not enumerated]",
@@ -123,7 +130,6 @@ TEST_CASE("Semigroup 45: relations [from copy, not enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   Semigroup<> T = Semigroup<>(S);
   T.set_report(SEMIGROUPS_REPORT);
@@ -161,6 +167,7 @@ TEST_CASE("Semigroup 45: relations [from copy, not enumerated]",
     nr++;
   }
   REQUIRE(T.nrrules() == nr);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 46: relations [from copy, partly enumerated]",
@@ -173,7 +180,6 @@ TEST_CASE("Semigroup 46: relations [from copy, partly enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.set_batch_size(1023);
   S.enumerate(1000);
@@ -214,6 +220,7 @@ TEST_CASE("Semigroup 46: relations [from copy, partly enumerated]",
     nr++;
   }
   REQUIRE(T.nrrules() == nr);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 47: relations [from copy, fully enumerated]",
@@ -226,7 +233,6 @@ TEST_CASE("Semigroup 47: relations [from copy, fully enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.enumerate(8000);
 
@@ -266,6 +272,7 @@ TEST_CASE("Semigroup 47: relations [from copy, fully enumerated]",
     nr++;
   }
   REQUIRE(T.nrrules() == nr);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
@@ -276,7 +283,6 @@ TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -289,7 +295,7 @@ TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
   T->set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -326,6 +332,7 @@ TEST_CASE("Semigroup 50: relations [from copy_closure, not enumerated]",
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
@@ -336,7 +343,6 @@ TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -349,7 +355,7 @@ TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
   T->set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -386,6 +392,7 @@ TEST_CASE("Semigroup 51: relations [from copy_add_generators, not enumerated]",
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 52: relations [from copy_closure, partly enumerated]",
@@ -396,7 +403,6 @@ TEST_CASE("Semigroup 52: relations [from copy_closure, partly enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
   S.set_batch_size(100);
 
   S.enumerate(10);
@@ -410,7 +416,7 @@ TEST_CASE("Semigroup 52: relations [from copy_closure, partly enumerated]",
 
   Semigroup<>* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -447,6 +453,7 @@ TEST_CASE("Semigroup 52: relations [from copy_closure, partly enumerated]",
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE(
@@ -458,7 +465,6 @@ TEST_CASE(
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
   S.set_batch_size(100);
 
   S.enumerate(10);
@@ -472,7 +478,7 @@ TEST_CASE(
 
   Semigroup<>* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -509,6 +515,7 @@ TEST_CASE(
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 54: relations [from copy_closure, fully enumerated]",
@@ -519,7 +526,6 @@ TEST_CASE("Semigroup 54: relations [from copy_closure, fully enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.enumerate(8000);
 
@@ -532,7 +538,7 @@ TEST_CASE("Semigroup 54: relations [from copy_closure, fully enumerated]",
 
   Semigroup<>* T = S.copy_closure(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -571,6 +577,7 @@ TEST_CASE("Semigroup 54: relations [from copy_closure, fully enumerated]",
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE(
@@ -582,7 +589,6 @@ TEST_CASE(
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   S.enumerate(8000);
 
@@ -595,7 +601,7 @@ TEST_CASE(
 
   Semigroup<>* T = S.copy_add_generators(&coll);
   T->set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(coll);
+  delete_gens(coll);
 
   std::vector<size_t> result;
   T->next_relation(result);
@@ -634,6 +640,7 @@ TEST_CASE(
   REQUIRE(T->nrrules() == nr);
   REQUIRE(2459 == nr);
   delete T;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 56: add_generators [duplicate generators]",
@@ -702,8 +709,7 @@ TEST_CASE("Semigroup 56: add_generators [duplicate generators]",
   REQUIRE(S.letter_to_pos(7) == 87);
   REQUIRE(S.letter_to_pos(8) == 97);
   REQUIRE(S.letter_to_pos(9) == 21);
-
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 57: add_generators [incremental 1]",
@@ -740,8 +746,7 @@ TEST_CASE("Semigroup 57: add_generators [incremental 1]",
   REQUIRE(S.size() == 119);
   REQUIRE(S.nrgens() == 14);
   REQUIRE(S.nrrules() == 253);
-
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 58: add_generators [incremental 2]",
@@ -789,7 +794,7 @@ TEST_CASE("Semigroup 58: add_generators [incremental 2]",
   S.add_generators({gens[6]});
   REQUIRE(S.nrgens() == 11);
   REQUIRE(S.size() == 119);
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 59: closure [duplicate generators]",
@@ -840,8 +845,7 @@ TEST_CASE("Semigroup 59: closure [duplicate generators]",
   S.closure({gens[6]});
   REQUIRE(S.size() == 119);
   REQUIRE(S.nrgens() == 8);
-
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 60: closure ", "[quick][semigroup][finite][60]") {
@@ -879,7 +883,7 @@ TEST_CASE("Semigroup 60: closure ", "[quick][semigroup][finite][60]") {
   S.closure(gens);
   REQUIRE(S.size() == 27);
   REQUIRE(S.nrgens() == 10);
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite][61]") {
@@ -889,11 +893,11 @@ TEST_CASE("Semigroup 61: factorisation ", "[quick][semigroup][finite][61]") {
 
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   word_t* w = S.factorisation(2);
   REQUIRE(*w == word_t({0, 1}));
   delete w;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 62: my favourite example with reserve",
@@ -910,9 +914,9 @@ TEST_CASE("Semigroup 62: my favourite example with reserve",
   Semigroup<> S(gens);
   S.reserve(597369);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 597369);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 63: minimal_factorisation ",
@@ -931,14 +935,13 @@ TEST_CASE("Semigroup 63: minimal_factorisation ",
   w = S.factorisation(gens[0]);
   REQUIRE(*w == word_t({0}));
   delete w;
-  really_delete_cont(gens);
 
   Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
   REQUIRE(S.minimal_factorisation(x) == nullptr);
-  x->really_delete();
   delete x;
 
   REQUIRE(S.minimal_factorisation(10000000) == nullptr);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 64: batch_size (for an extremely large value)",
@@ -947,13 +950,13 @@ TEST_CASE("Semigroup 64: batch_size (for an extremely large value)",
       = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
          new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  really_delete_cont(gens);
 
   S.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(Semigroup<>::LIMIT_MAX);
   S.enumerate();
 
   REQUIRE(S.size() == 5);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 65: my favourite example without reserve",
@@ -969,10 +972,10 @@ TEST_CASE("Semigroup 65: my favourite example without reserve",
          new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
 
   Semigroup<> S = Semigroup<>(gens);
-  really_delete_cont(gens);
 
   S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 597369);
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 70: number of idempotents",
@@ -985,13 +988,13 @@ TEST_CASE("Semigroup 70: number of idempotents",
       new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
       new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
   Semigroup<> S(gens);
-  really_delete_cont(gens);
   S.reserve(10077696);
   S.set_report(true);
   REQUIRE(S.size() == 10077696);
   REQUIRE(S.nridempotents() == 13688);
   S.set_report(false);
   delete sr;
+  delete_gens(gens);
 }
 
 TEST_CASE("Semigroup 71: number of idempotents",
@@ -1002,10 +1005,10 @@ TEST_CASE("Semigroup 71: number of idempotents",
          new Bipartition({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}),
          new Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4})};
   Semigroup<> S(gens);
-  really_delete_cont(gens);
   S.reserve(4213597);
   S.set_report(true);
   REQUIRE(S.size() == 4213597);
   REQUIRE(S.nridempotents() == 541254);
   S.set_report(false);
+  delete_gens(gens);
 }

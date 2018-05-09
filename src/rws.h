@@ -522,8 +522,8 @@ namespace libsemigroups {
     //! This method converts an unsigned integer to the corresponding
     //! rws_word_t. For example, the integer 0 is converted to the word with
     //! single letter which is the 1st ASCII character.
-    static inline rws_word_t* uint_to_rws_word(size_t const& a) {
-      return new rws_word_t(1, uint_to_rws_letter(a));
+    static inline rws_word_t uint_to_rws_word(size_t const& a) {
+      return rws_word_t(1, uint_to_rws_letter(a));
     }
 
     //! This method converts a string in the rewriting system into a vector of
@@ -556,9 +556,12 @@ namespace libsemigroups {
     //!
     //! This method returns a pointer to a new string, and it is the
     //! responsibility of the caller to delete it.
-    static inline rws_word_t* word_to_rws_word(word_t const& w) {
-      rws_word_t* ww = new rws_word_t();
-      return word_to_rws_word(w, ww);
+    static inline rws_word_t word_to_rws_word(word_t const& w) {
+      rws_word_t ww;
+      for (size_t const& a : w) {
+        ww += uint_to_rws_letter(a);
+      }
+      return ww;
     }
 
    private:

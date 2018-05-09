@@ -91,7 +91,6 @@ namespace libsemigroups {
     }
 
     inline void free(TElementPointerType x) const {
-      x->really_delete();
       delete x;
     }
 
