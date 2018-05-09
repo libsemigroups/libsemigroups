@@ -1434,3 +1434,14 @@ TEST_CASE("Permutation 02: exceptions", "[quick][element][permutation][02]") {
       PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 5, 0, 3, 2})),
       LibsemigroupsException);
 }
+
+TEST_CASE("TransformationType", "[xxx]") {
+  REQUIRE(sizeof(Transf<0>::integer_type) == 1);
+  REQUIRE(sizeof(Transf<255>::integer_type) == 1);
+  REQUIRE(sizeof(Transf<256>::integer_type) == 2);
+  REQUIRE(sizeof(Transf<65535>::integer_type) == 2);
+  REQUIRE(sizeof(Transf<65536>::integer_type) == 4);
+  REQUIRE(sizeof(Transf<4294967295>::integer_type) == 4);
+  REQUIRE(sizeof(Transf<4294967296>::integer_type) == 8);
+  auto x = Transf<3>::type({0, 1, 2});
+}

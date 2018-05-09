@@ -1540,6 +1540,17 @@ namespace libsemigroups {
   //   res.validate();
   //   return res;
   // }
+  template <size_t N> struct Transf {
+    using integer_type = typename std::conditional<
+        N >= 0x100000000,
+        u_int64_t,
+        typename std::conditional<
+            N >= 0x10000,
+            u_int32_t,
+            typename std::conditional<N >= 0x100, u_int16_t, u_int8_t>::type>::
+            type>::type;
+    using type = Transformation<integer_type>;
+  };
 
 }  // namespace libsemigroups
 
