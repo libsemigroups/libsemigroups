@@ -154,6 +154,7 @@ AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_popcnt_u32]
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_set_epi64x],[1,1])])
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_shuffle_epi8],[__m128i{},__m128i{}])])
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_slli_epi32],[__m128i{},1])])
+
 CXXFLAGS=$SAVED_CXXFLAGS
 
 AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
@@ -165,6 +166,23 @@ AS_IF([test "x$enable_hpcombi" = xyes],
 
 dnl # the following is used in Makefile.am
 AM_CONDITIONAL([LIBSEMIGROUPS_USE_HPCOMBI], [test "x$enable_hpcombi" = xyes])
+
+dnl # check for HPCombi's preprocessor macro
+AC_MSG_CHECKING([for HPCOMBI_CONSTEXPR_FUN_ARGS])
+AC_COMPILE_IFELSE( 
+                  [AC_LANG_PROGRAM( 
+                      [[using T = int; constexpr int exec(T f()) { return f(); }
+                      constexpr int foo() { return 1; }
+                      static_assert(exec(foo) == 1, "Failed exec");]]
+                    )],
+                   [hpcombi_constexpr_fun_args=yes],
+                   [hpcombi_constexpr_fun_args=no]
+                 )
+AC_MSG_RESULT([$hpcombi_constexpr_fun_args])
+AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
+               [test "x$hpcombi_constexpr_fun_args" = xyes])
+AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
+      [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
 
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
