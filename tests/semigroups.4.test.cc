@@ -234,7 +234,6 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
   Semigroup<> S(gens);
-  really_delete_cont(gens);
   S.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
@@ -294,7 +293,6 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
                                                 {0, 0, 0, 1, 0},
                                                 {0, 0, 0, 0, 0}})};
   Semigroup<>           S(gens);
-  really_delete_cont(gens);
   S.set_report(true);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);

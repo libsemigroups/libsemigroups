@@ -37,7 +37,6 @@ static inline void test_idempotent(Semigroup<>& S, Element* x) {
   y->redefine(x, x);
   REQUIRE(*x == *y);
   REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
-  y->really_delete();
   delete y;
 }
 
@@ -47,7 +46,6 @@ TEST_CASE("Semigroup 01: small transformation semigroup",
                                 new Transformation<u_int16_t>({0, 1, 2})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 2);
   REQUIRE(S.degree() == 3);
@@ -57,30 +55,25 @@ TEST_CASE("Semigroup 01: small transformation semigroup",
 
   Element* expected = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(*S[0] == *expected);
-  expected->really_delete();
   delete expected;
 
   expected = new Transformation<u_int16_t>({0, 1, 2});
   REQUIRE(*S[1] == *expected);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == 0);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new Transformation<u_int16_t>({0, 1, 2});
   REQUIRE(S.position(x) == 1);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new Transformation<u_int16_t>({0, 0, 0});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 }
 
@@ -88,11 +81,10 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
           "[quick][semigroup][finite][02]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>(
-             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)};
+             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
+         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 22);
   REQUIRE(S.degree() == 11);
@@ -101,41 +93,36 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   REQUIRE(S.nrrules() == 9);
 
   Element* expected = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(*S[0] == *expected);
-  expected->really_delete();
   delete expected;
 
-  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(*S[1] == *expected);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new PartialPerm<u_int16_t>({}, {}, 10);
+  x = new PartialPerm<u_int16_t>({}, {}, 11);
   REQUIRE(S.position(x) == 10);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new PartialPerm<u_int16_t>({}, {}, 9);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
 
-  x->really_delete();
   delete x;
 
   x = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(S.position(x) == 0);
   REQUIRE(S.test_membership(x));
 
-  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(S.position(y) == 1);
   REQUIRE(S.test_membership(y));
 
@@ -144,9 +131,7 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   REQUIRE(S.test_membership(y));
 
   REQUIRE(*y == *S[2]);
-  x->really_delete();
   delete x;
-  y->really_delete();
   delete y;
 }
 
@@ -190,9 +175,7 @@ TEST_CASE("Semigroup 03: small bipartition semigroup",
   y->redefine(gens[1], gens[2]);
   REQUIRE(S.position(y) == 7);
   REQUIRE(S.test_membership(y));
-  y->really_delete();
   delete y;
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
@@ -225,9 +208,7 @@ TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
   y->redefine(gens[0], gens[0]);
   REQUIRE(S.position(y) == 2);
   REQUIRE(S.test_membership(y));
-  y->really_delete();
   delete y;
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
@@ -235,7 +216,6 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
-  x->really_delete();
   delete x;
   Semigroup<> S = Semigroup<>({id});
   S.set_report(SEMIGROUPS_REPORT);
@@ -249,13 +229,11 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
 
   REQUIRE(S.position(id) == 0);
   REQUIRE(S.test_membership(id));
-  id->really_delete();
   delete id;
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
   delete sr;
 }
@@ -290,16 +268,13 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
@@ -332,16 +307,13 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
@@ -369,16 +341,13 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 1);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
@@ -405,7 +374,6 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
@@ -414,10 +382,8 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
@@ -440,22 +406,19 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
@@ -478,32 +441,27 @@ TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[0]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 12: small pbr semigroup",
           "[quick][semigroup][finite][12]") {
   std::vector<Element*> gens
-      = {new PBR(new std::vector<std::vector<u_int32_t>>(
-             {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
-         new PBR(new std::vector<std::vector<u_int32_t>>(
-             {{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}))};
+      = {new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}),
+         new PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}})};
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
 
@@ -520,17 +478,13 @@ TEST_CASE("Semigroup 12: small pbr semigroup",
   REQUIRE(S.position(gens[1]) == 1);
   REQUIRE(S.test_membership(gens[1]));
 
-  Element* x = new PBR(
-      new std::vector<std::vector<u_int32_t>>({{}, {}, {}, {}, {}, {}}));
+  Element* x = new PBR({{}, {}, {}, {}, {}, {}});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 13: large transformation semigroup",
@@ -548,7 +502,6 @@ TEST_CASE("Semigroup 13: large transformation semigroup",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 14: at, position, current_*",
@@ -568,12 +521,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
   REQUIRE(S.position(x) == 100);
-  x->really_delete();
   delete x;
 
   expected = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
@@ -581,12 +532,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
-  expected->really_delete();
   delete expected;
 
   x = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
   REQUIRE(S.position(x) == 1023);
-  x->really_delete();
   delete x;
 
   expected = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
@@ -594,12 +543,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 3001);
   REQUIRE(S.current_nrrules() == 526);
   REQUIRE(S.current_max_word_length() == 9);
-  expected->really_delete();
   delete expected;
 
   x = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
   REQUIRE(S.position(x) == 3000);
-  x->really_delete();
   delete x;
 
   REQUIRE(S.size() == 7776);
@@ -607,8 +554,6 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
@@ -642,8 +587,6 @@ TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
@@ -667,8 +610,6 @@ TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 17: factorisation, length [1 element]",
@@ -697,8 +638,6 @@ TEST_CASE("Semigroup 17: factorisation, length [1 element]",
 
   REQUIRE(S.length_non_const(7775) == 16);
   REQUIRE(S.current_max_word_length() == 16);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 18: factorisation, products [all elements]",
@@ -718,8 +657,6 @@ TEST_CASE("Semigroup 18: factorisation, products [all elements]",
     S.factorisation(result, i);
     REQUIRE(evaluate_reduct(S, result) == i);
   }
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
@@ -792,8 +729,6 @@ TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
   REQUIRE(S.fast_product(S.first_letter(7775), S.suffix(7775)) == 7775);
   REQUIRE(S.product_by_reduction(S.prefix(7775), S.final_letter(7775)) == 7775);
   REQUIRE(S.product_by_reduction(S.first_letter(7775), S.suffix(7775)) == 7775);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 20: letter_to_pos [standard]",
@@ -812,8 +747,6 @@ TEST_CASE("Semigroup 20: letter_to_pos [standard]",
   REQUIRE(S.letter_to_pos(2) == 2);
   REQUIRE(S.letter_to_pos(3) == 3);
   REQUIRE(S.letter_to_pos(4) == 4);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
@@ -867,8 +800,6 @@ TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 32);
   REQUIRE(S.nrrules() == 2621);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
@@ -921,8 +852,6 @@ TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
   REQUIRE(S.letter_to_pos(2) == 2);
   REQUIRE(S.letter_to_pos(3) == 120);
   REQUIRE(S.letter_to_pos(4) == 1546);
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
@@ -942,7 +871,6 @@ TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
     nr++;
   }
   REQUIRE(nr == S.nridempotents());
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
@@ -963,8 +891,6 @@ TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
     nr++;
   }
   REQUIRE(nr == S.nridempotents());
-
-  really_delete_cont(gens);
 }
 
 TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
@@ -978,7 +904,6 @@ TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
   Semigroup<> S = Semigroup<>(gens);
   S.set_report(SEMIGROUPS_REPORT);
   S.set_max_threads(1000);
-  really_delete_cont(gens);
 
   size_t nr = 0;
   for (size_t i = 0; i < S.size(); i++) {

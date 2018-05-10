@@ -31,7 +31,8 @@ ACLOCAL_AMFLAGS	= -I m4
 ## lines of code, and assertions. 
 
 ## libsemigroups headers
-pkginclude_HEADERS =  src/libsemigroups-config.h
+pkginclude_HEADERS =  src/libsemigroups.h
+pkginclude_HEADERS += src/libsemigroups-config.h
 pkginclude_HEADERS += src/libsemigroups-debug.h
 pkginclude_HEADERS += src/libsemigroups-exception.h
 pkginclude_HEADERS += src/blocks.h

@@ -81,7 +81,6 @@ TEST_CASE("KBFP 03: for a finite semigroup",
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
   S.set_report(KBFP_REPORT);
-  really_delete_cont(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -113,10 +112,6 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   REQUIRE((*ntc)[0]->size() == 68);
   delete ntc;
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;

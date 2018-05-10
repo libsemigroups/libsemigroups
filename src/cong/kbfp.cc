@@ -57,10 +57,9 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(_rws->confluent());
     std::vector<RWSE*> gens;
     for (size_t i = 0; i < _cong._nrgens; i++) {
-      gens.push_back(new RWSE(*_rws, i));
+      gens.push_back(new RWSE(_rws, i));
     }
     _semigroup = new Semigroup<RWSE*>(gens);
-    really_delete_cont(gens);
   }
 
   void Congruence::KBFP::run() {
@@ -94,9 +93,8 @@ namespace libsemigroups {
   Congruence::KBFP::word_to_class_index(word_t const& word) {
     LIBSEMIGROUPS_ASSERT(is_done());  // so that _semigroup != nullptr
 
-    RWSE* x   = new RWSE(*_rws, word);
+    RWSE* x   = new RWSE(_rws, word);
     size_t   pos = _semigroup->position(x);
-    x->really_delete();
     delete x;
     LIBSEMIGROUPS_ASSERT(pos != Semigroup<RWSE*>::UNDEFINED);
     return pos;
