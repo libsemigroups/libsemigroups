@@ -19,9 +19,9 @@ cd ../../..
 echo -e "\nConfiguring with --enable-densehashmap with sparsehash installed . . ."
 make clean && ./configure --enable-densehashmap && make check-quick -j2
 
-# Check configure with --enable-hpcombi and hpcombi not available
-echo -e "\nConfiguring with --enable-hpcombi with hpcombi not installed . . ."
-make clean && ./configure --enable-hpcombi && make check-quick -j2
+# Check configure with --enable/disable-hpcombi and hpcombi not available
+echo -e "\nConfiguring with --disable-hpcombi with hpcombi not installed . . ."
+make clean && ./configure --disable-hpcombi && make check-quick -j2
 
 # Get hpcombi version from file
 if [ -f extern/.HPCombi_VERSION ]; then
@@ -31,11 +31,19 @@ else
   exit 1
 fi
 
-echo -e "\nDownloading HPCombi $HPCombi. . ."
-curl -L -O https://github.com/hivert/HPCombi/releases/download/v$HPCOMBI/HPCombi-$HPCOMBI.tar.gz
-tar xzf HPCombi-$HPCOMBI.tar.gz
-rm HPCombi-$HPCOMBI.tar.gz
-mv HPCombi-$HPCOMBI extern/HPCombi
+#echo -e "\nDownloading HPCombi $HPCombi. . ."
+#curl -L -O https://github.com/hivert/HPCombi/releases/download/v$HPCOMBI/HPCombi-$HPCOMBI.tar.gz
+#tar xzf HPCombi-$HPCOMBI.tar.gz
+#rm HPCombi-$HPCOMBI.tar.gz
+#mv HPCombi-$HPCOMBI extern/HPCombi
+
+echo -e "\nCloning HPCombi master branch . . ."
+git clone -b master --depth=1 https://github.com/hivert/HPCombi.git extern/HPCombi
+echo "0.0.1" >> VERSION
+
+echo -e "\nConfiguring with --disable-hpcombi with hpcombi installed . . ."
+make clean && ./configure --disable-hpcombi && make check-quick -j2
 
 echo -e "\nConfiguring with --enable-hpcombi with hpcombi installed . . ."
 make clean && ./configure --enable-hpcombi && make check-quick -j2
+

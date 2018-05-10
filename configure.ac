@@ -95,7 +95,7 @@ AC_MSG_RESULT([$enable_densehashmap])
 AC_ARG_ENABLE([hpcombi],
     [AS_HELP_STRING([--enable-hpcombi], [enable HPCombi])],
     [],
-    [enable_hpcombi=no]
+    [enable_hpcombi=yes]
     )
 AC_MSG_CHECKING([whether to enable HPCombi])
 AC_MSG_RESULT([$enable_hpcombi])
@@ -116,7 +116,7 @@ AS_IF([test "x$enable_hpcombi" = xyes],
 
 AS_IF([test "x$enable_hpcombi" = xyes],
 [AS_IF([! cmp -s extern/HPCombi/VERSION extern/.HPCombi_VERSION],
-       [AC_MSG_WARN([the version of HPCombi that is present is incorrect, ignoring --enable-hpcombi])
+       [AC_MSG_WARN([the incorrect version of HPCombi is present, ignoring --enable-hpcombi])
         [enable_hpcombi=no]])])
 
 SAVED_CXXFLAGS=$CXXFLAGS
