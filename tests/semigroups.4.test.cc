@@ -31,8 +31,9 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#if (!defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP)    \
+     || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)) \
+    && LIBSEMIGROUPS_SIZEOF_VOID_P == 8
 
 TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
           "[quick][semigroup][finite][72]") {
@@ -270,11 +271,9 @@ TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
                              {0, 0, 0, 1, 0},
                              {0, 0, 0, 0, 0}})});
   S.set_report(true);
-  S.reserve(2 * 32311832);
+  S.reserve(40000000);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
-  // FIXME this demonstrates a very bad split with almost all the
-  // elements being put in the final thread by init_idempotents
   S.set_report(false);
 }
 
@@ -302,6 +301,7 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
                                                 {0, 0, 0, 0, 0}})};
   Semigroup<>           S(gens);
   S.set_report(true);
+  S.reserve(40000000);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
   // FIXME this demonstrates a very bad split with almost all the

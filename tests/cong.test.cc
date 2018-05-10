@@ -326,7 +326,7 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
                                        relation_t({2, 2}, {1})};
   std::vector<relation_t> extra     = {relation_t({0}, {1})};
   Congruence              cong("twosided", 3, relations, extra);
-  cong.set_report(true);
+  cong.set_report(CONG_REPORT);
   cong.force_kbfp();
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));

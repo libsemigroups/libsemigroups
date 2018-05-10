@@ -129,7 +129,7 @@ TEST_CASE("Transformation 04: u_int32_t methods",
   delete id;
 }
 
-TEST_CASE("Transformation 05: u_int32_t hash ~8ms",
+TEST_CASE("Transformation 05: u_int32_t hash",
           "[quick][element][transformation][05]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
@@ -409,7 +409,7 @@ TEST_CASE("BooleanMat 01: methods", "[quick][element][booleanmat][01]") {
   delete id;
 }
 
-TEST_CASE("BooleanMat 02: hash ~8ms", "[quick][element][booleanmat][02]") {
+TEST_CASE("BooleanMat 02: hash", "[quick][element][booleanmat][02]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -478,7 +478,7 @@ TEST_CASE("Bipartition 01: overridden methods",
   delete id;
 }
 
-TEST_CASE("Bipartition 02: hash ~12ms", "[quick][element][bipart][02]") {
+TEST_CASE("Bipartition 02: hash", "[quick][element][bipart][02]") {
   Element* x = new Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   for (size_t i = 0; i < 1000000; i++) {
@@ -628,7 +628,7 @@ TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
   delete sr;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix 02: hash ~11ms",
+TEST_CASE("ProjectiveMaxPlusMatrix 02: hash",
           "[quick][element][matrix][02]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x
@@ -702,7 +702,7 @@ TEST_CASE("MatrixOverSemiring 01: Integers methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 02: Integers, hash ~11ms",
+TEST_CASE("MatrixOverSemiring 02: Integers, hash",
           "[quick][element][matrix][02]") {
   Semiring<int64_t>* sr = new Integers();
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -751,7 +751,7 @@ TEST_CASE("MatrixOverSemiring 03: MaxPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 04: MaxPlusSemiring hash ~11ms",
+TEST_CASE("MatrixOverSemiring 04: MaxPlusSemiring hash",
           "[quick][element][matrix][04]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -800,7 +800,7 @@ TEST_CASE("MatrixOverSemiring 05: MinPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 06: MinPlusSemiring hash ~11ms",
+TEST_CASE("MatrixOverSemiring 06: MinPlusSemiring hash",
           "[quick][element][matrix][06]") {
   Semiring<int64_t>* sr = new MinPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -852,7 +852,7 @@ TEST_CASE("MatrixOverSemiring 07: TropicalMaxPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 08: TropicalMaxPlusSemiring hash ~11ms",
+TEST_CASE("MatrixOverSemiring 08: TropicalMaxPlusSemiring hash",
           "[quick][element][matrix][08]") {
   Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(33);
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -902,7 +902,7 @@ TEST_CASE("MatrixOverSemiring 09: TropicalMinPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 10: TropicalMinPlusSemiring hash ~11ms",
+TEST_CASE("MatrixOverSemiring 10: TropicalMinPlusSemiring hash",
           "[quick][element][matrix][10]") {
   Semiring<int64_t>* sr = new TropicalMinPlusSemiring(33);
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -951,7 +951,7 @@ TEST_CASE("MatrixOverSemiring 11: NaturalSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 12: NaturalSemiring hash ~11ms",
+TEST_CASE("MatrixOverSemiring 12: NaturalSemiring hash",
           "[quick][element][matrix][12]") {
   Semiring<int64_t>* sr = new NaturalSemiring(33, 2);
   Element*           x  = new MatrixOverSemiring<int64_t>(
@@ -1194,7 +1194,7 @@ TEST_CASE("PBR 03: product [bigger than previous]",
   delete expected;
 }
 
-TEST_CASE("PBR 04: hash ~28ms", "[quick][element][pbr][04]") {
+TEST_CASE("PBR 04: hash", "[quick][element][pbr][04]") {
   Element* x = new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();

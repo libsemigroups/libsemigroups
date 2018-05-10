@@ -17,6 +17,7 @@
 //
 
 #include "../src/libsemigroups-config.h"
+#include "../src/libsemigroups-debug.h"
 
 #ifdef LIBSEMIGROUPS_USE_HPCOMBI
 
@@ -26,6 +27,8 @@
 
 using namespace libsemigroups;
 using namespace HPCombi;
+
+const uint8_t FE = 0xfe;
 
 struct Renner0Element : public PTransf16 {
   using PTransf16::PTransf16;
@@ -38,38 +41,42 @@ struct Renner0Element : public PTransf16 {
     return static_cast<epu8>(_mm_blendv_epi8(maxab, minab, mask))
            | (y.v == cst_epu8_0xFF);
   }
-
-  size_t complexity() {
-    return -1;
-  }
 };
 
 namespace std {
 
   template <> struct hash<Renner0Element> {
     inline size_t operator()(const Renner0Element& ar) const {
-      return hash<HPCombi::Vect16>()(ar);
+      return hash<HPCombi::Vect16>{}(ar);
     }
   };
 }  // namespace std
 
 namespace libsemigroups {
   template <>
-  size_t libsemigroups::ElementContainer<Renner0Element>::complexity(
-      Renner0Element) const {
+  size_t ElementContainer<Renner0Element>::complexity(Renner0Element) const {
     return -1;
   }
+
+#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
+    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+  template <>
+  Renner0Element
+  ElementContainer<Renner0Element>::empty_key(Renner0Element) const {
+    return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
+  }
+#endif
 }  // namespace libsemigroups
 
 TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
   Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 2, 0})});
-  S.set_report(true);
+  S.set_report(false);
   REQUIRE(S.size() == 3);
   REQUIRE(S.nridempotents() == 1);
 }
 
-TEST_CASE("HPCombi 02: Transf16", "[quick][hpcombi][finite][02]") {
+TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
   Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
        Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -79,14 +86,14 @@ TEST_CASE("HPCombi 02: Transf16", "[quick][hpcombi][finite][02]") {
        Transf16({5, 6, 3, 0, 3, 0, 5, 1}),
        Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
        Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
-  S.reserve(597369 * 2);
+  S.reserve(600000);
   S.set_report(false);
   REQUIRE(S.size() == 597369);
 }
 
 const uint8_t FF = 0xFF;
 
-TEST_CASE("HPCombi 03: Renner0", "[quick][hpcombi][finite][03]") {
+TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
   Semigroup<Renner0Element,
             std::hash<Renner0Element>,
             std::equal_to<Renner0Element>>
@@ -103,6 +110,7 @@ TEST_CASE("HPCombi 03: Renner0", "[quick][hpcombi][finite][03]") {
   S.set_report(true);
   REQUIRE(S.size() == 8962225);
   REQUIRE(S.nridempotents() == 128);
+  S.set_report(false);
 }
 
 TEST_CASE("HPCombi 03: full transformation monoid 8",
