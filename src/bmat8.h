@@ -57,7 +57,7 @@ namespace libsemigroups {
     //!
     //! This constructor initializes a matrix where the rows of the matrix
     //! are the vectors in \p mat.
-    explicit BMat8(std::vector<std::vector<size_t>> const& mat);
+    explicit BMat8(std::vector<std::vector<bool>> const& mat);
 
     //! A constructor.
     //!
