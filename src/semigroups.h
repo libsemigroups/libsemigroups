@@ -239,6 +239,9 @@ namespace libsemigroups {
     explicit Semigroup(std::initializer_list<value_type> gens)
         : Semigroup(std::vector<value_type>(gens)) {}
 
+    explicit Semigroup(std::initializer_list<TElementType> gens)
+        : Semigroup(std::vector<TElementType>(gens)) {}
+
     //! Copy constructor.
     //!
     //! Constructs a new Semigroup which is an exact copy of \p copy. No
@@ -479,7 +482,7 @@ namespace libsemigroups {
         this->swap(_tmp_product, this->to_internal(out));
         this->multiply(this->to_internal(out), _tmp_product, _gens[*it]);
       }
-      return out;
+      return this->to_external(out);
     }
 
     //! Returns the maximum length of a word in the generators so far computed.

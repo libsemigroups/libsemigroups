@@ -282,7 +282,7 @@ namespace libsemigroups {
 
     TSubclass operator*(ElementWithVectorData const& y) const {
       TSubclass xy(y.degree());
-      xy.redefine(*this, y);
+      xy.Element::redefine(*this, y);
       return xy;
     }
 
@@ -360,8 +360,8 @@ namespace libsemigroups {
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    Element* empty_key() const override {
-      return new TSubclass({std::numeric_limits<TValueType>::max()});
+    TSubclass empty_key() const override {
+      return TSubclass({std::numeric_limits<TValueType>::max()});
     }
 #endif
 
@@ -860,13 +860,18 @@ namespace libsemigroups {
    public:
     //! A constructor.
     //!
-    //! Constructs a uninitialised bipartition of degree \p degree.
-    explicit Bipartition(size_t degree)
+    //! Constructs a uninitialised bipartition.
+    Bipartition()
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(),
           _nr_blocks(Bipartition::UNDEFINED),
           _nr_left_blocks(Bipartition::UNDEFINED),
           _trans_blocks_lookup(),
-          _rank(Bipartition::UNDEFINED) {
+          _rank(Bipartition::UNDEFINED) {}
+
+    //! A constructor.
+    //!
+    //! Constructs a uninitialised bipartition of degree \p degree.
+    explicit Bipartition(size_t degree) : Bipartition() {
       this->_vector.resize(2 * degree);
     }
 
@@ -892,7 +897,7 @@ namespace libsemigroups {
 
     void validate() const;
 
-    Bipartition(Bipartition const& copy, size_t = 0)
+    Bipartition(Bipartition const& copy)
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
               copy._vector),
           _nr_blocks(copy._nr_blocks),
@@ -1662,5 +1667,16 @@ namespace std {
     }
   };
 
+  template <typename TIntegerType>
+  struct hash<libsemigroups::PartialPerm<TIntegerType>> {
+    size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
+      return x.hash_value();
+    }
+  };
+  template <> struct hash<libsemigroups::Bipartition> {
+    size_t operator()(libsemigroups::Bipartition const& x) const {
+      return x.hash_value();
+    }
+  };
 }  // namespace std
 #endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_
