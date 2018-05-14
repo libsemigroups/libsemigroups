@@ -33,15 +33,15 @@ namespace libsemigroups {
   BooleanSemiring const* const BooleanMat::_semiring = new BooleanSemiring();
 
   // multiply x and y into this
-  void BooleanMat::redefine(Element const* x, Element const* y) {
-    LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
-    LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-    LIBSEMIGROUPS_ASSERT(x != this && y != this);
+  void BooleanMat::redefine(Element const& x, Element const& y) {
+    LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+    LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
 
     size_t                   k;
     size_t                   dim = this->degree();
-    std::vector<bool> const& xx  = static_cast<BooleanMat const*>(x)->_vector;
-    std::vector<bool> const& yy  = static_cast<BooleanMat const*>(y)->_vector;
+    std::vector<bool> const& xx  = static_cast<BooleanMat const&>(x)._vector;
+    std::vector<bool> const& yy  = static_cast<BooleanMat const&>(y)._vector;
 
     for (size_t i = 0; i < dim; i++) {
       for (size_t j = 0; j < dim; j++) {
@@ -104,7 +104,7 @@ namespace libsemigroups {
   }
 
   // the identity of this
-  Element* Bipartition::identity() const {
+  Bipartition Bipartition::identity() const {
     std::vector<u_int32_t> blocks;
     blocks.reserve(this->_vector.size());
     for (size_t j = 0; j < 2; j++) {
@@ -112,26 +112,25 @@ namespace libsemigroups {
         blocks.push_back(i);
       }
     }
-    return new Bipartition(blocks);
+    return Bipartition(blocks);
   }
 
   // multiply x and y into this
-  void Bipartition::redefine(Element const* x,
-                             Element const* y,
-                             size_t const&  thread_id) {
-    LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
-    LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-    LIBSEMIGROUPS_ASSERT(x != this && y != this);
+  void
+  Bipartition::redefine(Element const& x, Element const& y, size_t thread_id) {
+    LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+    LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
     u_int32_t n = this->degree();
 
-    Bipartition const* xx = static_cast<Bipartition const*>(x);
-    Bipartition const* yy = static_cast<Bipartition const*>(y);
+    auto const& xx = static_cast<Bipartition const&>(x);
+    auto const& yy = static_cast<Bipartition const&>(y);
 
-    std::vector<u_int32_t> const& xblocks = xx->_vector;
-    std::vector<u_int32_t> const& yblocks = yy->_vector;
+    std::vector<u_int32_t> const& xblocks = xx._vector;
+    std::vector<u_int32_t> const& yblocks = yy._vector;
 
-    u_int32_t nrx(xx->const_nr_blocks());
-    u_int32_t nry(yy->const_nr_blocks());
+    u_int32_t nrx(xx.const_nr_blocks());
+    u_int32_t nry(yy.const_nr_blocks());
 
     std::vector<u_int32_t>& fuse(_fuse[thread_id]);
     std::vector<u_int32_t>& lookup(_lookup[thread_id]);
@@ -351,7 +350,7 @@ namespace libsemigroups {
     }
   }
 
-  Element* PBR::identity() const {
+  PBR PBR::identity() const {
     std::vector<std::vector<u_int32_t>> adj;
     size_t                              n = this->degree();
     adj.reserve(2 * n);
@@ -362,17 +361,16 @@ namespace libsemigroups {
       adj[i].push_back(i + n);
       adj[i + n].push_back(i);
     }
-    return new PBR(adj);
+    return PBR(adj);
   }
 
-  void
-  PBR::redefine(Element const* xx, Element const* yy, size_t const& thread_id) {
-    LIBSEMIGROUPS_ASSERT(xx->degree() == yy->degree());
-    LIBSEMIGROUPS_ASSERT(xx->degree() == this->degree());
-    LIBSEMIGROUPS_ASSERT(xx != this && yy != this);
+  void PBR::redefine(Element const& xx, Element const& yy, size_t thread_id) {
+    LIBSEMIGROUPS_ASSERT(xx.degree() == yy.degree());
+    LIBSEMIGROUPS_ASSERT(xx.degree() == this->degree());
+    LIBSEMIGROUPS_ASSERT(&xx != this && &yy != this);
 
-    PBR const* x(static_cast<PBR const*>(xx));
-    PBR const* y(static_cast<PBR const*>(yy));
+    PBR const& x = static_cast<PBR const&>(xx);
+    PBR const& y = static_cast<PBR const&>(yy);
 
     u_int32_t const n = this->degree();
 
@@ -399,7 +397,7 @@ namespace libsemigroups {
     }
 
     for (size_t i = 0; i < n; i++) {
-      for (auto const& j : (*x)[i]) {
+      for (auto const& j : x[i]) {
         if (j < n) {
           out.set(i, j, true);
         } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
@@ -410,7 +408,7 @@ namespace libsemigroups {
           }
           tmp.set(j, 0, true);
           x_seen[i] = true;
-          y_dfs(x_seen, y_seen, tmp, n, j - n, x, y, j);
+          y_dfs(x_seen, y_seen, tmp, n, j - n, &x, &y, j);
           unite_rows(out, tmp, i, j);
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);
@@ -424,7 +422,7 @@ namespace libsemigroups {
     }
 
     for (size_t i = n; i < 2 * n; i++) {
-      for (auto const& j : (*y)[i]) {
+      for (auto const& j : y[i]) {
         if (j >= n) {
           out.set(i, j, true);
         } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
@@ -435,7 +433,7 @@ namespace libsemigroups {
           }
           tmp.set(j, 0, true);
           y_seen[i] = true;
-          x_dfs(x_seen, y_seen, tmp, n, j + n, x, y, j);
+          x_dfs(x_seen, y_seen, tmp, n, j + n, &x, &y, j);
           unite_rows(out, tmp, i, j);
           std::fill(x_seen.begin(), x_seen.end(), false);
           std::fill(y_seen.begin(), y_seen.end(), false);

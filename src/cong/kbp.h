@@ -28,7 +28,6 @@
 #include "../rws.h"
 #include "../rwse.h"
 #include "../semigroups.h"
-#include "p.h"
 
 namespace libsemigroups {
 
@@ -68,7 +67,7 @@ namespace libsemigroups {
     void init();
 
     RWS*              _rws;
-    Semigroup<RWSE*>* _semigroup;
+    Semigroup<RWSE>* _semigroup;
     Congruence*       _P_cong;
   };
 }  // namespace libsemigroups

@@ -91,16 +91,12 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   T.set_report(RWSE_REPORT);
   delete_gens(gens);
 
-  RWSE    ab(rws, word_t({0, 1}));
-  word_t* w = T.factorisation(&ab);
-  REQUIRE(*w == word_t({1}));
-  delete w;
+  RWSE ab(rws, word_t({0, 1}));
+  REQUIRE(T.factorisation(&ab) == word_t({1}));
 
   RWSE aaa(rws, word_t({0, 0, 0}));
-  w = T.factorisation(&aaa);
-  REQUIRE(*w == word_t({0}));
-  delete w;
+  REQUIRE(T.factorisation(&aaa) == word_t({0}));
 
-  aaa.copy(&ab);
+  aaa.copy(ab);
   REQUIRE(aaa == ab);
 }

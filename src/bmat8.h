@@ -234,13 +234,13 @@ namespace libsemigroups {
     static BMat8 random(size_t dim);
 
    private:
-    uint64_t                                     _data;
-    static std::random_device                    _rd;
-    static std::mt19937                          _gen;
-    static std::uniform_int_distribution<size_t> _dist;
-    static std::vector<uint64_t> const           ROW_MASK;
-    static std::vector<uint64_t> const           COL_MASK;
-    static std::vector<uint64_t> const           BIT_MASK;
+    uint64_t                                       _data;
+    static std::random_device                      _rd;
+    static std::mt19937                            _gen;
+    static std::uniform_int_distribution<uint64_t> _dist;
+    static std::vector<uint64_t> const             ROW_MASK;
+    static std::vector<uint64_t> const             COL_MASK;
+    static std::vector<uint64_t> const             BIT_MASK;
 
     // Cyclically shifts bits to left by 8m
     // https://stackoverflow.com/a/776523

@@ -33,7 +33,7 @@ const uint8_t FE = 0xfe;
 struct Renner0Element : public PTransf16 {
   using PTransf16::PTransf16;
 
-  Renner0Element operator*(Renner0Element y) {
+  Renner0Element operator*(Renner0Element const& y) const {
     Renner0Element minab, maxab, mask, b = permuted(y);
     mask  = _mm_cmplt_epi8(y, Perm16::one());
     minab = _mm_min_epi8(v, b);
@@ -54,7 +54,8 @@ namespace std {
 
 namespace libsemigroups {
   template <>
-  size_t ElementContainer<Renner0Element>::complexity(Renner0Element) const {
+  size_t
+  ElementContainer<Renner0Element>::complexity(Renner0Element const&) const {
     return -1;
   }
 

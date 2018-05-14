@@ -908,12 +908,25 @@ TEST_CASE("RWS 83: set_confluence_interval", "[quick][rws][83]") {
 }
 
 TEST_CASE("RWS 84: set_max_overlap", "[quick][rws][84]") {
-  std::ostringstream os;
-  RWS                rws;
+  RWS rws;
   rws.add_rule("aa", "");
   rws.add_rule("bB", "");
   rws.add_rule("bbb", "");
   rws.add_rule("ababab", "");
   rws.set_max_overlap(10);
   rws.set_max_overlap(-11);
+}
+
+TEST_CASE("RWS 85: Ceitin's undecidable word problem example",
+          "[fails][rws][85]") {
+  glob_reporter.set_report(true);
+  RWS rws;
+  rws.add_rule("ac", "ca");
+  rws.add_rule("ad", "da");
+  rws.add_rule("bc", "cb");
+  rws.add_rule("bd", "db");
+  rws.add_rule("eca", "ce");
+  rws.add_rule("edb", "de");
+  rws.add_rule("cca", "ccae");
+  rws.knuth_bendix();  // I guess this shouldn't work, and indeed it doesn't!
 }

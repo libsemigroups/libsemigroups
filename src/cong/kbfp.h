@@ -62,7 +62,7 @@ namespace libsemigroups {
     void init();
 
     RWS*              _rws;
-    Semigroup<RWSE*>* _semigroup;
+    Semigroup<RWSE>* _semigroup;
   };
 }  // namespace libsemigroups
 

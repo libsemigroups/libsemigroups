@@ -170,40 +170,32 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
   REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
   REQUIRE(S.length_const(378) == 6);
 
-  word_t* ww = S.minimal_factorisation(S.at(378));
-  REQUIRE(*ww == word_t({0, 1, 2, 0, 1, 2}));
-  delete ww;
+  REQUIRE(S.minimal_factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
 
-  ww = S.minimal_factorisation(BMat8({{1, 0, 0, 1, 1},
-                                      {0, 1, 0, 0, 1},
-                                      {1, 0, 1, 0, 1},
-                                      {0, 0, 1, 0, 1},
-                                      {0, 0, 0, 0, 0}}));
-  REQUIRE(ww == nullptr);
-  delete ww;
+  REQUIRE_THROWS_AS(S.minimal_factorisation(BMat8({{1, 0, 0, 1, 1},
+                                                   {0, 1, 0, 0, 1},
+                                                   {1, 0, 1, 0, 1},
+                                                   {0, 0, 1, 0, 1},
+                                                   {0, 0, 0, 0, 0}})),
+                    LibsemigroupsException);
 
-  ww = S.minimal_factorisation(1000000);
-  REQUIRE(ww == nullptr);
+  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000), LibsemigroupsException);
 
   w.clear();
   S.factorisation(w, 378);
   REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
   REQUIRE(S.length_const(378) == 6);
 
-  ww = S.factorisation(S.at(378));
-  REQUIRE(*ww == word_t({0, 1, 2, 0, 1, 2}));
-  delete ww;
+  REQUIRE(S.factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
 
-  ww = S.factorisation(BMat8({{1, 0, 0, 1, 1},
-                              {0, 1, 0, 0, 1},
-                              {1, 0, 1, 0, 1},
-                              {0, 0, 1, 0, 1},
-                              {0, 0, 0, 0, 0}}));
-  REQUIRE(ww == nullptr);
-  delete ww;
+  REQUIRE_THROWS_AS(S.factorisation(BMat8({{1, 0, 0, 1, 1},
+                                           {0, 1, 0, 0, 1},
+                                           {1, 0, 1, 0, 1},
+                                           {0, 0, 1, 0, 1},
+                                           {0, 0, 0, 0, 0}})),
+                    LibsemigroupsException);
 
-  ww = S.factorisation(1000000);
-  REQUIRE(ww == nullptr);
+  REQUIRE_THROWS_AS(S.factorisation(1000000), LibsemigroupsException);
 
   S.next_relation(w);
   REQUIRE(w == std::vector<size_t>({2, 2, 2}));
@@ -211,6 +203,13 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
   REQUIRE(w == std::vector<size_t>({3, 0, 7}));
   S.next_relation(w);
   REQUIRE(w == std::vector<size_t>({3, 2, 3}));
+
+  size_t pos = 0;
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    REQUIRE(S.position(*it) == pos);
+    pos++;
+  }
+  REQUIRE(pos == S.size());
 
   // Copy - after enumerate
   Semigroup<BMat8> T(S);
@@ -393,3 +392,50 @@ TEST_CASE("Semigroup 77: iterators BMat8", "[quick][semigroup][finite][77]") {
   REQUIRE(pos == 0);
 }
 #endif
+
+TEST_CASE("Semigroup 78: non-pointer, non-trivial element type",
+          "[standard][semigroup][finite][78]") {
+  std::vector<Transformation<uint_fast8_t>> gens
+      = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
+         Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
+         Transformation<uint_fast8_t>({3, 0, 7, 2, 4, 6, 2, 4}),
+         Transformation<uint_fast8_t>({3, 2, 3, 4, 5, 3, 0, 1}),
+         Transformation<uint_fast8_t>({4, 3, 7, 7, 4, 5, 0, 4}),
+         Transformation<uint_fast8_t>({5, 6, 3, 0, 3, 0, 5, 1}),
+         Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4}),
+         Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
+
+  Semigroup<Transformation<uint_fast8_t>> S(gens);
+  S.reserve(597369);
+  S.set_report(SEMIGROUPS_REPORT);
+
+  REQUIRE(S.size() == 597369);
+  REQUIRE(S.nridempotents() == 8194);
+  size_t pos = 0;
+  for (auto it = S.cbegin(); it < S.cend(); ++it) {
+    REQUIRE(S.position(*it) == pos);
+    pos++;
+  }
+
+  S.add_generators({Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})});
+  REQUIRE(S.size() == 826713);
+  S.closure({Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})});
+  REQUIRE(S.size() == 826713);
+  REQUIRE(S.minimal_factorisation(
+              Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})
+              * Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}))
+          == word_t({8, 1}));
+  REQUIRE(S.minimal_factorisation(10) == word_t({0, 2}));
+  REQUIRE(S.at(10) == Transformation<uint_fast8_t>({0, 4, 7, 2, 3, 4, 0, 6}));
+  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+                    LibsemigroupsException);
+  pos = 0;
+  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
+    REQUIRE(*it * *it == *it);
+    pos++;
+  }
+  REQUIRE(pos == S.nridempotents());
+  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
+    REQUIRE(*(it - 1) < *it);
+  }
+}

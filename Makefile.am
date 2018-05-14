@@ -69,7 +69,6 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 LINT_FORMAT_FILES_EXTRA =  src/cong/kbfp.h
 LINT_FORMAT_FILES_EXTRA += src/cong/kbp.h
-LINT_FORMAT_FILES_EXTRA += src/cong/p.h
 LINT_FORMAT_FILES_EXTRA += src/cong/tc.h
 
 LINT_FORMAT_FILES_EXTRA += src/cong/kbfp.cc

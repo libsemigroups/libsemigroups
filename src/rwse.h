@@ -56,6 +56,8 @@ namespace libsemigroups {
     //!
     //! The rewriting system \p rws is not copied either, and it is the
     //! responsibility of the caller to delete it.
+    RWSE() : Element(), _rws(nullptr), _rws_word() {}
+
     explicit RWSE(RWS* rws) : RWSE(rws, "", false) {}
 
     RWSE(RWS* rws, rws_word_t const& w) : RWSE(rws, w, true) {}
@@ -72,6 +74,9 @@ namespace libsemigroups {
     RWSE(RWS* rws, word_t const& w) : RWSE(rws, RWS::word_to_rws_word(w)) {}
     RWSE(RWS& rws, word_t const& w) : RWSE(&rws, w) {}
 
+    //! A copy constructor.
+    RWSE(RWSE const&);
+
     //! Returns \c true if \c this equals \p that.
     //!
     //! This method checks the mathematical equality of two RWSE, in other
@@ -87,21 +92,14 @@ namespace libsemigroups {
     //! This defines a total order on RWSEs that is the short-lex order on all
     //! words.
     // TODO should use the reduction ordering of RWS.
-    bool operator<(const Element& that) const override;
-
-    //! Returns a pointer to a copy of \c this.
-    //!
-    //! The parameter \p increase_deg_by is not used
-    //!
-    //! \sa Element::really_copy.
-    RWSE* really_copy(size_t increase_deg_by) const override;
+    bool operator<(Element const& that) const override;
 
     //! Copy \p x into \c this.
     //!
     //! This method copies the RWSE pointed to by \p x into \c this by
     //! changing \c this in-place.
-    void copy(Element const* x) override;
-    void swap(Element* x) override;
+    void copy(Element const& x) override;
+    void swap(Element& x) override;
 
     //! Returns the approximate time complexity of multiplying two
     //! RWSE's.
@@ -131,8 +129,16 @@ namespace libsemigroups {
     //!
     //! Returns a new RWSE wrapping the empty word and over the same rewriting
     //! system as \c this.
-    Element* identity() const override {
-      return new RWSE(_rws);
+    RWSE identity() const {
+      return RWSE(_rws);
+    }
+
+    RWSE* heap_copy() const override {
+      return new RWSE(*this);
+    }
+
+    RWSE* heap_identity() const override {
+      return this->identity().heap_copy();
     }
 
     //! Calculates a hash value for this object which is cached.
@@ -153,9 +159,7 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const* x,
-                  Element const* y,
-                  size_t const&  tid = 0) override;
+    void redefine(Element const& x, Element const& y, size_t tid = 0) override;
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
@@ -183,47 +187,26 @@ namespace std {
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from a const Element pointer. This is used by various methods
   //! of the Semigroup class.
-  template <> struct hash<libsemigroups::RWSE*> {
-    size_t operator()(libsemigroups::RWSE* x) const {
-      return x->hash_value();
-    }
-  };
-  template <> struct hash<libsemigroups::RWSE const*> {
-    size_t operator()(libsemigroups::RWSE const* x) const {
-      return x->hash_value();
+  template <> struct hash<libsemigroups::RWSE> {
+    size_t operator()(libsemigroups::RWSE const& x) const {
+      return x.hash_value();
     }
   };
 
-  //! Provides a call operator for comparing Elements via pointers.
-  //!
-  //! This struct provides a call operator for comparing const Element
-  //! pointers (by comparing the Element objects they point to). This is used
-  //! by various methods of the Semigroup class.
-  template <> struct equal_to<libsemigroups::RWSE*> {
-    size_t operator()(libsemigroups::RWSE* x, libsemigroups::RWSE* y) const {
-      return *x == *y;
+  template <> struct equal_to<libsemigroups::RWSE> {
+    bool operator()(libsemigroups::RWSE const& x,
+                    libsemigroups::RWSE const& y) const {
+      return x == y;
     }
   };
-  template <> struct equal_to<libsemigroups::RWSE const*> {
-    size_t operator()(libsemigroups::RWSE const* x,
-                      libsemigroups::RWSE const* y) const {
-      return *x == *y;
-    }
-  };  // class RWSE
 }  // namespace std
 
 namespace libsemigroups {
-  // Inherit methods required for ElementContainer's (Semigroup, Congruence
-  // etc) from the generic methods for Element*.
-  template <>
-  struct ElementContainer<RWSE*> : public ElementPointerContainer<RWSE*> {};
-
   // Specialise the factorisation method for Semigroup's of RWSE's so that they
   // just use the word inside the RWSE.
   template <>
-  word_t*
-  Semigroup<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>::factorisation(
-      RWSE* x);
+  word_t Semigroup<RWSE, std::hash<RWSE>, std::equal_to<RWSE>>::factorisation(
+      RWSE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_RWSE_H_

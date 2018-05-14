@@ -43,7 +43,7 @@ void delete_gens(std::vector<TElementType>& gens) {
 
 static inline void test_idempotent(Semigroup<>& S, Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
-  Element* y = x->really_copy();
+  Element* y = x->heap_copy();
   y->redefine(x, x);
   REQUIRE(*x == *y);
   REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));

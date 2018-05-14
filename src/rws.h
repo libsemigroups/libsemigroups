@@ -528,11 +528,11 @@ namespace libsemigroups {
 
     //! This method converts a string in the rewriting system into a vector of
     //! unsigned integers. This method is the inverse of RWS::uint_to_rws_word.
-    static word_t* rws_word_to_word(rws_word_t const* rws_word) {
-      word_t* w = new word_t();
-      w->reserve(rws_word->size());
-      for (rws_letter_t const& rws_letter : *rws_word) {
-        w->push_back(rws_letter_to_uint(rws_letter));
+    static word_t rws_word_to_word(rws_word_t const& rws_word) {
+      word_t w;
+      w.reserve(rws_word.size());
+      for (rws_letter_t const& rws_letter : rws_word) {
+        w.push_back(rws_letter_to_uint(rws_letter));
       }
       return w;
     }

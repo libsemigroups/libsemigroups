@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <numeric>
 #include <unordered_set>
 #include <vector>
 
@@ -50,6 +51,7 @@ namespace libsemigroups {
    public:
     //! A constructor.
     Element() : _hash_value(UNDEFINED) {}
+    explicit Element(size_t hv) : _hash_value(hv) {}
 
     //! A default destructor.
     virtual ~Element() {}
@@ -58,7 +60,11 @@ namespace libsemigroups {
     //!
     //! This method checks the mathematical equality of two Element objects in
     //! the same subclass of Element.
-    virtual bool operator==(const Element& that) const = 0;
+    virtual bool operator==(Element const& that) const = 0;
+
+    bool operator!=(Element const& that) const {
+      return !(*this == that);
+    }
 
     //! Returns \c true if \c this is less than \p that.
     //!
@@ -67,6 +73,10 @@ namespace libsemigroups {
     //! this total order depends on the method for the operator < in the
     //! subclass.
     virtual bool operator<(const Element& that) const = 0;
+
+    bool operator>(const Element& that) const {
+      return that < *this;
+    }
 
     //! Returns the approximate time complexity of multiplying two
     //! Element objects in a given subclass.
@@ -112,31 +122,23 @@ namespace libsemigroups {
     //! This method returns the multiplicative identity element for an object
     //! in a subclass of Element. The returned identity belongs to the same
     //! subclass and has the same degree as \c this.
-    virtual Element* identity() const = 0;
-
-    //! Returns a new element completely independent of \c this.
-    //!
-    //! If \p increase_deg_by is non-zero, then the degree (the size of the
-    //! container) of the defining data of \c this will be increased by this
-    //! amount.
-    //!
-    //! This method really copies an Element. To minimise the amount of copying
-    //! when Element objects are inserted in a std::unordered_map and other
-    //! containers, an Element behaves somewhat like a pointer, in that the
-    //! actual data in an Element is only copied when this method is called.
-    //! Otherwise, if an Element is copied, then its defining data is only
-    //! stored once.
-    virtual Element* really_copy(size_t increase_deg_by = 0) const = 0;
+    // FIXME remove this? I can't see how at present.
+    // virtual Element* identity() const = 0;
 
     //! Copy another Element into \c this.
     //!
-    //! This method copies \p x into \c this by changing \c this in-place.
-    virtual void copy(Element const* x) = 0;
+    //! This method copies its argument into \c this by changing \c this
+    //! in-place.
+    virtual void copy(Element const&) = 0;
+
+    void copy(Element const* x) {
+      return copy(*x);
+    }
 
     //! Swap another Element with \c this.
     //!
     //! This method swaps the defining data of \p x and \c this.
-    virtual void swap(Element* x) = 0;
+    virtual void swap(Element& x) = 0;
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -148,8 +150,12 @@ namespace libsemigroups {
     //! calls the 3 parameter version with third parameter 0. Any subclass of
     //! Element can implement either a two or three parameter version of this
     //! method and the base class method implements the other method.
-    virtual void redefine(Element const* x, Element const* y) {
+    virtual void redefine(Element const& x, Element const& y) {
       redefine(x, y, 0);
+    }
+
+    void redefine(Element const* x, Element const* y) {
+      redefine(*x, *y, 0);
     }
 
     //! Multiplies \p x and \p y and stores the result in \c this.
@@ -171,16 +177,32 @@ namespace libsemigroups {
     //! Note that if different threads call this method on a derived class of
     //! Element where static temporary storage is used in the redefine method
     //! with the same value of \p thread_id, then bad things may happen.
-    virtual void
-    redefine(Element const* x, Element const* y, size_t const& thread_id) {
-      (void) thread_id;
+    virtual void redefine(Element const& x, Element const& y, size_t) {
       redefine(x, y);
+    }
+
+    void redefine(Element const* x, Element const* y, size_t) {
+      redefine(*x, *y);
     }
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     virtual Element* empty_key() const = 0;
 #endif
+
+    virtual void increase_deg_by(size_t) {}
+
+    //! Returns a new element completely independent of \c this.
+    //!
+    //! This method really copies an Element. To minimise the amount of copying
+    //! when Element objects are inserted in a std::unordered_map and other
+    //! containers, an Element behaves somewhat like a pointer, in that the
+    //! actual data in an Element is only copied when this method is called.
+    //! Otherwise, if an Element is copied, then its defining data is only
+    //! stored once.
+    virtual Element* heap_copy() const = 0;
+
+    virtual Element* heap_identity() const = 0;
 
    protected:
     //! Calculate and cache a hash value.
@@ -203,6 +225,7 @@ namespace libsemigroups {
     //! This variable is used to indicate that a value is undefined. For
     //! example, the cached hash value of an Element is initially set to this
     //! value.
+    // FIXME move to constants.h file
     static size_t const UNDEFINED;
 
     //! This data member holds a cached version of the hash value of an Element.
@@ -235,6 +258,8 @@ namespace libsemigroups {
     //! Returns an object with an uninitialised vector.
     ElementWithVectorData() : Element(), _vector() {}
 
+    explicit ElementWithVectorData(size_t n) : Element(), _vector(n) {}
+
     //! A constructor.
     //!
     //! The parameter \p vector should be a const reference to defining data of
@@ -243,6 +268,23 @@ namespace libsemigroups {
     //! Returns an object whose defining data is a copy of \p vector.
     explicit ElementWithVectorData(std::vector<TValueType> const& vector)
         : Element(), _vector(vector) {}
+
+    //! A copy constructor.
+    //!
+    //! The size of the vector containing the defining data of \c this will be
+    //! increased by \p increase_deg_by.  If \p increase_deg_by is not 0, then
+    //! this method must be overridden by any subclass of ElementWithVectorData
+    //! since there is no way of knowing how a subclass is defined by the data
+    //! in the vector.
+    ElementWithVectorData(ElementWithVectorData const& copy)
+        : Element(copy._hash_value),
+          _vector(copy._vector.cbegin(), copy._vector.cend()) {}
+
+    TSubclass operator*(ElementWithVectorData const& y) const {
+      TSubclass xy(y.degree());
+      xy.redefine(*this, y);
+      return xy;
+    }
 
     //! Returns the \p pos entry in the vector containing the defining data.
     //!
@@ -266,7 +308,8 @@ namespace libsemigroups {
     //! This method checks that the underlying vectors of \c this and \p that
     //! are equal.
     bool operator==(Element const& that) const override {
-      return static_cast<TSubclass const&>(that)._vector == this->_vector;
+      return static_cast<ElementWithVectorData const&>(that)._vector
+             == this->_vector;
     }
 
     //! Returns \c true if \c this is less than \p that.
@@ -275,7 +318,7 @@ namespace libsemigroups {
     //! ElementWithVectorData of a given Element::degree, which is the
     //! short-lex order.
     bool operator<(Element const& that) const override {
-      TSubclass const& ewvd = static_cast<TSubclass const&>(that);
+      auto& ewvd = static_cast<ElementWithVectorData const&>(that);
       if (this->_vector.size() != ewvd._vector.size()) {
         return this->_vector.size() < ewvd._vector.size();
       }
@@ -287,21 +330,6 @@ namespace libsemigroups {
       return false;
     }
 
-    //! Returns a pointer to a copy of \c this.
-    //!
-    //! The size of the vector containing the defining data of \c this will be
-    //! increased by \p increase_deg_by.  If \p increase_deg_by is not 0, then
-    //! this method must be overridden by any subclass of ElementWithVectorData
-    //! since there is no way of knowing how a subclass is defined by the data
-    //! in the vector.
-    Element* really_copy(size_t increase_deg_by = 0) const override {
-      LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
-      (void) increase_deg_by;
-      TSubclass* copy   = new TSubclass(this->_vector);
-      copy->_hash_value = this->_hash_value;
-      return copy;
-    }
-
     //! Copy another Element into \c this.
     //!
     //! This method copies \p x into \c this by changing \c this in-place. This
@@ -309,12 +337,11 @@ namespace libsemigroups {
     //! replaces the underlying vector of \c this with the underlying vector of
     //! \p x. Any method overriding this one must define _hash_value correctly
     //! or call Element::reset_hash_value on \c this.
-    void copy(Element const* x) override {
-      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-      ElementWithVectorData const* xx
-          = static_cast<ElementWithVectorData const*>(x);
-      _vector.assign(xx->_vector.cbegin(), xx->_vector.cend());
-      this->_hash_value = xx->_hash_value;
+    void copy(Element const& x) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      auto const& xx = static_cast<ElementWithVectorData const&>(x);
+      _vector.assign(xx._vector.cbegin(), xx._vector.cend());
+      this->_hash_value = xx._hash_value;
     }
 
     //! Swap another Element with \c this.
@@ -324,17 +351,17 @@ namespace libsemigroups {
     //! then swaps the underlying vector of \c this with the underlying vector
     //! of \p x. Any method overriding should swap the hash_value of \c this
     //! and \p x, or call Element::reset_hash_value on \c this and \p x.
-    void swap(Element* x) override {
-      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-      ElementWithVectorData* xx = static_cast<ElementWithVectorData*>(x);
-      _vector.swap(xx->_vector);
-      std::swap(this->_hash_value, xx->_hash_value);
+    void swap(Element& x) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      auto& xx = static_cast<ElementWithVectorData&>(x);
+      _vector.swap(xx._vector);
+      std::swap(this->_hash_value, xx._hash_value);
     }
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    Element* empty_key() const override {
-      return new TSubclass({std::numeric_limits<TValueType>::max()});
+    TSubclass empty_key() const override {
+      return TSubclass({std::numeric_limits<TValueType>::max()});
     }
 #endif
 
@@ -370,8 +397,19 @@ namespace libsemigroups {
       return _vector.cend();
     }
 
+    // FIXME why does this method exist?
     inline size_t size() const {
       return _vector.size();
+    }
+
+    virtual TSubclass identity() const = 0;
+
+    Element* heap_identity() const override {
+      return this->identity().heap_copy();
+    }
+
+    Element* heap_copy() const override {
+      return new TSubclass(*static_cast<TSubclass const*>(this));
     }
 
    protected:
@@ -403,7 +441,10 @@ namespace libsemigroups {
   template <typename TValueType, class TSubclass>
   class ElementWithVectorDataDefaultHash
       : public ElementWithVectorData<TValueType, TSubclass> {
+   public:
     using ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData;
+    ElementWithVectorDataDefaultHash()
+        : ElementWithVectorData<TValueType, TSubclass>() {}
 
    protected:
     //! This method implements the default hash function for an
@@ -453,6 +494,9 @@ namespace libsemigroups {
    public:
     using ElementWithVectorDataDefaultHash<TValueType, TSubclass>::
         ElementWithVectorDataDefaultHash;
+
+    PartialTransformation()
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>() {}
 
     explicit PartialTransformation(std::vector<TValueType> const& vec)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(vec) {
@@ -515,13 +559,13 @@ namespace libsemigroups {
     //! This method returns a new partial transformation with degree equal to
     //! the degree of \c this that fixes every value from *0* to the degree of
     //! \c this.
-    Element* identity() const override {
+    TSubclass identity() const override {
       std::vector<TValueType> vector;
       vector.reserve(this->degree());
       for (size_t i = 0; i < this->degree(); i++) {
         vector.push_back(i);
       }
-      return new TSubclass(vector);
+      return TSubclass(vector);
     }
 
     //! Undefined image value.
@@ -558,6 +602,7 @@ namespace libsemigroups {
   class Transformation : public PartialTransformation<T, Transformation<T>> {
    public:
     using PartialTransformation<T, Transformation<T>>::PartialTransformation;
+    Transformation() : PartialTransformation<T, Transformation<T>>() {}
 
     explicit Transformation(std::vector<T> const& vec)
         : PartialTransformation<T, Transformation<T>>(vec) {
@@ -582,24 +627,16 @@ namespace libsemigroups {
       }
     }
 
-    //! Returns a pointer to a copy of \c this.
-    //!
-    //! See Element::really_copy for more details about this method.
-    //!
-    //! The copy returned by this method fixes all the values between the
-    //! Transformation::degree of \c this and \p increase_deg_by.
-    Element* really_copy(size_t increase_deg_by = 0) const override {
-      Transformation<T>* copy = new Transformation<T>(this->_vector);
-      if (increase_deg_by == 0) {
-        copy->_hash_value = this->_hash_value;
-      } else {
-        size_t n = copy->_vector.size();
-        copy->_vector.reserve(n + increase_deg_by);
-        for (size_t i = n; i < n + increase_deg_by; i++) {
-          copy->_vector.push_back(i);
-        }
-      }
-      return copy;
+    //! A copy constructor.
+    Transformation<T>(Transformation<T> const& copy)
+        : PartialTransformation<T, Transformation<T>>(copy) {}
+
+    void increase_deg_by(size_t m) override {
+      this->_vector.resize(this->_vector.size() + m);
+      std::iota(this->_vector.end() - m,
+                this->_vector.end(),
+                this->_vector.size() - m);
+      this->reset_hash_value();
     }
 
     //! Multiply \p x and \p y and stores the result in \c this.
@@ -608,15 +645,15 @@ namespace libsemigroups {
     //!
     //! This method asserts that the degrees of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
-    void redefine(Element const* x, Element const* y) override {
-      LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
-      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(x != this && y != this);
-      Transformation<T> const* xx(static_cast<Transformation<T> const*>(x));
-      Transformation<T> const* yy(static_cast<Transformation<T> const*>(y));
-      size_t const             n = this->_vector.size();
+    void redefine(Element const& x, Element const& y) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
+      auto const&  xx = static_cast<Transformation<T> const&>(x);
+      auto const&  yy = static_cast<Transformation<T> const&>(y);
+      size_t const n  = this->_vector.size();
       for (T i = 0; i < n; i++) {
-        (this->_vector)[i] = (*yy)[(*xx)[i]];
+        (this->_vector)[i] = yy[xx[i]];
       }
       this->reset_hash_value();
     }
@@ -717,6 +754,15 @@ namespace libsemigroups {
       }
     }
 
+    //! A copy constructor.
+    PartialPerm<T>(PartialPerm const& copy)
+        : PartialTransformation<T, PartialPerm<T>>(copy) {}
+
+    void increase_deg_by(size_t m) override {
+      this->_vector.insert(this->_vector.end(), m, UNDEFINED);
+      this->reset_hash_value();
+    }
+
     //! Returns \c true if \c this is less than \p that.
     //!
     //! This defines a total order on partial permutations that is equivalent
@@ -761,42 +807,21 @@ namespace libsemigroups {
       return false;
     }
 
-    //! Returns a pointer to a copy of \c this.
-    //!
-    //! See Element::really_copy for more details about this method.
-    //!
-    //! The copy returned by this method is undefined on all the values between
-    //! the PartialPerm::degree of \c this and \p increase_deg_by.
-    Element* really_copy(size_t increase_deg_by = 0) const override {
-      PartialPerm<T>* copy = new PartialPerm<T>(this->_vector);
-      if (increase_deg_by == 0) {
-        copy->_hash_value = this->_hash_value;
-      } else {
-        size_t n = copy->_vector.size();
-        copy->_vector.reserve(n + increase_deg_by);
-        for (size_t i = n; i < n + increase_deg_by; i++) {
-          copy->_vector.push_back(UNDEFINED);
-        }
-      }
-      return copy;
-    }
-
     //! Multiply \p x and \p y and stores the result in \c this.
     //!
     //! See Element::redefine for more details about this method.
     //!
     //! This method asserts that the degrees of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
-    void redefine(Element const* x, Element const* y) override {
-      LIBSEMIGROUPS_ASSERT(x->degree() == y->degree());
-      LIBSEMIGROUPS_ASSERT(x->degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(x != this && y != this);
-      PartialPerm<T> const* xx(static_cast<PartialPerm<T> const*>(x));
-      PartialPerm<T> const* yy(static_cast<PartialPerm<T> const*>(y));
-      size_t const          n = this->degree();
+    void redefine(Element const& x, Element const& y) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
+      auto const&  xx = static_cast<PartialPerm<T> const&>(x);
+      auto const&  yy = static_cast<PartialPerm<T> const&>(y);
+      size_t const n  = this->degree();
       for (T i = 0; i < n; i++) {
-        this->_vector[i]
-            = ((*xx)[i] == UNDEFINED ? UNDEFINED : (*yy)[(*xx)[i]]);
+        this->_vector[i] = (xx[i] == UNDEFINED ? UNDEFINED : yy[xx[i]]);
       }
       this->reset_hash_value();
     }
@@ -867,6 +892,14 @@ namespace libsemigroups {
 
     void validate() const;
 
+    Bipartition(Bipartition const& copy, size_t = 0)
+        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
+              copy._vector),
+          _nr_blocks(copy._nr_blocks),
+          _nr_left_blocks(copy._nr_left_blocks),
+          _trans_blocks_lookup(copy._trans_blocks_lookup),
+          _rank(copy._rank) {}
+
     // TODO another constructor that accepts an actual partition
 
     //! Returns the approximate time complexity of multiplication.
@@ -886,7 +919,7 @@ namespace libsemigroups {
     //! The *identity bipartition* of degree \f$n\f$ has blocks \f$\{i, -i\}\f$
     //! for all \f$i\in \{0, \ldots, n - 1\}\f$. This method returns a new
     //! identity bipartition of degree equal to the degree of \c this.
-    Element* identity() const override;
+    Bipartition identity() const override;
 
     //! Multiply \p x and \p y and stores the result in \c this.
     //!
@@ -899,9 +932,8 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const* x,
-                  Element const* y,
-                  size_t const&  thread_id) override;
+    void
+    redefine(Element const& x, Element const& y, size_t thread_id) override;
 
     //! Returns the number of transverse blocks.
     //!
@@ -1105,6 +1137,14 @@ namespace libsemigroups {
         }
       }
     }
+    //! A copy constructor.
+    //!
+    //! The parameter \p increase_deg_by must be 0, since it does not make
+    //! sense to increase the degree of a matrix.
+    MatrixOverSemiringBase(MatrixOverSemiringBase const& copy)
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(copy._vector),
+          _degree(copy._degree),
+          _semiring(copy._semiring) {}
 
     // The next constructor only exists to make the empty_key method for
     // ElementWithVectorData work.
@@ -1140,44 +1180,28 @@ namespace libsemigroups {
     //! This method returns a new matrix with dimension equal to that of \c
     //! this, where the main diagonal consists of the value Semiring::one and
     //! every other entry Semiring::zero.
-    Element* identity() const override {
+    TSubclass identity() const override {
       std::vector<TValueType> vector;
       vector.resize(this->_vector.size(), _semiring->zero());
       size_t n = this->degree();
       for (auto it = vector.begin(); it < vector.end(); it += n + 1) {
         (*it) = _semiring->one();
       }
-      return new TSubclass(vector, _semiring);
+      return TSubclass(vector, _semiring);
     }
 
-    //! Returns a pointer to a copy of \c this.
+    //! multiply \p x and \p y and stores the result in \c this.
     //!
-    //! The parameter \p increase_deg_by must be 0, since it does not make
-    //! sense to increase the degree of a matrix.
-    Element* really_copy(size_t increase_deg_by = 0) const override {
-      LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
-      (void) increase_deg_by;
-      MatrixOverSemiringBase* copy = static_cast<MatrixOverSemiringBase*>(
-          ElementWithVectorDataDefaultHash<TValueType,
-                                           TSubclass>::really_copy());
-      LIBSEMIGROUPS_ASSERT(copy->_semiring == nullptr
-                           || copy->_semiring == this->_semiring);
-      copy->_semiring = _semiring;
-      return copy;
-    }
-
-    //! Multiply \p x and \p y and stores the result in \c this.
-    //!
-    //! This method asserts that the degrees of \p x, \p y, and \c this, are
-    //! all equal, and that neither \p x nor \p y equals \c this. It does not
+    //! this method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this. it does not
     //! currently verify that \c x, \c y, and \c this are defined over the
     //! same semiring.
-    void redefine(Element const* x, Element const* y) override {
-      auto xx = static_cast<MatrixOverSemiringBase const*>(x);
-      auto yy = static_cast<MatrixOverSemiringBase const*>(y);
-      LIBSEMIGROUPS_ASSERT(xx->degree() == yy->degree());
-      LIBSEMIGROUPS_ASSERT(xx->degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(xx != this && yy != this);
+    void redefine(Element const& x, Element const& y) override {
+      auto xx = static_cast<MatrixOverSemiringBase const&>(x);
+      auto yy = static_cast<MatrixOverSemiringBase const&>(y);
+      LIBSEMIGROUPS_ASSERT(xx.degree() == yy.degree());
+      LIBSEMIGROUPS_ASSERT(xx.degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(&xx != this && &yy != this);
       // It can be that the elements are defined over semirings that are
       // distinct in memory but equal (for example, when one element comes
       // from a semigroup and another from an ideal of that semigroup).
@@ -1191,7 +1215,7 @@ namespace libsemigroups {
           int64_t v = _semiring->zero();
           for (size_t k = 0; k < deg; k++) {
             v = _semiring->plus(
-                v, _semiring->prod((*xx)[i * deg + k], (*yy)[k * deg + j]));
+                v, _semiring->prod(xx[i * deg + k], yy[k * deg + j]));
           }
           (this->_vector)[i * deg + j] = v;
         }
@@ -1278,6 +1302,10 @@ namespace libsemigroups {
     explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {}
 #endif
 
+    //! A copy constructor.
+    ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const& copy)
+        : MatrixOverSemiringBase(copy) {}
+
    private:
     friend class ElementWithVectorData<int64_t, ProjectiveMaxPlusMatrix>;
     explicit ProjectiveMaxPlusMatrix(std::vector<int64_t> matrix)
@@ -1306,9 +1334,10 @@ namespace libsemigroups {
   //! A permutation is stored as a vector of the images of
   //! \f$(0, 1, \ldots, n - 1)\f$,
   //! i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$.
-  template <typename T> class Permutation : public Transformation<T> {
+  template <typename T>
+  class Permutation : public PartialTransformation<T, Permutation<T>> {
    public:
-    using Transformation<T>::Transformation;
+    using PartialTransformation<T, Permutation<T>>::PartialTransformation;
 
     void validate() const {
       std::vector<bool> present(this->degree(), false);
@@ -1326,15 +1355,39 @@ namespace libsemigroups {
       }
     }
 
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! See Element::redefine for more details about this method.
+    //!
+    //! This method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this.
+    // FIXME make a TransformationBase class with this method
+    void redefine(Element const& x, Element const& y) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
+      auto const&  xx = static_cast<Permutation<T> const&>(x);
+      auto const&  yy = static_cast<Permutation<T> const&>(y);
+      size_t const n  = this->_vector.size();
+      for (T i = 0; i < n; i++) {
+        (this->_vector)[i] = yy[xx[i]];
+      }
+      this->reset_hash_value();
+    }
+
+    Permutation identity() const override {
+      return this->PartialTransformation<T, Permutation<T>>::identity();
+    }
+
     //! Returns the inverse of a permutation.
     //!
     //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
     //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
-    Permutation* inverse() {
+    Permutation inverse() const {
       size_t const n  = this->_vector.size();
-      Permutation* id = static_cast<Permutation<T>*>(this->identity());
+      Permutation  id = this->identity();
       for (T i = 0; i < n; i++) {
-        id->_vector[this->_vector[i]] = i;
+        id._vector[this->_vector[i]] = i;
       }
       return id;
     }
@@ -1375,11 +1428,16 @@ namespace libsemigroups {
     explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
 #endif
 
+    //! A copy constructor.
+    BooleanMat(BooleanMat const& copy)
+        : MatrixOverSemiringBase<bool, BooleanMat>(copy._vector,
+                                                   copy._semiring) {}
+
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! This method asserts that the dimensions of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
-    void redefine(Element const* x, Element const* y) final;
+    void redefine(Element const& x, Element const& y);
 
     // There is a specialization of std::hash for std::vector<bool> but for
     // some reason it causes a dramatic slow down in some of the benchmarks if
@@ -1442,7 +1500,7 @@ namespace libsemigroups {
     //! this where every value is adjacent to its negative. Equivalently,
     //! \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every \f$i\f$ less
     //! than the degree \f$n\f$.
-    Element* identity() const override;
+    PBR identity() const override;
 
     //! Multiply \p x and \p y and stores the result in \c this.
     //!
@@ -1455,9 +1513,7 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const* x,
-                  Element const* y,
-                  size_t const&  thread_id) override;
+    void redefine(Element const&, Element const&, size_t) override;
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
@@ -1573,6 +1629,7 @@ namespace std {
       return x->hash_value();
     }
   };
+  // FIXME the next struct should be deleted
   template <> struct hash<libsemigroups::Element> {
     size_t operator()(libsemigroups::Element const& x) const {
       return x.hash_value();
@@ -1585,16 +1642,25 @@ namespace std {
   //! pointers (by comparing the Element objects they point to). This is used
   //! by various methods of the Semigroup class.
   template <> struct equal_to<libsemigroups::Element*> {
-    size_t operator()(libsemigroups::Element* x,
-                      libsemigroups::Element* y) const {
+    bool operator()(libsemigroups::Element* x,
+                    libsemigroups::Element* y) const {
       return *x == *y;
     }
   };
   template <> struct equal_to<libsemigroups::Element const*> {
-    size_t operator()(libsemigroups::Element const* x,
-                      libsemigroups::Element const* y) const {
+    bool operator()(libsemigroups::Element const* x,
+                    libsemigroups::Element const* y) const {
       return *x == *y;
     }
   };
+
+  template <typename TIntegerType>
+  struct hash<libsemigroups::Transformation<TIntegerType>> {
+    size_t
+    operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
+      return x.hash_value();
+    }
+  };
+
 }  // namespace std
 #endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_

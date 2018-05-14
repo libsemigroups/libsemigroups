@@ -33,7 +33,7 @@ static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
 
 static inline void test_idempotent(Semigroup<>& S, Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
-  Element* y = x->really_copy();
+  Element* y = x->heap_copy();
   y->redefine(x, x);
   REQUIRE(*x == *y);
   REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
@@ -230,7 +230,7 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
   delete x;
-  Semigroup<> S = Semigroup<>({id});
+  Semigroup<> S({&id});
   S.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1);
@@ -238,11 +238,10 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
   REQUIRE(S.nridempotents() == 1);
   REQUIRE(S.nrgens() == 1);
   REQUIRE(S.nrrules() == 1);
-  REQUIRE(*S[0] == *id);
+  REQUIRE(*S[0] == id);
 
-  REQUIRE(S.position(id) == 0);
-  REQUIRE(S.test_membership(id));
-  delete id;
+  REQUIRE(S.position(&id) == 0);
+  REQUIRE(S.test_membership(&id));
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
