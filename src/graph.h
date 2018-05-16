@@ -20,6 +20,7 @@
 #define LIBSEMIGROUPS_SRC_GRAPH_H_
 
 #include "recvec.h"
+#include "libsemigroups-exception.h"
 #include <algorithm>
 #include <memory>
 #include <stack>
@@ -43,6 +44,8 @@ namespace libsemigroups {
   template <typename TIntType> class Digraph {
     static_assert(std::is_integral<TIntType>(),
                   "TIntType is not an integer type!");
+    static_assert(std::is_unsigned<TIntType>(),
+                  "TIntType is not unsigned!");
 
    public:
     //! A constant which represents undefined edges.
@@ -68,8 +71,14 @@ namespace libsemigroups {
     //! Returns the thing in the (\p i, \p j)th position of the
     //! underlying RecVec, i.e. the \p j-th edge from node \p i.
     TIntType inline get(TIntType i, TIntType j) {
-      LIBSEMIGROUPS_ASSERT(i < nr_nodes());
-      LIBSEMIGROUPS_ASSERT(j < _next_edge_pos[i]);
+      if (i >= nr_nodes()) {
+        throw LibsemigroupsException("get: first argument larger than "
+                                     "number of nodes - 1");
+      }
+      if(j >= _next_edge_pos[i]) {
+        throw LibsemigroupsException("get: second argument larger than "
+                                     "number of edges from node - 1");
+      }
       return _recvec.get(i, j);
     }
 
@@ -96,8 +105,14 @@ namespace libsemigroups {
     //! If \p i and \p j are nodes in \c this, then this function
     //! adds an edge from \p i to \p j.
     void inline add_edge(TIntType i, TIntType j) {
-      LIBSEMIGROUPS_ASSERT(i < _recvec.nr_rows());
-      LIBSEMIGROUPS_ASSERT(j < _recvec.nr_rows());
+      if (i >= nr_nodes()) {
+        throw LibsemigroupsException("add_edge: first argument larger than "
+                                     "number of nodes - 1");
+      }
+      if (j >= nr_nodes()) {
+        throw LibsemigroupsException("add_edge: second argument larger than "
+                                     "number of nodes - 1");
+      }
       set(i, _next_edge_pos[i], j);
       ++_next_edge_pos[i];
     }
@@ -189,7 +204,10 @@ namespace libsemigroups {
     //! This function returns the id number of the SCC containing \p node.
     //! If this has not been calculated, it will be at this point.
     TIntType get_scc_id(TIntType node) {
-      LIBSEMIGROUPS_ASSERT(node < _recvec.nr_rows());
+      if (node >= nr_nodes()) {
+        throw LibsemigroupsException("get_scc_id: first argument larger than "
+                                     "number of nodes - 1");
+      }
       if (!_has_scc) {
         gabow_scc();
       }
@@ -273,8 +291,10 @@ namespace libsemigroups {
     //! If \p i and \p j are nodes which exist in \c this, then this function
     //! adds an edge from \p i to \p j.
     void inline add_edge(TIntType i, TIntType j) {
-      LIBSEMIGROUPS_ASSERT(base_graph_type::_next_edge_pos[i] < _degree);
-      LIBSEMIGROUPS_ASSERT(i < base_graph_type::nr_nodes());
+      if(base_graph_type::_next_edge_pos[i] >= _degree){
+        throw LibsemigroupsException("add_edge: adding an edge would increase "
+                                     "the degree past the degree bound");
+      }
       Digraph<TIntType>::add_edge(i, j);
     }
 
