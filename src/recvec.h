@@ -20,7 +20,6 @@
 #define LIBSEMIGROUPS_SRC_RECVEC_H_
 
 #include <algorithm>
-#include <stack>
 #include <vector>
 
 #include "libsemigroups-debug.h"

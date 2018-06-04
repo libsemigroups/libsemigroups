@@ -16,19 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_GRAPH_H_
-#define LIBSEMIGROUPS_SRC_GRAPH_H_
+#ifndef LIBSEMIGROUPS_SRC_DIGRAPH_H_
+#define LIBSEMIGROUPS_SRC_DIGRAPH_H_
 
-#include "recvec.h"
 #include "libsemigroups-exception.h"
+#include "recvec.h"
 #include <algorithm>
-#include <memory>
 #include <stack>
 
 namespace libsemigroups {
-  //! Class for directed graphs
+  //! Class for directed Cayley graphs
   //!
-  //! This class represents directed graphs. If the graph has
+  //! This class represents directed Cayley graphs. If the digraph has
   //! \p n nodes, they are represented by the numbers {0, ..., n}.
   //! The underlying data structure is a RecVec
   //! which the Digraph contains. Digraph does not inherit from RecVec,
@@ -41,11 +40,13 @@ namespace libsemigroups {
   //! This simplifies some of the code.
   //! Also, this is a fairly minimal implementation which
   //! only includes the functionality which is useful for Cayley graphs.
-  template <typename TIntType> class Digraph {
+  //! When a digraph of this type is created, a bound on the degree must be
+  //! specified. This can be increased later (e.g. if more generators are
+  //! to be included in the Cayley digraph).
+  template <typename TIntType> class CayleyDigraph {
     static_assert(std::is_integral<TIntType>(),
                   "TIntType is not an integer type!");
-    static_assert(std::is_unsigned<TIntType>(),
-                  "TIntType is not unsigned!");
+    static_assert(std::is_unsigned<TIntType>(), "TIntType is not unsigned!");
 
    public:
     //! A constant which represents undefined edges.
@@ -57,14 +58,16 @@ namespace libsemigroups {
 
     //! A constructor
     //!
-    //! This constructor takes the initial number of vertices of the graph.
-    explicit Digraph(TIntType nr_vertices = 0)
-        : _next_edge_pos(nr_vertices),
-          _cc_ids(),
+    //! This constructor takes the initial degree bound and the initial
+    //! number of vertices of the graph.
+    explicit CayleyDigraph(TIntType degree_bound, TIntType nr_vertices = 0)
+        : _cc_ids(),
+          _degree_bound(degree_bound),
           _has_scc(false),
-          _recvec(0, nr_vertices, UNDEFINED) {}
+          _next_edge_pos(nr_vertices),
+          _recvec(degree_bound, nr_vertices, UNDEFINED) {}
 
-    Digraph &operator=(Digraph const &graph) = delete;
+    CayleyDigraph &operator=(CayleyDigraph const &graph) = delete;
 
     //! Returns the node which is the end of the \p j-th edge of \p i.
     //!
@@ -75,7 +78,7 @@ namespace libsemigroups {
         throw LibsemigroupsException("get: first argument larger than "
                                      "number of nodes - 1");
       }
-      if(j >= _next_edge_pos[i]) {
+      if (j >= _next_edge_pos[i]) {
         throw LibsemigroupsException("get: second argument larger than "
                                      "number of edges from node - 1");
       }
@@ -113,6 +116,10 @@ namespace libsemigroups {
         throw LibsemigroupsException("add_edge: second argument larger than "
                                      "number of nodes - 1");
       }
+      if (_next_edge_pos[i] >= _degree_bound) {
+        throw LibsemigroupsException("add_edge: adding an edge would increase "
+                                     "the degree past the degree bound");
+      }
       set(i, _next_edge_pos[i], j);
       ++_next_edge_pos[i];
     }
@@ -126,6 +133,24 @@ namespace libsemigroups {
         edges += i;
       }
       return edges;
+    }
+
+    //! Increase the degree of \c this
+    //!
+    //! Increases the maximum degree of \c this by \p nr.
+    //! This function must be called before you attempt to add an edge
+    //! to a vertex and increase its degree past \c degree_bound.
+    void inline increase_degree(TIntType nr) {
+      _recvec.add_cols(nr);
+      _degree_bound += nr;
+    }
+
+    //! Returns a bound on the degree of this graph
+    //!
+    //! This function returns the current bound on the degree of this graph.
+    //! This is used to decide how many columns to store in the RecVec.
+    TIntType degree_bound() {
+      return _degree_bound;
     }
 
     //! Calculate the strongly connected components of \c this
@@ -224,26 +249,13 @@ namespace libsemigroups {
       return *std::max_element(_next_edge_pos.begin(), _next_edge_pos.end());
     }
 
-   protected:
-    //! A vector containing the next edge positions for each node
-    std::vector<TIntType> _next_edge_pos;
-
    private:
     //! Sets a value in the underlying RecVec
     //!
     //! Sets the (\p i, \p j)th position of the underlying recvec to \p k.
-    //! This will increase the number of columns if there are not enough.
-    //! It will not increase the number of rows though!
-    //! Assert everything near any calls to this function.
     void inline set(TIntType i, TIntType j, TIntType k) {
-      LIBSEMIGROUPS_ASSERT(i < nr_nodes());
-      LIBSEMIGROUPS_ASSERT(k < nr_nodes());
-
-      // col indexing starts at 0, nr_cols starts at 1
-      size_t nr_cols = _recvec.nr_cols();
-      if (j >= nr_cols) {
-        _recvec.add_cols(j - nr_cols + 1);
-      }
+      LIBSEMIGROUPS_ASSERT(i < nr_nodes() && k < nr_nodes());
+      LIBSEMIGROUPS_ASSERT(j < _recvec.nr_cols());
 
       _recvec.set(i, j, k);
       _has_scc = false;
@@ -252,76 +264,21 @@ namespace libsemigroups {
     //! A vector containing the id of the SCC of each node
     std::vector<TIntType> _cc_ids;
 
+    //! A TIntType representing the current bound on the degree of each node.
+    TIntType _degree_bound;
+
     //! A boolean flag indicating whether the SCCs of \p this are known
     bool _has_scc;
+
+    //! A vector containing the next edge positions for each node
+    std::vector<TIntType> _next_edge_pos;
 
     //! A RecVec<TIntType> which is the underlying data structure for \p this
     RecVec<TIntType> _recvec;
   };
 
-  //! Class for bounded out-degree directed graphs
-  //!
-  //! This class represents directed graphs which have (known) bounded
-  //! out-degree. The motivation behind these graphs are Cayley graphs,
-  //! which have constant out-degree for a given set of generators.
-  //!
-  //! The maximum desired degree must be provided on creation,
-  //! but can be increased later (for example if you wished to add generators
-  //! to a Cayley graph).
   template <typename TIntType>
-  class BoundedOutDegreeDigraph : public Digraph<TIntType> {
-   public:
-    //! The type of digraph that \p this inherits from
-    //!
-    //! BoundedOutDegreeDigraph<TIntType> is a subclass of
-    //! Digraph<TIntType>. This member stores the type Digraph<TIntType>
-    //! so that members of the superclass can be accessed easily.
-    typedef Digraph<TIntType> base_graph_type;
-
-    //! A constructor
-    //!
-    //! This constructor takes the maximum degree, \p degree, of the graph.
-    //! This can be increased later, but must be increased before you try
-    //! to add an edge too many to a vertex!
-    explicit BoundedOutDegreeDigraph(TIntType degree, TIntType nr_vertices = 0)
-        : base_graph_type(nr_vertices), _degree(degree) {}
-
-    //! Add an edge to this digraph
-    //!
-    //! If \p i and \p j are nodes which exist in \c this, then this function
-    //! adds an edge from \p i to \p j.
-    void inline add_edge(TIntType i, TIntType j) {
-      if(base_graph_type::_next_edge_pos[i] >= _degree){
-        throw LibsemigroupsException("add_edge: adding an edge would increase "
-                                     "the degree past the degree bound");
-      }
-      Digraph<TIntType>::add_edge(i, j);
-    }
-
-    //! Increase the degree of \c this
-    //!
-    //! Increases the maximum degree of \c this by \p nr.
-    //! This function must be called before you attempt to add an edge
-    //! to a vertex and increase its degree past \c degree_bound.
-    void inline increase_degree(TIntType nr) {
-      base_graph_type::_recvec.add_cols(nr);
-      _degree += nr;
-    }
-
-    //! Returns a bound on the degree of this graph
-    //!
-    //! This function returns the current bound on the degree of this graph.
-    //! This is used to decide how many columns to store in the RecVec.
-    TIntType degree_bound() {
-      return _degree;
-    }
-
-   private:
-    TIntType _degree;
-  };
-
-  template <typename TIntType>
-  const TIntType Digraph<TIntType>::UNDEFINED
+  const TIntType CayleyDigraph<TIntType>::UNDEFINED
       = std::numeric_limits<TIntType>::max();
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_GRAPH_H_
+#endif  // LIBSEMIGROUPS_SRC_DIGRAPH_H_

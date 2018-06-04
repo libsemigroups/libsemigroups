@@ -37,9 +37,9 @@ pkginclude_HEADERS += src/libsemigroups-exception.h
 pkginclude_HEADERS += src/blocks.h
 pkginclude_HEADERS += src/bmat8.h     
 pkginclude_HEADERS += src/cong.h
+pkginclude_HEADERS += src/digraph.h
 pkginclude_HEADERS += src/elements.h   
 pkginclude_HEADERS += src/eltcont.h
-pkginclude_HEADERS += src/graph.h
 pkginclude_HEADERS += src/partition.h
 pkginclude_HEADERS += src/recvec.h
 pkginclude_HEADERS += src/report.h    
@@ -50,7 +50,6 @@ pkginclude_HEADERS += src/semigroups.h
 pkginclude_HEADERS += src/semiring.h  
 pkginclude_HEADERS += src/timer.h 
 pkginclude_HEADERS += src/uf.h 
-
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -106,8 +105,8 @@ lstest_SOURCES =  tests/main.test.cc
 lstest_SOURCES += tests/blocks.test.cc	  
 lstest_SOURCES += tests/bmat8.test.cc
 lstest_SOURCES += tests/cong.test.cc	  
-lstest_SOURCES += tests/elements.test.cc  
-lstest_SOURCES += tests/graph.test.cc
+lstest_SOURCES += tests/digraph.test.cc
+lstest_SOURCES += tests/elements.test.cc
 lstest_SOURCES += tests/hpcombi.test.cc 
 lstest_SOURCES += tests/kbp.test.cc       
 lstest_SOURCES += tests/kbfp.test.cc	  
