@@ -1,0 +1,12 @@
+name: libsemigroups
+
+channels:
+- QuantStack
+- conda-forge
+
+dependencies:
+  - libsemigroups
+  - xeus-cling
+  - notebook
+#  - pip:
+#      - cppyy
