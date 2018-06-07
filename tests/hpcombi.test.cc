@@ -63,7 +63,7 @@ namespace libsemigroups {
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
   template <>
   Renner0Element
-  ElementContainer<Renner0Element>::empty_key(Renner0Element) const {
+  ElementContainer<Renner0Element>::empty_key(Renner0Element const&) const {
     return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
   }
 #endif

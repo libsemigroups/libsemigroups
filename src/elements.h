@@ -360,8 +360,8 @@ namespace libsemigroups {
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    TSubclass empty_key() const override {
-      return TSubclass({std::numeric_limits<TValueType>::max()});
+    Element* empty_key() const override {
+      return new TSubclass({std::numeric_limits<TValueType>::max()});
     }
 #endif
 

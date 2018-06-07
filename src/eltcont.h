@@ -165,6 +165,7 @@ namespace libsemigroups {
 
     inline internal_value_type one(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->heap_identity());
+      // TODO remove dynamic_cast here
     }
 
     inline void multiply(internal_value_type       xy,
@@ -195,7 +196,7 @@ namespace libsemigroups {
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
-      return x->empty_key();
+      return dynamic_cast<internal_value_type>(x->empty_key());
     }
 #endif
   };
@@ -283,7 +284,7 @@ namespace libsemigroups {
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
-      return x->empty_key();
+      return dynamic_cast<internal_value_type>(x->empty_key());
     }
 #endif
   };
