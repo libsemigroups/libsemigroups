@@ -98,7 +98,6 @@ namespace libsemigroups {
     //!
     //! This method copies the RWSE pointed to by \p x into \c this by
     //! changing \c this in-place.
-    void copy(Element const& x) override;
     void swap(Element& x) override;
 
     //! Returns the approximate time complexity of multiplying two

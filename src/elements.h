@@ -117,16 +117,6 @@ namespace libsemigroups {
       return this->_hash_value;
     }
 
-    //! Copy another Element into \c this.
-    //!
-    //! This method copies its argument into \c this by changing \c this
-    //! in-place.
-    virtual void copy(Element const&) = 0;
-
-    void copy(Element const* x) {
-      return copy(*x);
-    }
-
     //! Swap another Element with \c this.
     //!
     //! This method swaps the defining data of \p x and \c this.
@@ -320,20 +310,6 @@ namespace libsemigroups {
         }
       }
       return false;
-    }
-
-    //! Copy another Element into \c this.
-    //!
-    //! This method copies \p x into \c this by changing \c this in-place. This
-    //! method asserts that the degrees of \c this and \p x are equal and then
-    //! replaces the underlying vector of \c this with the underlying vector of
-    //! \p x. Any method overriding this one must define _hash_value correctly
-    //! or call Element::reset_hash_value on \c this.
-    void copy(Element const& x) override {
-      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
-      auto const& xx = static_cast<ElementWithVectorData const&>(x);
-      _vector.assign(xx._vector.cbegin(), xx._vector.cend());
-      this->_hash_value = xx._hash_value;
     }
 
     //! Swap another Element with \c this.

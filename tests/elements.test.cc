@@ -98,11 +98,6 @@ TEST_CASE("Transformation 04: u_int32_t methods",
   Element* expected = new Transformation<u_int32_t>({0, 0, 0});
   REQUIRE(*expected < *x);
 
-  expected->copy(x);
-  REQUIRE(*expected == *x);
-
-  delete expected;
-
   REQUIRE(x->degree() == 3);
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 3);

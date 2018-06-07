@@ -96,7 +96,4 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
 
   RWSE aaa(rws, word_t({0, 0, 0}));
   REQUIRE(T.factorisation(&aaa) == word_t({0}));
-
-  aaa.copy(ab);
-  REQUIRE(aaa == ab);
 }

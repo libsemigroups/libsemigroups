@@ -42,13 +42,6 @@ namespace libsemigroups {
     }
   }
 
-  void RWSE::copy(Element const& x) {
-    auto const& xx = static_cast<RWSE const&>(x);
-    _rws_word.assign(xx._rws_word.cbegin(), xx._rws_word.cend());
-    _rws = xx._rws;
-    reset_hash_value();
-  }
-
   void RWSE::swap(Element& x) {
     auto& xx = static_cast<RWSE&>(x);
     _rws_word.swap(xx._rws_word);
