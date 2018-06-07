@@ -614,6 +614,7 @@ TEST_CASE("Semigroups 84: Exception: prefix",
     REQUIRE_NOTHROW(U.prefix(i));
     REQUIRE_THROWS_AS(U.prefix(i + U.size()), LibsemigroupsException);
   }
+  delete sr;
 }
 
 TEST_CASE("Semigroups 85: Exception: suffix",
@@ -993,7 +994,7 @@ TEST_CASE("Semigroup 92: Exception: add_generators",
   delete_gens(additional_gens_3_2);
 }
 
-TEST_CASE("Semigroup 93: non-pointer bipartitions",
+TEST_CASE("Semigroup 93: non-pointer Bipartitions",
           "[quick][semigroup][finite][93]") {
   std::vector<Bipartition> gens = {
       Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
