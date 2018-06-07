@@ -176,7 +176,11 @@ namespace libsemigroups {
           _suffix(),
           _tmp_product(),
           _wordlen(0) {  // (length of the current word) - 1
-      LIBSEMIGROUPS_ASSERT(_nrgens != 0);
+
+      if (_nrgens == 0) {
+        throw LibsemigroupsException(
+            "Semigroup::Semigroup: no generators given");
+      }
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
 #endif
@@ -187,10 +191,16 @@ namespace libsemigroups {
 
       _degree = this->element_degree(this->to_internal((*gens)[0]));
 
-      for (const_reference x : *gens) {
-        LIBSEMIGROUPS_ASSERT(this->element_degree(this->to_internal(x))
-                             == _degree);
-        _gens.push_back(this->internal_copy(this->to_internal(x)));
+      for (size_t i = 0; i < _nrgens; ++i) {
+        element_index_t degree
+            = this->element_degree(this->to_internal((*gens)[i]));
+        if (degree != _degree) {
+          throw LibsemigroupsException(
+              "Semigroup::Semigroup:  generator " + std::to_string(i)
+              + " has degree " + std::to_string(degree)
+              + " but should have degree " + std::to_string(_degree));
+        }
+        _gens.push_back(this->internal_copy(this->to_internal((*gens)[i])));
       }
 
       _tmp_product = this->one(_gens[0]);
@@ -238,9 +248,6 @@ namespace libsemigroups {
 
     explicit Semigroup(std::initializer_list<value_type> gens)
         : Semigroup(std::vector<value_type>(gens)) {}
-
-    explicit Semigroup(std::initializer_list<TElementType> gens)
-        : Semigroup(std::vector<TElementType>(gens)) {}
 
     //! Copy constructor.
     //!
@@ -446,13 +453,21 @@ namespace libsemigroups {
     //! \sa Semigroup::word_to_element.
     element_index_t word_to_pos(word_t const& w) const override {
       // w is a word in the generators (i.e. a vector of letter_t's)
-      LIBSEMIGROUPS_ASSERT(w.size() > 0);
+      if (w.size() == 0) {
+        throw LibsemigroupsException(std::string("Semigroup::word_to_pos: ")
+                                     + "the word given has length 0");
+      }
       if (w.size() == 1) {
         return letter_to_pos(w[0]);
       }
       element_index_t out = letter_to_pos(w[0]);
       for (auto it = w.begin() + 1; it < w.end(); it++) {
-        LIBSEMIGROUPS_ASSERT(*it < nrgens());
+        if (*it >= nrgens()) {
+          throw LibsemigroupsException(
+              "Semigroup::word_to_pos: word contains " + std::to_string(*it)
+              + " but the semigroup only has " + std::to_string(nrgens())
+              + " generators");
+        }
         out = fast_product(out, letter_to_pos(*it));
       }
       return out;
@@ -468,7 +483,10 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::word_to_pos.
     value_type word_to_element(word_t const& w) const {
-      LIBSEMIGROUPS_ASSERT(w.size() > 0);
+      if (w.size() == 0) {
+        throw LibsemigroupsException(
+            "Semigroup::word_to_element: the word given has length 0");
+      }
       if (is_done() || w.size() == 1) {
         // Return a copy
         return this->external_copy(_elements[word_to_pos(w)]);
@@ -478,11 +496,16 @@ namespace libsemigroups {
       value_type out = this->external_copy(_tmp_product);
       this->multiply(this->to_internal(out), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
-        LIBSEMIGROUPS_ASSERT(*it < nrgens());
+        if (*it >= nrgens()) {
+          throw LibsemigroupsException(
+              "Semigroup::word_to_element: word contains " + std::to_string(*it)
+              + " but the semigroup only has " + std::to_string(nrgens())
+              + " generators");
+        }
         this->swap(_tmp_product, this->to_internal(out));
         this->multiply(this->to_internal(out), _tmp_product, _gens[*it]);
       }
-      return this->to_external(out);
+      return out;
     }
 
     //! Returns the maximum length of a word in the generators so far computed.
@@ -514,7 +537,12 @@ namespace libsemigroups {
 
     //! Return a const reference to the generator with index \p pos.
     const_reference gens(letter_t pos) const {
-      LIBSEMIGROUPS_ASSERT(pos < _gens.size());
+      if (pos >= nrgens()) {
+        throw LibsemigroupsException(
+            "Semigroup::gens: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(nrgens())
+            + " generators");
+      }
       return this->to_external(_gens[pos]);
     }
 
@@ -578,7 +606,12 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     element_index_t prefix(element_index_t pos) const override {
-      LIBSEMIGROUPS_ASSERT(pos < _nr);
+      if (pos >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::prefix: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       return _prefix[pos];
     }
 
@@ -588,7 +621,12 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     element_index_t suffix(element_index_t pos) const override {
-      LIBSEMIGROUPS_ASSERT(pos < _nr);
+      if (pos >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::suffix: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       return _suffix[pos];
     }
 
@@ -605,7 +643,12 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     letter_t first_letter(element_index_t pos) const override {
-      LIBSEMIGROUPS_ASSERT(pos < _nr);
+      if (pos >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::first_letter: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       return _first[pos];
     }
 
@@ -622,7 +665,12 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, this is asserted in the method.
     letter_t final_letter(element_index_t pos) const override {
-      LIBSEMIGROUPS_ASSERT(pos < _nr);
+      if (pos >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::final_letter: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       return _final[pos];
     }
 
@@ -638,7 +686,12 @@ namespace libsemigroups {
     //! element of the semigroup, this is asserted in the method. This method
     //! causes no enumeration of the semigroup.
     size_t length_const(element_index_t pos) const override {
-      LIBSEMIGROUPS_ASSERT(pos < _nr);
+      if (pos >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::length_const: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       return _length[pos];
     }
 
@@ -663,7 +716,19 @@ namespace libsemigroups {
     //! right or left Cayley graph from \p i to \p j, whichever is shorter.
     element_index_t product_by_reduction(element_index_t i,
                                          element_index_t j) const override {
-      LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
+      if (i >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::product_by_reduction: first argument was "
+            + std::to_string(i) + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
+      if (j >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::product_by_reduction: second argument was"
+            + std::to_string(j) + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
+
       if (length_const(i) <= length_const(j)) {
         while (i != UNDEFINED) {
           j = _left.get(j, _final[i]);
@@ -700,7 +765,18 @@ namespace libsemigroups {
     //! transformations together.
     element_index_t fast_product(element_index_t i,
                                  element_index_t j) const override {
-      LIBSEMIGROUPS_ASSERT(i < _nr && j < _nr);
+      if (i >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::fast_product: first argument was " + std::to_string(i)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
+      if (j >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::fast_product: second argument was " + std::to_string(j)
+            + " but there are only " + std::to_string(_nr)
+            + " elements enumerated");
+      }
       if (length_const(i) < 2 * this->complexity(_tmp_product)
           || length_const(j) < 2 * this->complexity(_tmp_product)) {
         return product_by_reduction(i, j);
@@ -721,7 +797,12 @@ namespace libsemigroups {
     //! * Semigroup::add_generators was called after the semigroup was already
     //! partially enumerated.
     element_index_t letter_to_pos(letter_t i) const override {
-      LIBSEMIGROUPS_ASSERT(i < _nrgens);
+      if (i >= nrgens()) {
+        throw LibsemigroupsException(
+            "Semigroup::letter_to_pos: argument was " + std::to_string(i)
+            + " but there are only " + std::to_string(nrgens())
+            + " generators");
+      }
       return _letter_to_pos[i];
     }
 
@@ -741,7 +822,11 @@ namespace libsemigroups {
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
     bool is_idempotent(element_index_t pos) override {
-      LIBSEMIGROUPS_ASSERT(pos < size());
+      if (pos >= size()) {
+        throw LibsemigroupsException(
+            "Semigroup::is_idempotent: argument was " + std::to_string(pos)
+            + " but there are only " + std::to_string(size()) + " elements");
+      }
       init_idempotents();
       return _is_idempotent[pos];
     }
@@ -1312,11 +1397,18 @@ namespace libsemigroups {
       if (coll->empty()) {
         return;
       }
+      for (size_t i = 0; i < coll->size(); ++i) {
+        element_index_t degree
+            = this->element_degree(this->to_internal((*coll)[i]));
+        if (degree != _degree) {
+          throw LibsemigroupsException(
+              "Semigroup::add_generators: new generator " + std::to_string(i)
+              + " has degree " + std::to_string(degree)
+              + " but should have degree " + std::to_string(_degree));
+        }
+      }
       Timer  timer;
       size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
-
-      LIBSEMIGROUPS_ASSERT(
-          degree() == this->element_degree(this->to_internal(*coll->begin())));
 
       // get some parameters from the old semigroup
       letter_t old_nrgens  = _nrgens;
@@ -1337,8 +1429,6 @@ namespace libsemigroups {
 
       // add the new generators to new _gens, _elements, and _enumerate_order
       for (const_reference x : *coll) {
-        LIBSEMIGROUPS_ASSERT(this->element_degree(this->to_internal(x))
-                             == degree());
         auto it = _map.find(this->to_internal(x));
         if (it == _map.end()) {  // new generator
           _gens.push_back(this->internal_copy(this->to_internal(x)));
@@ -2097,10 +2187,7 @@ namespace libsemigroups {
       // Find the threshold beyond which it is quicker to simply multiply
       // elements rather than follow a path in the Cayley graph. This is the
       // enumerate_index_t i for which length(i) >= 2 * complexity.
-      size_t comp = this->complexity(_tmp_product);
-      LIBSEMIGROUPS_ASSERT(comp > 0);
-      // Previous assertion because otherwise the next line doesn't work as
-      // intended
+      size_t comp = std::max(this->complexity(_tmp_product), size_t(1));
       size_t threshold_length = std::min(_lenindex.size() - 2, comp - 1);
       enumerate_index_t threshold_index = _lenindex[threshold_length];
 
