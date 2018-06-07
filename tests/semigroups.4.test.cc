@@ -1098,8 +1098,7 @@ namespace libsemigroups {
   }
 }  // namespace libsemigroups
 
-TEST_CASE("Semigroup 95: integers",
-          "[quick][semigroup][finite][95]") {
+TEST_CASE("Semigroup 95: integers", "[quick][semigroup][finite][95]") {
   Semigroup<int> S({2});
   REQUIRE(S.size() == 32);
   REQUIRE(S.nridempotents() == 1);
@@ -1109,4 +1108,52 @@ TEST_CASE("Semigroup 95: integers",
   REQUIRE(T.nridempotents() == 2);
   REQUIRE(*T.cbegin_idempotents() == 0);
   REQUIRE(*T.cbegin_idempotents() + 1 == 1);
+}
+
+class NonTrivial {
+ public:
+  NonTrivial() : _re(0), _im(0) {}
+  NonTrivial(int re, int im) : _re(re), _im(im) {}
+
+  NonTrivial operator*(NonTrivial const& that) const {
+    return NonTrivial(_re * that._re, _im * that._im);
+  }
+
+  bool operator==(NonTrivial const& that) const {
+    return _re == that._re && _im == that._im;
+  }
+
+  bool operator<(NonTrivial const& that) const {
+    return _re < that._re || (_re == that._re && _im < that._im);
+  }
+
+  NonTrivial one() const {
+    return NonTrivial(1, 1);
+  }
+
+  size_t hash() const {
+    return _re * 17 + _im;
+  }
+
+ private:
+  int _re;
+  int _im;
+};
+
+namespace std {
+  template <> struct hash<NonTrivial> {
+    size_t operator()(NonTrivial const& x) const {
+      return x.hash();
+    }
+  };
+}
+
+static_assert(!std::is_trivial<NonTrivial>::value,
+              "NonTrivial is not non-trivial");
+
+TEST_CASE("Semigroup 96: non-trivial user type",
+          "[quick][semigroup][finite][96]") {
+  Semigroup<NonTrivial> S({NonTrivial(1, 1)});
+  REQUIRE(S.size() == 1);
+  REQUIRE(S.nridempotents() == 1);
 }

@@ -43,6 +43,9 @@ struct Renner0Element : public PTransf16 {
   }
 };
 
+static_assert(std::is_trivial<Renner0Element>::value,
+              "Renner0Element is not trivial");
+
 namespace std {
 
   template <> struct hash<Renner0Element> {

@@ -42,6 +42,7 @@
 #include <sparsehash/dense_hash_map>
 #endif
 
+// TODO move to libsemigroups.h
 #if (defined(__GNUC__) && __GNUC__ < 5 \
      && !(defined(__clang__) || defined(__INTEL_COMPILER)))
 #pragma message( \
@@ -77,10 +78,10 @@ namespace libsemigroups {
     using internal_const_value_type =
         typename ElementContainer<TElementType>::internal_const_value_type;
 
-    static_assert(std::is_trivial<internal_value_type>::value,
-                  "internal_value_type must be trivial");
-    static_assert(std::is_trivial<internal_const_value_type>::value,
-                  "internal_const_value_type must be trivial");
+    // static_assert(std::is_trivial<internal_value_type>::value,
+    //              "internal_value_type must be trivial");
+    // static_assert(std::is_trivial<internal_const_value_type>::value,
+    //              "internal_const_value_type must be trivial");
     static_assert(
         std::is_const<internal_const_value_type>::value
             || std::is_const<typename std::remove_pointer<

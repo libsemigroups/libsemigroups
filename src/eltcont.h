@@ -34,14 +34,18 @@ namespace libsemigroups {
 
   template <typename TElementType, typename = void> struct ElementContainer {};
   // TODO add TElementHash, and TElementEqual here
+  // so that I can add InternalElementHash/Equal here not P and Semigroup
 
-  // Specialization for trivial, non-pointer element types, such as BMat8,
-  // Transf16 and so on . . .
+  // Specialization for non-pointer element types not derived from Element,
+  // such as BMat8, Transf16 and so on . . .
+  //
+  // WARNING: This will be unnecessarily slow for non-trivial types!!
   template <typename TElementType>
   struct ElementContainer<
       TElementType,
-      typename std::enable_if<!std::is_pointer<TElementType>::value
-                              && std::is_trivial<TElementType>::value>::type> {
+      typename std::enable_if<
+          !std::is_pointer<TElementType>::value
+          && !std::is_base_of<Element, TElementType>::value>::type> {
     using value_type       = TElementType;
     using const_value_type = TElementType;
     using reference        = TElementType&;
@@ -117,12 +121,12 @@ namespace libsemigroups {
 #endif
   };
 
-  // Specialization for pointer element types, such as Element* and so on . . .
+  // Specialization for Element* and Element const* . . .
   template <typename TElementType>
   struct ElementContainer<
       TElementType,
-    // FIXME make this is_same<TElement, Element*>
-      typename std::enable_if<std::is_pointer<TElementType>::value>::type> {
+      typename std::enable_if<std::is_same<TElementType, Element*>::value ||
+        std::is_same<TElementType, Element const*>::value>::type> {
     using value_type = typename std::remove_const<
         typename std::remove_pointer<TElementType>::type>::type*;
     using const_value_type =
@@ -208,12 +212,13 @@ namespace libsemigroups {
 #endif
   };
 
-  // Specialization for non-pointer non-trivial element types, such as
+  // Specialization for classes derived from the class Element, such as
   // Transformation<size_t> and so on . . .
   template <typename TElementType>
   struct ElementContainer<
       TElementType,
-      typename std::enable_if<!std::is_trivial<TElementType>::value>::type> {
+      typename std::enable_if<
+          std::is_base_of<Element, TElementType>::value>::type> {
     static_assert(!std::is_pointer<TElementType>::value,
                   "TElementType must not be a pointer");
     using value_type       = TElementType;
@@ -264,9 +269,9 @@ namespace libsemigroups {
     }
 
     inline void multiply(internal_value_type       xy,
-                         internal_const_value_type x,
-                         internal_const_value_type y,
-                         size_t                    tid = 0) const {
+                                        internal_const_value_type x,
+                                        internal_const_value_type y,
+                                        size_t tid = 0) const {
       xy->Element::redefine(*x, *y, tid);
     }
 
