@@ -139,8 +139,10 @@ namespace libsemigroups {
       return x;
     }
 
-    const_value_type to_external(internal_const_value_type x) const {
-      return x;
+    // TODO The return type here is inconsistent with the other definitions of
+    // ElementContainer, make them more systematic
+    value_type to_external(internal_const_value_type x) const {
+      return const_cast<value_type>(x);
     }
 
     inline void internal_free(internal_const_value_type x) const {

@@ -81,19 +81,19 @@ namespace libsemigroups {
                   "internal_value_type must be trivial");
     static_assert(std::is_trivial<internal_const_value_type>::value,
                   "internal_const_value_type must be trivial");
-    /*static_assert(
+    static_assert(
         std::is_const<internal_const_value_type>::value
             || std::is_const<typename std::remove_pointer<
                    internal_const_value_type>::type>::value,
-        "internal_const_value_type must be const or pointer to const");*/
+        "internal_const_value_type must be const or pointer to const");
 
-    struct InternalElementHash : public ElementContainer<TElementType> {
+    struct InternalElementHash : public ElementContainer<value_type> {
       size_t operator()(internal_const_value_type x) const {
         return TElementHash{}(this->to_external(x));
       }
     };
 
-    struct InternalElementEqual : public ElementContainer<TElementType> {
+    struct InternalElementEqual : public ElementContainer<value_type> {
       bool operator()(internal_const_value_type x,
                       internal_const_value_type y) const {
         return TElementEqual{}(this->to_external(x), this->to_external(y));
