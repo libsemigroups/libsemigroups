@@ -272,7 +272,7 @@ namespace libsemigroups {
         : Element(copy._hash_value),
           _vector(copy._vector.cbegin(), copy._vector.cend()) {}
 
-    TSubclass operator*(ElementWithVectorData const& y) const {
+    virtual TSubclass operator*(ElementWithVectorData const& y) const {
       TSubclass xy(y.degree());
       xy.Element::redefine(*this, y);
       return xy;
@@ -1143,6 +1143,7 @@ namespace libsemigroups {
         }
       }
     }
+
     //! A copy constructor.
     //!
     //! The parameter \p increase_deg_by must be 0, since it does not make
@@ -1154,11 +1155,8 @@ namespace libsemigroups {
 
     // The next constructor only exists to make the empty_key method for
     // ElementWithVectorData work.
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    explicit MatrixOverSemiringBase(TValueType)
-        : MatrixOverSemiringBase(std::vector<TValueType>()) {}
-#endif
+    explicit MatrixOverSemiringBase(TValueType x)
+        : MatrixOverSemiringBase(std::vector<TValueType>(x * x)) {};
 
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {
@@ -1261,6 +1259,16 @@ namespace libsemigroups {
                                        MatrixOverSemiring<TValueType>>;
     using MatrixOverSemiringBase<TValueType, MatrixOverSemiring<TValueType>>::
         MatrixOverSemiringBase;
+
+   public:
+    MatrixOverSemiring operator*(
+        ElementWithVectorData<TValueType, MatrixOverSemiring<TValueType>> const&
+            y) const override {
+      MatrixOverSemiring<TValueType> xy(
+          std::vector<TValueType>(pow(y.degree(), 2)), this->semiring());
+      xy.Element::redefine(*this, y);
+      return xy;
+    }
   };
 
   //! Class for projective max-plus matrices.
@@ -1303,14 +1311,19 @@ namespace libsemigroups {
 
     // The next constructor only exists to make the empty_key method for
     // ElementWithVectorData work.
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {}
-#endif
 
     //! A copy constructor.
     ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const& copy)
         : MatrixOverSemiringBase(copy) {}
+
+    ProjectiveMaxPlusMatrix
+    operator*(ElementWithVectorData const& y) const override {
+      ProjectiveMaxPlusMatrix xy(std::vector<int64_t>(pow(y.degree(), 2)),
+                                 this->semiring());
+      xy.Element::redefine(*this, y);
+      return xy;
+    }
 
    private:
     friend class ElementWithVectorData<int64_t, ProjectiveMaxPlusMatrix>;
@@ -1410,10 +1423,13 @@ namespace libsemigroups {
 
     // The next constructor only exists to make the empty_key method for
     // ElementWithVectorData work.
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
     explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
-#endif
+
+    //! A constructor.
+    //!
+    //! Constructs a boolean matrix of the specified degree
+    explicit BooleanMat(size_t degree)
+        : BooleanMat(std::vector<bool>(degree * degree)) {}
 
     //! A copy constructor.
     BooleanMat(BooleanMat const& copy)
@@ -1464,6 +1480,9 @@ namespace libsemigroups {
 
     explicit PBR(std::initializer_list<std::vector<u_int32_t>> vec);
 
+    explicit PBR(size_t degree)
+        : PBR(std::vector<std::vector<u_int32_t>>(degree * 2,
+                                                  std::vector<u_int32_t>())) {}
     // TODO add a constructor like the one in GAP
 
     void validate() const;
@@ -1476,8 +1495,8 @@ namespace libsemigroups {
 
     //! Returns the degree of a PBR.
     //!
-    //! The *degree* of a PBR is half the number of points in the PBR, which is
-    //! also half the length of the underlying vector
+    //! The *degree* of a PBR is half the number of points in the PBR, which
+    //! is also half the length of the underlying vector
     //! ElementWithVectorData::_vector.
     size_t degree() const override;
 
@@ -1655,6 +1674,52 @@ namespace std {
     bool operator()(libsemigroups::Element const* x,
                     libsemigroups::Element const* y) const {
       return *x == *y;
+    }
+  };
+
+  template <typename TIntegerType>
+  struct hash<libsemigroups::Transformation<TIntegerType>> {
+    size_t
+    operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <typename TIntegerType>
+  struct hash<libsemigroups::PartialPerm<TIntegerType>> {
+    size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
+      return x.hash_value();
+    }
+  };
+  template <> struct hash<libsemigroups::Bipartition> {
+    size_t operator()(libsemigroups::Bipartition const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <> struct hash<libsemigroups::BooleanMat> {
+    size_t operator()(libsemigroups::BooleanMat const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
+    size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <> struct hash<libsemigroups::PBR> {
+    size_t operator()(libsemigroups::PBR const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <typename TValueType>
+  struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
+    size_t
+    operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
+      return x.hash_value();
     }
   };
 }  // namespace std

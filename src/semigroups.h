@@ -1038,7 +1038,7 @@ namespace libsemigroups {
       } else {
         throw LibsemigroupsException(
             "Semigroup::minimal_factorisation: index " + std::to_string(pos)
-            + " out of range, should be at most " + std::to_string(_nr));
+            + " out of range, should be at most " + std::to_string(_nr - 1));
       }
     }
 

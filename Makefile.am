@@ -113,6 +113,7 @@ lstest_SOURCES += tests/semigroups.1.test.cc
 lstest_SOURCES += tests/semigroups.2.test.cc
 lstest_SOURCES += tests/semigroups.3.test.cc
 lstest_SOURCES += tests/semigroups.4.test.cc
+lstest_SOURCES += tests/semigroups.5.test.cc
 lstest_SOURCES += tests/semiring.test.cc
 lstest_SOURCES += tests/timer.test.cc     
 lstest_SOURCES += tests/tc.test.cc
