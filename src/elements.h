@@ -1622,6 +1622,25 @@ namespace std {
     }
   };
 
+  //! Provides a call operator for comparing Elements via pointers.
+  //!
+  //! This struct provides a call operator for comparing const Element
+  //! pointers (by comparing the Element objects they point to). This is used
+  //! by various methods of the Semigroup class.
+  template <> struct equal_to<libsemigroups::Element*> {
+    bool operator()(libsemigroups::Element* x,
+                    libsemigroups::Element* y) const {
+      return *x == *y;
+    }
+  };
+
+  template <> struct equal_to<libsemigroups::Element const*> {
+    bool operator()(libsemigroups::Element const* x,
+                    libsemigroups::Element const* y) const {
+      return *x == *y;
+    }
+  };
+
   template <typename TIntegerType>
   struct hash<libsemigroups::Transformation<TIntegerType>> {
     size_t
@@ -1643,22 +1662,29 @@ namespace std {
     }
   };
 
-  //! Provides a call operator for comparing Elements via pointers.
-  //!
-  //! This struct provides a call operator for comparing const Element
-  //! pointers (by comparing the Element objects they point to). This is used
-  //! by various methods of the Semigroup class.
-  template <> struct equal_to<libsemigroups::Element*> {
-    bool operator()(libsemigroups::Element* x,
-                    libsemigroups::Element* y) const {
-      return *x == *y;
+  template <> struct hash<libsemigroups::BooleanMat> {
+    size_t operator()(libsemigroups::BooleanMat const& x) const {
+      return x.hash_value();
     }
   };
 
-  template <> struct equal_to<libsemigroups::Element const*> {
-    bool operator()(libsemigroups::Element const* x,
-                    libsemigroups::Element const* y) const {
-      return *x == *y;
+  template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
+    size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <> struct hash<libsemigroups::PBR> {
+    size_t operator()(libsemigroups::PBR const& x) const {
+      return x.hash_value();
+    }
+  };
+
+  template <typename TValueType>
+  struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
+    size_t
+    operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
+      return x.hash_value();
     }
   };
 
