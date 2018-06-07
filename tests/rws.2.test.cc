@@ -500,7 +500,7 @@ TEST_CASE("RWS 65: (from kbmag/standalone/kb_data/degen4b)",
   REQUIRE(rws.confluent());
 
   REQUIRE(rws.nr_rules() == 3);
-  // FIXME KBMAG says this terminates with 32758 rules, maybe that was with
+  // TODO KBMAG says this terminates with 32758 rules, maybe that was with
   // shortlex order?
 }*/
 

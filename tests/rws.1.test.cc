@@ -858,7 +858,7 @@ TEST_CASE("RWS 42: Example 6.6 in Sims (with limited overlap lengths)",
 // introducing new generators for the PCP generators.
 /*TEST_CASE("RWS 43: (from kbmag/standalone/kb_data/heinnilp)",
           "[fails][rws][kbmag][recursive][43]") {
-  // FIXME fails because internal_rewrite expect rules to be length reducing
+  // TODO fails because internal_rewrite expect rules to be length reducing
   RWS rws(new RECURSIVE(), "fFyYdDcCbBaA");
   rws.add_rule("BAba", "c");
   rws.add_rule("CAca", "d");

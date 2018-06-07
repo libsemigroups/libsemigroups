@@ -304,8 +304,6 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
   S.reserve(40000000);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
-  // FIXME this demonstrates a very bad split with almost all the
-  // elements being put in the final thread by init_idempotents
   S.set_report(false);
   delete_gens(gens);
 }
@@ -451,11 +449,7 @@ TEST_CASE("Semigroup 79: Exception: zero generators given",
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(Semigroup<BMat8>(gens2), LibsemigroupsException);
 
-  // FIXME: shouldn't need to give the additional template parameters here
-  REQUIRE_THROWS_AS((Semigroup<Element*,
-                               std::hash<Element const*>,
-                               std::equal_to<Element const*>>(gens3)),
-                    LibsemigroupsException);
+  REQUIRE_THROWS_AS(Semigroup<Element*>(gens3), LibsemigroupsException);
 }
 
 TEST_CASE("Semigroup 80: Exception: generators of different degrees",
