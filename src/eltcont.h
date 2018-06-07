@@ -27,8 +27,13 @@
 // TODO inline everything (it's not currently due to debugging)
 
 namespace libsemigroups {
+  template <typename TElementType>
+  TElementType one(TElementType x) {
+    return x.one();
+  }
 
   template <typename TElementType, typename = void> struct ElementContainer {};
+  // TODO add TElementHash, and TElementEqual here
 
   // Specialization for trivial, non-pointer element types, such as BMat8,
   // Transf16 and so on . . .
@@ -87,7 +92,7 @@ namespace libsemigroups {
     }
 
     inline internal_value_type one(internal_const_reference x) const {
-      return x.one();
+      return libsemigroups::one(x);
     }
 
     inline size_t element_degree(internal_const_reference) const {
@@ -116,6 +121,7 @@ namespace libsemigroups {
   template <typename TElementType>
   struct ElementContainer<
       TElementType,
+    // FIXME make this is_same<TElement, Element*>
       typename std::enable_if<std::is_pointer<TElementType>::value>::type> {
     using value_type = typename std::remove_const<
         typename std::remove_pointer<TElementType>::type>::type*;
@@ -167,7 +173,6 @@ namespace libsemigroups {
 
     inline internal_value_type one(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->heap_identity());
-      // TODO remove dynamic_cast here
     }
 
     inline void multiply(internal_value_type       xy,

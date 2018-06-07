@@ -1086,3 +1086,27 @@ TEST_CASE("Semigroup 94: non-pointer PartialPerms",
     REQUIRE(*(it - 1) < *it);
   }
 }
+
+namespace libsemigroups {
+  template <>
+  int one(int) {
+    return 1;
+  }
+  template <>
+  uint8_t one(uint8_t) {
+    return 1;
+  }
+}  // namespace libsemigroups
+
+TEST_CASE("Semigroup 95: integers",
+          "[quick][semigroup][finite][95]") {
+  Semigroup<int> S({2});
+  REQUIRE(S.size() == 32);
+  REQUIRE(S.nridempotents() == 1);
+
+  Semigroup<uint8_t> T({2, 3});
+  REQUIRE(T.size() == 130);
+  REQUIRE(T.nridempotents() == 2);
+  REQUIRE(*T.cbegin_idempotents() == 0);
+  REQUIRE(*T.cbegin_idempotents() + 1 == 1);
+}
