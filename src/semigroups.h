@@ -196,7 +196,7 @@ namespace libsemigroups {
             = this->element_degree(this->to_internal((*gens)[i]));
         if (degree != _degree) {
           throw LibsemigroupsException(
-              "Semigroup::Semigroup:  generator " + std::to_string(i)
+              "Semigroup::Semigroup: generator " + std::to_string(i)
               + " has degree " + std::to_string(degree)
               + " but should have degree " + std::to_string(_degree));
         }
