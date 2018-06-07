@@ -117,14 +117,6 @@ namespace libsemigroups {
       return this->_hash_value;
     }
 
-    //! Returns a new copy of the identity element.
-    //!
-    //! This method returns the multiplicative identity element for an object
-    //! in a subclass of Element. The returned identity belongs to the same
-    //! subclass and has the same degree as \c this.
-    // FIXME remove this? I can't see how at present.
-    // virtual Element* identity() const = 0;
-
     //! Copy another Element into \c this.
     //!
     //! This method copies its argument into \c this by changing \c this
@@ -225,7 +217,7 @@ namespace libsemigroups {
     //! This variable is used to indicate that a value is undefined. For
     //! example, the cached hash value of an Element is initially set to this
     //! value.
-    // FIXME move to constants.h file
+    // TODO move to constants.h file
     static size_t const UNDEFINED;
 
     //! This data member holds a cached version of the hash value of an Element.
@@ -395,11 +387,6 @@ namespace libsemigroups {
     //! element of the vector that is the underlying defining data of \c this.
     inline typename std::vector<TValueType>::iterator cend() const {
       return _vector.cend();
-    }
-
-    // FIXME why does this method exist?
-    inline size_t size() const {
-      return _vector.size();
     }
 
     virtual TSubclass identity() const = 0;
@@ -587,6 +574,33 @@ namespace libsemigroups {
   TValueType const PartialTransformation<TValueType, TSubclass>::UNDEFINED
       = std::numeric_limits<TValueType>::max();
 
+  // Base class for method redefine for Permutations and Transformations
+  template <typename TValueType, typename TSubclass>
+  class TransfBase : public PartialTransformation<TValueType, TSubclass> {
+   public:
+    using PartialTransformation<TValueType, TSubclass>::PartialTransformation;
+    TransfBase() : PartialTransformation<TValueType, TSubclass>() {}
+
+    //! Multiply \p x and \p y and stores the result in \c this.
+    //!
+    //! See Element::redefine for more details about this method.
+    //!
+    //! This method asserts that the degrees of \p x, \p y, and \c this, are
+    //! all equal, and that neither \p x nor \p y equals \c this.
+    void redefine(Element const& x, Element const& y) override {
+      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
+      auto const& xx = static_cast<TransfBase<TValueType, TSubclass> const&>(x);
+      auto const& yy = static_cast<TransfBase<TValueType, TSubclass> const&>(y);
+      size_t const n = this->_vector.size();
+      for (TValueType i = 0; i < n; i++) {
+        (this->_vector)[i] = yy[xx[i]];
+      }
+      this->reset_hash_value();
+    }
+  };
+
   //! Template class for transformations.
   //!
   //! The value of the template parameter \p T can be used to reduce the amount
@@ -598,22 +612,27 @@ namespace libsemigroups {
   //! *degree* of \f$f\f$.  A transformation is stored as a vector of the
   //! images of \f$\{0, 1, \ldots, n - 1\}\f$, i.e.
   //! \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$.
-  template <typename T>
-  class Transformation : public PartialTransformation<T, Transformation<T>> {
+  template <typename TValueType>
+  class Transformation
+      : public TransfBase<TValueType, Transformation<TValueType>> {
    public:
-    using PartialTransformation<T, Transformation<T>>::PartialTransformation;
-    Transformation() : PartialTransformation<T, Transformation<T>>() {}
+    using TransfBase<TValueType, Transformation<TValueType>>::TransfBase;
+    Transformation() : TransfBase<TValueType, Transformation<TValueType>>() {}
 
-    explicit Transformation(std::vector<T> const& vec)
-        : PartialTransformation<T, Transformation<T>>(vec) {
+    explicit Transformation(std::vector<TValueType> const& vec)
+        : TransfBase<TValueType, Transformation<TValueType>>(vec) {
 #if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
       validate();
 #endif
     }
 
-    Transformation(std::initializer_list<T> imgs)
-        : Transformation<T>(std::vector<T>(imgs)) {}
+    Transformation(std::initializer_list<TValueType> imgs)
+        : Transformation<TValueType>(std::vector<TValueType>(imgs)) {}
+
+    //! A copy constructor.
+    Transformation(Transformation<TValueType> const& copy)
+        : TransfBase<TValueType, Transformation<TValueType>>(copy) {}
 
     void validate() const {
       size_t max = this->_vector.size();
@@ -627,34 +646,11 @@ namespace libsemigroups {
       }
     }
 
-    //! A copy constructor.
-    Transformation<T>(Transformation<T> const& copy)
-        : PartialTransformation<T, Transformation<T>>(copy) {}
-
     void increase_deg_by(size_t m) override {
       this->_vector.resize(this->_vector.size() + m);
       std::iota(this->_vector.end() - m,
                 this->_vector.end(),
                 this->_vector.size() - m);
-      this->reset_hash_value();
-    }
-
-    //! Multiply \p x and \p y and stores the result in \c this.
-    //!
-    //! See Element::redefine for more details about this method.
-    //!
-    //! This method asserts that the degrees of \p x, \p y, and \c this, are
-    //! all equal, and that neither \p x nor \p y equals \c this.
-    void redefine(Element const& x, Element const& y) override {
-      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
-      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-      auto const&  xx = static_cast<Transformation<T> const&>(x);
-      auto const&  yy = static_cast<Transformation<T> const&>(y);
-      size_t const n  = this->_vector.size();
-      for (T i = 0; i < n; i++) {
-        (this->_vector)[i] = yy[xx[i]];
-      }
       this->reset_hash_value();
     }
 
@@ -685,19 +681,21 @@ namespace libsemigroups {
   //! PartialTransformation::UNDEFINED is
   //! used to indicate that \f$(i)f\f$ is undefined (i.e. not among
   //! the points where \f$f\f$ is defined).
-  template <typename T>
-  class PartialPerm : public PartialTransformation<T, PartialPerm<T>> {
+  template <typename TValueType>
+  class PartialPerm
+      : public PartialTransformation<TValueType, PartialPerm<TValueType>> {
    public:
-    using PartialTransformation<T, PartialPerm<T>>::PartialTransformation;
-    using PartialTransformation<T, PartialPerm<T>>::UNDEFINED;
+    using PartialTransformation<TValueType,
+                                PartialPerm<TValueType>>::PartialTransformation;
+    using PartialTransformation<TValueType, PartialPerm<TValueType>>::UNDEFINED;
 
-    explicit PartialPerm(std::vector<T> const& vec)
-        : PartialTransformation<T, PartialPerm<T>>(vec) {
+    explicit PartialPerm(std::vector<TValueType> const& vec)
+        : PartialTransformation<TValueType, PartialPerm<TValueType>>(vec) {
       validate();
     }
 
-    PartialPerm(std::initializer_list<T> imgs)
-        : PartialPerm<T>(std::vector<T>(imgs)) {}
+    PartialPerm(std::initializer_list<TValueType> imgs)
+        : PartialPerm<TValueType>(std::vector<TValueType>(imgs)) {}
 
     //! A constructor.
     //!
@@ -706,13 +704,14 @@ namespace libsemigroups {
     //! value in the range 0 to (strictly less than \p deg). This method
     //! asserts that \p dom and \p ran have equal size and that \p deg is
     //! greater than to the maximum value in \p dom or \p ran.
-    PartialPerm(std::vector<T> const& dom,
-                std::vector<T> const& ran,
-                size_t                deg)
+    PartialPerm(std::vector<TValueType> const& dom,
+                std::vector<TValueType> const& ran,
+                size_t                         deg)
         // The vector passed in the next line shouldn't be necessary, but with
         // GCC5 PartialPerm fails to inherit the 0-param constructor from
         // PartialTransformation.
-        : PartialTransformation<T, PartialPerm<T>>(std::vector<T>()) {
+        : PartialTransformation<TValueType, PartialPerm<TValueType>>(
+              std::vector<TValueType>()) {
       if (dom.size() != ran.size()) {
         throw LibsemigroupsException(
             "PartialPerm: domain and range size mismatch");
@@ -731,10 +730,12 @@ namespace libsemigroups {
       validate();
     }
 
-    PartialPerm(std::initializer_list<T> dom,
-                std::initializer_list<T> ran,
-                size_t                   deg)
-        : PartialPerm<T>(std::vector<T>(dom), std::vector<T>(ran), deg) {}
+    PartialPerm(std::initializer_list<TValueType> dom,
+                std::initializer_list<TValueType> ran,
+                size_t                            deg)
+        : PartialPerm<TValueType>(std::vector<TValueType>(dom),
+                                  std::vector<TValueType>(ran),
+                                  deg) {}
 
     void validate() const {
       std::vector<bool> present(this->degree(), false);
@@ -755,8 +756,8 @@ namespace libsemigroups {
     }
 
     //! A copy constructor.
-    PartialPerm<T>(PartialPerm const& copy)
-        : PartialTransformation<T, PartialPerm<T>>(copy) {}
+    PartialPerm<TValueType>(PartialPerm const& copy)
+        : PartialTransformation<TValueType, PartialPerm<TValueType>>(copy) {}
 
     void increase_deg_by(size_t m) override {
       this->_vector.insert(this->_vector.end(), m, UNDEFINED);
@@ -771,8 +772,8 @@ namespace libsemigroups {
     //! Returns \c true if something complicated is \c true and \c false if
     //! it is not.
     bool operator<(const Element& that) const override {
-      auto pp_this = static_cast<const PartialPerm<T>*>(this);
-      auto pp_that = static_cast<const PartialPerm<T>&>(that);
+      auto pp_this = static_cast<const PartialPerm<TValueType>*>(this);
+      auto pp_that = static_cast<const PartialPerm<TValueType>&>(that);
 
       size_t deg_this = pp_this->degree();
       for (auto it = pp_this->_vector.end() - 1; it >= pp_this->_vector.begin();
@@ -817,10 +818,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
       LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
       LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-      auto const&  xx = static_cast<PartialPerm<T> const&>(x);
-      auto const&  yy = static_cast<PartialPerm<T> const&>(y);
+      auto const&  xx = static_cast<PartialPerm<TValueType> const&>(x);
+      auto const&  yy = static_cast<PartialPerm<TValueType> const&>(y);
       size_t const n  = this->degree();
-      for (T i = 0; i < n; i++) {
+      for (TValueType i = 0; i < n; i++) {
         this->_vector[i] = (xx[i] == UNDEFINED ? UNDEFINED : yy[xx[i]]);
       }
       this->reset_hash_value();
@@ -1339,10 +1340,10 @@ namespace libsemigroups {
   //! A permutation is stored as a vector of the images of
   //! \f$(0, 1, \ldots, n - 1)\f$,
   //! i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$.
-  template <typename T>
-  class Permutation : public PartialTransformation<T, Permutation<T>> {
+  template <typename TValueType>
+  class Permutation : public TransfBase<TValueType, Permutation<TValueType>> {
    public:
-    using PartialTransformation<T, Permutation<T>>::PartialTransformation;
+    using TransfBase<TValueType, Permutation<TValueType>>::TransfBase;
 
     void validate() const {
       std::vector<bool> present(this->degree(), false);
@@ -1360,28 +1361,9 @@ namespace libsemigroups {
       }
     }
 
-    //! Multiply \p x and \p y and stores the result in \c this.
-    //!
-    //! See Element::redefine for more details about this method.
-    //!
-    //! This method asserts that the degrees of \p x, \p y, and \c this, are
-    //! all equal, and that neither \p x nor \p y equals \c this.
-    // FIXME make a TransformationBase class with this method
-    void redefine(Element const& x, Element const& y) override {
-      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
-      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-      auto const&  xx = static_cast<Permutation<T> const&>(x);
-      auto const&  yy = static_cast<Permutation<T> const&>(y);
-      size_t const n  = this->_vector.size();
-      for (T i = 0; i < n; i++) {
-        (this->_vector)[i] = yy[xx[i]];
-      }
-      this->reset_hash_value();
-    }
-
     Permutation identity() const override {
-      return this->PartialTransformation<T, Permutation<T>>::identity();
+      return this->PartialTransformation<TValueType,
+                                         Permutation<TValueType>>::identity();
     }
 
     //! Returns the inverse of a permutation.
@@ -1391,7 +1373,7 @@ namespace libsemigroups {
     Permutation inverse() const {
       size_t const n  = this->_vector.size();
       Permutation  id = this->identity();
-      for (T i = 0; i < n; i++) {
+      for (TValueType i = 0; i < n; i++) {
         id._vector[this->_vector[i]] = i;
       }
       return id;
@@ -1629,33 +1611,10 @@ namespace std {
       return x->hash_value();
     }
   };
+
   template <> struct hash<libsemigroups::Element const*> {
     size_t operator()(libsemigroups::Element const* x) const {
       return x->hash_value();
-    }
-  };
-  // FIXME the next struct should be deleted
-  template <> struct hash<libsemigroups::Element> {
-    size_t operator()(libsemigroups::Element const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator for comparing Elements via pointers.
-  //!
-  //! This struct provides a call operator for comparing const Element
-  //! pointers (by comparing the Element objects they point to). This is used
-  //! by various methods of the Semigroup class.
-  template <> struct equal_to<libsemigroups::Element*> {
-    bool operator()(libsemigroups::Element* x,
-                    libsemigroups::Element* y) const {
-      return *x == *y;
-    }
-  };
-  template <> struct equal_to<libsemigroups::Element const*> {
-    bool operator()(libsemigroups::Element const* x,
-                    libsemigroups::Element const* y) const {
-      return *x == *y;
     }
   };
 
@@ -1673,9 +1632,29 @@ namespace std {
       return x.hash_value();
     }
   };
+
   template <> struct hash<libsemigroups::Bipartition> {
     size_t operator()(libsemigroups::Bipartition const& x) const {
       return x.hash_value();
+    }
+  };
+
+  //! Provides a call operator for comparing Elements via pointers.
+  //!
+  //! This struct provides a call operator for comparing const Element
+  //! pointers (by comparing the Element objects they point to). This is used
+  //! by various methods of the Semigroup class.
+  template <> struct equal_to<libsemigroups::Element*> {
+    bool operator()(libsemigroups::Element* x,
+                    libsemigroups::Element* y) const {
+      return *x == *y;
+    }
+  };
+
+  template <> struct equal_to<libsemigroups::Element const*> {
+    bool operator()(libsemigroups::Element const* x,
+                    libsemigroups::Element const* y) const {
+      return *x == *y;
     }
   };
 }  // namespace std
