@@ -1139,9 +1139,13 @@ namespace libsemigroups {
           _semiring(copy._semiring) {}
 
     // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work.
-    explicit MatrixOverSemiringBase(TValueType x)
-        : MatrixOverSemiringBase(std::vector<TValueType>(x * x)) {};
+    // ElementWithVectorData work
+    // and because the compiler complains about * without it.
+    // Should never be called!
+    explicit MatrixOverSemiringBase(TValueType)
+        : MatrixOverSemiringBase(std::vector<TValueType>()) {
+        LIBSEMIGROUPS_ASSERT(false);  
+      };
 
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {
@@ -1295,8 +1299,12 @@ namespace libsemigroups {
     }
 
     // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work.
-    explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {}
+    // ElementWithVectorData work
+    // and because the compiler complains about * without it.
+    // Should never be called!
+    explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {
+      LIBSEMIGROUPS_ASSERT(false);
+    }
 
     //! A copy constructor.
     ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const& copy)
@@ -1656,52 +1664,6 @@ namespace std {
     }
   };
 
-  template <> struct hash<libsemigroups::Bipartition> {
-    size_t operator()(libsemigroups::Bipartition const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <> struct hash<libsemigroups::BooleanMat> {
-    size_t operator()(libsemigroups::BooleanMat const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
-    size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <> struct hash<libsemigroups::PBR> {
-    size_t operator()(libsemigroups::PBR const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <typename TValueType>
-  struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
-    size_t
-    operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <typename TIntegerType>
-  struct hash<libsemigroups::Transformation<TIntegerType>> {
-    size_t
-    operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  template <typename TIntegerType>
-  struct hash<libsemigroups::PartialPerm<TIntegerType>> {
-    size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
-      return x.hash_value();
-    }
-  };
   template <> struct hash<libsemigroups::Bipartition> {
     size_t operator()(libsemigroups::Bipartition const& x) const {
       return x.hash_value();

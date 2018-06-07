@@ -493,7 +493,6 @@ TEST_CASE("Semigroup 81: Exception: word_to_pos",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
@@ -506,11 +505,14 @@ TEST_CASE("Semigroup 81: Exception: word_to_pos",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> U(gens3);
-  delete_gens(gens3);
 
   REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
   REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
+
+  delete_gens(gens3);
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroup 82: Exception: word_to_element",
@@ -629,7 +631,6 @@ TEST_CASE("Semigroups 85: Exception: suffix",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.suffix(i));
@@ -648,6 +649,8 @@ TEST_CASE("Semigroups 85: Exception: suffix",
     REQUIRE_NOTHROW(U.suffix(i));
     REQUIRE_THROWS_AS(U.suffix(i + U.size()), LibsemigroupsException);
   }
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroups 86: Exception: first_letter",
@@ -668,7 +671,6 @@ TEST_CASE("Semigroups 86: Exception: first_letter",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.first_letter(i));
@@ -685,6 +687,9 @@ TEST_CASE("Semigroups 86: Exception: first_letter",
     REQUIRE_NOTHROW(U.first_letter(i));
     REQUIRE_THROWS_AS(U.first_letter(i + U.size()), LibsemigroupsException);
   }
+
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroups 87: Exception: final_letter",
@@ -705,7 +710,6 @@ TEST_CASE("Semigroups 87: Exception: final_letter",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.final_letter(i));
@@ -722,6 +726,8 @@ TEST_CASE("Semigroups 87: Exception: final_letter",
     REQUIRE_NOTHROW(U.final_letter(i));
     REQUIRE_THROWS_AS(U.final_letter(i + U.size()), LibsemigroupsException);
   }
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroups 88: Exception: length_const",
@@ -742,7 +748,6 @@ TEST_CASE("Semigroups 88: Exception: length_const",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.length_const(i));
@@ -759,6 +764,8 @@ TEST_CASE("Semigroups 88: Exception: length_const",
     REQUIRE_NOTHROW(U.length_const(i));
     REQUIRE_THROWS_AS(U.length_const(i + U.size()), LibsemigroupsException);
   }
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroups 89: Exception: product_by_reduction",
@@ -785,7 +792,6 @@ TEST_CASE("Semigroups 89: Exception: product_by_reduction",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -815,6 +821,8 @@ TEST_CASE("Semigroups 89: Exception: product_by_reduction",
                         LibsemigroupsException);
     }
   }
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroups 90: Exception: fast_product",
@@ -841,7 +849,6 @@ TEST_CASE("Semigroups 90: Exception: fast_product",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -871,6 +878,8 @@ TEST_CASE("Semigroups 90: Exception: fast_product",
                         LibsemigroupsException);
     }
   }
+  delete_gens(gens2);
+  delete sr;
 }
 
 TEST_CASE("Semigroup 90: Exception: letter_to_pos",
