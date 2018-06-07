@@ -1199,7 +1199,11 @@ TEST_CASE("SmallestInteger 01", "[quick][helpers][01]") {
 
 TEST_CASE("Transf 02", "[quick][helpers][02]") {
   auto x = Transf<3>::type({0, 1, 2});
+  (void) x;
   auto y = PPerm<3>::type({0, 1, 2});
+  (void) y;
   auto z = Perm<3>::type({0, 1, 2});
+  (void) z;
   auto a = BMat<3>::type({{0, 1}, {0, 1}});
+  (void) a;
 }
