@@ -29,7 +29,7 @@ matrix:
       #     packages:
       #       - gcc-4.9
       #       - g++-4.9
-    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.1 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
+    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.1 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=libsemigroups-1.0.0-new DIGRAPHS_BR=master
       addons:
         apt:
           sources:
