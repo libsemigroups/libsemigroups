@@ -57,7 +57,7 @@ TEST_CASE("Semigroup 26: cbegin_idempotents/cend, is_idempotent [2 threads]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_max_threads(2);
 
   size_t nr = 0;
@@ -89,7 +89,7 @@ TEST_CASE("Semigroup 27: is_done, is_begun", "[quick][semigroup][finite][27]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -113,8 +113,8 @@ TEST_CASE("Semigroup 28: current_position", "[quick][semigroup][finite][28]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_position(gens[0]) == 0);
   REQUIRE(S.current_position(gens[1]) == 1);
@@ -163,7 +163,7 @@ TEST_CASE("Semigroup 29: sorted_position, sorted_at",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.sorted_position(gens[0]) == 310);
   REQUIRE(*S.sorted_at(310) == *gens[0]);
@@ -219,7 +219,7 @@ TEST_CASE("Semigroup 30: right/left Cayley graph",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.right(0, 0) == 0);
   REQUIRE(S.left(0, 0) == 0);
@@ -246,7 +246,7 @@ TEST_CASE("Semigroup 31: iterator", "[quick][semigroup][finite][31]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_size() == 5);
   size_t size = S.current_size();
@@ -305,7 +305,7 @@ TEST_CASE("Semigroup 66: reverse iterator", "[quick][semigroup][finite][66]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_size() == 5);
   size_t size = S.current_size();
@@ -365,7 +365,7 @@ TEST_CASE("Semigroup 67: iterator arithmetic",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 7776);
   auto it = S.cbegin();
@@ -420,7 +420,7 @@ TEST_CASE("Semigroup 68: iterator sorted", "[quick][semigroup][finite][68]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   // Calling cbegin/cend_sorted fully enumerates the semigroup
   { auto it = S.cbegin_sorted(); }
@@ -469,7 +469,7 @@ TEST_CASE("Semigroup 69: iterator sorted arithmetic",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 7776);
   auto it = S.cbegin_sorted();
@@ -525,7 +525,7 @@ TEST_CASE("Semigroup 32: copy [not enumerated]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -535,7 +535,7 @@ TEST_CASE("Semigroup 32: copy [not enumerated]",
   REQUIRE(S.current_position(gens[1]) == 1);
 
   Semigroup<> T = Semigroup<>(S);
-  T.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!T.is_begun());
   REQUIRE(!T.is_done());
@@ -560,7 +560,7 @@ TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -576,7 +576,7 @@ TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_closure(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(T->is_begun());
@@ -595,7 +595,7 @@ TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   Semigroup<>* U = T->copy_closure(&coll);
-  U->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(U->is_begun());
@@ -609,7 +609,7 @@ TEST_CASE("Semigroup 33: copy_closure [not enumerated]",
 
   coll           = std::vector<Element*>();
   Semigroup<>* V = U->copy_closure(&coll);
-  V->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(V != U);
@@ -634,7 +634,7 @@ TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
@@ -650,7 +650,7 @@ TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_add_generators(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(!T->is_begun());
@@ -669,7 +669,7 @@ TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   Semigroup<>* U = T->copy_add_generators(&coll);
-  U->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(U->is_begun());
@@ -683,7 +683,7 @@ TEST_CASE("Semigroup 34: copy_add_generators [not enumerated]",
 
   coll           = std::vector<Element*>();
   Semigroup<>* V = U->copy_add_generators(&coll);
-  V->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
   REQUIRE(V != U);
@@ -711,7 +711,7 @@ TEST_CASE("Semigroup 35: copy [partly enumerated]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(1000);
   S.enumerate(1001);
 
@@ -723,7 +723,7 @@ TEST_CASE("Semigroup 35: copy [partly enumerated]",
   REQUIRE(S.current_position(gens[1]) == 1);
 
   Semigroup<> T = Semigroup<>(S);
-  T.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
   REQUIRE(!T.is_done());
@@ -756,7 +756,7 @@ TEST_CASE("Semigroup 36: copy_closure [partly enumerated]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(60);
   S.enumerate(60);
 
@@ -773,7 +773,7 @@ TEST_CASE("Semigroup 36: copy_closure [partly enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_closure(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
   delete_gens(coll);
@@ -801,7 +801,7 @@ TEST_CASE("Semigroup 37: copy_add_generators [partly enumerated]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(60);
   S.enumerate(60);
 
@@ -818,7 +818,7 @@ TEST_CASE("Semigroup 37: copy_add_generators [partly enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_add_generators(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
 
@@ -848,7 +848,7 @@ TEST_CASE("Semigroup 38: copy [fully enumerated]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   S.enumerate(8000);
 
@@ -859,7 +859,7 @@ TEST_CASE("Semigroup 38: copy [fully enumerated]",
   REQUIRE(S.nrrules() == 2459);
 
   Semigroup<> T = Semigroup<>(S);
-  T.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
   REQUIRE(T.is_done());
@@ -878,7 +878,7 @@ TEST_CASE("Semigroup 39: copy_closure [fully enumerated]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.enumerate(121);
 
   REQUIRE(S.is_begun());
@@ -894,7 +894,7 @@ TEST_CASE("Semigroup 39: copy_closure [fully enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_closure(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
 
@@ -922,7 +922,7 @@ TEST_CASE("Semigroup 40: copy_add_generators [fully enumerated]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   S.enumerate(121);
 
   REQUIRE(S.is_begun());
@@ -938,7 +938,7 @@ TEST_CASE("Semigroup 40: copy_add_generators [fully enumerated]",
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
   Semigroup<>* T = S.copy_add_generators(&coll);
-  T->set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
 
@@ -968,7 +968,7 @@ TEST_CASE("Semigroup 41: relations [duplicate gens]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   std::vector<size_t> result;
   S.next_relation(result);
@@ -1002,7 +1002,7 @@ TEST_CASE("Semigroup 42: relations", "[quick][semigroup][finite][42]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   std::vector<size_t> result;
   S.next_relation(result);

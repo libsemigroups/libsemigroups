@@ -38,7 +38,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(RWSE_REPORT);
+  REPORTER.set_report(RWSE_REPORT);
   delete_gens(gens);
 
   REQUIRE(S.size() == 4);
@@ -55,7 +55,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
 
   gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup<> T = Semigroup<>(gens);
-  T.set_report(RWSE_REPORT);
+  REPORTER.set_report(RWSE_REPORT);
   REQUIRE(T.size() == 4);
   delete_gens(gens);
 
@@ -75,7 +75,7 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(RWSE_REPORT);
+  REPORTER.set_report(RWSE_REPORT);
   delete_gens(gens);
 
   std::vector<relation_t> extra;
@@ -88,7 +88,7 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
 
   gens          = {new RWSE(rws, 0), new RWSE(rws, 1)};
   Semigroup<> T = Semigroup<>(gens);
-  T.set_report(RWSE_REPORT);
+  REPORTER.set_report(RWSE_REPORT);
   delete_gens(gens);
 
   RWSE ab(rws, word_t({0, 1}));

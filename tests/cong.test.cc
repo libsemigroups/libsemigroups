@@ -51,7 +51,7 @@ TEST_CASE("Congruence 01: Small fp semigroup",
   std::vector<relation_t> extra;
 
   Congruence cong("twosided", 2, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(!cong.is_done());
   REQUIRE(cong.nr_classes() == 5);
@@ -79,7 +79,7 @@ TEST_CASE("Congruence 02: Small left congruence on free semigroup",
   std::vector<relation_t> extra;
 
   Congruence cong("left", 2, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(cong.nr_classes() == 5);
 }
 
@@ -91,7 +91,7 @@ TEST_CASE("Congruence 03: Small right congruence on free semigroup",
   std::vector<relation_t> extra;
 
   Congruence cong("right", 2, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(cong.nr_classes() == 5);
   REQUIRE(cong.is_done());
 }
@@ -105,7 +105,7 @@ TEST_CASE(
   std::vector<relation_t> extra;
 
   Congruence cong("left", 2, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.word_to_class_index({0, 0, 1})
           == cong.word_to_class_index({0, 0, 0, 0, 1}));
@@ -125,7 +125,7 @@ TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
   std::vector<relation_t> extra;
 
   Congruence cong1("twosided", 2, rels, extra);
-  cong1.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong1.word_to_class_index({0, 0, 1})
           == cong1.word_to_class_index({0, 0, 0, 0, 1}));
@@ -136,7 +136,7 @@ TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
   REQUIRE(cong1.word_to_class_index({1}) != cong1.word_to_class_index({0}));
 
   Congruence cong2("twosided", 2, rels, extra);
-  cong2.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong2.word_to_class_index({0, 0, 0, 0})
           == cong2.word_to_class_index({0, 0}));
@@ -148,7 +148,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   REQUIRE(S.size() == 88);
@@ -156,7 +156,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
 
   std::vector<relation_t> extra;
   Congruence              cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
 
   Partition<word_t>* ntc = cong.nontrivial_classes();
@@ -169,7 +169,7 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   delete_gens(gens);
@@ -181,7 +181,7 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence              cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   delete t1;
   delete t2;
@@ -192,7 +192,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -204,7 +204,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
   Congruence              cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
   REQUIRE(cong.nr_classes() == 21);
@@ -227,7 +227,7 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // REQUIRE(S.size() == 88);
@@ -235,7 +235,7 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
   std::vector<relation_t> extra(
       {relation_t({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
   Congruence cong("left", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
@@ -270,7 +270,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   REQUIRE(S.size() == 88);
@@ -283,7 +283,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   S.factorisation(w2, S.position(t2));
   std::vector<relation_t> extra({std::make_pair(w1, w2)});
   Congruence              cong("right", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 72);
   REQUIRE(cong.nr_classes() == 72);
@@ -326,7 +326,7 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
                                        relation_t({2, 2}, {1})};
   std::vector<relation_t> extra     = {relation_t({0}, {1})};
   Congruence              cong("twosided", 3, relations, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   cong.force_kbfp();
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
@@ -351,7 +351,7 @@ TEST_CASE("Congruence 10: for an infinite fp semigroup",
                                   relation_t({2, 1}, {1})};
   std::vector<relation_t> extra = {{{0}, {1}}};
   Congruence              cong("twosided", 3, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   // This line is here to make sure that the max_threads is ignored here, since
   // if we are limited to one thread here then this example doesn't run!
   cong.set_max_threads(1);
@@ -374,7 +374,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
          new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // The following lines are intentionally commented out so that we can check
@@ -386,7 +386,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
   std::vector<relation_t> extra(
       {relation_t({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
   Congruence cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.word_to_class_index({0, 0, 0, 1})
           == cong.word_to_class_index({0, 0, 1, 0, 0}));
@@ -433,7 +433,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
@@ -443,7 +443,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
       {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
        relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 19009);
 
@@ -486,7 +486,7 @@ TEST_CASE("Congruence 13: partial perm example",
          new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)};
 
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // REQUIRE(S.size() == 712);
@@ -495,7 +495,7 @@ TEST_CASE("Congruence 13: partial perm example",
   std::vector<relation_t> extra
       = {relation_t({5, 3, 1}, {3, 3}), relation_t({2, 7}, {1, 6, 6, 1})};
   Congruence cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 32);
 }
@@ -510,7 +510,7 @@ TEST_CASE("Congruence 14: Bicyclic monoid",
                                   relation_t({1, 2}, {0})};
   std::vector<relation_t> extra;
   Congruence              cong("twosided", 3, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(cong.word_to_class_index({0})
           == cong.word_to_class_index({1, 2, 1, 1, 2, 2}));
   REQUIRE(cong.word_to_class_index({0})
@@ -531,7 +531,7 @@ TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
   std::vector<relation_t> extra({relation_t({1, 1, 1}, {0})});
   Congruence              cong("twosided", 3, rels, extra);
 
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 3);
 }
@@ -548,7 +548,7 @@ TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
       {relation_t({1, 1, 1, 1, 1}, {1}), relation_t({2, 2, 2}, {2})});
   Congruence cong("twosided", 3, rels, extra);
 
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 15);
 }
@@ -569,7 +569,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
@@ -579,7 +579,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
       {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
        relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   cong.set_max_threads(2);
 
   REQUIRE(cong.nr_classes() == 19009);
@@ -625,7 +625,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
   REQUIRE(gens[0]->degree() == 2);
 
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
@@ -635,7 +635,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
       {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
        relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   cong.set_max_threads(1);
 
   REQUIRE(cong.nr_classes() == 19009);
@@ -682,7 +682,7 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
   std::vector<relation_t> extra = {relation_t({0}, {1})};
 
   Congruence cong("twosided", 3, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(!cong.is_done());
 
@@ -700,7 +700,7 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
       = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
   Congruence              cong("twosided", 2, rels, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -740,7 +740,7 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
          new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   Congruence cong("twosided", &S, std::vector<relation_t>());
 
@@ -767,7 +767,7 @@ TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
 
   Congruence cong(
       "twosided", 2, rels, std::vector<relation_t>({relation_t({0}, {1})}));
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   Partition<word_t>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 1);
@@ -783,7 +783,7 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 0, 6, 7}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   std::vector<Element*> elms
@@ -813,7 +813,7 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
   }
 
   Congruence cong("right", &S, extra);
-  cong.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 1);
 }
@@ -852,7 +852,7 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
                                 new Transformation<u_int16_t>({0, 1, 2})};
 
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
   Congruence cong4("twosided", &S, {relation_t({1}, {0})});
@@ -872,7 +872,7 @@ TEST_CASE("Congruence 28: test_less_than",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
   Semigroup<BMat8> S(gens);
-  S.set_report(CONG_REPORT);
+  REPORTER.set_report(CONG_REPORT);
 
   Congruence<BMat8> cong1("twosided", &S, {relation_t({1}, {0})});
   REQUIRE(cong1.nr_classes() == 3);

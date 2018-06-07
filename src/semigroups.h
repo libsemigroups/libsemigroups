@@ -1227,7 +1227,7 @@ namespace libsemigroups {
 
       REPORT("limit = " << limit);
       Timer  timer;
-      size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
 
       // multiply the generators by every generator
       if (_pos < _lenindex[1]) {
@@ -1408,7 +1408,7 @@ namespace libsemigroups {
         }
       }
       Timer  timer;
-      size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
 
       // get some parameters from the old semigroup
       letter_t old_nrgens  = _nrgens;
@@ -1708,15 +1708,6 @@ namespace libsemigroups {
         out->closure(coll);
         return out;
       }
-    }
-
-    //! Turn reporting on or off.
-    //
-    //!  If \p val is true, then some methods for a Semigroup object may
-    //! report information about the progress of the computation.
-    // FIXME remove this
-    void set_report(bool val) const override {
-      glob_reporter.set_report(val);
     }
 
     //! Set the maximum number of threads that any method of an instance of
@@ -2214,7 +2205,7 @@ namespace libsemigroups {
         std::vector<std::vector<idempotent_value_t>> tmp(
             _max_threads, std::vector<idempotent_value_t>());
         std::vector<std::thread> threads;
-        glob_reporter.reset_thread_ids();
+        REPORTER.reset_thread_ids();
 
         for (size_t i = 0; i < _max_threads - 1; i++) {
           size_t thread_load = 0;
@@ -2307,7 +2298,7 @@ namespace libsemigroups {
 
       // Cannot use _tmp_product itself since there are multiple threads here!
       internal_value_type tmp_product = this->internal_copy(_tmp_product);
-      size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
 
       for (; pos < last; pos++) {
         element_index_t k = _enumerate_order[pos];

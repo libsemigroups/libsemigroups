@@ -75,7 +75,7 @@ namespace libsemigroups {
 TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
   Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 2, 0})});
-  S.set_report(false);
+  REPORTER.set_report(false);
   REQUIRE(S.size() == 3);
   REQUIRE(S.nridempotents() == 1);
 }
@@ -91,7 +91,7 @@ TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
        Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
        Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
   S.reserve(600000);
-  S.set_report(false);
+  REPORTER.set_report(false);
   REQUIRE(S.size() == 597369);
 }
 
@@ -111,10 +111,10 @@ TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
          Renner0Element({0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15}),
          Renner0Element(
              {0, 1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 12, 14, 15})});
-  S.set_report(true);
+  REPORTER.set_report(true);
   REQUIRE(S.size() == 8962225);
   REQUIRE(S.nridempotents() == 128);
-  S.set_report(false);
+  REPORTER.set_report(false);
 }
 
 TEST_CASE("HPCombi 03: full transformation monoid 8",
@@ -124,9 +124,9 @@ TEST_CASE("HPCombi 03: full transformation monoid 8",
        Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
        Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
   S.reserve(std::pow(8, 8));
-  S.set_report(true);
+  REPORTER.set_report(true);
   REQUIRE(S.size() == 16777216);
-  S.set_report(false);
+  REPORTER.set_report(false);
 }
 
 #endif

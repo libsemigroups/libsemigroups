@@ -99,7 +99,6 @@ namespace libsemigroups {
     virtual void            next_relation(word_t&)                          = 0;
     virtual void            enumerate(std::atomic<bool>&, size_t)           = 0;
     virtual void            enumerate(size_t)                               = 0;
-    virtual void            set_report(bool) const                          = 0;
     virtual void            set_max_threads(size_t)                         = 0;
   };
 

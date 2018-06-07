@@ -43,7 +43,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
       = {new Transformation<u_int16_t>({1, 0}),
          new Transformation<u_int16_t>(std::vector<u_int16_t>({0, 0}))};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
@@ -53,7 +53,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   RWS rws;
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
   delete_gens(gens);
 }
@@ -63,7 +63,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
@@ -74,7 +74,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
 
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
   delete_gens(gens);
 }
@@ -84,7 +84,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);
@@ -95,7 +95,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
 
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
   delete_gens(gens);
 }
@@ -119,7 +119,7 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
 
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
 
@@ -140,14 +140,14 @@ TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
   RWS rws;
   rws.add_rules(rels);
   rws.add_rules(extra);
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
 }
 
 TEST_CASE("RWS 06: for an infinite confluent fp semigroup 3",
           "[quick][rws][fpsemigroup][06]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("01", "10");
   rws.add_rule("02", "20");
   rws.add_rule("00", "0");
@@ -166,7 +166,7 @@ TEST_CASE("RWS 06: for an infinite confluent fp semigroup 3",
 TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
           "[quick][rws][fpsemigroup][07]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("000", "");
   rws.add_rule("111", "");
   rws.add_rule("010101", "");
@@ -179,7 +179,7 @@ TEST_CASE("RWS 07: for a finite non-confluent fp semigroup from wikipedia",
 
 TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup][08]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
   rws.add_rule("ba", "");
   rws.add_rule("cd", "");
@@ -194,7 +194,7 @@ TEST_CASE("RWS 08: Example 5.1 in Sims", "[quick][rws][fpsemigroup][08]") {
 
 TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup][09]") {
   RWS rws("aAbB");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   rws.add_rule("aA", "");
   rws.add_rule("Aa", "");
@@ -211,7 +211,7 @@ TEST_CASE("RWS 09: Example 5.1 in Sims", "[quick][rws][fpsemigroup][09]") {
 
 TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup][10]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bbb", "");
   rws.add_rule("ababab", "");
@@ -225,7 +225,7 @@ TEST_CASE("RWS 10: Example 5.3 in Sims", "[quick][rws][fpsemigroup][10]") {
 
 TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup][11]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bB", "");
   rws.add_rule("bbb", "");
@@ -240,7 +240,7 @@ TEST_CASE("RWS 11: Example 5.4 in Sims", "[quick][rws][fpsemigroup][11]") {
 
 TEST_CASE("RWS 12: Example 6.4 in Sims", "[quick][rws][fpsemigroup][12]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bc", "");
   rws.add_rule("bbb", "");
@@ -255,7 +255,7 @@ TEST_CASE("RWS 12: Example 6.4 in Sims", "[quick][rws][fpsemigroup][12]") {
 
 TEST_CASE("RWS 13: Example 6.6 in Sims", "[extreme][rws][fpsemigroup][13]") {
   RWS rws;
-  rws.set_report(true);
+  REPORTER.set_report(true);
 
   rws.add_rule("aa", "");
   rws.add_rule("bc", "");
@@ -273,7 +273,7 @@ TEST_CASE("RWS 13: Example 6.6 in Sims", "[extreme][rws][fpsemigroup][13]") {
 TEST_CASE("RWS 14: Chapter 10, Section 4 in NR",
           "[rws][quick][fpsemigroup][14]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   rws.add_rule("aaaa", "a");
   rws.add_rule("bbbb", "b");
@@ -291,7 +291,7 @@ TEST_CASE("RWS 14: Chapter 10, Section 4 in NR",
 TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
           "[rws][quick][fpsemigroup][15]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bbbbb", "");
   rws.add_rule("babababa", "");
@@ -313,7 +313,7 @@ TEST_CASE("RWS 15: Sym(5) from Chapter 3, Proposition 1.1 in NR",
 TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
           "[quick][rws][fpsemigroup][16]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaaaaaa", "");
   rws.add_rule("bb", "ababab");
   rws.add_rule("bb", "aaaabaaaabaaaabaaaab");
@@ -333,7 +333,7 @@ TEST_CASE("RWS 16: SL(2, 7) from Chapter 3, Proposition 1.5 in NR",
 
 TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup][17]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
 
   REQUIRE(rws.confluent());
@@ -345,7 +345,7 @@ TEST_CASE("RWS 17: Bicyclic monoid", "[rws][quick][fpsemigroup][17]") {
 TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
           "[rws][quick][fpsemigroup][18]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aba", "baa");
   rws.add_rule("bba", "bab");
   rws.add_rule("ac", "");
@@ -363,7 +363,7 @@ TEST_CASE("RWS 18: Plactic monoid of degree 2 from Wikipedia",
 TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
           "[rws][quick][fpsemigroup][19]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "a");
   rws.add_rule("bb", "b");
 
@@ -376,7 +376,7 @@ TEST_CASE("RWS 19: Example before Chapter 7, Proposition 1.1 in NR",
 TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
           "[rws][quick][fpsemigroup][20]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbb", "b");
   rws.add_rule("abababab", "aa");
@@ -393,7 +393,7 @@ TEST_CASE("RWS 20: size 243, Chapter 7, Theorem 3.6 in NR",
 TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
           "[rws][quick][fpsemigroup][21]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbb", "b");
   rws.add_rule("abbba", "aa");
@@ -409,7 +409,7 @@ TEST_CASE("RWS 21: size 240, Chapter 7, Theorem 3.9 in NR",
 TEST_CASE("RWS 22: F(2, 5); size 11, from Chapter 9, Section 1 in NR",
           "[rws][quick][fpsemigroup][22]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("ab", "c");
   rws.add_rule("bc", "d");
   rws.add_rule("cd", "e");
@@ -425,7 +425,7 @@ TEST_CASE("RWS 22: F(2, 5); size 11, from Chapter 9, Section 1 in NR",
 TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
           "[rws][quick][fpsemigroup][23]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("ab", "");
   rws.add_rule("bc", "d");
   rws.add_rule("cd", "e");
@@ -455,7 +455,7 @@ TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
   RWS rws;
   rws.add_rules(rels);
   rws.add_rules(extra);
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   REQUIRE(rws.confluent());
   // We could rewrite here and check equality by this is simpler since all
   // allocation and deletion is handled in test_equals
@@ -470,7 +470,7 @@ TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
 TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
           "[rws][quick][fpsemigroup][25]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbbb", "b");
   rws.add_rule("abbbabb", "bba");
@@ -505,7 +505,7 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
 
   // Call test_less_than without knuth_bendix first
   RWS rws2;
-  rws2.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws2.add_rule("aaa", "a");
   rws2.add_rule("bbbbb", "b");
   rws2.add_rule("abbbabb", "bba");
@@ -515,7 +515,7 @@ TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
 TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
           "[rws][fpsemigroup][quick][26]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbbbbbbb", "b");
   rws.add_rule("abbbbbabb", "bba");
@@ -548,7 +548,7 @@ TEST_CASE("RWS 26: Chapter 11, Section 1 (q = 8, r = 5) in NR",
 TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
           "[rws][quick][fpsemigroup][27]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aA", "");
   rws.add_rule("Aa", "");
   rws.add_rule("bB", "");
@@ -568,7 +568,7 @@ TEST_CASE("RWS 27: Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR",
 TEST_CASE("RWS 28: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
           "[rws][quick][fpsemigroup][28]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbbbbb", "b");
   rws.add_rule("abaabba", "bb");
@@ -582,7 +582,7 @@ TEST_CASE("RWS 28: Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR",
 TEST_CASE("RWS 29: Chapter 8, Theorem 4.2 in NR",
           "[rws][quick][fpsemigroup][29]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aaa", "a");
   rws.add_rule("bbbb", "b");
   rws.add_rule("bababababab", "b");
@@ -727,7 +727,7 @@ TEST_CASE("RWS 37: from GAP smalloverlap gap/test.gi:85 (knuth_bendix fails)",
 
   REQUIRE(!rws.confluent());
 
-  // TODO rws.set_report(); in all the new examples
+  // TODO REPORTER.set_report(); in all the new examples
 
   REQUIRE(!rws.test_equals("a", "b"));
   REQUIRE(rws.test_equals("aabcabc", "aabccba"));
@@ -743,7 +743,7 @@ TEST_CASE("RWS 38: Von Dyck (2,3,7) group - infinite",
   rws.add_rule("BA", "c");
 
   REQUIRE(!rws.confluent());
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.knuth_bendix();
 
   REQUIRE(rws.nr_rules() == 6);
@@ -762,7 +762,7 @@ TEST_CASE("RWS 39: Von Dyck (2,3,7) group - infinite - different presentation",
   rws.add_rule("BA", "c");
 
   REQUIRE(!rws.confluent());
-  rws.set_report(true);
+  REPORTER.set_report(true);
   rws.set_overlap_measure(RWS::overlap_measure::max_AB_BC);
   rws.set_max_rules(100);
   rws.knuth_bendix();
@@ -786,7 +786,7 @@ TEST_CASE("RWS 40: rewriting system from KBP 08",
 
   REQUIRE(!rws.confluent());
   REQUIRE(rws.nr_rules() == 6);
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.knuth_bendix();
   REQUIRE(rws.confluent());
   REQUIRE(rws.nr_rules() == 8);
@@ -830,7 +830,7 @@ TEST_CASE("RWS 41: rewriting system from Congruence 20", "[quick][rws][41]") {
 TEST_CASE("RWS 42: Example 6.6 in Sims (with limited overlap lengths)",
           "[extreme][rws][fpsemigroup][42]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   rws.add_rule("aa", "");
   rws.add_rule("bc", "");
@@ -868,7 +868,7 @@ TEST_CASE("RWS 42: Example 6.6 in Sims (with limited overlap lengths)",
   rws.add_rule("babABaBA", "abABaBAb");
   rws.add_rule("cBACab", "abcBAC");
   rws.add_rule("BabABBAbab", "aabABBAb");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -889,7 +889,7 @@ TEST_CASE("RWS 44: (from kbmag/standalone/kb_data/f27)",
   rws.add_rule("yf", "g");
   rws.add_rule("fg", "a");
   rws.add_rule("ga", "b");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -909,7 +909,7 @@ TEST_CASE("RWS 45: (from kbmag/standalone/kb_data/l32ext)",
   rws.add_rule("BB", "b");
   rws.add_rule("BaBaBaB", "abababa");
   rws.add_rule("aBabaBabaBabaBab", "BabaBabaBabaBaba");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -924,7 +924,7 @@ TEST_CASE("RWS 46: (from kbmag/standalone/kb_data/ab2)",
           "[quick][rws][kbmag][shortlex][46]") {
   RWS rws("aAbB");
   rws.add_rule("Bab", "a");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -950,7 +950,7 @@ TEST_CASE("RWS 47: (from kbmag/standalone/kb_data/d22)",
   rws.add_rule("dFDa", "");
   rws.add_rule("ybYA", "");
   rws.add_rule("fCFB", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -972,7 +972,7 @@ TEST_CASE("RWS 47: (from kbmag/standalone/kb_data/d22)",
 TEST_CASE("RWS 48: (from kbmag/standalone/kb_data/degen1)",
           "[quick][rws][kbmag][shortlex][48]") {
   RWS rws("");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -989,7 +989,7 @@ TEST_CASE("RWS 49: (from kbmag/standalone/kb_data/s4)",
   RWS rws("abB");
   rws.add_rule("bb", "B");
   rws.add_rule("BaBa", "abab");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -1016,7 +1016,7 @@ TEST_CASE("RWS 49: (from kbmag/standalone/kb_data/s4)",
   rws.add_rule("GBgb", "h");
   rws.add_rule("cb", "bc");
   rws.add_rule("ya", "ay");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 

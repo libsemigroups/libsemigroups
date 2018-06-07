@@ -121,7 +121,7 @@ namespace libsemigroups {
 
     REPORT("using " << nr_threads << " / "
                     << std::thread::hardware_concurrency() << " threads");
-    glob_reporter.reset_thread_ids();
+    REPORTER.reset_thread_ids();
 
     std::vector<std::thread> t;
     for (size_t i = 0; i < nr_threads; i++) {
@@ -135,7 +135,7 @@ namespace libsemigroups {
     }
     for (auto winner = data.begin(); winner < data.end(); winner++) {
       if ((*winner)->is_done() || !(*winner)->is_killed()) {
-        size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
+        size_t tid = REPORTER.thread_id(tids.at(winner - data.begin()));
         REPORT("Thread #" << tid << " is the winner!");
         if ((*winner)->is_done()) {
           // Delete the losers and clear _partial_data

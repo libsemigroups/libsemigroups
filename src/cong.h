@@ -295,15 +295,6 @@ namespace libsemigroups {
       _relations = relations;
     }
 
-    //! Turn reporting on or off.
-    //
-    //!  If \p val is true, then some methods for a Congruence object may
-    //! report information about the progress of the computation.
-    void set_report(bool val) const {
-      glob_reporter.set_report(val);
-      LIBSEMIGROUPS_ASSERT(glob_reporter.get_report() == val);
-    }
-
     //! Specify a partial coset table for the Todd-Coxeter algorithm.
     //!
     //! The parameter \p table should be a partial coset table for use in the
@@ -768,7 +759,7 @@ namespace libsemigroups {
 
       void run(size_t steps, std::atomic<bool>& killed) {
         REPORT("number of steps = " << steps);
-        size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
+        size_t tid = REPORTER.thread_id(std::this_thread::get_id());
         while (!_pairs_to_mult.empty()) {
           // Get the next pair
           std::pair<internal_const_value_type, internal_const_value_type>

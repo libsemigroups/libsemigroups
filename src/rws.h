@@ -365,14 +365,6 @@ namespace libsemigroups {
     //! the first entry.
     std::vector<std::pair<std::string, std::string>> rules() const;
 
-    //! Turn reporting on or off.
-    //!
-    //! If \p val is true, then some methods for a RWS object may report
-    //! information about the progress of the computation.
-    void set_report(bool val) const {
-      glob_reporter.set_report(val);
-    }
-
     //! Some information can be sent to std::cout during calls to
     //! RWS::knuth_bendix and RWS::knuth_bendix_by_overlap_length. This method
     //! can be used to determine the frequency with which this information is

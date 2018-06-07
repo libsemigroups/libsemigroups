@@ -45,7 +45,7 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
   Semigroup<BMat8> S(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_max_word_length() == 1);
   REQUIRE(!S.is_done());
@@ -242,7 +242,7 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
   Semigroup<> S(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nridempotents() == 2360);
   delete_gens(gens);
@@ -270,11 +270,11 @@ TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
                              {0, 0, 1, 0, 0},
                              {0, 0, 0, 1, 0},
                              {0, 0, 0, 0, 0}})});
-  S.set_report(true);
+  REPORTER.set_report(true);
   S.reserve(40000000);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
-  S.set_report(false);
+  REPORTER.set_report(false);
 }
 
 TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
@@ -300,11 +300,11 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
                                                 {0, 0, 0, 1, 0},
                                                 {0, 0, 0, 0, 0}})};
   Semigroup<>           S(gens);
-  S.set_report(true);
+  REPORTER.set_report(true);
   S.reserve(40000000);
   REQUIRE(S.size() == 32311832);
   REQUIRE(S.nridempotents() == 73023);
-  S.set_report(false);
+  REPORTER.set_report(false);
   delete_gens(gens);
 }
 
@@ -352,7 +352,7 @@ TEST_CASE("Semigroup 77: iterators BMat8", "[quick][semigroup][finite][77]") {
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
   Semigroup<BMat8> S(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   // Calling cbegin/cend_sorted fully enumerates the semigroup
   { auto it = S.cbegin_sorted(); }
@@ -406,7 +406,7 @@ TEST_CASE("Semigroup 78: non-pointer, non-trivial element type",
 
   Semigroup<Transformation<uint_fast8_t>> S(gens);
   S.reserve(597369);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 597369);
   REQUIRE(S.nridempotents() == 8194);
@@ -1008,7 +1008,7 @@ TEST_CASE("Semigroup 93: non-pointer Bipartitions",
   Semigroup<Bipartition> S(gens);
 
   S.reserve(10);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 10);
   REQUIRE(S.nridempotents() == 6);
@@ -1062,7 +1062,7 @@ TEST_CASE("Semigroup 94: non-pointer PartialPerms",
   Semigroup<PartialPerm<u_int16_t>> S(gens);
 
   S.reserve(102);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 102);
   REQUIRE(S.nridempotents() == 8);

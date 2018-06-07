@@ -279,7 +279,7 @@ namespace libsemigroups {
 
     // must reindex the blocks
     std::vector<u_int32_t>& lookup
-        = _lookup[glob_reporter.thread_id(std::this_thread::get_id())];
+        = _lookup[REPORTER.thread_id(std::this_thread::get_id())];
 
     lookup.clear();
     lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);

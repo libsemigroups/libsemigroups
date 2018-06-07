@@ -40,7 +40,7 @@ TEST_CASE("RWS 51: (from kbmag/standalone/kb_data/f25monoid)",
   rws.add_rule("cd", "e");
   rws.add_rule("de", "a");
   rws.add_rule("ea", "b");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -82,7 +82,7 @@ TEST_CASE("RWS 52: (from kbmag/standalone/kb_data/degen4a)",
   rws.add_rule("Aba", "bb");
   rws.add_rule("Bcb", "cc");
   rws.add_rule("Cac", "aa");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -100,7 +100,7 @@ TEST_CASE("RWS 53: (from kbmag/standalone/kb_data/torus)",
           "[quick][rws][kbmag][shortlex][53]") {
   RWS rws("aAcCbBdD");
   rws.add_rule("ABab", "DCdc");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -126,7 +126,7 @@ TEST_CASE("RWS 53: (from kbmag/standalone/kb_data/torus)",
   rws.add_rule("ef", "g");
   rws.add_rule("fg", "a");
   rws.add_rule("ga", "b");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -143,7 +143,7 @@ TEST_CASE("RWS 55: (from kbmag/standalone/kb_data/3a6)",
   rws.add_rule("bbb", "");
   rws.add_rule("abababab", "");
   rws.add_rule("aBaBaBaBaB", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -168,7 +168,7 @@ TEST_CASE("RWS 55: (from kbmag/standalone/kb_data/3a6)",
 TEST_CASE("RWS 56: (from kbmag/standalone/kb_data/f2)",
           "[quick][rws][kbmag][shortlex][56]") {
   RWS rws("aAbB");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -182,7 +182,7 @@ TEST_CASE("RWS 56: (from kbmag/standalone/kb_data/f2)",
           "[quick][rws][kbmag][recursive][57]") {
   RWS rws(new RECURSIVE(), "aAbB");
   rws.add_rule("Baab", "aaa");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -303,7 +303,7 @@ TEST_CASE("RWS 58: (from kbmag/standalone/kb_data/s16)",
   rws.add_rule("nmn", "mnm");
   rws.add_rule("om", "mo");
   rws.add_rule("ono", "non");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -319,7 +319,7 @@ TEST_CASE("RWS 59: (from kbmag/standalone/kb_data/a4monoid)",
   RWS rws("abB");
   rws.add_rule("bb", "B");
   rws.add_rule("BaB", "aba");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -341,7 +341,7 @@ TEST_CASE("RWS 60: (from kbmag/standalone/kb_data/degen3)",
   RWS rws("aAbB");
   rws.add_rule("ab", "");
   rws.add_rule("abb", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -386,7 +386,7 @@ TEST_CASE("RWS 61: (from kbmag/standalone/kb_data/s9)",
   rws.add_rule("gfg", "fgf");
   rws.add_rule("hf", "fh");
   rws.add_rule("hgh", "ghg");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -399,7 +399,7 @@ TEST_CASE("RWS 61: (from kbmag/standalone/kb_data/s9)",
 TEST_CASE("RWS 62: (from kbmag/standalone/kb_data/ab1)",
           "[quick][rws][kbmag][shortlex][62]") {
   RWS rws("aA");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -413,7 +413,7 @@ TEST_CASE("RWS 63: (from kbmag/standalone/kb_data/degen2)",
           "[quick][rws][kbmag][shortlex][63]") {
   RWS rws("aA");
   rws.add_rule("a", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -433,7 +433,7 @@ TEST_CASE("RWS 64: (from kbmag/standalone/kb_data/f25)",
   rws.add_rule("cd", "y");
   rws.add_rule("dy", "a");
   rws.add_rule("ya", "b");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -476,7 +476,7 @@ TEST_CASE("RWS 65: (from kbmag/standalone/kb_data/degen4b)",
   rws.add_rule("bbABaBcbCCAbaBBccBCbccBCb", "");
   rws.add_rule("ccBCbCacAABcbCCaaCAcaaCAc", "");
   rws.add_rule("aaCAcAbaBBCacAAbbABabbABa", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -492,7 +492,7 @@ TEST_CASE("RWS 65: (from kbmag/standalone/kb_data/degen4b)",
   rws.add_rule("ba", "abc");
   rws.add_rule("ca", "ac");
   rws.add_rule("cb", "bc");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -517,7 +517,7 @@ TEST_CASE("RWS 67: (from kbmag/standalone/kb_data/funny3)",
   rws.add_rule("abcABCabcABCabcABC", "");
   rws.add_rule("BcabCABcabCABcabCA", "");
   rws.add_rule("cbACBacbACBacbACBa", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -534,7 +534,7 @@ TEST_CASE("RWS 68: (from kbmag/standalone/kb_data/f27_2gen)",
   RWS rws("aAbB");
   rws.add_rule("bababbababbabbababbab", "a");
   rws.add_rule("abbabbababbaba", "b");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -552,7 +552,7 @@ TEST_CASE("RWS 69: (from kbmag/standalone/kb_data/m11)",
   rws.add_rule("BaBaBaBaBaB", "abababababa");
   rws.add_rule("bbabbabba", "abbabbabb");
   rws.add_rule("aBaBababaBabaBBaBab", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -594,7 +594,7 @@ TEST_CASE("RWS 70: (from kbmag/standalone/kb_data/e8)",
   rws.add_rule("gfg", "fgf");
   rws.add_rule("hf", "fh");
   rws.add_rule("hgh", "ghg");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -611,7 +611,7 @@ TEST_CASE("RWS 71: (from kbmag/standalone/kb_data/237)",
   rws.add_rule("aaaa", "AAA");
   rws.add_rule("bb", "B");
   rws.add_rule("BA", "c");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -628,7 +628,7 @@ TEST_CASE("RWS 72: (from kbmag/standalone/kb_data/c2)",
           "[quick][rws][kbmag][shortlex][72]") {
   RWS rws("a");
   rws.add_rule("aa", "");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -649,7 +649,7 @@ TEST_CASE("RWS 72: (from kbmag/standalone/kb_data/c2)",
   rws.add_rule("ya", "ay");
   rws.add_rule("db", "bd");
   rws.add_rule("yb", "by");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(rws.confluent());
 
@@ -678,7 +678,7 @@ TEST_CASE("RWS 74: (from kbmag/standalone/kb_data/cosets)",
   rws.add_rule("HH", "H");
   rws.add_rule("aH", "H");
   rws.add_rule("bH", "H");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   REQUIRE(!rws.confluent());
 
@@ -705,7 +705,7 @@ TEST_CASE("RWS 74: (from kbmag/standalone/kb_data/cosets)",
 TEST_CASE("RWS 75: Example 5.1 in Sims (RWS 09 again)",
           "[quick][rws][fpsemigroup][75]") {
   RWS rws("aAbB");
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
 
   rws.add_rule("aA", "");
   rws.add_rule("Aa", "");
@@ -733,7 +733,7 @@ TEST_CASE("RWS 76: (RWS 50 again) (from kbmag/standalone/kb_data/verifynilp)",
   rws.add_rule("GBgb", "h");
   rws.add_rule("cb", "bc");
   rws.add_rule("ya", "ay");
-  rws.set_report(true);
+  REPORTER.set_report(true);
 
   REQUIRE(!rws.confluent());
 
@@ -747,7 +747,7 @@ TEST_CASE("RWS 77: (RWS 66 again) (from kbmag/standalone/kb_data/nilp2)",
   rws.add_rule("ba", "abc");
   rws.add_rule("ca", "ac");
   rws.add_rule("cb", "bc");
-  rws.set_report(true);
+  REPORTER.set_report(true);
 
   REQUIRE(!rws.confluent());
   // This fails if clear_stack_interval is set to 50.
@@ -760,7 +760,7 @@ TEST_CASE("RWS 77: (RWS 66 again) (from kbmag/standalone/kb_data/nilp2)",
 
 TEST_CASE("RWS 78: Example 6.4 in Sims", "[quick][rws][fpsemigroup][78]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bc", "");
   rws.add_rule("bbb", "");
@@ -835,7 +835,7 @@ TEST_CASE("RWS 79: RWS 71 again", "[extreme][rws][shortlex][79]") {
   rws.add_rule("BaAAaAaAAaAAA", "cAAaAAaAaAAa");
   rws.add_rule("BaAaAAaAAaAAA", "cAAaAaAAaAAa");
   rws.add_rule("BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
-  rws.set_report(true);
+  REPORTER.set_report(true);
 
   REQUIRE(!rws.confluent());
   rws.set_max_rules(32768);
@@ -848,7 +848,7 @@ TEST_CASE(
     "RWS 80: Example 5.4 in Sims (RWS 11 again) (different overlap policy)",
     "[quick][rws][fpsemigroup][80]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bB", "");
   rws.add_rule("bbb", "");
@@ -866,7 +866,7 @@ TEST_CASE(
     "RWS 81: Example 5.4 in Sims (RWS 11 again) (different overlap policy)",
     "[quick][rws][fpsemigroup][81]") {
   RWS rws;
-  rws.set_report(RWS_REPORT);
+  REPORTER.set_report(RWS_REPORT);
   rws.add_rule("aa", "");
   rws.add_rule("bB", "");
   rws.add_rule("bbb", "");
@@ -919,7 +919,7 @@ TEST_CASE("RWS 84: set_max_overlap", "[quick][rws][84]") {
 
 TEST_CASE("RWS 85: Ceitin's undecidable word problem example",
           "[fails][rws][85]") {
-  glob_reporter.set_report(true);
+  REPORTER.set_report(true);
   RWS rws;
   rws.add_rule("ac", "ca");
   rws.add_rule("ad", "da");

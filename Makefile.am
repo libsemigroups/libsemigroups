@@ -53,7 +53,6 @@ libsemigroups_la_SOURCES =  src/blocks.cc
 libsemigroups_la_SOURCES += src/bmat8.cc
 libsemigroups_la_SOURCES += src/cong.cc
 libsemigroups_la_SOURCES += src/elements.cc  
-libsemigroups_la_SOURCES += src/report.cc 
 libsemigroups_la_SOURCES += src/rws.cc        
 libsemigroups_la_SOURCES += src/rwse.cc   
 libsemigroups_la_SOURCES += src/semigroups-base.cc 
