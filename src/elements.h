@@ -62,9 +62,6 @@ namespace libsemigroups {
     //! the same subclass of Element.
     virtual bool operator==(Element const& that) const = 0;
 
-    bool operator!=(Element const& that) const {
-      return !(*this == that);
-    }
 
     //! Returns \c true if \c this is less than \p that.
     //!
@@ -76,6 +73,18 @@ namespace libsemigroups {
 
     bool operator>(const Element& that) const {
       return that < *this;
+    }
+
+    bool operator!=(Element const& that) const {
+      return !(*this == that);
+    }
+
+    bool operator<=(Element const& that) const {
+      return *this < that || *this == that;
+    }
+
+    bool operator>=(Element const& that) const {
+      return that <= *this;
     }
 
     //! Returns the approximate time complexity of multiplying two
