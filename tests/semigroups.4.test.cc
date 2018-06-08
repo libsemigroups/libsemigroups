@@ -534,11 +534,16 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens2);
-  delete_gens(gens2);
 
   REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
-  REQUIRE_NOTHROW(T.word_to_element({0, 0, 1, 1}));
   REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}), LibsemigroupsException);
+
+  Element* t = T.word_to_element({0, 0, 1, 1});
+  REQUIRE(*t
+          == MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr)
+                 * MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr)
+                 * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)
+                 * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr));
 
   std::vector<Element*> gens3
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -547,11 +552,20 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> U(gens3);
-  delete_gens(gens3);
 
   REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
-  REQUIRE_NOTHROW(U.word_to_element({0, 0, 1, 2}));
   REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
+
+  Element* u = U.word_to_element({0, 0, 1, 2});
+  REQUIRE(*u
+          == Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
+                 * Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
+                 * Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})
+                 * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
+  delete t;
+  delete u;
+  delete_gens(gens2);
+  delete_gens(gens3);
 }
 
 TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
