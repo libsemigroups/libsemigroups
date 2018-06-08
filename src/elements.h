@@ -383,6 +383,32 @@ namespace libsemigroups {
       return new TSubclass(*static_cast<TSubclass const*>(this));
     }
 
+    //! Insertion operator
+    //!
+    //! This method allows ElementWithVectorData objects to be inserted into an
+    //! ostringstream
+    friend std::ostringstream& operator<<(std::ostringstream&          os,
+                                          ElementWithVectorData const& elt) {
+      os << "{";
+      for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
+        os << std::to_string(*it);
+        os << std::string(", ");
+      }
+      os << to_string(*(elt.cend() - 1));
+      os << std::string(1, "}");
+      return os;
+    }
+
+    //! Insertion operator
+    //!
+    //! This method allows ElementWithVectorData objects to be inserted into an
+    //! ostream.
+    friend std::ostream& operator<<(std::ostream&                os,
+                                    ElementWithVectorData const& elt) {
+      os << std::to_string(elt);
+      return os;
+    }
+
    protected:
     // Cannot declare cache_hash_value here, since PBR's are vectors of
     // vectors, and there is not std::hash<vector<whatever>>.
