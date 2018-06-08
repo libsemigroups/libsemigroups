@@ -8,6 +8,10 @@ AM_LDFLAGS  =  -no-undefined
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
+AM_CXXFLAGS += -g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits
+AM_CXXFLAGS += -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type
+AM_CXXFLAGS += -Wswitch -Wunused-label -fno-omit-frame-pointer
+AM_CXXFLAGS += -Wno-c++11-extensions -Wold-style-cast -Wshadow
 else
 AM_CPPFLAGS = -DNDEBUG
 endif
