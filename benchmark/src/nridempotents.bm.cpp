@@ -32,8 +32,10 @@ using namespace libsemigroups;
 #define BM_NRIDEMPOTENTS_THREADS(name, gens, n, m)                             \
   static void name(benchmark::State& state) {                                  \
     while (state.KeepRunning()) {                                              \
-      Semigroup S(gens);                                                       \
-      really_delete_cont(gens);                                                \
+      Semigroup<> S(gens);                                                     \
+      for (Element * x : gens) {                                               \
+        delete x;                                                              \
+      }                                                                        \
       S.reserve(n);                                                            \
       if (S.size() != n) {                                                     \
         throw std::runtime_error("wrong reserve size, expected "               \
@@ -66,8 +68,10 @@ using namespace libsemigroups;
 #define BM_NRIDEMPOTENTS_NO_THREADS(name, gens, n, m)                          \
   static void name(benchmark::State& state) {                                  \
     while (state.KeepRunning()) {                                              \
-      Semigroup S(gens);                                                       \
-      really_delete_cont(gens);                                                \
+      Semigroup<> S(gens);                                                     \
+      for (Element * x : gens) {                                               \
+        delete x;                                                              \
+      }                                                                        \
       S.reserve(n);                                                            \
       if (S.size() != n) {                                                     \
         throw std::runtime_error("wrong reserve size, expected "               \
@@ -144,16 +148,16 @@ BM_NRIDEMPOTENTS_THREADS(
     13688);
 
 BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_uppertri_6,
-                         upper_triangular_boolean_mat(6),
+                         *upper_triangular_boolean_mat(6),
                          2097152,
                          114433);
 
 BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_unitri_7,
-                         uni_triangular_boolean_mat(7),
+                         *uni_triangular_boolean_mat(7),
                          2097152,
                          96428);
 
-BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_gossip_6, gossip(6), 1092473, 203);
+BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_gossip_6, *gossip(6), 1092473, 203);
 
 BM_NRIDEMPOTENTS_THREADS(
     BM_nridempotents_symm_inv_8,

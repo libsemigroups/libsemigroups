@@ -44,7 +44,7 @@ namespace libsemigroups {
         gens->push_back(new BooleanMat(x));
       }
     }
-    gens->push_back(gens->at(0)->identity());
+    gens->push_back(gens->at(0)->heap_identity());
     return gens;
   }
 
@@ -77,7 +77,7 @@ namespace libsemigroups {
         gens->push_back(new BooleanMat(x));
       }
     }
-    gens->push_back(gens->at(0)->identity());
+    gens->push_back(gens->at(0)->heap_identity());
     return gens;
   }
 }  // namespace libsemigroups
