@@ -41,7 +41,7 @@
 #include "uf.h"
 
 #ifdef LIBSEMIGROUPS_USE_HPCOMBI
-#include "../extern/HPCombi/include/perm16.hpp"
+#include "perm16.hpp"
 #endif
 
 #endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_

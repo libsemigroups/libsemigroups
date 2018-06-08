@@ -37,7 +37,7 @@
 #include "semiring.h"
 
 #ifdef LIBSEMIGROUPS_USE_HPCOMBI
-#include "../extern/HPCombi/include/perm16.hpp"
+#include "perm16.hpp"
 #endif
 
 namespace libsemigroups {

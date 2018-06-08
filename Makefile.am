@@ -2,8 +2,8 @@
 # Automake configuration
 ##############################################################################
 
-AM_CXXFLAGS =  -I. -Wall -Wextra -pedantic -Wno-c++11-extensions -std=c++11 
-AM_CXXFLAGS += -g -O3 -march=native
+AM_CXXFLAGS =  -I$(top_srcdir)/extern/HPCombi/include -Wall -Wextra -pedantic 
+AM_CXXFLAGS += -Wno-c++11-extensions -std=gnu++11 -g -O3 -march=native
 AM_LDFLAGS  =  -no-undefined
 
 if LIBSEMIGROUPS_DEBUG
@@ -45,6 +45,13 @@ pkginclude_HEADERS += src/semigroups.h
 pkginclude_HEADERS += src/semiring.h  
 pkginclude_HEADERS += src/timer.h 
 pkginclude_HEADERS += src/uf.h 
+if LIBSEMIGROUPS_USE_HPCOMBI
+pkginclude_HEADERS += extern/HPCombi/include/perm16.hpp
+pkginclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
+pkginclude_HEADERS += extern/HPCombi/include/power.hpp
+pkginclude_HEADERS += extern/HPCombi/include/fallback/gcdlcm.hpp
+pkginclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
+endif 
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -77,7 +84,7 @@ LINT_FORMAT_FILES_EXTRA += src/cong/tc.cc
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
-EXTRA_DIST += VERSION
+EXTRA_DIST += VERSION extern/HPCombi/VERSION
 
 BENCHMARK_LINT_FORMAT =  benchmark/src/bmat8.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/cong.bm.cpp
