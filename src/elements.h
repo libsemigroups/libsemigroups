@@ -62,7 +62,6 @@ namespace libsemigroups {
     //! the same subclass of Element.
     virtual bool operator==(Element const& that) const = 0;
 
-
     //! Returns \c true if \c this is less than \p that.
     //!
     //! This method defines a total order on the set of objects in a given
@@ -1144,8 +1143,8 @@ namespace libsemigroups {
     // Should never be called!
     explicit MatrixOverSemiringBase(TValueType)
         : MatrixOverSemiringBase(std::vector<TValueType>()) {
-        LIBSEMIGROUPS_ASSERT(false);  
-      };
+      LIBSEMIGROUPS_ASSERT(false);
+    }
 
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {

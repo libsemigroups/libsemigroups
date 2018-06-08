@@ -27,8 +27,7 @@
 // TODO inline everything (it's not currently due to debugging)
 
 namespace libsemigroups {
-  template <typename TElementType>
-  TElementType one(TElementType x) {
+  template <typename TElementType> TElementType one(TElementType x) {
     return x.one();
   }
 
@@ -125,8 +124,9 @@ namespace libsemigroups {
   template <typename TElementType>
   struct ElementContainer<
       TElementType,
-      typename std::enable_if<std::is_same<TElementType, Element*>::value ||
-        std::is_same<TElementType, Element const*>::value>::type> {
+      typename std::enable_if<
+          std::is_same<TElementType, Element*>::value
+          || std::is_same<TElementType, Element const*>::value>::type> {
     using value_type = typename std::remove_const<
         typename std::remove_pointer<TElementType>::type>::type*;
     using const_value_type =
@@ -269,9 +269,9 @@ namespace libsemigroups {
     }
 
     inline void multiply(internal_value_type       xy,
-                                        internal_const_value_type x,
-                                        internal_const_value_type y,
-                                        size_t tid = 0) const {
+                         internal_const_value_type x,
+                         internal_const_value_type y,
+                         size_t                    tid = 0) const {
       xy->Element::redefine(*x, *y, tid);
     }
 

@@ -47,8 +47,8 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-TEST_CASE("Semigroup 01: small transformation semigroup",
-          "[quick][semigroup][finite][01]") {
+TEST_CASE("Semigroup 001: small transformation semigroup",
+          "[quick][semigroup][finite][001]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                 new Transformation<u_int16_t>({0, 1, 2})};
   Semigroup<>           S    = Semigroup<>(gens);
@@ -85,8 +85,8 @@ TEST_CASE("Semigroup 01: small transformation semigroup",
   delete x;
 }
 
-TEST_CASE("Semigroup 02: small partial perm semigroup",
-          "[quick][semigroup][finite][02]") {
+TEST_CASE("Semigroup 002: small partial perm semigroup",
+          "[quick][semigroup][finite][002]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>(
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
@@ -144,8 +144,8 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   delete y;
 }
 
-TEST_CASE("Semigroup 03: small bipartition semigroup",
-          "[quick][semigroup][finite][03]") {
+TEST_CASE("Semigroup 003: small bipartition semigroup",
+          "[quick][semigroup][finite][003]") {
   std::vector<Element*> gens
       = {new Bipartition(
              {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -189,8 +189,8 @@ TEST_CASE("Semigroup 03: small bipartition semigroup",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
-          "[quick][semigroup][finite][04]") {
+TEST_CASE("Semigroup 004: small Boolean matrix semigroup",
+          "[quick][semigroup][finite][004]") {
   std::vector<Element*> gens
       = {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
          new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
@@ -224,8 +224,8 @@ TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
-          "[quick][semigroup][finite][05]") {
+TEST_CASE("Semigroup 005: small projective max plus matrix semigroup",
+          "[quick][semigroup][finite][005]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
@@ -250,8 +250,8 @@ TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
   delete sr;
 }
 
-TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
-          "[quick][semigroup][finite][06]") {
+TEST_CASE("Semigroup 006: small matrix semigroup [Integers]",
+          "[quick][semigroup][finite][006]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -291,8 +291,8 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
-          "[quick][semigroup][finite][07]") {
+TEST_CASE("Semigroup 007: small matrix semigroup [MaxPlusSemiring]",
+          "[quick][semigroup][finite][007]") {
   Semiring<int64_t>*    sr = new MaxPlusSemiring();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
@@ -331,8 +331,8 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
-          "[quick][semigroup][finite][08]") {
+TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
+          "[quick][semigroup][finite][008]") {
   Semiring<int64_t>*    sr = new MinPlusSemiring();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, LONG_MAX}}, sr)};
@@ -366,8 +366,8 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
-          "[quick][semigroup][finite][09]") {
+TEST_CASE("Semigroup 009: small matrix semigroup [TropicalMaxPlusSemiring]",
+          "[quick][semigroup][finite][009]") {
   Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
@@ -403,8 +403,8 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
-          "[quick][semigroup][finite][10]") {
+TEST_CASE("Semigroup 010: small matrix semigroup [TropicalMinPlusSemiring]",
+          "[quick][semigroup][finite][010]") {
   Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -439,8 +439,8 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
-          "[quick][semigroup][finite][11]") {
+TEST_CASE("Semigroup 011: small matrix semigroup [NaturalSemiring]",
+          "[quick][semigroup][finite][011]") {
   Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -475,8 +475,8 @@ TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 12: small pbr semigroup",
-          "[quick][semigroup][finite][12]") {
+TEST_CASE("Semigroup 012: small pbr semigroup",
+          "[quick][semigroup][finite][012]") {
   std::vector<Element*> gens
       = {new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}),
          new PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}})};
@@ -506,8 +506,8 @@ TEST_CASE("Semigroup 12: small pbr semigroup",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 13: large transformation semigroup",
-          "[quick][semigroup][finite][13]") {
+TEST_CASE("Semigroup 013: large transformation semigroup",
+          "[quick][semigroup][finite][013]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -525,8 +525,8 @@ TEST_CASE("Semigroup 13: large transformation semigroup",
   REQUIRE(S.nrrules() == 2459);
 }
 
-TEST_CASE("Semigroup 14: at, position, current_*",
-          "[quick][semigroup][finite][14]") {
+TEST_CASE("Semigroup 014: at, position, current_*",
+          "[quick][semigroup][finite][014]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -579,7 +579,7 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.nrrules() == 2459);
 }
 
-TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
+TEST_CASE("Semigroup 015: enumerate", "[quick][semigroup][finite][015]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -614,8 +614,8 @@ TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
   REQUIRE(S.nrrules() == 2459);
 }
 
-TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
-          "[quick][semigroup][finite][16]") {
+TEST_CASE("Semigroup 016: enumerate [many stops and starts]",
+          "[quick][semigroup][finite][016]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -639,8 +639,8 @@ TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
   REQUIRE(S.nrrules() == 2459);
 }
 
-TEST_CASE("Semigroup 17: factorisation, length [1 element]",
-          "[quick][semigroup][finite][17]") {
+TEST_CASE("Semigroup 017: factorisation, length [1 element]",
+          "[quick][semigroup][finite][017]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -669,8 +669,8 @@ TEST_CASE("Semigroup 17: factorisation, length [1 element]",
   REQUIRE(S.current_max_word_length() == 16);
 }
 
-TEST_CASE("Semigroup 18: factorisation, products [all elements]",
-          "[quick][semigroup][finite][18]") {
+TEST_CASE("Semigroup 018: factorisation, products [all elements]",
+          "[quick][semigroup][finite][018]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -690,8 +690,8 @@ TEST_CASE("Semigroup 18: factorisation, products [all elements]",
   }
 }
 
-TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
-          "[quick][semigroup][finite][19]") {
+TEST_CASE("Semigroup 019: first/final letter, prefix, suffix, products",
+          "[quick][semigroup][finite][019]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -764,8 +764,8 @@ TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
   REQUIRE(S.product_by_reduction(S.first_letter(7775), S.suffix(7775)) == 7775);
 }
 
-TEST_CASE("Semigroup 20: letter_to_pos [standard]",
-          "[quick][semigroup][finite][20]") {
+TEST_CASE("Semigroup 020: letter_to_pos [standard]",
+          "[quick][semigroup][finite][020]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -783,8 +783,8 @@ TEST_CASE("Semigroup 20: letter_to_pos [standard]",
   REQUIRE(S.letter_to_pos(4) == 4);
 }
 
-TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
-          "[quick][semigroup][finite][21]") {
+TEST_CASE("Semigroup 021: letter_to_pos [duplicate gens]",
+          "[quick][semigroup][finite][021]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -837,8 +837,8 @@ TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
   REQUIRE(S.nrrules() == 2621);
 }
 
-TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
-          "[quick][semigroup][finite][22]") {
+TEST_CASE("Semigroup 022: letter_to_pos [after add_generators]",
+          "[quick][semigroup][finite][022]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -890,8 +890,8 @@ TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
-          "[quick][semigroup][finite][23]") {
+TEST_CASE("Semigroup 023: cbegin_idempotents/cend [1 thread]",
+          "[quick][semigroup][finite][023]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -910,8 +910,8 @@ TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
   REQUIRE(nr == S.nridempotents());
 }
 
-TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
-          "[quick][semigroup][finite][24]") {
+TEST_CASE("Semigroup 024: idempotent_cend/cbegin [1 thread]",
+          "[quick][semigroup][finite][024]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -931,8 +931,8 @@ TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
   REQUIRE(nr == S.nridempotents());
 }
 
-TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
-          "[quick][semigroup][finite][25]") {
+TEST_CASE("Semigroup 025: is_idempotent [1 thread]",
+          "[quick][semigroup][finite][025]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),

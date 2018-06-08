@@ -32,8 +32,8 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-TEST_CASE("Semigroup 95: non-pointer BooleanMats",
-          "[quick][semigroup][finite][95]") {
+TEST_CASE("Semigroup 098: non-pointer BooleanMats",
+          "[quick][semigroup][finite][098]") {
   std::vector<BooleanMat> gens
       = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
          BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
@@ -42,7 +42,7 @@ TEST_CASE("Semigroup 95: non-pointer BooleanMats",
   Semigroup<BooleanMat> S(gens);
 
   S.reserve(26);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 26);
   REQUIRE(S.nridempotents() == 4);
@@ -53,7 +53,8 @@ TEST_CASE("Semigroup 95: non-pointer BooleanMats",
     pos++;
   }
 
-  S.add_generators({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
+  S.add_generators(
+      {BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
   REQUIRE(S.size() == 29);
   S.closure({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
   REQUIRE(S.size() == 29);
@@ -79,9 +80,9 @@ TEST_CASE("Semigroup 95: non-pointer BooleanMats",
   }
 }
 
-TEST_CASE("Semigroup 96: non-pointer ProjectiveMaxPlusMatrix",
-          "[quick][semigroup][finite][96]") {
-  Semiring<int64_t>* sr = new MaxPlusSemiring();
+TEST_CASE("Semigroup 099: non-pointer ProjectiveMaxPlusMatrix",
+          "[quick][semigroup][finite][099]") {
+  Semiring<int64_t>*                   sr = new MaxPlusSemiring();
   std::vector<ProjectiveMaxPlusMatrix> gens
       = {ProjectiveMaxPlusMatrix({0, 1, 2, 3, 4, 1, 2, 1, 1}, sr),
          ProjectiveMaxPlusMatrix({0, 1, 1, 1, 1, 1, 0, 0, 0}, sr),
@@ -89,7 +90,7 @@ TEST_CASE("Semigroup 96: non-pointer ProjectiveMaxPlusMatrix",
   Semigroup<ProjectiveMaxPlusMatrix> S(gens);
 
   S.reserve(142);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 142);
   REQUIRE(S.nridempotents() == 90);
@@ -122,9 +123,8 @@ TEST_CASE("Semigroup 96: non-pointer ProjectiveMaxPlusMatrix",
   delete sr;
 }
 
-TEST_CASE("Semigroup 97: non-pointer PBR",
-          "[quick][semigroup][finite][97]") {
-  std::vector<PBR>                   gens = {PBR({{5, 3},
+TEST_CASE("Semigroup 100: non-pointer PBR", "[quick][semigroup][finite][100]") {
+  std::vector<PBR> gens = {PBR({{5, 3},
                                 {5, 4, 3, 0, 1, 2},
                                 {5, 4, 3, 0, 2},
                                 {5, 3, 0, 1, 2},
@@ -142,10 +142,10 @@ TEST_CASE("Semigroup 97: non-pointer PBR",
                                 {5, 4, 3, 2},
                                 {5, 4, 3, 2},
                                 {4, 1, 2}})};
-  Semigroup<PBR> S(gens);
+  Semigroup<PBR>   S(gens);
 
   S.reserve(4);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 4);
   REQUIRE(S.nridempotents() == 2);
@@ -155,19 +155,11 @@ TEST_CASE("Semigroup 97: non-pointer PBR",
     REQUIRE(S.position(*it) == pos);
     pos++;
   }
-  S.add_generators({PBR({{5, 4, 3},
-                         {5, 4, 2},
-                         {4, 2, 1},
-                         {5, 3, 0},
-                         {5, 3, 2, 1},
-                         {3, 1, 2}})});
+  S.add_generators({PBR(
+      {{5, 4, 3}, {5, 4, 2}, {4, 2, 1}, {5, 3, 0}, {5, 3, 2, 1}, {3, 1, 2}})});
   REQUIRE(S.size() == 6);
-  S.closure({PBR({{5, 4, 3},
-                         {5, 4, 2},
-                         {4, 2, 1},
-                         {5, 3, 0},
-                         {5, 3, 2, 1},
-                         {3, 1, 2}})});
+  S.closure({PBR(
+      {{5, 4, 3}, {5, 4, 2}, {4, 2, 1}, {5, 3, 0}, {5, 3, 2, 1}, {3, 1, 2}})});
   REQUIRE(S.size() == 6);
   REQUIRE(S.minimal_factorisation(PBR({{5, 3},
                                        {5, 4, 3, 0, 1, 2},
@@ -209,8 +201,8 @@ TEST_CASE("Semigroup 97: non-pointer PBR",
   }
 }
 
-TEST_CASE("Semigroup 98: non-pointer matrices over TropicalMaxPlusSemiring",
-          "[quick][semigroup][finite][98]") {
+TEST_CASE("Semigroup 101: non-pointer matrices over TropicalMaxPlusSemiring",
+          "[quick][semigroup][finite][101]") {
   Semiring<int64_t>*                       sr = new TropicalMaxPlusSemiring(9);
   std::vector<MatrixOverSemiring<int64_t>> gens
       = {MatrixOverSemiring<int64_t>({{1, 3}, {2, 1}}, sr),
@@ -219,8 +211,8 @@ TEST_CASE("Semigroup 98: non-pointer matrices over TropicalMaxPlusSemiring",
       = Semigroup<MatrixOverSemiring<int64_t>>(gens);
 
   S.reserve(4);
-  S.set_report(SEMIGROUPS_REPORT);
-  
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+
   REQUIRE(S.size() == 20);
   REQUIRE(S.nridempotents() == 1);
   size_t pos = 0;
@@ -254,8 +246,8 @@ TEST_CASE("Semigroup 98: non-pointer matrices over TropicalMaxPlusSemiring",
   delete sr;
 }
 
-TEST_CASE("Semigroup 98: non-pointer matrices over Integers",
-          "[quick][semigroup][finite][98]") {
+TEST_CASE("Semigroup 102: non-pointer matrices over Integers",
+          "[quick][semigroup][finite][102]") {
   Semiring<int64_t>*                       sr = new Integers();
   std::vector<MatrixOverSemiring<int64_t>> gens
       = {MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr),
@@ -264,7 +256,7 @@ TEST_CASE("Semigroup 98: non-pointer matrices over Integers",
       = Semigroup<MatrixOverSemiring<int64_t>>(gens);
 
   S.reserve(10000);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   S.enumerate(10000);
   REQUIRE(S.current_size() == 631);

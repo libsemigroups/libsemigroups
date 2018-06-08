@@ -36,8 +36,8 @@ void delete_gens(std::vector<TElementType>& gens) {
      || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)) \
     && LIBSEMIGROUPS_SIZEOF_VOID_P == 8
 
-TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
-          "[quick][semigroup][finite][72]") {
+TEST_CASE("Semigroup 072: regular boolean mat monoid 4 using BMat8",
+          "[quick][semigroup][finite][072]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -234,8 +234,8 @@ TEST_CASE("Semigroup 72: regular boolean mat monoid 4 using BMat8",
   REQUIRE(T.is_begun());
 }
 
-TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
-          "[quick][semigroup][finite][73]") {
+TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
+          "[quick][semigroup][finite][073]") {
   std::vector<Element*> gens = {
       new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
       new BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -248,8 +248,8 @@ TEST_CASE("Semigroup 73: regular boolean mat monoid 4 using BooleanMat",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
-          "[extreme][semigroup][finite][74]") {
+TEST_CASE("Semigroup 074: regular boolean mat monoid 5 using BMat8",
+          "[extreme][semigroup][finite][074]") {
   Semigroup<BMat8> S({BMat8({{0, 1, 0, 0, 0},
                              {1, 0, 0, 0, 0},
                              {0, 0, 1, 0, 0},
@@ -277,8 +277,8 @@ TEST_CASE("Semigroup 74: regular boolean mat monoid 5 using BMat8",
   REPORTER.set_report(false);
 }
 
-TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
-          "[extreme][semigroup][finite][75]") {
+TEST_CASE("Semigroup 075: regular boolean mat monoid 5 using BooleanMat",
+          "[extreme][semigroup][finite][075]") {
   std::vector<Element*> gens = {new BooleanMat({{0, 1, 0, 0, 0},
                                                 {1, 0, 0, 0, 0},
                                                 {0, 0, 1, 0, 0},
@@ -308,8 +308,8 @@ TEST_CASE("Semigroup 75: regular boolean mat monoid 5 using BooleanMat",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 76: add_generators BMat8",
-          "[quick][semigroup][finite][76]") {
+TEST_CASE("Semigroup 076: add_generators BMat8",
+          "[quick][semigroup][finite][076]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -345,7 +345,7 @@ TEST_CASE("Semigroup 76: add_generators BMat8",
   REQUIRE(S.size() == 63904);
 }
 
-TEST_CASE("Semigroup 77: iterators BMat8", "[quick][semigroup][finite][77]") {
+TEST_CASE("Semigroup 077: iterators BMat8", "[quick][semigroup][finite][077]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -392,8 +392,8 @@ TEST_CASE("Semigroup 77: iterators BMat8", "[quick][semigroup][finite][77]") {
 }
 #endif
 
-TEST_CASE("Semigroup 78: non-pointer, non-trivial element type",
-          "[standard][semigroup][finite][78]") {
+TEST_CASE("Semigroup 078: non-pointer, non-trivial element type",
+          "[standard][semigroup][finite][078]") {
   std::vector<Transformation<uint_fast8_t>> gens
       = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -439,8 +439,8 @@ TEST_CASE("Semigroup 78: non-pointer, non-trivial element type",
   }
 }
 
-TEST_CASE("Semigroup 79: Exception: zero generators given",
-          "[quick][finite][semigroup][79]") {
+TEST_CASE("Semigroup 079: Exception: zero generators given",
+          "[quick][finite][semigroup][079]") {
   std::vector<Transformation<uint_fast8_t>> gens1;
   std::vector<BMat8>                        gens2;
   std::vector<Element*>                     gens3;
@@ -452,8 +452,8 @@ TEST_CASE("Semigroup 79: Exception: zero generators given",
   REQUIRE_THROWS_AS(Semigroup<Element*>(gens3), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup 80: Exception: generators of different degrees",
-          "[quick][finite][semigroup][80]") {
+TEST_CASE("Semigroup 080: Exception: generators of different degrees",
+          "[quick][finite][semigroup][080]") {
   std::vector<Element*> gens1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 5})};
@@ -474,8 +474,8 @@ TEST_CASE("Semigroup 80: Exception: generators of different degrees",
   delete_gens(gens3);
 }
 
-TEST_CASE("Semigroup 81: Exception: word_to_pos",
-          "[quick][finite][semigroup][81]") {
+TEST_CASE("Semigroup 081: Exception: word_to_pos",
+          "[quick][finite][semigroup][081]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -515,8 +515,8 @@ TEST_CASE("Semigroup 81: Exception: word_to_pos",
   delete sr;
 }
 
-TEST_CASE("Semigroup 82: Exception: word_to_element",
-          "[quick][finite][semigroup][82]") {
+TEST_CASE("Semigroup 082: Exception: word_to_element",
+          "[quick][finite][semigroup][082]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -554,7 +554,7 @@ TEST_CASE("Semigroup 82: Exception: word_to_element",
   REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup 83: Exception: gens", "[quick][finite][semigroup][83]") {
+TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Element*> gens;
 
@@ -575,8 +575,8 @@ TEST_CASE("Semigroup 83: Exception: gens", "[quick][finite][semigroup][83]") {
   }
 }
 
-TEST_CASE("Semigroups 84: Exception: prefix",
-          "[quick][finite][semigroup][84]") {
+TEST_CASE("Semigroup 084: Exception: prefix",
+          "[quick][finite][semigroup][084]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -613,8 +613,8 @@ TEST_CASE("Semigroups 84: Exception: prefix",
   delete sr;
 }
 
-TEST_CASE("Semigroups 85: Exception: suffix",
-          "[quick][finite][semigroup][85]") {
+TEST_CASE("Semigroup 085: Exception: suffix",
+          "[quick][finite][semigroup][085]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -653,8 +653,8 @@ TEST_CASE("Semigroups 85: Exception: suffix",
   delete sr;
 }
 
-TEST_CASE("Semigroups 86: Exception: first_letter",
-          "[quick][finite][semigroup][86]") {
+TEST_CASE("Semigroup 086: Exception: first_letter",
+          "[quick][finite][semigroup][086]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -692,8 +692,8 @@ TEST_CASE("Semigroups 86: Exception: first_letter",
   delete sr;
 }
 
-TEST_CASE("Semigroups 87: Exception: final_letter",
-          "[quick][finite][semigroup][87]") {
+TEST_CASE("Semigroup 087: Exception: final_letter",
+          "[quick][finite][semigroup][087]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -730,8 +730,8 @@ TEST_CASE("Semigroups 87: Exception: final_letter",
   delete sr;
 }
 
-TEST_CASE("Semigroups 88: Exception: length_const",
-          "[quick][finite][semigroup][88]") {
+TEST_CASE("Semigroup 088: Exception: length_const",
+          "[quick][finite][semigroup][088]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -768,8 +768,8 @@ TEST_CASE("Semigroups 88: Exception: length_const",
   delete sr;
 }
 
-TEST_CASE("Semigroups 89: Exception: product_by_reduction",
-          "[quick][finite][semigroup][89]") {
+TEST_CASE("Semigroup 089: Exception: product_by_reduction",
+          "[quick][finite][semigroup][089]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
@@ -825,8 +825,8 @@ TEST_CASE("Semigroups 89: Exception: product_by_reduction",
   delete sr;
 }
 
-TEST_CASE("Semigroups 90: Exception: fast_product",
-          "[quick][finite][semigroup][90]") {
+TEST_CASE("Semigroup 090: Exception: fast_product",
+          "[quick][finite][semigroup][090]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
@@ -882,8 +882,8 @@ TEST_CASE("Semigroups 90: Exception: fast_product",
   delete sr;
 }
 
-TEST_CASE("Semigroup 90: Exception: letter_to_pos",
-          "[quick][finite][semigroup][90]") {
+TEST_CASE("Semigroup 091: Exception: letter_to_pos",
+          "[quick][finite][semigroup][091]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Element*> gens;
 
@@ -904,8 +904,8 @@ TEST_CASE("Semigroup 90: Exception: letter_to_pos",
   }
 }
 
-TEST_CASE("Semigroup 91: Exception: is_idempotent",
-          "[quick][finite][semigroup][91]") {
+TEST_CASE("Semigroup 092: Exception: is_idempotent",
+          "[quick][finite][semigroup][092]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -940,8 +940,8 @@ TEST_CASE("Semigroup 91: Exception: is_idempotent",
   }
 }
 
-TEST_CASE("Semigroup 92: Exception: add_generators",
-          "[quick][finite][semigroup][92]") {
+TEST_CASE("Semigroup 093: Exception: add_generators",
+          "[quick][finite][semigroup][093]") {
   std::vector<Element*> gens1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 2, 3, 2, 2, 3})};
@@ -997,8 +997,8 @@ TEST_CASE("Semigroup 92: Exception: add_generators",
   delete_gens(additional_gens_3_2);
 }
 
-TEST_CASE("Semigroup 93: non-pointer Bipartitions",
-          "[quick][semigroup][finite][93]") {
+TEST_CASE("Semigroup 094: non-pointer Bipartitions",
+          "[quick][semigroup][finite][094]") {
   std::vector<Bipartition> gens = {
       Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
       Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
@@ -1052,8 +1052,8 @@ TEST_CASE("Semigroup 93: non-pointer Bipartitions",
   }
 }
 
-TEST_CASE("Semigroup 94: non-pointer PartialPerms",
-          "[quick][semigroup][finite][94]") {
+TEST_CASE("Semigroup 095: non-pointer PartialPerms",
+          "[quick][semigroup][finite][095]") {
   std::vector<PartialPerm<u_int16_t>> gens
       = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
          PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
@@ -1097,17 +1097,15 @@ TEST_CASE("Semigroup 94: non-pointer PartialPerms",
 }
 
 namespace libsemigroups {
-  template <>
-  int one(int) {
+  template <> int one(int) {
     return 1;
   }
-  template <>
-  uint8_t one(uint8_t) {
+  template <> uint8_t one(uint8_t) {
     return 1;
   }
 }  // namespace libsemigroups
 
-TEST_CASE("Semigroup 95: integers", "[quick][semigroup][finite][95]") {
+TEST_CASE("Semigroup 096: integers", "[quick][semigroup][finite][096]") {
   Semigroup<int> S({2});
   REQUIRE(S.size() == 32);
   REQUIRE(S.nridempotents() == 1);
@@ -1155,13 +1153,13 @@ namespace std {
       return x.hash();
     }
   };
-}
+}  // namespace std
 
 static_assert(!std::is_trivial<NonTrivial>::value,
               "NonTrivial is not non-trivial");
 
-TEST_CASE("Semigroup 96: non-trivial user type",
-          "[quick][semigroup][finite][96]") {
+TEST_CASE("Semigroup 097: non-trivial user type",
+          "[quick][semigroup][finite][097]") {
   Semigroup<NonTrivial> S({NonTrivial(1, 1)});
   REQUIRE(S.size() == 1);
   REQUIRE(S.nridempotents() == 1);

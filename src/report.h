@@ -34,7 +34,7 @@
 #include "libsemigroups-debug.h"
 #include "timer.h"
 
-#define REPORT(message)                                                 \
+#define REPORT(message)                                            \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
     REPORTER.lock();                                               \
@@ -42,7 +42,7 @@
     REPORTER.unlock();                                             \
   }
 
-#define REPORT_FROM_FUNC(message)                                       \
+#define REPORT_FROM_FUNC(message)                                  \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
     REPORTER.lock();                                               \

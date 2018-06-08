@@ -2298,7 +2298,7 @@ namespace libsemigroups {
 
       // Cannot use _tmp_product itself since there are multiple threads here!
       internal_value_type tmp_product = this->internal_copy(_tmp_product);
-      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
+      size_t              tid = REPORTER.thread_id(std::this_thread::get_id());
 
       for (; pos < last; pos++) {
         element_index_t k = _enumerate_order[pos];
