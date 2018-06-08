@@ -25,8 +25,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <iostream>
 #include <numeric>
+#include <string>
 #include <unordered_set>
 #include <vector>
 
@@ -35,13 +35,13 @@
 #include "libsemigroups-exception.h"
 #include "recvec.h"
 #include "semiring.h"
+#include "to_string.h"
 
 #ifdef LIBSEMIGROUPS_USE_HPCOMBI
 #include "perm16.hpp"
 #endif
 
 namespace libsemigroups {
-
   //! Abstract base class for semigroup elements
   //!
   //! The Semigroup class consists of Element objects. Every derived class of
@@ -391,11 +391,9 @@ namespace libsemigroups {
                                           ElementWithVectorData const& elt) {
       os << "{";
       for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
-        os << std::to_string(*it);
-        os << std::string(", ");
+        os << libsemigroups::to_string(*it) << ", ";
       }
-      os << to_string(*(elt.cend() - 1));
-      os << std::string(1, "}");
+      os << libsemigroups::to_string(*(elt.cend() - 1)) << "}";
       return os;
     }
 
@@ -405,7 +403,7 @@ namespace libsemigroups {
     //! ostream.
     friend std::ostream& operator<<(std::ostream&                os,
                                     ElementWithVectorData const& elt) {
-      os << std::to_string(elt);
+      os << libsemigroups::to_string(elt);
       return os;
     }
 
@@ -509,8 +507,8 @@ namespace libsemigroups {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
           throw LibsemigroupsException(
               "PartialTransformation: image value out of bounds, found "
-              + std::to_string(val) + ", must be less than "
-              + std::to_string(this->degree()));
+              + libsemigroups::to_string(val) + ", must be less than "
+              + libsemigroups::to_string(this->degree()));
         }
       }
     }
@@ -650,8 +648,8 @@ namespace libsemigroups {
         if (val < 0 || val >= max) {
           throw LibsemigroupsException(
               "Transformation: image value out of bounds, found "
-              + std::to_string(val) + ", must be less than "
-              + std::to_string(max));
+              + libsemigroups::to_string(val) + ", must be less than "
+              + libsemigroups::to_string(max));
         }
       }
     }
@@ -729,8 +727,9 @@ namespace libsemigroups {
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
         throw LibsemigroupsException(
             "PartialPerm: domain value out of bounds, found "
-            + std::to_string(*std::max_element(dom.cbegin(), dom.cend()))
-            + ", must be less than " + std::to_string(deg));
+            + libsemigroups::to_string(
+                  *std::max_element(dom.cbegin(), dom.cend()))
+            + ", must be less than " + libsemigroups::to_string(deg));
       }
 
       this->_vector.resize(deg, UNDEFINED);
@@ -754,11 +753,11 @@ namespace libsemigroups {
           if (val < 0 || val >= this->degree()) {
             throw LibsemigroupsException(
                 "PartialPerm: image value out of bounds, found "
-                + std::to_string(val) + ", must be less than "
-                + std::to_string(this->degree()));
+                + libsemigroups::to_string(val) + ", must be less than "
+                + libsemigroups::to_string(this->degree()));
           } else if (present[val]) {
             throw LibsemigroupsException("PartialPerm: duplicate image value "
-                                         + std::to_string(val));
+                                         + libsemigroups::to_string(val));
           }
           present[val] = true;
         }
@@ -1148,7 +1147,8 @@ namespace libsemigroups {
       for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
           throw LibsemigroupsException(
-              "MatrixOverSemiring: matrix contains entry " + std::to_string(x)
+              "MatrixOverSemiring: matrix contains entry "
+              + libsemigroups::to_string(x)
               + " not in the underlying semiring");
         }
       }
@@ -1382,11 +1382,11 @@ namespace libsemigroups {
         if (val < 0 || val >= this->degree()) {
           throw LibsemigroupsException(
               "Permutation: image value out of bounds, found "
-              + std::to_string(val) + ", must be less than "
-              + std::to_string(this->degree()));
+              + libsemigroups::to_string(val) + ", must be less than "
+              + libsemigroups::to_string(this->degree()));
         } else if (present[val]) {
           throw LibsemigroupsException("Permutation: duplicate image value "
-                                       + std::to_string(val));
+                                       + libsemigroups::to_string(val));
         }
         present[val] = true;
       }

@@ -84,10 +84,10 @@ namespace libsemigroups {
     for (size_t i = 0; i < this->_vector.size(); ++i) {
       if (!seen[this->_vector[i]]) {
         if (this->_vector[i] != next) {
-          throw LibsemigroupsException("Bipartition: expected "
-                                       + std::to_string(next) + " but found "
-                                       + std::to_string(this->_vector[i])
-                                       + ", in position " + std::to_string(i));
+          throw LibsemigroupsException(
+              "Bipartition: expected " + libsemigroups::to_string(next)
+              + " but found " + libsemigroups::to_string(this->_vector[i])
+              + ", in position " + libsemigroups::to_string(i));
         }
         seen[this->_vector[i]] = true;
         next++;
@@ -327,9 +327,9 @@ namespace libsemigroups {
       for (auto const& v : this->_vector.at(u)) {
         if (v >= n) {
           throw LibsemigroupsException(
-              "PBR: entry out of bounds, vertex " + std::to_string(u)
-              + " is adjacent to " + std::to_string(v)
-              + ", should be less than " + std::to_string(n));
+              "PBR: entry out of bounds, vertex " + libsemigroups::to_string(u)
+              + " is adjacent to " + libsemigroups::to_string(v)
+              + ", should be less than " + libsemigroups::to_string(n));
         }
       }
     }

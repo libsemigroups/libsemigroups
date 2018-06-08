@@ -48,6 +48,7 @@ pkginclude_HEADERS += src/semigroups-base.h
 pkginclude_HEADERS += src/semigroups.h 
 pkginclude_HEADERS += src/semiring.h  
 pkginclude_HEADERS += src/timer.h 
+pkginclude_HEADERS += src/to_string.h 
 pkginclude_HEADERS += src/uf.h 
 if LIBSEMIGROUPS_USE_HPCOMBI
 pkginclude_HEADERS += extern/HPCombi/include/perm16.hpp
