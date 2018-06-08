@@ -42,7 +42,7 @@ static inline void test_idempotent(Semigroup<>& S, Element* x) {
 
 template <class TElementType>
 void delete_gens(std::vector<TElementType>& gens) {
-  for (auto& x : gens) {
+  for (auto x : gens) {
     delete x;
   }
 }
