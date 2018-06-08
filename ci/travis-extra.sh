@@ -39,7 +39,7 @@ fi
 
 echo -e "\nCloning HPCombi master branch . . ."
 git clone -b master --depth=1 https://github.com/hivert/HPCombi.git extern/HPCombi
-echo "0.0.1" >> VERSION
+echo "0.0.1" >> extern/HPCombi/VERSION
 
 echo -e "\nConfiguring with --disable-hpcombi with hpcombi installed . . ."
 make clean && ./configure --disable-hpcombi && make check-quick -j2

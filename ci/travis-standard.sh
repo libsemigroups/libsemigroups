@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+echo -e "\nCloning HPCombi master branch . . ."
+git clone -b master --depth=1 https://github.com/hivert/HPCombi.git extern/HPCombi
+echo "0.0.1" >> extern/HPCombi/VERSION
+
 # Setup
 ci/travis-quick.sh
 
