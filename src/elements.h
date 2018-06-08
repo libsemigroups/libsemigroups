@@ -1546,6 +1546,39 @@ namespace libsemigroups {
     }
 #endif
 
+    //! Insertion operator
+    //!
+    //! This method allows PBR objects to be inserted into an ostringstream
+    friend std::ostringstream& operator<<(std::ostringstream& os,
+                                          PBR const&          pbr) {
+      os << "{";
+      for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
+        os << "{";
+        for (auto it = pbr[i].begin(); it < pbr[i].end() - 1; it++) {
+          os << *it;
+          os << ", ";
+        }
+        os << pbr[i].back() << "}, ";
+      }
+
+      os << "{";
+      for (auto it = pbr[2 * pbr.degree() - 1].begin();
+           it < pbr[2 * pbr.degree() - 1].end() - 1;
+           it++) {
+        os << *it << ", ";
+      }
+      os << pbr[2 * pbr.degree() - 1].back() << "}}";
+      return os;
+    }
+
+    //! Insertion operator
+    //!
+    //! This method allows PBR objects to be inserted into an ostream.
+    friend std::ostream& operator<<(std::ostream& os, PBR const& pbr) {
+      os << libsemigroups::to_string(pbr);
+      return os;
+    }
+
    protected:
     void cache_hash_value() const override;
 
