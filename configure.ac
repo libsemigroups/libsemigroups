@@ -103,7 +103,7 @@ AC_MSG_RESULT([$enable_hpcombi])
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_CHECK_FILE([extern/HPCombi/VERSION], 
                      [], 
-                     [AC_MSG_WARN([HPCombi is not available, ignoring --enable-hpcombi])
+                     [AC_MSG_WARN([HPCombi is not available])
                       [enable_hpcombi=no]])])
 
 AS_IF([test "x$enable_hpcombi" = xyes],
@@ -116,7 +116,7 @@ AS_IF([test "x$enable_hpcombi" = xyes],
 
 AS_IF([test "x$enable_hpcombi" = xyes],
 [AS_IF([! cmp -s extern/HPCombi/VERSION extern/.HPCombi_VERSION],
-       [AC_MSG_WARN([the incorrect version of HPCombi is present, ignoring --enable-hpcombi])
+       [AC_MSG_WARN([the incorrect version of HPCombi is present, HPCombi will be disabled])
         [enable_hpcombi=no]])])
 
 SAVED_CXXFLAGS=$CXXFLAGS
@@ -159,7 +159,7 @@ CXXFLAGS=$SAVED_CXXFLAGS
 
 AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
       [AS_IF([test "x$enable_hpcombi" = xno],
-       [AC_MSG_WARN([compiler builtin not supported, ignoring --enable-hpcombi])])])
+       [AC_MSG_WARN([compiler builtin not supported, HPCombi will be disabled])])])
 
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_DEFINE([USE_HPCOMBI], [1], [define if building with HPCombi])])
@@ -168,8 +168,9 @@ dnl # the following is used in Makefile.am
 AM_CONDITIONAL([LIBSEMIGROUPS_USE_HPCOMBI], [test "x$enable_hpcombi" = xyes])
 
 dnl # check for HPCombi's preprocessor macro
-AC_MSG_CHECKING([for HPCOMBI_CONSTEXPR_FUN_ARGS])
-AC_COMPILE_IFELSE( 
+AS_IF([test "x$enable_hpcombi" = xyes], 
+[AC_MSG_CHECKING([for HPCOMBI_CONSTEXPR_FUN_ARGS])
+ AC_COMPILE_IFELSE( 
                   [AC_LANG_PROGRAM( 
                       [[using T = int; constexpr int exec(T f()) { return f(); }
                       constexpr int foo() { return 1; }
@@ -178,12 +179,12 @@ AC_COMPILE_IFELSE(
                    [hpcombi_constexpr_fun_args=yes],
                    [hpcombi_constexpr_fun_args=no]
                  )
-AC_MSG_RESULT([$hpcombi_constexpr_fun_args])
-AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
-               [test "x$hpcombi_constexpr_fun_args" = xyes])
-AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
-      [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
+ AC_MSG_RESULT([$hpcombi_constexpr_fun_args])])
 
+AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
+              [test "x$hpcombi_constexpr_fun_args" = xyes])
+AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
+     [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
