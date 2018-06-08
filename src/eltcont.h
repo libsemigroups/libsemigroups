@@ -24,10 +24,8 @@
 
 #include "elements.h"
 
-// TODO inline everything (it's not currently due to debugging)
-
 namespace libsemigroups {
-  template <typename TElementType> TElementType one(TElementType x) {
+  template <typename TElementType> inline TElementType one(TElementType x) {
     return x.one();
   }
 
@@ -55,19 +53,19 @@ namespace libsemigroups {
     using internal_reference        = reference;
     using internal_const_reference  = const_reference;
 
-    internal_const_reference to_internal(const_reference x) const {
+    inline internal_const_reference to_internal(const_reference x) const {
       return x;
     }
 
-    const_reference to_external(internal_const_reference x) const {
+    inline const_reference to_external(internal_const_reference x) const {
       return x;
     }
 
-    internal_reference to_internal(reference x) const {
+    inline internal_reference to_internal(reference x) const {
       return x;
     }
 
-    reference to_external(internal_reference x) const {
+    inline reference to_external(internal_reference x) const {
       return x;
     }
 
@@ -137,21 +135,21 @@ namespace libsemigroups {
     using internal_value_type       = value_type;
     using internal_const_value_type = const_value_type;
 
-    internal_value_type to_internal(value_type x) const {
+    inline internal_value_type to_internal(value_type x) const {
       return x;
     }
 
-    internal_const_value_type to_internal(const_value_type x) const {
+    inline internal_const_value_type to_internal(const_value_type x) const {
       return x;
     }
 
-    value_type to_external(internal_value_type x) const {
+    inline value_type to_external(internal_value_type x) const {
       return x;
     }
 
     // TODO The return type here is inconsistent with the other definitions of
     // ElementContainer, make them more systematic
-    value_type to_external(internal_const_value_type x) const {
+    inline value_type to_external(internal_const_value_type x) const {
       return const_cast<value_type>(x);
     }
 
@@ -163,11 +161,12 @@ namespace libsemigroups {
       delete x;
     }
 
-    internal_value_type internal_copy(internal_const_value_type x) const {
+    inline internal_value_type
+    internal_copy(internal_const_value_type x) const {
       return x->heap_copy();
     }
 
-    value_type external_copy(internal_const_value_type x) const {
+    inline value_type external_copy(internal_const_value_type x) const {
       return x->heap_copy();
     }
 
@@ -229,19 +228,19 @@ namespace libsemigroups {
     using internal_value_type       = TElementType*;
     using internal_const_value_type = TElementType const*;
 
-    internal_value_type to_internal(reference x) const {
+    inline internal_value_type to_internal(reference x) const {
       return &x;
     }
 
-    internal_const_value_type to_internal(const_reference x) const {
+    inline internal_const_value_type to_internal(const_reference x) const {
       return &x;
     }
 
-    reference to_external(internal_value_type x) const {
+    inline reference to_external(internal_value_type x) const {
       return *x;
     }
 
-    const_reference to_external(internal_const_value_type x) const {
+    inline const_reference to_external(internal_const_value_type x) const {
       return *x;
     }
 
