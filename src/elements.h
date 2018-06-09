@@ -1501,7 +1501,52 @@ namespace libsemigroups {
     explicit PBR(size_t degree)
         : PBR(std::vector<std::vector<u_int32_t>>(degree * 2,
                                                   std::vector<u_int32_t>())) {}
-    // TODO add a constructor like the one in GAP
+
+    //! Constructs a PBR from two vectors
+    //!
+    //! The parameters \p left and \p right should be vectors of
+    //! $\f$n\f$ vectors of non-negative integer values, so that
+    //! the vector in position \f$i\f$ of \p left is the list of points
+    //! adjacent to \f$i\f$ in the PBR, and the vector in position \f$i\f$
+    //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
+    PBR(std::vector<std::vector<int32_t>> const& left,
+        std::vector<std::vector<int32_t>> const& right)
+        : PBR(process_left_right(left, right)) {
+      size_t n = left.size();
+      if (n != right.size()) {
+        throw LibsemigroupsException(
+            "PBR: the two vectors must have the same length");
+      }
+      if (n > pow(2, 31)) {
+        throw LibsemigroupsException("PBR: too many points!");
+      }
+      for (std::vector<int32_t> vec : left) {
+        for (int32_t x : vec) {
+          if (x == 0 || x < -static_cast<int32_t>(n)
+              || x > static_cast<int32_t>(n)) {
+            throw LibsemigroupsException(
+                "PBR: the first argument contains a vector which contains "
+                + std::to_string(x)
+                + " but the values must lie in the ranges [-"
+                + std::to_string(n) + " .. -1] or " + "[1 .. "
+                + std::to_string(n) + "]");
+          }
+        }
+      }
+      for (std::vector<int32_t> vec : right) {
+        for (int32_t x : vec) {
+          if (x == 0 || x < -static_cast<int32_t>(n)
+              || x > static_cast<int32_t>(n)) {
+            throw LibsemigroupsException(
+                "PBR: the second argument contains a vector which contains "
+                + std::to_string(x)
+                + " but the values must lie in the ranges [-"
+                + std::to_string(n) + " .. -1] or " + "[1 .. "
+                + std::to_string(n) + "]");
+          }
+        }
+      }
+    };
 
     void validate() const;
 
@@ -1555,10 +1600,9 @@ namespace libsemigroups {
       for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
         os << "{";
         for (auto it = pbr[i].begin(); it < pbr[i].end() - 1; it++) {
-          os << *it;
-          os << ", ";
+          os << *it << ", ";
         }
-        os << pbr[i].back() << "}, ";
+        os << std::to_string(pbr[i].back()) << "}, ";
       }
 
       os << "{";
@@ -1567,7 +1611,7 @@ namespace libsemigroups {
            it++) {
         os << *it << ", ";
       }
-      os << pbr[2 * pbr.degree() - 1].back() << "}}";
+      os << std::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
       return os;
     }
 
@@ -1583,6 +1627,10 @@ namespace libsemigroups {
     void cache_hash_value() const override;
 
    private:
+    static std::vector<std::vector<u_int32_t>>
+         process_left_right(std::vector<std::vector<int32_t>> const& left,
+                            std::vector<std::vector<int32_t>> const& right);
+
     void unite_rows(RecVec<bool>& out,
                     RecVec<bool>& tmp,
                     size_t const& vertex1,
