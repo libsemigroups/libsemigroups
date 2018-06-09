@@ -501,6 +501,7 @@ namespace libsemigroups {
       this->multiply(this->to_internal(out), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
+          this->external_free(out);
           throw LibsemigroupsException(
               "Semigroup::word_to_element: word contains "
               + libsemigroups::to_string(*it) + " but the semigroup only has "
