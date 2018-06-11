@@ -36,6 +36,7 @@
 #include "libsemigroups-debug.h"
 #include "report.h"
 #include "semigroups-base.h"
+#include "to_string.h"
 
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
@@ -199,9 +200,9 @@ namespace libsemigroups {
             this->internal_free(x);
           }
           throw LibsemigroupsException(
-              "Semigroup::Semigroup: generator " + std::to_string(i)
-              + " has degree " + std::to_string(degree)
-              + " but should have degree " + std::to_string(_degree));
+              "Semigroup::Semigroup: generator " + libsemigroups::to_string(i)
+              + " has degree " + libsemigroups::to_string(degree)
+              + " but should have degree " + libsemigroups::to_string(_degree));
         }
         _gens.push_back(this->internal_copy(this->to_internal((*gens)[i])));
       }
@@ -467,9 +468,9 @@ namespace libsemigroups {
       for (auto it = w.begin() + 1; it < w.end(); it++) {
         if (*it >= nrgens()) {
           throw LibsemigroupsException(
-              "Semigroup::word_to_pos: word contains " + std::to_string(*it)
-              + " but the semigroup only has " + std::to_string(nrgens())
-              + " generators");
+              "Semigroup::word_to_pos: word contains "
+              + libsemigroups::to_string(*it) + " but the semigroup only has "
+              + libsemigroups::to_string(nrgens()) + " generators");
         }
         out = fast_product(out, letter_to_pos(*it));
       }
@@ -500,10 +501,11 @@ namespace libsemigroups {
       this->multiply(this->to_internal(out), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
+          this->external_free(out);
           throw LibsemigroupsException(
-              "Semigroup::word_to_element: word contains " + std::to_string(*it)
-              + " but the semigroup only has " + std::to_string(nrgens())
-              + " generators");
+              "Semigroup::word_to_element: word contains "
+              + libsemigroups::to_string(*it) + " but the semigroup only has "
+              + libsemigroups::to_string(nrgens()) + " generators");
         }
         this->swap(_tmp_product, this->to_internal(out));
         this->multiply(this->to_internal(out), _tmp_product, _gens[*it]);
@@ -542,8 +544,8 @@ namespace libsemigroups {
     const_reference gens(letter_t pos) const {
       if (pos >= nrgens()) {
         throw LibsemigroupsException(
-            "Semigroup::gens: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(nrgens())
+            "Semigroup::gens: argument was " + libsemigroups::to_string(pos)
+            + " but there are only " + libsemigroups::to_string(nrgens())
             + " generators");
       }
       return this->to_external(_gens[pos]);
@@ -611,8 +613,8 @@ namespace libsemigroups {
     element_index_t prefix(element_index_t pos) const override {
       if (pos >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::prefix: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(_nr)
+            "Semigroup::prefix: argument was " + libsemigroups::to_string(pos)
+            + " but there are only " + libsemigroups::to_string(_nr)
             + " elements enumerated");
       }
       return _prefix[pos];
@@ -626,8 +628,8 @@ namespace libsemigroups {
     element_index_t suffix(element_index_t pos) const override {
       if (pos >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::suffix: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(_nr)
+            "Semigroup::suffix: argument was " + libsemigroups::to_string(pos)
+            + " but there are only " + libsemigroups::to_string(_nr)
             + " elements enumerated");
       }
       return _suffix[pos];
@@ -648,9 +650,9 @@ namespace libsemigroups {
     letter_t first_letter(element_index_t pos) const override {
       if (pos >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::first_letter: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            "Semigroup::first_letter: argument was "
+            + libsemigroups::to_string(pos) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       return _first[pos];
     }
@@ -670,9 +672,9 @@ namespace libsemigroups {
     letter_t final_letter(element_index_t pos) const override {
       if (pos >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::final_letter: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            "Semigroup::final_letter: argument was "
+            + libsemigroups::to_string(pos) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       return _final[pos];
     }
@@ -691,9 +693,9 @@ namespace libsemigroups {
     size_t length_const(element_index_t pos) const override {
       if (pos >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::length_const: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            "Semigroup::length_const: argument was "
+            + libsemigroups::to_string(pos) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       return _length[pos];
     }
@@ -722,14 +724,14 @@ namespace libsemigroups {
       if (i >= _nr) {
         throw LibsemigroupsException(
             "Semigroup::product_by_reduction: first argument was "
-            + std::to_string(i) + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            + libsemigroups::to_string(i) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       if (j >= _nr) {
         throw LibsemigroupsException(
             "Semigroup::product_by_reduction: second argument was"
-            + std::to_string(j) + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            + libsemigroups::to_string(j) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
 
       if (length_const(i) <= length_const(j)) {
@@ -770,15 +772,15 @@ namespace libsemigroups {
                                  element_index_t j) const override {
       if (i >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::fast_product: first argument was " + std::to_string(i)
-            + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            "Semigroup::fast_product: first argument was "
+            + libsemigroups::to_string(i) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       if (j >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::fast_product: second argument was " + std::to_string(j)
-            + " but there are only " + std::to_string(_nr)
-            + " elements enumerated");
+            "Semigroup::fast_product: second argument was "
+            + libsemigroups::to_string(j) + " but there are only "
+            + libsemigroups::to_string(_nr) + " elements enumerated");
       }
       if (length_const(i) < 2 * this->complexity(_tmp_product)
           || length_const(j) < 2 * this->complexity(_tmp_product)) {
@@ -802,9 +804,9 @@ namespace libsemigroups {
     element_index_t letter_to_pos(letter_t i) const override {
       if (i >= nrgens()) {
         throw LibsemigroupsException(
-            "Semigroup::letter_to_pos: argument was " + std::to_string(i)
-            + " but there are only " + std::to_string(nrgens())
-            + " generators");
+            "Semigroup::letter_to_pos: argument was "
+            + libsemigroups::to_string(i) + " but there are only "
+            + libsemigroups::to_string(nrgens()) + " generators");
       }
       return _letter_to_pos[i];
     }
@@ -827,8 +829,9 @@ namespace libsemigroups {
     bool is_idempotent(element_index_t pos) override {
       if (pos >= size()) {
         throw LibsemigroupsException(
-            "Semigroup::is_idempotent: argument was " + std::to_string(pos)
-            + " but there are only " + std::to_string(size()) + " elements");
+            "Semigroup::is_idempotent: argument was "
+            + libsemigroups::to_string(pos) + " but there are only "
+            + libsemigroups::to_string(size()) + " elements");
       }
       init_idempotents();
       return _is_idempotent[pos];
@@ -1040,9 +1043,10 @@ namespace libsemigroups {
           pos = _suffix[pos];
         }
       } else {
-        throw LibsemigroupsException(
-            "Semigroup::minimal_factorisation: index " + std::to_string(pos)
-            + " out of range, should be at most " + std::to_string(_nr - 1));
+        throw LibsemigroupsException("Semigroup::minimal_factorisation: index "
+                                     + libsemigroups::to_string(pos)
+                                     + " out of range, should be at most "
+                                     + libsemigroups::to_string(_nr - 1));
       }
     }
 
@@ -1405,9 +1409,10 @@ namespace libsemigroups {
             = this->element_degree(this->to_internal((*coll)[i]));
         if (degree != _degree) {
           throw LibsemigroupsException(
-              "Semigroup::add_generators: new generator " + std::to_string(i)
-              + " has degree " + std::to_string(degree)
-              + " but should have degree " + std::to_string(_degree));
+              "Semigroup::add_generators: new generator "
+              + libsemigroups::to_string(i) + " has degree "
+              + libsemigroups::to_string(degree) + " but should have degree "
+              + libsemigroups::to_string(_degree));
         }
       }
       Timer  timer;

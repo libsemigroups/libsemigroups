@@ -28,6 +28,7 @@
 
 #include "libsemigroups-debug.h"
 #include "timer.h"
+#include "to_string.h"
 
 namespace libsemigroups {
 
@@ -218,7 +219,7 @@ namespace libsemigroups {
     //!
     //! This method allows BMat8 objects to be inserted into a ostream.
     friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << std::to_string(bm);
+      os << libsemigroups::to_string(bm);
       return os;
     }
 
