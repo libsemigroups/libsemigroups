@@ -568,38 +568,54 @@ namespace libsemigroups {
   std::vector<std::vector<u_int32_t>>
   PBR::process_left_right(std::vector<std::vector<int32_t>> const& left,
                           std::vector<std::vector<int32_t>> const& right) {
-    LIBSEMIGROUPS_ASSERT(left.size() == right.size());
-    LIBSEMIGROUPS_ASSERT(left.size() < 0x80000000);
-
-    std::vector<std::vector<u_int32_t>> out;
     size_t                              n = left.size();
+    std::vector<std::vector<u_int32_t>> out;
+    std::vector<u_int32_t>              v;
 
-    std::vector<u_int32_t> v;
-    for (std::vector<int32_t> const& vec : left) {
-      v.clear();
-      for (int32_t const& x : vec) {
-        LIBSEMIGROUPS_ASSERT(x != 0);
+    if (n != right.size()) {
+      throw LibsemigroupsException(
+          "PBR: the two vectors must have the same length");
+    }
+    if (n > 0x40000000) {
+      throw LibsemigroupsException("PBR: too many points!");
+    }
+    for (std::vector<int32_t> vec : left) {
+      v = std::vector<u_int32_t>();
+      for (int32_t x : vec) {
+        if (x == 0 || x < -static_cast<int32_t>(n)
+            || x > static_cast<int32_t>(n)) {
+          throw LibsemigroupsException(
+              "PBR: the first argument contains a vector which contains "
+              + std::to_string(x) + " but the values must lie in the ranges [-"
+              + std::to_string(n) + " .. -1] or " + "[1 .. " + std::to_string(n)
+              + "]");
+        }
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));
         }
         if (x > 0) {
           v.push_back(static_cast<u_int32_t>(x - 1));
         }
-        LIBSEMIGROUPS_ASSERT(v.back() < 2 * n);
       }
       out.push_back(v);
     }
-    for (std::vector<int32_t> const& vec : right) {
-      v.clear();
-      for (int32_t const& x : vec) {
-        LIBSEMIGROUPS_ASSERT(x != 0);
+    for (std::vector<int32_t> vec : right) {
+      v = std::vector<u_int32_t>();
+      for (int32_t x : vec) {
+        if (x == 0 || x < -static_cast<int32_t>(n)
+            || x > static_cast<int32_t>(n)) {
+          throw LibsemigroupsException(
+              "PBR: the second argument contains a vector which contains "
+              + std::to_string(x) + " but the values must lie in the ranges [-"
+              + std::to_string(n) + " .. -1] or " + "[1 .. " + std::to_string(n)
+              + "]");
+        }
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));
         }
         if (x > 0) {
           v.push_back(static_cast<u_int32_t>(x - 1));
         }
-        LIBSEMIGROUPS_ASSERT(v.back() < 2 * n);
       }
       out.push_back(v);
     }
