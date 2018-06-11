@@ -501,6 +501,7 @@ namespace libsemigroups {
       this->multiply(this->to_internal(out), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
+          this->external_free(out);
           throw LibsemigroupsException(
               "Semigroup::word_to_element: word contains "
               + libsemigroups::to_string(*it) + " but the semigroup only has "
@@ -1884,6 +1885,7 @@ namespace libsemigroups {
       }
     };
 
+   public:
     typedef iterator_base<internal_value_type, IteratorMethods> const_iterator;
     typedef iterator_base<std::pair<internal_value_type, element_index_t>,
                           IteratorMethodsPairFirst>
@@ -1898,7 +1900,6 @@ namespace libsemigroups {
     typedef const_reverse_iterator_pair_first
         const_reverse_iterator_idempotents;
 
-   public:
     //! Returns a const iterator pointing to the first element of the
     //! semigroup.
     //!

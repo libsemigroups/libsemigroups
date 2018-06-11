@@ -1029,6 +1029,51 @@ TEST_CASE("MatrixOverSemiring 19: exceptions", "[quick][element][matrix][18]") {
   delete sr;
 }
 
+TEST_CASE("PBR 01: universal product with convenience constructor",
+          "[quick][element][pbr][01]") {
+  Element* x = new PBR({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+                       {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}});
+
+  Element* y = new PBR({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
+                       {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
+
+  Element* z = new PBR({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
+                       {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
+
+  Element* xx = new PBR({{5, 3},
+                         {5, 4, 3, 0, 1, 2},
+                         {5, 4, 3, 0, 2},
+                         {5, 3, 0, 1, 2},
+                         {5, 0, 2},
+                         {5, 4, 3, 1, 2}});
+  Element* yy = new PBR({{5, 4, 3, 0},
+                         {5, 4, 2},
+                         {5, 1, 2},
+                         {5, 4, 3, 2},
+                         {5, 4, 3, 2},
+                         {4, 1, 2}});
+
+  REQUIRE(*x == *xx);
+  REQUIRE(*y == *yy);
+
+  z->redefine(x, y);
+
+  Element* expected = new PBR({{0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5}});
+  REQUIRE(*z == *expected);
+
+  delete x;
+  delete xx;
+  delete y;
+  delete yy;
+  delete z;
+  delete expected;
+}
+
 TEST_CASE("PBR 02: universal product", "[quick][element][pbr][02]") {
   Element* x = new PBR({{5, 3},
                         {5, 4, 3, 0, 1, 2},

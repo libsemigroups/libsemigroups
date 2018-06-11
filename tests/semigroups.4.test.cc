@@ -1123,6 +1123,8 @@ TEST_CASE("Semigroup 096: integers", "[quick][semigroup][finite][096]") {
   Semigroup<int> S({2});
   REQUIRE(S.size() == 32);
   REQUIRE(S.nridempotents() == 1);
+  Semigroup<int>::const_iterator it = S.cbegin();
+  REQUIRE(*it == 2);
 
   Semigroup<uint8_t> T({2, 3});
   REQUIRE(T.size() == 130);
