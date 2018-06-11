@@ -918,7 +918,14 @@ namespace libsemigroups {
           _trans_blocks_lookup(copy._trans_blocks_lookup),
           _rank(copy._rank) {}
 
-    // TODO another constructor that accepts an actual partition
+    //! A constructor.
+    //!
+    //! The argument \p blocks should be a list of vectors which partition the
+    //! ranges [-n .. -1] U [1 .. n] for some positive integer *n*, called the
+    //! degree of the bipartition. The bipartition constructed has equivalence
+    //! classes given by the vectors in \p blocks.
+    Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks)
+        : Bipartition(blocks_to_list(blocks)){};
 
     //! Returns the approximate time complexity of multiplication.
     //!
@@ -1042,6 +1049,8 @@ namespace libsemigroups {
     }
 
    private:
+    static std::vector<u_int32_t>
+              blocks_to_list(std::vector<std::vector<int32_t>> blocks);
     u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
     void      init_trans_blocks_lookup();
 
@@ -1514,9 +1523,8 @@ namespace libsemigroups {
     //! the vector in position \f$i\f$ of \p left is the list of points
     //! adjacent to \f$i\f$ in the PBR, and the vector in position \f$i\f$
     //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
-    // TODO move to cc file
-    PBR(std::vector<std::vector<int32_t>> const& left,
-        std::vector<std::vector<int32_t>> const& right)
+    PBR(std::initializer_list<std::vector<int32_t>> const& left,
+        std::initializer_list<std::vector<int32_t>> const& right)
         : PBR(process_left_right(left, right)) {
       // FIXME I'm not sure this makes sense, shouldn't the validation of
       // left and right be done in process_left_right??
@@ -1525,7 +1533,7 @@ namespace libsemigroups {
         throw LibsemigroupsException(
             "PBR: the two vectors must have the same length");
       }
-      if (n > 0x80000000) {
+      if (n > 0x40000000) {
         throw LibsemigroupsException("PBR: too many points!");
       }
       for (std::vector<int32_t> const& vec : left) {

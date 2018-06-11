@@ -298,6 +298,65 @@ namespace libsemigroups {
     return new Blocks(blocks, blocks_lookup, nr_blocks);
   }
 
+  std::vector<u_int32_t>
+  Bipartition::blocks_to_list(std::vector<std::vector<int32_t>> blocks) {
+    int32_t max = 0;
+    int32_t deg = 0;
+    for (std::vector<int32_t> block : blocks) {
+      for (int32_t x : block) {
+        if (std::abs(x) > max) {
+          max = std::abs(x);
+        }
+        deg++;
+      }
+    }
+    if (deg < 2 * max) {
+      throw LibsemigroupsException("Bipartition: the blocks given do not "
+                                   "disjoint union to the ranges [-"
+                                   + std::to_string(-max) + ".. -1] U [1 .. "
+                                   + std::to_string(max) + "]: "
+                                   + std::to_string(deg) + " elements given");
+    }
+    if (max >= static_cast<int32_t>(0x40000000)) {
+      throw LibsemigroupsException("Bipartition: too many points");
+    }
+
+    std::vector<u_int32_t> out = std::vector<u_int32_t>(
+        2 * max, std::numeric_limits<u_int32_t>::max());
+
+    for (u_int32_t i = 0; i < blocks.size(); ++i) {
+      for (int32_t x : blocks[i]) {
+        if (x == 0) {
+          throw LibsemigroupsException(
+              "Bipartition: found 0 in a block, but every value should be "
+              "in the ranges [-"
+              + std::to_string(-max) + " .. -1] or [1 .. " + std::to_string(max)
+              + "]");
+        }
+        if (x < 0) {
+          if (out[static_cast<u_int32_t>(max - x - 1)]
+              != std::numeric_limits<u_int32_t>::max()) {
+            throw LibsemigroupsException("Bipartition: found "
+                                         + std::to_string(x) + " twice");
+          }
+          out[static_cast<u_int32_t>(max - x - 1)] = i;
+        } else {
+          if (out[static_cast<u_int32_t>(x - 1)]
+              != std::numeric_limits<u_int32_t>::max()) {
+            throw LibsemigroupsException("Bipartition: found "
+                                         + std::to_string(x) + " twice");
+          }
+
+          out[static_cast<u_int32_t>(x - 1)] = i;
+        }
+      }
+    }
+    LIBSEMIGROUPS_ASSERT(
+        std::find(out.begin(), out.end(), std::numeric_limits<u_int32_t>::max())
+        == out.end());
+    return out;
+  }
+
   // Partitioned binary relations (PBRs)
   std::vector<std::vector<bool>>
       PBR::_x_seen(std::thread::hardware_concurrency());
