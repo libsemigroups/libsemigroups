@@ -547,6 +547,140 @@ TEST_CASE("Bipartition 06: exceptions", "[quick][bipart][06]") {
   REQUIRE_THROWS_AS(Bipartition({1, 0}), LibsemigroupsException);
 }
 
+TEST_CASE("Bipartition 07: convenience constructor",
+          "[quick][element][bipart][07]") {
+  Bipartition* xx = new Bipartition(
+      {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
+
+  Bipartition* x = new Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                                     {7, 10, -3, -9, -10},
+                                     {8, -4},
+                                     {-5, -6},
+                                     {-8}});
+  REQUIRE(*x == *xx);
+
+  REQUIRE(x->rank() == 3);
+  REQUIRE(x->at(0) == 0);
+  REQUIRE(x->at(6) == 1);
+  REQUIRE(x->at(10) == 0);
+  REQUIRE(x->const_nr_blocks() == 5);
+  REQUIRE(x->nr_blocks() == 5);
+  REQUIRE(x->const_nr_blocks() == 5);
+  REQUIRE(x->nr_blocks() == 5);
+  REQUIRE(x->nr_left_blocks() == 3);
+  REQUIRE(x->nr_right_blocks() == 5);
+  REQUIRE(x->is_transverse_block(0));
+  REQUIRE(x->is_transverse_block(1));
+  REQUIRE(x->is_transverse_block(2));
+  REQUIRE(!x->is_transverse_block(3));
+  REQUIRE(!x->is_transverse_block(4));
+
+  Bipartition* yy = new Bipartition(
+      {0, 0, 1, 2, 3, 3, 0, 4, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1});
+
+  Bipartition* y = new Bipartition({{1, 2, 7, -1, -2, -3, -4, -5, -6, -9},
+                                     {3, 9, 10, -7, -10},
+                                     {4, -8},
+                                     {5, 6},
+                                     {8}});
+
+  REQUIRE(*y == *yy);
+
+  Blocks* a = x->left_blocks();
+  Blocks* b = y->right_blocks();
+  REQUIRE(*a == *b);
+  delete a;
+  delete b;
+  a = x->right_blocks();
+  b = y->left_blocks();
+  REQUIRE(*a == *b);
+  delete a;
+  delete b;
+  delete x;
+  delete y;
+  delete xx;
+  delete yy;
+
+  xx = new Bipartition(
+      {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
+  x = new Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                       {7, 10, -3, -9, -10},
+                       {8, -4},
+                       {-5, -6},
+                       {-8}});
+  REQUIRE(*x == *xx);
+  x->set_nr_blocks(5);
+  REQUIRE(x->nr_blocks() == 5);
+  delete x;
+  delete xx;
+
+  xx = new Bipartition(
+      {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
+  x = new Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                       {7, 10, -3, -9, -10},
+                       {8, -4},
+                       {-5, -6},
+                       {-8}});
+  REQUIRE(*x == *xx);
+  x->set_nr_left_blocks(3);
+  REQUIRE(x->nr_left_blocks() == 3);
+  REQUIRE(x->nr_right_blocks() == 5);
+  REQUIRE(x->nr_blocks() == 5);
+  delete x;
+  delete xx;
+
+  x = new Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                       {7, 10, -3, -9, -10},
+                       {8, -4},
+                       {-5, -6},
+                       {-8}});
+  x->set_rank(3);
+  REQUIRE(x->rank() == 3);
+  delete x;
+
+  REQUIRE_THROWS_AS(Bipartition({{0, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(Bipartition({{1, 2, 3, 4, 5, 6, 9, 11, -1, -2, -7},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(Bipartition({{1, 2, 3, 4, 5, 6, 11, -1, -2, -7},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(Bipartition({{1, 2, 3, 4, 5, 6, -11, -1, -2, -7},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(Bipartition({{0, 2, 3, 4, 5, 6, 9, -1},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(Bipartition({{0, 2, 3, 4, 5, 6, 9, -1, -2},
+                                 {7, 10, -3, -9, -10},
+                                 {8, -4},
+                                 {-5, -6},
+                                 {-8}}),
+                    LibsemigroupsException);
+}
+
 TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
           "[quick][element][matrix][01]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
@@ -1188,6 +1322,24 @@ TEST_CASE("PBR 06: exceptions", "[quick][element][pbr][06]") {
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(PBR({{4}, {3}, {0}, {0, 2}, {0, 3, 4, 5}}),
                     LibsemigroupsException);
+
+  REQUIRE_NOTHROW(PBR({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+                      {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}));
+
+  REQUIRE_NOTHROW(PBR({{}, {}}));
+
+  REQUIRE_THROWS_AS(PBR({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+                        {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(PBR({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+                        {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
+                    LibsemigroupsException);
+
+  REQUIRE_THROWS_AS(
+      PBR({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+          {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}, {-1, -2}}),
+      LibsemigroupsException);
 }
 
 template <class T> bool test_inverse(Permutation<T> const& p) {
