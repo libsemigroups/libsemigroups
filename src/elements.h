@@ -507,7 +507,8 @@ namespace libsemigroups {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
           throw LibsemigroupsException(
               "PartialTransformation: image value out of bounds, found "
-              + libsemigroups::to_string(val) + ", must be less than "
+              + libsemigroups::to_string(static_cast<size_t>(val))
+              + ", must be less than "
               + libsemigroups::to_string(this->degree()));
         }
       }
@@ -648,8 +649,8 @@ namespace libsemigroups {
         if (val < 0 || val >= max) {
           throw LibsemigroupsException(
               "Transformation: image value out of bounds, found "
-              + libsemigroups::to_string(val) + ", must be less than "
-              + libsemigroups::to_string(max));
+              + libsemigroups::to_string(static_cast<size_t>(val))
+              + ", must be less than " + libsemigroups::to_string(max));
         }
       }
     }
@@ -727,8 +728,8 @@ namespace libsemigroups {
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
         throw LibsemigroupsException(
             "PartialPerm: domain value out of bounds, found "
-            + libsemigroups::to_string(
-                  *std::max_element(dom.cbegin(), dom.cend()))
+            + libsemigroups::to_string(static_cast<size_t>(
+                  *std::max_element(dom.cbegin(), dom.cend())))
             + ", must be less than " + libsemigroups::to_string(deg));
       }
 
@@ -753,11 +754,13 @@ namespace libsemigroups {
           if (val < 0 || val >= this->degree()) {
             throw LibsemigroupsException(
                 "PartialPerm: image value out of bounds, found "
-                + libsemigroups::to_string(val) + ", must be less than "
+                + libsemigroups::to_string(static_cast<size_t>(val))
+                + ", must be less than "
                 + libsemigroups::to_string(this->degree()));
           } else if (present[val]) {
-            throw LibsemigroupsException("PartialPerm: duplicate image value "
-                                         + libsemigroups::to_string(val));
+            throw LibsemigroupsException(
+                "PartialPerm: duplicate image value "
+                + libsemigroups::to_string(static_cast<size_t>(val)));
           }
           present[val] = true;
         }
@@ -1148,7 +1151,7 @@ namespace libsemigroups {
         if (!this->_semiring->contains(x)) {
           throw LibsemigroupsException(
               "MatrixOverSemiring: matrix contains entry "
-              + libsemigroups::to_string(x)
+              + libsemigroups::to_string(static_cast<size_t>(x))
               + " not in the underlying semiring");
         }
       }
@@ -1382,11 +1385,13 @@ namespace libsemigroups {
         if (val < 0 || val >= this->degree()) {
           throw LibsemigroupsException(
               "Permutation: image value out of bounds, found "
-              + libsemigroups::to_string(val) + ", must be less than "
+              + libsemigroups::to_string(static_cast<size_t>(val))
+              + ", must be less than "
               + libsemigroups::to_string(this->degree()));
         } else if (present[val]) {
-          throw LibsemigroupsException("Permutation: duplicate image value "
-                                       + libsemigroups::to_string(val));
+          throw LibsemigroupsException(
+              "Permutation: duplicate image value "
+              + libsemigroups::to_string(static_cast<size_t>(val)));
         }
         present[val] = true;
       }
@@ -1509,19 +1514,22 @@ namespace libsemigroups {
     //! the vector in position \f$i\f$ of \p left is the list of points
     //! adjacent to \f$i\f$ in the PBR, and the vector in position \f$i\f$
     //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
+    // TODO move to cc file
     PBR(std::vector<std::vector<int32_t>> const& left,
         std::vector<std::vector<int32_t>> const& right)
         : PBR(process_left_right(left, right)) {
+          // FIXME I'm not sure this makes sense, shouldn't the validation of
+          // left and right be done in process_left_right??
       size_t n = left.size();
       if (n != right.size()) {
         throw LibsemigroupsException(
             "PBR: the two vectors must have the same length");
       }
-      if (n > pow(2, 31)) {
+      if (n > 0x80000000) {
         throw LibsemigroupsException("PBR: too many points!");
       }
-      for (std::vector<int32_t> vec : left) {
-        for (int32_t x : vec) {
+      for (std::vector<int32_t> const& vec : left) {
+        for (int32_t const& x : vec) {
           if (x == 0 || x < -static_cast<int32_t>(n)
               || x > static_cast<int32_t>(n)) {
             throw LibsemigroupsException(
@@ -1533,7 +1541,7 @@ namespace libsemigroups {
           }
         }
       }
-      for (std::vector<int32_t> vec : right) {
+      for (std::vector<int32_t> const& vec : right) {
         for (int32_t x : vec) {
           if (x == 0 || x < -static_cast<int32_t>(n)
               || x > static_cast<int32_t>(n)) {
@@ -1546,7 +1554,7 @@ namespace libsemigroups {
           }
         }
       }
-    };
+    }
 
     void validate() const;
 
@@ -1628,8 +1636,8 @@ namespace libsemigroups {
 
    private:
     static std::vector<std::vector<u_int32_t>>
-         process_left_right(std::vector<std::vector<int32_t>> const& left,
-                            std::vector<std::vector<int32_t>> const& right);
+    process_left_right(std::vector<std::vector<int32_t>> const& left,
+                       std::vector<std::vector<int32_t>> const& right);
 
     void unite_rows(RecVec<bool>& out,
                     RecVec<bool>& tmp,

@@ -510,15 +510,15 @@ namespace libsemigroups {
   PBR::process_left_right(std::vector<std::vector<int32_t>> const& left,
                           std::vector<std::vector<int32_t>> const& right) {
     LIBSEMIGROUPS_ASSERT(left.size() == right.size());
-    LIBSEMIGROUPS_ASSERT(left.size() < pow(2, 31));
+    LIBSEMIGROUPS_ASSERT(left.size() < 0x80000000);
 
     std::vector<std::vector<u_int32_t>> out;
     size_t                              n = left.size();
 
     std::vector<u_int32_t> v;
-    for (std::vector<int32_t> vec : left) {
-      v = std::vector<u_int32_t>();
-      for (int32_t& x : vec) {
+    for (std::vector<int32_t> const& vec : left) {
+      v.clear();
+      for (int32_t const& x : vec) {
         LIBSEMIGROUPS_ASSERT(x != 0);
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));
@@ -528,11 +528,11 @@ namespace libsemigroups {
         }
         LIBSEMIGROUPS_ASSERT(v.back() < 2 * n);
       }
-      out.push_back(v);;
+      out.push_back(v);
     }
-    for (std::vector<int32_t> vec : right) {
-      v = std::vector<u_int32_t>();
-      for (int32_t& x : vec) {
+    for (std::vector<int32_t> const& vec : right) {
+      v.clear();
+      for (int32_t const& x : vec) {
         LIBSEMIGROUPS_ASSERT(x != 0);
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));
@@ -542,7 +542,7 @@ namespace libsemigroups {
         }
         LIBSEMIGROUPS_ASSERT(v.back() < 2 * n);
       }
-      out.push_back(v);;
+      out.push_back(v);
     }
     return out;
   }
