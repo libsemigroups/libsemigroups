@@ -50,6 +50,7 @@ TEST_CASE("Transformation 01: u_int16_t methods",
 
   x.increase_deg_by(10);
   REQUIRE(x.degree() == 13);
+  REQUIRE(x.end() - x.begin() == 13);
 }
 
 TEST_CASE("Transformation 02: u_int16_t hash",
@@ -216,6 +217,7 @@ TEST_CASE("PartialPerm 01: u_int16_t methods", "[quick][element][pperm][01]") {
 
   x.increase_deg_by(10);
   REQUIRE(x.degree() == 20);
+  REQUIRE(x.end() - x.begin() == x.degree());
 }
 
 TEST_CASE("PartialPerm 02: u_int16_t hash", "[quick][element][pperm][02]") {

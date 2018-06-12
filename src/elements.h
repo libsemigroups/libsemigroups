@@ -1091,10 +1091,12 @@ namespace libsemigroups {
   //! MatrixOverSemiringBase, and it is used so that it can be passed to
   //! ElementWithVectorData, whose method ElementWithVectorData::identity
   //! returns an instance of \p TSubclass.
+  // TODO constructor for rvalue reference of "matrix"
   template <typename TValueType, class TSubclass>
   class MatrixOverSemiringBase
       : public ElementWithVectorDataDefaultHash<TValueType, TSubclass> {
    public:
+
     //! A constructor.
     //!
     //! Constructs a matrix defined by \p matrix.
@@ -1186,14 +1188,6 @@ namespace libsemigroups {
           _degree(copy._degree),
           _semiring(copy._semiring) {}
 
-    // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work
-    // and because the compiler complains about * without it.
-    // Should never be called!
-    explicit MatrixOverSemiringBase(TValueType)
-        : MatrixOverSemiringBase(std::vector<TValueType>()) {
-      LIBSEMIGROUPS_ASSERT(false);
-    }
 
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {
@@ -1222,8 +1216,7 @@ namespace libsemigroups {
     //! this, where the main diagonal consists of the value Semiring::one and
     //! every other entry Semiring::zero.
     TSubclass identity() const override {
-      std::vector<TValueType> vector;
-      vector.resize(this->_vector.size(), _semiring->zero());
+      std::vector<TValueType> vector(this->_vector.size(), _semiring->zero());
       size_t n = this->degree();
       for (auto it = vector.begin(); it < vector.end(); it += n + 1) {
         (*it) = _semiring->one();
@@ -1270,9 +1263,14 @@ namespace libsemigroups {
     //! Constructs a MatrixOverSemiringBase with whose underlying semiring is
     //! not defined. The underlying semiring must be set by any class deriving
     //! from this one.
-    explicit MatrixOverSemiringBase(std::vector<TValueType> matrix)
+    explicit MatrixOverSemiringBase(std::vector<TValueType> const& matrix)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
           _degree(sqrt(matrix.size())),
+          _semiring(nullptr) {}
+
+    explicit MatrixOverSemiringBase(TValueType = 0)
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(),
+          _degree(0),
           _semiring(nullptr) {}
 
    private:
