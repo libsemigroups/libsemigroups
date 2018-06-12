@@ -1518,8 +1518,8 @@ namespace libsemigroups {
     PBR(std::vector<std::vector<int32_t>> const& left,
         std::vector<std::vector<int32_t>> const& right)
         : PBR(process_left_right(left, right)) {
-          // FIXME I'm not sure this makes sense, shouldn't the validation of
-          // left and right be done in process_left_right??
+      // FIXME I'm not sure this makes sense, shouldn't the validation of
+      // left and right be done in process_left_right??
       size_t n = left.size();
       if (n != right.size()) {
         throw LibsemigroupsException(
