@@ -197,11 +197,11 @@ namespace libsemigroups {
       // slow (~50ms to ~10s!!!!)
       // reserve(_nrgens);
 
-      _degree = this->element_degree(this->to_internal((*gens)[0]));
+      _degree = this->element_degree((*gens)[0]);
 
       for (size_t i = 0; i < _nrgens; ++i) {
         element_index_t degree
-            = this->element_degree(this->to_internal((*gens)[i]));
+            = this->element_degree((*gens)[i]);
         if (degree != _degree) {
           for (auto& x : _gens) {
             this->internal_free(x);
@@ -374,14 +374,12 @@ namespace libsemigroups {
           _sorted(),
           _wordlen(0) {
       LIBSEMIGROUPS_ASSERT(!coll->empty());
-      LIBSEMIGROUPS_ASSERT(this->element_degree(this->to_internal(coll->at(0)))
-                           >= S.degree());
+      LIBSEMIGROUPS_ASSERT(this->element_degree(coll->at(0)) >= S.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
       for (TElementType const& x : *coll) {
         LIBSEMIGROUPS_ASSERT(
-            this->element_degree(this->to_internal(x))
-            == this->element_degree(this->to_internal((*coll)[0])));
+            this->element_degree(x) == this->element_degree((*coll)[0]));
       }
 #endif
 #ifdef LIBSEMIGROUPS_STATS
@@ -398,7 +396,7 @@ namespace libsemigroups {
       _suffix.resize(S._nr, 0);
 
       size_t deg_plus
-          = this->element_degree(this->to_internal(coll->at(0))) - S.degree();
+          = this->element_degree(coll->at(0)) - S.degree();
 
       if (deg_plus != 0) {
         _degree += deg_plus;
@@ -511,20 +509,20 @@ namespace libsemigroups {
       }
       // TODO we could trace the right/left Cayley graph as far as possible,
       // i.e. do a partial fast_product
-      value_type out = this->external_copy(_tmp_product);
-      this->multiply(this->to_internal(out), _gens[w[0]], _gens[w[1]]);
+      internal_value_type out = this->internal_copy(_tmp_product);
+      this->multiply(out, _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
-          this->external_free(out);
+          this->internal_free(out);
           throw LibsemigroupsException(
               "Semigroup::word_to_element: word contains "
               + libsemigroups::to_string(*it) + " but the semigroup only has "
               + libsemigroups::to_string(nrgens()) + " generators");
         }
-        this->swap(_tmp_product, this->to_internal(out));
-        this->multiply(this->to_internal(out), _tmp_product, _gens[*it]);
+        this->swap(_tmp_product, out);
+        this->multiply(out, _tmp_product, _gens[*it]);
       }
-      return out;
+      return this->external_copy(out);
     }
 
     //! Returns the maximum length of a word in the generators so far computed.
@@ -598,7 +596,7 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
     element_index_t current_position(const_reference x) const {
-      if (this->element_degree(this->to_internal(x)) != _degree) {
+      if (this->element_degree(x) != _degree) {
         return UNDEFINED;
       }
 
@@ -943,7 +941,7 @@ namespace libsemigroups {
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
     element_index_t position(TElementType x) {
-      if (this->element_degree(this->to_internal(x)) != _degree) {
+      if (this->element_degree(x) != _degree) {
         return UNDEFINED;
       }
 
@@ -1433,13 +1431,14 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    void add_generators(std::vector<value_type> const* coll) {
-      if (coll->empty()) {
+    template<class TCollection>
+    void add_generators(TCollection const &coll) {
+      if (coll.size() == 0) {
         return;
       }
-      for (size_t i = 0; i < coll->size(); ++i) {
-        element_index_t degree
-            = this->element_degree(this->to_internal((*coll)[i]));
+      auto it = coll.begin();
+      for (size_t i = 0; i < coll.size(); ++i, ++it) {
+        element_index_t degree = this->element_degree(*it);
         if (degree != _degree) {
           throw LibsemigroupsException(
               "Semigroup::add_generators: new generator "
@@ -1469,7 +1468,7 @@ namespace libsemigroups {
       }
 
       // add the new generators to new _gens, _elements, and _enumerate_order
-      for (const_reference x : *coll) {
+      for (const_reference x : coll) {
         auto it = _map.find(this->to_internal(x));
         if (it == _map.end()) {  // new generator
           _gens.push_back(this->internal_copy(this->to_internal(x)));
@@ -1624,41 +1623,8 @@ namespace libsemigroups {
     //! Add copies of the generators \p coll to the generators of \c this.
     //!
     //! See Semigroup::add_generators for more details.
-    void add_generators(std::vector<value_type> const& coll) {
-      add_generators(&coll);
-    }
-
-    //! Add copies of the generators \p coll to the generators of \c this.
-    //!
-    //! See Semigroup::add_generators for more details.
-    void add_generators(std::initializer_list<value_type> coll) {
-      add_generators(std::vector<value_type>(coll));
-    }
-
-    //! Add copies of the generators \p coll to the generators of \c this.
-    //!
-    //! See Semigroup::add_generators for more details.
-    //! This particular function is only enabled if value_type and
-    //! const_value_type are different types (if they're not, this function
-    //! signature matches another).
-    template <typename TDummy = value_type>
-    typename std::enable_if<!std::is_same<TDummy, const_value_type>::value,
-                            void>::type
-    add_generators(std::initializer_list<const_value_type> coll) {
-      add_generators(std::vector<const_value_type>(coll));
-    }
-
-    //! Add copies of the generators \p coll to the generators of \c this.
-    //!
-    //! See Semigroup::add_generators for more details.
-    //! This particular function is only enabled if value_type and
-    //! const_value_type are different types (if they're not, this function
-    //! signature matches another).
-    template <typename TDummy = value_type>
-    typename std::enable_if<!std::is_same<TDummy, const_value_type>::value,
-                            void>::type
-    add_generators(std::vector<const_value_type> const& coll) {
-      add_generators(reinterpret_cast<std::vector<value_type> const&>(coll));
+    void add_generators(std::initializer_list<const_value_type> coll) {
+      add_generators<std::initializer_list<const_value_type>>(coll);
     }
 
     //! Returns a new semigroup generated by \c this and \p coll.
@@ -1673,12 +1639,13 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    Semigroup* copy_add_generators(std::vector<value_type>* coll) const {
-      if (coll->empty()) {
+    template<class TCollection>
+    Semigroup* copy_add_generators(TCollection const &coll) const {
+      if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
         // Partially copy
-        Semigroup* out = new Semigroup(*this, coll);
+        Semigroup* out = new Semigroup(*this, &coll);
         out->add_generators(coll);
         return out;
       }
@@ -1706,43 +1673,25 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    void closure(std::vector<value_type>* coll) {
-      if (coll->empty()) {
+    template<class TCollection>
+    void closure(TCollection const &coll) {
+      if (coll.size() == 0) {
         return;
       } else {
-        std::vector<value_type> singleton;
-        for (reference x : *coll) {
+        for (const_reference x : coll) {
           if (!test_membership(x)) {
-            singleton.push_back(x);
-            add_generators(singleton);
-            singleton.pop_back();
+            add_generators({x});
           }
         }
       }
     }
 
-    //! Add copies of the non-redundant generators in \p coll to the generators
-    //! of \c this.
-    //!
-    //! See Semigroup::closure for details.
-    void closure(std::vector<value_type> const* coll) {
-      closure(const_cast<std::vector<value_type>*>(coll));
-    }
-
     //! Add copies of the non-redundant generators in \p coll to the
     //! generators of \c this.
     //!
     //! See Semigroup::closure for more details.
-    void closure(std::vector<value_type> const& coll) {
-      closure(&coll);
-    }
-
-    //! Add copies of the non-redundant generators in \p coll to the
-    //! generators of \c this.
-    //!
-    //! See Semigroup::closure for more details.
-    void closure(std::initializer_list<value_type> coll) {
-      closure(std::vector<value_type>(coll));
+    void closure(std::initializer_list<const_value_type> coll) {
+      closure<std::initializer_list<const_value_type>>(coll);
     }
 
     //! Returns a new semigroup generated by \c this and copies of the
@@ -1757,8 +1706,9 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    Semigroup* copy_closure(std::vector<value_type>* coll) {
-      if (coll->empty()) {
+    template<class TCollection>
+    Semigroup* copy_closure(TCollection const &coll) {
+      if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
         // The next line is required so that when we call the closure method on
@@ -1767,7 +1717,7 @@ namespace libsemigroups {
         // partial copy does not contain enough data to run enumerate).
         this->enumerate(LIMIT_MAX);
         // Partially copy
-        Semigroup* out = new Semigroup(*this, coll);
+        Semigroup* out = new Semigroup(*this, &coll);
         out->closure(coll);
         return out;
       }

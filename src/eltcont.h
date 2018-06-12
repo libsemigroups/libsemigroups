@@ -54,7 +54,7 @@ namespace libsemigroups {
           !std::is_pointer<TElementType>::value
           && !std::is_base_of<Element, TElementType>::value>::type> {
     using value_type       = TElementType;
-    using const_value_type = TElementType;
+    using const_value_type = const TElementType;
     using reference        = TElementType&;
     using const_reference  = TElementType const&;
 
@@ -68,14 +68,6 @@ namespace libsemigroups {
     }
 
     inline const_reference to_external(internal_const_reference x) const {
-      return x;
-    }
-
-    inline internal_reference to_internal(reference x) const {
-      return x;
-    }
-
-    inline reference to_external(internal_reference x) const {
       return x;
     }
 
@@ -95,7 +87,7 @@ namespace libsemigroups {
     }
 
     inline void increase_deg_by(size_t = 0) const {}
-    inline void internal_free(internal_value_type) const {}
+    inline void internal_free(internal_reference) const {}
     inline void external_free(value_type) const {}
 
     inline void swap(internal_reference x, internal_reference y) const {
@@ -106,7 +98,7 @@ namespace libsemigroups {
       return libsemigroups::one(x);
     }
 
-    inline size_t element_degree(internal_const_reference) const {
+    inline size_t element_degree(const_reference) const {
       return 0;
     }
 
@@ -131,36 +123,33 @@ namespace libsemigroups {
   struct ElementContainer<
       TElementType,
       typename std::enable_if<
+    // What happens if TElementType is a SubElement* ???
+    // It's not clear for me how you use that.
           std::is_same<TElementType, Element*>::value
           || std::is_same<TElementType, Element const*>::value>::type> {
-    using value_type = typename std::remove_const<
-        typename std::remove_pointer<TElementType>::type>::type*;
-    using const_value_type =
-        typename std::remove_pointer<value_type>::type const*;
+    using value_type = Element *;
+    using const_value_type = Element const*;
     using reference       = value_type;
     using const_reference = const_value_type;
 
     using internal_value_type       = value_type;
     using internal_const_value_type = const_value_type;
 
-    inline internal_value_type to_internal(value_type x) const {
-      return x;
-    }
-
     inline internal_const_value_type to_internal(const_value_type x) const {
-      return x;
-    }
-
-    inline value_type to_external(internal_value_type x) const {
       return x;
     }
 
     // TODO The return type here is inconsistent with the other definitions of
     // ElementContainer, make them more systematic
+
+    // Florent: Losing the const here is DANGEROUS...
     inline value_type to_external(internal_const_value_type x) const {
       return const_cast<value_type>(x);
     }
 
+    // Value are actually pointer to memory shared with other
+    // values. Obviously, The caller should make sure that nothing is actually
+    // shared.
     inline void internal_free(internal_const_value_type x) const {
       delete const_cast<internal_value_type>(x);
     }
@@ -197,7 +186,7 @@ namespace libsemigroups {
       x->swap(*y);
     }
 
-    inline size_t element_degree(internal_const_value_type x) const {
+    inline size_t element_degree(const_value_type x) const {
       return x->degree();
     }
 
@@ -227,29 +216,24 @@ namespace libsemigroups {
     static_assert(!std::is_pointer<TElementType>::value,
                   "TElementType must not be a pointer");
     using value_type       = TElementType;
-    using const_value_type = TElementType;
+    using const_value_type = const TElementType;
     using reference        = TElementType&;
     using const_reference  = TElementType const&;
 
     using internal_value_type       = TElementType*;
     using internal_const_value_type = TElementType const*;
 
-    inline internal_value_type to_internal(reference x) const {
-      return &x;
-    }
-
     inline internal_const_value_type to_internal(const_reference x) const {
       return &x;
-    }
-
-    inline reference to_external(internal_value_type x) const {
-      return *x;
     }
 
     inline const_reference to_external(internal_const_value_type x) const {
       return *x;
     }
 
+    // Value contains some memory shared with other values. Destroy the shared
+    // part. Obviously, The caller should make sure that nothing is actually
+    // shared.
     inline void internal_free(internal_const_value_type x) const {
       delete const_cast<internal_value_type>(x);
     }
@@ -284,8 +268,8 @@ namespace libsemigroups {
       x->swap(*y);
     }
 
-    inline size_t element_degree(internal_const_value_type x) const {
-      return x->degree();
+    inline size_t element_degree(const_value_type x) const {
+      return x.degree();
     }
 
     inline size_t complexity(internal_const_value_type x) const {

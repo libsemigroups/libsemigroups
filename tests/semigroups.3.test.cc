@@ -70,7 +70,7 @@ TEST_CASE("Semigroup 043: relations [copy_closure, duplicate gens]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(&coll);
+  Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T->size() == 7776);
@@ -109,7 +109,7 @@ TEST_CASE("Semigroup 044: relations [copy_add_generators, duplicate gens]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(&coll);
+  Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T->size() == 7776);
@@ -291,7 +291,7 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(&coll);
+  Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
@@ -351,7 +351,7 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(&coll);
+  Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->gens(3)));
   REQUIRE(*coll[1] == *(T->gens(4)));
@@ -414,7 +414,7 @@ TEST_CASE("Semigroup 052: relations [from copy_closure, partly enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(&coll);
+  Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -476,7 +476,7 @@ TEST_CASE(
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(&coll);
+  Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -536,7 +536,7 @@ TEST_CASE("Semigroup 054: relations [from copy_closure, fully enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(&coll);
+  Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -599,7 +599,7 @@ TEST_CASE(
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(&coll);
+  Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
