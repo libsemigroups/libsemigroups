@@ -296,7 +296,7 @@ namespace libsemigroups {
 
     //! Returns the product of \c this and \p y
     //!
-    //! This returns the product of \c this and \p y, as defined by 
+    //! This returns the product of \c this and \p y, as defined by
     //! Element::redefine, without altering \c this or \p y.
     virtual TSubclass operator*(ElementWithVectorData const& y) const {
       TSubclass xy(y.degree());
@@ -525,7 +525,7 @@ namespace libsemigroups {
 
     //! A constructor.
     //!
-    //! Constructs an uninitialised PartialTransformation. 
+    //! Constructs an uninitialised PartialTransformation.
     PartialTransformation()
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>() {}
 
@@ -980,7 +980,7 @@ namespace libsemigroups {
     //! The parameter \p blocks must have length *2n* for some positive integer
     //! *n*, consist of non-negative integers, and have the property that if
     //! *i*, *i > 0*, occurs in \p blocks, then *i - 1* occurs earlier in
-    //! blocks. 
+    //! blocks.
     //!
     //! The parameter \p blocks is copied.
     explicit Bipartition(std::vector<u_int32_t> const& blocks)
@@ -1028,7 +1028,7 @@ namespace libsemigroups {
     //! degree of the bipartition. The bipartition constructed has equivalence
     //! classes given by the vectors in \p blocks.
     Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks)
-        : Bipartition(blocks_to_list(blocks)){};
+        : Bipartition(blocks_to_list(blocks)) {}
 
     //! Returns the approximate time complexity of multiplication.
     //!
@@ -1188,7 +1188,6 @@ namespace libsemigroups {
   class MatrixOverSemiringBase
       : public ElementWithVectorDataDefaultHash<TValueType, TSubclass> {
    public:
-
     //! A constructor.
     //!
     //! Constructs a matrix defined by \p matrix.
