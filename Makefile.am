@@ -4,9 +4,9 @@
 
 AM_CXXFLAGS =  -I$(top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(top_srcdir)/extern/HPCombi/include/fallback
-AM_CXXFLAGS += -Wall -Wextra
-AM_CXXFLAGS += -Wno-c++11-extensions -std=gnu++11 -g -O3 -march=native
 AM_CXXFLAGS += -mavx -flax-vector-conversions
+AM_CXXFLAGS += -std=gnu++11 -g -O3 -march=native -Wall -Wextra  
+
 AM_LDFLAGS  =  -no-undefined
 
 if LIBSEMIGROUPS_DEBUG
