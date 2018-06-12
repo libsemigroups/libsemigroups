@@ -259,6 +259,9 @@ namespace libsemigroups {
     explicit ElementWithVectorData(std::vector<TValueType> const& vector)
         : Element(), _vector(vector) {}
 
+    explicit ElementWithVectorData(std::vector<TValueType>&& vec)
+        : Element(), _vector(std::move(vec)) {}
+
     //! A copy constructor.
     //!
     //! The size of the vector containing the defining data of \c this will be
@@ -493,27 +496,6 @@ namespace libsemigroups {
     PartialTransformation()
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>() {}
 
-    explicit PartialTransformation(std::vector<TValueType> const& vec)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(vec) {
-      validate();
-    }
-
-    PartialTransformation(std::initializer_list<TValueType> imgs)
-        : PartialTransformation<TValueType, TSubclass>(
-              std::vector<TValueType>(imgs)) {}
-
-    void validate() const {
-      for (auto const& val : this->_vector) {
-        if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
-          throw LibsemigroupsException(
-              "PartialTransformation: image value out of bounds, found "
-              + libsemigroups::to_string(static_cast<size_t>(val))
-              + ", must be less than "
-              + libsemigroups::to_string(this->degree()));
-        }
-      }
-    }
-
     //! Returns the approximate time complexity of multiplying two
     //! partial transformations.
     //!
@@ -528,7 +510,7 @@ namespace libsemigroups {
     //! The *degree* of a partial transformation is the number of points used
     //! in its definition, which is equal to the size of
     //! ElementWithVectorData::_vector.
-    size_t degree() const override {
+    size_t degree() const final {
       return this->_vector.size();
     }
 
@@ -556,12 +538,9 @@ namespace libsemigroups {
     //! the degree of \c this that fixes every value from *0* to the degree of
     //! \c this.
     TSubclass identity() const override {
-      std::vector<TValueType> vector;
-      vector.reserve(this->degree());
-      for (size_t i = 0; i < this->degree(); i++) {
-        vector.push_back(i);
-      }
-      return TSubclass(vector);
+      std::vector<TValueType> vector(this->degree());
+      std::iota(vector.begin(), vector.end(), 0);
+      return TSubclass(std::move(vector));
     }
 
     //! Undefined image value.
@@ -624,6 +603,11 @@ namespace libsemigroups {
   template <typename TValueType>
   class Transformation
       : public TransfBase<TValueType, Transformation<TValueType>> {
+    static_assert(std::is_integral<TValueType>::value,
+                  "template parameter TValueType must be an integral type");
+    static_assert(!std::numeric_limits<TValueType>::is_signed,
+                  "template parameter TValueType must be unsigned");
+
    public:
     using TransfBase<TValueType, Transformation<TValueType>>::TransfBase;
     Transformation() : TransfBase<TValueType, Transformation<TValueType>>() {}
@@ -636,6 +620,12 @@ namespace libsemigroups {
 #endif
     }
 
+    explicit Transformation(std::vector<TValueType>&& vec)
+        : TransfBase<TValueType, Transformation<TValueType>>(std::move(vec)) {
+      validate();
+    }
+
+    // validate is called in constructor above.
     Transformation(std::initializer_list<TValueType> imgs)
         : Transformation<TValueType>(std::vector<TValueType>(imgs)) {}
 
@@ -644,13 +634,13 @@ namespace libsemigroups {
         : TransfBase<TValueType, Transformation<TValueType>>(copy) {}
 
     void validate() const {
-      size_t max = this->_vector.size();
+      size_t deg = this->degree();
       for (auto const& val : this->_vector) {
-        if (val < 0 || val >= max) {
+        if (val >= deg) {
           throw LibsemigroupsException(
               "Transformation: image value out of bounds, found "
               + libsemigroups::to_string(static_cast<size_t>(val))
-              + ", must be less than " + libsemigroups::to_string(max));
+              + ", must be less than " + libsemigroups::to_string(deg));
         }
       }
     }
@@ -693,6 +683,11 @@ namespace libsemigroups {
   template <typename TValueType>
   class PartialPerm
       : public PartialTransformation<TValueType, PartialPerm<TValueType>> {
+    static_assert(std::is_integral<TValueType>::value,
+                  "template parameter TValueType must be an integral type");
+    static_assert(!std::numeric_limits<TValueType>::is_signed,
+                  "template parameter TValueType must be unsigned");
+
    public:
     using PartialTransformation<TValueType,
                                 PartialPerm<TValueType>>::PartialTransformation;
@@ -700,6 +695,12 @@ namespace libsemigroups {
 
     explicit PartialPerm(std::vector<TValueType> const& vec)
         : PartialTransformation<TValueType, PartialPerm<TValueType>>(vec) {
+      validate();
+    }
+
+    explicit PartialPerm(std::vector<TValueType>&& vec)
+        : PartialTransformation<TValueType, PartialPerm<TValueType>>(
+              std::move(vec)) {
       validate();
     }
 
@@ -732,7 +733,6 @@ namespace libsemigroups {
                   *std::max_element(dom.cbegin(), dom.cend())))
             + ", must be less than " + libsemigroups::to_string(deg));
       }
-
       this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
         this->_vector[dom[i]] = ran[i];
@@ -748,7 +748,8 @@ namespace libsemigroups {
                                   deg) {}
 
     void validate() const {
-      std::vector<bool> present(this->degree(), false);
+      size_t const      deg = this->degree();
+      std::vector<bool> present(deg, false);
       for (auto const& val : this->_vector) {
         if (val != UNDEFINED) {
           if (val < 0 || val >= this->degree()) {
@@ -898,6 +899,16 @@ namespace libsemigroups {
     //! The parameter \p blocks is copied.
     explicit Bipartition(std::vector<u_int32_t> const& blocks)
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(blocks),
+          _nr_blocks(Bipartition::UNDEFINED),
+          _nr_left_blocks(Bipartition::UNDEFINED),
+          _trans_blocks_lookup(),
+          _rank(Bipartition::UNDEFINED) {
+      validate();
+    }
+
+    explicit Bipartition(std::vector<u_int32_t>&& blocks)
+        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
+              std::move(blocks)),
           _nr_blocks(Bipartition::UNDEFINED),
           _nr_left_blocks(Bipartition::UNDEFINED),
           _trans_blocks_lookup(),
@@ -1238,7 +1249,7 @@ namespace libsemigroups {
       // LIBSEMIGROUPS_ASSERT(xx->semiring() == yy->semiring() &&
       // xx->semiring() == this->semiring());
       // TODO verify that x, y, and this are defined over the same semiring.
-      size_t deg = this->degree();
+      size_t const deg = this->degree();
 
       for (size_t i = 0; i < deg; i++) {
         for (size_t j = 0; j < deg; j++) {

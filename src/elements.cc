@@ -65,32 +65,29 @@ namespace libsemigroups {
       Bipartition::_lookup(std::thread::hardware_concurrency());
 
   void Bipartition::validate() const {
-    if (this->_vector.empty()) {
+    size_t const n = _vector.size();
+    if (n == 0) {
       return;
 #if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
     && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    } else if (this->_vector.size() == 1
+    } else if (n == 1
                && this->_vector[0] == std::numeric_limits<u_int32_t>::max()) {
       return;
 #endif
-    } else if (this->_vector.size() % 2 == 1) {
+    } else if (n % 2 != 0) {
       throw LibsemigroupsException(
           "Bipartition: expected argument of even length");
     }
-    std::vector<bool> seen(
-        *std::max_element(this->_vector.cbegin(), this->_vector.cend()) + 1,
-        false);
     size_t next = 0;
-    for (size_t i = 0; i < this->_vector.size(); ++i) {
-      if (!seen[this->_vector[i]]) {
-        if (this->_vector[i] != next) {
-          throw LibsemigroupsException(
-              "Bipartition: expected " + libsemigroups::to_string(next)
-              + " but found " + libsemigroups::to_string(this->_vector[i])
-              + ", in position " + libsemigroups::to_string(i));
-        }
-        seen[this->_vector[i]] = true;
-        next++;
+    for (size_t i = 0; i < n; ++i) {
+      u_int32_t const j = this->_vector[i];
+      if (j == next) {
+        ++next;
+      } else if (j > next) {
+        throw LibsemigroupsException(
+            "Bipartition: expected " + libsemigroups::to_string(next)
+            + " but found " + libsemigroups::to_string(j) + ", in position "
+            + libsemigroups::to_string(i));
       }
     }
   }
@@ -105,14 +102,11 @@ namespace libsemigroups {
 
   // the identity of this
   Bipartition Bipartition::identity() const {
-    std::vector<u_int32_t> blocks;
-    blocks.reserve(this->_vector.size());
-    for (size_t j = 0; j < 2; j++) {
-      for (u_int32_t i = 0; i < this->degree(); i++) {
-        blocks.push_back(i);
-      }
-    }
-    return Bipartition(blocks);
+    size_t const           n = this->degree();
+    std::vector<u_int32_t> vector(2 * n);
+    std::iota(vector.begin(), vector.begin() + n, 0);
+    std::iota(vector.begin() + n, vector.end(), 0);
+    return Bipartition(std::move(vector));
   }
 
   // multiply x and y into this
