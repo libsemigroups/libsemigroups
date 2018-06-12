@@ -141,9 +141,7 @@ namespace libsemigroups {
 
     // TODO The return type here is inconsistent with the other definitions of
     // ElementContainer, make them more systematic
-
-    // Florent: Losing the const here is DANGEROUS...
-    inline value_type to_external(internal_const_value_type x) const {
+    inline const_value_type to_external(internal_const_value_type x) const {
       return const_cast<value_type>(x);
     }
 

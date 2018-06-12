@@ -40,7 +40,7 @@ void delete_gens(std::vector<TElementType>& gens) {
 
 #if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
-static inline void test_idempotent(Semigroup<>& S, Element* x) {
+static inline void test_idempotent(Semigroup<>& S, const Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
   Element* y = x->heap_copy();
   y->redefine(x, x);

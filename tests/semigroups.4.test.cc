@@ -447,7 +447,7 @@ TEST_CASE("Semigroup 079: Exception: zero generators given",
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(Semigroup<BMat8>(gens2), LibsemigroupsException);
 
-  REQUIRE_THROWS_AS(Semigroup<Element*>(gens3), LibsemigroupsException);
+  REQUIRE_THROWS_AS(Semigroup<>(gens3), LibsemigroupsException);
 }
 
 TEST_CASE("Semigroup 080: Exception: generators of different degrees",

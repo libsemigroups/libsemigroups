@@ -31,7 +31,7 @@ static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
   return out;
 }
 
-static inline void test_idempotent(Semigroup<>& S, Element* x) {
+static inline void test_idempotent(Semigroup<>& S, const Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
   Element* y = x->heap_copy();
   y->redefine(x, x);

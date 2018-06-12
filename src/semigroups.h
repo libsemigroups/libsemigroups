@@ -929,7 +929,7 @@ namespace libsemigroups {
     //! the semigroup. The semigroup is enumerated in batches until \p x is
     //! found or the semigroup is fully enumerated but \p x was not found (see
     //! Semigroup::set_batch_size).
-    bool test_membership(TElementType x) {
+    bool test_membership(const_value_type x) {
       return (position(x) != UNDEFINED);
     }
 
@@ -940,7 +940,7 @@ namespace libsemigroups {
     //! of the element \p x if it belongs to the semigroup. The semigroup is
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
-    element_index_t position(TElementType x) {
+    element_index_t position(const_value_type x) {
       if (this->element_degree(x) != _degree) {
         return UNDEFINED;
       }
@@ -1742,7 +1742,11 @@ namespace libsemigroups {
       typedef typename std::vector<TElementType>::size_type  size_type;
       typedef typename std::vector<T>::difference_type       difference_type;
       typedef typename std::vector<TElementType>::value_type value_type;
-      using reference = typename C::reference;
+      using iterated_value =
+          typename std::conditional<std::is_trivial<value_type>::value,
+                                    const_value_type,
+                                    const_reference>::type;
+      typedef iterated_value reference;
       typedef typename std::vector<TElementType>::const_pointer pointer;
       typedef std::random_access_iterator_tag iterator_category;
 
@@ -1837,7 +1841,7 @@ namespace libsemigroups {
         return _it_vec - that._it_vec;
       }
 
-      reference operator*() const {
+      iterated_value operator*() const {
         return _methods.indirection(_it_vec);
       }
 
@@ -1852,12 +1856,12 @@ namespace libsemigroups {
 
     struct IteratorMethods : public ElementContainer<TElementType> {
       IteratorMethods() {}
-      using reference =
+      using iterated_value =
           typename std::conditional<std::is_trivial<value_type>::value,
-                                    value_type,
+                                    const_value_type,
                                     const_reference>::type;
 
-      reference indirection(
+      iterated_value indirection(
           typename std::vector<internal_value_type>::const_iterator it) const {
         return this->to_external(*it);
       }
@@ -1869,13 +1873,13 @@ namespace libsemigroups {
     };
 
     struct IteratorMethodsPairFirst : public ElementContainer<TElementType> {
-      using reference =
+      using iterated_value =
           typename std::conditional<std::is_trivial<value_type>::value,
-                                    value_type,
+                                    const_value_type,
                                     const_reference>::type;
 
       IteratorMethodsPairFirst() {}
-      reference indirection(
+      iterated_value indirection(
           typename std::vector<
               std::pair<internal_value_type, element_index_t>>::const_iterator
               it) const {
