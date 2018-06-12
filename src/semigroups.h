@@ -2361,7 +2361,7 @@ namespace libsemigroups {
     }
 
     size_t                                     _batch_size;
-    element_index_t                            _degree;
+    size_t                                     _degree;
     std::vector<std::pair<letter_t, letter_t>> _duplicate_gens;
     std::vector<internal_value_type>           _elements;
     std::vector<element_index_t>               _enumerate_order;
