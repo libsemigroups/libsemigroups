@@ -85,6 +85,9 @@ AC_ARG_ENABLE([densehashmap],
 AC_MSG_CHECKING([whether to use google's dense_hash_map])
 AC_MSG_RESULT([$enable_densehashmap])
 
+# Check if code coverage mode is enabled
+AX_CODE_COVERAGE()
+
 # Check if HPCombi is enabled
 AC_ARG_ENABLE([hpcombi],
     [AS_HELP_STRING([--enable-hpcombi], [enable HPCombi])],
@@ -98,20 +101,26 @@ AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_CHECK_FILE([extern/HPCombi/VERSION], 
                      [], 
                      [AC_MSG_WARN([HPCombi is not available])
-                      [enable_hpcombi=no]])])
+                     [enable_hpcombi=no]])])
 
-AS_IF([test "x$enable_hpcombi" = xyes],
-      [AC_MSG_CHECKING([the present version of HPCombi])
-      [cat extern/HPCombi/VERSION]])
-
+REQUIRED_HPCOMBI="$(cat extern/.HPCombi_VERSION)"
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_MSG_CHECKING([the required version of HPCombi])
-      [cat extern/.HPCombi_VERSION]])
+       AC_MSG_RESULT([$REQUIRED_HPCOMBI])])
+
+FOUND_HPCOMBI="$(cat extern/HPCombi/VERSION)"
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_MSG_CHECKING([the version of HPCombi that's present])
+       AC_MSG_RESULT([$FOUND_HPCOMBI])])
+
 
 AS_IF([test "x$enable_hpcombi" = xyes],
-[AS_IF([! cmp -s extern/HPCombi/VERSION extern/.HPCombi_VERSION],
-       [AC_MSG_WARN([the incorrect version of HPCombi is present, HPCombi will be disabled])
-        [enable_hpcombi=no]])])
+      [AX_COMPARE_VERSION($FOUND_HPCOMBI, 
+                          [ge], 
+                          $REQUIRED_HPCOMBI,
+                          [],
+                          [AC_MSG_WARN([the incorrect version of HPCombi is present, HPCombi will be disabled]) 
+                          enable_hpcombi=no])])
 
 SAVED_CXXFLAGS=$CXXFLAGS
 CXXFLAGS="-g -O2 -mavx -flax-vector-conversions"
@@ -179,8 +188,6 @@ AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS],
               [test "x$hpcombi_constexpr_fun_args" = xyes])
 AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
      [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
-# Check if code coverage mode is enabled
-AX_CODE_COVERAGE()
 
 dnl Output configured files
 
