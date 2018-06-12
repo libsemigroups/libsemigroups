@@ -566,6 +566,7 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
   delete u;
   delete_gens(gens2);
   delete_gens(gens3);
+  delete sr;
 }
 
 TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
