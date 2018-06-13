@@ -1279,14 +1279,6 @@ namespace libsemigroups {
           _degree(copy._degree),
           _semiring(copy._semiring) {}
 
-    // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work, and because the compiler complains about the
-    // operator * without it. Should never be called, so we assert it is not!
-    explicit MatrixOverSemiringBase(TValueType)
-        : MatrixOverSemiringBase(std::vector<TValueType>()) {
-      LIBSEMIGROUPS_ASSERT(false);
-    }
-
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {
       return _semiring;
