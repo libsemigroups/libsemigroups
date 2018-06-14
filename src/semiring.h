@@ -71,6 +71,11 @@ namespace libsemigroups {
     //! Returns the product of \p x and \p y.
     virtual T prod(T x, T y) const = 0;
 
+    //! Returns \c true if \c this contain the argument.
+    //!
+    //! This method returns \c true if the argument is mathematically contained
+    //! in \c this. For semirings without threshold, this will always return
+    //! true.
     virtual bool contains(T) const {
       return true;
     }

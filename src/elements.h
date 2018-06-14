@@ -51,6 +51,10 @@ namespace libsemigroups {
    public:
     //! A constructor.
     Element() : _hash_value(UNDEFINED) {}
+    
+    //! A constructor.
+    //!
+    //! Constructs an element with given hash value.
     explicit Element(size_t hv) : _hash_value(hv) {}
 
     //! A default destructor.
@@ -160,6 +164,10 @@ namespace libsemigroups {
       redefine(x, y, 0);
     }
 
+    //! Multiplies \p x and \p y and stores the result in \c this.
+    //!
+    //! This version of the method takes const pointers rather than const
+    //! references, but otherwise behaves like the other Element::redefine.
     void redefine(Element const* x, Element const* y) {
       redefine(*x, *y, 0);
     }
@@ -201,6 +209,7 @@ namespace libsemigroups {
 #endif
 
     //! Increases the degree of \c this by \p deg.
+    //! This does not make sense for all subclasses of Element.
     virtual void increase_deg_by(size_t) {}
 
     //! Returns a new element completely independent of \c this.
@@ -273,6 +282,9 @@ namespace libsemigroups {
     //! Returns an object with an uninitialised vector.
     ElementWithVectorData() : Element(), _vector() {}
 
+    //! A constructor.
+    //!
+    //! Returns an object with an uninitialised vector of length \p n.
     explicit ElementWithVectorData(size_t n) : Element(), _vector(n) {}
 
     //! A constructor.
@@ -420,10 +432,19 @@ namespace libsemigroups {
     //! This must be defined in subclasses of ElementWithVectorData.
     virtual TSubclass identity() const = 0;
 
+    //! Returns a new identity for TSubclass
+    //!
+    //! Returns a pointer to an element that is an identity for elements
+    //! of type TSubclass, and is independent from other copies that already
+    //! may exist.
     Element* heap_identity() const override {
       return this->identity().heap_copy();
     }
 
+    //! Returns a pointer to a new copy of \c this. 
+    //!
+    //! Returns a pointer to an element that has the same defining data as \c
+    //! this, but is independent in memory.
     Element* heap_copy() const override {
       return new TSubclass(*static_cast<TSubclass const*>(this));
     }
@@ -1058,6 +1079,15 @@ namespace libsemigroups {
     Bipartition(std::initializer_list<u_int32_t> blocks)
         : Bipartition(std::vector<u_int32_t>(blocks)) {}
 
+    //! Validates the data defining \c this.
+    //!
+    //! This method throws a LibsemigroupsException if the data defining \c
+    //! this is invalid, which could occur if:
+    //!
+    //! *this->_vector has odd length, or
+    //!
+    //! *a positive integer *i* occurs in \c this->_vector before the integer
+    //! *i* - 1
     void validate() const;
 
     //! A copy constructor.
@@ -1497,9 +1527,11 @@ namespace libsemigroups {
       after();  // this is to put the matrix in normal form
     }
 
-    // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work, and because the compiler complains about *
-    // without it. Should never be called, so we assert it is not!
+    //! A constructor.
+    //!
+    //! This constructor only exists to make the empty_key method for
+    //! ElementWithVectorData work, and because the compiler complains about the
+    //! operator * without it. Should never be called, so we assert it is not!
     explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {
       LIBSEMIGROUPS_ASSERT(false);
     }
@@ -1626,8 +1658,10 @@ namespace libsemigroups {
     explicit BooleanMat(std::vector<std::vector<bool>> const& matrix)
         : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
 
-    // The next constructor only exists to make the empty_key method for
-    // ElementWithVectorData work.
+    //! A constructor.
+    //!
+    //! This constructor only exists to make the empty_key method for
+    //! ElementWithVectorData work.
     explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
 
     //! A constructor.
@@ -1674,8 +1708,9 @@ namespace libsemigroups {
   //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
   class PBR : public ElementWithVectorData<std::vector<u_int32_t>, PBR> {
    public:
-    //! Constructs a PBR defined by the vector pointed to by \p vector.
+    //! A constructor.
     //!
+    //! Constructs a PBR defined by the vector pointed to by \p vector.
     //! The parameter \p vector should be a pointer to a vector of vectors of
     //! non-negative integer values of length \f$2n\f$ for some integer
     //! \f$n\f$, the vector in position \f$i\f$ is the list of points adjacent
@@ -1683,8 +1718,16 @@ namespace libsemigroups {
     using ElementWithVectorData<std::vector<u_int32_t>,
                                 PBR>::ElementWithVectorData;
 
+    //! A constructor.
+    //!
+    //! Constructs a PBR defined by the initializer list \p vec. This list
+    //! should be interpreted in the same way as \p vector in the vector
+    //! constructor PBR::PBR.
     explicit PBR(std::initializer_list<std::vector<u_int32_t>> vec);
 
+    //! A constructor.
+    //!
+    //! Constructs an empty (no relation) PBR of the given degree.
     explicit PBR(size_t degree)
         : PBR(std::vector<std::vector<u_int32_t>>(degree * 2,
                                                   std::vector<u_int32_t>())) {}
@@ -1700,6 +1743,15 @@ namespace libsemigroups {
         std::initializer_list<std::vector<int32_t>> const& right)
         : PBR(process_left_right(left, right)) {}
 
+    //! Validates the data defining \c this.
+    //!
+    //! This method throws a LibsemigroupsException if the data defining \c
+    //! this is invalid, which could occur if:
+    //!
+    //! * \c this->_vector has odd length, or
+    //!
+    //! * \c this->_vector contains a vector containing a value which is larger
+    //! than \c this->_vector.size() (i.e. twice the degree of \c this).
     void validate() const;
 
     //! Returns the approximate time complexity of multiplying PBRs.
@@ -1884,6 +1936,7 @@ namespace std {
   //! Element from an Element pointer. This is used by various methods
   //! of the Semigroup class.
   template <> struct hash<libsemigroups::Element*> {
+    //! Hashes an Element given by Element pointer.
     size_t operator()(libsemigroups::Element* x) const {
       return x->hash_value();
     }
@@ -1896,6 +1949,7 @@ namespace std {
   //! Element from a const Element pointer. This is used by various methods
   //! of the Semigroup class.
   template <> struct hash<libsemigroups::Element const*> {
+    //! Hashes an Element given by const Element pointer.
     size_t operator()(libsemigroups::Element const* x) const {
       return x->hash_value();
     }
@@ -1903,10 +1957,12 @@ namespace std {
 
   //! Provides a call operator for comparing Elements via pointers.
   //!
-  //! This struct provides a call operator for comparing const Element
+  //! This struct provides a call operator for comparing Element
   //! pointers (by comparing the Element objects they point to). This is used
   //! by various methods of the Semigroup class.
   template <> struct equal_to<libsemigroups::Element*> {
+    //! Tests equality of two Element pointers via equality of the Elements they
+    //! point to.
     bool operator()(libsemigroups::Element* x,
                     libsemigroups::Element* y) const {
       return *x == *y;
@@ -1919,6 +1975,8 @@ namespace std {
   //! pointers (by comparing the Element objects they point to). This is used
   //! by various methods of the Semigroup class.
   template <> struct equal_to<libsemigroups::Element const*> {
+    //! Tests equality of two const Element pointers via equality of the
+    //! Elements they point to.
     bool operator()(libsemigroups::Element const* x,
                     libsemigroups::Element const* y) const {
       return *x == *y;
@@ -1933,6 +1991,7 @@ namespace std {
   //! methods of the Semigroup class.
   template <typename TIntegerType>
   struct hash<libsemigroups::Transformation<TIntegerType>> {
+    //! Hashes a Transformation given by const Element pointer.
     size_t
     operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
       return x.hash_value();
@@ -1947,6 +2006,7 @@ namespace std {
   //! methods of the Semigroup class.
   template <typename TIntegerType>
   struct hash<libsemigroups::PartialPerm<TIntegerType>> {
+    //! Hashes a PartialPerm given by const Element pointer.
     size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
       return x.hash_value();
     }
@@ -1959,6 +2019,7 @@ namespace std {
   //! Bipartition from a Bipartition reference. This is used by various
   //! methods of the Semigroup class.
   template <> struct hash<libsemigroups::Bipartition> {
+    //! Hashes a Bipartition given by const Element pointer.
     size_t operator()(libsemigroups::Bipartition const& x) const {
       return x.hash_value();
     }
@@ -1971,6 +2032,7 @@ namespace std {
   //! BooleanMat from a BooleanMat reference. This is used by various
   //! methods of the Semigroup class.
   template <> struct hash<libsemigroups::BooleanMat> {
+    //! Hashes a BooleanMat given by const Element pointer.
     size_t operator()(libsemigroups::BooleanMat const& x) const {
       return x.hash_value();
     }
@@ -1983,6 +2045,7 @@ namespace std {
   //! ProjectiveMaxPlusMatrix from a ProjectiveMaxPlusMatrix reference. This is
   //! used by various methods of the Semigroup class.
   template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
+    //! Hashes a ProjectiveMaxPlusMatrix given by const Element pointer.
     size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
       return x.hash_value();
     }
@@ -1994,6 +2057,7 @@ namespace std {
   //! PBR from a PBR reference. This is used by various methods of the Semigroup
   //! class.
   template <> struct hash<libsemigroups::PBR> {
+    //! Hashes a PBR given by const Element pointer.
     size_t operator()(libsemigroups::PBR const& x) const {
       return x.hash_value();
     }
@@ -2008,6 +2072,7 @@ namespace std {
   template <typename TValueType>
   struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
     size_t
+    //! Hashes a MatrixOverSemiring given by const Element pointer.
     operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
       return x.hash_value();
     }
