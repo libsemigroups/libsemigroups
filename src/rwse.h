@@ -48,18 +48,30 @@ namespace libsemigroups {
     }
 
    public:
+    //! Constructor
+    //!
+    //! Constructs a RWSE which does not represent a word or have an
+    //! associated rewriting system.
+    RWSE() : Element(), _rws(nullptr), _rws_word() {}
+
+    //! Constructor from a rewriting system and a word.
+    //!
+    //! Constructs a RWSE which represents the empty word, where multiplication
+    //! with other RWSE's is defined with respect to the rewriting system \p
+    //! rws.
+    //!
+    //! The rewriting system \p rws is not copied, and it is the
+    //! responsibility of the caller to delete it.
+    explicit RWSE(RWS* rws) : RWSE(rws, "", false) {}
+
     //! Constructor from a rewriting system and a word.
     //!
     //! Constructs a RWSE which is essentially the word \p w, whose
     //! multiplication with other RWSE's is defined with respect to the
     //! rewriting system \p rws.
     //!
-    //! The rewriting system \p rws is not copied either, and it is the
+    //! The rewriting system \p rws is not copied, and it is the
     //! responsibility of the caller to delete it.
-    RWSE() : Element(), _rws(nullptr), _rws_word() {}
-
-    explicit RWSE(RWS* rws) : RWSE(rws, "", false) {}
-
     RWSE(RWS* rws, rws_word_t const& w) : RWSE(rws, w, true) {}
 
     //! Constructor from a rewriting system and a letter.
@@ -132,10 +144,18 @@ namespace libsemigroups {
       return RWSE(_rws);
     }
 
+    //! Returns an independent copy of \c this.
+    //!
+    //! Returns a pointer to a copy of \c this, which is not linked to \c this
+    //! in memory.
     RWSE* heap_copy() const override {
       return new RWSE(*this);
     }
 
+    //! Returns a new copy of the identity RWSE.
+    //!
+    //! Returns a pointer to a copy of \c this->identity(), which is not linked
+    //! to any other copy in memory.
     RWSE* heap_identity() const override {
       return this->identity().heap_copy();
     }
@@ -192,6 +212,11 @@ namespace std {
     }
   };
 
+  //! Provides a call operator for comparing RWSEs via references.
+  //!
+  //! This struct provides a call operator for comparing const RWSE
+  //! references (by comparing the RWSE objects they point to). This is used
+  //! by various methods of the Semigroup class.
   template <> struct equal_to<libsemigroups::RWSE> {
     bool operator()(libsemigroups::RWSE const& x,
                     libsemigroups::RWSE const& y) const {
