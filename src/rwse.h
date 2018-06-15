@@ -78,12 +78,19 @@ namespace libsemigroups {
     //!
     //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
     RWSE(RWS* rws, letter_t const& a) : RWSE(rws, RWS::uint_to_rws_word(a)) {}
+
+    //! Constructor from a rewriting system and a letter.
+    //!
+    //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
     RWSE(RWS& rws, letter_t const& a) : RWSE(&rws, a) {}
 
     //! Constructor from a rewriting system and a word.
     //!
     //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
     RWSE(RWS* rws, word_t const& w) : RWSE(rws, RWS::word_to_rws_word(w)) {}
+    //! Constructor from a rewriting system and a word.
+    //!
+    //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
     RWSE(RWS& rws, word_t const& w) : RWSE(&rws, w) {}
 
     //! A copy constructor.
@@ -207,6 +214,7 @@ namespace std {
   //! Element from a const Element pointer. This is used by various methods
   //! of the Semigroup class.
   template <> struct hash<libsemigroups::RWSE> {
+    //! Hashes a RWSE given by const RWSE reference.
     size_t operator()(libsemigroups::RWSE const& x) const {
       return x.hash_value();
     }
@@ -218,6 +226,7 @@ namespace std {
   //! references (by comparing the RWSE objects they point to). This is used
   //! by various methods of the Semigroup class.
   template <> struct equal_to<libsemigroups::RWSE> {
+    //! Tests equality of two const RWSE references via equality of the RWSEs.
     bool operator()(libsemigroups::RWSE const& x,
                     libsemigroups::RWSE const& y) const {
       return x == y;
@@ -226,8 +235,10 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  // Specialise the factorisation method for Semigroup's of RWSE's so that they
-  // just use the word inside the RWSE.
+  //! Returns a libsemigroups::word_t which evaluates to \p x.
+  //!
+  //! Specialises the factorisation method for Semigroup's of RWSE's so that it
+  //! just returns the word inside the RWSE.
   template <>
   word_t Semigroup<RWSE, std::hash<RWSE>, std::equal_to<RWSE>>::factorisation(
       RWSE const& x);

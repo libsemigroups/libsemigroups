@@ -51,7 +51,7 @@ namespace libsemigroups {
    public:
     //! A constructor.
     Element() : _hash_value(UNDEFINED) {}
-    
+
     //! A constructor.
     //!
     //! Constructs an element with given hash value.
@@ -441,7 +441,7 @@ namespace libsemigroups {
       return this->identity().heap_copy();
     }
 
-    //! Returns a pointer to a new copy of \c this. 
+    //! Returns a pointer to a new copy of \c this.
     //!
     //! Returns a pointer to an element that has the same defining data as \c
     //! this, but is independent in memory.
@@ -1878,7 +1878,8 @@ namespace libsemigroups {
   //! memory required) unsigned integer type which can represent the
   //! non-negative integer \c N.
   template <size_t N> struct SmallestInteger {
-    //TODO: assert N unsigned?
+    //! The smallest (in terms of memory required) unsigned integer type which
+    //! can represent \c N.
     using type = typename std::conditional<
         N >= 0x100000000,
         u_int64_t,
@@ -1991,7 +1992,7 @@ namespace std {
   //! methods of the Semigroup class.
   template <typename TIntegerType>
   struct hash<libsemigroups::Transformation<TIntegerType>> {
-    //! Hashes a Transformation given by const Element pointer.
+    //! Hashes a Transformation given by const Transformation pointer.
     size_t
     operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
       return x.hash_value();
@@ -2006,7 +2007,7 @@ namespace std {
   //! methods of the Semigroup class.
   template <typename TIntegerType>
   struct hash<libsemigroups::PartialPerm<TIntegerType>> {
-    //! Hashes a PartialPerm given by const Element pointer.
+    //! Hashes a PartialPerm given by const PartialPerm pointer.
     size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
       return x.hash_value();
     }
@@ -2019,7 +2020,7 @@ namespace std {
   //! Bipartition from a Bipartition reference. This is used by various
   //! methods of the Semigroup class.
   template <> struct hash<libsemigroups::Bipartition> {
-    //! Hashes a Bipartition given by const Element pointer.
+    //! Hashes a Bipartition given by const Bipartition pointer.
     size_t operator()(libsemigroups::Bipartition const& x) const {
       return x.hash_value();
     }
@@ -2032,7 +2033,7 @@ namespace std {
   //! BooleanMat from a BooleanMat reference. This is used by various
   //! methods of the Semigroup class.
   template <> struct hash<libsemigroups::BooleanMat> {
-    //! Hashes a BooleanMat given by const Element pointer.
+    //! Hashes a BooleanMat given by const BooleanMat pointer.
     size_t operator()(libsemigroups::BooleanMat const& x) const {
       return x.hash_value();
     }
@@ -2045,7 +2046,8 @@ namespace std {
   //! ProjectiveMaxPlusMatrix from a ProjectiveMaxPlusMatrix reference. This is
   //! used by various methods of the Semigroup class.
   template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
-    //! Hashes a ProjectiveMaxPlusMatrix given by const Element pointer.
+    //! Hashes a ProjectiveMaxPlusMatrix given by const ProjectiveMaxPlusMatrix
+    //! pointer.
     size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
       return x.hash_value();
     }
@@ -2057,7 +2059,7 @@ namespace std {
   //! PBR from a PBR reference. This is used by various methods of the Semigroup
   //! class.
   template <> struct hash<libsemigroups::PBR> {
-    //! Hashes a PBR given by const Element pointer.
+    //! Hashes a PBR given by const PBT pointer.
     size_t operator()(libsemigroups::PBR const& x) const {
       return x.hash_value();
     }
@@ -2072,7 +2074,7 @@ namespace std {
   template <typename TValueType>
   struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
     size_t
-    //! Hashes a MatrixOverSemiring given by const Element pointer.
+    //! Hashes a MatrixOverSemiring given by const MatrixOverSemiring pointer.
     operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
       return x.hash_value();
     }

@@ -22,6 +22,10 @@
 #include <string>
 
 namespace libsemigroups {
+  //! Returns a libsemigroups::word_t which evaluates to \p x.
+  //!
+  //! Specialises the factorisation method for Semigroup's of RWSE's so that it
+  //! just returns the word inside the RWSE.
   template <>
   word_t Semigroup<RWSE, std::hash<RWSE>, std::equal_to<RWSE>>::factorisation(
       RWSE const& x) {

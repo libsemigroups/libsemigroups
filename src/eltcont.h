@@ -25,6 +25,9 @@
 #include "elements.h"
 
 namespace libsemigroups {
+  //! Returns the one of type TElementType
+  //!
+  //! See also Element::identity
   template <typename TElementType> inline TElementType one(TElementType x) {
     return x.one();
   }

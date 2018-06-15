@@ -255,9 +255,17 @@ namespace libsemigroups {
       _lenindex.push_back(_enumerate_order.size());
     }
 
+    //! Construct from generators.
+    //!
+    //! This constructor simply calls the above constructor with a pointer to \p
+    //! gens.
     explicit Semigroup(std::vector<value_type> const& gens)
         : Semigroup(&gens) {}
 
+    //! Construct from generators.
+    //!
+    //! This constructor simply constructs a vector from \p gens and calls the
+    //! above constructor.
     explicit Semigroup(std::initializer_list<value_type> gens)
         : Semigroup(std::vector<value_type>(gens)) {}
 
@@ -1069,23 +1077,21 @@ namespace libsemigroups {
       }
     }
 
-    //! Returns a pointer to a minimal libsemigroups::word_t which evaluates to
-    //! the Element in position \p pos of \c this.
+    //! Returns a minimal libsemigroups::word_t which evaluates to the Element
+    //! in position \p pos of \c this.
     //!
     //! This is the same as the two-argument method for
     //! Semigroup::minimal_factorisation, but it returns a pointer to the
     //! factorisation instead of modifying an argument in-place.
     //! If \p pos is greater than the size of the semigroup, then a
     //! LibsemigroupsException is thrown.
-
     word_t minimal_factorisation(element_index_t pos) override {
       word_t word;
       minimal_factorisation(word, pos);
       return word;
     }
 
-    //! Returns a pointer to a minimal libsemigroups::word_t which evaluates to
-    //! \p x.
+    //! Returns a minimal libsemigroups::word_t which evaluates to \p x.
     //!
     //! This is the same as the method taking a Semigroup::element_index_t, but
     //! it factorises an Element instead of using the position of an element.
@@ -1112,8 +1118,8 @@ namespace libsemigroups {
       minimal_factorisation(word, pos);
     }
 
-    //! Returns a pointer to a libsemigroups::word_t which evaluates to
-    //! the Element in position \p pos of \c this.
+    //! Returns a libsemigroups::word_t which evaluates to the Element in
+    //! position \p pos of \c this.
     //!
     //! The key difference between this method and
     //! Semigroup::minimal_factorisation(element_index_t pos), is that the
@@ -1124,7 +1130,7 @@ namespace libsemigroups {
       return minimal_factorisation(pos);
     }
 
-    //! Returns a pointer to a libsemigroups::word_t which evaluates to
+    //! Returns a libsemigroups::word_t which evaluates to \p x.
     //!
     //! The key difference between this method and
     //! Semigroup::minimal_factorisation(TElementType x), is that the
@@ -1634,6 +1640,12 @@ namespace libsemigroups {
       add_generators(std::vector<value_type>(coll));
     }
 
+    //! Add copies of the generators \p coll to the generators of \c this.
+    //!
+    //! See Semigroup::add_generators for more details.
+    //! This particular function is only enabled if value_type and
+    //! const_value_type are different types (if they're not, this function
+    //! signature matches another).
     template <typename TDummy = value_type>
     typename std::enable_if<!std::is_same<TDummy, const_value_type>::value,
                             void>::type
@@ -1641,6 +1653,12 @@ namespace libsemigroups {
       add_generators(std::vector<const_value_type>(coll));
     }
 
+    //! Add copies of the generators \p coll to the generators of \c this.
+    //!
+    //! See Semigroup::add_generators for more details.
+    //! This particular function is only enabled if value_type and
+    //! const_value_type are different types (if they're not, this function
+    //! signature matches another).
     template <typename TDummy = value_type>
     typename std::enable_if<!std::is_same<TDummy, const_value_type>::value,
                             void>::type
@@ -1708,6 +1726,10 @@ namespace libsemigroups {
       }
     }
 
+    //! Add copies of the non-redundant generators in \p coll to the generators
+    //! of \c this.
+    //!
+    //! See Semigroup::closure for details.
     void closure(std::vector<value_type> const* coll) {
       closure(const_cast<std::vector<value_type>*>(coll));
     }
@@ -1924,17 +1946,30 @@ namespace libsemigroups {
     };
 
    public:
+    //! A type for const iterators through the elements of \c this.
     typedef iterator_base<internal_value_type, IteratorMethods> const_iterator;
+    //! A type for const iterators through (element, index) pairs of \c this.
     typedef iterator_base<std::pair<internal_value_type, element_index_t>,
                           IteratorMethodsPairFirst>
-                                                  const_iterator_pair_first;
+        const_iterator_pair_first;
+    //! A type for const reverse iterators through the elements of \c this.
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    //! A type for const reverse iterators through (element, index) pairs of \c
+    //! this.
     typedef std::reverse_iterator<const_iterator_pair_first>
         const_reverse_iterator_pair_first;
 
+    //! A type for sorted const iterators through (element, index) pairs of \c
+    //! this.
     typedef const_iterator_pair_first         const_iterator_sorted;
+    //! A type for sorted const iterators through (idempotent, index) pairs of
+    //! \c this.
     typedef const_iterator_pair_first         const_iterator_idempotents;
+    //! A type for reverse sorted const iterators through (element, index)
+    //! pairs of \c this.
     typedef const_reverse_iterator_pair_first const_reverse_iterator_sorted;
+    //! A type for reverse sorted const iterators through (idempotent, index)
+    //! pairs of \c this.
     typedef const_reverse_iterator_pair_first
         const_reverse_iterator_idempotents;
 
@@ -2321,8 +2356,7 @@ namespace libsemigroups {
         element_index_t k = _enumerate_order[pos];
         if (!_is_idempotent[k]) {
           // The following is product_by_reduction, don't have to consider
-          // lengths
-          // because they are equal!!
+          // lengths because they are equal!!
           element_index_t i = k, j = k;
           while (j != UNDEFINED) {
             i = _right.get(i, _first[j]);
