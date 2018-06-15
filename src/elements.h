@@ -1803,17 +1803,15 @@ namespace libsemigroups {
       os << "{";
       for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
         os << "{";
-        for (auto it = pbr[i].begin(); it < pbr[i].end() - 1; it++) {
-          os << *it << ", ";
+        for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
+          os << pbr[i][j] << ", ";
         }
         os << std::to_string(pbr[i].back()) << "}, ";
       }
 
       os << "{";
-      for (auto it = pbr[2 * pbr.degree() - 1].begin();
-           it < pbr[2 * pbr.degree() - 1].end() - 1;
-           it++) {
-        os << *it << ", ";
+      for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
+        os << pbr[2 * pbr.degree() - 1][j] << ", ";
       }
       os << std::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
       return os;
