@@ -187,5 +187,7 @@ lint:
 	
 doc:
 	@echo "Generating documentation . . ."; \
+	mkdir -p html
+	sed 's/\[!\[.*//' README.md | tee html/README_doxy.md
 	doxygen Doxyfile
 	@echo "See: html/index.html";
