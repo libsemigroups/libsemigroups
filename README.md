@@ -3,7 +3,7 @@
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/james-d-mitchell/libsemigroups/master?filepath=index.ipynb)
 
 ### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) 
-with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/) and [N. Thiery](http://nicolas.thiery.name)
+with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/), [F. Hivert](https://www.lri.fr/~hivert/), F. Smith, and [N. Thiery](http://nicolas.thiery.name)
 
 The current version of libsemigroups is 0.6.3.
 
