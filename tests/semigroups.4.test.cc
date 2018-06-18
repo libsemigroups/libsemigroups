@@ -1116,6 +1116,14 @@ namespace libsemigroups {
   template <> uint8_t one(uint8_t) {
     return 1;
   }
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <> int empty_key(int) {
+    return -1;
+  }
+  template <> uint8_t empty_key(uint8_t) {
+    return -1;
+  }
+#endif
 }  // namespace libsemigroups
 
 TEST_CASE("Semigroup 096: integers", "[quick][semigroup][finite][096]") {
@@ -1161,6 +1169,12 @@ class NonTrivial {
   int _re;
   int _im;
 };
+
+namespace libsemigroups {
+  template <> NonTrivial empty_key(NonTrivial) {
+    return NonTrivial();
+  }
+}  // namespace libsemigroups
 
 namespace std {
   template <> struct hash<NonTrivial> {

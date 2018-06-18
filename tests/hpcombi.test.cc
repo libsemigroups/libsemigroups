@@ -62,7 +62,13 @@ namespace libsemigroups {
     return -1;
   }
 
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <> inline Transf16 empty_key(Transf16) {
+    return Transf16(
+        {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE});
+  }
+
   template <>
   Renner0Element
   ElementContainer<Renner0Element>::empty_key(Renner0Element const&) const {

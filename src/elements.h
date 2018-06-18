@@ -386,8 +386,8 @@ namespace libsemigroups {
     }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    TSubclass empty_key() const override {
-      return TSubclass({std::numeric_limits<TValueType>::max()});
+    Element* empty_key() const override {
+      return new TSubclass({std::numeric_limits<TValueType>::max()});
     }
 #endif
 
@@ -1669,6 +1669,7 @@ namespace libsemigroups {
     //!
     //! This constructor only exists to make the empty_key method for
     //! ElementWithVectorData work.
+    // TODO LIBSEMIGROUPS_DENSEHASHMAP
     explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
 
     //! A constructor.

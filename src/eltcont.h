@@ -27,10 +27,16 @@
 namespace libsemigroups {
   //! Returns the one of type TElementType
   //!
-  //! See also Element::identity
+  // FIXME
   template <typename TElementType> inline TElementType one(TElementType x) {
     return x.one();
   }
+
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <typename TElementType> inline TElementType empty_key(TElementType x) {
+    return x.empty_key();
+  }
+#endif
 
   template <typename TElementType, typename = void> struct ElementContainer {};
   // TODO add TElementHash, and TElementEqual here
@@ -113,9 +119,8 @@ namespace libsemigroups {
     }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    // TODO this could be static
-    inline internal_value_type empty_key(internal_const_reference) const {
-      return internal_value_type(-1);
+    inline internal_value_type empty_key(internal_const_reference x) const {
+      return libsemigroups::empty_key(x);
     }
 #endif
   };
@@ -205,7 +210,6 @@ namespace libsemigroups {
     }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->empty_key());
     }
@@ -293,7 +297,6 @@ namespace libsemigroups {
     }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->empty_key());
     }

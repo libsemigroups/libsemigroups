@@ -233,6 +233,13 @@ namespace libsemigroups {
     //! top-left \p dim x \p dim entries may be non-zero.
     static BMat8 random(size_t dim);
 
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    // FIXME do this another way
+    BMat8 empty_key() const {
+      return BMat8(0xFF7FBFDFEFF7FBFE);
+    }
+#endif
+
    private:
     uint64_t                                       _data;
     static std::random_device                      _rd;
