@@ -38,9 +38,8 @@
 #include "semigroups-base.h"
 #include "to_string.h"
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-#include <sparsehash/dense_hash_map>
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+#include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 #endif
 
 // TODO move to libsemigroups.h
@@ -219,8 +218,7 @@ namespace libsemigroups {
       _id          = this->one(_gens[0]);
       _lenindex.push_back(0);
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       _map.set_empty_key(this->empty_key(_id));
 #endif
 
@@ -311,8 +309,7 @@ namespace libsemigroups {
 #endif
       _elements.reserve(_nr);
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       _map.set_empty_key(this->empty_key(_id));
       _map.resize(_nr);
 #else
@@ -426,8 +423,7 @@ namespace libsemigroups {
       _id          = this->one(this->to_internal(coll->at(0)));
       _tmp_product = this->internal_copy(_id);
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       _map.set_empty_key(this->empty_key(_id));
       _map.resize(S._nr);
 #else
@@ -910,8 +906,7 @@ namespace libsemigroups {
       _left.reserve(nn);
       _length.reserve(nn);
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       _map.resize(nn);
 #else
       _map.reserve(nn);
@@ -2411,8 +2406,7 @@ namespace libsemigroups {
     std::vector<index_t>                       _length;
     std::vector<enumerate_index_t>             _lenindex;
     std::vector<element_index_t>               _letter_to_pos;
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     google::dense_hash_map<internal_const_value_type,
                            element_index_t,
                            InternalElementHash,

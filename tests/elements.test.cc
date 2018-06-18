@@ -174,8 +174,7 @@ TEST_CASE("Transformation 07: exceptions",
       Transformation<u_int16_t>(std::initializer_list<u_int16_t>({1, 2, 3})),
       LibsemigroupsException);
 
-#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
   auto& UNDEF
       = PartialTransformation<u_int16_t, PartialPerm<u_int16_t>>::UNDEFINED;
   REQUIRE_THROWS_AS(Transformation<u_int16_t>(std::initializer_list<u_int16_t>(

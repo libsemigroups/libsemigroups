@@ -187,8 +187,7 @@ namespace libsemigroups {
     //! things will happen.
     void redefine(Element const& x, Element const& y, size_t tid = 0) override;
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     RWSE* empty_key() const override {
       return new RWSE(_rws, "supercalifragilisticexpialidocious");
     }

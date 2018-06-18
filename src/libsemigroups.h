@@ -40,8 +40,13 @@
 #include "timer.h"
 #include "uf.h"
 
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
+// FIXME should be hpcombi.hpp
 #include "perm16.hpp"
+#endif
+
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+#include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 #endif
 
 #endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_

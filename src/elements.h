@@ -37,7 +37,7 @@
 #include "semiring.h"
 #include "to_string.h"
 
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
 #include "perm16.hpp"
 #endif
 
@@ -203,8 +203,7 @@ namespace libsemigroups {
       redefine(*x, *y);
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     virtual Element* empty_key() const = 0;
 #endif
 
@@ -386,8 +385,7 @@ namespace libsemigroups {
       std::swap(this->_hash_value, xx._hash_value);
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     TSubclass empty_key() const override {
       return TSubclass({std::numeric_limits<TValueType>::max()});
     }
@@ -721,8 +719,7 @@ namespace libsemigroups {
     //! where the image of a point *i* is given by \p vec[i].
     explicit Transformation(std::vector<TValueType> const& vec)
         : TransfBase<TValueType, Transformation<TValueType>>(vec) {
-#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       validate();
 #endif
     }
@@ -1798,8 +1795,7 @@ namespace libsemigroups {
     //! things will happen.
     void redefine(Element const&, Element const&, size_t) override;
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     Element* empty_key() const override {
       return new PBR({{ std::numeric_limits<u_int32_t>::max() }});
     }
@@ -1899,7 +1895,7 @@ namespace libsemigroups {
   };
 
   template <size_t N> struct Transf {
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
     using type = typename std::conditional<
         N >= 16,
         Transformation<typename SmallestInteger<N>::type>,
@@ -1910,7 +1906,7 @@ namespace libsemigroups {
   };
 
   template <size_t N> struct PPerm {
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
     using type = typename std::conditional<
         N >= 16,
         PartialPerm<typename SmallestInteger<N>::type>,
@@ -1921,7 +1917,7 @@ namespace libsemigroups {
   };
 
   template <size_t N> struct Perm {
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
     using type = typename std::conditional<
         N >= 16,
         Permutation<typename SmallestInteger<N>::type>,

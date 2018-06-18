@@ -35,10 +35,6 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h sys/time.h unistd.h pthread.h])
-AC_CHECK_HEADER([sparsehash/dense_hash_map], 
-                [AC_DEFINE([HAVE_DENSEHASHMAP], 
-                           [1], 
-                           [define if google dense_hash_map is available])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -77,13 +73,25 @@ AC_MSG_RESULT([$enable_stats])
 AC_ARG_ENABLE([densehashmap],
     [AS_HELP_STRING([--enable-densehashmap], 
                     [enable google's dense_hash_map])],
-                    [AC_DEFINE([USE_DENSEHASHMAP], 
-                               [1], 
-                               [define if building with google's dense_hash_map])],
+    [enable_densehashmap=yes],
     [enable_densehashmap=no])
 
 AC_MSG_CHECKING([whether to use google's dense_hash_map])
 AC_MSG_RESULT([$enable_densehashmap])
+
+AS_IF([test "x$enable_densehashmap" = xyes],
+      [AC_CHECK_FILE([extern/sparsehash-c11/sparsehash/dense_hash_map], 
+                     [], 
+                     [AC_MSG_WARN([extern/sparsehash-c11 is not available, see https://github.com/sparsehash/sparsehash-c11])
+                     [enable_densehashmap=no]])])
+
+AS_IF([test "x$enable_densehashmap" = xyes], 
+       [AC_DEFINE([DENSEHASHMAP], 
+                  [1], 
+                  [define if google's dense_hash_map is available])])
+
+AM_CONDITIONAL([LIBSEMIGROUPS_DENSEHASHMAP], 
+               [test "x$enable_densehashmap" = xyes])
 
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
@@ -165,10 +173,10 @@ AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
        [AC_MSG_WARN([compiler builtin not supported, HPCombi will be disabled])])])
 
 AS_IF([test "x$enable_hpcombi" = xyes],
-      [AC_DEFINE([USE_HPCOMBI], [1], [define if building with HPCombi])])
+      [AC_DEFINE([HPCOMBI], [1], [define if building with HPCombi])])
 
 dnl # the following is used in Makefile.am
-AM_CONDITIONAL([LIBSEMIGROUPS_USE_HPCOMBI], [test "x$enable_hpcombi" = xyes])
+AM_CONDITIONAL([LIBSEMIGROUPS_HPCOMBI], [test "x$enable_hpcombi" = xyes])
 
 dnl # check for HPCombi's preprocessor macro
 AS_IF([test "x$enable_hpcombi" = xyes], 

@@ -112,8 +112,7 @@ namespace libsemigroups {
       return x < y;
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     // TODO this could be static
     inline internal_value_type empty_key(internal_const_reference) const {
       return internal_value_type(-1);
@@ -205,8 +204,7 @@ namespace libsemigroups {
       return *x < *y;
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->empty_key());
@@ -294,8 +292,7 @@ namespace libsemigroups {
       return *x < *y;
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     // TODO could be static
     inline internal_value_type empty_key(internal_const_value_type x) const {
       return dynamic_cast<internal_value_type>(x->empty_key());

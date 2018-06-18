@@ -68,8 +68,7 @@ namespace libsemigroups {
     size_t const n = _vector.size();
     if (n == 0) {
       return;
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     } else if (n == 1
                && this->_vector[0] == std::numeric_limits<u_int32_t>::max()) {
       return;
@@ -366,8 +365,7 @@ namespace libsemigroups {
 
   void PBR::validate() const {
     size_t n = this->_vector.size();
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
     if (n == 1
         && this->_vector[0][0] == std::numeric_limits<u_int32_t>::max()) {
       return;

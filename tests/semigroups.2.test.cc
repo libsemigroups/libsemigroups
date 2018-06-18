@@ -38,8 +38,7 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-#if !defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
 static inline void test_idempotent(Semigroup<>& S, Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));

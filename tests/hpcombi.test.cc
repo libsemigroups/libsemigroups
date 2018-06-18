@@ -19,7 +19,7 @@
 #include "../src/libsemigroups-config.h"
 #include "../src/libsemigroups-debug.h"
 
-#ifdef LIBSEMIGROUPS_USE_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI
 
 #include "../extern/HPCombi/include/perm16.hpp"
 #include "../src/semigroups.h"
@@ -62,8 +62,7 @@ namespace libsemigroups {
     return -1;
   }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <>
   Renner0Element
   ElementContainer<Renner0Element>::empty_key(Renner0Element const&) const {

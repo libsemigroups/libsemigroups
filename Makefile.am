@@ -49,7 +49,8 @@ pkginclude_HEADERS += src/semiring.h
 pkginclude_HEADERS += src/timer.h
 pkginclude_HEADERS += src/to_string.h
 pkginclude_HEADERS += src/uf.h
-if LIBSEMIGROUPS_USE_HPCOMBI
+if LIBSEMIGROUPS_HPCOMBI
+## TODO add hpcombi.hpp
 pkginclude_HEADERS += extern/HPCombi/include/perm16.hpp
 pkginclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
 pkginclude_HEADERS += extern/HPCombi/include/power.hpp
@@ -132,7 +133,7 @@ lstest_SOURCES += tests/uf.test.cc
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS)
 lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
-if LIBSEMIGROUPS_USE_HPCOMBI
+if LIBSEMIGROUPS_HPCOMBI
 lstest_CXXFLAGS += -mavx -flax-vector-conversions
 endif
 

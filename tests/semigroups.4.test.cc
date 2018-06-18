@@ -32,9 +32,7 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-#if (!defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP)    \
-     || !defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)) \
-    && LIBSEMIGROUPS_SIZEOF_VOID_P == 8
+#if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
 TEST_CASE("Semigroup 072: regular boolean mat monoid 4 using BMat8",
           "[quick][semigroup][finite][072]") {
