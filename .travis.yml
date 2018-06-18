@@ -79,12 +79,12 @@ matrix:
     #   osx_image: xcode8
     - os: osx
       osx_image: xcode8
-      env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 before_install:
     - eval "${MATRIX_EVAL}"
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install gcc5; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install gcc@7; fi
 script:
   - ci/travis-$TEST_SUITE.sh
