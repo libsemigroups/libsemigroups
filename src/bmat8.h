@@ -180,7 +180,6 @@ namespace libsemigroups {
         tmp &= diag;
         data |= tmp;
         y    = cyclic_shift(y);
-        tmp  = 0;
         diag = cyclic_shift(diag);
       }
       return BMat8(data);

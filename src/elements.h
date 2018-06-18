@@ -1079,17 +1079,6 @@ namespace libsemigroups {
     Bipartition(std::initializer_list<u_int32_t> blocks)
         : Bipartition(std::vector<u_int32_t>(blocks)) {}
 
-    //! Validates the data defining \c this.
-    //!
-    //! This method throws a LibsemigroupsException if the data defining \c
-    //! this is invalid, which could occur if:
-    //!
-    //! *this->_vector has odd length, or
-    //!
-    //! *a positive integer *i* occurs in \c this->_vector before the integer
-    //! *i* - 1
-    void validate() const;
-
     //! A copy constructor.
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
@@ -1109,6 +1098,17 @@ namespace libsemigroups {
     //! classes given by the vectors in \p blocks.
     Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks)
         : Bipartition(blocks_to_list(blocks)) {}
+
+    //! Validates the data defining \c this.
+    //!
+    //! This method throws a LibsemigroupsException if the data defining \c
+    //! this is invalid, which could occur if:
+    //!
+    //! *this->_vector has odd length, or
+    //!
+    //! *a positive integer *i* occurs in \c this->_vector before the integer
+    //! *i* - 1
+    void validate() const;
 
     //! Returns the approximate time complexity of multiplication.
     //!
@@ -1263,7 +1263,6 @@ namespace libsemigroups {
   //! MatrixOverSemiringBase, and it is used so that it can be passed to
   //! ElementWithVectorData, whose method ElementWithVectorData::identity
   //! returns an instance of \p TSubclass.
-  // TODO constructor for rvalue reference of "matrix"
   template <typename TValueType, class TSubclass>
   class MatrixOverSemiringBase
       : public ElementWithVectorDataDefaultHash<TValueType, TSubclass> {
@@ -1287,9 +1286,16 @@ namespace libsemigroups {
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(matrix),
           _degree(sqrt(matrix.size())),
           _semiring(semiring) {
-      LIBSEMIGROUPS_ASSERT(semiring != nullptr);
-      LIBSEMIGROUPS_ASSERT(!matrix.empty());
-      LIBSEMIGROUPS_ASSERT(matrix.size() == _degree * _degree);
+      validate();
+    }
+
+    MatrixOverSemiringBase(std::vector<TValueType>&&   matrix,
+                           Semiring<TValueType> const* semiring)
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(
+              std::move(matrix)),
+          _degree(sqrt(this->_vector.size())),
+          _semiring(semiring) {
+      validate();
     }
 
     //! A constructor.
@@ -1339,11 +1345,24 @@ namespace libsemigroups {
       validate();
     }
 
+    //! A copy constructor.
+    //!
+    //! The parameter \p increase_deg_by must be 0, since it does not make
+    //! sense to increase the degree of a matrix.
+    MatrixOverSemiringBase(MatrixOverSemiringBase const& copy)
+        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(copy._vector),
+          _degree(copy._degree),
+          _semiring(copy._semiring) {}
+
     //! Validates the data defining \c this.
     //!
     //! This method throws a LibsemigroupsException if any value of \c this is
     //! not in the underlying semiring.
     void validate() const {
+      if (this->degree() * this->degree() != this->_vector.size()) {
+        throw LibsemigroupsException("MatrixOverSemiring: matrix must have "
+                                     "size that is a perfect square");
+      }
       for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
           throw LibsemigroupsException(
@@ -1353,15 +1372,6 @@ namespace libsemigroups {
         }
       }
     }
-
-    //! A copy constructor.
-    //!
-    //! The parameter \p increase_deg_by must be 0, since it does not make
-    //! sense to increase the degree of a matrix.
-    MatrixOverSemiringBase(MatrixOverSemiringBase const& copy)
-        : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(copy._vector),
-          _degree(copy._degree),
-          _semiring(copy._semiring) {}
 
     //! Returns a pointer to the Semiring over which the matrix is defined.
     Semiring<TValueType> const* semiring() const {
