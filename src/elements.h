@@ -1286,6 +1286,22 @@ namespace libsemigroups {
       validate();
     }
 
+    //! A constructor.
+    //!
+    //! Constructs a matrix defined by \p matrix.
+    //!
+    //! The parameter \p matrix should be a rvalue reference to a vector of
+    //! integer values of length \f$n ^ 2\f$ for some integer \f$n\f$, so that
+    //! the value in position \f$in + j\f$ is the entry in the \f$i\f$th row and
+    //! \f$j\f$th column of the constructed matrix.
+    //!
+    //! The parameter \p semiring should be a pointer to a Semiring, which
+    //! is the semiring over which the matrix is defined.
+    //!
+    //! This method asserts that the parameter \p semiring is not a nullptr,
+    //! and that the vector \p matrix has size a non-zero perfect square.
+    //!
+    //! This method moves the parameter \p matrix.
     MatrixOverSemiringBase(std::vector<TValueType>&&   matrix,
                            Semiring<TValueType> const* semiring)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(
