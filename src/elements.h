@@ -1424,7 +1424,7 @@ namespace libsemigroups {
     //! every other entry Semiring::zero.
     TSubclass identity() const override {
       std::vector<TValueType> vector(this->_vector.size(), _semiring->zero());
-      size_t n = this->degree();
+      size_t                  n = this->degree();
       for (auto it = vector.begin(); it < vector.end(); it += n + 1) {
         (*it) = _semiring->one();
       }
@@ -1568,15 +1568,6 @@ namespace libsemigroups {
       after();  // this is to put the matrix in normal form
     }
 
-    //! A constructor.
-    //!
-    //! This constructor only exists to make the empty_key method for
-    //! ElementWithVectorData work, and because the compiler complains about the
-    //! operator * without it. Should never be called, so we assert it is not!
-    explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {
-      LIBSEMIGROUPS_ASSERT(false);
-    }
-
     //! A copy constructor.
     ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const& copy)
         : MatrixOverSemiringBase(copy) {}
@@ -1597,6 +1588,11 @@ namespace libsemigroups {
     }
 
    private:
+    // This constructor only exists to make the empty_key method for
+    // ElementWithVectorData work, and because the compiler complains about the
+    // Element::operator* without it.
+    explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {}
+
     friend class ElementWithVectorData<int64_t, ProjectiveMaxPlusMatrix>;
     explicit ProjectiveMaxPlusMatrix(std::vector<int64_t> matrix)
         : MatrixOverSemiringBase(matrix) {}
@@ -1701,13 +1697,6 @@ namespace libsemigroups {
 
     //! A constructor.
     //!
-    //! This constructor only exists to make the empty_key method for
-    //! ElementWithVectorData work.
-    // TODO LIBSEMIGROUPS_DENSEHASHMAP
-    explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
-
-    //! A constructor.
-    //!
     //! Constructs a boolean matrix of the specified degree
     explicit BooleanMat(size_t degree)
         : BooleanMat(std::vector<bool>(degree * degree)) {}
@@ -1734,6 +1723,11 @@ namespace libsemigroups {
     // }
 
    private:
+    // This constructor only exists to make the empty_key method for
+    // ElementWithVectorData work, and because the compiler complains about the
+    // Element::operator* without it.
+    explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
+
     // The next constructor only exists to allow the identity method for
     // MatrixOverSemiringBase to work.
     friend class MatrixOverSemiringBase<bool, BooleanMat>;

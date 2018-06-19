@@ -62,7 +62,6 @@ namespace libsemigroups {
     return -1;
   }
 
-
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <> inline Transf16 empty_key(Transf16) {
     return Transf16(

@@ -21,7 +21,6 @@
 
 #include <sstream>
 
-
 namespace libsemigroups {
   //! Returns a string representing an object of type \c T.
   //!

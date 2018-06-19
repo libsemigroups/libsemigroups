@@ -55,8 +55,8 @@ namespace libsemigroups {
           && !std::is_base_of<Element, TElementType>::value>::type> {
     using value_type       = TElementType;
     using const_value_type = const TElementType;
-    using reference        = TElementType&;
-    using const_reference  = TElementType const&;
+    using reference        = TElementType &;
+    using const_reference  = TElementType const &;
 
     using internal_value_type       = value_type;
     using internal_const_value_type = value_type const;
@@ -123,14 +123,14 @@ namespace libsemigroups {
   struct ElementContainer<
       TElementType,
       typename std::enable_if<
-    // What happens if TElementType is a SubElement* ???
-    // It's not clear for me how you use that.
-          std::is_same<TElementType, Element*>::value
-          || std::is_same<TElementType, Element const*>::value>::type> {
-    using value_type = Element *;
-    using const_value_type = Element const*;
-    using reference       = value_type;
-    using const_reference = const_value_type;
+          // What happens if TElementType is a SubElement* ???
+          // It's not clear for me how you use that.
+          std::is_same<TElementType, Element *>::value
+          || std::is_same<TElementType, Element const *>::value>::type> {
+    using value_type       = Element *;
+    using const_value_type = Element const *;
+    using reference        = value_type;
+    using const_reference  = const_value_type;
 
     using internal_value_type       = value_type;
     using internal_const_value_type = const_value_type;
@@ -215,11 +215,11 @@ namespace libsemigroups {
                   "TElementType must not be a pointer");
     using value_type       = TElementType;
     using const_value_type = const TElementType;
-    using reference        = TElementType&;
-    using const_reference  = TElementType const&;
+    using reference        = TElementType &;
+    using const_reference  = TElementType const &;
 
-    using internal_value_type       = TElementType*;
-    using internal_const_value_type = TElementType const*;
+    using internal_value_type       = TElementType *;
+    using internal_const_value_type = TElementType const *;
 
     inline internal_const_value_type to_internal(const_reference x) const {
       return &x;

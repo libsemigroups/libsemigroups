@@ -64,11 +64,13 @@ namespace libsemigroups {
   template <typename TElementType  = Element const*,
             typename TElementHash  = std::hash<TElementType>,
             typename TElementEqual = std::equal_to<TElementType>>
-    // Florent : I didn't manage to get that working...
-    //            typename TElementHash  =
-    //               std::hash<typename ElementContainer<TElementType>::value_type>,
-    //            typename TElementEqual =
-    //               std::equal_to<typename ElementContainer<TElementType>::value_type>>
+  // Florent : I didn't manage to get that working...
+  //            typename TElementHash  =
+  //               std::hash<typename
+  //               ElementContainer<TElementType>::value_type>,
+  //            typename TElementEqual =
+  //               std::equal_to<typename
+  //               ElementContainer<TElementType>::value_type>>
   class Semigroup : public ElementContainer<TElementType>,
                     public SemigroupBase {
     using value_type = typename ElementContainer<TElementType>::value_type;
@@ -205,8 +207,7 @@ namespace libsemigroups {
       _degree = this->element_degree((*gens)[0]);
 
       for (size_t i = 0; i < _nrgens; ++i) {
-        element_index_t degree
-            = this->element_degree((*gens)[i]);
+        element_index_t degree = this->element_degree((*gens)[i]);
         if (degree != _degree) {
           for (auto& x : _gens) {
             this->internal_free(x);
@@ -383,8 +384,8 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_DEBUG
       for (TElementType const& x : *coll) {
-        LIBSEMIGROUPS_ASSERT(
-            this->element_degree(x) == this->element_degree((*coll)[0]));
+        LIBSEMIGROUPS_ASSERT(this->element_degree(x)
+                             == this->element_degree((*coll)[0]));
       }
 #endif
 #ifdef LIBSEMIGROUPS_STATS
@@ -400,8 +401,7 @@ namespace libsemigroups {
       _prefix.resize(S._nr, 0);
       _suffix.resize(S._nr, 0);
 
-      size_t deg_plus
-          = this->element_degree(coll->at(0)) - S.degree();
+      size_t deg_plus = this->element_degree(coll->at(0)) - S.degree();
 
       if (deg_plus != 0) {
         _degree += deg_plus;
@@ -564,11 +564,11 @@ namespace libsemigroups {
     //! in general in general not in position \p pos in the semigroup, i.e.
     //! is not equal to Semigroup::at(pos).
     const_reference gens(letter_t pos) const {
-    if (pos >= nrgens()) {
-      throw LibsemigroupsException(
-          "Semigroup::gens: argument was " + libsemigroups::to_string(pos)
-          + " but there are only " + libsemigroups::to_string(nrgens())
-          + " generators");
+      if (pos >= nrgens()) {
+        throw LibsemigroupsException(
+            "Semigroup::gens: argument was " + libsemigroups::to_string(pos)
+            + " but there are only " + libsemigroups::to_string(nrgens())
+            + " generators");
       }
       return this->to_external(_gens[pos]);
     }
@@ -1436,18 +1436,16 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    template<class TCollection>
-    void add_generators(TCollection const &coll) {
+    template <class TCollection> void add_generators(TCollection const& coll) {
       if (coll.size() == 0) {
         return;
       }
-      auto it = coll.begin();
-      for (size_t i = 0; i < coll.size(); ++i, ++it) {
+      for (auto it = coll.begin(); it < coll.end(); ++it) {
         element_index_t degree = this->element_degree(*it);
         if (degree != _degree) {
           throw LibsemigroupsException(
               "Semigroup::add_generators: new generator "
-              + libsemigroups::to_string(i) + " has degree "
+              + libsemigroups::to_string(it - coll.begin()) + " has degree "
               + libsemigroups::to_string(degree) + " but should have degree "
               + libsemigroups::to_string(_degree));
         }
@@ -1644,8 +1642,8 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    template<class TCollection>
-    Semigroup* copy_add_generators(TCollection const &coll) const {
+    template <class TCollection>
+    Semigroup* copy_add_generators(TCollection const& coll) const {
       if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
@@ -1678,8 +1676,7 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    template<class TCollection>
-    void closure(TCollection const &coll) {
+    template <class TCollection> void closure(TCollection const& coll) {
       if (coll.size() == 0) {
         return;
       } else {
@@ -1711,8 +1708,8 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
-    template<class TCollection>
-    Semigroup* copy_closure(TCollection const &coll) {
+    template <class TCollection>
+    Semigroup* copy_closure(TCollection const& coll) {
       if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
@@ -1752,7 +1749,7 @@ namespace libsemigroups {
           typename std::conditional<std::is_trivial<value_type>::value,
                                     const_value_type,
                                     const_reference>::type;
-      typedef iterated_value reference;
+      typedef iterated_value                                    reference;
       typedef typename std::vector<TElementType>::const_pointer pointer;
       typedef std::random_access_iterator_tag iterator_category;
 
@@ -1917,10 +1914,10 @@ namespace libsemigroups {
 
     //! A type for sorted const iterators through (element, index) pairs of \c
     //! this.
-    typedef const_iterator_pair_first         const_iterator_sorted;
+    typedef const_iterator_pair_first const_iterator_sorted;
     //! A type for sorted const iterators through (idempotent, index) pairs of
     //! \c this.
-    typedef const_iterator_pair_first         const_iterator_idempotents;
+    typedef const_iterator_pair_first const_iterator_idempotents;
     //! A type for reverse sorted const iterators through (element, index)
     //! pairs of \c this.
     typedef const_reverse_iterator_pair_first const_reverse_iterator_sorted;
