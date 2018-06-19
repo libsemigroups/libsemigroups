@@ -33,7 +33,8 @@ namespace libsemigroups {
   }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <typename TElementType> inline TElementType empty_key(TElementType x) {
+  template <typename TElementType>
+  inline TElementType empty_key(TElementType x) {
     return x.empty_key();
   }
 #endif
