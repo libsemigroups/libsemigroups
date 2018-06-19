@@ -1171,9 +1171,11 @@ class NonTrivial {
 };
 
 namespace libsemigroups {
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <> NonTrivial empty_key(NonTrivial) {
     return NonTrivial();
   }
+#endif
 }  // namespace libsemigroups
 
 namespace std {
