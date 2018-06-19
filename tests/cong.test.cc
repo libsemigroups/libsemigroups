@@ -896,7 +896,7 @@ TEST_CASE("Congruence 28: test_less_than",
 }*/
 
 std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
-// q is supposed to be 0 or 1
+  // q is supposed to be 0 or 1
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
@@ -919,13 +919,15 @@ std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
   rels.push_back({{e[l], id}, {e[l]}});
 
   switch (q) {
-  case 0:
-    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {s[i]}});
-    break;
-  case 1:
-    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {id}});
-    break;
-    // default: assert(FALSE)
+    case 0:
+      for (size_t i = 0; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {s[i]}});
+      break;
+    case 1:
+      for (size_t i = 0; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {id}});
+      break;
+      // default: assert(FALSE)
   }
   for (int i = 0; i < static_cast<int>(l); ++i) {
     for (int j = 0; j < static_cast<int>(l); ++j) {
@@ -972,8 +974,6 @@ std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
   return rels;
 }
 
-
-
 std::vector<relation_t> EGTypeBMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
@@ -993,10 +993,9 @@ std::vector<relation_t> EGTypeBMonoid(size_t l, int q) {
   return rels;
 }
 
-
 std::vector<size_t> max_elt_B(size_t i) {
   std::vector<size_t> t(0);
-  for (int end=i; end >= 0; end--) {
+  for (int end = i; end >= 0; end--) {
     for (int k = 0; k <= end; k++) {
       t.push_back(k);
     }
@@ -1017,30 +1016,28 @@ std::vector<relation_t> RennerTypeBMonoid(size_t l, int q) {
 
   std::vector<relation_t> rels = RennerCommonTypeBMonoid(l, q);
 
-  for (size_t i = 1; i<l; i++) {
+  for (size_t i = 1; i < l; i++) {
     std::vector<size_t> new_rel = max_elt_B(i);
     new_rel.push_back(e[0]);
     new_rel.insert(new_rel.begin(), e[0]);
-    rels.push_back({new_rel, {e[i+1]}});
+    rels.push_back({new_rel, {e[i + 1]}});
   }
 
   return rels;
 }
 
-
 std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
-// q is supposed to be 0 or 1
+  // q is supposed to be 0 or 1
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
-    s.push_back(i);     // 0 est \pi_1^f et 1 est \pi_1^e
+    s.push_back(i);  // 0 est \pi_1^f et 1 est \pi_1^e
   }
   for (size_t i = l; i < 2 * l + 1; ++i) {
     e.push_back(i);
   }
-  size_t f = 2 * l + 1;
+  size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
-
 
   std::vector<relation_t> rels = {relation_t({id, id}, {id})};
   // identity relations
@@ -1056,69 +1053,68 @@ std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
   rels.push_back({{f, id}, {f}});
 
   switch (q) {
-  case 0:
-    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {s[i]}});
-    break;
-  case 1:
-    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {id}});
-    break;
-    // default: assert(FALSE)
+    case 0:
+      for (size_t i = 0; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {s[i]}});
+      break;
+    case 1:
+      for (size_t i = 0; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {id}});
+      break;
+      // default: assert(FALSE)
   }
-  for (int i = 1; i < static_cast<int>(l); ++i) {   // tout sauf \pi_1^f
+  for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
     for (int j = 1; j < static_cast<int>(l); ++j) {
       if (std::abs(i - j) >= 2) {
         rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
       }
     }
   }
-  for (int i = 3; i < static_cast<int>(l); ++i){    // \pi_1^f avec les \pi_i pour i>2
-    rels.push_back({{s[0], s[i]},{s[i], s[0]}});
+  for (int i = 3; i < static_cast<int>(l);
+       ++i) {  // \pi_1^f avec les \pi_i pour i>2
+    rels.push_back({{s[0], s[i]}, {s[i], s[0]}});
   }
-  rels.push_back({{s[0], s[1]},{s[1], s[0]}});      // \pi_1^f avec \pi_1^e
+  rels.push_back({{s[0], s[1]}, {s[1], s[0]}});  // \pi_1^f avec \pi_1^e
 
-
-  for (size_t i = 1; i < l - 1; ++i) {              // tresses
+  for (size_t i = 1; i < l - 1; ++i) {  // tresses
     rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
   }
-  rels.push_back({{s[0], s[2], s[0]},{s[2], s[0], s[2]}});      // tresse de \pi_1^f
+  rels.push_back(
+      {{s[0], s[2], s[0]}, {s[2], s[0], s[2]}});  // tresse de \pi_1^f
 
-
-
-  for (size_t i = 2; i < l; ++i) {          // commutation, attention début à 2
+  for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
     for (size_t j = 0; j < i; ++j) {
       rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
     }
     rels.push_back({{s[i], f}, {f, s[i]}});
   }
-  rels.push_back({{s[0], f}, {f, s[0]}});       // commutation \pi_1^f et f
-  rels.push_back({{s[1], e[0]}, {e[0], s[1]}}); // commutation \pi_1^e et e
+  rels.push_back({{s[0], f}, {f, s[0]}});        // commutation \pi_1^f et f
+  rels.push_back({{s[1], e[0]}, {e[0], s[1]}});  // commutation \pi_1^e et e
 
-
-  for (size_t i = 1; i < l; ++i) {              // absorption
+  for (size_t i = 1; i < l; ++i) {  // absorption
     for (size_t j = i + 1; j < l + 1; ++j) {
       rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
       rels.push_back({{s[i], e[j]}, {e[j]}});
-      if (i == 1){                                  // cas particulier \pi_1^f
-      rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
-      rels.push_back({{s[0], e[j]}, {e[j]}});
+      if (i == 1) {  // cas particulier \pi_1^f
+        rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
+        rels.push_back({{s[0], e[j]}, {e[j]}});
       }
     }
   }
 
-  for (size_t i = 0; i < l + 1; ++i) {      // produit e_i
+  for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
     for (size_t j = 0; j < l + 1; ++j) {
       rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
       rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
     }
-    if (i > 1){
-      rels.push_back({{f, e[i]},{e[i], f}});
-      rels.push_back({{f, e[i]},{e[i]}});
+    if (i > 1) {
+      rels.push_back({{f, e[i]}, {e[i], f}});
+      rels.push_back({{f, e[i]}, {e[i]}});
     }
   }
-  rels.push_back({{f, f},{f}});
-  rels.push_back({{f, e[0]},{e[1]}});
-  rels.push_back({{e[0], f},{e[1]}});
-
+  rels.push_back({{f, f}, {f}});
+  rels.push_back({{f, e[0]}, {e[1]}});
+  rels.push_back({{e[0], f}, {e[1]}});
 
   for (size_t i = 2; i < l; ++i) {
     rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
@@ -1129,10 +1125,6 @@ std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
   return rels;
 }
 
-
-
-
-
 std::vector<relation_t> EGTypeDMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
@@ -1142,26 +1134,25 @@ std::vector<relation_t> EGTypeDMonoid(size_t l, int q) {
   for (size_t i = l; i < 2 * l + 1; ++i) {
     e.push_back(i);
   }
-  size_t f = 2 * l + 1;
+  size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
 
   std::vector<relation_t> rels = RennerCommonTypeDMonoid(l, q);
 
-  if (l >= 3){
+  if (l >= 3) {
     rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
     rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
   }
   return rels;
 }
 
-
 std::vector<size_t> max_elt_D(size_t i, int g) {
-// g est 0 ou 1 : 0 pour f et 1 pour e
+  // g est 0 ou 1 : 0 pour f et 1 pour e
   std::vector<size_t> t(0);
-  int parity = g;
-  for (int end=i; end > 0; end--) {
+  int                 parity = g;
+  for (int end = i; end > 0; end--) {
     t.push_back(parity);
-    for(int k = 2; k <= end; k++) {
+    for (int k = 2; k <= end; k++) {
       t.push_back(k);
     }
     parity = (parity + 1) % 2;
@@ -1169,7 +1160,7 @@ std::vector<size_t> max_elt_D(size_t i, int g) {
   return t;
 }
 
-#include<iostream>
+#include <iostream>
 
 std::vector<relation_t> RennerTypeDMonoid(size_t l, int q) {
   std::vector<size_t> s;
@@ -1180,7 +1171,7 @@ std::vector<relation_t> RennerTypeDMonoid(size_t l, int q) {
   for (size_t i = l; i < 2 * l + 1; ++i) {
     e.push_back(i);
   }
-  size_t f = 2 * l + 1;
+  size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
 
   std::vector<relation_t> rels = RennerCommonTypeDMonoid(l, q);
@@ -1192,47 +1183,36 @@ std::vector<relation_t> RennerTypeDMonoid(size_t l, int q) {
     if (i % 2 == 0) {
       new_rel_e.insert(new_rel_e.begin(), f);
       new_rel_e.push_back(e[0]);
-      rels.push_back({new_rel_e, {e[i+1]}});
+      rels.push_back({new_rel_e, {e[i + 1]}});
 
       new_rel_f.insert(new_rel_f.begin(), e[0]);
       new_rel_f.push_back(f);
-      rels.push_back({new_rel_f, {e[i+1]}});
+      rels.push_back({new_rel_f, {e[i + 1]}});
     } else {
       new_rel_e.insert(new_rel_e.begin(), f);
       new_rel_e.push_back(f);
-      rels.push_back({new_rel_e, {e[i+1]}});
+      rels.push_back({new_rel_e, {e[i + 1]}});
 
       new_rel_f.insert(new_rel_f.begin(), e[0]);
       new_rel_f.push_back(e[0]);
-      rels.push_back({new_rel_f, {e[i+1]}});
+      rels.push_back({new_rel_f, {e[i + 1]}});
     }
-
-    std::cout << "new_rel_e : ";
-    for (auto lt : new_rel_e) std::cout << " " << lt;
-    std::cout << std::endl;
-    std::cout << "new_rel_f : ";
-    for (auto lt : new_rel_f) std::cout << " " << lt;
-    std::cout << std::endl;
-
   }
   return rels;
 }
 
-
-
-
 TEST_CASE("Congruence 29: Renner monoid type B2 (E. G. presentation), q = 1",
-          "[congruence][fpsemigroup][29]") {
+          "[congruence][fpsemigroup][quick][29]") {
   Congruence cong("twosided", 6, {}, EGTypeBMonoid(2, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 57);
 }
 
 TEST_CASE("Congruence 30: Renner monoid type B2 (E. G. presentation), q = 0",
-          "[congruence][fpsemigroup][30]") {
+          "[congruence][fpsemigroup][quick][30]") {
   Congruence cong("twosided", 6, {}, EGTypeBMonoid(2, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 57);
 }
@@ -1241,7 +1221,7 @@ TEST_CASE("Congruence 30: Renner monoid type B2 (E. G. presentation), q = 0",
 TEST_CASE("Congruence 31: Renner monoid type B3 (E. G. presentation), q = 1",
           "[congruence][fpsemigroup][31]") {
   Congruence cong("twosided", 8, {}, EGTypeBMonoid(3, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 757);
 }
@@ -1250,104 +1230,113 @@ TEST_CASE("Congruence 31: Renner monoid type B3 (E. G. presentation), q = 1",
 TEST_CASE("Congruence 32: Renner monoid type B3 (E. G. presentation), q = 0",
           "[congruence][fpsemigroup][32]") {
   Congruence cong("twosided", 8, {}, EGTypeBMonoid(3, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 757);
 }
 
-TEST_CASE("Congruence 33: Renner monoid type B2 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][33]") {
+TEST_CASE(
+    "Congruence 33: Renner monoid type B2 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][quick][33]") {
   Congruence cong("twosided", 6, {}, RennerTypeBMonoid(2, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 57);
 }
 
-TEST_CASE("Congruence 34: Renner monoid type B2 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][34]") {
+TEST_CASE(
+    "Congruence 34: Renner monoid type B2 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][quick][34]") {
   Congruence cong("twosided", 6, {}, RennerTypeBMonoid(2, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 57);
 }
 
-TEST_CASE("Congruence 35: Renner monoid type B3 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][35]") {
+TEST_CASE(
+    "Congruence 35: Renner monoid type B3 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][quick][35]") {
   Congruence cong("twosided", 8, {}, RennerTypeBMonoid(3, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 757);
 }
 
-TEST_CASE("Congruence 36: Renner monoid type B3 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][36]") {
+TEST_CASE(
+    "Congruence 36: Renner monoid type B3 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][quick][36]") {
   Congruence cong("twosided", 8, {}, RennerTypeBMonoid(3, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 757);
 }
 
-TEST_CASE("Congruence 37: Renner monoid type B4 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][37]") {
+TEST_CASE(
+    "Congruence 37: Renner monoid type B4 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][standard][37]") {
   Congruence cong("twosided", 10, {}, RennerTypeBMonoid(4, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13889);
 }
 
-TEST_CASE("Congruence 38: Renner monoid type B4 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][38]") {
+TEST_CASE(
+    "Congruence 38: Renner monoid type B4 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][standard][38]") {
   Congruence cong("twosided", 10, {}, RennerTypeBMonoid(4, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13889);
 }
 
-TEST_CASE("Congruence 39: Renner monoid type B5 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][39]") {
+TEST_CASE(
+    "Congruence 39: Renner monoid type B5 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][extreme][39]") {
   Congruence cong("twosided", 12, {}, RennerTypeBMonoid(5, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 322021);
 }
 
-TEST_CASE("Congruence 40: Renner monoid type B5 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][40]") {
+TEST_CASE(
+    "Congruence 40: Renner monoid type B5 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][extreme][40]") {
   Congruence cong("twosided", 12, {}, RennerTypeBMonoid(5, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 322021);
 }
 
-
+// TODO: segfaults!
 TEST_CASE("Congruence 41: Renner monoid type D2 (E. G. presentation), q = 1",
           "[congruence][fpsemigroup][41]") {
   Congruence cong("twosided", 7, {}, EGTypeDMonoid(2, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 37);
 }
 
+// TODO: fails!
 TEST_CASE("Congruence 42: Renner monoid type D2 (E. G. presentation), q = 0",
           "[congruence][fpsemigroup][42]") {
   Congruence cong("twosided", 7, {}, EGTypeDMonoid(2, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 37);
 }
 
 TEST_CASE("Congruence 43: Renner monoid type D3 (E. G. presentation), q = 1",
-          "[congruence][fpsemigroup][43]") {
+          "[congruence][fpsemigroup][quick][43]") {
   Congruence cong("twosided", 9, {}, EGTypeDMonoid(3, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 541);
 }
 
 TEST_CASE("Congruence 44: Renner monoid type D3 (E. G. presentation), q = 0",
-          "[congruence][fpsemigroup][44]") {
+          "[congruence][fpsemigroup][quick][44]") {
   Congruence cong("twosided", 9, {}, EGTypeDMonoid(3, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 541);
 }
@@ -1356,7 +1345,7 @@ TEST_CASE("Congruence 44: Renner monoid type D3 (E. G. presentation), q = 0",
 TEST_CASE("Congruence 45: Renner monoid type D4 (E. G. presentation), q = 1",
           "[congruence][fpsemigroup][45]") {
   Congruence cong("twosided", 11, {}, EGTypeDMonoid(4, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 10625);
 }
@@ -1365,105 +1354,114 @@ TEST_CASE("Congruence 45: Renner monoid type D4 (E. G. presentation), q = 1",
 TEST_CASE("Congruence 46: Renner monoid type D4 (E. G. presentation), q = 0",
           "[congruence][fpsemigroup][46]") {
   Congruence cong("twosided", 11, {}, EGTypeDMonoid(4, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 10625);
 }
 
-
-
-TEST_CASE("Congruence 47: Renner monoid type D2 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][47]") {
+// TODO: fails!
+TEST_CASE(
+    "Congruence 47: Renner monoid type D2 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][47]") {
   Congruence cong("twosided", 7, {}, RennerTypeDMonoid(2, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 37);
 }
 
-TEST_CASE("Congruence 48: Renner monoid type D2 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][48]") {
+// TODO: segfaults!
+TEST_CASE(
+    "Congruence 48: Renner monoid type D2 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][48]") {
   Congruence cong("twosided", 7, {}, RennerTypeDMonoid(2, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 37);
 }
 
-TEST_CASE("Congruence 49: Renner monoid type D3 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][49]") {
+TEST_CASE(
+    "Congruence 49: Renner monoid type D3 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][quick][49]") {
   Congruence cong("twosided", 9, {}, RennerTypeDMonoid(3, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 541);
 }
 
-TEST_CASE("Congruence 50: Renner monoid type D3 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][50]") {
+TEST_CASE(
+    "Congruence 50: Renner monoid type D3 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][quick][50]") {
   Congruence cong("twosided", 9, {}, RennerTypeDMonoid(3, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 541);
 }
 
-TEST_CASE("Congruence 51: Renner monoid type D4 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][51]") {
+TEST_CASE(
+    "Congruence 51: Renner monoid type D4 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][quick][51]") {
   Congruence cong("twosided", 11, {}, RennerTypeDMonoid(4, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 10625);
 }
 
-TEST_CASE("Congruence 52: Renner monoid type D4 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][52]") {
+TEST_CASE(
+    "Congruence 52: Renner monoid type D4 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][standard][52]") {
   Congruence cong("twosided", 11, {}, RennerTypeDMonoid(4, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 10625);
 }
 
-TEST_CASE("Congruence 53: Renner monoid type D5 (Gay-Hivert presentation), q = 1",
-          "[congruence][fpsemigroup][53]") {
+TEST_CASE(
+    "Congruence 53: Renner monoid type D5 (Gay-Hivert presentation), q = 1",
+    "[congruence][fpsemigroup][extreme][53]") {
   Congruence cong("twosided", 13, {}, RennerTypeDMonoid(5, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 258661);
 }
 
-TEST_CASE("Congruence 54: Renner monoid type D5 (Gay-Hivert presentation), q = 0",
-          "[congruence][fpsemigroup][54]") {
+TEST_CASE(
+    "Congruence 54: Renner monoid type D5 (Gay-Hivert presentation), q = 0",
+    "[congruence][fpsemigroup][extreme][54]") {
   Congruence cong("twosided", 13, {}, RennerTypeDMonoid(5, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 258661);
 }
 
 // The two following are quite large, so I keep them commented out
-// TEST_CASE("Congruence 55: Renner monoid type D6 (Gay-Hivert presentation), q = 1",
+// TEST_CASE("Congruence 55: Renner monoid type D6 (Gay-Hivert presentation), q
+// = 1",
 //           "[congruence][fpsemigroup][55]") {
 //   Congruence cong("twosided", 15, {}, RennerTypeDMonoid(6, 1));
-//   cong.set_report(true);
+//   REPORTER.set_report(CONG_REPORT);
 //   REQUIRE(!cong.is_obviously_infinite());
 //   REQUIRE(cong.nr_classes() == 7464625);
 // }
 
-// TEST_CASE("Congruence 56: Renner monoid type D6 (Gay-Hivert presentation), q = 0",
+// TEST_CASE("Congruence 56: Renner monoid type D6 (Gay-Hivert presentation), q
+// = 0",
 //           "[congruence][fpsemigroup][56]") {
 //   Congruence cong("twosided", 15, {}, RennerTypeDMonoid(6, 0));
-//   cong.set_report(true);
+//   REPORTER.set_report(CONG_REPORT);
 //   REQUIRE(!cong.is_obviously_infinite());
 //   REQUIRE(cong.nr_classes() == 7464625);
 // }
 
-
 std::vector<relation_t> RookMonoid(size_t l, int q) {
-// q is supposed to be 0 or 1
+  // q is supposed to be 0 or 1
 
   std::vector<size_t> s;
   for (size_t i = 0; i < l; ++i) {
-    s.push_back(i);     // 0 est \pi_0
+    s.push_back(i);  // 0 est \pi_0
   }
 
   // identity relations
-  size_t id = l;
+  size_t                  id   = l;
   std::vector<relation_t> rels = {relation_t({id, id}, {id})};
   for (size_t i = 0; i < l; ++i) {
     rels.push_back({{s[i], id}, {s[i]}});
@@ -1471,14 +1469,16 @@ std::vector<relation_t> RookMonoid(size_t l, int q) {
   }
 
   switch (q) {
-  case 0:
-    for (size_t i = 0; i < l; ++i) rels.push_back({{s[i], s[i]}, {s[i]}});
-    break;
-  case 1:
-    rels.push_back({{s[0], s[0]}, {s[0]}});
-    for (size_t i = 1; i < l; ++i) rels.push_back({{s[i], s[i]}, {id}});
-    break;
-    // default: assert(FALSE)
+    case 0:
+      for (size_t i = 0; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {s[i]}});
+      break;
+    case 1:
+      rels.push_back({{s[0], s[0]}, {s[0]}});
+      for (size_t i = 1; i < l; ++i)
+        rels.push_back({{s[i], s[i]}, {id}});
+      break;
+      // default: assert(FALSE)
   }
   for (int i = 0; i < static_cast<int>(l); ++i) {
     for (int j = 0; j < static_cast<int>(l); ++j) {
@@ -1499,39 +1499,39 @@ std::vector<relation_t> RookMonoid(size_t l, int q) {
 }
 
 TEST_CASE("Congruence 57: Rook monoid R5, q = 0",
-          "[congruence][fpsemigroup][57]") {
+          "[congruence][fpsemigroup][quick][57]") {
   Congruence cong("twosided", 6, {}, RookMonoid(5, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 1546);
 }
 
 TEST_CASE("Congruence 58: Rook monoid R5, q = 1",
-          "[congruence][fpsemigroup][58]") {
+          "[congruence][fpsemigroup][quick][58]") {
   Congruence cong("twosided", 6, {}, RookMonoid(5, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 1546);
 }
 
 TEST_CASE("Congruence 59: Rook monoid R6, q = 0",
-          "[congruence][fpsemigroup][59]") {
+          "[congruence][fpsemigroup][quick][59]") {
   Congruence cong("twosided", 7, {}, RookMonoid(6, 0));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13327);
 }
 
 TEST_CASE("Congruence 60: Rook monoid R6, q = 1",
-          "[congruence][fpsemigroup][60]") {
+          "[congruence][fpsemigroup][quick][60]") {
   Congruence cong("twosided", 7, {}, RookMonoid(6, 1));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13327);
 }
 
 template <typename T>
-std::vector<T> concat(std::vector<T> lhs, const std::vector<T> & rhs) {
+std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
   lhs.insert(lhs.end(), rhs.begin(), rhs.end());
   return lhs;
 }
@@ -1539,62 +1539,56 @@ std::vector<T> concat(std::vector<T> lhs, const std::vector<T> & rhs) {
 std::vector<relation_t> Stell(size_t l) {
   std::vector<size_t> pi;
   for (size_t i = 0; i < l; ++i) {
-    pi.push_back(i);     // 0 est \pi_0
+    pi.push_back(i);  // 0 est \pi_0
   }
 
-  std::vector<relation_t> rels {};
-  std::vector<size_t> t {pi[0]};
+  std::vector<relation_t> rels{};
+  std::vector<size_t>     t{pi[0]};
   for (int i = 1; i < static_cast<int>(l); ++i) {
-    t.insert(t.begin(),pi[i]);
+    t.insert(t.begin(), pi[i]);
     rels.push_back({concat(t, {pi[i]}), t});
   }
   return rels;
 }
 
-TEST_CASE("Congruence 61: Stellar S2",
-          "[congruence][fpsemigroup][61]") {
+TEST_CASE("Congruence 61: Stellar S2", "[congruence][fpsemigroup][quick][61]") {
   Congruence cong("twosided", 3, RookMonoid(2, 0), Stell(2));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 5);
 }
 
-TEST_CASE("Congruence 62: Stellar S3",
-          "[congruence][fpsemigroup][62]") {
+TEST_CASE("Congruence 62: Stellar S3", "[congruence][fpsemigroup][quick][62]") {
   Congruence cong("twosided", 4, RookMonoid(3, 0), Stell(3));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 16);
 }
 
-TEST_CASE("Congruence 63: Stellar S4",
-          "[congruence][fpsemigroup][63]") {
+TEST_CASE("Congruence 63: Stellar S4", "[congruence][fpsemigroup][quick][63]") {
   Congruence cong("twosided", 5, RookMonoid(4, 0), Stell(4));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 65);
 }
 
-TEST_CASE("Congruence 64: Stellar S5",
-          "[congruence][fpsemigroup][64]") {
+TEST_CASE("Congruence 64: Stellar S5", "[congruence][fpsemigroup][quick][64]") {
   Congruence cong("twosided", 6, RookMonoid(5, 0), Stell(5));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 326);
 }
 
-TEST_CASE("Congruence 65: Stellar S6",
-          "[congruence][fpsemigroup][65]") {
+TEST_CASE("Congruence 65: Stellar S6", "[congruence][fpsemigroup][quick][65]") {
   Congruence cong("twosided", 7, RookMonoid(6, 0), Stell(6));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 1957);
 }
 
-TEST_CASE("Congruence 66: Stellar S7",
-          "[congruence][fpsemigroup][66]") {
+TEST_CASE("Congruence 66: Stellar S7", "[congruence][fpsemigroup][quick][66]") {
   Congruence cong("twosided", 8, RookMonoid(7, 0), Stell(7));
-  cong.set_report(true);
+  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13700);
 }
