@@ -9,6 +9,11 @@ AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
 
+dnl Set default CFLAGS/CXXFLAGS to nothing, to avoid passing -g -O2 as
+dnl the default C/CXXFLAGS when compiling in, e.g. debug mode
+: ${CFLAGS=""}
+: ${CXXFLAGS=""}
+
 AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
