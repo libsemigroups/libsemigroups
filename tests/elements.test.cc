@@ -684,6 +684,47 @@ TEST_CASE("Bipartition 07: convenience constructor",
                     LibsemigroupsException);
 }
 
+TEST_CASE("Bipartition 07: force copy constructor over move constructor",
+          "[quick][element][bipart][07]") {
+  std::vector<uint32_t> xx(
+      {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
+  auto                  x = Bipartition(xx);
+  std::vector<uint32_t> yy(
+      {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
+  auto                  y = Bipartition(yy);
+  std::vector<uint32_t> zz(
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+  auto z = Bipartition(zz);
+  REQUIRE(!(y == z));
+
+  z.redefine(x, y, 0);
+  auto expected = Bipartition(
+      {0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1});
+  REQUIRE(z == expected);
+
+  expected = Bipartition(
+      {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
+  z.redefine(y, x, 0);
+  REQUIRE(z == expected);
+
+  REQUIRE(!(y < z));
+  REQUIRE(x.degree() == 10);
+  REQUIRE(y.degree() == 10);
+  REQUIRE(z.degree() == 10);
+  REQUIRE(x.complexity() == 100);
+  REQUIRE(y.complexity() == 100);
+  REQUIRE(z.complexity() == 100);
+
+  auto id = x.identity();
+  z.redefine(id, x, 0);
+  REQUIRE(z == x);
+  z.redefine(x, id, 0);
+  REQUIRE(z == x);
+  z.redefine(id, y, 0);
+  REQUIRE(z == y);
+  z.redefine(y, id, 0);
+  REQUIRE(z == y);
+}
 TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
           "[quick][element][matrix][01]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
