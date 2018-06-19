@@ -7,14 +7,7 @@ echo -e "\nConfiguring with --enable-densehashmap with sparsehash not installed 
 
 # Check configure with --enable-googlehashmap and googlehashmap available
 echo -e "\nDownloading sparsehash . . ."
-git clone -b master --depth=1 https://github.com/sparsehash/sparsehash-c11.git extern/sparsehash
-cd extern/sparsehash
-mkdir -p build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release  ..
-sudo make install
-sudo mv /usr/local/include/google/sparsehash/ /usr/local/include/
-cd ../../..
+git clone -b master --depth=1 https://github.com/sparsehash/sparsehash-c11.git extern/sparsehash-c11
 
 echo -e "\nConfiguring with --enable-densehashmap with sparsehash installed . . ."
 make clean && ./configure --enable-densehashmap && make check-quick -j2
