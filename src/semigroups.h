@@ -1437,6 +1437,8 @@ namespace libsemigroups {
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
     template <class TCollection> void add_generators(TCollection const& coll) {
+      static_assert(!std::is_pointer<TCollection>::value,
+                    "TCollection should not be a pointer");
       if (coll.size() == 0) {
         return;
       }
@@ -1644,6 +1646,8 @@ namespace libsemigroups {
     //! LibsemigroupsException will be thrown.
     template <class TCollection>
     Semigroup* copy_add_generators(TCollection const& coll) const {
+      static_assert(!std::is_pointer<TCollection>::value,
+                    "TCollection should not be a pointer");
       if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
@@ -1677,6 +1681,8 @@ namespace libsemigroups {
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
     template <class TCollection> void closure(TCollection const& coll) {
+      static_assert(!std::is_pointer<TCollection>::value,
+                    "TCollection should not be a pointer");
       if (coll.size() == 0) {
         return;
       } else {
@@ -1710,6 +1716,8 @@ namespace libsemigroups {
     //! LibsemigroupsException will be thrown.
     template <class TCollection>
     Semigroup* copy_closure(TCollection const& coll) {
+      static_assert(!std::is_pointer<TCollection>::value,
+                    "TCollection should not be a pointer");
       if (coll.size() == 0) {
         return new Semigroup(*this);
       } else {
