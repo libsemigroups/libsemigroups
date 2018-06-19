@@ -38,6 +38,7 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
+// FIXME the following example is extremely slow when using densehashmap.
 #if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
 static inline void test_idempotent(Semigroup<>& S, const Element* x) {

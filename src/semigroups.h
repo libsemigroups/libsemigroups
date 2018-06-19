@@ -246,7 +246,7 @@ namespace libsemigroups {
           _enumerate_order.push_back(_nr);
           _letter_to_pos.push_back(_nr);
           _length.push_back(1);
-          _map.insert(std::make_pair(_elements.back(), _nr));
+          _map.emplace(_elements.back(), _nr);
           _prefix.push_back(UNDEFINED);
           // TODO _prefix.push_back(_nr) and get rid of _letter_to_pos, and
           // the extra clause in the enumerate method!
@@ -327,7 +327,7 @@ namespace libsemigroups {
         // TODO could be internal_const_reference
         internal_value_type y = this->internal_copy(x);
         _elements.push_back(y);
-        _map.insert(std::make_pair(y, i++));
+        _map.emplace(y, i++);
       }
       copy_gens();
     }
@@ -438,7 +438,7 @@ namespace libsemigroups {
         internal_value_type y = this->internal_copy(x);
         this->increase_deg_by(y, deg_plus);
         _elements.push_back(y);
-        _map.insert(std::make_pair(y, i));
+        _map.emplace(y, i);
         is_one(y, i++);
       }
       copy_gens();  // copy the old generators
@@ -1292,7 +1292,7 @@ namespace libsemigroups {
               _final.push_back(j);
               _enumerate_order.push_back(_nr);
               _length.push_back(2);
-              _map.insert(std::make_pair(_elements.back(), _nr));
+              _map.emplace(_elements.back(), _nr);
               _prefix.push_back(i);
               _reduced.set(i, j, true);
               _right.set(i, j, _nr);
@@ -1349,7 +1349,7 @@ namespace libsemigroups {
                 _first.push_back(b);
                 _final.push_back(j);
                 _length.push_back(_wordlen + 2);
-                _map.insert(std::make_pair(_elements.back(), _nr));
+                _map.emplace(_elements.back(), _nr);
                 _prefix.push_back(i);
                 _reduced.set(i, j, true);
                 _right.set(i, j, _nr);
@@ -1478,7 +1478,7 @@ namespace libsemigroups {
         if (it == _map.end()) {  // new generator
           _gens.push_back(this->internal_copy(this->to_internal(x)));
           _elements.push_back(_gens.back());
-          _map.insert(std::make_pair(_gens.back(), _nr));
+          _map.emplace(_gens.back(), _nr);
 
           _first.push_back(_gens.size() - 1);
           _final.push_back(_gens.size() - 1);
@@ -2122,7 +2122,7 @@ namespace libsemigroups {
           _first.push_back(b);
           _final.push_back(j);
           _length.push_back(_wordlen + 2);
-          _map.insert(std::make_pair(_elements.back(), _nr));
+          _map.emplace(_elements.back(), _nr);
           _prefix.push_back(i);
           _reduced.set(i, j, true);
           _right.set(i, j, _nr);

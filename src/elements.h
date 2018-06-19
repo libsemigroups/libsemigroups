@@ -387,7 +387,9 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
     Element* empty_key() const override {
-      return new TSubclass({std::numeric_limits<TValueType>::max()});
+      // + 2 since bipartition must be of even degree!
+      std::vector<TValueType> vector(this->degree() + 2);
+      return new TSubclass(std::move(vector));
     }
 #endif
 
@@ -999,6 +1001,14 @@ namespace libsemigroups {
              - std::count(
                    this->_vector.cbegin(), this->_vector.cend(), UNDEFINED);
     }
+
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    Element* empty_key() const override {
+      std::vector<TValueType> vector(this->degree() + 1);
+      std::iota(vector.begin(), vector.end(), 0);
+      return new PartialPerm(std::move(vector));
+    }
+#endif
   };
 
   //! Class for bipartitions.
@@ -1455,6 +1465,14 @@ namespace libsemigroups {
       this->reset_hash_value();
     }
 
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    Element* empty_key() const override {
+      std::vector<TValueType> vector((this->degree() + 1)
+                                     * (this->degree() + 1));
+      return new TSubclass(std::move(vector), _semiring);
+    }
+#endif
+
    protected:
     friend class ElementWithVectorData<TValueType, TSubclass>;
     //! Constructs a MatrixOverSemiringBase whose underlying semiring is
@@ -1811,12 +1829,6 @@ namespace libsemigroups {
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
     void redefine(Element const&, Element const&, size_t) override;
-
-#ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    Element* empty_key() const override {
-      return new PBR({{ std::numeric_limits<u_int32_t>::max() }});
-    }
-#endif
 
     //! Insertion operator
     //!
