@@ -47,39 +47,6 @@ TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
   REQUIRE(S.nridempotents() == 2360);
   delete_gens(gens);
 }
-
-// TODO: move to benchmarks
-TEST_CASE("Semigroup 075: regular boolean mat monoid 5 using BooleanMat",
-          "[extreme][semigroup][finite][075]") {
-  std::vector<Element*> gens = {new BooleanMat({{0, 1, 0, 0, 0},
-                                                {1, 0, 0, 0, 0},
-                                                {0, 0, 1, 0, 0},
-                                                {0, 0, 0, 1, 0},
-                                                {0, 0, 0, 0, 1}}),
-                                new BooleanMat({{0, 1, 0, 0, 0},
-                                                {0, 0, 1, 0, 0},
-                                                {0, 0, 0, 1, 0},
-                                                {0, 0, 0, 0, 1},
-                                                {1, 0, 0, 0, 0}}),
-                                new BooleanMat({{1, 0, 0, 0, 0},
-                                                {0, 1, 0, 0, 0},
-                                                {0, 0, 1, 0, 0},
-                                                {0, 0, 0, 1, 0},
-                                                {1, 0, 0, 0, 1}}),
-                                new BooleanMat({{1, 0, 0, 0, 0},
-                                                {0, 1, 0, 0, 0},
-                                                {0, 0, 1, 0, 0},
-                                                {0, 0, 0, 1, 0},
-                                                {0, 0, 0, 0, 0}})};
-  Semigroup<>           S(gens);
-  REPORTER.set_report(true);
-  S.reserve(40000000);
-  REQUIRE(S.size() == 32311832);
-  REQUIRE(S.nridempotents() == 73023);
-  REPORTER.set_report(false);
-  delete_gens(gens);
-}
-
 #endif
 
 TEST_CASE("Semigroup 079: Exception: zero generators given",

@@ -22,6 +22,7 @@
 
 #include <benchmark/benchmark.h>
 #include <libsemigroups/bmat8.h>
+#include <libsemigroups/semigroups.h>
 
 using namespace libsemigroups;
 
@@ -70,5 +71,46 @@ static void BM_BMat8_multiply(benchmark::State& state) {
 }
 
 BENCHMARK(BM_BMat8_multiply)->UseManualTime()->MinTime(1);
+
+static void BM_size_idems_reserve_regular_bmat_5(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    Semigroup<BMat8> S({BMat8({{0, 1, 0, 0, 0},
+                               {1, 0, 0, 0, 0},
+                               {0, 0, 1, 0, 0},
+                               {0, 0, 0, 1, 0},
+                               {0, 0, 0, 0, 1}}),
+                        BMat8({{0, 1, 0, 0, 0},
+                               {0, 0, 1, 0, 0},
+                               {0, 0, 0, 1, 0},
+                               {0, 0, 0, 0, 1},
+                               {1, 0, 0, 0, 0}}),
+                        BMat8({{1, 0, 0, 0, 0},
+                               {0, 1, 0, 0, 0},
+                               {0, 0, 1, 0, 0},
+                               {0, 0, 0, 1, 0},
+                               {1, 0, 0, 0, 1}}),
+                        BMat8({{1, 0, 0, 0, 0},
+                               {0, 1, 0, 0, 0},
+                               {0, 0, 1, 0, 0},
+                               {0, 0, 0, 1, 0},
+                               {0, 0, 0, 0, 0}})});
+    S.reserve(40000000);
+
+    auto start = std::chrono::high_resolution_clock::now();
+    S.size();
+    S.nridempotents();
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds
+        = std::chrono::duration_cast<std::chrono::duration<double>>(end
+                                                                    - start);
+    state.SetIterationTime(elapsed_seconds.count());
+  }
+}
+
+BENCHMARK(BM_size_idems_reserve_regular_bmat_5)
+    ->Unit(benchmark::kMillisecond)
+    ->MinTime(1)
+    ->UseManualTime();
 
 BENCHMARK_MAIN();

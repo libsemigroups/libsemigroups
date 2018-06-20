@@ -224,37 +224,6 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(T.is_done());
   REQUIRE(T.is_begun());
 }
-
-// TODO: move to benchmarks
-TEST_CASE("Semigroup of BMats xx: regular boolean mat monoid 5 using BMat8",
-          "[extreme][semigroup][bmat][finite][02]") {
-  Semigroup<BMat8> S({BMat8({{0, 1, 0, 0, 0},
-                             {1, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 1}}),
-                      BMat8({{0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 1},
-                             {1, 0, 0, 0, 0}}),
-                      BMat8({{1, 0, 0, 0, 0},
-                             {0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {1, 0, 0, 0, 1}}),
-                      BMat8({{1, 0, 0, 0, 0},
-                             {0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0}})});
-  REPORTER.set_report(true);
-  S.reserve(40000000);
-  REQUIRE(S.size() == 32311832);
-  REQUIRE(S.nridempotents() == 73023);
-  REPORTER.set_report(false);
-}
-
 #endif
 
 TEST_CASE("Semigroup of BMats 02: Exception: zero generators given",
