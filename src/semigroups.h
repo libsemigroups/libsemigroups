@@ -514,20 +514,22 @@ namespace libsemigroups {
       }
       // TODO we could trace the right/left Cayley graph as far as possible,
       // i.e. do a partial fast_product
-      internal_value_type out = this->internal_copy(_tmp_product);
-      this->multiply(out, _gens[w[0]], _gens[w[1]]);
+      internal_value_type prod = this->internal_copy(_tmp_product);
+      this->multiply(prod, _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
-          this->internal_free(out);
+          this->internal_free(prod);
           throw LibsemigroupsException(
               "Semigroup::word_to_element: word contains "
               + libsemigroups::to_string(*it) + " but the semigroup only has "
               + libsemigroups::to_string(nrgens()) + " generators");
         }
-        this->swap(_tmp_product, out);
-        this->multiply(out, _tmp_product, _gens[*it]);
+        this->swap(_tmp_product, prod);
+        this->multiply(prod, _tmp_product, _gens[*it]);
       }
-      return this->external_copy(out);
+      value_type ret = this->external_copy(prod);
+      this->internal_free(prod);
+      return ret;
     }
 
     //! Returns the maximum length of a word in the generators so far computed.
