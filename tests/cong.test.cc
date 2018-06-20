@@ -1592,3 +1592,40 @@ TEST_CASE("Congruence 66: Stellar S7", "[congruence][fpsemigroup][quick][66]") {
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 13700);
 }
+
+TEST_CASE(
+    "Congruence 67: transformation semigroup size 88, duplicate generators",
+    "[quick][congruence][multithread]") {
+  std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+                                new Transformation<u_int16_t>({3, 2, 1, 3, 3}),
+                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+  Semigroup<>           S    = Semigroup<>(gens);
+  REPORTER.set_report(CONG_REPORT);
+  delete_gens(gens);
+  REQUIRE(S.size() == 88);
+  REQUIRE(S.nrrules() == 21);
+  REQUIRE(S.degree() == 5);
+  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_t   w1, w2;
+  S.factorisation(w1, S.position(t1));
+  S.factorisation(w2, S.position(t2));
+  std::vector<relation_t> extra({std::make_pair(w1, w2)});
+  Congruence              cong("twosided", &S, extra);
+  REPORTER.set_report(CONG_REPORT);
+
+  REQUIRE(cong.nr_classes() == 21);
+  REQUIRE(cong.nr_classes() == 21);
+  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+  Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+  word_t   w3, w4;
+  S.factorisation(w3, S.position(t3));
+  S.factorisation(w4, S.position(t4));
+  REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
+  REQUIRE(cong.test_equals(w3, w4));
+
+  delete t1;
+  delete t2;
+  delete t3;
+  delete t4;
+}

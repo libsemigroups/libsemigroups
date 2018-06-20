@@ -130,6 +130,15 @@ lstest_SOURCES += tests/semiring.test.cc
 lstest_SOURCES += tests/timer.test.cc
 lstest_SOURCES += tests/tc.test.cc
 lstest_SOURCES += tests/uf.test.cc
+lstest_SOURCES += tests/semigroups.bipart.test.cc
+lstest_SOURCES += tests/semigroups.bmat.test.cc
+lstest_SOURCES += tests/semigroups.booleanmat.test.cc
+lstest_SOURCES += tests/semigroups.integermatrices.test.cc
+lstest_SOURCES += tests/semigroups.partialperm.test.cc
+lstest_SOURCES += tests/semigroups.pbr.test.cc
+lstest_SOURCES += tests/semigroups.projmaxplus.test.cc
+lstest_SOURCES += tests/semigroups.transformations.test.cc
+lstest_SOURCES += tests/semigroups.tropicalmaxplus.test.cc
 
 lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
 lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS)

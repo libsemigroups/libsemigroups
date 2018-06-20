@@ -34,204 +34,6 @@ void delete_gens(std::vector<TElementType>& gens) {
 
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
-TEST_CASE("Semigroup 072: regular boolean mat monoid 4 using BMat8",
-          "[quick][semigroup][finite][072]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-
-  Semigroup<BMat8> S(gens);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
-
-  REQUIRE(S.current_max_word_length() == 1);
-  REQUIRE(!S.is_done());
-  REQUIRE(!S.is_begun());
-  REQUIRE(S.current_position(S.gens(0) * S.gens(3))
-          == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
-                                    {0, 1, 0, 0, 1},
-                                    {1, 0, 1, 0, 1},
-                                    {0, 0, 1, 0, 1},
-                                    {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.current_size() == 4);
-  REQUIRE(S.current_nrrules() == 0);
-  REQUIRE(S.length_const(0) == 1);
-  REQUIRE(S.length_non_const(5) == 2);
-
-  REQUIRE(S.size() == 63904);
-  REQUIRE(S.nridempotents() == 2360);
-  REQUIRE(S.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
-  REQUIRE(S.word_to_element({0, 1, 2, 0, 1, 2})
-          == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
-  REQUIRE(S.current_max_word_length() == 21);
-  REQUIRE(S.degree() == 0);
-  REQUIRE(S.nrgens() == 4);
-  REQUIRE(S.gens(0)
-          == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-  REQUIRE(S.gens(1)
-          == BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-  REQUIRE(S.gens(2)
-          == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
-  REQUIRE(S.gens(3)
-          == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
-  REQUIRE(S.is_done());
-  REQUIRE(S.is_begun());
-  REQUIRE(S.current_position(S.gens(0) * S.gens(3)) == 7);
-  REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
-                                    {0, 1, 0, 0, 1},
-                                    {1, 0, 1, 0, 1},
-                                    {0, 0, 1, 0, 1},
-                                    {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.current_nrrules() == 13716);
-  REQUIRE(S.prefix(0) == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.suffix(0) == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.first_letter(0) == 0);
-  REQUIRE(S.final_letter(0) == 0);
-  REQUIRE(S.batch_size() == 8192);
-  REQUIRE(S.length_const(0) == 1);
-  REQUIRE(S.length_const(7) == 2);
-  REQUIRE(S.length_const(63903) == 21);
-  REQUIRE(S.length_non_const(7) == 2);
-  REQUIRE(S.length_non_const(63903) == 21);
-  REQUIRE(S.product_by_reduction(0, 3) == 7);
-  REQUIRE(S.fast_product(0, 3) == 7);
-  REQUIRE(S.letter_to_pos(0) == 0);
-  REQUIRE(S.letter_to_pos(1) == 1);
-  REQUIRE(S.letter_to_pos(2) == 2);
-  REQUIRE(S.letter_to_pos(3) == 3);
-  REQUIRE(!S.is_idempotent(0));
-  REQUIRE(S.is_idempotent(3));
-  REQUIRE(!S.is_idempotent(7));
-  REQUIRE(S.nrrules() == 13716);
-  REQUIRE(S.test_membership(S.gens(1)));
-  REQUIRE(!S.test_membership(BMat8({{1, 0, 0, 1, 1},
-                                    {0, 1, 0, 0, 1},
-                                    {1, 0, 1, 0, 1},
-                                    {0, 0, 1, 0, 1},
-                                    {0, 0, 0, 0, 0}})));
-  REQUIRE(S.position(S.gens(1)) == 1);
-  REQUIRE(S.position(S.gens(0) * S.gens(3)) == 7);
-  REQUIRE(S.position(BMat8({{1, 0, 0, 1, 1},
-                            {0, 1, 0, 0, 1},
-                            {1, 0, 1, 0, 1},
-                            {0, 0, 1, 0, 1},
-                            {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
-
-  REQUIRE(S.sorted_position(BMat8({{1, 0, 0, 1, 1},
-                                   {0, 1, 0, 0, 1},
-                                   {1, 0, 1, 0, 1},
-                                   {0, 0, 1, 0, 1},
-                                   {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.sorted_position(S.gens(0)) == 18185);
-  REQUIRE(S.sorted_position(S.gens(3)) == 33066);
-  REQUIRE(S.sorted_position(S.gens(0) * S.gens(3)) == 18184);
-  REQUIRE(S.position_to_sorted_position(0) == 18185);
-  REQUIRE(S.position_to_sorted_position(3) == 33066);
-  REQUIRE(S.position_to_sorted_position(7) == 18184);
-
-  REQUIRE(S.at(7) == S.gens(0) * S.gens(3));
-  REQUIRE(S[7] == S[0] * S[3]);
-
-  REQUIRE(S.sorted_at(18185) == S.at(0));
-  REQUIRE(S.sorted_at(33066) == S.at(3));
-  REQUIRE(S.sorted_at(18184) == S.gens(0) * S.gens(3));
-
-  REQUIRE(S.right(0, 3) == 7);
-  RecVec<size_t>* right = S.right_cayley_graph_copy();
-
-  for (size_t i = 0; i < 63904; ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      REQUIRE(right->get(i, j) == S.right(i, j));
-    }
-  }
-  delete right;
-  REQUIRE(S.right(0, 3) == 7);
-
-  REQUIRE(S.left(0, 3) == 7);
-  RecVec<size_t>* left = S.left_cayley_graph_copy();
-
-  for (size_t i = 0; i < 63904; ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      REQUIRE(left->get(i, j) == S.left(i, j));
-    }
-  }
-  delete left;
-  REQUIRE(S.left(0, 3) == 7);
-
-  word_t w;
-  S.minimal_factorisation(w, 378);
-  REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
-  REQUIRE(S.length_const(378) == 6);
-
-  REQUIRE(S.minimal_factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
-
-  REQUIRE_THROWS_AS(S.minimal_factorisation(BMat8({{1, 0, 0, 1, 1},
-                                                   {0, 1, 0, 0, 1},
-                                                   {1, 0, 1, 0, 1},
-                                                   {0, 0, 1, 0, 1},
-                                                   {0, 0, 0, 0, 0}})),
-                    LibsemigroupsException);
-
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000), LibsemigroupsException);
-
-  w.clear();
-  S.factorisation(w, 378);
-  REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
-  REQUIRE(S.length_const(378) == 6);
-
-  REQUIRE(S.factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
-
-  REQUIRE_THROWS_AS(S.factorisation(BMat8({{1, 0, 0, 1, 1},
-                                           {0, 1, 0, 0, 1},
-                                           {1, 0, 1, 0, 1},
-                                           {0, 0, 1, 0, 1},
-                                           {0, 0, 0, 0, 0}})),
-                    LibsemigroupsException);
-
-  REQUIRE_THROWS_AS(S.factorisation(1000000), LibsemigroupsException);
-
-  S.next_relation(w);
-  REQUIRE(w == std::vector<size_t>({2, 2, 2}));
-  S.next_relation(w);
-  REQUIRE(w == std::vector<size_t>({3, 0, 7}));
-  S.next_relation(w);
-  REQUIRE(w == std::vector<size_t>({3, 2, 3}));
-
-  size_t pos = 0;
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
-  }
-  REQUIRE(pos == S.size());
-
-  // Copy - after enumerate
-  Semigroup<BMat8> T(S);
-  REQUIRE(T.size() == 63904);
-  REQUIRE(T.nridempotents() == 2360);
-  REQUIRE(T.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
-  REQUIRE(T.word_to_element({0, 1, 2, 0, 1, 2})
-          == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
-  REQUIRE(T.current_max_word_length() == 21);
-  REQUIRE(T.degree() == 0);
-  REQUIRE(T.nrgens() == 4);
-  REQUIRE(T.gens(0)
-          == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-  REQUIRE(T.gens(1)
-          == BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-  REQUIRE(T.gens(2)
-          == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
-  REQUIRE(T.gens(3)
-          == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
-  REQUIRE(T.is_done());
-  REQUIRE(T.is_begun());
-}
-
 TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
           "[quick][semigroup][finite][073]") {
   std::vector<Element*> gens = {
@@ -246,35 +48,7 @@ TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 074: regular boolean mat monoid 5 using BMat8",
-          "[extreme][semigroup][finite][074]") {
-  Semigroup<BMat8> S({BMat8({{0, 1, 0, 0, 0},
-                             {1, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 1}}),
-                      BMat8({{0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 1},
-                             {1, 0, 0, 0, 0}}),
-                      BMat8({{1, 0, 0, 0, 0},
-                             {0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {1, 0, 0, 0, 1}}),
-                      BMat8({{1, 0, 0, 0, 0},
-                             {0, 1, 0, 0, 0},
-                             {0, 0, 1, 0, 0},
-                             {0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0}})});
-  REPORTER.set_report(true);
-  S.reserve(40000000);
-  REQUIRE(S.size() == 32311832);
-  REQUIRE(S.nridempotents() == 73023);
-  REPORTER.set_report(false);
-}
-
+// TODO: move to benchmarks
 TEST_CASE("Semigroup 075: regular boolean mat monoid 5 using BooleanMat",
           "[extreme][semigroup][finite][075]") {
   std::vector<Element*> gens = {new BooleanMat({{0, 1, 0, 0, 0},
@@ -306,232 +80,68 @@ TEST_CASE("Semigroup 075: regular boolean mat monoid 5 using BooleanMat",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 076: add_generators BMat8",
-          "[quick][semigroup][finite][076]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-
-  Semigroup<BMat8> S({gens[0]});
-  REQUIRE(S.size() == 2);
-
-  S.add_generators({gens[0]});
-  REQUIRE(S.size() == 2);
-
-  S.add_generators({});
-  REQUIRE(S.size() == 2);
-
-  S.add_generators({gens[1]});
-  REQUIRE(S.current_size() == 6);
-  REQUIRE(!S.is_done());
-  S.enumerate(10);
-  REQUIRE(S.current_size() == 24);
-  REQUIRE(S.is_done());
-  REQUIRE(S.size() == 24);
-
-  S.add_generators({gens[2]});
-  REQUIRE(S.current_size() == 330);
-  REQUIRE(!S.is_done());
-
-  S.add_generators({gens[3]});
-  REQUIRE(S.current_size() == 864);
-  S.enumerate(1000);
-  REQUIRE(S.current_size() == 9056);
-  REQUIRE(!S.is_done());
-  REQUIRE(S.size() == 63904);
-}
-
-TEST_CASE("Semigroup 077: iterators BMat8", "[quick][semigroup][finite][077]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
-
-  // Calling cbegin/cend_sorted fully enumerates the semigroup
-  { auto it = S.cbegin_sorted(); }
-  REQUIRE(S.is_done());
-
-  size_t pos = 0;
-  for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); it++) {
-    REQUIRE(S.sorted_position(*it) == pos);
-    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
-    pos++;
-  }
-  REQUIRE(pos == S.size());
-
-  pos = 0;
-  for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); ++it) {
-    REQUIRE(S.sorted_position(*it) == pos);
-    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
-    pos++;
-  }
-  REQUIRE(pos == S.size());
-
-  pos = S.size();
-  for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); it++) {
-    pos--;
-    REQUIRE(S.sorted_position(*it) == pos);
-    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
-  }
-  REQUIRE(pos == 0);
-
-  pos = S.size();
-  for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); ++it) {
-    pos--;
-    REQUIRE(S.sorted_position(*it) == pos);
-    REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
-  }
-  REQUIRE(pos == 0);
-}
 #endif
-
-TEST_CASE("Semigroup 078: non-pointer, non-trivial element type",
-          "[standard][semigroup][finite][078]") {
-  std::vector<Transformation<uint_fast8_t>> gens
-      = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
-         Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
-         Transformation<uint_fast8_t>({3, 0, 7, 2, 4, 6, 2, 4}),
-         Transformation<uint_fast8_t>({3, 2, 3, 4, 5, 3, 0, 1}),
-         Transformation<uint_fast8_t>({4, 3, 7, 7, 4, 5, 0, 4}),
-         Transformation<uint_fast8_t>({5, 6, 3, 0, 3, 0, 5, 1}),
-         Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4}),
-         Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
-
-  Semigroup<Transformation<uint_fast8_t>> S(gens);
-  S.reserve(597369);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
-
-  REQUIRE(S.size() == 597369);
-  REQUIRE(S.nridempotents() == 8194);
-  size_t pos = 0;
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
-  }
-
-  S.add_generators({Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})});
-  REQUIRE(S.size() == 826713);
-  S.closure({Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})});
-  REQUIRE(S.size() == 826713);
-  REQUIRE(S.minimal_factorisation(
-              Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})
-              * Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}))
-          == word_t({8, 1}));
-  REQUIRE(S.minimal_factorisation(10) == word_t({0, 2}));
-  REQUIRE(S.at(10) == Transformation<uint_fast8_t>({0, 4, 7, 2, 3, 4, 0, 6}));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  pos = 0;
-  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-    REQUIRE(*it * *it == *it);
-    pos++;
-  }
-  REQUIRE(pos == S.nridempotents());
-  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-    REQUIRE(*(it - 1) < *it);
-  }
-}
 
 TEST_CASE("Semigroup 079: Exception: zero generators given",
           "[quick][finite][semigroup][079]") {
-  std::vector<Transformation<uint_fast8_t>> gens1;
-  std::vector<BMat8>                        gens2;
-  std::vector<Element*>                     gens3;
+  std::vector<Element*>                     gens;
 
-  REQUIRE_THROWS_AS(Semigroup<Transformation<uint_fast8_t>>(gens1),
-                    LibsemigroupsException);
-  REQUIRE_THROWS_AS(Semigroup<BMat8>(gens2), LibsemigroupsException);
-
-  REQUIRE_THROWS_AS(Semigroup<>(gens3), LibsemigroupsException);
+  REQUIRE_THROWS_AS(Semigroup<>(gens), LibsemigroupsException);
 }
 
 TEST_CASE("Semigroup 080: Exception: generators of different degrees",
           "[quick][finite][semigroup][080]") {
-  std::vector<Element*> gens1
+  std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 5})};
-  std::vector<Transformation<uint_fast8_t>> gens2
-      = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
-         Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7, 3})};
-  std::vector<Element*> gens3
+  std::vector<Element*> gens2
       = {new PartialPerm<u_int16_t>(
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
          new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
-  REQUIRE_THROWS_AS(Semigroup<>(gens1), LibsemigroupsException);
-  REQUIRE_THROWS_AS(Semigroup<Transformation<uint_fast8_t>>(gens2),
-                    LibsemigroupsException);
-  REQUIRE_THROWS_AS(Semigroup<>(gens3), LibsemigroupsException);
+  REQUIRE_THROWS_AS(Semigroup<>(gens), LibsemigroupsException);
+  REQUIRE_THROWS_AS(Semigroup<>(gens2), LibsemigroupsException);
 
-  delete_gens(gens1);
-  delete_gens(gens3);
+  delete_gens(gens);
+  delete_gens(gens2);
 }
 
 TEST_CASE("Semigroup 081: Exception: word_to_pos",
           "[quick][finite][semigroup][081]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
-
-  REQUIRE_THROWS_AS(S.word_to_pos({}), LibsemigroupsException);
-  REQUIRE_NOTHROW(S.word_to_pos({0}));
-  REQUIRE_NOTHROW(S.word_to_pos({0, 3, 0, 3, 1}));
-  REQUIRE_THROWS_AS(S.word_to_pos({0, 1, 0, 4}), LibsemigroupsException);
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
   REQUIRE_THROWS_AS(T.word_to_pos({0, 0, 1, 2}), LibsemigroupsException);
 
-  std::vector<Element*> gens3
+  std::vector<Element*> gens2
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> U(gens3);
+  Semigroup<> U(gens2);
 
   REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
   REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
 
-  delete_gens(gens3);
+  delete_gens(gens);
   delete_gens(gens2);
   delete sr;
 }
 
 TEST_CASE("Semigroup 082: Exception: word_to_element",
           "[quick][finite][semigroup][082]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
-
-  REQUIRE_THROWS_AS(S.word_to_element({}), LibsemigroupsException);
-  REQUIRE_NOTHROW(S.word_to_element({0}));
-  REQUIRE_NOTHROW(S.word_to_element({0, 3, 0, 3, 1}));
-  REQUIRE_THROWS_AS(S.word_to_element({0, 1, 0, 4}), LibsemigroupsException);
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
   REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}), LibsemigroupsException);
@@ -543,13 +153,13 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
                  * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)
                  * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr));
 
-  std::vector<Element*> gens3
+  std::vector<Element*> gens2
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> U(gens3);
+  Semigroup<> U(gens2);
 
   REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
   REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
@@ -562,8 +172,8 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
                  * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
   delete t;
   delete u;
+  delete_gens(gens);
   delete_gens(gens2);
-  delete_gens(gens3);
   delete sr;
 }
 
@@ -590,221 +200,91 @@ TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
 
 TEST_CASE("Semigroup 084: Exception: prefix",
           "[quick][finite][semigroup][084]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 0; i < S.size(); ++i) {
-    REQUIRE_NOTHROW(S.prefix(i));
-    REQUIRE_THROWS_AS(S.prefix(i + S.size()), LibsemigroupsException);
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
-  delete_gens(gens2);
+  Semigroup<> T(gens);
+  delete_gens(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.prefix(i));
     REQUIRE_THROWS_AS(T.prefix(i + T.size()), LibsemigroupsException);
-  }
-
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-         Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    REQUIRE_NOTHROW(U.prefix(i));
-    REQUIRE_THROWS_AS(U.prefix(i + U.size()), LibsemigroupsException);
   }
   delete sr;
 }
 
 TEST_CASE("Semigroup 085: Exception: suffix",
           "[quick][finite][semigroup][085]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 0; i < S.size(); ++i) {
-    REQUIRE_NOTHROW(S.suffix(i));
-    REQUIRE_THROWS_AS(S.suffix(i + S.size()), LibsemigroupsException);
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.suffix(i));
     REQUIRE_THROWS_AS(T.suffix(i + T.size()), LibsemigroupsException);
   }
-
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-         Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    REQUIRE_NOTHROW(U.suffix(i));
-    REQUIRE_THROWS_AS(U.suffix(i + U.size()), LibsemigroupsException);
-  }
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 086: Exception: first_letter",
           "[quick][finite][semigroup][086]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 0; i < S.size(); ++i) {
-    REQUIRE_NOTHROW(S.first_letter(i));
-    REQUIRE_THROWS_AS(S.first_letter(i + S.size()), LibsemigroupsException);
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.first_letter(i));
     REQUIRE_THROWS_AS(T.first_letter(i + T.size()), LibsemigroupsException);
   }
-
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    REQUIRE_NOTHROW(U.first_letter(i));
-    REQUIRE_THROWS_AS(U.first_letter(i + U.size()), LibsemigroupsException);
-  }
-
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 087: Exception: final_letter",
           "[quick][finite][semigroup][087]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 0; i < S.size(); ++i) {
-    REQUIRE_NOTHROW(S.final_letter(i));
-    REQUIRE_THROWS_AS(S.final_letter(i + S.size()), LibsemigroupsException);
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.final_letter(i));
     REQUIRE_THROWS_AS(T.final_letter(i + T.size()), LibsemigroupsException);
   }
-
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    REQUIRE_NOTHROW(U.final_letter(i));
-    REQUIRE_THROWS_AS(U.final_letter(i + U.size()), LibsemigroupsException);
-  }
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 088: Exception: length_const",
           "[quick][finite][semigroup][088]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 0; i < S.size(); ++i) {
-    REQUIRE_NOTHROW(S.length_const(i));
-    REQUIRE_THROWS_AS(S.length_const(i + S.size()), LibsemigroupsException);
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.length_const(i));
     REQUIRE_THROWS_AS(T.length_const(i + T.size()), LibsemigroupsException);
   }
-
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-         Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    REQUIRE_NOTHROW(U.length_const(i));
-    REQUIRE_THROWS_AS(U.length_const(i + U.size()), LibsemigroupsException);
-  }
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 089: Exception: product_by_reduction",
           "[quick][finite][semigroup][089]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 1; i < S.size(); ++i) {
-    for (size_t j = 1; j < S.size(); ++j) {
-      REQUIRE_NOTHROW(S.product_by_reduction(i, j));
-      REQUIRE_THROWS_AS(S.product_by_reduction(i + S.size(), j),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.product_by_reduction(i, j + S.size()),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.product_by_reduction(i + S.size(), j + S.size()),
-                        LibsemigroupsException);
-    }
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -818,50 +298,17 @@ TEST_CASE("Semigroup 089: Exception: product_by_reduction",
     }
   }
 
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3}),
-         Transformation<u_int16_t>({3, 1, 1, 2})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    for (size_t j = 0; j < U.size(); ++j) {
-      REQUIRE_NOTHROW(U.product_by_reduction(i, j));
-      REQUIRE_THROWS_AS(U.product_by_reduction(i + U.size(), j),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(U.product_by_reduction(i, j + U.size()),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(U.product_by_reduction(i + U.size(), j + U.size()),
-                        LibsemigroupsException);
-    }
-  }
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
 TEST_CASE("Semigroup 090: Exception: fast_product",
           "[quick][finite][semigroup][090]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
-
-  for (size_t i = 1; i < S.size(); ++i) {
-    for (size_t j = 1; j < S.size(); ++j) {
-      REQUIRE_NOTHROW(S.fast_product(i, j));
-      REQUIRE_THROWS_AS(S.fast_product(i + S.size(), j),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.fast_product(i, j + S.size()),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.fast_product(i + S.size(), j + S.size()),
-                        LibsemigroupsException);
-    }
-  }
-
   Semiring<int64_t>*    sr = new Integers();
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens2);
+  Semigroup<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -875,23 +322,7 @@ TEST_CASE("Semigroup 090: Exception: fast_product",
     }
   }
 
-  std::vector<Transformation<u_int16_t>> gens3
-      = {Transformation<u_int16_t>({0, 1, 2, 3}),
-         Transformation<u_int16_t>({3, 1, 1, 2})};
-  Semigroup<Transformation<u_int16_t>> U(gens3);
-
-  for (size_t i = 0; i < U.size(); ++i) {
-    for (size_t j = 0; j < U.size(); ++j) {
-      REQUIRE_NOTHROW(U.fast_product(i, j));
-      REQUIRE_THROWS_AS(U.fast_product(i + U.size(), j),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(U.fast_product(i, j + U.size()),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(U.fast_product(i + U.size(), j + U.size()),
-                        LibsemigroupsException);
-    }
-  }
-  delete_gens(gens2);
+  delete_gens(gens);
   delete sr;
 }
 
@@ -919,30 +350,15 @@ TEST_CASE("Semigroup 091: Exception: letter_to_pos",
 
 TEST_CASE("Semigroup 092: Exception: is_idempotent",
           "[quick][finite][semigroup][092]") {
-  std::vector<BMat8> gens
-      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
-
-  // S has size 63904
-  for (size_t i = 0; i < 63904; ++i) {
-    REQUIRE_NOTHROW(S.is_idempotent(i));
-  }
-  for (size_t i = 0; i < 20; ++i) {
-    REQUIRE_THROWS_AS(S.is_idempotent(63904 + i), LibsemigroupsException);
-  }
-
-  std::vector<Element*> gens2
+  std::vector<Element*> gens
       = {new Bipartition(
              {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
          new Bipartition(
              {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
          new Bipartition(
              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
-  Semigroup<> T = Semigroup<>(gens2);
-  delete_gens(gens2);
+  Semigroup<> T = Semigroup<>(gens);
+  delete_gens(gens);
 
   // T has size 10
   for (size_t i = 0; i < 10; ++i) {
@@ -958,34 +374,24 @@ TEST_CASE("Semigroup 093: Exception: add_generators",
   std::vector<Element*> gens1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 2, 3, 2, 2, 3})};
-  std::vector<Transformation<uint_fast8_t>> gens2
-      = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
-         Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7})};
-  std::vector<Element*> gens3
+  std::vector<Element*> gens2
       = {new PartialPerm<u_int16_t>(
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
          new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
   Semigroup<>                             S(gens1);
-  Semigroup<Transformation<uint_fast8_t>> T(gens2);
-  Semigroup<>                             U(gens3);
+  Semigroup<>                             U(gens2);
 
   std::vector<Element*> additional_gens_1_1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3})};
   std::vector<Element*> additional_gens_1_2
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3, 3})};
-  std::vector<Transformation<uint_fast8_t>> additional_gens_2_1
-      = {Transformation<uint_fast8_t>({1, 2, 2, 2, 1, 1, 3, 4}),
-         Transformation<uint_fast8_t>({1, 2, 1, 3, 1, 4, 1, 5})};
-  std::vector<Transformation<uint_fast8_t>> additional_gens_2_2
-      = {Transformation<uint_fast8_t>({1, 2, 2, 2, 1, 1, 3, 4}),
-         Transformation<uint_fast8_t>({1, 2, 1, 3, 1, 4, 1, 5, 1})};
-  std::vector<Element*> additional_gens_3_1
+  std::vector<Element*> additional_gens_2_1
       = {new PartialPerm<u_int16_t>(
              {0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
          new PartialPerm<u_int16_t>({2, 5, 1}, {6, 0, 3}, 11)};
-  std::vector<Element*> additional_gens_3_2
+  std::vector<Element*> additional_gens_2_2
       = {new PartialPerm<u_int16_t>(
              {0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
          new PartialPerm<u_int16_t>({2, 5, 1}, {6, 0, 3}, 12)};
@@ -994,119 +400,16 @@ TEST_CASE("Semigroup 093: Exception: add_generators",
   REQUIRE_THROWS_AS(S.add_generators(additional_gens_1_2),
                     LibsemigroupsException);
 
-  REQUIRE_NOTHROW(T.add_generators(additional_gens_2_1));
-  REQUIRE_THROWS_AS(T.add_generators(additional_gens_2_2),
-                    LibsemigroupsException);
-
-  REQUIRE_NOTHROW(U.add_generators(additional_gens_3_1));
-  REQUIRE_THROWS_AS(U.add_generators(additional_gens_3_2),
+  REQUIRE_NOTHROW(U.add_generators(additional_gens_2_1));
+  REQUIRE_THROWS_AS(U.add_generators(additional_gens_2_2),
                     LibsemigroupsException);
 
   delete_gens(gens1);
-  delete_gens(gens3);
+  delete_gens(gens2);
   delete_gens(additional_gens_1_1);
   delete_gens(additional_gens_1_2);
-  delete_gens(additional_gens_3_1);
-  delete_gens(additional_gens_3_2);
-}
-
-TEST_CASE("Semigroup 094: non-pointer Bipartitions",
-          "[quick][semigroup][finite][094]") {
-  std::vector<Bipartition> gens = {
-      Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
-      Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
-      Bipartition(
-          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
-
-  Semigroup<Bipartition> S(gens);
-
-  S.reserve(10);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
-
-  REQUIRE(S.size() == 10);
-  REQUIRE(S.nridempotents() == 6);
-
-  size_t pos = 0;
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
-  }
-
-  S.add_generators({Bipartition(
-      {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
-
-  REQUIRE(S.size() == 21);
-  S.closure({Bipartition(
-      {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
-  REQUIRE(S.size() == 21);
-  REQUIRE(S.minimal_factorisation(Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
-                                               0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                                  * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                                 1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
-                                  * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
-                                                 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
-          == word_t({0, 3, 1}));
-  REQUIRE(S.minimal_factorisation(11) == word_t({0, 3}));
-  REQUIRE(S.at(11)
-          == Bipartition(
-                 {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                 * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  pos = 0;
-  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-    REQUIRE(*it * *it == *it);
-    pos++;
-  }
-  REQUIRE(pos == S.nridempotents());
-  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-    REQUIRE(*(it - 1) < *it);
-  }
-}
-
-TEST_CASE("Semigroup 095: non-pointer PartialPerms",
-          "[quick][semigroup][finite][095]") {
-  std::vector<PartialPerm<u_int16_t>> gens
-      = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
-         PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
-         PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
-
-  Semigroup<PartialPerm<u_int16_t>> S(gens);
-
-  S.reserve(102);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
-
-  REQUIRE(S.size() == 102);
-  REQUIRE(S.nridempotents() == 8);
-  size_t pos = 0;
-
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
-  }
-
-  S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
-  S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
-  REQUIRE(S.minimal_factorisation(
-              PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
-              * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-          == word_t({3, 2}));
-  REQUIRE(S.minimal_factorisation(10) == word_t({2, 1}));
-  REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  pos = 0;
-  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-    REQUIRE(*it * *it == *it);
-    pos++;
-  }
-  REQUIRE(pos == S.nridempotents());
-  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-    REQUIRE(*(it - 1) < *it);
-  }
+  delete_gens(additional_gens_2_1);
+  delete_gens(additional_gens_2_2);
 }
 
 namespace libsemigroups {
