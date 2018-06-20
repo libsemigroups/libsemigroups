@@ -24,9 +24,8 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 101: non-pointer "
-          "matrices over TropicalMaxPlusSemiring",
-          "[quick][semigroup][finite][101]") {
+TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
+          "[quick][semigroup][matrix][finite][01]") {
   Semiring<int64_t>*                       sr = new TropicalMaxPlusSemiring(9);
   std::vector<MatrixOverSemiring<int64_t>> gens
       = {MatrixOverSemiring<int64_t>({{1, 3}, {2, 1}}, sr),

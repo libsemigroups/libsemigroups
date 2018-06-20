@@ -24,15 +24,8 @@
 
 using namespace libsemigroups;
 
-template <class TElementType>
-void delete_gens(std::vector<TElementType>& gens) {
-  for (auto& x : gens) {
-    delete x;
-  }
-}
-
-TEST_CASE("Semigroup of PartialPerms 095: non-pointer PartialPerms",
-          "[quick][semigroup][finite][095]") {
+TEST_CASE("Semigroup of PartialPerms 01",
+          "[quick][semigroup][partialperm][finite][095]") {
   std::vector<PartialPerm<u_int16_t>> gens
       = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
          PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),

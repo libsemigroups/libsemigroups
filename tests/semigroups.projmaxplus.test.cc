@@ -24,9 +24,9 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of ProjectiveMaxPlusMatrices 099: non-pointer "
+TEST_CASE("Semigroup of ProjectiveMaxPlusMatrices 01: non-pointer "
           "ProjectiveMaxPlusMatrix",
-          "[quick][semigroup][finite][099]") {
+          "[quick][semigroup][matrix][finite][01]") {
   Semiring<int64_t>*                   sr = new MaxPlusSemiring();
   std::vector<ProjectiveMaxPlusMatrix> gens
       = {ProjectiveMaxPlusMatrix({0, 1, 2, 3, 4, 1, 2, 1, 1}, sr),

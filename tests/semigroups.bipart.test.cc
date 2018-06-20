@@ -24,8 +24,8 @@
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of Bipartitions 094: non-pointer Bipartitions",
-          "[quick][semigroup][finite][094]") {
+TEST_CASE("Semigroup of Bipartitions 01: non-pointer Bipartitions",
+          "[quick][semigroup][bipart][finite][01]") {
   std::vector<Bipartition> gens = {
       Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
       Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),

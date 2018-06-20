@@ -23,33 +23,8 @@
 
 using namespace libsemigroups;
 
-static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
-  letter_t out = S.letter_to_pos(word[0]);
-  for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
-    out = S.right(out, *it);
-  }
-  return out;
-}
-
-static inline void test_idempotent(Semigroup<>& S, const Element* x) {
-  REQUIRE(S.is_idempotent(S.position(x)));
-  Element* y = x->heap_copy();
-  y->redefine(x, x);
-  REQUIRE(*x == *y);
-  REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
-  delete y;
-}
-
-template <class TElementType>
-void delete_gens(std::vector<TElementType>& gens) {
-  for (auto x : gens) {
-    delete x;
-  }
-}
-
-TEST_CASE(
-    "Semigroup of transformations 078: non-pointer, non-trivial element type",
-    "[standard][semigroup][finite][078]") {
+TEST_CASE("Semigroup of Transformations 01",
+          "[standard][semigroup][transformation][finite][01]") {
   std::vector<Transformation<uint_fast8_t>> gens
       = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -95,17 +70,17 @@ TEST_CASE(
   }
 }
 
-TEST_CASE("Semigroup of transformations 079: Exception: zero generators given",
-          "[quick][finite][semigroup][079]") {
+TEST_CASE("Semigroup of Transformations 02: Exception: zero generators given",
+          "[quick][finite][semigroup][transformation][02]") {
   std::vector<Transformation<uint_fast8_t>> gens1;
 
   REQUIRE_THROWS_AS(Semigroup<Transformation<uint_fast8_t>>(gens1),
                     LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of transformations 080: Exception: generators of "
+TEST_CASE("Semigroup of Transformations 03: Exception: generators of "
           "different degrees",
-          "[quick][finite][semigroup][080]") {
+          "[quick][finite][semigroup][transformation][03]") {
   std::vector<Transformation<uint_fast8_t>> gens
       = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7, 3})};
@@ -114,8 +89,8 @@ TEST_CASE("Semigroup of transformations 080: Exception: generators of "
                     LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of transformations 081: Exception: word_to_pos",
-          "[quick][finite][semigroup][081]") {
+TEST_CASE("Semigroup of Transformations 04: Exception: word_to_pos",
+          "[quick][finite][semigroup][transformation][04]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -129,8 +104,8 @@ TEST_CASE("Semigroup of transformations 081: Exception: word_to_pos",
   REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of transformations 082: Exception: word_to_element",
-          "[quick][finite][semigroup][082]") {
+TEST_CASE("Semigroup of Transformations 05: Exception: word_to_element",
+          "[quick][finite][semigroup][transformation][05]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -150,8 +125,8 @@ TEST_CASE("Semigroup of transformations 082: Exception: word_to_element",
                  * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
 }
 
-TEST_CASE("Semigroup of transformations 083: Exception: gens",
-          "[quick][finite][semigroup][083]") {
+TEST_CASE("Semigroup of Transformations 05: Exception: gens",
+          "[quick][finite][semigroup][transformation][05]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Transformation<size_t>> gens;
 
@@ -171,8 +146,8 @@ TEST_CASE("Semigroup of transformations 083: Exception: gens",
   }
 }
 
-TEST_CASE("Semigroup of transformations 084: Exception: prefix",
-          "[quick][finite][semigroup][084]") {
+TEST_CASE("Semigroup of Transformations 06: Exception: prefix",
+          "[quick][finite][semigroup][transformation][06]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
@@ -185,8 +160,8 @@ TEST_CASE("Semigroup of transformations 084: Exception: prefix",
   }
 }
 
-TEST_CASE("Semigroup of transformations 085: Exception: suffix",
-          "[quick][finite][semigroup][085]") {
+TEST_CASE("Semigroup of Transformations 07: Exception: suffix",
+          "[quick][finite][semigroup][transformation][07]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -201,8 +176,8 @@ TEST_CASE("Semigroup of transformations 085: Exception: suffix",
   }
 }
 
-TEST_CASE("Semigroup of transformations 086: Exception: first_letter",
-          "[quick][finite][semigroup][086]") {
+TEST_CASE("Semigroup of Transformations 08: Exception: first_letter",
+          "[quick][finite][semigroup][transformation][08]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
@@ -215,8 +190,8 @@ TEST_CASE("Semigroup of transformations 086: Exception: first_letter",
   }
 }
 
-TEST_CASE("Semigroup of transformations 087: Exception: final_letter",
-          "[quick][finite][semigroup][087]") {
+TEST_CASE("Semigroup of Transformations 09: Exception: final_letter",
+          "[quick][finite][semigroup][transformation][09]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
@@ -229,8 +204,8 @@ TEST_CASE("Semigroup of transformations 087: Exception: final_letter",
   }
 }
 
-TEST_CASE("Semigroup of transformations 088: Exception: length_const",
-          "[quick][finite][semigroup][088]") {
+TEST_CASE("Semigroup of Transformations 10: Exception: length_const",
+          "[quick][finite][semigroup][transformation][10]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
@@ -243,8 +218,8 @@ TEST_CASE("Semigroup of transformations 088: Exception: length_const",
   }
 }
 
-TEST_CASE("Semigroup of transformations 089: Exception: product_by_reduction",
-          "[quick][finite][semigroup][089]") {
+TEST_CASE("Semigroup of Transformations 11: Exception: product_by_reduction",
+          "[quick][finite][semigroup][transformation][11]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3}),
          Transformation<u_int16_t>({3, 1, 1, 2})};
@@ -263,8 +238,8 @@ TEST_CASE("Semigroup of transformations 089: Exception: product_by_reduction",
   }
 }
 
-TEST_CASE("Semigroup of transformations 090: Exception: fast_product",
-          "[quick][finite][semigroup][090]") {
+TEST_CASE("Semigroup of Transformations 12: Exception: fast_product",
+          "[quick][finite][semigroup][transformation][12]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3}),
          Transformation<u_int16_t>({3, 1, 1, 2})};
@@ -283,8 +258,8 @@ TEST_CASE("Semigroup of transformations 090: Exception: fast_product",
   }
 }
 
-TEST_CASE("Semigroup of transformations 091: Exception: letter_to_pos",
-          "[quick][finite][semigroup][091]") {
+TEST_CASE("Semigroup of Transformations 13: Exception: letter_to_pos",
+          "[quick][finite][semigroup][transformation][13]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Transformation<size_t>> gens;
 
@@ -304,8 +279,8 @@ TEST_CASE("Semigroup of transformations 091: Exception: letter_to_pos",
   }
 }
 
-TEST_CASE("Semigroup of transformations 092: Exception: is_idempotent",
-          "[quick][finite][semigroup][092]") {
+TEST_CASE("Semigroup of Transformations 14: Exception: is_idempotent",
+          "[quick][finite][semigroup][transformation][14]") {
   std::vector<Transformation<u_int16_t>> gens
       = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          Transformation<u_int16_t>({5, 1, 3, 3, 2, 5}),
@@ -322,8 +297,8 @@ TEST_CASE("Semigroup of transformations 092: Exception: is_idempotent",
   }
 }
 
-TEST_CASE("Semigroup of transformations 093: Exception: add_generators",
-          "[quick][finite][semigroup][093]") {
+TEST_CASE("Semigroup of Transformations 15: Exception: add_generators",
+          "[quick][finite][semigroup][transformation][15]") {
   std::vector<Transformation<uint_fast8_t>> gens
       = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7})};

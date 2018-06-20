@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "../src/bmat8.h"
 #include "../src/semigroups.h"
 #include "catch.hpp"
 #include <iostream>
@@ -23,3 +24,35 @@
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
+
+namespace libsemigroups {
+  template <> int one(int) {
+    return 1;
+  }
+  template <> uint8_t one(uint8_t) {
+    return 1;
+  }
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <> int empty_key(int) {
+    return -1;
+  }
+  template <> uint8_t empty_key(uint8_t) {
+    return -1;
+  }
+#endif
+}  // namespace libsemigroups
+
+TEST_CASE("Semigroup of Integers",
+          "[quick][semigroup][integers][finite][01]") {
+  Semigroup<int> S({2});
+  REQUIRE(S.size() == 32);
+  REQUIRE(S.nridempotents() == 1);
+  Semigroup<int>::const_iterator it = S.cbegin();
+  REQUIRE(*it == 2);
+
+  Semigroup<uint8_t> T({2, 3});
+  REQUIRE(T.size() == 130);
+  REQUIRE(T.nridempotents() == 2);
+  REQUIRE(*T.cbegin_idempotents() == 0);
+  REQUIRE(*T.cbegin_idempotents() + 1 == 1);
+}

@@ -25,17 +25,10 @@
 
 using namespace libsemigroups;
 
-template <class TElementType>
-void delete_gens(std::vector<TElementType>& gens) {
-  for (auto& x : gens) {
-    delete x;
-  }
-}
-
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
-TEST_CASE("Semigroup of BMats 072: regular boolean mat monoid 4 using BMat8",
-          "[quick][semigroup][finite][072]") {
+TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
+          "[quick][semigroup][bmat][finite][01]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -233,8 +226,8 @@ TEST_CASE("Semigroup of BMats 072: regular boolean mat monoid 4 using BMat8",
 }
 
 // TODO: move to benchmarks
-TEST_CASE("Semigroup of BMats 074: regular boolean mat monoid 5 using BMat8",
-          "[extreme][semigroup][finite][074]") {
+TEST_CASE("Semigroup of BMats xx: regular boolean mat monoid 5 using BMat8",
+          "[extreme][semigroup][bmat][finite][02]") {
   Semigroup<BMat8> S({BMat8({{0, 1, 0, 0, 0},
                              {1, 0, 0, 0, 0},
                              {0, 0, 1, 0, 0},
@@ -264,15 +257,15 @@ TEST_CASE("Semigroup of BMats 074: regular boolean mat monoid 5 using BMat8",
 
 #endif
 
-TEST_CASE("Semigroup of BMats 079: Exception: zero generators given",
-          "[quick][finite][semigroup][079]") {
+TEST_CASE("Semigroup of BMats 02: Exception: zero generators given",
+          "[quick][finite][semigroup][bmat][02]") {
   std::vector<BMat8> gens;
 
   REQUIRE_THROWS_AS(Semigroup<BMat8>(gens), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of BMats 082: Exception: word_to_element",
-          "[quick][finite][semigroup][082]") {
+TEST_CASE("Semigroup of BMats 03: Exception: word_to_element",
+          "[quick][finite][semigroup][bmat][03]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -286,8 +279,8 @@ TEST_CASE("Semigroup of BMats 082: Exception: word_to_element",
   REQUIRE_THROWS_AS(S.word_to_element({0, 1, 0, 4}), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of BMats 084: Exception: prefix",
-          "[quick][finite][semigroup][084]") {
+TEST_CASE("Semigroup of BMats 04: Exception: prefix",
+          "[quick][finite][semigroup][bmat][04]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -300,8 +293,8 @@ TEST_CASE("Semigroup of BMats 084: Exception: prefix",
   }
 }
 
-TEST_CASE("Semigroup of BMats 085: Exception: suffix",
-          "[quick][finite][semigroup][085]") {
+TEST_CASE("Semigroup of BMats 05: Exception: suffix",
+          "[quick][finite][semigroup][bmat][085]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -309,8 +302,8 @@ TEST_CASE("Semigroup of BMats 085: Exception: suffix",
   Semigroup<BMat8> S(gens);
 }
 
-TEST_CASE("Semigroup of BMats 086: Exception: first_letter",
-          "[quick][finite][semigroup][086]") {
+TEST_CASE("Semigroup of BMats 06: Exception: first_letter",
+          "[quick][finite][semigroup][bmat][086]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -323,8 +316,8 @@ TEST_CASE("Semigroup of BMats 086: Exception: first_letter",
   }
 }
 
-TEST_CASE("Semigroup of BMats 087: Exception: final_letter",
-          "[quick][finite][semigroup][087]") {
+TEST_CASE("Semigroup of BMats 07: Exception: final_letter",
+          "[quick][finite][semigroup][bmat][087]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -332,8 +325,8 @@ TEST_CASE("Semigroup of BMats 087: Exception: final_letter",
   Semigroup<BMat8> S(gens);
 }
 
-TEST_CASE("Semigroup of BMats 088: Exception: length_const",
-          "[quick][finite][semigroup][088]") {
+TEST_CASE("Semigroup of BMats 08: Exception: length_const",
+          "[quick][finite][semigroup][bmat][088]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -346,8 +339,8 @@ TEST_CASE("Semigroup of BMats 088: Exception: length_const",
   }
 }
 
-TEST_CASE("Semigroup of BMats 089: Exception: product_by_reduction",
-          "[quick][finite][semigroup][089]") {
+TEST_CASE("Semigroup of BMats 09: Exception: product_by_reduction",
+          "[quick][finite][semigroup][bmat][089]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
@@ -366,8 +359,8 @@ TEST_CASE("Semigroup of BMats 089: Exception: product_by_reduction",
   }
 }
 
-TEST_CASE("Semigroup of BMats 090: Exception: fast_product",
-          "[quick][finite][semigroup][090]") {
+TEST_CASE("Semigroup of BMats 10: Exception: fast_product",
+          "[quick][finite][semigroup][bmat][10]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
@@ -386,8 +379,8 @@ TEST_CASE("Semigroup of BMats 090: Exception: fast_product",
   }
 }
 
-TEST_CASE("Semigroup of BMats 092: Exception: is_idempotent",
-          "[quick][finite][semigroup][092]") {
+TEST_CASE("Semigroup of BMats 11: Exception: is_idempotent",
+          "[quick][finite][semigroup][bmat][11]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),

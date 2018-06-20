@@ -24,15 +24,8 @@
 
 using namespace libsemigroups;
 
-template <class TElementType>
-void delete_gens(std::vector<TElementType>& gens) {
-  for (auto& x : gens) {
-    delete x;
-  }
-}
-
-TEST_CASE("Semigroup of BooleanMats 098: non-pointer BooleanMats",
-          "[quick][semigroup][finite][098]") {
+TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
+          "[quick][semigroup][booleanmat][finite][01]") {
   std::vector<BooleanMat> gens
       = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
          BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
