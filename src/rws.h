@@ -365,14 +365,6 @@ namespace libsemigroups {
     //! the first entry.
     std::vector<std::pair<std::string, std::string>> rules() const;
 
-    //! Turn reporting on or off.
-    //!
-    //! If \p val is true, then some methods for a RWS object may report
-    //! information about the progress of the computation.
-    void set_report(bool val) const {
-      glob_reporter.set_report(val);
-    }
-
     //! Some information can be sent to std::cout during calls to
     //! RWS::knuth_bendix and RWS::knuth_bendix_by_overlap_length. This method
     //! can be used to determine the frequency with which this information is
@@ -522,17 +514,17 @@ namespace libsemigroups {
     //! This method converts an unsigned integer to the corresponding
     //! rws_word_t. For example, the integer 0 is converted to the word with
     //! single letter which is the 1st ASCII character.
-    static inline rws_word_t* uint_to_rws_word(size_t const& a) {
-      return new rws_word_t(1, uint_to_rws_letter(a));
+    static inline rws_word_t uint_to_rws_word(size_t const& a) {
+      return rws_word_t(1, uint_to_rws_letter(a));
     }
 
     //! This method converts a string in the rewriting system into a vector of
     //! unsigned integers. This method is the inverse of RWS::uint_to_rws_word.
-    static word_t* rws_word_to_word(rws_word_t const* rws_word) {
-      word_t* w = new word_t();
-      w->reserve(rws_word->size());
-      for (rws_letter_t const& rws_letter : *rws_word) {
-        w->push_back(rws_letter_to_uint(rws_letter));
+    static word_t rws_word_to_word(rws_word_t const& rws_word) {
+      word_t w;
+      w.reserve(rws_word.size());
+      for (rws_letter_t const& rws_letter : rws_word) {
+        w.push_back(rws_letter_to_uint(rws_letter));
       }
       return w;
     }
@@ -556,9 +548,12 @@ namespace libsemigroups {
     //!
     //! This method returns a pointer to a new string, and it is the
     //! responsibility of the caller to delete it.
-    static inline rws_word_t* word_to_rws_word(word_t const& w) {
-      rws_word_t* ww = new rws_word_t();
-      return word_to_rws_word(w, ww);
+    static inline rws_word_t word_to_rws_word(word_t const& w) {
+      rws_word_t ww;
+      for (size_t const& a : w) {
+        ww += uint_to_rws_letter(a);
+      }
+      return ww;
     }
 
    private:
@@ -703,7 +698,7 @@ namespace libsemigroups {
     Rule(Rule const& copy) = delete;
 
     // Construct from RWS with new but empty rws_word_t's
-    explicit Rule(RWS const* rws, int64_t id)
+    Rule(RWS const* rws, int64_t id)
         : _rws(rws),
           _lhs(new rws_word_t()),
           _rhs(new rws_word_t()),

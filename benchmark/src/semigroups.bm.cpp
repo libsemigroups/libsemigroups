@@ -27,6 +27,13 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto x : gens) {
+    delete x;
+  }
+}
+
 typedef std::vector<std::vector<u_int32_t>> PBR_Input;
 
 auto& MINUS_INFTY = Semiring<int64_t>::MINUS_INFTY;
@@ -39,8 +46,8 @@ static void BM_size_small_trans_01(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                   new Transformation<u_int16_t>({0, 1, 2})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
 
     S.size();
   }
@@ -52,10 +59,10 @@ static void BM_size_small_pperm_02(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens
         = {new PartialPerm<u_int16_t>(
-               {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+               {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
+           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     S.size();
   }
@@ -72,8 +79,8 @@ static void BM_size_small_bipart_03(benchmark::State& state) {
                {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
            new Bipartition(
                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
   }
 }
@@ -86,8 +93,8 @@ static void BM_size_small_bmat_04(benchmark::State& state) {
         = {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
            new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
            new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
   }
 }
@@ -98,13 +105,9 @@ static void BM_size_small_proj_max_plus_05(benchmark::State& state) {
   while (state.KeepRunning()) {
     Semiring<int64_t>* sr = new MaxPlusSemiring();
     auto x = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
-    auto id = x->identity();
-    x->really_delete();
-    delete x;
-    Semigroup S = Semigroup({id});
+    Semigroup<ProjectiveMaxPlusMatrix> S({x->identity()});
     S.size();
-    id->really_delete();
-    delete id;
+    delete x;
     delete sr;
   }
 }
@@ -119,8 +122,8 @@ static void BM_size_small_int_mat_06(benchmark::State& state) {
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
            new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -134,8 +137,8 @@ static void BM_size_small_max_plus_07(benchmark::State& state) {
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
            new MatrixOverSemiring<int64_t>({{0, -3}, {-3, -1}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -148,8 +151,8 @@ static void BM_size_small_min_plus_08(benchmark::State& state) {
     Semiring<int64_t>*    sr = new MinPlusSemiring();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, INFTY}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -164,8 +167,8 @@ static void BM_size_small_trop_max_plus_09(benchmark::State& state) {
         new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
                                         sr),
         new MatrixOverSemiring<int64_t>({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -182,8 +185,8 @@ static void BM_size_small_trop_min_plus_10(benchmark::State& state) {
         new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
         new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}},
                                         sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -200,8 +203,8 @@ static void BM_size_small_nat_mat_11(benchmark::State& state) {
         new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
         new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}},
                                         sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     S.size();
     delete sr;
   }
@@ -212,11 +215,11 @@ BENCHMARK(BM_size_small_nat_mat_11)->MinTime(1)->Unit(benchmark::kMicrosecond);
 static void BM_size_small_pbr_12(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens
-        = {new PBR(new PBR_Input({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
-           new PBR(new PBR_Input(
+        = {new PBR(PBR_Input({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
+           new PBR(PBR_Input(
                {{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}))};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     S.size();
   }
@@ -241,8 +244,8 @@ static void BM_size_no_reserve_62(benchmark::State& state) {
            new Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4}),
            new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -271,8 +274,8 @@ static void BM_size_reserve_62(benchmark::State& state) {
            new Transformation<uint_fast8_t>({6, 0, 1, 1, 1, 6, 3, 4}),
            new Transformation<uint_fast8_t>({7, 7, 4, 0, 6, 4, 1, 7})};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(597369);
@@ -296,8 +299,8 @@ static void BM_size_no_reserve_full_trans_8(benchmark::State& state) {
         = {new Transformation<uint_fast8_t>({1, 2, 3, 4, 5, 6, 7, 0}),
            new Transformation<uint_fast8_t>({1, 0, 2, 3, 4, 5, 6, 7}),
            new Transformation<uint_fast8_t>({0, 1, 2, 3, 4, 5, 6, 0})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -319,8 +322,8 @@ static void BM_size_reserve_full_trans_8(benchmark::State& state) {
         = {new Transformation<uint_fast8_t>({1, 2, 3, 4, 5, 6, 7, 0}),
            new Transformation<uint_fast8_t>({1, 0, 2, 3, 4, 5, 6, 7}),
            new Transformation<uint_fast8_t>({0, 1, 2, 3, 4, 5, 6, 0})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(std::pow(8, 8));
     S.size();
@@ -465,8 +468,8 @@ static void BM_size_no_reserve_uppertri_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 0},
                                                   {0, 0, 0, 0, 0, 0}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -610,8 +613,8 @@ static void BM_size_reserve_uppertri_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 0},
                                                   {0, 0, 0, 0, 0, 0}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(2097152);
     S.size();
@@ -777,8 +780,8 @@ static void BM_size_no_reserve_unitri_7(benchmark::State& state) {
                                                   {0, 0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 0, 0, 1}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -943,8 +946,8 @@ static void BM_size_reserve_unitri_7(benchmark::State& state) {
                                                   {0, 0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 0, 0, 1}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(2097152);
     S.size();
@@ -1053,8 +1056,8 @@ static void BM_size_no_reserve_gossip_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 1, 1}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -1162,8 +1165,8 @@ static void BM_size_reserve_gossip_6(benchmark::State& state) {
                                                   {0, 0, 0, 1, 0, 0},
                                                   {0, 0, 0, 0, 1, 1},
                                                   {0, 0, 0, 0, 1, 1}})};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(1092473);
     S.size();
@@ -1191,8 +1194,8 @@ static void BM_size_no_reserve_reg_bool_4(benchmark::State& state) {
                {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            new BooleanMat(
                {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -1219,8 +1222,8 @@ static void BM_size_reserve_reg_bool_4(benchmark::State& state) {
                {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            new BooleanMat(
                {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(65535);
     S.size();
@@ -1248,8 +1251,8 @@ static void BM_size_no_reserve_symm_inv_8(benchmark::State& state) {
                {1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8),
            new PartialPerm<uint_fast8_t>(
                {0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -1276,8 +1279,8 @@ static void BM_size_reserve_symm_inv_8(benchmark::State& state) {
                {1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8),
            new PartialPerm<uint_fast8_t>(
                {0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(1441729);
     S.size();
@@ -1301,8 +1304,8 @@ static void BM_size_no_reserve_partition_6(benchmark::State& state) {
            new Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}),
            new Bipartition({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}),
            new Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -1325,8 +1328,8 @@ static void BM_size_reserve_partition_6(benchmark::State& state) {
            new Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}),
            new Bipartition({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}),
            new Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4})};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(4213597);
     S.size();
@@ -1852,8 +1855,8 @@ static void BM_size_no_reserve_proj_max_plus(benchmark::State& state) {
                                                                 MINUS_INFTY,
                                                                 MINUS_INFTY}},
                                                               sr)};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -2380,8 +2383,8 @@ static void BM_size_reserve_proj_max_plus(benchmark::State& state) {
                                                                 MINUS_INFTY,
                                                                 MINUS_INFTY}},
                                                               sr)};
-    Semigroup             S    = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<>           S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(242931);
@@ -2448,8 +2451,8 @@ static void BM_size_no_reserve_int_mat(benchmark::State& state) {
                                             {-2, -1, 0, 0, 0, 0, -2, 1, -2, -1},
                                             {2, -4, 3, 1, -1, 3, -1, 0, -1, 0}},
                                            sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.enumerate(300000);  // This is probably infinite we stop at 300000
@@ -2515,8 +2518,8 @@ static void BM_size_reserve_int_mat(benchmark::State& state) {
                                             {-2, -1, 0, 0, 0, 0, -2, 1, -2, -1},
                                             {2, -4, 3, 1, -1, 3, -1, 0, -1, 0}},
                                            sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(320000);
@@ -2579,8 +2582,8 @@ static void BM_size_no_reserve_max_plus(benchmark::State& state) {
                 {-3, 5, MINUS_INFTY, MINUS_INFTY, 1, 0, 2, -3},
                 {-1, 0, 4, 1, 0, 2, 5, 2}},
                sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.enumerate(300000);  // This is probably infinite we stop at 300000
@@ -2641,8 +2644,8 @@ static void BM_size_reserve_max_plus(benchmark::State& state) {
                 {-3, 5, MINUS_INFTY, MINUS_INFTY, 1, 0, 2, -3},
                 {-1, 0, 4, 1, 0, 2, 5, 2}},
                sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(320000);
@@ -2703,8 +2706,8 @@ static void BM_size_no_reserve_min_plus(benchmark::State& state) {
              {-3, 5, INFTY, INFTY, 1, 0, 2, -3},
              {-1, 0, 4, 1, 0, 2, 5, 2}},
             sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.enumerate(300000);  // This is probably infinite we stop at 300000
@@ -2764,8 +2767,8 @@ static void BM_size_reserve_min_plus(benchmark::State& state) {
              {-3, 5, INFTY, INFTY, 1, 0, 2, -3},
              {-1, 0, 4, 1, 0, 2, 5, 2}},
             sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(320000);
@@ -2953,8 +2956,8 @@ static void BM_size_no_reserve_trop_max_plus(benchmark::State& state) {
                                              0}},
                                            sr)};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -3141,8 +3144,8 @@ static void BM_size_reserve_trop_max_plus(benchmark::State& state) {
                                              0}},
                                            sr)};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(362880);
@@ -3188,8 +3191,8 @@ static void BM_size_no_reserve_trop_min_plus(benchmark::State& state) {
                 {INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, 0}},
                sr)};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -3234,8 +3237,8 @@ static void BM_size_reserve_trop_min_plus(benchmark::State& state) {
                 {INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, INFTY, 0}},
                sr)};
 
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(362880);
@@ -3262,8 +3265,8 @@ static void BM_size_no_reserve_nat_mat(benchmark::State& state) {
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr),
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -3289,8 +3292,8 @@ static void BM_size_reserve_nat_mat(benchmark::State& state) {
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr),
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
         new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(10077696);
@@ -3311,19 +3314,18 @@ BENCHMARK(BM_size_reserve_nat_mat)
 
 static void BM_size_no_reserve_full_pbr_2(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<Element*> gens
-        = {new PBR(new PBR_Input({{}, {2}, {1}, {3, 0}})),
-           new PBR(new PBR_Input({{3, 0}, {2}, {1}, {}})),
-           new PBR(new PBR_Input({{2, 1}, {3}, {0}, {1}})),
-           new PBR(new PBR_Input({{2}, {3}, {0}, {3, 1}})),
-           new PBR(new PBR_Input({{3}, {1}, {0}, {1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {0, 1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {3}})),
-           new PBR(new PBR_Input({{3}, {2}, {1}, {0}})),
-           new PBR(new PBR_Input({{3}, {3, 2}, {0}, {1}}))};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    std::vector<Element*> gens = {new PBR(PBR_Input({{}, {2}, {1}, {3, 0}})),
+                                  new PBR(PBR_Input({{3, 0}, {2}, {1}, {}})),
+                                  new PBR(PBR_Input({{2, 1}, {3}, {0}, {1}})),
+                                  new PBR(PBR_Input({{2}, {3}, {0}, {3, 1}})),
+                                  new PBR(PBR_Input({{3}, {1}, {0}, {1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {0, 1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {3}})),
+                                  new PBR(PBR_Input({{3}, {2}, {1}, {0}})),
+                                  new PBR(PBR_Input({{3}, {3, 2}, {0}, {1}}))};
+    Semigroup<>           S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
@@ -3342,19 +3344,18 @@ BENCHMARK(BM_size_no_reserve_full_pbr_2)
 
 static void BM_size_reserve_full_pbr_2(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<Element*> gens
-        = {new PBR(new PBR_Input({{}, {2}, {1}, {3, 0}})),
-           new PBR(new PBR_Input({{3, 0}, {2}, {1}, {}})),
-           new PBR(new PBR_Input({{2, 1}, {3}, {0}, {1}})),
-           new PBR(new PBR_Input({{2}, {3}, {0}, {3, 1}})),
-           new PBR(new PBR_Input({{3}, {1}, {0}, {1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {0, 1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {1}})),
-           new PBR(new PBR_Input({{3}, {2}, {0}, {3}})),
-           new PBR(new PBR_Input({{3}, {2}, {1}, {0}})),
-           new PBR(new PBR_Input({{3}, {3, 2}, {0}, {1}}))};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    std::vector<Element*> gens = {new PBR(PBR_Input({{}, {2}, {1}, {3, 0}})),
+                                  new PBR(PBR_Input({{3, 0}, {2}, {1}, {}})),
+                                  new PBR(PBR_Input({{2, 1}, {3}, {0}, {1}})),
+                                  new PBR(PBR_Input({{2}, {3}, {0}, {3, 1}})),
+                                  new PBR(PBR_Input({{3}, {1}, {0}, {1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {0, 1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {1}})),
+                                  new PBR(PBR_Input({{3}, {2}, {0}, {3}})),
+                                  new PBR(PBR_Input({{3}, {2}, {1}, {0}})),
+                                  new PBR(PBR_Input({{3}, {3, 2}, {0}, {1}}))};
+    Semigroup<>           S(gens);
+    delete_gens(gens);
 
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(65536);
@@ -3383,8 +3384,8 @@ static void BM_size_no_reserve_symm_inv_9(benchmark::State& state) {
                {1, 2, 3, 4, 5, 6, 7, 8}, {0, 1, 2, 3, 4, 5, 6, 7}, 9),
            new PartialPerm<uint_fast8_t>(
                {0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 8}, 9)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
     auto end = std::chrono::high_resolution_clock::now();
@@ -3411,8 +3412,8 @@ static void BM_size_reserve_symm_inv_9(benchmark::State& state) {
                {1, 2, 3, 4, 5, 6, 7, 8}, {0, 1, 2, 3, 4, 5, 6, 7}, 9),
            new PartialPerm<uint_fast8_t>(
                {0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 8}, 9)};
-    Semigroup S = Semigroup(gens);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
     auto start = std::chrono::high_resolution_clock::now();
     S.reserve(17572114);
     S.size();

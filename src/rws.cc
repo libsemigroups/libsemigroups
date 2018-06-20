@@ -219,8 +219,8 @@ namespace libsemigroups {
   void RWS::add_rules(std::vector<relation_t> const& relations) {
     for (relation_t const& rel : relations) {
       if (rel.first != rel.second) {
-        add_rule(new_rule(word_to_rws_word(rel.first),
-                          word_to_rws_word(rel.second)));
+        add_rule(new_rule(new rws_word_t(word_to_rws_word(rel.first)),
+                          new rws_word_t(word_to_rws_word(rel.second))));
       }
     }
   }

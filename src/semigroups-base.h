@@ -92,14 +92,13 @@ namespace libsemigroups {
     virtual element_index_t left(element_index_t, letter_t)                 = 0;
     virtual cayley_graph_t* left_cayley_graph_copy()                        = 0;
     virtual void            minimal_factorisation(word_t&, element_index_t) = 0;
-    virtual word_t*         minimal_factorisation(element_index_t)          = 0;
+    virtual word_t          minimal_factorisation(element_index_t)          = 0;
     virtual void            factorisation(word_t&, element_index_t)         = 0;
-    virtual word_t*         factorisation(element_index_t)                  = 0;
+    virtual word_t          factorisation(element_index_t)                  = 0;
     virtual void            reset_next_relation()                           = 0;
     virtual void            next_relation(word_t&)                          = 0;
     virtual void            enumerate(std::atomic<bool>&, size_t)           = 0;
     virtual void            enumerate(size_t)                               = 0;
-    virtual void            set_report(bool) const                          = 0;
     virtual void            set_max_threads(size_t)                         = 0;
   };
 

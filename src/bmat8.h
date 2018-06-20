@@ -28,6 +28,7 @@
 
 #include "libsemigroups-debug.h"
 #include "timer.h"
+#include "to_string.h"
 
 namespace libsemigroups {
 
@@ -57,7 +58,7 @@ namespace libsemigroups {
     //!
     //! This constructor initializes a matrix where the rows of the matrix
     //! are the vectors in \p mat.
-    explicit BMat8(std::vector<std::vector<size_t>> const& mat);
+    explicit BMat8(std::vector<std::vector<bool>> const& mat);
 
     //! A constructor.
     //!
@@ -179,7 +180,6 @@ namespace libsemigroups {
         tmp &= diag;
         data |= tmp;
         y    = cyclic_shift(y);
-        tmp  = 0;
         diag = cyclic_shift(diag);
       }
       return BMat8(data);
@@ -218,7 +218,7 @@ namespace libsemigroups {
     //!
     //! This method allows BMat8 objects to be inserted into a ostream.
     friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << std::to_string(bm);
+      os << libsemigroups::to_string(bm);
       return os;
     }
 
@@ -233,14 +233,21 @@ namespace libsemigroups {
     //! top-left \p dim x \p dim entries may be non-zero.
     static BMat8 random(size_t dim);
 
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    // FIXME do this another way
+    BMat8 empty_key() const {
+      return BMat8(0xFF7FBFDFEFF7FBFE);
+    }
+#endif
+
    private:
-    uint64_t                                     _data;
-    static std::random_device                    _rd;
-    static std::mt19937                          _gen;
-    static std::uniform_int_distribution<size_t> _dist;
-    static std::vector<uint64_t> const           ROW_MASK;
-    static std::vector<uint64_t> const           COL_MASK;
-    static std::vector<uint64_t> const           BIT_MASK;
+    uint64_t                                       _data;
+    static std::random_device                      _rd;
+    static std::mt19937                            _gen;
+    static std::uniform_int_distribution<uint64_t> _dist;
+    static std::vector<uint64_t> const             ROW_MASK;
+    static std::vector<uint64_t> const             COL_MASK;
+    static std::vector<uint64_t> const             BIT_MASK;
 
     // Cyclically shifts bits to left by 8m
     // https://stackoverflow.com/a/776523

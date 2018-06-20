@@ -110,11 +110,12 @@ namespace libsemigroups {
                                                  0x2,
                                                  0x1};
 
-  std::random_device                    BMat8::_rd;
-  std::mt19937                          BMat8::_gen(_rd());
-  std::uniform_int_distribution<size_t> BMat8::_dist(0, 0xffffffffffffffff);
+  std::random_device                      BMat8::_rd;
+  std::mt19937                            BMat8::_gen(_rd());
+  std::uniform_int_distribution<uint64_t> BMat8::_dist(0, 0xffffffffffffffff);
 
-  BMat8::BMat8(std::vector<std::vector<size_t>> const& mat) {
+  BMat8::BMat8(std::vector<std::vector<bool>> const& mat) {
+    // FIXME exceptions
     LIBSEMIGROUPS_ASSERT(mat.size() <= 8);
     LIBSEMIGROUPS_ASSERT(0 < mat.size());
     _data        = 0;

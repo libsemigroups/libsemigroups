@@ -22,19 +22,22 @@
 #include <string>
 
 namespace libsemigroups {
+  //! Returns a libsemigroups::word_t which evaluates to \p x.
+  //!
+  //! Specialises the factorisation method for Semigroup's of RWSE's so that it
+  //! just returns the word inside the RWSE.
   template <>
-  word_t*
-  Semigroup<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>::factorisation(
-      RWSE* x) {
-    return const_cast<word_t*>(RWS::rws_word_to_word(
-        (reinterpret_cast<RWSE const*>(x))->get_rws_word()));
+  word_t Semigroup<RWSE, std::hash<RWSE>, std::equal_to<RWSE>>::factorisation(
+      RWSE const& x) {
+    return RWS::rws_word_to_word(x.get_rws_word());
   }
 
+  RWSE::RWSE(RWSE const& cpy)
+      : Element(cpy._hash_value), _rws(cpy._rws), _rws_word(cpy._rws_word) {}
+
   bool RWSE::operator<(Element const& that) const {
-    LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-    LIBSEMIGROUPS_ASSERT(static_cast<RWSE const&>(that)._rws_word != nullptr);
-    rws_word_t u = *(this->_rws_word);
-    rws_word_t v = *(static_cast<RWSE const&>(that)._rws_word);
+    rws_word_t const& u = this->_rws_word;
+    rws_word_t const& v = static_cast<RWSE const&>(that)._rws_word;
     if (u != v && (u.size() < v.size() || (u.size() == v.size() && u < v))) {
       // TODO allow other reduction orders here
       return true;
@@ -43,42 +46,21 @@ namespace libsemigroups {
     }
   }
 
-  RWSE* RWSE::really_copy(size_t increase_deg_by) const {
-    LIBSEMIGROUPS_ASSERT(increase_deg_by == 0);
-    LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-    (void) increase_deg_by;  // to keep the compiler happy
-    rws_word_t* rws_word(new rws_word_t(*(this->_rws_word)));
-    return new RWSE(_rws, rws_word, false);
+  void RWSE::swap(Element& x) {
+    auto& xx = static_cast<RWSE&>(x);
+    _rws_word.swap(xx._rws_word);
+    std::swap(_rws, xx._rws);
+    std::swap(this->_hash_value, xx._hash_value);
   }
 
-  void RWSE::copy(Element const* x) {
-    LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-    RWSE const* xx(static_cast<RWSE const*>(x));
-    LIBSEMIGROUPS_ASSERT(xx->_rws_word != nullptr);
-    _rws_word->assign(xx->_rws_word->cbegin(), xx->_rws_word->cend());
-    reset_hash_value();
-  }
-
-  void RWSE::swap(Element* x) {
-    LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-    RWSE* xx = static_cast<RWSE*>(x);
-    LIBSEMIGROUPS_ASSERT(xx->_rws_word != nullptr);
-    _rws_word->swap(*(xx->_rws_word));
-    std::swap(this->_hash_value, xx->_hash_value);
-  }
-
-  void RWSE::redefine(Element const* x, Element const* y, size_t const& tid) {
-    (void) tid;
-    RWSE const* xx = static_cast<RWSE const*>(x);
-    RWSE const* yy = static_cast<RWSE const*>(y);
-    LIBSEMIGROUPS_ASSERT(xx->_rws_word != nullptr);
-    LIBSEMIGROUPS_ASSERT(yy->_rws_word != nullptr);
-    LIBSEMIGROUPS_ASSERT(_rws_word != nullptr);
-    LIBSEMIGROUPS_ASSERT(xx->_rws == yy->_rws);
-    _rws_word->clear();
-    _rws_word->append(*(xx->_rws_word));
-    _rws_word->append(*(yy->_rws_word));
-    _rws->rewrite(_rws_word);
+  void RWSE::redefine(Element const& x, Element const& y, size_t) {
+    auto const& xx = static_cast<RWSE const&>(x);
+    auto const& yy = static_cast<RWSE const&>(y);
+    LIBSEMIGROUPS_ASSERT(xx._rws == yy._rws);
+    _rws_word.clear();
+    _rws_word.append(xx._rws_word);
+    _rws_word.append(yy._rws_word);
+    _rws->rewrite(&_rws_word);
     this->reset_hash_value();
   }
 }  // namespace libsemigroups

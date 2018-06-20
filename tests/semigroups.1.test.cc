@@ -31,23 +31,29 @@ static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
   return out;
 }
 
-static inline void test_idempotent(Semigroup<>& S, Element* x) {
+static inline void test_idempotent(Semigroup<>& S, const Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
-  Element* y = x->really_copy();
+  Element* y = x->heap_copy();
   y->redefine(x, x);
   REQUIRE(*x == *y);
   REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
-  y->really_delete();
   delete y;
 }
 
-TEST_CASE("Semigroup 01: small transformation semigroup",
-          "[quick][semigroup][finite][01]") {
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto x : gens) {
+    delete x;
+  }
+}
+
+TEST_CASE("Semigroup 001: small transformation semigroup",
+          "[quick][semigroup][finite][001]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                 new Transformation<u_int16_t>({0, 1, 2})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   REQUIRE(S.size() == 2);
   REQUIRE(S.degree() == 3);
@@ -57,42 +63,37 @@ TEST_CASE("Semigroup 01: small transformation semigroup",
 
   Element* expected = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(*S[0] == *expected);
-  expected->really_delete();
   delete expected;
 
   expected = new Transformation<u_int16_t>({0, 1, 2});
   REQUIRE(*S[1] == *expected);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == 0);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new Transformation<u_int16_t>({0, 1, 2});
   REQUIRE(S.position(x) == 1);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new Transformation<u_int16_t>({0, 0, 0});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 }
 
-TEST_CASE("Semigroup 02: small partial perm semigroup",
-          "[quick][semigroup][finite][02]") {
+TEST_CASE("Semigroup 002: small partial perm semigroup",
+          "[quick][semigroup][finite][002]") {
   std::vector<Element*> gens
       = {new PartialPerm<u_int16_t>(
-             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10)};
+             {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
+         new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   REQUIRE(S.size() == 22);
   REQUIRE(S.degree() == 11);
@@ -101,41 +102,36 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   REQUIRE(S.nrrules() == 9);
 
   Element* expected = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(*S[0] == *expected);
-  expected->really_delete();
   delete expected;
 
-  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(*S[1] == *expected);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new PartialPerm<u_int16_t>({}, {}, 10);
+  x = new PartialPerm<u_int16_t>({}, {}, 11);
   REQUIRE(S.position(x) == 10);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new PartialPerm<u_int16_t>({}, {}, 9);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
 
-  x->really_delete();
   delete x;
 
   x = new PartialPerm<u_int16_t>(
-      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
+      {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
   REQUIRE(S.position(x) == 0);
   REQUIRE(S.test_membership(x));
 
-  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 10);
+  Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(S.position(y) == 1);
   REQUIRE(S.test_membership(y));
 
@@ -144,14 +140,12 @@ TEST_CASE("Semigroup 02: small partial perm semigroup",
   REQUIRE(S.test_membership(y));
 
   REQUIRE(*y == *S[2]);
-  x->really_delete();
   delete x;
-  y->really_delete();
   delete y;
 }
 
-TEST_CASE("Semigroup 03: small bipartition semigroup",
-          "[quick][semigroup][finite][03]") {
+TEST_CASE("Semigroup 003: small bipartition semigroup",
+          "[quick][semigroup][finite][003]") {
   std::vector<Element*> gens
       = {new Bipartition(
              {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -160,7 +154,8 @@ TEST_CASE("Semigroup 03: small bipartition semigroup",
          new Bipartition(
              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+
   REQUIRE(S.size() == 10);
   REQUIRE(S.degree() == 10);
   REQUIRE(S.nridempotents() == 6);
@@ -190,19 +185,19 @@ TEST_CASE("Semigroup 03: small bipartition semigroup",
   y->redefine(gens[1], gens[2]);
   REQUIRE(S.position(y) == 7);
   REQUIRE(S.test_membership(y));
-  y->really_delete();
   delete y;
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
-          "[quick][semigroup][finite][04]") {
+TEST_CASE("Semigroup 004: small Boolean matrix semigroup",
+          "[quick][semigroup][finite][004]") {
   std::vector<Element*> gens
       = {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
          new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
          new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+
   REQUIRE(S.size() == 3);
   REQUIRE(S.degree() == 3);
   REQUIRE(S.nridempotents() == 2);
@@ -225,49 +220,44 @@ TEST_CASE("Semigroup 04: small Boolean matrix semigroup",
   y->redefine(gens[0], gens[0]);
   REQUIRE(S.position(y) == 2);
   REQUIRE(S.test_membership(y));
-  y->really_delete();
   delete y;
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 05: small projective max plus matrix semigroup",
-          "[quick][semigroup][finite][05]") {
+TEST_CASE("Semigroup 005: small projective max plus matrix semigroup",
+          "[quick][semigroup][finite][005]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   auto x  = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
   auto id = x->identity();
-  x->really_delete();
   delete x;
-  Semigroup<> S = Semigroup<>({id});
-  S.set_report(SEMIGROUPS_REPORT);
+  Semigroup<> S({&id});
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1);
   REQUIRE(S.degree() == 3);
   REQUIRE(S.nridempotents() == 1);
   REQUIRE(S.nrgens() == 1);
   REQUIRE(S.nrrules() == 1);
-  REQUIRE(*S[0] == *id);
+  REQUIRE(*S[0] == id);
 
-  REQUIRE(S.position(id) == 0);
-  REQUIRE(S.test_membership(id));
-  id->really_delete();
-  delete id;
+  REQUIRE(S.position(&id) == 0);
+  REQUIRE(S.test_membership(&id));
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
   delete sr;
 }
 
-TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
-          "[quick][semigroup][finite][06]") {
+TEST_CASE("Semigroup 006: small matrix semigroup [Integers]",
+          "[quick][semigroup][finite][006]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 13);
   REQUIRE(S.degree() == 2);
@@ -290,27 +280,25 @@ TEST_CASE("Semigroup 06: small matrix semigroup [Integers]",
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
-          "[quick][semigroup][finite][07]") {
+TEST_CASE("Semigroup 007: small matrix semigroup [MaxPlusSemiring]",
+          "[quick][semigroup][finite][007]") {
   Semiring<int64_t>*    sr = new MaxPlusSemiring();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, -3}, {-3, -1}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 26);
   REQUIRE(S.degree() == 2);
@@ -332,26 +320,24 @@ TEST_CASE("Semigroup 07: small matrix semigroup [MaxPlusSemiring]",
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
-          "[quick][semigroup][finite][08]") {
+TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
+          "[quick][semigroup][finite][008]") {
   Semiring<int64_t>*    sr = new MinPlusSemiring();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, LONG_MAX}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 3);
   REQUIRE(S.degree() == 2);
@@ -369,28 +355,26 @@ TEST_CASE("Semigroup 08: small matrix semigroup [MinPlusSemiring]",
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 1);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
-          "[quick][semigroup][finite][09]") {
+TEST_CASE("Semigroup 009: small matrix semigroup [TropicalMaxPlusSemiring]",
+          "[quick][semigroup][finite][009]") {
   Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
                                       sr),
       new MatrixOverSemiring<int64_t>({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 119);
   REQUIRE(S.degree() == 3);
@@ -405,7 +389,6 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
@@ -414,21 +397,20 @@ TEST_CASE("Semigroup 09: small matrix semigroup [TropicalMaxPlusSemiring]",
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
-          "[quick][semigroup][finite][10]") {
+TEST_CASE("Semigroup 010: small matrix semigroup [TropicalMinPlusSemiring]",
+          "[quick][semigroup][finite][010]") {
   Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
       new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1039);
   REQUIRE(S.degree() == 3);
@@ -440,33 +422,31 @@ TEST_CASE("Semigroup 10: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
-          "[quick][semigroup][finite][11]") {
+TEST_CASE("Semigroup 011: small matrix semigroup [NaturalSemiring]",
+          "[quick][semigroup][finite][011]") {
   Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
   std::vector<Element*> gens = {
       new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
       new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 86);
   REQUIRE(S.degree() == 3);
@@ -478,34 +458,30 @@ TEST_CASE("Semigroup 11: small matrix semigroup [NaturalSemiring]",
   REQUIRE(S.position(gens[0]) == 0);
   REQUIRE(S.test_membership(gens[0]));
 
-  Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
+  Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
+  x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[0]);
   REQUIRE(S.position(x) == 4);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
 
-  really_delete_cont(gens);
   delete sr;
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 12: small pbr semigroup",
-          "[quick][semigroup][finite][12]") {
+TEST_CASE("Semigroup 012: small pbr semigroup",
+          "[quick][semigroup][finite][012]") {
   std::vector<Element*> gens
-      = {new PBR(new std::vector<std::vector<u_int32_t>>(
-             {{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}})),
-         new PBR(new std::vector<std::vector<u_int32_t>>(
-             {{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}))};
+      = {new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}),
+         new PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 30);
   REQUIRE(S.degree() == 3);
@@ -520,21 +496,18 @@ TEST_CASE("Semigroup 12: small pbr semigroup",
   REQUIRE(S.position(gens[1]) == 1);
   REQUIRE(S.test_membership(gens[1]));
 
-  Element* x = new PBR(
-      new std::vector<std::vector<u_int32_t>>({{}, {}, {}, {}, {}, {}}));
+  Element* x = new PBR({{}, {}, {}, {}, {}, {}});
   REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
   REQUIRE(S.test_membership(x));
-  x->really_delete();
   delete x;
-
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 13: large transformation semigroup",
-          "[quick][semigroup][finite][13]") {
+TEST_CASE("Semigroup 013: large transformation semigroup",
+          "[quick][semigroup][finite][013]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -542,17 +515,18 @@ TEST_CASE("Semigroup 13: large transformation semigroup",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 14: at, position, current_*",
-          "[quick][semigroup][finite][14]") {
+TEST_CASE("Semigroup 014: at, position, current_*",
+          "[quick][semigroup][finite][014]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -560,7 +534,9 @@ TEST_CASE("Semigroup 14: at, position, current_*",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_batch_size(1024);
 
   Element* expected = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
@@ -568,12 +544,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
-  expected->really_delete();
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
   REQUIRE(S.position(x) == 100);
-  x->really_delete();
   delete x;
 
   expected = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
@@ -581,12 +555,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
-  expected->really_delete();
   delete expected;
 
   x = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
   REQUIRE(S.position(x) == 1023);
-  x->really_delete();
   delete x;
 
   expected = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
@@ -594,12 +566,10 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.current_size() == 3001);
   REQUIRE(S.current_nrrules() == 526);
   REQUIRE(S.current_max_word_length() == 9);
-  expected->really_delete();
   delete expected;
 
   x = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
   REQUIRE(S.position(x) == 3000);
-  x->really_delete();
   delete x;
 
   REQUIRE(S.size() == 7776);
@@ -607,11 +577,9 @@ TEST_CASE("Semigroup 14: at, position, current_*",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
+TEST_CASE("Semigroup 015: enumerate", "[quick][semigroup][finite][015]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -619,7 +587,9 @@ TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_batch_size(1024);
 
   S.enumerate(3000);
@@ -642,12 +612,10 @@ TEST_CASE("Semigroup 15: enumerate", "[quick][semigroup][finite][15]") {
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
-          "[quick][semigroup][finite][16]") {
+TEST_CASE("Semigroup 016: enumerate [many stops and starts]",
+          "[quick][semigroup][finite][016]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -655,7 +623,9 @@ TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_batch_size(128);
 
   for (size_t i = 1; !S.is_done(); i++) {
@@ -667,12 +637,10 @@ TEST_CASE("Semigroup 16: enumerate [many stops and starts]",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 5);
   REQUIRE(S.nrrules() == 2459);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 17: factorisation, length [1 element]",
-          "[quick][semigroup][finite][17]") {
+TEST_CASE("Semigroup 017: factorisation, length [1 element]",
+          "[quick][semigroup][finite][017]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -680,7 +648,9 @@ TEST_CASE("Semigroup 17: factorisation, length [1 element]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_batch_size(1024);
 
   word_t result;
@@ -697,12 +667,10 @@ TEST_CASE("Semigroup 17: factorisation, length [1 element]",
 
   REQUIRE(S.length_non_const(7775) == 16);
   REQUIRE(S.current_max_word_length() == 16);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 18: factorisation, products [all elements]",
-          "[quick][semigroup][finite][18]") {
+TEST_CASE("Semigroup 018: factorisation, products [all elements]",
+          "[quick][semigroup][finite][018]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -710,7 +678,9 @@ TEST_CASE("Semigroup 18: factorisation, products [all elements]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_batch_size(1024);
 
   word_t result;
@@ -718,12 +688,10 @@ TEST_CASE("Semigroup 18: factorisation, products [all elements]",
     S.factorisation(result, i);
     REQUIRE(evaluate_reduct(S, result) == i);
   }
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
-          "[quick][semigroup][finite][19]") {
+TEST_CASE("Semigroup 019: first/final letter, prefix, suffix, products",
+          "[quick][semigroup][finite][019]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -731,7 +699,9 @@ TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.enumerate(1000);  // fully enumerates
 
   REQUIRE(S.first_letter(6377) == 2);
@@ -792,12 +762,10 @@ TEST_CASE("Semigroup 19: first/final letter, prefix, suffix, products",
   REQUIRE(S.fast_product(S.first_letter(7775), S.suffix(7775)) == 7775);
   REQUIRE(S.product_by_reduction(S.prefix(7775), S.final_letter(7775)) == 7775);
   REQUIRE(S.product_by_reduction(S.first_letter(7775), S.suffix(7775)) == 7775);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 20: letter_to_pos [standard]",
-          "[quick][semigroup][finite][20]") {
+TEST_CASE("Semigroup 020: letter_to_pos [standard]",
+          "[quick][semigroup][finite][020]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -805,19 +773,18 @@ TEST_CASE("Semigroup 20: letter_to_pos [standard]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   REQUIRE(S.letter_to_pos(0) == 0);
   REQUIRE(S.letter_to_pos(1) == 1);
   REQUIRE(S.letter_to_pos(2) == 2);
   REQUIRE(S.letter_to_pos(3) == 3);
   REQUIRE(S.letter_to_pos(4) == 4);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
-          "[quick][semigroup][finite][21]") {
+TEST_CASE("Semigroup 021: letter_to_pos [duplicate gens]",
+          "[quick][semigroup][finite][021]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -852,7 +819,8 @@ TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   REQUIRE(S.letter_to_pos(0) == 0);
   REQUIRE(S.letter_to_pos(1) == 1);
@@ -867,12 +835,10 @@ TEST_CASE("Semigroup 21: letter_to_pos [duplicate gens]",
   REQUIRE(S.nridempotents() == 537);
   REQUIRE(S.nrgens() == 32);
   REQUIRE(S.nrrules() == 2621);
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
-          "[quick][semigroup][finite][22]") {
+TEST_CASE("Semigroup 022: letter_to_pos [after add_generators]",
+          "[quick][semigroup][finite][022]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -880,7 +846,7 @@ TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>({gens[0]});
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1);
   REQUIRE(S.degree() == 6);
@@ -921,12 +887,11 @@ TEST_CASE("Semigroup 22: letter_to_pos [after add_generators]",
   REQUIRE(S.letter_to_pos(2) == 2);
   REQUIRE(S.letter_to_pos(3) == 120);
   REQUIRE(S.letter_to_pos(4) == 1546);
-
-  really_delete_cont(gens);
+  delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
-          "[quick][semigroup][finite][23]") {
+TEST_CASE("Semigroup 023: cbegin_idempotents/cend [1 thread]",
+          "[quick][semigroup][finite][023]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -934,7 +899,8 @@ TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   size_t nr = 0;
   for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); it++) {
@@ -942,11 +908,10 @@ TEST_CASE("Semigroup 23: cbegin_idempotents/cend [1 thread]",
     nr++;
   }
   REQUIRE(nr == S.nridempotents());
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
-          "[quick][semigroup][finite][24]") {
+TEST_CASE("Semigroup 024: idempotent_cend/cbegin [1 thread]",
+          "[quick][semigroup][finite][024]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -954,7 +919,8 @@ TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
 
   size_t nr  = 0;
   auto   end = S.cend_idempotents();
@@ -963,12 +929,10 @@ TEST_CASE("Semigroup 24: idempotent_cend/cbegin [1 thread]",
     nr++;
   }
   REQUIRE(nr == S.nridempotents());
-
-  really_delete_cont(gens);
 }
 
-TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
-          "[quick][semigroup][finite][25]") {
+TEST_CASE("Semigroup 025: is_idempotent [1 thread]",
+          "[quick][semigroup][finite][025]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -976,9 +940,10 @@ TEST_CASE("Semigroup 25: is_idempotent [1 thread]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(SEMIGROUPS_REPORT);
+  REPORTER.set_report(SEMIGROUPS_REPORT);
+  delete_gens(gens);
+
   S.set_max_threads(1000);
-  really_delete_cont(gens);
 
   size_t nr = 0;
   for (size_t i = 0; i < S.size(); i++) {

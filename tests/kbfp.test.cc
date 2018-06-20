@@ -29,6 +29,13 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 TEST_CASE("KBFP 01: Small fp semigroup",
           "[quick][congruence][kbfp][fpsemigroup][01]") {
   std::vector<relation_t> rels;
@@ -38,7 +45,7 @@ TEST_CASE("KBFP 01: Small fp semigroup",
 
   Congruence cong("twosided", 2, rels, extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(!cong.is_done());
   REQUIRE(cong.nr_classes() == 5);
@@ -60,7 +67,7 @@ TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
 
   Congruence cong1("twosided", 2, rels, extra);
   cong1.force_kbfp();
-  cong1.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong1.word_to_class_index({0, 0, 1}) == 4);
   REQUIRE(cong1.word_to_class_index({0, 0, 0, 0, 1}) == 4);
@@ -70,7 +77,7 @@ TEST_CASE("KBFP 02: word_to_class_index for fp semigroup",
 
   Congruence cong2("twosided", 2, rels, extra);
   cong2.force_kbfp();
-  cong2.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong2.word_to_class_index({0, 0, 0, 0}) == 2);
 }
@@ -80,8 +87,8 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(KBFP_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(KBFP_REPORT);
+  delete_gens(gens);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -96,7 +103,7 @@ TEST_CASE("KBFP 03: for a finite semigroup",
 
   Congruence cong("twosided", &S, extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
   REQUIRE(cong.nr_classes() == 21);
@@ -113,10 +120,6 @@ TEST_CASE("KBFP 03: for a finite semigroup",
   REQUIRE((*ntc)[0]->size() == 68);
   delete ntc;
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
@@ -146,7 +149,7 @@ TEST_CASE("KBFP 04: finite fp-semigroup, dihedral group of order 6",
 
   Congruence cong("twosided", 5, rels, extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong.nr_classes() == 6);
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
@@ -179,7 +182,7 @@ TEST_CASE("KBFP 05: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 4, rels, extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({2}) == cong.word_to_class_index({3}));
@@ -240,7 +243,7 @@ TEST_CASE("KBFP 06: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 11, rels, extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({5}));
@@ -264,7 +267,7 @@ TEST_CASE("KBFP 07: fp semigroup, size 240",
 
   Congruence cong("twosided", 2, std::vector<relation_t>(), extra);
   cong.force_kbfp();
-  cong.set_report(KBFP_REPORT);
+  REPORTER.set_report(KBFP_REPORT);
 
   REQUIRE(cong.nr_classes() == 240);
 }

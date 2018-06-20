@@ -23,37 +23,38 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto x : gens) {
+    delete x;
+  }
+}
+
 static void BM_Congruence_full_PBR_monoid(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {
-        new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
 
-    Semigroup S = Semigroup(gens);
-    S.set_report(false);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    REPORTER.set_report(false);
+    delete_gens(gens);
 
     std::vector<relation_t> extra(
         {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
                     {9, 3, 6, 6, 10, 9, 4, 7}),
          relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
     Congruence cong("twosided", &S, extra);
-    cong.set_report(false);
+    REPORTER.set_report(false);
 
     auto start = std::chrono::high_resolution_clock::now();
     cong.nr_classes();
@@ -71,36 +72,29 @@ BENCHMARK(BM_Congruence_full_PBR_monoid)
     ->UseManualTime();
 
 static void BM_Congruence_full_PBR_monoid_max_2(benchmark::State& state) {
+  REPORTER.set_report(false);
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {
-        new PBR(new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-        new PBR(new std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-        new PBR(
-            new std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
+        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
 
-    Semigroup S = Semigroup(gens);
-    S.set_report(false);
-    really_delete_cont(gens);
+    Semigroup<> S(gens);
+    delete_gens(gens);
 
     std::vector<relation_t> extra(
         {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
                     {9, 3, 6, 6, 10, 9, 4, 7}),
          relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
     Congruence cong("twosided", &S, extra);
-    cong.set_report(false);
     cong.set_max_threads(2);
 
     auto start = std::chrono::high_resolution_clock::now();

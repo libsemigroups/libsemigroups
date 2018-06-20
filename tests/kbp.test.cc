@@ -42,7 +42,7 @@ TEST_CASE("KBP 01: for an infinite fp semigroup",
                                   relation_t({2, 1}, {1})};
   std::vector<relation_t> extra = {{{0}, {1}}};
   Congruence              cong("twosided", 3, rels, extra);
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
   cong.force_kbp();
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
@@ -77,7 +77,7 @@ TEST_CASE("KBP 02: for an infinite fp semigroup",
   std::vector<relation_t> extra = {{{0}, {1}}};
   Congruence              cong("twosided", 4, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
@@ -103,7 +103,7 @@ TEST_CASE("KBP 03: for an infinite fp semigroup",
   std::vector<relation_t> extra = {{{1}, {2}}};
   Congruence              cong("twosided", 5, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
 
@@ -134,7 +134,7 @@ TEST_CASE("KBP 04: for an infinite fp semigroup",
   std::vector<relation_t> extra = {{{2}, {3}}};
   Congruence              cong("twosided", 5, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({2}));
 
@@ -158,7 +158,7 @@ TEST_CASE("KBP 05: trivial congruence on a finite fp semigroup",
   std::vector<relation_t> extra = {};
   Congruence              cong("twosided", 2, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 27);
   REQUIRE(cong.word_to_class_index({0}) == 0);
@@ -192,7 +192,7 @@ TEST_CASE("KBP 06: universal congruence on a finite fp semigroup",
       = {relation_t({0}, {1}), relation_t({0, 0}, {0})};
   Congruence cong("twosided", 2, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 1);
   REQUIRE(cong.word_to_class_index({0}) == 0);
@@ -228,7 +228,7 @@ TEST_CASE("KBP 06: left congruence with even chunks on a finite fp semigroup",
       = {relation_t({0}, {1}), relation_t({0, 0}, {0})};
   Congruence cong("left", 2, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   Partition<word_t>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 6);
@@ -274,7 +274,7 @@ TEST_CASE("KBP 07: finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR",
   std::vector<relation_t> extra = {};
   Congruence              cong("twosided", 3, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 120);
 }
@@ -294,7 +294,7 @@ TEST_CASE(
   std::vector<relation_t> extra = {relation_t({1, 2, 2, 1}, {1, 1, 2, 1, 2})};
   Congruence              cong("right", 3, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   // Generating pair
   REQUIRE(cong.word_to_class_index({1, 2, 2, 1})
@@ -328,7 +328,7 @@ TEST_CASE("KBP 09: finite fp-semigroup, dihedral group of order 6",
 
   Congruence cong("twosided", 5, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 6);
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
@@ -361,7 +361,7 @@ TEST_CASE("KBP 10: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 4, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({2}) == cong.word_to_class_index({3}));
@@ -422,7 +422,7 @@ TEST_CASE("KBP 11: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 11, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({5}));
@@ -442,7 +442,7 @@ TEST_CASE("KBP 12: Infinite fp semigroup with infinite classes",
   std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
   Congruence              cong("twosided", 2, rels, extra);
   cong.force_kbp();
-  cong.set_report(KBP_REPORT);
+  REPORTER.set_report(KBP_REPORT);
 
   word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};

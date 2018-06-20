@@ -25,107 +25,266 @@
 #include "elements.h"
 
 namespace libsemigroups {
+  //! Returns the one of type TElementType
+  //!
+  // FIXME
+  template <typename TElementType> inline TElementType one(TElementType x) {
+    return x.one();
+  }
 
-  template <typename TElementType> struct ElementContainer {
-    inline TElementType multiply(TElementType xy,
-                                 TElementType x,
-                                 TElementType y,
-                                 size_t       tid = 0) const {
-      (void) xy;
-      (void) tid;
-      return x * y;
-    }
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <typename TElementType>
+  inline TElementType empty_key(TElementType x) {
+    return x.empty_key();
+  }
+#endif
 
-    inline TElementType copy(TElementType x, size_t increase_deg_by = 0) const {
-      (void) increase_deg_by;
+  template <typename TElementType, typename = void> struct ElementContainer {};
+  // TODO add TElementHash, and TElementEqual here
+  // so that I can add InternalElementHash/Equal here not P and Semigroup
+
+  // Specialization for non-pointer element types not derived from Element,
+  // such as BMat8, Transf16 and so on . . .
+  //
+  // WARNING: This will be unnecessarily slow for non-trivial types!!
+  template <typename TElementType>
+  struct ElementContainer<
+      TElementType,
+      typename std::enable_if<
+          !std::is_pointer<TElementType>::value
+          && !std::is_base_of<Element, TElementType>::value>::type> {
+    using value_type       = TElementType;
+    using const_value_type = const TElementType;
+    using reference        = TElementType &;
+    using const_reference  = TElementType const &;
+
+    using internal_value_type       = value_type;
+    using internal_const_value_type = value_type const;
+    using internal_reference        = reference;
+    using internal_const_reference  = const_reference;
+
+    inline internal_const_reference to_internal(const_reference x) const {
       return x;
     }
 
-    inline void free(TElementType x) const {
-      (void) x;
+    inline const_reference to_external(internal_const_reference x) const {
+      return x;
     }
 
-    inline void swap(TElementType x, TElementType y) const {
+    inline void multiply(internal_reference       xy,
+                         internal_const_reference x,
+                         internal_const_reference y,
+                         size_t = 0) const {
+      xy = x * y;
+    }
+
+    inline internal_value_type internal_copy(internal_const_reference x) const {
+      return x;
+    }
+
+    inline value_type external_copy(const_reference x) const {
+      return x;
+    }
+
+    inline void increase_deg_by(size_t = 0) const {}
+    inline void internal_free(internal_reference) const {}
+    inline void external_free(value_type) const {}
+
+    inline void swap(internal_reference x, internal_reference y) const {
       std::swap(x, y);
     }
 
-    inline TElementType one(TElementType x) const {
-      return x.one();
+    inline internal_value_type one(internal_const_reference x) const {
+      return libsemigroups::one(x);
     }
 
-    inline size_t element_degree(TElementType x) const {
-      (void) x;
+    inline size_t element_degree(const_reference) const {
       return 0;
     }
 
-    inline size_t complexity(TElementType x) const {
-      (void) x;
+    inline size_t complexity(internal_const_reference) const {
       return 1;
     }
 
-    inline bool cmp(TElementType x, TElementType y) const {
+    inline bool cmp(internal_const_reference x,
+                    internal_const_reference y) const {
       return x < y;
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    inline TElementType empty_key(TElementType x) const {
-      (void) x;
-      return TElementType(-1);
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    inline internal_value_type empty_key(internal_const_reference x) const {
+      return libsemigroups::empty_key(x);
     }
 #endif
   };
 
-  template <typename TElementPointerType> struct ElementPointerContainer {
-    inline TElementPointerType multiply(TElementPointerType xy,
-                                        TElementPointerType x,
-                                        TElementPointerType y,
-                                        size_t              tid = 0) const {
-      xy->redefine(x, y, tid);
-      return xy;
+  // Specialization for Element* and Element const* . . .
+  template <typename TElementType>
+  struct ElementContainer<
+      TElementType,
+      typename std::enable_if<
+          // What happens if TElementType is a SubElement* ???
+          // It's not clear for me how you use that.
+          std::is_same<TElementType, Element *>::value
+          || std::is_same<TElementType, Element const *>::value>::type> {
+    using value_type       = Element *;
+    using const_value_type = Element const *;
+    using reference        = value_type;
+    using const_reference  = const_value_type;
+
+    using internal_value_type       = value_type;
+    using internal_const_value_type = const_value_type;
+
+    inline internal_const_value_type to_internal(const_value_type x) const {
+      return x;
     }
 
-    inline TElementPointerType copy(TElementPointerType x,
-                                    size_t increase_deg_by = 0) const {
-      return x->really_copy(increase_deg_by);
+    // TODO The return type here is inconsistent with the other definitions of
+    // ElementContainer, make them more systematic
+    inline const_value_type to_external(internal_const_value_type x) const {
+      return const_cast<value_type>(x);
     }
 
-    inline void free(TElementPointerType x) const {
-      x->really_delete();
+    // Value are actually pointer to memory shared with other
+    // values. Obviously, The caller should make sure that nothing is actually
+    // shared.
+    inline void internal_free(internal_const_value_type x) const {
+      delete const_cast<internal_value_type>(x);
+    }
+
+    inline void external_free(value_type x) const {
       delete x;
     }
 
-    inline void swap(TElementPointerType x, TElementPointerType y) const {
-      x->swap(y);
+    inline internal_value_type
+    internal_copy(internal_const_value_type x) const {
+      return x->heap_copy();
     }
 
-    inline TElementPointerType one(TElementPointerType x) const {
-      return static_cast<TElementPointerType>(x->identity());
+    inline value_type external_copy(internal_const_value_type x) const {
+      return x->heap_copy();
     }
 
-    inline size_t element_degree(TElementPointerType x) const {
+    inline void increase_deg_by(internal_value_type x, size_t m) const {
+      x->increase_deg_by(m);
+    }
+
+    inline internal_value_type one(internal_const_value_type x) const {
+      return dynamic_cast<internal_value_type>(x->heap_identity());
+    }
+
+    inline void multiply(internal_value_type       xy,
+                         internal_const_value_type x,
+                         internal_const_value_type y,
+                         size_t                    tid = 0) const {
+      xy->Element::redefine(*x, *y, tid);
+    }
+
+    inline void swap(internal_value_type x, internal_value_type y) const {
+      x->swap(*y);
+    }
+
+    inline size_t element_degree(const_value_type x) const {
       return x->degree();
     }
 
-    inline size_t complexity(TElementPointerType x) const {
+    inline size_t complexity(internal_const_value_type x) const {
       return x->complexity();
     }
 
-    inline bool cmp(TElementPointerType x, TElementPointerType y) const {
+    inline bool cmp(internal_const_value_type x,
+                    internal_const_value_type y) const {
       return *x < *y;
     }
 
-#if defined(LIBSEMIGROUPS_HAVE_DENSEHASHMAP) \
-    && defined(LIBSEMIGROUPS_USE_DENSEHASHMAP)
-    inline TElementPointerType empty_key(TElementPointerType x) const {
-      return x->empty_key();
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    inline internal_value_type empty_key(internal_const_value_type x) const {
+      return dynamic_cast<internal_value_type>(x->empty_key());
     }
 #endif
   };
 
-  template <>
-  struct ElementContainer<Element*> : public ElementPointerContainer<Element*> {
-  };
+  // Specialization for classes derived from the class Element, such as
+  // Transformation<size_t> and so on . . .
+  template <typename TElementType>
+  struct ElementContainer<
+      TElementType,
+      typename std::enable_if<
+          std::is_base_of<Element, TElementType>::value>::type> {
+    static_assert(!std::is_pointer<TElementType>::value,
+                  "TElementType must not be a pointer");
+    using value_type       = TElementType;
+    using const_value_type = const TElementType;
+    using reference        = TElementType &;
+    using const_reference  = TElementType const &;
 
+    using internal_value_type       = TElementType *;
+    using internal_const_value_type = TElementType const *;
+
+    inline internal_const_value_type to_internal(const_reference x) const {
+      return &x;
+    }
+
+    inline const_reference to_external(internal_const_value_type x) const {
+      return *x;
+    }
+
+    // Value contains some memory shared with other values. Destroy the shared
+    // part. Obviously, The caller should make sure that nothing is actually
+    // shared.
+    inline void internal_free(internal_const_value_type x) const {
+      delete const_cast<internal_value_type>(x);
+    }
+
+    inline void external_free(value_type) const {}
+
+    inline internal_value_type
+    internal_copy(internal_const_value_type x) const {
+      return new value_type(*x);
+    }
+
+    inline value_type external_copy(internal_const_value_type x) const {
+      return value_type(*x);
+    }
+
+    inline void increase_deg_by(internal_value_type x, size_t m) const {
+      x->increase_deg_by(m);
+    }
+
+    inline internal_value_type one(internal_const_value_type x) const {
+      return dynamic_cast<internal_value_type>(x->heap_identity());
+    }
+
+    inline void multiply(internal_value_type       xy,
+                         internal_const_value_type x,
+                         internal_const_value_type y,
+                         size_t                    tid = 0) const {
+      xy->Element::redefine(*x, *y, tid);
+    }
+
+    inline void swap(internal_value_type x, internal_value_type y) const {
+      x->swap(*y);
+    }
+
+    inline size_t element_degree(const_value_type x) const {
+      return x.degree();
+    }
+
+    inline size_t complexity(internal_const_value_type x) const {
+      return x->complexity();
+    }
+
+    inline bool cmp(internal_const_value_type x,
+                    internal_const_value_type y) const {
+      return *x < *y;
+    }
+
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+    inline internal_value_type empty_key(internal_const_value_type x) const {
+      return dynamic_cast<internal_value_type>(x->empty_key());
+    }
+#endif
+  };
 }  // namespace libsemigroups
+
 #endif  // LIBSEMIGROUPS_SRC_ELTCONT_H_

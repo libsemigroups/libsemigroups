@@ -34,20 +34,20 @@
 #include "libsemigroups-debug.h"
 #include "timer.h"
 
-#define REPORT(message)                                                 \
-  if (glob_reporter.get_report()) {                                     \
-    size_t __tid = glob_reporter.thread_id(std::this_thread::get_id()); \
-    glob_reporter.lock();                                               \
-    glob_reporter(this, __func__, __tid) << message << std::endl;       \
-    glob_reporter.unlock();                                             \
+#define REPORT(message)                                            \
+  if (REPORTER.get_report()) {                                     \
+    size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
+    REPORTER.lock();                                               \
+    REPORTER(this, __func__, __tid) << message << std::endl;       \
+    REPORTER.unlock();                                             \
   }
 
-#define REPORT_FROM_FUNC(message)                                       \
-  if (glob_reporter.get_report()) {                                     \
-    size_t __tid = glob_reporter.thread_id(std::this_thread::get_id()); \
-    glob_reporter.lock();                                               \
-    glob_reporter(__func__, __tid) << message << std::endl;             \
-    glob_reporter.unlock();                                             \
+#define REPORT_FROM_FUNC(message)                                  \
+  if (REPORTER.get_report()) {                                     \
+    size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
+    REPORTER.lock();                                               \
+    REPORTER(__func__, __tid) << message << std::endl;             \
+    REPORTER.unlock();                                             \
   }
 
 namespace libsemigroups {
@@ -77,7 +77,7 @@ namespace libsemigroups {
   // If the call operator has not been called before, then the prefix is not
   // printed (and consequently the value of the thread_id is not set).
 
-  class Reporter {
+  static class Reporter {
    public:
     // 0 parameters
     //
@@ -269,8 +269,6 @@ namespace libsemigroups {
     size_t                                      _next_tid;
     std::ostream*                               _ostream;  // For testing
     std::atomic<bool>                           _report;
-  };
-
-  extern Reporter glob_reporter;
+  } REPORTER;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_REPORT_H_

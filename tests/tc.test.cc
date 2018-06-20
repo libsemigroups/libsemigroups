@@ -29,6 +29,13 @@
 
 using namespace libsemigroups;
 
+template <class TElementType>
+void delete_gens(std::vector<TElementType>& gens) {
+  for (auto& x : gens) {
+    delete x;
+  }
+}
+
 TEST_CASE("TC 01: Small fp semigroup",
           "[quick][congruence][tc][fpsemigroup][01]") {
   std::vector<relation_t> rels;
@@ -38,7 +45,7 @@ TEST_CASE("TC 01: Small fp semigroup",
 
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(!cong->is_done());
 
@@ -64,7 +71,7 @@ TEST_CASE("TC 02: Small left congruence on free semigroup",
 
   Congruence* cong = new Congruence("left", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   REQUIRE(cong->nr_classes() == 5);
   delete cong;
 }
@@ -78,7 +85,7 @@ TEST_CASE("TC 03: Small right congruence on free semigroup",
 
   Congruence* cong = new Congruence("right", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   REQUIRE(cong->nr_classes() == 5);
   REQUIRE(cong->is_done());
   delete cong;
@@ -94,7 +101,7 @@ TEST_CASE("TC 04: word_to_class_index for left congruence on free "
 
   Congruence* cong = new Congruence("left", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 1})
           == cong->word_to_class_index({0, 0, 0, 0, 1}));
   REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
@@ -115,7 +122,7 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
 
   Congruence* cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 1})
           == cong->word_to_class_index({0, 0, 0, 0, 1}));
   REQUIRE(cong->word_to_class_index({0, 1, 1, 0, 0, 1})
@@ -126,7 +133,7 @@ TEST_CASE("TC 05: word_to_class_index for small fp semigroup",
 
   cong = new Congruence("twosided", 2, rels, extra);
   cong->force_tc();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   REQUIRE(cong->word_to_class_index({0, 0, 0, 0}) < cong->nr_classes());
   delete cong;
 }
@@ -136,7 +143,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S   = Semigroup<>(vec);
-  S.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -153,7 +160,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence              cong("twosided", &S, extra);
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
   REQUIRE(cong.nr_classes() == 21);
@@ -170,8 +177,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   REQUIRE(ntc->size() == 1);
   REQUIRE(ntc->at(0)->size() == 68);
   delete ntc;
-
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
@@ -179,7 +185,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S   = Semigroup<>(vec);
-  S.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
@@ -193,7 +199,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence              cong("left", &S, extra);
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
@@ -202,8 +208,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
   REQUIRE(ntc->size() == 1);
   REQUIRE(ntc->at(0)->size() == 20);
   delete ntc;
-
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
@@ -211,7 +216,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S   = Semigroup<>(vec);
-  S.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -225,7 +230,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
 
   Congruence cong("right", &S, {relation_t(w1, w2)});
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 72);
   REQUIRE(cong.nr_classes() == 72);
@@ -264,7 +269,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   }
   REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
   delete ntc;
-  really_delete_cont(vec);
+  delete_gens(vec);
 }
 
 // Testing prefilled TC
@@ -274,8 +279,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(TC_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -289,7 +293,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence*             cong = new Congruence("twosided", &S, extra);
   cong->force_tc_prefill();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong->nr_classes() == 21);
   REQUIRE(cong->nr_classes() == 21);
@@ -300,15 +304,12 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong->word_to_class_index(w3) == cong->word_to_class_index(w4));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
   delete t4;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
@@ -316,8 +317,7 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(TC_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
@@ -329,7 +329,7 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence*             cong = new Congruence("left", &S, extra);
   cong->force_tc_prefill();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong->nr_classes() == 69);
   REQUIRE(cong->nr_classes() == 69);
@@ -339,15 +339,12 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
   delete t1;
   delete t2;
   delete t3;
   delete t4;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
@@ -355,8 +352,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
   Semigroup<>           S    = Semigroup<>(gens);
-  S.set_report(TC_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
@@ -369,7 +365,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   std::vector<relation_t> extra({relation_t(w1, w2)});
   Congruence*             cong = new Congruence("right", &S, extra);
   cong->force_tc_prefill();
-  cong->set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong->nr_classes() == 72);
   REQUIRE(cong->nr_classes() == 72);
@@ -386,12 +382,6 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   //  REQUIRE(cong->word_to_class_index(w5) == cong->word_to_class_index(w6));
   REQUIRE(cong->word_to_class_index(w3) != cong->word_to_class_index(w6));
 
-  t1->really_delete();
-  t2->really_delete();
-  t3->really_delete();
-  t4->really_delete();
-  t5->really_delete();
-  t6->really_delete();
   delete t1;
   delete t2;
   delete t3;
@@ -399,6 +389,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   delete t5;
   delete t6;
   delete cong;
+  delete_gens(gens);
 }
 
 TEST_CASE("TC 12: finite fp-semigroup, dihedral group of order 6",
@@ -424,7 +415,7 @@ TEST_CASE("TC 12: finite fp-semigroup, dihedral group of order 6",
 
   Congruence cong("twosided", 5, rels, extra);
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 6);
   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
@@ -457,7 +448,7 @@ TEST_CASE("TC 13: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 4, rels, extra);
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({2}) == cong.word_to_class_index({3}));
@@ -518,7 +509,7 @@ TEST_CASE("TC 14: finite fp-semigroup, size 16",
 
   Congruence cong("twosided", 11, rels, extra);
   cong.force_tc();
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
 
   REQUIRE(cong.nr_classes() == 16);
   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({5}));
@@ -537,8 +528,8 @@ TEST_CASE("TC 15: test prefilling of the table manually",
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
   Semigroup<> S = Semigroup<>(gens);
-  S.set_report(TC_REPORT);
-  really_delete_cont(gens);
+  REPORTER.set_report(TC_REPORT);
+  delete_gens(gens);
 
   // Copy the right Cayley graph of S for prefilling
   Semigroup<>::cayley_graph_t const* right = S.right_cayley_graph_copy();
@@ -561,7 +552,7 @@ TEST_CASE("TC 15: test prefilling of the table manually",
          relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
   Congruence cong("twosided", 2, rels, std::vector<relation_t>());
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   cong.set_prefill(*right);
   delete right;
   REQUIRE(cong.nr_classes() == S.size() - 1);
@@ -588,14 +579,14 @@ TEST_CASE("TC 16: test packing phase", "[quick][tc][finite][16]") {
          relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
   Congruence cong1("twosided", 2, rels, std::vector<relation_t>());
-  cong1.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   cong1.force_tc();
   cong1.set_pack(10);
   cong1.set_report_interval(10);
   REQUIRE(cong1.nr_classes() == 78);
 
   Congruence cong2("left", 2, rels, std::vector<relation_t>());
-  cong2.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   cong2.force_tc();
   cong2.set_pack(10);
   cong2.set_report_interval(10);
@@ -620,7 +611,7 @@ TEST_CASE("TC 17: Example 6.6 in Sims (see also RWS 13)",
                      1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                     {0})};
   Congruence cong("twosided", 4, rels, std::vector<relation_t>());
-  cong.set_report(TC_REPORT);
+  REPORTER.set_report(TC_REPORT);
   cong.force_tc();
   REQUIRE(cong.nr_classes() == 10752);  // Verified with GAP
 }

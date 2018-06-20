@@ -6,7 +6,7 @@ set -e
 
 # Build the benchmark executables
 if [ -d benchmark/src/build ]; then
-  make -j4 ; make install
+  make -j4 && make install
   cd benchmark/src/build
 else
   # Build and install libsemigroups, required since the benchmark executables

@@ -23,7 +23,6 @@
 
 #include "cong/kbfp.cc"
 #include "cong/kbp.cc"
-#include "cong/p.h"
 #include "cong/tc.cc"
 
 namespace libsemigroups {
@@ -122,7 +121,7 @@ namespace libsemigroups {
 
     REPORT("using " << nr_threads << " / "
                     << std::thread::hardware_concurrency() << " threads");
-    glob_reporter.reset_thread_ids();
+    REPORTER.reset_thread_ids();
 
     std::vector<std::thread> t;
     for (size_t i = 0; i < nr_threads; i++) {
@@ -136,7 +135,7 @@ namespace libsemigroups {
     }
     for (auto winner = data.begin(); winner < data.end(); winner++) {
       if ((*winner)->is_done() || !(*winner)->is_killed()) {
-        size_t tid = glob_reporter.thread_id(tids.at(winner - data.begin()));
+        size_t tid = REPORTER.thread_id(tids.at(winner - data.begin()));
         REPORT("Thread #" << tid << " is the winner!");
         if ((*winner)->is_done()) {
           // Delete the losers and clear _partial_data
@@ -215,6 +214,7 @@ namespace libsemigroups {
           data.push_back(new KBFP(*this));
         }
         // TC will be invalid/useless in certain cases; we check these here.
+        // FIXME if it is obviously_infinite, then KBFP won't terminate either!
         if (!is_obviously_infinite()) {
           data.push_back(new TC(*this));
         }
@@ -301,12 +301,6 @@ namespace libsemigroups {
     static_cast<TC*>(_data)->prefill();
   }
 
-  void Congruence::force_p() {
-    LIBSEMIGROUPS_ASSERT(_semigroup != nullptr);
-    delete_data();
-    _data = new P<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>(*this);
-  }
-
   void Congruence::force_kbp() {
     LIBSEMIGROUPS_ASSERT(_semigroup == nullptr);
     delete_data();
@@ -390,6 +384,7 @@ namespace libsemigroups {
   // This method requires a Semigroup pointer and therefore does not allow fp
   // semigroup congruences.
   Partition<word_t>* Congruence::DATA::nontrivial_classes() {
+    // FIXME this should be completely rewritten
     LIBSEMIGROUPS_ASSERT(is_done());
     LIBSEMIGROUPS_ASSERT(_cong._semigroup != nullptr);
 
@@ -406,13 +401,11 @@ namespace libsemigroups {
     }
 
     // Look up the class number of each element of the parent semigroup
-    word_t* word;
+    word_t word;
     for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
-      word = _cong._semigroup->factorisation(pos);
-      // FIXME use the two argument version of factorisation to avoid
-      // unnecessary memory allocations in the previous line.
-      LIBSEMIGROUPS_ASSERT(word_to_class_index(*word) < nr_classes());
-      (*all_classes)[word_to_class_index(*word)]->push_back(word);
+      _cong._semigroup->factorisation(word, pos);
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(word) < nr_classes());
+      (*all_classes)[word_to_class_index(word)]->push_back(new word_t(word));
     }
 
     // Store the words

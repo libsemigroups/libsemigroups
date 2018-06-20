@@ -4,10 +4,15 @@ dnl Autoconf and automake initialization.
 
 AC_PREREQ([2.69])
 AC_INIT([libsemigroups],m4_esyscmd([tr -d '\n' < VERSION]),[jdm3@st-andrews.ac.uk])
-AC_CONFIG_SRCDIR(src/semigroups.h)
+AC_CONFIG_SRCDIR(src/libsemigroups.h)
 AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
+
+dnl Set default CFLAGS/CXXFLAGS to nothing, to avoid passing -g -O2 as
+dnl the default C/CXXFLAGS when compiling in, e.g. debug mode
+: ${CFLAGS=""}
+: ${CXXFLAGS=""}
 
 AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
@@ -35,10 +40,6 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h sys/time.h unistd.h pthread.h])
-AC_CHECK_HEADER([sparsehash/dense_hash_map], 
-                [AC_DEFINE([HAVE_DENSEHASHMAP], 
-                           [1], 
-                           [define if google dense_hash_map is available])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -47,6 +48,7 @@ AC_TYPE_INT64_T
 AC_TYPE_SIZE_T
 AC_TYPE_UINT64_T
 AC_CHECK_TYPES([ptrdiff_t])
+AC_CHECK_SIZEOF([void *])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
@@ -60,12 +62,6 @@ AC_ARG_ENABLE([debug],
     )
 AC_MSG_CHECKING([whether to enable debug mode])
 AC_MSG_RESULT([$enable_debug])
-
-AS_IF([test "x$enable_debug" = xyes],
-    [AC_SUBST(CXXFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wunused-label -fno-omit-frame-pointer -Wno-c++11-extensions -Wold-style-cast -Wshadow')])
-
-AS_IF([test "x$enable_debug" = xyes],
-    [AC_SUBST(CFLAGS, '-g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type -Wswitch -Wunused-label -fno-omit-frame-pointer -Wold-style-cast -Wshadow')])
 
 AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
 
@@ -82,19 +78,34 @@ AC_MSG_RESULT([$enable_stats])
 AC_ARG_ENABLE([densehashmap],
     [AS_HELP_STRING([--enable-densehashmap], 
                     [enable google's dense_hash_map])],
-                    [AC_DEFINE([USE_DENSEHASHMAP], 
-                               [1], 
-                               [define if building with google's dense_hash_map])],
+    [enable_densehashmap=yes],
     [enable_densehashmap=no])
 
 AC_MSG_CHECKING([whether to use google's dense_hash_map])
 AC_MSG_RESULT([$enable_densehashmap])
 
+AS_IF([test "x$enable_densehashmap" = xyes],
+      [AC_CHECK_FILE([extern/sparsehash-c11/sparsehash/dense_hash_map], 
+                     [], 
+                     [AC_MSG_WARN([extern/sparsehash-c11 is not available, see https://github.com/sparsehash/sparsehash-c11])
+                     [enable_densehashmap=no]])])
+
+AS_IF([test "x$enable_densehashmap" = xyes], 
+       [AC_DEFINE([DENSEHASHMAP], 
+                  [1], 
+                  [define if google's dense_hash_map is available])])
+
+AM_CONDITIONAL([LIBSEMIGROUPS_DENSEHASHMAP], 
+               [test "x$enable_densehashmap" = xyes])
+
+# Check if code coverage mode is enabled
+AX_CODE_COVERAGE()
+
 # Check if HPCombi is enabled
 AC_ARG_ENABLE([hpcombi],
     [AS_HELP_STRING([--enable-hpcombi], [enable HPCombi])],
     [],
-    [enable_hpcombi=no]
+    [enable_hpcombi=yes]
     )
 AC_MSG_CHECKING([whether to enable HPCombi])
 AC_MSG_RESULT([$enable_hpcombi])
@@ -102,21 +113,27 @@ AC_MSG_RESULT([$enable_hpcombi])
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_CHECK_FILE([extern/HPCombi/VERSION], 
                      [], 
-                     [AC_MSG_WARN([HPCombi is not available, ignoring --enable-hpcombi])
-                      [enable_hpcombi=no]])])
+                     [AC_MSG_WARN([HPCombi is not available])
+                     [enable_hpcombi=no]])])
 
-AS_IF([test "x$enable_hpcombi" = xyes],
-      [AC_MSG_CHECKING([the present version of HPCombi])
-      [cat extern/HPCombi/VERSION]])
-
+REQUIRED_HPCOMBI="$(cat extern/.HPCombi_VERSION)"
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_MSG_CHECKING([the required version of HPCombi])
-      [cat extern/.HPCombi_VERSION]])
+       AC_MSG_RESULT([$REQUIRED_HPCOMBI])])
+
+FOUND_HPCOMBI="$(cat extern/HPCombi/VERSION)"
+AS_IF([test "x$enable_hpcombi" = xyes],
+      [AC_MSG_CHECKING([the version of HPCombi that's present])
+       AC_MSG_RESULT([$FOUND_HPCOMBI])])
+
 
 AS_IF([test "x$enable_hpcombi" = xyes],
-[AS_IF([! cmp -s extern/HPCombi/VERSION extern/.HPCombi_VERSION],
-       [AC_MSG_WARN([the version of HPCombi that is present is incorrect, ignoring --enable-hpcombi])
-        [enable_hpcombi=no]])])
+      [AX_COMPARE_VERSION($FOUND_HPCOMBI, 
+                          [ge], 
+                          $REQUIRED_HPCOMBI,
+                          [],
+                          [AC_MSG_WARN([the incorrect version of HPCombi is present, HPCombi will be disabled]) 
+                          enable_hpcombi=no])])
 
 SAVED_CXXFLAGS=$CXXFLAGS
 CXXFLAGS="-g -O2 -mavx -flax-vector-conversions"
@@ -153,20 +170,37 @@ AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_popcnt_u32]
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_set_epi64x],[1,1])])
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_shuffle_epi8],[__m128i{},__m128i{}])])
 AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_slli_epi32],[__m128i{},1])])
+
 CXXFLAGS=$SAVED_CXXFLAGS
 
 AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
       [AS_IF([test "x$enable_hpcombi" = xno],
-       [AC_MSG_WARN([compiler builtin not supported, ignoring --enable-hpcombi])])])
+       [AC_MSG_WARN([compiler builtin not supported, HPCombi will be disabled])])])
 
 AS_IF([test "x$enable_hpcombi" = xyes],
-      [AC_DEFINE([USE_HPCOMBI], [1], [define if building with HPCombi])])
+      [AC_DEFINE([HPCOMBI], [1], [define if building with HPCombi])])
 
 dnl # the following is used in Makefile.am
-AM_CONDITIONAL([LIBSEMIGROUPS_USE_HPCOMBI], [test "x$enable_hpcombi" = xyes])
+AM_CONDITIONAL([LIBSEMIGROUPS_HPCOMBI], [test "x$enable_hpcombi" = xyes])
 
-# Check if code coverage mode is enabled
-AX_CODE_COVERAGE()
+dnl # check for HPCombi's preprocessor macro
+AS_IF([test "x$enable_hpcombi" = xyes], 
+[AC_MSG_CHECKING([for HPCOMBI_CONSTEXPR_FUN_ARGS])
+ AC_COMPILE_IFELSE( 
+                  [AC_LANG_PROGRAM( 
+                      [[using T = int; constexpr int exec(T f()) { return f(); }
+                      constexpr int foo() { return 1; }
+                      static_assert(exec(foo) == 1, "Failed exec");]]
+                    )],
+                   [hpcombi_constexpr_fun_args=yes],
+                   [hpcombi_constexpr_fun_args=no]
+                 )
+ AC_MSG_RESULT([$hpcombi_constexpr_fun_args])])
+
+AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
+              [test "x$hpcombi_constexpr_fun_args" = xyes])
+AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
+     [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
 
 dnl Output configured files
 

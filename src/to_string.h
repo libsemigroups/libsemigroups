@@ -16,8 +16,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "report.h"
+#ifndef LIBSEMIGROUPS_SRC_TO_STRING_H_
+#define LIBSEMIGROUPS_SRC_TO_STRING_H_
+
+#include <sstream>
 
 namespace libsemigroups {
-  Reporter glob_reporter;
-}
+  //! Returns a string representing an object of type \c T.
+  //!
+  //! It appears that GCC 4.9.1 (at least) do not have std::to_string
+  //! implemented, so we implement our own. This requires the operator \c <<
+  //! to be implemented for an \c ostringstream& and const T& element.
+  template <typename T> std::string to_string(const T& n) {
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+  }
+}  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_SRC_TO_STRING_H_

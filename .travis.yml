@@ -12,6 +12,10 @@ matrix:
   include:
     - env: TEST_SUITE=lint
     - env: TEST_SUITE=doc
+      addons:
+        apt:
+          packages:
+            - graphviz
     - env: TEST_SUITE=coverage MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       addons:
         apt:
@@ -29,7 +33,7 @@ matrix:
       #     packages:
       #       - gcc-4.9
       #       - g++-4.9
-    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=master IOVERS=4.5.1 ORBVERS=4.8.0 GENSSVERS=1.6.4 SEMIGROUPS_BR=master DIGRAPHS_BR=master
+    - env: TEST_SUITE=gap MATRIX_EVAL="CC=gcc-5 && CXX=g++-5" GAP_FORK=gap-system GAP_BRANCH=stable-4.9 IOVERS=4.5.1 ORBVERS=4.8.0 GENSSVERS=1.6.5 SEMIGROUPS_BR=libsemigroups-1.0.0-new DIGRAPHS_BR=master
       addons:
         apt:
           sources:
@@ -75,11 +79,12 @@ matrix:
     #   osx_image: xcode8
     - os: osx
       osx_image: xcode8
-      env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+      env: TEST_SUITE=quick MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 before_install:
     - eval "${MATRIX_EVAL}"
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install gcc@7; fi
 script:
   - ci/travis-$TEST_SUITE.sh

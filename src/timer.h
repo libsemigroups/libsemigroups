@@ -23,15 +23,7 @@
 #include <iostream>
 #include <string>
 
-// It appears that GCC 4.9.1 (at least) do not have std::to_string implemented.
-#include <sstream>
-namespace std {
-  template <typename T> std::string to_string(const T& n) {
-    std::ostringstream stm;
-    stm << n;
-    return stm.str();
-  }
-}  // namespace std
+#include "to_string.h"
 
 namespace libsemigroups {
 
@@ -97,7 +89,7 @@ namespace libsemigroups {
                    size_t                    threshold) const {
       T x = std::chrono::duration_cast<T>(elapsed);
       if (x > T(threshold)) {
-        str += std::to_string(x.count()) + unit;
+        str += libsemigroups::to_string(x.count()) + unit;
         elapsed -= x;
         return true;
       }
