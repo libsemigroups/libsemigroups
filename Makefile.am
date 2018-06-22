@@ -71,8 +71,8 @@ libsemigroups_la_SOURCES += src/rwse.cc
 libsemigroups_la_SOURCES += src/semigroups-base.cc
 libsemigroups_la_SOURCES += src/uf.cc
 
-libsemigroups_la_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
-libsemigroups_la_CFLAGS = $(CODE_COVERAGE_CFLAGS)
+libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
+libsemigroups_la_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
 
 libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
@@ -141,12 +141,9 @@ lstest_SOURCES += tests/timer.test.cc
 lstest_SOURCES += tests/tc.test.cc
 lstest_SOURCES += tests/uf.test.cc
 
-lstest_CPPFLAGS = -DCONFIG_H $(CODE_COVERAGE_CPPFLAGS)
-lstest_CFLAGS = $(CODE_COVERAGE_CFLAGS)
+lstest_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS) 
+lstest_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
 lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
-if LIBSEMIGROUPS_HPCOMBI
-lstest_CXXFLAGS += -mavx -flax-vector-conversions
-endif
 
 lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 lstest_LDADD = libsemigroups.la

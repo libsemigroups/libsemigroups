@@ -198,9 +198,7 @@ AS_IF([test "x$enable_hpcombi" = xyes],
  AC_MSG_RESULT([$hpcombi_constexpr_fun_args])])
 
 AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
-              [test "x$hpcombi_constexpr_fun_args" = xyes])
-AS_IF([test "x$hpcombi_constexpr_fun_args" = xyes],
-     [AC_DEFINE([HPCOMBI_CONSTEXPR_FUN_ARGS], [1], [define if building with HPCombi])])
+               [test "x$hpcombi_constexpr_fun_args" = xyes])
 
 dnl Output configured files
 
