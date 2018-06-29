@@ -19,10 +19,8 @@
 // The purpose of this file is to test the UF class which describes a partition
 // of the set of integers {0 .. n-1}
 
-#include <utility>
-
-#include "../src/uf.h"
 #include "catch.hpp"
+#include "src/uf.h"
 
 #define UF_REPORT false
 

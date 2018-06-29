@@ -16,11 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <utility>
-
-#include "../src/bmat8.h"
-#include "../src/cong.h"
 #include "catch.hpp"
+#include "src/cong.h"
 
 #define CONG_REPORT false
 

@@ -17,8 +17,7 @@
 //
 
 #include "catch.hpp"
-
-#include "../src/recvec.h"
+#include "src/recvec.h"
 
 using namespace libsemigroups;
 

@@ -20,10 +20,8 @@
 // achieved by calling cong->p() before calculating anything about the
 // congruence.
 
-#include <utility>
-
-#include "../src/cong.h"
 #include "catch.hpp"
+#include "src/cong.h"
 
 #define P_REPORT false
 

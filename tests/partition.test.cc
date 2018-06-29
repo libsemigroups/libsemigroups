@@ -16,11 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <utility>
-
-#include "../src/partition.h"
-#include "../src/semigroups.h"
 #include "catch.hpp"
+#include "src/cong.h"
 
 using namespace libsemigroups;
 

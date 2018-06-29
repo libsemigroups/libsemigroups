@@ -16,11 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <utility>
-
-#include "../src/cong.h"
-#include "../src/rwse.h"
 #include "catch.hpp"
+#include "src/rwse.h"
 
 #define RWSE_REPORT false
 

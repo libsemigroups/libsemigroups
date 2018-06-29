@@ -16,14 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../src/libsemigroups-config.h"
-#include "../src/libsemigroups-debug.h"
-
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
-#include "../extern/HPCombi/include/perm16.hpp"
-#include "../src/semigroups.h"
 #include "catch.hpp"
+#include "src/hpcombi.h"
+#include "src/semigroups.h"
 
 using namespace libsemigroups;
 using namespace HPCombi;

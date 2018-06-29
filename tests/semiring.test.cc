@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../src/semiring.h"
 #include "catch.hpp"
+#include "src/semiring.h"
 
 using namespace libsemigroups;
 

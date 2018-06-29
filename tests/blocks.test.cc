@@ -17,9 +17,8 @@
 //
 
 #include "catch.hpp"
-
-#include "../src/blocks.h"
-#include "../src/elements.h"
+#include "src/blocks.h"
+#include "src/elements.h"
 
 using namespace libsemigroups;
 

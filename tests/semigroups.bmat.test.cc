@@ -16,10 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "../src/bmat8.h"
-#include "../src/semigroups.h"
 #include "catch.hpp"
-#include <iostream>
+#include "src/libsemigroups.h"
 
 #define SEMIGROUPS_REPORT false
 

@@ -15,13 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
-
 #include <chrono>
 #include <iostream>
 #include <thread>
 
-#include "../src/timer.h"
+#include "catch.hpp"
+#include "src/timer.h"
 
 using namespace libsemigroups;
 

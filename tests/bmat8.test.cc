@@ -17,7 +17,13 @@
 
 #include "catch.hpp"
 
-#include "../src/bmat8.h"
+#include <algorithm>
+#include <unordered_set>
+
+#include "catch.hpp"
+#include "src/bmat8.h"
+#include "src/elements.h"
+#include "src/semigroups.h"
 
 #define BMAT_REPORT false
 

@@ -15,15 +15,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO The other examples from Sims book (Chapters 5 and 6) which use
+// TODO The other examples from Sims' book (Chapters 5 and 6) which use
 // reduction orderings different from shortlex
 
-#include <utility>
-
 #include "catch.hpp"
-
-#include "../src/cong.h"
-#include "../src/rws.h"
+#include "src/rws.h"
 
 #define RWS_REPORT false
 

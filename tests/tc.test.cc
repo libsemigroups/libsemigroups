@@ -20,10 +20,8 @@
 // achieved by calling cong->tc() before calculating anything about the
 // congruence.
 
-#include <utility>
-
-#include "../src/cong.h"
 #include "catch.hpp"
+#include "src/cong.h"
 
 #define TC_REPORT false
 
