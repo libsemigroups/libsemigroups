@@ -27,7 +27,7 @@
 #include "../cong.h"
 #include "../rws.h"
 #include "../rwse.h"
-#include "../semigroups.h"
+#include "../semigroup.h"
 
 namespace libsemigroups {
 

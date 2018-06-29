@@ -17,14 +17,13 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of PBRs 01",
-          "[quick][semigroup][pbr][finite][01]") {
+TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
   std::vector<PBR> gens = {PBR({{5, 3},
                                 {5, 4, 3, 0, 1, 2},
                                 {5, 4, 3, 0, 2},

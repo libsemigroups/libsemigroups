@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some benchmarks for libsemigroups/src/semigroups.h.
+// This file contains some benchmarks for libsemigroups/src/semigroup.h.
 //
 // Numbers in a suffix of a function name refer to the number of the example in
 // libsemigroups/test/semigroups.test.cc
 
 #include <benchmark/benchmark.h>
-#include <libsemigroups/semigroups.h>
+#include <libsemigroups/semigroup.h>
 #include <libsemigroups/semiring.h>
 
 using namespace libsemigroups;

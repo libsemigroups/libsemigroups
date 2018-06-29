@@ -22,7 +22,7 @@
 #ifndef LIBSEMIGROUPS_SRC_ELTCONT_H_
 #define LIBSEMIGROUPS_SRC_ELTCONT_H_
 
-#include "elements.h"
+#include "element.h"
 
 namespace libsemigroups {
   //! Returns the one of type TElementType
@@ -30,6 +30,10 @@ namespace libsemigroups {
   // FIXME
   template <typename TElementType> inline TElementType one(TElementType x) {
     return x.one();
+  }
+
+  template <typename TElementType> inline TElementType one(size_t = 0) {
+    return TElementType::one();
   }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -71,13 +75,6 @@ namespace libsemigroups {
       return x;
     }
 
-    inline void multiply(internal_reference       xy,
-                         internal_const_reference x,
-                         internal_const_reference y,
-                         size_t = 0) const {
-      xy = x * y;
-    }
-
     inline internal_value_type internal_copy(internal_const_reference x) const {
       return x;
     }
@@ -86,9 +83,17 @@ namespace libsemigroups {
       return x;
     }
 
-    inline void increase_deg_by(size_t = 0) const {}
     inline void internal_free(internal_reference) const {}
     inline void external_free(value_type) const {}
+
+    inline void multiply(internal_reference       xy,
+                         internal_const_reference x,
+                         internal_const_reference y,
+                         size_t = 0) const {
+      xy = x * y;
+    }
+
+    inline void increase_deg_by(size_t = 0) const {}
 
     inline void swap(internal_reference x, internal_reference y) const {
       std::swap(x, y);

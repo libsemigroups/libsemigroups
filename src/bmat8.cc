@@ -27,6 +27,7 @@
 
 namespace libsemigroups {
   static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
+
   std::vector<uint64_t> const BMat8::ROW_MASK = {0xff00000000000000,
                                                  0xff000000000000,
                                                  0xff0000000000,

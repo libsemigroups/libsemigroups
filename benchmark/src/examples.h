@@ -22,7 +22,7 @@
 #ifndef LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_H_
 #define LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_H_
 
-#include <libsemigroups/semigroups.h>
+#include <libsemigroups/semigroup.h>
 
 namespace libsemigroups {
   typedef std::vector<std::vector<bool>> BooleanMatArg;

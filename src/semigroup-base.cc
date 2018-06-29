@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "semigroups-base.h"
+#include "semigroup-base.h"
 
 namespace libsemigroups {
   SemigroupBase::index_t const SemigroupBase::UNDEFINED

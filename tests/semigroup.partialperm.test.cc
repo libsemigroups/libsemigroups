@@ -17,42 +17,43 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
-          "[quick][semigroup][matrix][finite][01]") {
-  Semiring<int64_t>*                       sr = new TropicalMaxPlusSemiring(9);
-  std::vector<MatrixOverSemiring<int64_t>> gens
-      = {MatrixOverSemiring<int64_t>({{1, 3}, {2, 1}}, sr),
-         MatrixOverSemiring<int64_t>({{2, 1}, {4, 0}}, sr)};
-  Semigroup<MatrixOverSemiring<int64_t>> S
-      = Semigroup<MatrixOverSemiring<int64_t>>(gens);
+TEST_CASE("Semigroup of PartialPerms 01",
+          "[quick][semigroup][partialperm][finite][095]") {
+  std::vector<PartialPerm<u_int16_t>> gens
+      = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
+         PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
+         PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
 
-  S.reserve(4);
+  Semigroup<PartialPerm<u_int16_t>> S(gens);
+
+  S.reserve(102);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.size() == 20);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.size() == 102);
+  REQUIRE(S.nridempotents() == 8);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
     REQUIRE(S.position(*it) == pos);
     pos++;
   }
-  S.add_generators({MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)});
-  REQUIRE(S.size() == 73);
-  S.closure({MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)});
-  REQUIRE(S.size() == 73);
+
+  S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+  REQUIRE(S.size() == 396);
+  S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+  REQUIRE(S.size() == 396);
   REQUIRE(S.minimal_factorisation(
-              MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)
-              * MatrixOverSemiring<int64_t>({{2, 1}, {4, 0}}, sr))
-          == word_t({2, 1}));
-  REQUIRE(S.minimal_factorisation(52) == word_t({0, 2, 2, 1}));
-  REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{9, 7}, {9, 5}}, sr));
+              PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
+              * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
+          == word_t({3, 2}));
+  REQUIRE(S.minimal_factorisation(10) == word_t({2, 1}));
+  REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);
   pos = 0;
@@ -64,6 +65,4 @@ TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }
-
-  delete sr;
 }

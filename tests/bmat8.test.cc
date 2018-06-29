@@ -22,8 +22,8 @@
 
 #include "catch.hpp"
 #include "src/bmat8.h"
-#include "src/elements.h"
-#include "src/semigroups.h"
+#include "src/element.h"
+#include "src/semigroup.h"
 
 #define BMAT_REPORT false
 

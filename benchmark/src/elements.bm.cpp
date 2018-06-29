@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some benchmarks for libsemigroups/src/elements.h
+// This file contains some benchmarks for libsemigroups/src/element.h
 
 #include <chrono>
 
 #include <benchmark/benchmark.h>
-#include <libsemigroups/libsemigroups.h>
+#include <libsemigroups/libsemigroup.h>
 
 using namespace libsemigroups;
 

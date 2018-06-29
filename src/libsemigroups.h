@@ -24,8 +24,11 @@
 #include "blocks.h"
 #include "bmat8.h"
 #include "cong.h"
-#include "elements.h"
+#include "element-adapter.h"
+#include "element-helper.h"
+#include "element.h"
 #include "eltcont.h"
+#include "hpcombi.h"
 #include "libsemigroups-config.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
@@ -34,15 +37,16 @@
 #include "report.h"
 #include "rws.h"
 #include "rwse.h"
-#include "semigroups-base.h"
-#include "semigroups.h"
+#include "schreier-sims.h"
+#include "semigroup-base.h"
+#include "semigroup-traits.h"
+#include "semigroup.h"
 #include "semiring.h"
 #include "timer.h"
 #include "uf.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
-// FIXME should be hpcombi.hpp
-#include "perm16.hpp"
+#include "hpcombi.hpp"
 #endif
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP

@@ -25,9 +25,9 @@
 #include <utility>
 #include <vector>
 
-#include "elements.h"
+#include "element.h"
 #include "rws.h"
-#include "semigroups.h"
+#include "semigroup.h"
 
 namespace libsemigroups {
 

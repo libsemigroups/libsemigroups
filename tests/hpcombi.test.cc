@@ -20,7 +20,7 @@
 
 #include "catch.hpp"
 #include "src/hpcombi.h"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 using namespace libsemigroups;
 using namespace HPCombi;

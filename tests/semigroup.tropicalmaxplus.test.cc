@@ -17,47 +17,42 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
-          "[quick][semigroup][booleanmat][finite][01]") {
-  std::vector<BooleanMat> gens
-      = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
-         BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
-         BooleanMat({0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1})};
+TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
+          "[quick][semigroup][matrix][finite][01]") {
+  Semiring<int64_t>*                       sr = new TropicalMaxPlusSemiring(9);
+  std::vector<MatrixOverSemiring<int64_t>> gens
+      = {MatrixOverSemiring<int64_t>({{1, 3}, {2, 1}}, sr),
+         MatrixOverSemiring<int64_t>({{2, 1}, {4, 0}}, sr)};
+  Semigroup<MatrixOverSemiring<int64_t>> S
+      = Semigroup<MatrixOverSemiring<int64_t>>(gens);
 
-  Semigroup<BooleanMat> S(gens);
-
-  S.reserve(26);
+  S.reserve(4);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.size() == 26);
-  REQUIRE(S.nridempotents() == 4);
+  REQUIRE(S.size() == 20);
+  REQUIRE(S.nridempotents() == 1);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
     REQUIRE(S.position(*it) == pos);
     pos++;
   }
-
-  S.add_generators(
-      {BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
-  REQUIRE(S.size() == 29);
-  S.closure({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
-  REQUIRE(S.size() == 29);
+  S.add_generators({MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)});
+  REQUIRE(S.size() == 73);
+  S.closure({MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)});
+  REQUIRE(S.size() == 73);
   REQUIRE(S.minimal_factorisation(
-              BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
-              * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}))
-          == word_t({3, 0}));
-  REQUIRE(S.minimal_factorisation(28) == word_t({3, 0}));
-  REQUIRE(
-      S.at(28)
-      == BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
-             * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}));
+              MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)
+              * MatrixOverSemiring<int64_t>({{2, 1}, {4, 0}}, sr))
+          == word_t({2, 1}));
+  REQUIRE(S.minimal_factorisation(52) == word_t({0, 2, 2, 1}));
+  REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{9, 7}, {9, 5}}, sr));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);
   pos = 0;
@@ -69,4 +64,6 @@ TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }
+
+  delete sr;
 }

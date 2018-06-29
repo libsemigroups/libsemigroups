@@ -23,7 +23,7 @@
 // libsemigroups/test/semigroups.test.cc
 
 #include <benchmark/benchmark.h>
-#include <libsemigroups/semigroups.h>
+#include <libsemigroups/semigroup.h>
 
 #include "examples.h"
 

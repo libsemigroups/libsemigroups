@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIGROUPS_BASE_H_
-#define LIBSEMIGROUPS_SRC_SEMIGROUPS_BASE_H_
+#ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_
+#define LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_
 
 #include <atomic>
 
@@ -103,4 +103,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_BASE_H_
+#endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_

@@ -30,7 +30,7 @@
 
 #include "partition.h"
 #include "report.h"
-#include "semigroups.h"
+#include "semigroup.h"
 #include "uf.h"
 
 #define RETURN_FALSE nullptr

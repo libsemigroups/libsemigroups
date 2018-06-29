@@ -17,26 +17,26 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of PartialPerms 01",
-          "[quick][semigroup][partialperm][finite][095]") {
-  std::vector<PartialPerm<u_int16_t>> gens
-      = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
-         PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
-         PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
+TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
+          "[quick][semigroup][booleanmat][finite][01]") {
+  std::vector<BooleanMat> gens
+      = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
+         BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
+         BooleanMat({0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1})};
 
-  Semigroup<PartialPerm<u_int16_t>> S(gens);
+  Semigroup<BooleanMat> S(gens);
 
-  S.reserve(102);
+  S.reserve(26);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.size() == 102);
-  REQUIRE(S.nridempotents() == 8);
+  REQUIRE(S.size() == 26);
+  REQUIRE(S.nridempotents() == 4);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -44,16 +44,20 @@ TEST_CASE("Semigroup of PartialPerms 01",
     pos++;
   }
 
-  S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
-  S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
+  S.add_generators(
+      {BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
+  REQUIRE(S.size() == 29);
+  S.closure({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
+  REQUIRE(S.size() == 29);
   REQUIRE(S.minimal_factorisation(
-              PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
-              * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-          == word_t({3, 2}));
-  REQUIRE(S.minimal_factorisation(10) == word_t({2, 1}));
-  REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
+              BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
+              * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}))
+          == word_t({3, 0}));
+  REQUIRE(S.minimal_factorisation(28) == word_t({3, 0}));
+  REQUIRE(
+      S.at(28)
+      == BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
+             * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);
   pos = 0;

@@ -18,7 +18,7 @@
 
 // This file contains some performance benchmarks.
 
-#include "../semigroups.h"
+#include "src/semigroup.h"
 #include "catch.hpp"
 
 using namespace libsemigroups;

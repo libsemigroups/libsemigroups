@@ -17,15 +17,14 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE(
-    "Semigroup of integer matrices 01",
-    "[quick][semigroup][matrix][finite][01]") {
+TEST_CASE("Semigroup of integer matrices 01",
+          "[quick][semigroup][matrix][finite][01]") {
   Semiring<int64_t>*                       sr = new Integers();
   std::vector<MatrixOverSemiring<int64_t>> gens
       = {MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr),

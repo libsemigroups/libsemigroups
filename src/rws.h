@@ -28,7 +28,7 @@
 #include <vector>
 
 #include "cong.h"
-#include "semigroups.h"
+#include "semigroup.h"
 
 namespace libsemigroups {
 

@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
@@ -49,7 +49,7 @@ TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
 
 TEST_CASE("Semigroup 079: Exception: zero generators given",
           "[quick][finite][semigroup][079]") {
-  std::vector<Element*>                     gens;
+  std::vector<Element*> gens;
 
   REQUIRE_THROWS_AS(Semigroup<>(gens), LibsemigroupsException);
 }
@@ -344,8 +344,8 @@ TEST_CASE("Semigroup 093: Exception: add_generators",
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
          new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
-  Semigroup<>                             S(gens1);
-  Semigroup<>                             U(gens2);
+  Semigroup<> S(gens1);
+  Semigroup<> U(gens2);
 
   std::vector<Element*> additional_gens_1_1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3})};

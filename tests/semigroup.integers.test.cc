@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
@@ -40,8 +40,7 @@ namespace libsemigroups {
 #endif
 }  // namespace libsemigroups
 
-TEST_CASE("Semigroup of Integers",
-          "[quick][semigroup][integers][finite][01]") {
+TEST_CASE("Semigroup of Integers", "[quick][semigroup][integers][finite][01]") {
   Semigroup<int> S({2});
   REQUIRE(S.size() == 32);
   REQUIRE(S.nridempotents() == 1);

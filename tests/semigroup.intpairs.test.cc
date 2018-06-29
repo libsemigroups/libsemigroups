@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/semigroups.h"
+#include "src/semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 
@@ -69,8 +69,7 @@ namespace std {
   };
 }  // namespace std
 
-static_assert(!std::is_trivial<IntPair>::value,
-              "IntPair is not non-trivial");
+static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
 TEST_CASE("Semigroup of IntPairs (non-trivial user type)",
           "[quick][semigroup][nontrivial][finite][097]") {

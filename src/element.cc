@@ -19,7 +19,7 @@
 // This file contains implementations of the non-template derived classes of
 // the Elements abstract base class.
 
-#include "elements.h"
+#include "element.h"
 
 #include <algorithm>
 #include <thread>
@@ -102,6 +102,13 @@ namespace libsemigroups {
   // the identity of this
   Bipartition Bipartition::identity() const {
     size_t const           n = this->degree();
+    std::vector<u_int32_t> vector(2 * n);
+    std::iota(vector.begin(), vector.begin() + n, 0);
+    std::iota(vector.begin() + n, vector.end(), 0);
+    return Bipartition(std::move(vector));
+  }
+
+  Bipartition Bipartition::identity(size_t n) {
     std::vector<u_int32_t> vector(2 * n);
     std::iota(vector.begin(), vector.begin() + n, 0);
     std::iota(vector.begin() + n, vector.end(), 0);
@@ -404,6 +411,19 @@ namespace libsemigroups {
   PBR PBR::identity() const {
     std::vector<std::vector<u_int32_t>> adj;
     size_t                              n = this->degree();
+    adj.reserve(2 * n);
+    for (u_int32_t i = 0; i < 2 * n; i++) {
+      adj.push_back(std::vector<u_int32_t>());
+    }
+    for (u_int32_t i = 0; i < n; i++) {
+      adj[i].push_back(i + n);
+      adj[i + n].push_back(i);
+    }
+    return PBR(adj);
+  }
+
+  PBR PBR::identity(size_t n) {
+    std::vector<std::vector<u_int32_t>> adj;
     adj.reserve(2 * n);
     for (u_int32_t i = 0; i < 2 * n; i++) {
       adj.push_back(std::vector<u_int32_t>());

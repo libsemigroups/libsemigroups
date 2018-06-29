@@ -19,8 +19,8 @@
 // TODO
 // 1. check use of value_type etc
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
-#define LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_H_
+#define LIBSEMIGROUPS_SRC_SEMIGROUP_H_
 
 #include <algorithm>
 #include <mutex>
@@ -31,11 +31,11 @@
 #include <utility>
 #include <vector>
 
-#include "elements.h"
+#include "element.h"
 #include "eltcont.h"
 #include "libsemigroups-debug.h"
 #include "report.h"
-#include "semigroups-base.h"
+#include "semigroup-base.h"
 #include "to_string.h"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -2418,4 +2418,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_SEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_H_

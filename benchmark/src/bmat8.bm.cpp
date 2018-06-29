@@ -22,7 +22,7 @@
 
 #include <benchmark/benchmark.h>
 #include <libsemigroups/bmat8.h>
-#include <libsemigroups/semigroups.h>
+#include <libsemigroups/semigroup.h>
 
 using namespace libsemigroups;
 

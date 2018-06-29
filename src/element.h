@@ -18,8 +18,8 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
-#ifndef LIBSEMIGROUPS_SRC_ELEMENTS_H_
-#define LIBSEMIGROUPS_SRC_ELEMENTS_H_
+#ifndef LIBSEMIGROUPS_SRC_ELEMENT_H_
+#define LIBSEMIGROUPS_SRC_ELEMENT_H_
 
 #include <math.h>
 
@@ -31,14 +31,16 @@
 #include <vector>
 
 #include "blocks.h"
+#include "element-adapter.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
 #include "recvec.h"
+#include "semigroup-traits.h"
 #include "semiring.h"
 #include "to_string.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
-#include "perm16.hpp"
+#include "hpcombi.hpp"
 #endif
 
 namespace libsemigroups {
@@ -219,13 +221,17 @@ namespace libsemigroups {
     //! actual data in an Element is only copied when this method is called.
     //! Otherwise, if an Element is copied, then its defining data is only
     //! stored once.
+    // FIXME delete
     virtual Element* heap_copy() const = 0;
 
     //! Returns an independent copy of the identity.
     //!
     //! This method returns a copy of the identity element (in the appropriate
     //! semigroup) which is independent from previous copies.
+    // FIXME delete
     virtual Element* heap_identity() const = 0;
+
+    template <class TElementType> TElementType identity() const;
 
    protected:
     //! Calculate and cache a hash value.
@@ -432,11 +438,14 @@ namespace libsemigroups {
     //! This must be defined in subclasses of ElementWithVectorData.
     virtual TSubclass identity() const = 0;
 
+    static TSubclass identity(size_t degree);
+
     //! Returns a new identity for TSubclass
     //!
     //! Returns a pointer to an element that is an identity for elements
     //! of type TSubclass, and is independent from other copies that already
     //! may exist.
+    // FIXME delete
     Element* heap_identity() const override {
       return this->identity().heap_copy();
     }
@@ -445,6 +454,7 @@ namespace libsemigroups {
     //!
     //! Returns a pointer to an element that has the same defining data as \c
     //! this, but is independent in memory.
+    // FIXME delete
     Element* heap_copy() const override {
       return new TSubclass(*static_cast<TSubclass const*>(this));
     }
@@ -642,6 +652,12 @@ namespace libsemigroups {
     //! \c this.
     TSubclass identity() const override {
       std::vector<TValueType> vector(this->degree());
+      std::iota(vector.begin(), vector.end(), 0);
+      return TSubclass(std::move(vector));
+    }
+
+    static TSubclass identity(size_t n) {
+      std::vector<TValueType> vector(n);
       std::iota(vector.begin(), vector.end(), 0);
       return TSubclass(std::move(vector));
     }
@@ -1134,7 +1150,8 @@ namespace libsemigroups {
     //! The *identity bipartition* of degree \f$n\f$ has blocks \f$\{i, -i\}\f$
     //! for all \f$i\in \{0, \ldots, n - 1\}\f$. This method returns a new
     //! identity bipartition of degree equal to the degree of \c this.
-    Bipartition identity() const override;
+    Bipartition        identity() const override;
+    static Bipartition identity(size_t);
 
     //! Multiply \p x and \p y and stores the result in \c this.
     //!
@@ -1431,6 +1448,14 @@ namespace libsemigroups {
       return TSubclass(vector, _semiring);
     }
 
+    static TSubclass identity(size_t n, Semiring<TValueType>* sr) {
+      std::vector<TValueType> vector(n, sr->zero());
+      for (auto it = vector.begin(); it < vector.end(); it += n + 1) {
+        (*it) = sr->one();
+      }
+      return TSubclass(vector, sr);
+    }
+
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! this method asserts that the degrees of \p x, \p y, and \c this, are
@@ -1653,6 +1678,11 @@ namespace libsemigroups {
                                          Permutation<TValueType>>::identity();
     }
 
+    static Permutation one(size_t n) {
+      return PartialTransformation<TValueType,
+                                   Permutation<TValueType>>::identity(n);
+    }
+
     //! Returns the inverse of a permutation.
     //!
     //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
@@ -1809,7 +1839,8 @@ namespace libsemigroups {
     //! this where every value is adjacent to its negative. Equivalently,
     //! \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every \f$i\f$ less
     //! than the degree \f$n\f$.
-    PBR identity() const override;
+    PBR        identity() const override;
+    static PBR identity(size_t);
 
     //! Multiply \p x and \p y and stores the result in \c this.
     //!
@@ -1891,69 +1922,140 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 
-  // template <typename T, typename... Args>
-  // T inline make_element(Args&&... args) {
-  //   T res(std::forward<Args>(args)...);
-  //   res.validate();
-  //   return res;
-  // }
+  // SemigroupTraits specialization for derived classes of Element.
+  template <class TElementType>
+  struct SemigroupTraits<
+      TElementType,
+      typename std::enable_if<
+          std::is_base_of<Element, TElementType>::value>::type> {
+    static_assert(!std::is_pointer<TElementType>::value,
+                  "TElementType must not be a pointer");
+    using value_type       = TElementType;
+    using const_value_type = TElementType const;
+    using reference        = TElementType&;
+    using const_reference  = TElementType const&;
 
-  //! Provides a type giving the smallest unsigned integer type capable of
-  //! representing the template \c N.
-  //!
-  //! The type SmallestInteger<N>::type contains the smallest (in terms of
-  //! memory required) unsigned integer type which can represent the
-  //! non-negative integer \c N.
-  template <size_t N> struct SmallestInteger {
-    //! The smallest (in terms of memory required) unsigned integer type which
-    //! can represent \c N.
-    using type = typename std::conditional<
-        N >= 0x100000000,
-        u_int64_t,
-        typename std::conditional<
-            N >= 0x10000,
-            u_int32_t,
-            typename std::conditional<N >= 0x100, u_int16_t, u_int8_t>::type>::
-            type>::type;
+    using internal_value_type       = TElementType*;
+    using internal_const_value_type = TElementType const*;
+    using internal_reference        = internal_value_type&;
+    using internal_const_reference  = internal_const_value_type&;
+
+    inline internal_const_value_type to_internal(const_reference x) const {
+      return &x;
+    }
+
+    inline const_reference to_external(internal_const_value_type x) const {
+      return *x;
+    }
+
+    // Value contains some memory shared with other values. Destroy the shared
+    // part. Obviously, The caller should make sure that nothing is actually
+    // shared.
+    inline void internal_free(internal_const_value_type x) const {
+      delete const_cast<internal_value_type>(x);
+    }
+
+    inline void external_free(value_type) const {}
+
+    inline internal_value_type
+    internal_copy(internal_const_value_type x) const {
+      return new value_type(*x);
+    }
+
+    inline value_type external_copy(internal_const_value_type x) const {
+      return value_type(*x);
+    }
   };
 
-  template <size_t N> struct Transf {
-#ifdef LIBSEMIGROUPS_HPCOMBI
-    using type = typename std::conditional<
-        N >= 16,
-        Transformation<typename SmallestInteger<N>::type>,
-        HPCombi::Transf16>::type;
-#else
-    using type = Transformation<typename SmallestInteger<N>::type>;
-#endif
-  };
+  // Specialization of function templates from element-adapter.h for classes
+  // derived from the class Element, such as Transformation<size_t> and so on .
+  // . .
+  namespace tmp {
+    template <class TSubclass>
+    struct complexity<TSubclass*,
+                      typename std::enable_if<
+                          std::is_base_of<Element, TSubclass>::value>::type> {
+      inline size_t operator()(TSubclass const* x) const {
+        return x->complexity();
+      }
+    };
 
-  template <size_t N> struct PPerm {
-#ifdef LIBSEMIGROUPS_HPCOMBI
-    using type = typename std::conditional<
-        N >= 16,
-        PartialPerm<typename SmallestInteger<N>::type>,
-        HPCombi::PTransf16>::type;
-#else
-    using type = PartialPerm<typename SmallestInteger<N>::type>;
-#endif
-  };
+    template <class TSubclass>
+    struct degree<TSubclass*,
+                  typename std::enable_if<
+                      std::is_base_of<Element, TSubclass>::value>::type> {
+      inline size_t operator()(TSubclass const* x) const {
+        return x->degree();
+      }
+    };
 
-  template <size_t N> struct Perm {
-#ifdef LIBSEMIGROUPS_HPCOMBI
-    using type = typename std::conditional<
-        N >= 16,
-        Permutation<typename SmallestInteger<N>::type>,
-        HPCombi::Perm16>::type;
-#else
-    using type = Permutation<typename SmallestInteger<N>::type>;
-#endif
-  };
+    template <class TSubclass>
+    struct increase_degree_by<
+        TSubclass*,
+        typename std::enable_if<
+            std::is_base_of<Element, TSubclass>::value>::type> {
+      inline void operator()(TSubclass const* x, size_t n) const {
+        return x->increase_degree_by(n);
+      }
+    };
 
-  class BMat8;
-  template <size_t N> struct BMat {
-    using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
-  };
+    template <class TSubclass>
+    struct less<TSubclass*,
+                typename std::enable_if<
+                    std::is_base_of<Element, TSubclass>::value>::type> {
+      inline void operator()(TSubclass const* x, TSubclass const* y) const {
+        return *x < *y;
+      }
+    };
+
+    template <class TSubclass>
+    struct one<TSubclass*,
+               typename std::enable_if<
+                   std::is_base_of<Element, TSubclass>::value>::type> {
+      TSubclass* operator()(Element const* x) {
+        return new TSubclass(std::move(x->identity<TSubclass>()));
+      }
+
+      TSubclass* operator()(size_t n) {
+        return new TSubclass(std::move(TSubclass::one(n)));
+      }
+    };
+
+    template <class TSubclass>
+    struct product<TSubclass*,
+                   typename std::enable_if<
+                       std::is_base_of<Element, TSubclass>::value>::type> {
+      void operator()(TSubclass*       xy,
+                      TSubclass const* x,
+                      TSubclass const* y,
+                      size_t           tid = 0) {
+        xy->Element::redefine(*x, *y, tid);
+      }
+    };
+
+    template <class TSubclass>
+    struct swap<TSubclass*,
+                typename std::enable_if<
+                    std::is_base_of<Element, TSubclass>::value>::type> {
+      void operator()(TSubclass* x, TSubclass* y) const {
+        x->swap(*y);
+      }
+    };
+
+    template <typename TValueType>
+    struct action<Permutation<TValueType>*, TValueType> {
+      TValueType operator()(Permutation<TValueType> const* x,
+                            TValueType const               pt) {
+        return (*x)[pt];
+      }
+    };
+
+    template <typename TValueType> struct inverse<Permutation<TValueType>*> {
+      Permutation<TValueType>* operator()(Permutation<TValueType>* x) {
+        return new Permutation<TValueType>(std::move(x->inverse()));
+      }
+    };
+  }  // namespace tmp
 }  // namespace libsemigroups
 
 namespace std {
@@ -2086,7 +2188,7 @@ namespace std {
   //! PBR from a PBR reference. This is used by various methods of the Semigroup
   //! class.
   template <> struct hash<libsemigroups::PBR> {
-    //! Hashes a PBR given by const PBT pointer.
+    //! Hashes a PBR given by const PBR reference.
     size_t operator()(libsemigroups::PBR const& x) const {
       return x.hash_value();
     }
@@ -2107,4 +2209,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_SRC_ELEMENTS_H_
+#endif  // LIBSEMIGROUPS_SRC_ELEMENT_H_

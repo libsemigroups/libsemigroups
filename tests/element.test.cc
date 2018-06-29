@@ -18,7 +18,8 @@
 
 #include "catch.hpp"
 #include "src/bmat8.h"
-#include "src/elements.h"
+#include "src/element-helper.h"
+#include "src/element.h"
 
 using namespace libsemigroups;
 
