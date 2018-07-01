@@ -7,15 +7,15 @@ AM_CXXFLAGS += -I$(top_srcdir)/extern/HPCombi/include/fallback
 AM_CXXFLAGS += -I$(top_srcdir)/extern/sparsehash-c11
 AM_CXXFLAGS += -mavx -flax-vector-conversions -mlzcnt
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -march=native -Wall -Wextra
+AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 
 AM_LDFLAGS  =  -no-undefined
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
-AM_CXXFLAGS += -g3 -O0 -Wall -Wextra -Wno-unused-parameter -Wtype-limits
-AM_CXXFLAGS += -Wformat-security -Wpointer-arith -Wno-div-by-zero -Wreturn-type
-AM_CXXFLAGS += -Wswitch -Wunused-label -fno-omit-frame-pointer -pedantic
-AM_CXXFLAGS += -Wno-c++11-extensions -Wold-style-cast -Wshadow
+AM_CXXFLAGS += -g3 -O0
+AM_CXXFLAGS += -fno-omit-frame-pointer -pedantic
+AM_CXXFLAGS += -Wno-c++11-extensions -Wold-style-cast 
 else
 AM_CPPFLAGS = -DNDEBUG
 endif

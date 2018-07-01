@@ -98,6 +98,18 @@ AS_IF([test "x$enable_densehashmap" = xyes],
 AM_CONDITIONAL([LIBSEMIGROUPS_DENSEHASHMAP], 
                [test "x$enable_densehashmap" = xyes])
 
+AC_ARG_ENABLE([compile-warnings],
+    [AS_HELP_STRING([--enable-compile-warnings], [enable compiler warnings])],
+    [enable_compile_warnings=yes],
+    [enable_compile_warnings=no])
+AC_MSG_CHECKING([whether enable compiler warnings])
+AC_MSG_RESULT([$enable_compile_warnings])
+
+AS_IF([test "x$enable_compile_warnings" != "xno"],
+  [ax_enable_compile_warnings=yes
+   AX_COMPILER_FLAGS_CXXFLAGS([WARNING_CXXFLAGS])
+   AC_SUBST([WARNING_CXXFLAGS])])
+
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
@@ -125,7 +137,6 @@ FOUND_HPCOMBI="$(cat extern/HPCombi/VERSION)"
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_MSG_CHECKING([the version of HPCombi that's present])
        AC_MSG_RESULT([$FOUND_HPCOMBI])])
-
 
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AX_COMPARE_VERSION($FOUND_HPCOMBI, 
