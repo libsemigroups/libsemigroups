@@ -26,6 +26,8 @@
 #include <functional>
 #include <type_traits>
 
+#include "hash.h"
+
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {
     using value_type       = TElementType;
@@ -82,7 +84,7 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementHash  = std::hash<TElementType>,
+            typename TElementHash  = libsemigroups::hash<TElementType>,
             typename TElementEqual = std::equal_to<TElementType>>
   class SemigroupTraitsHashEqual
       : public SemigroupTraitsEqual<TElementType, TElementEqual> {

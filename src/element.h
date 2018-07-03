@@ -32,6 +32,7 @@
 
 #include "blocks.h"
 #include "element-adapter.h"
+#include "hash.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
 #include "recvec.h"
@@ -2056,9 +2057,17 @@ namespace libsemigroups {
       }
     };
   }  // namespace tmp
-}  // namespace libsemigroups
 
-namespace std {
+  template <class TSubclass>
+  struct hash<TSubclass,
+              typename std::enable_if<
+                  std::is_base_of<Element, TSubclass>::value>::type> {
+    //! Hashes a Transformation given by const Transformation pointer.
+    size_t operator()(TSubclass const& x) const {
+      return x.hash_value();
+    }
+  };
+
   //! Provides a call operator returning a hash value for an Element
   //! via a pointer.
   //!
@@ -2084,7 +2093,9 @@ namespace std {
       return x->hash_value();
     }
   };
+}  // namespace libsemigroups
 
+namespace std {
   //! Provides a call operator for comparing Elements via pointers.
   //!
   //! This struct provides a call operator for comparing Element
@@ -2110,102 +2121,6 @@ namespace std {
     bool operator()(libsemigroups::Element const* x,
                     libsemigroups::Element const* y) const {
       return *x == *y;
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a Transformation by
-  //! reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! Transformation from a Transformation reference. This is used by various
-  //! methods of the Semigroup class.
-  template <typename TIntegerType>
-  struct hash<libsemigroups::Transformation<TIntegerType>> {
-    //! Hashes a Transformation given by const Transformation pointer.
-    size_t
-    operator()(libsemigroups::Transformation<TIntegerType> const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a PartialPerm by
-  //! reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! PartialPerm from a PartialPerm reference. This is used by various
-  //! methods of the Semigroup class.
-  template <typename TIntegerType>
-  struct hash<libsemigroups::PartialPerm<TIntegerType>> {
-    //! Hashes a PartialPerm given by const PartialPerm pointer.
-    size_t operator()(libsemigroups::PartialPerm<TIntegerType> const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a Bipartition by
-  //! reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! Bipartition from a Bipartition reference. This is used by various
-  //! methods of the Semigroup class.
-  template <> struct hash<libsemigroups::Bipartition> {
-    //! Hashes a Bipartition given by const Bipartition pointer.
-    size_t operator()(libsemigroups::Bipartition const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a BooleanMat by
-  //! reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! BooleanMat from a BooleanMat reference. This is used by various
-  //! methods of the Semigroup class.
-  template <> struct hash<libsemigroups::BooleanMat> {
-    //! Hashes a BooleanMat given by const BooleanMat pointer.
-    size_t operator()(libsemigroups::BooleanMat const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a
-  //! ProjectiveMaxPlusMatrix by reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! ProjectiveMaxPlusMatrix from a ProjectiveMaxPlusMatrix reference. This is
-  //! used by various methods of the Semigroup class.
-  template <> struct hash<libsemigroups::ProjectiveMaxPlusMatrix> {
-    //! Hashes a ProjectiveMaxPlusMatrix given by const ProjectiveMaxPlusMatrix
-    //! pointer.
-    size_t operator()(libsemigroups::ProjectiveMaxPlusMatrix const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a PBR by reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! PBR from a PBR reference. This is used by various methods of the Semigroup
-  //! class.
-  template <> struct hash<libsemigroups::PBR> {
-    //! Hashes a PBR given by const PBR reference.
-    size_t operator()(libsemigroups::PBR const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Provides a call operator returning a hash value for a MatrixOverSemiring
-  //! by reference.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! MatrixOverSemiring from a MatrixOverSemiring reference. This is used by
-  //! various methods of the Semigroup class.
-  template <typename TValueType>
-  struct hash<libsemigroups::MatrixOverSemiring<TValueType>> {
-    size_t
-    //! Hashes a MatrixOverSemiring given by const MatrixOverSemiring pointer.
-    operator()(libsemigroups::MatrixOverSemiring<TValueType> const& x) const {
-      return x.hash_value();
     }
   };
 }  // namespace std

@@ -410,7 +410,7 @@ namespace libsemigroups {
     //! is the square of the size of the semigroup over which \c this is
     //! defined.
     template <typename TElementType  = Element const*,
-              typename TElementHash  = std::hash<TElementType>,
+              typename TElementHash  = libsemigroups::hash<TElementType>,
               typename TElementEqual = std::equal_to<TElementType>>
     void force_p() {
       LIBSEMIGROUPS_ASSERT(_semigroup != nullptr);

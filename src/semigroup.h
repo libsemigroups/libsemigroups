@@ -62,7 +62,7 @@ namespace libsemigroups {
   //! presentation for the semigroup is known.
 
   template <typename TElementType  = Element const*,
-            typename TElementHash  = std::hash<TElementType>,
+            typename TElementHash  = libsemigroups::hash<TElementType>,
             typename TElementEqual = std::equal_to<TElementType>>
   // Florent : I didn't manage to get that working...
   //            typename TElementHash  =

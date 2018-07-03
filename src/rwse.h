@@ -171,7 +171,7 @@ namespace libsemigroups {
     //!
     //! \sa Element::hash_value and Element::cache_hash_value.
     void cache_hash_value() const override {
-      this->_hash_value = std::hash<rws_word_t>{}(_rws_word);
+      this->_hash_value = libsemigroups::hash<rws_word_t>{}(_rws_word);
     }
 
     //! Multiply \p x and \p y and stores the result in \c this.
@@ -239,8 +239,8 @@ namespace libsemigroups {
   //! Specialises the factorisation method for Semigroup's of RWSE's so that it
   //! just returns the word inside the RWSE.
   template <>
-  word_t Semigroup<RWSE, std::hash<RWSE>, std::equal_to<RWSE>>::factorisation(
-      RWSE const& x);
+  word_t Semigroup<RWSE, libsemigroups::hash<RWSE>, std::equal_to<RWSE>>::
+      factorisation(RWSE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_RWSE_H_
