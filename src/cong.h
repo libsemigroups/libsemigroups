@@ -30,6 +30,7 @@
 
 #include "partition.h"
 #include "report.h"
+#include "semigroup-traits.h"
 #include "semigroup.h"
 #include "uf.h"
 
@@ -488,7 +489,8 @@ namespace libsemigroups {
     class KBP;   // Knuth-Bendix followed by P
     template <typename TElementType,
               typename TElementHash,
-              typename TElementEqual>
+              typename TElementEqual,
+              class TTraits>
     class P;   // Orbit of pairs
     class TC;  // Todd-Coxeter
 
@@ -499,7 +501,8 @@ namespace libsemigroups {
       friend KBP;
       template <typename TElementType,
                 typename TElementHash,
-                typename TElementEqual>
+                typename TElementEqual,
+                class TTraits>
       friend class P;
       friend TC;
 
@@ -619,21 +622,26 @@ namespace libsemigroups {
       typedef std::vector<class_t*> partition_t;
     };
 
-    template <typename TElementType,
-              typename TElementHash,
-              typename TElementEqual>
-    class P : public DATA, ElementContainer<TElementType> {
-      using value_type = typename ElementContainer<TElementType>::value_type;
-      using const_value_type =
-          typename ElementContainer<TElementType>::const_value_type;
-      using reference = typename ElementContainer<TElementType>::reference;
-      using const_reference =
-          typename ElementContainer<TElementType>::const_reference;
+    template <
+        typename TElementType,
+        typename TElementHash,
+        typename TElementEqual,
+        class TTraits
+        = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
+    class P : public DATA, TTraits {
+      using value_type       = typename TTraits::value_type;
+      using const_value_type = typename TTraits::const_value_type;
+      using reference        = typename TTraits::reference;
+      using const_reference  = typename TTraits::const_reference;
 
-      using internal_value_type =
-          typename ElementContainer<TElementType>::internal_value_type;
+      using internal_value_type = typename TTraits::internal_value_type;
       using internal_const_value_type =
-          typename ElementContainer<TElementType>::internal_const_value_type;
+          typename TTraits::internal_const_value_type;
+
+      using internal_equal_to = typename TTraits::internal_equal_to;
+      using internal_hash     = typename TTraits::internal_hash;
+
+      using product = product<internal_value_type>;
 
       static_assert(std::is_trivial<internal_value_type>::value,
                     "internal_value_type must be trivial");
@@ -773,16 +781,14 @@ namespace libsemigroups {
           for (size_t i = 0; i < this->_cong._nrgens; i++) {
             const_reference gen = semigroup->gens(i);
             if (this->_cong._type == LEFT || this->_cong._type == TWOSIDED) {
-              this->multiply(
-                  _tmp1, this->to_internal(gen), current_pair.first, tid);
-              this->multiply(
+              product()(_tmp1, this->to_internal(gen), current_pair.first, tid);
+              product()(
                   _tmp2, this->to_internal(gen), current_pair.second, tid);
               add_pair(_tmp1, _tmp2);
             }
             if (this->_cong._type == RIGHT || this->_cong._type == TWOSIDED) {
-              this->multiply(
-                  _tmp1, current_pair.first, this->to_internal(gen), tid);
-              this->multiply(
+              product()(_tmp1, current_pair.first, this->to_internal(gen), tid);
+              product()(
                   _tmp2, current_pair.second, this->to_internal(gen), tid);
               add_pair(_tmp1, _tmp2);
             }
@@ -847,26 +853,13 @@ namespace libsemigroups {
       }
 
      private:
-      struct InternalElementHash : public ElementContainer<TElementType> {
-        size_t operator()(internal_const_value_type x) const {
-          return TElementHash{}(this->to_external(x));
-        }
-      };
-
-      struct InternalElementEqual : public ElementContainer<TElementType> {
-        bool operator()(internal_const_value_type x,
-                        internal_const_value_type y) const {
-          return TElementEqual{}(this->to_external(x), this->to_external(y));
-        }
-      };
-
       struct PHash {
        public:
         size_t
         operator()(std::pair<internal_const_value_type,
                              internal_const_value_type> const& pair) const {
-          return InternalElementHash{}(pair.first)           // NOLINT()
-                 + 17 * InternalElementHash{}(pair.second);  // NOLINT()
+          return internal_hash()(pair.first)
+                 + 17 * internal_hash()(pair.second);
         }
       };
 
@@ -875,14 +868,13 @@ namespace libsemigroups {
                                     internal_const_value_type> pair1,
                           std::pair<internal_const_value_type,
                                     internal_const_value_type> pair2) const {
-          return InternalElementEqual{}(pair1.first, pair2.first)  // NOLINT()
-                 && InternalElementEqual{}(pair1.second,           // NOLINT()
-                                           pair2.second);
+          return internal_equal_to()(pair1.first, pair2.first)
+                 && internal_equal_to()(pair1.second, pair2.second);
         }
       };
 
       void add_pair(internal_const_value_type x, internal_const_value_type y) {
-        if (!InternalElementEqual()(x, y)) {
+        if (!internal_equal_to()(x, y)) {
           internal_const_value_type xx, yy;
           bool                      xx_new = false, yy_new = false;
           size_t                    i, j;
@@ -954,8 +946,8 @@ namespace libsemigroups {
       UF  _lookup;
       std::unordered_map<internal_const_value_type,
                          size_t,
-                         InternalElementHash,
-                         InternalElementEqual>
+                         internal_hash,
+                         internal_equal_to>
                     _map;
       size_t        _map_next;
       class_index_t _next_class;

@@ -23,55 +23,59 @@
 #define LIBSEMIGROUPS_SRC_HPCOMBI_H_
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
-#include "element-adapter.h"
+#include "adapters.h"
 #include "semigroup-traits.h"
 
 namespace libsemigroups {
   using Perm16 = HPCombi::Perm16;
 
-  namespace tmp {
-    template <> struct degree<Perm16> {
-      inline constexpr size_t operator()(Perm16 const&) const {
-        return 16;
-      }
-    };
+  template <> struct degree<Perm16> {
+    inline constexpr size_t operator()(Perm16 const&) const {
+      return 16;
+    }
+  };
 
-    template <> struct inverse<Perm16> {
-      inline Perm16 operator()(Perm16 const& x) const {
-        return x.inverse();
-      }
-    };
+  template <> struct inverse<Perm16> {
+    inline Perm16 operator()(Perm16 const& x) const {
+      return x.inverse();
+    }
+  };
 
-    template <> struct one<Perm16> {
-      inline Perm16 operator()(size_t) const {
-        return Perm16::one();
-      }
+  template <> struct one<Perm16> {
+    inline Perm16 operator()(size_t) const {
+      return Perm16::one();
+    }
 
-      inline Perm16 operator()(Perm16 const&) const {
-        return Perm16::one();
-      }
-    };
+    inline Perm16 operator()(Perm16 const&) const {
+      return Perm16::one();
+    }
+  };
 
-    template <> struct product<Perm16> {
-      void
-      operator()(Perm16& xy, Perm16 const& x, Perm16 const& y, size_t = 0) {
-        xy = x * y;
-      }
-    };
+  template <> struct product<Perm16> {
+    void operator()(Perm16& xy, Perm16 const& x, Perm16 const& y, size_t = 0) {
+      xy = x * y;
+    }
+  };
 
-    template <> struct swap<Perm16> {
-      void operator()(Perm16& x, Perm16& y) const {
-        std::swap(x, y);
-      }
-    };
+  template <> struct swap<Perm16> {
+    void operator()(Perm16& x, Perm16& y) const {
+      std::swap(x, y);
+    }
+  };
 
-    template <typename TValueType> struct action<Perm16, TValueType> {
-      inline TValueType operator()(Perm16 x, TValueType i) const {
-        return x[i];
-      }
-    };
-  }  // namespace tmp
+  template <typename TValueType> struct action<Perm16, TValueType> {
+    inline TValueType operator()(Perm16 x, TValueType i) const {
+      return x[i];
+    }
+  };
 
+#ifdef LIBSEMIGROUPS_DENSEHASHMAP
+  template <> struct empty_key<Transf16> {
+    Transf16 operator()(Transf16 const&) const {
+      return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
+    }
+  };
+#endif
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI

@@ -44,7 +44,6 @@ static_assert(std::is_trivial<Renner0Element>::value,
               "Renner0Element is not trivial");
 
 namespace std {
-
   template <> struct hash<Renner0Element> {
     inline size_t operator()(const Renner0Element& ar) const {
       return hash<HPCombi::Vect16>{}(ar);
@@ -53,23 +52,12 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  template <>
-  size_t
-  ElementContainer<Renner0Element>::complexity(Renner0Element const&) const {
-    return -1;
-  }
-
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <> inline Transf16 empty_key(Transf16) {
-    return Transf16(
-        {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE});
-  }
-
-  template <>
-  Renner0Element
-  ElementContainer<Renner0Element>::empty_key(Renner0Element const&) const {
-    return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
-  }
+  template <> struct empty_key<Renner0Element> {
+    Renner0Element operator()(Renner0Element const&) const {
+      return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
+    }
+  };
 #endif
 }  // namespace libsemigroups
 

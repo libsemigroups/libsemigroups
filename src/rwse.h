@@ -205,14 +205,11 @@ namespace libsemigroups {
     rws_word_t _rws_word;
   };
 
-  namespace tmp {
-    template <>
-    struct one<RWSE*> {
-      RWSE* operator()(RWSE const* x) {
-        return new RWSE(std::move(x->identity()));
-      }
-    };
-  }  // namespace tmp
+  template <> struct one<RWSE*> {
+    RWSE* operator()(RWSE const* x) {
+      return new RWSE(std::move(x->identity()));
+    }
+  };
 
 }  // namespace libsemigroups
 

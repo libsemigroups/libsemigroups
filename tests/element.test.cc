@@ -48,7 +48,7 @@ TEST_CASE("Transformation 01: u_int16_t methods",
   expected = Transformation<u_int16_t>({0, 1, 2});
   REQUIRE(id == expected);
 
-  x.increase_deg_by(10);
+  x.increase_degree_by(10);
   REQUIRE(x.degree() == 13);
   REQUIRE(x.end() - x.begin() == 13);
 }
@@ -212,7 +212,7 @@ TEST_CASE("PartialPerm 01: u_int16_t methods", "[quick][element][pperm][01]") {
   expected = PartialPerm<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   REQUIRE(id == expected);
 
-  x.increase_deg_by(10);
+  x.increase_degree_by(10);
   REQUIRE(x.degree() == 20);
   REQUIRE(x.end() - x.begin() == x.degree());
 }

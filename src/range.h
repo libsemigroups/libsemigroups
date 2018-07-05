@@ -33,8 +33,7 @@ namespace libsemigroups {
    public:
     using value_type = TIntegralType;
 
-    IntegralRange()
-        : _begin(TBegin), _end(TEnd) {}
+    IntegralRange() : _begin(TBegin), _end(TEnd) {}
 
     IntegralRange(TIntegralType begin, TIntegralType end)
         : _begin(begin), _end(end) {}
@@ -47,7 +46,7 @@ namespace libsemigroups {
         return _i;
       }
 
-      iterator const &operator++() {
+      iterator const& operator++() {
         ++_i;
         return *this;
       }

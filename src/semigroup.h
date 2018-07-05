@@ -32,10 +32,10 @@
 #include <vector>
 
 #include "element.h"
-#include "eltcont.h"
 #include "libsemigroups-debug.h"
 #include "report.h"
 #include "semigroup-base.h"
+#include "semigroup-traits.h"
 #include "to_string.h"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -61,29 +61,38 @@ namespace libsemigroups {
   //! right Cayley graphs are determined, and a confluent terminating
   //! presentation for the semigroup is known.
 
-  template <typename TElementType  = Element const*,
-            typename TElementHash  = libsemigroups::hash<TElementType>,
-            typename TElementEqual = libsemigroups::equal_to<TElementType>>
+  template <
+      typename TElementType  = Element const*,
+      typename TElementHash  = libsemigroups::hash<TElementType>,
+      typename TElementEqual = libsemigroups::equal_to<TElementType>,
+      class TTraits
+      = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
   // Florent : I didn't manage to get that working...
   //            typename TElementHash  =
   //               std::hash<typename
-  //               ElementContainer<TElementType>::value_type>,
+  //               TTraits::value_type>,
   //            typename TElementEqual =
   //               std::equal_to<typename
-  //               ElementContainer<TElementType>::value_type>>
-  class Semigroup : public ElementContainer<TElementType>,
-                    public SemigroupBase {
-    using value_type = typename ElementContainer<TElementType>::value_type;
-    using const_value_type =
-        typename ElementContainer<TElementType>::const_value_type;
-    using reference = typename ElementContainer<TElementType>::reference;
-    using const_reference =
-        typename ElementContainer<TElementType>::const_reference;
+  //               TTraits::value_type>>
+  class Semigroup : private TTraits, public SemigroupBase {
+    using value_type       = typename TTraits::value_type;
+    using const_value_type = typename TTraits::const_value_type;
+    using reference        = typename TTraits::reference;
+    using const_reference  = typename TTraits::const_reference;
 
-    using internal_value_type =
-        typename ElementContainer<TElementType>::internal_value_type;
+    using internal_value_type = typename TTraits::internal_value_type;
     using internal_const_value_type =
-        typename ElementContainer<TElementType>::internal_const_value_type;
+        typename TTraits::internal_const_value_type;
+
+    using internal_equal_to = typename TTraits::internal_equal_to;
+    using internal_hash     = typename TTraits::internal_hash;
+
+    using complexity         = complexity<internal_value_type>;
+    using internal_degree    = ::libsemigroups::degree<internal_value_type>;
+    using increase_degree_by = increase_degree_by<internal_value_type>;
+    using less               = less<internal_value_type>;
+    using one                = one<internal_value_type>;
+    using product            = product<internal_value_type>;
 
     // static_assert(std::is_trivial<internal_value_type>::value,
     //              "internal_value_type must be trivial");
@@ -94,27 +103,6 @@ namespace libsemigroups {
             || std::is_const<typename std::remove_pointer<
                    internal_const_value_type>::type>::value,
         "internal_const_value_type must be const or pointer to const");
-
-    //! Provides a call operator for hashing elements of \c this
-    //!
-    //! This struct provides a call operator for hashing an element of \c this,
-    //! provided as an internal_const_value_type.
-    struct InternalElementHash : public ElementContainer<value_type> {
-      size_t operator()(internal_const_value_type x) const {
-        return TElementHash{}(this->to_external(x));
-      }
-    };
-
-    //! Provides a call operator for comparing elements of \c this
-    //!
-    //! This struct provides a call operator for comparing two elements of \c
-    //! this, provided as internal_const_value_types.
-    struct InternalElementEqual : public ElementContainer<value_type> {
-      bool operator()(internal_const_value_type x,
-                      internal_const_value_type y) const {
-        return TElementEqual{}(this->to_external(x), this->to_external(y));
-      }
-    };
 
     // The elements of a semigroup are stored in _elements, but because of the
     // way add_generators/closure work, it might not be the case that all the
@@ -204,10 +192,11 @@ namespace libsemigroups {
       // slow (~50ms to ~10s!!!!)
       // reserve(_nrgens);
 
-      _degree = this->element_degree((*gens)[0]);
+      _degree = internal_degree()(this->to_internal((*gens)[0]));
 
       for (size_t i = 0; i < _nrgens; ++i) {
-        element_index_t degree = this->element_degree((*gens)[i]);
+        element_index_t degree
+            = internal_degree()(this->to_internal((*gens)[i]));
         if (degree != _degree) {
           for (auto& x : _gens) {
             this->internal_free(x);
@@ -220,8 +209,8 @@ namespace libsemigroups {
         _gens.push_back(this->internal_copy(this->to_internal((*gens)[i])));
       }
 
-      _tmp_product = this->one(_gens[0]);
-      _id          = this->one(_gens[0]);
+      _tmp_product = one()(_gens[0]);
+      _id          = one()(_gens[0]);
       _lenindex.push_back(0);
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -380,12 +369,12 @@ namespace libsemigroups {
           _sorted(),
           _wordlen(0) {
       LIBSEMIGROUPS_ASSERT(!coll->empty());
-      LIBSEMIGROUPS_ASSERT(this->element_degree(coll->at(0)) >= S.degree());
+      LIBSEMIGROUPS_ASSERT(internal_degree()(coll->at(0)) >= S.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
       for (TElementType const& x : *coll) {
-        LIBSEMIGROUPS_ASSERT(this->element_degree(x)
-                             == this->element_degree((*coll)[0]));
+        LIBSEMIGROUPS_ASSERT(internal_degree()(x)
+                             == internal_degree()((*coll)[0]));
       }
 #endif
 #ifdef LIBSEMIGROUPS_STATS
@@ -401,7 +390,7 @@ namespace libsemigroups {
       _prefix.resize(S._nr, 0);
       _suffix.resize(S._nr, 0);
 
-      size_t deg_plus = this->element_degree(coll->at(0)) - S.degree();
+      size_t deg_plus = internal_degree()(coll->at(0)) - S.degree();
 
       if (deg_plus != 0) {
         _degree += deg_plus;
@@ -423,7 +412,7 @@ namespace libsemigroups {
         _length[_enumerate_order[i]] = 1;
       }
 
-      _id          = this->one(this->to_internal(coll->at(0)));
+      _id          = one()(this->to_internal(coll->at(0)));
       _tmp_product = this->internal_copy(_id);
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -436,7 +425,7 @@ namespace libsemigroups {
       element_index_t i = 0;
       for (internal_const_value_type x : S._elements) {
         internal_value_type y = this->internal_copy(x);
-        this->increase_deg_by(y, deg_plus);
+        increase_degree_by()(y, deg_plus);
         _elements.push_back(y);
         _map.emplace(y, i);
         is_one(y, i++);
@@ -515,7 +504,7 @@ namespace libsemigroups {
       // TODO we could trace the right/left Cayley graph as far as possible,
       // i.e. do a partial fast_product
       internal_value_type prod = this->internal_copy(_tmp_product);
-      this->multiply(prod, _gens[w[0]], _gens[w[1]]);
+      product()(prod, _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
         if (*it >= nrgens()) {
           this->internal_free(prod);
@@ -524,8 +513,8 @@ namespace libsemigroups {
               + libsemigroups::to_string(*it) + " but the semigroup only has "
               + libsemigroups::to_string(nrgens()) + " generators");
         }
-        this->swap(_tmp_product, prod);
-        this->multiply(prod, _tmp_product, _gens[*it]);
+        std::swap(_tmp_product, prod);
+        product()(prod, _tmp_product, _gens[*it]);
       }
       value_type ret = this->external_copy(prod);
       this->internal_free(prod);
@@ -603,7 +592,7 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
     element_index_t current_position(const_reference x) const {
-      if (this->element_degree(x) != _degree) {
+      if (internal_degree()(x) != _degree) {
         return UNDEFINED;
       }
 
@@ -794,7 +783,7 @@ namespace libsemigroups {
     //! For example, if the Element::complexity of the multiplication is linear
     //! and \c this is a semigroup of transformations of degree 20, and the
     //! shortest paths in the left and right Cayley graphs from \p i to \p j
-    //! are of length 100 and 1131, then it better to just multiply the
+    //! are of length 100 and 1131, then it better to just product the
     //! transformations together.
     element_index_t fast_product(element_index_t i,
                                  element_index_t j) const override {
@@ -810,11 +799,11 @@ namespace libsemigroups {
             + libsemigroups::to_string(j) + " but there are only "
             + libsemigroups::to_string(_nr) + " elements enumerated");
       }
-      if (length_const(i) < 2 * this->complexity(_tmp_product)
-          || length_const(j) < 2 * this->complexity(_tmp_product)) {
+      if (length_const(i) < 2 * complexity()(_tmp_product)
+          || length_const(j) < 2 * complexity()(_tmp_product)) {
         return product_by_reduction(i, j);
       } else {
-        this->multiply(_tmp_product, _elements[i], _elements[j]);
+        product()(_tmp_product, _elements[i], _elements[j]);
         return _map.find(_tmp_product)->second;
       }
     }
@@ -948,7 +937,7 @@ namespace libsemigroups {
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
     element_index_t position(const_value_type x) {
-      if (this->element_degree(x) != _degree) {
+      if (internal_degree()(this->to_internal(x)) != _degree) {
         return UNDEFINED;
       }
 
@@ -1272,13 +1261,13 @@ namespace libsemigroups {
       Timer  timer;
       size_t tid = REPORTER.thread_id(std::this_thread::get_id());
 
-      // multiply the generators by every generator
+      // product the generators by every generator
       if (_pos < _lenindex[1]) {
         index_t nr_shorter_elements = _nr;
         while (_pos < _lenindex[1]) {
           element_index_t i = _enumerate_order[_pos];
           for (letter_t j = 0; j != _nrgens; ++j) {
-            this->multiply(_tmp_product, _elements[i], _gens[j], tid);
+            product()(_tmp_product, _elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
             _nr_products++;
 #endif
@@ -1315,7 +1304,7 @@ namespace libsemigroups {
         _lenindex.push_back(_enumerate_order.size());
       }
 
-      // multiply the words of length > 1 by every generator
+      // product the words of length > 1 by every generator
       bool stop = (_nr >= limit || killed);
 
       while (_pos != _nr && !stop) {
@@ -1336,7 +1325,7 @@ namespace libsemigroups {
                 _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
               }
             } else {
-              this->multiply(_tmp_product, _elements[i], _gens[j], tid);
+              product()(_tmp_product, _elements[i], _gens[j], tid);
 #ifdef LIBSEMIGROUPS_STATS
               _nr_products++;
 #endif
@@ -1445,7 +1434,7 @@ namespace libsemigroups {
         return;
       }
       for (auto it = coll.begin(); it < coll.end(); ++it) {
-        element_index_t degree = this->element_degree(*it);
+        element_index_t degree = internal_degree()(this->to_internal(*it));
         if (degree != _degree) {
           throw LibsemigroupsException(
               "Semigroup::add_generators: new generator "
@@ -1754,7 +1743,7 @@ namespace libsemigroups {
       typedef typename std::vector<TElementType>::size_type  size_type;
       typedef typename std::vector<T>::difference_type       difference_type;
       typedef typename std::vector<TElementType>::value_type value_type;
-      // Florent : Move that logic in eltcont.h
+      // FIXME Florent : Move that logic in eltcont.h
       using iterated_value =
           typename std::conditional<std::is_trivial<value_type>::value,
                                     const_value_type,
@@ -1867,9 +1856,9 @@ namespace libsemigroups {
       static C const                          _methods;
     };  // iterator_base definition ends
 
-    struct IteratorMethods : public ElementContainer<TElementType> {
+    struct IteratorMethods : private TTraits {
       IteratorMethods() {}
-      // Florent : Move that logic in eltcont.h
+      // FIXME Florent : Move that logic in eltcont.h
       using iterated_value =
           typename std::conditional<std::is_trivial<value_type>::value,
                                     const_value_type,
@@ -1886,7 +1875,7 @@ namespace libsemigroups {
       }
     };
 
-    struct IteratorMethodsPairFirst : public ElementContainer<TElementType> {
+    struct IteratorMethodsPairFirst : private TTraits {
       using iterated_value =
           typename std::conditional<std::is_trivial<value_type>::value,
                                     const_value_type,
@@ -2075,7 +2064,7 @@ namespace libsemigroups {
     // Check if an element is the identity, x should be in the position pos
     // of _elements.
     void inline is_one(internal_const_value_type x, element_index_t pos) {
-      if (!_found_one && InternalElementEqual{}(x, _id)) {  // NOLINT()
+      if (!_found_one && internal_equal_to()(x, _id)) {
         _pos_one   = pos;
         _found_one = true;
       }
@@ -2121,7 +2110,7 @@ namespace libsemigroups {
           _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
         }
       } else {
-        this->multiply(_tmp_product, _elements[i], _gens[j], tid);
+        product()(_tmp_product, _elements[i], _gens[j], tid);
         auto it = _map.find(_tmp_product);
         if (it == _map.end()) {  // it's new!
           is_one(_tmp_product, _nr);
@@ -2182,7 +2171,7 @@ namespace libsemigroups {
                 _sorted.end(),
                 [this](std::pair<internal_value_type, element_index_t> const& x,
                        std::pair<internal_value_type, element_index_t> const& y)
-                    -> bool { return this->cmp(x.first, y.first); });
+                    -> bool { return less()(x.first, y.first); });
 
       // Invert the permutation in _sorted[*].second
       std::vector<element_index_t> tmp_inverter;
@@ -2209,10 +2198,10 @@ namespace libsemigroups {
 
       Timer timer;
 
-      // Find the threshold beyond which it is quicker to simply multiply
+      // Find the threshold beyond which it is quicker to simply product
       // elements rather than follow a path in the Cayley graph. This is the
       // enumerate_index_t i for which length(i) >= 2 * complexity.
-      size_t comp = std::max(this->complexity(_tmp_product), size_t(1));
+      size_t comp             = std::max(complexity()(_tmp_product), size_t(1));
       size_t threshold_length = std::min(_lenindex.size() - 2, comp - 1);
       enumerate_index_t threshold_index = _lenindex[threshold_length];
 
@@ -2303,7 +2292,7 @@ namespace libsemigroups {
     // Find the idempotents in the range [first, last) and store
     // the corresponding std::pair of type idempotent_value_t in the 4th
     // parameter. The parameter threshold is the point, calculated in
-    // init_idempotents, at which it is better to simply multiply elements
+    // init_idempotents, at which it is better to simply product elements
     // rather than trace in the left/right Cayley graph.
     void idempotents(enumerate_index_t const          first,
                      enumerate_index_t const          last,
@@ -2346,8 +2335,8 @@ namespace libsemigroups {
       for (; pos < last; pos++) {
         element_index_t k = _enumerate_order[pos];
         if (!_is_idempotent[k]) {
-          this->multiply(tmp_product, _elements[k], _elements[k], tid);
-          if (InternalElementEqual{}(tmp_product, _elements[k])) {  // NOLINT()
+          product()(tmp_product, _elements[k], _elements[k], tid);
+          if (internal_equal_to()(tmp_product, _elements[k])) {
             idempotents.push_back(idempotent_value_t(_elements[k], k));
             _is_idempotent[k] = true;
           }
@@ -2377,14 +2366,14 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
     google::dense_hash_map<internal_const_value_type,
                            element_index_t,
-                           InternalElementHash,
-                           InternalElementEqual>
+                           internal_hash,
+                           internal_equal_to>
         _map;
 #else
     std::unordered_map<internal_const_value_type,
                        element_index_t,
-                       InternalElementHash,
-                       InternalElementEqual>
+                       internal_hash,
+                       internal_equal_to>
         _map;
 #endif
     size_t                                                       _max_threads;
@@ -2411,9 +2400,10 @@ namespace libsemigroups {
 
   template <typename TElementType,
             typename TElementHash,
-            typename TElementEqual>
+            typename TElementEqual,
+            class TTraits>
   template <typename T, typename C>
-  C const Semigroup<TElementType, TElementHash, TElementEqual>::
+  C const Semigroup<TElementType, TElementHash, TElementEqual, TTraits>::
       iterator_base<T, C>::_methods;
 
 }  // namespace libsemigroups

@@ -21,18 +21,19 @@
 #ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_
 #define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_
 
+#include "adapters.h"
 #include "blocks.h"
 #include "bmat8.h"
 #include "cong.h"
-#include "element-adapter.h"
 #include "element-helper.h"
 #include "element.h"
-#include "eltcont.h"
+#include "functional.h"
 #include "hpcombi.h"
 #include "libsemigroups-config.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
 #include "partition.h"
+#include "range.h"
 #include "recvec.h"
 #include "report.h"
 #include "rws.h"
@@ -42,7 +43,9 @@
 #include "semigroup-traits.h"
 #include "semigroup.h"
 #include "semiring.h"
+#include "square.h"
 #include "timer.h"
+#include "to_string.h"
 #include "uf.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI

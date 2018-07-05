@@ -27,7 +27,7 @@
 #include <random>
 #include <x86intrin.h>
 
-#include "element-adapter.h"
+#include "adapters.h"
 #include "element.h"
 #include "hpcombi.hpp"
 #include "libsemigroups-debug.h"
@@ -277,66 +277,65 @@ namespace libsemigroups {
     }
   };
 
-  // Specialization for element-adapter.h structs
-  namespace tmp {
-    template <> struct complexity<BMat8> {
-      inline size_t operator()(BMat8 const&) const {
-        return 0;
-      }
-    };
+  // Specialization for adapters.h structs
+  template <> struct complexity<BMat8> {
+    inline size_t operator()(BMat8 const&) const {
+      return 0;
+    }
+  };
 
-    template <> struct degree<BMat8> {
-      inline size_t operator()(BMat8 const&) const {
-        return 8;
-      }
-    };
+  template <> struct degree<BMat8> {
+    inline size_t operator()(BMat8 const&) const {
+      return 8;
+    }
+  };
 
-    template <> struct increase_degree_by<BMat8> {
-      inline void operator()(BMat8 const&) const {}
-    };
+  template <> struct increase_degree_by<BMat8> {
+    inline void operator()(BMat8 const&) const {}
+  };
 
-    template <> struct less<BMat8> {
-      inline bool operator()(BMat8 const& x, BMat8 const& y) const {
-        return x < y;
-      }
-    };
+  template <> struct less<BMat8> {
+    inline bool operator()(BMat8 const& x, BMat8 const& y) const {
+      return x < y;
+    }
+  };
 
-    template <> struct one<BMat8> {
-      inline BMat8 operator()(BMat8 const& x) const {
-        return x.one();
-      }
+  template <> struct one<BMat8> {
+    inline BMat8 operator()(BMat8 const& x) const {
+      return x.one();
+    }
 
-      inline BMat8 operator()(size_t) const {
-        return BMat8::one();
-      }
-    };
+    inline BMat8 operator()(size_t) const {
+      return BMat8::one();
+    }
+  };
 
-    template <> struct product<BMat8> {
-      inline void operator()(BMat8& xy, BMat8 const& x, BMat8 const& y) {
-        xy = x * y;
-      }
-    };
+  template <> struct product<BMat8> {
+    inline void
+    operator()(BMat8& xy, BMat8 const& x, BMat8 const& y, size_t = 0) {
+      xy = x * y;
+    }
+  };
 
-    template <> struct swap<BMat8> {
-      inline void operator()(BMat8& x, BMat8& y) {
-        std::swap(x, y);
-      }
-    };
+  template <> struct swap<BMat8> {
+    inline void operator()(BMat8& x, BMat8& y) {
+      std::swap(x, y);
+    }
+  };
 
-    template <typename TIndexType> struct action<BMat8, TIndexType> {
-      inline TIndexType operator()(BMat8 const& x, TIndexType const i) const {
-        LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
-        return x.lz_row(i);
-      }
-    };
+  template <typename TIndexType> struct action<BMat8, TIndexType> {
+    inline TIndexType operator()(BMat8 const& x, TIndexType const i) const {
+      LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
+      return x.lz_row(i);
+    }
+  };
 
-    template <> struct inverse<BMat8> {
-      inline BMat8 operator()(BMat8 const& x) const {
-        LIBSEMIGROUPS_ASSERT(true);  // TODO check that x is invertible
-        return x.transpose();
-      }
-    };
-  }  // namespace tmp
+  template <> struct inverse<BMat8> {
+    inline BMat8 operator()(BMat8 const& x) const {
+      LIBSEMIGROUPS_ASSERT(true);  // TODO check that x is invertible
+      return x.transpose();
+    }
+  };
 }  // namespace libsemigroups
 
 namespace std {

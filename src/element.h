@@ -29,8 +29,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "adapters.h"
 #include "blocks.h"
-#include "element-adapter.h"
 #include "functional.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
@@ -211,7 +211,7 @@ namespace libsemigroups {
 
     //! Increases the degree of \c this by \p deg.
     //! This does not make sense for all subclasses of Element.
-    virtual void increase_deg_by(size_t) {}
+    virtual void increase_degree_by(size_t) {}
 
     //! Returns a new element completely independent of \c this.
     //!
@@ -230,8 +230,6 @@ namespace libsemigroups {
     //! semigroup) which is independent from previous copies.
     // FIXME delete
     virtual Element* heap_identity() const = 0;
-
-    template <class TElementType> TElementType identity() const;
 
    protected:
     //! Calculate and cache a hash value.
@@ -315,10 +313,10 @@ namespace libsemigroups {
     //! A copy constructor.
     //!
     //! The size of the vector containing the defining data of \c this will be
-    //! increased by \p increase_deg_by.  If \p increase_deg_by is not 0, then
-    //! this method must be overridden by any subclass of ElementWithVectorData
-    //! since there is no way of knowing how a subclass is defined by the data
-    //! in the vector.
+    //! increased by \p increase_degree_by.  If \p increase_degree_by is not 0,
+    //! then this method must be overridden by any subclass of
+    //! ElementWithVectorData since there is no way of knowing how a subclass is
+    //! defined by the data in the vector.
     ElementWithVectorData(ElementWithVectorData const& copy)
         : Element(copy._hash_value),
           _vector(copy._vector.cbegin(), copy._vector.cend()) {}
@@ -784,7 +782,7 @@ namespace libsemigroups {
       }
     }
 
-    void increase_deg_by(size_t m) override {
+    void increase_degree_by(size_t m) override {
       this->_vector.resize(this->_vector.size() + m);
       std::iota(this->_vector.end() - m,
                 this->_vector.end(),
@@ -936,7 +934,7 @@ namespace libsemigroups {
     PartialPerm<TValueType>(PartialPerm const& copy)
         : PartialTransformation<TValueType, PartialPerm<TValueType>>(copy) {}
 
-    void increase_deg_by(size_t m) override {
+    void increase_degree_by(size_t m) override {
       this->_vector.insert(this->_vector.end(), m, UNDEFINED);
       this->reset_hash_value();
     }
@@ -1387,7 +1385,7 @@ namespace libsemigroups {
 
     //! A copy constructor.
     //!
-    //! The parameter \p increase_deg_by must be 0, since it does not make
+    //! The parameter \p increase_degree_by must be 0, since it does not make
     //! sense to increase the degree of a matrix.
     MatrixOverSemiringBase(MatrixOverSemiringBase const& copy)
         : ElementWithVectorDataDefaultHash<TValueType, TSubclass>(copy._vector),
@@ -1967,96 +1965,144 @@ namespace libsemigroups {
     }
   };
 
-  // Specialization of function templates from element-adapter.h for classes
-  // derived from the class Element, such as Transformation<size_t> and so on .
-  // . .
-  namespace tmp {
-    template <class TSubclass>
-    struct complexity<TSubclass*,
-                      typename std::enable_if<
-                          std::is_base_of<Element, TSubclass>::value>::type> {
-      inline size_t operator()(TSubclass const* x) const {
-        return x->complexity();
-      }
-    };
+  // FIXME What happens if TElementType is a SubElement* ???
+  // It's not clear for me how you use that.
 
-    template <class TSubclass>
-    struct degree<TSubclass*,
-                  typename std::enable_if<
-                      std::is_base_of<Element, TSubclass>::value>::type> {
-      inline size_t operator()(TSubclass const* x) const {
-        return x->degree();
-      }
-    };
+  // Specialization for Element* and Element const* . . .
+  template <typename TElementType>
+  struct SemigroupTraits<
+      TElementType,
+      typename std::enable_if<
+          std::is_same<TElementType, Element*>::value
+          || std::is_same<TElementType, Element const*>::value>::type> {
+    using value_type       = Element*;
+    using const_value_type = Element const*;
+    using reference        = value_type;
+    using const_reference  = const_value_type;
 
-    template <class TSubclass>
-    struct increase_degree_by<
-        TSubclass*,
-        typename std::enable_if<
-            std::is_base_of<Element, TSubclass>::value>::type> {
-      inline void operator()(TSubclass const* x, size_t n) const {
-        return x->increase_degree_by(n);
-      }
-    };
+    using internal_value_type       = value_type;
+    using internal_const_value_type = const_value_type;
+    using internal_reference        = internal_value_type&;
+    using internal_const_reference  = internal_const_value_type&;
 
-    template <class TSubclass>
-    struct less<TSubclass*,
+    inline internal_const_value_type to_internal(const_value_type x) const {
+      return x;
+    }
+
+    // TODO The return type here is inconsistent with the other definitions of
+    // make them more systematic
+    inline const_value_type to_external(internal_const_value_type x) const {
+      return const_cast<value_type>(x);
+    }
+
+    // Value are actually pointer to memory shared with other values.
+    // Obviously, The caller should make sure that nothing is actually shared.
+    inline void internal_free(internal_const_value_type x) const {
+      delete const_cast<internal_value_type>(x);
+    }
+
+    inline void external_free(value_type x) const {
+      delete x;
+    }
+
+    inline internal_value_type
+    internal_copy(internal_const_value_type x) const {
+      return x->heap_copy();
+    }
+
+    inline value_type external_copy(internal_const_value_type x) const {
+      return x->heap_copy();
+    }
+  };
+
+  // Specialization of templates from adapters.h for classes // derived from
+  // the class Element, such as Transformation<size_t> and so on . . .
+  template <class TSubclass>
+  struct complexity<TSubclass*,
+                    typename std::enable_if<
+                        std::is_base_of<Element, TSubclass>::value>::type> {
+    inline size_t operator()(TSubclass const* x) const {
+      return x->complexity();
+    }
+  };
+
+  template <class TSubclass>
+  struct degree<TSubclass*,
                 typename std::enable_if<
                     std::is_base_of<Element, TSubclass>::value>::type> {
-      inline bool operator()(TSubclass const* x, TSubclass const* y) const {
-        return *x < *y;
-      }
-    };
+    inline size_t operator()(TSubclass const* x) const {
+      return x->degree();
+    }
+  };
 
-    template <class TSubclass>
-    struct one<TSubclass*,
-               typename std::enable_if<
-                   std::is_base_of<Element, TSubclass>::value>::type> {
-      TSubclass* operator()(Element const* x) const {
-        return new TSubclass(std::move(x->identity<TSubclass>()));
-      }
+  template <class TSubclass>
+  struct increase_degree_by<
+      TSubclass*,
+      typename std::enable_if<
+          std::is_base_of<Element, TSubclass>::value>::type> {
+    inline void operator()(TSubclass* x, size_t n) const {
+      return x->increase_degree_by(n);
+    }
+  };
 
-      TSubclass* operator()(size_t n) {
-        return new TSubclass(std::move(TSubclass::one(n)));
-      }
-    };
+  template <class TSubclass>
+  struct less<TSubclass*,
+              typename std::enable_if<
+                  std::is_base_of<Element, TSubclass>::value>::type> {
+    inline bool operator()(TSubclass const* x, TSubclass const* y) const {
+      return *x < *y;
+    }
+  };
 
-    template <class TSubclass>
-    struct product<TSubclass*,
-                   typename std::enable_if<
-                       std::is_base_of<Element, TSubclass>::value>::type> {
-      void operator()(TSubclass*       xy,
-                      TSubclass const* x,
-                      TSubclass const* y,
-                      size_t           tid = 0) {
-        xy->Element::redefine(*x, *y, tid);
-      }
-    };
+  template <class TSubclass>
+  struct one<TSubclass*,
+             typename std::enable_if<
+                 std::is_base_of<Element, TSubclass>::value>::type> {
+    TSubclass* operator()(Element const* x) const {
+      // return new TSubclass(std::move(x->identity<TSubclass>()));
+      return static_cast<TSubclass*>(x->heap_identity());
+    }
 
-    //FIXME is this used??
-    template <class TSubclass>
-    struct swap<TSubclass*,
-                typename std::enable_if<
-                    std::is_base_of<Element, TSubclass>::value>::type> {
-      void operator()(TSubclass* x, TSubclass* y) const {
-        x->swap(*y);
-      }
-    };
+    TSubclass* operator()(size_t n) {
+      return new TSubclass(std::move(TSubclass::one(n)));
+    }
+  };
 
-    template <typename TValueType>
-    struct action<Permutation<TValueType>*, TValueType> {
-      TValueType operator()(Permutation<TValueType> const* x,
-                            TValueType const               pt) {
-        return (*x)[pt];
-      }
-    };
+  template <class TSubclass>
+  struct product<TSubclass*,
+                 typename std::enable_if<
+                     std::is_base_of<Element, TSubclass>::value>::type> {
+    void operator()(TSubclass*       xy,
+                    TSubclass const* x,
+                    TSubclass const* y,
+                    size_t           tid = 0) {
+      xy->Element::redefine(*x, *y, tid);
+    }
+  };
 
-    template <typename TValueType> struct inverse<Permutation<TValueType>*> {
-      Permutation<TValueType>* operator()(Permutation<TValueType>* x) {
-        return new Permutation<TValueType>(std::move(x->inverse()));
-      }
-    };
-  }  // namespace tmp
+  // FIXME is this used??
+  template <class TSubclass>
+  struct swap<TSubclass*,
+              typename std::enable_if<
+                  std::is_base_of<Element, TSubclass>::value>::type> {
+    void operator()(TSubclass* x, TSubclass* y) const {
+      x->swap(*y);
+    }
+  };
+
+  template <typename TValueType>
+  struct action<Permutation<TValueType>*, TValueType> {
+    TValueType operator()(Permutation<TValueType> const* x,
+                          TValueType const               pt) {
+      return (*x)[pt];
+    }
+  };
+
+  template <typename TValueType> struct inverse<Permutation<TValueType>*> {
+    Permutation<TValueType>* operator()(Permutation<TValueType>* x) {
+      return new Permutation<TValueType>(std::move(x->inverse()));
+    }
+  };
 
   template <class TSubclass>
   struct hash<TSubclass,
@@ -2074,7 +2120,8 @@ namespace libsemigroups {
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from an Element pointer. This is used by various methods
   //! of the Semigroup class.
-  template <class TSubclass> struct hash<TSubclass*,
+  template <class TSubclass>
+  struct hash<TSubclass*,
               typename std::enable_if<
                   std::is_base_of<Element, TSubclass>::value>::type> {
     //! Hashes an Element given by Element pointer.

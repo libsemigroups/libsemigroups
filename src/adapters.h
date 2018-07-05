@@ -19,29 +19,27 @@
 // This file contains function templates for adapting a class for use with
 // libsemigroups.
 
-#ifndef LIBSEMIGROUPS_SRC_ELEMENT_ADAPTER_H_
-#define LIBSEMIGROUPS_SRC_ELEMENT_ADAPTER_H_
+#ifndef LIBSEMIGROUPS_SRC_ADAPTERS_H_
+#define LIBSEMIGROUPS_SRC_ADAPTERS_H_
 
 #include <type_traits>
 
 namespace libsemigroups {
-  namespace tmp {
-    template <typename TElementType, typename = void> struct complexity;
-    template <typename TElementType, typename = void> struct degree;
-    template <typename TElementType, typename = void> struct increase_degree_by;
-    template <typename TElementType, typename = void> struct less;
-    template <typename TElementType, typename = void> struct one;
-    template <typename TElementType, typename = void> struct product;
-    template <typename TElementType, typename = void> struct swap;
-    // JDM: not sure that swap is used for anything . . .
+  template <typename TElementType, typename = void> struct complexity;
+  template <typename TElementType, typename = void> struct degree;
+  template <typename TElementType, typename = void> struct increase_degree_by;
+  template <typename TElementType, typename = void> struct less;
+  template <typename TElementType, typename = void> struct one;
+  template <typename TElementType, typename = void> struct product;
+  template <typename TElementType, typename = void> struct swap;
+  // JDM: not sure that swap is used for anything . . .
 
-    template <typename TElementType, typename TPointType, typename = void>
-    struct action;
-    template <typename TElementType, typename = void> struct inverse;
+  template <typename TElementType, typename TPointType, typename = void>
+  struct action;
+  template <typename TElementType, typename = void> struct inverse;
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    template <typename TElementType, typename = void> struct empty_key;
+  template <typename TElementType, typename = void> struct empty_key;
 #endif
-  }  // namespace tmp
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_ELEMENT_ADAPTER_H_
+#endif  // LIBSEMIGROUPS_SRC_ADAPTERS_H_

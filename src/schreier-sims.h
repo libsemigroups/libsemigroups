@@ -42,7 +42,7 @@
 
 #include <array>
 
-#include "element-adapter.h"
+#include "adapters.h"
 #include "element-helper.h"
 #include "range.h"
 #include "semigroup-traits.h"
@@ -74,11 +74,11 @@ namespace libsemigroups {
     using point_type   = TPointType;
 
    private:
-    using degree  = typename tmp::degree<internal_value_type>;
-    using inverse = typename tmp::inverse<internal_value_type>;
-    using product = typename tmp::product<internal_value_type>;
-    using action  = typename tmp::action<internal_value_type, point_type>;
-    using one     = typename tmp::one<internal_value_type>;
+    using degree  = degree<internal_value_type>;
+    using inverse = inverse<internal_value_type>;
+    using product = product<internal_value_type>;
+    using action  = action<internal_value_type, point_type>;
+    using one     = one<internal_value_type>;
 
    public:
     StabChain()

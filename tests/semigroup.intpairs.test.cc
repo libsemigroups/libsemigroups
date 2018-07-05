@@ -26,7 +26,7 @@ using namespace libsemigroups;
 class IntPair {
  public:
   IntPair() : _x(0), _y(0) {}
-  IntPair(int re, int im) : _x(re), _y(im) {}
+  IntPair(int x, int y) : _x(x), _y(y) {}
 
   IntPair operator*(IntPair const& that) const {
     return IntPair(_x * that._x, _y * that._y);
@@ -40,10 +40,6 @@ class IntPair {
     return _x < that._x || (_x == that._x && _y < that._y);
   }
 
-  IntPair one() const {
-    return IntPair(1, 1);
-  }
-
   size_t hash() const {
     return _x * 17 + _y;
   }
@@ -53,7 +49,47 @@ class IntPair {
   int _y;
 };
 
+static_assert(!std::is_trivial<IntPair>::value,
+              "IntPair should be non-trivial");
+
 namespace libsemigroups {
+  template <> struct complexity<IntPair> {
+    size_t operator()(IntPair) {
+      return 0;
+    }
+  };
+
+  template <> struct degree<IntPair> {
+    size_t operator()(IntPair) {
+      return 0;
+    }
+  };
+
+  template <> struct increase_degree_by<IntPair> {
+    IntPair operator()(IntPair x) {
+      LIBSEMIGROUPS_ASSERT(false);
+      return x;
+    }
+  };
+
+  template <> struct less<IntPair> {
+    bool operator()(IntPair x, IntPair y) {
+      return x < y;
+    }
+  };
+
+  template <> struct one<IntPair> {
+    IntPair operator()(IntPair) {
+      return IntPair(1, 1);
+    }
+  };
+
+  template <> struct product<IntPair> {
+    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) {
+      xy = x * y;
+    }
+  };
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <> IntPair empty_key(IntPair) {
     return IntPair();

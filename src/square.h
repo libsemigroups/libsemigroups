@@ -129,7 +129,7 @@ namespace libsemigroups {
 
     inline typename std::array<T, N>::const_iterator cend(size_t depth) const {
       LIBSEMIGROUPS_ASSERT(depth < N);
-      return _arrays[depth].cend();;
+      return _arrays[depth].cend();
     }
 
     inline typename std::array<T, N>::iterator begin(size_t depth) {

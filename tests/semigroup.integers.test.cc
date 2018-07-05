@@ -24,12 +24,64 @@
 using namespace libsemigroups;
 
 namespace libsemigroups {
-  template <> int one(int) {
-    return 1;
-  }
-  template <> uint8_t one(uint8_t) {
-    return 1;
-  }
+  template <typename TIntegralType>
+  struct complexity<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    size_t operator()(TIntegralType) {
+      return 0;
+    }
+  };
+
+  template <typename TIntegralType>
+  struct degree<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    size_t operator()(TIntegralType) {
+      return 0;
+    }
+  };
+
+  template <typename TIntegralType>
+  struct increase_degree_by<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    TIntegralType operator()(TIntegralType x) {
+      LIBSEMIGROUPS_ASSERT(false);
+      return x;
+    }
+  };
+
+  template <typename TIntegralType>
+  struct less<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    bool operator()(TIntegralType x, TIntegralType y) {
+      return x < y;
+    }
+  };
+
+  template <typename TIntegralType>
+  struct one<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    TIntegralType operator()(TIntegralType) {
+      return 1;
+    }
+  };
+
+  template <typename TIntegralType>
+  struct product<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    void operator()(TIntegralType& xy,
+                    TIntegralType  x,
+                    TIntegralType  y,
+                    size_t = 0) {
+      xy = x * y;
+    }
+  };
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <> int empty_key(int) {
     return -1;
