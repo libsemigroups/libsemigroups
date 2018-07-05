@@ -23,10 +23,9 @@
 #ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
 #define LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
 
-#include <functional>
 #include <type_traits>
 
-#include "hash.h"
+#include "functional.h"
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {
@@ -61,7 +60,7 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementEqual = std::equal_to<TElementType>>
+            typename TElementEqual = libsemigroups::equal_to<TElementType>>
   class SemigroupTraitsEqual : public SemigroupTraits<TElementType> {
    private:
     using base = SemigroupTraits<TElementType>;
@@ -77,15 +76,27 @@ namespace libsemigroups {
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
 
+    // FIXME remove this
     inline bool equal_to(internal_const_value_type x,
                          internal_const_value_type y) const {
       return TElementEqual()(this->to_external(x), this->to_external(y));
     }
+
+    //! Provides a call operator for comparing elements of \c this
+    //!
+    //! This struct provides a call operator for comparing two elements of \c
+    //! this, provided as internal_const_value_types.
+    struct internal_equal_to : base {
+      bool operator()(internal_const_value_type x,
+                      internal_const_value_type y) const {
+        return TElementEqual()(this->to_external(x), this->to_external(y));
+      }
+    };
   };
 
   template <typename TElementType,
             typename TElementHash  = libsemigroups::hash<TElementType>,
-            typename TElementEqual = std::equal_to<TElementType>>
+            typename TElementEqual = libsemigroups::equal_to<TElementType>>
   class SemigroupTraitsHashEqual
       : public SemigroupTraitsEqual<TElementType, TElementEqual> {
    private:
@@ -102,9 +113,20 @@ namespace libsemigroups {
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
 
+    // FIXME remove this
     inline size_t hash(internal_const_value_type x) const {
       return TElementHash()(this->to_external(x));
     }
+
+    //! Provides a call operator for hashing elements of \c this
+    //!
+    //! This struct provides a call operator for hashing an element of \c this,
+    //! provided as an internal_const_value_type.
+    struct internal_hash : base {
+      size_t operator()(internal_const_value_type x) const {
+        return TElementHash{}(this->to_external(x));
+      }
+    };
   };
 
 }  // namespace libsemigroups

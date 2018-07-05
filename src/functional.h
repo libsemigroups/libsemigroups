@@ -16,17 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a class for creating ranges of integers libsemigroups.
+// This file contains TODO
 
-#ifndef LIBSEMIGROUPS_SRC_HASH_H_
-#define LIBSEMIGROUPS_SRC_HASH_H_
+#ifndef LIBSEMIGROUPS_SRC_FUNCTIONAL_H_
+#define LIBSEMIGROUPS_SRC_FUNCTIONAL_H_
 
-#include <type_traits>
+#include <functional>
+
 namespace libsemigroups {
   template <typename TValueType, typename = void> struct hash {
     size_t operator()(TValueType const& x) const {
       return std::hash<TValueType>()(x);
     }
   };
+
+  template <typename TValueType, typename = void> struct equal_to {
+    size_t operator()(TValueType const& x, TValueType const& y) const {
+      return std::equal_to<TValueType>()(x, y);
+    }
+  };
+
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_HASH_H_
+#endif  // LIBSEMIGROUPS_SRC_FUNCTIONAL_H_

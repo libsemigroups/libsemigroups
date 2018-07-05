@@ -153,7 +153,6 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
 
   std::vector<relation_t> extra;
   Congruence              cong("twosided", &S, extra);
-  REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_done());
 
   Partition<word_t>* ntc = cong.nontrivial_classes();

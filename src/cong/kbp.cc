@@ -64,7 +64,9 @@ namespace libsemigroups {
     init();
     if (!_killed) {
       REPORT("running P . . .")
-      auto p = static_cast<P<RWSE, libsemigroups::hash<RWSE>, std::equal_to<RWSE>>*>(_P_cong->cget_data());
+      auto p = static_cast<
+          P<RWSE, libsemigroups::hash<RWSE>, libsemigroups::equal_to<RWSE>>*>(
+          _P_cong->cget_data());
       LIBSEMIGROUPS_ASSERT(p != nullptr);
       p->run(steps, _killed);
     }

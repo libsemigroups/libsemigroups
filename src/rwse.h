@@ -155,6 +155,7 @@ namespace libsemigroups {
     //!
     //! Returns a pointer to a copy of \c this, which is not linked to \c this
     //! in memory.
+    // FIXME remove
     RWSE* heap_copy() const override {
       return new RWSE(*this);
     }
@@ -163,6 +164,7 @@ namespace libsemigroups {
     //!
     //! Returns a pointer to a copy of \c this->identity(), which is not linked
     //! to any other copy in memory.
+    // FIXME remove
     RWSE* heap_identity() const override {
       return this->identity().heap_copy();
     }
@@ -199,10 +201,19 @@ namespace libsemigroups {
     }
 
    private:
-    // TODO const!
     RWS*       _rws;
     rws_word_t _rws_word;
   };
+
+  namespace tmp {
+    template <>
+    struct one<RWSE*> {
+      RWSE* operator()(RWSE const* x) {
+        return new RWSE(std::move(x->identity()));
+      }
+    };
+  }  // namespace tmp
+
 }  // namespace libsemigroups
 
 namespace std {
@@ -239,8 +250,9 @@ namespace libsemigroups {
   //! Specialises the factorisation method for Semigroup's of RWSE's so that it
   //! just returns the word inside the RWSE.
   template <>
-  word_t Semigroup<RWSE, libsemigroups::hash<RWSE>, std::equal_to<RWSE>>::
-      factorisation(RWSE const& x);
+  word_t Semigroup<RWSE,
+                   libsemigroups::hash<RWSE>,
+                   libsemigroups::equal_to<RWSE>>::factorisation(RWSE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_RWSE_H_

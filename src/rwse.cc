@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <string>
 
-#include "hash.h"
+#include "functional.h"
 
 namespace libsemigroups {
   //! Returns a libsemigroups::word_t which evaluates to \p x.
@@ -29,7 +29,8 @@ namespace libsemigroups {
   //! Specialises the factorisation method for Semigroup's of RWSE's so that it
   //! just returns the word inside the RWSE.
   template <>
-  word_t Semigroup<RWSE, libsemigroups::hash<RWSE>, std::equal_to<RWSE>>::
+  word_t
+  Semigroup<RWSE, libsemigroups::hash<RWSE>, libsemigroups::equal_to<RWSE>>::
       factorisation(RWSE const& x) {
     return RWS::rws_word_to_word(x.get_rws_word());
   }

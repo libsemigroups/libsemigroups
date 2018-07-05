@@ -53,7 +53,7 @@ namespace libsemigroups {
             typename TPointType    = typename SmallestInteger<N>::type,
             typename TElementType  = typename Perm<N>::type,
             typename TDomainType   = IntegralRange<TPointType, 0, N>,
-            typename TElementEqual = std::equal_to<TElementType>,
+            typename TElementEqual = libsemigroups::equal_to<TElementType>,
             class Traits = SemigroupTraitsEqual<TElementType, TElementEqual>>
   class StabChain : private Traits {
     using value_type       = typename Traits::value_type;

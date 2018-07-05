@@ -24,7 +24,6 @@
 #include <math.h>
 
 #include <algorithm>
-#include <functional>
 #include <numeric>
 #include <string>
 #include <unordered_set>
@@ -32,7 +31,7 @@
 
 #include "blocks.h"
 #include "element-adapter.h"
-#include "hash.h"
+#include "functional.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
 #include "recvec.h"
@@ -2004,7 +2003,7 @@ namespace libsemigroups {
     struct less<TSubclass*,
                 typename std::enable_if<
                     std::is_base_of<Element, TSubclass>::value>::type> {
-      inline void operator()(TSubclass const* x, TSubclass const* y) const {
+      inline bool operator()(TSubclass const* x, TSubclass const* y) const {
         return *x < *y;
       }
     };
@@ -2013,7 +2012,7 @@ namespace libsemigroups {
     struct one<TSubclass*,
                typename std::enable_if<
                    std::is_base_of<Element, TSubclass>::value>::type> {
-      TSubclass* operator()(Element const* x) {
+      TSubclass* operator()(Element const* x) const {
         return new TSubclass(std::move(x->identity<TSubclass>()));
       }
 
@@ -2034,6 +2033,7 @@ namespace libsemigroups {
       }
     };
 
+    //FIXME is this used??
     template <class TSubclass>
     struct swap<TSubclass*,
                 typename std::enable_if<
@@ -2074,54 +2074,30 @@ namespace libsemigroups {
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from an Element pointer. This is used by various methods
   //! of the Semigroup class.
-  template <> struct hash<libsemigroups::Element*> {
+  template <class TSubclass> struct hash<TSubclass*,
+              typename std::enable_if<
+                  std::is_base_of<Element, TSubclass>::value>::type> {
     //! Hashes an Element given by Element pointer.
-    size_t operator()(libsemigroups::Element* x) const {
+    size_t operator()(TSubclass const* x) const {
       return x->hash_value();
     }
   };
 
-  //! Provides a call operator returning a hash value for a const Element
-  //! via a pointer.
-  //!
-  //! This struct provides a call operator for obtaining a hash value for the
-  //! Element from a const Element pointer. This is used by various methods
-  //! of the Semigroup class.
-  template <> struct hash<libsemigroups::Element const*> {
-    //! Hashes an Element given by const Element pointer.
-    size_t operator()(libsemigroups::Element const* x) const {
-      return x->hash_value();
-    }
-  };
-}  // namespace libsemigroups
-
-namespace std {
   //! Provides a call operator for comparing Elements via pointers.
   //!
   //! This struct provides a call operator for comparing Element
   //! pointers (by comparing the Element objects they point to). This is used
   //! by various methods of the Semigroup class.
-  template <> struct equal_to<libsemigroups::Element*> {
-    //! Tests equality of two Element pointers via equality of the Elements they
-    //! point to.
-    bool operator()(libsemigroups::Element* x,
-                    libsemigroups::Element* y) const {
-      return *x == *y;
-    }
-  };
-
-  //! Provides a call operator for comparing const Elements via pointers.
-  //!
-  //! This struct provides a call operator for comparing const Element
-  //! pointers (by comparing the Element objects they point to). This is used
-  //! by various methods of the Semigroup class.
-  template <> struct equal_to<libsemigroups::Element const*> {
+  template <class TSubclass>
+  struct equal_to<
+      TSubclass*,
+      typename std::enable_if<
+          std::is_base_of<libsemigroups::Element, TSubclass>::value>::type> {
     //! Tests equality of two const Element pointers via equality of the
     //! Elements they point to.
-    bool operator()(libsemigroups::Element const* x,
-                    libsemigroups::Element const* y) const {
+    bool operator()(TSubclass const* x, TSubclass const* y) const {
       return *x == *y;
     }
   };
-}  // namespace std
+}  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_ELEMENT_H_

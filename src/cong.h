@@ -411,7 +411,7 @@ namespace libsemigroups {
     //! defined.
     template <typename TElementType  = Element const*,
               typename TElementHash  = libsemigroups::hash<TElementType>,
-              typename TElementEqual = std::equal_to<TElementType>>
+              typename TElementEqual = libsemigroups::equal_to<TElementType>>
     void force_p() {
       LIBSEMIGROUPS_ASSERT(_semigroup != nullptr);
       delete_data();
