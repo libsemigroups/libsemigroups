@@ -643,9 +643,6 @@ namespace libsemigroups {
 
       using product = product<internal_value_type>;
 
-      static_assert(std::is_trivial<internal_value_type>::value,
-                    "internal_value_type must be trivial");
-
      public:
       explicit P(Congruence& cong)
           : DATA(cong, 2000, 40000),
@@ -661,9 +658,10 @@ namespace libsemigroups {
             _tmp1(),
             _tmp2() {
         LIBSEMIGROUPS_ASSERT(cong._semigroup != nullptr);
-
+        // FIXME all the static_cast's of the form below must include all 3
+        // template parameters, not just the first.
         auto semigroup = static_cast<Semigroup<TElementType>*>(cong._semigroup);
-        _tmp1 = this->internal_copy(this->to_internal(semigroup->gens(0)));
+        _tmp1 = this->internal_copy(this->to_internal_const(semigroup->gens(0)));
         _tmp2 = this->internal_copy(_tmp1);
 
         // Set up _pairs_to_mult
@@ -678,12 +676,12 @@ namespace libsemigroups {
 
       void delete_tmp_storage() {
         std::unordered_set<
-            std::pair<internal_const_value_type, internal_const_value_type>,
+            std::pair<internal_value_type, internal_value_type>,
             PHash,
             PEqual>()
             .swap(_found_pairs);
         std::queue<
-            std::pair<internal_const_value_type, internal_const_value_type>>()
+            std::pair<internal_value_type, internal_value_type>>()
             .swap(_pairs_to_mult);
       }
 
@@ -691,12 +689,12 @@ namespace libsemigroups {
         delete_tmp_storage();
         this->internal_free(_tmp1);
         this->internal_free(_tmp2);
-        for (auto& x : _map) {  // TODO check type
+        for (auto& x : _map) {
           this->internal_free(x.first);
         }
       }
 
-      bool is_done() const final {
+      bool is_done() const final { // TODO noexcept
         return _done;
       }
 
@@ -770,9 +768,8 @@ namespace libsemigroups {
         size_t tid = REPORTER.thread_id(std::this_thread::get_id());
         while (!_pairs_to_mult.empty()) {
           // Get the next pair
-          std::pair<internal_const_value_type, internal_const_value_type>
-              current_pair = _pairs_to_mult.front();
-
+          auto current_pair = _pairs_to_mult.front();
+          // TODO can the previous be auto&, or does the pop make this UB?
           _pairs_to_mult.pop();
 
           // Add its left and/or right multiples
@@ -781,15 +778,15 @@ namespace libsemigroups {
           for (size_t i = 0; i < this->_cong._nrgens; i++) {
             const_reference gen = semigroup->gens(i);
             if (this->_cong._type == LEFT || this->_cong._type == TWOSIDED) {
-              product()(_tmp1, this->to_internal(gen), current_pair.first, tid);
+              product()(_tmp1, this->to_internal_const(gen), current_pair.first, tid);
               product()(
-                  _tmp2, this->to_internal(gen), current_pair.second, tid);
+                  _tmp2, this->to_internal_const(gen), current_pair.second, tid);
               add_pair(_tmp1, _tmp2);
             }
             if (this->_cong._type == RIGHT || this->_cong._type == TWOSIDED) {
-              product()(_tmp1, current_pair.first, this->to_internal(gen), tid);
+              product()(_tmp1, current_pair.first, this->to_internal_const(gen), tid);
               product()(
-                  _tmp2, current_pair.second, this->to_internal(gen), tid);
+                  _tmp2, current_pair.second, this->to_internal_const(gen), tid);
               add_pair(_tmp1, _tmp2);
             }
           }
@@ -875,9 +872,9 @@ namespace libsemigroups {
 
       void add_pair(internal_const_value_type x, internal_const_value_type y) {
         if (!internal_equal_to()(x, y)) {
-          internal_const_value_type xx, yy;
-          bool                      xx_new = false, yy_new = false;
-          size_t                    i, j;
+          internal_value_type xx, yy;
+          bool                xx_new = false, yy_new = false;
+          size_t              i, j;
 
           auto it_x = _map.find(x);
           if (it_x == _map.end()) {
@@ -896,16 +893,18 @@ namespace libsemigroups {
           } else {
             j = it_y->second;
           }
-
+          // TODO avoid unnecessary copying in the next block
           LIBSEMIGROUPS_ASSERT(i != j);
-          std::pair<internal_const_value_type, internal_const_value_type> pair;
+          std::pair<internal_value_type, internal_value_type> pair;
           if (xx_new || yy_new) {  // it's a new pair
-            xx   = (xx_new ? xx : it_x->first);
-            yy   = (yy_new ? yy : it_y->first);
+            xx   = internal_value_type(xx_new ? xx : it_x->first);
+            yy   = internal_value_type(yy_new ? yy : it_y->first);
             pair = (i < j ? std::make_pair(xx, yy) : std::make_pair(yy, xx));
           } else {
-            pair = (i < j ? std::make_pair(it_x->first, it_y->first)
-                          : std::make_pair(it_y->first, it_x->first));
+            pair = (i < j ? std::make_pair(internal_value_type(it_x->first),
+                                           internal_value_type(it_y->first))
+                          : std::make_pair(internal_value_type(it_y->first),
+                                           internal_value_type(it_x->first)));
             if (_found_pairs.find(pair) != _found_pairs.end()) {
               return;
             }
@@ -924,7 +923,7 @@ namespace libsemigroups {
         return it->second;
       }
 
-      size_t add_index(internal_const_value_type x) {
+      size_t add_index(internal_value_type x) {
         LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
         LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
         _map.emplace(x, _map_next);
@@ -939,7 +938,7 @@ namespace libsemigroups {
       std::vector<class_index_t> _class_lookup;
       bool                       _done;
       std::unordered_set<
-          std::pair<internal_const_value_type, internal_const_value_type>,
+          std::pair<internal_value_type, internal_value_type>,
           PHash,
           PEqual>
           _found_pairs;
@@ -953,12 +952,11 @@ namespace libsemigroups {
       class_index_t _next_class;
       size_t        _nr_nontrivial_classes;
       size_t        _nr_nontrivial_elms;
-      std::queue<
-          std::pair<internal_const_value_type, internal_const_value_type>>
-                                             _pairs_to_mult;
-      std::vector<internal_const_value_type> _reverse_map;
-      internal_value_type                    _tmp1;
-      internal_value_type                    _tmp2;
+      std::queue<std::pair<internal_value_type, internal_value_type>>
+                                       _pairs_to_mult;
+      std::vector<internal_value_type> _reverse_map;
+      internal_value_type              _tmp1;
+      internal_value_type              _tmp2;
     };
 
     // This deletes all DATA objects stored in this congruence, including

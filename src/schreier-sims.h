@@ -112,7 +112,7 @@ namespace libsemigroups {
         throw LibsemigroupsException(
             "StabChain::add_generator: the degree of the generator must be "
             + to_string(N) + ", not "
-            + to_string(degree()(this->to_internal(x))));
+            + to_string(degree()(this->to_internal_const(x))));
       } else if (!contains(x)) {
         _finished = false;
         _strong_gens.push_back(0, this->internal_copy(_tmp_element2));
@@ -164,10 +164,10 @@ namespace libsemigroups {
         throw LibsemigroupsException(
             "StabChain::sift: the degree of the generator must be "
             + to_string(N) + ", not "
-            + to_string(degree()(this->to_internal(x))));
+            + to_string(degree()(this->to_internal_const(x))));
       }
       // Do not call schreier_sims, sifts in the current StabChain!
-      internal_value_type cpy = this->internal_copy(this->to_internal(x));
+      internal_value_type cpy = this->internal_copy(this->to_internal_const(x));
       std::swap(cpy, _tmp_element2);
       this->internal_free(cpy);
       internal_sift();  // changes _tmp_element2 in place
@@ -179,7 +179,7 @@ namespace libsemigroups {
         return false;
       }
       schreier_sims();
-      internal_value_type cpy = this->internal_copy(this->to_internal(x));
+      internal_value_type cpy = this->internal_copy(this->to_internal_const(x));
       std::swap(cpy, _tmp_element2);
       this->internal_free(cpy);
       internal_sift();  // changes _tmp_element2 in place
@@ -262,7 +262,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI
           std::is_same<HPCombi::Perm16, value_type>::value ||
 #endif
-          degree()(this->to_internal(x)) == N;
+          degree()(this->to_internal_const(x)) == N;
     }
 
     void internal_add_base_point(point_type const pt) {

@@ -39,11 +39,19 @@ namespace libsemigroups {
     using internal_reference        = reference;
     using internal_const_reference  = const_reference;
 
-    inline internal_const_reference to_internal(const_reference x) const {
+    inline internal_const_reference to_internal_const(const_reference x) const {
       return x;
     }
 
-    inline const_reference to_external(internal_const_reference x) const {
+    inline internal_reference to_internal(reference x) const {
+      return x;
+    }
+
+    inline const_reference to_external_const(internal_const_reference x) const {
+      return x;
+    }
+
+    inline reference to_external(internal_reference x) const {
       return x;
     }
 
@@ -83,7 +91,8 @@ namespace libsemigroups {
     struct internal_equal_to : base {
       bool operator()(internal_const_value_type x,
                       internal_const_value_type y) const {
-        return TElementEqual()(this->to_external(x), this->to_external(y));
+        return TElementEqual()(this->to_external_const(x),
+                               this->to_external_const(y));
       }
     };
   };
@@ -113,7 +122,7 @@ namespace libsemigroups {
     //! provided as an internal_const_value_type.
     struct internal_hash : base {
       size_t operator()(internal_const_value_type x) const {
-        return TElementHash{}(this->to_external(x));
+        return TElementHash()(this->to_external_const(x));
       }
     };
   };

@@ -78,10 +78,17 @@ TEST_CASE("Semigroup 081: Exception: word_to_pos",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens);
+  auto& UNDEFINED = Semigroup<>::UNDEFINED;
 
   REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
+  REQUIRE(T.word_to_pos({0, 0, 1, 1}) == UNDEFINED);
+  REQUIRE(T.current_position(T.word_to_element({0, 0, 1, 1})) == UNDEFINED);
   REQUIRE_THROWS_AS(T.word_to_pos({0, 0, 1, 2}), LibsemigroupsException);
+
+  REQUIRE(T.size() == 13);
+  REQUIRE(T.word_to_pos({0, 0, 1, 1}) == 6);
+  REQUIRE(T.current_position(T.word_to_element({0, 0, 1, 1})) == 6);
 
   std::vector<Element*> gens2
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),

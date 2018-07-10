@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2016 James D. Mitchell
+// Copyright (C) 2016-18 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -83,6 +83,10 @@ namespace libsemigroups {
     using internal_value_type = typename TTraits::internal_value_type;
     using internal_const_value_type =
         typename TTraits::internal_const_value_type;
+    using internal_reference =
+        typename TTraits::internal_value_type;
+    using internal_const_reference =
+        typename TTraits::internal_const_value_type;
 
     using internal_equal_to = typename TTraits::internal_equal_to;
     using internal_hash     = typename TTraits::internal_hash;
@@ -93,6 +97,7 @@ namespace libsemigroups {
     using less               = less<internal_value_type>;
     using one                = one<internal_value_type>;
     using product            = product<internal_value_type>;
+    using swap               = swap<internal_value_type>;
 
     // static_assert(std::is_trivial<internal_value_type>::value,
     //              "internal_value_type must be trivial");
@@ -135,7 +140,7 @@ namespace libsemigroups {
     //!
     //! 1. there must be at least one generator
     //! 2. the generators must have equal degree Element::degree
-    //!
+    //  FIXME remove Element::degree from previous line
     //! if either of these points is not satisfied, then a
     //! LibsemigroupsException will be thrown.
     //!
@@ -188,25 +193,22 @@ namespace libsemigroups {
       _nr_products = 0;
 #endif
       _right.set_default_value(UNDEFINED);
-      // FIXME inclusion of the next line makes test Semigroup 72 extremely
-      // slow (~50ms to ~10s!!!!)
+      // FIXME inclusion of the next line makes test Semigroup of BMats 01
+      // extremely slow (~50ms to ~10s!!!!)
       // reserve(_nrgens);
-
-      _degree = internal_degree()(this->to_internal((*gens)[0]));
+      _degree = internal_degree()(this->to_internal_const((*gens)[0]));
 
       for (size_t i = 0; i < _nrgens; ++i) {
-        element_index_t degree
-            = internal_degree()(this->to_internal((*gens)[i]));
+        size_t degree = internal_degree()(this->to_internal_const((*gens)[i]));
         if (degree != _degree) {
-          for (auto& x : _gens) {
-            this->internal_free(x);
-          }
           throw LibsemigroupsException(
               "Semigroup::Semigroup: generator " + libsemigroups::to_string(i)
               + " has degree " + libsemigroups::to_string(degree)
               + " but should have degree " + libsemigroups::to_string(_degree));
         }
-        _gens.push_back(this->internal_copy(this->to_internal((*gens)[i])));
+      }
+      for (auto const& x : *gens) {
+        _gens.push_back(this->internal_copy(this->to_internal_const(x)));
       }
 
       _tmp_product = one()(_gens[0]);
@@ -223,7 +225,7 @@ namespace libsemigroups {
         if (it != _map.end()) {  // duplicate generator
           _letter_to_pos.push_back(it->second);
           _nrrules++;
-          _duplicate_gens.push_back(std::make_pair(i, _first[it->second]));
+          _duplicate_gens.emplace_back(i, _first[it->second]);
           // i.e. _gens[i] = _gens[_first[it->second]]
           // _first maps from element_index_t -> letter_t :)
         } else {
@@ -296,7 +298,7 @@ namespace libsemigroups {
           _relation_gen(S._relation_gen),
           _relation_pos(S._relation_pos),
           _right(S._right),
-          _sorted(),  // TODO(JDM) S this if set
+          _sorted(),  // TODO S this if set
           _suffix(S._suffix),
           _wordlen(S._wordlen) {
 #ifdef LIBSEMIGROUPS_STATS
@@ -313,9 +315,8 @@ namespace libsemigroups {
       _tmp_product = this->internal_copy(S._id);
 
       element_index_t i = 0;
-      for (internal_const_value_type x : S._elements) {
-        // TODO could be internal_const_reference
-        internal_value_type y = this->internal_copy(x);
+      for (auto const& x : S._elements) {
+        auto y = this->internal_copy(x);
         _elements.push_back(y);
         _map.emplace(y, i++);
       }
@@ -372,7 +373,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(internal_degree()(coll->at(0)) >= S.degree());
 
 #ifdef LIBSEMIGROUPS_DEBUG
-      for (TElementType const& x : *coll) {
+      for (auto const& x : *coll) {
         LIBSEMIGROUPS_ASSERT(internal_degree()(x)
                              == internal_degree()((*coll)[0]));
       }
@@ -423,8 +424,8 @@ namespace libsemigroups {
 #endif
 
       element_index_t i = 0;
-      for (internal_const_value_type x : S._elements) {
-        internal_value_type y = this->internal_copy(x);
+      for (internal_const_reference x : S._elements) {
+        auto y = this->internal_copy(x);
         increase_degree_by()(y, deg_plus);
         _elements.push_back(y);
         _map.emplace(y, i);
@@ -441,10 +442,10 @@ namespace libsemigroups {
       this->internal_free(_id);
 
       // delete those generators not in _elements, i.e. the duplicate ones
-      for (std::pair<letter_t, letter_t>& x : _duplicate_gens) {
+      for (auto& x : _duplicate_gens) {
         this->internal_free(_gens[x.first]);
       }
-      for (internal_value_type x : _elements) {
+      for (internal_reference x : _elements) {
         this->internal_free(x);
       }
     }
@@ -455,9 +456,13 @@ namespace libsemigroups {
     //! The parameter \p w must consist of non-negative integers less than
     //! Semigroup::nrgens, or a LibsemigroupsException will be thrown.
     //! This method returns the position in \c this of the element obtained by
-    //! evaluating \p w. This is equivalent to finding the product \c x of the
-    //! generators Semigroup::gens(\c w[i]) and then calling Semigroup::position
-    //! with argument \c x.
+    //! evaluating \p w. This method does not perform any enumeration of the
+    //! semigroup, and will return UNDEFINED if the position of the element of
+    //! \c this corresponding to \p w cannot be determined.
+    //!
+    //! This is equivalent to finding the product \c x of the
+    //! generators Semigroup::gens(\c w[i]) and then calling
+    //! Semigroup::position_current with argument \c x.
     //!
     //! \sa Semigroup::word_to_element.
     element_index_t word_to_pos(word_t const& w) const override {
@@ -466,60 +471,50 @@ namespace libsemigroups {
         throw LibsemigroupsException(
             "Semigroup::word_to_pos: the word given has length 0");
       }
-      if (w.size() == 1) {
-        return letter_to_pos(w[0]);
-      }
-      element_index_t out = letter_to_pos(w[0]);
-      for (auto it = w.begin() + 1; it < w.end(); it++) {
-        if (*it >= nrgens()) {
+      for (auto x : w) {
+        if (x >= nrgens()) {
           throw LibsemigroupsException(
               "Semigroup::word_to_pos: word contains "
-              + libsemigroups::to_string(*it) + " but the semigroup only has "
+              + libsemigroups::to_string(x) + " but the semigroup only has "
               + libsemigroups::to_string(nrgens()) + " generators");
         }
-        out = fast_product(out, letter_to_pos(*it));
+      }
+      element_index_t out = _letter_to_pos[w[0]];
+      for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
+        out = _right.get(out, _letter_to_pos[*it]);
       }
       return out;
     }
 
-    //! Returns a pointer to the element of \c this represented by the word
+    //! Returns a copy of the element of \c this represented by the word
     //! \p w.
     //!
     //! The parameter \p w must consist of non-negative integers less than
     //! Semigroup::nrgens, or a LibsemigroupsException will be thrown.
-    //! This method returns a pointer to the element of \c this obtained by
+    //! This method returns a copy of the element of \c this obtained by
     //! evaluating \p w. This is equivalent to finding the product \c x of the
     //! generators Semigroup::gens(\c w[i]).
     //!
     //! \sa Semigroup::word_to_pos.
     value_type word_to_element(word_t const& w) const {
-      if (w.size() == 0) {
-        throw LibsemigroupsException(
-            "Semigroup::word_to_element: the word given has length 0");
-      }
-      if (is_done() || w.size() == 1) {
+      element_index_t pos = word_to_pos(w);
+      if (pos != UNDEFINED) {
         // Return a copy
-        return this->external_copy(_elements[word_to_pos(w)]);
+        return this->external_copy(_elements[pos]);
       }
-      // TODO we could trace the right/left Cayley graph as far as possible,
-      // i.e. do a partial fast_product
-      internal_value_type prod = this->internal_copy(_tmp_product);
-      product()(prod, _gens[w[0]], _gens[w[1]]);
+      // word_to_pos is always known for generators (i.e. when w.size() == 1),
+      // and word_to_pos verifies that w is valid.
+      LIBSEMIGROUPS_ASSERT(w.size() > 1);
+      LIBSEMIGROUPS_ASSERT(w[0] < nrgens() && w[1] < nrgens());
+      value_type prod = this->external_copy(_tmp_product);
+      product()(this->to_internal(prod), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
-        if (*it >= nrgens()) {
-          this->internal_free(prod);
-          throw LibsemigroupsException(
-              "Semigroup::word_to_element: word contains "
-              + libsemigroups::to_string(*it) + " but the semigroup only has "
-              + libsemigroups::to_string(nrgens()) + " generators");
-        }
-        std::swap(_tmp_product, prod);
-        product()(prod, _tmp_product, _gens[*it]);
+        LIBSEMIGROUPS_ASSERT(*it < nrgens());
+        swap()(_tmp_product, this->to_internal(prod));
+        product()(this->to_internal(prod), _tmp_product, _gens[*it]);
       }
-      value_type ret = this->external_copy(prod);
-      this->internal_free(prod);
-      return ret;
-    }
+      return prod;
+    } //HERE
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
@@ -551,8 +546,8 @@ namespace libsemigroups {
     //! Returns a const reference to the generator with index \p pos.
     //!
     //! If \p pos is not less than Semigroup::nrgens(), a
-    //! LibsemigroupsException will be thrown. Note that Semigroup::gens(pos) is
-    //! in general in general not in position \p pos in the semigroup, i.e.
+    //! LibsemigroupsException will be thrown. Note that Semigroup::gens(pos)
+    //! is in general in general not in position \p pos in the semigroup, i.e.
     //! is not equal to Semigroup::at(pos).
     const_reference gens(letter_t pos) const {
       if (pos >= nrgens()) {
@@ -561,7 +556,7 @@ namespace libsemigroups {
             + " but there are only " + libsemigroups::to_string(nrgens())
             + " generators");
       }
-      return this->to_external(_gens[pos]);
+      return this->to_external_const(_gens[pos]);
     }
 
     //! Returns \c true if the semigroup is fully enumerated and \c false if
@@ -592,11 +587,11 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::position and Semigroup::sorted_position.
     element_index_t current_position(const_reference x) const {
-      if (internal_degree()(x) != _degree) {
+      if (internal_degree()(this->to_internal_const(x)) != _degree) {
         return UNDEFINED;
       }
 
-      auto it = _map.find(this->to_internal(x));
+      auto it = _map.find(this->to_internal_const(x));
       return (it == _map.end() ? UNDEFINED : it->second);
     }
 
@@ -937,12 +932,12 @@ namespace libsemigroups {
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
     element_index_t position(const_value_type x) {
-      if (internal_degree()(this->to_internal(x)) != _degree) {
+      if (internal_degree()(this->to_internal_const(x)) != _degree) {
         return UNDEFINED;
       }
 
       while (true) {
-        auto it = _map.find(this->to_internal(x));
+        auto it = _map.find(this->to_internal_const(x));
         if (it != _map.end()) {
           return it->second;
         }
@@ -979,27 +974,27 @@ namespace libsemigroups {
     //! This method attempts to enumerate the semigroup until at least
     //! \c pos + 1 elements have been found. If \p pos is greater than
     //! Semigroup::size, then this method returns \c nullptr.
-    TElementType at(element_index_t pos) {
+    const_reference at(element_index_t pos) {
       enumerate(pos + 1);
-      return this->to_external(_elements.at(pos));
+      return this->to_external_const(_elements.at(pos));
     }
 
     //! Returns the element of the semigroup in position \p pos.
     //!
     //! This method performs no checks on its argument, and performs no
     //! enumeration of the semigroup.
-    TElementType operator[](element_index_t pos) const {
+    const_reference operator[](element_index_t pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _elements.size());
-      return this->to_external(_elements[pos]);
+      return this->to_external_const(_elements[pos]);
     }
 
     //! Returns the element of the semigroup in position \p pos of the sorted
     //! array of elements, or \c nullptr in \p pos is not valid (i.e. too big).
     //!
     //! This method fully enumerates the semigroup.
-    TElementType sorted_at(element_index_t pos) {
+    const_reference sorted_at(element_index_t pos) {
       init_sorted();
-      return this->to_external(_sorted.at(pos).first);
+      return this->to_external_const(_sorted.at(pos).first);
     }
 
     //! Returns the index of the product of the element in position \p i with
@@ -1434,7 +1429,7 @@ namespace libsemigroups {
         return;
       }
       for (auto it = coll.begin(); it < coll.end(); ++it) {
-        element_index_t degree = internal_degree()(this->to_internal(*it));
+        element_index_t degree = internal_degree()(this->to_internal_const(*it));
         if (degree != _degree) {
           throw LibsemigroupsException(
               "Semigroup::add_generators: new generator "
@@ -1465,9 +1460,9 @@ namespace libsemigroups {
 
       // add the new generators to new _gens, _elements, and _enumerate_order
       for (const_reference x : coll) {
-        auto it = _map.find(this->to_internal(x));
+        auto it = _map.find(this->to_internal_const(x));
         if (it == _map.end()) {  // new generator
-          _gens.push_back(this->internal_copy(this->to_internal(x)));
+          _gens.push_back(this->internal_copy(this->to_internal_const(x)));
           _elements.push_back(_gens.back());
           _map.emplace(_gens.back(), _nr);
 
@@ -1477,13 +1472,13 @@ namespace libsemigroups {
           _letter_to_pos.push_back(_nr);
           _enumerate_order.push_back(_nr);
 
-          is_one(this->to_internal(x), _nr);
+          is_one(this->to_internal_const(x), _nr);
           _prefix.push_back(UNDEFINED);
           _suffix.push_back(UNDEFINED);
           _length.push_back(1);
           _nr++;
         } else if (_letter_to_pos[_first[it->second]] == it->second) {
-          _gens.push_back(this->internal_copy(this->to_internal(x)));
+          _gens.push_back(this->internal_copy(this->to_internal_const(x)));
           // x is one of the existing generators
           _duplicate_gens.push_back(
               std::make_pair(_gens.size() - 1, _first[it->second]));
@@ -1738,21 +1733,18 @@ namespace libsemigroups {
     }
 
    private:
-    template <typename T, class C> class iterator_base {
+    template <typename TWrappedItemType, class TMethodsType>
+    class iterator_base {
      public:
-      typedef typename std::vector<TElementType>::size_type  size_type;
-      typedef typename std::vector<T>::difference_type       difference_type;
-      typedef typename std::vector<TElementType>::value_type value_type;
-      // FIXME Florent : Move that logic in eltcont.h
-      using iterated_value =
-          typename std::conditional<std::is_trivial<value_type>::value,
-                                    const_value_type,
-                                    const_reference>::type;
-      typedef iterated_value                                    reference;
-      typedef typename std::vector<TElementType>::const_pointer pointer;
+      typedef typename std::vector<value_type>::size_type       size_type;
+      typedef typename std::vector<value_type>::difference_type difference_type;
+      typedef typename std::vector<value_type>::value_type      value_type;
+      typedef const_reference                                   reference;
+      typedef typename std::vector<value_type>::const_pointer   pointer;
       typedef std::random_access_iterator_tag iterator_category;
 
-      explicit iterator_base(typename std::vector<T>::const_iterator it_vec)
+      explicit iterator_base(
+          typename std::vector<TWrappedItemType>::const_iterator it_vec)
           : _it_vec(it_vec) {}
 
       iterator_base(iterator_base const& that) : iterator_base(that._it_vec) {}
@@ -1843,66 +1835,52 @@ namespace libsemigroups {
         return _it_vec - that._it_vec;
       }
 
-      iterated_value operator*() const {
-        return _methods.indirection(_it_vec);
+      const_reference operator*() const {
+        return TMethodsType().indirection(_it_vec);
       }
 
       pointer operator->() const {
-        return _methods.addressof(_it_vec);
+        return TMethodsType().addressof(_it_vec);
       }
 
      protected:
-      typename std::vector<T>::const_iterator _it_vec;
-      static C const                          _methods;
+      typename std::vector<TWrappedItemType>::const_iterator _it_vec;
     };  // iterator_base definition ends
 
-    struct IteratorMethods : private TTraits {
-      IteratorMethods() {}
-      // FIXME Florent : Move that logic in eltcont.h
-      using iterated_value =
-          typename std::conditional<std::is_trivial<value_type>::value,
-                                    const_value_type,
-                                    const_reference>::type;
+    struct iterator_methods : private TTraits {
+      using wrapped_iterator =
+          typename std::vector<internal_value_type>::const_iterator;
 
-      iterated_value indirection(
-          typename std::vector<internal_value_type>::const_iterator it) const {
-        return this->to_external(*it);
+      const_reference indirection(wrapped_iterator it) const {
+        return this->to_external_const(*it);
       }
 
-      typename std::vector<TElementType>::const_pointer addressof(
-          typename std::vector<internal_value_type>::const_iterator it) const {
-        return &(this->to_external(*it));
+      typename std::vector<value_type>::const_pointer
+      addressof(wrapped_iterator it) const {
+        return &(this->to_external_const(*it));
       }
     };
 
-    struct IteratorMethodsPairFirst : private TTraits {
-      using iterated_value =
-          typename std::conditional<std::is_trivial<value_type>::value,
-                                    const_value_type,
-                                    const_reference>::type;
+    struct iterator_methods_pair_first : private TTraits {
+      using wrapped_iterator = typename std::vector<
+        std::pair<internal_value_type, element_index_t>>::const_iterator;
 
-      IteratorMethodsPairFirst() {}
-      iterated_value indirection(
-          typename std::vector<
-              std::pair<internal_value_type, element_index_t>>::const_iterator
-              it) const {
-        return this->to_external((*it).first);
+      const_reference indirection(wrapped_iterator it) const {
+        return this->to_external_const((*it).first);
       }
 
-      typename std::vector<TElementType>::const_pointer
-      addressof(typename std::vector<
-                std::pair<internal_value_type, element_index_t>>::const_iterator
-                    it) const {
-        return &(this->to_external((*it).first));
+      typename std::vector<value_type>::const_pointer
+      addressof(wrapped_iterator it) const {
+        return &(this->to_external_const((*it).first));
       }
     };
 
    public:
     //! A type for const iterators through the elements of \c this.
-    typedef iterator_base<internal_value_type, IteratorMethods> const_iterator;
+    typedef iterator_base<internal_value_type, iterator_methods> const_iterator;
     //! A type for const iterators through (element, index) pairs of \c this.
     typedef iterator_base<std::pair<internal_value_type, element_index_t>,
-                          IteratorMethodsPairFirst>
+                          iterator_methods_pair_first>
         const_iterator_pair_first;
     //! A type for const reverse iterators through the elements of \c this.
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -2397,15 +2375,6 @@ namespace libsemigroups {
     size_t _nr_products;
 #endif
   };
-
-  template <typename TElementType,
-            typename TElementHash,
-            typename TElementEqual,
-            class TTraits>
-  template <typename T, typename C>
-  C const Semigroup<TElementType, TElementHash, TElementEqual, TTraits>::
-      iterator_base<T, C>::_methods;
-
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_H_

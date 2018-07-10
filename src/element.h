@@ -1934,15 +1934,23 @@ namespace libsemigroups {
     using const_reference  = TElementType const&;
 
     using internal_value_type       = TElementType*;
-    using internal_const_value_type = TElementType const*;
+    using internal_const_value_type = TElementType const* const;
     using internal_reference        = internal_value_type&;
     using internal_const_reference  = internal_const_value_type&;
 
-    inline internal_const_value_type to_internal(const_reference x) const {
+    inline internal_const_value_type to_internal_const(const_reference x) const {
       return &x;
     }
 
-    inline const_reference to_external(internal_const_value_type x) const {
+    inline internal_value_type to_internal(reference x) const {
+      return &x;
+    }
+
+    inline const_reference to_external_const(internal_const_value_type x) const {
+      return *x;
+    }
+
+    inline reference to_external(internal_value_type x) const {
       return *x;
     }
 
@@ -1950,6 +1958,7 @@ namespace libsemigroups {
     // part. Obviously, The caller should make sure that nothing is actually
     // shared.
     inline void internal_free(internal_const_value_type x) const {
+      // FIXME remove const_cast
       delete const_cast<internal_value_type>(x);
     }
 
@@ -1976,7 +1985,7 @@ namespace libsemigroups {
           std::is_same<TElementType, Element*>::value
           || std::is_same<TElementType, Element const*>::value>::type> {
     using value_type       = Element*;
-    using const_value_type = Element const*;
+    using const_value_type = Element const* const;
     using reference        = value_type;
     using const_reference  = const_value_type;
 
@@ -1985,19 +1994,28 @@ namespace libsemigroups {
     using internal_reference        = internal_value_type&;
     using internal_const_reference  = internal_const_value_type&;
 
-    inline internal_const_value_type to_internal(const_value_type x) const {
+    inline internal_const_value_type
+    to_internal_const(const_value_type x) const {
       return x;
     }
 
-    // TODO The return type here is inconsistent with the other definitions of
-    // make them more systematic
-    inline const_value_type to_external(internal_const_value_type x) const {
+    inline internal_value_type to_internal(value_type x) const {
+      return x;
+    }
+
+    inline const_value_type
+    to_external_const(internal_const_value_type x) const {
       return const_cast<value_type>(x);
+    }
+
+    inline value_type to_external(internal_value_type x) const {
+      return x;
     }
 
     // Value are actually pointer to memory shared with other values.
     // Obviously, The caller should make sure that nothing is actually shared.
     inline void internal_free(internal_const_value_type x) const {
+      // FIXME remove const_cast
       delete const_cast<internal_value_type>(x);
     }
 
