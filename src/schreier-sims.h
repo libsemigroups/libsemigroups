@@ -144,35 +144,19 @@ namespace libsemigroups {
       return out;
     }
 
-    // To avoid the second copy, the sift method should be as follows, it
-    // doesn't currently work because this->to_internal returns a
-    // internal_const_value_type, which can't be swapped.
-    //
-    // value_type sift(const_reference x) {
-    //   value_type cpy = this->external_copy(this->to_internal(x));
-    //   std::swap(this->to_internal(cpy), _tmp_element2);
-    //   internal_sift(); // changes _tmp_element2 in place
-    //   std::swap(this->to_internal(cpy), _tmp_element2);
-    //   return cpy;
-    // }
-    //
-    // Could also just take a reference and change the incoming element x
-    // in-place??
-
-    value_type sift(const_reference x) {
+     value_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LibsemigroupsException(
             "StabChain::sift: the degree of the generator must be "
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       }
-      // Do not call schreier_sims, sifts in the current StabChain!
-      internal_value_type cpy = this->internal_copy(this->to_internal_const(x));
-      std::swap(cpy, _tmp_element2);
-      this->internal_free(cpy);
-      internal_sift();  // changes _tmp_element2 in place
-      return this->external_copy(_tmp_element2);
-    }
+       value_type cpy = this->external_copy(x);
+       std::swap(this->to_internal(cpy), _tmp_element2);
+       internal_sift(); // changes _tmp_element2 in place
+       std::swap(this->to_internal(cpy), _tmp_element2);
+       return cpy;
+     }
 
     bool contains(const_reference x) {
       if (!has_valid_degree(x)) {
