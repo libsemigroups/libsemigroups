@@ -76,12 +76,6 @@ namespace libsemigroups {
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
 
-    // FIXME remove this
-    inline bool equal_to(internal_const_value_type x,
-                         internal_const_value_type y) const {
-      return TElementEqual()(this->to_external(x), this->to_external(y));
-    }
-
     //! Provides a call operator for comparing elements of \c this
     //!
     //! This struct provides a call operator for comparing two elements of \c
@@ -112,11 +106,6 @@ namespace libsemigroups {
     using internal_const_value_type = typename base::internal_const_value_type;
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
-
-    // FIXME remove this
-    inline size_t hash(internal_const_value_type x) const {
-      return TElementHash()(this->to_external(x));
-    }
 
     //! Provides a call operator for hashing elements of \c this
     //!

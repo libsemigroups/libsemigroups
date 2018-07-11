@@ -54,19 +54,22 @@ namespace libsemigroups {
             typename TElementType  = typename Perm<N>::type,
             typename TDomainType   = IntegralRange<TPointType, 0, N>,
             typename TElementEqual = libsemigroups::equal_to<TElementType>,
-            class Traits = SemigroupTraitsEqual<TElementType, TElementEqual>>
-  class StabChain : private Traits {
-    using value_type       = typename Traits::value_type;
-    using const_value_type = typename Traits::const_value_type;
-    using reference        = typename Traits::reference;
-    using const_reference  = typename Traits::const_reference;
+            class TTraits = SemigroupTraitsEqual<TElementType, TElementEqual>>
+  class StabChain : private TTraits {
+    using value_type       = typename TTraits::value_type;
+    using const_value_type = typename TTraits::const_value_type;
+    using reference        = typename TTraits::reference;
+    using const_reference  = typename TTraits::const_reference;
 
-    using internal_value_type = typename Traits::internal_value_type;
+    using internal_value_type = typename TTraits::internal_value_type;
     using internal_const_value_type =
-        typename Traits::internal_const_value_type;
-    using internal_reference       = typename Traits::internal_reference;
-    using internal_const_reference = typename Traits::internal_const_reference;
+        typename TTraits::internal_const_value_type;
+    using internal_reference       = typename TTraits::internal_reference;
+    using internal_const_reference = typename TTraits::internal_const_reference;
 
+    using internal_equal_to = typename TTraits::internal_equal_to;
+
+    // FIXME make index_type a template parameter again
     using index_type = size_t;
 
    public:
@@ -122,7 +125,7 @@ namespace libsemigroups {
             "StabChain::generator: the argument must be at most "
             + to_string(_strong_gens.size(0)) + ", not " + to_string(index));
       }
-      return this->to_external(_strong_gens.at(0, index));
+      return this->to_external_const(_strong_gens.at(0, index));
     }
 
     bool empty() {
@@ -180,7 +183,7 @@ namespace libsemigroups {
       std::swap(cpy, _tmp_element2);
       this->internal_free(cpy);
       internal_sift();  // changes _tmp_element2 in place
-      return this->equal_to(_tmp_element2, _one);
+      return internal_equal_to()(_tmp_element2, _one);
     }
 
     void clear() {
@@ -363,7 +366,7 @@ namespace libsemigroups {
                 _tmp_element1, _transversal[i][beta], _strong_gens.at(i, m));
             point_type delta = action()(_strong_gens.at(i, m), beta);
             LIBSEMIGROUPS_ASSERT(delta == action()(_tmp_element1, _base[i]));
-            if (!this->equal_to(_tmp_element1, _transversal[i][delta])) {
+            if (!internal_equal_to()(_tmp_element1, _transversal[i][delta])) {
               product()(_tmp_element2, _tmp_element1, _inversal[i][delta]);
               LIBSEMIGROUPS_ASSERT(_base[i]
                                    == action()(_tmp_element2, _base[i]));
@@ -372,7 +375,7 @@ namespace libsemigroups {
               bool       propagate = false;
               if (depth < _base_size) {
                 propagate = true;
-              } else if (!this->equal_to(_tmp_element2, _one)) {
+              } else if (!internal_equal_to()(_tmp_element2, _one)) {
                 propagate = true;
                 internal_add_base_point(first_non_fixed_point(_tmp_element2));
               }
@@ -398,9 +401,6 @@ namespace libsemigroups {
 
     point_type first_non_fixed_point(internal_const_value_type x) {
       for (auto it = _domain.cbegin(); it < _domain.cend(); ++it) {
-        // FIXME In the next line the index_type and point_type are assumed to
-        // be the same, we require some domain from which to choose base
-        // points.
         if (*it != action()(x, *it)) {
           return *it;
         }

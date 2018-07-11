@@ -86,20 +86,16 @@ namespace libsemigroups_tests {
     // right to left.
     TEST_CASE("Schreier-Sims 04: symmetric perm. group (degree 5)",
               "[quick][schreier-sims][04]") {
-      // StabChain<5> S;
-      StabChain<5, size_t, Permutation<size_t>> S;
+      StabChain<5> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 0, 2, 3, 4}));
       S.add_generator(Perm({1, 2, 3, 4, 0}));
-      REQUIRE(Perm({1, 0, 2, 3, 4}) * Perm({1, 2, 3, 4, 0})
-              == Perm({2, 1, 3, 4, 0}));
       REQUIRE(S.size() == 120);
     }
 
     TEST_CASE("Schreier-Sims 05: symmetric perm. group (degree 8)",
               "[quick][schreier-sims][05]") {
-      // StabChain<8> S;
-      StabChain<8, size_t, Permutation<size_t>> S;
+      StabChain<8> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 6, 2, 3, 4, 5, 1, 7}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
@@ -108,8 +104,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 06: symmetric perm. group (degree 9)",
               "[quick][schreier-sims][06]") {
-      // StabChain<9> S;
-      StabChain<9, size_t, Permutation<size_t>> S;
+      StabChain<9> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 0}));
@@ -118,8 +113,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 07: alternating perm. group (degree 12)",
               "[quick][schreier-sims][07]") {
-      // StabChain<12> S;
-      StabChain<12, size_t, Permutation<size_t>> S;
+      StabChain<12> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
       S.add_generator(Perm({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
@@ -132,8 +126,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 08: symmetric perm. group (degree 16)",
               "[quick][schreier-sims][08]") {
-      // StabChain<16> S;
-      StabChain<16, size_t, Permutation<size_t>> S;
+      StabChain<16> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(
           Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -144,8 +137,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 09: alternating perm. group (degree 15)",
               "[quick][schreier-sims][09]") {
-      // StabChain<15> S;
-      StabChain<15, size_t, Permutation<size_t>> S;
+      StabChain<15> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
@@ -167,8 +159,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 10: alternating perm. group (degree 16)",
               "[quick][schreier-sims][10]") {
-      // StabChain<16> S;
-      StabChain<16, size_t, Permutation<size_t>> S;
+      StabChain<16> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(
           Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -184,6 +175,8 @@ namespace libsemigroups_tests {
       REQUIRE(S.contains(
           Perm({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
 
+      REQUIRE(S.contains(
+          Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})));
       REQUIRE(S.contains(S.generator(0)));
       REQUIRE(S.contains(S.generator(1)));
       REQUIRE(S.contains(S.generator(2)));
@@ -210,7 +203,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 11: dihedral perm. group (order 10)",
               "[quick][schreier-sims][11]") {
-      StabChain<5, size_t, Permutation<size_t>> S;
+      StabChain<5> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 4, 3, 2, 1}));
       S.add_generator(Perm({1, 2, 3, 4, 0}));
@@ -251,7 +244,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 13: perm. group T (order 12)",
               "[quick][schreier-sims][13]") {
-      StabChain<12, size_t, Permutation<size_t>> S;
+      StabChain<12> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 6}));
       S.add_generator(Perm({6, 11, 10, 9, 8, 7, 3, 2, 1, 0, 5, 4}));
@@ -260,12 +253,14 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 14: quaternion perm. group (order 8)",
               "[quick][schreier-sims][14]") {
-      StabChain<9, size_t, Permutation<size_t>> S;
+      StabChain<9> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
       S.add_generator(Perm({0, 3, 5, 4, 8, 7, 2, 6, 1}));
+      REQUIRE(S.generator(0) == Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
 
       REQUIRE(S.size() == 8);
+      REQUIRE(S.sift(S.generator(0)) == S.generator(0).one());
       REQUIRE(S.contains(S.generator(0)));
       REQUIRE(S.contains(S.generator(1)));
       REQUIRE(S.contains(Perm({0, 6, 3, 7, 5, 1, 4, 8, 2})));

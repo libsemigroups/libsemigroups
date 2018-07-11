@@ -32,6 +32,7 @@
 namespace libsemigroups {
 
   template <typename T, size_t N, class A = std::allocator<T>>
+    //FIXME remove or use the template parameter A
   class SquareVector {
     // So that SquareVector<T, N, A> can access private data members of
     // SquareVector<S, M, B> and vice versa.
@@ -58,7 +59,7 @@ namespace libsemigroups {
       return _arrays[depth][_sizes[depth] - 1];
     }
 
-    inline T at(size_t depth, size_t index) const {
+    inline T const& at(size_t depth, size_t index) const {
       LIBSEMIGROUPS_ASSERT(depth < N);
       LIBSEMIGROUPS_ASSERT(index < _sizes[depth]);
       return _arrays[depth][index];
@@ -115,7 +116,7 @@ namespace libsemigroups {
       return _arrays[depth];
     }
 
-    inline T at(size_t depth, size_t index) const {
+    inline T const& at(size_t depth, size_t index) const {
       LIBSEMIGROUPS_ASSERT(depth < N);
       LIBSEMIGROUPS_ASSERT(index < N);
       return _arrays.at(depth).at(index);

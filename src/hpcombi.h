@@ -51,9 +51,11 @@ namespace libsemigroups {
     }
   };
 
+  // Note that HPCombi implements composition of functions from left to right,
+  // whereas libsemigroups assumes composition is right to left.
   template <> struct product<Perm16> {
     void operator()(Perm16& xy, Perm16 const& x, Perm16 const& y, size_t = 0) {
-      xy = x * y;
+      xy = y * x;
     }
   };
 
