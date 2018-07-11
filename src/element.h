@@ -417,7 +417,7 @@ namespace libsemigroups {
     //!
     //! This method returns a const_iterator pointing at the first entry in the
     //! vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator cbegin() const {
+    inline typename std::vector<TValueType>::const_iterator cbegin() const {
       return _vector.cbegin();
     }
 
@@ -425,7 +425,7 @@ namespace libsemigroups {
     //!
     //! This method returns a const iterator referring to the past-the-end
     //! element of the vector that is the underlying defining data of \c this.
-    inline typename std::vector<TValueType>::iterator cend() const {
+    inline typename std::vector<TValueType>::const_iterator cend() const {
       return _vector.cend();
     }
 
