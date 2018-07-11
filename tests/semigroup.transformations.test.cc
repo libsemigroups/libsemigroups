@@ -140,9 +140,9 @@ TEST_CASE("Semigroup of Transformations 05: Exception: gens",
     Semigroup<Transformation<size_t>> S(gens);
 
     for (size_t j = 0; j < i; ++j) {
-      REQUIRE_NOTHROW(S.gens(j));
+      REQUIRE_NOTHROW(S.generator(j));
     }
-    REQUIRE_THROWS_AS(S.gens(i), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.generator(i), LibsemigroupsException);
   }
 }
 

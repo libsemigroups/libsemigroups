@@ -293,8 +293,8 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
 
   Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
   delete_gens(coll);
 
   std::vector<size_t> result;
@@ -353,8 +353,8 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
 
   Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
   delete_gens(coll);
 
   std::vector<size_t> result;

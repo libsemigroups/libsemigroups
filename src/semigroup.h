@@ -17,7 +17,21 @@
 //
 
 // TODO
-// 1. check use of value_type etc
+// 1. check use of:
+//    * value_type [x]
+//    * const_value_type [ ]
+//    * reference        [ ]
+//    * const_reference  [ ]
+//    * internal_value_type [ ]
+//    * internal_const_value_type [ ]
+//    * internal_reference [ ]
+//    * internal_const_reference [ ]
+// 2. Check if Semigroup<Element*> works
+// 3. Update the doc
+// 4. Double check "noexcept" usage
+// 5. Make const member functions thread-safe
+// 6. Replace typedef's with aliases.
+// 7. Rename to FroidurePin
 
 #ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_H_
 #define LIBSEMIGROUPS_SRC_SEMIGROUP_H_
@@ -435,6 +449,26 @@ namespace libsemigroups {
       // Now this is ready to have add_generators or closure called on it
     }
 
+    void verify_element_index(std::string const& method_name,
+                              element_index_t    i) const {
+      if (i >= _nr) {
+        throw LibsemigroupsException(
+            "Semigroup::" + method_name + ": there are only  "
+            + libsemigroups::to_string(_nr) + " elements"
+            + (is_done() ? "" : " enumerated so far") + ", not "
+            + libsemigroups::to_string(i));
+      }
+    }
+
+    void verify_letter_index(std::string const& method_name, letter_t i) const {
+      if (i >= nrgens()) {
+        throw LibsemigroupsException(
+            "Semigroup::" + method_name + ": there are only  "
+            + libsemigroups::to_string(nrgens()) + " generators, not "
+            + libsemigroups::to_string(i));
+      }
+    }
+
    public:
     //! A default destructor.
     ~Semigroup() {
@@ -469,15 +503,10 @@ namespace libsemigroups {
       // w is a word in the generators (i.e. a vector of letter_t's)
       if (w.size() == 0) {
         throw LibsemigroupsException(
-            "Semigroup::word_to_pos: the word given has length 0");
+            "Semigroup::word_to_pos: the given word has length 0");
       }
       for (auto x : w) {
-        if (x >= nrgens()) {
-          throw LibsemigroupsException(
-              "Semigroup::word_to_pos: word contains "
-              + libsemigroups::to_string(x) + " but the semigroup only has "
-              + libsemigroups::to_string(nrgens()) + " generators");
-        }
+        verify_letter_index("word_to_pos", x);
       }
       element_index_t out = _letter_to_pos[w[0]];
       for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
@@ -494,6 +523,9 @@ namespace libsemigroups {
     //! This method returns a copy of the element of \c this obtained by
     //! evaluating \p w. This is equivalent to finding the product \c x of the
     //! generators Semigroup::gens(\c w[i]).
+    //!
+    //! A copy is returned instead of a reference, because the element of \c
+    //! this corresponding to \p w may not yet have been enumerated.
     //!
     //! \sa Semigroup::word_to_pos.
     value_type word_to_element(word_t const& w) const {
@@ -514,7 +546,7 @@ namespace libsemigroups {
         product()(this->to_internal(prod), _tmp_product, _gens[*it]);
       }
       return prod;
-    } //HERE
+    }
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
@@ -523,7 +555,7 @@ namespace libsemigroups {
     //! short-lex order induced by the order of the generators (as passed to
     //! Semigroup::Semigroup).  This method returns the length of the longest
     //! word in the generators that has so far been enumerated.
-    size_t current_max_word_length() const override {
+    size_t current_max_word_length() const noexcept override {
       if (is_done()) {
         return _lenindex.size() - 2;
       } else if (_nr > _lenindex.back()) {
@@ -534,12 +566,12 @@ namespace libsemigroups {
     }
 
     //! Returns the degree of any (and all) Element's in the semigroup.
-    size_t degree() const override {
+    size_t degree() const noexcept override {
       return _degree;
     }
 
     //! Returns the number of generators of the semigroup.
-    size_t nrgens() const override {
+    size_t nrgens() const noexcept override {
       return _gens.size();
     }
 
@@ -549,13 +581,8 @@ namespace libsemigroups {
     //! LibsemigroupsException will be thrown. Note that Semigroup::gens(pos)
     //! is in general in general not in position \p pos in the semigroup, i.e.
     //! is not equal to Semigroup::at(pos).
-    const_reference gens(letter_t pos) const {
-      if (pos >= nrgens()) {
-        throw LibsemigroupsException(
-            "Semigroup::gens: argument was " + libsemigroups::to_string(pos)
-            + " but there are only " + libsemigroups::to_string(nrgens())
-            + " generators");
-      }
+    const_reference generator(letter_t pos) const {
+      verify_letter_index("generator", pos);
       return this->to_external_const(_gens[pos]);
     }
 
@@ -564,13 +591,13 @@ namespace libsemigroups {
     //!
     //! The semigroup is fully enumerated when the product of every element
     //! by every generator is known.
-    bool is_done() const override {
+    bool is_done() const noexcept override {
       return (_pos >= _nr);
     }
 
     //! Returns \c true if elements other than the generators have been
     //! enumerated so far and \c false otherwise.
-    bool is_begun() const override {
+    bool is_begun() const noexcept override {
       LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
       return (_pos >= _lenindex[1]);
     }
@@ -600,7 +627,7 @@ namespace libsemigroups {
     //!
     //! This is only the actual size of the semigroup if the semigroup is fully
     //! enumerated.
-    size_t current_size() const override {
+    size_t current_size() const noexcept override {
       return _elements.size();
     }
 
@@ -609,7 +636,7 @@ namespace libsemigroups {
     //!
     //! This is only the actual number of relations in a presentation defining
     //! the semigroup if the semigroup is fully enumerated.
-    size_t current_nrrules() const override {
+    size_t current_nrrules() const noexcept override {
       return _nrrules;
     }
 
@@ -619,12 +646,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, or a LibsemigroupsException will be thrown.
     element_index_t prefix(element_index_t pos) const override {
-      if (pos >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::prefix: argument was " + libsemigroups::to_string(pos)
-            + " but there are only " + libsemigroups::to_string(_nr)
-            + " elements enumerated");
-      }
+      verify_element_index("prefix", pos);
       return _prefix[pos];
     }
 
@@ -634,12 +656,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, or a LibsemigroupsException will be thrown.
     element_index_t suffix(element_index_t pos) const override {
-      if (pos >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::suffix: argument was " + libsemigroups::to_string(pos)
-            + " but there are only " + libsemigroups::to_string(_nr)
-            + " elements enumerated");
-      }
+      verify_element_index("suffix", pos);
       return _suffix[pos];
     }
 
@@ -656,12 +673,7 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, or a LibsemigroupsException will be thrown.
     letter_t first_letter(element_index_t pos) const override {
-      if (pos >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::first_letter: argument was "
-            + libsemigroups::to_string(pos) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
+      verify_element_index("first_letter", pos);
       return _first[pos];
     }
 
@@ -678,18 +690,13 @@ namespace libsemigroups {
     //! The parameter \p pos must be a valid position of an already enumerated
     //! element of the semigroup, or a LibsemigroupsException will be thrown.
     letter_t final_letter(element_index_t pos) const override {
-      if (pos >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::final_letter: argument was "
-            + libsemigroups::to_string(pos) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
+      verify_element_index("final_letter", pos);
       return _final[pos];
     }
 
     //! Returns the current value of the batch size. This is the minimum
     //! number of elements enumerated in any call to Semigroup::enumerate.
-    size_t batch_size() const override {
+    size_t batch_size() const noexcept override {
       return _batch_size;
     }
 
@@ -699,12 +706,7 @@ namespace libsemigroups {
     //! element of the semigroup, or a LibsemigroupsException will be thrown.
     //! This method causes no enumeration of the semigroup.
     size_t length_const(element_index_t pos) const override {
-      if (pos >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::length_const: argument was "
-            + libsemigroups::to_string(pos) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
+      verify_element_index("length_const", pos);
       return _length[pos];
     }
 
@@ -732,18 +734,8 @@ namespace libsemigroups {
     //! left Cayley graph from \p j labelled by this->minimal_factorisation(i).
     element_index_t product_by_reduction(element_index_t i,
                                          element_index_t j) const override {
-      if (i >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::product_by_reduction: first argument was "
-            + libsemigroups::to_string(i) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
-      if (j >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::product_by_reduction: second argument was"
-            + libsemigroups::to_string(j) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
+      verify_element_index("product_by_reduction", i);
+      verify_element_index("product_by_reduction", j);
 
       if (length_const(i) <= length_const(j)) {
         while (i != UNDEFINED) {
@@ -782,18 +774,8 @@ namespace libsemigroups {
     //! transformations together.
     element_index_t fast_product(element_index_t i,
                                  element_index_t j) const override {
-      if (i >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::fast_product: first argument was "
-            + libsemigroups::to_string(i) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
-      if (j >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::fast_product: second argument was "
-            + libsemigroups::to_string(j) + " but there are only "
-            + libsemigroups::to_string(_nr) + " elements enumerated");
-      }
+      verify_element_index("fast_product", i);
+      verify_element_index("fast_product", j);
       if (length_const(i) < 2 * complexity()(_tmp_product)
           || length_const(j) < 2 * complexity()(_tmp_product)) {
         return product_by_reduction(i, j);
@@ -814,12 +796,7 @@ namespace libsemigroups {
     //! * Semigroup::add_generators was called after the semigroup was already
     //! partially enumerated.
     element_index_t letter_to_pos(letter_t i) const override {
-      if (i >= nrgens()) {
-        throw LibsemigroupsException(
-            "Semigroup::letter_to_pos: argument was "
-            + libsemigroups::to_string(i) + " but there are only "
-            + libsemigroups::to_string(nrgens()) + " generators");
-      }
+      verify_letter_index("letter_to_pos", i);
       return _letter_to_pos[i];
     }
 
@@ -841,12 +818,7 @@ namespace libsemigroups {
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
     bool is_idempotent(element_index_t pos) override {
-      if (pos >= size()) {
-        throw LibsemigroupsException(
-            "Semigroup::is_idempotent: argument was "
-            + libsemigroups::to_string(pos) + " but there are only "
-            + libsemigroups::to_string(size()) + " elements");
-      }
+      verify_element_index("is_idempotent", pos);
       init_idempotents();
       return _is_idempotent[pos];
     }
@@ -871,7 +843,7 @@ namespace libsemigroups {
     //! This is used by, for example, Semigroup::position so that it is
     //! possible to find the position of an element without fully enumerating
     //! the semigroup.
-    void set_batch_size(size_t batch_size) override {
+    void set_batch_size(size_t batch_size) noexcept override {
       _batch_size = batch_size;
     }
 
@@ -920,7 +892,7 @@ namespace libsemigroups {
     //! the semigroup. The semigroup is enumerated in batches until \p x is
     //! found or the semigroup is fully enumerated but \p x was not found (see
     //! Semigroup::set_batch_size).
-    bool test_membership(const_value_type x) {
+    bool test_membership(const_reference x) {
       return (position(x) != UNDEFINED);
     }
 
@@ -931,7 +903,7 @@ namespace libsemigroups {
     //! of the element \p x if it belongs to the semigroup. The semigroup is
     //! enumerated in batches until \p x is found or the semigroup is fully
     //! enumerated but \p x was not found (see Semigroup::set_batch_size).
-    element_index_t position(const_value_type x) {
+    element_index_t position(const_reference x) {
       if (internal_degree()(this->to_internal_const(x)) != _degree) {
         return UNDEFINED;
       }
@@ -952,7 +924,7 @@ namespace libsemigroups {
     //! Returns the position of \p x in the sorted array of elements of the
     //! semigroup, or Semigroup::UNDEFINED if \p x is not an element of \c
     //! this.
-    element_index_t sorted_position(TElementType x) {
+    element_index_t sorted_position(const_reference x) {
       return position_to_sorted_position(position(x));
     }
 
@@ -1046,18 +1018,11 @@ namespace libsemigroups {
       if (pos >= _nr && !is_done()) {
         enumerate(pos + 1);
       }
-
-      if (pos < _nr) {
-        word.clear();
-        while (pos != UNDEFINED) {
-          word.push_back(_first[pos]);
-          pos = _suffix[pos];
-        }
-      } else {
-        throw LibsemigroupsException("Semigroup::minimal_factorisation: index "
-                                     + libsemigroups::to_string(pos)
-                                     + " out of range, should be at most "
-                                     + libsemigroups::to_string(_nr - 1));
+      verify_element_index("minimal_factorisation", pos);
+      word.clear();
+      while (pos != UNDEFINED) {
+        word.push_back(_first[pos]);
+        pos = _suffix[pos];
       }
     }
 
@@ -1081,7 +1046,7 @@ namespace libsemigroups {
     //! it factorises an Element instead of using the position of an element.
     //! If \p pos is greater than the size of the semigroup, then a
     //! LibsemigroupsException is thrown.
-    word_t minimal_factorisation(TElementType const& x) {
+    word_t minimal_factorisation(const_reference x) {
       element_index_t pos = this->position(x);
       if (pos == UNDEFINED) {
         throw LibsemigroupsException(
@@ -1117,11 +1082,11 @@ namespace libsemigroups {
     //! Returns a libsemigroups::word_t which evaluates to \p x.
     //!
     //! The key difference between this method and
-    //! Semigroup::minimal_factorisation(TElementType x), is that the
+    //! Semigroup::minimal_factorisation(const_reference x), is that the
     //! resulting factorisation may not be minimal.
     //! If \p pos is greater than the size of the semigroup, then a
     //! LibsemigroupsException is thrown.
-    word_t factorisation(TElementType const& x) {
+    word_t factorisation(const_reference x) {
       return minimal_factorisation(x);
     }
 
@@ -1131,7 +1096,7 @@ namespace libsemigroups {
     //! After a call to this function, the next call to
     //! Semigroup::next_relation will return the first relation of the
     //! presentation defining the semigroup.
-    void reset_next_relation() override {
+    void reset_next_relation() noexcept override {
       _relation_pos = UNDEFINED;
       _relation_gen = 0;
     }
@@ -1614,6 +1579,7 @@ namespace libsemigroups {
     //! Add copies of the generators \p coll to the generators of \c this.
     //!
     //! See Semigroup::add_generators for more details.
+    // FIXME const_reference??
     void add_generators(std::initializer_list<const_value_type> coll) {
       add_generators<std::initializer_list<const_value_type>>(coll);
     }
@@ -1684,6 +1650,7 @@ namespace libsemigroups {
     //! generators of \c this.
     //!
     //! See Semigroup::closure for more details.
+    // FIXME const_reference?
     void closure(std::initializer_list<const_value_type> coll) {
       closure<std::initializer_list<const_value_type>>(coll);
     }
@@ -1726,7 +1693,8 @@ namespace libsemigroups {
     //! of a Semigroup object. The number of threads is limited to the maximum
     //! of 1 and the minimum of \p nr_threads and the number of threads
     //! supported by the hardware.
-    void set_max_threads(size_t nr_threads) override {
+    void set_max_threads(size_t nr_threads) noexcept override {
+      // TODO check noexcept is ok
       unsigned int n
           = static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
       _max_threads = std::min(n, std::thread::hardware_concurrency());
@@ -1879,6 +1847,7 @@ namespace libsemigroups {
     //! A type for const iterators through the elements of \c this.
     typedef iterator_base<internal_value_type, iterator_methods> const_iterator;
     //! A type for const iterators through (element, index) pairs of \c this.
+    // FIXME why is const_iterator_pair_first public??
     typedef iterator_base<std::pair<internal_value_type, element_index_t>,
                           iterator_methods_pair_first>
         const_iterator_pair_first;
@@ -2041,7 +2010,8 @@ namespace libsemigroups {
 
     // Check if an element is the identity, x should be in the position pos
     // of _elements.
-    void inline is_one(internal_const_value_type x, element_index_t pos) {
+    // FIXME noexcept should depend on whether or not internal_equal_to throws.
+    void inline is_one(internal_const_value_type x, element_index_t pos) noexcept {
       if (!_found_one && internal_equal_to()(x, _id)) {
         _pos_one   = pos;
         _found_one = true;
@@ -2132,10 +2102,10 @@ namespace libsemigroups {
     }
 
     // Initialise the data member _sorted. We store a list of pairs consisting
-    // of an TElementType and element_index_t which is sorted on the first entry
-    // using the operator< of the Element class. The second component is then
-    // inverted (as a permutation) so that we can then find the position of an
-    // element in the sorted list of elements.
+    // of an internal_value_type and element_index_t which is sorted on the
+    // first entry using the operator< of the Element class. The second
+    // component is then inverted (as a permutation) so that we can then find
+    // the position of an element in the sorted list of elements.
     void init_sorted() {
       if (_sorted.size() == size()) {
         return;
@@ -2143,7 +2113,7 @@ namespace libsemigroups {
       size_t n = size();
       _sorted.reserve(n);
       for (element_index_t i = 0; i < n; i++) {
-        _sorted.push_back(std::make_pair(_elements[i], i));
+        _sorted.emplace_back(_elements[i], i);
       }
       std::sort(_sorted.begin(),
                 _sorted.end(),
@@ -2236,22 +2206,22 @@ namespace libsemigroups {
           REPORT("thread " << i + 1 << " has load " << thread_load)
           first[i + 1] = last[i];
 
-          threads.push_back(std::thread(&Semigroup::idempotents,
-                                        this,
-                                        first[i],
-                                        last[i],
-                                        threshold_index,
-                                        std::ref(tmp[i])));
+          threads.emplace_back(&Semigroup::idempotents,
+                               this,
+                               first[i],
+                               last[i],
+                               threshold_index,
+                               std::ref(tmp[i]));
         }
         // TODO use less threads if the av_load is too low
 
         REPORT("thread " << _max_threads << " has load " << total_load)
-        threads.push_back(std::thread(&Semigroup::idempotents,
-                                      this,
-                                      first[_max_threads - 1],
-                                      last[_max_threads - 1],
-                                      threshold_index,
-                                      std::ref(tmp[_max_threads - 1])));
+        threads.emplace_back(&Semigroup::idempotents,
+                             this,
+                             first[_max_threads - 1],
+                             last[_max_threads - 1],
+                             threshold_index,
+                             std::ref(tmp[_max_threads - 1]));
 
         size_t nridempotents = 0;
         for (size_t i = 0; i < _max_threads; i++) {
@@ -2295,7 +2265,7 @@ namespace libsemigroups {
             j = _suffix[j];
           }
           if (i == k) {
-            idempotents.push_back(idempotent_value_t(_elements[k], k));
+            idempotents.emplace_back(_elements[k], k);
             _is_idempotent[k] = true;
           }
         }
@@ -2315,7 +2285,7 @@ namespace libsemigroups {
         if (!_is_idempotent[k]) {
           product()(tmp_product, _elements[k], _elements[k], tid);
           if (internal_equal_to()(tmp_product, _elements[k])) {
-            idempotents.push_back(idempotent_value_t(_elements[k], k));
+            idempotents.emplace_back(_elements[k], k);
             _is_idempotent[k] = true;
           }
         }

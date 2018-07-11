@@ -40,7 +40,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(S.current_max_word_length() == 1);
   REQUIRE(!S.is_done());
   REQUIRE(!S.is_begun());
-  REQUIRE(S.current_position(S.gens(0) * S.gens(3))
+  REQUIRE(S.current_position(S.generator(0) * S.generator(3))
           == Semigroup<BMat8>::UNDEFINED);
   REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
                                     {0, 1, 0, 0, 1},
@@ -61,17 +61,17 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(S.current_max_word_length() == 21);
   REQUIRE(S.degree() == 8);
   REQUIRE(S.nrgens() == 4);
-  REQUIRE(S.gens(0)
+  REQUIRE(S.generator(0)
           == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-  REQUIRE(S.gens(1)
+  REQUIRE(S.generator(1)
           == BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-  REQUIRE(S.gens(2)
+  REQUIRE(S.generator(2)
           == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
-  REQUIRE(S.gens(3)
+  REQUIRE(S.generator(3)
           == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
   REQUIRE(S.is_done());
   REQUIRE(S.is_begun());
-  REQUIRE(S.current_position(S.gens(0) * S.gens(3)) == 7);
+  REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == 7);
   REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
                                     {0, 1, 0, 0, 1},
                                     {1, 0, 1, 0, 1},
@@ -99,14 +99,14 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(S.is_idempotent(3));
   REQUIRE(!S.is_idempotent(7));
   REQUIRE(S.nrrules() == 13716);
-  REQUIRE(S.test_membership(S.gens(1)));
+  REQUIRE(S.test_membership(S.generator(1)));
   REQUIRE(!S.test_membership(BMat8({{1, 0, 0, 1, 1},
                                     {0, 1, 0, 0, 1},
                                     {1, 0, 1, 0, 1},
                                     {0, 0, 1, 0, 1},
                                     {0, 0, 0, 0, 0}})));
-  REQUIRE(S.position(S.gens(1)) == 1);
-  REQUIRE(S.position(S.gens(0) * S.gens(3)) == 7);
+  REQUIRE(S.position(S.generator(1)) == 1);
+  REQUIRE(S.position(S.generator(0) * S.generator(3)) == 7);
   REQUIRE(S.position(BMat8({{1, 0, 0, 1, 1},
                             {0, 1, 0, 0, 1},
                             {1, 0, 1, 0, 1},
@@ -120,19 +120,19 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
                                    {0, 0, 1, 0, 1},
                                    {0, 0, 0, 0, 0}}))
           == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.sorted_position(S.gens(0)) == 18185);
-  REQUIRE(S.sorted_position(S.gens(3)) == 33066);
-  REQUIRE(S.sorted_position(S.gens(0) * S.gens(3)) == 18184);
+  REQUIRE(S.sorted_position(S.generator(0)) == 18185);
+  REQUIRE(S.sorted_position(S.generator(3)) == 33066);
+  REQUIRE(S.sorted_position(S.generator(0) * S.generator(3)) == 18184);
   REQUIRE(S.position_to_sorted_position(0) == 18185);
   REQUIRE(S.position_to_sorted_position(3) == 33066);
   REQUIRE(S.position_to_sorted_position(7) == 18184);
 
-  REQUIRE(S.at(7) == S.gens(0) * S.gens(3));
+  REQUIRE(S.at(7) == S.generator(0) * S.generator(3));
   REQUIRE(S[7] == S[0] * S[3]);
 
   REQUIRE(S.sorted_at(18185) == S.at(0));
   REQUIRE(S.sorted_at(33066) == S.at(3));
-  REQUIRE(S.sorted_at(18184) == S.gens(0) * S.gens(3));
+  REQUIRE(S.sorted_at(18184) == S.generator(0) * S.generator(3));
 
   REQUIRE(S.right(0, 3) == 7);
   RecVec<size_t>* right = S.right_cayley_graph_copy();
@@ -212,13 +212,13 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(T.current_max_word_length() == 21);
   REQUIRE(T.degree() == 8);
   REQUIRE(T.nrgens() == 4);
-  REQUIRE(T.gens(0)
+  REQUIRE(T.generator(0)
           == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-  REQUIRE(T.gens(1)
+  REQUIRE(T.generator(1)
           == BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-  REQUIRE(T.gens(2)
+  REQUIRE(T.generator(2)
           == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
-  REQUIRE(T.gens(3)
+  REQUIRE(T.generator(3)
           == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
   REQUIRE(T.is_done());
   REQUIRE(T.is_begun());

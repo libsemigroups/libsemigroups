@@ -661,7 +661,8 @@ namespace libsemigroups {
         // FIXME all the static_cast's of the form below must include all 3
         // template parameters, not just the first.
         auto semigroup = static_cast<Semigroup<TElementType>*>(cong._semigroup);
-        _tmp1 = this->internal_copy(this->to_internal_const(semigroup->gens(0)));
+        _tmp1          = this->internal_copy(
+            this->to_internal_const(semigroup->generator(0)));
         _tmp2 = this->internal_copy(_tmp1);
 
         // Set up _pairs_to_mult
@@ -776,17 +777,23 @@ namespace libsemigroups {
           auto semigroup
               = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
           for (size_t i = 0; i < this->_cong._nrgens; i++) {
-            const_reference gen = semigroup->gens(i);
+            const_reference gen = semigroup->generator(i);
             if (this->_cong._type == LEFT || this->_cong._type == TWOSIDED) {
-              product()(_tmp1, this->to_internal_const(gen), current_pair.first, tid);
               product()(
-                  _tmp2, this->to_internal_const(gen), current_pair.second, tid);
+                  _tmp1, this->to_internal_const(gen), current_pair.first, tid);
+              product()(_tmp2,
+                        this->to_internal_const(gen),
+                        current_pair.second,
+                        tid);
               add_pair(_tmp1, _tmp2);
             }
             if (this->_cong._type == RIGHT || this->_cong._type == TWOSIDED) {
-              product()(_tmp1, current_pair.first, this->to_internal_const(gen), tid);
               product()(
-                  _tmp2, current_pair.second, this->to_internal_const(gen), tid);
+                  _tmp1, current_pair.first, this->to_internal_const(gen), tid);
+              product()(_tmp2,
+                        current_pair.second,
+                        this->to_internal_const(gen),
+                        tid);
               add_pair(_tmp1, _tmp2);
             }
           }

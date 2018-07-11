@@ -229,9 +229,9 @@ TEST_CASE("Semigroup 030: right/left Cayley graph",
   Element* tmp = new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5});
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
     for (size_t i = 0; i < 5; ++i) {
-      tmp->redefine(*it, S.gens(i));
+      tmp->redefine(*it, S.generator(i));
       REQUIRE(S.position(tmp) == S.right(S.position(*it), i));
-      tmp->redefine(S.gens(i), *it);
+      tmp->redefine(S.generator(i), *it);
       REQUIRE(S.position(tmp) == S.left(S.position(*it), i));
     }
   }
@@ -547,7 +547,7 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
   REQUIRE(T.current_size() == 5);
   REQUIRE(T.current_nrrules() == 0);
   REQUIRE(T.current_max_word_length() == 1);
-  REQUIRE(T.current_position(S.gens(1)) == 1);
+  REQUIRE(T.current_position(S.generator(1)) == 1);
 
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nridempotents() == 537);
@@ -589,7 +589,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(T->current_size() == 7719);
   REQUIRE(T->current_nrrules() == 2418);
   REQUIRE(T->current_max_word_length() == 14);
-  REQUIRE(T->current_position(S.gens(1)) == 1);
+  REQUIRE(T->current_position(S.generator(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
@@ -663,7 +663,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(T->current_size() == 5);
   REQUIRE(T->current_nrrules() == 0);
   REQUIRE(T->current_max_word_length() == 1);
-  REQUIRE(T->current_position(S.gens(1)) == 1);
+  REQUIRE(T->current_position(S.generator(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
@@ -777,8 +777,8 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
 
   Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
   delete_gens(coll);
 
   REQUIRE(T->is_begun());
@@ -822,8 +822,8 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
 
   Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
@@ -898,8 +898,8 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
 
   Semigroup<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
@@ -942,8 +942,8 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
 
   Semigroup<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(*coll[0] == *(T->gens(3)));
-  REQUIRE(*coll[1] == *(T->gens(4)));
+  REQUIRE(*coll[0] == *(T->generator(3)));
+  REQUIRE(*coll[1] == *(T->generator(4)));
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
