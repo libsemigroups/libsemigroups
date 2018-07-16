@@ -53,6 +53,7 @@
 
 #include "adapters.h"
 #include "element-helper.h"
+#include "libsemigroups-config.h"
 #include "range.h"
 #include "semigroup-traits.h"
 #include "square.h"

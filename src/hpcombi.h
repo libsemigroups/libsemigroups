@@ -21,59 +21,120 @@
 
 #ifndef LIBSEMIGROUPS_SRC_HPCOMBI_H_
 #define LIBSEMIGROUPS_SRC_HPCOMBI_H_
+
+// Must include libsemigroups-config.h so that LIBSEMIGROUPS_HPCOMBI is
+// defined, if so specified at during configure.
+#include "libsemigroups-config.h"
+
 #ifdef LIBSEMIGROUPS_HPCOMBI
+
+#include "hpcombi.hpp"
 
 #include "adapters.h"
 #include "semigroup-traits.h"
 
 namespace libsemigroups {
-  using Perm16 = HPCombi::Perm16;
+  using PTransf16 = HPCombi::PTransf16;
 
-  template <> struct degree<Perm16> {
-    inline constexpr size_t operator()(Perm16 const&) const {
+  template <class TPTransf16Subclass>
+  struct complexity<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    constexpr size_t operator()(TPTransf16Subclass const&) const noexcept {
+      return 0;
+    }
+  };
+
+  template <class TPTransf16Subclass>
+  struct degree<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    constexpr size_t operator()(TPTransf16Subclass const&) const noexcept {
       return 16;
     }
   };
 
-  template <> struct inverse<Perm16> {
-    inline Perm16 operator()(Perm16 const& x) const {
+  template <class TPTransf16Subclass>
+  struct inverse<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TPTransf16Subclass operator()(TPTransf16Subclass const& x) const
+        noexcept {
       return x.inverse();
     }
   };
 
-  template <> struct one<Perm16> {
-    inline Perm16 operator()(size_t) const {
-      return Perm16::one();
+  template <class TPTransf16Subclass>
+  struct less<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    bool operator()(TPTransf16Subclass const& x,
+                    TPTransf16Subclass const& y) const noexcept {
+      return x < y;
+    }
+  };
+
+  template <class TPTransf16Subclass>
+  struct one<TPTransf16Subclass,
+             typename std::enable_if<
+                 std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TPTransf16Subclass operator()(size_t) const noexcept {
+      return TPTransf16Subclass::one();
     }
 
-    inline Perm16 operator()(Perm16 const&) const {
-      return Perm16::one();
+    TPTransf16Subclass operator()(TPTransf16Subclass const&) const noexcept {
+      return TPTransf16Subclass::one();
     }
   };
 
   // Note that HPCombi implements composition of functions from left to right,
   // whereas libsemigroups assumes composition is right to left.
-  template <> struct product<Perm16> {
-    void operator()(Perm16& xy, Perm16 const& x, Perm16 const& y, size_t = 0) {
+  template <class TPTransf16Subclass>
+  struct product<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    void operator()(TPTransf16Subclass&       xy,
+                    TPTransf16Subclass const& x,
+                    TPTransf16Subclass const& y,
+                    size_t = 0) const noexcept {
       xy = y * x;
     }
   };
 
-  template <> struct swap<Perm16> {
-    void operator()(Perm16& x, Perm16& y) const {
+  template <class TPTransf16Subclass>
+  struct swap<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    void operator()(TPTransf16Subclass& x, TPTransf16Subclass& y) const
+        noexcept {
       std::swap(x, y);
     }
   };
 
-  template <typename TValueType> struct action<Perm16, TValueType> {
-    inline TValueType operator()(Perm16 x, TValueType i) const {
+  template <class TPTransf16Subclass, typename TValueType>
+  struct action<
+      TPTransf16Subclass,
+      TValueType,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TValueType operator()(TPTransf16Subclass x, TValueType i) const noexcept {
       return x[i];
     }
   };
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <> struct empty_key<Transf16> {
-    Transf16 operator()(Transf16 const&) const {
+  template <class TPTransf16Subclass>
+  struct empty_key<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TPTransf16Subclass operator()(TPTransf16Subclass const&) const noexcept {
       return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE};
     }
   };

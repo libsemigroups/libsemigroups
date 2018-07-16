@@ -28,7 +28,7 @@ namespace libsemigroups {
   struct complexity<
       TIntegralType,
       typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-    size_t operator()(TIntegralType) {
+    constexpr size_t operator()(TIntegralType) const noexcept {
       return 0;
     }
   };
@@ -37,7 +37,7 @@ namespace libsemigroups {
   struct degree<
       TIntegralType,
       typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-    size_t operator()(TIntegralType) {
+    constexpr size_t operator()(TIntegralType) const noexcept {
       return 0;
     }
   };
@@ -46,17 +46,17 @@ namespace libsemigroups {
   struct increase_degree_by<
       TIntegralType,
       typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-    TIntegralType operator()(TIntegralType x) {
+    TIntegralType operator()(TIntegralType x) const noexcept {
       LIBSEMIGROUPS_ASSERT(false);
       return x;
     }
   };
 
   template <typename TIntegralType>
-  struct less<
-      TIntegralType,
-      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-    bool operator()(TIntegralType x, TIntegralType y) {
+  struct less<TIntegralType,
+              typename std::enable_if<std::is_integral<TIntegralType>::value>::
+                  type> {
+    bool operator()(TIntegralType x, TIntegralType y) const noexcept {
       return x < y;
     }
   };
@@ -65,7 +65,7 @@ namespace libsemigroups {
   struct one<
       TIntegralType,
       typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-    TIntegralType operator()(TIntegralType) {
+    constexpr TIntegralType operator()(TIntegralType) const noexcept {
       return 1;
     }
   };
@@ -77,17 +77,19 @@ namespace libsemigroups {
     void operator()(TIntegralType& xy,
                     TIntegralType  x,
                     TIntegralType  y,
-                    size_t = 0) {
+                    size_t = 0) const noexcept {
       xy = x * y;
     }
   };
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <> int empty_key(int) {
-    return -1;
-  }
-  template <> uint8_t empty_key(uint8_t) {
-    return -1;
+  template <typename TIntegralType>
+  struct empty_key<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
+    TIntegralType operator()(TIntegralType) const noexcept {
+      return UNDEFINED;
+    }
   }
 #endif
 }  // namespace libsemigroups

@@ -40,10 +40,6 @@
 #include "semiring.h"
 #include "to_string.h"
 
-#ifdef LIBSEMIGROUPS_HPCOMBI
-#include "hpcombi.hpp"
-#endif
-
 namespace libsemigroups {
   //! Abstract base class for semigroup elements
   //!

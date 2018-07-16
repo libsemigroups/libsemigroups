@@ -16,10 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// Must include hpcombi.h so that LIBSEMIGROUPS_HPCOMBI is defined, if so
+// specified at during configure.
+#include "src/hpcombi.h"
+
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
 #include "catch.hpp"
-#include "src/hpcombi.h"
 #include "src/semigroup.h"
 
 using namespace libsemigroups;

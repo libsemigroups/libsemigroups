@@ -25,7 +25,7 @@ using namespace libsemigroups;
 
 class IntPair {
  public:
-  IntPair() : _x(0), _y(0) {}
+  constexpr IntPair() noexcept : _x(1), _y(1) {}
   IntPair(int x, int y) : _x(x), _y(y) {}
 
   IntPair operator*(IntPair const& that) const {
@@ -54,38 +54,38 @@ static_assert(!std::is_trivial<IntPair>::value,
 
 namespace libsemigroups {
   template <> struct complexity<IntPair> {
-    size_t operator()(IntPair) {
+    constexpr size_t operator()(IntPair) const noexcept {
       return 0;
     }
   };
 
   template <> struct degree<IntPair> {
-    size_t operator()(IntPair) {
+    constexpr size_t operator()(IntPair) const noexcept {
       return 0;
     }
   };
 
   template <> struct increase_degree_by<IntPair> {
-    IntPair operator()(IntPair x) {
+    IntPair operator()(IntPair const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(false);
       return x;
     }
   };
 
   template <> struct less<IntPair> {
-    bool operator()(IntPair x, IntPair y) {
+    bool operator()(IntPair x, IntPair y) const noexcept {
       return x < y;
     }
   };
 
   template <> struct one<IntPair> {
-    IntPair operator()(IntPair) {
-      return IntPair(1, 1);
+    constexpr IntPair operator()(IntPair) const noexcept {
+      return IntPair();
     }
   };
 
   template <> struct product<IntPair> {
-    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) {
+    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const noexcept {
       xy = x * y;
     }
   };

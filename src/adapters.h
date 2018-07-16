@@ -22,6 +22,8 @@
 #ifndef LIBSEMIGROUPS_SRC_ADAPTERS_H_
 #define LIBSEMIGROUPS_SRC_ADAPTERS_H_
 
+#include "libsemigroups-config.h"
+
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct complexity;
   template <typename TElementType, typename = void> struct degree;

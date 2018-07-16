@@ -22,7 +22,6 @@
 #include "bmat8.h"
 
 #include <random>
-#include <string>
 #include <vector>
 
 namespace libsemigroups {

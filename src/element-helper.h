@@ -23,10 +23,8 @@
 #define LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
 
 #include "element.h"
-
-#ifdef LIBSEMIGROUPS_HPCOMBI
-#include "hpcombi.hpp"
-#endif
+#include "hpcombi.h"
+#include "libsemigroups-config.h"
 
 namespace libsemigroups {
 

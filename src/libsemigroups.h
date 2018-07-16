@@ -48,10 +48,6 @@
 #include "to_string.h"
 #include "uf.h"
 
-#ifdef LIBSEMIGROUPS_HPCOMBI
-#include "hpcombi.hpp"
-#endif
-
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 #endif

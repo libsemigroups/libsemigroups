@@ -93,7 +93,7 @@ namespace libsemigroups {
   Congruence::KBFP::word_to_class_index(word_type const& word) {
     LIBSEMIGROUPS_ASSERT(is_done());  // so that _semigroup != nullptr
     size_t   pos = _semigroup->position(RWSE(_rws, word));
-    LIBSEMIGROUPS_ASSERT(pos != Semigroup<RWSE>::UNDEFINED);
+    LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
     return pos;
   }
 

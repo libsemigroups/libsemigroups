@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a class for creating ranges of integers libsemigroups.
+// This file contains a class for creating ranges of integers.
 
 #ifndef LIBSEMIGROUPS_SRC_RANGE_H_
 #define LIBSEMIGROUPS_SRC_RANGE_H_

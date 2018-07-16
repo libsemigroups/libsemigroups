@@ -28,11 +28,7 @@
 #include <x86intrin.h>
 
 #include "adapters.h"
-// FIXME the following should be in an ifdef
-#include "hpcombi.hpp"
 #include "libsemigroups-debug.h"
-#include "semigroup-traits.h"
-#include "timer.h"
 #include "to_string.h"
 
 namespace libsemigroups {
@@ -279,59 +275,61 @@ namespace libsemigroups {
 
   // Specialization for adapters.h structs
   template <> struct complexity<BMat8> {
-    inline size_t operator()(BMat8 const&) const {
+    constexpr inline size_t operator()(BMat8 const&) const noexcept {
       return 0;
     }
   };
 
   template <> struct degree<BMat8> {
-    inline size_t operator()(BMat8 const&) const {
+    constexpr inline size_t operator()(BMat8 const&) const noexcept {
       return 8;
     }
   };
 
   template <> struct increase_degree_by<BMat8> {
-    inline void operator()(BMat8 const&) const {}
+    inline void operator()(BMat8 const&) const noexcept {}
   };
 
   template <> struct less<BMat8> {
-    inline bool operator()(BMat8 const& x, BMat8 const& y) const {
+    inline bool operator()(BMat8 const& x, BMat8 const& y) const noexcept {
       return x < y;
     }
   };
 
   template <> struct one<BMat8> {
-    inline BMat8 operator()(BMat8 const& x) const {
+    inline BMat8 operator()(BMat8 const& x) const noexcept {
       return x.one();
     }
 
-    inline BMat8 operator()(size_t) const {
+    inline BMat8 operator()(size_t) const noexcept {
       return BMat8::one();
     }
   };
 
   template <> struct product<BMat8> {
     inline void
-    operator()(BMat8& xy, BMat8 const& x, BMat8 const& y, size_t = 0) {
+    operator()(BMat8& xy, BMat8 const& x, BMat8 const& y, size_t = 0) const
+        noexcept {
       xy = x * y;
     }
   };
 
   template <> struct swap<BMat8> {
-    inline void operator()(BMat8& x, BMat8& y) {
+    inline void operator()(BMat8& x, BMat8& y) const noexcept {
       std::swap(x, y);
     }
   };
 
   template <typename TIndexType> struct action<BMat8, TIndexType> {
-    inline TIndexType operator()(BMat8 const& x, TIndexType const i) const {
+    inline TIndexType operator()(BMat8 const& x, TIndexType const i) const
+        noexcept {
       LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
       return x.lz_row(i);
     }
   };
 
   template <> struct inverse<BMat8> {
-    inline BMat8 operator()(BMat8 const& x) const {
+    inline BMat8 operator()(BMat8 const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(true);  // TODO check that x is invertible
       return x.transpose();
     }
