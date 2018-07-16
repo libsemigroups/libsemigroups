@@ -23,15 +23,15 @@
 
 using namespace libsemigroups;
 
-static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
-  letter_t out = S.letter_to_pos(word[0]);
+static inline size_t evaluate_reduct(Semigroup<>& S, word_type const& word) {
+  letter_type out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
     out = S.right(out, *it);
   }
   return out;
 }
 
-static inline size_t evaluate_reduct(Semigroup<>* S, word_t const& word) {
+static inline size_t evaluate_reduct(Semigroup<>* S, word_type const& word) {
   return evaluate_reduct(*S, word);
 }
 
@@ -53,7 +53,7 @@ TEST_CASE("Semigroup 043: relations [copy_closure, duplicate gens]",
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  S.enumerate(Semigroup<>::LIMIT_MAX);
+  S.enumerate(LIMIT_MAX);
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
   REQUIRE(S.nrgens() == 5);
@@ -92,7 +92,7 @@ TEST_CASE("Semigroup 044: relations [copy_add_generators, duplicate gens]",
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  S.enumerate(Semigroup<>::LIMIT_MAX);
+  S.enumerate(LIMIT_MAX);
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
   REQUIRE(S.nrgens() == 5);
@@ -139,7 +139,7 @@ TEST_CASE("Semigroup 045: relations [from copy, not enumerated]",
   T.next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -156,7 +156,7 @@ TEST_CASE("Semigroup 045: relations [from copy, not enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -192,7 +192,7 @@ TEST_CASE("Semigroup 046: relations [from copy, partly enumerated]",
   T.next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -209,7 +209,7 @@ TEST_CASE("Semigroup 046: relations [from copy, partly enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -244,7 +244,7 @@ TEST_CASE("Semigroup 047: relations [from copy, fully enumerated]",
   T.next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -261,7 +261,7 @@ TEST_CASE("Semigroup 047: relations [from copy, fully enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T.factorisation(rhs, result[2]);
@@ -301,7 +301,7 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
   T->next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -319,7 +319,7 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -361,7 +361,7 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
   T->next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -379,7 +379,7 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -422,7 +422,7 @@ TEST_CASE("Semigroup 052: relations [from copy_closure, partly enumerated]",
   T->next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -440,7 +440,7 @@ TEST_CASE("Semigroup 052: relations [from copy_closure, partly enumerated]",
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -484,7 +484,7 @@ TEST_CASE(
   T->next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -502,7 +502,7 @@ TEST_CASE(
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -545,7 +545,7 @@ TEST_CASE("Semigroup 054: relations [from copy_closure, fully enumerated]",
   size_t nr = 0;
   while (!result.empty()) {
     REQUIRE(result.size() == 3);  // there are no duplicate gens
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -564,7 +564,7 @@ TEST_CASE("Semigroup 054: relations [from copy_closure, fully enumerated]",
 
   while (!result.empty()) {
     REQUIRE(result.size() == 3);
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -608,7 +608,7 @@ TEST_CASE(
   size_t nr = 0;
   while (!result.empty()) {
     REQUIRE(result.size() == 3);  // there are no duplicate gens
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -627,7 +627,7 @@ TEST_CASE(
 
   while (!result.empty()) {
     REQUIRE(result.size() == 3);
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     T->factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     T->factorisation(rhs, result[2]);
@@ -768,11 +768,11 @@ TEST_CASE("Semigroup 058: add_generators [incremental 2]",
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.add_generators(std::vector<Element*>({}));
   S.add_generators({gens[0]});
-  S.enumerate(Semigroup<>::LIMIT_MAX);
+  S.enumerate(LIMIT_MAX);
   S.add_generators({gens[1]});
-  S.enumerate(Semigroup<>::LIMIT_MAX);
+  S.enumerate(LIMIT_MAX);
   S.add_generators({gens[2]});
-  S.enumerate(Semigroup<>::LIMIT_MAX);
+  S.enumerate(LIMIT_MAX);
   REQUIRE(S.current_size() == 7);
   S.add_generators({gens[3], gens[4], gens[5]});
   REQUIRE(S.nrgens() == 8);
@@ -894,7 +894,7 @@ TEST_CASE("Semigroup 061: factorisation ", "[quick][semigroup][finite][061]") {
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.factorisation(2) == word_t({0, 1}));
+  REQUIRE(S.factorisation(2) == word_type({0, 1}));
   delete_gens(gens);
 }
 
@@ -926,9 +926,9 @@ TEST_CASE("Semigroup 063: minimal_factorisation ",
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
-  REQUIRE(S.minimal_factorisation(gens[0]) == word_t({0}));
+  REQUIRE(S.minimal_factorisation(gens[0]) == word_type({0}));
 
-  REQUIRE(S.factorisation(gens[0]) == word_t({0}));
+  REQUIRE(S.factorisation(gens[0]) == word_type({0}));
 
   Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
   REQUIRE_THROWS_AS(S.minimal_factorisation(x), LibsemigroupsException);
@@ -946,7 +946,7 @@ TEST_CASE("Semigroup 064: batch_size (for an extremely large value)",
   Semigroup<> S = Semigroup<>(gens);
 
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  S.set_batch_size(Semigroup<>::LIMIT_MAX);
+  S.set_batch_size(LIMIT_MAX);
   S.enumerate();
 
   REQUIRE(S.size() == 5);

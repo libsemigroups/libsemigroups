@@ -16,11 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "semigroup-base.h"
+#include "catch.hpp"
+#include "src/constants.h"
 
 namespace libsemigroups {
-  SemigroupBase::index_t const SemigroupBase::UNDEFINED
-      = std::numeric_limits<index_t>::max();
-  SemigroupBase::index_t const SemigroupBase::LIMIT_MAX
-      = std::numeric_limits<index_t>::max();
+  namespace constants {
+    constexpr bool REPORT = false;
+
+    TEST_CASE("Constants 01:", "[quick][constants][01]") {
+      // REQUIRE(UNDEFINED != LIMIT_MAX);
+    }
+  }  // namespace constants
 }  // namespace libsemigroups

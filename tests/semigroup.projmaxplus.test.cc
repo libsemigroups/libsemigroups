@@ -52,7 +52,7 @@ TEST_CASE("Semigroup of ProjectiveMaxPlusMatrices 01: non-pointer "
   REQUIRE(S.minimal_factorisation(
               ProjectiveMaxPlusMatrix({1, 0, 0, 1, 0, 1, 0, 1, 0}, sr)
               * ProjectiveMaxPlusMatrix({0, 1, 2, 3, 4, 1, 2, 1, 1}, sr))
-          == word_t({3, 0}));
+          == word_type({3, 0}));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);
   pos = 0;

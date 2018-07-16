@@ -216,8 +216,8 @@ namespace libsemigroups {
   }
 
   // Public
-  void RWS::add_rules(std::vector<relation_t> const& relations) {
-    for (relation_t const& rel : relations) {
+  void RWS::add_rules(std::vector<relation_type> const& relations) {
+    for (relation_type const& rel : relations) {
       if (rel.first != rel.second) {
         add_rule(new_rule(new rws_word_t(word_to_rws_word(rel.first)),
                           new rws_word_t(word_to_rws_word(rel.second))));
@@ -550,7 +550,7 @@ namespace libsemigroups {
     int64_t v_id = v->id();
     for (auto it = u->lhs()->cend() - 1;
          it > limit && !killed && u_id == u->id() && v_id == v->id()
-         && (_max_overlap == UNBOUNDED
+         && (_max_overlap == LIMIT_MAX
              || (*_overlap_measure)(u, v, it) <= _max_overlap);
          --it) {
       // Check if B = [it, u->lhs()->cend()) is a prefix of v->lhs()
@@ -634,7 +634,7 @@ namespace libsemigroups {
       // LIBSEMIGROUPS_ASSERT(_stack.empty());
       // Seems that the stack can be non-empty here in RWS 12, 14, 16 and maybe
       // more
-      if (_max_overlap == UNBOUNDED && _max_rules == UNBOUNDED) {
+      if (_max_overlap == LIMIT_MAX && _max_rules == LIMIT_MAX) {
         _confluence_known = true;
         _confluent        = true;
         for (Rule* rule : _inactive_rules) {
@@ -668,14 +668,14 @@ namespace libsemigroups {
     return *p == *q;
   }
 
-  bool RWS::test_equals(word_t const& p, word_t const& q) {
+  bool RWS::test_equals(word_type const& p, word_type const& q) {
     return test_equals(word_to_rws_word(p, _tmp_word1),
                        word_to_rws_word(q, _tmp_word2));
   }
 
   bool RWS::test_equals(std::initializer_list<size_t> const& p,
                         std::initializer_list<size_t> const& q) {
-    return test_equals(word_t(p), word_t(q));
+    return test_equals(word_type(p), word_type(q));
   }
 
   bool RWS::test_equals(std::string const& p, std::string const& q) {
@@ -701,7 +701,7 @@ namespace libsemigroups {
     return (*_order)(q, p);
   }
 
-  bool RWS::test_less_than(word_t const& p, word_t const& q) {
+  bool RWS::test_less_than(word_type const& p, word_type const& q) {
     return test_less_than(word_to_rws_word(p, _tmp_word1),
                           word_to_rws_word(q, _tmp_word2));
   }

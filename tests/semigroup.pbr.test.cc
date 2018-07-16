@@ -73,8 +73,8 @@ TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
                                          {5, 3, 0},
                                          {5, 3, 2, 1},
                                          {3, 1, 2}}))
-          == word_t({0, 0}));
-  REQUIRE(S.minimal_factorisation(5) == word_t({3, 3}));
+          == word_type({0, 0}));
+  REQUIRE(S.minimal_factorisation(5) == word_type({3, 3}));
   REQUIRE(S.at(5)
           == PBR({{5, 4, 3},
                   {5, 4, 2},

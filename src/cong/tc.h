@@ -49,8 +49,8 @@ namespace libsemigroups {
       return _active - 1;
     }
 
-    class_index_t word_to_class_index(word_t const& word) final;
-    result_t current_equals(word_t const& w1, word_t const& w2) final;
+    class_index_t word_to_class_index(word_type const& word) final;
+    result_t current_equals(word_type const& w1, word_type const& w2) final;
 
     // This method compresses the coset table used by <todd_coxeter>.
     void compress();
@@ -67,9 +67,9 @@ namespace libsemigroups {
     void init_after_prefill();
     void init_tc_relations();
 
-    void        new_coset(class_index_t const&, letter_t const&);
+    void        new_coset(class_index_t const&, letter_type const&);
     void        identify_cosets(class_index_t, class_index_t);
-    inline void trace(class_index_t const&, relation_t const&, bool add = true);
+    inline void trace(class_index_t const&, relation_type const&, bool add = true);
 
     size_t                            _active;  // Number of active cosets
     std::vector<signed_class_index_t> _bckwd;
@@ -77,7 +77,7 @@ namespace libsemigroups {
     class_index_t                     _current;
     class_index_t                     _current_no_add;
     size_t                            _defined;
-    std::vector<relation_t>           _extra;
+    std::vector<relation_type>           _extra;
     std::vector<class_index_t>        _forwd;
     class_index_t                     _id_coset;   // TODO(JDM) Remove?
     bool                              _init_done;  // Has init() been run yet?
@@ -89,7 +89,7 @@ namespace libsemigroups {
     bool                      _prefilled;
     RecVec<class_index_t>     _preim_init;
     RecVec<class_index_t>     _preim_next;
-    std::vector<relation_t>   _relations;
+    std::vector<relation_type>   _relations;
     std::stack<class_index_t> _rhs_stack;  // Stack for identifying cosets
     size_t                    _steps;
     size_t                    _stop_packing;  // TODO(JDM): make this a bool?

@@ -28,26 +28,26 @@ TEST_CASE("Partition 01: 0-argument constructor", "[partition][quick][01]") {
 }
 
 TEST_CASE("Partition 02: 1-argument constructor", "[partition][quick][02]") {
-  std::vector<std::vector<word_t*>*>* vector
-      = new std::vector<std::vector<word_t*>*>();
+  std::vector<std::vector<word_type*>*>* vector
+      = new std::vector<std::vector<word_type*>*>();
 
   for (size_t i = 0; i < 3; i++) {
-    vector->push_back(new std::vector<word_t*>());
+    vector->push_back(new std::vector<word_type*>());
   }
 
-  vector->at(0)->push_back(new word_t({1}));
-  vector->at(0)->push_back(new word_t({0, 1}));
-  vector->at(1)->push_back(new word_t({0, 0, 1}));
-  vector->at(1)->push_back(new word_t({1, 3, 2, 2}));
-  vector->at(2)->push_back(new word_t({3}));
+  vector->at(0)->push_back(new word_type({1}));
+  vector->at(0)->push_back(new word_type({0, 1}));
+  vector->at(1)->push_back(new word_type({0, 0, 1}));
+  vector->at(1)->push_back(new word_type({1, 3, 2, 2}));
+  vector->at(2)->push_back(new word_type({3}));
 
-  Partition<word_t>* part = new Partition<word_t>(vector);
+  Partition<word_type>* part = new Partition<word_type>(vector);
 
   REQUIRE(part->size() == 3);
   REQUIRE(part->at(0)->size() == 2);
   REQUIRE((*part)[1]->size() == 2);
   REQUIRE((*part)[2]->size() == 1);
-  REQUIRE(*part->at(1, 1) == word_t({1, 3, 2, 2}));
+  REQUIRE(*part->at(1, 1) == word_type({1, 3, 2, 2}));
 
   delete part;
 }

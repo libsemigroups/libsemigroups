@@ -54,9 +54,9 @@ namespace libsemigroups {
       return _semigroup->size();
     }
 
-    class_index_t word_to_class_index(word_t const& word) final;
-    result_t current_equals(word_t const& w1, word_t const& w2) final;
-    result_t current_less_than(word_t const& w1, word_t const& w2) override;
+    class_index_t word_to_class_index(word_type const& word) final;
+    result_t current_equals(word_type const& w1, word_type const& w2) final;
+    result_t current_less_than(word_type const& w1, word_type const& w2) override;
 
    private:
     void init();

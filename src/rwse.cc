@@ -24,12 +24,12 @@
 #include "functional.h"
 
 namespace libsemigroups {
-  //! Returns a libsemigroups::word_t which evaluates to \p x.
+  //! Returns a libsemigroups::word_type which evaluates to \p x.
   //!
   //! Specialises the factorisation method for Semigroup's of RWSE's so that it
   //! just returns the word inside the RWSE.
   template <>
-  word_t
+  word_type
   Semigroup<RWSE, libsemigroups::hash<RWSE>, libsemigroups::equal_to<RWSE>>::
       factorisation(RWSE const& x) {
     return RWS::rws_word_to_word(x.get_rws_word());

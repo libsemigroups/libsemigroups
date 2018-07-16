@@ -28,7 +28,7 @@
 #include <x86intrin.h>
 
 #include "adapters.h"
-#include "element.h"
+// FIXME the following should be in an ifdef
 #include "hpcombi.hpp"
 #include "libsemigroups-debug.h"
 #include "semigroup-traits.h"

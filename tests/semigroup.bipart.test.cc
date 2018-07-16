@@ -58,8 +58,8 @@ TEST_CASE("Semigroup of Bipartitions 01: non-pointer Bipartitions",
                                                  1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
                                   * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
                                                  5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
-          == word_t({0, 3, 1}));
-  REQUIRE(S.minimal_factorisation(11) == word_t({0, 3}));
+          == word_type({0, 3, 1}));
+  REQUIRE(S.minimal_factorisation(11) == word_type({0, 3}));
   REQUIRE(S.at(11)
           == Bipartition(
                  {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0})

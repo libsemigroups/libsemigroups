@@ -25,7 +25,10 @@
 
 #include "catch.hpp"
 
-#include "src/libsemigroups.h"
+#include "src/bmat8.h"
+#include "src/element-helper.h"
+#include "src/hpcombi.h"
+#include "src/schreier-sims.h"
 
 namespace libsemigroups_tests {
   namespace schreier_sims {

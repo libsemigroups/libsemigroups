@@ -25,6 +25,7 @@
 #include <utility>
 #include <vector>
 
+#include "constants.h"
 #include "element.h"
 #include "rws.h"
 #include "semigroup.h"
@@ -36,8 +37,7 @@ namespace libsemigroups {
   //! This class is used to wrap libsemigroups::rws_word_t into an Element so
   //! that it is possible to use them as generators for a Semigroup object.
   class RWSE : public Element {
-    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
-    using rws_word_t              = RWS::rws_word_t;
+    using rws_word_t = RWS::rws_word_t;
 
    private:
     RWSE(RWS* rws, rws_word_t w, bool reduce)
@@ -77,21 +77,22 @@ namespace libsemigroups {
     //! Constructor from a rewriting system and a letter.
     //!
     //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
-    RWSE(RWS* rws, letter_t const& a) : RWSE(rws, RWS::uint_to_rws_word(a)) {}
+    RWSE(RWS* rws, letter_type const& a)
+        : RWSE(rws, RWS::uint_to_rws_word(a)) {}
 
     //! Constructor from a rewriting system and a letter.
     //!
     //! Calls RWSE::RWSE with RWS::uint_to_rws_word of \p a.
-    RWSE(RWS& rws, letter_t const& a) : RWSE(&rws, a) {}
+    RWSE(RWS& rws, letter_type const& a) : RWSE(&rws, a) {}
 
     //! Constructor from a rewriting system and a word.
     //!
     //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
-    RWSE(RWS* rws, word_t const& w) : RWSE(rws, RWS::word_to_rws_word(w)) {}
+    RWSE(RWS* rws, word_type const& w) : RWSE(rws, RWS::word_to_rws_word(w)) {}
     //! Constructor from a rewriting system and a word.
     //!
     //! Calls RWSE::RWSE with RWS::word_to_rws_word of \p w.
-    RWSE(RWS& rws, word_t const& w) : RWSE(&rws, w) {}
+    RWSE(RWS& rws, word_type const& w) : RWSE(&rws, w) {}
 
     //! A copy constructor.
     RWSE(RWSE const&);
@@ -242,14 +243,14 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  //! Returns a libsemigroups::word_t which evaluates to \p x.
+  //! Returns a libsemigroups::word_type which evaluates to \p x.
   //!
   //! Specialises the factorisation method for Semigroup's of RWSE's so that it
   //! just returns the word inside the RWSE.
   template <>
-  word_t Semigroup<RWSE,
-                   libsemigroups::hash<RWSE>,
-                   libsemigroups::equal_to<RWSE>>::factorisation(RWSE const& x);
+  word_type
+  Semigroup<RWSE, libsemigroups::hash<RWSE>, libsemigroups::equal_to<RWSE>>::
+      factorisation(RWSE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SRC_RWSE_H_

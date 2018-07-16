@@ -51,8 +51,8 @@ TEST_CASE("Semigroup of PartialPerms 01",
   REQUIRE(S.minimal_factorisation(
               PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
               * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-          == word_t({3, 2}));
-  REQUIRE(S.minimal_factorisation(10) == word_t({2, 1}));
+          == word_type({3, 2}));
+  REQUIRE(S.minimal_factorisation(10) == word_type({2, 1}));
   REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);

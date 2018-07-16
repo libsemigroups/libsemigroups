@@ -27,10 +27,6 @@
 
 namespace libsemigroups {
 
-  // Define static data members
-  size_t const Congruence::INFTY     = std::numeric_limits<size_t>::max();
-  size_t const Congruence::UNDEFINED = std::numeric_limits<size_t>::max();
-
   // Get the type from a string
   Congruence::cong_t Congruence::type_from_string(std::string type) {
     if (type == "left") {
@@ -43,10 +39,10 @@ namespace libsemigroups {
     }
   }
 
-  Congruence::Congruence(cong_t                         type,
-                         size_t                         nrgens,
-                         std::vector<relation_t> const& relations,
-                         std::vector<relation_t> const& extra)
+  Congruence::Congruence(cong_t                            type,
+                         size_t                            nrgens,
+                         std::vector<relation_type> const& relations,
+                         std::vector<relation_type> const& extra)
       : _data(nullptr),
         _extra(extra),
         _max_threads(std::thread::hardware_concurrency()),
@@ -60,26 +56,26 @@ namespace libsemigroups {
     // i.e. that every entry is at most nrgens - 1
   }
 
-  Congruence::Congruence(std::string                    type,
-                         size_t                         nrgens,
-                         std::vector<relation_t> const& relations,
-                         std::vector<relation_t> const& extra)
+  Congruence::Congruence(std::string                       type,
+                         size_t                            nrgens,
+                         std::vector<relation_type> const& relations,
+                         std::vector<relation_type> const& extra)
       : Congruence(type_from_string(type), nrgens, relations, extra) {}
 
-  Congruence::Congruence(cong_t                         type,
-                         SemigroupBase*                 semigroup,
-                         std::vector<relation_t> const& genpairs)
+  Congruence::Congruence(cong_t                            type,
+                         SemigroupBase*                    semigroup,
+                         std::vector<relation_type> const& genpairs)
       : Congruence(type,
                    semigroup->nrgens(),
-                   std::vector<relation_t>(),
-                   std::vector<relation_t>()) {
+                   std::vector<relation_type>(),
+                   std::vector<relation_type>()) {
     _semigroup = semigroup;
     _extra     = genpairs;  // it is essential that this is set here!
   }
 
-  Congruence::Congruence(std::string                    type,
-                         SemigroupBase*                 semigroup,
-                         std::vector<relation_t> const& extra)
+  Congruence::Congruence(std::string                       type,
+                         SemigroupBase*                    semigroup,
+                         std::vector<relation_type> const& extra)
       : Congruence(type_from_string(type), semigroup, extra) {}
 
   Congruence::DATA* Congruence::winning_data(
@@ -260,7 +256,7 @@ namespace libsemigroups {
     // Does there exist a generator which appears in no relation?
     for (size_t gen = 0; gen < _nrgens; gen++) {
       bool found = false;
-      for (relation_t const& rel : _relations) {
+      for (relation_type const& rel : _relations) {
         if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
                 != rel.first.cend()
             || std::find(rel.second.cbegin(), rel.second.cend(), gen)
@@ -270,7 +266,7 @@ namespace libsemigroups {
         }
       }
       if (!found) {
-        for (relation_t const& rel : _extra) {
+        for (relation_type const& rel : _extra) {
           if (std::find(rel.first.cbegin(), rel.first.cend(), gen)
                   != rel.first.cend()
               || std::find(rel.second.cbegin(), rel.second.cend(), gen)
@@ -313,7 +309,7 @@ namespace libsemigroups {
     _data = new KBFP(*this);
   }
 
-  Partition<word_t>* Congruence::nontrivial_classes() {
+  Partition<word_type>* Congruence::nontrivial_classes() {
     DATA* data;
     if (_semigroup == nullptr) {
       // If this is an fp semigroup congruence, then KBP is the only DATA
@@ -323,7 +319,7 @@ namespace libsemigroups {
       // happens to be a KBP object already.
       data = new KBP(*this);
       data->run();
-      Partition<word_t>* out = data->nontrivial_classes();
+      Partition<word_type>* out = data->nontrivial_classes();
       if (_data == nullptr) {
         delete_data();
         _data = data;
@@ -357,14 +353,14 @@ namespace libsemigroups {
 
       while (relation.size() == 2 && !relation.empty()) {
         // This is for the case when there are duplicate gens
-        word_t lhs = {relation[0]};
-        word_t rhs = {relation[1]};
+        word_type lhs = {relation[0]};
+        word_type rhs = {relation[1]};
         _relations.push_back(std::make_pair(lhs, rhs));
         semigroup->next_relation(relation);
         // We could remove the duplicate generators, and update any relation
         // that contains a removed generator but this would be more complicated
       }
-      word_t lhs, rhs;  // changed in-place by factorisation
+      word_type lhs, rhs;  // changed in-place by factorisation
       while (!relation.empty()) {
         semigroup->factorisation(lhs, relation[0]);
         lhs.push_back(relation[1]);
@@ -383,7 +379,7 @@ namespace libsemigroups {
   // and KBFP; the P and KBP subclasses override with their own superior method.
   // This method requires a Semigroup pointer and therefore does not allow fp
   // semigroup congruences.
-  Partition<word_t>* Congruence::DATA::nontrivial_classes() {
+  Partition<word_type>* Congruence::DATA::nontrivial_classes() {
     // FIXME this should be completely rewritten
     LIBSEMIGROUPS_ASSERT(is_done());
     LIBSEMIGROUPS_ASSERT(_cong._semigroup != nullptr);
@@ -391,7 +387,7 @@ namespace libsemigroups {
     partition_t* classes = new partition_t();
 
     if (_cong._extra.empty()) {
-      return new Partition<word_t>(classes);  // no nontrivial classes
+      return new Partition<word_type>(classes);  // no nontrivial classes
     }
 
     // Note: we assume classes are numbered contiguously {0 .. n-1}
@@ -401,11 +397,11 @@ namespace libsemigroups {
     }
 
     // Look up the class number of each element of the parent semigroup
-    word_t word;
+    word_type word;
     for (size_t pos = 0; pos < _cong._semigroup->size(); pos++) {
       _cong._semigroup->factorisation(word, pos);
       LIBSEMIGROUPS_ASSERT(word_to_class_index(word) < nr_classes());
-      (*all_classes)[word_to_class_index(word)]->push_back(new word_t(word));
+      (*all_classes)[word_to_class_index(word)]->push_back(new word_type(word));
     }
 
     // Store the words
@@ -423,7 +419,7 @@ namespace libsemigroups {
     }
     delete all_classes;
 
-    return new Partition<word_t>(classes);
+    return new Partition<word_type>(classes);
   }
 
 }  // namespace libsemigroups

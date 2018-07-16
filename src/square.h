@@ -32,7 +32,7 @@
 namespace libsemigroups {
 
   template <typename T, size_t N, class A = std::allocator<T>>
-    //FIXME remove or use the template parameter A
+  // FIXME remove or use the template parameter A
   class SquareVector {
     // So that SquareVector<T, N, A> can access private data members of
     // SquareVector<S, M, B> and vice versa.

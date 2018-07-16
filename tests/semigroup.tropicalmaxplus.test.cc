@@ -50,8 +50,8 @@ TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
   REQUIRE(S.minimal_factorisation(
               MatrixOverSemiring<int64_t>({{1, 1}, {0, 2}}, sr)
               * MatrixOverSemiring<int64_t>({{2, 1}, {4, 0}}, sr))
-          == word_t({2, 1}));
-  REQUIRE(S.minimal_factorisation(52) == word_t({0, 2, 2, 1}));
+          == word_type({2, 1}));
+  REQUIRE(S.minimal_factorisation(52) == word_type({0, 2, 2, 1}));
   REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{9, 7}, {9, 5}}, sr));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);

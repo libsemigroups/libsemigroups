@@ -28,6 +28,7 @@
 #include <utility>
 #include <vector>
 
+#include "constants.h"
 #include "partition.h"
 #include "report.h"
 #include "semigroup-traits.h"
@@ -66,10 +67,6 @@ namespace libsemigroups {
       TWOSIDED = 2
     };
 
-    //! The maximum number of steps that can be done in one run of
-    //! Congruence::run.
-    static const size_t LIMIT_MAX = std::numeric_limits<size_t>::max();
-
    public:
     //! Type for indices of congruence classes in a Congruence object.
     typedef size_t class_index_t;
@@ -84,11 +81,11 @@ namespace libsemigroups {
     //! * \p nrgens: the number of generators.
     //!
     //! * \p relations: the defining relations of the semigroup over which the
-    //! congruence being constructed is defined. Every relation_t in this
+    //! congruence being constructed is defined. Every relation_type in this
     //! parameter must consist of positive integers less than \p nrgens.
     //!
     //! * \p extra: additional relations corresponding to the generating pairs
-    //! of the congruence being constructed.  Every relation_t in this
+    //! of the congruence being constructed.  Every relation_type in this
     //! parameter must consist of positive integers less than \p nrgens.
     //!
     //! This constructor returns an instance of a Congruence object whose type
@@ -104,10 +101,10 @@ namespace libsemigroups {
     //! the parameter \p relations and the relations defining the
     //! congruence to be constructed should be passed as the parameter \p
     //! extra.
-    Congruence(std::string                    type,
-               size_t                         nrgens,
-               std::vector<relation_t> const& relations,
-               std::vector<relation_t> const& extra);
+    Congruence(std::string                       type,
+               size_t                            nrgens,
+               std::vector<relation_type> const& relations,
+               std::vector<relation_type> const& extra);
 
     //! Constructor for congruences over a Semigroup object.
     //!
@@ -121,7 +118,7 @@ namespace libsemigroups {
     //!
     //! * \p genpairs: additional relations corresponding to the generating
     //! pairs
-    //! of the congruence being constructed.  Every relation_t in this
+    //! of the congruence being constructed.  Every relation_type in this
     //! parameter must consist of positive integers less than the number of
     //! generators of \p semigroup (Semigroup::nrgens()).
     //!
@@ -129,9 +126,9 @@ namespace libsemigroups {
     //! is described by the string \p type. The congruence is defined over the
     //! Semigroup \p semigroup and is the least congruence containing the
     //! generating pairs in \p extra.
-    Congruence(std::string                    type,
-               SemigroupBase*                 semigroup,
-               std::vector<relation_t> const& genpairs);
+    Congruence(std::string                       type,
+               SemigroupBase*                    semigroup,
+               std::vector<relation_type> const& genpairs);
 
     //! A default destructor.
     //!
@@ -143,7 +140,7 @@ namespace libsemigroups {
 
     //! Returns the index of the congruence class corresponding to \p word.
     //!
-    //! The parameter \p word must be a libsemigroups::word_t consisting of
+    //! The parameter \p word must be a libsemigroups::word_type consisting of
     //! indices of the generators of the semigroup over which \c this is
     //! defined.
     //!
@@ -156,7 +153,7 @@ namespace libsemigroups {
     //! \warning The method for finding the structure of a congruence is
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
-    class_index_t word_to_class_index(word_t const& word) {
+    class_index_t word_to_class_index(word_type const& word) {
       DATA* data = get_data();
       LIBSEMIGROUPS_ASSERT(data->is_done());
       return data->word_to_class_index(word);
@@ -165,13 +162,13 @@ namespace libsemigroups {
     //!  Returns \c true if the words \p w1 and \p w2 belong to the
     //! same congruence class.
     //!
-    //! The parameters  \p w1  and \p w2 must be libsemigroups::word_t's
+    //! The parameters  \p w1  and \p w2 must be libsemigroups::word_type's
     //! consisting of indices of generators of the semigroup over which \c this
     //! is defined.
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    bool test_equals(word_t const& w1, word_t const& w2) {
+    bool test_equals(word_type const& w1, word_type const& w2) {
       if (w1 == w2) {
         return true;
       }
@@ -196,7 +193,7 @@ namespace libsemigroups {
     //! than
     //! the class of \p w2 in a total ordering of congruence classes.
     //!
-    //! The parameters \p w1 and \p w2 should be libsemigroups::word_t's
+    //! The parameters \p w1 and \p w2 should be libsemigroups::word_type's
     //! consisting of indices of the generators of the semigroup over which \c
     //! this is defined.
     //!
@@ -206,7 +203,7 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    bool test_less_than(word_t const& w1, word_t const& w2) {
+    bool test_less_than(word_type const& w1, word_type const& w2) {
       DATA* data;
       if (is_done()) {
         data = _data;
@@ -256,7 +253,7 @@ namespace libsemigroups {
     //! \warning If \c this has infinitely many non-trivial congruence classes,
     //! then this method will only terminate when it can no longer allocate
     //! memory.
-    Partition<word_t>* nontrivial_classes();
+    Partition<word_type>* nontrivial_classes();
 
     //! Returns \c true if the structure of the congruence is known.
     bool is_done() const {
@@ -271,14 +268,14 @@ namespace libsemigroups {
     //!
     //! This method is non-const since if the congruence is defined over a
     //! Semigroup object, then we may have to compute and store its relations.
-    std::vector<relation_t> const& relations() {
+    std::vector<relation_type> const& relations() {
       init_relations(_semigroup);
       return _relations;
     }
 
     //!  Returns the vector of extra relations (or equivalently,
     //! generating pairs) used to define the congruence.
-    std::vector<relation_t> const& extra() const {
+    std::vector<relation_type> const& extra() const {
       return _extra;
     }
 
@@ -291,7 +288,7 @@ namespace libsemigroups {
 
     // FIXME it would be better to provide a constructor from another
     // congruence that copied the relations.
-    void set_relations(std::vector<relation_t> const& relations) {
+    void set_relations(std::vector<relation_type> const& relations) {
       LIBSEMIGROUPS_ASSERT(_relations.empty());  // _extra can be non-empty!
       _relations = relations;
     }
@@ -538,7 +535,7 @@ namespace libsemigroups {
 
       // This method returns the index of the congruence class containing the
       // element of the semigroup defined by word.
-      virtual class_index_t word_to_class_index(word_t const& word) = 0;
+      virtual class_index_t word_to_class_index(word_type const& word) = 0;
 
       // Possible result of questions that might not be answerable.
       enum result_t { TRUE = 0, FALSE = 1, UNKNOWN = 2 };
@@ -547,7 +544,8 @@ namespace libsemigroups {
       // elements in the same congruence class, \c false if they are known to
       // lie in different classes, and **UNKNOWN** if the information has not
       // yet been discovered.
-      virtual result_t current_equals(word_t const& w1, word_t const& w2) = 0;
+      virtual result_t current_equals(word_type const& w1, word_type const& w2)
+          = 0;
 
       // This method returns \c true if the two words are known to be in
       // distinct classes, where w1's class is less than w2's class by some
@@ -555,7 +553,8 @@ namespace libsemigroups {
       // **UNKNOWN** if the information has not yet been discovered.
       // \p w1 const reference to the first word
       // \p w2 const reference to the second word
-      virtual result_t current_less_than(word_t const& w1, word_t const& w2) {
+      virtual result_t current_less_than(word_type const& w1,
+                                         word_type const& w2) {
         if (is_done()) {
           return word_to_class_index(w1) < word_to_class_index(w2)
                      ? result_t::TRUE
@@ -567,7 +566,7 @@ namespace libsemigroups {
       }
 
       // This method returns the non-trivial classes of the congruence.
-      virtual Partition<word_t>* nontrivial_classes();
+      virtual Partition<word_type>* nontrivial_classes();
 
       // This method kills a given instance of a DATA object.
       void kill() {
@@ -613,13 +612,13 @@ namespace libsemigroups {
       }
 
      private:
-      Congruence&                   _cong;
-      size_t                        _default_nr_steps;
-      std::atomic<bool>             _killed;
-      size_t                        _report_interval;
-      size_t                        _report_next;
-      typedef std::vector<word_t*>  class_t;
-      typedef std::vector<class_t*> partition_t;
+      Congruence&                     _cong;
+      size_t                          _default_nr_steps;
+      std::atomic<bool>               _killed;
+      size_t                          _report_interval;
+      size_t                          _report_next;
+      typedef std::vector<word_type*> class_t;
+      typedef std::vector<class_t*>   partition_t;
     };
 
     template <
@@ -666,7 +665,7 @@ namespace libsemigroups {
         _tmp2 = this->internal_copy(_tmp1);
 
         // Set up _pairs_to_mult
-        for (relation_t const& rel : cong._extra) {
+        for (relation_type const& rel : cong._extra) {
           value_type x = semigroup->word_to_element(rel.first);
           value_type y = semigroup->word_to_element(rel.second);
           add_pair(this->to_internal(x), this->to_internal(y));
@@ -676,14 +675,12 @@ namespace libsemigroups {
       }
 
       void delete_tmp_storage() {
-        std::unordered_set<
-            std::pair<internal_value_type, internal_value_type>,
-            PHash,
-            PEqual>()
+        std::unordered_set<std::pair<internal_value_type, internal_value_type>,
+                           PHash,
+                           PEqual>()
             .swap(_found_pairs);
-        std::queue<
-            std::pair<internal_value_type, internal_value_type>>()
-            .swap(_pairs_to_mult);
+        std::queue<std::pair<internal_value_type, internal_value_type>>().swap(
+            _pairs_to_mult);
       }
 
       ~P() {
@@ -691,11 +688,11 @@ namespace libsemigroups {
         this->internal_free(_tmp1);
         this->internal_free(_tmp2);
         for (auto& x : _map) {
-          this->internal_free(x.first);
+          this->internal_free(const_cast<internal_value_type>(x.first));
         }
       }
 
-      bool is_done() const final { // TODO noexcept
+      bool is_done() const final {  // TODO noexcept
         return _done;
       }
 
@@ -705,7 +702,7 @@ namespace libsemigroups {
                + _next_class;
       }
 
-      class_index_t word_to_class_index(word_t const& w) final {
+      class_index_t word_to_class_index(word_type const& w) final {
         LIBSEMIGROUPS_ASSERT(is_done());
         auto semigroup
             = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
@@ -717,7 +714,7 @@ namespace libsemigroups {
         return _class_lookup[ind_x];
       }
 
-      result_t current_equals(word_t const& w1, word_t const& w2) final {
+      result_t current_equals(word_type const& w1, word_type const& w2) final {
         if (is_done()) {
           return word_to_class_index(w1) == word_to_class_index(w2) ? TRUE
                                                                     : FALSE;
@@ -733,17 +730,17 @@ namespace libsemigroups {
         return _lookup.find(ind_x) == _lookup.find(ind_y) ? TRUE : UNKNOWN;
       }
 
-      Partition<word_t>* nontrivial_classes() final {
+      Partition<word_type>* nontrivial_classes() final {
         LIBSEMIGROUPS_ASSERT(is_done());
         LIBSEMIGROUPS_ASSERT(_reverse_map.size() >= _nr_nontrivial_elms);
         LIBSEMIGROUPS_ASSERT(_class_lookup.size() >= _nr_nontrivial_elms);
 
-        Partition<word_t>* classes
-            = new Partition<word_t>(_nr_nontrivial_classes);
+        Partition<word_type>* classes
+            = new Partition<word_type>(_nr_nontrivial_classes);
         auto semigroup
             = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
         for (size_t ind = 0; ind < _nr_nontrivial_elms; ind++) {
-          word_t* word = new word_t(
+          word_type* word = new word_type(
               semigroup->factorisation(this->to_external(_reverse_map[ind])));
           (*classes)[_class_lookup[ind]]->push_back(word);
         }
@@ -760,7 +757,7 @@ namespace libsemigroups {
 
       void run(std::atomic<bool>& killed) {
         while (!killed && !is_done()) {
-          run(Congruence::LIMIT_MAX, killed);
+          run(LIMIT_MAX, killed);
         }
       }
 
@@ -944,10 +941,9 @@ namespace libsemigroups {
 
       std::vector<class_index_t> _class_lookup;
       bool                       _done;
-      std::unordered_set<
-          std::pair<internal_value_type, internal_value_type>,
-          PHash,
-          PEqual>
+      std::unordered_set<std::pair<internal_value_type, internal_value_type>,
+                         PHash,
+                         PEqual>
           _found_pairs;
       UF  _lookup;
       std::unordered_map<internal_const_value_type,
@@ -991,32 +987,29 @@ namespace libsemigroups {
                        bool                       ignore_max_threads = false,
                        std::function<bool(DATA*)> goal_func = RETURN_FALSE);
 
-    Congruence(cong_t                         type,
-               size_t                         nrgens,
-               std::vector<relation_t> const& relations,
-               std::vector<relation_t> const& extra);
+    Congruence(cong_t                            type,
+               size_t                            nrgens,
+               std::vector<relation_type> const& relations,
+               std::vector<relation_type> const& extra);
 
-    Congruence(cong_t                         type,
-               SemigroupBase*                 semigroup,
-               std::vector<relation_t> const& extra);
+    Congruence(cong_t                            type,
+               SemigroupBase*                    semigroup,
+               std::vector<relation_type> const& extra);
 
     cong_t type_from_string(std::string);
 
-    DATA*                   _data;
-    std::vector<relation_t> _extra;
-    std::mutex              _init_mtx;
-    std::mutex              _kill_mtx;
-    size_t                  _max_threads;
-    size_t                  _nrgens;
-    std::vector<DATA*>      _partial_data;
-    RecVec<class_index_t>   _prefill;
-    std::vector<relation_t> _relations;
-    std::atomic<bool>       _relations_done;
-    SemigroupBase*          _semigroup;
-    cong_t                  _type;
-
-    static size_t const INFTY;
-    static size_t const UNDEFINED;
+    DATA*                      _data;
+    std::vector<relation_type> _extra;
+    std::mutex                 _init_mtx;
+    std::mutex                 _kill_mtx;
+    size_t                     _max_threads;
+    size_t                     _nrgens;
+    std::vector<DATA*>         _partial_data;
+    RecVec<class_index_t>      _prefill;
+    std::vector<relation_type> _relations;
+    std::atomic<bool>          _relations_done;
+    SemigroupBase*             _semigroup;
+    cong_t                     _type;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_CONG_H_

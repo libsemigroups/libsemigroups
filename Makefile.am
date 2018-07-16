@@ -75,7 +75,6 @@ libsemigroups_la_SOURCES += src/cong.cc
 libsemigroups_la_SOURCES += src/element.cc
 libsemigroups_la_SOURCES += src/rws.cc
 libsemigroups_la_SOURCES += src/rwse.cc
-libsemigroups_la_SOURCES += src/semigroup-base.cc
 libsemigroups_la_SOURCES += src/uf.cc
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
@@ -115,10 +114,10 @@ CHECK_FLAGS2  = [quick],[standard]
 check_PROGRAMS = lstest
 
 lstest_SOURCES =  tests/main.test.cc
-lstest_SOURCES += tests/schreier-sims.test.cc
 lstest_SOURCES += tests/blocks.test.cc
 lstest_SOURCES += tests/bmat8.test.cc
 lstest_SOURCES += tests/cong.test.cc
+lstest_SOURCES += tests/constants.test.cc
 lstest_SOURCES += tests/element.test.cc
 lstest_SOURCES += tests/hpcombi.test.cc
 lstest_SOURCES += tests/kbp.test.cc
@@ -129,6 +128,7 @@ lstest_SOURCES += tests/recvec.test.cc
 lstest_SOURCES += tests/rws.1.test.cc
 lstest_SOURCES += tests/rws.2.test.cc
 lstest_SOURCES += tests/rwse.test.cc
+lstest_SOURCES += tests/schreier-sims.test.cc
 lstest_SOURCES += tests/semigroup.1.test.cc
 lstest_SOURCES += tests/semigroup.2.test.cc
 lstest_SOURCES += tests/semigroup.3.test.cc

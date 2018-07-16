@@ -31,6 +31,15 @@
 
 // TODO
 //
+// 0. check use of:
+//    * value_type []
+//    * const_value_type []
+//    * reference        []
+//    * const_reference  []
+//    * internal_value_type []
+//    * internal_const_value_type []
+//    * internal_reference []
+//    * internal_const_reference []
 // 1. iterator to the elements (maybe)
 // 2. stabilizer method
 // 3. change base
@@ -58,14 +67,11 @@ namespace libsemigroups {
   class StabChain : private TTraits {
     using value_type       = typename TTraits::value_type;
     using const_value_type = typename TTraits::const_value_type;
-    using reference        = typename TTraits::reference;
     using const_reference  = typename TTraits::const_reference;
 
     using internal_value_type = typename TTraits::internal_value_type;
     using internal_const_value_type =
         typename TTraits::internal_const_value_type;
-    using internal_reference       = typename TTraits::internal_reference;
-    using internal_const_reference = typename TTraits::internal_const_reference;
 
     using internal_equal_to = typename TTraits::internal_equal_to;
 
@@ -144,19 +150,19 @@ namespace libsemigroups {
       return out;
     }
 
-     value_type sift(const_reference x) {
+    value_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LibsemigroupsException(
             "StabChain::sift: the degree of the generator must be "
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       }
-       value_type cpy = this->external_copy(x);
-       std::swap(this->to_internal(cpy), _tmp_element2);
-       internal_sift(); // changes _tmp_element2 in place
-       std::swap(this->to_internal(cpy), _tmp_element2);
-       return cpy;
-     }
+      value_type cpy = this->external_copy(x);
+      std::swap(this->to_internal(cpy), _tmp_element2);
+      internal_sift();  // changes _tmp_element2 in place
+      std::swap(this->to_internal(cpy), _tmp_element2);
+      return cpy;
+    }
 
     bool contains(const_reference x) {
       if (!has_valid_degree(x)) {

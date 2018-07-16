@@ -32,20 +32,20 @@ void delete_gens(std::vector<TElementType>& gens) {
 
 TEST_CASE("Congruence 00: 5-parameter constructor",
           "[quick][congruence][fpsemigroup][multithread][00]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong("left", 2, rels, extra);
 }
 
 TEST_CASE("Congruence 01: Small fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][01]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong("twosided", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
@@ -70,10 +70,10 @@ TEST_CASE("Congruence 01: Small fp semigroup",
 
 TEST_CASE("Congruence 02: Small left congruence on free semigroup",
           "[quick][congruence][fpsemigroup][multithread][02]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong("left", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
@@ -82,10 +82,10 @@ TEST_CASE("Congruence 02: Small left congruence on free semigroup",
 
 TEST_CASE("Congruence 03: Small right congruence on free semigroup",
           "[quick][congruence][fpsemigroup][multithread][03]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong("right", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
@@ -96,10 +96,10 @@ TEST_CASE("Congruence 03: Small right congruence on free semigroup",
 TEST_CASE(
     "Congruence 04: word_to_class_index for left congruence on free semigroup",
     "[quick][congruence][fpsemigroup][multithread][04]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong("left", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
@@ -116,10 +116,10 @@ TEST_CASE(
 
 TEST_CASE("Congruence 05: word_to_class_index for small fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][05]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1, 1}));     // (a, b^2)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
+  std::vector<relation_type> extra;
 
   Congruence cong1("twosided", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
@@ -151,11 +151,11 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
 
-  std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra;
+  Congruence                 cong("twosided", &S, extra);
   REQUIRE(!cong.is_done());
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 0);
   delete ntc;
 }
@@ -170,13 +170,13 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
   REQUIRE(S.degree() == 5);
   delete_gens(gens);
 
-  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t   w1, w2;
+  Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_type w1, w2;
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
-  std::vector<relation_t> extra({relation_t(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({relation_type(w1, w2)});
+  Congruence                 cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   delete t1;
@@ -193,20 +193,20 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
   REQUIRE(S.degree() == 5);
-  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t   w1, w2;
+  Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_type w1, w2;
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
-  std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({std::make_pair(w1, w2)});
+  Congruence                 cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
   REQUIRE(cong.nr_classes() == 21);
-  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-  Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  word_t   w3, w4;
+  Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+  Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+  word_type w3, w4;
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));
@@ -228,17 +228,17 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
 
   // REQUIRE(S.size() == 88);
   // REQUIRE(S.degree() == 5);
-  std::vector<relation_t> extra(
-      {relation_t({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
+  std::vector<relation_type> extra(
+      {relation_type({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
   Congruence cong("left", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 69);
   REQUIRE(cong.nr_classes() == 69);
 
-  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-  Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  word_t   w3, w4;
+  Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+  Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+  word_type w3, w4;
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
@@ -272,22 +272,22 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 18);
   REQUIRE(S.degree() == 5);
-  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t   w1, w2;
+  Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_type w1, w2;
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
-  std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence              cong("right", &S, extra);
+  std::vector<relation_type> extra({std::make_pair(w1, w2)});
+  Congruence                 cong("right", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 72);
   REQUIRE(cong.nr_classes() == 72);
-  Element* t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
-  Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  Element* t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
-  Element* t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
-  word_t   w3, w4, w5, w6;
+  Element*  t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
+  Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+  Element*  t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
+  Element*  t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
+  word_type w3, w4, w5, w6;
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   S.factorisation(w5, S.position(t5));
@@ -310,18 +310,18 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
 
 TEST_CASE("Congruence 09: for an infinite fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][09]") {
-  std::vector<relation_t> relations = {relation_t({0, 1}, {1, 0}),
-                                       relation_t({0, 2}, {2, 2}),
-                                       relation_t({0, 2}, {0}),
-                                       relation_t({0, 2}, {0}),
-                                       relation_t({2, 2}, {0}),
-                                       relation_t({1, 2}, {1, 2}),
-                                       relation_t({1, 2}, {2, 2}),
-                                       relation_t({1, 2, 2}, {1}),
-                                       relation_t({1, 2}, {1}),
-                                       relation_t({2, 2}, {1})};
-  std::vector<relation_t> extra     = {relation_t({0}, {1})};
-  Congruence              cong("twosided", 3, relations, extra);
+  std::vector<relation_type> relations = {relation_type({0, 1}, {1, 0}),
+                                          relation_type({0, 2}, {2, 2}),
+                                          relation_type({0, 2}, {0}),
+                                          relation_type({0, 2}, {0}),
+                                          relation_type({2, 2}, {0}),
+                                          relation_type({1, 2}, {1, 2}),
+                                          relation_type({1, 2}, {2, 2}),
+                                          relation_type({1, 2, 2}, {1}),
+                                          relation_type({1, 2}, {1}),
+                                          relation_type({2, 2}, {1})};
+  std::vector<relation_type> extra     = {relation_type({0}, {1})};
+  Congruence                 cong("twosided", 3, relations, extra);
   REPORTER.set_report(CONG_REPORT);
   cong.force_kbfp();
 
@@ -336,17 +336,17 @@ TEST_CASE("Congruence 09: for an infinite fp semigroup",
 
 TEST_CASE("Congruence 10: for an infinite fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][10]") {
-  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
-                                  relation_t({0, 2}, {2, 0}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {0}),
-                                  relation_t({2, 0}, {0}),
-                                  relation_t({1, 2}, {2, 1}),
-                                  relation_t({1, 1, 1}, {1}),
-                                  relation_t({1, 2}, {1}),
-                                  relation_t({2, 1}, {1})};
-  std::vector<relation_t> extra = {{{0}, {1}}};
-  Congruence              cong("twosided", 3, rels, extra);
+  std::vector<relation_type> rels  = {relation_type({0, 1}, {1, 0}),
+                                     relation_type({0, 2}, {2, 0}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {0}),
+                                     relation_type({2, 0}, {0}),
+                                     relation_type({1, 2}, {2, 1}),
+                                     relation_type({1, 1, 1}, {1}),
+                                     relation_type({1, 2}, {1}),
+                                     relation_type({2, 1}, {1})};
+  std::vector<relation_type> extra = {{{0}, {1}}};
+  Congruence                 cong("twosided", 3, rels, extra);
   REPORTER.set_report(CONG_REPORT);
   // This line is here to make sure that the max_threads is ignored here, since
   // if we are limited to one thread here then this example doesn't run!
@@ -379,8 +379,8 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
   // REQUIRE(S.size(false) == 11804);
   // REQUIRE(S.nrrules(false) == 2460);
 
-  std::vector<relation_t> extra(
-      {relation_t({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
+  std::vector<relation_type> extra(
+      {relation_type({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
   Congruence cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
@@ -435,15 +435,16 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
 
-  std::vector<relation_t> extra(
-      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
-       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+  std::vector<relation_type> extra(
+      {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
+                     {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_type({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
   for (size_t i = 0; i < ntc->size(); i++) {
@@ -488,8 +489,8 @@ TEST_CASE("Congruence 13: partial perm example",
   // REQUIRE(S.size() == 712);
   // REQUIRE(S.nrrules() == 1121);
 
-  std::vector<relation_t> extra
-      = {relation_t({5, 3, 1}, {3, 3}), relation_t({2, 7}, {1, 6, 6, 1})};
+  std::vector<relation_type> extra
+      = {relation_type({5, 3, 1}, {3, 3}), relation_type({2, 7}, {1, 6, 6, 1})};
   Congruence cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
@@ -498,14 +499,14 @@ TEST_CASE("Congruence 13: partial perm example",
 
 TEST_CASE("Congruence 14: Bicyclic monoid",
           "[quick][congruence][fpsemigroup][multithread][14]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
-                                  relation_t({1, 0}, {1}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {2}),
-                                  relation_t({2, 0}, {2}),
-                                  relation_t({1, 2}, {0})};
-  std::vector<relation_t> extra;
-  Congruence              cong("twosided", 3, rels, extra);
+  std::vector<relation_type> rels = {relation_type({0, 1}, {1}),
+                                     relation_type({1, 0}, {1}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {2}),
+                                     relation_type({2, 0}, {2}),
+                                     relation_type({1, 2}, {0})};
+  std::vector<relation_type> extra;
+  Congruence                 cong("twosided", 3, rels, extra);
   REPORTER.set_report(CONG_REPORT);
   REQUIRE(cong.word_to_class_index({0})
           == cong.word_to_class_index({1, 2, 1, 1, 2, 2}));
@@ -518,14 +519,14 @@ TEST_CASE("Congruence 14: Bicyclic monoid",
 
 TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
           "[fixme][quick][congruence][fpsemigroup][multithread][15]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
-                                  relation_t({1, 0}, {1}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {2}),
-                                  relation_t({2, 0}, {2}),
-                                  relation_t({1, 2}, {0})};
-  std::vector<relation_t> extra({relation_t({1, 1, 1}, {0})});
-  Congruence              cong("twosided", 3, rels, extra);
+  std::vector<relation_type> rels = {relation_type({0, 1}, {1}),
+                                     relation_type({1, 0}, {1}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {2}),
+                                     relation_type({2, 0}, {2}),
+                                     relation_type({1, 2}, {0})};
+  std::vector<relation_type> extra({relation_type({1, 1, 1}, {0})});
+  Congruence                 cong("twosided", 3, rels, extra);
 
   REPORTER.set_report(CONG_REPORT);
 
@@ -534,14 +535,14 @@ TEST_CASE("Congruence 15: Congruence on bicyclic monoid",
 
 TEST_CASE("Congruence 16: Congruence on free abelian monoid with 15 classes",
           "[quick][congruence][fpsemigroup][multithread][16]") {
-  std::vector<relation_t> rels = {relation_t({0, 1}, {1}),
-                                  relation_t({1, 0}, {1}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {2}),
-                                  relation_t({2, 0}, {2}),
-                                  relation_t({1, 2}, {2, 1})};
-  std::vector<relation_t> extra(
-      {relation_t({1, 1, 1, 1, 1}, {1}), relation_t({2, 2, 2}, {2})});
+  std::vector<relation_type> rels = {relation_type({0, 1}, {1}),
+                                     relation_type({1, 0}, {1}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {2}),
+                                     relation_type({2, 0}, {2}),
+                                     relation_type({1, 2}, {2, 1})};
+  std::vector<relation_type> extra(
+      {relation_type({1, 1, 1, 1, 1}, {1}), relation_type({2, 2, 2}, {2})});
   Congruence cong("twosided", 3, rels, extra);
 
   REPORTER.set_report(CONG_REPORT);
@@ -571,16 +572,17 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
 
-  std::vector<relation_t> extra(
-      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
-       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+  std::vector<relation_type> extra(
+      {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
+                     {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_type({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
   cong.set_max_threads(2);
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
   for (size_t i = 0; i < ntc->size(); i++) {
@@ -627,16 +629,17 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
   // REQUIRE(S.size() == 65536);
   // REQUIRE(S.nrrules() == 45416);
 
-  std::vector<relation_t> extra(
-      {relation_t({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7}),
-       relation_t({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
+  std::vector<relation_type> extra(
+      {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
+                     {9, 3, 6, 6, 10, 9, 4, 7}),
+       relation_type({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4})});
   Congruence cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
   cong.set_max_threads(1);
 
   REQUIRE(cong.nr_classes() == 19009);
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 577);
   std::vector<size_t> sizes({0, 0, 0, 0});
   for (size_t i = 0; i < ntc->size(); i++) {
@@ -663,26 +666,26 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
 
 TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
           "[quick][congruence][fpsemigroup][multithread][19]") {
-  std::vector<relation_t> rels  = {relation_t({0, 0}, {0, 0}),
-                                  relation_t({0, 1}, {1, 0}),
-                                  relation_t({0, 2}, {2, 0}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {0}),
-                                  relation_t({2, 0}, {0}),
-                                  relation_t({1, 0}, {0, 1}),
-                                  relation_t({1, 1}, {1, 1}),
-                                  relation_t({1, 2}, {2, 1}),
-                                  relation_t({1, 1, 1}, {1}),
-                                  relation_t({1, 2}, {1}),
-                                  relation_t({2, 1}, {1})};
-  std::vector<relation_t> extra = {relation_t({0}, {1})};
+  std::vector<relation_type> rels  = {relation_type({0, 0}, {0, 0}),
+                                     relation_type({0, 1}, {1, 0}),
+                                     relation_type({0, 2}, {2, 0}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {0}),
+                                     relation_type({2, 0}, {0}),
+                                     relation_type({1, 0}, {0, 1}),
+                                     relation_type({1, 1}, {1, 1}),
+                                     relation_type({1, 2}, {2, 1}),
+                                     relation_type({1, 1, 1}, {1}),
+                                     relation_type({1, 2}, {1}),
+                                     relation_type({2, 1}, {1})};
+  std::vector<relation_type> extra = {relation_type({0}, {1})};
 
   Congruence cong("twosided", 3, rels, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(!cong.is_done());
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 1);
   REQUIRE((*ntc)[0]->size() == 5);
   delete ntc;
@@ -692,14 +695,15 @@ TEST_CASE("Congruence 19: Infinite fp semigroup from GAP library",
 
 TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
           "[quick][congruence][fpsemigroup][multithread][20]") {
-  std::vector<relation_t> rels
-      = {relation_t({0, 0, 0}, {0}), relation_t({0, 1}, {1, 0})};
-  std::vector<relation_t> extra = {relation_t({0}, {0, 0})};
-  Congruence              cong("twosided", 2, rels, extra);
+  std::vector<relation_type> rels
+      = {relation_type({0, 0, 0}, {0}), relation_type({0, 1}, {1, 0})};
+  std::vector<relation_type> extra = {relation_type({0}, {0, 0})};
+  Congruence                 cong("twosided", 2, rels, extra);
   REPORTER.set_report(CONG_REPORT);
 
-  word_t x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  word_t y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  word_type x = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  word_type y
+      = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
   REQUIRE(cong.test_equals(x, y));
 
@@ -716,14 +720,14 @@ TEST_CASE("Congruence 20: Infinite fp semigroup with infinite classes",
 
 TEST_CASE("Congruence 21: trivial cong on an fp semigroup",
           "[quick][congruence][fpsemigroup][multithread][21]") {
-  std::vector<relation_t> rels;
-  rels.push_back(relation_t({0, 0, 0}, {0}));  // (a^3, a)
-  rels.push_back(relation_t({0}, {1}));        // (a, b)
-  std::vector<relation_t> extra;
+  std::vector<relation_type> rels;
+  rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
+  rels.push_back(relation_type({0}, {1}));        // (a, b)
+  std::vector<relation_type> extra;
 
   Congruence cong("left", 2, rels, extra);
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 0);
   delete ntc;
 }
@@ -738,34 +742,36 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
-  Congruence cong("twosided", &S, std::vector<relation_t>());
+  Congruence cong("twosided", &S, std::vector<relation_type>());
 
   REQUIRE(cong.nr_classes() == S.size());
 }
 
 TEST_CASE("Congruence 23: test nontrivial_classes for a fp semigroup cong",
           "[quick][congruence][finite][fpsemigroup][23]") {
-  std::vector<relation_t> rels
-      = {relation_t({0, 0, 0}, {0}),
-         relation_t({1, 0, 0}, {1, 0}),
-         relation_t({1, 0, 1, 1, 1}, {1, 0}),
-         relation_t({1, 1, 1, 1, 1}, {1, 1}),
-         relation_t({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
-         relation_t({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
-         relation_t({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
-         relation_t({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
-         relation_t({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
-         relation_t({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
-         relation_t({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
-         relation_t({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
-         relation_t({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
-         relation_t({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+  std::vector<relation_type> rels
+      = {relation_type({0, 0, 0}, {0}),
+         relation_type({1, 0, 0}, {1, 0}),
+         relation_type({1, 0, 1, 1, 1}, {1, 0}),
+         relation_type({1, 1, 1, 1, 1}, {1, 1}),
+         relation_type({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_type({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
+         relation_type({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
+         relation_type({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_type({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
+         relation_type({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
+         relation_type({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
+         relation_type({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
+         relation_type({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
+         relation_type({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
-  Congruence cong(
-      "twosided", 2, rels, std::vector<relation_t>({relation_t({0}, {1})}));
+  Congruence cong("twosided",
+                  2,
+                  rels,
+                  std::vector<relation_type>({relation_type({0}, {1})}));
   REPORTER.set_report(CONG_REPORT);
 
-  Partition<word_t>* ntc = cong.nontrivial_classes();
+  Partition<word_type>* ntc = cong.nontrivial_classes();
   REQUIRE(ntc->size() == 1);
   delete ntc;
 }
@@ -798,8 +804,8 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
          new Transformation<u_int16_t>({0, 0, 0, 0, 0, 0, 7, 6}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
 
-  std::vector<relation_t> extra;
-  word_t                  w1, w2;
+  std::vector<relation_type> extra;
+  word_type                  w1, w2;
   for (size_t i = 0; i < elms.size(); i += 2) {
     S.factorisation(w1, S.position(elms[i]));
     S.factorisation(w2, S.position(elms[i + 1]));
@@ -816,8 +822,8 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
 
 TEST_CASE("Congruence 25: free semigroup with redundant relations",
           "[quick][congruence][multithread][fpsemigroup][25]") {
-  std::vector<relation_t> extra = {relation_t({0, 0}, {0, 0})};
-  Congruence              cong("twosided", 1, {}, extra);
+  std::vector<relation_type> extra = {relation_type({0, 0}, {0, 0})};
+  Congruence                 cong("twosided", 1, {}, extra);
   REQUIRE(cong.test_equals({0, 0}, {0, 0}));
 }
 
@@ -830,18 +836,20 @@ TEST_CASE("Congruence 26: free semigroup with redundant relations",
 
 TEST_CASE("Congruence 27: is_obviously_infinite",
           "[quick][congruence][fpsemigroup][27]") {
-  Congruence cong1(
-      "twosided", 3, {relation_t({0, 1}, {0})}, {relation_t({2, 2}, {2})});
+  Congruence cong1("twosided",
+                   3,
+                   {relation_type({0, 1}, {0})},
+                   {relation_type({2, 2}, {2})});
   REQUIRE(cong1.is_obviously_infinite());
   Congruence cong2("twosided",
                    3,
-                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
-                   {relation_t({1, 1}, {1})});
+                   {relation_type({0, 1}, {0}), relation_type({0, 0}, {0})},
+                   {relation_type({1, 1}, {1})});
   REQUIRE(cong2.is_obviously_infinite());
   Congruence cong3("twosided",
                    3,
-                   {relation_t({0, 1}, {0}), relation_t({0, 0}, {0})},
-                   {relation_t({1, 2}, {1})});
+                   {relation_type({0, 1}, {0}), relation_type({0, 0}, {0})},
+                   {relation_type({1, 2}, {1})});
   REQUIRE(!cong3.is_obviously_infinite());
 
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
@@ -851,13 +859,13 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
-  Congruence cong4("twosided", &S, {relation_t({1}, {0})});
+  Congruence cong4("twosided", &S, {relation_type({1}, {0})});
   REQUIRE(!cong4.is_obviously_infinite());
 }
 
 TEST_CASE("Congruence 28: test_less_than",
           "[quick][congruence][fpsemigroup][28]") {
-  Congruence cong("twosided", 2, {relation_t({0, 0}, {0})}, {});
+  Congruence cong("twosided", 2, {relation_type({0, 0}, {0})}, {});
   REQUIRE(!cong.test_less_than({0, 0}, {0}));
 }
 
@@ -870,28 +878,28 @@ TEST_CASE("Congruence 28: test_less_than",
   Semigroup<BMat8> S(gens);
   REPORTER.set_report(CONG_REPORT);
 
-  Congruence<BMat8> cong1("twosided", &S, {relation_t({1}, {0})});
+  Congruence<BMat8> cong1("twosided", &S, {relation_type({1}, {0})});
   REQUIRE(cong1.nr_classes() == 3);
   REQUIRE(cong1.word_to_class_index({1}) == 0);
 
-  Congruence<BMat8> cong2("twosided", &S, {relation_t({1}, {0})});
+  Congruence<BMat8> cong2("twosided", &S, {relation_type({1}, {0})});
   cong2.force_kbfp();
   REQUIRE(cong2.nr_classes() == 3);
   REQUIRE(cong2.word_to_class_index({1}) == 0);
 
   Semigroup<BMat8>  T({gens[0], gens[2], gens[3]});
-  Congruence<BMat8> cong3("twosided", &T, {relation_t({1}, {0})});
+  Congruence<BMat8> cong3("twosided", &T, {relation_type({1}, {0})});
   cong3.force_p();
   REQUIRE(cong3.nr_classes() == 2);
   REQUIRE(cong3.word_to_class_index({1}) == 0);
 
-  Congruence<BMat8> cong4("twosided", &S, {relation_t({1}, {0})});
+  Congruence<BMat8> cong4("twosided", &S, {relation_type({1}, {0})});
   cong2.force_tc();
   REQUIRE(cong4.nr_classes() == 3);
   REQUIRE(cong4.word_to_class_index({1}) == 0);
 }*/
 
-std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
+std::vector<relation_type> RennerCommonTypeBMonoid(size_t l, int q) {
   // q is supposed to be 0 or 1
   std::vector<size_t> s;
   std::vector<size_t> e;
@@ -903,7 +911,7 @@ std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
   }
   size_t id = 2 * l + 1;
 
-  std::vector<relation_t> rels = {relation_t({id, id}, {id})};
+  std::vector<relation_type> rels = {relation_type({id, id}, {id})};
   // identity relations
   for (size_t i = 0; i < l; ++i) {
     rels.push_back({{s[i], id}, {s[i]}});
@@ -970,7 +978,7 @@ std::vector<relation_t> RennerCommonTypeBMonoid(size_t l, int q) {
   return rels;
 }
 
-std::vector<relation_t> EGTypeBMonoid(size_t l, int q) {
+std::vector<relation_type> EGTypeBMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
@@ -981,7 +989,7 @@ std::vector<relation_t> EGTypeBMonoid(size_t l, int q) {
   }
   size_t id = 2 * l + 1;
 
-  std::vector<relation_t> rels = RennerCommonTypeBMonoid(l, q);
+  std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
 
   if (l >= 2)
     rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
@@ -999,7 +1007,7 @@ std::vector<size_t> max_elt_B(size_t i) {
   return t;
 }
 
-std::vector<relation_t> RennerTypeBMonoid(size_t l, int q) {
+std::vector<relation_type> RennerTypeBMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
@@ -1010,7 +1018,7 @@ std::vector<relation_t> RennerTypeBMonoid(size_t l, int q) {
   }
   size_t id = 2 * l + 1;
 
-  std::vector<relation_t> rels = RennerCommonTypeBMonoid(l, q);
+  std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
 
   for (size_t i = 1; i < l; i++) {
     std::vector<size_t> new_rel = max_elt_B(i);
@@ -1022,7 +1030,7 @@ std::vector<relation_t> RennerTypeBMonoid(size_t l, int q) {
   return rels;
 }
 
-std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
+std::vector<relation_type> RennerCommonTypeDMonoid(size_t l, int q) {
   // q is supposed to be 0 or 1
   std::vector<size_t> s;
   std::vector<size_t> e;
@@ -1035,7 +1043,7 @@ std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
   size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
 
-  std::vector<relation_t> rels = {relation_t({id, id}, {id})};
+  std::vector<relation_type> rels = {relation_type({id, id}, {id})};
   // identity relations
   for (size_t i = 0; i < l; ++i) {
     rels.push_back({{s[i], id}, {s[i]}});
@@ -1121,7 +1129,7 @@ std::vector<relation_t> RennerCommonTypeDMonoid(size_t l, int q) {
   return rels;
 }
 
-std::vector<relation_t> EGTypeDMonoid(size_t l, int q) {
+std::vector<relation_type> EGTypeDMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
@@ -1133,7 +1141,7 @@ std::vector<relation_t> EGTypeDMonoid(size_t l, int q) {
   size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
 
-  std::vector<relation_t> rels = RennerCommonTypeDMonoid(l, q);
+  std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
 
   if (l >= 3) {
     rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
@@ -1158,7 +1166,7 @@ std::vector<size_t> max_elt_D(size_t i, int g) {
 
 #include <iostream>
 
-std::vector<relation_t> RennerTypeDMonoid(size_t l, int q) {
+std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
   std::vector<size_t> s;
   std::vector<size_t> e;
   for (size_t i = 0; i < l; ++i) {
@@ -1170,7 +1178,7 @@ std::vector<relation_t> RennerTypeDMonoid(size_t l, int q) {
   size_t f  = 2 * l + 1;
   size_t id = 2 * l + 2;
 
-  std::vector<relation_t> rels = RennerCommonTypeDMonoid(l, q);
+  std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
 
   for (size_t i = 2; i < l; i++) {
     std::vector<size_t> new_rel_f = max_elt_D(i, 0);
@@ -1448,7 +1456,7 @@ TEST_CASE(
 //   REQUIRE(cong.nr_classes() == 7464625);
 // }
 
-std::vector<relation_t> RookMonoid(size_t l, int q) {
+std::vector<relation_type> RookMonoid(size_t l, int q) {
   // q is supposed to be 0 or 1
 
   std::vector<size_t> s;
@@ -1457,8 +1465,8 @@ std::vector<relation_t> RookMonoid(size_t l, int q) {
   }
 
   // identity relations
-  size_t                  id   = l;
-  std::vector<relation_t> rels = {relation_t({id, id}, {id})};
+  size_t                     id   = l;
+  std::vector<relation_type> rels = {relation_type({id, id}, {id})};
   for (size_t i = 0; i < l; ++i) {
     rels.push_back({{s[i], id}, {s[i]}});
     rels.push_back({{id, s[i]}, {s[i]}});
@@ -1532,14 +1540,14 @@ std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
   return lhs;
 }
 
-std::vector<relation_t> Stell(size_t l) {
+std::vector<relation_type> Stell(size_t l) {
   std::vector<size_t> pi;
   for (size_t i = 0; i < l; ++i) {
     pi.push_back(i);  // 0 est \pi_0
   }
 
-  std::vector<relation_t> rels{};
-  std::vector<size_t>     t{pi[0]};
+  std::vector<relation_type> rels{};
+  std::vector<size_t>        t{pi[0]};
   for (int i = 1; i < static_cast<int>(l); ++i) {
     t.insert(t.begin(), pi[i]);
     rels.push_back({concat(t, {pi[i]}), t});
@@ -1601,20 +1609,20 @@ TEST_CASE(
   REQUIRE(S.size() == 88);
   REQUIRE(S.nrrules() == 21);
   REQUIRE(S.degree() == 5);
-  Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-  Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-  word_t   w1, w2;
+  Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+  Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+  word_type w1, w2;
   S.factorisation(w1, S.position(t1));
   S.factorisation(w2, S.position(t2));
-  std::vector<relation_t> extra({std::make_pair(w1, w2)});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({std::make_pair(w1, w2)});
+  Congruence                 cong("twosided", &S, extra);
   REPORTER.set_report(CONG_REPORT);
 
   REQUIRE(cong.nr_classes() == 21);
   REQUIRE(cong.nr_classes() == 21);
-  Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-  Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-  word_t   w3, w4;
+  Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+  Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+  word_type w3, w4;
   S.factorisation(w3, S.position(t3));
   S.factorisation(w4, S.position(t4));
   REQUIRE(cong.word_to_class_index(w3) == cong.word_to_class_index(w4));

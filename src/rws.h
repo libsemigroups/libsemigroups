@@ -28,7 +28,8 @@
 #include <vector>
 
 #include "cong.h"
-#include "semigroup.h"
+#include "constants.h"
+#include "types.h"
 
 namespace libsemigroups {
 
@@ -171,8 +172,8 @@ namespace libsemigroups {
           _confluence_known(false),
           _inactive_rules(),
           _confluent(false),
-          _max_overlap(UNBOUNDED),
-          _max_rules(UNBOUNDED),
+          _max_overlap(LIMIT_MAX),
+          _max_rules(LIMIT_MAX),
           _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
           _order(order),
           _overlap_measure(nullptr),
@@ -218,7 +219,7 @@ namespace libsemigroups {
 
     //! Constructs a rewriting system with rules derived from the
     //! parameter \p relations, and with the SHORTLEX reduction ordering.
-    explicit RWS(std::vector<relation_t> const& relations) : RWS() {
+    explicit RWS(std::vector<relation_type> const& relations) : RWS() {
       add_rules(relations);
     }
 
@@ -227,7 +228,7 @@ namespace libsemigroups {
     //!
     //! The RWS instance constructed here owns the parameter \p order, and
     //! deletes it in its destructor.
-    RWS(ReductionOrdering* order, std::vector<relation_t> const& relations)
+    RWS(ReductionOrdering* order, std::vector<relation_type> const& relations)
         : RWS(order) {
       add_rules(relations);
     }
@@ -318,7 +319,7 @@ namespace libsemigroups {
       size_t max_overlap               = _max_overlap;
       size_t check_confluence_interval = _check_confluence_interval;
       _max_overlap                     = 1;
-      _check_confluence_interval       = UNBOUNDED;
+      _check_confluence_interval       = LIMIT_MAX;
       std::atomic<bool> killed(false);
       while (!confluent()) {
         knuth_bendix(killed);
@@ -342,7 +343,7 @@ namespace libsemigroups {
     //! rewriting system.
     //!
     //! \sa RWS::add_rule.
-    void add_rules(std::vector<relation_t> const& relations);
+    void add_rules(std::vector<relation_type> const& relations);
 
     //! Add rules derived from Congruence::relations and Congruence::extra
     //! applied to \p cong.
@@ -381,14 +382,14 @@ namespace libsemigroups {
     //! before checking confluence. Setting this value too low can adversely
     //! affect the performance of RWS::knuth_bendix.
     //!
-    //! The default value is 4096, and should be set to RWS::UNBOUNDED if
+    //! The default value is 4096, and should be set to RWS::LIMIT_MAX if
     //! RWS::knuth_bendix should never check if the system is already
     //! confluent.
     //!
     //! \sa RWS::knuth_bendix.
     void set_check_confluence_interval(size_t interval) {
-      if (interval > UNBOUNDED) {
-        interval = UNBOUNDED;
+      if (LIMIT_MAX > interval) {
+        interval = LIMIT_MAX;
       }
       _check_confluence_interval = interval;
     }
@@ -408,8 +409,8 @@ namespace libsemigroups {
     //!
     //! \sa RWS::knuth_bendix.
     void set_max_overlap(size_t val) {
-      if (val > UNBOUNDED) {
-        val = UNBOUNDED;
+      if (val > LIMIT_MAX) {
+        val = LIMIT_MAX;
       }
       _max_overlap = val;
     }
@@ -438,7 +439,7 @@ namespace libsemigroups {
     //! terminate.
     //!
     //! \sa RWS::test_less_than(std::string const& p, std::string const& q)
-    bool test_less_than(word_t const& p, word_t const& q);
+    bool test_less_than(word_type const& p, word_type const& q);
 
     //! Returns \c true if \c RWS::rewrite(p) is
     //! less than \c RWS::rewrite(q), with respect
@@ -447,7 +448,7 @@ namespace libsemigroups {
     //! \warning This method calls RWS::knuth_bendix and so it may never
     //! terminate.
     //!
-    //! \sa RWS::test_less_than(word_t const& p, word_t const& q)
+    //! \sa RWS::test_less_than(word_type const& p, word_type const& q)
     bool test_less_than(std::string const& p, std::string const& q);
 
     //! Returns \c true if \c RWS::rewrite(p) is
@@ -460,7 +461,7 @@ namespace libsemigroups {
     //! \warning This method calls RWS::knuth_bendix and so it may never
     //! terminate.
     //!
-    //! \sa RWS::test_less_than(word_t const& p, word_t const& q)
+    //! \sa RWS::test_less_than(word_type const& p, word_type const& q)
     bool test_less_than(std::string* p, std::string* q);
 
     //! Returns \c true if the reduced form of \c RWS::word_to_rws_word(p)
@@ -471,7 +472,7 @@ namespace libsemigroups {
     //! terminate.
     //!
     //! \sa RWS::test_equals(std::string const& p, std::string const& q)
-    bool test_equals(word_t const& p, word_t const& q);
+    bool test_equals(word_type const& p, word_type const& q);
 
     //! Returns \c true if the reduced form of \c RWS::word_to_rws_word(p)
     //! equal the reduced form of \c RWS::word_to_rws_word(q), and \c false if
@@ -490,7 +491,7 @@ namespace libsemigroups {
     //! \warning This method calls RWS::knuth_bendix and so it may never
     //! terminate.
     //!
-    //! \sa RWS::test_equals(word_t const& p, word_t const& q)
+    //! \sa RWS::test_equals(word_type const& p, word_type const& q)
     bool test_equals(std::string const& p, std::string const& q);
 
     //! Returns \c true if \c RWS::rewrite(p) equals
@@ -502,14 +503,8 @@ namespace libsemigroups {
     //! \warning This method calls RWS::knuth_bendix and so it may never
     //! terminate.
     //!
-    //! \sa RWS::test_equals(word_t const& p, word_t const& q)
+    //! \sa RWS::test_equals(word_type const& p, word_type const& q)
     bool test_equals(std::string* p, std::string* q);
-
-    //! The constant value represents an UNBOUNDED quantity.
-    //!
-    //! \sa RWS::set_check_confluence_interval, RWS::set_max_rules,
-    //! RWS::set_max_overlap.
-    static size_t const UNBOUNDED = static_cast<size_t>(-2);
 
     //! This method converts an unsigned integer to the corresponding
     //! rws_word_t. For example, the integer 0 is converted to the word with
@@ -520,8 +515,8 @@ namespace libsemigroups {
 
     //! This method converts a string in the rewriting system into a vector of
     //! unsigned integers. This method is the inverse of RWS::uint_to_rws_word.
-    static word_t rws_word_to_word(rws_word_t const& rws_word) {
-      word_t w;
+    static word_type rws_word_to_word(rws_word_t const& rws_word) {
+      word_type w;
       w.reserve(rws_word.size());
       for (rws_letter_t const& rws_letter : rws_word) {
         w.push_back(rws_letter_to_uint(rws_letter));
@@ -535,7 +530,7 @@ namespace libsemigroups {
     //! unsigned integers \p w.
     //!
     //! This method returns its second parameter \p ww.
-    static rws_word_t* word_to_rws_word(word_t const& w, rws_word_t* ww) {
+    static rws_word_t* word_to_rws_word(word_type const& w, rws_word_t* ww) {
       ww->clear();
       for (size_t const& a : w) {
         (*ww) += uint_to_rws_letter(a);
@@ -548,7 +543,7 @@ namespace libsemigroups {
     //!
     //! This method returns a pointer to a new string, and it is the
     //! responsibility of the caller to delete it.
-    static inline rws_word_t word_to_rws_word(word_t const& w) {
+    static inline rws_word_t word_to_rws_word(word_type const& w) {
       rws_word_t ww;
       for (size_t const& a : w) {
         ww += uint_to_rws_letter(a);

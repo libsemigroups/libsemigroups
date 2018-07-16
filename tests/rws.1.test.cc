@@ -31,7 +31,6 @@ void delete_gens(std::vector<TElementType>& gens) {
 }
 
 using namespace libsemigroups;
-size_t UNBOUNDED1 = RWS::UNBOUNDED;
 
 TEST_CASE("RWS 01: for a transformation semigroup of size 4",
           "[quick][rws][fpsemigroup][01]") {
@@ -43,8 +42,8 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
-  std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({});
+  Congruence                 cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -63,8 +62,8 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 3);
-  std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({});
+  Congruence                 cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -84,8 +83,8 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
   REQUIRE(S.nrrules() == 18);
-  std::vector<relation_t> extra({});
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra({});
+  Congruence                 cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -98,18 +97,18 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
 
 TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
           "[quick][rws][fpsemigroup][04]") {
-  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
-                                  relation_t({0, 2}, {2, 0}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {0}),
-                                  relation_t({2, 0}, {0}),
-                                  relation_t({1, 1}, {1, 1}),
-                                  relation_t({1, 2}, {2, 1}),
-                                  relation_t({1, 1, 1}, {1}),
-                                  relation_t({1, 2}, {1}),
-                                  relation_t({2, 1}, {1})};
-  std::vector<relation_t> extra = {{{0}, {1}}};
-  Congruence              cong("twosided", 3, rels, extra);
+  std::vector<relation_type> rels  = {relation_type({0, 1}, {1, 0}),
+                                     relation_type({0, 2}, {2, 0}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {0}),
+                                     relation_type({2, 0}, {0}),
+                                     relation_type({1, 1}, {1, 1}),
+                                     relation_type({1, 2}, {2, 1}),
+                                     relation_type({1, 1, 1}, {1}),
+                                     relation_type({1, 2}, {1}),
+                                     relation_type({2, 1}, {1})};
+  std::vector<relation_type> extra = {{{0}, {1}}};
+  Congruence                 cong("twosided", 3, rels, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -121,17 +120,17 @@ TEST_CASE("RWS 04: for an infinite confluent fp semigroup 1",
 
 TEST_CASE("RWS 05: for an infinite confluent fp semigroup 2",
           "[quick][rws][fpsemigroup][05]") {
-  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
-                                  relation_t({0, 2}, {2, 0}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {0}),
-                                  relation_t({2, 0}, {0}),
-                                  relation_t({1, 1}, {1, 1}),
-                                  relation_t({1, 2}, {2, 1}),
-                                  relation_t({1, 1, 1}, {1}),
-                                  relation_t({1, 2}, {1}),
-                                  relation_t({2, 1}, {1})};
-  std::vector<relation_t> extra = {{{0}, {1}}};
+  std::vector<relation_type> rels  = {relation_type({0, 1}, {1, 0}),
+                                     relation_type({0, 2}, {2, 0}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {0}),
+                                     relation_type({2, 0}, {0}),
+                                     relation_type({1, 1}, {1, 1}),
+                                     relation_type({1, 2}, {2, 1}),
+                                     relation_type({1, 1, 1}, {1}),
+                                     relation_type({1, 2}, {1}),
+                                     relation_type({2, 1}, {1})};
+  std::vector<relation_type> extra = {{{0}, {1}}};
 
   RWS rws;
   rws.add_rules(rels);
@@ -436,17 +435,17 @@ TEST_CASE("RWS 23: F(2, 6); infinite, from Chapter 9, Section 1 in NR",
 }
 
 TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
-  std::vector<relation_t> rels  = {relation_t({0, 1}, {1, 0}),
-                                  relation_t({0, 2}, {2, 0}),
-                                  relation_t({0, 0}, {0}),
-                                  relation_t({0, 2}, {0}),
-                                  relation_t({2, 0}, {0}),
-                                  relation_t({1, 1}, {1, 1}),
-                                  relation_t({1, 2}, {2, 1}),
-                                  relation_t({1, 1, 1}, {1}),
-                                  relation_t({1, 2}, {1}),
-                                  relation_t({2, 1}, {1})};
-  std::vector<relation_t> extra = {{{0}, {1}}};
+  std::vector<relation_type> rels  = {relation_type({0, 1}, {1, 0}),
+                                     relation_type({0, 2}, {2, 0}),
+                                     relation_type({0, 0}, {0}),
+                                     relation_type({0, 2}, {0}),
+                                     relation_type({2, 0}, {0}),
+                                     relation_type({1, 1}, {1, 1}),
+                                     relation_type({1, 2}, {2, 1}),
+                                     relation_type({1, 1, 1}, {1}),
+                                     relation_type({1, 2}, {1}),
+                                     relation_type({2, 1}, {1})};
+  std::vector<relation_type> extra = {{{0}, {1}}};
 
   RWS rws;
   rws.add_rules(rels);
@@ -458,9 +457,9 @@ TEST_CASE("RWS 24: add_rule", "[quick][rws][fpsemigroup][24]") {
   REQUIRE(rws.test_equals(rels[3].first, rels[3].second));
   REQUIRE(rws.test_equals(rels[6].first, rels[6].second));
   REQUIRE(rws.test_equals(rels[7].first, rels[7].second));
-  REQUIRE(rws.test_equals(word_t({1, 0}), word_t({2, 2, 0, 1, 2})));
-  REQUIRE(rws.test_equals(word_t({2, 1}), word_t({1, 1, 1, 2})));
-  REQUIRE(!rws.test_equals(word_t({1, 0}), word_t({2})));
+  REQUIRE(rws.test_equals(word_type({1, 0}), word_type({2, 2, 0, 1, 2})));
+  REQUIRE(rws.test_equals(word_type({2, 1}), word_type({1, 1, 1, 2})));
+  REQUIRE(!rws.test_equals(word_type({1, 0}), word_type({2})));
 }
 
 TEST_CASE("RWS 25: Chapter 11, Section 1 (q = 4, r = 3) in NR",
@@ -616,9 +615,11 @@ TEST_CASE("RWS 30: test_equals", "[quick][rws][fpsemigroup][30]") {
 }
 
 TEST_CASE("RWS 31: for a free semigroup", "[quick][rws][smalloverlap][31]") {
-  Congruence cong(
-      "twosided", 2, std::vector<relation_t>(), std::vector<relation_t>());
-  RWS rws;
+  Congruence cong("twosided",
+                  2,
+                  std::vector<relation_type>(),
+                  std::vector<relation_type>());
+  RWS        rws;
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
 
@@ -840,7 +841,7 @@ TEST_CASE("RWS 42: Example 6.6 in Sims (with limited overlap lengths)",
   rws.set_max_overlap(45);
   // Avoid checking confluence since this is very slow, essentially takes the
   // same amount of time as running RWS 13.
-  rws.set_check_confluence_interval(UNBOUNDED1);
+  rws.set_check_confluence_interval(LIMIT_MAX);
 
   rws.knuth_bendix();
   REQUIRE(rws.nr_rules() == 1026);

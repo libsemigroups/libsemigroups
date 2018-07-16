@@ -41,8 +41,8 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
   REQUIRE(S.nrrules() == 4);
-  std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
+  std::vector<relation_type> extra;
+  Congruence                 cong("twosided", &S, extra);
 
   RWS rws;
   rws.add_rules(cong.relations());
@@ -56,14 +56,14 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
   REQUIRE(T.size() == 4);
   delete_gens(gens);
 
-  RWSE ab(rws, word_t({0, 1}));
+  RWSE ab(rws, word_type({0, 1}));
   RWSE b(rws, 1);
   REQUIRE(!(b < ab));
   REQUIRE(b == ab);
   REQUIRE(!(ab < b));
   REQUIRE(!(ab < b));
 
-  RWSE aba(rws, word_t({0, 1, 0}));
+  RWSE aba(rws, word_type({0, 1, 0}));
   REQUIRE(b < aba);
 }
 
@@ -75,9 +75,9 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   REPORTER.set_report(RWSE_REPORT);
   delete_gens(gens);
 
-  std::vector<relation_t> extra;
-  Congruence              cong("twosided", &S, extra);
-  RWS                     rws;
+  std::vector<relation_type> extra;
+  Congruence                 cong("twosided", &S, extra);
+  RWS                        rws;
   rws.add_rules(cong.relations());
   rws.add_rules(cong.extra());
 
@@ -88,9 +88,9 @@ TEST_CASE("RWSE 02: factorisation", "[quick][rwse][02]") {
   REPORTER.set_report(RWSE_REPORT);
   delete_gens(gens);
 
-  RWSE ab(rws, word_t({0, 1}));
-  REQUIRE(T.factorisation(&ab) == word_t({1}));
+  RWSE ab(rws, word_type({0, 1}));
+  REQUIRE(T.factorisation(&ab) == word_type({1}));
 
-  RWSE aaa(rws, word_t({0, 0, 0}));
-  REQUIRE(T.factorisation(&aaa) == word_t({0}));
+  RWSE aaa(rws, word_type({0, 0, 0}));
+  REQUIRE(T.factorisation(&aaa) == word_type({0}));
 }

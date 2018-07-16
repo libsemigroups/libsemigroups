@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,25 +16,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file declares debugging functionality.
+#ifndef LIBSEMIGROUPS_SRC_TYPES_H_
+#define LIBSEMIGROUPS_SRC_TYPES_H_
 
-#ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
-#define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
+#include <vector>
 
-#include <assert.h>
+namespace libsemigroups {
+  //! Type for the index of a generator of a semigroup.
+  using letter_type = size_t;
 
-#include "libsemigroups-config.h"
+  //! Type for a word over the generators of a semigroup.
+  using word_type = std::vector<letter_type>;
 
-#ifdef LIBSEMIGROUPS_DEBUG
-#define LIBSEMIGROUPS_ASSERT(x) assert(x)
-#else
-#define LIBSEMIGROUPS_ASSERT(x)
-#endif
+  //! Type for a pair of word_type (a *relation*) of a semigroup.
+  using relation_type = std::pair<word_type, word_type>;
+}
 
-#if (defined(__GNUC__) && __GNUC__ < 5 \
-     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#pragma message( \
-    "GCC version >=5.0 is recommended, some features may not work correctly")
-#endif
-
-#endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_DEBUG_H_
+#endif  // LIBSEMIGROUPS_SRC_TYPES_H_

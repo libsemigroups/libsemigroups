@@ -24,7 +24,6 @@
 #define RWS_REPORT false
 
 using namespace libsemigroups;
-size_t UNBOUNDED2 = RWS::UNBOUNDED;
 
 // Fibonacci group F(2,5) - monoid presentation - has order 12 (group elements
 // + empty word)
@@ -780,7 +779,7 @@ TEST_CASE("RWS 78: Example 6.4 in Sims", "[quick][rws][fpsemigroup][78]") {
   REQUIRE(rws.nr_rules() == 21);
   REQUIRE(!rws.confluent());
 
-  rws.set_max_rules(UNBOUNDED2);
+  rws.set_max_rules(LIMIT_MAX);
   rws.knuth_bendix();
   REQUIRE(rws.confluent());
   REQUIRE(rws.nr_rules() == 40);

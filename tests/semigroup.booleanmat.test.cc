@@ -52,8 +52,8 @@ TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
   REQUIRE(S.minimal_factorisation(
               BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
               * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}))
-          == word_t({3, 0}));
-  REQUIRE(S.minimal_factorisation(28) == word_t({3, 0}));
+          == word_type({3, 0}));
+  REQUIRE(S.minimal_factorisation(28) == word_type({3, 0}));
   REQUIRE(
       S.at(28)
       == BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})

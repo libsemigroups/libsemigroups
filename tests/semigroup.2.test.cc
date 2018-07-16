@@ -23,8 +23,8 @@
 
 using namespace libsemigroups;
 
-static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
-  letter_t out = S.letter_to_pos(word[0]);
+static inline size_t evaluate_reduct(Semigroup<>& S, word_type const& word) {
+  letter_type out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
     out = S.right(out, *it);
   }
@@ -140,14 +140,14 @@ TEST_CASE("Semigroup 028: current_position",
   delete x;
 
   x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5, 6});
-  REQUIRE(S.current_position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.current_position(x) == UNDEFINED);
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
   delete x;
 
   x = new Transformation<u_int16_t>({5, 4, 5, 1, 0, 5});
-  REQUIRE(S.current_position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.current_position(x) == UNDEFINED);
   REQUIRE(S.current_size() == 1029);
   REQUIRE(S.current_nrrules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
@@ -203,12 +203,12 @@ TEST_CASE("Semigroup 029: sorted_position, sorted_at",
   delete x;
 
   x = new Transformation<u_int16_t>({5, 5, 5, 1, 5, 5, 6});
-  REQUIRE(S.sorted_position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.sorted_position(x) == UNDEFINED);
   delete x;
 
   // REQUIRE(S.sorted_at(100000) == nullptr);
   // REQUIRE(S.at(100000) == nullptr);
-  REQUIRE(S.position_to_sorted_position(100000) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position_to_sorted_position(100000) == UNDEFINED);
   delete_gens(gens);
 }
 
@@ -1011,7 +1011,7 @@ TEST_CASE("Semigroup 042: relations", "[quick][semigroup][finite][042]") {
   S.next_relation(result);
   size_t nr = 0;
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     S.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     S.factorisation(rhs, result[2]);
@@ -1027,7 +1027,7 @@ TEST_CASE("Semigroup 042: relations", "[quick][semigroup][finite][042]") {
   nr = 0;
 
   while (!result.empty()) {
-    word_t lhs, rhs;
+    word_type lhs, rhs;
     S.factorisation(lhs, result[0]);
     lhs.push_back(result[1]);
     S.factorisation(rhs, result[2]);

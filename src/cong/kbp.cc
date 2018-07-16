@@ -56,7 +56,7 @@ namespace libsemigroups {
 
   void Congruence::KBP::run() {
     while (!_killed && !is_done()) {
-      run(Congruence::LIMIT_MAX);
+      run(LIMIT_MAX);
     }
   }
 
@@ -76,13 +76,13 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-  Congruence::KBP::word_to_class_index(word_t const& word) {
+  Congruence::KBP::word_to_class_index(word_type const& word) {
     LIBSEMIGROUPS_ASSERT(is_done());
     return _P_cong->word_to_class_index(word);
   }
 
-  Congruence::DATA::result_t Congruence::KBP::current_equals(word_t const& w1,
-                                                             word_t const& w2) {
+  Congruence::DATA::result_t Congruence::KBP::current_equals(word_type const& w1,
+                                                             word_type const& w2) {
     init();
     if (!is_done() && is_killed()) {
       // This cannot be reliably tested: see TC::current_equals for more info
@@ -92,7 +92,7 @@ namespace libsemigroups {
     return _P_cong->cget_data()->current_equals(w1, w2);
   }
 
-  Partition<word_t>* Congruence::KBP::nontrivial_classes() {
+  Partition<word_type>* Congruence::KBP::nontrivial_classes() {
     LIBSEMIGROUPS_ASSERT(is_done());
     return _P_cong->nontrivial_classes();
   }

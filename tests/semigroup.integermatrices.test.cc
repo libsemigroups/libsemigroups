@@ -49,9 +49,9 @@ TEST_CASE("Semigroup of integer matrices 01",
               MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr)
               * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)
               * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr))
-          == word_t({0, 1, 0}));
+          == word_type({0, 1, 0}));
   REQUIRE(S.minimal_factorisation(52)
-          == word_t({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
+          == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
   REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{64, 0}, {-64, 0}}, sr));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);

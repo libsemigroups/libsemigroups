@@ -23,8 +23,8 @@
 
 using namespace libsemigroups;
 
-static inline size_t evaluate_reduct(Semigroup<>& S, word_t const& word) {
-  letter_t out = S.letter_to_pos(word[0]);
+static inline size_t evaluate_reduct(Semigroup<>& S, word_type const& word) {
+  letter_type out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
     out = S.right(out, *it);
   }
@@ -80,7 +80,7 @@ TEST_CASE("Semigroup 001: small transformation semigroup",
   delete x;
 
   x = new Transformation<u_int16_t>({0, 0, 0});
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 }
@@ -111,7 +111,7 @@ TEST_CASE("Semigroup 002: small partial perm semigroup",
   delete expected;
 
   Element* x = new Transformation<u_int16_t>({0, 1, 0});
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
@@ -121,7 +121,7 @@ TEST_CASE("Semigroup 002: small partial perm semigroup",
   delete x;
 
   x = new PartialPerm<u_int16_t>({}, {}, 9);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
 
   delete x;
@@ -244,7 +244,7 @@ TEST_CASE("Semigroup 005: small projective max plus matrix semigroup",
   REQUIRE(S.test_membership(&id));
 
   x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
   delete sr;
@@ -274,7 +274,7 @@ TEST_CASE("Semigroup 006: small matrix semigroup [Integers]",
   REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
 
   x->redefine(gens[1], gens[1]);
@@ -283,7 +283,7 @@ TEST_CASE("Semigroup 006: small matrix semigroup [Integers]",
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
@@ -315,7 +315,7 @@ TEST_CASE("Semigroup 007: small matrix semigroup [MaxPlusSemiring]",
   REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
@@ -323,7 +323,7 @@ TEST_CASE("Semigroup 007: small matrix semigroup [MaxPlusSemiring]",
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
@@ -335,7 +335,7 @@ TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
           "[quick][semigroup][finite][008]") {
   Semiring<int64_t>*    sr = new MinPlusSemiring();
   std::vector<Element*> gens
-      = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, LONG_MAX}}, sr)};
+      = {new MatrixOverSemiring<int64_t>({{1, 0}, {0, POSITIVE_INFINITY}}, sr)};
   Semigroup<> S = Semigroup<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
@@ -350,7 +350,7 @@ TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
   REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 1);
@@ -358,7 +358,7 @@ TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
@@ -387,12 +387,12 @@ TEST_CASE("Semigroup 009: small matrix semigroup [TropicalMaxPlusSemiring]",
   REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
@@ -423,12 +423,12 @@ TEST_CASE("Semigroup 010: small matrix semigroup [TropicalMinPlusSemiring]",
   REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[0], gens[0]);
   REQUIRE(S.position(x) == 2);
@@ -459,12 +459,12 @@ TEST_CASE("Semigroup 011: small matrix semigroup [NaturalSemiring]",
   REQUIRE(S.test_membership(gens[0]));
 
   Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   delete x;
 
   x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[0]);
   REQUIRE(S.position(x) == 4);
@@ -497,7 +497,7 @@ TEST_CASE("Semigroup 012: small pbr semigroup",
   REQUIRE(S.test_membership(gens[1]));
 
   Element* x = new PBR({{}, {}, {}, {}, {}, {}});
-  REQUIRE(S.position(x) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.position(x) == UNDEFINED);
   REQUIRE(!S.test_membership(x));
   x->redefine(gens[1], gens[1]);
   REQUIRE(S.position(x) == 5);
@@ -653,9 +653,9 @@ TEST_CASE("Semigroup 017: factorisation, length [1 element]",
 
   S.set_batch_size(1024);
 
-  word_t result;
+  word_type result;
   S.factorisation(result, 5537);
-  word_t expected = {1, 2, 2, 2, 3, 2, 4, 1, 2, 2, 3};
+  word_type expected = {1, 2, 2, 2, 3, 2, 4, 1, 2, 2, 3};
   REQUIRE(result == expected);
   REQUIRE(S.length_const(5537) == 11);
   REQUIRE(S.length_non_const(5537) == 11);
@@ -683,7 +683,7 @@ TEST_CASE("Semigroup 018: factorisation, products [all elements]",
 
   S.set_batch_size(1024);
 
-  word_t result;
+  word_type result;
   for (size_t i = 0; i < S.size(); i++) {
     S.factorisation(result, i);
     REQUIRE(evaluate_reduct(S, result) == i);
@@ -750,9 +750,9 @@ TEST_CASE("Semigroup 019: first/final letter, prefix, suffix, products",
   REQUIRE(S.product_by_reduction(S.first_letter(3683), S.suffix(3683)) == 3683);
 
   REQUIRE(S.first_letter(0) == 0);
-  REQUIRE(S.prefix(0) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.prefix(0) == UNDEFINED);
   REQUIRE(S.final_letter(0) == 0);
-  REQUIRE(S.suffix(0) == Semigroup<>::UNDEFINED);
+  REQUIRE(S.suffix(0) == UNDEFINED);
 
   REQUIRE(S.first_letter(7775) == 1);
   REQUIRE(S.prefix(7775) == 7760);

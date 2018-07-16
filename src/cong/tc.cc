@@ -25,7 +25,6 @@
 #include <algorithm>
 
 namespace libsemigroups {
-
   // COSET LISTS:
   //
   // We use these two arrays to simulate a doubly-linked list of active
@@ -94,7 +93,7 @@ namespace libsemigroups {
       // This is the first run
       init_tc_relations();
       // Apply each "extra" relation to the first coset only
-      for (relation_t const& rel : _extra) {
+      for (relation_type const& rel : _extra) {
         trace(_id_coset, rel);  // Allow new cosets
       }
       _init_done = true;
@@ -157,7 +156,7 @@ namespace libsemigroups {
     _preim_next.add_rows(_table.nr_rows());
 
     for (class_index_t c = 0; c < _active; c++) {
-      for (letter_t i = 0; i < _cong._nrgens; i++) {
+      for (letter_type i = 0; i < _cong._nrgens; i++) {
         class_index_t b = _table.get(c, i);
         _preim_next.set(c, i, _preim_init.get(b, i));
         _preim_init.set(b, i, c);
@@ -174,7 +173,7 @@ namespace libsemigroups {
     switch (_cong._type) {
       case LEFT:
         _extra.insert(_extra.end(), _cong._extra.begin(), _cong._extra.end());
-        for (relation_t& rel : _extra) {
+        for (relation_type& rel : _extra) {
           std::reverse(rel.first.begin(), rel.first.end());
           std::reverse(rel.second.begin(), rel.second.end());
         }
@@ -211,7 +210,7 @@ namespace libsemigroups {
       case TWOSIDED:
         break;
       case LEFT:
-        for (relation_t& rel : _relations) {
+        for (relation_type& rel : _relations) {
           std::reverse(rel.first.begin(), rel.first.end());
           std::reverse(rel.second.begin(), rel.second.end());
         }
@@ -266,7 +265,7 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-  Congruence::TC::word_to_class_index(word_t const& w) {
+  Congruence::TC::word_to_class_index(word_type const& w) {
     class_index_t c = _id_coset;
     if (_cong._type == LEFT) {
       // Iterate in reverse order
@@ -285,8 +284,8 @@ namespace libsemigroups {
     return (c == UNDEFINED ? c : c - 1);
   }
 
-  Congruence::DATA::result_t Congruence::TC::current_equals(word_t const& w1,
-                                                            word_t const& w2) {
+  Congruence::DATA::result_t Congruence::TC::current_equals(word_type const& w1,
+                                                            word_type const& w2) {
     if (w1 == w2) {
       return result_t::TRUE;
     } else if (!is_done() && is_killed()) {
@@ -319,7 +318,7 @@ namespace libsemigroups {
   }
 
   // Create a new active coset for coset c to map to under generator a
-  void Congruence::TC::new_coset(class_index_t const& c, letter_t const& a) {
+  void Congruence::TC::new_coset(class_index_t const& c, letter_type const& a) {
     _active++;
     _defined++;
     _report_next++;
@@ -342,7 +341,7 @@ namespace libsemigroups {
     _next = _forwd[_last];
 
     // Clear the new coset's row in each table
-    for (letter_t i = 0; i < _cong._nrgens; i++) {
+    for (letter_type i = 0; i < _cong._nrgens; i++) {
       _table.set(_last, i, UNDEFINED);
       _preim_init.set(_last, i, UNDEFINED);
     }
@@ -410,7 +409,7 @@ namespace libsemigroups {
         // with
         _bckwd[rhs] = -static_cast<signed_class_index_t>(lhs);
 
-        for (letter_t i = 0; i < _cong._nrgens; i++) {
+        for (letter_type i = 0; i < _cong._nrgens; i++) {
           // Let <v> be the first PREIMAGE of <rhs>
           class_index_t v = _preim_init.get(rhs, i);
           while (v != UNDEFINED) {
@@ -472,7 +471,7 @@ namespace libsemigroups {
   // new cosets will be created whenever necessary; if false, then we are
   // "packing", and this function will not create any new cosets.
   void Congruence::TC::trace(class_index_t const& c,
-                             relation_t const&    rel,
+                             relation_type const&    rel,
                              bool                 add) {
     class_index_t lhs = c;
     for (auto it = rel.first.cbegin(); it < rel.first.cend() - 1; it++) {
@@ -517,8 +516,8 @@ namespace libsemigroups {
       _cosets_killed = _defined - _active;
     }
 
-    letter_t      a = rel.first.back();
-    letter_t      b = rel.second.back();
+    letter_type      a = rel.first.back();
+    letter_type      b = rel.second.back();
     class_index_t u = _table.get(lhs, a);
     class_index_t v = _table.get(rhs, b);
     // u = lhs^a = c^rel[1]
@@ -559,7 +558,7 @@ namespace libsemigroups {
   // Apply the Todd-Coxeter algorithm until the coset table is complete.
   void Congruence::TC::run() {
     while (!is_done() && !is_killed()) {
-      run(Congruence::LIMIT_MAX);
+      run(LIMIT_MAX);
     }
   }
 
@@ -577,7 +576,7 @@ namespace libsemigroups {
     REPORT("number of steps: " << _steps);
     do {
       // Apply each relation to the "_current" coset
-      for (relation_t const& rel : _relations) {
+      for (relation_type const& rel : _relations) {
         trace(_current, rel);  // Allow new cosets
       }
 
@@ -597,7 +596,7 @@ namespace libsemigroups {
 
         do {
           // Apply every relation to the "_current_no_add" coset
-          for (relation_t const& rel : _relations) {
+          for (relation_type const& rel : _relations) {
             trace(_current_no_add, rel, false);  // Don't allow new cosets
           }
           _current_no_add = _forwd[_current_no_add];

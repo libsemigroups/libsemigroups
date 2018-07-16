@@ -78,7 +78,6 @@ TEST_CASE("Semigroup 081: Exception: word_to_pos",
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
   Semigroup<> T(gens);
-  auto& UNDEFINED = Semigroup<>::UNDEFINED;
 
   REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
@@ -160,7 +159,7 @@ TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
       }
       gens.push_back(new Transformation<size_t>(trans));
     }
-    Semigroup<> S(gens);
+    Semigroup<Element*> S(gens);
     delete_gens(gens);
 
     for (size_t j = 0; j < i; ++j) {

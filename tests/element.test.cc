@@ -174,30 +174,26 @@ TEST_CASE("Transformation 07: exceptions",
       Transformation<u_int16_t>(std::initializer_list<u_int16_t>({1, 2, 3})),
       LibsemigroupsException);
 
-  auto& UNDEF
-      = PartialTransformation<u_int16_t, PartialPerm<u_int16_t>>::UNDEFINED;
   REQUIRE_THROWS_AS(Transformation<u_int16_t>(std::initializer_list<u_int16_t>(
-                        {UNDEF, UNDEF, UNDEF})),
+                        {UNDEFINED, UNDEFINED, UNDEFINED})),
                     LibsemigroupsException);
 }
 
 TEST_CASE("PartialPerm 01: u_int16_t methods", "[quick][element][pperm][01]") {
-  auto& UNDEF
-      = PartialTransformation<u_int16_t, PartialPerm<u_int16_t>>::UNDEFINED;
   auto x = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
   auto y = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
   REQUIRE(x == y);
   auto yy = x * x;
-  REQUIRE(yy.at(0) == UNDEF);
-  REQUIRE(yy.at(1) == UNDEF);
-  REQUIRE(yy.at(2) == UNDEF);
-  REQUIRE(yy.at(3) == UNDEF);
-  REQUIRE(yy.at(4) == UNDEF);
+  REQUIRE(yy.at(0) == UNDEFINED);
+  REQUIRE(yy.at(1) == UNDEFINED);
+  REQUIRE(yy.at(2) == UNDEFINED);
+  REQUIRE(yy.at(3) == UNDEFINED);
+  REQUIRE(yy.at(4) == UNDEFINED);
   REQUIRE(yy.at(5) == 1);
 
   REQUIRE(yy < y);
   REQUIRE(!(x < x));
-  auto expected = PartialPerm<u_int16_t>({UNDEF, UNDEF, UNDEF});
+  auto expected = PartialPerm<u_int16_t>({UNDEFINED, UNDEFINED, UNDEFINED});
   REQUIRE(expected < x);
 
   REQUIRE(x.degree() == 10);
@@ -246,21 +242,19 @@ TEST_CASE("PartialPerm 03: u_int16_t delete/copy",
 }
 
 TEST_CASE("PartialPerm 04: u_int32_t methods", "[quick][element][pperm][04]") {
-  auto& UNDEF
-      = PartialTransformation<u_int32_t, PartialPerm<u_int32_t>>::UNDEFINED;
   auto x = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
   auto y = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(x == y);
   auto xx = x * x;
-  REQUIRE(xx.at(0) == UNDEF);
-  REQUIRE(xx.at(1) == UNDEF);
-  REQUIRE(xx.at(2) == UNDEF);
-  REQUIRE(xx.at(3) == UNDEF);
-  REQUIRE(xx.at(4) == UNDEF);
+  REQUIRE(xx.at(0) == UNDEFINED);
+  REQUIRE(xx.at(1) == UNDEFINED);
+  REQUIRE(xx.at(2) == UNDEFINED);
+  REQUIRE(xx.at(3) == UNDEFINED);
+  REQUIRE(xx.at(4) == UNDEFINED);
   REQUIRE(xx.at(5) == 1);
   REQUIRE((xx < y) == true);
 
-  auto z = PartialPerm<u_int32_t>({UNDEF, UNDEF, UNDEF});
+  auto z = PartialPerm<u_int32_t>({UNDEFINED, UNDEFINED, UNDEFINED});
   REQUIRE(z < x);
 
   REQUIRE(x.degree() == 11);
@@ -306,10 +300,9 @@ TEST_CASE("PartialPerm 06: u_int32_t delete/copy",
 }
 
 TEST_CASE("PartialPerm 07: exceptions", "[quick][element][pperm][07]") {
-  auto& UNDEF = PartialPerm<u_int16_t>::UNDEFINED;
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>()));
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({0})));
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEF})));
+  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEFINED})));
   REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1})),
                     LibsemigroupsException);
 
@@ -317,22 +310,22 @@ TEST_CASE("PartialPerm 07: exceptions", "[quick][element][pperm][07]") {
   REQUIRE_NOTHROW(
       PartialPerm<u_int16_t>(std::initializer_list<u_int16_t>({0, 1, 2})));
   REQUIRE_NOTHROW(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({0, UNDEF, 2})));
+      PartialPerm<u_int16_t>(std::vector<u_int16_t>({0, UNDEFINED, 2})));
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(
-      std::vector<u_int16_t>({0, UNDEF, 5, UNDEF, UNDEF, 1})));
+      std::vector<u_int16_t>({0, UNDEFINED, 5, UNDEFINED, UNDEFINED, 1})));
 
   std::vector<u_int16_t> pimgs = {1, 2, 3};
   // REQUIRE_NOTHROW(PartialPerm<u_int16_t>(pimgs));
   REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 2, 3})),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEF, UNDEF, 3})),
+      PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEFINED, UNDEFINED, 3})),
       LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, UNDEF, 1})),
+      PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, UNDEFINED, 1})),
       LibsemigroupsException);
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(
-                        std::vector<u_int16_t>({3, UNDEF, 2, 1, UNDEF, 3})),
+  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>(
+                        {3, UNDEFINED, 2, 1, UNDEFINED, 3})),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(
       PartialPerm<u_int16_t>(std::initializer_list<u_int16_t>({1, 2, 3})),
@@ -734,10 +727,10 @@ TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
 
   REQUIRE(x.semiring() == sr);
 
-  auto y
-      = ProjectiveMaxPlusMatrix({{LONG_MIN, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr);
+  auto y = ProjectiveMaxPlusMatrix(
+      {{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}}, sr);
   expected = ProjectiveMaxPlusMatrix(
-      {{LONG_MIN, -1, -1}, {-1, 0, -1}, {0, -2, -1}}, sr);
+      {{NEGATIVE_INFINITY, -1, -1}, {-1, 0, -1}, {0, -2, -1}}, sr);
   REQUIRE(y == expected);
   REQUIRE(!(x == y));
 

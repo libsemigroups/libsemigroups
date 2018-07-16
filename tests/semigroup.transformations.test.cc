@@ -54,8 +54,8 @@ TEST_CASE("Semigroup of Transformations 01",
   REQUIRE(S.minimal_factorisation(
               Transformation<uint_fast8_t>({7, 1, 2, 6, 7, 4, 1, 5})
               * Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}))
-          == word_t({8, 1}));
-  REQUIRE(S.minimal_factorisation(10) == word_t({0, 2}));
+          == word_type({8, 1}));
+  REQUIRE(S.minimal_factorisation(10) == word_type({0, 2}));
   REQUIRE(S.at(10) == Transformation<uint_fast8_t>({0, 4, 7, 2, 3, 4, 0, 6}));
   REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                     LibsemigroupsException);

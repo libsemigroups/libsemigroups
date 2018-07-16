@@ -31,6 +31,7 @@
 
 #include "adapters.h"
 #include "blocks.h"
+#include "constants.h"
 #include "functional.h"
 #include "libsemigroups-debug.h"
 #include "libsemigroups-exception.h"
@@ -246,14 +247,6 @@ namespace libsemigroups {
     void reset_hash_value() const {
       _hash_value = UNDEFINED;
     }
-
-    //! UNDEFINED value.
-    //!
-    //! This variable is used to indicate that a value is undefined. For
-    //! example, the cached hash value of an Element is initially set to this
-    //! value.
-    // TODO move to constants.h file
-    static size_t const UNDEFINED;
 
     //! This data member holds a cached version of the hash value of an Element.
     //! It is stored here if it is ever computed. It is invalidated by
@@ -660,12 +653,6 @@ namespace libsemigroups {
       return TSubclass(std::move(vector));
     }
 
-    //! Undefined image value.
-    //!
-    //! This value is used to indicate that a partial transformation is not
-    //! defined on a value.
-    static TValueType const UNDEFINED;
-
    private:
     // Used for determining rank
     static std::vector<bool> _lookup;
@@ -674,10 +661,6 @@ namespace libsemigroups {
   template <typename TValueType, typename TSubclass>
   std::vector<bool> PartialTransformation<TValueType, TSubclass>::_lookup
       = std::vector<bool>();
-
-  template <typename TValueType, typename TSubclass>
-  TValueType const PartialTransformation<TValueType, TSubclass>::UNDEFINED
-      = std::numeric_limits<TValueType>::max();
 
   // Base class for method redefine for Permutations and Transformations
   template <typename TValueType, typename TSubclass>
@@ -828,7 +811,6 @@ namespace libsemigroups {
    public:
     using PartialTransformation<TValueType,
                                 PartialPerm<TValueType>>::PartialTransformation;
-    using PartialTransformation<TValueType, PartialPerm<TValueType>>::UNDEFINED;
 
     //! A constructor.
     //!
@@ -1047,10 +1029,10 @@ namespace libsemigroups {
     //! Constructs a uninitialised bipartition.
     Bipartition()
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(),
-          _nr_blocks(Bipartition::UNDEFINED),
-          _nr_left_blocks(Bipartition::UNDEFINED),
+          _nr_blocks(UNDEFINED),
+          _nr_left_blocks(UNDEFINED),
           _trans_blocks_lookup(),
-          _rank(Bipartition::UNDEFINED) {}
+          _rank(UNDEFINED) {}
 
     //! A constructor.
     //!
@@ -1069,10 +1051,10 @@ namespace libsemigroups {
     //! The parameter \p blocks is copied.
     explicit Bipartition(std::vector<u_int32_t> const& blocks)
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(blocks),
-          _nr_blocks(Bipartition::UNDEFINED),
-          _nr_left_blocks(Bipartition::UNDEFINED),
+          _nr_blocks(UNDEFINED),
+          _nr_left_blocks(UNDEFINED),
           _trans_blocks_lookup(),
-          _rank(Bipartition::UNDEFINED) {
+          _rank(UNDEFINED) {
       validate();
     }
 
@@ -1087,10 +1069,10 @@ namespace libsemigroups {
     explicit Bipartition(std::vector<u_int32_t>&& blocks)
         : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
               std::move(blocks)),
-          _nr_blocks(Bipartition::UNDEFINED),
-          _nr_left_blocks(Bipartition::UNDEFINED),
+          _nr_blocks(UNDEFINED),
+          _nr_left_blocks(UNDEFINED),
           _trans_blocks_lookup(),
-          _rank(Bipartition::UNDEFINED) {
+          _rank(UNDEFINED) {
       validate();
     }
 
@@ -1226,8 +1208,7 @@ namespace libsemigroups {
     //! to \p nr_blocks. It asserts that either there is no existing cached
     //! value or \p nr_blocks equals the existing cached value.
     inline void set_nr_blocks(size_t nr_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_blocks == Bipartition::UNDEFINED
-                           || _nr_blocks == nr_blocks);
+      LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
       _nr_blocks = nr_blocks;
     }
 
@@ -1238,7 +1219,7 @@ namespace libsemigroups {
     //! existing cached value or \p nr_left_blocks equals the existing cached
     //! value.
     inline void set_nr_left_blocks(size_t nr_left_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_left_blocks == Bipartition::UNDEFINED
+      LIBSEMIGROUPS_ASSERT(_nr_left_blocks == UNDEFINED
                            || _nr_left_blocks == nr_left_blocks);
       _nr_left_blocks = nr_left_blocks;
     }
@@ -1249,7 +1230,7 @@ namespace libsemigroups {
     //! It asserts that either there is no existing cached value or
     //! \p rank equals the existing cached value.
     inline void set_rank(size_t rank) {
-      LIBSEMIGROUPS_ASSERT(_rank == Bipartition::UNDEFINED || _rank == rank);
+      LIBSEMIGROUPS_ASSERT(_rank == UNDEFINED || _rank == rank);
       _rank = rank;
     }
 
@@ -1266,8 +1247,6 @@ namespace libsemigroups {
     size_t            _nr_left_blocks;
     std::vector<bool> _trans_blocks_lookup;
     size_t            _rank;
-
-    static u_int32_t const UNDEFINED;
   };
 
   //! Matrices over a semiring.
@@ -1622,9 +1601,14 @@ namespace libsemigroups {
 
     // A function applied after redefinition
     inline void after() final {
-      int64_t norm = *std::max_element(_vector.begin(), _vector.end());
+      int64_t norm = std::numeric_limits<int64_t>::min();
+      for (auto const& x : _vector) {
+        if (x != NEGATIVE_INFINITY && x > norm) {
+          norm = x;
+        }
+      }
       for (auto& x : _vector) {
-        if (x != LONG_MIN) {
+        if (x != NEGATIVE_INFINITY) {
           x -= norm;
         }
       }
@@ -1938,7 +1922,8 @@ namespace libsemigroups {
     using internal_reference        = internal_value_type&;
     using internal_const_reference  = internal_const_value_type&;
 
-    inline internal_const_value_type to_internal_const(const_reference x) const {
+    inline internal_const_value_type
+    to_internal_const(const_reference x) const {
       return &x;
     }
 
@@ -1946,7 +1931,8 @@ namespace libsemigroups {
       return &x;
     }
 
-    inline const_reference to_external_const(internal_const_value_type x) const {
+    inline const_reference
+    to_external_const(internal_const_value_type x) const {
       return *x;
     }
 
@@ -1957,9 +1943,8 @@ namespace libsemigroups {
     // Value contains some memory shared with other values. Destroy the shared
     // part. Obviously, The caller should make sure that nothing is actually
     // shared.
-    inline void internal_free(internal_const_value_type x) const {
-      // FIXME remove const_cast
-      delete const_cast<internal_value_type>(x);
+    inline void internal_free(internal_value_type x) const {
+      delete x;
     }
 
     inline void external_free(value_type) const {}
@@ -1973,9 +1958,6 @@ namespace libsemigroups {
       return value_type(*x);
     }
   };
-
-  // FIXME What happens if TElementType is a SubElement* ???
-  // It's not clear for me how you use that.
 
   // Specialization for Element* and Element const* . . .
   template <typename TElementType>
@@ -2014,9 +1996,8 @@ namespace libsemigroups {
 
     // Value are actually pointer to memory shared with other values.
     // Obviously, The caller should make sure that nothing is actually shared.
-    inline void internal_free(internal_const_value_type x) const {
-      // FIXME remove const_cast
-      delete const_cast<internal_value_type>(x);
+    inline void internal_free(internal_value_type x) const {
+      delete x;
     }
 
     inline void external_free(value_type x) const {

@@ -64,7 +64,7 @@ namespace libsemigroups {
 
   void Congruence::KBFP::run() {
     while (!_killed && !is_done()) {
-      run(Congruence::LIMIT_MAX);
+      run(LIMIT_MAX);
     }
   }
 
@@ -76,9 +76,9 @@ namespace libsemigroups {
     if (!_killed) {
       REPORT("running Froidure-Pin . . .")
       // This if statement will never be entered - see top of file for details
-      if (steps != Congruence::LIMIT_MAX) {
+      if (steps != LIMIT_MAX) {
         // The default batch_size is too large and can take a long time, but if
-        // we are running Congruence::LIMIT_MAX steps, then the usual batch
+        // we are running LIMIT_MAX steps, then the usual batch
         // size is ok.
         _semigroup->set_batch_size(steps);
       }
@@ -90,7 +90,7 @@ namespace libsemigroups {
   }
 
   Congruence::class_index_t
-  Congruence::KBFP::word_to_class_index(word_t const& word) {
+  Congruence::KBFP::word_to_class_index(word_type const& word) {
     LIBSEMIGROUPS_ASSERT(is_done());  // so that _semigroup != nullptr
     size_t   pos = _semigroup->position(RWSE(_rws, word));
     LIBSEMIGROUPS_ASSERT(pos != Semigroup<RWSE>::UNDEFINED);
@@ -98,7 +98,7 @@ namespace libsemigroups {
   }
 
   Congruence::DATA::result_t
-  Congruence::KBFP::current_equals(word_t const& w1, word_t const& w2) {
+  Congruence::KBFP::current_equals(word_type const& w1, word_type const& w2) {
     init();
     if (!is_done() && is_killed()) {
       // This cannot be reliably tested: see TC::current_equals for more info
@@ -108,7 +108,7 @@ namespace libsemigroups {
   }
 
   Congruence::DATA::result_t
-  Congruence::KBFP::current_less_than(word_t const& w1, word_t const& w2) {
+  Congruence::KBFP::current_less_than(word_type const& w1, word_type const& w2) {
     init();
     if (!is_done() && is_killed()) {
       // This cannot be reliably tested: see TC::current_equals for more info

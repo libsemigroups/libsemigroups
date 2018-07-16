@@ -27,7 +27,6 @@
 #include "report.h"
 
 namespace libsemigroups {
-  size_t const Element::UNDEFINED = std::numeric_limits<size_t>::max();
 
   // Boolean matrices
   BooleanSemiring const* const BooleanMat::_semiring = new BooleanSemiring();
@@ -57,8 +56,6 @@ namespace libsemigroups {
   }
 
   // Bipartitions
-  u_int32_t const Bipartition::UNDEFINED
-      = std::numeric_limits<u_int32_t>::max();
   std::vector<std::vector<u_int32_t>>
       Bipartition::_fuse(std::thread::hardware_concurrency());
   std::vector<std::vector<u_int32_t>>
@@ -190,7 +187,7 @@ namespace libsemigroups {
   // nr blocks
 
   u_int32_t Bipartition::const_nr_blocks() const {
-    if (_nr_blocks != Bipartition::UNDEFINED) {
+    if (_nr_blocks != UNDEFINED) {
       return _nr_blocks;
     } else if (degree() == 0) {
       return 0;
@@ -200,14 +197,14 @@ namespace libsemigroups {
   }
 
   u_int32_t Bipartition::nr_blocks() {
-    if (_nr_blocks == Bipartition::UNDEFINED) {
+    if (_nr_blocks == UNDEFINED) {
       _nr_blocks = this->const_nr_blocks();
     }
     return _nr_blocks;
   }
 
   u_int32_t Bipartition::nr_left_blocks() {
-    if (_nr_left_blocks == Bipartition::UNDEFINED) {
+    if (_nr_left_blocks == UNDEFINED) {
       if (degree() == 0) {
         _nr_left_blocks = 0;
       } else {
@@ -250,7 +247,7 @@ namespace libsemigroups {
   }
 
   size_t Bipartition::rank() {
-    if (_rank == this->UNDEFINED) {
+    if (_rank == UNDEFINED) {
       init_trans_blocks_lookup();
       _rank = std::count(
           _trans_blocks_lookup.begin(), _trans_blocks_lookup.end(), true);
@@ -282,12 +279,12 @@ namespace libsemigroups {
         = _lookup[REPORTER.thread_id(std::this_thread::get_id())];
 
     lookup.clear();
-    lookup.resize(this->nr_blocks(), Bipartition::UNDEFINED);
+    lookup.resize(this->nr_blocks(), UNDEFINED);
     u_int32_t nr_blocks = 0;
 
     for (auto it = _vector.begin() + (_vector.size() / 2); it < _vector.end();
          it++) {
-      if (lookup[*it] == Bipartition::UNDEFINED) {
+      if (lookup[*it] == UNDEFINED) {
         lookup[*it] = nr_blocks;
         blocks_lookup->push_back(this->is_transverse_block(*it));
         nr_blocks++;

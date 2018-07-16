@@ -40,14 +40,13 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(S.current_max_word_length() == 1);
   REQUIRE(!S.is_done());
   REQUIRE(!S.is_begun());
-  REQUIRE(S.current_position(S.generator(0) * S.generator(3))
-          == Semigroup<BMat8>::UNDEFINED);
+  REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == UNDEFINED);
   REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
                                     {0, 1, 0, 0, 1},
                                     {1, 0, 1, 0, 1},
                                     {0, 0, 1, 0, 1},
                                     {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
+          == UNDEFINED);
   REQUIRE(S.current_size() == 4);
   REQUIRE(S.current_nrrules() == 0);
   REQUIRE(S.length_const(0) == 1);
@@ -77,10 +76,10 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
                                     {1, 0, 1, 0, 1},
                                     {0, 0, 1, 0, 1},
                                     {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
+          == UNDEFINED);
   REQUIRE(S.current_nrrules() == 13716);
-  REQUIRE(S.prefix(0) == Semigroup<BMat8>::UNDEFINED);
-  REQUIRE(S.suffix(0) == Semigroup<BMat8>::UNDEFINED);
+  REQUIRE(S.prefix(0) == UNDEFINED);
+  REQUIRE(S.suffix(0) == UNDEFINED);
   REQUIRE(S.first_letter(0) == 0);
   REQUIRE(S.final_letter(0) == 0);
   REQUIRE(S.batch_size() == 8192);
@@ -112,14 +111,14 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
                             {1, 0, 1, 0, 1},
                             {0, 0, 1, 0, 1},
                             {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
+          == UNDEFINED);
 
   REQUIRE(S.sorted_position(BMat8({{1, 0, 0, 1, 1},
                                    {0, 1, 0, 0, 1},
                                    {1, 0, 1, 0, 1},
                                    {0, 0, 1, 0, 1},
                                    {0, 0, 0, 0, 0}}))
-          == Semigroup<BMat8>::UNDEFINED);
+          == UNDEFINED);
   REQUIRE(S.sorted_position(S.generator(0)) == 18185);
   REQUIRE(S.sorted_position(S.generator(3)) == 33066);
   REQUIRE(S.sorted_position(S.generator(0) * S.generator(3)) == 18184);
@@ -156,12 +155,12 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   delete left;
   REQUIRE(S.left(0, 3) == 7);
 
-  word_t w;
+  word_type w;
   S.minimal_factorisation(w, 378);
-  REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
+  REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
   REQUIRE(S.length_const(378) == 6);
 
-  REQUIRE(S.minimal_factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
+  REQUIRE(S.minimal_factorisation(S.at(378)) == word_type({0, 1, 2, 0, 1, 2}));
 
   REQUIRE_THROWS_AS(S.minimal_factorisation(BMat8({{1, 0, 0, 1, 1},
                                                    {0, 1, 0, 0, 1},
@@ -174,10 +173,10 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
 
   w.clear();
   S.factorisation(w, 378);
-  REQUIRE(w == word_t({0, 1, 2, 0, 1, 2}));
+  REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
   REQUIRE(S.length_const(378) == 6);
 
-  REQUIRE(S.factorisation(S.at(378)) == word_t({0, 1, 2, 0, 1, 2}));
+  REQUIRE(S.factorisation(S.at(378)) == word_type({0, 1, 2, 0, 1, 2}));
 
   REQUIRE_THROWS_AS(S.factorisation(BMat8({{1, 0, 0, 1, 1},
                                            {0, 1, 0, 0, 1},
