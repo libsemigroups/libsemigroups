@@ -64,7 +64,7 @@ namespace libsemigroups {
             typename TDomainType   = IntegralRange<TPointType, 0, N>,
             typename TElementEqual = libsemigroups::equal_to<TElementType>,
             class TTraits = SemigroupTraitsEqual<TElementType, TElementEqual>>
-  class StabChain : private TTraits {
+  class SchreierSims : private TTraits {
     using value_type       = typename TTraits::value_type;
     using const_value_type = typename TTraits::const_value_type;
     using const_reference  = typename TTraits::const_reference;
@@ -90,7 +90,7 @@ namespace libsemigroups {
     using one     = one<internal_value_type>;
 
    public:
-    StabChain()
+    SchreierSims()
         : _base(),
           _base_size(0),
           _domain(),
@@ -106,7 +106,7 @@ namespace libsemigroups {
       init();
     }
 
-    ~StabChain() {
+    ~SchreierSims() {
       clear();
       this->internal_free(_one);
       this->internal_free(_tmp_element1);
@@ -116,7 +116,7 @@ namespace libsemigroups {
     void add_generator(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LibsemigroupsException(
-            "StabChain::add_generator: the degree of the generator must be "
+            "SchreierSims::add_generator: the degree of the generator must be "
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       } else if (!contains(x)) {
@@ -128,7 +128,7 @@ namespace libsemigroups {
     const_reference generator(size_t index) {
       if (index >= _strong_gens.size(0)) {
         throw LibsemigroupsException(
-            "StabChain::generator: the argument must be at most "
+            "SchreierSims::generator: the argument must be at most "
             + to_string(_strong_gens.size(0)) + ", not " + to_string(index));
       }
       return this->to_external_const(_strong_gens.at(0, index));
@@ -153,7 +153,7 @@ namespace libsemigroups {
     value_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LibsemigroupsException(
-            "StabChain::sift: the degree of the generator must be "
+            "SchreierSims::sift: the degree of the generator must be "
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       }
@@ -206,19 +206,19 @@ namespace libsemigroups {
     void add_base_point(point_type const pt) {
       if (pt >= N - 1) {
         throw LibsemigroupsException(
-            "StabChain::add_base_point: the new base point must be at most "
+            "SchreierSims::add_base_point: the new base point must be at most "
             + std::to_string(N) + ", not " + std::to_string(pt));
       } else if (_base_size == N) {
         throw LibsemigroupsException(
-            "StabChain::add_base_point: the current base has size "
+            "SchreierSims::add_base_point: the current base has size "
             + std::to_string(N) + ", cannot add further points");
       } else if (finished()) {
-        throw LibsemigroupsException("StabChain::add_base_point: cannot add "
+        throw LibsemigroupsException("SchreierSims::add_base_point: cannot add "
                                      "further base points");
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
-            throw LibsemigroupsException("StabChain::add_base_point: "
+            throw LibsemigroupsException("SchreierSims::add_base_point: "
                                          + std::to_string(pt)
                                          + " is already a base point");
           }
@@ -230,7 +230,7 @@ namespace libsemigroups {
     point_type base(index_type const index) const {
       if (index >= _base_size) {
         throw LibsemigroupsException(
-            "StabChain::base: the index must be at most "
+            "SchreierSims::base: the index must be at most "
             + std::to_string(_base_size) + ", not " + std::to_string(index));
       }
       return _base[index];

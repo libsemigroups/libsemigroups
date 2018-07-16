@@ -30,15 +30,14 @@
 #include "src/hpcombi.h"
 #include "src/schreier-sims.h"
 
-namespace libsemigroups_tests {
+namespace libsemigroups {
   namespace schreier_sims {
-    using namespace libsemigroups;
 
     constexpr bool REPORT = false;
 
     TEST_CASE("Schreier-Sims 01: trivial perm. group (degree 1)",
               "[quick][schreier-sims][01]") {
-      StabChain<1> S;
+      SchreierSims<1> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0}));
       REQUIRE(S.size() == 1);
@@ -48,8 +47,8 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 02: trivial perm. group (degree 2)",
               "[quick][schreier-sims][02]") {
-      StabChain<2> S;
-      using Perm = StabChain<2>::element_type;
+      SchreierSims<2> S;
+      using Perm = SchreierSims<2>::element_type;
       S.add_generator(Perm({0, 1}));
       REQUIRE(S.size() == 1);
       REQUIRE(S.sift(Perm({1, 0})) == Perm({1, 0}));
@@ -62,9 +61,9 @@ namespace libsemigroups_tests {
       size_t constexpr N = 100;
       // We allocate using "new" to avoid allocation on the stack,
       // since 100 is too large, and causes this test to seg fault.
-      auto S     = new StabChain<N>();
+      auto S     = new SchreierSims<N>();
       using Perm = std::remove_pointer<decltype(S)>::type::element_type;
-      std::vector<StabChain<N>::point_type> vec(N);
+      std::vector<SchreierSims<N>::point_type> vec(N);
       std::iota(vec.begin(), vec.end(), 0);
 
       S->add_generator(Perm(vec));
@@ -89,7 +88,7 @@ namespace libsemigroups_tests {
     // right to left.
     TEST_CASE("Schreier-Sims 04: symmetric perm. group (degree 5)",
               "[quick][schreier-sims][04]") {
-      StabChain<5> S;
+      SchreierSims<5> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 0, 2, 3, 4}));
       S.add_generator(Perm({1, 2, 3, 4, 0}));
@@ -98,7 +97,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 05: symmetric perm. group (degree 8)",
               "[quick][schreier-sims][05]") {
-      StabChain<8> S;
+      SchreierSims<8> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 6, 2, 3, 4, 5, 1, 7}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
@@ -107,7 +106,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 06: symmetric perm. group (degree 9)",
               "[quick][schreier-sims][06]") {
-      StabChain<9> S;
+      SchreierSims<9> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 0}));
@@ -116,7 +115,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 07: alternating perm. group (degree 12)",
               "[quick][schreier-sims][07]") {
-      StabChain<12> S;
+      SchreierSims<12> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
       S.add_generator(Perm({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
@@ -129,7 +128,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 08: symmetric perm. group (degree 16)",
               "[quick][schreier-sims][08]") {
-      StabChain<16> S;
+      SchreierSims<16> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(
           Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -140,7 +139,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 09: alternating perm. group (degree 15)",
               "[quick][schreier-sims][09]") {
-      StabChain<15> S;
+      SchreierSims<15> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
       S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
@@ -162,7 +161,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 10: alternating perm. group (degree 16)",
               "[quick][schreier-sims][10]") {
-      StabChain<16> S;
+      SchreierSims<16> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(
           Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -206,7 +205,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 11: dihedral perm. group (order 10)",
               "[quick][schreier-sims][11]") {
-      StabChain<5> S;
+      SchreierSims<5> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 4, 3, 2, 1}));
       S.add_generator(Perm({1, 2, 3, 4, 0}));
@@ -218,7 +217,7 @@ namespace libsemigroups_tests {
               "[quick][schreier-sims][12]") {
       // At N = 4000 or so, this starts to take an appreciable amount of time.
       constexpr size_t N = 200;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
       using pt           = std::remove_pointer<decltype(S)>::type::point_type;
 
@@ -247,7 +246,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 13: perm. group T (order 12)",
               "[quick][schreier-sims][13]") {
-      StabChain<12> S;
+      SchreierSims<12> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 6}));
       S.add_generator(Perm({6, 11, 10, 9, 8, 7, 3, 2, 1, 0, 5, 4}));
@@ -256,7 +255,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 14: quaternion perm. group (order 8)",
               "[quick][schreier-sims][14]") {
-      StabChain<9> S;
+      SchreierSims<9> S;
       using Perm = decltype(S)::element_type;
       S.add_generator(Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
       S.add_generator(Perm({0, 3, 5, 4, 8, 7, 2, 6, 1}));
@@ -276,7 +275,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 15: perm. group (order 84129611558952960)",
               "[quick][schreier-sims][15]") {
       constexpr size_t N = 729;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -395,7 +394,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 16: perm. group SL(3, 5) (order 372000)",
               "[quick][schreier-sims][16]") {
       constexpr size_t N = 126;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(
@@ -496,7 +495,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 17: perm. group PSL(4, 8) (order 34558531338240)",
               "[quick][schreier-sims][17]") {
       constexpr size_t N = 585;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -593,7 +592,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 18: perm. Mathieu group M11 (order 7920)",
               "[quick][schreier-sims][18]") {
       constexpr size_t N = 11;
-      auto             S = StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = decltype(S)::element_type;
 
       S.add_generator(Perm({0, 9, 2, 10, 6, 5, 4, 8, 7, 1, 3}));
@@ -612,7 +611,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 19: perm. Mathieu group M24 (order 244823040)",
               "[quick][schreier-sims][19]") {
       constexpr size_t N = 24;
-      auto             S = StabChain<N>();
+      auto             S = SchreierSims<N>();
       using Perm         = decltype(S)::element_type;
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
@@ -647,7 +646,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 20: perm. Janko Group J1 (order 175560)",
               "[quick][schreier-sims][20]") {
       constexpr size_t N = 267;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -833,7 +832,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 21: perm. Hall-Janko group (order 604800)",
               "[quick][schreier-sims][21]") {
       constexpr size_t N = 101;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -902,7 +901,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 22: perm. Hall–Janko group (alt.) (order 604800)",
               "[quick][schreier-sims][22]") {
       constexpr size_t N = 841;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -1037,7 +1036,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 23: perm. Conway group Co3 (order 495766656000)",
               "[quick][schreier-sims][23]") {
       constexpr size_t N = 277;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -1220,7 +1219,7 @@ namespace libsemigroups_tests {
         "Schreier-Sims 24: perm. Conway group Co3 (alt.) (order 495766656000) ",
         "[quick][schreier-sims][24]") {
       constexpr size_t N = 553;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -1314,7 +1313,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 25: perm. Suzuki group (order 448345497600)",
               "[quick][schreier-sims][25]") {
       constexpr size_t N = 1783;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -1655,7 +1654,7 @@ namespace libsemigroups_tests {
         "[quick][schreier-sims][26]") {
       // Slower than GAP
       constexpr size_t N = 3511;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -2309,7 +2308,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 27: perm. Held group (order 4030387200)",
               "[quick][schreier-sims][27]") {
       constexpr size_t N = 2059;
-      auto             S = new StabChain<N>();
+      auto             S = new SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(Perm(
@@ -2699,7 +2698,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 28: perm. group C2 x C2 x C2 (order 8)",
               "[quick][schreier-sims][28]") {
       constexpr size_t N = 8;
-      auto             S = StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
@@ -2712,7 +2711,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 29: perm. group C2 x C2 x C2 x C2 (order 16)",
               "[quick][schreier-sims][29]") {
       constexpr size_t N = 8;
-      auto             S = StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = decltype(S)::element_type;
 
       S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
@@ -2736,7 +2735,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 30: perm. group (S5 x S5) : C2 (order 28800)",
               "[quick][schreier-sims][30]") {
       constexpr size_t N = 10;
-      auto             S = StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S.add_generator(Perm({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
@@ -2748,7 +2747,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 31: perm. group C3 x D8 x A5 (order 1440)",
               "[quick][schreier-sims][31]") {
       constexpr size_t N = 12;
-      auto             S = StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
@@ -2764,7 +2763,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 32: perm. group GL(4, 3) (order 24261120)",
               "[quick][schreier-sims][32]") {
       constexpr size_t N = 81;
-      auto             S = StabChain<N>();
+      auto             S = SchreierSims<N>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S.add_generator(Perm(
@@ -2829,7 +2828,7 @@ namespace libsemigroups_tests {
     TEST_CASE("Schreier-Sims 33: perm. group PSL(3, 7) (order 1876896)",
               "[quick][schreier-sims][33]") {
       constexpr size_t N = 57;
-      auto             S = new StabChain<N, size_t, Permutation<size_t>>();
+      auto             S = new SchreierSims<N, size_t, Permutation<size_t>>();
       using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
 
       S->add_generator(
@@ -2886,7 +2885,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 34: BMat8 cyclic group order 2",
               "[quick][schreier-sims][34]") {
-      StabChain<8, size_t, BMat8> S;
+      SchreierSims<8, size_t, BMat8> S;
       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                              {1, 0, 0, 0, 0, 0, 0, 0},
                              {0, 0, 1, 0, 0, 0, 0, 0},
@@ -2900,7 +2899,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 35: BMat8 symmetric group 8",
               "[quick][schreier-sims][35]") {
-      StabChain<8, size_t, BMat8> S;
+      SchreierSims<8, size_t, BMat8> S;
       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                              {1, 0, 0, 0, 0, 0, 0, 0},
                              {0, 0, 1, 0, 0, 0, 0, 0},
@@ -2922,7 +2921,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 36: BMat8 dihedral group D_16",
               "[quick][schreier-sims][36]") {
-      StabChain<8, size_t, BMat8> S;
+      SchreierSims<8, size_t, BMat8> S;
       S.add_generator(BMat8({{1, 0, 0, 0, 0, 0, 0, 0},
                              {0, 0, 0, 0, 0, 0, 0, 1},
                              {0, 0, 0, 0, 0, 0, 1, 0},
@@ -2944,7 +2943,7 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 37: symmetric perm. group (degree 5)",
               "[quick][schreier-sims][37]") {
-      StabChain<5, size_t, Permutation<size_t>> S;
+      SchreierSims<5, size_t, Permutation<size_t>> S;
       using Perm = Permutation<size_t>;
       S.add_generator(Perm({1, 2, 3, 4, 0}));
       S.add_generator(Perm({1, 0, 2, 3, 4}));
@@ -2953,9 +2952,9 @@ namespace libsemigroups_tests {
 
     TEST_CASE("Schreier-Sims 38: alternating perm. group (degree 17)",
               "[quick][schreier-sims][38]") {
-      StabChain<17> S;
+      SchreierSims<17> S;
       S.clear();
-      using Perm = StabChain<17>::element_type;
+      using Perm = SchreierSims<17>::element_type;
       REQUIRE(S.size() == 1);
       S.add_generator(
           Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
@@ -3014,4 +3013,4 @@ namespace libsemigroups_tests {
       REQUIRE(S.size() == static_cast<uint64_t>(177843714048000));
     }
   }  // namespace schreier_sims
-}  // namespace libsemigroups_tests
+}  // namespace libsemigroups

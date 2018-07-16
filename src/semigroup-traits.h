@@ -17,7 +17,7 @@
 //
 
 // This file contains the SemigroupTraits class that defines the types, and
-// methods for translating between then, for use by the Semigroup, StabChain,
+// methods for translating between then, for use by the Semigroup, SchreierSims,
 // and P classes.
 
 #ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
