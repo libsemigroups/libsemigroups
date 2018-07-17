@@ -356,12 +356,7 @@ namespace libsemigroups {
       if (this->_vector.size() != ewvd._vector.size()) {
         return this->_vector.size() < ewvd._vector.size();
       }
-      for (size_t i = 0; i < this->_vector.size(); i++) {
-        if ((*this)[i] != ewvd[i]) {
-          return (*this)[i] < ewvd[i];
-        }
-      }
-      return false;
+      return this->_vector < ewvd._vector;
     }
 
     //! Swap another Element with \c this.
