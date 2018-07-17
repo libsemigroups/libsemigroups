@@ -85,7 +85,8 @@ namespace libsemigroups {
   };
 
   template <> struct product<IntPair> {
-    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const noexcept {
+    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const
+        noexcept {
       xy = x * y;
     }
   };
