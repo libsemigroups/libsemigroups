@@ -16,16 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIRING_H_
-#define LIBSEMIGROUPS_SRC_SEMIRING_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIRING_H_
+#define LIBSEMIGROUPS_INCLUDE_SEMIRING_H_
 
 #include <limits.h>
 
 #include <algorithm>
 #include <cstdint>
 
+#include "misc/libsemigroups-debug.h"
+
 #include "constants.h"
-#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -401,4 +402,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_SEMIRING_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIRING_H_

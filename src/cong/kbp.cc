@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include "../rwse.h"
+#include "rwse.h"
 
 namespace libsemigroups {
 

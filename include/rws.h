@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_RWS_H_
-#define LIBSEMIGROUPS_SRC_RWS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_RWS_H_
+#define LIBSEMIGROUPS_INCLUDE_RWS_H_
 
 #include <atomic>
 #include <list>
@@ -809,4 +809,4 @@ namespace libsemigroups {
     Rule const*                _rule;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_RWS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_RWS_H_

@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_TIMER_H_
-#define LIBSEMIGROUPS_SRC_TIMER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_
 
 #include <chrono>
 #include <iostream>
 #include <string>
 
-#include "to_string.h"
+#include "stl.h"
 
 namespace libsemigroups {
 
@@ -98,4 +98,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_TIMER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_

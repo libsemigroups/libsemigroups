@@ -21,9 +21,9 @@
 #include <unordered_set>
 
 #include "catch.hpp"
-#include "src/bmat8.h"
-#include "src/element.h"
-#include "src/semigroup.h"
+#include "bmat8.h"
+#include "element.h"
+#include "semigroup.h"
 
 #define BMAT_REPORT false
 

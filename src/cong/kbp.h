@@ -24,10 +24,10 @@
 #ifndef LIBSEMIGROUPS_SRC_CONG_KBP_H_
 #define LIBSEMIGROUPS_SRC_CONG_KBP_H_
 
-#include "../cong.h"
-#include "../rws.h"
-#include "../rwse.h"
-#include "../semigroup.h"
+#include "cong.h"
+#include "rws.h"
+#include "rwse.h"
+#include "semigroup.h"
 
 namespace libsemigroups {
 

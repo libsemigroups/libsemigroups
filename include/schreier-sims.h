@@ -46,17 +46,18 @@
 // 4. random version
 // 5. try it with Digraphs
 
-#ifndef LIBSEMIGROUPS_SRC_SCHREIER_SIMS_H_
-#define LIBSEMIGROUPS_SRC_SCHREIER_SIMS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_
+#define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_
 
 #include <array>
 
+#include "misc/libsemigroups-config.h"
+#include "misc/range.h"
+#include "misc/square.h"
+
 #include "adapters.h"
 #include "element-helper.h"
-#include "libsemigroups-config.h"
-#include "range.h"
 #include "semigroup-traits.h"
-#include "square.h"
 
 namespace libsemigroups {
   template <size_t N,
@@ -84,11 +85,12 @@ namespace libsemigroups {
 
    private:
     // gcc apparently requires the extra qualification on the aliases below
+    using action  = ::libsemigroups::action<internal_element_type, point_type>;
     using degree  = ::libsemigroups::degree<internal_element_type>;
     using inverse = ::libsemigroups::inverse<internal_element_type>;
-    using product = ::libsemigroups::product<internal_element_type>;
-    using action  = ::libsemigroups::action<internal_element_type, point_type>;
     using one     = ::libsemigroups::one<internal_element_type>;
+    using product = ::libsemigroups::product<internal_element_type>;
+    using swap    = ::libsemigroups::swap<internal_element_type>;
 
    public:
     SchreierSims()
@@ -158,10 +160,10 @@ namespace libsemigroups {
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       }
-      element_type cpy = this->external_copy(x);
-      std::swap(this->to_internal(cpy), _tmp_element2);
+      element_type cpy = this->external_copy(this->to_internal_const(x));
+      swap()(this->to_internal(cpy), _tmp_element2);
       internal_sift();  // changes _tmp_element2 in place
-      std::swap(this->to_internal(cpy), _tmp_element2);
+      swap()(this->to_internal(cpy), _tmp_element2);
       return cpy;
     }
 
@@ -172,10 +174,14 @@ namespace libsemigroups {
       schreier_sims();
       internal_element_type cpy
           = this->internal_copy(this->to_internal_const(x));
-      std::swap(cpy, _tmp_element2);
+      swap()(cpy, _tmp_element2);
       this->internal_free(cpy);
       internal_sift();  // changes _tmp_element2 in place
       return internal_equal_to()(_tmp_element2, _one);
+    }
+
+    const_reference identity() const {
+      return this->to_external_const(_one);
     }
 
     void clear() {
@@ -310,7 +316,7 @@ namespace libsemigroups {
           return depth;
         }
         product()(_tmp_element1, _tmp_element2, _inversal[depth][beta]);
-        std::swap(_tmp_element2, _tmp_element1);
+        swap()(_tmp_element2, _tmp_element1);
       }
       return _base_size;
     }
@@ -416,4 +422,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_SCHREIER_SIMS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_

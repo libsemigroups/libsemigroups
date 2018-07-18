@@ -17,8 +17,8 @@
 //
 
 #include "catch.hpp"
-#include "src/bmat8.h"
-#include "src/semigroup.h"
+#include "bmat8.h"
+#include "semigroup.h"
 
 #define SEMIGROUPS_REPORT false
 

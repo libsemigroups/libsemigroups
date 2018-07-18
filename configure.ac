@@ -4,7 +4,7 @@ dnl Autoconf and automake initialization.
 
 AC_PREREQ([2.69])
 AC_INIT([libsemigroups],m4_esyscmd([tr -d '\n' < VERSION]),[jdm3@st-andrews.ac.uk])
-AC_CONFIG_SRCDIR(src/libsemigroups.h)
+AC_CONFIG_SRCDIR(include/libsemigroups.h)
 AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
@@ -18,7 +18,7 @@ AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-AX_PREFIX_CONFIG_H([src/libsemigroups-config.h],[],[config/config.h])
+AX_PREFIX_CONFIG_H([include/misc/libsemigroups-config.h],[],[config/config.h])
 
 AC_PROG_CXX
 AC_LANG([C++])
@@ -128,14 +128,14 @@ AS_IF([test "x$enable_hpcombi" = xyes],
                      [AC_MSG_WARN([HPCombi is not available])
                      [enable_hpcombi=no]])])
 
-REQUIRED_HPCOMBI="$(cat extern/.HPCombi_VERSION)"
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_MSG_CHECKING([the required version of HPCombi])
+       REQUIRED_HPCOMBI="$(cat extern/.HPCombi_VERSION)"
        AC_MSG_RESULT([$REQUIRED_HPCOMBI])])
 
-FOUND_HPCOMBI="$(cat extern/HPCombi/VERSION)"
 AS_IF([test "x$enable_hpcombi" = xyes],
       [AC_MSG_CHECKING([the version of HPCombi that's present])
+       FOUND_HPCOMBI="$(cat extern/HPCombi/VERSION)"
        AC_MSG_RESULT([$FOUND_HPCOMBI])])
 
 AS_IF([test "x$enable_hpcombi" = xyes],

@@ -21,7 +21,7 @@
 // congruence.
 
 #include "catch.hpp"
-#include "src/cong.h"
+#include "cong.h"
 
 #define KBP_REPORT false
 

@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/rwse.h"
+#include "rwse.h"
 
 #define RWSE_REPORT false
 

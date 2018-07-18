@@ -20,12 +20,12 @@
 // methods for translating between then, for use by the Semigroup, SchreierSims,
 // and P classes.
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
-#define LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_
+#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_
 
 #include <type_traits>
 
-#include "functional.h"
+#include "misc/stl.h"
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {
@@ -131,4 +131,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_TRAITS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_

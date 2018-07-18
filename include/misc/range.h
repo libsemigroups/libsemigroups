@@ -18,8 +18,8 @@
 
 // This file contains a class for creating ranges of integers.
 
-#ifndef LIBSEMIGROUPS_SRC_RANGE_H_
-#define LIBSEMIGROUPS_SRC_RANGE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_RANGE_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_RANGE_H_
 
 #include <type_traits>
 
@@ -89,4 +89,4 @@ namespace libsemigroups {
     iterator _end;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_RANGE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_RANGE_H_

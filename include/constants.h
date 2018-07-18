@@ -34,8 +34,8 @@
 // to two different integral types and then these are compared, this will yield
 // false, and so == of UNDEFINED and itself is not transitive, so beware.
 
-#ifndef LIBSEMIGROUPS_SRC_CONSTANTS_H_
-#define LIBSEMIGROUPS_SRC_CONSTANTS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_CONSTANTS_H_
+#define LIBSEMIGROUPS_INCLUDE_CONSTANTS_H_
 
 #include <algorithm>
 #include <type_traits>
@@ -206,4 +206,4 @@ namespace libsemigroups {
     return lhs.get_value<TIntegralType>() - rhs;
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_CONSTANTS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_CONSTANTS_H_

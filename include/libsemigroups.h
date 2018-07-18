@@ -18,8 +18,8 @@
 
 // This file includes all the headers in libsemigroups, for convenience.
 
-#ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_
-#define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
+#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
 
 #include "adapters.h"
 #include "blocks.h"
@@ -28,7 +28,6 @@
 #include "constants.h"
 #include "element-helper.h"
 #include "element.h"
-#include "functional.h"
 #include "hpcombi.h"
 #include "libsemigroups-config.h"
 #include "libsemigroups-debug.h"
@@ -45,8 +44,8 @@
 #include "semigroup.h"
 #include "semiring.h"
 #include "square.h"
+#include "stl.h"
 #include "timer.h"
-#include "to_string.h"
 #include "types.h"
 #include "uf.h"
 
@@ -54,4 +53,4 @@
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 #endif
 
-#endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_

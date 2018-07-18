@@ -31,7 +31,7 @@
 
 #include <vector>
 
-#include "../rwse.h"
+#include "rwse.h"
 #include "kbfp.h"
 
 namespace libsemigroups {

@@ -19,10 +19,10 @@
 // This file contains function templates for adapting a class for use with
 // libsemigroups.
 
-#ifndef LIBSEMIGROUPS_SRC_ADAPTERS_H_
-#define LIBSEMIGROUPS_SRC_ADAPTERS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
+#define LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
 
-#include "libsemigroups-config.h"
+#include "misc/libsemigroups-config.h"
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct complexity;
@@ -42,4 +42,4 @@ namespace libsemigroups {
   template <typename TElementType, typename = void> struct empty_key;
 #endif
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_ADAPTERS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_

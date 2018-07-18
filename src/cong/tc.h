@@ -26,7 +26,7 @@
 #include <stack>
 #include <vector>
 
-#include "../cong.h"
+#include "cong.h"
 
 namespace libsemigroups {
 

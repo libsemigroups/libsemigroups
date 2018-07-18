@@ -16,13 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_
-#define LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
+#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
 
 #include <atomic>
 
+#include "misc/recvec.h"
+
 #include "constants.h"
-#include "recvec.h"
 #include "types.h"
 
 namespace libsemigroups {
@@ -88,4 +89,4 @@ namespace libsemigroups {
     virtual void      set_max_threads(size_t)                               = 0;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_BASE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_

@@ -19,14 +19,15 @@
 // This file contains some helper structs for determining the most space
 // efficient types for various kinds of semigroup elements.
 
-#ifndef LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
-#define LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_H_
+#define LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_H_
 
 #include <type_traits>
 
+#include "misc/libsemigroups-config.h"
+
 #include "element.h"
 #include "hpcombi.h"
-#include "libsemigroups-config.h"
 #include "types.h"
 
 namespace libsemigroups {
@@ -69,4 +70,4 @@ namespace libsemigroups {
     using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_H_

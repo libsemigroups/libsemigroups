@@ -33,8 +33,8 @@
 // 6. Replace typedef's with aliases. [x]
 // 7. Rename to FroidurePin
 
-#ifndef LIBSEMIGROUPS_SRC_SEMIGROUP_H_
-#define LIBSEMIGROUPS_SRC_SEMIGROUP_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_H_
+#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_H_
 
 #include <algorithm>
 #include <mutex>
@@ -45,14 +45,15 @@
 #include <utility>
 #include <vector>
 
+#include "misc/libsemigroups-debug.h"
+#include "misc/libsemigroups-exception.h"
+#include "misc/report.h"
+#include "misc/stl.h"
+
 #include "adapters.h"
 #include "constants.h"
-#include "libsemigroups-debug.h"
-#include "libsemigroups-exception.h"
-#include "report.h"
 #include "semigroup-base.h"
 #include "semigroup-traits.h"
-#include "to_string.h"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
@@ -2372,4 +2373,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_SEMIGROUP_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_H_

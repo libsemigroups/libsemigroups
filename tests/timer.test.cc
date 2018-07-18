@@ -20,7 +20,7 @@
 #include <thread>
 
 #include "catch.hpp"
-#include "src/timer.h"
+#include "misc/timer.h"
 
 using namespace libsemigroups;
 

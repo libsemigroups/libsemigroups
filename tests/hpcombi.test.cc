@@ -18,12 +18,12 @@
 
 // Must include hpcombi.h so that LIBSEMIGROUPS_HPCOMBI is defined, if so
 // specified at during configure.
-#include "src/hpcombi.h"
+#include "hpcombi.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
 #include "catch.hpp"
-#include "src/semigroup.h"
+#include "semigroup.h"
 
 using namespace libsemigroups;
 using namespace HPCombi;

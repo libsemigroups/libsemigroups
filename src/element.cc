@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <thread>
 
-#include "report.h"
+#include "misc/report.h"
 
 namespace libsemigroups {
 

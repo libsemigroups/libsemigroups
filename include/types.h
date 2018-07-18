@@ -16,8 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_TYPES_H_
-#define LIBSEMIGROUPS_SRC_TYPES_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_TYPES_H_
+#define LIBSEMIGROUPS_INCLUDE_TYPES_H_
+
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace libsemigroups {
   //! Provides a type giving the smallest unsigned integer type capable of
@@ -47,6 +51,6 @@ namespace libsemigroups {
 
   //! Type for a pair of word_type (a *relation*) of a semigroup.
   using relation_type = std::pair<word_type, word_type>;
-}
+}  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_TYPES_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_TYPES_H_

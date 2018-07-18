@@ -19,8 +19,8 @@
 // This file contains the declaration of a blocks class, which is needed by the
 // bipartitions code.
 
-#ifndef LIBSEMIGROUPS_SRC_BLOCKS_H_
-#define LIBSEMIGROUPS_SRC_BLOCKS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_BLOCKS_H_
+#define LIBSEMIGROUPS_INCLUDE_BLOCKS_H_
 
 #include <vector>
 
@@ -173,4 +173,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_BLOCKS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_BLOCKS_H_

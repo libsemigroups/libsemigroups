@@ -16,21 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_TO_STRING_H_
-#define LIBSEMIGROUPS_SRC_TO_STRING_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_EXCEPTION_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_EXCEPTION_H_
 
-#include <sstream>
+#include <exception>
+#include <string>
 
-namespace libsemigroups {
-  //! Returns a string representing an object of type \c T.
-  //!
-  //! It appears that GCC 4.9.1 (at least) do not have std::to_string
-  //! implemented, so we implement our own. This requires the operator \c <<
-  //! to be implemented for an \c ostringstream& and const T& element.
-  template <typename T> std::string to_string(const T& n) {
-    std::ostringstream stm;
-    stm << n;
-    return stm.str();
-  }
-}  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_TO_STRING_H_
+struct LibsemigroupsException : public std::runtime_error {
+  explicit LibsemigroupsException(std::string const& s)
+      : std::runtime_error(s) {}
+};
+
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_EXCEPTION_H_

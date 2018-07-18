@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/constants.h"
+#include "constants.h"
 
 namespace libsemigroups {
   namespace constants {

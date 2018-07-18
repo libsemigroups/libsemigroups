@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_RECVEC_H_
-#define LIBSEMIGROUPS_SRC_RECVEC_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_RECVEC_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_RECVEC_H_
 
 #include <algorithm>
 #include <vector>
@@ -650,4 +650,4 @@ namespace libsemigroups {
           reference_type,
           pointer_type>::fast_iterator_methods();
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_RECVEC_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_RECVEC_H_

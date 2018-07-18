@@ -16,12 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains TODO
+// This file contains some functionality missing in some implementations of the
+// stl, or to augment the stl implementations.
 
-#ifndef LIBSEMIGROUPS_SRC_FUNCTIONAL_H_
-#define LIBSEMIGROUPS_SRC_FUNCTIONAL_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_STL_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_STL_H_
 
 #include <functional>
+#include <sstream>
 
 namespace libsemigroups {
   template <typename TValueType, typename = void> struct hash {
@@ -36,5 +38,16 @@ namespace libsemigroups {
     }
   };
 
+  //! Returns a string representing an object of type \c T.
+  //!
+  //! It appears that GCC 4.9.1 (at least) do not have std::to_string
+  //! implemented, so we implement our own. This requires the operator \c <<
+  //! to be implemented for an \c ostringstream& and const T& element.
+  template <typename T> std::string to_string(const T& n) {
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+  }
+
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_FUNCTIONAL_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_STL_H_

@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/cong.h"
+#include "cong.h"
 
 using namespace libsemigroups;
 

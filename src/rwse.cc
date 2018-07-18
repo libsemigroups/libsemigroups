@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <string>
 
-#include "functional.h"
+#include "misc/stl.h"
 
 namespace libsemigroups {
   //! Returns a libsemigroups::word_type which evaluates to \p x.

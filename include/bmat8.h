@@ -18,8 +18,8 @@
 
 // This file contains a declaration of fast boolean matrices up to dimension 8.
 
-#ifndef LIBSEMIGROUPS_SRC_BMAT8_H_
-#define LIBSEMIGROUPS_SRC_BMAT8_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_BMAT8_H_
+#define LIBSEMIGROUPS_INCLUDE_BMAT8_H_
 
 #include <climits>
 #include <functional>
@@ -27,9 +27,10 @@
 #include <random>
 #include <x86intrin.h>
 
+#include "misc/libsemigroups-debug.h"
+#include "misc/stl.h"
+
 #include "adapters.h"
-#include "libsemigroups-debug.h"
-#include "to_string.h"
 
 namespace libsemigroups {
 
@@ -343,4 +344,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_SRC_BMAT8_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_BMAT8_H_

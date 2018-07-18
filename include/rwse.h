@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_RWSE_H_
-#define LIBSEMIGROUPS_SRC_RWSE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_RWSE_H_
+#define LIBSEMIGROUPS_INCLUDE_RWSE_H_
 
 #include <algorithm>
 #include <stack>
@@ -253,4 +253,4 @@ namespace libsemigroups {
       factorisation(RWSE const& x);
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_RWSE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_RWSE_H_

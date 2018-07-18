@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2018 James D. Mitchell
+// Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,15 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_EXCEPTION_H_
-#define LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_EXCEPTION_H_
+// This file declares debugging functionality.
 
-#include <exception>
-#include <string>
+#ifndef LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_DEBUG_H_
+#define LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_DEBUG_H_
 
-struct LibsemigroupsException : public std::runtime_error {
-  explicit LibsemigroupsException(std::string const& s)
-      : std::runtime_error(s) {}
-};
+#include <assert.h>
 
-#endif  // LIBSEMIGROUPS_SRC_LIBSEMIGROUPS_EXCEPTION_H_
+#include "libsemigroups-config.h"
+
+#ifdef LIBSEMIGROUPS_DEBUG
+#define LIBSEMIGROUPS_ASSERT(x) assert(x)
+#else
+#define LIBSEMIGROUPS_ASSERT(x)
+#endif
+
+#if (defined(__GNUC__) && __GNUC__ < 5 \
+     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma message( \
+    "GCC version >=5.0 is recommended, some features may not work correctly")
+#endif
+
+#endif  // LIBSEMIGROUPS_INCLUDE_MISC_LIBSEMIGROUPS_DEBUG_H_

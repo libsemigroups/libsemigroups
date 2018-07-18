@@ -19,12 +19,12 @@
 // This file contains specializations of the class adapters in adapters.h
 // for the element types in HPCombi.
 
-#ifndef LIBSEMIGROUPS_SRC_HPCOMBI_H_
-#define LIBSEMIGROUPS_SRC_HPCOMBI_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_HPCOMBI_H_
+#define LIBSEMIGROUPS_INCLUDE_HPCOMBI_H_
 
 // Must include libsemigroups-config.h so that LIBSEMIGROUPS_HPCOMBI is
 // defined, if so specified at during configure.
-#include "libsemigroups-config.h"
+#include "misc/libsemigroups-config.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
@@ -140,4 +140,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI
-#endif  // LIBSEMIGROUPS_SRC_HPCOMBI_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_HPCOMBI_H_

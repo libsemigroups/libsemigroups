@@ -22,8 +22,8 @@
 // * split this file into several files
 // * move all non-template definitions into cc file
 
-#ifndef LIBSEMIGROUPS_SRC_ELEMENT_H_
-#define LIBSEMIGROUPS_SRC_ELEMENT_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
+#define LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
 
 #include <math.h>
 
@@ -33,16 +33,16 @@
 #include <unordered_set>
 #include <vector>
 
+#include "misc/libsemigroups-debug.h"
+#include "misc/libsemigroups-exception.h"
+#include "misc/stl.h"
+#include "misc/recvec.h"
+
 #include "adapters.h"
 #include "blocks.h"
 #include "constants.h"
-#include "functional.h"
-#include "libsemigroups-debug.h"
-#include "libsemigroups-exception.h"
-#include "recvec.h"
 #include "semigroup-traits.h"
 #include "semiring.h"
-#include "to_string.h"
 
 namespace libsemigroups {
   //! Abstract base class for semigroup elements
@@ -2141,4 +2141,4 @@ namespace libsemigroups {
     }
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_ELEMENT_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_H_

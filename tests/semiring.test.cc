@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "src/semiring.h"
+#include "semiring.h"
 
 using namespace libsemigroups;
 
