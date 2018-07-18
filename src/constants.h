@@ -28,7 +28,7 @@
 // purposes of storing it in a data member and for comparisons. This allows us
 // to avoid duplicating code for constants like UNDEFINED, and makes UNDEFINED
 // more straightforward to use (no template parameters, or qualifications are
-// required, as they used to be).
+// required, as they used to be). FIXME update this comment
 //
 // This approach also has some drawbacks, if UNDEFINED is implicitly converted
 // to two different integral types and then these are compared, this will yield

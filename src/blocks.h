@@ -22,12 +22,7 @@
 #ifndef LIBSEMIGROUPS_SRC_BLOCKS_H_
 #define LIBSEMIGROUPS_SRC_BLOCKS_H_
 
-#include <algorithm>
-#include <functional>
 #include <vector>
-
-#include "constants.h"
-#include "libsemigroups-debug.h"
 
 namespace libsemigroups {
 
@@ -42,13 +37,12 @@ namespace libsemigroups {
   //! The Blocks class is not currently used by any of the methods for the
   //! Semigroup class but the extra methods are used in the GAP package
   //! [Semigroups package for GAP](https://gap-packages.github.io/Semigroups/).
-
   class Blocks {
    public:
     //! A constructor.
     //!
     //! Constructs a blocks object of size 0.
-    Blocks() : _blocks(nullptr), _lookup(nullptr), _nr_blocks(0), _rank(0) {}
+    Blocks();
 
     //! A constructor.
     //!
@@ -63,12 +57,7 @@ namespace libsemigroups {
     //! list); this is equal to the number of blocks in the partition. A value
     //! \c true in position \f$i\f$ indicates that the \f$i\f$th block is signed
     //! (transverse) and \c false that it is unsigned.
-    Blocks(std::vector<u_int32_t>* blocks, std::vector<bool>* lookup)
-        : _blocks(blocks), _lookup(lookup), _nr_blocks(), _rank(UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
-      _nr_blocks = *(std::max_element(_blocks->begin(), _blocks->end())) + 1;
-      LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
-    }
+    Blocks(std::vector<u_int32_t>*, std::vector<bool>*);
 
     //! A constructor.
     //!
@@ -90,16 +79,7 @@ namespace libsemigroups {
     //! This constructor is provided for the situation where the number of
     //! blocks in blocks is known *a priori* and so does not need to be
     //! calculated in the constructor.
-    Blocks(std::vector<u_int32_t>* blocks,
-           std::vector<bool>*      lookup,
-           u_int32_t               nr_blocks)
-        : _blocks(blocks),
-          _lookup(lookup),
-          _nr_blocks(nr_blocks),
-          _rank(UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
-      LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
-    }
+    Blocks(std::vector<u_int32_t>*, std::vector<bool>*, u_int32_t);
 
     //! The assignment operator is deleted for Blocks to avoid unintended
     //! copying.
@@ -114,10 +94,7 @@ namespace libsemigroups {
     //! Default destructor.
     //!
     //! Deletes the blocks and lookup provided at construction time.
-    ~Blocks() {
-      delete _blocks;
-      delete _lookup;
-    }
+    ~Blocks();
 
     //! Returns \c true if \c this equals \p that.
     //!
@@ -136,18 +113,13 @@ namespace libsemigroups {
     //!
     //! The *degree* of a Blocks object is the size of the set of
     //! which it is a partition.
-    inline u_int32_t degree() const {
-      return (_nr_blocks == 0 ? 0 : _blocks->size());
-    }
+    u_int32_t degree() const;
 
     //! Returns the index of the block containing pos.
     //!
     //! This method asserts that \p pos is valid, i.e. that it is less than the
     //! degree of \c this.
-    inline u_int32_t block(size_t pos) const {
-      LIBSEMIGROUPS_ASSERT(pos < _blocks->size());
-      return (*_blocks)[pos];
-    }
+    u_int32_t block(size_t pos) const;
 
     //! Returns \c true if the block with index \p index is transverse
     //!
@@ -155,10 +127,7 @@ namespace libsemigroups {
     //! transverse (or signed) block and it returns \c false if it is not
     //! transverse (or unsigned).  This method asserts that the parameter \p
     //! index is valid, i.e. that it is less than the degree of \c this.
-    inline bool is_transverse_block(size_t index) const {
-      LIBSEMIGROUPS_ASSERT(index < _nr_blocks);
-      return (*_lookup)[index];
-    }
+    bool is_transverse_block(size_t index) const;
 
     //! Returns a pointer to the lookup table for block indices.
     //!
@@ -166,17 +135,13 @@ namespace libsemigroups {
     //! \c true in position \c i if the \c i th block of \c this is a
     //! transverse block; the entry in position \c i is \c false otherwise.
     // FIXME better to have lookup_begin/end methods
-    inline std::vector<bool> const* lookup() const {
-      return _lookup;
-    }
+    std::vector<bool> const* lookup() const;
 
     //! Returns the number of blocks in the Blocks object.
     //!
     //! This method returns the number of parts in the partition that instances
     //! of this class represent.
-    inline u_int32_t nr_blocks() const {
-      return _nr_blocks;
-    }
+    u_int32_t nr_blocks() const;
 
     //! Returns the number of signed (transverse) blocks in \c this.
     //!
@@ -193,18 +158,12 @@ namespace libsemigroups {
     //! Returns a const_iterator pointing to the index of the first block
     //!
     //! This method asserts that degree is not 0.
-    inline typename std::vector<u_int32_t>::const_iterator cbegin() const {
-      LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
-      return _blocks->cbegin();
-    }
+    typename std::vector<u_int32_t>::const_iterator cbegin() const;
 
     //! Returns a const_iterator referring to past-the-end of the last block.
     //!
     //! This method asserts that degree is not 0.
-    inline typename std::vector<u_int32_t>::const_iterator cend() const {
-      LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
-      return _blocks->cend();
-    }
+    typename std::vector<u_int32_t>::const_iterator cend() const;
 
    private:
     std::vector<u_int32_t>* _blocks;

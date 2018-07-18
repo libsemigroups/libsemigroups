@@ -18,6 +18,10 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
+// TODO:
+// * split this file into several files
+// * move all non-template definitions into cc file
+
 #ifndef LIBSEMIGROUPS_SRC_ELEMENT_H_
 #define LIBSEMIGROUPS_SRC_ELEMENT_H_
 

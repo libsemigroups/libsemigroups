@@ -22,31 +22,14 @@
 #ifndef LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
 #define LIBSEMIGROUPS_SRC_ELEMENT_HELPER_H_
 
+#include <type_traits>
+
 #include "element.h"
 #include "hpcombi.h"
 #include "libsemigroups-config.h"
+#include "types.h"
 
 namespace libsemigroups {
-
-  //! Provides a type giving the smallest unsigned integer type capable of
-  //! representing the template \c N.
-  //!
-  //! The type SmallestInteger<N>::type contains the smallest (in terms of
-  //! memory required) unsigned integer type which can represent the
-  //! non-negative integer \c N.
-  // (i.e. >= or >)
-  template <size_t N> struct SmallestInteger {
-    //! The smallest (in terms of memory required) unsigned integer type which
-    //! can represent \c N.
-    using type = typename std::conditional<
-        N >= 0x100000000,
-        u_int64_t,
-        typename std::conditional<
-            N >= 0x10000,
-            u_int32_t,
-            typename std::conditional<N >= 0x100, u_int16_t, u_int8_t>::type>::
-            type>::type;
-  };
 
   template <size_t N> struct Transf {
 #ifdef LIBSEMIGROUPS_HPCOMBI

@@ -34,6 +34,7 @@ pkginclude_HEADERS =  src/adapters.h
 pkginclude_HEADERS += src/blocks.h
 pkginclude_HEADERS += src/bmat8.h
 pkginclude_HEADERS += src/cong.h
+pkginclude_HEADERS += src/constants.h
 pkginclude_HEADERS += src/element-helper.h
 pkginclude_HEADERS += src/element.h
 pkginclude_HEADERS += src/functional.h
@@ -55,6 +56,7 @@ pkginclude_HEADERS += src/semigroup.h
 pkginclude_HEADERS += src/semiring.h
 pkginclude_HEADERS += src/square.h
 pkginclude_HEADERS += src/timer.h
+pkginclude_HEADERS += src/types.h
 pkginclude_HEADERS += src/to_string.h
 pkginclude_HEADERS += src/uf.h
 if LIBSEMIGROUPS_HPCOMBI

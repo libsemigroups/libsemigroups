@@ -31,7 +31,6 @@
 #include "hpcombi.hpp"
 
 #include "adapters.h"
-#include "semigroup-traits.h"
 
 namespace libsemigroups {
   using PTransf16 = HPCombi::PTransf16;

@@ -25,6 +25,7 @@
 #include "blocks.h"
 #include "bmat8.h"
 #include "cong.h"
+#include "constants.h"
 #include "element-helper.h"
 #include "element.h"
 #include "functional.h"
@@ -46,6 +47,7 @@
 #include "square.h"
 #include "timer.h"
 #include "to_string.h"
+#include "types.h"
 #include "uf.h"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP

@@ -29,7 +29,32 @@
 
 #include "blocks.h"
 
+#include <algorithm>
+
+#include "constants.h"
+#include "libsemigroups-debug.h"
+
 namespace libsemigroups {
+  Blocks::Blocks()
+      : _blocks(nullptr), _lookup(nullptr), _nr_blocks(0), _rank(0) {}
+
+  Blocks::Blocks(std::vector<u_int32_t>* blocks, std::vector<bool>* lookup)
+      : _blocks(blocks), _lookup(lookup), _nr_blocks(), _rank(UNDEFINED) {
+    LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
+    _nr_blocks = *(std::max_element(_blocks->begin(), _blocks->end())) + 1;
+    LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
+  }
+
+  Blocks::Blocks(std::vector<u_int32_t>* blocks,
+                 std::vector<bool>*      lookup,
+                 u_int32_t               nr_blocks)
+      : _blocks(blocks),
+        _lookup(lookup),
+        _nr_blocks(nr_blocks),
+        _rank(UNDEFINED) {
+    LIBSEMIGROUPS_ASSERT(_blocks->size() != 0);
+    LIBSEMIGROUPS_ASSERT(_nr_blocks == _lookup->size());
+  }
 
   Blocks::Blocks(Blocks const& copy)
       : _blocks(nullptr),
@@ -43,6 +68,11 @@ namespace libsemigroups {
     } else {
       LIBSEMIGROUPS_ASSERT(copy._lookup == nullptr);
     }
+  }
+
+  Blocks::~Blocks() {
+    delete _blocks;
+    delete _lookup;
   }
 
   bool Blocks::operator==(const Blocks& that) const {
@@ -75,6 +105,28 @@ namespace libsemigroups {
     return false;
   }
 
+  u_int32_t Blocks::degree() const {
+    return (_nr_blocks == 0 ? 0 : _blocks->size());
+  }
+
+  u_int32_t Blocks::block(size_t pos) const {
+    LIBSEMIGROUPS_ASSERT(pos < _blocks->size());
+    return (*_blocks)[pos];
+  }
+  // FIXME better to have lookup_begin/end methods
+  std::vector<bool> const* Blocks::lookup() const {
+    return _lookup;
+  }
+
+  bool Blocks::is_transverse_block(size_t index) const {
+    LIBSEMIGROUPS_ASSERT(index < _nr_blocks);
+    return (*_lookup)[index];
+  }
+
+  u_int32_t Blocks::nr_blocks() const {
+    return _nr_blocks;
+  }
+
   u_int32_t Blocks::rank() {
     if (_rank == UNDEFINED) {
       _rank = std::count(_lookup->cbegin(), _lookup->cend(), true);
@@ -95,5 +147,18 @@ namespace libsemigroups {
       seed = ((seed * n) + val);
     }
     return seed;
+  }
+  typename std::vector<u_int32_t>::const_iterator
+  Blocks::cbegin() const {
+    LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
+    return _blocks->cbegin();
+  }
+
+  //! Returns a const_iterator referring to past-the-end of the last block.
+  //!
+  //! This method asserts that degree is not 0.
+  typename std::vector<u_int32_t>::const_iterator Blocks::cend() const {
+    LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
+    return _blocks->cend();
   }
 }  // namespace libsemigroups
