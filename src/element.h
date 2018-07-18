@@ -1903,50 +1903,50 @@ namespace libsemigroups {
           std::is_base_of<Element, TElementType>::value>::type> {
     static_assert(!std::is_pointer<TElementType>::value,
                   "TElementType must not be a pointer");
-    using value_type       = TElementType;
-    using const_value_type = TElementType const;
+    using element_type       = TElementType;
+    using const_element_type = TElementType const;
     using reference        = TElementType&;
     using const_reference  = TElementType const&;
 
-    using internal_value_type       = TElementType*;
-    using internal_const_value_type = TElementType const* const;
-    using internal_reference        = internal_value_type&;
-    using internal_const_reference  = internal_const_value_type&;
+    using internal_element_type       = TElementType*;
+    using internal_const_element_type = TElementType const* const;
+    using internal_reference        = internal_element_type&;
+    using internal_const_reference  = internal_const_element_type&;
 
-    inline internal_const_value_type
+    inline internal_const_element_type
     to_internal_const(const_reference x) const {
       return &x;
     }
 
-    inline internal_value_type to_internal(reference x) const {
+    inline internal_element_type to_internal(reference x) const {
       return &x;
     }
 
     inline const_reference
-    to_external_const(internal_const_value_type x) const {
+    to_external_const(internal_const_element_type x) const {
       return *x;
     }
 
-    inline reference to_external(internal_value_type x) const {
+    inline reference to_external(internal_element_type x) const {
       return *x;
     }
 
     // Value contains some memory shared with other values. Destroy the shared
     // part. Obviously, The caller should make sure that nothing is actually
     // shared.
-    inline void internal_free(internal_value_type x) const {
+    inline void internal_free(internal_element_type x) const {
       delete x;
     }
 
-    inline void external_free(value_type) const {}
+    inline void external_free(element_type) const {}
 
-    inline internal_value_type
-    internal_copy(internal_const_value_type x) const {
-      return new value_type(*x);
+    inline internal_element_type
+    internal_copy(internal_const_element_type x) const {
+      return new element_type(*x);
     }
 
-    inline value_type external_copy(internal_const_value_type x) const {
-      return value_type(*x);
+    inline element_type external_copy(internal_const_element_type x) const {
+      return element_type(*x);
     }
   };
 
@@ -1957,50 +1957,50 @@ namespace libsemigroups {
       typename std::enable_if<
           std::is_same<TElementType, Element*>::value
           || std::is_same<TElementType, Element const*>::value>::type> {
-    using value_type       = Element*;
-    using const_value_type = Element const* const;
-    using reference        = value_type;
-    using const_reference  = const_value_type;
+    using element_type       = Element*;
+    using const_element_type = Element const* const;
+    using reference        = element_type;
+    using const_reference  = const_element_type;
 
-    using internal_value_type       = value_type;
-    using internal_const_value_type = const_value_type;
-    using internal_reference        = internal_value_type&;
-    using internal_const_reference  = internal_const_value_type&;
+    using internal_element_type       = element_type;
+    using internal_const_element_type = const_element_type;
+    using internal_reference        = internal_element_type&;
+    using internal_const_reference  = internal_const_element_type&;
 
-    inline internal_const_value_type
-    to_internal_const(const_value_type x) const {
+    inline internal_const_element_type
+    to_internal_const(const_element_type x) const {
       return x;
     }
 
-    inline internal_value_type to_internal(value_type x) const {
+    inline internal_element_type to_internal(element_type x) const {
       return x;
     }
 
-    inline const_value_type
-    to_external_const(internal_const_value_type x) const {
-      return const_cast<value_type>(x);
+    inline const_element_type
+    to_external_const(internal_const_element_type x) const {
+      return const_cast<element_type>(x);
     }
 
-    inline value_type to_external(internal_value_type x) const {
+    inline element_type to_external(internal_element_type x) const {
       return x;
     }
 
     // Value are actually pointer to memory shared with other values.
     // Obviously, The caller should make sure that nothing is actually shared.
-    inline void internal_free(internal_value_type x) const {
+    inline void internal_free(internal_element_type x) const {
       delete x;
     }
 
-    inline void external_free(value_type x) const {
+    inline void external_free(element_type x) const {
       delete x;
     }
 
-    inline internal_value_type
-    internal_copy(internal_const_value_type x) const {
+    inline internal_element_type
+    internal_copy(internal_const_element_type x) const {
       return x->heap_copy();
     }
 
-    inline value_type external_copy(internal_const_value_type x) const {
+    inline element_type external_copy(internal_const_element_type x) const {
       return x->heap_copy();
     }
   };

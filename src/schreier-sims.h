@@ -32,12 +32,12 @@
 // TODO
 //
 // 0. check use of:
-//    * value_type []
-//    * const_value_type []
+//    * element_type []
+//    * const_element_type []
 //    * reference        []
 //    * const_reference  []
-//    * internal_value_type []
-//    * internal_const_value_type []
+//    * internal_element_type []
+//    * internal_const_element_type []
 //    * internal_reference []
 //    * internal_const_reference []
 // 1. iterator to the elements (maybe)
@@ -66,13 +66,12 @@ namespace libsemigroups {
             typename TElementEqual = libsemigroups::equal_to<TElementType>,
             class TTraits = SemigroupTraitsEqual<TElementType, TElementEqual>>
   class SchreierSims : private TTraits {
-    using value_type       = typename TTraits::value_type;
-    using const_value_type = typename TTraits::const_value_type;
-    using const_reference  = typename TTraits::const_reference;
+    using const_element_type = typename TTraits::const_element_type;
+    using const_reference    = typename TTraits::const_reference;
 
-    using internal_value_type = typename TTraits::internal_value_type;
-    using internal_const_value_type =
-        typename TTraits::internal_const_value_type;
+    using internal_element_type = typename TTraits::internal_element_type;
+    using internal_const_element_type =
+        typename TTraits::internal_const_element_type;
 
     using internal_equal_to = typename TTraits::internal_equal_to;
 
@@ -80,15 +79,16 @@ namespace libsemigroups {
     using index_type = size_t;
 
    public:
-    using element_type = TElementType;
+    using element_type = typename TTraits::element_type;
     using point_type   = TPointType;
 
    private:
-    using degree  = degree<internal_value_type>;
-    using inverse = inverse<internal_value_type>;
-    using product = product<internal_value_type>;
-    using action  = action<internal_value_type, point_type>;
-    using one     = one<internal_value_type>;
+    // gcc apparently requires the extra qualification on the aliases below
+    using degree  = ::libsemigroups::degree<internal_element_type>;
+    using inverse = ::libsemigroups::inverse<internal_element_type>;
+    using product = ::libsemigroups::product<internal_element_type>;
+    using action  = ::libsemigroups::action<internal_element_type, point_type>;
+    using one     = ::libsemigroups::one<internal_element_type>;
 
    public:
     SchreierSims()
@@ -151,14 +151,14 @@ namespace libsemigroups {
       return out;
     }
 
-    value_type sift(const_reference x) {
+    element_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LibsemigroupsException(
             "SchreierSims::sift: the degree of the generator must be "
             + to_string(N) + ", not "
             + to_string(degree()(this->to_internal_const(x))));
       }
-      value_type cpy = this->external_copy(x);
+      element_type cpy = this->external_copy(x);
       std::swap(this->to_internal(cpy), _tmp_element2);
       internal_sift();  // changes _tmp_element2 in place
       std::swap(this->to_internal(cpy), _tmp_element2);
@@ -170,7 +170,8 @@ namespace libsemigroups {
         return false;
       }
       schreier_sims();
-      internal_value_type cpy = this->internal_copy(this->to_internal_const(x));
+      internal_element_type cpy
+          = this->internal_copy(this->to_internal_const(x));
       std::swap(cpy, _tmp_element2);
       this->internal_free(cpy);
       internal_sift();  // changes _tmp_element2 in place
@@ -186,7 +187,7 @@ namespace libsemigroups {
           }
         }
       }
-      std::unordered_set<internal_value_type> deleted;
+      std::unordered_set<internal_element_type> deleted;
       for (size_t depth = 0; depth < N; ++depth) {
         for (size_t index = 0; index < _strong_gens.size(depth); ++index) {
           if (deleted.find(_strong_gens.at(depth, index)) == deleted.end()) {
@@ -251,7 +252,7 @@ namespace libsemigroups {
     bool has_valid_degree(const_reference x) const {
       return
 #ifdef LIBSEMIGROUPS_HPCOMBI
-          std::is_same<HPCombi::Perm16, value_type>::value ||
+          std::is_same<HPCombi::Perm16, element_type>::value ||
 #endif
           degree()(this->to_internal_const(x)) == N;
     }
@@ -277,7 +278,7 @@ namespace libsemigroups {
       }
     }
 
-    void orbit_add_gen(index_type const depth, internal_value_type gen) {
+    void orbit_add_gen(index_type const depth, internal_element_type gen) {
       LIBSEMIGROUPS_ASSERT(depth < _base_size);
       // Apply the new generator to existing points in orbits[depth].
       index_type old_size_orbit = _orbits.size(depth);
@@ -287,9 +288,9 @@ namespace libsemigroups {
       orbit_enumerate(depth, old_size_orbit);
     }
 
-    void orbit_add_point(index_type const    depth,
-                         internal_value_type x,
-                         point_type const    pt) {
+    void orbit_add_point(index_type const      depth,
+                         internal_element_type x,
+                         point_type const      pt) {
       point_type img = action()(x, pt);
       if (!_orbits_lookup[depth][img]) {
         _orbits.push_back(depth, img);
@@ -320,8 +321,8 @@ namespace libsemigroups {
       }
 
       for (index_type j = 0; j < _strong_gens.size(0); j++) {
-        internal_const_value_type x = _strong_gens.at(0, j);
-        index_type                k = 0;
+        internal_const_element_type x = _strong_gens.at(0, j);
+        index_type                  k = 0;
         while (k < _base_size && action()(x, _base[k]) == _base[k]) {
           ++k;
         }
@@ -339,7 +340,7 @@ namespace libsemigroups {
         index_type old_first = _strong_gens.size(i);
         // set up the strong generators
         for (index_type j = first; j < _strong_gens.size(i - 1); j++) {
-          internal_value_type x = _strong_gens.at(i - 1, j);
+          internal_element_type x = _strong_gens.at(i - 1, j);
           if (beta == action()(x, beta)) {
             _strong_gens.push_back(i, x);
           }
@@ -390,7 +391,7 @@ namespace libsemigroups {
       _finished = true;
     }
 
-    point_type first_non_fixed_point(internal_const_value_type x) {
+    point_type first_non_fixed_point(internal_const_element_type x) {
       for (auto it = _domain.cbegin(); it < _domain.cend(); ++it) {
         if (*it != action()(x, *it)) {
           return *it;
@@ -399,18 +400,18 @@ namespace libsemigroups {
       return N;
     }
 
-    std::array<point_type, N>            _base;
-    index_type                           _base_size;
-    TDomainType                          _domain;
-    bool                                 _finished;
-    internal_value_type                  _one;
-    SquareVector<point_type, N>          _orbits;
-    SquareArray<bool, N>                 _orbits_lookup;
-    SquareVector<internal_value_type, N> _strong_gens;
-    internal_value_type                  _tmp_element1;
-    internal_value_type                  _tmp_element2;
-    SquareArray<internal_value_type, N>  _transversal;
-    SquareArray<internal_value_type, N>  _inversal;
+    std::array<point_type, N>              _base;
+    index_type                             _base_size;
+    TDomainType                            _domain;
+    bool                                   _finished;
+    internal_element_type                  _one;
+    SquareVector<point_type, N>            _orbits;
+    SquareArray<bool, N>                   _orbits_lookup;
+    SquareVector<internal_element_type, N> _strong_gens;
+    internal_element_type                  _tmp_element1;
+    internal_element_type                  _tmp_element2;
+    SquareArray<internal_element_type, N>  _transversal;
+    SquareArray<internal_element_type, N>  _inversal;
   };
 
 }  // namespace libsemigroups

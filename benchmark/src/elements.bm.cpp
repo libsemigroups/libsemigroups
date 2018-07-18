@@ -233,7 +233,7 @@ static void BM_Bipart_Identity(benchmark::State& state) {
 
 BENCHMARK(BM_Bipart_Identity)->UseManualTime()->MinTime(1);
 
-// FIXME this is way too slow!
+// TODO this is way too slow!
 static void BM_Matrix_No_Except_No_Move(benchmark::State& state) {
   Semiring<int64_t>*    sr = new Integers();
 
@@ -249,7 +249,7 @@ static void BM_Matrix_No_Except_No_Move(benchmark::State& state) {
 
 BENCHMARK(BM_Matrix_No_Except_No_Move)->MinTime(1);
 
-// FIXME this is way too slow!
+// TODO this is way too slow!
 static void BM_Matrix_No_Except_Move(benchmark::State& state) {
   Semiring<int64_t>*    sr = new Integers();
 

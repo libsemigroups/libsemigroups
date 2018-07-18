@@ -29,13 +29,13 @@
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {
-    using value_type       = TElementType;
-    using const_value_type = TElementType const;
+    using element_type       = TElementType;
+    using const_element_type = TElementType const;
     using reference        = TElementType&;
     using const_reference  = TElementType const&;
 
-    using internal_value_type       = value_type;
-    using internal_const_value_type = const_value_type;
+    using internal_element_type       = element_type;
+    using internal_const_element_type = const_element_type;
     using internal_reference        = reference;
     using internal_const_reference  = const_reference;
 
@@ -55,16 +55,16 @@ namespace libsemigroups {
       return x;
     }
 
-    inline internal_value_type internal_copy(internal_const_reference x) const {
+    inline internal_element_type internal_copy(internal_const_reference x) const {
       return x;
     }
 
-    inline value_type external_copy(const_reference x) const {
+    inline element_type external_copy(const_reference x) const {
       return x;
     }
 
-    inline void internal_free(internal_value_type) const {}
-    inline void external_free(value_type) const {}
+    inline void internal_free(internal_element_type) const {}
+    inline void external_free(element_type) const {}
   };
 
   template <typename TElementType,
@@ -74,23 +74,23 @@ namespace libsemigroups {
     using base = SemigroupTraits<TElementType>;
 
    public:
-    using value_type       = typename base::value_type;
-    using const_value_type = typename base::const_value_type;
+    using element_type       = typename base::element_type;
+    using const_element_type = typename base::const_element_type;
     using reference        = typename base::reference;
     using const_reference  = typename base::const_reference;
 
-    using internal_value_type       = typename base::internal_value_type;
-    using internal_const_value_type = typename base::internal_const_value_type;
+    using internal_element_type       = typename base::internal_element_type;
+    using internal_const_element_type = typename base::internal_const_element_type;
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
 
     //! Provides a call operator for comparing elements of \c this
     //!
     //! This struct provides a call operator for comparing two elements of \c
-    //! this, provided as internal_const_value_types.
+    //! this, provided as internal_const_element_types.
     struct internal_equal_to : base {
-      bool operator()(internal_const_value_type x,
-                      internal_const_value_type y) const {
+      bool operator()(internal_const_element_type x,
+                      internal_const_element_type y) const {
         return TElementEqual()(this->to_external_const(x),
                                this->to_external_const(y));
       }
@@ -106,22 +106,22 @@ namespace libsemigroups {
     using base = SemigroupTraits<TElementType>;
 
    public:
-    using value_type       = typename base::value_type;
-    using const_value_type = typename base::const_value_type;
+    using element_type       = typename base::element_type;
+    using const_element_type = typename base::const_element_type;
     using reference        = typename base::reference;
     using const_reference  = typename base::const_reference;
 
-    using internal_value_type       = typename base::internal_value_type;
-    using internal_const_value_type = typename base::internal_const_value_type;
+    using internal_element_type       = typename base::internal_element_type;
+    using internal_const_element_type = typename base::internal_const_element_type;
     using internal_reference        = typename base::internal_reference;
     using internal_const_reference  = typename base::internal_const_reference;
 
     //! Provides a call operator for hashing elements of \c this
     //!
     //! This struct provides a call operator for hashing an element of \c this,
-    //! provided as an internal_const_value_type.
+    //! provided as an internal_const_element_type.
     struct internal_hash : base {
-      size_t operator()(internal_const_value_type x) const {
+      size_t operator()(internal_const_element_type x) const {
         return TElementHash()(this->to_external_const(x));
       }
     };

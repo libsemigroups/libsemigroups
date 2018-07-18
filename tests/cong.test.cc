@@ -18,6 +18,7 @@
 
 #include "catch.hpp"
 #include "src/cong.h"
+#include "src/element.h"
 
 #define CONG_REPORT false
 

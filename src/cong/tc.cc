@@ -75,7 +75,8 @@ namespace libsemigroups {
         _current_no_add(UNDEFINED),
         _defined(1),
         _extra(),
-        _forwd(1, UNDEFINED),
+        // gcc appears to require the static_cast in the next line.
+        _forwd(1, static_cast<size_t>(UNDEFINED)),
         _id_coset(0),
         _init_done(false),
         _last(0),

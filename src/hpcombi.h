@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains specializations of the SemigroupTraits class, and
-// adapters, for the element types in HPCombi.
+// This file contains specializations of the class adapters in adapters.h
+// for the element types in HPCombi.
 
 #ifndef LIBSEMIGROUPS_SRC_HPCOMBI_H_
 #define LIBSEMIGROUPS_SRC_HPCOMBI_H_
