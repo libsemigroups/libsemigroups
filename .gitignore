@@ -40,3 +40,4 @@ benchmark/logs
 benchmark/CMakeFiles
 benchmark/CMakeCache.txt
 libsemigroups-config.h
+extern/*
