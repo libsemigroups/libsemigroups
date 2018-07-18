@@ -25,8 +25,8 @@
 #include <queue>
 #include <stack>
 #include <string>
-#include <utility>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include "constants.h"
@@ -631,8 +631,8 @@ namespace libsemigroups {
     class P : public DATA, TTraits {
       using element_type       = typename TTraits::element_type;
       using const_element_type = typename TTraits::const_element_type;
-      using reference        = typename TTraits::reference;
-      using const_reference  = typename TTraits::const_reference;
+      using reference          = typename TTraits::reference;
+      using const_reference    = typename TTraits::const_reference;
 
       using internal_element_type = typename TTraits::internal_element_type;
       using internal_const_element_type =
@@ -676,12 +676,13 @@ namespace libsemigroups {
       }
 
       void delete_tmp_storage() {
-        std::unordered_set<std::pair<internal_element_type, internal_element_type>,
-                           PHash,
-                           PEqual>()
+        std::unordered_set<
+            std::pair<internal_element_type, internal_element_type>,
+            PHash,
+            PEqual>()
             .swap(_found_pairs);
-        std::queue<std::pair<internal_element_type, internal_element_type>>().swap(
-            _pairs_to_mult);
+        std::queue<std::pair<internal_element_type, internal_element_type>>()
+            .swap(_pairs_to_mult);
       }
 
       ~P() {
@@ -708,7 +709,7 @@ namespace libsemigroups {
         auto semigroup
             = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
         element_type x     = semigroup->word_to_element(w);
-        size_t     ind_x = get_index(this->to_internal(x));
+        size_t       ind_x = get_index(this->to_internal(x));
         this->external_free(x);
         LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
         LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
@@ -724,8 +725,8 @@ namespace libsemigroups {
             = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
         element_type x     = semigroup->word_to_element(w1);
         element_type y     = semigroup->word_to_element(w2);
-        size_t     ind_x = get_index(this->to_internal(x));
-        size_t     ind_y = get_index(this->to_internal(y));
+        size_t       ind_x = get_index(this->to_internal(x));
+        size_t       ind_y = get_index(this->to_internal(y));
         this->external_free(x);
         this->external_free(y);
         return _lookup.find(ind_x) == _lookup.find(ind_y) ? TRUE : UNKNOWN;
@@ -875,11 +876,12 @@ namespace libsemigroups {
         }
       };
 
-      void add_pair(internal_const_element_type x, internal_const_element_type y) {
+      void add_pair(internal_const_element_type x,
+                    internal_const_element_type y) {
         if (!internal_equal_to()(x, y)) {
           internal_element_type xx, yy;
-          bool                xx_new = false, yy_new = false;
-          size_t              i, j;
+          bool                  xx_new = false, yy_new = false;
+          size_t                i, j;
 
           auto it_x = _map.find(x);
           if (it_x == _map.end()) {
@@ -942,9 +944,10 @@ namespace libsemigroups {
 
       std::vector<class_index_t> _class_lookup;
       bool                       _done;
-      std::unordered_set<std::pair<internal_element_type, internal_element_type>,
-                         PHash,
-                         PEqual>
+      std::unordered_set<
+          std::pair<internal_element_type, internal_element_type>,
+          PHash,
+          PEqual>
           _found_pairs;
       UF  _lookup;
       std::unordered_map<internal_const_element_type,
@@ -957,7 +960,7 @@ namespace libsemigroups {
       size_t        _nr_nontrivial_classes;
       size_t        _nr_nontrivial_elms;
       std::queue<std::pair<internal_element_type, internal_element_type>>
-                                       _pairs_to_mult;
+                                         _pairs_to_mult;
       std::vector<internal_element_type> _reverse_map;
       internal_element_type              _tmp1;
       internal_element_type              _tmp2;

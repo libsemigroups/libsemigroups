@@ -1905,13 +1905,13 @@ namespace libsemigroups {
                   "TElementType must not be a pointer");
     using element_type       = TElementType;
     using const_element_type = TElementType const;
-    using reference        = TElementType&;
-    using const_reference  = TElementType const&;
+    using reference          = TElementType&;
+    using const_reference    = TElementType const&;
 
     using internal_element_type       = TElementType*;
-    using internal_const_element_type = TElementType const* const;
-    using internal_reference        = internal_element_type&;
-    using internal_const_reference  = internal_const_element_type&;
+    using internal_const_element_type = TElementType const*;
+    using internal_reference          = internal_element_type&;
+    using internal_const_reference    = internal_const_element_type const&;
 
     inline internal_const_element_type
     to_internal_const(const_reference x) const {
@@ -1958,14 +1958,14 @@ namespace libsemigroups {
           std::is_same<TElementType, Element*>::value
           || std::is_same<TElementType, Element const*>::value>::type> {
     using element_type       = Element*;
-    using const_element_type = Element const* const;
-    using reference        = element_type;
-    using const_reference  = const_element_type;
+    using const_element_type = Element const*;
+    using reference          = element_type;
+    using const_reference    = const_element_type;
 
     using internal_element_type       = element_type;
     using internal_const_element_type = const_element_type;
-    using internal_reference        = internal_element_type&;
-    using internal_const_reference  = internal_const_element_type&;
+    using internal_reference          = internal_element_type&;
+    using internal_const_reference    = internal_const_element_type const&;
 
     inline internal_const_element_type
     to_internal_const(const_element_type x) const {

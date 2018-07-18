@@ -61,8 +61,7 @@ namespace libsemigroups {
       TPTransf16Subclass,
       typename std::enable_if<
           std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
-    TPTransf16Subclass operator()(TPTransf16Subclass const& x) const
-        noexcept {
+    TPTransf16Subclass operator()(TPTransf16Subclass const& x) const noexcept {
       return x.inverse();
     }
   };

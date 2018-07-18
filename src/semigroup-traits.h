@@ -31,13 +31,13 @@ namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {
     using element_type       = TElementType;
     using const_element_type = TElementType const;
-    using reference        = TElementType&;
-    using const_reference  = TElementType const&;
+    using reference          = TElementType&;
+    using const_reference    = TElementType const&;
 
     using internal_element_type       = element_type;
     using internal_const_element_type = const_element_type;
-    using internal_reference        = reference;
-    using internal_const_reference  = const_reference;
+    using internal_reference          = reference;
+    using internal_const_reference    = const_reference;
 
     inline internal_const_reference to_internal_const(const_reference x) const {
       return x;
@@ -55,7 +55,8 @@ namespace libsemigroups {
       return x;
     }
 
-    inline internal_element_type internal_copy(internal_const_reference x) const {
+    inline internal_element_type
+    internal_copy(internal_const_reference x) const {
       return x;
     }
 
@@ -76,13 +77,14 @@ namespace libsemigroups {
    public:
     using element_type       = typename base::element_type;
     using const_element_type = typename base::const_element_type;
-    using reference        = typename base::reference;
-    using const_reference  = typename base::const_reference;
+    using reference          = typename base::reference;
+    using const_reference    = typename base::const_reference;
 
-    using internal_element_type       = typename base::internal_element_type;
-    using internal_const_element_type = typename base::internal_const_element_type;
-    using internal_reference        = typename base::internal_reference;
-    using internal_const_reference  = typename base::internal_const_reference;
+    using internal_element_type = typename base::internal_element_type;
+    using internal_const_element_type =
+        typename base::internal_const_element_type;
+    using internal_reference       = typename base::internal_reference;
+    using internal_const_reference = typename base::internal_const_reference;
 
     //! Provides a call operator for comparing elements of \c this
     //!
@@ -108,13 +110,14 @@ namespace libsemigroups {
    public:
     using element_type       = typename base::element_type;
     using const_element_type = typename base::const_element_type;
-    using reference        = typename base::reference;
-    using const_reference  = typename base::const_reference;
+    using reference          = typename base::reference;
+    using const_reference    = typename base::const_reference;
 
-    using internal_element_type       = typename base::internal_element_type;
-    using internal_const_element_type = typename base::internal_const_element_type;
-    using internal_reference        = typename base::internal_reference;
-    using internal_const_reference  = typename base::internal_const_reference;
+    using internal_element_type = typename base::internal_element_type;
+    using internal_const_element_type =
+        typename base::internal_const_element_type;
+    using internal_reference       = typename base::internal_reference;
+    using internal_const_reference = typename base::internal_const_reference;
 
     //! Provides a call operator for hashing elements of \c this
     //!

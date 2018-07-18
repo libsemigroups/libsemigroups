@@ -53,9 +53,9 @@ namespace libsemigroups {
   };
 
   template <typename TIntegralType>
-  struct less<TIntegralType,
-              typename std::enable_if<std::is_integral<TIntegralType>::value>::
-                  type> {
+  struct less<
+      TIntegralType,
+      typename std::enable_if<std::is_integral<TIntegralType>::value>::type> {
     bool operator()(TIntegralType x, TIntegralType y) const noexcept {
       return x < y;
     }
