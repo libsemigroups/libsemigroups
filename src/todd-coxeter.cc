@@ -19,38 +19,81 @@
 // This file contains an implementation of the Todd-Coxeter algorithm for
 // semigroups.
 
-// FIXME there doesn't seem to be any reason to store _relations as pairs,
-// maybe better to store it as a flat vector, this might reduce code
-// duplication too.
-//
 // TODO:
-// - allow addition of identity (i.e. via empty string)
-// - allow inverses
+// 1. there doesn't seem to be any reason to store _relations as pairs, maybe
+//    better to store it as a flat vector, this might reduce code duplication
+//    too.
+// 2. allow addition of identity (i.e. via empty string)
+// 3. allow inverses
+// 4. add constructor from RWS, see comments in somewhere in here??
+
+//////////////////////////////////////////////////////////////////////////
+// NOTES on the data structures used by Todd-Coxeter
+//
+// We use these two arrays to simulate a doubly-linked list of active
+// cosets
+// (the "active list") with deleted cosets attached to the end (the "free
+// list").  If c is an active coset:
+//   _forwd[c] is the coset that comes after c in the list.
+//   _bckwd[c] is the coset that comes before c in the list.
+// If c is a free coset (has been deleted) the backward reference is not
+// needed, and so instead, _bckwd[c] is set to the coset c was identified
+// with.  To indicate this alternative use of the list, the entry is
+// negated
+// (_backwd[c] == -3 indicates that c was identified with coset 3).
+//
+// We also store some special locations in the list:
+//   _current is the coset to which we are currently applying relations.
+//   _current_no_add is used instead of _current if we are in a packing
+//   phase.
+//   _last points to the final active coset in the list.
+//   _next points to the first free coset in the list.
+// Hence usually _next == _last + 1.
+//
+// COSET TABLES:
+//
+// We use these three tables to store all a coset's images and preimages.
+//   _table[c][i] is coset c's image under generator i.
+//   _preim_init[c][i] is ONE of coset c's preimages under generator i.
+//   _preim_next[c][i] is a coset that has THE SAME IMAGE as coset c
+//   (under i)
+//
+// Hence to find all the preimages of c under i:
+//   - Let u = _preim_init[c][i] ONCE.
+//   - Let u = _preim_next[u][i] REPEATEDLY until it becomes UNDEFINED.
+// Each u is one preimage.
+//
+// To add v, a new preimage of c under i:
+//   - Set _preim_next[v][i] to point to the current _preim_init[c][i].
+//   - Then change _preim_init[c][i] to point to v.
+// Now the new preimage and all the old preimages are stored.
+//////////////////////////////////////////////////////////////////////////
 
 #include "todd-coxeter.h"
 
 #include <algorithm>
 #include <unordered_map>
 
-#include "libsemigroups-debug.h"
-#include "libsemigroups-exception.h"
-#include "report.h"
-#include "semigroups.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-exception.h"
+#include "internal/report.h"
+
+#include "semigroup.h"
 #include "tce.h"
 
 namespace libsemigroups {
 
   namespace congruence {
-    ////////////////////////////////////////////////////////////////////////////
-    // Private Constructor
-    ////////////////////////////////////////////////////////////////////////////
+    using signed_class_index_type = int64_t;
+    using congruence_type         = CongIntf::congruence_type;
+    using class_index_type        = CongIntf::class_index_type;
 
-    // Split this ToddCoxeter into two the original one (just used to compute
-    // congruences of an fp semigroup), and the other one for finding
-    // congruences over SemigroupBase*.
+    /////////////////////////
+    // Private Constructor //
+    /////////////////////////
 
-    ToddCoxeter::ToddCoxeter(congruence_t type)
-        : Interface(type),
+    ToddCoxeter::ToddCoxeter(congruence_type type)
+        : CongIntf(type),
           _active(1),
           _base(nullptr),
           _bckwd(1, 0),
@@ -59,36 +102,43 @@ namespace libsemigroups {
           _current_no_add(UNDEFINED),
           _defined(1),
           _extra(),
-          _forwd(1, UNDEFINED),
+          _forwd(1, static_cast<size_t>(UNDEFINED)),
           _id_coset(0),
           _init_done(false),
           _last(0),
+          _lhs_stack(),
           _next(UNDEFINED),
           _non_trivial_classes(),
           _nrgens(UNDEFINED),
           _pack(120000),
-          _policy(none),
+          _policy(policy::none),
           _prefilled(false),
-          _quotient_semigroup(nullptr),
+          _preim_init(0, 0, UNDEFINED),
+          _preim_next(0, 0, UNDEFINED),
+          _relations(),
+          _rhs_stack(),
           _stop_packing(false),
-          _type(type) {}
+          _table(0, 0, UNDEFINED) {}
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Public Constructors
-    ////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////
+    // Constructors and destructor //
+    /////////////////////////////////
 
-    ToddCoxeter::ToddCoxeter(congruence_t type, SemigroupBase* S, policy p)
+    ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase* S, policy p)
         : ToddCoxeter(type) {
       _base   = S;
       _policy = p;
-      LIBSEMIGROUPS_ASSERT(validate_relations());
-      // TODO assertion should be an exception
+      _nrgens = S->nrgens();
+      _table.add_rows(1);
+      _table.add_cols(_nrgens);
+      _preim_init = RecVec<class_index_type>(_nrgens, 1, UNDEFINED);
+      _preim_next = RecVec<class_index_type>(_nrgens, 1, UNDEFINED);
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_t                   type,
-                             SemigroupBase*                 S,
-                             std::vector<relation_t> const& genpairs,
-                             policy                         p)
+    ToddCoxeter::ToddCoxeter(congruence_type                   type,
+                             SemigroupBase*                    S,
+                             std::vector<relation_type> const& genpairs,
+                             policy                            p)
         : ToddCoxeter(type, S, p) {
       _extra = genpairs;
     }
@@ -97,8 +147,8 @@ namespace libsemigroups {
     // copy)
     //     : ToddCoxeter(copy.type(),
     //                   copy.nr_generators(),
-    //                   std::vector<relation_t>(copy._relations),
-    //                   std::vector<relation_t>(copy._extra)) {
+    //                   std::vector<relation_type>(copy._relations),
+    //                   std::vector<relation_type>(copy._extra)) {
     //   // FIXME init_relations will be called on this at some point, and if it
     //   // was already called on copy, and we are a left congruence, then this
     //   // will reverse the relations again.
@@ -106,355 +156,34 @@ namespace libsemigroups {
 
     // ToddCoxeter::ToddCoxeter(
     //     ToddCoxeter const*   copy,
-    //     std::vector<relation_t> const& extra)
+    //     std::vector<relation_type> const& extra)
     //     : ToddCoxeter(*copy) {
     //   _extra.reserve(_extra.size() + extra.size());
     //   _extra.insert(_extra.end(), extra.begin(), extra.end());
     //   LIBSEMIGROUPS_ASSERT(validate_relations());
     // }
+    // TODO replace this constructor, see header
+    ToddCoxeter::ToddCoxeter(congruence_type                   type,
+                             size_t                            nrgens,
+                             std::vector<relation_type> const& relations,
+                             std::vector<relation_type> const& extra)
+        : ToddCoxeter(type) {
+      _nrgens     = nrgens;
+      _relations  = relations;
+      _extra      = extra;
+      _table      = RecVec<class_index_type>(_nrgens, 1, UNDEFINED);
+      _preim_init = RecVec<class_index_type>(_nrgens, 1, UNDEFINED),
+      _preim_next = RecVec<class_index_type>(_nrgens, 1, UNDEFINED),
+      validate_relations();
+    }
 
     ToddCoxeter::~ToddCoxeter() {
-      delete _quotient_semigroup;
+      reset_quotient();
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden public pure virtual methods from congruence::Interface
-    //////////////////////////////////////////////////////////////////////////
-
-    class_index_t ToddCoxeter::word_to_class_index(word_t const& w) {
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      class_index_t c = const_word_to_class_index(w);
-      // c is in the range 1, ..., _active because 0 represents the identity
-      // coset, and does not correspond to an element.
-      LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
-      return c;
-    }
-
-    size_t ToddCoxeter::nr_classes() {
-      if (is_quotient_obviously_infinite()) {
-        return INFTY;
-      } else {
-        run();
-        LIBSEMIGROUPS_ASSERT(finished());
-        return _active - 1;
-      }
-    }
-
-    void ToddCoxeter::add_pair(word_t lhs, word_t rhs) {
-      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(validate_word(lhs));
-      LIBSEMIGROUPS_ASSERT(validate_word(rhs));
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      _extra.push_back(std::make_pair(lhs, rhs));
-      reset_quotient_semigroup();
-    }
-
-    SemigroupBase* ToddCoxeter::quotient_semigroup() {
-      if (type() != TWOSIDED) {
-        throw LibsemigroupsException("The congruence must be two-sided");
-      }
-      if (_quotient_semigroup == nullptr) {
-        run();
-        LIBSEMIGROUPS_ASSERT(finished());
-        Semigroup<TCE>* Q = new Semigroup<TCE>({TCE(this, _table.get(0, 0))});
-        for (size_t i = 1; i < _nrgens; ++i) {
-          // We use _table.get(0, i) instead of just i, because there might be
-          // more generators than cosets.
-          Q->add_generator(TCE(this, _table.get(0, i)));
-        }
-        _quotient_semigroup = Q;
-      }
-      return _quotient_semigroup;
-    }
-
-    std::vector<std::vector<word_t>>::const_iterator
-    ToddCoxeter::cbegin_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.cbegin();
-    }
-
-    std::vector<std::vector<word_t>>::const_iterator
-    ToddCoxeter::cend_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.cend();
-    }
-
-    size_t ToddCoxeter::nr_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.size();
-    }
-
-    bool ToddCoxeter::is_quotient_obviously_infinite() const {
-      // TODO exceptions instead of assertions
-      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
-      if (_policy != none) {
-        // _policy != none means we were created from a SemigroupBase*, which
-        // means that this is infinite if and only if the SemigroupBase* is
-        // infinite too, which is not obvious (or even possible to check at
-        // present).
-        return false;
-      } else if (_nrgens > _relations.size() + _extra.size()) {
-        return true;
-      }
-
-      auto is_letter_in_word = [](word_t const& w, size_t gen) {
-        return (std::find(w.cbegin(), w.cend(), gen) != w.cend());
-      };
-
-      // Does there exist a generator which appears in no relation?
-      for (size_t gen = 0; gen < _nrgens; ++gen) {
-        bool found = false;
-        for (auto it = _relations.cbegin(); it < _relations.cend() && !found;
-             ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
-        }
-        for (auto it = _extra.cbegin(); it < _extra.cend() && !found; ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
-        }
-        if (!found) {
-          return true;  // We found a generator not in any relation.
-        }
-      }
-      // Otherwise, every generator occurs at least once in a relation.
-      return false;
-      // TODO: check that for every generator there exists a word in one of the
-      // relations consisting solely of that generator, otherwise the order of
-      // that generator is infinite.
-      // TODO: check if the number of occurrences of a given letter is constant
-      // on both sides of every relation, if so then again that letter has
-      // infinite order.
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // NOTES on the data structures used by Todd-Coxeter
-    //
-    // We use these two arrays to simulate a doubly-linked list of active
-    // cosets
-    // (the "active list") with deleted cosets attached to the end (the "free
-    // list").  If c is an active coset:
-    //   _forwd[c] is the coset that comes after c in the list.
-    //   _bckwd[c] is the coset that comes before c in the list.
-    // If c is a free coset (has been deleted) the backward reference is not
-    // needed, and so instead, _bckwd[c] is set to the coset c was identified
-    // with.  To indicate this alternative use of the list, the entry is
-    // negated
-    // (_backwd[c] == -3 indicates that c was identified with coset 3).
-    //
-    // We also store some special locations in the list:
-    //   _current is the coset to which we are currently applying relations.
-    //   _current_no_add is used instead of _current if we are in a packing
-    //   phase.
-    //   _last points to the final active coset in the list.
-    //   _next points to the first free coset in the list.
-    // Hence usually _next == _last + 1.
-    //
-    // COSET TABLES:
-    //
-    // We use these three tables to store all a coset's images and preimages.
-    //   _table[c][i] is coset c's image under generator i.
-    //   _preim_init[c][i] is ONE of coset c's preimages under generator i.
-    //   _preim_next[c][i] is a coset that has THE SAME IMAGE as coset c
-    //   (under i)
-    //
-    // Hence to find all the preimages of c under i:
-    //   - Let u = _preim_init[c][i] ONCE.
-    //   - Let u = _preim_next[u][i] REPEATEDLY until it becomes UNDEFINED.
-    // Each u is one preimage.
-    //
-    // To add v, a new preimage of c under i:
-    //   - Set _preim_next[v][i] to point to the current _preim_init[c][i].
-    //   - Then change _preim_init[c][i] to point to v.
-    // Now the new preimage and all the old preimages are stored.
-    //////////////////////////////////////////////////////////////////////////
-
-    //////////////////////////////////////////////////////////////////////////
-    // Initialisation methods
-    //////////////////////////////////////////////////////////////////////////
-
-    // Private
-    void ToddCoxeter::prefill(SemigroupBase* S) {
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_policy == use_cayley_graph);
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nrgens());
-      LIBSEMIGROUPS_ASSERT(S->nrgens() == _nrgens);
-      _table.add_rows(S->size());
-      for (size_t i = 0; i < _nrgens; i++) {
-        _table.set(0, i, S->letter_to_pos(i) + 1);
-      }
-      if (type() == LEFT) {
-        for (size_t row = 0; row < S->size(); ++row) {
-          for (size_t col = 0; col < _nrgens; ++col) {
-            _table.set(row + 1, col, S->left(row, col) + 1);
-          }
-        }
-      } else {
-        for (size_t row = 0; row < S->size(); ++row) {
-          for (size_t col = 0; col < _nrgens; ++col) {
-            _table.set(row + 1, col, S->right(row, col) + 1);
-          }
-        }
-      }
-      init_after_prefill();
-    }
-
-    // Public
-    void ToddCoxeter::prefill(RecVec<class_index_t> const& table) {
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_policy == none);
-      LIBSEMIGROUPS_ASSERT(_base == nullptr);
-      LIBSEMIGROUPS_ASSERT(table.nr_rows() > 0);
-      LIBSEMIGROUPS_ASSERT(table.nr_cols() == _nrgens);
-      LIBSEMIGROUPS_ASSERT(_relations.empty());
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
-      _table = table;
-      LIBSEMIGROUPS_ASSERT(validate_table());
-      // TODO Suppose that "table" is the right/left Cayley graph of a Semigroup
-      // and add a row at the start for coset 0. See [todd-coxeter][21]. This
-      // would make this method more useable.
-      init_after_prefill();
-    }
-
-    // Private
-    void ToddCoxeter::init_after_prefill() {
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == _nrgens);
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() > 1);
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_relations.empty());
-      _prefilled = true;
-      _active    = _table.nr_rows();
-      _id_coset  = 0;
-
-      _forwd.reserve(_active);
-      _bckwd.reserve(_active);
-
-      for (size_t i = 1; i < _active; i++) {
-        _forwd.push_back(i + 1);
-        _bckwd.push_back(i - 1);
-      }
-
-      _forwd[0]           = 1;
-      _forwd[_active - 1] = UNDEFINED;
-
-      _last = _active - 1;
-
-      _preim_init.add_rows(_table.nr_rows());
-      _preim_next.add_rows(_table.nr_rows());
-
-      for (class_index_t c = 0; c < _active; c++) {
-        for (size_t i = 0; i < _nrgens; i++) {
-          class_index_t b = _table.get(c, i);
-          _preim_next.set(c, i, _preim_init.get(b, i));
-          _preim_init.set(b, i, c);
-        }
-      }
-      _defined = _active;
-    }
-
-    // Private
-    void ToddCoxeter::use_relations_or_cayley_graph() {
-      if (_base != nullptr) {
-        switch (_policy) {
-          case use_relations:
-            relations(_base, [this](word_t lhs, word_t rhs) -> void {
-              _relations.push_back(make_pair(lhs, rhs));
-            });
-            LIBSEMIGROUPS_ASSERT(validate_relations());
-            break;
-          case use_cayley_graph:
-            prefill(_base);
-            LIBSEMIGROUPS_ASSERT(validate_table());
-            break;
-          case none:
-            // TODO exception
-            LIBSEMIGROUPS_ASSERT(false);
-        }
-      }
-    }
-
-    // Private: do not call this directly, use init() instead!
-    void ToddCoxeter::init_relations() {
-      // This should not have been run before
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-
-      // Add the relations/Cayley graph from _base if any.
-      use_relations_or_cayley_graph();
-
-      switch (type()) {
-        case LEFT:
-          for (relation_t& rel : _extra) {
-            std::reverse(rel.first.begin(), rel.first.end());
-            std::reverse(rel.second.begin(), rel.second.end());
-          }
-          for (relation_t& rel : _relations) {
-            std::reverse(rel.first.begin(), rel.first.end());
-            std::reverse(rel.second.begin(), rel.second.end());
-          }
-          break;
-        case RIGHT:  // do nothing
-          break;
-        case TWOSIDED:
-          if (!_extra.empty()) {
-            _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
-            _extra.clear();
-            // Don't reset_isomorphic_non_fp_semigroup here since although we
-            // are changing the relations, we are not changing the semigroup
-            // over which this is defined.
-          }
-          break;
-        default:
-          LIBSEMIGROUPS_ASSERT(false);
-      }
-    }
-
-    // Private
-    void ToddCoxeter::init() {
-      if (!_init_done) {
-        init_relations();
-        // Apply each "extra" relation to the first coset only
-        for (relation_t const& rel : _extra) {
-          trace(_id_coset, rel);  // Allow new cosets
-        }
-        _init_done = true;
-      }
-    }
-
-    // Private
-    void ToddCoxeter::init_non_trivial_classes() {
-      // FIXME if not is proper quotient also!! If this is the case, then
-      // we might end up enumerating an infinite semigroup in the loop below.
-      if (!_non_trivial_classes.empty()) {
-        // There are no non-trivial classes, or we already found them.
-        return;
-      } else if (_base == nullptr) {
-        throw LibsemigroupsException("There's no base semigroup in which to "
-                                     "find the non-trivial classes");
-      }
-
-      _non_trivial_classes.assign(_table.nr_rows(), std::vector<word_t>());
-
-      word_t w;
-      for (size_t pos = 0; pos < _base->size(); ++pos) {
-        _base->factorisation(w, pos);
-        LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < _table.nr_rows());
-        _non_trivial_classes[word_to_class_index(w)].push_back(w);
-      }
-
-      _non_trivial_classes.erase(
-          std::remove_if(_non_trivial_classes.begin(),
-                         _non_trivial_classes.end(),
-                         [this](std::vector<word_t> const& klass) -> bool {
-                           return klass.size() <= 1;
-                         }),
-          _non_trivial_classes.end());
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden virtual methods from Runner
-    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////
+    // Overridden virtual methods from Runner //
+    ////////////////////////////////////////////
 
     void ToddCoxeter::run() {
       if (finished()) {
@@ -464,12 +193,13 @@ namespace libsemigroups {
       init();
       if (is_quotient_obviously_infinite()) {
         throw LibsemigroupsException(
-            "this is infinite and Todd-Coxeter will never terminate");
+            "there are infinitely many classes in the congruence and "
+            "Todd-Coxeter will never terminate");
       }
 
       while (!dead() && !timed_out() && _current != _next) {
         // Apply each relation to the "_current" coset
-        for (relation_t const& rel : _relations) {
+        for (relation_type const& rel : _relations) {
           trace(_current, rel);  // Allow new cosets
         }
 
@@ -488,7 +218,7 @@ namespace libsemigroups {
 
           do {
             // Apply every relation to the "_current_no_add" coset
-            for (relation_t const& rel : _relations) {
+            for (relation_type const& rel : _relations) {
               trace(_current_no_add, rel, false);  // Don't allow new cosets
             }
             _current_no_add = _forwd[_current_no_add];
@@ -528,48 +258,163 @@ namespace libsemigroups {
       // No return value: all info is now stored in the class
     }
 
+    //////////////////////////////////////////////////////////
+    // Overridden public pure virtual methods from CongIntf //
+    //////////////////////////////////////////////////////////
+
+    void ToddCoxeter::add_pair(word_type lhs, word_type rhs) {
+      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
+      validate_word(lhs);
+      validate_word(rhs);
+      if (_init_done) {
+        // TODO allow adding of pairs here
+        throw LibsemigroupsException("can't add pair at this point");
+      }
+      _extra.emplace_back(lhs, rhs);
+      reset_quotient();
+    }
+
+    std::vector<std::vector<word_type>>::const_iterator
+    ToddCoxeter::cbegin_non_trivial_classes() {
+      init_non_trivial_classes();
+      return _non_trivial_classes.cbegin();
+    }
+
+    std::vector<std::vector<word_type>>::const_iterator
+    ToddCoxeter::cend_non_trivial_classes() {
+      init_non_trivial_classes();
+      return _non_trivial_classes.cend();
+    }
+
+    size_t ToddCoxeter::nr_classes() {
+      if (is_quotient_obviously_infinite()) {
+        return POSITIVE_INFINITY;
+      } else {
+        run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        return _active - 1;
+      }
+    }
+
+    size_t ToddCoxeter::nr_non_trivial_classes() {
+      init_non_trivial_classes();
+      return _non_trivial_classes.size();
+    }
+
+    SemigroupBase* ToddCoxeter::quotient_semigroup() {
+      if (type() != congruence_type::TWOSIDED) {
+        throw LibsemigroupsException("the congruence must be two-sided");
+      } else if (get_quotient() == nullptr) {
+        run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        // TODO replace with 0-parameter constructor when available
+        Semigroup<TCE>* Q = new Semigroup<TCE>({TCE(this, _table.get(0, 0))});
+        for (size_t i = 1; i < _nrgens; ++i) {
+          // We use _table.get(0, i) instead of just i, because there might be
+          // more generators than cosets.
+          Q->add_generator(TCE(this, _table.get(0, i)));
+        }
+        set_quotient(Q);
+      }
+      return get_quotient();
+    }
+
+    class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      class_index_type c = const_word_to_class_index(w);
+      // c is in the range 1, ..., _active because 0 represents the identity
+      // coset, and does not correspond to an element.
+      LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
+      return c;
+    }
+
     //////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter specific methods
+    // Overridden public non-pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
-    // TODO check order
+
+    bool ToddCoxeter::is_quotient_obviously_infinite() {
+      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
+      if (_policy != policy::none) {
+        // _policy != none means we were created from a SemigroupBase*, which
+        // means that this is infinite if and only if the SemigroupBase* is
+        // infinite too, which is not obvious (or even possible to check at
+        // present).
+        return false;
+      } else if (_prefilled) {
+        return false;
+      }
+      init();
+      if (_nrgens > _relations.size() + _extra.size()) {
+        return true;
+      }
+      auto is_letter_in_word = [](word_type const& w, size_t gen) {
+        return (std::find(w.cbegin(), w.cend(), gen) != w.cend());
+      };
+
+      // Does there exist a generator which appears in no relation?
+      for (size_t gen = 0; gen < _nrgens; ++gen) {
+        bool found = false;
+        for (auto it = _relations.cbegin(); it < _relations.cend() && !found;
+             ++it) {
+          found = is_letter_in_word((*it).first, gen)
+                  || is_letter_in_word((*it).second, gen);
+        }
+        for (auto it = _extra.cbegin(); it < _extra.cend() && !found; ++it) {
+          found = is_letter_in_word((*it).first, gen)
+                  || is_letter_in_word((*it).second, gen);
+        }
+        if (!found) {
+          return true;  // We found a generator not in any relation.
+        }
+      }
+      // Otherwise, every generator occurs at least once in a relation.
+      return false;
+      // TODO: check that for every generator there exists a word in one of the
+      // relations consisting solely of that generator, otherwise the order of
+      // that generator is infinite.
+      // TODO: check if the number of occurrences of a given letter is constant
+      // on both sides of every relation, if so then again that letter has
+      // infinite order.
+    }
+
+    ////////////////////
+    // Public methods //
+    ////////////////////
+
     bool ToddCoxeter::empty() const {
       return _relations.empty() && _extra.empty()
              && (_table.empty()
                  || (_table.nr_rows() == 1
                      && std::all_of(_table.cbegin_row(0),
                                     _table.cend_row(0),
-                                    [](class_index_t x) -> bool {
+                                    [](class_index_type x) -> bool {
                                       return x == UNDEFINED;
                                     })));
     }
 
-    void ToddCoxeter::reset_isomorphic_non_fp_semigroup() {
-      if (_delete_isomorphic_non_fp_semigroup) {
-        delete _isomorphic_non_fp_semigroup;
-      }
-      _delete_isomorphic_non_fp_semigroup = true;
-      _isomorphic_non_fp_semigroup        = nullptr;
+    ToddCoxeter::policy ToddCoxeter::get_policy() const noexcept {
+      return _policy;
     }
 
-    word_t ToddCoxeter::string_to_word(std::string const& s) const {
-      word_t w;
-      w.reserve(s.size());
-      for (char const& c : s) {
-        w.push_back(char_to_uint(c));
-      }
-      return w;
+    void ToddCoxeter::prefill(RecVec<class_index_type> const& table) {
+      // TODO assertions -> exceptions
+      LIBSEMIGROUPS_ASSERT(!_init_done);
+      LIBSEMIGROUPS_ASSERT(_policy == policy::none);
+      LIBSEMIGROUPS_ASSERT(_base == nullptr);
+      LIBSEMIGROUPS_ASSERT(table.nr_rows() > 0);
+      LIBSEMIGROUPS_ASSERT(table.nr_cols() == _nrgens);
+      LIBSEMIGROUPS_ASSERT(_relations.empty());
+      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
+      _table = table;
+      validate_table();
+      // TODO Suppose that "table" is the right/left Cayley graph of a Semigroup
+      // and add a row at the start for coset 0. See [todd-coxeter][21]. This
+      // would make this method more useable.
+      init_after_prefill();
     }
 
-    std::string ToddCoxeter::word_to_string(word_t const& w) const {
-      std::string s;
-      s.reserve(w.size());
-      for (size_t const& l : w) {
-        s.push_back(uint_to_char(l));
-      }
-      return s;
-    }
-
-    class_index_t ToddCoxeter::right(class_index_t i, letter_t j) {
+    class_index_type ToddCoxeter::right(class_index_type i, letter_type j) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       return _table.get(i, j);
@@ -579,12 +424,294 @@ namespace libsemigroups {
       _pack = val;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // Other private methods
-    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    // Overridden private pure virtual methods from CongIntf //
+    ///////////////////////////////////////////////////////////
+
+    class_index_type
+    ToddCoxeter::const_word_to_class_index(word_type const& w) const {
+      validate_word(w);
+      class_index_type c = _id_coset;
+
+      if (type() == congruence_type::LEFT) {
+        // Iterate in reverse order
+        for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
+             ++rit) {
+          c = _table.get(c, *rit);
+        }
+      } else {
+        // Iterate in sequential order
+        for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
+          c = _table.get(c, *it);
+        }
+      }
+      return (c == UNDEFINED ? c : c - 1);
+    }
+
+    //////////////////////////////////
+    // Private methods - validation //
+    //////////////////////////////////
+
+    void ToddCoxeter::validate_relations() const {
+      for (auto const& rel : _relations) {
+        validate_word(rel.first);
+        validate_word(rel.second);
+      }
+      for (auto const& rel : _extra) {
+        validate_word(rel.first);
+        validate_word(rel.second);
+      }
+    }
+
+    void ToddCoxeter::validate_table() const {
+      for (size_t i = 0; i < _table.nr_rows(); ++i) {
+        for (size_t j = 0; j < _table.nr_cols(); ++j) {
+          class_index_type c = _table.get(i, j);
+          if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
+            throw LibsemigroupsException(
+                "invalid table, the entry in row " + libsemigroups::to_string(i)
+                + " and column " + libsemigroups::to_string(j)
+                + " should be in the range [1, "
+                + libsemigroups::to_string(_table.nr_rows())
+                + ") or UNDEFINED, but is " + libsemigroups::to_string(c));
+          }
+        }
+      }
+    }
+
+    void ToddCoxeter::validate_word(word_type const& w) const {
+      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
+      for (auto const& l : w) {
+        if (l >= _nrgens) {
+          throw LibsemigroupsException(
+              "invalid word, found " + libsemigroups::to_string(l)
+              + " should be at most " + libsemigroups::to_string(_nrgens));
+        }
+      }
+    }
+
+    //////////////////////////////////////
+    // Private methods - initialisation //
+    //////////////////////////////////////
+
+    void ToddCoxeter::init() {
+      if (!_init_done) {
+        init_relations();
+        // Apply each "extra" relation to the first coset only
+        for (relation_type const& rel : _extra) {
+          trace(_id_coset, rel);  // Allow new cosets
+        }
+        _init_done = true;
+      }
+    }
+
+    void ToddCoxeter::init_after_prefill() {
+      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == _nrgens);
+      LIBSEMIGROUPS_ASSERT(_table.nr_rows() > 1);
+      LIBSEMIGROUPS_ASSERT(!_init_done);
+      LIBSEMIGROUPS_ASSERT(_relations.empty());
+      _prefilled = true;
+      _active    = _table.nr_rows();
+      _id_coset  = 0;
+
+      _forwd.reserve(_active);
+      _bckwd.reserve(_active);
+
+      for (size_t i = 1; i < _active; i++) {
+        _forwd.push_back(i + 1);
+        _bckwd.push_back(i - 1);
+      }
+
+      _forwd[0]           = 1;
+      _forwd[_active - 1] = UNDEFINED;
+
+      _last = _active - 1;
+
+      _preim_init.add_rows(_table.nr_rows());
+      _preim_next.add_rows(_table.nr_rows());
+
+      for (class_index_type c = 0; c < _active; c++) {
+        for (size_t i = 0; i < _nrgens; i++) {
+          class_index_type b = _table.get(c, i);
+          _preim_next.set(c, i, _preim_init.get(b, i));
+          _preim_init.set(b, i, c);
+        }
+      }
+      _defined = _active;
+    }
+
+    void ToddCoxeter::init_non_trivial_classes() {
+      // FIXME if not is proper quotient also!! If this is the case, then
+      // we might end up enumerating an infinite semigroup in the loop below.
+      if (!_non_trivial_classes.empty()) {
+        // There are no non-trivial classes, or we already found them.
+        return;
+      } else if (_base == nullptr) {
+        throw LibsemigroupsException("There's no base semigroup in which to "
+                                     "find the non-trivial classes");
+      }
+
+      _non_trivial_classes.assign(_table.nr_rows(), std::vector<word_type>());
+
+      word_type w;
+      for (size_t pos = 0; pos < _base->size(); ++pos) {
+        _base->factorisation(w, pos);
+        LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < _table.nr_rows());
+        _non_trivial_classes[word_to_class_index(w)].push_back(w);
+      }
+
+      _non_trivial_classes.erase(
+          std::remove_if(_non_trivial_classes.begin(),
+                         _non_trivial_classes.end(),
+                         [this](std::vector<word_type> const& klass) -> bool {
+                           return klass.size() <= 1;
+                         }),
+          _non_trivial_classes.end());
+    }
+
+    // Private: do not call this directly, use init() instead!
+    void ToddCoxeter::init_relations() {
+      // This should not have been run before
+      LIBSEMIGROUPS_ASSERT(!_init_done);
+
+      // Add the relations/Cayley graph from _base if any.
+      use_relations_or_cayley_graph();
+
+      switch (type()) {
+        case congruence_type::LEFT:
+          for (relation_type& rel : _extra) {
+            std::reverse(rel.first.begin(), rel.first.end());
+            std::reverse(rel.second.begin(), rel.second.end());
+          }
+          for (relation_type& rel : _relations) {
+            std::reverse(rel.first.begin(), rel.first.end());
+            std::reverse(rel.second.begin(), rel.second.end());
+          }
+          break;
+        case congruence_type::RIGHT:  // do nothing
+          break;
+        case congruence_type::TWOSIDED:
+          if (!_extra.empty()) {
+            _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
+            _extra.clear();
+            // Don't reset_quotient_semigroup here since although we are
+            // changing the relations, we are not changing the semigroup over
+            // which this congruence is defined.
+          }
+          break;
+        default:
+          LIBSEMIGROUPS_ASSERT(false);
+      }
+    }
+
+    void ToddCoxeter::prefill(SemigroupBase* S) {
+      LIBSEMIGROUPS_ASSERT(!_init_done);
+      LIBSEMIGROUPS_ASSERT(_policy == policy::use_cayley_graph);
+      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
+      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nrgens());
+      LIBSEMIGROUPS_ASSERT(S->nrgens() == _nrgens);
+      _table.add_rows(S->size());
+      for (size_t i = 0; i < _nrgens; i++) {
+        _table.set(0, i, S->letter_to_pos(i) + 1);
+      }
+      if (type() == congruence_type::LEFT) {
+        for (size_t row = 0; row < S->size(); ++row) {
+          for (size_t col = 0; col < _nrgens; ++col) {
+            _table.set(row + 1, col, S->left(row, col) + 1);
+          }
+        }
+      } else {
+        for (size_t row = 0; row < S->size(); ++row) {
+          for (size_t col = 0; col < _nrgens; ++col) {
+            _table.set(row + 1, col, S->right(row, col) + 1);
+          }
+        }
+      }
+      init_after_prefill();
+    }
+
+    void ToddCoxeter::use_relations_or_cayley_graph() {
+      // FIXME nothing stops this from being called multiple times
+      if (_base != nullptr) {
+        switch (_policy) {
+          case policy::use_relations:
+            relations(_base, [this](word_type lhs, word_type rhs) -> void {
+              _relations.emplace_back(lhs, rhs);
+            });
+#ifdef LIBSEMIGROUPS_DEBUG
+            // This is a check of program logic, since we use _base to obtain
+            // the relations, so we only validate in debug mode.
+            validate_relations();
+#endif
+            break;
+          case policy::use_cayley_graph:
+            prefill(_base);
+#ifdef LIBSEMIGROUPS_DEBUG
+            // This is a check of program logic, since we use _base to fill the
+            // table, so we only validate in debug mode.
+            validate_table();
+#endif
+            break;
+          case policy::none:
+            // So that this doesn't fail silently
+            throw INTERNAL_EXCEPTION;
+        }
+      }
+    }
+
+    /////////////////////////////
+    // Private methods - other //
+    /////////////////////////////
+
+    // Compress the table
+    void ToddCoxeter::compress() {
+      if (dead()) {
+        return;
+      }
+      LIBSEMIGROUPS_ASSERT(finished());
+      if (_active == _table.nr_rows()) {
+        return;
+      }
+
+      RecVec<class_index_type> table(_nrgens, _active);
+
+      class_index_type pos = _id_coset;
+      // old number to new numbers lookup
+      std::unordered_map<class_index_type, class_index_type> lookup;
+      size_t                                                 next_index = 0;
+
+      while (pos != _next) {
+        size_t curr_index;
+        auto   it = lookup.find(pos);
+        if (it == lookup.end()) {
+          lookup.insert(std::make_pair(pos, next_index));
+          curr_index = next_index;
+          next_index++;
+        } else {
+          curr_index = it->second;
+        }
+
+        // copy row
+        for (size_t i = 0; i < _nrgens; i++) {
+          class_index_type val = _table.get(pos, i);
+          it                   = lookup.find(val);
+          if (it == lookup.end()) {
+            lookup.insert(std::make_pair(val, next_index));
+            val = next_index;
+            next_index++;
+          } else {
+            val = it->second;
+          }
+          table.set(curr_index, i, val);
+        }
+        pos = _forwd[pos];
+      }
+      _table = table;
+    }
 
     // Create a new active coset for coset c to map to under generator a
-    void ToddCoxeter::new_coset(class_index_t const& c, letter_t const& a) {
+    void ToddCoxeter::new_coset(class_index_type const& c,
+                                letter_type const&      a) {
       _active++;
       _defined++;
 
@@ -606,7 +733,7 @@ namespace libsemigroups {
       _next = _forwd[_last];
 
       // Clear the new coset's row in each table
-      for (letter_t i = 0; i < _nrgens; i++) {
+      for (letter_type i = 0; i < _nrgens; i++) {
         _table.set(_last, i, UNDEFINED);
         _preim_init.set(_last, i, UNDEFINED);
       }
@@ -620,7 +747,8 @@ namespace libsemigroups {
     }
 
     // Identify lhs with rhs, and process any further coincidences
-    void ToddCoxeter::identify_cosets(class_index_t lhs, class_index_t rhs) {
+    void ToddCoxeter::identify_cosets(class_index_type lhs,
+                                      class_index_type rhs) {
       // Note that _lhs_stack and _rhs_stack may not be empty, if this was
       // killed before and has been restarted.
       // TODO add assertion that lhs and rhs are valid values
@@ -629,9 +757,9 @@ namespace libsemigroups {
       if (lhs == rhs) {
         return;
       } else if (rhs < lhs) {
-        class_index_t tmp = lhs;
-        lhs               = rhs;
-        rhs               = tmp;
+        class_index_type tmp = lhs;
+        lhs                  = rhs;
+        rhs                  = tmp;
       }
 
       // TODO Replace the following line with "while (!_killed)" and simply run
@@ -673,14 +801,14 @@ namespace libsemigroups {
 
           // Leave a "forwarding address" so we know what <rhs> was identified
           // with
-          _bckwd[rhs] = -static_cast<signed_class_index_t>(lhs);
+          _bckwd[rhs] = -static_cast<signed_class_index_type>(lhs);
 
-          for (letter_t i = 0; i < _nrgens; i++) {
+          for (letter_type i = 0; i < _nrgens; i++) {
             // Let <v> be the first PREIMAGE of <rhs>
-            class_index_t v = _preim_init.get(rhs, i);
+            class_index_type v = _preim_init.get(rhs, i);
             while (v != UNDEFINED) {
               _table.set(v, i, lhs);  // Replace <rhs> by <lhs> in the table
-              class_index_t u
+              class_index_type u
                   = _preim_next.get(v, i);  // Get <rhs>'s next preimage
               _preim_next.set(v, i, _preim_init.get(lhs, i));
               _preim_init.set(lhs, i, v);
@@ -691,7 +819,7 @@ namespace libsemigroups {
             // Now let <v> be the IMAGE of <rhs>
             v = _table.get(rhs, i);
             if (v != UNDEFINED) {
-              class_index_t u = _preim_init.get(v, i);
+              class_index_type u = _preim_init.get(v, i);
               LIBSEMIGROUPS_ASSERT(u != UNDEFINED);
               if (u == rhs) {
                 // Remove <rhs> from the start of the list of <v>'s preimages
@@ -736,10 +864,10 @@ namespace libsemigroups {
     // <c>, and identify the two results.  If <add> is true (the default) then
     // new cosets will be created whenever necessary; if false, then we are
     // "packing", and this function will not create any new cosets.
-    void ToddCoxeter::trace(class_index_t const& c,
-                            relation_t const&    rel,
-                            bool                 add) {
-      class_index_t lhs = c;
+    void ToddCoxeter::trace(class_index_type const& c,
+                            relation_type const&    rel,
+                            bool                    add) {
+      class_index_type lhs = c;
       for (auto it = rel.first.cbegin(); it < rel.first.cend() - 1; it++) {
         if (_table.get(lhs, *it) != UNDEFINED) {
           lhs = _table.get(lhs, *it);
@@ -752,7 +880,7 @@ namespace libsemigroups {
       }
       // <lhs> is the image of <c> under <rel>[1] (minus the last letter)
 
-      class_index_t rhs = c;
+      class_index_type rhs = c;
       for (auto it = rel.second.cbegin(); it < rel.second.cend() - 1; it++) {
         if (_table.get(rhs, *it) != UNDEFINED) {
           rhs = _table.get(rhs, *it);
@@ -778,10 +906,10 @@ namespace libsemigroups {
         _cosets_killed = _defined - _active;
       }
 
-      letter_t      a = rel.first.back();
-      letter_t      b = rel.second.back();
-      class_index_t u = _table.get(lhs, a);
-      class_index_t v = _table.get(rhs, b);
+      letter_type      a = rel.first.back();
+      letter_type      b = rel.second.back();
+      class_index_type u = _table.get(lhs, a);
+      class_index_type v = _table.get(rhs, b);
       // u = lhs^a = c^rel[1]
       // v = rhs^b = c^rel[2]
 
@@ -816,102 +944,88 @@ namespace libsemigroups {
         identify_cosets(u, v);
       }
     }
+  }  // namespace congruence
 
-    // compress the table
-    void ToddCoxeter::compress() {
-      if (dead()) {
-        return;
-      }
-      LIBSEMIGROUPS_ASSERT(finished());
-      if (_active == _table.nr_rows()) {
-        return;
-      }
+  /*namespace fpsemigroup {
+    ToddCoxeter::ToddCoxeter()
+      // TODO Use unique_pointer
+        : _tcc(new congruence::ToddCoxeter(congruence_type::TWOSIDED)) {}
 
-      RecVec<class_index_t> table(_nrgens, _active);
-
-      class_index_t pos = _id_coset;
-      // old number to new numbers lookup
-      std::unordered_map<class_index_t, class_index_t> lookup;
-      size_t                                           next_index = 0;
-
-      while (pos != _next) {
-        size_t curr_index;
-        auto   it = lookup.find(pos);
-        if (it == lookup.end()) {
-          lookup.insert(std::make_pair(pos, next_index));
-          curr_index = next_index;
-          next_index++;
-        } else {
-          curr_index = it->second;
-        }
-
-        // copy row
-        for (size_t i = 0; i < _nrgens; i++) {
-          class_index_t val = _table.get(pos, i);
-          it                = lookup.find(val);
-          if (it == lookup.end()) {
-            lookup.insert(std::make_pair(val, next_index));
-            val = next_index;
-            next_index++;
-          } else {
-            val = it->second;
-          }
-          table.set(curr_index, i, val);
-        }
-        pos = _forwd[pos];
-      }
-      _table = table;
+    void ToddCoxeter::run() {
+      _tcc->run();
     }
 
-    // TODO Should throw exception
-    bool ToddCoxeter::validate_relations() const {
-      for (auto const& rel : _relations) {
-        if (!validate_word(rel.first) || !validate_word(rel.second)) {
-          return false;
-        }
+    std::string const& ToddCoxeter::alphabet() const {
+      return _alphabet;
+    }
+    SemigroupBase* ToddCoxeter::isomorphic_non_fp_semigroup() {
+      if (_isomorphic_non_fp_semigroup != nullptr) {
+        // This might be the case if this was constructed from a SemigroupBase*
+        return _isomorphic_non_fp_semigroup;
+      } else if (!_is_proper_quotient) {
+        // This ToddCoxeter instance represents an fp semigroup, and so we can
+        // compute the isomorphic non-fp semigroup.
+        return quotient_semigroup();
       }
-      for (auto const& rel : _extra) {
-        if (!validate_word(rel.first) || !validate_word(rel.second)) {
-          return false;
-        }
-      }
-      return true;
+      throw std::runtime_error("this defines a proper quotient, cannot find "
+                               "an isomorphic non-fp semigroup");
     }
 
-    // TODO Should throw exception
-    bool ToddCoxeter::validate_table() const {
-      if (!std::all_of(_table.cbegin(), _table.cend(), [this](class_index_t c) {
-            return c > 0 && (c == UNDEFINED || c < _table.nr_rows());
-          })) {
+    bool ToddCoxeter::has_isomorphic_non_fp_semigroup() {
+      return _isomorphic_non_fp_semigroup != nullptr;
+    }
+
+    bool ToddCoxeter::equal_to(word_type const& u, word_type const& v) {
+      if (u == v) {
+        return true;
+      } else if (!_prefilled && _relations.empty() && _extra.empty()) {
+        // This defines the free semigroup
+        return false;
+      } else if (!_is_proper_quotient) {
+        return word_to_class_index(u) == word_to_class_index(v);
+      }
+      throw std::runtime_error(
+          "this defines a proper quotient, cannot test equality of words");
+    }
+
+    bool ToddCoxeter::equal_to(std::string const& u, std::string const& v) {
+      if (u == v) {
+        return true;
+      } else if (!_prefilled && _relations.empty() && _extra.empty()) {
+        // This defines the free semigroup
         return false;
       }
-      return true;
+      return equal_to(string_to_word(u), string_to_word(v));
     }
 
-    class_index_t
-    ToddCoxeter::const_word_to_class_index(word_t const& w) const {
-      validate_word(w);
-      class_index_t c = _id_coset;
-
-      if (type() == LEFT) {
-        // Iterate in reverse order
-        for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
-             ++rit) {
-          c = _table.get(c, *rit);
-        }
-      } else {
-        // Iterate in sequential order
-        for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
-          c = _table.get(c, *it);
-        }
-      }
-      return (c == UNDEFINED ? c : c - 1);
+    word_type ToddCoxeter::normal_form(word_type const& w) {
+      // isomorphic_non_fp_semigroup throws if we cannot do this
+      auto S = static_cast<Semigroup<TCE>*>(isomorphic_non_fp_semigroup());
+      S->enumerate();
+      word_type out;
+      S->factorisation(out, S->word_to_pos(w));
+      return out;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter class
-    //////////////////////////////////////////////////////////////////////////
+    std::string ToddCoxeter::normal_form(std::string const& w) {
+      return word_to_string(normal_form(string_to_word(w)));
+    }
 
+    // Private
+    bool ToddCoxeter::validate_word(std::string const& w) const {
+      LIBSEMIGROUPS_ASSERT(_alphabet != NO_ALPHABET);
+      return std::all_of(w.cbegin(), w.cend(), [this](char c) {
+        return _alphabet_map.find(c) != _alphabet_map.end();
+      });
+    }
+
+    // bool ToddCoxeter::is_obviously_infinite() const {
+    //  return !is_obviously_finite() && is_quotient_obviously_infinite();
+    //}
+
+    // size_t ToddCoxeter::size() {
+    //  return nr_classes();
+    // }
     //////////////////////////////////////////////////////////////////////////
     // Overridden virtual methods from fpsemigroup::Interface
     //
@@ -931,9 +1045,9 @@ namespace libsemigroups {
         }
         set_alphabet(lphbt);
       }
-      _preim_init = RecVec<class_index_t>(nr, 1, UNDEFINED),
-      _preim_next = RecVec<class_index_t>(nr, 1, UNDEFINED),
-      _table      = RecVec<class_index_t>(nr, 1, UNDEFINED);
+      _preim_init = RecVec<class_index_type>(nr, 1, UNDEFINED),
+      _preim_next = RecVec<class_index_type>(nr, 1, UNDEFINED),
+      _table      = RecVec<class_index_type>(nr, 1, UNDEFINED);
     }
 
     size_t ToddCoxeter::nr_generators() const {
@@ -965,25 +1079,6 @@ namespace libsemigroups {
       return (*_alphabet_map.find(c)).second;
     }
 
-    // Private
-    // TODO make void
-    bool ToddCoxeter::validate_word(word_t const& w) const {
-      LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
-      if (!std::all_of(
-              w.cbegin(), w.cend(), [this](size_t i) { return i < _nrgens; })) {
-        throw std::runtime_error("invalid word");
-        // TODO more info
-      }
-      return true;
-    }
-
-    // Private
-    bool ToddCoxeter::validate_word(std::string const& w) const {
-      LIBSEMIGROUPS_ASSERT(_alphabet != NO_ALPHABET);
-      return std::all_of(w.cbegin(), w.cend(), [this](char c) {
-        return _alphabet_map.find(c) != _alphabet_map.end();
-      });
-    }
 
     // Private - for use by FpSemigroup
     void ToddCoxeter::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
@@ -999,7 +1094,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(S->nrgens() == _nrgens);
     }
 
-    void ToddCoxeter::internal_add_relation(word_t lhs, word_t rhs) {
+    void ToddCoxeter::internal_add_relation(word_type lhs, word_type rhs) {
       // TODO exceptions instead of assertions
       LIBSEMIGROUPS_ASSERT(_nrgens != UNDEFINED);
       LIBSEMIGROUPS_ASSERT(validate_word(lhs));
@@ -1008,12 +1103,12 @@ namespace libsemigroups {
       _relations.push_back(std::make_pair(lhs, rhs));
     }
 
-    void ToddCoxeter::add_relation(word_t lhs, word_t rhs) {
+    void ToddCoxeter::add_relation(word_type lhs, word_type rhs) {
       // Add the relations from _isomorphic_non_fp_semigroup if any, and then
       // reset _isomorphic_non_fp_semigroup, since it is no longer valid.
       use_relations_or_cayley_graph();
       internal_add_relation(lhs, rhs);
-      reset_isomorphic_non_fp_semigroup();
+      // reset_isomorphic_non_fp_semigroup();
       reset_quotient_semigroup();
     }
 
@@ -1035,78 +1130,22 @@ namespace libsemigroups {
       // 2. _isomorphic_non_fp_semigroup being defined and fully enumerated
       // means it is finite.
     }
-
-  }  // namespace congruence
-
-  namespace fpsemigroup {
-    ToddCoxeter::ToddCoxeter() : _tcc(new congruence::ToddCoxeter(TWOSIDED)) {}
-
-    void ToddCoxeter::run() {
-      _tcc->run();
-    }
-
-    std::string const& ToddCoxeter::alphabet() const {
-      return _alphabet;
-    }
-    SemigroupBase* ToddCoxeter::isomorphic_non_fp_semigroup() {
-      if (_isomorphic_non_fp_semigroup != nullptr) {
-        // This might be the case if this was constructed from a SemigroupBase*
-        return _isomorphic_non_fp_semigroup;
-      } else if (!_is_proper_quotient) {
-        // This ToddCoxeter instance represents an fp semigroup, and so we can
-        // compute the isomorphic non-fp semigroup.
-        return quotient_semigroup();
+    word_type ToddCoxeter::string_to_word(std::string const& s) const {
+      word_type w;
+      w.reserve(s.size());
+      for (char const& c : s) {
+        w.push_back(char_to_uint(c));
       }
-      throw std::runtime_error("this defines a proper quotient, cannot find "
-                               "an isomorphic non-fp semigroup");
+      return w;
     }
 
-    bool ToddCoxeter::has_isomorphic_non_fp_semigroup() {
-      return _isomorphic_non_fp_semigroup != nullptr;
-    }
-
-    bool ToddCoxeter::equal_to(word_t const& u, word_t const& v) {
-      if (u == v) {
-        return true;
-      } else if (!_prefilled && _relations.empty() && _extra.empty()) {
-        // This defines the free semigroup
-        return false;
-      } else if (!_is_proper_quotient) {
-        return word_to_class_index(u) == word_to_class_index(v);
+    std::string ToddCoxeter::word_to_string(word_type const& w) const {
+      std::string s;
+      s.reserve(w.size());
+      for (letter_type const& l : w) {
+        s.push_back(uint_to_char(l));
       }
-      throw std::runtime_error(
-          "this defines a proper quotient, cannot test equality of words");
+      return s;
     }
-
-    bool ToddCoxeter::equal_to(std::string const& u, std::string const& v) {
-      if (u == v) {
-        return true;
-      } else if (!_prefilled && _relations.empty() && _extra.empty()) {
-        // This defines the free semigroup
-        return false;
-      }
-      return equal_to(string_to_word(u), string_to_word(v));
-    }
-
-    word_t ToddCoxeter::normal_form(word_t const& w) {
-      // isomorphic_non_fp_semigroup throws if we cannot do this
-      auto S = static_cast<Semigroup<TCE>*>(isomorphic_non_fp_semigroup());
-      S->enumerate();
-      word_t out;
-      S->factorisation(out, S->word_to_pos(w));
-      return out;
-    }
-
-    std::string ToddCoxeter::normal_form(std::string const& w) {
-      return word_to_string(normal_form(string_to_word(w)));
-    }
-
-    // bool ToddCoxeter::is_obviously_infinite() const {
-    //  return !is_obviously_finite() && is_quotient_obviously_infinite();
-    //}
-
-    // size_t ToddCoxeter::size() {
-    //  return nr_classes();
-    // }
-  }  // namespace fpsemigroup
+  }  // namespace fpsemigroup */
 }  // namespace libsemigroups

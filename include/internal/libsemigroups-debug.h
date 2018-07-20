@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2018 James D. Mitchell
+// Copyright (C) 2017 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,13 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// Todd-Coxeter elements
-#include "tce.h"
+// This file declares debugging functionality.
 
-namespace libsemigroups {
-  template <> size_t ElementContainer<TCE>::complexity(TCE) const {
-    return -1;
-    // Highest possible complexity since multiplication is not defined for
-    // arbitrary elements
-  }
-}  // namespace libsemigroups
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_DEBUG_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_DEBUG_H_
+
+#include <assert.h>
+
+#include "libsemigroups-config.h"
+
+#ifdef LIBSEMIGROUPS_DEBUG
+#define LIBSEMIGROUPS_ASSERT(x) assert(x)
+#else
+#define LIBSEMIGROUPS_ASSERT(x)
+#endif
+
+#if (defined(__GNUC__) && __GNUC__ < 5 \
+     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma message( \
+    "GCC version >=5.0 is recommended, some features may not work correctly")
+#endif
+
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_DEBUG_H_

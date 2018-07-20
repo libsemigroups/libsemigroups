@@ -20,8 +20,8 @@
 // the integers {1 .. n}, using the UNION-FIND METHOD: new pairs can be added
 // and the appropriate classes combined quickly.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_MISC_UF_H_
-#define LIBSEMIGROUPS_INCLUDE_MISC_UF_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_UF_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_UF_H_
 
 #include <algorithm>
 #include <functional>
@@ -85,4 +85,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_MISC_UF_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_UF_H_

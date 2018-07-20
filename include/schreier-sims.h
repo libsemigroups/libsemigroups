@@ -51,9 +51,9 @@
 
 #include <array>
 
-#include "misc/libsemigroups-config.h"
-#include "misc/range.h"
-#include "misc/square.h"
+#include "internal/libsemigroups-config.h"
+#include "internal/range.h"
+#include "internal/square.h"
 
 #include "adapters.h"
 #include "element-helper.h"

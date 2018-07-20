@@ -19,8 +19,8 @@
 // This file contains some functionality missing in some implementations of the
 // stl, or to augment the stl implementations.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_MISC_STL_H_
-#define LIBSEMIGROUPS_INCLUDE_MISC_STL_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_H_
 
 #include <functional>
 #include <sstream>
@@ -50,4 +50,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_MISC_STL_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_H_

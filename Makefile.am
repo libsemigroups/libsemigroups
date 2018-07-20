@@ -49,17 +49,17 @@ pkginclude_HEADERS += include/semigroup.h
 pkginclude_HEADERS += include/semiring.h
 pkginclude_HEADERS += include/types.h
 
-pkginclude_HEADERS += include/misc/libsemigroups-config.h
-pkginclude_HEADERS += include/misc/libsemigroups-debug.h
-pkginclude_HEADERS += include/misc/libsemigroups-exception.h
-pkginclude_HEADERS += include/misc/partition.h
-pkginclude_HEADERS += include/misc/range.h
-pkginclude_HEADERS += include/misc/recvec.h
-pkginclude_HEADERS += include/misc/report.h
-pkginclude_HEADERS += include/misc/square.h
-pkginclude_HEADERS += include/misc/stl.h
-pkginclude_HEADERS += include/misc/timer.h
-pkginclude_HEADERS += include/misc/uf.h
+pkginclude_HEADERS += include/internal/libsemigroups-config.h
+pkginclude_HEADERS += include/internal/libsemigroups-debug.h
+pkginclude_HEADERS += include/internal/libsemigroups-exception.h
+pkginclude_HEADERS += include/internal/partition.h
+pkginclude_HEADERS += include/internal/range.h
+pkginclude_HEADERS += include/internal/recvec.h
+pkginclude_HEADERS += include/internal/report.h
+pkginclude_HEADERS += include/internal/square.h
+pkginclude_HEADERS += include/internal/stl.h
+pkginclude_HEADERS += include/internal/timer.h
+pkginclude_HEADERS += include/internal/uf.h
 
 if LIBSEMIGROUPS_HPCOMBI
 pkginclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
@@ -75,10 +75,16 @@ lib_LTLIBRARIES = libsemigroups.la
 ## libsemigroups sources
 libsemigroups_la_SOURCES =  src/blocks.cc
 libsemigroups_la_SOURCES += src/bmat8.cc
+libsemigroups_la_SOURCES += src/cong-intf.cc
 libsemigroups_la_SOURCES += src/cong.cc
 libsemigroups_la_SOURCES += src/element.cc
+libsemigroups_la_SOURCES += src/fpsemi-intf.cc
+libsemigroups_la_SOURCES += src/race.cc
+libsemigroups_la_SOURCES += src/runner.cc
 libsemigroups_la_SOURCES += src/rws.cc
 libsemigroups_la_SOURCES += src/rwse.cc
+libsemigroups_la_SOURCES += src/semigroup-base.cc
+libsemigroups_la_SOURCES += src/todd-coxeter.cc
 libsemigroups_la_SOURCES += src/uf.cc
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
@@ -151,6 +157,7 @@ lstest_SOURCES += tests/semigroup.tropicalmaxplus.test.cc
 lstest_SOURCES += tests/semiring.test.cc
 lstest_SOURCES += tests/timer.test.cc
 lstest_SOURCES += tests/tc.test.cc
+lstest_SOURCES += tests/todd-coxeter.test.cc
 lstest_SOURCES += tests/uf.test.cc
 
 lstest_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS) 

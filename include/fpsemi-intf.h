@@ -18,73 +18,73 @@
 
 // This file contains an interface for fp semigroup like classes.
 
-#ifndef LIBSEMIGROUPS_SRC_FPSEMI_INTF_H_
-#define LIBSEMIGROUPS_SRC_FPSEMI_INTF_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
+#define LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
 
 #include <string>
 
-#include "defs.h"
-#include "runner.h"
-#include "semigroups-base.h"
+#include "internal/runner.h"
+
+#include "semigroup-base.h"
+#include "types.h"
 
 namespace libsemigroups {
   class FpSemigroup;
-  namespace fpsemigroup {
-    class Interface : public Runner {
-      friend class libsemigroups::FpSemigroup;
-     public:
-      static const std::string NO_ALPHABET;
+  class FpSemiIntf : public Runner {
+    friend class libsemigroups::FpSemigroup;
 
-      // Pure methods (for defining an f.p. semigroup)
-      virtual void               set_nr_generators(size_t) = 0;
-      virtual size_t             nr_generators() const     = 0;
-      virtual void               set_alphabet(std::string) = 0;
-      virtual std::string const& alphabet() const          = 0;
-      // TODO - nr_relations
-      //      - next_relation (can't do cbegin/cend cos the data types are
-      //      different in the subclasses)
+   public:
+    static const std::string NO_ALPHABET;
 
-     private:
-      virtual bool validate_word(word_t const&) const              = 0;
-      virtual bool validate_word(std::string const&) const         = 0;
-      virtual void set_isomorphic_non_fp_semigroup(SemigroupBase*) = 0;
-      virtual void internal_add_relation(word_t, word_t)           = 0;
+    // Pure methods (for defining an f.p. semigroup)
+    virtual void               set_nr_generators(size_t) = 0;
+    virtual size_t             nr_generators() const     = 0;
+    virtual void               set_alphabet(std::string) = 0;
+    virtual std::string const& alphabet() const          = 0;
+    // TODO - nr_relations
+    //      - next_relation (can't do cbegin/cend cos the data types are
+    //      different in the subclasses)
 
-     public:
-      // The arguments add_relations are not const& since they must be copied
-      // into any instance of a derived class.
-      virtual void add_relation(word_t, word_t)           = 0;
-      virtual void add_relation(std::string, std::string) = 0;
+   private:
+    virtual bool validate_word(word_type const&) const           = 0;
+    virtual bool validate_word(std::string const&) const         = 0;
+    virtual void set_isomorphic_non_fp_semigroup(SemigroupBase*) = 0;
+    virtual void internal_add_relation(word_type, word_type)     = 0;
 
-      // Pure methods (attributes of an f.p. semigroup)
-      virtual bool           is_obviously_finite() const       = 0;
-      virtual bool           is_obviously_infinite() const     = 0;
-      virtual size_t         size()                            = 0;
-      virtual SemigroupBase* isomorphic_non_fp_semigroup()     = 0;
-      virtual bool           has_isomorphic_non_fp_semigroup() = 0;
+   public:
+    // The arguments add_relations are not const& since they must be copied
+    // into any instance of a derived class.
+    virtual void add_relation(word_type, word_type)     = 0;
+    virtual void add_relation(std::string, std::string) = 0;
 
-      // Pure methods (for elements of fp semigroups)
-      virtual bool        equal_to(word_t const&, word_t const&)           = 0;
-      virtual bool        equal_to(std::string const&, std::string const&) = 0;
-      virtual word_t      normal_form(word_t const&)                       = 0;
-      virtual std::string normal_form(std::string const&)                  = 0;
+    // Pure methods (attributes of an f.p. semigroup)
+    virtual bool           is_obviously_finite() const       = 0;
+    virtual bool           is_obviously_infinite() const     = 0;
+    virtual size_t         size()                            = 0;
+    virtual SemigroupBase* isomorphic_non_fp_semigroup()     = 0;
+    virtual bool           has_isomorphic_non_fp_semigroup() = 0;
 
-      // Non-pure methods (these all use the pure methods, and are mostly
-      // syntactic sugar).
-      void add_relation(std::initializer_list<size_t>,
-                        std::initializer_list<size_t>);
-      void add_relations(SemigroupBase*);
-      void add_relations(std::vector<relation_t> const&);
-      void add_relation(relation_t);
-      void add_relation(std::pair<std::string, std::string>);
-      bool validate_relation(relation_t const&) const;
-      bool validate_relation(word_t const&, word_t const&) const;
-      bool validate_relation(std::pair<std::string, std::string> const&) const;
-      bool validate_relation(std::string const&, std::string const&) const;
-      bool equal_to(std::initializer_list<size_t> const&,
-                    std::initializer_list<size_t> const&);
-      word_t normal_form(std::initializer_list<size_t> const&);
-    };
-  }  // namespace fpsemigroup
+    // Pure methods (for elements of fp semigroups)
+    virtual bool        equal_to(word_type const&, word_type const&)     = 0;
+    virtual bool        equal_to(std::string const&, std::string const&) = 0;
+    virtual word_type   normal_form(word_type const&)                    = 0;
+    virtual std::string normal_form(std::string const&)                  = 0;
+
+    // Non-pure methods (these all use the pure methods, and are mostly
+    // syntactic sugar).
+    void add_relation(std::initializer_list<size_t>,
+                      std::initializer_list<size_t>);
+    void add_relations(SemigroupBase*);
+    void add_relations(std::vector<relation_type> const&);
+    void add_relation(relation_type);
+    void add_relation(std::pair<std::string, std::string>);
+    bool validate_relation(relation_type const&) const;
+    bool validate_relation(word_type const&, word_type const&) const;
+    bool validate_relation(std::pair<std::string, std::string> const&) const;
+    bool validate_relation(std::string const&, std::string const&) const;
+    bool equal_to(std::initializer_list<size_t> const&,
+                  std::initializer_list<size_t> const&);
+    word_type normal_form(std::initializer_list<size_t> const&);
+  };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_FPSEMI_INTF_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_

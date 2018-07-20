@@ -27,8 +27,8 @@
 #include <random>
 #include <x86intrin.h>
 
-#include "misc/libsemigroups-debug.h"
-#include "misc/stl.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/stl.h"
 
 #include "adapters.h"
 

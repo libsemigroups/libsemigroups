@@ -31,7 +31,7 @@
 
 namespace libsemigroups {
 
-  using congruence_t = congruence::Interface::congruence_t;
+  using congruence_t = CongIntf::congruence_t;
   using Interface    = fpsemigroup::Interface;
   using ToddCoxeter  = fpsemigroup::ToddCoxeter;
   using RWS          = fpsemigroup::RWS;

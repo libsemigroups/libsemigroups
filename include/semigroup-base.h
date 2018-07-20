@@ -20,8 +20,9 @@
 #define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
 
 #include <atomic>
+#include <functional>
 
-#include "misc/recvec.h"
+#include "internal/recvec.h"
 
 #include "constants.h"
 #include "types.h"
@@ -85,8 +86,11 @@ namespace libsemigroups {
     virtual void      reset_next_relation()                                 = 0;
     virtual void      next_relation(word_type&)                             = 0;
     virtual void      enumerate(std::atomic<bool>&, size_t)                 = 0;
-    virtual void      enumerate(size_t)                                     = 0;
+    virtual void      enumerate(size_t = LIMIT_MAX)                         = 0;
     virtual void      set_max_threads(size_t)                               = 0;
   };
+
+  void relations(SemigroupBase*, std::function<void(word_type, word_type)>&&);
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_

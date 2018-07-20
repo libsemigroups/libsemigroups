@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_
-#define LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_TIMER_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_TIMER_H_
 
 #include <chrono>
 #include <iostream>
@@ -47,7 +47,7 @@ namespace libsemigroups {
 
     // String containing the somewhat human readable amount of time, this is
     // primarily intended for testing purposes
-    std::string string(std::chrono::nanoseconds elapsed) const {
+    static std::string string(std::chrono::nanoseconds elapsed) {
       std::string out;
       if (string_it<std::chrono::hours>(out, elapsed, "h ", 0)) {
         string_it<std::chrono::minutes>(out, elapsed, "m", 0);
@@ -83,10 +83,10 @@ namespace libsemigroups {
     std::chrono::high_resolution_clock::time_point _start;
 
     template <typename T>
-    bool string_it(std::string&              str,
-                   std::chrono::nanoseconds& elapsed,
-                   std::string               unit,
-                   size_t                    threshold) const {
+    static bool string_it(std::string&              str,
+                          std::chrono::nanoseconds& elapsed,
+                          std::string               unit,
+                          size_t                    threshold) {
       T x = std::chrono::duration_cast<T>(elapsed);
       if (x > T(threshold)) {
         str += libsemigroups::to_string(x.count()) + unit;
@@ -98,4 +98,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_MISC_TIMER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_TIMER_H_

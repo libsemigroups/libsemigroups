@@ -18,21 +18,21 @@
 
 // Todd-Coxeter elements
 
-#ifndef LIBSEMIGROUPS_SRC_TCE_H_
-#define LIBSEMIGROUPS_SRC_TCE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_TCE_H_
+#define LIBSEMIGROUPS_INCLUDE_TCE_H_
 
-#include "eltcont.h"
+#include "adapters.h"
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
 
-  using class_index_t = congruence::Interface::class_index_t;
   class TCE {
+    using class_index_type = CongIntf::class_index_type;
+
    public:
     TCE() = default;
-    TCE(congruence::ToddCoxeter* tc, class_index_t i) : _tc(tc), _index(i) {}
-
-    ~TCE() = default;
+    // TODO smart pointer?
+    TCE(congruence::ToddCoxeter* tc, class_index_type i) : _tc(tc), _index(i) {}
 
     bool operator==(TCE const& that) const {
       return _index == that._index;
@@ -44,7 +44,7 @@ namespace libsemigroups {
 
     // Only works when that is a generator!!
     inline TCE operator*(TCE const& that) const {
-      LIBSEMIGROUPS_ASSERT(that._index <= _tc->nr_generators());
+      // LIBSEMIGROUPS_ASSERT(that._index <= _tc->nr_generators());
       return TCE(_tc, _tc->right(_index, that._index - 1));
     }
 
@@ -52,16 +52,55 @@ namespace libsemigroups {
       return TCE(_tc, 0);
     }
 
-    class_index_t class_index() const {
+    class_index_type class_index() const {
       return _index;
     }
 
    private:
-    congruence::ToddCoxeter*  _tc;
-    class_index_t _index;
+    congruence::ToddCoxeter* _tc;
+    class_index_type         _index;
   };
 
-  template <> size_t ElementContainer<TCE>::complexity(TCE) const;
+  template <> struct complexity<TCE> {
+    constexpr size_t operator()(TCE const&) const noexcept {
+      return LIMIT_MAX;
+    }
+  };
+
+  template <> struct degree<TCE> {
+    constexpr size_t operator()(TCE const&) const noexcept {
+      return 16;
+    }
+  };
+
+  template <>
+  struct less<
+      TCE> {
+    bool operator()(TCE const& x,
+                    TCE const& y) const noexcept {
+      return x < y;
+    }
+  };
+
+  template <>
+  struct one<TCE> {
+    TCE operator()(TCE const& x) const noexcept {
+      return x.one();
+    }
+  };
+
+  template <> struct product<TCE> {
+    void operator()(TCE& xy, TCE const& x, TCE const& y, size_t = 0) const
+        noexcept {
+      xy = x * y;
+    }
+  };
+
+  template <> struct swap<TCE> {
+    void operator()(TCE& x, TCE& y) const noexcept {
+      std::swap(x, y);
+    }
+  };
 }  // namespace libsemigroups
 
 namespace std {
@@ -72,4 +111,4 @@ namespace std {
   };
 }  // namespace std
 
-#endif  // LIBSEMIGROUPS_SRC_TCE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_TCE_H_

@@ -27,9 +27,9 @@
 
 namespace libsemigroups {
 
-  using congruence_t = congruence::Interface::congruence_t;
+  using congruence_t = CongIntf::congruence_t;
 
-  class Congruence : public congruence::Interface {
+  class Congruence : public CongIntf {
    public:
     //////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -55,7 +55,7 @@ namespace libsemigroups {
                std::vector<relation_t> const& genpairs);
 
     //////////////////////////////////////////////////////////////////////////
-    // Overridden public pure virtual methods from congruence::Interface
+    // Overridden public pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
 
     class_index_t  word_to_class_index(word_t const&) override;
@@ -71,7 +71,7 @@ namespace libsemigroups {
     size_t nr_non_trivial_classes() override;
 
     //////////////////////////////////////////////////////////////////////////
-    // Overridden public non-pure virtual methods from congruence::Interface
+    // Overridden public non-pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
 
     bool contains(word_t const&, word_t const&) override;
@@ -86,7 +86,7 @@ namespace libsemigroups {
 
    private:
     /////////////////////////////////////////////////////////////////////////
-    // Overridden private pure virtual methods from congruence::Interface
+    // Overridden private pure virtual methods from CongIntf
     /////////////////////////////////////////////////////////////////////////
 
     class_index_t const_word_to_class_index(word_t const&) const override;

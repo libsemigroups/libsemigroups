@@ -24,7 +24,7 @@
 
 // Must include libsemigroups-config.h so that LIBSEMIGROUPS_HPCOMBI is
 // defined, if so specified at during configure.
-#include "misc/libsemigroups-config.h"
+#include "internal/libsemigroups-config.h"
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
@@ -52,16 +52,6 @@ namespace libsemigroups {
           std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
     constexpr size_t operator()(TPTransf16Subclass const&) const noexcept {
       return 16;
-    }
-  };
-
-  template <class TPTransf16Subclass>
-  struct inverse<
-      TPTransf16Subclass,
-      typename std::enable_if<
-          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
-    TPTransf16Subclass operator()(TPTransf16Subclass const& x) const noexcept {
-      return x.inverse();
     }
   };
 
@@ -115,16 +105,6 @@ namespace libsemigroups {
     }
   };
 
-  template <class TPTransf16Subclass, typename TValueType>
-  struct action<
-      TPTransf16Subclass,
-      TValueType,
-      typename std::enable_if<
-          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
-    TValueType operator()(TPTransf16Subclass x, TValueType i) const noexcept {
-      return x[i];
-    }
-  };
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <class TPTransf16Subclass>
@@ -137,6 +117,29 @@ namespace libsemigroups {
     }
   };
 #endif
+
+  // FIXME should only be for Perm16's
+  template <class TPTransf16Subclass, typename TValueType>
+  struct action<
+      TPTransf16Subclass,
+      TValueType,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TValueType operator()(TPTransf16Subclass x, TValueType i) const noexcept {
+      return x[i];
+    }
+  };
+
+  // FIXME should only be for Perm16's
+  template <class TPTransf16Subclass>
+  struct inverse<
+      TPTransf16Subclass,
+      typename std::enable_if<
+          std::is_base_of<PTransf16, TPTransf16Subclass>::value>::type> {
+    TPTransf16Subclass operator()(TPTransf16Subclass const& x) const noexcept {
+      return x.inverse();
+    }
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI

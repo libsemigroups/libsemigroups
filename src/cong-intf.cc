@@ -18,33 +18,54 @@
 
 #include "cong-intf.h"
 
+#include "constants.h"
+#include "semigroup-base.h"
+
 namespace libsemigroups {
-  namespace congruence {
+  CongIntf::CongIntf(congruence_type type)
+      : Runner(), _delete_quotient(false), _quotient(nullptr), _type(type) {}
 
-    Interface::congruence_t Interface::type() const {
-      return _type;
-    }
+  CongIntf::congruence_type CongIntf::type() const noexcept {
+    return _type;
+  }
 
-    bool Interface::contains(word_t const& w1, word_t const& w2) {
-      return word_to_class_index(w1) == word_to_class_index(w2);
+  void CongIntf::reset_quotient() {
+    if (_delete_quotient) {
+      delete _quotient;
     }
+    _delete_quotient = true;
+    _quotient        = nullptr;
+  }
 
-    bool Interface::const_contains(word_t const& u, word_t const& v) const {
-      return (const_word_to_class_index(u) != UNDEFINED
-              && const_word_to_class_index(u) == const_word_to_class_index(v));
-    }
+  void CongIntf::set_quotient(SemigroupBase* quotient) {
+    reset_quotient();
+    _delete_quotient = true;
+    _quotient        = quotient;
+  }
 
-    bool Interface::less(word_t const& w1, word_t const& w2) {
-      return word_to_class_index(w1) < word_to_class_index(w2);
-    }
+  SemigroupBase* CongIntf::get_quotient() const {
+    return _quotient;
+  }
 
-    void Interface::add_pair(std::initializer_list<size_t> l,
-                             std::initializer_list<size_t> r) {
-      add_pair(word_t(l), word_t(r));
-    }
+  bool CongIntf::contains(word_type const& w1, word_type const& w2) {
+    return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
+  }
 
-    bool Interface::is_quotient_obviously_infinite() const {
-      return false;
-    }
-  }  // namespace congruence
+  bool CongIntf::const_contains(word_type const& u, word_type const& v) const {
+    return (const_word_to_class_index(u) != UNDEFINED
+            && const_word_to_class_index(u) == const_word_to_class_index(v));
+  }
+
+  bool CongIntf::less(word_type const& w1, word_type const& w2) {
+    return word_to_class_index(w1) < word_to_class_index(w2);
+  }
+
+  void CongIntf::add_pair(std::initializer_list<size_t> l,
+                          std::initializer_list<size_t> r) {
+    add_pair(word_type(l), word_type(r));
+  }
+
+  bool CongIntf::is_quotient_obviously_infinite() {
+    return false;
+  }
 }  // namespace libsemigroups

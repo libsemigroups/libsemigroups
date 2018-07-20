@@ -32,7 +32,7 @@
 #include <algorithm>
 
 #include "constants.h"
-#include "misc/libsemigroups-debug.h"
+#include "internal/libsemigroups-debug.h"
 
 namespace libsemigroups {
   Blocks::Blocks()

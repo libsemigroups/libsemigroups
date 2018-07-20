@@ -29,9 +29,9 @@
 #include <utility>
 #include <vector>
 
-#include "misc/partition.h"
-#include "misc/report.h"
-#include "misc/uf.h"
+#include "internal/partition.h"
+#include "internal/report.h"
+#include "internal/uf.h"
 
 #include "constants.h"
 #include "semigroup-traits.h"

@@ -24,7 +24,7 @@
 
 #include <type_traits>
 
-#include "misc/libsemigroups-config.h"
+#include "internal/libsemigroups-config.h"
 
 #include "element.h"
 #include "hpcombi.h"

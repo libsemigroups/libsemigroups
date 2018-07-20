@@ -21,8 +21,8 @@
 // second is a very thin wrapper around a square arrary of arrays, which exists
 // mostly just for the assertions.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_MISC_SQUARE_H_
-#define LIBSEMIGROUPS_INCLUDE_MISC_SQUARE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_SQUARE_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_SQUARE_H_
 
 #include <algorithm>
 #include <array>
@@ -147,4 +147,4 @@ namespace libsemigroups {
     std::array<std::array<T, N>, N> _arrays;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_MISC_SQUARE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_SQUARE_H_

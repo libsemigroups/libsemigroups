@@ -33,10 +33,10 @@
 #include <unordered_set>
 #include <vector>
 
-#include "misc/libsemigroups-debug.h"
-#include "misc/libsemigroups-exception.h"
-#include "misc/stl.h"
-#include "misc/recvec.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-exception.h"
+#include "internal/stl.h"
+#include "internal/recvec.h"
 
 #include "adapters.h"
 #include "blocks.h"

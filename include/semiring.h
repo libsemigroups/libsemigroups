@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "misc/libsemigroups-debug.h"
+#include "internal/libsemigroups-debug.h"
 
 #include "constants.h"
 

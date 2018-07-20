@@ -18,14 +18,11 @@
 
 // This file contains implementations of the methods for the Runner class.
 
-#include "runner.h"
-#include "report.h"
+#include "internal/runner.h"
+#include "internal/report.h"
 
 namespace libsemigroups {
-
-  // class Runner
-  std::chrono::nanoseconds const Runner::FOREVER
-      = std::chrono::nanoseconds::max();
+  constexpr std::chrono::nanoseconds Runner::FOREVER;
 
   Runner::Runner()
       : _dead(false),

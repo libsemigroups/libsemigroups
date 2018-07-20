@@ -45,10 +45,10 @@
 #include <utility>
 #include <vector>
 
-#include "misc/libsemigroups-debug.h"
-#include "misc/libsemigroups-exception.h"
-#include "misc/report.h"
-#include "misc/stl.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-exception.h"
+#include "internal/report.h"
+#include "internal/stl.h"
 
 #include "adapters.h"
 #include "constants.h"
@@ -1380,6 +1380,11 @@ namespace libsemigroups {
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
     //! LibsemigroupsException will be thrown.
+
+    void add_generator(element_type const& x) {
+      add_generators({x});
+    }
+
     template <class TCollection> void add_generators(TCollection const& coll) {
       static_assert(!std::is_pointer<TCollection>::value,
                     "TCollection should not be a pointer");

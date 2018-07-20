@@ -28,9 +28,9 @@
 
 namespace libsemigroups {
 
-  using Interface   = congruence::Interface;
+  using Interface   = CongIntf;
   using ToddCoxeter = congruence::ToddCoxeter;
-  using class_index_t = congruence::Interface::class_index_t;
+  using class_index_t = CongIntf::class_index_t;
 
   //////////////////////////////////////////////////////////////////////////
   // Constructors
@@ -149,7 +149,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // Overridden public pure virtual methods from congruence::Interface
+  // Overridden public pure virtual methods from CongIntf
   //////////////////////////////////////////////////////////////////////////
 
   class_index_t Congruence::word_to_class_index(word_t const& word) {
@@ -201,7 +201,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // Overridden public non-pure virtual methods from congruence::Interface
+  // Overridden public non-pure virtual methods from CongIntf
   //////////////////////////////////////////////////////////////////////////
 
   bool Congruence::contains(word_t const& lhs, word_t const& rhs) {
@@ -229,7 +229,7 @@ namespace libsemigroups {
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // Overridden private pure virtual methods from congruence::Interface
+  // Overridden private pure virtual methods from CongIntf
   /////////////////////////////////////////////////////////////////////////
 
   // FIXME if this method should never be used, why is it here in the first

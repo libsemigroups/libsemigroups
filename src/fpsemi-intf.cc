@@ -22,15 +22,14 @@
 #include "fpsemi-intf.h"
 
 namespace libsemigroups {
-  namespace fpsemigroup {
-    std::string const Interface::NO_ALPHABET = "";
+    std::string const FpSemiIntf::NO_ALPHABET = "";
 
-    void Interface::add_relation(std::initializer_list<size_t> l,
+    void FpSemiIntf::add_relation(std::initializer_list<size_t> l,
                                  std::initializer_list<size_t> r) {
-      add_relation(word_t(l), word_t(r));
+      add_relation(word_type(l), word_type(r));
     }
 
-    void Interface::add_relations(SemigroupBase* S) {
+    void FpSemiIntf::add_relations(SemigroupBase* S) {
       S->enumerate();
 
       std::vector<size_t> relation;  // a triple
@@ -41,13 +40,13 @@ namespace libsemigroups {
         // This is for the case when there are duplicate gens
         // We use the internal_add_relations, so as not to delete the
         // SemigroupBase*.
-        internal_add_relation(word_t({relation[0]}), word_t({relation[1]}));
+        internal_add_relation(word_type({relation[0]}), word_type({relation[1]}));
         S->next_relation(relation);
         // We could remove the duplicate generators, and update any relation
         // that contains a removed generator but this would be more
         // complicated
       }
-      word_t lhs, rhs;  // changed in-place by factorisation
+      word_type lhs, rhs;  // changed in-place by factorisation
       while (!relation.empty()) {
         S->factorisation(lhs, relation[0]);
         S->factorisation(rhs, relation[2]);
@@ -59,45 +58,44 @@ namespace libsemigroups {
       }
     }
 
-    void Interface::add_relations(std::vector<relation_t> const& rels) {
+    void FpSemiIntf::add_relations(std::vector<relation_type> const& rels) {
       for (auto rel : rels) {
         add_relation(rel);
       }
     }
 
-    void Interface::add_relation(relation_t rel) {
+    void FpSemiIntf::add_relation(relation_type rel) {
       add_relation(rel.first, rel.second);
     }
 
-    void Interface::add_relation(std::pair<std::string, std::string> rel) {
+    void FpSemiIntf::add_relation(std::pair<std::string, std::string> rel) {
       add_relation(rel.first, rel.second);
     }
 
-    bool Interface::validate_relation(relation_t const& r) const {
+    bool FpSemiIntf::validate_relation(relation_type const& r) const {
       return validate_relation(r.first, r.second);
     }
 
-    bool Interface::validate_relation(word_t const& l, word_t const& r) const {
+    bool FpSemiIntf::validate_relation(word_type const& l, word_type const& r) const {
       return validate_word(l) && validate_word(r);
     }
 
-    bool Interface::validate_relation(
+    bool FpSemiIntf::validate_relation(
         std::pair<std::string, std::string> const& p) const {
       return validate_relation(p.first, p.second);
     }
 
-    bool Interface::validate_relation(std::string const& l,
+    bool FpSemiIntf::validate_relation(std::string const& l,
                                       std::string const& r) const {
       return validate_word(l) && validate_word(r);
     }
 
-    bool Interface::equal_to(std::initializer_list<size_t> const& u,
+    bool FpSemiIntf::equal_to(std::initializer_list<size_t> const& u,
                              std::initializer_list<size_t> const& v) {
-      return equal_to(word_t(u), word_t(v));
+      return equal_to(word_type(u), word_type(v));
     }
 
-    word_t Interface::normal_form(std::initializer_list<size_t> const& w) {
-      return normal_form(word_t(w));
+    word_type FpSemiIntf::normal_form(std::initializer_list<size_t> const& w) {
+      return normal_form(word_type(w));
     }
-  }  // namespace fpsemigroup
 }  // namespace libsemigroups

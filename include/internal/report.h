@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_MISC_REPORT_H_
-#define LIBSEMIGROUPS_INCLUDE_MISC_REPORT_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_
 
 #include <cxxabi.h>
 
@@ -271,4 +271,4 @@ namespace libsemigroups {
     std::atomic<bool>                           _report;
   } REPORTER;
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_MISC_REPORT_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_

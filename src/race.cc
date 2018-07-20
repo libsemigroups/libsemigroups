@@ -21,7 +21,7 @@
 // obtaining the winner.
 //
 
-#include "race.h"
+#include "internal/race.h"
 
 namespace libsemigroups {
 
@@ -58,7 +58,7 @@ namespace libsemigroups {
         try {
           _runners.at(pos)->run();
         } catch (std::exception const& e) {
-          size_t tid = glob_reporter.thread_id(tids[pos]);
+          size_t tid = REPORTER.thread_id(tids[pos]);
           REPORT("exception thrown by " << tid << ": " << e.what())
           return;
         }
@@ -78,7 +78,7 @@ namespace libsemigroups {
         }
       };
 
-      glob_reporter.reset_thread_ids();
+      REPORTER.reset_thread_ids();
 
       std::vector<std::thread> t;
       for (size_t i = 0; i < nr_threads; ++i) {
@@ -91,7 +91,7 @@ namespace libsemigroups {
         if ((*method)->finished() && _winner == nullptr) {
           _winner = *method;
           size_t tid
-              = glob_reporter.thread_id(tids.at(method - _runners.begin()));
+              = REPORTER.thread_id(tids.at(method - _runners.begin()));
           REPORT("#" << tid << " is the winner!");
         } else {
           delete *method;
