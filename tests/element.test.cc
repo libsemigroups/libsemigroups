@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "bmat8.h"
+#include "catch.hpp"
 #include "element-helper.h"
 #include "element.h"
 

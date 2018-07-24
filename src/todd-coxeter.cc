@@ -84,7 +84,7 @@
 
 namespace libsemigroups {
 
-  using congruence_type         = CongIntf::congruence_type;
+  using congruence_type = CongIntf::congruence_type;
 
   namespace congruence {
     using signed_class_index_type = int64_t;
@@ -166,8 +166,8 @@ namespace libsemigroups {
                              std::vector<relation_type> const& extra)
         : ToddCoxeter(type) {
       set_nr_generators(nrgens);
-      _relations  = relations;
-      _extra      = extra;
+      _relations = relations;
+      _extra     = extra;
       validate_relations();
     }
 
@@ -521,7 +521,8 @@ namespace libsemigroups {
         if (l >= nr_generators()) {
           throw LibsemigroupsException(
               "invalid word, found " + libsemigroups::to_string(l)
-              + " should be at most " + libsemigroups::to_string(nr_generators()));
+              + " should be at most "
+              + libsemigroups::to_string(nr_generators()));
         }
       }
     }
@@ -1044,7 +1045,7 @@ namespace libsemigroups {
       // TODO use the other normal_form method
       // FIXME there's an off by one error in the output of string_to_word..
       word_type ww = string_to_word(w);
-      std::for_each(ww.begin(), ww.end(), [](size_t& i) -> void {++i;});
+      std::for_each(ww.begin(), ww.end(), [](size_t& i) -> void { ++i; });
       return word_to_string(
           _tcc->class_index_to_word(_tcc->word_to_class_index(ww)));
     }

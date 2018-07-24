@@ -89,9 +89,8 @@ namespace libsemigroups {
       }
       for (auto method = _runners.begin(); method < _runners.end(); ++method) {
         if ((*method)->finished() && _winner == nullptr) {
-          _winner = *method;
-          size_t tid
-              = REPORTER.thread_id(tids.at(method - _runners.begin()));
+          _winner    = *method;
+          size_t tid = REPORTER.thread_id(tids.at(method - _runners.begin()));
           REPORT("#" << tid << " is the winner!");
         } else {
           delete *method;

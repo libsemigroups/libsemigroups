@@ -35,8 +35,8 @@
 
 #include "internal/libsemigroups-debug.h"
 #include "internal/libsemigroups-exception.h"
-#include "internal/stl.h"
 #include "internal/recvec.h"
+#include "internal/stl.h"
 
 #include "adapters.h"
 #include "blocks.h"

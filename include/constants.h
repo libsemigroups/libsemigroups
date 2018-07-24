@@ -81,7 +81,7 @@ namespace libsemigroups {
   };
 
   template <typename TIntegralType, int64_t TOffset, class TMaxOrMin>
-  bool operator==(TIntegralType const&     lhs,
+  bool operator==(TIntegralType const&                lhs,
                   Constant<TOffset, TMaxOrMin> const& rhs) noexcept {
     static_assert(std::is_integral<TIntegralType>::value,
                   "can only compare constants and integral types");
@@ -89,7 +89,7 @@ namespace libsemigroups {
   }
 
   template <typename TIntegralType, int64_t TOffset, class TMaxOrMin>
-  bool operator!=(TIntegralType const&     lhs,
+  bool operator!=(TIntegralType const&                lhs,
                   Constant<TOffset, TMaxOrMin> const& rhs) noexcept {
     static_assert(std::is_integral<TIntegralType>::value,
                   "can only compare constants and integral types");

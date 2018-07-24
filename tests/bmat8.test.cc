@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <unordered_set>
 
-#include "catch.hpp"
 #include "bmat8.h"
+#include "catch.hpp"
 #include "element.h"
 #include "semigroup.h"
 

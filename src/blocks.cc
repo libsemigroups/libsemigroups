@@ -148,8 +148,7 @@ namespace libsemigroups {
     }
     return seed;
   }
-  typename std::vector<u_int32_t>::const_iterator
-  Blocks::cbegin() const {
+  typename std::vector<u_int32_t>::const_iterator Blocks::cbegin() const {
     LIBSEMIGROUPS_ASSERT(_blocks != nullptr);
     return _blocks->cbegin();
   }

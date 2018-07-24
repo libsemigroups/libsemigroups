@@ -61,7 +61,7 @@ namespace libsemigroups {
           "cannot be set more than once");
     }
     _is_nr_generators_defined = true;
-    _nrgens = n;
+    _nrgens                   = n;
   }
 
   SemigroupBase* CongIntf::get_quotient() const {

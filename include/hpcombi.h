@@ -105,7 +105,6 @@ namespace libsemigroups {
     }
   };
 
-
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <class TPTransf16Subclass>
   struct empty_key<
