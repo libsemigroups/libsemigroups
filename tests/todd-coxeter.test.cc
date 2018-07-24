@@ -33,7 +33,9 @@
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
-  namespace todd_coxeter {
+  using congruence_type = CongIntf::congruence_type;
+
+  namespace congruence_todd_coxeter {
 
     template <class TElementType>
     void delete_gens(std::vector<TElementType>& gens) {
@@ -42,8 +44,7 @@ namespace libsemigroups {
       }
     }
 
-    using congruence_type = CongIntf::congruence_type;
-    using ToddCoxeter     = congruence::ToddCoxeter;
+    using ToddCoxeter = congruence::ToddCoxeter;
 
     constexpr bool REPORT = false;
 
@@ -118,16 +119,6 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 3);
     }
 
-    /*TEST_CASE("ToddCoxeter 04: add_relation ", "[quick][todd-coxeter][04]") {
-      REPORTER.set_report(REPORT);
-      ToddCoxeter tc(congruence_type::LEFT);
-      tc.set_alphabet("ab");
-      tc.add_relation("aaa", "a");
-      tc.add_relation("a", "bb");
-
-      REQUIRE(tc.nr_classes() == 5);
-    }*/
-
     TEST_CASE(
         "ToddCoxeter 05: non-trivial two-sided constructed with Semigroup",
         "[quick][todd-coxeter][05]") {
@@ -172,70 +163,6 @@ namespace libsemigroups {
       ToddCoxeter tc2(congruence_type::TWOSIDED, 3, relations, {});
       REQUIRE(tc2.nr_classes() == 2);
     }
-
-    // RWS methods fail for this one
-    /*TEST_CASE("ToddCoxeter 07: (from kbmag/standalone/kb_data/s4) (RWS 49)",
-              "[quick][todd-coxeter][07]") {
-      REPORTER.set_report(REPORT);
-
-      ToddCoxeter tc(congruence_type::TWOSIDED);
-      tc.set_alphabet("abcd");
-      tc.add_relation("bb", "c");
-      tc.add_relation("caca", "abab");
-      tc.add_relation("bc", "d");
-      tc.add_relation("cb", "d");
-      tc.add_relation("aa", "d");
-      tc.add_relation("ad", "a");
-      tc.add_relation("da", "a");
-      tc.add_relation("bd", "b");
-      tc.add_relation("db", "b");
-      tc.add_relation("cd", "c");
-      tc.add_relation("dc", "c");
-      REQUIRE(tc.nr_classes() == 24);
-      REQUIRE(tc.isomorphic_non_fp_semigroup()->size() == 24);
-      REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
-    }*/
-
-    // Second of BHN's series of increasingly complicated presentations of 1.
-    // Doesn't terminate
-    /*    TEST_CASE(
-            "ToddCoxeter 08: (from kbmag/standalone/kb_data/degen4b) (RWS 65)",
-            "[extreme][todd-coxeter][kbmag][shortlex][08]") {
-          REPORTER.set_report(REPORT);
-
-          ToddCoxeter tc(congruence_type::TWOSIDED);
-          tc.set_alphabet("abcdefg");
-          // Inverses . . .
-          tc.add_relation("ad", "g");
-          tc.add_relation("da", "g");
-          tc.add_relation("be", "g");
-          tc.add_relation("eb", "g");
-          tc.add_relation("cf", "g");
-          tc.add_relation("fc", "g");
-
-          // Identity . . .
-          tc.add_relation("ag", "a");
-          tc.add_relation("bg", "b");
-          tc.add_relation("cg", "c");
-          tc.add_relation("dg", "d");
-          tc.add_relation("eg", "e");
-          tc.add_relation("fg", "f");
-          tc.add_relation("ga", "a");
-          tc.add_relation("gb", "b");
-          tc.add_relation("gc", "c");
-          tc.add_relation("gd", "d");
-          tc.add_relation("ge", "e");
-          tc.add_relation("gf", "f");
-          tc.add_relation("gg", "g");
-
-          tc.add_relation("bbdeaecbffdbaeeccefbccefb", "g");
-          tc.add_relation("ccefbfacddecbffaafdcaafdc", "g");
-          tc.add_relation("aafdcdbaeefacddbbdeabbdea", "g");
-
-          REQUIRE(tc.nr_classes() == 1);
-          REQUIRE(tc.isomorphic_non_fp_semigroup()->size() == 1);
-          REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
-        }*/
 
     TEST_CASE("ToddCoxeter 09: Small right congruence on free semigroup",
               "[quick][todd-coxeter][09]") {
@@ -746,27 +673,6 @@ namespace libsemigroups {
       REQUIRE(tc2.nr_classes() == 78);
     }
 
-    /*    TEST_CASE("ToddCoxeter 23: test validate",
-       "[quick][todd-coxeter][23]") { REPORTER.set_report(REPORT);
-
-          ToddCoxeter tc(congruence_type::TWOSIDED);
-          tc.set_nr_generators(2);
-          tc.add_relation({0}, {1});
-          REQUIRE(tc.validate_relations());
-
-          tc.add_pair({1, 1}, {1});
-          REQUIRE(tc.validate_relations());
-
-          // FIXME The following fail in an assertion, but should fail in an
-          // exception.
-          //
-          // tc.add_pair({1}, {2});
-          // REQUIRE(!tc.validate_relations());
-
-          // tc.add_relation({1}, {2});
-          // REQUIRE(!tc.validate_relations());
-        }*/
-
     TEST_CASE("ToddCoxeter 24: non-trivial left congruence constructed with "
               "semigroup",
               "[quick][todd-coxeter][24]") {
@@ -799,68 +705,142 @@ namespace libsemigroups {
 
     TEST_CASE("ToddCoxeter 25: 2-sided congruence on free semigroup",
               "[quick][todd-coxeter][25]") {
-      REPORTER.set_report(true);
+      REPORTER.set_report(REPORT);
       ToddCoxeter tc(congruence_type::TWOSIDED, 1, {});
       REQUIRE(tc.contains({0, 0}, {0, 0}));
-      REQUIRE_THROWS_AS(!tc.contains({0, 0}, {0}), LibsemigroupsException);
+      REQUIRE(!tc.contains({0, 0}, {0}));
     }
 
-   /* TEST_CASE("ToddCoxeter 26: add_relations after constructed from semigroup",
+    TEST_CASE("ToddCoxeter 27: calling run when obviously infinite",
+              "[quick][todd-coxeter][27]") {
+      ToddCoxeter tc(congruence_type::TWOSIDED, 5, {});
+      REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
+    }
+  }  // namespace congruence_todd_coxeter
+
+  namespace fpsemigroup_todd_coxeter {
+    using ToddCoxeter     = fpsemigroup::ToddCoxeter;
+    constexpr bool REPORT = false;
+
+    TEST_CASE("ToddCoxeter 04: add_rule ", "[quick][todd-coxeter][04]") {
+      REPORTER.set_report(REPORT);
+      ToddCoxeter tc;
+      tc.set_alphabet("ab");
+      tc.add_rule("aaa", "a");
+      tc.add_rule("a", "bb");
+
+      REQUIRE(tc.size() == 5);
+    }
+
+    // RWS methods fail for this one
+    TEST_CASE("ToddCoxeter 07: (from kbmag/standalone/kb_data/s4) (RWS 49)",
+              "[quick][todd-coxeter][07]") {
+      REPORTER.set_report(REPORT);
+
+      ToddCoxeter tc;
+      tc.set_alphabet("abcd");
+      tc.add_rule("bb", "c");
+      tc.add_rule("caca", "abab");
+      tc.add_rule("bc", "d");
+      tc.add_rule("cb", "d");
+      tc.add_rule("aa", "d");
+      tc.add_rule("ad", "a");
+      tc.add_rule("da", "a");
+      tc.add_rule("bd", "b");
+      tc.add_rule("db", "b");
+      tc.add_rule("cd", "c");
+      tc.add_rule("dc", "c");
+      REQUIRE(tc.size() == 24);
+      REQUIRE(tc.isomorphic_non_fp_semigroup()->size() == 24);
+      REQUIRE(tc.normal_form("aaaaaaaaaaaaaaaaaaa") == "a");
+      // TODO uncomment the next line
+      //  REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
+    }
+
+    // Second of BHN's series of increasingly complicated presentations
+    // of 1. Doesn't terminate
+    TEST_CASE("ToddCoxeter 08: (from kbmag/standalone/kb_data/degen4b) "
+              "(RWS 65)",
+              "[extreme][todd-coxeter][kbmag][shortlex][08]") {
+      REPORTER.set_report(REPORT);
+
+      ToddCoxeter tc;
+      tc.set_alphabet("abcdefg");
+      // Inverses . . .
+      tc.add_rule("ad", "g");
+      tc.add_rule("da", "g");
+      tc.add_rule("be", "g");
+      tc.add_rule("eb", "g");
+      tc.add_rule("cf", "g");
+      tc.add_rule("fc", "g");
+
+      // Identity . . .
+      tc.add_rule("ag", "a");
+      tc.add_rule("bg", "b");
+      tc.add_rule("cg", "c");
+      tc.add_rule("dg", "d");
+      tc.add_rule("eg", "e");
+      tc.add_rule("fg", "f");
+      tc.add_rule("ga", "a");
+      tc.add_rule("gb", "b");
+      tc.add_rule("gc", "c");
+      tc.add_rule("gd", "d");
+      tc.add_rule("ge", "e");
+      tc.add_rule("gf", "f");
+      tc.add_rule("gg", "g");
+
+      tc.add_rule("bbdeaecbffdbaeeccefbccefb", "g");
+      tc.add_rule("ccefbfacddecbffaafdcaafdc", "g");
+      tc.add_rule("aafdcdbaeefacddbbdeabbdea", "g");
+
+      REQUIRE(tc.size() == 1);
+      REQUIRE(tc.isomorphic_non_fp_semigroup()->size() == 1);
+      // TODO uncomment the next line
+      // REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
+    }
+
+    TEST_CASE("ToddCoxeter 23: test validate", "[quick][todd-coxeter][23]") {
+      REPORTER.set_report(REPORT);
+
+      ToddCoxeter tc;
+      tc.set_alphabet("ab");
+      tc.add_rule("a", "b");
+      tc.add_rule("bb", "b");
+
+      REQUIRE_THROWS_AS(tc.add_rule("b", "c"), LibsemigroupsException);
+    }
+
+    TEST_CASE("ToddCoxeter 26: add_rules after constructed from semigroup",
               "[quick][todd-coxeter][26]") {
       REPORTER.set_report(REPORT);
 
-      std::vector<Element*> gens
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
-      delete_gens(gens);
+      using Transf = Transf<5>::type;
 
+      Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE(S.size() == 88);
       REQUIRE(S.nrrules() == 18);
-      REQUIRE(S.degree() == 5);
 
-      Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-      Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-      Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-      Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
       word_type w1, w2, w3, w4;
-      S.factorisation(w1, S.position(t1));
-      S.factorisation(w2, S.position(t2));
-      S.factorisation(w3, S.position(t3));
-      S.factorisation(w4, S.position(t4));
+      S.factorisation(w1, S.position(Transf({3, 4, 4, 4, 4})));
+      S.factorisation(w2, S.position(Transf({3, 1, 3, 3, 3})));
+      S.factorisation(w3, S.position(Transf({1, 3, 1, 3, 3})));
+      S.factorisation(w4, S.position(Transf({4, 2, 4, 4, 2})));
 
-      delete t1;
-      delete t2;
-      delete t3;
-      delete t4;
-
-      ToddCoxeter tc1(congruence_type::TWOSIDED,
-                      &S,
-                      {},
-                      ToddCoxeter::policy::use_cayley_graph);
-      tc1.add_relation(w1, w2);
+      ToddCoxeter tc1(S);
+      tc1.add_rule(w1, w2);
 
       REQUIRE(tc1.size() == 21);
       REQUIRE(tc1.size() == tc1.isomorphic_non_fp_semigroup()->size());
       REQUIRE(tc1.equal_to(w3, w4));
       REQUIRE(tc1.normal_form(w3) == tc1.normal_form(w4));
 
-      ToddCoxeter tc2(congruence_type::TWOSIDED,
-                      &S,
-                      {},
-                      ToddCoxeter::policy::use_relations);
-      tc2.add_relation(w1, w2);
+      ToddCoxeter tc2(S);
+      tc2.add_rule(w1, w2);
 
       REQUIRE(tc2.size() == 21);
       REQUIRE(tc2.size() == tc2.isomorphic_non_fp_semigroup()->size());
       REQUIRE(tc2.equal_to(w3, w4));
       REQUIRE(tc2.normal_form(w3) == tc2.normal_form(w4));
-    }*/
-
-    TEST_CASE("ToddCoxeter 27: calling run when obviously infinite",
-              "[quick][todd-coxeter][27]") {
-      ToddCoxeter tc(congruence_type::TWOSIDED, 5, {});
-      REQUIRE_THROWS_AS(tc.run(), std::runtime_error);
     }
-  }  // namespace todd_coxeter
+  }  // namespace fpsemigroup_todd_coxeter
 }  // namespace libsemigroups

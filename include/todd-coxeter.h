@@ -19,6 +19,10 @@
 // This file contains a declaration of a class for performing the Todd-Coxeter
 // algorithm for semigroups.
 
+// TODO:
+// 1. In congruence::ToddCoxeter: add methods for add_pair, set_base, etc, for
+// use with 0-parameter constructor
+
 #ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_
 #define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_
 
@@ -41,12 +45,6 @@ namespace libsemigroups {
     class ToddCoxeter : public CongIntf {
       using signed_class_index_type = int64_t;
 
-      /////////////////////////
-      // Private constructor //
-      /////////////////////////
-
-      explicit ToddCoxeter(congruence_type type);
-
      public:
       using congruence_type  = CongIntf::congruence_type;
       using class_index_type = CongIntf::class_index_type;
@@ -56,6 +54,9 @@ namespace libsemigroups {
       /////////////////////////////////
       // Constructors and destructor //
       /////////////////////////////////
+
+      // TODO was private ok?
+      explicit ToddCoxeter(congruence_type type);
 
       ToddCoxeter(congruence_type                   type,
                   SemigroupBase*                    S,
@@ -106,12 +107,16 @@ namespace libsemigroups {
       size_t                     nr_non_trivial_classes() override;
       SemigroupBase*             quotient_semigroup() override;
       class_index_type           word_to_class_index(word_type const&) override;
+      word_type                  class_index_to_word(class_index_type) override;
 
       //////////////////////////////////////////////////////////////
       // Overridden public non-pure virtual methods from CongIntf //
       //////////////////////////////////////////////////////////////
 
+      bool contains(word_type const&, word_type const&) override;
+      bool is_quotient_obviously_finite() override;
       bool is_quotient_obviously_infinite() override;
+      void set_nr_generators(size_t) override;
 
       ////////////////////
       // Public methods //
@@ -179,7 +184,6 @@ namespace libsemigroups {
       std::stack<class_index_type> _lhs_stack;
       class_index_type             _next;
       std::vector<std::vector<word_type>> _non_trivial_classes;
-      size_t                              _nrgens;
       size_t _pack;  // Nr of active cosets allowed before a
                      // packing phase starts
       policy                       _policy;
@@ -193,60 +197,51 @@ namespace libsemigroups {
     };
   }  // namespace congruence
 
-  /*  namespace fpsemigroup {
-      class ToddCoxeter : public FpSemiIntf {
-       public:
-        // TODO add constructors
-        ToddCoxeter();
+  namespace fpsemigroup {
+    class ToddCoxeter : public FpSemiIntf {
+     public:
+      //////////////////
+      // Constructors //
+      //////////////////
 
-        //////////////////////////////////////////////////////////////////////////
-        // Overridden virtual methods from Runner
-        //////////////////////////////////////////////////////////////////////////
+      ToddCoxeter();
+      explicit ToddCoxeter(SemigroupBase*);
+      explicit ToddCoxeter(SemigroupBase&);
 
-        void run() override;
+      ////////////////////////////////////////////
+      // Overridden virtual methods from Runner //
+      ////////////////////////////////////////////
 
-        //////////////////////////////////////////////////////////////////////////
-        // Overridden virtual methods from FpSemiIntf
-        //////////////////////////////////////////////////////////////////////////
+      void run() override;
 
-        void               set_nr_generators(size_t) override;
-        size_t             nr_generators() const override;
-        void               set_alphabet(std::string) override;
-        std::string const& alphabet() const override;
+      /////////////////////////////////////////////////////
+      // Overridden pure virtual methods from FpSemiIntf //
+      /////////////////////////////////////////////////////
 
-       private:
-        bool validate_word(word_type const&) const override;
-        bool validate_word(std::string const&) const override;
-        void set_isomorphic_non_fp_semigroup(SemigroupBase*) override;
-        void internal_add_relation(word_type, word_type) override;
+      void add_rule(std::string const&, std::string const&) override;
 
-       public:
-        void add_relation(word_type, word_type) override;
-        void add_relation(std::string, std::string) override;
+      bool   is_obviously_finite() override;
+      bool   is_obviously_infinite() override;
+      SemigroupBase* isomorphic_non_fp_semigroup() override;
+      size_t size() override;
 
-        bool           is_obviously_finite() const override;
-        bool           is_obviously_infinite() const override;
-        size_t         size() override;
-        SemigroupBase* isomorphic_non_fp_semigroup() override;
-        bool           has_isomorphic_non_fp_semigroup() override;
+      bool equal_to(std::string const&, std::string const&) override;
 
-        bool equal_to(word_type const&, word_type const&) override;
-        bool equal_to(std::string const&, std::string const&) override;
+      std::string normal_form(std::string const&) override;
 
-        word_type      normal_form(word_type const&) override;
-        std::string normal_form(std::string const&) override;
+      /////////////////////////////////////////////////////////
+      // Overridden non-pure virtual methods from FpSemiIntf //
+      /////////////////////////////////////////////////////////
 
-        size_t           char_to_uint(char) const;
-        char             uint_to_char(size_t) const;
-        word_type        string_to_word(std::string const&) const;
-        std::string      word_to_string(word_type const&) const;
-      void validate_word(std::string const&) const;
+      void      add_rule(word_type const&, word_type const&) override;
+      bool      equal_to(word_type const&, word_type const&) override;
+      word_type normal_form(word_type const&) override;
+      void      set_alphabet(std::string const&) override;
+      void      set_alphabet(size_t) override;
 
-       private:
-        congruence::ToddCoxeter* _tcc;
-        std::string                        _alphabet;
-        std::unordered_map<char, letter_type> _alphabet_map;
-      };
-    }  // namespace fpsemigroup */
+     private:
+      std::unique_ptr<congruence::ToddCoxeter> _tcc;
+    };
+  }  // namespace fpsemigroup
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_

@@ -18,73 +18,125 @@
 
 // This file contains an interface for fp semigroup like classes.
 
+// TODO - nr_relations
+//      - next_relation (can't do cbegin/cend cos the data types are
+//      different in the subclasses)??
+//      - noexcept
+
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
 
 #include <string>
+#include <unordered_map>
 
 #include "internal/runner.h"
 
-#include "semigroup-base.h"
 #include "types.h"
 
 namespace libsemigroups {
-  class FpSemigroup;
+  class FpSemigroup;    // Forward declaration
+  class SemigroupBase;  // Forward declaration
+
   class FpSemiIntf : public Runner {
     friend class libsemigroups::FpSemigroup;
 
    public:
-    static const std::string NO_ALPHABET;
+    /////////////////
+    // Constructor //
+    /////////////////
+    FpSemiIntf();
 
-    // Pure methods (for defining an f.p. semigroup)
-    virtual void               set_nr_generators(size_t) = 0;
-    virtual size_t             nr_generators() const     = 0;
-    virtual void               set_alphabet(std::string) = 0;
-    virtual std::string const& alphabet() const          = 0;
-    // TODO - nr_relations
-    //      - next_relation (can't do cbegin/cend cos the data types are
-    //      different in the subclasses)
+    ////////////////////////////////
+    // Public non-virtual methods //
+    ////////////////////////////////
 
-   private:
-    virtual bool validate_word(word_type const&) const           = 0;
-    virtual bool validate_word(std::string const&) const         = 0;
-    virtual void set_isomorphic_non_fp_semigroup(SemigroupBase*) = 0;
-    virtual void internal_add_relation(word_type, word_type)     = 0;
+    std::string const& alphabet() const;
+    bool               has_isomorphic_non_fp_semigroup() const noexcept;
 
-   public:
-    // The arguments add_relations are not const& since they must be copied
-    // into any instance of a derived class.
-    virtual void add_relation(word_type, word_type)     = 0;
-    virtual void add_relation(std::string, std::string) = 0;
+    //////////////////////////
+    // Pure virtual methods //
+    //////////////////////////
+
+    virtual void add_rule(std::string const&, std::string const&) = 0;
+    // TODO is the next one required?
+    //virtual void add_rules(SemigroupBase*)                        = 0;
 
     // Pure methods (attributes of an f.p. semigroup)
-    virtual bool           is_obviously_finite() const       = 0;
-    virtual bool           is_obviously_infinite() const     = 0;
-    virtual size_t         size()                            = 0;
-    virtual SemigroupBase* isomorphic_non_fp_semigroup()     = 0;
-    virtual bool           has_isomorphic_non_fp_semigroup() = 0;
+    virtual bool   is_obviously_finite()   = 0;
+    virtual bool   is_obviously_infinite() = 0;
+    virtual size_t size()                  = 0;
 
     // Pure methods (for elements of fp semigroups)
-    virtual bool        equal_to(word_type const&, word_type const&)     = 0;
-    virtual bool        equal_to(std::string const&, std::string const&) = 0;
-    virtual word_type   normal_form(word_type const&)                    = 0;
-    virtual std::string normal_form(std::string const&)                  = 0;
+    virtual bool equal_to(std::string const&, std::string const&) = 0;
+    virtual std::string normal_form(std::string const&) = 0;
 
-    // Non-pure methods (these all use the pure methods, and are mostly
-    // syntactic sugar).
-    void add_relation(std::initializer_list<size_t>,
-                      std::initializer_list<size_t>);
-    void add_relations(SemigroupBase*);
-    void add_relations(std::vector<relation_type> const&);
-    void add_relation(relation_type);
-    void add_relation(std::pair<std::string, std::string>);
-    bool validate_relation(relation_type const&) const;
-    bool validate_relation(word_type const&, word_type const&) const;
-    bool validate_relation(std::pair<std::string, std::string> const&) const;
-    bool validate_relation(std::string const&, std::string const&) const;
-    bool equal_to(std::initializer_list<size_t> const&,
-                  std::initializer_list<size_t> const&);
-    word_type normal_form(std::initializer_list<size_t> const&);
+    virtual SemigroupBase* isomorphic_non_fp_semigroup() = 0;
+
+    //////////////////////////////////////
+    // Non-pure syntactic sugar methods //
+    //////////////////////////////////////
+
+    void add_rule(std::pair<std::string, std::string>);
+    void add_rules(std::vector<std::pair<std::string, std::string>> const&);
+    void add_rules(SemigroupBase*);
+
+
+    // bool equal_to(std::initializer_list<letter_type> const&,
+    //              std::initializer_list<letter_type> const&);
+
+    // word_type normal_form(std::initializer_list<letter_type> const&);
+    // TODO normal_form for word_type??
+
+    // void add_rule(relation_type);
+    // void add_rule(std::initializer_list<size_t>,
+    //              std::initializer_list<size_t>);
+    // void add_rules(std::vector<relation_type> const&);
+
+    ////////////////////////////
+    // Public virtual methods //
+    ////////////////////////////
+
+    virtual void      add_rule(word_type const&, word_type const&);
+    virtual bool      equal_to(word_type const&, word_type const&);
+    virtual word_type normal_form(word_type const&);
+    virtual void      set_alphabet(std::string const&);
+    virtual void      set_alphabet(size_t);
+
+   protected:
+    ////////////////////////////////
+    // Protected methods and data //
+    ////////////////////////////////
+    // TODO should be noexcept
+    size_t      char_to_uint(char) const;
+    char        uint_to_char(size_t) const;
+    word_type   string_to_word(std::string const&) const;
+    std::string word_to_string(word_type const&) const;
+
+    // TODO are these really necessary?
+    SemigroupBase* get_isomorphic_non_fp_semigroup() const noexcept;
+    void           set_isomorphic_non_fp_semigroup(SemigroupBase*);
+
+    bool           is_alphabet_defined() const noexcept;
+
+    bool validate_letter(char) const;
+
+    void validate_word(std::string const&) const;
+    void validate_word(word_type const&) const;
+
+    void validate_relation(std::string const&, std::string const&) const;
+    void validate_relation(std::pair<std::string, std::string> const&) const;
+    void validate_relation(relation_type const&) const;
+    void validate_relation(word_type const&, word_type const&) const;
+
+    //////////////////
+    // Private data //
+    //////////////////
+
+    std::string                           _alphabet;
+    std::unordered_map<char, letter_type> _alphabet_map;
+    bool                                  _delete_isomorphic_non_fp_semigroup;
+    bool                                  _is_alphabet_defined;
+    SemigroupBase*                        _isomorphic_non_fp_semigroup;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_

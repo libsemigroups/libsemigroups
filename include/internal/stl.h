@@ -23,6 +23,7 @@
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_H_
 
 #include <functional>
+#include <memory>
 #include <sstream>
 
 namespace libsemigroups {
@@ -38,6 +39,21 @@ namespace libsemigroups {
     }
   };
 
+  // Forward declaration
+  template <typename T> std::string to_string(const T& n);
+
+  // A << method for vectors
+  template <typename T>
+  std::ostringstream& operator<<(std::ostringstream&   os,
+                                 std::vector<T> const& vec) {
+    os << "{";
+    for (auto it = vec.cbegin(); it < vec.cend() - 1; it++) {
+      os << libsemigroups::to_string(*it) << ", ";
+    }
+    os << libsemigroups::to_string(*(vec.cend() - 1)) << "}";
+    return os;
+  }
+
   //! Returns a string representing an object of type \c T.
   //!
   //! It appears that GCC 4.9.1 (at least) do not have std::to_string
@@ -47,6 +63,13 @@ namespace libsemigroups {
     std::ostringstream stm;
     stm << n;
     return stm.str();
+  }
+
+  // C++11 is missing make_unique. The following implementation is from Item 21
+  // in "Effective Modern C++" by Scott Meyers.
+  template <typename T, typename... Ts>
+  std::unique_ptr<T> make_unique(Ts&&... params) {
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
   }
 
 }  // namespace libsemigroups

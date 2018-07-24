@@ -443,10 +443,10 @@ namespace libsemigroups {
                               element_index_type i) const {
       if (i >= _nr) {
         throw LibsemigroupsException(
-            "Semigroup::" + method_name + ": there are only  "
+            "Semigroup::" + method_name + ": there are only "
             + libsemigroups::to_string(_nr) + " elements"
-            + (is_done() ? "" : " enumerated so far") + ", not "
-            + libsemigroups::to_string(i));
+            + (is_done() ? "" : " enumerated so far") + ", but index "
+            + libsemigroups::to_string(i) + " was given");
       }
     }
 

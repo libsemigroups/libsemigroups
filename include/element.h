@@ -451,6 +451,7 @@ namespace libsemigroups {
     //! ostringstream
     friend std::ostringstream& operator<<(std::ostringstream&          os,
                                           ElementWithVectorData const& elt) {
+      // TODO replace this with the method in stl.h
       os << "{";
       for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
         os << libsemigroups::to_string(*it) << ", ";

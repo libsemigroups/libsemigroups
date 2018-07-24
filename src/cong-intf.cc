@@ -18,15 +18,26 @@
 
 #include "cong-intf.h"
 
+#include "internal/libsemigroups-exception.h"
+
 #include "constants.h"
 #include "semigroup-base.h"
 
 namespace libsemigroups {
   CongIntf::CongIntf(congruence_type type)
-      : Runner(), _delete_quotient(false), _quotient(nullptr), _type(type) {}
+      : Runner(),
+        _delete_quotient(false),
+        _is_nr_generators_defined(false),
+        _nrgens(UNDEFINED),
+        _quotient(nullptr),
+        _type(type) {}
 
   CongIntf::congruence_type CongIntf::type() const noexcept {
     return _type;
+  }
+
+  size_t CongIntf::nr_generators() const noexcept {
+    return _nrgens;
   }
 
   void CongIntf::reset_quotient() {
@@ -41,6 +52,16 @@ namespace libsemigroups {
     reset_quotient();
     _delete_quotient = true;
     _quotient        = quotient;
+  }
+
+  void CongIntf::set_nr_generators(size_t n) {
+    if (_is_nr_generators_defined) {
+      throw LibsemigroupsException(
+          "CongIntf::set_nr_generators: the number of geneators "
+          "cannot be set more than once");
+    }
+    _is_nr_generators_defined = true;
+    _nrgens = n;
   }
 
   SemigroupBase* CongIntf::get_quotient() const {
@@ -63,6 +84,10 @@ namespace libsemigroups {
   void CongIntf::add_pair(std::initializer_list<size_t> l,
                           std::initializer_list<size_t> r) {
     add_pair(word_type(l), word_type(r));
+  }
+
+  bool CongIntf::is_quotient_obviously_finite() {
+    return false;
   }
 
   bool CongIntf::is_quotient_obviously_infinite() {

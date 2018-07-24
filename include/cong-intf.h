@@ -69,8 +69,7 @@ namespace libsemigroups {
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
     virtual class_index_type word_to_class_index(word_type const& word) = 0;
-
-    // TODO virtual word_type class_index_to_word(class_index_type i) = 0;
+    virtual word_type        class_index_to_word(class_index_type i)    = 0;
 
     //! Returns the number of congruences classes of \c this.
     //!
@@ -141,7 +140,9 @@ namespace libsemigroups {
     //! undecidable in general, and this method may never terminate.
     virtual bool less(word_type const& w1, word_type const& w2);
 
+    virtual bool is_quotient_obviously_finite();
     virtual bool is_quotient_obviously_infinite();
+    virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
     // Non-pure non-virtual methods (using the pure methods, for syntactic //
@@ -154,6 +155,7 @@ namespace libsemigroups {
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
     congruence_type type() const noexcept;
+    size_t nr_generators() const noexcept;
 
    protected:
     /////////////////////////////////////////////////////////////////////////
@@ -163,6 +165,7 @@ namespace libsemigroups {
     void reset_quotient();
     void set_quotient(SemigroupBase*);
     SemigroupBase* get_quotient() const;
+
 
    private:
     /////////////////////////////////////////////////////////////////////////
@@ -175,11 +178,12 @@ namespace libsemigroups {
     virtual class_index_type
     const_word_to_class_index(word_type const& word) const = 0;
 
-
     /////////////////////////////////////////////////////////////////////////
     // Private data
     /////////////////////////////////////////////////////////////////////////
     bool            _delete_quotient;
+    bool            _is_nr_generators_defined;
+    size_t          _nrgens;
     SemigroupBase*  _quotient;
     congruence_type _type;
   };

@@ -22,6 +22,7 @@
 #define LIBSEMIGROUPS_INCLUDE_TCE_H_
 
 #include "adapters.h"
+#include "constants.h"
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
@@ -35,6 +36,7 @@ namespace libsemigroups {
     TCE(congruence::ToddCoxeter* tc, class_index_type i) : _tc(tc), _index(i) {}
 
     bool operator==(TCE const& that) const {
+      // TODO check _tc too
       return _index == that._index;
     }
 
@@ -60,7 +62,7 @@ namespace libsemigroups {
     congruence::ToddCoxeter* _tc;
     class_index_type         _index;
   };
-
+  // TODO static_assert trivial
   template <> struct complexity<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
       return LIMIT_MAX;
