@@ -16,23 +16,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "rws.h"
+#include "knuth-bendix.h"
 
 #include <algorithm>
 #include <set>
 #include <string>
 
-#include "rwse.h"
-#include "semigroups.h"
+#include "kbe.h"
+#include "semigroup.h"
 
 namespace libsemigroups {
   namespace fpsemigroup {
 
-    typedef char internal_char_t;
-    typedef char external_char_t;
+    using internal_char_type = char;
+    using external_char_type = char;
 
-    typedef std::string internal_string_t;
-    typedef std::string external_string_t;
+    using internal_string_type = std::string;
+    using external_string_type = std::string;
 
     //////////////////////////////////////////////////////////////////////////
     // Internal functions for handling strings
@@ -41,9 +41,9 @@ namespace libsemigroups {
     // Replace [it1_begin .. it1_begin + (it2_end - it2_begin)] by
     // [it2_begin .. it2_end], no checks performed.
     static inline void
-    string_replace(external_string_t::iterator       it1_begin,
-                   external_string_t::const_iterator it2_begin,
-                   external_string_t::const_iterator it2_end) {
+    string_replace(external_string_type::iterator       it1_begin,
+                   external_string_type::const_iterator it2_begin,
+                   external_string_type::const_iterator it2_end) {
       while (it2_begin < it2_end) {
         *it1_begin = *it2_begin;
         ++it1_begin;
@@ -54,10 +54,10 @@ namespace libsemigroups {
     // Returns true if [first_prefix, last_prefix) is a prefix of [first_word,
     // last_word).
     static inline bool
-    is_prefix(external_string_t::const_iterator const& first_word,
-              external_string_t::const_iterator const& last_word,
-              external_string_t::const_iterator const& first_prefix,
-              external_string_t::const_iterator const& last_prefix) {
+    is_prefix(external_string_type::const_iterator const& first_word,
+              external_string_type::const_iterator const& last_word,
+              external_string_type::const_iterator const& first_prefix,
+              external_string_type::const_iterator const& last_prefix) {
       LIBSEMIGROUPS_ASSERT(first_word <= last_word);
       // We don't care if first_prefix > last_prefix
       if (last_prefix - first_prefix > last_word - first_word) {
@@ -68,14 +68,29 @@ namespace libsemigroups {
       return std::equal(first_prefix, last_prefix, first_word);
     }
 
+    static inline std::pair<external_string_type::const_iterator,
+                            external_string_type::const_iterator>
+    maximum_common_prefix(
+        external_string_type::const_iterator        first_word1,
+        external_string_type::const_iterator const& last_word1,
+        external_string_type::const_iterator        first_word2,
+        external_string_type::const_iterator const& last_word2) {
+      while (*first_word1 == *first_word2 && first_word1 < last_word1
+             && first_word2 < last_word2) {
+        ++first_word1;
+        ++first_word2;
+      }
+      return std::make_pair(first_word1, first_word2);
+    }
+
 #ifdef LIBSEMIGROUPS_DEBUG
     // Returns true if [first_suffix, last_suffix) is a suffix of [first_word,
     // last_word).
     static inline bool
-    is_suffix(external_string_t::const_iterator const& first_word,
-              external_string_t::const_iterator const& last_word,
-              external_string_t::const_iterator const& first_suffix,
-              external_string_t::const_iterator const& last_suffix) {
+    is_suffix(external_string_type::const_iterator const& first_word,
+              external_string_type::const_iterator const& last_word,
+              external_string_type::const_iterator const& first_suffix,
+              external_string_type::const_iterator const& last_suffix) {
       LIBSEMIGROUPS_ASSERT(first_word <= last_word);
       // We don't care if first_suffix > last_suffix
       if (last_suffix - first_suffix > last_word - first_word) {
@@ -95,28 +110,14 @@ namespace libsemigroups {
     }
 #endif
 
-    static inline std::pair<external_string_t::const_iterator,
-                            external_string_t::const_iterator>
-    maximum_common_prefix(external_string_t::const_iterator        first_word1,
-                          external_string_t::const_iterator const& last_word1,
-                          external_string_t::const_iterator        first_word2,
-                          external_string_t::const_iterator const& last_word2) {
-      while (*first_word1 == *first_word2 && first_word1 < last_word1
-             && first_word2 < last_word2) {
-        ++first_word1;
-        ++first_word2;
-      }
-      return std::make_pair(first_word1, first_word2);
-    }
-
     //////////////////////////////////////////////////////////////////////////
     // OverlapMeasure substructs
     //////////////////////////////////////////////////////////////////////////
 
-    struct RWS::OverlapMeasure {
-      virtual size_t operator()(Rule const*                              AB,
-                                Rule const*                              BC,
-                                internal_string_t::const_iterator const& it)
+    struct KnuthBendix::OverlapMeasure {
+      virtual size_t operator()(Rule const*                                 AB,
+                                Rule const*                                 BC,
+                                internal_string_type::const_iterator const& it)
           = 0;
       virtual ~OverlapMeasure() {}
       // Forward declarations
@@ -125,10 +126,11 @@ namespace libsemigroups {
       struct max_AB_BC;
     };
 
-    struct RWS::OverlapMeasure::ABC : public RWS::OverlapMeasure {
-      size_t operator()(Rule const*                              AB,
-                        Rule const*                              BC,
-                        internal_string_t::const_iterator const& it) final {
+    struct KnuthBendix::OverlapMeasure::ABC
+        : public KnuthBendix::OverlapMeasure {
+      size_t operator()(Rule const*                                 AB,
+                        Rule const*                                 BC,
+                        internal_string_type::const_iterator const& it) final {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -137,10 +139,11 @@ namespace libsemigroups {
       }
     };
 
-    struct RWS::OverlapMeasure::AB_BC : public RWS::OverlapMeasure {
-      size_t operator()(Rule const*                              AB,
-                        Rule const*                              BC,
-                        internal_string_t::const_iterator const& it) final {
+    struct KnuthBendix::OverlapMeasure::AB_BC
+        : public KnuthBendix::OverlapMeasure {
+      size_t operator()(Rule const*                                 AB,
+                        Rule const*                                 BC,
+                        internal_string_type::const_iterator const& it) final {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -150,10 +153,11 @@ namespace libsemigroups {
       }
     };
 
-    struct RWS::OverlapMeasure::max_AB_BC : public RWS::OverlapMeasure {
-      size_t operator()(Rule const*                              AB,
-                        Rule const*                              BC,
-                        internal_string_t::const_iterator const& it) final {
+    struct KnuthBendix::OverlapMeasure::max_AB_BC
+        : public KnuthBendix::OverlapMeasure {
+      size_t operator()(Rule const*                                 AB,
+                        Rule const*                                 BC,
+                        internal_string_type::const_iterator const& it) final {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -164,10 +168,10 @@ namespace libsemigroups {
     };
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS static data members
+    // KnuthBendix static data members
     //////////////////////////////////////////////////////////////////////////
 
-    external_string_t const RWS::STANDARD_ALPHABET = "";
+    external_string_type const KnuthBendix::STANDARD_ALPHABET = "";
 
 #ifdef LIBSEMIGROUPS_STATS
 
@@ -175,9 +179,9 @@ namespace libsemigroups {
     // ./configure --enable-stats functions
     //////////////////////////////////////////////////////////////////////////
 
-    size_t RWS::max_active_word_length() {
-      auto comp = [](libsemigroups::RWS::Rule const* p,
-                     libsemigroups::RWS::Rule const* q) -> bool {
+    size_t KnuthBendix::max_active_word_length() {
+      auto comp = [](libsemigroups::KnuthBendix::Rule const* p,
+                     libsemigroups::KnuthBendix::Rule const* q) -> bool {
         return p->lhs()->size() < q->lhs()->size();
       };
       auto max = std::max_element(
@@ -194,16 +198,14 @@ namespace libsemigroups {
     // Constructors and destructor
     //////////////////////////////////////////////////////////////////////////
 
-    RWS::RWS(ReductionOrdering* order, external_string_t alphabet)
-        : Interface(),
+    KnuthBendix::KnuthBendix(ReductionOrdering*   order,
+                             external_string_type alphabet)
+        : FpSemiIntf(),
           _active_rules(),
-          _alphabet(STANDARD_ALPHABET),
           _check_confluence_interval(4096),
           _confluent(false),
           _confluence_known(false),
-          _delete_isomorphic_non_fp_semigroup(true),
           _inactive_rules(),
-          _isomorphic_non_fp_semigroup(nullptr),
           _max_overlap(UNBOUNDED),
           _max_rules(UNBOUNDED),
           _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
@@ -211,8 +213,8 @@ namespace libsemigroups {
           _order(order),
           _overlap_measure(nullptr),
           _stack(),
-          _tmp_word1(new internal_string_t()),
-          _tmp_word2(new internal_string_t()),
+          _tmp_word1(new internal_string_type()),
+          _tmp_word2(new internal_string_type()),
           _total_rules(0) {
       _next_rule_it1 = _active_rules.end();  // null
       _next_rule_it2 = _active_rules.end();  // null
@@ -228,31 +230,33 @@ namespace libsemigroups {
 #endif
     }
 
-    RWS::RWS(SemigroupBase* S) : RWS() {
-      _delete_isomorphic_non_fp_semigroup = false;
-      _isomorphic_non_fp_semigroup        = S;
-      set_nr_generators(S->nrgens());
-      // TODO move the call to add_relations to elsewhere, so that it's done in
-      // knuth_bendix so that this is done in a thread, and not when RWS is
-      // constructed. If it is moved, then we will have to do add_relations(S)
-      // to add_relation() so that we don't lose the relations from S.
+    KnuthBendix::KnuthBendix(SemigroupBase* S) : KnuthBendix() {
+      // TODO move the call to add_rules to elsewhere, so that it's done in
+      // knuth_bendix so that this is done in a thread, and not when KnuthBendix
+      // is constructed. If it is moved, then we will have to do
+      // add_rules(S) to add_rule() so that we don't lose the relations
+      // from S.
       // TODO what if S is the return value of isomorphic_non_fp_semigroup? Then
       // shouldn't we use the same alphabet as S?
-      add_relations(S);
+      FpSemiIntf::set_alphabet(S->nrgens());
+      add_rules(S);
+      set_isomorphic_non_fp_semigroup(S);
     }
 
-    RWS::RWS(RWS const* rws)
-        : RWS(new ReductionOrdering(rws->_order), rws->_alphabet) {
-      set_overlap_policy(rws->_overlap_policy);
-      // TODO _active_rules.reserve(rws->nr_rules());
-      _nrgens = rws->_nrgens;
+    KnuthBendix::KnuthBendix(SemigroupBase& S) : KnuthBendix(&S) {}
+
+    KnuthBendix::KnuthBendix(KnuthBendix const* kb)
+        : KnuthBendix(new ReductionOrdering(kb->_order), kb->_alphabet) {
+      set_overlap_policy(kb->_overlap_policy);
+      // TODO _active_rules.reserve(kb->nr_rules());
+      _nrgens = kb->_nrgens;
       for (Rule const* rule : _active_rules) {
         add_rule(new_rule(rule));
       }
       // TODO set confluence if known?
     }
 
-    RWS::~RWS() {
+    KnuthBendix::~KnuthBendix() {
       delete _order;
       delete _overlap_measure;
       delete _tmp_word1;
@@ -274,28 +278,28 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // Setters for RWS optional parameters
+    // Setters for KnuthBendix optional parameters
     //////////////////////////////////////////////////////////////////////////
 
-    void RWS::set_check_confluence_interval(size_t interval) {
+    void KnuthBendix::set_check_confluence_interval(size_t interval) {
       if (interval > UNBOUNDED) {
         interval = UNBOUNDED;
       }
       _check_confluence_interval = interval;
     }
 
-    void RWS::set_max_overlap(size_t val) {
+    void KnuthBendix::set_max_overlap(size_t val) {
       if (val > UNBOUNDED) {
         val = UNBOUNDED;
       }
       _max_overlap = val;
     }
 
-    void RWS::set_max_rules(size_t val) {
+    void KnuthBendix::set_max_rules(size_t val) {
       _max_rules = val;
     }
 
-    void RWS::set_overlap_policy(overlap_policy p) {
+    void KnuthBendix::set_overlap_policy(overlap_policy p) {
       delete _overlap_measure;
       _overlap_policy = p;
       switch (p) {
@@ -314,41 +318,10 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // Overridden virtual methods from Interface
+    // FpSemiIntf - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    // Currently assumes that you cannot change the nr generators after first
-    // definining it.
-    void RWS::set_nr_generators(size_t nr) {
-      // TODO exceptions instead of assertions
-      LIBSEMIGROUPS_ASSERT(_nrgens == UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(_alphabet == STANDARD_ALPHABET);
-      LIBSEMIGROUPS_ASSERT(_active_rules.empty());
-      _nrgens = nr;
-    }
-
-    // Detects the actual number of generators in the rules, unless the number
-    // of generators, or alphabet, was previously set (and was not
-    // STANDARD_ALPHABET).
-    size_t RWS::nr_generators() const {
-      if (_nrgens == UNDEFINED) {
-        // TODO exceptions instead of assertions
-        LIBSEMIGROUPS_ASSERT(_alphabet == STANDARD_ALPHABET);
-        std::unordered_set<char> set;
-        for (Rule const* rule : _active_rules) {
-          for (auto const& letter : *rule->lhs()) {
-            set.insert(letter);
-          }
-          for (auto const& letter : *rule->rhs()) {
-            set.insert(letter);
-          }
-        }
-        _nrgens = set.size();
-      }
-      return _nrgens;
-    }
-
-    void RWS::set_alphabet(external_string_t lphbt) {
+    void KnuthBendix::set_alphabet(external_string_type const& lphbt) {
       LIBSEMIGROUPS_ASSERT(_alphabet == STANDARD_ALPHABET);
       LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
       LIBSEMIGROUPS_ASSERT(_nrgens == UNDEFINED);
@@ -365,90 +338,43 @@ namespace libsemigroups {
       }
     }
 
-    external_string_t const& RWS::alphabet() const {
-      return _alphabet;
-    }
-
     // Private
-    bool RWS::validate_word(word_t const& w) const {
-      // If the number of generators is undefined, then every word is valid.
-      return _nrgens == UNDEFINED
-             || std::all_of(w.cbegin(), w.cend(), [this](size_t i) {
-                  return i < _nrgens;
-                });
-    }
-
-    // Private
-    bool RWS::validate_word(external_string_t const& w) const {
-      // If the _alphabet has not been defined, then every word is valid
-      return _alphabet == STANDARD_ALPHABET
-             || std::all_of(w.cbegin(), w.cend(), [this](char c) {
-                  return _alphabet_map.find(c) != _alphabet_map.end();
-                });
-    }
-
-    // Private
-    void RWS::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
-      LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
-      _delete_isomorphic_non_fp_semigroup = false;
-      _isomorphic_non_fp_semigroup        = S;
-    }
-
-    // Private
-    void RWS::internal_add_relation(word_t p, word_t q) {
+    /*void KnuthBendix::internal_add_rule(word_type p, word_type q) {
       if (p != q) {
         add_rule(
             new_rule(word_to_internal_string(p), word_to_internal_string(q)));
       }
-    }
+    }*/
 
-    void RWS::add_relation(external_string_t p, external_string_t q) {
+    void KnuthBendix::add_rule(external_string_type const& p,
+                               external_string_type const& q) {
+      if (!is_alphabet_defined()) {
+        throw LibsemigroupsException("KnuthBendix::add_rule: cannot add rules "
+                                     "before an alphabet is defined");
+      }
       if (p != q) {
-        if (_isomorphic_non_fp_semigroup != nullptr) {
-          // TODO currently the relations from _isomorphic_non_fp_semigroup are
-          // added in the constructor, uncomment the next line if it moves.
-          // add_relations(_isomorphic_non_fp_semigroup);
-          if (_delete_isomorphic_non_fp_semigroup) {
-            delete _isomorphic_non_fp_semigroup;
-          }
-          _delete_isomorphic_non_fp_semigroup = true;
-          _isomorphic_non_fp_semigroup        = nullptr;
-        }
-        auto pp = new external_string_t(p);
-        // TODO can use &p instead?
-        auto qq = new external_string_t(q);
+        validate_word(p);
+        validate_word(q);
+        auto pp = new external_string_type(p);
+        auto qq = new external_string_type(q);
         external_to_internal_string(*pp);
         external_to_internal_string(*qq);
         add_rule(new_rule(pp, qq));
+        reset_isomorphic_non_fp_semigroup();
       }
     }
 
-    void RWS::add_relation(word_t p, word_t q) {
-      if (p != q) {
-        if (_isomorphic_non_fp_semigroup != nullptr) {
-          add_relations(_isomorphic_non_fp_semigroup);
-          if (_delete_isomorphic_non_fp_semigroup) {
-            delete _isomorphic_non_fp_semigroup;
-          }
-          _delete_isomorphic_non_fp_semigroup = true;
-          _isomorphic_non_fp_semigroup        = nullptr;
-        }
-        internal_add_relation(p, q);
-      }
-    }
-
-    bool RWS::is_obviously_finite() const {
+    bool KnuthBendix::is_obviously_finite() {
       return (_isomorphic_non_fp_semigroup != nullptr
-              && _isomorphic_non_fp_semigroup->is_done())
-             || _alphabet.empty();
+              && _isomorphic_non_fp_semigroup->is_done());
     }
 
-    bool RWS::is_obviously_infinite() const {
+    bool KnuthBendix::is_obviously_infinite() {
       if (_isomorphic_non_fp_semigroup != nullptr
           && _isomorphic_non_fp_semigroup->is_done()) {
-        // In this case the semigroup defined by the RWS is finite.
+        // In this case the semigroup defined by the KnuthBendix is finite.
         return false;
-      } else if (nr_generators() > _active_rules.size()) {
+      } else if (alphabet().size() > _active_rules.size()) {
         return true;
       }
       // TODO:
@@ -462,45 +388,35 @@ namespace libsemigroups {
       return false;
     }
 
-    size_t RWS::size() {
+    size_t KnuthBendix::size() {
       if (is_obviously_infinite()) {
-        return INFTY;
+        return POSITIVE_INFINITY;
       } else {
         return isomorphic_non_fp_semigroup()->size();
       }
     }
 
-    SemigroupBase* RWS::isomorphic_non_fp_semigroup() {
+    SemigroupBase* KnuthBendix::isomorphic_non_fp_semigroup() {
       // FIXME check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
-      if (_isomorphic_non_fp_semigroup == nullptr) {
+      if (!has_isomorphic_non_fp_semigroup()) {
         run();
-        auto T = new Semigroup<RWSE*>({new RWSE(*this, 0)});
-        for (size_t i = 1; i < nr_generators(); ++i) {
-          T->add_generator(new RWSE(*this, i));
+        auto T = new Semigroup<KBE*>({new KBE(*this, 0)});
+        for (size_t i = 1; i < alphabet().size(); ++i) {
+          T->add_generator(new KBE(*this, i));
         }
-        _isomorphic_non_fp_semigroup = T;
+        set_isomorphic_non_fp_semigroup(T);
       }
       return _isomorphic_non_fp_semigroup;
     }
 
-    bool RWS::has_isomorphic_non_fp_semigroup() {
-      return _isomorphic_non_fp_semigroup != nullptr;
-    }
-
-    bool RWS::equal_to(word_t const& u, word_t const& v) {
+    bool KnuthBendix::equal_to(external_string_type const& u,
+                               external_string_type const& v) {
       if (u == v) {
         return true;
       }
-      return equal_to(*word_to_internal_string(u), *word_to_internal_string(v));
-    }
-
-    bool RWS::equal_to(external_string_t const& u, external_string_t const& v) {
-      if (u == v) {
-        return true;
-      }
-      internal_string_t uu = rewrite(u);
-      internal_string_t vv = rewrite(v);
+      internal_string_type uu = rewrite(u);
+      internal_string_type vv = rewrite(v);
       if (uu == vv) {
         return true;
       }
@@ -510,13 +426,8 @@ namespace libsemigroups {
       return uu == vv;
     }
 
-    word_t RWS::normal_form(word_t const& w) {
-      internal_string_t* ww = word_to_internal_string(w);
-      internal_rewrite(ww);
-      return *internal_string_to_word(ww);
-    }
-
-    external_string_t RWS::normal_form(external_string_t const& w) {
+    external_string_type
+    KnuthBendix::normal_form(external_string_type const& w) {
       return rewrite(w);
     }
 
@@ -524,16 +435,16 @@ namespace libsemigroups {
     // Overridden virtual methods from Runner
     //////////////////////////////////////////////////////////////////////////
 
-    void RWS::run() {
+    void KnuthBendix::run() {
       knuth_bendix();
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS private methods for converting from ints <-> string/char
+    // KnuthBendix private methods for converting from ints <-> string/char
     //////////////////////////////////////////////////////////////////////////
 
     // Static
-    size_t RWS::internal_char_to_uint(internal_char_t c) {
+    size_t KnuthBendix::internal_char_to_uint(internal_char_type c) {
 #ifdef LIBSEMIGROUPS_DEBUG
       return static_cast<size_t>(c - 97);
 #else
@@ -542,32 +453,34 @@ namespace libsemigroups {
     }
 
     // Static
-    internal_char_t RWS::uint_to_internal_char(size_t a) {
+    internal_char_type KnuthBendix::uint_to_internal_char(size_t a) {
 #ifdef LIBSEMIGROUPS_DEBUG
-      return static_cast<internal_char_t>(a + 97);
+      return static_cast<internal_char_type>(a + 97);
 #else
-      return static_cast<internal_char_t>(a + 1);
+      return static_cast<internal_char_type>(a + 1);
 #endif
     }
 
     // Static
-    internal_string_t* RWS::uint_to_internal_string(size_t i) {
-      return new internal_string_t({uint_to_internal_char(i)});
+    internal_string_type* KnuthBendix::uint_to_internal_string(size_t i) {
+      return new internal_string_type({uint_to_internal_char(i)});
     }
 
     // Static
-    word_t* RWS::internal_string_to_word(internal_string_t const* s) {
-      word_t* w = new word_t();
+    word_type*
+    KnuthBendix::internal_string_to_word(internal_string_type const* s) {
+      word_type* w = new word_type();
       w->reserve(s->size());
-      for (internal_char_t const& c : *s) {
+      for (internal_char_type const& c : *s) {
         w->push_back(internal_char_to_uint(c));
       }
       return w;
     }
 
     // Static
-    internal_string_t* RWS::word_to_internal_string(word_t const&      w,
-                                                    internal_string_t* ww) {
+    internal_string_type*
+    KnuthBendix::word_to_internal_string(word_type const&         w,
+                                         internal_string_type* ww) {
       ww->clear();
       for (size_t const& a : w) {
         (*ww) += uint_to_internal_char(a);
@@ -576,24 +489,28 @@ namespace libsemigroups {
     }
 
     // Static
-    internal_string_t* RWS::word_to_internal_string(word_t const& w) {
-      internal_string_t* ww = new internal_string_t();
+    internal_string_type*
+    KnuthBendix::word_to_internal_string(word_type const& w) {
+      internal_string_type* ww = new internal_string_type();
       return word_to_internal_string(w, ww);
     }
 
-    internal_char_t RWS::external_to_internal_char(external_char_t c) const {
+    internal_char_type
+    KnuthBendix::external_to_internal_char(external_char_type c) const {
       LIBSEMIGROUPS_ASSERT(_alphabet != STANDARD_ALPHABET);
       LIBSEMIGROUPS_ASSERT(_alphabet_map.find(c) != _alphabet_map.end());
       return (*_alphabet_map.find(c)).second;
     }
 
-    external_char_t RWS::internal_to_external_char(internal_char_t a) const {
+    external_char_type
+    KnuthBendix::internal_to_external_char(internal_char_type a) const {
       LIBSEMIGROUPS_ASSERT(_alphabet != STANDARD_ALPHABET);
       LIBSEMIGROUPS_ASSERT(internal_char_to_uint(a) < _alphabet.size());
       return _alphabet[internal_char_to_uint(a)];
     }
 
-    void RWS::external_to_internal_string(external_string_t& w) const {
+    void
+    KnuthBendix::external_to_internal_string(external_string_type& w) const {
       if (_alphabet == STANDARD_ALPHABET) {
         return;
       }
@@ -602,7 +519,8 @@ namespace libsemigroups {
       }
     }
 
-    void RWS::internal_to_external_string(internal_string_t& w) const {
+    void
+    KnuthBendix::internal_to_external_string(internal_string_type& w) const {
       if (_alphabet == STANDARD_ALPHABET) {
         return;
       }
@@ -612,10 +530,10 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS private methods for rules
+    // KnuthBendix private methods for rules
     //////////////////////////////////////////////////////////////////////////
 
-    RWS::Rule* RWS::new_rule() const {
+    KnuthBendix::Rule* KnuthBendix::new_rule() const {
       ++_total_rules;
       Rule* rule;
       if (!_inactive_rules.empty()) {
@@ -630,8 +548,8 @@ namespace libsemigroups {
       return rule;
     }
 
-    RWS::Rule* RWS::new_rule(internal_string_t* lhs,
-                             internal_string_t* rhs) const {
+    KnuthBendix::Rule* KnuthBendix::new_rule(internal_string_type* lhs,
+                                             internal_string_type* rhs) const {
       Rule* rule = new_rule();
       delete rule->_lhs;
       delete rule->_rhs;
@@ -641,24 +559,25 @@ namespace libsemigroups {
       return rule;
     }
 
-    RWS::Rule* RWS::new_rule(Rule const* rule1) const {
+    KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) const {
       Rule* rule2 = new_rule();
       rule2->_lhs->append(*rule1->lhs());  // copies lhs
       rule2->_rhs->append(*rule1->rhs());  // copies rhs
       return rule2;
     }
 
-    RWS::Rule* RWS::new_rule(internal_string_t::const_iterator begin_lhs,
-                             internal_string_t::const_iterator end_lhs,
-                             internal_string_t::const_iterator begin_rhs,
-                             internal_string_t::const_iterator end_rhs) const {
+    KnuthBendix::Rule*
+    KnuthBendix::new_rule(internal_string_type::const_iterator begin_lhs,
+                          internal_string_type::const_iterator end_lhs,
+                          internal_string_type::const_iterator begin_rhs,
+                          internal_string_type::const_iterator end_rhs) const {
       Rule* rule = new_rule();
       rule->_lhs->append(begin_lhs, end_lhs);
       rule->_rhs->append(begin_rhs, end_rhs);
       return rule;
     }
 
-    void RWS::add_rule(Rule* rule) {
+    void KnuthBendix::add_rule(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
 #ifdef LIBSEMIGROUPS_STATS
       _max_word_length  = std::max(_max_word_length, rule->lhs()->size());
@@ -667,7 +586,8 @@ namespace libsemigroups {
 #endif
       if (!_set_rules.emplace(RuleLookup(rule)).second) {
         // The rules are not reduced, this should only happen if we are calling
-        // add_rule from outside the class (i.e. we are initialising the RWS).
+        // add_rule from outside the class (i.e. we are initialising the
+        // KnuthBendix).
         push_stack(rule);
         return;  // Do not activate or actually add the rule at this point
       }
@@ -688,8 +608,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
     }
 
-    std::list<RWS::Rule const*>::iterator
-    RWS::remove_rule(std::list<RWS::Rule const*>::iterator it) {
+    std::list<KnuthBendix::Rule const*>::iterator
+    KnuthBendix::remove_rule(std::list<KnuthBendix::Rule const*>::iterator it) {
 #ifdef LIBSEMIGROUPS_STATS
       _unique_lhs_rules.erase(*((*it)->lhs()));
 #endif
@@ -718,60 +638,61 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS public methods for rules and rewriting
+    // KnuthBendix public methods for rules and rewriting
     //////////////////////////////////////////////////////////////////////////
 
-    size_t RWS::nr_rules() const {
+    size_t KnuthBendix::nr_rules() const {
       return _active_rules.size();
     }
 
-    std::vector<std::pair<external_string_t, external_string_t>>
-    RWS::rules() const {
-      std::vector<std::pair<external_string_t, external_string_t>> rules;
+    std::vector<std::pair<external_string_type, external_string_type>>
+    KnuthBendix::rules() const {
+      std::vector<std::pair<external_string_type, external_string_type>> rules;
       rules.reserve(nr_rules());
       for (Rule const* rule : _active_rules) {
-        internal_string_t lhs = internal_string_t(*rule->lhs());
-        internal_string_t rhs = internal_string_t(*rule->rhs());
+        internal_string_type lhs = internal_string_type(*rule->lhs());
+        internal_string_type rhs = internal_string_type(*rule->rhs());
         internal_to_external_string(lhs);
         internal_to_external_string(rhs);
         rules.push_back(std::make_pair(lhs, rhs));
       }
-      std::sort(rules.begin(),
-                rules.end(),
-                [this](std::pair<external_string_t, external_string_t> rule1,
-                       std::pair<external_string_t, external_string_t> rule2) {
-                  return (*_order)(rule2.first, rule1.first)
-                         || (rule1.first == rule2.first
-                             && (*_order)(rule2.second, rule1.second));
-                });
+      std::sort(
+          rules.begin(),
+          rules.end(),
+          [this](std::pair<external_string_type, external_string_type> rule1,
+                 std::pair<external_string_type, external_string_type> rule2) {
+            return (*_order)(rule2.first, rule1.first)
+                   || (rule1.first == rule2.first
+                       && (*_order)(rule2.second, rule1.second));
+          });
       return rules;
     }
 
-    external_string_t* RWS::rewrite(external_string_t* w) const {
+    external_string_type* KnuthBendix::rewrite(external_string_type* w) const {
       external_to_internal_string(*w);
       internal_rewrite(w);
       internal_to_external_string(*w);
       return w;
     }
 
-    external_string_t RWS::rewrite(external_string_t w) const {
+    external_string_type KnuthBendix::rewrite(external_string_type w) const {
       rewrite(&w);
       return w;
     }
 
-    std::ostream& operator<<(std::ostream& os, RWS const& rws) {
-      for (auto rule : rws._active_rules) {
+    std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
+      for (auto rule : kb._active_rules) {
         os << *rule << std::endl;
       }
       return os;
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS the main public methods
+    // KnuthBendix the main public methods
     //////////////////////////////////////////////////////////////////////////
 
     // See CONFLUENT from Sims, p62
-    bool RWS::confluent() const {
+    bool KnuthBendix::confluent() const {
       if (!_stack.empty()) {
         return false;
       }
@@ -779,9 +700,9 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_stack.empty());
         _confluent        = true;
         _confluence_known = true;
-        internal_string_t word1;
-        internal_string_t word2;
-        size_t            seen = 0;
+        internal_string_type word1;
+        internal_string_type word2;
+        size_t               seen = 0;
 
         for (auto it1 = _active_rules.cbegin();
              it1 != _active_rules.cend() && !dead() && !timed_out();
@@ -837,14 +758,14 @@ namespace libsemigroups {
     }
 
     // KBS_2 from Sims, p77-78
-    void RWS::knuth_bendix() {
+    void KnuthBendix::knuth_bendix() {
       if (finished()) {
         return;
       }
       Timer timer;
       if (_stack.empty() && confluent() && !dead()) {
         // _stack can be non-empty if non-reduced rules were used to define the
-        // RWS.  If _stack is non-empty, then it means that the rules in
+        // KnuthBendix.  If _stack is non-empty, then it means that the rules in
         // _active_rules might not define the system.
         REPORT("the system is confluent already");
         set_finished();
@@ -897,8 +818,8 @@ namespace libsemigroups {
         REPORT("timed out");
       } else {
         // LIBSEMIGROUPS_ASSERT(_stack.empty());
-        // Seems that the stack can be non-empty here in RWS 12, 14, 16 and
-        // maybe more
+        // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
+        // and maybe more
         if (_max_overlap == UNBOUNDED && _max_rules == UNBOUNDED) {
           REPORT("finished");
           _confluence_known = true;
@@ -919,7 +840,7 @@ namespace libsemigroups {
       REPORT("elapsed time = " << timer);
     }
 
-    void RWS::knuth_bendix_by_overlap_length() {
+    void KnuthBendix::knuth_bendix_by_overlap_length() {
       Timer  timer;
       size_t max_overlap               = _max_overlap;
       size_t check_confluence_interval = _check_confluence_interval;
@@ -935,20 +856,21 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // RWS private methods
+    // KnuthBendix private methods
     //////////////////////////////////////////////////////////////////////////
 
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if it
     // is not, then u might not have sufficient space!
-    void RWS::internal_rewrite(internal_string_t* u) const {
+    void KnuthBendix::internal_rewrite(internal_string_type* u) const {
       if (u->size() < _min_length_lhs_rule) {
         return;
       }
-      internal_string_t::iterator const& v_begin = u->begin();
-      internal_string_t::iterator v_end = u->begin() + _min_length_lhs_rule - 1;
-      internal_string_t::iterator w_begin      = v_end;
-      internal_string_t::iterator const& w_end = u->end();
+      internal_string_type::iterator const& v_begin = u->begin();
+      internal_string_type::iterator        v_end
+          = u->begin() + _min_length_lhs_rule - 1;
+      internal_string_type::iterator        w_begin = v_end;
+      internal_string_type::iterator const& w_end   = u->end();
 
       RuleLookup lookup;
 
@@ -980,7 +902,7 @@ namespace libsemigroups {
     }
 
     // TEST_2 from Sims, p76
-    void RWS::clear_stack() {
+    void KnuthBendix::clear_stack() {
       while (!_stack.empty() && !dead() && !timed_out()) {
 #ifdef LIBSEMIGROUPS_STATS
         _max_stack_depth = std::max(_max_stack_depth, _stack.size());
@@ -993,16 +915,16 @@ namespace libsemigroups {
         // Rewrite both sides and reorder if necessary . . .
         rule1->rewrite();
         if (*rule1->lhs() != *rule1->rhs()) {
-          internal_string_t const* lhs = rule1->lhs();
+          internal_string_type const* lhs = rule1->lhs();
           for (auto it = _active_rules.begin(); it != _active_rules.end();) {
             Rule* rule2 = const_cast<Rule*>(*it);
-            if (rule2->lhs()->find(*lhs) != external_string_t::npos) {
+            if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
               it = remove_rule(it);
               LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
               // rule2 is added to _inactive_rules by clear_stack
               _stack.emplace(rule2);
             } else {
-              if (rule2->rhs()->find(*lhs) != external_string_t::npos) {
+              if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
                 rule2->rewrite_rhs();
               }
               ++it;
@@ -1031,7 +953,7 @@ namespace libsemigroups {
       }
     }
 
-    void RWS::push_stack(Rule* rule) {
+    void KnuthBendix::push_stack(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (*rule->lhs() != *rule->rhs()) {
         _stack.emplace(rule);
@@ -1042,7 +964,7 @@ namespace libsemigroups {
     }
 
     // OVERLAP_2 from Sims, p77
-    void RWS::overlap(Rule const* u, Rule const* v) {
+    void KnuthBendix::overlap(Rule const* u, Rule const* v) {
       LIBSEMIGROUPS_ASSERT(u->active() && v->active());
       auto limit
           = u->lhs()->cend() - std::min(u->lhs()->size(), v->lhs()->size());

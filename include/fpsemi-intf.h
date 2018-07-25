@@ -44,22 +44,14 @@ namespace libsemigroups {
     /////////////////
     // Constructor //
     /////////////////
+
     FpSemiIntf();
 
-    ////////////////////////////////
-    // Public non-virtual methods //
-    ////////////////////////////////
-
-    std::string const& alphabet() const;
-    bool               has_isomorphic_non_fp_semigroup() const noexcept;
-
-    //////////////////////////
-    // Pure virtual methods //
-    //////////////////////////
+    /////////////////////////////////
+    // Public pure virtual methods //
+    /////////////////////////////////
 
     virtual void add_rule(std::string const&, std::string const&) = 0;
-    // TODO is the next one required?
-    //virtual void add_rules(SemigroupBase*)                        = 0;
 
     // Pure methods (attributes of an f.p. semigroup)
     virtual bool   is_obviously_finite()   = 0;
@@ -67,40 +59,32 @@ namespace libsemigroups {
     virtual size_t size()                  = 0;
 
     // Pure methods (for elements of fp semigroups)
-    virtual bool equal_to(std::string const&, std::string const&) = 0;
-    virtual std::string normal_form(std::string const&) = 0;
+    virtual bool        equal_to(std::string const&, std::string const&) = 0;
+    virtual std::string normal_form(std::string const&)                  = 0;
 
     virtual SemigroupBase* isomorphic_non_fp_semigroup() = 0;
 
-    //////////////////////////////////////
-    // Non-pure syntactic sugar methods //
-    //////////////////////////////////////
+    // TODO nr_rules
 
-    void add_rule(std::pair<std::string, std::string>);
-    void add_rules(std::vector<std::pair<std::string, std::string>> const&);
-    void add_rules(SemigroupBase*);
-
-
-    // bool equal_to(std::initializer_list<letter_type> const&,
-    //              std::initializer_list<letter_type> const&);
-
-    // word_type normal_form(std::initializer_list<letter_type> const&);
-    // TODO normal_form for word_type??
-
-    // void add_rule(relation_type);
-    // void add_rule(std::initializer_list<size_t>,
-    //              std::initializer_list<size_t>);
-    // void add_rules(std::vector<relation_type> const&);
-
-    ////////////////////////////
-    // Public virtual methods //
-    ////////////////////////////
+    /////////////////////////////////////
+    // Public non-pure virtual methods //
+    /////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
+    virtual void      add_rules(SemigroupBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
     virtual void      set_alphabet(std::string const&);
     virtual void      set_alphabet(size_t);
+
+    ////////////////////////////////
+    // Public non-virtual methods //
+    ////////////////////////////////
+
+    void add_rule(std::pair<std::string, std::string>);
+    void add_rules(std::vector<std::pair<std::string, std::string>> const&);
+    std::string const& alphabet() const;
+    bool               has_isomorphic_non_fp_semigroup() const noexcept;
 
    protected:
     ////////////////////////////////
@@ -112,11 +96,10 @@ namespace libsemigroups {
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
-    // TODO are these really necessary?
-    SemigroupBase* get_isomorphic_non_fp_semigroup() const noexcept;
-    void           set_isomorphic_non_fp_semigroup(SemigroupBase*);
+    void reset_isomorphic_non_fp_semigroup();
+    void set_isomorphic_non_fp_semigroup(SemigroupBase*);
 
-    bool           is_alphabet_defined() const noexcept;
+    bool is_alphabet_defined() const noexcept;
 
     bool validate_letter(char) const;
 
@@ -140,3 +123,17 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
+        //////////////////////////////////////
+        // Non-pure syntactic sugar methods //
+        //////////////////////////////////////
+
+// bool equal_to(std::initializer_list<letter_type> const&,
+//              std::initializer_list<letter_type> const&);
+
+// word_type normal_form(std::initializer_list<letter_type> const&);
+// TODO normal_form for word_type??
+
+// void add_rule(relation_type);
+// void add_rule(std::initializer_list<size_t>,
+//              std::initializer_list<size_t>);
+// void add_rules(std::vector<relation_type> const&);

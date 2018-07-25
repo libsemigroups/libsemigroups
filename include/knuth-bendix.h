@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_RWS_H_
-#define LIBSEMIGROUPS_SRC_RWS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
+#define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
 
 #include <algorithm>
 #include <atomic>
@@ -30,20 +30,22 @@
 #include <utility>
 #include <vector>
 
+#include "internal/libsemigroups-config.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/report.h"
+#include "internal/timer.h"
+
 #include "fpsemi-intf.h"
-#include "libsemigroups-config.h"
-#include "libsemigroups-debug.h"
-#include "race.h"
-#include "report.h"
-#include "rws-order.h"
-#include "semigroups-base.h"
-#include "timer.h"
+#include "kb-order.h"
+#include "semigroup-base.h"
+#include "types.h"
 
 // TODO: - move implementation to .cc file
-//       - don't use the typedef external_string_t in public methods, use
+//       - don't use the typedef external_string_type in public methods, use
 //       std::string instead.
 
 namespace libsemigroups {
+  class KBE; // Forward declaration
 
   namespace fpsemigroup {
     //! This class is used to represent a
@@ -51,23 +53,59 @@ namespace libsemigroups {
     //! system](https://en.wikipedia.org/wiki/Semi-Thue_system)
     //! defining a finitely presented monoid or semigroup.
 
-    class RWS : public Interface {
-      // Forward declarations
-      class RuleLookup;       // defined in rws.h
-      struct OverlapMeasure;  // defined in rws.cc
+    class KnuthBendix : public FpSemiIntf {
+     public:
+      //////////////////////////////////////////////////////////////////////////
+      // Runner - overridden virtual methods - public
+      //////////////////////////////////////////////////////////////////////////
+
+      void run() override;
+
+      //////////////////////////////////////////////////////////////////////////
+      // FpSemiIntf - overridden pure virtual methods - public
+      //////////////////////////////////////////////////////////////////////////
+
+      void add_rule(std::string const&, std::string const&) override;
+
+      bool   is_obviously_finite() override;
+      bool   is_obviously_infinite() override;
+      size_t size() override;
+
+      bool        equal_to(std::string const&, std::string const&) override;
+      std::string normal_form(std::string const&) override;
+
+      SemigroupBase* isomorphic_non_fp_semigroup() override;
+
+      //////////////////////////////////////////////////////////////////////////
+      // FpSemiIntf - overridden non-pure virtual methods - public
+      //////////////////////////////////////////////////////////////////////////
+
+      void set_alphabet(std::string const&) override;
+
+     private:
+      //////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - forward declarations - private
+      //////////////////////////////////////////////////////////////////////////
+
+      class RuleLookup;       // defined in knuth-bendix.h
+      struct OverlapMeasure;  // defined in knuth-bendix.cc
+      friend struct Rule;     // defined in knuth-bendix.h
       struct Rule;
-      friend Rule;        // defined in rws.h
-      friend class RWSE;  // defined in rwse.h
+      friend class ::libsemigroups::KBE;       // defined in kbe.h
 
-      typedef char internal_char_t;
-      typedef char external_char_t;
+      //////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - typedefs - private
+      //////////////////////////////////////////////////////////////////////////
 
-      typedef std::string internal_string_t;
-      typedef std::string external_string_t;
+      using internal_char_type = char;
+      using external_char_type = char;
+
+      using internal_string_type = std::string;
+      using external_string_type = std::string;
 
      public:
       //////////////////////////////////////////////////////////////////////////
-      // Static data members and enums
+      // KnuthBendix - static data members and enums - public
       //////////////////////////////////////////////////////////////////////////
 
       //! The values in this enum determine how a rewriting system measures the
@@ -77,19 +115,21 @@ namespace libsemigroups {
       //! * ***AB_BC***:      \f$d(AB, BC) = |AB| + |BC|\f$
       //! * ***max_AB_BC***:  \f$d(AB, BC) = max(|AB|, |BC|)\f$
       //!
-      //! \sa RWS::set_overlap_policy.
+      //! \sa KnuthBendix::set_overlap_policy.
+      // TODO enum class
       enum overlap_policy { ABC = 0, AB_BC = 1, max_AB_BC = 2 };
 
-      static external_string_t const STANDARD_ALPHABET;
+      static external_string_type const STANDARD_ALPHABET;
 
       //! The constant value represents an UNBOUNDED quantity.
       //!
-      //! \sa RWS::set_check_confluence_interval, RWS::set_max_rules,
-      //! RWS::set_max_overlap.
-      static size_t const UNBOUNDED = static_cast<size_t>(-2);
+      //! \sa KnuthBendix::set_check_confluence_interval,
+      //! KnuthBendix::set_max_rules, KnuthBendix::set_max_overlap.
+      // TODO move to constants.h
+      static size_t const UNBOUNDED = std::numeric_limits<size_t>::max() - 2;
 
       //////////////////////////////////////////////////////////////////////////
-      // Constructors and destructor
+      // KnuthBendix - constructors and destructor - public
       //////////////////////////////////////////////////////////////////////////
 
       //! Constructs rewriting system with no rules and the reduction ordering
@@ -98,13 +138,15 @@ namespace libsemigroups {
       //! This constructs a rewriting system with no rules, and with the
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
-      explicit RWS(ReductionOrdering*, external_string_t = STANDARD_ALPHABET);
-      explicit RWS(SemigroupBase*);
-      explicit RWS(RWS const*);
+      explicit KnuthBendix(ReductionOrdering*,
+                           external_string_type = STANDARD_ALPHABET);
+      explicit KnuthBendix(SemigroupBase*);
+      explicit KnuthBendix(SemigroupBase&);
+      explicit KnuthBendix(KnuthBendix const*);
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
       //! reduction ordering.
-      RWS() : RWS(new SHORTLEX(), STANDARD_ALPHABET) {}
+      KnuthBendix() : KnuthBendix(new SHORTLEX(), STANDARD_ALPHABET) {}
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
       //! reduction ordering and using the alphabet specified by the parameter
@@ -113,130 +155,93 @@ namespace libsemigroups {
       // with single default parameters:
       //    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
       // and so we have two constructors instead.
-      explicit RWS(external_string_t alphabet)
-          : RWS(new SHORTLEX(), alphabet) {}
+      explicit KnuthBendix(external_string_type alphabet)
+          : KnuthBendix(new SHORTLEX(), alphabet) {}
 
       //! A default destructor
       //!
       //! This deletes the reduction order used to construct the object, and the
       //! rules in the system.
-      ~RWS();
+      ~KnuthBendix();
 
       //////////////////////////////////////////////////////////////////////////
-      // Setters for RWS optional parameters
+      // KnuthBendix - setters for optional parameters - public
       //////////////////////////////////////////////////////////////////////////
 
-      //! The method RWS::knuth_bendix periodically checks if the system is
-      //! already confluent. This method can be used to set how frequently this
-      //! happens, it is the number of new overlaps that should be considered
-      //! before checking confluence. Setting this value too low can adversely
-      //! affect the performance of RWS::knuth_bendix.
+      //! The method KnuthBendix::knuth_bendix periodically checks if the system
+      //! is already confluent. This method can be used to set how frequently
+      //! this happens, it is the number of new overlaps that should be
+      //! considered before checking confluence. Setting this value too low can
+      //! adversely affect the performance of KnuthBendix::knuth_bendix.
       //!
-      //! The default value is 4096, and should be set to RWS::UNBOUNDED if
-      //! RWS::knuth_bendix should never check if the system is already
-      //! confluent.
+      //! The default value is 4096, and should be set to KnuthBendix::UNBOUNDED
+      //! if KnuthBendix::knuth_bendix should never check if the system is
+      //! already confluent.
       //!
-      //! \sa RWS::knuth_bendix.
+      //! \sa KnuthBendix::knuth_bendix.
       void set_check_confluence_interval(size_t);
 
       //! This method can be used to specify the maximum length of the overlap
       //! of
       //! two left hand sides of rules that should be considered in
-      //! RWS::knuth_bendix.
+      //! KnuthBendix::knuth_bendix.
       //!
       //! If this value is less than the longest left hand side of a rule, then
-      //! RWS::knuth_bendix can terminate without the system being confluent.
+      //! KnuthBendix::knuth_bendix can terminate without the system being
+      //! confluent.
       //!
-      //! \sa RWS::knuth_bendix.
+      //! \sa KnuthBendix::knuth_bendix.
       void set_max_overlap(size_t);
 
       //! This method sets the (approximate) maximum number of rules that the
       //! system should contain. If this is number is exceeded in calls to
-      //! RWS::knuth_bendix or RWS::knuth_bendix_by_overlap_length, then
-      //! these methods will terminate and the system may not be confluent.
+      //! KnuthBendix::knuth_bendix or
+      //! KnuthBendix::knuth_bendix_by_overlap_length, then these methods will
+      //! terminate and the system may not be confluent.
       //!
-      //! \sa RWS::knuth_bendix and RWS::knuth_bendix.
+      //! \sa KnuthBendix::knuth_bendix and KnuthBendix::knuth_bendix.
       void set_max_rules(size_t);
 
       //! This method can be used to determine the way that the length of an
       //! overlap of two words in the system is meaasured.
       //!
-      //! \sa RWS::overlap_measure.
+      //! \sa KnuthBendix::overlap_measure.
       void set_overlap_policy(overlap_policy);
 
-      //////////////////////////////////////////////////////////////////////////
-      // Overridden virtual methods from Interface
-      //////////////////////////////////////////////////////////////////////////
-
-      void                     set_nr_generators(size_t) override;
-      size_t                   nr_generators() const override;
-      void                     set_alphabet(external_string_t) override;
-      external_string_t const& alphabet() const override;
-
-     private:
-      bool validate_word(word_t const&) const override;
-      bool validate_word(external_string_t const&) const override;
-      void set_isomorphic_non_fp_semigroup(SemigroupBase*) override;
-      void internal_add_relation(word_t, word_t) override;
-
-     public:
-      void add_relation(word_t, word_t) override;
-      void add_relation(external_string_t, external_string_t) override;
-      using Interface::add_relation;
-
-      bool           is_obviously_finite() const override;
-      bool           is_obviously_infinite() const override;
-      size_t         size() override;
-      SemigroupBase* isomorphic_non_fp_semigroup() override;
-      bool           has_isomorphic_non_fp_semigroup() override;
-
-      bool equal_to(word_t const&, word_t const&) override;
-      bool equal_to(std::string const&, std::string const&) override;
-      using Interface::equal_to;
-
-      word_t      normal_form(word_t const&) override;
-      std::string normal_form(std::string const&) override;
-      using Interface::normal_form;
-
-      //////////////////////////////////////////////////////////////////////////
-      // Overridden virtual methods from Runner
-      //////////////////////////////////////////////////////////////////////////
-
-      void run() override;
-
      private:
       //////////////////////////////////////////////////////////////////////////
-      // RWS private methods for converting from ints <-> string/char
+      // KnuthBendix - methods for converting ints <-> string/char - private
       //////////////////////////////////////////////////////////////////////////
 
-      static size_t             internal_char_to_uint(internal_char_t c);
-      static internal_char_t    uint_to_internal_char(size_t a);
-      static internal_string_t* uint_to_internal_string(size_t);
-      static word_t* internal_string_to_word(internal_string_t const*);
+      static size_t                internal_char_to_uint(internal_char_type c);
+      static internal_char_type    uint_to_internal_char(size_t a);
+      static internal_string_type* uint_to_internal_string(size_t);
+      static word_type* internal_string_to_word(internal_string_type const*);
 
       // The second parameter is modified in-place and returned.
-      static internal_string_t* word_to_internal_string(word_t const&,
-                                                        internal_string_t*);
+      static internal_string_type*
+      word_to_internal_string(word_type const&, internal_string_type*);
 
       // Returns a pointer, the caller should delete it.
-      static internal_string_t* word_to_internal_string(word_t const&);
+      static internal_string_type* word_to_internal_string(word_type const&);
 
-      internal_char_t external_to_internal_char(external_char_t) const;
-      external_char_t internal_to_external_char(internal_char_t) const;
-      void            external_to_internal_string(external_string_t& w) const;
-      void            internal_to_external_string(internal_string_t& w) const;
+      internal_char_type external_to_internal_char(external_char_type) const;
+      external_char_type internal_to_external_char(internal_char_type) const;
+      void external_to_internal_string(external_string_type& w) const;
+      void internal_to_external_string(internal_string_type& w) const;
 
       //////////////////////////////////////////////////////////////////////////
-      // RWS private methods for rules
+      // KnuthBendix - methods for rules - private
       //////////////////////////////////////////////////////////////////////////
 
       Rule* new_rule() const;
-      Rule* new_rule(internal_string_t* lhs, internal_string_t* rhs) const;
+      Rule* new_rule(internal_string_type* lhs,
+                     internal_string_type* rhs) const;
       Rule* new_rule(Rule const* rule) const;
-      Rule* new_rule(internal_string_t::const_iterator begin_lhs,
-                     internal_string_t::const_iterator end_lhs,
-                     internal_string_t::const_iterator begin_rhs,
-                     internal_string_t::const_iterator end_rhs) const;
+      Rule* new_rule(internal_string_type::const_iterator begin_lhs,
+                     internal_string_type::const_iterator end_lhs,
+                     internal_string_type::const_iterator begin_rhs,
+                     internal_string_type::const_iterator end_rhs) const;
 
       void add_rule(Rule* rule);
 
@@ -245,7 +250,7 @@ namespace libsemigroups {
 
      public:
       //////////////////////////////////////////////////////////////////////////
-      // RWS public methods for rules and rewriting
+      // KnuthBendix - methods for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
 
       //! Returns the current number of active rules in the rewriting system.
@@ -257,24 +262,24 @@ namespace libsemigroups {
       //! reduction ordering of the rewriting system. The rules are sorted
       //! according to the reduction ordering used by the rewriting system, on
       //! the first entry.
-      std::vector<std::pair<external_string_t, external_string_t>>
+      std::vector<std::pair<external_string_type, external_string_type>>
       rules() const;
 
       //! Rewrites the word \p w in-place according to the current rules in the
       //! rewriting system, and returns it.
-      external_string_t* rewrite(external_string_t* w) const;
+      external_string_type* rewrite(external_string_type* w) const;
 
       //! Rewrites a copy of the word \p w rewritten according to the current
       //! rules in the rewriting system.
-      external_string_t rewrite(external_string_t w) const;
+      external_string_type rewrite(external_string_type w) const;
 
-      //! This method allows a RWS object to be left shifted into a
+      //! This method allows a KnuthBendix object to be left shifted into a
       //! std::ostream, such as std::cout. The currently active rules of the
       //! system are represented in the output.
-      friend std::ostream& operator<<(std::ostream& os, RWS const& rws);
+      friend std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb);
 
       //////////////////////////////////////////////////////////////////////////
-      // RWS the main public methods
+      // KnuthBendix - main methods - public
       //////////////////////////////////////////////////////////////////////////
 
       //! Returns \c true if the rewriting system is
@@ -294,35 +299,32 @@ namespace libsemigroups {
 
       //! This method runs the Knuth-Bendix algorithm on the rewriting system by
       //! considering all overlaps of a given length \f$n\f$ (according to the
-      //! RWS::overlap_measure) before those overlaps of length \f$n + 1\f$.
+      //! KnuthBendix::overlap_measure) before those overlaps of length \f$n +
+      //! 1\f$.
       //!
       //! \warning This will terminate when the rewriting system is confluent,
       //! which might be never.
       //!
-      //! \sa RWS::knuth_bendix.
+      //! \sa KnuthBendix::knuth_bendix.
       void knuth_bendix_by_overlap_length();
 
      private:
       //////////////////////////////////////////////////////////////////////////
-      // RWS private methods and data
+      // KnuthBendix - methods and data - private
       //////////////////////////////////////////////////////////////////////////
 
       // Rewrites the word pointed to by \p w in-place according to the current
       // rules in the rewriting system.
-      void internal_rewrite(internal_string_t* w) const;
+      void internal_rewrite(internal_string_type* w) const;
       void clear_stack();
       void push_stack(Rule* rule);
       void overlap(Rule const* u, Rule const* v);
 
-      std::list<Rule const*>                               _active_rules;
-      external_string_t                                    _alphabet;
-      std::unordered_map<external_char_t, internal_char_t> _alphabet_map;
+      std::list<Rule const*>           _active_rules;
       size_t                           _check_confluence_interval;
       mutable std::atomic<bool>        _confluent;
       mutable std::atomic<bool>        _confluence_known;
-      bool                             _delete_isomorphic_non_fp_semigroup;
       mutable std::list<Rule*>         _inactive_rules;
-      SemigroupBase*                   _isomorphic_non_fp_semigroup;
       size_t                           _max_overlap;
       size_t                           _max_rules;
       size_t                           _min_length_lhs_rule;
@@ -334,47 +336,47 @@ namespace libsemigroups {
       overlap_policy                   _overlap_policy;
       std::set<RuleLookup>             _set_rules;
       std::stack<Rule*>                _stack;
-      internal_string_t*               _tmp_word1;
-      internal_string_t*               _tmp_word2;
+      internal_string_type*            _tmp_word1;
+      internal_string_type*            _tmp_word2;
       mutable size_t                   _total_rules;
 
 #ifdef LIBSEMIGROUPS_STATS
-      size_t                                max_active_word_length();
-      size_t                                _max_stack_depth;
-      size_t                                _max_word_length;
-      size_t                                _max_active_word_length;
-      size_t                                _max_active_rules;
-      std::unordered_set<internal_string_t> _unique_lhs_rules;
+      size_t                                   max_active_word_length();
+      size_t                                   _max_stack_depth;
+      size_t                                   _max_word_length;
+      size_t                                   _max_active_word_length;
+      size_t                                   _max_active_rules;
+      std::unordered_set<internal_string_type> _unique_lhs_rules;
 #endif
     };
 
     // Class for rules in rewriting systems.
-    struct RWS::Rule {
+    struct KnuthBendix::Rule {
       friend std::ostream& operator<<(std::ostream& os, Rule const& rule) {
         os << rule.internal_to_external_string(rule.lhs()) << " -> "
            << rule.internal_to_external_string(rule.rhs());
         return os;
       }
 
-      external_string_t
-      internal_to_external_string(internal_string_t const* word) const {
-        external_string_t str(*word);
-        _rws->internal_to_external_string(str);
+      external_string_type
+      internal_to_external_string(internal_string_type const* word) const {
+        external_string_type str(*word);
+        _kb->internal_to_external_string(str);
         return str;
       }
 
       // Returns the left hand side of the rule, which is guaranteed to be
       // greater than its right hand side according to the reduction ordering of
-      // the RWS used to construct this.
-      internal_string_t const* lhs() const {
-        return const_cast<internal_string_t const*>(_lhs);
+      // the KnuthBendix used to construct this.
+      internal_string_type const* lhs() const {
+        return const_cast<internal_string_type const*>(_lhs);
       }
 
       // Returns the right hand side of the rule, which is guaranteed to be
       // less than its left hand side according to the reduction ordering of
-      // the RWS used to construct this.
-      internal_string_t const* rhs() const {
-        return const_cast<internal_string_t const*>(_rhs);
+      // the KnuthBendix used to construct this.
+      internal_string_type const* rhs() const {
+        return const_cast<internal_string_type const*>(_rhs);
       }
 
       // The Rule class does not support an assignment contructor to avoid
@@ -385,11 +387,11 @@ namespace libsemigroups {
       // accidental copying.
       Rule(Rule const& copy) = delete;
 
-      // Construct from RWS with new but empty internal_string_t's
-      explicit Rule(RWS const* rws, int64_t id)
-          : _rws(rws),
-            _lhs(new internal_string_t()),
-            _rhs(new internal_string_t()),
+      // Construct from KnuthBendix with new but empty internal_string_type's
+      explicit Rule(KnuthBendix const* kb, int64_t id)
+          : _kb(kb),
+            _lhs(new internal_string_type()),
+            _rhs(new internal_string_type()),
             _id(-1 * id) {
         LIBSEMIGROUPS_ASSERT(_id < 0);
       }
@@ -402,14 +404,14 @@ namespace libsemigroups {
 
       void rewrite() {
         LIBSEMIGROUPS_ASSERT(_id != 0);
-        _rws->internal_rewrite(_lhs);
-        _rws->internal_rewrite(_rhs);
+        _kb->internal_rewrite(_lhs);
+        _kb->internal_rewrite(_rhs);
         reorder();
       }
 
       void rewrite_rhs() {
         LIBSEMIGROUPS_ASSERT(_id != 0);
-        _rws->internal_rewrite(_rhs);
+        _kb->internal_rewrite(_rhs);
       }
 
       void clear() {
@@ -449,30 +451,30 @@ namespace libsemigroups {
       }
 
       void reorder() {
-        if ((*(_rws->_order))(_rhs, _lhs)) {
+        if ((*(_kb->_order))(_rhs, _lhs)) {
           std::swap(_lhs, _rhs);
         }
       }
 
-      RWS const*         _rws;
-      internal_string_t* _lhs;
-      internal_string_t* _rhs;
-      int64_t            _id;
+      KnuthBendix const*    _kb;
+      internal_string_type* _lhs;
+      internal_string_type* _rhs;
+      int64_t               _id;
     };
 
-    // Simple class wrapping a two iterators to an internal_string_t and a Rule
-    // const*
-    class RWS::RuleLookup {
+    // Simple class wrapping a two iterators to an internal_string_type and a
+    // Rule const*
+    class KnuthBendix::RuleLookup {
      public:
       RuleLookup() : _rule(nullptr) {}
 
-      explicit RuleLookup(RWS::Rule* rule)
+      explicit RuleLookup(KnuthBendix::Rule* rule)
           : _first(rule->lhs()->cbegin()),
             _last(rule->lhs()->cend()),
             _rule(rule) {}
 
-      RuleLookup& operator()(internal_string_t::iterator const& first,
-                             internal_string_t::iterator const& last) {
+      RuleLookup& operator()(internal_string_type::iterator const& first,
+                             internal_string_type::iterator const& last) {
         _first = first;
         _last  = last;
         return *this;
@@ -498,10 +500,10 @@ namespace libsemigroups {
       }
 
      private:
-      internal_string_t::const_iterator _first;
-      internal_string_t::const_iterator _last;
-      Rule const*                       _rule;
+      internal_string_type::const_iterator _first;
+      internal_string_type::const_iterator _last;
+      Rule const*                          _rule;
     };
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_RWS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_

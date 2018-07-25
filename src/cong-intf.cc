@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO clean this up
+
 #include "cong-intf.h"
 
 #include "internal/libsemigroups-exception.h"
@@ -44,13 +46,16 @@ namespace libsemigroups {
     if (_delete_quotient) {
       delete _quotient;
     }
-    _delete_quotient = true;
+    _delete_quotient = false;
     _quotient        = nullptr;
   }
 
   void CongIntf::set_quotient(SemigroupBase* quotient) {
-    reset_quotient();
-    _delete_quotient = true;
+    LIBSEMIGROUPS_ASSERT(quotient != nullptr);
+    LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
+    // FIXME _delete_quotient can be either true or false, depending on whether
+    // quotient is coming from outside or inside.
+    _delete_quotient = false;
     _quotient        = quotient;
   }
 
@@ -64,6 +69,7 @@ namespace libsemigroups {
     _nrgens                   = n;
   }
 
+  // FIXME replace with has_quotient
   SemigroupBase* CongIntf::get_quotient() const {
     return _quotient;
   }

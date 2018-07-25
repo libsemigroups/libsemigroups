@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// The purpose of this file is to test the ToddCoxeter class.
+// The purpose of this file is to test the ToddCoxeter classes.
 
 #include <utility>
 

@@ -257,6 +257,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////
     // FIXME should be word_type const&
     void ToddCoxeter::add_pair(word_type lhs, word_type rhs) {
+      // TODO exception not assertion
       LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
       validate_word(lhs);
       validate_word(rhs);
@@ -995,6 +996,7 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(SemigroupBase* S) : ToddCoxeter() {
       set_alphabet(S->nrgens());
       add_rules(S);
+      // TODO something like the following
       // if (S->nr_rules() == this->nr_rules()) {
       //   set_isomorphic_non_fp_semigroup(S);
       // }

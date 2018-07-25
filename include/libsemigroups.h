@@ -18,6 +18,8 @@
 
 // This file includes all the headers in libsemigroups, for convenience.
 
+// TODO double check!
+
 #ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
 #define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
 

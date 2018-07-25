@@ -83,7 +83,7 @@ namespace libsemigroups {
   void FpSemiIntf::add_rules(SemigroupBase* S) {
     // The call to add_rule in the lambda below should validate the relations,
     // and that _alphabet has been defined already.
-    if (_alphabet.size() != S->nrgens()) {
+    if (is_alphabet_defined() && _alphabet.size() != S->nrgens()) {
       throw LibsemigroupsException(
           "FpSemiIntf::add_rules: incompatible number of generators, found "
           + libsemigroups::to_string(S->nrgens()) + ", should be at most "
@@ -110,6 +110,10 @@ namespace libsemigroups {
   ////////////////////////////
 
   void FpSemiIntf::add_rule(word_type const& lhs, word_type const& rhs) {
+    if (!is_alphabet_defined()) {
+      throw LibsemigroupsException("FpSemiIntf::add_rule: cannot add rules "
+                                   "before an alphabet is defined");
+    }
     validate_word(lhs);
     validate_word(rhs);
     add_rule(word_to_string(lhs), word_to_string(rhs));
@@ -204,14 +208,22 @@ namespace libsemigroups {
     return _is_alphabet_defined;
   }
 
-  SemigroupBase* FpSemiIntf::get_isomorphic_non_fp_semigroup() const noexcept {
-    return _isomorphic_non_fp_semigroup;
+  void FpSemiIntf::reset_isomorphic_non_fp_semigroup() {
+    if (_delete_isomorphic_non_fp_semigroup) {
+      delete _isomorphic_non_fp_semigroup;
+    }
+    _delete_isomorphic_non_fp_semigroup = false;
+    _isomorphic_non_fp_semigroup        = nullptr;
   }
 
-  void FpSemiIntf::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
+  void FpSemiIntf::set_isomorphic_non_fp_semigroup(
+      SemigroupBase* isomorphic_non_fp_semigroup) {
+    LIBSEMIGROUPS_ASSERT(isomorphic_non_fp_semigroup != nullptr);
     LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
+    // FIXME _delete_isomorphic_non_fp_semigroup can be either true or false,
+    // depending on whether quotient is coming from outside or inside.
     _delete_isomorphic_non_fp_semigroup = false;
-    _isomorphic_non_fp_semigroup        = S;
+    _isomorphic_non_fp_semigroup        = isomorphic_non_fp_semigroup;
   }
 
   bool FpSemiIntf::validate_letter(char c) const {
