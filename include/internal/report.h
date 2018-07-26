@@ -77,7 +77,7 @@ namespace libsemigroups {
   // If the call operator has not been called before, then the prefix is not
   // printed (and consequently the value of the thread_id is not set).
 
-  static class Reporter {
+  class Reporter {
    public:
     // 0 parameters
     //
@@ -269,6 +269,8 @@ namespace libsemigroups {
     size_t                                      _next_tid;
     std::ostream*                               _ostream;  // For testing
     std::atomic<bool>                           _report;
-  } REPORTER;
+  };
+
+  extern Reporter REPORTER;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_

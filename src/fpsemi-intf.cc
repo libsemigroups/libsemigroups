@@ -28,9 +28,9 @@
 #include "semigroup-base.h"
 
 namespace libsemigroups {
-  /////////////////
-  // Constructor //
-  /////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiIntf - constructor + destructor - public
+  //////////////////////////////////////////////////////////////////////////////
 
   FpSemiIntf::FpSemiIntf()
       : _alphabet(),
@@ -38,6 +38,12 @@ namespace libsemigroups {
         _delete_isomorphic_non_fp_semigroup(false),
         _is_alphabet_defined(false),
         _isomorphic_non_fp_semigroup(nullptr) {}
+
+  FpSemiIntf::~FpSemiIntf() {
+    if (_delete_isomorphic_non_fp_semigroup) {
+      delete _isomorphic_non_fp_semigroup;
+    }
+  }
 
   ////////////////////////////////
   // Public non-virtual methods //
@@ -59,12 +65,12 @@ namespace libsemigroups {
   // Non-pure syntactic sugar methods //
   //////////////////////////////////////
 
+  void FpSemiIntf::add_rule(std::initializer_list<size_t> l,
+                            std::initializer_list<size_t> r) {
+    add_rule(word_type(l), word_type(r));
+  }
+
   // TODO delete or implement these
-  //  void FpSemiIntf::add_rule(std::initializer_list<size_t> l,
-  //                            std::initializer_list<size_t> r) {
-  //    add_rule(word_type(l), word_type(r));
-  //  }
-  //
   //  void FpSemiIntf::add_rule(relation_type rel) {
   //    add_rule(rel.first, rel.second);
   //  }
@@ -131,8 +137,6 @@ namespace libsemigroups {
   }
 
   void FpSemiIntf::set_alphabet(std::string const& lphbt) {
-    LIBSEMIGROUPS_ASSERT(_alphabet.empty());
-    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
     if (_is_alphabet_defined) {
       throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
                                    "cannot be set more than once");
@@ -155,8 +159,6 @@ namespace libsemigroups {
 
   void FpSemiIntf::set_alphabet(size_t nr_letters) {
     // TODO check that nr_letters isn't too big
-    LIBSEMIGROUPS_ASSERT(_alphabet.empty());
-    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
     if (_is_alphabet_defined) {
       throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
                                    "cannot be set more than once");
@@ -165,7 +167,11 @@ namespace libsemigroups {
                                    "must be non-empty");
     }
     for (size_t i = 0; i < nr_letters; ++i) {
+#ifdef LIBSEMIGROUPS_DEBUG
+      _alphabet += static_cast<char>(i + 97);
+#else
       _alphabet += static_cast<char>(i + 1);
+#endif
       _alphabet_map.emplace(_alphabet[i], i);
     }
     _is_alphabet_defined = true;
@@ -208,6 +214,10 @@ namespace libsemigroups {
     return _is_alphabet_defined;
   }
 
+  SemigroupBase* FpSemiIntf::get_isomorphic_non_fp_semigroup() const noexcept {
+    return _isomorphic_non_fp_semigroup;
+  }
+
   void FpSemiIntf::reset_isomorphic_non_fp_semigroup() {
     if (_delete_isomorphic_non_fp_semigroup) {
       delete _isomorphic_non_fp_semigroup;
@@ -238,7 +248,7 @@ namespace libsemigroups {
     for (auto l : w) {
       if (!validate_letter(l)) {
         throw LibsemigroupsException(
-            "FpSemiIntf::validate_word: invalid letter "
+            "FpSemiIntf::validate_word 1: invalid letter "
             + libsemigroups::to_string(l) + " in word " + w);
       }
     }
@@ -248,7 +258,7 @@ namespace libsemigroups {
     for (auto l : w) {
       if (!validate_letter(uint_to_char(l))) {
         throw LibsemigroupsException(
-            "FpSemiIntf::validate_word: invalid letter "
+            "FpSemiIntf::validate_word 2: invalid letter "
             + libsemigroups::to_string(l) + " in word "
             + libsemigroups::to_string(w));
       }

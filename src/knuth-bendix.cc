@@ -22,6 +22,8 @@
 #include <set>
 #include <string>
 
+#include "internal/report.h"
+
 #include "kbe.h"
 #include "semigroup.h"
 
@@ -167,12 +169,6 @@ namespace libsemigroups {
       }
     };
 
-    //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix static data members
-    //////////////////////////////////////////////////////////////////////////
-
-    external_string_type const KnuthBendix::STANDARD_ALPHABET = "";
-
 #ifdef LIBSEMIGROUPS_STATS
 
     //////////////////////////////////////////////////////////////////////////
@@ -206,6 +202,7 @@ namespace libsemigroups {
           _confluent(false),
           _confluence_known(false),
           _inactive_rules(),
+          _internal_is_same_as_external(false),
           _max_overlap(UNBOUNDED),
           _max_rules(UNBOUNDED),
           _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
@@ -219,7 +216,7 @@ namespace libsemigroups {
       _next_rule_it1 = _active_rules.end();  // null
       _next_rule_it2 = _active_rules.end();  // null
       set_overlap_policy(overlap_policy::ABC);
-      if (alphabet != STANDARD_ALPHABET) {
+      if (!alphabet.empty()) {
         set_alphabet(alphabet);
       }
 #ifdef LIBSEMIGROUPS_STATS
@@ -246,7 +243,7 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(SemigroupBase& S) : KnuthBendix(&S) {}
 
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
-        : KnuthBendix(new ReductionOrdering(kb->_order), kb->_alphabet) {
+        : KnuthBendix(new ReductionOrdering(kb->_order), kb->alphabet()) {
       set_overlap_policy(kb->_overlap_policy);
       // TODO _active_rules.reserve(kb->nr_rules());
       _nrgens = kb->_nrgens;
@@ -271,9 +268,6 @@ namespace libsemigroups {
         Rule* rule = _stack.top();
         _stack.pop();
         delete rule;
-      }
-      if (_delete_isomorphic_non_fp_semigroup) {
-        delete _isomorphic_non_fp_semigroup;
       }
     }
 
@@ -322,29 +316,13 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::set_alphabet(external_string_type const& lphbt) {
-      LIBSEMIGROUPS_ASSERT(_alphabet == STANDARD_ALPHABET);
-      LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
-      LIBSEMIGROUPS_ASSERT(_nrgens == UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(_active_rules.empty());
+      FpSemiIntf::set_alphabet(lphbt);
       if (std::is_sorted(lphbt.cbegin(), lphbt.cend())) {
-        _alphabet = STANDARD_ALPHABET;
+        _internal_is_same_as_external = true;
       } else {
-        _alphabet = lphbt;
-        for (size_t i = 0; i < _alphabet.size(); ++i) {
-          _alphabet_map.emplace(
-              std::make_pair(_alphabet[i], uint_to_internal_char(i)));
-        }
-        _nrgens = _alphabet.size();
+        _internal_is_same_as_external = false;
       }
     }
-
-    // Private
-    /*void KnuthBendix::internal_add_rule(word_type p, word_type q) {
-      if (p != q) {
-        add_rule(
-            new_rule(word_to_internal_string(p), word_to_internal_string(q)));
-      }
-    }*/
 
     void KnuthBendix::add_rule(external_string_type const& p,
                                external_string_type const& q) {
@@ -365,13 +343,12 @@ namespace libsemigroups {
     }
 
     bool KnuthBendix::is_obviously_finite() {
-      return (_isomorphic_non_fp_semigroup != nullptr
-              && _isomorphic_non_fp_semigroup->is_done());
+      return has_isomorphic_non_fp_semigroup()
+             && isomorphic_non_fp_semigroup()->is_done();
     }
 
     bool KnuthBendix::is_obviously_infinite() {
-      if (_isomorphic_non_fp_semigroup != nullptr
-          && _isomorphic_non_fp_semigroup->is_done()) {
+      if (is_obviously_finite()) {
         // In this case the semigroup defined by the KnuthBendix is finite.
         return false;
       } else if (alphabet().size() > _active_rules.size()) {
@@ -396,18 +373,22 @@ namespace libsemigroups {
       }
     }
 
+    size_t KnuthBendix::nr_rules() const noexcept {
+      return _active_rules.size();
+    }
+
     SemigroupBase* KnuthBendix::isomorphic_non_fp_semigroup() {
-      // FIXME check that no generators/rules can be added after this has been
+      // TODO check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
       if (!has_isomorphic_non_fp_semigroup()) {
         run();
-        auto T = new Semigroup<KBE*>({new KBE(*this, 0)});
+        auto T = new Semigroup<KBE>({KBE(*this, 0)});
         for (size_t i = 1; i < alphabet().size(); ++i) {
-          T->add_generator(new KBE(*this, i));
+          T->add_generator(KBE(*this, i));
         }
         set_isomorphic_non_fp_semigroup(T);
       }
-      return _isomorphic_non_fp_semigroup;
+      return get_isomorphic_non_fp_semigroup();
     }
 
     bool KnuthBendix::equal_to(external_string_type const& u,
@@ -454,6 +435,7 @@ namespace libsemigroups {
 
     // Static
     internal_char_type KnuthBendix::uint_to_internal_char(size_t a) {
+      // TODO check a is not too big
 #ifdef LIBSEMIGROUPS_DEBUG
       return static_cast<internal_char_type>(a + 97);
 #else
@@ -463,6 +445,7 @@ namespace libsemigroups {
 
     // Static
     internal_string_type* KnuthBendix::uint_to_internal_string(size_t i) {
+      // TODO check i is not too big
       return new internal_string_type({uint_to_internal_char(i)});
     }
 
@@ -497,21 +480,19 @@ namespace libsemigroups {
 
     internal_char_type
     KnuthBendix::external_to_internal_char(external_char_type c) const {
-      LIBSEMIGROUPS_ASSERT(_alphabet != STANDARD_ALPHABET);
-      LIBSEMIGROUPS_ASSERT(_alphabet_map.find(c) != _alphabet_map.end());
-      return (*_alphabet_map.find(c)).second;
+      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
+      return uint_to_internal_char(char_to_uint(c));
     }
 
     external_char_type
     KnuthBendix::internal_to_external_char(internal_char_type a) const {
-      LIBSEMIGROUPS_ASSERT(_alphabet != STANDARD_ALPHABET);
-      LIBSEMIGROUPS_ASSERT(internal_char_to_uint(a) < _alphabet.size());
-      return _alphabet[internal_char_to_uint(a)];
+      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
+      return uint_to_char(internal_char_to_uint(a));
     }
 
     void
     KnuthBendix::external_to_internal_string(external_string_type& w) const {
-      if (_alphabet == STANDARD_ALPHABET) {
+      if (_internal_is_same_as_external) {
         return;
       }
       for (auto& a : w) {
@@ -521,7 +502,7 @@ namespace libsemigroups {
 
     void
     KnuthBendix::internal_to_external_string(internal_string_type& w) const {
-      if (_alphabet == STANDARD_ALPHABET) {
+      if (_internal_is_same_as_external) {
         return;
       }
       for (auto& a : w) {
@@ -640,10 +621,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix public methods for rules and rewriting
     //////////////////////////////////////////////////////////////////////////
-
-    size_t KnuthBendix::nr_rules() const {
-      return _active_rules.size();
-    }
 
     std::vector<std::pair<external_string_type, external_string_type>>
     KnuthBendix::rules() const {

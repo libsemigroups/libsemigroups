@@ -225,9 +225,10 @@ namespace libsemigroups {
       SemigroupBase* isomorphic_non_fp_semigroup() override;
       size_t size() override;
 
-      bool equal_to(std::string const&, std::string const&) override;
-
+      bool        equal_to(std::string const&, std::string const&) override;
       std::string normal_form(std::string const&) override;
+
+      size_t nr_rules() const noexcept override;
 
       /////////////////////////////////////////////////////////
       // Overridden non-pure virtual methods from FpSemiIntf //
@@ -240,6 +241,7 @@ namespace libsemigroups {
       void      set_alphabet(size_t) override;
 
      private:
+      size_t                                   _nr_rules;
       std::unique_ptr<congruence::ToddCoxeter> _tcc;
     };
   }  // namespace fpsemigroup

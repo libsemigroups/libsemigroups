@@ -100,6 +100,9 @@ namespace libsemigroups {
     virtual non_trivial_class_iterator cbegin_non_trivial_classes() = 0;
     virtual non_trivial_class_iterator cend_non_trivial_classes()   = 0;
     virtual size_t                     nr_non_trivial_classes()     = 0;
+    // JDM: not sure how to implement the following, for example in the
+    // ToddCoxeter class.
+    // virtual size_t                     nr_pairs() const noexcept    = 0;
 
     //////////////////////////////////////////////////////////////////////////
     // Non-pure virtual methods (default versions using pure methods, where //

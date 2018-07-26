@@ -134,6 +134,12 @@ namespace libsemigroups {
     return *_kb->internal_string_to_word(&_kb_word);
   }
 
+  KBE::operator std::string() const {
+    std::string out(_kb_word);
+    _kb->internal_to_external_string(out); // changes out in-place
+    return out;
+  }
+
   template <> word_type Semigroup<KBE>::factorisation(KBE const& x) {
     return x;
   }

@@ -81,6 +81,8 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void set_alphabet(std::string const&) override;
+      using FpSemiIntf::set_alphabet;
+      using FpSemiIntf::add_rule;
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -119,8 +121,6 @@ namespace libsemigroups {
       // TODO enum class
       enum overlap_policy { ABC = 0, AB_BC = 1, max_AB_BC = 2 };
 
-      static external_string_type const STANDARD_ALPHABET;
-
       //! The constant value represents an UNBOUNDED quantity.
       //!
       //! \sa KnuthBendix::set_check_confluence_interval,
@@ -139,14 +139,14 @@ namespace libsemigroups {
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
       explicit KnuthBendix(ReductionOrdering*,
-                           external_string_type = STANDARD_ALPHABET);
+                           external_string_type = "");
       explicit KnuthBendix(SemigroupBase*);
       explicit KnuthBendix(SemigroupBase&);
       explicit KnuthBendix(KnuthBendix const*);
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
       //! reduction ordering.
-      KnuthBendix() : KnuthBendix(new SHORTLEX(), STANDARD_ALPHABET) {}
+      KnuthBendix() : KnuthBendix(new SHORTLEX()) {}
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
       //! reduction ordering and using the alphabet specified by the parameter
@@ -254,7 +254,7 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       //! Returns the current number of active rules in the rewriting system.
-      size_t nr_rules() const;
+      size_t nr_rules() const noexcept override;
 
       //! This method returns a vector consisting of the pairs of strings which
       //! represent the rules of the rewriting system. The \c first entry in
@@ -325,6 +325,7 @@ namespace libsemigroups {
       mutable std::atomic<bool>        _confluent;
       mutable std::atomic<bool>        _confluence_known;
       mutable std::list<Rule*>         _inactive_rules;
+      bool                             _internal_is_same_as_external;
       size_t                           _max_overlap;
       size_t                           _max_rules;
       size_t                           _min_length_lhs_rule;

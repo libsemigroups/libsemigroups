@@ -174,6 +174,7 @@ namespace libsemigroups {
 
     //! Returns a pointer to the internal_string_type used to create \c this.
     operator word_type() const;
+    operator std::string() const;
 
    private:
     KnuthBendix*         _kb;

@@ -84,6 +84,7 @@ libsemigroups_la_SOURCES += src/fpsemi-intf.cc
 libsemigroups_la_SOURCES += src/kbe.cc
 libsemigroups_la_SOURCES += src/knuth-bendix.cc
 libsemigroups_la_SOURCES += src/race.cc
+libsemigroups_la_SOURCES += src/report.cc
 libsemigroups_la_SOURCES += src/runner.cc
 libsemigroups_la_SOURCES += src/rws.cc
 libsemigroups_la_SOURCES += src/rwse.cc

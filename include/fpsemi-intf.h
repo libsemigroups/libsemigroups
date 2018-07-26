@@ -41,11 +41,12 @@ namespace libsemigroups {
     friend class libsemigroups::FpSemigroup;
 
    public:
-    /////////////////
-    // Constructor //
-    /////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - constructor + destructor - public
+    //////////////////////////////////////////////////////////////////////////////
 
     FpSemiIntf();
+    virtual ~FpSemiIntf();
 
     /////////////////////////////////
     // Public pure virtual methods //
@@ -64,13 +65,15 @@ namespace libsemigroups {
 
     virtual SemigroupBase* isomorphic_non_fp_semigroup() = 0;
 
-    // TODO nr_rules
+    virtual size_t nr_rules() const noexcept = 0;
 
     /////////////////////////////////////
     // Public non-pure virtual methods //
     /////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
+    virtual void      add_rule(std::initializer_list<size_t>,
+                               std::initializer_list<size_t>);
     virtual void      add_rules(SemigroupBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
@@ -96,6 +99,7 @@ namespace libsemigroups {
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
+    SemigroupBase* get_isomorphic_non_fp_semigroup() const noexcept;
     void reset_isomorphic_non_fp_semigroup();
     void set_isomorphic_non_fp_semigroup(SemigroupBase*);
 
@@ -111,11 +115,12 @@ namespace libsemigroups {
     void validate_relation(relation_type const&) const;
     void validate_relation(word_type const&, word_type const&) const;
 
+   private:
     //////////////////
     // Private data //
     //////////////////
-
     std::string                           _alphabet;
+    // The unordered_map could be an array if this is too slow
     std::unordered_map<char, letter_type> _alphabet_map;
     bool                                  _delete_isomorphic_non_fp_semigroup;
     bool                                  _is_alphabet_defined;
@@ -123,6 +128,7 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
+// TODO use or delete the below
         //////////////////////////////////////
         // Non-pure syntactic sugar methods //
         //////////////////////////////////////

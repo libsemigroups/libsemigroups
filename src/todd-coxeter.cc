@@ -990,12 +990,14 @@ namespace libsemigroups {
     //////////////////
 
     ToddCoxeter::ToddCoxeter()
-        : _tcc(libsemigroups::make_unique<congruence::ToddCoxeter>(
+        : _nr_rules(0),
+          _tcc(libsemigroups::make_unique<congruence::ToddCoxeter>(
               congruence_type::TWOSIDED)) {}
 
     ToddCoxeter::ToddCoxeter(SemigroupBase* S) : ToddCoxeter() {
       set_alphabet(S->nrgens());
       add_rules(S);
+      _nr_rules += S->nrrules();
       // TODO something like the following
       // if (S->nr_rules() == this->nr_rules()) {
       //   set_isomorphic_non_fp_semigroup(S);
@@ -1022,6 +1024,7 @@ namespace libsemigroups {
       // are not valid, and string_to_word does not checks.
       validate_word(lhs);
       validate_word(rhs);
+      _nr_rules++;
       _tcc->add_pair(string_to_word(lhs), string_to_word(rhs));
     }
 
@@ -1055,6 +1058,10 @@ namespace libsemigroups {
     SemigroupBase* ToddCoxeter::isomorphic_non_fp_semigroup() {
       // _tcc handles changes to this that effect the quotient.
       return _tcc->quotient_semigroup();
+    }
+
+    size_t ToddCoxeter::nr_rules() const noexcept {
+      return _nr_rules;
     }
 
     /////////////////////////////////////////////////////////
