@@ -41,7 +41,8 @@ namespace libsemigroups {
 
     void set_max_threads(size_t val);
     Runner* winner();
-    void add_runner(Runner* r);
+    void add_runner(Runner* r);//, std::function<void()> func);
+
     typename std::vector<Runner*>::iterator begin();
     typename std::vector<Runner*>::iterator end();
 

@@ -84,6 +84,7 @@ namespace libsemigroups {
     // Public non-virtual methods //
     ////////////////////////////////
 
+    void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
     std::string const& alphabet() const;

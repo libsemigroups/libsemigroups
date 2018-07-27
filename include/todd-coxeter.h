@@ -101,10 +101,7 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////
 
       void                       add_pair(word_type, word_type) override;
-      non_trivial_class_iterator cbegin_non_trivial_classes() override;
-      non_trivial_class_iterator cend_non_trivial_classes() override;
       size_t                     nr_classes() override;
-      size_t                     nr_non_trivial_classes() override;
       SemigroupBase*             quotient_semigroup() override;
       class_index_type           word_to_class_index(word_type const&) override;
       word_type                  class_index_to_word(class_index_type) override;
@@ -113,10 +110,10 @@ namespace libsemigroups {
       // Overridden public non-pure virtual methods from CongIntf //
       //////////////////////////////////////////////////////////////
 
-      bool contains(word_type const&, word_type const&) override;
-      bool is_quotient_obviously_finite() override;
-      bool is_quotient_obviously_infinite() override;
-      void set_nr_generators(size_t) override;
+      bool   contains(word_type const&, word_type const&) override;
+      bool   is_quotient_obviously_finite() override;
+      bool   is_quotient_obviously_infinite() override;
+      void   set_nr_generators(size_t) override;
 
       ////////////////////
       // Public methods //
@@ -149,7 +146,6 @@ namespace libsemigroups {
 
       void init();
       void init_after_prefill();
-      void init_non_trivial_classes();
       void init_relations();
       void prefill(SemigroupBase*);
       void use_relations_or_cayley_graph();
@@ -169,8 +165,6 @@ namespace libsemigroups {
       //////////////////
       // TODO use Pimpl
       size_t _active;  // Number of active cosets
-      // _base is the semigroup over which the congruence is defined.
-      SemigroupBase*                       _base;
       std::vector<signed_class_index_type> _bckwd;
       size_t                               _cosets_killed;
       class_index_type                     _current;
@@ -183,7 +177,6 @@ namespace libsemigroups {
       class_index_type             _last;
       std::stack<class_index_type> _lhs_stack;
       class_index_type             _next;
-      std::vector<std::vector<word_type>> _non_trivial_classes;
       size_t _pack;  // Nr of active cosets allowed before a
                      // packing phase starts
       policy                       _policy;
@@ -205,6 +198,7 @@ namespace libsemigroups {
       //////////////////
 
       ToddCoxeter();
+      explicit ToddCoxeter(std::string const&);
       explicit ToddCoxeter(SemigroupBase*);
       explicit ToddCoxeter(SemigroupBase&);
 
@@ -213,6 +207,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////
 
       void run() override;
+      // TODO finished method using that of _tcc
 
       /////////////////////////////////////////////////////
       // Overridden pure virtual methods from FpSemiIntf //
@@ -239,6 +234,13 @@ namespace libsemigroups {
       word_type normal_form(word_type const&) override;
       void      set_alphabet(std::string const&) override;
       void      set_alphabet(size_t) override;
+
+      //////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods - public
+      //////////////////////////////////////////////////////////////////////////
+
+      // Set the char in alphabet() to be the identity.
+      void set_identity(std::string const&);
 
      private:
       size_t                                   _nr_rules;

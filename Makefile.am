@@ -136,7 +136,6 @@ lstest_SOURCES += tests/constants.test.cc
 lstest_SOURCES += tests/element.test.cc
 lstest_SOURCES += tests/hpcombi.test.cc
 lstest_SOURCES += tests/kbp.test.cc
-lstest_SOURCES += tests/kbfp.test.cc
 lstest_SOURCES += tests/knuth-bendix.test.cc
 lstest_SOURCES += tests/p.test.cc
 lstest_SOURCES += tests/partition.test.cc

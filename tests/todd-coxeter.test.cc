@@ -48,7 +48,7 @@ namespace libsemigroups {
 
     constexpr bool REPORT = false;
 
-    TEST_CASE("ToddCoxeter 01: small fp semigroup",
+    TEST_CASE("Todd-Coxeter 01: small fp semigroup",
               "[quick][todd-coxeter][01]") {
       REPORTER.set_report(REPORT);
 
@@ -70,7 +70,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({0, 0, 0}) != tc.word_to_class_index({1}));
     }
 
-    TEST_CASE("ToddCoxeter 02: Example 6.6 in Sims (see also RWS 13)",
+    TEST_CASE("Todd-Coxeter 02: Example 6.6 in Sims (see also RWS 13)",
               "[standard][todd-coxeter][02]") {
       // TODO double check if this is standard or not
       REPORTER.set_report(REPORT);
@@ -101,7 +101,7 @@ namespace libsemigroups {
       // REQUIRE(rws.confluent());  // This is slow
     }
 
-    TEST_CASE("ToddCoxeter 03: ToddCoxeter constructed with Semigroup",
+    TEST_CASE("Todd-Coxeter 03: ToddCoxeter constructed with Semigroup",
               "[quick][todd-coxeter][03]") {
       REPORTER.set_report(REPORT);
       std::vector<BMat8> gens
@@ -120,7 +120,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE(
-        "ToddCoxeter 05: non-trivial two-sided constructed with Semigroup",
+        "Todd-Coxeter 05: non-trivial two-sided constructed with Semigroup",
         "[quick][todd-coxeter][05]") {
       REPORTER.set_report(REPORT);
 
@@ -141,7 +141,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 21);
     }
 
-    TEST_CASE("ToddCoxeter 06: non-trivial two-sided constructed by relations",
+    TEST_CASE("Todd-Coxeter 06: non-trivial two-sided constructed by relations",
               "[quick][todd-coxeter][06]") {
       REPORTER.set_report(REPORT);
 
@@ -164,7 +164,7 @@ namespace libsemigroups {
       REQUIRE(tc2.nr_classes() == 2);
     }
 
-    TEST_CASE("ToddCoxeter 09: Small right congruence on free semigroup",
+    TEST_CASE("Todd-Coxeter 09: Small right congruence on free semigroup",
               "[quick][todd-coxeter][09]") {
       REPORTER.set_report(REPORT);
 
@@ -178,7 +178,7 @@ namespace libsemigroups {
       REQUIRE(tc.finished());
     }
 
-    TEST_CASE("ToddCoxeter 10: word_to_class_index for left "
+    TEST_CASE("Todd-Coxeter 10: word_to_class_index for left "
               "congruence on free semigroup",
               "[quick][todd-coxeter][10]") {
       REPORTER.set_report(REPORT);
@@ -199,7 +199,7 @@ namespace libsemigroups {
               != tc.word_to_class_index({0, 0, 0, 0}));
     }
 
-    TEST_CASE("ToddCoxeter 11: word_to_class_index for small fp semigroup",
+    TEST_CASE("Todd-Coxeter 11: word_to_class_index for small fp semigroup",
               "[quick][todd-coxeter][11]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels;
@@ -220,7 +220,7 @@ namespace libsemigroups {
       REQUIRE(tc2.word_to_class_index({0, 0, 0, 0}) < tc2.nr_classes());
     }
 
-    TEST_CASE("ToddCoxeter 12: transformation semigroup size 88",
+    TEST_CASE("Todd-Coxeter 12: transformation semigroup size 88",
               "[quick][todd-coxeter][12]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> vec
@@ -266,7 +266,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE(
-        "ToddCoxeter 13: left congruence on transformation semigroup size 88",
+        "Todd-Coxeter 13: left congruence on transformation semigroup size 88",
         "[quick][todd-coxeter][13]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> vec
@@ -299,7 +299,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE(
-        "ToddCoxeter 14: right congruence on transformation semigroup size 88",
+        "Todd-Coxeter 14: right congruence on transformation semigroup size 88",
         "[quick][todd-coxeter][14]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> vec
@@ -362,7 +362,7 @@ namespace libsemigroups {
       delete_gens(vec);
     }
 
-    TEST_CASE("ToddCoxeter 15: transformation semigroup size 88",
+    TEST_CASE("Todd-Coxeter 15: transformation semigroup size 88",
               "[quick][todd-coxeter][15]") {
       REPORTER.set_report(REPORT);
 
@@ -403,7 +403,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE(
-        "ToddCoxeter 16: left congruence on transformation semigroup size 88 ",
+        "Todd-Coxeter 16: left congruence on transformation semigroup size 88 ",
         "[quick][todd-coxeter][16]") {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -440,7 +440,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE(
-        "ToddCoxeter 17: right congruence on transformation semigroup size 88 ",
+        "Todd-Coxeter 17: right congruence on transformation semigroup size 88 ",
         "[quick][todd-coxeter][17]") {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -488,7 +488,7 @@ namespace libsemigroups {
       delete t6;
     }
 
-    TEST_CASE("ToddCoxeter 18: finite fp-semigroup, dihedral group of order 6",
+    TEST_CASE("Todd-Coxeter 18: finite fp-semigroup, dihedral group of order 6",
               "[quick][todd-coxeter][18]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels  = {relation_type({0, 0}, {0}),
@@ -514,7 +514,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
     }
 
-    TEST_CASE("ToddCoxeter 19: finite fp-semigroup, size 16",
+    TEST_CASE("Todd-Coxeter 19: finite fp-semigroup, size 16",
               "[quick][todd-coxeter][19]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
@@ -546,7 +546,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
     }
 
-    TEST_CASE("ToddCoxeter 20: finite fp-semigroup, size 16",
+    TEST_CASE("Todd-Coxeter 20: finite fp-semigroup, size 16",
               "[quick][todd-coxeter][20]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
@@ -614,7 +614,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
     }
 
-    TEST_CASE("ToddCoxeter 21: test prefilling of the table manually",
+    TEST_CASE("Todd-Coxeter 21: test prefilling of the table manually",
               "[quick][todd-coxeter][21]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
@@ -643,7 +643,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == S.size());
     }
 
-    TEST_CASE("ToddCoxeter 22: test packing phase",
+    TEST_CASE("Todd-Coxeter 22: test packing phase",
               "[quick][todd-coxeter][22]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
@@ -673,7 +673,7 @@ namespace libsemigroups {
       REQUIRE(tc2.nr_classes() == 78);
     }
 
-    TEST_CASE("ToddCoxeter 24: non-trivial left congruence constructed with "
+    TEST_CASE("Todd-Coxeter 24: non-trivial left congruence constructed with "
               "semigroup",
               "[quick][todd-coxeter][24]") {
       REPORTER.set_report(REPORT);
@@ -703,7 +703,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 69);
     }
 
-    TEST_CASE("ToddCoxeter 25: 2-sided congruence on free semigroup",
+    TEST_CASE("Todd-Coxeter 25: 2-sided congruence on free semigroup",
               "[quick][todd-coxeter][25]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc(congruence_type::TWOSIDED, 1, {});
@@ -711,7 +711,7 @@ namespace libsemigroups {
       REQUIRE(!tc.contains({0, 0}, {0}));
     }
 
-    TEST_CASE("ToddCoxeter 27: calling run when obviously infinite",
+    TEST_CASE("Todd-Coxeter 27: calling run when obviously infinite",
               "[quick][todd-coxeter][27]") {
       ToddCoxeter tc(congruence_type::TWOSIDED, 5, {});
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
@@ -722,7 +722,7 @@ namespace libsemigroups {
     using ToddCoxeter     = fpsemigroup::ToddCoxeter;
     constexpr bool REPORT = false;
 
-    TEST_CASE("ToddCoxeter 04: add_rule ", "[quick][todd-coxeter][04]") {
+    TEST_CASE("Todd-Coxeter 04: add_rule ", "[quick][todd-coxeter][04]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet("ab");
@@ -733,7 +733,7 @@ namespace libsemigroups {
     }
 
     // RWS methods fail for this one
-    TEST_CASE("ToddCoxeter 07: (from kbmag/standalone/kb_data/s4) (RWS 49)",
+    TEST_CASE("Todd-Coxeter 07: (from kbmag/standalone/kb_data/s4) (RWS 49)",
               "[quick][todd-coxeter][07]") {
       REPORTER.set_report(REPORT);
 
@@ -759,7 +759,7 @@ namespace libsemigroups {
 
     // Second of BHN's series of increasingly complicated presentations
     // of 1. Doesn't terminate
-    TEST_CASE("ToddCoxeter 08: (from kbmag/standalone/kb_data/degen4b) "
+    TEST_CASE("Todd-Coxeter 08: (from kbmag/standalone/kb_data/degen4b) "
               "(RWS 65)",
               "[extreme][todd-coxeter][kbmag][shortlex][08]") {
       REPORTER.set_report(REPORT);
@@ -799,7 +799,7 @@ namespace libsemigroups {
       // REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
     }
 
-    TEST_CASE("ToddCoxeter 23: test validate", "[quick][todd-coxeter][23]") {
+    TEST_CASE("Todd-Coxeter 23: test validate", "[quick][todd-coxeter][23]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc;
@@ -810,7 +810,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(tc.add_rule("b", "c"), LibsemigroupsException);
     }
 
-    TEST_CASE("ToddCoxeter 26: add_rules after constructed from semigroup",
+    TEST_CASE("Todd-Coxeter 26: add_rules after constructed from semigroup",
               "[quick][todd-coxeter][26]") {
       REPORTER.set_report(REPORT);
 
@@ -842,5 +842,47 @@ namespace libsemigroups {
       REQUIRE(tc2.equal_to(w3, w4));
       REQUIRE(tc2.normal_form(w3) == tc2.normal_form(w4));
     }
+
+    TEST_CASE("Todd-Coxeter 28: Sym(5) from Chapter 3, Proposition 1.1 in NR",
+              "[todd-coxeter][quick][28]") {
+      REPORTER.set_report(REPORT);
+
+      ToddCoxeter tc("ABabe");
+      tc.set_identity("e");
+      tc.add_rule("aa", "e");
+      tc.add_rule("bbbbb", "e");
+      tc.add_rule("babababa", "e");
+      tc.add_rule("bB", "e");
+      tc.add_rule("Bb", "e");
+      tc.add_rule("BabBab", "e");
+      tc.add_rule("aBBabbaBBabb", "e");
+      tc.add_rule("aBBBabbbaBBBabbb", "e");
+      tc.add_rule("aA", "e");
+      tc.add_rule("Aa", "e");
+      REQUIRE(tc.size() == 120);
+    }
+
+    TEST_CASE("Todd-Coxeter 29: Chapter 7, Theorem 3.6 in NR (size 243)",
+        "[todd-coxeter][quick][29]") {
+      REPORTER.set_report(REPORT);
+      ToddCoxeter tc("ab");
+      tc.add_rule("aaa", "a");
+      tc.add_rule("bbbb", "b");
+      tc.add_rule("ababababab", "aa");
+
+      REQUIRE(tc.size() == 243);
+    }
+
+    TEST_CASE("Todd-Coxeter 29: finite semigroup (size 99)",
+        "[todd-coxeter][quick][29]") {
+      REPORTER.set_report(REPORT);
+      ToddCoxeter tc("ab");
+      tc.add_rule("aaa", "a");
+      tc.add_rule("bbbb", "b");
+      tc.add_rule("abababab", "aa");
+
+      REQUIRE(tc.size() == 99);
+    }
+
   }  // namespace fpsemigroup_todd_coxeter
 }  // namespace libsemigroups

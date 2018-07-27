@@ -97,7 +97,6 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type type)
         : CongIntf(type),
           _active(1),
-          _base(nullptr),
           _bckwd(1, 0),
           _cosets_killed(0),
           _current(0),
@@ -110,7 +109,6 @@ namespace libsemigroups {
           _last(0),
           _lhs_stack(),
           _next(UNDEFINED),
-          _non_trivial_classes(),
           _pack(120000),
           _policy(policy::none),
           _prefilled(false),
@@ -127,8 +125,8 @@ namespace libsemigroups {
 
     ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase* S, policy p)
         : ToddCoxeter(type) {
-      _base   = S;
       _policy = p;
+      set_parent(S);
       set_nr_generators(S->nrgens());
     }
 
@@ -269,17 +267,6 @@ namespace libsemigroups {
       reset_quotient();
     }
 
-    std::vector<std::vector<word_type>>::const_iterator
-    ToddCoxeter::cbegin_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.cbegin();
-    }
-
-    std::vector<std::vector<word_type>>::const_iterator
-    ToddCoxeter::cend_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.cend();
-    }
 
     size_t ToddCoxeter::nr_classes() {
       if (is_quotient_obviously_infinite()) {
@@ -291,10 +278,6 @@ namespace libsemigroups {
       }
     }
 
-    size_t ToddCoxeter::nr_non_trivial_classes() {
-      init_non_trivial_classes();
-      return _non_trivial_classes.size();
-    }
 
     SemigroupBase* ToddCoxeter::quotient_semigroup() {
       if (type() != congruence_type::TWOSIDED) {
@@ -436,7 +419,7 @@ namespace libsemigroups {
       // TODO assertions -> exceptions
       LIBSEMIGROUPS_ASSERT(!_init_done);
       LIBSEMIGROUPS_ASSERT(_policy == policy::none);
-      LIBSEMIGROUPS_ASSERT(_base == nullptr);
+      LIBSEMIGROUPS_ASSERT(!has_parent());
       LIBSEMIGROUPS_ASSERT(table.nr_rows() > 0);
       LIBSEMIGROUPS_ASSERT(table.nr_cols() == nr_generators());
       LIBSEMIGROUPS_ASSERT(_relations.empty());
@@ -578,41 +561,12 @@ namespace libsemigroups {
       _defined = _active;
     }
 
-    void ToddCoxeter::init_non_trivial_classes() {
-      // FIXME if not is proper quotient also!! If this is the case, then
-      // we might end up enumerating an infinite semigroup in the loop below.
-      if (!_non_trivial_classes.empty()) {
-        // There are no non-trivial classes, or we already found them.
-        return;
-      } else if (_base == nullptr) {
-        throw LibsemigroupsException("There's no base semigroup in which to "
-                                     "find the non-trivial classes");
-      }
-
-      _non_trivial_classes.assign(_table.nr_rows(), std::vector<word_type>());
-
-      word_type w;
-      for (size_t pos = 0; pos < _base->size(); ++pos) {
-        _base->factorisation(w, pos);
-        LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < _table.nr_rows());
-        _non_trivial_classes[word_to_class_index(w)].push_back(w);
-      }
-
-      _non_trivial_classes.erase(
-          std::remove_if(_non_trivial_classes.begin(),
-                         _non_trivial_classes.end(),
-                         [this](std::vector<word_type> const& klass) -> bool {
-                           return klass.size() <= 1;
-                         }),
-          _non_trivial_classes.end());
-    }
-
     // Private: do not call this directly, use init() instead!
     void ToddCoxeter::init_relations() {
       // This should not have been run before
       LIBSEMIGROUPS_ASSERT(!_init_done);
 
-      // Add the relations/Cayley graph from _base if any.
+      // Add the relations/Cayley graph from parent() if any.
       use_relations_or_cayley_graph();
 
       switch (type()) {
@@ -670,23 +624,23 @@ namespace libsemigroups {
 
     void ToddCoxeter::use_relations_or_cayley_graph() {
       // FIXME nothing stops this from being called multiple times
-      if (_base != nullptr) {
+      if (has_parent()) {
         switch (_policy) {
           case policy::use_relations:
-            relations(_base, [this](word_type lhs, word_type rhs) -> void {
+            relations(parent(), [this](word_type lhs, word_type rhs) -> void {
               _relations.emplace_back(lhs, rhs);
             });
 #ifdef LIBSEMIGROUPS_DEBUG
-            // This is a check of program logic, since we use _base to obtain
-            // the relations, so we only validate in debug mode.
+            // This is a check of program logic, since we use parent() to
+            // obtain the relations, so we only validate in debug mode.
             validate_relations();
 #endif
             break;
           case policy::use_cayley_graph:
-            prefill(_base);
+            prefill(parent());
 #ifdef LIBSEMIGROUPS_DEBUG
-            // This is a check of program logic, since we use _base to fill the
-            // table, so we only validate in debug mode.
+            // This is a check of program logic, since we use parent() to fill
+            // the table, so we only validate in debug mode.
             validate_table();
 #endif
             break;
@@ -994,6 +948,10 @@ namespace libsemigroups {
           _tcc(libsemigroups::make_unique<congruence::ToddCoxeter>(
               congruence_type::TWOSIDED)) {}
 
+    ToddCoxeter::ToddCoxeter(std::string const& lphbt) : ToddCoxeter() {
+      set_alphabet(lphbt);
+    }
+
     ToddCoxeter::ToddCoxeter(SemigroupBase* S) : ToddCoxeter() {
       set_alphabet(S->nrgens());
       add_rules(S);
@@ -1071,6 +1029,10 @@ namespace libsemigroups {
     // We override FpSemiIntf::add_rule to avoid unnecessary conversion from
     // word_type -> string.
     void ToddCoxeter::add_rule(word_type const& lhs, word_type const& rhs) {
+      if (lhs.empty() || rhs.empty()) {
+        throw LibsemigroupsException(
+            "ToddCoxeter::add_rule: rules must be non-empty");
+      }
       validate_word(lhs);
       validate_word(rhs);
       _tcc->add_pair(lhs, rhs);
@@ -1101,7 +1063,27 @@ namespace libsemigroups {
       FpSemiIntf::set_alphabet(nr_letters);
       _tcc->set_nr_generators(nr_letters);
     }
-
     // TODO override add_rules(SemigroupBase*) to avoid unnecessary conversions
+
+    //////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - methods - public
+    //////////////////////////////////////////////////////////////////////////
+    // TODO move to fpsemiintf
+    void ToddCoxeter::set_identity(std::string const& id) {
+      if (id.length() != 1) {
+        throw LibsemigroupsException(
+            "ToddCoxeter::set_identity: invalid identity length, found "
+            + to_string(id.length()) + " should be 1");
+      }
+      validate_letter(id[0]);
+      for (auto l : alphabet()) {
+        if (l == id[0]) {
+          add_rule(id + id, id);
+        } else {
+          add_rule(to_string(l) + id, to_string(l));
+          add_rule(id + to_string(l), to_string(l));
+        }
+      }
+    }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

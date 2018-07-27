@@ -31,6 +31,7 @@ namespace libsemigroups {
         _delete_quotient(false),
         _is_nr_generators_defined(false),
         _nrgens(UNDEFINED),
+        _parent(nullptr),
         _quotient(nullptr),
         _type(type) {}
 
@@ -59,10 +60,26 @@ namespace libsemigroups {
     _quotient        = quotient;
   }
 
+  void CongIntf::set_parent(SemigroupBase* parent) {
+    LIBSEMIGROUPS_ASSERT(parent != nullptr);
+    LIBSEMIGROUPS_ASSERT(_parent == nullptr);
+    // TODO MORE asserts (check compatibility of parent and this)
+    _parent = parent;
+    // TODO set quotient
+  }
+
+  bool CongIntf::has_parent() const noexcept {
+    return _parent != nullptr;
+  }
+
+  SemigroupBase* CongIntf::parent() const noexcept {
+    return _parent;
+  }
+
   void CongIntf::set_nr_generators(size_t n) {
     if (_is_nr_generators_defined) {
       throw LibsemigroupsException(
-          "CongIntf::set_nr_generators: the number of geneators "
+          "CongIntf::set_nr_generators: the number of generators "
           "cannot be set more than once");
     }
     _is_nr_generators_defined = true;
@@ -99,4 +116,56 @@ namespace libsemigroups {
   bool CongIntf::is_quotient_obviously_infinite() {
     return false;
   }
+
+  void CongIntf::init_non_trivial_classes() {
+    // FIXME if not is proper quotient also!! If this is the case, then
+    // we might end up enumerating an infinite semigroup in the loop below.
+    if (!_non_trivial_classes.empty()) {
+      // There are no non-trivial classes, or we already found them.
+      // FIXME this doesn't cover the case when there are no non-triv classes
+      return;
+    } else if (_parent == nullptr) {
+      throw LibsemigroupsException("There's no parent semigroup in which to "
+                                   "find the non-trivial classes");
+    }
+
+    _non_trivial_classes.assign(nr_classes(), std::vector<word_type>());
+
+    word_type w;
+    for (size_t pos = 0; pos < _parent->size(); ++pos) {
+      _parent->factorisation(w, pos);
+      _non_trivial_classes[word_to_class_index(w)].push_back(w);
+    }
+
+    _non_trivial_classes.erase(
+        std::remove_if(_non_trivial_classes.begin(),
+                       _non_trivial_classes.end(),
+                       [this](std::vector<word_type> const& klass) -> bool {
+                         return klass.size() <= 1;
+                       }),
+        _non_trivial_classes.end());
+  }
+
+  std::vector<std::vector<word_type>>::const_iterator
+  CongIntf::cbegin_non_trivial_classes() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.cbegin();
+  }
+
+  std::vector<std::vector<word_type>>::const_iterator
+  CongIntf::cend_non_trivial_classes() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.cend();
+  }
+
+  size_t CongIntf::nr_non_trivial_classes() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.size();
+  }
+
+  CongIntf::class_index_type
+  CongIntf::const_word_to_class_index(word_type const&) const {
+    throw LibsemigroupsException("not implemented");
+  }
+
 }  // namespace libsemigroups

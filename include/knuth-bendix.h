@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <atomic>
 #include <list>
+#include <ostream>
 #include <set>
 #include <stack>
 #include <string>
@@ -32,12 +33,10 @@
 
 #include "internal/libsemigroups-config.h"
 #include "internal/libsemigroups-debug.h"
-#include "internal/report.h"
-#include "internal/timer.h"
 
+#include "cong-intf.h"
 #include "fpsemi-intf.h"
 #include "kb-order.h"
-#include "semigroup-base.h"
 #include "types.h"
 
 // TODO: - move implementation to .cc file
@@ -47,6 +46,10 @@
 namespace libsemigroups {
   class KBE; // Forward declaration
 
+  namespace congruence {
+    class KnuthBendix; // Forward declaration
+  }
+
   namespace fpsemigroup {
     //! This class is used to represent a
     //! [string rewriting
@@ -54,7 +57,9 @@ namespace libsemigroups {
     //! defining a finitely presented monoid or semigroup.
 
     class KnuthBendix : public FpSemiIntf {
+      friend class ::libsemigroups::congruence::KnuthBendix;
      public:
+      // TODO typedef isomorphic_non_fp_semigroup_type
       //////////////////////////////////////////////////////////////////////////
       // Runner - overridden virtual methods - public
       //////////////////////////////////////////////////////////////////////////
@@ -81,8 +86,11 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void set_alphabet(std::string const&) override;
-      using FpSemiIntf::set_alphabet;
+      void set_alphabet(size_t) override;
+
       using FpSemiIntf::add_rule;
+      using FpSemiIntf::normal_form;
+      using FpSemiIntf::equal_to;
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -155,8 +163,12 @@ namespace libsemigroups {
       // with single default parameters:
       //    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
       // and so we have two constructors instead.
-      explicit KnuthBendix(external_string_type alphabet)
+      explicit KnuthBendix(external_string_type const& alphabet)
           : KnuthBendix(new SHORTLEX(), alphabet) {}
+
+      explicit KnuthBendix(size_t n) : KnuthBendix(new SHORTLEX()) {
+        set_alphabet(n);
+      }
 
       //! A default destructor
       //!
@@ -182,8 +194,7 @@ namespace libsemigroups {
       void set_check_confluence_interval(size_t);
 
       //! This method can be used to specify the maximum length of the overlap
-      //! of
-      //! two left hand sides of rules that should be considered in
+      //! of two left hand sides of rules that should be considered in
       //! KnuthBendix::knuth_bendix.
       //!
       //! If this value is less than the longest left hand side of a rule, then
@@ -331,7 +342,6 @@ namespace libsemigroups {
       size_t                           _min_length_lhs_rule;
       std::list<Rule const*>::iterator _next_rule_it1;
       std::list<Rule const*>::iterator _next_rule_it2;
-      mutable size_t                   _nrgens;
       ReductionOrdering const*         _order;
       OverlapMeasure*                  _overlap_measure;
       overlap_policy                   _overlap_policy;
@@ -506,5 +516,46 @@ namespace libsemigroups {
       Rule const*                          _rule;
     };
   }  // namespace fpsemigroup
+
+  namespace congruence {
+    class KnuthBendix : public CongIntf {
+     public:
+      ////////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - constructors - public
+      ////////////////////////////////////////////////////////////////////////////
+
+      KnuthBendix();
+      explicit KnuthBendix(SemigroupBase&);
+      // TODO remove the next, currently unused
+      KnuthBendix(size_t                            nrgens,
+                  std::vector<relation_type> const& relations,
+                  std::vector<relation_type> const& extra = {});
+
+      ////////////////////////////////////////////////////////////////////////////
+      // Runner - overridden pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////////
+
+      void run() override;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////////
+
+      void             add_pair(word_type, word_type) override;
+      word_type        class_index_to_word(class_index_type) override;
+      SemigroupBase*   quotient_semigroup() override;
+      size_t           nr_classes() override;
+      class_index_type word_to_class_index(word_type const&) override;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden non-pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////////
+
+      void set_nr_generators(size_t) override;
+
+     private:
+      std::unique_ptr<fpsemigroup::KnuthBendix> _kbfp;
+    };
+  }  // namespace congruence
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_

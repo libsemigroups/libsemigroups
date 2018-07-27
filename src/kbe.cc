@@ -31,7 +31,7 @@ namespace libsemigroups {
   KBE::KBE(KnuthBendix* kb, internal_string_type w, bool reduce)
       : Element(), _kb(kb), _kb_word(w) {
     if (reduce) {
-      _kb->rewrite(&_kb_word);
+      _kb->internal_rewrite(&_kb_word);
     }
   }
 
@@ -119,7 +119,7 @@ namespace libsemigroups {
     _kb_word.clear();
     _kb_word.append(xx._kb_word);
     _kb_word.append(yy._kb_word);
-    _kb->rewrite(&_kb_word);
+    _kb->internal_rewrite(&_kb_word);
     this->reset_hash_value();
   }
 

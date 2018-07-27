@@ -23,6 +23,7 @@
 #include <string>
 
 #include "internal/report.h"
+#include "internal/timer.h"
 
 #include "kbe.h"
 #include "semigroup.h"
@@ -206,7 +207,6 @@ namespace libsemigroups {
           _max_overlap(UNBOUNDED),
           _max_rules(UNBOUNDED),
           _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
-          _nrgens(UNDEFINED),
           _order(order),
           _overlap_measure(nullptr),
           _stack(),
@@ -235,7 +235,7 @@ namespace libsemigroups {
       // from S.
       // TODO what if S is the return value of isomorphic_non_fp_semigroup? Then
       // shouldn't we use the same alphabet as S?
-      FpSemiIntf::set_alphabet(S->nrgens());
+      set_alphabet(S->nrgens());
       add_rules(S);
       set_isomorphic_non_fp_semigroup(S);
     }
@@ -245,8 +245,8 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
         : KnuthBendix(new ReductionOrdering(kb->_order), kb->alphabet()) {
       set_overlap_policy(kb->_overlap_policy);
+      set_alphabet(kb->alphabet());
       // TODO _active_rules.reserve(kb->nr_rules());
-      _nrgens = kb->_nrgens;
       for (Rule const* rule : _active_rules) {
         add_rule(new_rule(rule));
       }
@@ -317,11 +317,18 @@ namespace libsemigroups {
 
     void KnuthBendix::set_alphabet(external_string_type const& lphbt) {
       FpSemiIntf::set_alphabet(lphbt);
-      if (std::is_sorted(lphbt.cbegin(), lphbt.cend())) {
-        _internal_is_same_as_external = true;
-      } else {
-        _internal_is_same_as_external = false;
+      _internal_is_same_as_external = true;
+      for (size_t i = 0; i < lphbt.size(); ++i) {
+        if (uint_to_internal_char(i) != lphbt[i]) {
+          _internal_is_same_as_external = false;
+          return;
+        }
       }
+    }
+
+    void KnuthBendix::set_alphabet(size_t n) {
+      FpSemiIntf::set_alphabet(n);
+      _internal_is_same_as_external = true;
     }
 
     void KnuthBendix::add_rule(external_string_type const& p,
@@ -354,6 +361,8 @@ namespace libsemigroups {
       } else if (alphabet().size() > _active_rules.size()) {
         return true;
       }
+
+
       // TODO:
       // - check that every generator i occurs in the lhs of some rule (if not,
       //   then if two words have different numbers of i in them, then they are
@@ -393,6 +402,8 @@ namespace libsemigroups {
 
     bool KnuthBendix::equal_to(external_string_type const& u,
                                external_string_type const& v) {
+      validate_word(u);
+      validate_word(v);
       if (u == v) {
         return true;
       }
@@ -402,6 +413,7 @@ namespace libsemigroups {
         return true;
       }
       run();  // TODO possibly use run_for here?
+      // FIXME can't use internal_rewrite on external_strings!!
       internal_rewrite(&uu);
       internal_rewrite(&vv);
       return uu == vv;
@@ -409,6 +421,7 @@ namespace libsemigroups {
 
     external_string_type
     KnuthBendix::normal_form(external_string_type const& w) {
+      run();
       return rewrite(w);
     }
 
@@ -978,4 +991,94 @@ namespace libsemigroups {
       }
     }
   }  // namespace fpsemigroup
+
+  namespace congruence {
+    using class_index_type = CongIntf::class_index_type;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - constructors - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    KnuthBendix::KnuthBendix()
+        : CongIntf(congruence_type::TWOSIDED),
+          _kbfp(make_unique<fpsemigroup::KnuthBendix>()) {}
+
+    KnuthBendix::KnuthBendix(SemigroupBase& S)
+        // FIXME don't repeat the code here from the 0-param constructor
+        : CongIntf(congruence_type::TWOSIDED),
+          _kbfp(make_unique<fpsemigroup::KnuthBendix>(S)) {
+      CongIntf::set_nr_generators(S.nrgens());
+      set_parent(&S);
+    }
+
+    // TODO: Does this make sense??
+    KnuthBendix::KnuthBendix(size_t                            nrgens,
+                             std::vector<relation_type> const& relations,
+                             std::vector<relation_type> const& extra)
+        : KnuthBendix() {
+      _kbfp->set_alphabet(nrgens);
+      for (auto const& rel : relations) {
+        _kbfp->add_rule(rel);
+      }
+      for (auto const& rel : extra) {
+        _kbfp->add_rule(rel);
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Runner - overridden pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::run() {
+      _kbfp->run();
+      set_finished();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    // TODO const&
+    void KnuthBendix::add_pair(word_type lhs, word_type rhs) {
+      _kbfp->add_rule(lhs, rhs);
+    }
+
+    word_type KnuthBendix::class_index_to_word(class_index_type i) {
+      // i is checked in minimal_factorisation
+      set_finished();
+      return _kbfp->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
+    }
+
+    size_t KnuthBendix::nr_classes() {
+      set_finished();
+      return _kbfp->size();
+    }
+
+    SemigroupBase* KnuthBendix::quotient_semigroup() {
+      set_finished();
+      return _kbfp->isomorphic_non_fp_semigroup();
+    }
+
+    class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
+      // TODO check arg
+      auto S
+          = static_cast<Semigroup<KBE>*>(_kbfp->isomorphic_non_fp_semigroup());
+      // FIXME leaks
+      size_t pos = S->position(
+          KBE(_kbfp.get(), *_kbfp->word_to_internal_string(word)));
+      LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
+      return pos;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden non-pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::set_nr_generators(size_t n) {
+      CongIntf::set_nr_generators(n);
+      _kbfp->set_alphabet(n);
+    }
+
+  }  // namespace congruence
+
 }  // namespace libsemigroups

@@ -70,10 +70,9 @@ namespace libsemigroups {
     add_rule(word_type(l), word_type(r));
   }
 
-  // TODO delete or implement these
-  //  void FpSemiIntf::add_rule(relation_type rel) {
-  //    add_rule(rel.first, rel.second);
-  //  }
+  void FpSemiIntf::add_rule(relation_type rel) {
+    add_rule(rel.first, rel.second);
+  }
 
   void FpSemiIntf::add_rule(std::pair<std::string, std::string> rel) {
     add_rule(rel.first, rel.second);

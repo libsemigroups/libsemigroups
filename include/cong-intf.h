@@ -85,21 +85,11 @@ namespace libsemigroups {
     //! anything is computed about the congruence.
     // TODO make the preceeding description more precise, and actually enforce
     // it.
+    // TODO const&
     virtual void add_pair(word_type, word_type) = 0;
 
     virtual SemigroupBase* quotient_semigroup() = 0;
 
-    //! Returns the non-trivial classes of the congruence.
-    //!
-    //! The elements in these classes are represented as words in the
-    //! generators of the semigroup over which the congruence is defined.
-    //!
-    //! \warning If \c this has infinitely many non-trivial congruence
-    //! classes, then this method will only terminate when it can no longer
-    //! allocate memory.
-    virtual non_trivial_class_iterator cbegin_non_trivial_classes() = 0;
-    virtual non_trivial_class_iterator cend_non_trivial_classes()   = 0;
-    virtual size_t                     nr_non_trivial_classes()     = 0;
     // JDM: not sure how to implement the following, for example in the
     // ToddCoxeter class.
     // virtual size_t                     nr_pairs() const noexcept    = 0;
@@ -118,12 +108,12 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    virtual bool contains(word_type const& w1, word_type const& w2);
+    virtual bool contains(word_type const&, word_type const&);
 
     // Same as the above but only uses the so far computed information to
     // answer. In particular, does not call this->run(). This method may
     // return false negatives, but must not return false positives.
-    virtual bool const_contains(word_type const& w1, word_type const& w2) const;
+    virtual bool const_contains(word_type const&, word_type const&) const;
 
     //! Returns \c true if the congruence class of \p w1 is less than
     //! that of \p w2.
@@ -141,15 +131,14 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    virtual bool less(word_type const& w1, word_type const& w2);
+    virtual bool less(word_type const&, word_type const&);
 
     virtual bool is_quotient_obviously_finite();
     virtual bool is_quotient_obviously_infinite();
     virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
-    // Non-pure non-virtual methods (using the pure methods, for syntactic //
-    // sugar mostly).                                                      //
+    // Non-pure non-virtual methods
     /////////////////////////////////////////////////////////////////////////
 
     // Pass by value since these must be copied anyway
@@ -157,8 +146,20 @@ namespace libsemigroups {
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
-    congruence_type type() const noexcept;
-    size_t nr_generators() const noexcept;
+    congruence_type            type() const noexcept;
+    size_t                     nr_generators() const noexcept;
+
+    //! Returns the non-trivial classes of the congruence.
+    //!
+    //! The elements in these classes are represented as words in the
+    //! generators of the semigroup over which the congruence is defined.
+    //!
+    //! \warning If \c this has infinitely many non-trivial congruence
+    //! classes, then this method will only terminate when it can no longer
+    //! allocate memory.
+    non_trivial_class_iterator cbegin_non_trivial_classes();
+    non_trivial_class_iterator cend_non_trivial_classes();
+    size_t                     nr_non_trivial_classes();
 
    protected:
     /////////////////////////////////////////////////////////////////////////
@@ -167,28 +168,40 @@ namespace libsemigroups {
 
     void reset_quotient();
     void set_quotient(SemigroupBase*);
+    // TODO replace get_quotient with has_quotient
     SemigroupBase* get_quotient() const;
 
+    void set_parent(SemigroupBase*);
+    bool has_parent() const noexcept;
+    SemigroupBase* parent() const noexcept;
 
    private:
     /////////////////////////////////////////////////////////////////////////
-    // Private pure virtual methods
+    // CongIntf - non-pure virtual methods - private
     /////////////////////////////////////////////////////////////////////////
 
     // const_word_to_class_index is private, because the answer returned
     // depends on the state of the object, but word_to_class_index does not
     // (i.e the return value should not change).
-    virtual class_index_type
-    const_word_to_class_index(word_type const& word) const = 0;
+    virtual class_index_type const_word_to_class_index(word_type const&) const;
 
     /////////////////////////////////////////////////////////////////////////
-    // Private data
+    // CongIntf - non-pure non-virtual methods - private
     /////////////////////////////////////////////////////////////////////////
-    bool            _delete_quotient;
-    bool            _is_nr_generators_defined;
-    size_t          _nrgens;
-    SemigroupBase*  _quotient;
-    congruence_type _type;
+
+    void init_non_trivial_classes();
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongIntf - data members - private
+    /////////////////////////////////////////////////////////////////////////
+
+    bool                                _delete_quotient;
+    bool                                _is_nr_generators_defined;
+    std::vector<std::vector<word_type>> _non_trivial_classes;
+    size_t                              _nrgens;
+    SemigroupBase*                      _parent;
+    SemigroupBase*                      _quotient;
+    congruence_type                     _type;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
