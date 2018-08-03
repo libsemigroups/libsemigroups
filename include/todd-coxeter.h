@@ -32,15 +32,10 @@
 
 #include "internal/recvec.h"
 
-#include "cong-intf.h"
+#include "cong-wrap.h"
 #include "fpsemi-intf.h"
 
 namespace libsemigroups {
-  // Forward declaratation
-  namespace fpsemigroup {
-    class ToddCoxeter;
-  }  // namespace fpsemigroup
-
   namespace congruence {
     class ToddCoxeter : public CongIntf {
       using signed_class_index_type = int64_t;
@@ -63,7 +58,9 @@ namespace libsemigroups {
                   std::vector<relation_type> const& genpairs,
                   policy                            p);
 
-      ToddCoxeter(congruence_type type, SemigroupBase* S, policy p);
+      ToddCoxeter(congruence_type,
+                  SemigroupBase*,
+                  policy = policy::use_relations);
 
       // TODO remove the next constructor, or use it as a convenience to first
       // construct an fpsemigroup::ToddCoxeter using relations, and then to
@@ -191,7 +188,10 @@ namespace libsemigroups {
   }  // namespace congruence
 
   namespace fpsemigroup {
-    class ToddCoxeter : public FpSemiIntf {
+    using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
+  }  // namespace fpsemigroup
+
+  /*  class ToddCoxeter : public FpSemiIntf {
      public:
       //////////////////
       // Constructors //
@@ -235,17 +235,9 @@ namespace libsemigroups {
       void      set_alphabet(std::string const&) override;
       void      set_alphabet(size_t) override;
 
-      //////////////////////////////////////////////////////////////////////////
-      // ToddCoxeter - methods - public
-      //////////////////////////////////////////////////////////////////////////
-
-      // Set the char in alphabet() to be the identity.
-      void set_identity(std::string const&);
-
      private:
       size_t                                   _nr_rules;
       std::unique_ptr<congruence::ToddCoxeter> _tcc;
-    };
-  }  // namespace fpsemigroup
+    };*/
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_

@@ -422,4 +422,98 @@ namespace libsemigroups {
       p.run_for(std::chrono::milliseconds(200));
     }*/
   }  // namespace congruence
+
+  namespace fpsemigroup {
+
+    template <class TElementType>
+    void delete_gens(std::vector<TElementType>& gens) {
+      for (auto x : gens) {
+        delete x;
+      }
+    }
+
+    constexpr bool REPORT = false;
+
+    TEST_CASE("FpSemiP 01: 2-sided congruence on finite semigroup",
+              "[quick][fpsemi-p][01]") {
+      REPORTER.set_report(REPORT);
+      std::vector<Element*> gens
+          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+      Semigroup<> S = Semigroup<>(gens);
+      delete_gens(gens);
+
+      // The following lines are intentionally commented out so that we can
+      // check that P does not enumerate the semigroup, they remain to remind us
+      // of the size and number of rules of the semigroups.
+      // REQUIRE(S.size() == 88);
+      // REQUIRE(S.nrrules() == 18);
+
+      P<> p(S);
+      p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}), word_type({1, 0, 0, 0, 1}));
+
+      REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
+      REQUIRE(p.finished());
+      REQUIRE(!S.is_begun());
+      REQUIRE(!S.is_done());
+
+      REQUIRE(p.size() == 21);
+      REQUIRE(p.size() == 21);
+      REQUIRE(S.is_done());  // nr_classes requires S.size();
+    }
+
+    TEST_CASE("FpSemiP 02: 2-sided congruence on finite semigroup",
+              "[quick][fpsemi-p][02]") {
+      REPORTER.set_report(REPORT);
+      std::vector<Element*> gens
+          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+      Semigroup<> S = Semigroup<>(gens);
+      delete_gens(gens);
+
+      // The following lines are intentionally commented out so that we can
+      // check that P does not enumerate the semigroup, they remain to remind us
+      // of the size and number of rules of the semigroups.
+      // REQUIRE(S.size() == 88);
+      // REQUIRE(S.nrrules() == 18);
+
+      P<> p(S);
+      p.add_rule("abaaabbaa", "baaab");
+
+      REQUIRE(p.equal_to("aaab", "aabaa"));
+      REQUIRE(p.finished());
+      REQUIRE(!S.is_begun());
+      REQUIRE(!S.is_done());
+
+      REQUIRE(p.size() == 21);
+      REQUIRE(p.size() == 21);
+      REQUIRE(S.is_done());  // nr_classes requires S.size();
+    }
+
+    // This test is commented out because it does not and should not compile,
+    // the P class requires a base semigroup over which to compute, in the
+    // example below there is no such base semigroup.
+    //
+    // TEST_CASE("FpSemiP 03: infinite fp semigroup from GAP library",
+    //           "[quick][fpsemi-p][03]") {
+    //   REPORTER.set_report(REPORT);
+    //   P<> p;
+    //   p.set_alphabet(2);
+    //   p.add_rule(word_type({0, 0}), word_type({0, 0}));
+    //   p.add_rule(word_type({0, 1}), {1, 0});
+    //   p.add_rule(word_type({0, 2}), {2, 0});
+    //   p.add_rule(word_type({0, 0}), {0});
+    //   p.add_rule(word_type({0, 2}), {0});
+    //   p.add_rule(word_type({2, 0}), {0});
+    //   p.add_rule(word_type({1, 0}), {0, 1});
+    //   p.add_rule(word_type({1, 1}), {1, 1});
+    //   p.add_rule(word_type({1, 2}), {2, 1});
+    //   p.add_rule(word_type({1, 1, 1}), {1});
+    //   p.add_rule(word_type({1, 2}), word_type({1}));
+    //   p.add_rule(word_type({2, 1}), word_type({1}));
+    //   p.add_rule(word_type({0}), word_type({1}));
+
+    //   REQUIRE(!p.finished());
+    // }
+  }  // namespace fpsemigroup
 }  // namespace libsemigroups

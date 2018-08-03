@@ -30,6 +30,7 @@
 #include <unordered_map>
 
 #include "internal/runner.h"
+#include "internal/stl.h"
 
 #include "types.h"
 
@@ -48,9 +49,9 @@ namespace libsemigroups {
     FpSemiIntf();
     virtual ~FpSemiIntf();
 
-    /////////////////////////////////
-    // Public pure virtual methods //
-    /////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule(std::string const&, std::string const&) = 0;
 
@@ -67,9 +68,9 @@ namespace libsemigroups {
 
     virtual size_t nr_rules() const noexcept = 0;
 
-    /////////////////////////////////////
-    // Public non-pure virtual methods //
-    /////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - non-pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
     virtual void      add_rule(std::initializer_list<size_t>,
@@ -80,15 +81,18 @@ namespace libsemigroups {
     virtual void      set_alphabet(std::string const&);
     virtual void      set_alphabet(size_t);
 
-    ////////////////////////////////
-    // Public non-virtual methods //
-    ////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - non-virtual methods - public
+    //////////////////////////////////////////////////////////////////////////////
 
     void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
+
     std::string const& alphabet() const;
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
+    // Set the char in alphabet() to be the identity.
+    void set_identity(std::string const&);
 
    protected:
     ////////////////////////////////
@@ -127,6 +131,7 @@ namespace libsemigroups {
     bool                                  _is_alphabet_defined;
     SemigroupBase*                        _isomorphic_non_fp_semigroup;
   };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
 // TODO use or delete the below

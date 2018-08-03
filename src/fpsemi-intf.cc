@@ -45,9 +45,9 @@ namespace libsemigroups {
     }
   }
 
-  ////////////////////////////////
-  // Public non-virtual methods //
-  ////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiIntf - non-virtual methods - public
+  //////////////////////////////////////////////////////////////////////////////
 
   std::string const& FpSemiIntf::alphabet() const {
     if (!_is_alphabet_defined) {
@@ -59,6 +59,23 @@ namespace libsemigroups {
 
   bool FpSemiIntf::has_isomorphic_non_fp_semigroup() const noexcept {
     return _isomorphic_non_fp_semigroup != nullptr;
+  }
+
+  void FpSemiIntf::set_identity(std::string const& id) {
+    if (id.length() != 1) {
+      throw LibsemigroupsException(
+          "ToddCoxeter::set_identity: invalid identity, found "
+          + to_string(id.length()) + " letters, should be single letter");
+    }
+    validate_letter(id[0]);
+    for (auto l : alphabet()) {
+      if (l == id[0]) {
+        add_rule(id + id, id);
+      } else {
+        add_rule(to_string(l) + id, to_string(l));
+        add_rule(id + to_string(l), to_string(l));
+      }
+    }
   }
 
   //////////////////////////////////////

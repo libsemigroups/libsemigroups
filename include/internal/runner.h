@@ -53,16 +53,16 @@ namespace libsemigroups {
     void report_every(std::chrono::nanoseconds val);
     template <typename TIntType> void report_every(TIntType time);
 
-    bool finished() const;
-    void set_finished();
-    void unset_finished();  // TODO use this! Currently only used in cong-p.h
+    virtual bool finished() const;
+    void set_finished() const;
+    void unset_finished() const;  // TODO use this! Currently only used in cong-p.h
 
     void kill();
     bool dead() const;
 
    private:
     std::atomic<bool>                                      _dead;
-    bool                                                   _finished;
+    mutable bool                                           _finished;
     mutable std::chrono::high_resolution_clock::time_point _last_report;
     std::chrono::nanoseconds                               _run_for;
     std::chrono::nanoseconds                       _report_time_interval;

@@ -21,6 +21,7 @@
 #include "cong-intf.h"
 
 #include "internal/libsemigroups-exception.h"
+#include "internal/stl.h"
 
 #include "constants.h"
 #include "semigroup-base.h"
@@ -78,9 +79,10 @@ namespace libsemigroups {
 
   void CongIntf::set_nr_generators(size_t n) {
     if (_is_nr_generators_defined) {
-      throw LibsemigroupsException(
-          "CongIntf::set_nr_generators: the number of generators "
-          "cannot be set more than once");
+      throw LibsemigroupsException(std::string(__FILE__) + ":"
+                                   + libsemigroups::to_string(__LINE__)
+                                   + ": the number of generators "
+                                     "cannot be set more than once");
     }
     _is_nr_generators_defined = true;
     _nrgens                   = n;
@@ -131,8 +133,8 @@ namespace libsemigroups {
       throw LibsemigroupsException("There's no parent semigroup in which to "
                                    "find the non-trivial classes");
     }
-    LIBSEMIGROUPS_ASSERT(nr_classes() != POSITIVE_INFINITY);
 
+    LIBSEMIGROUPS_ASSERT(nr_classes() != POSITIVE_INFINITY);
     _non_trivial_classes.assign(nr_classes(), std::vector<word_type>());
 
     word_type w;

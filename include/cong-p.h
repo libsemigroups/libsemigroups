@@ -27,9 +27,12 @@
 
 #include <queue>
 
+#include "internal/stl.h"
 #include "internal/uf.h"
 
 #include "cong-intf.h"
+#include "cong-wrap.h"
+#include "fpsemi-intf.h"
 #include "kbe.h"
 #include "semigroup.h"
 
@@ -67,12 +70,13 @@ namespace libsemigroups {
       using semigroup_type
           = Semigroup<TElementType, TElementHash, TElementEqual, TTraits>;
 
-     public:
       ////////////////////////////////////////////////////////////////////////
-      // P - constructor + destructor - public
+      // P - constructor - private
       ////////////////////////////////////////////////////////////////////////
+      // This is private because it is not possible to create a P object
+      // without it being defined over a parent semigroup.
 
-      P(congruence_type type, SemigroupBase* S)
+      explicit P(congruence_type type)
           : CongIntf(type),
             _class_lookup(),
             _found_pairs(),
@@ -86,10 +90,17 @@ namespace libsemigroups {
             _pairs_to_mult(),
             _reverse_map(),
             _tmp1(),
-            _tmp2() {
+            _tmp2() {}
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // P - constructor + destructor - public
+      ////////////////////////////////////////////////////////////////////////
+
+      P(congruence_type type, SemigroupBase* S) : P(type) {
         LIBSEMIGROUPS_ASSERT(S != nullptr);
-        auto parent = static_cast<semigroup_type*>(S);
-        set_parent(parent);
+        set_nr_generators(S->nrgens());
+        set_parent(static_cast<semigroup_type*>(S));
       }
 
       P(congruence_type type, SemigroupBase& S) : P(type, &S) {}
@@ -201,13 +212,11 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair(word_type l, word_type r) override {
-        reference x
-            = static_cast<semigroup_type*>(parent())->word_to_element(l);
-        reference y
-            = static_cast<semigroup_type*>(parent())->word_to_element(r);
+        auto x = static_cast<semigroup_type*>(parent())->word_to_element(l);
+        auto y = static_cast<semigroup_type*>(parent())->word_to_element(r);
         internal_add_pair(this->to_internal(x), this->to_internal(y));
-        this->internal_free(x);
-        this->internal_free(y);
+        this->external_free(x);
+        this->external_free(y);
         unset_finished();
       }
 
@@ -242,6 +251,21 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // CongIntf - overridden non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
+
+      class_index_type const_word_to_class_index(word_type const& w) const override {
+        if (!_init_done) {
+          return UNDEFINED;
+        }
+        auto x  = static_cast<semigroup_type*>(parent())->word_to_element(w);
+        auto it = _map.find(this->to_internal_const(x));
+        this->external_free(x);
+        if (it == _map.end()) {
+          return UNDEFINED;
+        }
+        LIBSEMIGROUPS_ASSERT(it->second < _class_lookup.size());
+        LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
+        return _class_lookup[it->second];
+      }
 
       void init_non_trivial_classes() override {
         run();
@@ -352,7 +376,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // TODO: revise from here
+      // P - inner structs - private
       ////////////////////////////////////////////////////////////////////////
 
       struct PHash {
@@ -404,15 +428,27 @@ namespace libsemigroups {
       internal_element_type              _tmp2;
     };
   }  // namespace congruence
+
+  namespace fpsemigroup {
+    template <
+        typename TElementType  = Element const*,
+        typename TElementHash  = libsemigroups::hash<TElementType>,
+        typename TElementEqual = libsemigroups::equal_to<TElementType>,
+        class TTraits
+        = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
+    using P = WrappedCong<
+        congruence::P<TElementType, TElementHash, TElementEqual, TTraits>, false>;
+    // The false in the template of the previous line, is so that we do not add
+    // the rules from any underlying semigroup to the P.
+  }  // namespace fpsemigroup
 }  // namespace libsemigroups
+
+////////////////////////////////////////////////////////////////////////////////
+// OLD STUFF
+////////////////////////////////////////////////////////////////////////////////
 
 // The following originates in the stable-1.0 branch
 /*
-namespace libsemigroups {
-  namespace congruence {
-    using congruence_t = Interface::congruence_t;
-    using RWS          = fpsemigrouRWS;
-
     // Forward declaration
     template <typename TElementType,
               typename TElementHash,
@@ -434,154 +470,6 @@ namespace libsemigroups {
       // if they are the same, then they represent the same class, i.e. we don't
       // have to worry about running this at all.
 
-
-      void run() override {
-        if (finished()) {
-          return;
-        }
-
-        Timer t;
-        init();
-
-        size_t tid = glob_reporter.thread_id(std::this_thread::get_id());
-        while (!_pairs_to_mult.empty() && !dead() && !timed_out()) {
-          // Get the next pair
-          std::pair<TElementType, TElementType> current_pair
-              = _pairs_to_mult.front();
-
-          _pairs_to_mult.pop();
-
-          // Add its left and/or right multiples
-          for (size_t i = 0; i < _semigroup->nrgens(); i++) {
-            TElementType gen = _semigroup->gens(i);
-            if (type() == LEFT || type() == TWOSIDED) {
-              _tmp1 = this->multiply(_tmp1, gen, current_pair.first, tid);
-              _tmp2 = this->multiply(_tmp2, gen, current_pair.second, tid);
-              internal_add_pair(_tmp1, _tmp2);
-            }
-            if (type() == RIGHT || type() == TWOSIDED) {
-              _tmp1 = this->multiply(_tmp1, current_pair.first, gen, tid);
-              _tmp2 = this->multiply(_tmp2, current_pair.second, gen, tid);
-              internal_add_pair(_tmp1, _tmp2);
-            }
-          }
-          if (report()) {
-            REPORT("found " << _found_pairs.size() << " pairs: " << _map_next
-                            << " elements in " << _lookup.nr_blocks()
-                            << " classes, " << _pairs_to_mult.size()
-                            << " pairs on the stack");
-          }
-        }
-
-        if (!dead() && !timed_out()) {
-          // Make a normalised class lookup (class numbers {0, .., n-1}, in
-          // order)
-          if (_lookup.get_size() > 0) {
-            _class_lookup.reserve(_lookup.get_size());
-            _next_class = 1;
-            size_t nr;
-            size_t max = 0;
-            LIBSEMIGROUPS_ASSERT(_lookup.find(0) == 0);
-            _class_lookup.push_back(0);
-            for (size_t i = 1; i < _lookup.get_size(); i++) {
-              nr = _lookup.find(i);
-              if (nr > max) {
-                _class_lookup.push_back(_next_class++);
-                max = nr;
-              } else {
-                _class_lookup.push_back(_class_lookup[nr]);
-              }
-            }
-          }
-
-          // Record information about non-trivial classes
-          _nr_nontrivial_classes = _next_class;
-          _nr_nontrivial_elms    = _map_next;
-        }
-
-        REPORT("stopping with " << _found_pairs.size()
-                                << " pairs: " << _map_next << " elements in "
-                                << _lookup.nr_blocks() << " classes");
-        REPORT("elapsed time = " << t);
-        if (dead()) {
-          REPORT("killed");
-        } else if (timed_out()) {
-          REPORT("timed out!");
-        } else {
-          set_finished();
-          delete_tmp_storage();
-          REPORT("finished!");
-        }
-      }
-
-      SemigroupBase* quotient_semigroup() override {
-        // FIXME actually implement this
-        throw std::runtime_error("not yet implemented");
-      }
-
-     private:
-      struct PHash {
-       public:
-        size_t
-        operator()(std::pair<TElementType, TElementType> const& pair) const {
-          return TElementHash()(pair.first) + 17 * TElementHash()(pair.second);
-        }
-      };
-
-      struct PEqual {
-        size_t operator()(std::pair<TElementType, TElementType> pair1,
-                          std::pair<TElementType, TElementType> pair2) const {
-          return TElementEqual()(pair1.first, pair2.first)
-                 && TElementEqual()(pair1.second, pair2.second);
-        }
-      };
-
-      class_index_t const_word_to_class_index(word_t const& w) const override {
-        if (!_init_done) {
-          return UNDEFINED;
-        }
-        TElementType x  = _semigroup->word_to_element(w);
-        auto         it = _map.find(x);
-        this->free(x);
-        if (it == _map.end()) {
-          return UNDEFINED;
-        }
-        LIBSEMIGROUPS_ASSERT(it->second < _class_lookup.size());
-        LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
-        return _class_lookup[it->second];
-      }
-
-
-      size_t get_index(TElementType x) {
-        auto it = _map.find(x);
-        if (it == _map.end()) {
-          return add_index(this->copy(x));
-        }
-        return it->second;
-      }
-
-
-
-      std::vector<class_index_t> _class_lookup;
-      std::unordered_set<std::pair<TElementType, TElementType>, PHash, PEqual>
-                                                        _found_pairs;
-      std::vector<relation_t>                           _genpairs;
-      bool                                              _init_done;
-      UF                                                _lookup;
-      std::unordered_map<TElementType, size_t>          _map;
-      size_t                                            _map_next;
-      class_index_t                                     _next_class;
-      std::vector<std::vector<word_t>>                  _non_trivial_classes;
-      size_t                                            _nr_nontrivial_classes;
-      size_t                                            _nr_nontrivial_elms;
-      std::queue<std::pair<TElementType, TElementType>> _pairs_to_mult;
-      std::vector<TElementType>                         _reverse_map;
-      RWS*                                              _rws;
-      Semigroup<TElementType, TElementHash, TElementEqual>* _semigroup;
-      TElementType                                          _tmp1;
-      TElementType                                          _tmp2;
-      congruence_t                                          _type;
-    };
 
     ////////////////////////////////////////////////////////////////////////////
     // Class for elements of the quotient semigroup
@@ -647,6 +535,7 @@ namespace std {
     }
   };
 }  // namespace std */
+
 // From v0.6.3
 //      result_t current_equals(word_type const& w1, word_type const& w2) final
 //      {

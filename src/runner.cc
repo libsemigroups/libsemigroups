@@ -82,11 +82,11 @@ namespace libsemigroups {
     // true here if we are not dead and the object thinks it is finished.
   }
 
-  void Runner::set_finished() {
+  void Runner::set_finished() const {
     _finished = true;
   }
 
-  void Runner::unset_finished() {
+  void Runner::unset_finished() const {
     _finished = false;
   }
 

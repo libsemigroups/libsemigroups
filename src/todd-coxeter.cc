@@ -314,7 +314,7 @@ namespace libsemigroups {
       auto S = static_cast<Semigroup<TCE>*>(quotient_semigroup());
       S->enumerate();
       word_type out;
-      S->minimal_factorisation(out, S->position(TCE(this, i)));
+      S->minimal_factorisation(out, S->position(TCE(this, i + 1)));
       return out;  // TODO std::move?
     }
 
@@ -937,7 +937,7 @@ namespace libsemigroups {
       }
     }
   }  // namespace congruence
-
+/*
   namespace fpsemigroup {
     //////////////////
     // Constructors //
@@ -1024,7 +1024,7 @@ namespace libsemigroups {
 
     /////////////////////////////////////////////////////////
     // Overridden non-pure virtual methods from FpSemiIntf //
-    /////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////
 
     // We override FpSemiIntf::add_rule to avoid unnecessary conversion from
     // word_type -> string.
@@ -1063,27 +1063,5 @@ namespace libsemigroups {
       FpSemiIntf::set_alphabet(nr_letters);
       _tcc->set_nr_generators(nr_letters);
     }
-    // TODO override add_rules(SemigroupBase*) to avoid unnecessary conversions
-
-    //////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - methods - public
-    //////////////////////////////////////////////////////////////////////////
-    // TODO move to fpsemiintf
-    void ToddCoxeter::set_identity(std::string const& id) {
-      if (id.length() != 1) {
-        throw LibsemigroupsException(
-            "ToddCoxeter::set_identity: invalid identity length, found "
-            + to_string(id.length()) + " should be 1");
-      }
-      validate_letter(id[0]);
-      for (auto l : alphabet()) {
-        if (l == id[0]) {
-          add_rule(id + id, id);
-        } else {
-          add_rule(to_string(l) + id, to_string(l));
-          add_rule(id + to_string(l), to_string(l));
-        }
-      }
-    }
-  }  // namespace fpsemigroup
+  }  // namespace fpsemigroup*/
 }  // namespace libsemigroups
