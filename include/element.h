@@ -454,9 +454,9 @@ namespace libsemigroups {
       // TODO replace this with the method in stl.h
       os << "{";
       for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
-        os << libsemigroups::to_string(*it) << ", ";
+        os << to_string(*it) << ", ";
       }
-      os << libsemigroups::to_string(*(elt.cend() - 1)) << "}";
+      os << to_string(*(elt.cend() - 1)) << "}";
       return os;
     }
 
@@ -466,7 +466,7 @@ namespace libsemigroups {
     //! ostream.
     friend std::ostream& operator<<(std::ostream&                os,
                                     ElementWithVectorData const& elt) {
-      os << libsemigroups::to_string(elt);
+      os << to_string(elt);
       return os;
     }
 
@@ -581,17 +581,16 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if any value of \c this is
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if any value of \c this is
     //! out of bounds (i.e. less than 0, greater than or equal to \c
     //! this->degree(), and not PartialTransformation::UNDEFINED).
     void validate() const {
       for (auto const& val : this->_vector) {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
-          throw LibsemigroupsException(
-              "PartialTransformation: image value out of bounds, found "
-              + libsemigroups::to_string(static_cast<size_t>(val))
-              + ", must be less than "
-              + libsemigroups::to_string(this->degree()));
+          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                        + to_string(static_cast<size_t>(val))
+                                        + ", must be less than "
+                                        + to_string(this->degree()));
         }
       }
     }
@@ -747,16 +746,16 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if any value of \c this is
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if any value of \c this is
     //! out of bounds (i.e. greater than or equal to \c this->degree()).
     void validate() const {
       size_t deg = this->degree();
       for (auto const& val : this->_vector) {
         if (val >= deg) {
-          throw LibsemigroupsException(
-              "Transformation: image value out of bounds, found "
-              + libsemigroups::to_string(static_cast<size_t>(val))
-              + ", must be less than " + libsemigroups::to_string(deg));
+          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                        + to_string(static_cast<size_t>(val))
+                                        + ", must be less than "
+                                        + to_string(deg));
         }
       }
     }
@@ -853,15 +852,14 @@ namespace libsemigroups {
         : PartialTransformation<TValueType, PartialPerm<TValueType>>(
               std::vector<TValueType>()) {
       if (dom.size() != ran.size()) {
-        throw LibsemigroupsException(
-            "PartialPerm: domain and range size mismatch");
+        throw LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch");
       } else if (!(dom.empty()
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
-        throw LibsemigroupsException(
-            "PartialPerm: domain value out of bounds, found "
-            + libsemigroups::to_string(static_cast<size_t>(
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "domain value out of bounds, found "
+            + to_string(static_cast<size_t>(
                   *std::max_element(dom.cbegin(), dom.cend())))
-            + ", must be less than " + libsemigroups::to_string(deg));
+            + ", must be less than " + to_string(deg));
       }
       this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
@@ -883,7 +881,7 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if any value of \c this is
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if any value of \c this is
     //! out of bounds (i.e. greater than or equal to \c this->degree()), and not
     //! equal to PartialPerm::UNDEFINED), or if any image appears more than
     //! once.
@@ -893,15 +891,13 @@ namespace libsemigroups {
       for (auto const& val : this->_vector) {
         if (val != UNDEFINED) {
           if (val < 0 || val >= this->degree()) {
-            throw LibsemigroupsException(
-                "PartialPerm: image value out of bounds, found "
-                + libsemigroups::to_string(static_cast<size_t>(val))
-                + ", must be less than "
-                + libsemigroups::to_string(this->degree()));
+            throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                          + to_string(static_cast<size_t>(val))
+                                          + ", must be less than "
+                                          + to_string(this->degree()));
           } else if (present[val]) {
-            throw LibsemigroupsException(
-                "PartialPerm: duplicate image value "
-                + libsemigroups::to_string(static_cast<size_t>(val)));
+            throw LIBSEMIGROUPS_EXCEPTION(
+                "duplicate image value " + to_string(static_cast<size_t>(val)));
           }
           present[val] = true;
         }
@@ -1100,7 +1096,7 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if the data defining \c
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if the data defining \c
     //! this is invalid, which could occur if:
     //!
     //! *this->_vector has odd length, or
@@ -1338,17 +1334,15 @@ namespace libsemigroups {
           _degree(),
           _semiring(semiring) {
       if (semiring == nullptr) {
-        throw LibsemigroupsException("MatrixOverSemiring: semiring is nullptr");
+        throw LIBSEMIGROUPS_EXCEPTION("semiring is nullptr");
       } else if (matrix.empty()) {
-        throw LibsemigroupsException(
-            "MatrixOverSemiring: matrix has dimension 0");
+        throw LIBSEMIGROUPS_EXCEPTION("matrix has dimension 0");
       } else if (!all_of(matrix.cbegin(),
                          matrix.cend(),
                          [&matrix](std::vector<TValueType> row) {
                            return row.size() == matrix.size();
                          })) {
-        throw LibsemigroupsException(
-            "MatrixOverSemiring: matrix is not square");
+        throw LIBSEMIGROUPS_EXCEPTION("matrix is not square");
       }
       _degree = matrix[0].size();
       this->_vector.reserve(matrix.size() * matrix.size());
@@ -1369,19 +1363,18 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if any value of \c this is
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if any value of \c this is
     //! not in the underlying semiring.
     void validate() const {
       if (this->degree() * this->degree() != this->_vector.size()) {
-        throw LibsemigroupsException("MatrixOverSemiring: matrix must have "
-                                     "size that is a perfect square");
+        throw LIBSEMIGROUPS_EXCEPTION("matrix must have "
+                                      "size that is a perfect square");
       }
       for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
-          throw LibsemigroupsException(
-              "MatrixOverSemiring: matrix contains entry "
-              + libsemigroups::to_string(static_cast<size_t>(x))
-              + " not in the underlying semiring");
+          throw LIBSEMIGROUPS_EXCEPTION("matrix contains entry "
+                                        + to_string(static_cast<size_t>(x))
+                                        + " not in the underlying semiring");
         }
       }
     }
@@ -1630,22 +1623,20 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if any value of \c this is
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if any value of \c this is
     //! out of bounds (i.e. greater than or equal to \c this->degree()), or if
     //! any image appears more than once.
     void validate() const {
       std::vector<bool> present(this->degree(), false);
       for (auto const& val : this->_vector) {
         if (val < 0 || val >= this->degree()) {
-          throw LibsemigroupsException(
-              "Permutation: image value out of bounds, found "
-              + libsemigroups::to_string(static_cast<size_t>(val))
-              + ", must be less than "
-              + libsemigroups::to_string(this->degree()));
+          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                        + to_string(static_cast<size_t>(val))
+                                        + ", must be less than "
+                                        + to_string(this->degree()));
         } else if (present[val]) {
-          throw LibsemigroupsException(
-              "Permutation: duplicate image value "
-              + libsemigroups::to_string(static_cast<size_t>(val)));
+          throw LIBSEMIGROUPS_EXCEPTION("duplicate image value "
+                                        + to_string(static_cast<size_t>(val)));
         }
         present[val] = true;
       }
@@ -1789,7 +1780,7 @@ namespace libsemigroups {
 
     //! Validates the data defining \c this.
     //!
-    //! This method throws a LibsemigroupsException if the data defining \c
+    //! This method throws a LIBSEMIGROUPS_EXCEPTION if the data defining \c
     //! this is invalid, which could occur if:
     //!
     //! * \c this->_vector has odd length, or
@@ -1844,14 +1835,14 @@ namespace libsemigroups {
         for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
           os << pbr[i][j] << ", ";
         }
-        os << std::to_string(pbr[i].back()) << "}, ";
+        os << to_string(pbr[i].back()) << "}, ";
       }
 
       os << "{";
       for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
         os << pbr[2 * pbr.degree() - 1][j] << ", ";
       }
-      os << std::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
+      os << to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
       return os;
     }
 
@@ -1859,7 +1850,7 @@ namespace libsemigroups {
     //!
     //! This method allows PBR objects to be inserted into an ostream.
     friend std::ostream& operator<<(std::ostream& os, PBR const& pbr) {
-      os << libsemigroups::to_string(pbr);
+      os << to_string(pbr);
       return os;
     }
 

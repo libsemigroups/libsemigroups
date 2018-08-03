@@ -439,9 +439,9 @@ namespace libsemigroups {
       delete t4;
     }
 
-    TEST_CASE(
-        "Todd-Coxeter 17: right congruence on transformation semigroup size 88 ",
-        "[quick][todd-coxeter][17]") {
+    TEST_CASE("Todd-Coxeter 17: right congruence on transformation semigroup "
+              "size 88 ",
+              "[quick][todd-coxeter][17]") {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
@@ -863,7 +863,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE("Todd-Coxeter 29: Chapter 7, Theorem 3.6 in NR (size 243)",
-        "[todd-coxeter][quick][29]") {
+              "[todd-coxeter][quick][29]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc("ab");
       tc.add_rule("aaa", "a");
@@ -874,7 +874,7 @@ namespace libsemigroups {
     }
 
     TEST_CASE("Todd-Coxeter 29: finite semigroup (size 99)",
-        "[todd-coxeter][quick][29]") {
+              "[todd-coxeter][quick][29]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc("ab");
       tc.add_rule("aaa", "a");
@@ -885,4 +885,4 @@ namespace libsemigroups {
     }
 
   }  // namespace fpsemigroup_todd_coxeter
-}  // namespace libsemigroups
+}  // namespace libsemigroups*/

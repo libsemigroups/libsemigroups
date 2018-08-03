@@ -71,7 +71,7 @@ namespace libsemigroups {
       return;
 #endif
     } else if (n % 2 != 0) {
-      throw LibsemigroupsException(
+      throw LIBSEMIGROUPS_EXCEPTION(
           "Bipartition: expected argument of even length");
     }
     size_t next = 0;
@@ -80,10 +80,9 @@ namespace libsemigroups {
       if (j == next) {
         ++next;
       } else if (j > next) {
-        throw LibsemigroupsException(
-            "Bipartition: expected " + libsemigroups::to_string(next)
-            + " but found " + libsemigroups::to_string(j) + ", in position "
-            + libsemigroups::to_string(i));
+        throw LIBSEMIGROUPS_EXCEPTION("Bipartition: expected " + to_string(next)
+                                      + " but found " + to_string(j)
+                                      + ", in position " + to_string(i));
       }
     }
   }
@@ -308,14 +307,14 @@ namespace libsemigroups {
       }
     }
     if (deg < 2 * max) {
-      throw LibsemigroupsException("Bipartition: the blocks given do not "
-                                   "disjoint union to the ranges [-"
-                                   + std::to_string(-max) + ".. -1] U [1 .. "
-                                   + std::to_string(max) + "]: "
-                                   + std::to_string(deg) + " elements given");
+      throw LIBSEMIGROUPS_EXCEPTION("Bipartition: the blocks given do not "
+                                    "disjoint union to the ranges [-"
+                                    + to_string(-max) + ".. -1] U [1 .. "
+                                    + to_string(max) + "]: "
+                                    + to_string(deg) + " elements given");
     }
     if (max >= static_cast<int32_t>(0x40000000)) {
-      throw LibsemigroupsException("Bipartition: too many points");
+      throw LIBSEMIGROUPS_EXCEPTION("Bipartition: too many points");
     }
 
     std::vector<u_int32_t> out = std::vector<u_int32_t>(
@@ -324,24 +323,24 @@ namespace libsemigroups {
     for (u_int32_t i = 0; i < blocks.size(); ++i) {
       for (int32_t x : blocks[i]) {
         if (x == 0) {
-          throw LibsemigroupsException(
+          throw LIBSEMIGROUPS_EXCEPTION(
               "Bipartition: found 0 in a block, but every value should be "
               "in the ranges [-"
-              + std::to_string(-max) + " .. -1] or [1 .. " + std::to_string(max)
+              + to_string(-max) + " .. -1] or [1 .. " + to_string(max)
               + "]");
         }
         if (x < 0) {
           if (out[static_cast<u_int32_t>(max - x - 1)]
               != std::numeric_limits<u_int32_t>::max()) {
-            throw LibsemigroupsException("Bipartition: found "
-                                         + std::to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found "
+                                          + to_string(x) + " twice");
           }
           out[static_cast<u_int32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<u_int32_t>(x - 1)]
               != std::numeric_limits<u_int32_t>::max()) {
-            throw LibsemigroupsException("Bipartition: found "
-                                         + std::to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found "
+                                          + to_string(x) + " twice");
           }
 
           out[static_cast<u_int32_t>(x - 1)] = i;
@@ -376,15 +375,15 @@ namespace libsemigroups {
     }
 #endif
     if (n % 2 == 1) {
-      throw LibsemigroupsException("PBR: expected argument of even length");
+      throw LIBSEMIGROUPS_EXCEPTION("PBR: expected argument of even length");
     }
     for (size_t u = 0; u < n; ++u) {
       for (auto const& v : this->_vector.at(u)) {
         if (v >= n) {
-          throw LibsemigroupsException(
-              "PBR: entry out of bounds, vertex " + libsemigroups::to_string(u)
-              + " is adjacent to " + libsemigroups::to_string(v)
-              + ", should be less than " + libsemigroups::to_string(n));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "PBR: entry out of bounds, vertex " + to_string(u)
+              + " is adjacent to " + to_string(v) + ", should be less than "
+              + to_string(n));
         }
       }
     }
@@ -582,21 +581,21 @@ namespace libsemigroups {
     std::vector<u_int32_t>              v;
 
     if (n != right.size()) {
-      throw LibsemigroupsException(
+      throw LIBSEMIGROUPS_EXCEPTION(
           "PBR: the two vectors must have the same length");
     }
     if (n > 0x40000000) {
-      throw LibsemigroupsException("PBR: too many points!");
+      throw LIBSEMIGROUPS_EXCEPTION("PBR: too many points!");
     }
     for (std::vector<int32_t> vec : left) {
       v = std::vector<u_int32_t>();
       for (int32_t x : vec) {
         if (x == 0 || x < -static_cast<int32_t>(n)
             || x > static_cast<int32_t>(n)) {
-          throw LibsemigroupsException(
+          throw LIBSEMIGROUPS_EXCEPTION(
               "PBR: the first argument contains a vector which contains "
-              + std::to_string(x) + " but the values must lie in the ranges [-"
-              + std::to_string(n) + " .. -1] or " + "[1 .. " + std::to_string(n)
+              + to_string(x) + " but the values must lie in the ranges [-"
+              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n)
               + "]");
         }
         if (x < 0) {
@@ -613,10 +612,10 @@ namespace libsemigroups {
       for (int32_t x : vec) {
         if (x == 0 || x < -static_cast<int32_t>(n)
             || x > static_cast<int32_t>(n)) {
-          throw LibsemigroupsException(
+          throw LIBSEMIGROUPS_EXCEPTION(
               "PBR: the second argument contains a vector which contains "
-              + std::to_string(x) + " but the values must lie in the ranges [-"
-              + std::to_string(n) + " .. -1] or " + "[1 .. " + std::to_string(n)
+              + to_string(x) + " but the values must lie in the ranges [-"
+              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n)
               + "]");
         }
         if (x < 0) {

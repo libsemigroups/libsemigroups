@@ -44,10 +44,10 @@
 //       std::string instead.
 
 namespace libsemigroups {
-  class KBE; // Forward declaration
+  class KBE;  // Forward declaration
 
   namespace congruence {
-    class KnuthBendix; // Forward declaration
+    class KnuthBendix;  // Forward declaration
   }
 
   namespace fpsemigroup {
@@ -58,6 +58,7 @@ namespace libsemigroups {
 
     class KnuthBendix : public FpSemiIntf {
       friend class ::libsemigroups::congruence::KnuthBendix;
+
      public:
       // TODO typedef isomorphic_non_fp_semigroup_type
       //////////////////////////////////////////////////////////////////////////
@@ -89,8 +90,8 @@ namespace libsemigroups {
       void set_alphabet(size_t) override;
 
       using FpSemiIntf::add_rule;
-      using FpSemiIntf::normal_form;
       using FpSemiIntf::equal_to;
+      using FpSemiIntf::normal_form;
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -101,7 +102,7 @@ namespace libsemigroups {
       struct OverlapMeasure;  // defined in knuth-bendix.cc
       friend struct Rule;     // defined in knuth-bendix.h
       struct Rule;
-      friend class ::libsemigroups::KBE;       // defined in kbe.h
+      friend class ::libsemigroups::KBE;  // defined in kbe.h
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - typedefs - private
@@ -146,8 +147,7 @@ namespace libsemigroups {
       //! This constructs a rewriting system with no rules, and with the
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
-      explicit KnuthBendix(ReductionOrdering*,
-                           external_string_type = "");
+      explicit KnuthBendix(ReductionOrdering*, external_string_type = "");
       explicit KnuthBendix(SemigroupBase*);
       explicit KnuthBendix(SemigroupBase&);
       explicit KnuthBendix(KnuthBendix const*);

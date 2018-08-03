@@ -184,7 +184,7 @@ namespace libsemigroups {
       Timer timer;
       init();
       if (is_quotient_obviously_infinite()) {
-        throw LibsemigroupsException(
+        throw LIBSEMIGROUPS_EXCEPTION(
             "there are infinitely many classes in the congruence and "
             "Todd-Coxeter will never terminate");
       }
@@ -261,12 +261,11 @@ namespace libsemigroups {
       validate_word(rhs);
       if (_init_done) {
         // TODO allow adding of pairs here
-        throw LibsemigroupsException("can't add pair at this point");
+        throw LIBSEMIGROUPS_EXCEPTION("can't add pair at this point");
       }
       _extra.emplace_back(lhs, rhs);
       reset_quotient();
     }
-
 
     size_t ToddCoxeter::nr_classes() {
       if (is_quotient_obviously_infinite()) {
@@ -278,10 +277,9 @@ namespace libsemigroups {
       }
     }
 
-
     SemigroupBase* ToddCoxeter::quotient_semigroup() {
       if (type() != congruence_type::TWOSIDED) {
-        throw LibsemigroupsException("the congruence must be two-sided");
+        throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
       } else if (!has_quotient()) {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
@@ -378,8 +376,7 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled
-             || (has_quotient() && quotient()->is_done());
+      return _prefilled || (has_quotient() && quotient()->is_done());
       // 1. _prefilled means that either we were created from a SemigroupBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
@@ -487,12 +484,11 @@ namespace libsemigroups {
         for (size_t j = 0; j < _table.nr_cols(); ++j) {
           class_index_type c = _table.get(i, j);
           if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
-            throw LibsemigroupsException(
-                "invalid table, the entry in row " + libsemigroups::to_string(i)
-                + " and column " + libsemigroups::to_string(j)
-                + " should be in the range [1, "
-                + libsemigroups::to_string(_table.nr_rows())
-                + ") or UNDEFINED, but is " + libsemigroups::to_string(c));
+            throw LIBSEMIGROUPS_EXCEPTION(
+                "invalid table, the entry in row " + to_string(i)
+                + " and column " + to_string(j) + " should be in the range [1, "
+                + to_string(_table.nr_rows()) + ") or UNDEFINED, but is "
+                + to_string(c));
           }
         }
       }
@@ -503,10 +499,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
       for (auto const& l : w) {
         if (l >= nr_generators()) {
-          throw LibsemigroupsException(
-              "invalid word, found " + libsemigroups::to_string(l)
-              + " should be at most "
-              + libsemigroups::to_string(nr_generators()));
+          throw LIBSEMIGROUPS_EXCEPTION("invalid word, found " + to_string(l)
+                                        + " should be at most "
+                                        + to_string(nr_generators()));
         }
       }
     }
@@ -937,131 +932,132 @@ namespace libsemigroups {
       }
     }
   }  // namespace congruence
-/*
-  namespace fpsemigroup {
-    //////////////////
-    // Constructors //
-    //////////////////
+  /*
+    namespace fpsemigroup {
+      //////////////////
+      // Constructors //
+      //////////////////
 
-    ToddCoxeter::ToddCoxeter()
-        : _nr_rules(0),
-          _tcc(libsemigroups::make_unique<congruence::ToddCoxeter>(
-              congruence_type::TWOSIDED)) {}
+      ToddCoxeter::ToddCoxeter()
+          : _nr_rules(0),
+            _tcc(libsemigroups::make_unique<congruence::ToddCoxeter>(
+                congruence_type::TWOSIDED)) {}
 
-    ToddCoxeter::ToddCoxeter(std::string const& lphbt) : ToddCoxeter() {
-      set_alphabet(lphbt);
-    }
-
-    ToddCoxeter::ToddCoxeter(SemigroupBase* S) : ToddCoxeter() {
-      set_alphabet(S->nrgens());
-      add_rules(S);
-      _nr_rules += S->nrrules();
-      // TODO something like the following
-      // if (S->nr_rules() == this->nr_rules()) {
-      //   set_isomorphic_non_fp_semigroup(S);
-      // }
-    }
-
-    // TODO move to FpSemiIntf?
-    ToddCoxeter::ToddCoxeter(SemigroupBase& S) : ToddCoxeter(&S) {}
-
-    void ToddCoxeter::run() {
-      _tcc->run();
-    }
-
-    /////////////////////////////////////////////////////
-    // Overridden pure virtual methods from FpSemiIntf //
-    /////////////////////////////////////////////////////
-
-    void ToddCoxeter::add_rule(std::string const& lhs, std::string const& rhs) {
-      if (!is_alphabet_defined()) {
-        throw LibsemigroupsException("ToddCoxeter::add_rule: cannot add rules "
-                                     "before an alphabet is defined");
+      ToddCoxeter::ToddCoxeter(std::string const& lphbt) : ToddCoxeter() {
+        set_alphabet(lphbt);
       }
-      // We perform these checks here because string_to_word fails if lhs/rhs
-      // are not valid, and string_to_word does not checks.
-      validate_word(lhs);
-      validate_word(rhs);
-      _nr_rules++;
-      _tcc->add_pair(string_to_word(lhs), string_to_word(rhs));
-    }
 
-    bool ToddCoxeter::is_obviously_finite() {
-      return _tcc->is_quotient_obviously_finite();
-    }
-
-    bool ToddCoxeter::is_obviously_infinite() {
-      return _tcc->is_quotient_obviously_infinite();
-    }
-
-    size_t ToddCoxeter::size() {
-      return _tcc->nr_classes();
-    }
-
-    bool ToddCoxeter::equal_to(std::string const& lhs, std::string const& rhs) {
-      return _tcc->contains(string_to_word(lhs), string_to_word(rhs));
-    }
-
-    // TODO improve the many copies etc in:
-    // string -> word_type -> class_index_type -> word_type -> string
-    std::string ToddCoxeter::normal_form(std::string const& w) {
-      // TODO use the other normal_form method
-      // FIXME there's an off by one error in the output of string_to_word..
-      word_type ww = string_to_word(w);
-      std::for_each(ww.begin(), ww.end(), [](size_t& i) -> void { ++i; });
-      return word_to_string(
-          _tcc->class_index_to_word(_tcc->word_to_class_index(ww)));
-    }
-
-    SemigroupBase* ToddCoxeter::isomorphic_non_fp_semigroup() {
-      // _tcc handles changes to this that effect the quotient.
-      return _tcc->quotient_semigroup();
-    }
-
-    size_t ToddCoxeter::nr_rules() const noexcept {
-      return _nr_rules;
-    }
-
-    /////////////////////////////////////////////////////////
-    // Overridden non-pure virtual methods from FpSemiIntf //
-   /////////////////////////////////////////////////////////
-
-    // We override FpSemiIntf::add_rule to avoid unnecessary conversion from
-    // word_type -> string.
-    void ToddCoxeter::add_rule(word_type const& lhs, word_type const& rhs) {
-      if (lhs.empty() || rhs.empty()) {
-        throw LibsemigroupsException(
-            "ToddCoxeter::add_rule: rules must be non-empty");
+      ToddCoxeter::ToddCoxeter(SemigroupBase* S) : ToddCoxeter() {
+        set_alphabet(S->nrgens());
+        add_rules(S);
+        _nr_rules += S->nrrules();
+        // TODO something like the following
+        // if (S->nr_rules() == this->nr_rules()) {
+        //   set_isomorphic_non_fp_semigroup(S);
+        // }
       }
-      validate_word(lhs);
-      validate_word(rhs);
-      _tcc->add_pair(lhs, rhs);
-    }
 
-    // We override FpSemiIntf::equal_to to avoid unnecessary conversion from
-    // word_type -> string.
-    bool ToddCoxeter::equal_to(word_type const& lhs, word_type const& rhs) {
-      return _tcc->contains(lhs, rhs);
-    }
+      // TODO move to FpSemiIntf?
+      ToddCoxeter::ToddCoxeter(SemigroupBase& S) : ToddCoxeter(&S) {}
 
-    // We override FpSemiIntf::normal_form to avoid unnecessary conversion from
-    // word_type -> string.
-    word_type ToddCoxeter::normal_form(word_type const& w) {
-      return _tcc->class_index_to_word(_tcc->word_to_class_index(w));
-    }
+      void ToddCoxeter::run() {
+        _tcc->run();
+      }
 
-    // We override FpSemiIntf::set_alphabet so that we can set the number of
-    // generators in _tcc.
-    void ToddCoxeter::set_alphabet(std::string const& lphbet) {
-      FpSemiIntf::set_alphabet(lphbet);
-      _tcc->set_nr_generators(lphbet.size());
-    }
+      /////////////////////////////////////////////////////
+      // Overridden pure virtual methods from FpSemiIntf //
+      /////////////////////////////////////////////////////
 
-    // We override FpSemiIntf::set_alphabet so that we can set the number of
-    // generators in _tcc.
-    void ToddCoxeter::set_alphabet(size_t nr_letters) {
-      FpSemiIntf::set_alphabet(nr_letters);
-      _tcc->set_nr_generators(nr_letters);
-    }
-  }  // namespace fpsemigroup*/
+      void ToddCoxeter::add_rule(std::string const& lhs, std::string const& rhs)
+    { if (!is_alphabet_defined()) { throw
+    LIBSEMIGROUPS_EXCEPTION("ToddCoxeter::add_rule: cannot add rules " "before
+    an alphabet is defined");
+        }
+        // We perform these checks here because string_to_word fails if lhs/rhs
+        // are not valid, and string_to_word does not checks.
+        validate_word(lhs);
+        validate_word(rhs);
+        _nr_rules++;
+        _tcc->add_pair(string_to_word(lhs), string_to_word(rhs));
+      }
+
+      bool ToddCoxeter::is_obviously_finite() {
+        return _tcc->is_quotient_obviously_finite();
+      }
+
+      bool ToddCoxeter::is_obviously_infinite() {
+        return _tcc->is_quotient_obviously_infinite();
+      }
+
+      size_t ToddCoxeter::size() {
+        return _tcc->nr_classes();
+      }
+
+      bool ToddCoxeter::equal_to(std::string const& lhs, std::string const& rhs)
+    { return _tcc->contains(string_to_word(lhs), string_to_word(rhs));
+      }
+
+      // TODO improve the many copies etc in:
+      // string -> word_type -> class_index_type -> word_type -> string
+      std::string ToddCoxeter::normal_form(std::string const& w) {
+        // TODO use the other normal_form method
+        // FIXME there's an off by one error in the output of string_to_word..
+        word_type ww = string_to_word(w);
+        std::for_each(ww.begin(), ww.end(), [](size_t& i) -> void { ++i; });
+        return word_to_string(
+            _tcc->class_index_to_word(_tcc->word_to_class_index(ww)));
+      }
+
+      SemigroupBase* ToddCoxeter::isomorphic_non_fp_semigroup() {
+        // _tcc handles changes to this that effect the quotient.
+        return _tcc->quotient_semigroup();
+      }
+
+      size_t ToddCoxeter::nr_rules() const noexcept {
+        return _nr_rules;
+      }
+
+      /////////////////////////////////////////////////////////
+      // Overridden non-pure virtual methods from FpSemiIntf //
+     /////////////////////////////////////////////////////////
+
+      // We override FpSemiIntf::add_rule to avoid unnecessary conversion from
+      // word_type -> string.
+      void ToddCoxeter::add_rule(word_type const& lhs, word_type const& rhs) {
+        if (lhs.empty() || rhs.empty()) {
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "ToddCoxeter::add_rule: rules must be non-empty");
+        }
+        validate_word(lhs);
+        validate_word(rhs);
+        _tcc->add_pair(lhs, rhs);
+      }
+
+      // We override FpSemiIntf::equal_to to avoid unnecessary conversion from
+      // word_type -> string.
+      bool ToddCoxeter::equal_to(word_type const& lhs, word_type const& rhs) {
+        return _tcc->contains(lhs, rhs);
+      }
+
+      // We override FpSemiIntf::normal_form to avoid unnecessary conversion
+    from
+      // word_type -> string.
+      word_type ToddCoxeter::normal_form(word_type const& w) {
+        return _tcc->class_index_to_word(_tcc->word_to_class_index(w));
+      }
+
+      // We override FpSemiIntf::set_alphabet so that we can set the number of
+      // generators in _tcc.
+      void ToddCoxeter::set_alphabet(std::string const& lphbet) {
+        FpSemiIntf::set_alphabet(lphbet);
+        _tcc->set_nr_generators(lphbet.size());
+      }
+
+      // We override FpSemiIntf::set_alphabet so that we can set the number of
+      // generators in _tcc.
+      void ToddCoxeter::set_alphabet(size_t nr_letters) {
+        FpSemiIntf::set_alphabet(nr_letters);
+        _tcc->set_nr_generators(nr_letters);
+      }
+    }  // namespace fpsemigroup*/
 }  // namespace libsemigroups

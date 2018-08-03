@@ -334,8 +334,8 @@ namespace libsemigroups {
     void KnuthBendix::add_rule(external_string_type const& p,
                                external_string_type const& q) {
       if (!is_alphabet_defined()) {
-        throw LibsemigroupsException("KnuthBendix::add_rule: cannot add rules "
-                                     "before an alphabet is defined");
+        throw LIBSEMIGROUPS_EXCEPTION("KnuthBendix::add_rule: cannot add rules "
+                                      "before an alphabet is defined");
       }
       if (p != q) {
         validate_word(p);
@@ -361,7 +361,6 @@ namespace libsemigroups {
       } else if (alphabet().size() > _active_rules.size()) {
         return true;
       }
-
 
       // TODO:
       // - check that every generator i occurs in the lhs of some rule (if not,
@@ -475,7 +474,7 @@ namespace libsemigroups {
 
     // Static
     internal_string_type*
-    KnuthBendix::word_to_internal_string(word_type const&         w,
+    KnuthBendix::word_to_internal_string(word_type const&      w,
                                          internal_string_type* ww) {
       ww->clear();
       for (size_t const& a : w) {

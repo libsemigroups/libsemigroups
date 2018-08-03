@@ -30,8 +30,7 @@ namespace libsemigroups {
   //! just returns the word inside the RWSE.
   template <>
   word_type
-  Semigroup<RWSE, libsemigroups::hash<RWSE>, libsemigroups::equal_to<RWSE>>::
-      factorisation(RWSE const& x) {
+  Semigroup<RWSE, hash<RWSE>, equal_to<RWSE>>::factorisation(RWSE const& x) {
     return RWS::rws_word_to_word(x.get_rws_word());
   }
 

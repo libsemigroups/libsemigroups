@@ -74,8 +74,8 @@ namespace libsemigroups {
   //! presentation for the semigroup is known.
   template <
       typename TElementType  = Element const*,
-      typename TElementHash  = libsemigroups::hash<TElementType>,
-      typename TElementEqual = libsemigroups::equal_to<TElementType>,
+      typename TElementHash  = hash<TElementType>,
+      typename TElementEqual = equal_to<TElementType>,
       class TTraits
       = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
   class Semigroup : private TTraits, public SemigroupBase {
@@ -146,7 +146,7 @@ namespace libsemigroups {
     //! 2. the generators must have equal degree Element::degree
     //  FIXME remove Element::degree from previous line
     //! if either of these points is not satisfied, then a
-    //! LibsemigroupsException will be thrown.
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown.
     //!
     //! There can be duplicate generators and although they do not count as
     //! distinct elements, they do count as distinct generators. In other words,
@@ -190,8 +190,7 @@ namespace libsemigroups {
           _tmp_product(),
           _wordlen(0) {  // (length of the current word) - 1
       if (_nrgens == 0) {
-        throw LibsemigroupsException(
-            "Semigroup::Semigroup: no generators given");
+        throw LIBSEMIGROUPS_EXCEPTION("no generators given");
       }
 #ifdef LIBSEMIGROUPS_STATS
       _nr_products = 0;
@@ -205,10 +204,9 @@ namespace libsemigroups {
       for (size_t i = 0; i < _nrgens; ++i) {
         size_t degree = internal_degree()(this->to_internal_const((*gens)[i]));
         if (degree != _degree) {
-          throw LibsemigroupsException(
-              "Semigroup::Semigroup: generator " + libsemigroups::to_string(i)
-              + " has degree " + libsemigroups::to_string(degree)
-              + " but should have degree " + libsemigroups::to_string(_degree));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "generator " + to_string(i) + " has degree " + to_string(degree)
+              + " but should have degree " + to_string(_degree));
         }
       }
       for (const_reference x : *gens) {
@@ -440,25 +438,20 @@ namespace libsemigroups {
     }
 
     // Read-only - thread-safe
-    void verify_element_index(std::string const& method_name,
-                              element_index_type i) const {
+    void verify_element_index(element_index_type i) const {
       if (i >= _nr) {
-        throw LibsemigroupsException(
-            "Semigroup::" + method_name + ": there are only "
-            + libsemigroups::to_string(_nr) + " elements"
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "there are only " + to_string(_nr) + " elements"
             + (is_done() ? "" : " enumerated so far") + ", but index "
-            + libsemigroups::to_string(i) + " was given");
+            + to_string(i) + " was given");
       }
     }
 
     // thread-safe?
-    void verify_letter_index(std::string const& method_name,
-                             letter_type        i) const {
+    void verify_letter_index(letter_type i) const {
       if (i >= nrgens()) {
-        throw LibsemigroupsException(
-            "Semigroup::" + method_name + ": there are only  "
-            + libsemigroups::to_string(nrgens()) + " generators, not "
-            + libsemigroups::to_string(i));
+        throw LIBSEMIGROUPS_EXCEPTION("there are only  " + to_string(nrgens())
+                                      + " generators, not " + to_string(i));
       }
     }
 
@@ -481,7 +474,7 @@ namespace libsemigroups {
     //! represented by the word \p w.
     //!
     //! The parameter \p w must consist of non-negative integers less than
-    //! Semigroup::nrgens, or a LibsemigroupsException will be thrown.
+    //! Semigroup::nrgens, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method returns the position in \c this of the element obtained by
     //! evaluating \p w. This method does not perform any enumeration of the
     //! semigroup, and will return UNDEFINED if the position of the element of
@@ -495,11 +488,10 @@ namespace libsemigroups {
     element_index_type word_to_pos(word_type const& w) const override {
       // w is a word in the generators (i.e. a vector of letter_type's)
       if (w.size() == 0) {
-        throw LibsemigroupsException(
-            "Semigroup::word_to_pos: the given word has length 0");
+        throw LIBSEMIGROUPS_EXCEPTION("the given word has length 0");
       }
       for (auto x : w) {
-        verify_letter_index("word_to_pos", x);
+        verify_letter_index(x);
       }
       element_index_type out = _letter_to_pos[w[0]];
       for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
@@ -512,7 +504,7 @@ namespace libsemigroups {
     //! \p w.
     //!
     //! The parameter \p w must consist of non-negative integers less than
-    //! Semigroup::nrgens, or a LibsemigroupsException will be thrown.
+    //! Semigroup::nrgens, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method returns a copy of the element of \c this obtained by
     //! evaluating \p w. This is equivalent to finding the product \c x of the
     //! generators Semigroup::gens(\c w[i]).
@@ -571,11 +563,11 @@ namespace libsemigroups {
     //! Returns a const reference to the generator with index \p pos.
     //!
     //! If \p pos is not less than Semigroup::nrgens(), a
-    //! LibsemigroupsException will be thrown. Note that Semigroup::gens(pos)
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown. Note that Semigroup::gens(pos)
     //! is in general in general not in position \p pos in the semigroup, i.e.
     //! is not equal to Semigroup::at(pos).
     const_reference generator(letter_type pos) const {
-      verify_letter_index("generator", pos);
+      verify_letter_index(pos);
       return this->to_external_const(_gens[pos]);
     }
 
@@ -637,9 +629,9 @@ namespace libsemigroups {
     //! \p pos (of the semigroup) of length one less than the length of \c x.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     element_index_type prefix(element_index_type pos) const override {
-      verify_element_index("prefix", pos);
+      verify_element_index(pos);
       return _prefix[pos];
     }
 
@@ -647,9 +639,9 @@ namespace libsemigroups {
     //! \p pos (of the semigroup) of length one less than the length of \c x.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     element_index_type suffix(element_index_type pos) const override {
-      verify_element_index("suffix", pos);
+      verify_element_index(pos);
       return _suffix[pos];
     }
 
@@ -664,9 +656,9 @@ namespace libsemigroups {
     //! duplicate generators.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     letter_type first_letter(element_index_type pos) const override {
-      verify_element_index("first_letter", pos);
+      verify_element_index(pos);
       return _first[pos];
     }
 
@@ -681,9 +673,9 @@ namespace libsemigroups {
     //! duplicate generators.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     letter_type final_letter(element_index_type pos) const override {
-      verify_element_index("final_letter", pos);
+      verify_element_index(pos);
       return _final[pos];
     }
 
@@ -696,17 +688,17 @@ namespace libsemigroups {
     //! Returns the length of the element in position \c pos of the semigroup.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method causes no enumeration of the semigroup.
     size_t length_const(element_index_type pos) const override {
-      verify_element_index("length_const", pos);
+      verify_element_index(pos);
       return _length[pos];
     }
 
     //! Returns the length of the element in position \c pos of the semigroup.
     //!
     //! The parameter \p pos must be a valid position of an element of the
-    //! semigroup, or a LibsemigroupsException will be thrown.
+    //! semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     size_t length_non_const(element_index_type pos) override {
       if (pos >= _nr) {
         enumerate();
@@ -718,7 +710,7 @@ namespace libsemigroups {
     //! \c this->at(j) by following a path in the Cayley graph.
     //!
     //! The values \p i and \p j must be less than Semigroup::current_size, or
-    //! a LibsemigroupsException will be thrown.
+    //! a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method returns the position Semigroup::element_index_type in the
     //! semigroup of the product of \c this->at(i) and \c this->at(j) elements
     //! by following the path in the right Cayley graph from \p i labelled by
@@ -728,8 +720,8 @@ namespace libsemigroups {
     element_index_type
     product_by_reduction(element_index_type i,
                          element_index_type j) const override {
-      verify_element_index("product_by_reduction", i);
-      verify_element_index("product_by_reduction", j);
+      verify_element_index(i);
+      verify_element_index(j);
 
       if (length_const(i) <= length_const(j)) {
         while (i != UNDEFINED) {
@@ -750,7 +742,7 @@ namespace libsemigroups {
     //! \c this->at(j).
     //!
     //! The values \p i and \p j must be less than Semigroup::current_size, or
-    //! a LibsemigroupsException will be thrown.
+    //! a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method either:
     //!
     //! * follows the path in the right or left Cayley graph from \p i to \p j,
@@ -768,8 +760,8 @@ namespace libsemigroups {
     //! transformations together.
     element_index_type fast_product(element_index_type i,
                                     element_index_type j) const override {
-      verify_element_index("fast_product", i);
-      verify_element_index("fast_product", j);
+      verify_element_index(i);
+      verify_element_index(j);
       if (length_const(i) < 2 * complexity()(_tmp_product)
           || length_const(j) < 2 * complexity()(_tmp_product)) {
         return product_by_reduction(i, j);
@@ -781,16 +773,16 @@ namespace libsemigroups {
 
     //! Returns the position in \c this of the generator with index \p i
     //!
-    //! If \p i is not a valid generator index, a LibsemigroupsException will be
-    //! thrown. In many cases \p letter_to_pos(i) will equal \p i, examples of
-    //! when this will not be the case are:
+    //! If \p i is not a valid generator index, a LIBSEMIGROUPS_EXCEPTION will
+    //! be thrown. In many cases \p letter_to_pos(i) will equal \p i, examples
+    //! of when this will not be the case are:
     //!
     //! * there are duplicate generators;
     //!
     //! * Semigroup::add_generators was called after the semigroup was already
     //! partially enumerated.
     element_index_type letter_to_pos(letter_type i) const override {
-      verify_letter_index("letter_to_pos", i);
+      verify_letter_index(i);
       return _letter_to_pos[i];
     }
 
@@ -808,11 +800,11 @@ namespace libsemigroups {
     //! and \c false if it is not.
     //!
     //! The parameter \p pos must be a valid position of an element of the
-    //! semigroup, or a LibsemigroupsException will be thrown.
+    //! semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
     bool is_idempotent(element_index_type pos) override {
-      verify_element_index("is_idempotent", pos);
+      verify_element_index(pos);
       init_idempotents();
       return _is_idempotent[pos];
     }
@@ -1009,13 +1001,13 @@ namespace libsemigroups {
     //! pos of the semigroup with respect to the generators of the semigroup.
     //! This method enumerates the semigroup until at least the \p pos element
     //! is known. If \p pos is greater than the size of the semigroup, then
-    //! a LibsemigroupsException is thrown.
+    //! a LIBSEMIGROUPS_EXCEPTION is thrown.
     void minimal_factorisation(word_type&         word,
                                element_index_type pos) override {
       if (pos >= _nr && !is_done()) {
         enumerate(pos + 1);
       }
-      verify_element_index("minimal_factorisation", pos);
+      verify_element_index(pos);
       word.clear();
       while (pos != UNDEFINED) {
         word.push_back(_first[pos]);
@@ -1030,7 +1022,7 @@ namespace libsemigroups {
     //! Semigroup::minimal_factorisation, but it returns a pointer to the
     //! factorisation instead of modifying an argument in-place.
     //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! LIBSEMIGROUPS_EXCEPTION is thrown.
     word_type minimal_factorisation(element_index_type pos) override {
       word_type word;
       minimal_factorisation(word, pos);
@@ -1042,11 +1034,11 @@ namespace libsemigroups {
     //! This is the same as the method taking a Semigroup::element_index_type,
     //! but it factorises an Element instead of using the position of an
     //! element. If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! LIBSEMIGROUPS_EXCEPTION is thrown.
     word_type minimal_factorisation(const_reference x) {
       element_index_type pos = this->position(x);
       if (pos == UNDEFINED) {
-        throw LibsemigroupsException(
+        throw LIBSEMIGROUPS_EXCEPTION(
             "the argument is not an element of the semigroup");
       }
       return minimal_factorisation(pos);
@@ -1058,8 +1050,8 @@ namespace libsemigroups {
     //! The key difference between this method and
     //! Semigroup::minimal_factorisation(word_type& word, element_index_type
     //! pos), is that the resulting factorisation may not be minimal. If \p pos
-    //! is greater than the size of the semigroup, then a LibsemigroupsException
-    //! is thrown.
+    //! is greater than the size of the semigroup, then a
+    //! LIBSEMIGROUPS_EXCEPTION is thrown.
     void factorisation(word_type& word, element_index_type pos) override {
       minimal_factorisation(word, pos);
     }
@@ -1071,7 +1063,7 @@ namespace libsemigroups {
     //! Semigroup::minimal_factorisation(element_index_type pos), is that the
     //! resulting factorisation may not be minimal.
     //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! LIBSEMIGROUPS_EXCEPTION is thrown.
     word_type factorisation(element_index_type pos) override {
       return minimal_factorisation(pos);
     }
@@ -1082,7 +1074,7 @@ namespace libsemigroups {
     //! Semigroup::minimal_factorisation(const_reference x), is that the
     //! resulting factorisation may not be minimal.
     //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! LIBSEMIGROUPS_EXCEPTION is thrown.
     word_type factorisation(const_reference x) {
       return minimal_factorisation(x);
     }
@@ -1380,7 +1372,7 @@ namespace libsemigroups {
     //! The elements of the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown.
 
     void add_generator(element_type const& x) {
       add_generators({x});
@@ -1396,11 +1388,10 @@ namespace libsemigroups {
         element_index_type degree
             = internal_degree()(this->to_internal_const(*it));
         if (degree != _degree) {
-          throw LibsemigroupsException(
-              "Semigroup::add_generators: new generator "
-              + libsemigroups::to_string(it - coll.begin()) + " has degree "
-              + libsemigroups::to_string(degree) + " but should have degree "
-              + libsemigroups::to_string(_degree));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "new generator " + to_string(it - coll.begin()) + " has degree "
+              + to_string(degree) + " but should have degree "
+              + to_string(_degree));
         }
       }
       Timer  timer;
@@ -1595,7 +1586,7 @@ namespace libsemigroups {
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown.
     template <class TCollection>
     Semigroup* copy_add_generators(TCollection const& coll) const {
       static_assert(!std::is_pointer<TCollection>::value,
@@ -1631,7 +1622,7 @@ namespace libsemigroups {
     //! The elements the parameter \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown.
     template <class TCollection> void closure(TCollection const& coll) {
       static_assert(!std::is_pointer<TCollection>::value,
                     "TCollection should not be a pointer");
@@ -1665,7 +1656,7 @@ namespace libsemigroups {
     //! The elements the argument \p coll are copied into the semigroup, and
     //! should be deleted by the caller.
     //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
+    //! LIBSEMIGROUPS_EXCEPTION will be thrown.
     template <class TCollection>
     Semigroup* copy_closure(TCollection const& coll) {
       static_assert(!std::is_pointer<TCollection>::value,

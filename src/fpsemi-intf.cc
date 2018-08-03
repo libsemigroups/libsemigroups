@@ -51,8 +51,7 @@ namespace libsemigroups {
 
   std::string const& FpSemiIntf::alphabet() const {
     if (!_is_alphabet_defined) {
-      throw LibsemigroupsException(
-          "FpSemiIntf::alphabet: no alphabet has been defined");
+      throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return _alphabet;
   }
@@ -63,9 +62,9 @@ namespace libsemigroups {
 
   void FpSemiIntf::set_identity(std::string const& id) {
     if (id.length() != 1) {
-      throw LibsemigroupsException(
-          "ToddCoxeter::set_identity: invalid identity, found "
-          + to_string(id.length()) + " letters, should be single letter");
+      throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
+                                    + to_string(id.length())
+                                    + " letters, should be single letter");
     }
     validate_letter(id[0]);
     for (auto l : alphabet()) {
@@ -106,10 +105,9 @@ namespace libsemigroups {
     // The call to add_rule in the lambda below should validate the relations,
     // and that _alphabet has been defined already.
     if (is_alphabet_defined() && _alphabet.size() != S->nrgens()) {
-      throw LibsemigroupsException(
-          "FpSemiIntf::add_rules: incompatible number of generators, found "
-          + libsemigroups::to_string(S->nrgens()) + ", should be at most "
-          + libsemigroups::to_string(_alphabet.size()));
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "incompatible number of generators, found " + to_string(S->nrgens())
+          + ", should be at most " + to_string(_alphabet.size()));
     }
     relations(S, [this](word_type lhs, word_type rhs) -> void {
       add_rule(word_to_string(lhs), word_to_string(rhs));
@@ -133,8 +131,8 @@ namespace libsemigroups {
 
   void FpSemiIntf::add_rule(word_type const& lhs, word_type const& rhs) {
     if (!is_alphabet_defined()) {
-      throw LibsemigroupsException("FpSemiIntf::add_rule: cannot add rules "
-                                   "before an alphabet is defined");
+      throw LIBSEMIGROUPS_EXCEPTION("cannot add rules "
+                                    "before an alphabet is defined");
     }
     validate_word(lhs);
     validate_word(rhs);
@@ -154,18 +152,17 @@ namespace libsemigroups {
 
   void FpSemiIntf::set_alphabet(std::string const& lphbt) {
     if (_is_alphabet_defined) {
-      throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
-                                   "cannot be set more than once");
+      throw LIBSEMIGROUPS_EXCEPTION("the alphabet "
+                                    "cannot be set more than once");
     } else if (lphbt.empty()) {
-      throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
-                                   "must be non-empty");
+      throw LIBSEMIGROUPS_EXCEPTION("the alphabet "
+                                    "must be non-empty");
     }
     for (size_t i = 0; i < lphbt.size(); ++i) {
       if (_alphabet_map.find(lphbt[i]) != _alphabet_map.end()) {
         _alphabet_map.clear();  // Strong exception guarantee
-        throw LibsemigroupsException(
-            "FpSemiIntf::set_alphabet: duplicate letter "
-            + libsemigroups::to_string(lphbt[i]) + " in alphabet");
+        throw LIBSEMIGROUPS_EXCEPTION("duplicate letter " + to_string(lphbt[i])
+                                      + " in alphabet");
       }
       _alphabet_map.emplace(lphbt[i], i);
     }
@@ -176,11 +173,11 @@ namespace libsemigroups {
   void FpSemiIntf::set_alphabet(size_t nr_letters) {
     // TODO check that nr_letters isn't too big
     if (_is_alphabet_defined) {
-      throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
-                                   "cannot be set more than once");
+      throw LIBSEMIGROUPS_EXCEPTION("the alphabet "
+                                    "cannot be set more than once");
     } else if (nr_letters == 0) {
-      throw LibsemigroupsException("FpSemiIntf::set_alphabet: the alphabet "
-                                   "must be non-empty");
+      throw LIBSEMIGROUPS_EXCEPTION("the alphabet "
+                                    "must be non-empty");
     }
     for (size_t i = 0; i < nr_letters; ++i) {
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -254,8 +251,7 @@ namespace libsemigroups {
 
   bool FpSemiIntf::validate_letter(char c) const {
     if (!_is_alphabet_defined) {
-      throw LibsemigroupsException(
-          "FpSemiIntf::validate_letter: no alphabet has been defined");
+      throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return (_alphabet_map.find(c) != _alphabet_map.end());
   }
@@ -263,9 +259,8 @@ namespace libsemigroups {
   void FpSemiIntf::validate_word(std::string const& w) const {
     for (auto l : w) {
       if (!validate_letter(l)) {
-        throw LibsemigroupsException(
-            "FpSemiIntf::validate_word 1: invalid letter "
-            + libsemigroups::to_string(l) + " in word " + w);
+        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + to_string(l)
+                                      + " in word " + w);
       }
     }
   }
@@ -273,10 +268,8 @@ namespace libsemigroups {
   void FpSemiIntf::validate_word(word_type const& w) const {
     for (auto l : w) {
       if (!validate_letter(uint_to_char(l))) {
-        throw LibsemigroupsException(
-            "FpSemiIntf::validate_word 2: invalid letter "
-            + libsemigroups::to_string(l) + " in word "
-            + libsemigroups::to_string(w));
+        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + to_string(l)
+                                      + " in word " + to_string(w));
       }
     }
   }

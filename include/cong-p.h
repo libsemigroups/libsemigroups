@@ -41,8 +41,8 @@ namespace libsemigroups {
     // This version of P originates in the old cong.h file.
     template <
         typename TElementType  = Element const*,
-        typename TElementHash  = libsemigroups::hash<TElementType>,
-        typename TElementEqual = libsemigroups::equal_to<TElementType>,
+        typename TElementHash  = hash<TElementType>,
+        typename TElementEqual = equal_to<TElementType>,
         class TTraits
         = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     class P : public CongIntf, private TTraits {
@@ -222,12 +222,12 @@ namespace libsemigroups {
 
       word_type class_index_to_word(class_index_type) override {
         // TODO implement
-        throw LibsemigroupsException("not yet implemented");
+        throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
       }
 
       SemigroupBase* quotient_semigroup() override {
         // FIXME actually implement this
-        throw LibsemigroupsException("not yet implemented");
+        throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
       }
 
       size_t nr_classes() override {
@@ -432,8 +432,8 @@ namespace libsemigroups {
   namespace fpsemigroup {
     template <
         typename TElementType  = Element const*,
-        typename TElementHash  = libsemigroups::hash<TElementType>,
-        typename TElementEqual = libsemigroups::equal_to<TElementType>,
+        typename TElementHash  = hash<TElementType>,
+        typename TElementEqual = equal_to<TElementType>,
         class TTraits
         = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     using P = WrappedCong<

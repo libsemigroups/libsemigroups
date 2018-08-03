@@ -1215,14 +1215,14 @@ namespace libsemigroups {
       REQUIRE(S.nrrules() == 18);
 
       KnuthBendix kb(S);
-      auto P = kb.quotient_semigroup(); // Parent
-      REQUIRE(P == &S); // Pointers the same
+      auto        P = kb.quotient_semigroup();  // Parent
+      REQUIRE(P == &S);                         // Pointers the same
       kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
 
       REQUIRE(kb.nr_classes() == 21);
       REQUIRE(kb.nr_classes() == 21);
-      auto Q = kb.quotient_semigroup(); // quotient
+      auto Q = kb.quotient_semigroup();  // quotient
 
       REQUIRE(P != Q);
       REQUIRE(Q->size() == 21);
@@ -1267,7 +1267,6 @@ namespace libsemigroups {
       kb.add_pair({2, 2}, {0});
       kb.add_pair({1, 4, 2, 3, 3}, {0});
       kb.add_pair({4, 4, 4}, {0});
-
 
       REQUIRE(kb.nr_classes() == 6);
       // Throws because there's no parent semigroup
@@ -1387,4 +1386,3 @@ namespace libsemigroups {
     }
   }  // namespace knuth_bendix_congruence
 }  // namespace libsemigroups
-

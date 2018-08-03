@@ -109,7 +109,7 @@ namespace libsemigroups {
   }
 
   void KBE::cache_hash_value() const {
-    this->_hash_value = libsemigroups::hash<internal_string_type>{}(_kb_word);
+    this->_hash_value = hash<internal_string_type>{}(_kb_word);
   }
 
   void KBE::redefine(Element const& x, Element const& y, size_t) {
@@ -136,7 +136,7 @@ namespace libsemigroups {
 
   KBE::operator std::string() const {
     std::string out(_kb_word);
-    _kb->internal_to_external_string(out); // changes out in-place
+    _kb->internal_to_external_string(out);  // changes out in-place
     return out;
   }
 

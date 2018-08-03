@@ -220,7 +220,7 @@ namespace libsemigroups {
     //!
     //! This method allows BMat8 objects to be inserted into a ostream.
     friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << libsemigroups::to_string(bm);
+      os << to_string(bm);
       return os;
     }
 

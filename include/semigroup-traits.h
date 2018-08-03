@@ -69,7 +69,7 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementEqual = libsemigroups::equal_to<TElementType>>
+            typename TElementEqual = equal_to<TElementType>>
   class SemigroupTraitsEqual : public SemigroupTraits<TElementType> {
    private:
     using base = SemigroupTraits<TElementType>;
@@ -100,8 +100,8 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementHash  = libsemigroups::hash<TElementType>,
-            typename TElementEqual = libsemigroups::equal_to<TElementType>>
+            typename TElementHash  = hash<TElementType>,
+            typename TElementEqual = equal_to<TElementType>>
   class SemigroupTraitsHashEqual
       : public SemigroupTraitsEqual<TElementType, TElementEqual> {
    private:

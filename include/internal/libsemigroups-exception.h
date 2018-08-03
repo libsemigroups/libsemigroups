@@ -28,14 +28,16 @@ namespace libsemigroups {
   struct LibsemigroupsException : public std::runtime_error {
     LibsemigroupsException(std::string const& fname,
                            int                linenum,
+                           std::string const& funcname,
                            std::string const& msg)
-        : std::runtime_error(fname + ":" + to_string(linenum) + ":" + msg) {}
+        : std::runtime_error(fname + ":" + to_string(linenum) + ":" + funcname
+                             + ": " + msg) {}
   };
 
 }  // namespace libsemigroups
 
 #define LIBSEMIGROUPS_EXCEPTION(msg) \
-  LibsemigroupsException(__FILE__, __LINE__, msg)
+  LibsemigroupsException(__FILE__, __LINE__, __func__, msg)
 #define INTERNAL_EXCEPTION \
   LIBSEMIGROUPS_EXCEPTION("internal error, something went wrong")
 

@@ -48,9 +48,9 @@ namespace libsemigroups {
                                  std::vector<T> const& vec) {
     os << "{";
     for (auto it = vec.cbegin(); it < vec.cend() - 1; it++) {
-      os << libsemigroups::to_string(*it) << ", ";
+      os << to_string(*it) << ", ";
     }
-    os << libsemigroups::to_string(*(vec.cend() - 1)) << "}";
+    os << to_string(*(vec.cend() - 1)) << "}";
     return os;
   }
 

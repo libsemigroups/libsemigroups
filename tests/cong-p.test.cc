@@ -36,7 +36,7 @@ namespace libsemigroups {
       }
     }
 
-    constexpr bool REPORT = false;
+    constexpr bool            REPORT   = false;
     CongIntf::congruence_type TWOSIDED = CongIntf::congruence_type::TWOSIDED;
     CongIntf::congruence_type LEFT     = CongIntf::congruence_type::LEFT;
     CongIntf::congruence_type RIGHT    = CongIntf::congruence_type::RIGHT;
@@ -378,9 +378,8 @@ namespace libsemigroups {
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 11804);
       // REQUIRE(S.nrrules(false) == 2460);
-      std::vector<relation_type> extra(
-          {relation_type()});
-      P<> p(LEFT, S);
+      std::vector<relation_type> extra({relation_type()});
+      P<>                        p(LEFT, S);
       p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
 
       REQUIRE(p.word_to_class_index({1, 1, 0, 3}) == 1);
@@ -450,7 +449,8 @@ namespace libsemigroups {
       // REQUIRE(S.nrrules() == 18);
 
       P<> p(S);
-      p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}), word_type({1, 0, 0, 0, 1}));
+      p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),
+                 word_type({1, 0, 0, 0, 1}));
 
       REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
       REQUIRE(p.finished());

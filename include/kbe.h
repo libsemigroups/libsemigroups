@@ -35,7 +35,7 @@ namespace libsemigroups {
   //! Element so that it is possible to use them as generators for a Semigroup
   //! object.
   class KBE : public Element {
-    using KnuthBendix = fpsemigroup::KnuthBendix;
+    using KnuthBendix          = fpsemigroup::KnuthBendix;
     using internal_string_type = KnuthBendix::internal_string_type;
 
    private:

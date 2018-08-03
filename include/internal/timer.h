@@ -89,7 +89,7 @@ namespace libsemigroups {
                           size_t                    threshold) {
       T x = std::chrono::duration_cast<T>(elapsed);
       if (x > T(threshold)) {
-        str += libsemigroups::to_string(x.count()) + unit;
+        str += to_string(x.count()) + unit;
         elapsed -= x;
         return true;
       }
