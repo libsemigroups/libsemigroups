@@ -138,7 +138,7 @@ namespace libsemigroups {
     virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
-    // Non-pure non-virtual methods
+    // CongIntf - non-pure non-virtual methods - public
     /////////////////////////////////////////////////////////////////////////
 
     // Pass by value since these must be copied anyway
@@ -146,8 +146,8 @@ namespace libsemigroups {
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
-    congruence_type            type() const noexcept;
-    size_t                     nr_generators() const noexcept;
+    congruence_type type() const noexcept;
+    size_t          nr_generators() const noexcept;
 
     //! Returns the non-trivial classes of the congruence.
     //!
@@ -163,17 +163,23 @@ namespace libsemigroups {
 
    protected:
     /////////////////////////////////////////////////////////////////////////
-    // Protected non-virtual methods
+    // CongIntf - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
     void reset_quotient();
     void set_quotient(SemigroupBase*);
-    // TODO replace get_quotient with has_quotient
-    SemigroupBase* get_quotient() const;
+    bool has_quotient() const noexcept;
+    SemigroupBase* quotient() const noexcept;
 
     void set_parent(SemigroupBase*);
     bool has_parent() const noexcept;
     SemigroupBase* parent() const noexcept;
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongIntf - data - protected
+    /////////////////////////////////////////////////////////////////////////
+
+    std::vector<std::vector<word_type>> _non_trivial_classes;
 
    private:
     /////////////////////////////////////////////////////////////////////////
@@ -184,12 +190,7 @@ namespace libsemigroups {
     // depends on the state of the object, but word_to_class_index does not
     // (i.e the return value should not change).
     virtual class_index_type const_word_to_class_index(word_type const&) const;
-
-    /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure non-virtual methods - private
-    /////////////////////////////////////////////////////////////////////////
-
-    void init_non_trivial_classes();
+    virtual void             init_non_trivial_classes();
 
     /////////////////////////////////////////////////////////////////////////
     // CongIntf - data members - private
@@ -197,7 +198,6 @@ namespace libsemigroups {
 
     bool                                _delete_quotient;
     bool                                _is_nr_generators_defined;
-    std::vector<std::vector<word_type>> _non_trivial_classes;
     size_t                              _nrgens;
     SemigroupBase*                      _parent;
     SemigroupBase*                      _quotient;

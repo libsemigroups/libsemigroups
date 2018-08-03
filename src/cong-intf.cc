@@ -86,8 +86,11 @@ namespace libsemigroups {
     _nrgens                   = n;
   }
 
-  // FIXME replace with has_quotient
-  SemigroupBase* CongIntf::get_quotient() const {
+  bool CongIntf::has_quotient() const noexcept {
+    return _quotient != nullptr;
+  }
+
+  SemigroupBase* CongIntf::quotient() const noexcept {
     return _quotient;
   }
 
@@ -128,6 +131,7 @@ namespace libsemigroups {
       throw LibsemigroupsException("There's no parent semigroup in which to "
                                    "find the non-trivial classes");
     }
+    LIBSEMIGROUPS_ASSERT(nr_classes() != POSITIVE_INFINITY);
 
     _non_trivial_classes.assign(nr_classes(), std::vector<word_type>());
 

@@ -28,15 +28,14 @@
 
 namespace libsemigroups {
 
-  using Interface   = CongIntf;
   using ToddCoxeter = congruence::ToddCoxeter;
-  using class_index_t = CongIntf::class_index_t;
+  using class_index_type = CongIntf::class_index_type;
 
   //////////////////////////////////////////////////////////////////////////
   // Constructors
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_t type) : Interface(type), _race() {}
+  Congruence::Congruence(congruence_t type) : CongIntf(type), _race() {}
 
   Congruence::Congruence(congruence_t                   type,
                          SemigroupBase*                 S,
@@ -123,7 +122,7 @@ namespace libsemigroups {
       // genpairs, so that we can potentially answer "contains" questions using
       // this rws. This will fix attr.tst, but is a bit perverse. Would it be
       // better to just be able to add the rws here itself as a runner? This is
-      // not currently possible since it is not a Interface. Or we
+      // not currently possible since it is not a CongIntf. Or we
       // could store a RWS directly inside a Congruence, so that it could be
       // used solely for the "contains" method?
 
@@ -137,13 +136,13 @@ namespace libsemigroups {
       // FIXME: Here we must run
       // rws->isomorphic_non_fp_semigroup()->enumerate() rather than
       // rws->run(), which is the Race default, the Runner derived class
-      // implementing this will also have to be a Interface so
+      // implementing this will also have to be a CongIntf so
       // that it can answer the required questions about itself.
       // Hmm, I'm not sure I want to do this now, means writing a special
       // class just for this runner, or making RWS inherit from
-      // Interface also (and using the prerun runner), which would
-      // probably make the separation of Interface and
-      // fpsemigroup::Interface redundant.
+      // CongIntf also (and using the prerun runner), which would
+      // probably make the separation of CongIntf and
+      // fpsemigroup::CongIntf redundant.
       //}
     }
   }
@@ -152,30 +151,30 @@ namespace libsemigroups {
   // Overridden public pure virtual methods from CongIntf
   //////////////////////////////////////////////////////////////////////////
 
-  class_index_t Congruence::word_to_class_index(word_t const& word) {
-    return static_cast<Interface*>(_race.winner())->word_to_class_index(word);
+  class_index_type Congruence::word_to_class_index(word_t const& word) {
+    return static_cast<CongIntf*>(_race.winner())->word_to_class_index(word);
   }
 
   size_t Congruence::nr_classes() {
-    return static_cast<Interface*>(_race.winner())->nr_classes();
+    return static_cast<CongIntf*>(_race.winner())->nr_classes();
   }
 
   void Congruence::add_pair(word_t lhs, word_t rhs) {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto runner : _race) {
-      static_cast<Interface*>(runner)->add_pair(lhs, rhs);
+      static_cast<CongIntf*>(runner)->add_pair(lhs, rhs);
     }
   }
 
   SemigroupBase* Congruence::quotient_semigroup() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(_race.winner())->quotient_semigroup();
+    return static_cast<CongIntf*>(_race.winner())->quotient_semigroup();
   }
 
   bool Congruence::is_quotient_obviously_infinite() const {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto runner : _race) {
-      if (static_cast<Interface*>(runner)->is_quotient_obviously_infinite()) {
+      if (static_cast<CongIntf*>(runner)->is_quotient_obviously_infinite()) {
         return true;
       }
     }
@@ -185,19 +184,19 @@ namespace libsemigroups {
   std::vector<std::vector<word_t>>::const_iterator
   Congruence::cbegin_non_trivial_classes() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(_race.winner())
+    return static_cast<CongIntf*>(_race.winner())
         ->cbegin_non_trivial_classes();
   }
 
   std::vector<std::vector<word_t>>::const_iterator
   Congruence::cend_non_trivial_classes() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(_race.winner())->cend_non_trivial_classes();
+    return static_cast<CongIntf*>(_race.winner())->cend_non_trivial_classes();
   }
 
   size_t Congruence::nr_non_trivial_classes() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(_race.winner())->nr_non_trivial_classes();
+    return static_cast<CongIntf*>(_race.winner())->nr_non_trivial_classes();
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -208,12 +207,12 @@ namespace libsemigroups {
     if (const_contains(lhs, rhs)) {
       return true;
     }
-    return static_cast<Interface*>(_race.winner())->contains(lhs, rhs);
+    return static_cast<CongIntf*>(_race.winner())->contains(lhs, rhs);
   }
 
   bool Congruence::const_contains(word_t const& lhs, word_t const& rhs) const {
     for (auto runner : _race) {
-      if (static_cast<Interface*>(runner)->const_contains(lhs, rhs)) {
+      if (static_cast<CongIntf*>(runner)->const_contains(lhs, rhs)) {
         return true;
       }
     }
@@ -232,12 +231,4 @@ namespace libsemigroups {
   // Overridden private pure virtual methods from CongIntf
   /////////////////////////////////////////////////////////////////////////
 
-  // FIXME if this method should never be used, why is it here in the first
-  // place?
-  class_index_t
-  Congruence::const_word_to_class_index(word_t const&) const {
-    throw LibsemigroupsException("This shouldn't happen");
-    LIBSEMIGROUPS_ASSERT(false);  // Shouldn't end up here
-    return -1;
-  }
 }  // namespace libsemigroups

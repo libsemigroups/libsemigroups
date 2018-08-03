@@ -1215,11 +1215,27 @@ namespace libsemigroups {
       REQUIRE(S.nrrules() == 18);
 
       KnuthBendix kb(S);
+      auto P = kb.quotient_semigroup(); // Parent
+      REQUIRE(P == &S); // Pointers the same
       kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
 
       REQUIRE(kb.nr_classes() == 21);
       REQUIRE(kb.nr_classes() == 21);
+      auto Q = kb.quotient_semigroup(); // quotient
+
+      REQUIRE(P != Q);
+      REQUIRE(Q->size() == 21);
+      REQUIRE(Q->nridempotents() == 3);
+
+      std::vector<std::string> v(static_cast<Semigroup<KBE>*>(Q)->cbegin(),
+                                 static_cast<Semigroup<KBE>*>(Q)->cend());
+      REQUIRE(v
+              == std::vector<std::string>(
+                     {"a",     "b",     "aa",    "ab",   "ba",   "bb",
+                      "aaa",   "aab",   "aba",   "abb",  "baa",  "bba",
+                      "aaaa",  "abaa",  "abba",  "baaa", "bbaa", "abaaa",
+                      "abbaa", "bbaaa", "abbaaa"}));
 
       REQUIRE(
           kb.word_to_class_index(S.factorisation(Transf({1, 3, 1, 3, 3})))
@@ -1251,6 +1267,7 @@ namespace libsemigroups {
       kb.add_pair({2, 2}, {0});
       kb.add_pair({1, 4, 2, 3, 3}, {0});
       kb.add_pair({4, 4, 4}, {0});
+
 
       REQUIRE(kb.nr_classes() == 6);
       // Throws because there's no parent semigroup

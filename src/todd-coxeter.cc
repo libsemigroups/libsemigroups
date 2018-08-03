@@ -282,7 +282,7 @@ namespace libsemigroups {
     SemigroupBase* ToddCoxeter::quotient_semigroup() {
       if (type() != congruence_type::TWOSIDED) {
         throw LibsemigroupsException("the congruence must be two-sided");
-      } else if (get_quotient() == nullptr) {
+      } else if (!has_quotient()) {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         // TODO replace with 0-parameter constructor when available
@@ -294,7 +294,7 @@ namespace libsemigroups {
         }
         set_quotient(Q);
       }
-      return get_quotient();
+      return quotient();
     }
 
     class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
@@ -379,7 +379,7 @@ namespace libsemigroups {
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
       return _prefilled
-             || (get_quotient() != nullptr && get_quotient()->is_done());
+             || (has_quotient() && quotient()->is_done());
       // 1. _prefilled means that either we were created from a SemigroupBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
