@@ -22,14 +22,21 @@
 #include <exception>
 #include <string>
 
+#include "internal/stl.h"
+
 namespace libsemigroups {
   struct LibsemigroupsException : public std::runtime_error {
-    explicit LibsemigroupsException(std::string const& s)
-        : std::runtime_error(s) {}
+    LibsemigroupsException(std::string const& fname,
+                           int                linenum,
+                           std::string const& msg)
+        : std::runtime_error(fname + ":" + to_string(linenum) + ":" + msg) {}
   };
 
-  LibsemigroupsException const INTERNAL_EXCEPTION
-      = LibsemigroupsException("internal error, somthing went wrong");
 }  // namespace libsemigroups
+
+#define LIBSEMIGROUPS_EXCEPTION(msg) \
+  LibsemigroupsException(__FILE__, __LINE__, msg)
+#define INTERNAL_EXCEPTION \
+  LIBSEMIGROUPS_EXCEPTION("internal error, something went wrong")
 
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_EXCEPTION_H_

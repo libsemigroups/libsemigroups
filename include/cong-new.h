@@ -19,53 +19,53 @@
 // This file contains stuff for creating congruence over Semigroup objects or
 // over FpSemigroup objects.
 
-#ifndef LIBSEMIGROUPS_SRC_CONG_H_
-#define LIBSEMIGROUPS_SRC_CONG_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
+#define LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
 
 #include "cong-intf.h"
-#include "fpsemi.h"
 
 namespace libsemigroups {
 
-  using congruence_t = CongIntf::congruence_t;
+  using congruence_type = CongIntf::congruence_type;
 
   class Congruence : public CongIntf {
    public:
     //////////////////////////////////////////////////////////////////////////
-    // Constructors
+    // Congruence - constructors
     //////////////////////////////////////////////////////////////////////////
     // TODO: Policy?
 
-    explicit Congruence(congruence_t type);
+    explicit Congruence(congruence_type type);
 
-    Congruence(congruence_t                      type,
+    Congruence(congruence_type                      type,
                SemigroupBase*                    S,
-               std::initializer_list<relation_t> extra);
+               std::initializer_list<relation_type> extra);
 
-    Congruence(congruence_t                   type,
+    Congruence(congruence_type                   type,
                SemigroupBase*                 S,
-               std::vector<relation_t> const& genpairs);
+               std::vector<relation_type> const& genpairs);
 
-    Congruence(congruence_t                   type,
+    // TODO uncomment these
+    /*Congruence(congruence_type                   type,
                FpSemigroup&                   S,
-               std::vector<relation_t> const& genpairs);
+               std::vector<relation_type> const& genpairs);
 
-    Congruence(congruence_t                   type,
+    Congruence(congruence_type                   type,
                FpSemigroup*                   S,
-               std::vector<relation_t> const& genpairs);
+               std::vector<relation_type> const& genpairs);*/
 
     //////////////////////////////////////////////////////////////////////////
     // Overridden public pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
 
-    class_index_t  word_to_class_index(word_t const&) override;
+    class_index_type  word_to_class_index(word_type const&) override;
     size_t         nr_classes() override;
-    void           add_pair(word_t, word_t) override;
+    void           add_pair(word_type, word_type) override;
     SemigroupBase* quotient_semigroup() override;
 
-    std::vector<std::vector<word_t>>::const_iterator
+    std::vector<std::vector<word_type>>::const_iterator
     cbegin_non_trivial_classes() override;
-    std::vector<std::vector<word_t>>::const_iterator
+    std::vector<std::vector<word_type>>::const_iterator
     cend_non_trivial_classes() override;
 
     size_t nr_non_trivial_classes() override;
@@ -74,8 +74,8 @@ namespace libsemigroups {
     // Overridden public non-pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
 
-    bool contains(word_t const&, word_t const&) override;
-    bool const_contains(word_t const&, word_t const&) const override;
+    bool contains(word_type const&, word_type const&) override;
+    bool const_contains(word_type const&, word_type const&) const override;
     bool is_quotient_obviously_infinite() const override;
 
     //////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ namespace libsemigroups {
     // Overridden private pure virtual methods from CongIntf
     /////////////////////////////////////////////////////////////////////////
 
-    class_index_t const_word_to_class_index(word_t const&) const override;
+    class_index_type const_word_to_class_index(word_type const&) const override;
 
     /////////////////////////////////////////////////////////////////////////
     // Private data
@@ -99,4 +99,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SRC_CONG_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
