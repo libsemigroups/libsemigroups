@@ -19,91 +19,92 @@
 // This file contains the declaration of a class for finitely presented
 // semigroups.
 
-#ifndef LIBSEMIGROUPS_SRC_FPSEMI_H_
-#define LIBSEMIGROUPS_SRC_FPSEMI_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
+#define LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
 
-#include "defs.h"
+#include "internal/race.h"
+
 #include "fpsemi-intf.h"
-#include "race.h"
-#include "rws.h"
-#include "semigroups-base.h"
+#include "knuth-bendix.h"
+#include "semigroup-base.h"
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
 
   // This is a class for defining fp semigroups.
-  class FpSemigroup : public fpsemigroup::Interface {
+  class FpSemigroup : public FpSemiIntf {
    public:
     // Execution policy:
     // - standard: means run 1 variant of everything
     // - none:     means no methods are added, and at least one must be added
     //             manually via add_method
+    //  TODO enum class
     enum policy { standard = 0, none = 1 };
 
     //////////////////////////////////////////////////////////////////////////
-    // Constructors
+    // FpSemigroup - constructors - public
     //////////////////////////////////////////////////////////////////////////
 
     explicit FpSemigroup(FpSemigroup::policy = standard);
 
-    explicit FpSemigroup(size_t nrgens, FpSemigroup::policy = standard);
-
     // TODO initializer list constructor
-    FpSemigroup(size_t                         nrgens,
-                std::vector<relation_t> const& relations,
-                FpSemigroup::policy = standard);
+    // TODO alphabet constructor
 
     explicit FpSemigroup(SemigroupBase*);
 
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - overridden pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////
+
+    void run() override;
+
     //////////////////////////////////////////////////////////////////////////
-    // Overridden virtual methods from fpsemigroup::Interface
+    // FpSemiIntf - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void               set_nr_generators(size_t) override;
-    size_t             nr_generators() const override;
-    void               set_alphabet(std::string) override;
-    std::string const& alphabet() const override;
+    void           add_rule(std::string const&, std::string const&) override;
+    using FpSemiIntf::add_rule;
 
-   private:
-    bool validate_word(word_t const&) const override;
-    bool validate_word(std::string const&) const override;
-    void set_isomorphic_non_fp_semigroup(SemigroupBase*) override;
-    void internal_add_relation(word_t, word_t) override;
-
-   public:
-    void add_relation(word_t, word_t) override;
-    void add_relation(std::string, std::string) override;
-    using fpsemigroup::Interface::add_relation;
-
-    bool           is_obviously_finite() const override;
-    bool           is_obviously_infinite() const override;
-    size_t         size() override;
+    bool           equal_to(std::string const&, std::string const&) override;
+    bool           is_obviously_finite() override;
+    bool           is_obviously_infinite() override;
     SemigroupBase* isomorphic_non_fp_semigroup() override;
-    bool           has_isomorphic_non_fp_semigroup() override;
+    std::string    normal_form(std::string const&) override;
+    size_t         nr_rules() const noexcept override;
+    size_t         size() override;
 
-    bool equal_to(word_t const&, word_t const&) override;
-    bool equal_to(std::string const&, std::string const&) override;
-    using fpsemigroup::Interface::equal_to;
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - non-pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////////
 
-    word_t      normal_form(word_t const&) override;
-    std::string normal_form(std::string const&) override;
-    using fpsemigroup::Interface::normal_form;
+    void set_alphabet(std::string const&) override;
+    void set_alphabet(size_t) override;
 
     //////////////////////////////////////////////////////////////////////////
-    // Public methods for FpSemigroup
+    // FpSemigroup - methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    fpsemigroup::RWS*         rws();
-    fpsemigroup::ToddCoxeter* todd_coxeter();
+    bool has_knuth_bendix() const;
+    bool has_todd_coxeter() const;
+    fpsemigroup::KnuthBendix* knuth_bendix() const;
+    fpsemigroup::ToddCoxeter* todd_coxeter() const;
 
     // TODO further methods:
     // - add_method
 
    private:
+    //////////////////////////////////////////////////////////////////////////
+    // FpSemigroup - methods - private
+    //////////////////////////////////////////////////////////////////////////
+
     template <class TFpSemigroupInterfaceSubclass>
-    TFpSemigroupInterfaceSubclass* find_method();
+    TFpSemigroupInterfaceSubclass* find_method() const;
+
+    //////////////////////////////////////////////////////////////////////////
+    // FpSemigroup - data - private
+    //////////////////////////////////////////////////////////////////////////
 
     Race _race;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_FPSEMI_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_H_

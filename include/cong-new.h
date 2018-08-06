@@ -22,81 +22,75 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
 
+#include "internal/race.h"
+
 #include "cong-intf.h"
 
 namespace libsemigroups {
-
   using congruence_type = CongIntf::congruence_type;
 
-  class Congruence : public CongIntf {
-   public:
-    //////////////////////////////////////////////////////////////////////////
-    // Congruence - constructors
-    //////////////////////////////////////////////////////////////////////////
-    // TODO: Policy?
+  class FpSemigroup;  // Forward declaration
+  namespace tmp {
+    class Congruence : public CongIntf {
+     public:
+      //////////////////////////////////////////////////////////////////////////
+      // Congruence - constructors - public
+      //////////////////////////////////////////////////////////////////////////
+      // TODO: Policy?
 
-    explicit Congruence(congruence_type type);
+      explicit Congruence(congruence_type type);
 
-    Congruence(congruence_type                      type,
-               SemigroupBase*                    S,
-               std::initializer_list<relation_type> extra);
+      Congruence(congruence_type type, SemigroupBase* S);
+      Congruence(congruence_type type, SemigroupBase& S);
+      Congruence(congruence_type type, FpSemigroup& S);
+      Congruence(congruence_type type, FpSemigroup* S);
 
-    Congruence(congruence_type                   type,
-               SemigroupBase*                 S,
-               std::vector<relation_type> const& genpairs);
+      //////////////////////////////////////////////////////////////////////////
+      // Runner - overridden pure virtual methods - public
+      //////////////////////////////////////////////////////////////////////////
 
-    // TODO uncomment these
-    /*Congruence(congruence_type                   type,
-               FpSemigroup&                   S,
-               std::vector<relation_type> const& genpairs);
+      void run() override;
 
-    Congruence(congruence_type                   type,
-               FpSemigroup*                   S,
-               std::vector<relation_type> const& genpairs);*/
+      //////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden pure virtual methods - public
+      //////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden public pure virtual methods from CongIntf
-    //////////////////////////////////////////////////////////////////////////
+      void             add_pair(word_type, word_type) override;
+      word_type        class_index_to_word(class_index_type) override;
+      SemigroupBase*   quotient_semigroup() override;
+      size_t           nr_classes() override;
+      class_index_type word_to_class_index(word_type const&) override;
 
-    class_index_type  word_to_class_index(word_type const&) override;
-    size_t         nr_classes() override;
-    void           add_pair(word_type, word_type) override;
-    SemigroupBase* quotient_semigroup() override;
+      //////////////////////////////////////////////////////////////////////////
+      // CongIntf - non-pure virtual methods - publice
+      //////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::vector<word_type>>::const_iterator
-    cbegin_non_trivial_classes() override;
-    std::vector<std::vector<word_type>>::const_iterator
-    cend_non_trivial_classes() override;
+      bool contains(word_type const&, word_type const&) override;
+      bool const_contains(word_type const&, word_type const&) const override;
+      bool is_quotient_obviously_infinite() override;
 
-    size_t nr_non_trivial_classes() override;
+      //////////////////////////////////////////////////////////////////////////
+      // Public methods
+      //////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden public non-pure virtual methods from CongIntf
-    //////////////////////////////////////////////////////////////////////////
+      void add_method(Runner*);
 
-    bool contains(word_type const&, word_type const&) override;
-    bool const_contains(word_type const&, word_type const&) const override;
-    bool is_quotient_obviously_infinite() const override;
+     private:
+      //////////////////////////////////////////////////////////////////////////
+      // CongIntf - non-pure virtual methods - private
+      //////////////////////////////////////////////////////////////////////////
+      // TODO use it or lose it
+      // class_index_type const_word_to_class_index(word_type const&) const
+      // override;
+      void init_non_trivial_classes() override;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Public methods
-    //////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////
+      // Congruence - data - private
+      /////////////////////////////////////////////////////////////////////////
 
-    void add_method(Runner*);
-
-   private:
-    /////////////////////////////////////////////////////////////////////////
-    // Overridden private pure virtual methods from CongIntf
-    /////////////////////////////////////////////////////////////////////////
-
-    class_index_type const_word_to_class_index(word_type const&) const override;
-
-    /////////////////////////////////////////////////////////////////////////
-    // Private data
-    /////////////////////////////////////////////////////////////////////////
-
-    Race _race;
-  };
+      Race _race;
+    };
+  }  // namespace tmp
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_

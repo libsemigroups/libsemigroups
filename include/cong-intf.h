@@ -39,7 +39,7 @@ namespace libsemigroups {
         = std::vector<std::vector<word_type>>::const_iterator;
 
     ////////////////////////////////////////////////////////////////////////////
-    // Constructors + Destructors
+    // CongIntf - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
     explicit CongIntf(congruence_type type);
@@ -48,7 +48,7 @@ namespace libsemigroups {
     virtual ~CongIntf() {}
 
     ////////////////////////////////////////////////////////////////////////////
-    // Pure virtual methods
+    // CongIntf - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     //! Returns the index of the congruence class corresponding to \p word.
@@ -94,10 +94,9 @@ namespace libsemigroups {
     // ToddCoxeter class.
     // virtual size_t                     nr_pairs() const noexcept    = 0;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Non-pure virtual methods (default versions using pure methods, where //
-    // there might be better ways than the default in some cases).          //
-    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - non-pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////////
 
     //! Returns \c true if the words \p w1 and \p w2 belong to the
     //! same congruence class.

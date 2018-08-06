@@ -20,8 +20,8 @@
 // semigroups. The basic idea is that this object holds a number of methods (in
 // its Race _race member) and runs them competitively in multiple threads
 // (maybe) to determine the structure of the fp semigroup. As such every method
-// delegates to the corresponding method in every fpsemigroup::Interface* object
-// in the _race.
+// delegates to the corresponding method in every fpsemigroup::FpSemiIntf*
+// object in the _race.
 
 #include "fpsemi.h"
 
@@ -31,21 +31,19 @@
 
 namespace libsemigroups {
 
-  using congruence_t = CongIntf::congruence_t;
-  using Interface    = fpsemigroup::Interface;
-  using ToddCoxeter  = fpsemigroup::ToddCoxeter;
-  using RWS          = fpsemigroup::RWS;
+  using congruence_type = CongIntf::congruence_type;
+  using ToddCoxeter     = fpsemigroup::ToddCoxeter;
+  using KnuthBendix     = fpsemigroup::KnuthBendix;
 
   //////////////////////////////////////////////////////////////////////////
-  // Constructors
+  // FpSemigroup - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  FpSemigroup::FpSemigroup(FpSemigroup::policy p)
-      : Interface(), _race(INFTY) {
+  FpSemigroup::FpSemigroup(FpSemigroup::policy p) : FpSemiIntf(), _race() {
     switch (p) {
       case standard: {
         _race.add_runner(new ToddCoxeter());
-        _race.add_runner(new RWS());
+        _race.add_runner(new KnuthBendix());
         break;
       }
       case none: {
@@ -55,137 +53,61 @@ namespace libsemigroups {
     }
   }
 
-  FpSemigroup::FpSemigroup(size_t nrgens, FpSemigroup::policy p)
-      : FpSemigroup(p) {
-    for (auto runner : _race) {
-      static_cast<Interface*>(runner)->set_nr_generators(nrgens);
-    }
-  }
-
-  FpSemigroup::FpSemigroup(size_t                         nrgens,
-                           std::vector<relation_t> const& relations,
-                           FpSemigroup::policy            p)
-      : FpSemigroup(nrgens, p) {
-    for (auto const& rel : relations) {
-      // FIXME This is wasteful since it calls add_relation(rel.first,
-      // rel.second), and then make_pair(rel.first, rel.second), in
-      // Todd-Coxeter for example
-      add_relation(rel);
-    }
-  }
+  // FIXME This is wasteful since it calls add_rule(rel.first,
+  // rel.second), and then make_pair(rel.first, rel.second), in
+  // Todd-Coxeter for example
 
   // Don't take FpSemigroup::policy as an argument here since we must have a
   // place to cache the SemigroupBase* S.
-  FpSemigroup::FpSemigroup(SemigroupBase* S) : FpSemigroup(S->nrgens()) {
+  FpSemigroup::FpSemigroup(SemigroupBase* S) : FpSemigroup() {
     for (auto runner : _race) {
-      static_cast<Interface*>(runner)
-          ->set_isomorphic_non_fp_semigroup(S);
+      static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S);
       // TODO if the policy is standard, then add another ToddCoxeter with
       // policy use_cayley_graph
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - overridden pure virtual methods - public
+  ////////////////////////////////////////////////////////////////////////
+
+  void FpSemigroup::run() {
+    _race.winner();
+  }
+
   //////////////////////////////////////////////////////////////////////////
-  // Overridden virtual methods from Interface
+  // FpSemiIntf - overridden pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  void FpSemigroup::set_nr_generators(size_t m) {
+  void FpSemigroup::add_rule(std::string const& lhs, std::string const& rhs) {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // TODO Don't allow setting the number of generators after a certain point
     for (auto runner : _race) {
-      static_cast<Interface*>(runner)->set_nr_generators(m);
+      static_cast<FpSemiIntf*>(runner)->add_rule(lhs, rhs);
     }
   }
 
-  size_t FpSemigroup::nr_generators() const {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(*_race.begin())->nr_generators();
+  bool FpSemigroup::equal_to(std::string const& u, std::string const& v) {
+    return static_cast<FpSemiIntf*>(_race.winner())->equal_to(u, v);
   }
 
-  void FpSemigroup::set_alphabet(std::string alpha) {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // TODO Don't allow setting the alphabet after a certain point
-    for (auto runner : _race) {
-      static_cast<Interface*>(runner)->set_alphabet(alpha);
-    }
-  }
-
-  std::string const& FpSemigroup::alphabet() const {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(*_race.begin())->alphabet();
-  }
-
-  // Private
-  bool FpSemigroup::validate_word(word_t const& w) const {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(*_race.begin())
-        ->validate_word(w);
-  }
-
-  // Private
-  bool FpSemigroup::validate_word(std::string const& w) const {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    return static_cast<Interface*>(*_race.begin())
-        ->validate_word(w);
-  }
-
-  // Private
-  void FpSemigroup::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
-    for (auto runner : _race) {
-      static_cast<Interface*>(runner)
-          ->set_isomorphic_non_fp_semigroup(S);
-    }
-  }
-
-  void FpSemigroup::add_relation(word_t lhs, word_t rhs) {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    for (auto runner : _race) {
-      static_cast<Interface*>(runner)->add_relation(lhs, rhs);
-    }
-  }
-
-  void FpSemigroup::add_relation(std::string lhs, std::string rhs) {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // TODO Don't allow adding new relations after a certain point
-    for (auto runner : _race) {
-      static_cast<Interface*>(runner)->add_relation(lhs, rhs);
-    }
-  }
-
-  void FpSemigroup::internal_add_relation(word_t, word_t) {
-    // This does nothing here.
-    // FIXME is there some way to not have it? Yes, by making FpSemigroup not
-    // an Interface subclass.
-    LIBSEMIGROUPS_ASSERT(false);
-  }
-
-  bool FpSemigroup::is_obviously_finite() const {
+  bool FpSemigroup::is_obviously_finite() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto it = _race.begin(); it < _race.end(); ++it) {
-      if (static_cast<Interface*>(*it)->is_obviously_finite()) {
+      if (static_cast<FpSemiIntf*>(*it)->is_obviously_finite()) {
         return true;
       }
     }
     return false;
   }
 
-  bool FpSemigroup::is_obviously_infinite() const {
+  bool FpSemigroup::is_obviously_infinite() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto it = _race.begin(); it < _race.end(); ++it) {
-      if (static_cast<Interface*>(*it)->is_obviously_infinite()) {
+      if (static_cast<FpSemiIntf*>(*it)->is_obviously_infinite()) {
         return true;
       }
     }
     return false;
-  }
-
-  size_t FpSemigroup::size() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    if (is_obviously_infinite()) {
-      return INFTY;
-    } else {
-      return static_cast<Interface*>(_race.winner())->size();
-    }
   }
 
   SemigroupBase* FpSemigroup::isomorphic_non_fp_semigroup() {
@@ -193,71 +115,111 @@ namespace libsemigroups {
     // This loop is here in case one of the Runners in _race was created using
     // a non-f.p. semigroup, so we can just return that and not run the _race.
     for (auto runner : _race) {
-      if (static_cast<Interface*>(runner)
-              ->has_isomorphic_non_fp_semigroup()) {
-        return static_cast<Interface*>(runner)
-            ->isomorphic_non_fp_semigroup();
+      if (static_cast<FpSemiIntf*>(runner)->has_isomorphic_non_fp_semigroup()) {
+        return static_cast<FpSemiIntf*>(runner)->isomorphic_non_fp_semigroup();
       }
     }
-    return static_cast<Interface*>(_race.winner())
+    return static_cast<FpSemiIntf*>(_race.winner())
         ->isomorphic_non_fp_semigroup();
   }
 
-  bool FpSemigroup::has_isomorphic_non_fp_semigroup() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // This loop is here in case one of the Runners in _race was created using
-    // a non-f.p. semigroup, so we can just return that and not run the _race.
-    for (auto runner : _race) {
-      if (static_cast<Interface*>(runner)
-              ->has_isomorphic_non_fp_semigroup()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool FpSemigroup::equal_to(word_t const& u, word_t const& v) {
-    return static_cast<Interface*>(_race.winner())->equal_to(u, v);
-  }
-
-  bool FpSemigroup::equal_to(std::string const& u, std::string const& v) {
-    return static_cast<Interface*>(_race.winner())->equal_to(u, v);
-  }
-
-  word_t FpSemigroup::normal_form(word_t const& w) {
-    return static_cast<Interface*>(_race.winner())->normal_form(w);
-  }
-
   std::string FpSemigroup::normal_form(std::string const& w) {
-    return static_cast<Interface*>(_race.winner())->normal_form(w);
+    return static_cast<FpSemiIntf*>(_race.winner())->normal_form(w);
   }
 
-  //////////////////////////////////////////////////////////////////////////
-  // Specific methods for FpSemigroup
-  //////////////////////////////////////////////////////////////////////////
-
-  template <class TInterfaceSubclass>
-  TInterfaceSubclass* FpSemigroup::find_method() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // We use find_if so that this works even if we haven't computed anything
-    // at all.
-    auto it = std::find_if(_race.begin(), _race.end(), [](Runner* m) {
-      return typeid(*m) == typeid(TInterfaceSubclass);
-    });
-    if (it != _race.end()) {
-      return static_cast<TInterfaceSubclass*>(*it);
+  size_t FpSemigroup::nr_rules() const noexcept {
+    if (_race.empty()) {
+      return 0;
     } else {
-      // Exception?
-      return nullptr;
+      // FIXME this is bad
+      return static_cast<FpSemiIntf*>(*_race.begin())->nr_rules();
     }
   }
 
-  ToddCoxeter* FpSemigroup::todd_coxeter() {
+  size_t FpSemigroup::size() {
+    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    if (is_obviously_infinite()) {
+      return POSITIVE_INFINITY;
+    } else {
+      return static_cast<FpSemiIntf*>(_race.winner())->size();
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiIntf - non-pure virtual methods - public
+  //////////////////////////////////////////////////////////////////////////////
+
+  void FpSemigroup::set_alphabet(std::string const& lphbt) {
+    FpSemiIntf::set_alphabet(lphbt);
+    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    // TODO Don't allow setting the alphabet after a certain point
+    for (auto runner : _race) {
+      static_cast<FpSemiIntf*>(runner)->set_alphabet(lphbt);
+    }
+  }
+
+  void FpSemigroup::set_alphabet(size_t n) {
+    FpSemiIntf::set_alphabet(n);
+    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    // TODO Don't allow setting the alphabet after a certain point
+    for (auto runner : _race) {
+      static_cast<FpSemiIntf*>(runner)->set_alphabet(n);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // FpSemigroup - methods - public
+  //////////////////////////////////////////////////////////////////////////
+
+  fpsemigroup::KnuthBendix* FpSemigroup::knuth_bendix() const {
+    return find_method<KnuthBendix>();
+  }
+
+  bool FpSemigroup::has_knuth_bendix() const {
+    try {
+      knuth_bendix();
+      return true;
+    } catch (...) {
+      return false;
+    }
+  }
+
+  fpsemigroup::ToddCoxeter* FpSemigroup::todd_coxeter() const {
     return find_method<ToddCoxeter>();
   }
 
-  RWS* FpSemigroup::rws() {
-    return find_method<RWS>();
+  bool FpSemigroup::has_todd_coxeter() const {
+    try {
+      todd_coxeter();
+      return true;
+    } catch (...) {
+      return false;
+    }
   }
+
+  //////////////////////////////////////////////////////////////////////////
+  // FpSemigroup - methods - private
+  //////////////////////////////////////////////////////////////////////////
+
+  template <class TFpSemiIntfSubclass>
+  TFpSemiIntfSubclass* FpSemigroup::find_method() const {
+    // We use find_if so that this works even if we haven't computed anything
+    // at all.
+    auto it = std::find_if(_race.begin(), _race.end(), [](Runner* m) {
+      return typeid(*m) == typeid(TFpSemiIntfSubclass);
+    });
+    if (it != _race.end()) {
+      return static_cast<TFpSemiIntfSubclass*>(*it);
+    } else {
+      throw LIBSEMIGROUPS_EXCEPTION("method not found");
+    }
+  }
+
+/*  // Private
+  void FpSemigroup::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
+    for (auto runner : _race) {
+      static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S);
+    }
+  }*/
 
 }  // namespace libsemigroups

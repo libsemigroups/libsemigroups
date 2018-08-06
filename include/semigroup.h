@@ -2139,8 +2139,8 @@ namespace libsemigroups {
       std::sort(
           _sorted.begin(),
           _sorted.end(),
-          [this](std::pair<internal_element_type, element_index_type> const& x,
-                 std::pair<internal_element_type, element_index_type> const& y)
+          [](std::pair<internal_element_type, element_index_type> const& x,
+             std::pair<internal_element_type, element_index_type> const& y)
               -> bool { return less()(x.first, y.first); });
 
       // Invert the permutation in _sorted[*].second

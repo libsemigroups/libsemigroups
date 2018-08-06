@@ -185,7 +185,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(winner->is_done());
     } else {
       if (_semigroup != nullptr) {
-        auto prefillit = [this](Congruence::DATA* data) {
+        auto prefillit = [](Congruence::DATA* data) {
           static_cast<TC*>(data)->prefill();
         };
 

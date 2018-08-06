@@ -28,6 +28,7 @@
 
 namespace libsemigroups {
   namespace congruence {
+    using congruence_type = CongIntf::congruence_type;
 
     template <class TElementType>
     void delete_gens(std::vector<TElementType>& gens) {
@@ -36,10 +37,11 @@ namespace libsemigroups {
       }
     }
 
-    constexpr bool            REPORT   = false;
-    CongIntf::congruence_type TWOSIDED = CongIntf::congruence_type::TWOSIDED;
-    CongIntf::congruence_type LEFT     = CongIntf::congruence_type::LEFT;
-    CongIntf::congruence_type RIGHT    = CongIntf::congruence_type::RIGHT;
+    constexpr bool REPORT = false;
+
+    congruence_type const TWOSIDED = congruence_type::TWOSIDED;
+    congruence_type const LEFT     = congruence_type::LEFT;
+    congruence_type const RIGHT    = congruence_type::RIGHT;
 
     TEST_CASE("CongP 01: 2-sided congruence on finite semigroup",
               "[quick][cong-p][01]") {

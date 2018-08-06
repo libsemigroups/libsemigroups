@@ -138,26 +138,7 @@ namespace libsemigroups {
       _extra = genpairs;
     }
 
-    // ToddCoxeter::ToddCoxeter(ToddCoxeter const&
-    // copy)
-    //     : ToddCoxeter(copy.type(),
-    //                   copy.nr_generators(),
-    //                   std::vector<relation_type>(copy._relations),
-    //                   std::vector<relation_type>(copy._extra)) {
-    //   // FIXME init_relations will be called on this at some point, and if it
-    //   // was already called on copy, and we are a left congruence, then this
-    //   // will reverse the relations again.
-    // }
-
-    // ToddCoxeter::ToddCoxeter(
-    //     ToddCoxeter const*   copy,
-    //     std::vector<relation_type> const& extra)
-    //     : ToddCoxeter(*copy) {
-    //   _extra.reserve(_extra.size() + extra.size());
-    //   _extra.insert(_extra.end(), extra.begin(), extra.end());
-    //   LIBSEMIGROUPS_ASSERT(validate_relations());
-    // }
-    // TODO replace this constructor, see header
+    // TODO make this constructor private??
     ToddCoxeter::ToddCoxeter(congruence_type                   type,
                              size_t                            nrgens,
                              std::vector<relation_type> const& relations,
@@ -168,6 +149,19 @@ namespace libsemigroups {
       _extra     = extra;
       validate_relations();
     }
+
+    ToddCoxeter::ToddCoxeter(ToddCoxeter const& copy)
+        : ToddCoxeter(copy.type(),
+                      copy.nr_generators(),
+                      std::vector<relation_type>(copy._relations),
+                      std::vector<relation_type>(copy._extra)) {
+      // FIXME init_relations will be called on this at some point, and if it
+      // was already called on copy, and we are a left congruence, then this
+      // will reverse the relations again.
+    }
+
+    ToddCoxeter::ToddCoxeter(fpsemigroup::ToddCoxeter const& copy)
+        : ToddCoxeter(*copy.congruence()) {}
 
     ToddCoxeter::~ToddCoxeter() {
       reset_quotient();

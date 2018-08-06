@@ -37,6 +37,14 @@
 
 namespace libsemigroups {
   namespace congruence {
+    class ToddCoxeter;  // forward declaration
+  }
+
+  namespace fpsemigroup {
+    using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
+  }
+
+  namespace congruence {
     class ToddCoxeter : public CongIntf {
       using signed_class_index_type = int64_t;
 
@@ -70,6 +78,10 @@ namespace libsemigroups {
                   std::vector<relation_type> const& relations,
                   std::vector<relation_type> const& extra = {});
 
+      explicit ToddCoxeter(fpsemigroup::ToddCoxeter const&);
+
+      ToddCoxeter(ToddCoxeter const&);
+
       ~ToddCoxeter();
 
       // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
@@ -80,9 +92,7 @@ namespace libsemigroups {
 
       // TODO double check if the following are still required
       // ToddCoxeter(congruence_type type, size_t nrgens);
-      // ToddCoxeter(ToddCoxeter const& copy);
-      // ToddCoxeter(fpsemigroup::ToddCoxeter const*,
-      //            std::vector<relation_type> const&);
+      //ToddCoxeter(fpsemigroup::ToddCoxeter const*);
 
       // ToddCoxeter(FpSemigroup const*,
       //            std::vector<relation_type> const&);
@@ -186,58 +196,5 @@ namespace libsemigroups {
       RecVec<class_index_type>     _table;
     };
   }  // namespace congruence
-
-  namespace fpsemigroup {
-    using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
-  }  // namespace fpsemigroup
-
-  /*  class ToddCoxeter : public FpSemiIntf {
-     public:
-      //////////////////
-      // Constructors //
-      //////////////////
-
-      ToddCoxeter();
-      explicit ToddCoxeter(std::string const&);
-      explicit ToddCoxeter(SemigroupBase*);
-      explicit ToddCoxeter(SemigroupBase&);
-
-      ////////////////////////////////////////////
-      // Overridden virtual methods from Runner //
-      ////////////////////////////////////////////
-
-      void run() override;
-      // TODO finished method using that of _tcc
-
-      /////////////////////////////////////////////////////
-      // Overridden pure virtual methods from FpSemiIntf //
-      /////////////////////////////////////////////////////
-
-      void add_rule(std::string const&, std::string const&) override;
-
-      bool   is_obviously_finite() override;
-      bool   is_obviously_infinite() override;
-      SemigroupBase* isomorphic_non_fp_semigroup() override;
-      size_t size() override;
-
-      bool        equal_to(std::string const&, std::string const&) override;
-      std::string normal_form(std::string const&) override;
-
-      size_t nr_rules() const noexcept override;
-
-      /////////////////////////////////////////////////////////
-      // Overridden non-pure virtual methods from FpSemiIntf //
-      /////////////////////////////////////////////////////////
-
-      void      add_rule(word_type const&, word_type const&) override;
-      bool      equal_to(word_type const&, word_type const&) override;
-      word_type normal_form(word_type const&) override;
-      void      set_alphabet(std::string const&) override;
-      void      set_alphabet(size_t) override;
-
-     private:
-      size_t                                   _nr_rules;
-      std::unique_ptr<congruence::ToddCoxeter> _tcc;
-    };*/
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_

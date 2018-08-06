@@ -167,11 +167,10 @@ namespace libsemigroups {
 
       // We override FpSemiIntf::set_alphabet so that we can set the number of
       // generators in _wrapped_cong.
-      /*void set_alphabet(size_t nr_letters) override {
+      void set_alphabet(size_t nr_letters) override {
         FpSemiIntf::set_alphabet(nr_letters);
         _wrapped_cong->set_nr_generators(nr_letters);
-      }*/
-      using FpSemiIntf::set_alphabet;
+      }
 
       void add_rules(SemigroupBase* S) override {
         // TODO improve this method to avoid unnecessary conversions
@@ -181,6 +180,14 @@ namespace libsemigroups {
         // if (S->nr_rules() == this->nr_rules()) {
         //   set_isomorphic_non_fp_semigroup(S);
         // }
+      }
+
+      ////////////////////////////////////////////////////////////////////////////
+      // WrappedCong - methods - public
+      ////////////////////////////////////////////////////////////////////////////
+      //TODO use shared_ptr
+      TWrappedCong const* congruence() const {
+        return _wrapped_cong.get();
       }
 
      private:

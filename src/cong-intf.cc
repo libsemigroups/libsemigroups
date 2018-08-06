@@ -146,7 +146,7 @@ namespace libsemigroups {
     _non_trivial_classes.erase(
         std::remove_if(_non_trivial_classes.begin(),
                        _non_trivial_classes.end(),
-                       [this](std::vector<word_type> const& klass) -> bool {
+                       [](std::vector<word_type> const& klass) -> bool {
                          return klass.size() <= 1;
                        }),
         _non_trivial_classes.end());
