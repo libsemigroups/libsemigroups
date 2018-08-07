@@ -252,6 +252,10 @@ namespace libsemigroups {
       _lenindex.push_back(_enumerate_order.size());
     }
 
+    // FIXME
+    //explicit Semigroup(element_type gens...)
+    //    : Semigroup(std::vector<element_type>(gens)) {}
+
     //! Construct from generators.
     //!
     //! This constructor simply calls the above constructor with a pointer to \p

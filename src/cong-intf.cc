@@ -79,10 +79,8 @@ namespace libsemigroups {
 
   void CongIntf::set_nr_generators(size_t n) {
     if (_is_nr_generators_defined) {
-      throw LIBSEMIGROUPS_EXCEPTION(std::string(__FILE__) + ":"
-                                    + to_string(__LINE__)
-                                    + ": the number of generators "
-                                      "cannot be set more than once");
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "the number of generators cannot be set more than once");
     }
     _is_nr_generators_defined = true;
     _nrgens                   = n;
@@ -130,7 +128,7 @@ namespace libsemigroups {
       // FIXME this doesn't cover the case when there are no non-triv classes
       return;
     } else if (_parent == nullptr) {
-      throw LIBSEMIGROUPS_EXCEPTION("There's no parent semigroup in which to "
+      throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
                                     "find the non-trivial classes");
     }
 

@@ -245,7 +245,6 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
         : KnuthBendix(new ReductionOrdering(kb->_order), kb->alphabet()) {
       set_overlap_policy(kb->_overlap_policy);
-      set_alphabet(kb->alphabet());
       // TODO _active_rules.reserve(kb->nr_rules());
       for (Rule const* rule : _active_rules) {
         add_rule(new_rule(rule));
@@ -1002,6 +1001,10 @@ namespace libsemigroups {
         : CongIntf(congruence_type::TWOSIDED),
           _kbfp(make_unique<fpsemigroup::KnuthBendix>()) {}
 
+    KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
+        : CongIntf(congruence_type::TWOSIDED),
+          _kbfp(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
+
     KnuthBendix::KnuthBendix(SemigroupBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
@@ -1029,8 +1032,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::run() {
-      _kbfp->run();
-      set_finished();
+      _kbfp->isomorphic_non_fp_semigroup()->enumerate(dead());
+      // FIXME what happens if  _kbfp->isomorphic_non_fp_semigroup() runs
+      // forever? I don't think we have any way to kill it.
+      if (_kbfp->isomorphic_non_fp_semigroup()->is_done() && !dead()) {
+        set_finished();
+      } else if (dead()) {
+        REPORT("killed");
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////////

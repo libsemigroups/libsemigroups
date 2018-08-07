@@ -200,7 +200,8 @@ namespace libsemigroups {
     bool                                _delete_quotient;
     bool                                _is_nr_generators_defined;
     size_t                              _nrgens;
-    SemigroupBase*                      _parent;
+    SemigroupBase* _parent;  // TODO make this a template param, so that it can
+                             // be i.e. FpSemigroup* or SemigroupBase*
     SemigroupBase*                      _quotient;
     congruence_type                     _type;
   };

@@ -58,7 +58,7 @@ namespace libsemigroups {
     void unset_finished() const;  // TODO use this! Currently only used in cong-p.h
 
     void kill();
-    bool dead() const;
+    std::atomic<bool> const& dead() const;
 
    private:
     std::atomic<bool>                                      _dead;

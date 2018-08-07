@@ -88,9 +88,9 @@ namespace libsemigroups {
     using signed_class_index_type = int64_t;
     using class_index_type        = CongIntf::class_index_type;
 
-    /////////////////////////
-    // Private Constructor //
-    /////////////////////////
+    /////////////////////////////////
+    // Constructors and destructor //
+    /////////////////////////////////
 
     ToddCoxeter::ToddCoxeter(congruence_type type)
         : CongIntf(type),
@@ -116,10 +116,6 @@ namespace libsemigroups {
           _rhs_stack(),
           _stop_packing(false),
           _table(0, 0, UNDEFINED) {}
-
-    /////////////////////////////////
-    // Constructors and destructor //
-    /////////////////////////////////
 
     ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase* S, policy p)
         : ToddCoxeter(type) {

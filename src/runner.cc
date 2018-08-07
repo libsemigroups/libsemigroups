@@ -95,7 +95,7 @@ namespace libsemigroups {
     _dead = true;
   }
 
-  bool Runner::dead() const {
+  std::atomic<bool> const& Runner::dead() const {
     return _dead;
   }
 }  // namespace libsemigroups

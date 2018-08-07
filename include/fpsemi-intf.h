@@ -79,7 +79,7 @@ namespace libsemigroups {
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
     virtual void      set_alphabet(std::string const&);
-    virtual void      set_alphabet(size_t);
+    virtual void      set_alphabet(letter_type);
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiIntf - non-virtual methods - public
@@ -93,6 +93,7 @@ namespace libsemigroups {
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
     // Set the char in alphabet() to be the identity.
     void set_identity(std::string const&);
+    void set_identity(letter_type);
 
    protected:
     ////////////////////////////////

@@ -526,6 +526,7 @@ namespace libsemigroups {
 
       KnuthBendix();
       explicit KnuthBendix(SemigroupBase&);
+      explicit KnuthBendix(fpsemigroup::KnuthBendix const*);
       // TODO remove the next, currently unused
       KnuthBendix(size_t                            nrgens,
                   std::vector<relation_type> const& relations,

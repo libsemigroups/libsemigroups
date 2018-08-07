@@ -28,7 +28,7 @@
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration
-  namespace tmp {
+  namespace tmp { // FIXME remove this
     class Congruence : public CongIntf {
      public:
       //////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void run() override;
+      bool finished() const override;
 
       //////////////////////////////////////////////////////////////////////////
       // CongIntf - overridden pure virtual methods - public
@@ -80,7 +81,6 @@ namespace libsemigroups {
       // TODO use it or lose it
       // class_index_type const_word_to_class_index(word_type const&) const
       // override;
-      void init_non_trivial_classes() override;
 
       /////////////////////////////////////////////////////////////////////////
       // Congruence - data - private

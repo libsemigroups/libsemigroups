@@ -47,6 +47,8 @@ namespace libsemigroups {
           new ToddCoxeter(type, S, ToddCoxeter::policy::use_relations));
       _race.add_runner(
           new ToddCoxeter(type, S, ToddCoxeter::policy::use_cayley_graph));
+      set_nr_generators(S->nrgens());
+      set_parent(S);
     }
 
     Congruence::Congruence(congruence_type type, SemigroupBase& S)
@@ -57,6 +59,8 @@ namespace libsemigroups {
 
     Congruence::Congruence(congruence_type type, FpSemigroup* S)
         : Congruence(type) {
+        set_nr_generators(S->alphabet().size());
+        // set_parent(S); currently not possible
       // FIXME revise this!
       _race.set_max_threads(POSITIVE_INFINITY);
       if (S->has_todd_coxeter()) {
@@ -121,24 +125,13 @@ namespace libsemigroups {
         // could store a RWS directly inside a Congruence, so that it could be
         // used solely for the "contains" method?
 
-        // if (type == TWOSIDED) {
-        // Method 6 (KBFP)
-        // RWS* rws = new RWS(S->knuth_bendix());
-        // for (auto const& rel : genpairs) {
-        //  rws->add_relation(rel);
-        //}
-        // _race.add_runner(rws);
-        // FIXME: Here we must run
-        // rws->isomorphic_non_fp_semigroup()->enumerate() rather than
-        // rws->run(), which is the Race default, the Runner derived class
-        // implementing this will also have to be a CongIntf so
-        // that it can answer the required questions about itself.
-        // Hmm, I'm not sure I want to do this now, means writing a special
-        // class just for this runner, or making RWS inherit from
-        // CongIntf also (and using the prerun runner), which would
-        // probably make the separation of CongIntf and
-        // fpsemigroup::CongIntf redundant.
-        //}
+        if (type == congruence_type::TWOSIDED) {
+          // Method 6 (KBFP)
+          // S->knuth_bendix() must be copied because maybe we will add more
+          // generating pairs, for thread-safety, and because
+          // congruence::KnuthBendix deletes the congruence it wraps.
+          _race.add_runner(new congruence::KnuthBendix(S->knuth_bendix()));
+        }
       }
     }
 
@@ -148,6 +141,19 @@ namespace libsemigroups {
 
     void Congruence::run() {
       _race.winner();
+    }
+
+    bool Congruence::finished() const {
+      // Must set_finished, since otherwise Runner methods won't function
+      // correctly.
+      for (auto runner : _race) {
+        if (runner->finished()) {
+          set_finished();
+          return true;
+        }
+      }
+      unset_finished();
+      return false;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -188,14 +194,6 @@ namespace libsemigroups {
       return false;
     }
 
-    void Congruence::init_non_trivial_classes() {
-      LIBSEMIGROUPS_ASSERT(!_race.empty());
-      auto winner          = static_cast<CongIntf*>(_race.winner());
-      _non_trivial_classes = std::vector<std::vector<word_type>>(
-          winner->cbegin_ntc(),
-          winner->cend_ntc());
-    }
-
     //////////////////////////////////////////////////////////////////////////
     // Overridden public non-pure virtual methods from CongIntf
     //////////////////////////////////////////////////////////////////////////
@@ -222,6 +220,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void Congruence::add_method(Runner* r) {
+      // TODO check that it is ok to add runners
       _race.add_runner(r);
     }
 

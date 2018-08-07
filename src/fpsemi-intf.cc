@@ -33,7 +33,8 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
 
   FpSemiIntf::FpSemiIntf()
-      : _alphabet(),
+      : Runner(),
+        _alphabet(),
         _alphabet_map(),
         _delete_isomorphic_non_fp_semigroup(false),
         _is_alphabet_defined(false),
@@ -75,6 +76,11 @@ namespace libsemigroups {
         add_rule(id + to_string(l), to_string(l));
       }
     }
+  }
+
+  void FpSemiIntf::set_identity(letter_type id) {
+    validate_letter(id);
+    set_identity(std::string(1, _alphabet[id]));
   }
 
   //////////////////////////////////////

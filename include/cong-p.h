@@ -449,7 +449,7 @@ namespace libsemigroups {
     // semigroup using KnuthBendix on the fp semigroup and then the pairs
     // algorithm to compute the congruence.
     //////////////////////////////////////////////////////////////////////////
-
+    // TODO move the implementation to a cong-p.cc file
     class KBP
         : public P<KBE,
                    hash<KBE>,
@@ -491,6 +491,8 @@ namespace libsemigroups {
       }
 
       // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
+      // Override the method for the class P to avoid having to know the parent
+      // semigroup (found as part of KBP::run) to add a pair.
       void add_pair(word_type l, word_type r) override {
         internal_element_type x = new element_type(_kb, l);
         internal_element_type y = new element_type(_kb, r);
