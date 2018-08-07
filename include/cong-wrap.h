@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains
+// This file contains TODO
 
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_

@@ -236,6 +236,7 @@ namespace libsemigroups {
         Congruence cong(TWOSIDED, S);
         cong.add_pair({0}, {1});
 
+        // Requires KBP to work
         REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
         REQUIRE(cong.word_to_class_index({0})
                 == cong.word_to_class_index({1, 0}));
@@ -251,11 +252,6 @@ namespace libsemigroups {
     }
 
     /*
-
-
-
-
-
       TEST_CASE("Congruence 11: 2-sided congruence on finite semigroup",
                 "[quick][congruence-new][finite][11]") {
         REPORTER.set_report(REPORT);

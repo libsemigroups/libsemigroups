@@ -513,6 +513,7 @@ namespace libsemigroups {
     //! this corresponding to \p w may not yet have been enumerated.
     //!
     //! \sa Semigroup::word_to_pos.
+    // TODO should return rvalue reference
     element_type word_to_element(word_type const& w) const {
       element_index_type pos = word_to_pos(w);
       if (pos != UNDEFINED) {

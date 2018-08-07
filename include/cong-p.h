@@ -38,22 +38,28 @@
 
 namespace libsemigroups {
   namespace congruence {
-    // This version of P originates in the old cong.h file.
+    // TODO: the type of the congruence defined by class P should be a template
+    // parameter
     template <
         typename TElementType  = Element const*,
         typename TElementHash  = hash<TElementType>,
         typename TElementEqual = equal_to<TElementType>,
         class TTraits
         = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
-    class P : public CongIntf, private TTraits {
+    class P : public CongIntf, protected TTraits {
+     public:
       ////////////////////////////////////////////////////////////////////////
-      // P - typedefs - private
+      // P - typedefs - public
       ////////////////////////////////////////////////////////////////////////
       // TODO check if the following are all actually used
       using element_type       = typename TTraits::element_type;
       using const_element_type = typename TTraits::const_element_type;
       using reference          = typename TTraits::reference;
       using const_reference    = typename TTraits::const_reference;
+
+      ////////////////////////////////////////////////////////////////////////
+      // P - typedefs - private
+      ////////////////////////////////////////////////////////////////////////
 
       using internal_element_type = typename TTraits::internal_element_type;
       using internal_const_element_type =
@@ -67,14 +73,17 @@ namespace libsemigroups {
 
       using product = ::libsemigroups::product<internal_element_type>;
 
+     protected:
+      ////////////////////////////////////////////////////////////////////////
+      // P - constructor - protected
+      ////////////////////////////////////////////////////////////////////////
+      // This is protected because it is not possible to create a P object
+      // without it being defined over a parent semigroup.
+
+      // TODO should be this and not TTraits that is used as a template
+      // parameter, maybe?
       using semigroup_type
           = Semigroup<TElementType, TElementHash, TElementEqual, TTraits>;
-
-      ////////////////////////////////////////////////////////////////////////
-      // P - constructor - private
-      ////////////////////////////////////////////////////////////////////////
-      // This is private because it is not possible to create a P object
-      // without it being defined over a parent semigroup.
 
       explicit P(congruence_type type)
           : CongIntf(type),
@@ -212,6 +221,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair(word_type l, word_type r) override {
+        if (!has_parent()) {
+          throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
+                                        "the parent semigroup is defined");
+        }
         auto x = static_cast<semigroup_type*>(parent())->word_to_element(l);
         auto y = static_cast<semigroup_type*>(parent())->word_to_element(r);
         internal_add_pair(this->to_internal(x), this->to_internal(y));
@@ -238,10 +251,9 @@ namespace libsemigroups {
       class_index_type word_to_class_index(word_type const& w) final {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
-        auto x = this->to_internal(
-            static_cast<semigroup_type*>(parent())->word_to_element(w));
-        size_t ind_x = get_index(x);
-        this->internal_free(x);
+        auto   x = static_cast<semigroup_type*>(parent())->word_to_element(w);
+        size_t ind_x = get_index(this->to_internal_const(x));
+        this->external_free(x);
         LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
         LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
         return _class_lookup[ind_x];
@@ -252,7 +264,8 @@ namespace libsemigroups {
       // CongIntf - overridden non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
-      class_index_type const_word_to_class_index(word_type const& w) const override {
+      class_index_type
+      const_word_to_class_index(word_type const& w) const override {
         if (!_init_done) {
           return UNDEFINED;
         }
@@ -278,15 +291,65 @@ namespace libsemigroups {
         for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
           word_type word
               = static_cast<semigroup_type*>(parent())->factorisation(
-                  _reverse_map[ind]);
+                  this->to_external(_reverse_map[ind]));
           _non_trivial_classes[_class_lookup[ind]].push_back(word);
+        }
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // P - methods - protected
+      ////////////////////////////////////////////////////////////////////////
+     protected:
+      void internal_add_pair(internal_const_element_type x,
+                             internal_const_element_type y) {
+        if (!internal_equal_to()(x, y)) {
+          internal_element_type xx, yy;
+          bool                  xx_new = false, yy_new = false;
+          size_t                i, j;
+
+          auto it_x = _map.find(x);
+          if (it_x == _map.end()) {
+            xx_new = true;
+            xx     = this->internal_copy(x);
+            i      = add_index(xx);
+          } else {
+            i = it_x->second;
+          }
+
+          auto it_y = _map.find(y);
+          if (it_y == _map.end()) {
+            yy_new = true;
+            yy     = this->internal_copy(y);
+            j      = add_index(yy);
+          } else {
+            j = it_y->second;
+          }
+
+          LIBSEMIGROUPS_ASSERT(i != j);
+          std::pair<internal_element_type, internal_element_type> pair;
+          if (xx_new || yy_new) {  // it's a new pair
+            xx   = internal_element_type(xx_new ? xx : it_x->first);
+            yy   = internal_element_type(yy_new ? yy : it_y->first);
+            pair = (i < j ? std::make_pair(xx, yy) : std::make_pair(yy, xx));
+          } else {
+            pair = (i < j ? std::make_pair(internal_element_type(it_x->first),
+                                           internal_element_type(it_y->first))
+                          : std::make_pair(internal_element_type(it_y->first),
+                                           internal_element_type(it_x->first)));
+            if (_found_pairs.find(pair) != _found_pairs.end()) {
+              return;
+            }
+          }
+          _found_pairs.insert(pair);
+          _pairs_to_mult.push(pair);
+          _lookup.unite(i, j);
         }
       }
 
       ////////////////////////////////////////////////////////////////////////
       // P - methods - private
       ////////////////////////////////////////////////////////////////////////
-
+     private:
       size_t add_index(internal_element_type x) {
         LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
         LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
@@ -325,53 +388,6 @@ namespace libsemigroups {
               static_cast<semigroup_type*>(parent())->generator(0)));
           _tmp2      = this->internal_copy(_tmp1);
           _init_done = true;
-        }
-      }
-
-      void internal_add_pair(internal_const_element_type x,
-                             internal_const_element_type y) {
-        if (!internal_equal_to()(x, y)) {
-          internal_element_type xx, yy;
-          bool                        xx_new = false, yy_new = false;
-          size_t                      i, j;
-
-          auto it_x = _map.find(x);
-          if (it_x == _map.end()) {
-            xx_new = true;
-            xx     = this->internal_copy(x);
-            i      = add_index(xx);
-          } else {
-            i = it_x->second;
-          }
-
-          auto it_y = _map.find(y);
-          if (it_y == _map.end()) {
-            yy_new = true;
-            yy     = this->internal_copy(y);
-            j      = add_index(yy);
-          } else {
-            j = it_y->second;
-          }
-
-          LIBSEMIGROUPS_ASSERT(i != j);
-          std::pair<internal_element_type, internal_element_type>
-              pair;
-          if (xx_new || yy_new) {  // it's a new pair
-            xx   = internal_element_type(xx_new ? xx : it_x->first);
-            yy   = internal_element_type(yy_new ? yy : it_y->first);
-            pair = (i < j ? std::make_pair(xx, yy) : std::make_pair(yy, xx));
-          } else {
-            pair = (i < j ? std::make_pair(internal_element_type(it_x->first),
-                                           internal_element_type(it_y->first))
-                          : std::make_pair(internal_element_type(it_y->first),
-                                           internal_element_type(it_x->first)));
-            if (_found_pairs.find(pair) != _found_pairs.end()) {
-              return;
-            }
-          }
-          _found_pairs.insert(pair);
-          _pairs_to_mult.push(pair);
-          _lookup.unite(i, j);
         }
       }
 
@@ -427,6 +443,69 @@ namespace libsemigroups {
       internal_element_type              _tmp1;
       internal_element_type              _tmp2;
     };
+
+    //////////////////////////////////////////////////////////////////////////
+    // The next class is for calculating congruences on a finitely presented
+    // semigroup using KnuthBendix on the fp semigroup and then the pairs
+    // algorithm to compute the congruence.
+    //////////////////////////////////////////////////////////////////////////
+
+    class KBP
+        : public P<KBE,
+                   hash<KBE>,
+                   equal_to<KBE>,
+                   SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
+      ////////////////////////////////////////////////////////////////////////
+      // KBP - typedefs - private
+      ////////////////////////////////////////////////////////////////////////
+
+      using p_type          = P<KBE,
+                       hash<KBE>,
+                       equal_to<KBE>,
+                       SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;
+      using congruence_type = CongIntf::congruence_type;
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // KBP - constructors - public
+      ////////////////////////////////////////////////////////////////////////
+
+      KBP(congruence_type type, fpsemigroup::KnuthBendix* kb)
+          : p_type(type), _kb(kb) {
+        this->set_nr_generators(kb->alphabet().size());
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // P - overridden virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
+
+      void run() override {
+        if (!finished()) {
+          auto S = _kb->isomorphic_non_fp_semigroup();
+          set_parent(static_cast<typename p_type::semigroup_type*>(S));
+          p_type::run();
+        }
+      }
+
+      // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
+      void add_pair(word_type l, word_type r) override {
+        internal_element_type x = new element_type(_kb, l);
+        internal_element_type y = new element_type(_kb, r);
+        internal_add_pair(x, y);
+        this->internal_free(x);
+        this->internal_free(y);
+        unset_finished();
+      }
+
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // KBP - data - private
+      ////////////////////////////////////////////////////////////////////////
+      // TODO use shared_ptr
+
+      fpsemigroup::KnuthBendix* _kb;
+    };
+
   }  // namespace congruence
 
   namespace fpsemigroup {
@@ -437,7 +516,8 @@ namespace libsemigroups {
         class TTraits
         = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     using P = WrappedCong<
-        congruence::P<TElementType, TElementHash, TElementEqual, TTraits>, false>;
+        congruence::P<TElementType, TElementHash, TElementEqual, TTraits>,
+        false>;
     // The false in the template of the previous line, is so that we do not add
     // the rules from any underlying semigroup to the P.
   }  // namespace fpsemigroup

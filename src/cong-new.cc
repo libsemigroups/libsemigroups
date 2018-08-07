@@ -32,6 +32,7 @@
 namespace libsemigroups {
   namespace tmp {
     using ToddCoxeter      = congruence::ToddCoxeter;
+    using KBP              = congruence::KBP;
     using class_index_type = CongIntf::class_index_type;
 
     //////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ namespace libsemigroups {
         }
         // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
         // then attempts to run the exhaustive pairs algorithm on that.
-        // _race.add_runner(new P<RWSE*>(type, S->knuth_bendix(), genpairs));
+        _race.add_runner(new KBP(type, S->knuth_bendix()));
 
         // TODO add a runner for P and the rws using the rules of S *and*
         // genpairs, so that we can potentially answer "contains" questions
