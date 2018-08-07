@@ -153,13 +153,13 @@ namespace libsemigroups {
   }
 
   std::vector<std::vector<word_type>>::const_iterator
-  CongIntf::cbegin_non_trivial_classes() {
+  CongIntf::cbegin_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cbegin();
   }
 
   std::vector<std::vector<word_type>>::const_iterator
-  CongIntf::cend_non_trivial_classes() {
+  CongIntf::cend_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cend();
   }

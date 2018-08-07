@@ -1243,7 +1243,7 @@ namespace libsemigroups {
 
       REQUIRE(kb.nr_non_trivial_classes() == 1);
       REQUIRE(kb.nr_generators() == 2);
-      REQUIRE(kb.cbegin_non_trivial_classes()->size() == 68);
+      REQUIRE(kb.cbegin_ntc()->size() == 68);
     }
 
     TEST_CASE("KnuthBendix (cong) 04: free semigroup congruence (6 classes)"

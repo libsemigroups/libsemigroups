@@ -336,8 +336,8 @@ namespace libsemigroups {
         REQUIRE(cong.nr_classes() == 19009);
         size_t                             nr = 0;
         std::unordered_map<size_t, size_t> result;
-        for (auto it = cong.cbegin_non_trivial_classes();
-             it < cong.cend_non_trivial_classes();
+        for (auto it = cong.cbegin_ntc();
+             it < cong.cend_ntc();
              ++it) {
           auto result_it = result.find((*it).size());
           if (result_it == result.end()) {

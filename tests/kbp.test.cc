@@ -20,7 +20,7 @@
 // achieved by calling kbp.force_kbp() before calculating anything about the
 // congruence.
 
-#include <utility> // for std::transform
+#include <utility>  // for std::transform
 
 #include "catch.hpp"
 #include "cong-p.h"
@@ -62,10 +62,10 @@ namespace libsemigroups {
                 == kbp.word_to_class_index({1, 0, 1}));
 
         REQUIRE(kbp.nr_non_trivial_classes() == 1);
-        REQUIRE(kbp.cbegin_non_trivial_classes()->size() == 5);
+        REQUIRE(kbp.cbegin_ntc()->size() == 5);
         REQUIRE(
-            std::vector<word_type>(kbp.cbegin_non_trivial_classes()->cbegin(),
-                                   kbp.cbegin_non_trivial_classes()->cend())
+            std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                   kbp.cbegin_ntc()->cend())
             == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
       }
 
@@ -102,10 +102,10 @@ namespace libsemigroups {
                 == kbp.word_to_class_index({1, 0, 1}));
 
         REQUIRE(kbp.nr_non_trivial_classes() == 1);
-        REQUIRE(kbp.cbegin_non_trivial_classes()->size() == 5);
+        REQUIRE(kbp.cbegin_ntc()->size() == 5);
         REQUIRE(
-            std::vector<word_type>(kbp.cbegin_non_trivial_classes()->cbegin(),
-                                   kbp.cbegin_non_trivial_classes()->cend())
+            std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                   kbp.cbegin_ntc()->cend())
             == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
       }
 
@@ -145,11 +145,10 @@ namespace libsemigroups {
         REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
 
         REQUIRE(kbp.nr_non_trivial_classes() == 1);
-        REQUIRE(kbp.cbegin_non_trivial_classes()->size() == 2);
-        REQUIRE(
-            std::vector<word_type>(kbp.cbegin_non_trivial_classes()->cbegin(),
-                                   kbp.cbegin_non_trivial_classes()->cend())
-            == std::vector<word_type>({{1}, {2}}));
+        REQUIRE(kbp.cbegin_ntc()->size() == 2);
+        REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                       kbp.cbegin_ntc()->cend())
+                == std::vector<word_type>({{1}, {2}}));
 
         REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
       }
@@ -190,11 +189,10 @@ namespace libsemigroups {
         REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({2}));
 
         REQUIRE(kbp.nr_non_trivial_classes() == 1);
-        REQUIRE(kbp.cbegin_non_trivial_classes()->size() == 3);
-        REQUIRE(
-            std::vector<word_type>(kbp.cbegin_non_trivial_classes()->cbegin(),
-                                   kbp.cbegin_non_trivial_classes()->cend())
-            == std::vector<word_type>({{2}, {3}, {1}}));
+        REQUIRE(kbp.cbegin_ntc()->size() == 3);
+        REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                       kbp.cbegin_ntc()->cend())
+                == std::vector<word_type>({{2}, {3}, {1}}));
       }
 
       TEST_CASE("KBP 05: trivial congruence on a finite fp semigroup",
@@ -223,12 +221,11 @@ namespace libsemigroups {
         REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 1);
 
         REQUIRE(kbp.nr_non_trivial_classes() == 0);
-        REQUIRE(kbp.cbegin_non_trivial_classes()
-                == kbp.cend_non_trivial_classes());
+        REQUIRE(kbp.cbegin_ntc() == kbp.cend_ntc());
       }
 
       TEST_CASE("KBP 06: universal congruence on a finite fp semigroup",
-                      "[quick][kbp][06]") {
+                "[quick][kbp][06]") {
         REPORTER.set_report(REPORT);
 
         KnuthBendix kb;
@@ -249,38 +246,37 @@ namespace libsemigroups {
 
         REQUIRE(kbp.nr_classes() == 1);
 
-        REQUIRE(kbp.cbegin_non_trivial_classes()->size() == 27);
+        REQUIRE(kbp.cbegin_ntc()->size() == 27);
         REQUIRE(kb.size() == 27);
-        REQUIRE(
-            std::vector<word_type>(kbp.cbegin_non_trivial_classes()->cbegin(),
-                                   kbp.cbegin_non_trivial_classes()->cend())
-            == std::vector<word_type>({{0},
-                                       {1},
-                                       {0, 0},
-                                       {0, 1},
-                                       {1, 0},
-                                       {1, 1},
-                                       {0, 0, 0},
-                                       {1, 0, 0},
-                                       {0, 1, 0},
-                                       {1, 0, 1},
-                                       {0, 1, 1},
-                                       {1, 1, 0},
-                                       {1, 1, 1},
-                                       {1, 0, 0, 0},
-                                       {0, 1, 0, 0},
-                                       {1, 1, 0, 0},
-                                       {1, 0, 1, 0},
-                                       {0, 1, 0, 1},
-                                       {1, 1, 0, 1},
-                                       {1, 0, 1, 1},
-                                       {1, 1, 0, 0, 0},
-                                       {1, 0, 1, 0, 0},
-                                       {1, 1, 0, 1, 0},
-                                       {1, 0, 1, 0, 1},
-                                       {1, 1, 0, 1, 1},
-                                       {1, 1, 0, 1, 0, 0},
-                                       {1, 1, 0, 1, 0, 1}}));
+        REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                       kbp.cbegin_ntc()->cend())
+                == std::vector<word_type>({{0},
+                                           {1},
+                                           {0, 0},
+                                           {0, 1},
+                                           {1, 0},
+                                           {1, 1},
+                                           {0, 0, 0},
+                                           {1, 0, 0},
+                                           {0, 1, 0},
+                                           {1, 0, 1},
+                                           {0, 1, 1},
+                                           {1, 1, 0},
+                                           {1, 1, 1},
+                                           {1, 0, 0, 0},
+                                           {0, 1, 0, 0},
+                                           {1, 1, 0, 0},
+                                           {1, 0, 1, 0},
+                                           {0, 1, 0, 1},
+                                           {1, 1, 0, 1},
+                                           {1, 0, 1, 1},
+                                           {1, 1, 0, 0, 0},
+                                           {1, 0, 1, 0, 0},
+                                           {1, 1, 0, 1, 0},
+                                           {1, 0, 1, 0, 1},
+                                           {1, 1, 0, 1, 1},
+                                           {1, 1, 0, 1, 0, 0},
+                                           {1, 1, 0, 1, 0, 1}}));
 
         REQUIRE(kbp.nr_non_trivial_classes() == 1);
 
@@ -290,9 +286,8 @@ namespace libsemigroups {
         REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 0);
       }
 
-      TEST_CASE(
-          "KBP 06: left congruence with even chunks on a finite fp semigroup",
-          "[quick][left][kbp][06]") {
+      TEST_CASE("KBP 06: left congruence on a finite fp semigroup",
+                "[quick][kbp][06]") {
         REPORTER.set_report(REPORT);
         KnuthBendix kb;
         kb.set_alphabet(2);
@@ -313,12 +308,32 @@ namespace libsemigroups {
         REQUIRE(kbp.nr_non_trivial_classes() == 6);
 
         std::vector<size_t> v(kbp.nr_non_trivial_classes(), 0);
-        std::transform(kbp.cbegin_non_trivial_classes(),
-                       kbp.cend_non_trivial_classes(),
+        std::transform(kbp.cbegin_ntc(),
+                       kbp.cend_ntc(),
                        v.begin(),
                        std::mem_fn(&std::vector<word_type>::size));
         std::sort(v.begin(), v.end());
         REQUIRE(v == std::vector<size_t>({4, 4, 4, 5, 5, 5}));
+
+        REQUIRE(std::vector<std::vector<word_type>>(kbp.cbegin_ntc(),
+                                                    kbp.cend_ntc())
+                == std::vector<std::vector<word_type>>(
+                       {{{0}, {1}, {0, 0}, {0, 1}, {0, 0, 0}},
+                        {{1, 0}, {1, 1}, {1, 0, 0}, {1, 0, 1}, {1, 0, 0, 0}},
+                        {{0, 1, 0}, {0, 1, 1}, {0, 1, 0, 0}, {0, 1, 0, 1}},
+                        {{1, 1, 0},
+                         {1, 1, 1},
+                         {1, 1, 0, 0},
+                         {1, 1, 0, 1},
+                         {1, 1, 0, 0, 0}},
+                        {{1, 0, 1, 0},
+                         {1, 0, 1, 1},
+                         {1, 0, 1, 0, 0},
+                         {1, 0, 1, 0, 1}},
+                        {{1, 1, 0, 1, 0},
+                         {1, 1, 0, 1, 1},
+                         {1, 1, 0, 1, 0, 0},
+                         {1, 1, 0, 1, 0, 1}}}));
 
         REQUIRE(kbp.word_to_class_index({0})
                 == kbp.word_to_class_index({0, 0, 0}));
@@ -336,225 +351,227 @@ namespace libsemigroups {
         REQUIRE(kbp.nr_classes() == 6);
       }
 
-      /*
+      // KBP 07 only really tests KnuthBendix
+      TEST_CASE(
+          "KBP 07: finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR ",
+          "[quick][kbp][07]") {
+        REPORTER.set_report(REPORT);
+        KnuthBendix kb;
+        kb.set_alphabet(4);
+        kb.add_rule({0, 0}, {0});
+        kb.add_rule({0, 1}, {1});
+        kb.add_rule({1, 0}, {1});
+        kb.add_rule({0, 2}, {2});
+        kb.add_rule({2, 0}, {2});
+        kb.add_rule({0, 3}, {3});
+        kb.add_rule({3, 0}, {3});
+        kb.add_rule({2, 3}, {0});
+        kb.add_rule({3, 2}, {0});
+        kb.add_rule({1, 1}, {0});
+        kb.add_rule({2, 2, 2, 2}, {0});
+        kb.add_rule({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0});
 
+        KBP kbp(TWOSIDED, kb);
+        REQUIRE(kbp.nr_classes() == 120);
+        REQUIRE(kbp.nr_non_trivial_classes() == 0);
+      }
 
+      TEST_CASE("KBP 08: right congruence on infinite fp semigroup",
+                "[quick][kbp][08]") {
+        REPORTER.set_report(REPORT);
+        KnuthBendix kb;
+        kb.set_alphabet(3);
+        kb.add_rule({1, 1, 1, 1, 1, 1, 1}, {1});
+        kb.add_rule({2, 2, 2, 2, 2}, {2});
+        kb.add_rule({1, 2, 2, 1, 0}, {1, 2, 2, 1});
+        kb.add_rule({1, 2, 2, 1, 2}, {1, 2, 2, 1});
+        kb.add_rule({1, 1, 2, 1, 2, 0}, {1, 1, 2, 1, 2});
+        kb.add_rule({1, 1, 2, 1, 2, 1}, {1, 1, 2, 1, 2});
 
+        KBP kbp(RIGHT, kb);
+        kbp.add_pair({1, 2, 2, 1}, {1, 1, 2, 1, 2});
 
+        // Generating pair
+        REQUIRE(kbp.word_to_class_index({1, 2, 2, 1})
+                == kbp.word_to_class_index({1, 1, 2, 1, 2}));
 
+        REQUIRE(kbp.nr_non_trivial_classes() == 1);
+        REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
+                                       kbp.cbegin_ntc()->end())
+                == std::vector<word_type>({{1, 2, 2, 1}, {1, 1, 2, 1, 2}}));
+      }
 
-            TEST_CASE("KBP 07: finite group, Chapter 11, Theorem 1.9, H, q = 4
-      in NR",
-                      "[quick][kbp][07]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels
-                  = {relation_type({0, 0}, {0}),
-                     relation_type({0, 1}, {1}),
-                     relation_type({1, 0}, {1}),
-                     relation_type({0, 2}, {2}),
-                     relation_type({2, 0}, {2}),
-                     relation_type({0, 3}, {3}),
-                     relation_type({3, 0}, {3}),
-                     relation_type({2, 3}, {0}),
-                     relation_type({3, 2}, {0}),
-                     relation_type({1, 1}, {0}),
-                     relation_type({2, 2, 2, 2}, {0}),
-                     relation_type({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0})};
+      TEST_CASE("KBP 09: finite fp semigroup, dihedral group of order 6",
+                "[quick][kbp][09]") {
+        REPORTER.set_report(REPORT);
+        KnuthBendix kb;
+        kb.set_alphabet(5);
+        kb.add_rule({0, 0}, {0});
+        kb.add_rule({0, 1}, {1});
+        kb.add_rule({1, 0}, {1});
+        kb.add_rule({0, 2}, {2});
+        kb.add_rule({2, 0}, {2});
+        kb.add_rule({0, 3}, {3});
+        kb.add_rule({3, 0}, {3});
+        kb.add_rule({0, 4}, {4});
+        kb.add_rule({4, 0}, {4});
+        kb.add_rule({1, 2}, {0});
+        kb.add_rule({2, 1}, {0});
+        kb.add_rule({3, 4}, {0});
+        kb.add_rule({4, 3}, {0});
+        kb.add_rule({2, 2}, {0});
+        kb.add_rule({1, 4, 2, 3, 3}, {0});
+        kb.add_rule({4, 4, 4}, {0});
 
-              std::vector<relation_type> extra = {};
-              KBP kbp(TWOSIDED, kb);
+        KBP kbp(TWOSIDED, kb);
 
+        REQUIRE(kbp.nr_classes() == 6);
+        REQUIRE(kbp.nr_non_trivial_classes() == 0);
+        REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+      }
 
+      TEST_CASE("KBP 10: finite fp semigroup, size 16", "[quick][kbp][10]") {
+        REPORTER.set_report(REPORT);
 
-              REQUIRE(kbp.nr_classes() == 120);
-            }
+        KnuthBendix kb;
+        kb.set_alphabet(4);
+        kb.add_rule({3}, {2});
+        kb.add_rule({0, 3}, {0, 2});
+        kb.add_rule({1, 1}, {1});
+        kb.add_rule({1, 3}, {1, 2});
+        kb.add_rule({2, 1}, {2});
+        kb.add_rule({2, 2}, {2});
+        kb.add_rule({2, 3}, {2});
+        kb.add_rule({0, 0, 0}, {0});
+        kb.add_rule({0, 0, 1}, {1});
+        kb.add_rule({0, 0, 2}, {2});
+        kb.add_rule({0, 1, 2}, {1, 2});
+        kb.add_rule({1, 0, 0}, {1});
+        kb.add_rule({1, 0, 2}, {0, 2});
+        kb.add_rule({2, 0, 0}, {2});
+        kb.add_rule({0, 1, 0, 1}, {1, 0, 1});
+        kb.add_rule({0, 2, 0, 2}, {2, 0, 2});
+        kb.add_rule({1, 0, 1, 0}, {1, 0, 1});
+        kb.add_rule({1, 2, 0, 1}, {1, 0, 1});
+        kb.add_rule({1, 2, 0, 2}, {2, 0, 2});
+        kb.add_rule({2, 0, 1, 0}, {2, 0, 1});
+        kb.add_rule({2, 0, 2, 0}, {2, 0, 2});
 
-            TEST_CASE("KBP 08: infinite fp-semigroup, rght congruence with one "
-                      "non-trivial class",
-                      "[quick][kbp][08]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels = {
-                  relation_type({1, 1, 1, 1, 1, 1, 1}, {1}),
-                  relation_type({2, 2, 2, 2, 2}, {2}),
-                  relation_type({1, 2, 2, 1, 0}, {1, 2, 2, 1}),
-                  relation_type({1, 2, 2, 1, 2}, {1, 2, 2, 1}),
-                  relation_type({1, 1, 2, 1, 2, 0}, {1, 1, 2, 1, 2}),
-                  relation_type({1, 1, 2, 1, 2, 1}, {1, 1, 2, 1, 2}),
-              };
+        KBP kbp(TWOSIDED, kb);
+        kbp.add_pair({2}, {3});
 
-              std::vector<relation_type> extra
-                  = {relation_type({1, 2, 2, 1}, {1, 1, 2, 1, 2})};
-              KBP kbp("right", 3, rels, extra);
+        REQUIRE(kbp.nr_classes() == 16);
+        REQUIRE(kbp.nr_non_trivial_classes() == 0);
+        REQUIRE(kbp.word_to_class_index({2}) == kbp.word_to_class_index({3}));
+      }
 
+      TEST_CASE("KBP 11: finite fp semigroup, size 16", "[quick][kbp][11]") {
+        REPORTER.set_report(REPORT);
 
-              // Generating pair
-              REQUIRE(kbp.word_to_class_index({1, 2, 2, 1})
-                      == kbp.word_to_class_index({1, 1, 2, 1, 2}));
+        KnuthBendix kb;
+        kb.set_alphabet(11);
+        kb.add_rule({2}, {1});
+        kb.add_rule({4}, {3});
+        kb.add_rule({5}, {0});
+        kb.add_rule({6}, {3});
+        kb.add_rule({7}, {1});
+        kb.add_rule({8}, {3});
+        kb.add_rule({9}, {3});
+        kb.add_rule({10}, {0});
+        kb.add_rule({0, 2}, {0, 1});
+        kb.add_rule({0, 4}, {0, 3});
+        kb.add_rule({0, 5}, {0, 0});
+        kb.add_rule({0, 6}, {0, 3});
+        kb.add_rule({0, 7}, {0, 1});
+        kb.add_rule({0, 8}, {0, 3});
+        kb.add_rule({0, 9}, {0, 3});
+        kb.add_rule({0, 10}, {0, 0});
+        kb.add_rule({1, 1}, {1});
+        kb.add_rule({1, 2}, {1});
+        kb.add_rule({1, 4}, {1, 3});
+        kb.add_rule({1, 5}, {1, 0});
+        kb.add_rule({1, 6}, {1, 3});
+        kb.add_rule({1, 7}, {1});
+        kb.add_rule({1, 8}, {1, 3});
+        kb.add_rule({1, 9}, {1, 3});
+        kb.add_rule({1, 10}, {1, 0});
+        kb.add_rule({3, 1}, {3});
+        kb.add_rule({3, 2}, {3});
+        kb.add_rule({3, 3}, {3});
+        kb.add_rule({3, 4}, {3});
+        kb.add_rule({3, 5}, {3, 0});
+        kb.add_rule({3, 6}, {3});
+        kb.add_rule({3, 7}, {3});
+        kb.add_rule({3, 8}, {3});
+        kb.add_rule({3, 9}, {3});
+        kb.add_rule({3, 10}, {3, 0});
+        kb.add_rule({0, 0, 0}, {0});
+        kb.add_rule({0, 0, 1}, {1});
+        kb.add_rule({0, 0, 3}, {3});
+        kb.add_rule({0, 1, 3}, {1, 3});
+        kb.add_rule({1, 0, 0}, {1});
+        kb.add_rule({1, 0, 3}, {0, 3});
+        kb.add_rule({3, 0, 0}, {3});
+        kb.add_rule({0, 1, 0, 1}, {1, 0, 1});
+        kb.add_rule({0, 3, 0, 3}, {3, 0, 3});
+        kb.add_rule({1, 0, 1, 0}, {1, 0, 1});
+        kb.add_rule({1, 3, 0, 1}, {1, 0, 1});
+        kb.add_rule({1, 3, 0, 3}, {3, 0, 3});
+        kb.add_rule({3, 0, 1, 0}, {3, 0, 1});
+        kb.add_rule({3, 0, 3, 0}, {3, 0, 3});
 
-              Partition<word_type>* ntc = kbp.nontrivial_classes();
-              REQUIRE(ntc->size() == 1);
-              REQUIRE(ntc->at(0)->size() == 2);
-              delete ntc;
-            }
+        KBP kbp(TWOSIDED, kb);
+        kbp.add_pair({1}, {3});
 
-            TEST_CASE("KBP 09: finite fp-semigroup, dihedral group of order 6",
-                      "[quick][kbp][finite][09]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels  = {relation_type({0, 0}, {0}),
-                                                 relation_type({0, 1}, {1}),
-                                                 relation_type({1, 0}, {1}),
-                                                 relation_type({0, 2}, {2}),
-                                                 relation_type({2, 0}, {2}),
-                                                 relation_type({0, 3}, {3}),
-                                                 relation_type({3, 0}, {3}),
-                                                 relation_type({0, 4}, {4}),
-                                                 relation_type({4, 0}, {4}),
-                                                 relation_type({1, 2}, {0}),
-                                                 relation_type({2, 1}, {0}),
-                                                 relation_type({3, 4}, {0}),
-                                                 relation_type({4, 3}, {0}),
-                                                 relation_type({2, 2}, {0}),
-                                                 relation_type({1, 4, 2, 3, 3},
-      {0}), relation_type({4, 4, 4}, {0})}; std::vector<relation_type> extra =
-      {};
+        REQUIRE(kbp.nr_classes() == 3);
+        REQUIRE(kbp.nr_non_trivial_classes() == 1);
+        REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
+                                       kbp.cbegin_ntc()->end())
+                == std::vector<word_type>({{1},
+                                           {3},
+                                           {0, 1},
+                                           {0, 3},
+                                           {1, 0},
+                                           {3, 0},
+                                           {1, 3},
+                                           {0, 1, 0},
+                                           {0, 3, 0},
+                                           {1, 0, 1},
+                                           {3, 0, 1},
+                                           {3, 0, 3},
+                                           {1, 3, 0},
+                                           {0, 3, 0, 1}}));
+        REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({5}));
+        REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({10}));
+        REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+        REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({7}));
+        REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({4}));
+        REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({6}));
+        REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({8}));
+        REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({9}));
+      }
 
-              KBP kbp(TWOSIDED, kb);
+      TEST_CASE("KBP 12: infinite fp semigroup with infinite classes",
+                "[quick][kbp][12]") {
+        REPORTER.set_report(REPORT);
 
+        KnuthBendix kb;
+        kb.set_alphabet(2);
+        kb.add_rule({0, 0, 0}, {0});
+        kb.add_rule({0, 1}, {1, 0});
+        kb.add_rule({0}, {0, 0});
+        KBP kbp(TWOSIDED, kb);
 
+        word_type x
+            = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        word_type y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-              REQUIRE(kbp.nr_classes() == 6);
-              REQUIRE(kbp.word_to_class_index({1}) ==
-      kbp.word_to_class_index({2}));
-            }
-
-            TEST_CASE("KBP 10: finite fp-semigroup, size 16",
-                      "[quick][kbp][finite][10]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels
-                  = {relation_type({3}, {2}),
-                     relation_type({0, 3}, {0, 2}),
-                     relation_type({1, 1}, {1}),
-                     relation_type({1, 3}, {1, 2}),
-                     relation_type({2, 1}, {2}),
-                     relation_type({2, 2}, {2}),
-                     relation_type({2, 3}, {2}),
-                     relation_type({0, 0, 0}, {0}),
-                     relation_type({0, 0, 1}, {1}),
-                     relation_type({0, 0, 2}, {2}),
-                     relation_type({0, 1, 2}, {1, 2}),
-                     relation_type({1, 0, 0}, {1}),
-                     relation_type({1, 0, 2}, {0, 2}),
-                     relation_type({2, 0, 0}, {2}),
-                     relation_type({0, 1, 0, 1}, {1, 0, 1}),
-                     relation_type({0, 2, 0, 2}, {2, 0, 2}),
-                     relation_type({1, 0, 1, 0}, {1, 0, 1}),
-                     relation_type({1, 2, 0, 1}, {1, 0, 1}),
-                     relation_type({1, 2, 0, 2}, {2, 0, 2}),
-                     relation_type({2, 0, 1, 0}, {2, 0, 1}),
-                     relation_type({2, 0, 2, 0}, {2, 0, 2})};
-              std::vector<relation_type> extra = {};
-
-              KBP kbp(TWOSIDED, kb);
-
-
-
-              REQUIRE(kbp.nr_classes() == 16);
-              REQUIRE(kbp.word_to_class_index({2}) ==
-      kbp.word_to_class_index({3}));
-            }
-
-            TEST_CASE("KBP 11: finite fp-semigroup, size 16",
-                      "[quick][kbp][finite][11]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels
-                  = {relation_type({2}, {1}),
-                     relation_type({4}, {3}),
-                     relation_type({5}, {0}),
-                     relation_type({6}, {3}),
-                     relation_type({7}, {1}),
-                     relation_type({8}, {3}),
-                     relation_type({9}, {3}),
-                     relation_type({10}, {0}),
-                     relation_type({0, 2}, {0, 1}),
-                     relation_type({0, 4}, {0, 3}),
-                     relation_type({0, 5}, {0, 0}),
-                     relation_type({0, 6}, {0, 3}),
-                     relation_type({0, 7}, {0, 1}),
-                     relation_type({0, 8}, {0, 3}),
-                     relation_type({0, 9}, {0, 3}),
-                     relation_type({0, 10}, {0, 0}),
-                     relation_type({1, 1}, {1}),
-                     relation_type({1, 2}, {1}),
-                     relation_type({1, 4}, {1, 3}),
-                     relation_type({1, 5}, {1, 0}),
-                     relation_type({1, 6}, {1, 3}),
-                     relation_type({1, 7}, {1}),
-                     relation_type({1, 8}, {1, 3}),
-                     relation_type({1, 9}, {1, 3}),
-                     relation_type({1, 10}, {1, 0}),
-                     relation_type({3, 1}, {3}),
-                     relation_type({3, 2}, {3}),
-                     relation_type({3, 3}, {3}),
-                     relation_type({3, 4}, {3}),
-                     relation_type({3, 5}, {3, 0}),
-                     relation_type({3, 6}, {3}),
-                     relation_type({3, 7}, {3}),
-                     relation_type({3, 8}, {3}),
-                     relation_type({3, 9}, {3}),
-                     relation_type({3, 10}, {3, 0}),
-                     relation_type({0, 0, 0}, {0}),
-                     relation_type({0, 0, 1}, {1}),
-                     relation_type({0, 0, 3}, {3}),
-                     relation_type({0, 1, 3}, {1, 3}),
-                     relation_type({1, 0, 0}, {1}),
-                     relation_type({1, 0, 3}, {0, 3}),
-                     relation_type({3, 0, 0}, {3}),
-                     relation_type({0, 1, 0, 1}, {1, 0, 1}),
-                     relation_type({0, 3, 0, 3}, {3, 0, 3}),
-                     relation_type({1, 0, 1, 0}, {1, 0, 1}),
-                     relation_type({1, 3, 0, 1}, {1, 0, 1}),
-                     relation_type({1, 3, 0, 3}, {3, 0, 3}),
-                     relation_type({3, 0, 1, 0}, {3, 0, 1}),
-                     relation_type({3, 0, 3, 0}, {3, 0, 3})};
-              std::vector<relation_type> extra = {};
-
-              KBP kbp(TWOSIDED, kb);
-
-
-
-              REQUIRE(kbp.nr_classes() == 16);
-              REQUIRE(kbp.word_to_class_index({0}) ==
-      kbp.word_to_class_index({5})); REQUIRE(kbp.word_to_class_index({0})
-                      == kbp.word_to_class_index({10}));
-              REQUIRE(kbp.word_to_class_index({1}) ==
-      kbp.word_to_class_index({2})); REQUIRE(kbp.word_to_class_index({1}) ==
-      kbp.word_to_class_index({7})); REQUIRE(kbp.word_to_class_index({3}) ==
-      kbp.word_to_class_index({4})); REQUIRE(kbp.word_to_class_index({3}) ==
-      kbp.word_to_class_index({6})); REQUIRE(kbp.word_to_class_index({3}) ==
-      kbp.word_to_class_index({8})); REQUIRE(kbp.word_to_class_index({3}) ==
-      kbp.word_to_class_index({9}));
-            }
-
-            TEST_CASE("KBP 12: Infinite fp semigroup with infinite classes",
-                      "[quick][kbp][12]") {
-      REPORTER.set_report(REPORT);
-              std::vector<relation_type> rels
-                  = {relation_type({0, 0, 0}, {0}),
-      relation_type({0, 1}, {1, 0})};
-              std::vector<relation_type> extra = {relation_type({0}, {0, 0})};
-              KBP kbp(TWOSIDED, kb);
-
-
-
-              word_type x
-                  = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1}; word_type y = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1};
-
-              REQUIRE(kbp.test_equals(x, y));
-
-              REQUIRE(!kbp.is_done());
-            }*/
+        REQUIRE(kbp.contains(x, y));
+        REQUIRE(kbp.contains({0, 0}, {0}));
+        REQUIRE(!kbp.contains({1}, {0}));
+        REQUIRE(kbp.finished());
+      }
     }  // namespace kbp
   }    // namespace congruence
 }  // namespace libsemigroups

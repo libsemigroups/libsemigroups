@@ -192,8 +192,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!_race.empty());
       auto winner          = static_cast<CongIntf*>(_race.winner());
       _non_trivial_classes = std::vector<std::vector<word_type>>(
-          winner->cbegin_non_trivial_classes(),
-          winner->cend_non_trivial_classes());
+          winner->cbegin_ntc(),
+          winner->cend_ntc());
     }
 
     //////////////////////////////////////////////////////////////////////////

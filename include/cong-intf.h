@@ -158,8 +158,8 @@ namespace libsemigroups {
     //! \warning If \c this has infinitely many non-trivial congruence
     //! classes, then this method will only terminate when it can no longer
     //! allocate memory.
-    non_trivial_class_iterator cbegin_non_trivial_classes();
-    non_trivial_class_iterator cend_non_trivial_classes();
+    non_trivial_class_iterator cbegin_ntc();
+    non_trivial_class_iterator cend_ntc();
     size_t                     nr_non_trivial_classes();
 
    protected:
