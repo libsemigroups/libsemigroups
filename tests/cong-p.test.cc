@@ -28,8 +28,6 @@
 
 namespace libsemigroups {
   namespace congruence {
-    using congruence_type = CongIntf::congruence_type;
-
     template <class TElementType>
     void delete_gens(std::vector<TElementType>& gens) {
       for (auto x : gens) {

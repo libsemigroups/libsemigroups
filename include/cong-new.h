@@ -27,8 +27,6 @@
 #include "cong-intf.h"
 
 namespace libsemigroups {
-  using congruence_type = CongIntf::congruence_type;
-
   class FpSemigroup;  // Forward declaration
   namespace tmp {
     class Congruence : public CongIntf {

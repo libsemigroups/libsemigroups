@@ -111,6 +111,7 @@ namespace libsemigroups {
     bool is_alphabet_defined() const noexcept;
 
     bool validate_letter(char) const;
+    bool validate_letter(letter_type) const;
 
     void validate_word(std::string const&) const;
     void validate_word(word_type const&) const;

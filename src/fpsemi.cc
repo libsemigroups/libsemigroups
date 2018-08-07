@@ -31,9 +31,8 @@
 
 namespace libsemigroups {
 
-  using congruence_type = CongIntf::congruence_type;
-  using ToddCoxeter     = fpsemigroup::ToddCoxeter;
-  using KnuthBendix     = fpsemigroup::KnuthBendix;
+  using ToddCoxeter = fpsemigroup::ToddCoxeter;
+  using KnuthBendix = fpsemigroup::KnuthBendix;
 
   //////////////////////////////////////////////////////////////////////////
   // FpSemigroup - constructors - public

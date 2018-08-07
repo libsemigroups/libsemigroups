@@ -49,7 +49,6 @@ namespace libsemigroups {
       using signed_class_index_type = int64_t;
 
      public:
-      using congruence_type  = CongIntf::congruence_type;
       using class_index_type = CongIntf::class_index_type;
 
       enum class policy { none = 0, use_relations = 1, use_cayley_graph = 2 };

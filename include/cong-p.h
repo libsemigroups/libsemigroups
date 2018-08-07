@@ -463,7 +463,6 @@ namespace libsemigroups {
                        hash<KBE>,
                        equal_to<KBE>,
                        SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;
-      using congruence_type = CongIntf::congruence_type;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -474,6 +473,10 @@ namespace libsemigroups {
           : p_type(type), _kb(kb) {
         this->set_nr_generators(kb->alphabet().size());
       }
+
+      // For testing purposes only really
+      KBP(congruence_type type, fpsemigroup::KnuthBendix& kb)
+          : KBP(type, &kb){};
 
       ////////////////////////////////////////////////////////////////////////
       // P - overridden virtual methods - public

@@ -36,7 +36,7 @@ namespace libsemigroups {
         _quotient(nullptr),
         _type(type) {}
 
-  CongIntf::congruence_type CongIntf::type() const noexcept {
+  congruence_type CongIntf::type() const noexcept {
     return _type;
   }
 

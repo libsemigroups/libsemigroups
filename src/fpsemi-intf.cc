@@ -256,20 +256,29 @@ namespace libsemigroups {
     return (_alphabet_map.find(c) != _alphabet_map.end());
   }
 
+  bool FpSemiIntf::validate_letter(letter_type c) const {
+    if (!_is_alphabet_defined) {
+      throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
+    }
+    return c < _alphabet.size();
+  }
+
   void FpSemiIntf::validate_word(std::string const& w) const {
     for (auto l : w) {
       if (!validate_letter(l)) {
-        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + to_string(l)
-                                      + " in word " + w);
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter " + to_string(l) + " in word " + w
+            + ", valid letters are \"" + _alphabet + "\"");
       }
     }
   }
 
   void FpSemiIntf::validate_word(word_type const& w) const {
     for (auto l : w) {
-      if (!validate_letter(uint_to_char(l))) {
-        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + to_string(l)
-                                      + " in word " + to_string(w));
+      if (!validate_letter(l)) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter " + to_string(l) + " in word " + to_string(w)
+            + ", the valid range is [0, " + to_string(_alphabet.size()) + ")");
       }
     }
   }

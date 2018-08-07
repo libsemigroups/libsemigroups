@@ -33,8 +33,6 @@
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
-  using congruence_type = CongIntf::congruence_type;
-
   namespace congruence_todd_coxeter {
 
     template <class TElementType>

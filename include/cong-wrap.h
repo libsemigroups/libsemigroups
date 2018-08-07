@@ -33,8 +33,6 @@ namespace libsemigroups {
   namespace fpsemigroup {
     template <class TWrappedCong, bool TAddRules = true>
     class WrappedCong : public FpSemiIntf {
-      using congruence_type = CongIntf::congruence_type;
-
      public:
       using wrapped_type = TWrappedCong;
 

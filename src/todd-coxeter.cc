@@ -84,8 +84,6 @@
 
 namespace libsemigroups {
 
-  using congruence_type = CongIntf::congruence_type;
-
   namespace congruence {
     using signed_class_index_type = int64_t;
     using class_index_type        = CongIntf::class_index_type;
