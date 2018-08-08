@@ -59,7 +59,8 @@ namespace libsemigroups {
           _runners.at(pos)->run();
         } catch (std::exception const& e) {
           size_t tid = REPORTER.thread_id(tids[pos]);
-          REPORT("exception thrown by " << tid << ": " << e.what())
+          REPORT("exception thrown by #" << tid << ":");
+          REPORT(e.what());
           return;
         }
         // Stop two Runner* objects from killing each other

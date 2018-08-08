@@ -21,16 +21,21 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
 
+#include "internal/libsemigroups-exception.h"
 #include "internal/runner.h"
 
 #include "types.h"
 
 namespace libsemigroups {
-  class SemigroupBase; // Forward declaration
+  class SemigroupBase;  // Forward declaration
+  namespace tmp {
+    class Congruence;  // Forward declaration
+  }
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
   class CongIntf : public Runner {
+    friend class tmp::Congruence;
    public:
     //! The different types of congruence.
 
@@ -161,6 +166,13 @@ namespace libsemigroups {
     non_trivial_class_iterator cbegin_ntc();
     non_trivial_class_iterator cend_ntc();
     size_t                     nr_non_trivial_classes();
+    // TODO move implementation to cc file
+    SemigroupBase* parent_semigroup() const {
+      if (!has_parent()) {
+        throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
+      }
+      return parent();
+    }
 
    protected:
     /////////////////////////////////////////////////////////////////////////

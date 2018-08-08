@@ -170,7 +170,7 @@ namespace libsemigroups {
 
   CongIntf::class_index_type
   CongIntf::const_word_to_class_index(word_type const&) const {
-    throw LIBSEMIGROUPS_EXCEPTION("not implemented");
+    return UNDEFINED;
   }
 
 }  // namespace libsemigroups

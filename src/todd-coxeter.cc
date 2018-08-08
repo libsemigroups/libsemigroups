@@ -154,8 +154,17 @@ namespace libsemigroups {
       // will reverse the relations again.
     }
 
-    ToddCoxeter::ToddCoxeter(fpsemigroup::ToddCoxeter const& copy)
-        : ToddCoxeter(*copy.congruence()) {}
+    ToddCoxeter::ToddCoxeter(fpsemigroup::ToddCoxeter& copy)
+        : ToddCoxeter(*copy.congruence()) {
+      LIBSEMIGROUPS_ASSERT(!has_parent());
+      if (copy.finished()) {
+        set_parent(copy.isomorphic_non_fp_semigroup());
+      }
+      if (_policy == policy::none) {
+        _policy = policy::use_relations;
+        // FIXME assertion failure if we use_cayley_graph
+      }
+    }
 
     ToddCoxeter::~ToddCoxeter() {
       reset_quotient();

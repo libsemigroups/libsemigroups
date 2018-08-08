@@ -77,7 +77,7 @@ namespace libsemigroups {
                   std::vector<relation_type> const& relations,
                   std::vector<relation_type> const& extra = {});
 
-      explicit ToddCoxeter(fpsemigroup::ToddCoxeter const&);
+      explicit ToddCoxeter(fpsemigroup::ToddCoxeter&);
 
       ToddCoxeter(ToddCoxeter const&);
 

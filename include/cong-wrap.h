@@ -44,7 +44,11 @@ namespace libsemigroups {
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED)) {
+        // _wrapped_cong should die, if this is killed, so we replace its
+        // "dead" with the one from this.
         _wrapped_cong->replace_dead(get_dead());
+        // This is finished if _wrapped_cong is finished, so we replace our
+        // "finished" with that of the wrapped cong.
         replace_finished(_wrapped_cong->get_finished());
       }
 

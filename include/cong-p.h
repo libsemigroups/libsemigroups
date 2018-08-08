@@ -259,9 +259,9 @@ namespace libsemigroups {
         return _class_lookup[ind_x];
       }
 
-     private:
+     protected:
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden non-pure virtual methods - private
+      // CongIntf - overridden non-pure virtual methods - protected
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type
@@ -299,7 +299,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // P - methods - protected
       ////////////////////////////////////////////////////////////////////////
-     protected:
       void internal_add_pair(internal_const_element_type x,
                              internal_const_element_type y) {
         if (!internal_equal_to()(x, y)) {
@@ -500,9 +499,9 @@ namespace libsemigroups {
         }
       }
 
-      // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
       // Override the method for the class P to avoid having to know the parent
       // semigroup (found as part of KBP::run) to add a pair.
+      // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
       void add_pair(word_type l, word_type r) override {
         internal_element_type x = new element_type(_kb, l);
         internal_element_type y = new element_type(_kb, r);
@@ -512,7 +511,12 @@ namespace libsemigroups {
         set_finished(false);
       }
 
-     private:
+     protected:
+      ////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden non-pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+      using p_type::init_non_trivial_classes;
+
       ////////////////////////////////////////////////////////////////////////
       // KBP - data - private
       ////////////////////////////////////////////////////////////////////////

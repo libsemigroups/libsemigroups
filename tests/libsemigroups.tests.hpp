@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,6 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define CATCH_CONFIG_FAST_COMPILE
-#define CATCH_CONFIG_MAIN
-#include "libsemigroups.tests.hpp"
+#ifndef LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_
+#define LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_
+
+#include "catch.hpp"
+
+#define STR2(X) #X
+#define STR(X) STR2(X)
+
+#define LIBSEMIGROUPS_TEST_CASE(id, msg, tags) \
+  TEST_CASE(id ": " msg, "[" __FILE__ "][" STR(__LINE__) "][" id "]" tags)
+
+#endif // LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_

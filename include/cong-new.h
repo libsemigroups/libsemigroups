@@ -69,7 +69,7 @@ namespace libsemigroups {
       bool is_quotient_obviously_infinite() override;
 
       //////////////////////////////////////////////////////////////////////////
-      // Public methods
+      // Congruence - methods - public
       //////////////////////////////////////////////////////////////////////////
 
       void add_method(Runner*);
@@ -81,6 +81,7 @@ namespace libsemigroups {
       // TODO use it or lose it
       // class_index_type const_word_to_class_index(word_type const&) const
       // override;
+      void init_non_trivial_classes() override;
 
       /////////////////////////////////////////////////////////////////////////
       // Congruence - data - private
