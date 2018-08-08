@@ -148,11 +148,11 @@ namespace libsemigroups {
       // correctly.
       for (auto runner : _race) {
         if (runner->finished()) {
-          set_finished();
+          set_finished(true);
           return true;
         }
       }
-      unset_finished();
+      set_finished(false);
       return false;
     }
 

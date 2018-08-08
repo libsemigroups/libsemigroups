@@ -22,18 +22,51 @@
 #include "internal/report.h"
 
 namespace libsemigroups {
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - typedefs - public
+  ////////////////////////////////////////////////////////////////////////
+
   constexpr std::chrono::nanoseconds Runner::FOREVER;
 
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - constructors + destructor - public
+  ////////////////////////////////////////////////////////////////////////
+
   Runner::Runner()
-      : _dead(false),
-        _finished(false),
+      : _dead(new std::atomic<bool>(false)),
+        _delete_dead(true),
+        _finished(new bool(false)),
+        _delete_finished(true),
         _last_report(std::chrono::high_resolution_clock::now()),
         _run_for(FOREVER) {
     report_every(std::chrono::seconds(1));
   }
 
+  Runner::~Runner() {
+    if (_delete_dead) {
+      delete _dead;
+    }
+    if (_delete_finished) {
+      delete _finished;
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - non-pure virtual methods - public
+  ////////////////////////////////////////////////////////////////////////
+
+  bool Runner::finished() const {
+    return !(*_dead) && (*_finished);
+    // Since kill() may leave the object in an invalid state we only return
+    // true here if we are not dead and the object thinks it is finished.
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - non-pure non-virtual methods - public
+  ////////////////////////////////////////////////////////////////////////
+
   void Runner::run_for(std::chrono::nanoseconds val) {
-    if (!_finished) {
+    if (!(*_finished)) {
       if (val != FOREVER) {
         REPORT("running for approx. " << Timer::string(val));
       } else {
@@ -50,7 +83,7 @@ namespace libsemigroups {
   }
 
   bool Runner::timed_out() const {
-    return (_finished
+    return (*_finished
             || std::chrono::duration_cast<std::chrono::milliseconds>(
                    std::chrono::high_resolution_clock::now() - _start_time)
                    >= _run_for);
@@ -72,30 +105,41 @@ namespace libsemigroups {
     _report_time_interval = val;
   }
 
-  template <typename TIntType> void Runner::report_every(TIntType time) {
-    report_every(std::chrono::nanoseconds(time));
+
+  void Runner::set_finished(bool val) const {
+    *_finished = val;
   }
 
-  bool Runner::finished() const {
-    return !_dead && _finished;
-    // Since kill() may leave the object in an invalid state we only return
-    // true here if we are not dead and the object thinks it is finished.
+  bool& Runner::get_finished() const {
+    return *_finished;
   }
 
-  void Runner::set_finished() const {
-    _finished = true;
-  }
-
-  void Runner::unset_finished() const {
-    _finished = false;
+  void Runner::replace_finished(bool& val) {
+    if (_delete_finished) {
+      delete _finished;
+    }
+    _finished        = &val;
+    _delete_finished = false;
   }
 
   void Runner::kill() {
     // TODO add killed-by-thread
-    _dead = true;
+    *_dead = true;
   }
 
-  std::atomic<bool> const& Runner::dead() const {
-    return _dead;
+  bool Runner::dead() const {
+    return *_dead;
+  }
+
+  std::atomic<bool>& Runner::get_dead() const {
+    return *_dead;
+  }
+
+  void Runner::replace_dead(std::atomic<bool>& dead) {
+    if (_delete_dead) {
+      delete _dead;
+    }
+    _dead        = &dead;
+    _delete_dead = false;
   }
 }  // namespace libsemigroups

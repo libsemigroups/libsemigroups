@@ -43,8 +43,12 @@ namespace libsemigroups {
       WrappedCong()
           : _nr_rules(0),
             _wrapped_cong(
-                make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
+                make_unique<wrapped_type>(congruence_type::TWOSIDED)) {
+        _wrapped_cong->replace_dead(get_dead());
+        replace_finished(_wrapped_cong->get_finished());
+      }
 
+      // FIXME avoid code duplication here
       explicit WrappedCong(SemigroupBase* S)
           : _nr_rules(0),
             _wrapped_cong(
@@ -53,6 +57,8 @@ namespace libsemigroups {
         if (TAddRules) {
           add_rules(S);
         }
+        _wrapped_cong->replace_dead(get_dead());
+        replace_finished(_wrapped_cong->get_finished());
       }
 
       explicit WrappedCong(std::string const& lphbt) : WrappedCong() {
@@ -67,17 +73,6 @@ namespace libsemigroups {
 
       void run() override {
         _wrapped_cong->run();
-      }
-
-      bool finished() const override {
-        // Must set_finished, since otherwise Runner methods won't function
-        // correctly.
-        if (_wrapped_cong->finished()) {
-          set_finished();
-        } else {
-          unset_finished();
-        }
-        return _wrapped_cong->finished();
       }
 
       ////////////////////////////////////////////////////////////////////////////

@@ -384,7 +384,8 @@ namespace libsemigroups {
       return _active_rules.size();
     }
 
-    SemigroupBase* KnuthBendix::isomorphic_non_fp_semigroup() {
+    SemigroupBase*
+    KnuthBendix::isomorphic_non_fp_semigroup() {
       // TODO check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
       if (!has_isomorphic_non_fp_semigroup()) {
@@ -756,7 +757,7 @@ namespace libsemigroups {
         // KnuthBendix.  If _stack is non-empty, then it means that the rules in
         // _active_rules might not define the system.
         REPORT("the system is confluent already");
-        set_finished();
+        set_finished(true);
         return;
       } else if (_active_rules.size() >= _max_rules) {
         REPORT("too many rules");
@@ -816,7 +817,7 @@ namespace libsemigroups {
             delete rule;
           }
           _inactive_rules.clear();
-          set_finished();
+          set_finished(true);
         }
       }
       REPORT("stopping with active rules = "
@@ -999,32 +1000,26 @@ namespace libsemigroups {
 
     KnuthBendix::KnuthBendix()
         : CongIntf(congruence_type::TWOSIDED),
-          _kbfp(make_unique<fpsemigroup::KnuthBendix>()) {}
+          _kb(make_unique<fpsemigroup::KnuthBendix>()) {
+      _kb->replace_dead(get_dead());
+    }
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
+        // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
-          _kbfp(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
+          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {
+      _kb->replace_dead(get_dead());
+    }
 
     KnuthBendix::KnuthBendix(SemigroupBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
-          _kbfp(make_unique<fpsemigroup::KnuthBendix>(S)) {
+          _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
+      // Replace the "dead" of _kb with that of this, so that if this is
+      // killed, so too is _kb.
+      _kb->replace_dead(get_dead());
       CongIntf::set_nr_generators(S.nrgens());
       set_parent(&S);
-    }
-
-    // TODO: Does this make sense??
-    KnuthBendix::KnuthBendix(size_t                            nrgens,
-                             std::vector<relation_type> const& relations,
-                             std::vector<relation_type> const& extra)
-        : KnuthBendix() {
-      _kbfp->set_alphabet(nrgens);
-      for (auto const& rel : relations) {
-        _kbfp->add_rule(rel);
-      }
-      for (auto const& rel : extra) {
-        _kbfp->add_rule(rel);
-      }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1032,12 +1027,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::run() {
-      _kbfp->isomorphic_non_fp_semigroup()->enumerate(dead());
-      // FIXME what happens if  _kbfp->isomorphic_non_fp_semigroup() runs
-      // forever? I don't think we have any way to kill it.
-      if (_kbfp->isomorphic_non_fp_semigroup()->is_done() && !dead()) {
-        set_finished();
-      } else if (dead()) {
+      if (finished()) {
+        return;
+      }
+      _kb->run();
+      // It is essential that we call _kb->run() first and then
+      // _kb->isomorphic_non_fp_semigroup(), since this might get killed
+      // during _kb->run().
+      if (!dead()) {
+        _kb->isomorphic_non_fp_semigroup()->enumerate(dead());
+        if (_kb->isomorphic_non_fp_semigroup()->is_done() && !dead()) {
+          set_finished(true);
+        }
+      }
+      if (dead()) {
         REPORT("killed");
       }
     }
@@ -1048,32 +1051,32 @@ namespace libsemigroups {
 
     // TODO const&
     void KnuthBendix::add_pair(word_type lhs, word_type rhs) {
-      _kbfp->add_rule(lhs, rhs);
+      _kb->add_rule(lhs, rhs);
     }
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      set_finished();
-      return _kbfp->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
+      set_finished(true);
+      return _kb->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
     }
 
     size_t KnuthBendix::nr_classes() {
-      set_finished();
-      return _kbfp->size();
+      set_finished(true);
+      return _kb->size();
     }
 
     SemigroupBase* KnuthBendix::quotient_semigroup() {
-      set_finished();
-      return _kbfp->isomorphic_non_fp_semigroup();
+      set_finished(true);
+      return _kb->isomorphic_non_fp_semigroup();
     }
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       // TODO check arg
       auto S
-          = static_cast<Semigroup<KBE>*>(_kbfp->isomorphic_non_fp_semigroup());
+          = static_cast<Semigroup<KBE>*>(_kb->isomorphic_non_fp_semigroup());
       // FIXME leaks
       size_t pos = S->position(
-          KBE(_kbfp.get(), *_kbfp->word_to_internal_string(word)));
+          KBE(_kb.get(), *_kb->word_to_internal_string(word)));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }
@@ -1084,7 +1087,7 @@ namespace libsemigroups {
 
     void KnuthBendix::set_nr_generators(size_t n) {
       CongIntf::set_nr_generators(n);
-      _kbfp->set_alphabet(n);
+      _kb->set_alphabet(n);
     }
 
   }  // namespace congruence

@@ -24,15 +24,16 @@
 // - implement a run_for method.
 // - consider keeping killed off methods.
 // - Race should inherit from Runner.
+//
 
-#ifndef LIBSEMIGROUPS_SRC_RACE_H_
-#define LIBSEMIGROUPS_SRC_RACE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
 
 #include <thread>
 #include <vector>
 
-#include "runner.h"
 #include "report.h"
+#include "runner.h"
 
 namespace libsemigroups {
   class Race { // public Runner

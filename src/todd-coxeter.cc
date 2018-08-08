@@ -232,7 +232,7 @@ namespace libsemigroups {
       } else {
         LIBSEMIGROUPS_ASSERT(_current == _next);
         REPORT("finished!");
-        set_finished();
+        set_finished(true);
         compress();
       }
       // No return value: all info is now stored in the class

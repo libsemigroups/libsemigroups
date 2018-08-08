@@ -395,7 +395,7 @@ namespace libsemigroups {
 
   TEST_CASE("Congruence 16: 2-sided congruence on free abelian monoid",
             "[quick][congruence-new][16]") {
-    REPORTER.set_report(true);
+    REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(3);
     S.add_rule({1, 2}, {2, 1});
@@ -404,23 +404,6 @@ namespace libsemigroups {
     Congruence cong(TWOSIDED, S);
     cong.add_pair({1, 1, 1, 1, 1}, {1});
     cong.add_pair({2, 2, 2}, {2});
-
-    REQUIRE(cong.nr_classes() == 15);
-  }
-
-  TEST_CASE("Congruence 68: ", "[quick][congruence-new][68]") {
-    REPORTER.set_report(true);
-    FpSemigroup S;
-    S.set_alphabet("abBe");
-    S.set_identity("e");
-    S.add_rule("aa", "e");
-    // FIXME S.add_rule("aa", ""); causes seg fault
-    S.add_rule("BB", "b");
-    S.add_rule("BaBaBaB", "abababa");
-    S.add_rule("aBabaBabaBabaBab", "BabaBabaBabaBaba");
-
-    Congruence cong(TWOSIDED, S);
-    cong.add_pair({0}, {1});
 
     REQUIRE(cong.nr_classes() == 15);
   }
@@ -879,5 +862,24 @@ S.add_rule({1, 0}, {0})});
       REQUIRE(cong.contains({0, 1}, {0}));
       REQUIRE(cong.contains({1, 0}, {0}));
     }*/
+  TEST_CASE("Congruence 68: example where Todd-Coxeter works but Knuth-Bendix "
+            "runs forever",
+            "[quick][congruence-new][68]") {
+    REPORTER.set_report(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("abBe");
+    S.set_identity("e");
+    S.add_rule("aa", "e");
+    // FIXME S.add_rule("aa", ""); causes seg fault, should be allowed or give
+    // sensible exception
+    S.add_rule("BB", "b");
+    S.add_rule("BaBaBaB", "abababa");
+    S.add_rule("aBabaBabaBabaBab", "BabaBabaBabaBaba");
+
+    Congruence cong(TWOSIDED, S);
+    cong.add_pair({0}, {1});
+
+    REQUIRE(cong.nr_classes() == 4);
+  }
   }  // namespace tmp
 }  // namespace libsemigroups

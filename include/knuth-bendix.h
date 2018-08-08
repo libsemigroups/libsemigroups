@@ -527,10 +527,6 @@ namespace libsemigroups {
       KnuthBendix();
       explicit KnuthBendix(SemigroupBase&);
       explicit KnuthBendix(fpsemigroup::KnuthBendix const*);
-      // TODO remove the next, currently unused
-      KnuthBendix(size_t                            nrgens,
-                  std::vector<relation_type> const& relations,
-                  std::vector<relation_type> const& extra = {});
 
       ////////////////////////////////////////////////////////////////////////////
       // Runner - overridden pure virtual methods - public
@@ -555,7 +551,7 @@ namespace libsemigroups {
       void set_nr_generators(size_t) override;
 
      private:
-      std::unique_ptr<fpsemigroup::KnuthBendix> _kbfp;
+      std::unique_ptr<fpsemigroup::KnuthBendix> _kb;
     };
   }  // namespace congruence
 }  // namespace libsemigroups

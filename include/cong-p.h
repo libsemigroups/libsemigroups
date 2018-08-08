@@ -210,7 +210,7 @@ namespace libsemigroups {
         } else if (timed_out()) {
           REPORT("timed out!");
         } else {
-          set_finished();
+          set_finished(true);
           delete_tmp_storage();
           REPORT("finished!");
         }
@@ -230,7 +230,7 @@ namespace libsemigroups {
         internal_add_pair(this->to_internal(x), this->to_internal(y));
         this->external_free(x);
         this->external_free(y);
-        unset_finished();
+        set_finished(false);
       }
 
       word_type class_index_to_word(class_index_type) override {
@@ -471,7 +471,10 @@ namespace libsemigroups {
 
       KBP(congruence_type type, fpsemigroup::KnuthBendix* kb)
           : p_type(type), _kb(kb) {
-        this->set_nr_generators(kb->alphabet().size());
+        // Replace the "dead" of _kb with that of this, so that if this is
+        // killed, so too is _kb.
+        _kb->replace_dead(get_dead());
+        set_nr_generators(_kb->alphabet().size());
       }
 
       // For testing purposes only really
@@ -483,10 +486,17 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void run() override {
-        if (!finished()) {
+        if (finished()) {
+          return;
+        }
+        _kb->run();
+        if (!dead()) {
           auto S = _kb->isomorphic_non_fp_semigroup();
           set_parent(static_cast<typename p_type::semigroup_type*>(S));
           p_type::run();
+        }
+        if (dead()) {
+          REPORT("killed");
         }
       }
 
@@ -499,7 +509,7 @@ namespace libsemigroups {
         internal_add_pair(x, y);
         this->internal_free(x);
         this->internal_free(y);
-        unset_finished();
+        set_finished(false);
       }
 
      private:
@@ -529,7 +539,7 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 ////////////////////////////////////////////////////////////////////////////////
-// OLD STUFF
+// OLD STUFF - TODO delete this
 ////////////////////////////////////////////////////////////////////////////////
 
 // The following originates in the stable-1.0 branch

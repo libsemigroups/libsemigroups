@@ -35,6 +35,7 @@ namespace libsemigroups {
         _parent(nullptr),
         _quotient(nullptr),
         _type(type) {}
+  // TODO move initialisation of data members into init method
 
   congruence_type CongIntf::type() const noexcept {
     return _type;
