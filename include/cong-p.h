@@ -438,7 +438,6 @@ namespace libsemigroups {
       std::queue<std::pair<internal_element_type, internal_element_type>>
                                          _pairs_to_mult;
       std::vector<internal_element_type> _reverse_map;
-      KnuthBendix*                       _kb;
       internal_element_type              _tmp1;
       internal_element_type              _tmp2;
     };

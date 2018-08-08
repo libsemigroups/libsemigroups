@@ -56,6 +56,7 @@ namespace libsemigroups {
   void CongIntf::set_quotient(SemigroupBase* quotient) {
     LIBSEMIGROUPS_ASSERT(quotient != nullptr);
     LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
+    LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
     // FIXME _delete_quotient can be either true or false, depending on whether
     // quotient is coming from outside or inside.
     _delete_quotient = false;

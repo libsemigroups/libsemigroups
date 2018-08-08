@@ -159,8 +159,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!has_parent());
       if (copy.finished()) {
         set_parent(copy.isomorphic_non_fp_semigroup());
-      }
-      if (_policy == policy::none) {
+        LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_relations;
         // FIXME assertion failure if we use_cayley_graph
       }
@@ -373,13 +372,14 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled || (has_quotient() && quotient()->is_done());
+      return _prefilled || (has_quotient() && quotient()->is_done())
+             || (has_parent() && parent()->is_done());
       // 1. _prefilled means that either we were created from a SemigroupBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
       // defined by _relations must be finite.
       //
-      // 2. _isomorphic_non_fp_semigroup being defined and fully enumerated
+      // 2. the quotient semigroup being defined and fully enumerated
       // means it is finite.
     }
 

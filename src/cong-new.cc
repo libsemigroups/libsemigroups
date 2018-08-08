@@ -208,9 +208,19 @@ namespace libsemigroups {
       return false;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden public non-pure virtual methods from CongIntf
-    //////////////////////////////////////////////////////////////////////////
+    bool Congruence::is_quotient_obviously_finite() {
+      LIBSEMIGROUPS_ASSERT(!_race.empty());
+      for (auto runner : _race) {
+        if (static_cast<CongIntf*>(runner)->is_quotient_obviously_finite()) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden non-pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////////
 
     bool Congruence::contains(word_type const& lhs, word_type const& rhs) {
       if (const_contains(lhs, rhs)) {
@@ -221,6 +231,9 @@ namespace libsemigroups {
 
     bool Congruence::const_contains(word_type const& lhs,
                                     word_type const& rhs) const {
+      if (lhs == rhs) {
+        return true;
+      }
       for (auto runner : _race) {
         if (static_cast<CongIntf*>(runner)->const_contains(lhs, rhs)) {
           return true;

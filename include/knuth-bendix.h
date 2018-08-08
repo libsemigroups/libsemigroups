@@ -548,6 +548,7 @@ namespace libsemigroups {
       // CongIntf - overridden non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
+      bool const_contains(word_type const&, word_type const&) const override;
       void set_nr_generators(size_t) override;
 
      private:

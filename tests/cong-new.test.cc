@@ -27,6 +27,13 @@
 
 namespace libsemigroups {
   namespace tmp {
+    template <class TElementType>
+    void delete_gens(std::vector<TElementType>& gens) {
+      for (auto& x : gens) {
+        delete x;
+      }
+    }
+
     constexpr bool REPORT = false;
 
     congruence_type const TWOSIDED = congruence_type::TWOSIDED;
@@ -548,7 +555,7 @@ namespace libsemigroups {
                            Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-      Congruence cong(TWOSIDED, S);
+      Congruence        cong(TWOSIDED, S);
       REQUIRE(cong.nr_classes() == S.size());
     }
 
@@ -585,8 +592,9 @@ namespace libsemigroups {
 
     // FIXME in this example non-winner ToddCoxeter takes a long time to stop
     // after it is killed
-    LIBSEMIGROUPS_TEST_CASE("023", "right congruence on finite semigroup",
-                "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("023",
+                            "right congruence on finite semigroup",
+                            "[quick]") {
       REPORTER.set_report(REPORT);
       using Transf = Transf<8>::type;
       Semigroup<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
@@ -609,13 +617,13 @@ namespace libsemigroups {
                                   Transf({5, 5, 5, 5, 5, 5, 6, 7}),
                                   Transf({0, 0, 0, 0, 0, 0, 7, 6}),
                                   Transf({0, 1, 2, 3, 4, 5, 7, 6})};
-      REQUIRE(
-          std::all_of(elms.cbegin(), elms.cend(), [&S](Transf const& x) -> bool {
+      REQUIRE(std::all_of(
+          elms.cbegin(), elms.cend(), [&S](Transf const& x) -> bool {
             return S.test_membership(x);
           }));
 
       Congruence cong(RIGHT, S);
-      word_type w1, w2;
+      word_type  w1, w2;
       for (size_t i = 0; i < elms.size(); i += 2) {
         S.factorisation(w1, S.position(elms[i]));
         S.factorisation(w2, S.position(elms[i + 1]));
@@ -645,148 +653,305 @@ namespace libsemigroups {
       REQUIRE(!cong.contains({0, 0}, {0}));
     }
 
-    /*
-
-
-
-
-
-
-      LIBSEMIGROUPS_TEST_CASE("009", "is_quotient_obviously_infinite",
-                "[quick]") {
-  S.add_rule({0, 1}, {0})});
-  S.add_rule({2, 2}, {2})});
-        REQUIRE(cong1.is_quotient_obviously_infinite());
-
-  S.add_rule({0, 0}, {0})});
-  S.add_rule({1, 1}, {1})});
-        REQUIRE(cong2.is_quotient_obviously_infinite());
-
-  S.add_rule({1, 2}, {1})});
-        REQUIRE(!cong3.is_quotient_obviously_infinite());
-
-        std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1,
-  0}), new Transformation<u_int16_t>({0, 1, 2})};
-
-        Semigroup<> S = Semigroup<>(gens);
-        S.set_report(REPORT);
-        really_delete_cont(gens);
-
-  S.add_rule({1}, {0})});
-        REQUIRE(!cong4.is_quotient_obviously_infinite());
+    LIBSEMIGROUPS_TEST_CASE("026",
+                            "is_quotient_obviously_(in)finite",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({2, 2}, {2});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({1, 1}, {1});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({1, 2}, {1});
+        REQUIRE(!cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        Congruence cong(RIGHT, S);
+        cong.add_pair({2, 2}, {2});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(RIGHT, S);
+        cong.add_pair({1, 1}, {1});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(RIGHT, S);
+        cong.add_pair({1, 2}, {1});
+        REQUIRE(!cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        Congruence cong(LEFT, S);
+        cong.add_pair({2, 2}, {2});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(LEFT, S);
+        cong.add_pair({1, 1}, {1});
+        REQUIRE(cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
+      }
+      {
+        FpSemigroup S;
+        S.set_alphabet(3);
+        S.add_rule({0, 1}, {0});
+        S.add_rule({0, 0}, {0});
+        Congruence cong(LEFT, S);
+        cong.add_pair({1, 2}, {1});
+        REQUIRE(!cong.is_quotient_obviously_infinite());
+        REQUIRE(!cong.is_quotient_obviously_finite());
       }
 
-      LIBSEMIGROUPS_TEST_CASE("009", "less for a 2-sided congruence over fp
-      semigroup",
-                "[quick]") {
-  S.add_rule({0, 0}, {0})});
-        Congruence  cong(TWOSIDED, S, {});
-        REQUIRE(!cong.less({0, 0}, {0}));
+      using Transf = Transf<3>::type;
+      Semigroup<Transf> S({Transf({0, 1, 0}), Transf({0, 1, 2})});
+      REQUIRE(S.size() == 2);
+      {
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({1}, {0});
+        REQUIRE(!cong.is_quotient_obviously_infinite());
+        REQUIRE(cong.is_quotient_obviously_finite());
+        REQUIRE(cong.nr_classes() == 1);
       }
+    }
 
-      LIBSEMIGROUPS_TEST_CASE("009", "2-sided congruences of BMat8 semigroup",
-                "[quick]") {
-        REPORTER.set_report(REPORT);
-        std::vector<BMat8> gens
-            = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0,
-  1}}), BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-               BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0,
-  1}}), BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+    LIBSEMIGROUPS_TEST_CASE("027", "less", "[quick]") {
+      FpSemigroup S;
+      S.set_alphabet(2);
+      S.add_rule({0, 0}, {0});
 
-        Semigroup<BMat8> S(gens);
+      Congruence cong(TWOSIDED, S);
+      REQUIRE(!cong.less({0, 0}, {0}));
+    }
 
-  S.add_rule({1}, {0})});
-        REQUIRE(cong1.nr_classes() == 3);
-        REQUIRE(cong1.word_to_class_index({1}) == 0);
+    LIBSEMIGROUPS_TEST_CASE("028",
+                            "2-sided congruences of BMat8 semigroup",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      using BMat = BMat<4>::type;
+      std::vector<BMat> gens
+          = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+             BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+             BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+             BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+      {
+        Semigroup<BMat> S(gens);
 
-  S.add_rule({1}, {0})});
-        REQUIRE(cong2.nr_classes() == 3);
-        REQUIRE(cong2.word_to_class_index({1}) == 0);
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({1}, {0});
 
-        Semigroup<BMat8> T({gens[0], gens[2], gens[3]});
-  S.add_rule({1}, {0})});
-        REQUIRE(cong3.nr_classes() == 2);
-        REQUIRE(cong3.word_to_class_index({1}) == 0);
+        REQUIRE(cong.nr_classes() == 3);
+        REQUIRE(cong.word_to_class_index({1}) == 0);
+        REQUIRE(cong.nr_non_trivial_classes() == 3);
 
-  S.add_rule({1}, {0})});
-        REQUIRE(cong4.nr_classes() == 3);
-        REQUIRE(cong4.word_to_class_index({1}) == 0);
+        std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+        std::transform(cong.cbegin_ntc(),
+                       cong.cend_ntc(),
+                       v.begin(),
+                       std::mem_fn(&std::vector<word_type>::size));
+        std::sort(v.begin(), v.end());
+        REQUIRE(v == std::vector<size_t>({12, 12, 63880}));
+        REQUIRE(cong.cbegin_ntc()->size() == 12);
+        REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
+                                       cong.cbegin_ntc()->cend())
+                == std::vector<word_type>({{0},
+                                           {1},
+                                           {0, 1, 0},
+                                           {0, 1, 1},
+                                           {1, 0, 1},
+                                           {1, 1, 0},
+                                           {1, 1, 1},
+                                           {0, 1, 0, 1, 1},
+                                           {0, 1, 1, 0, 1},
+                                           {1, 0, 1, 1, 0},
+                                           {1, 0, 1, 1, 1},
+                                           {1, 1, 0, 1, 1}}));
       }
+      {
+        Semigroup<BMat8>  S({gens[0], gens[2], gens[3]});
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({1}, {0});
 
-      LIBSEMIGROUPS_TEST_CASE("009", "left congruence on finite semigroup",
-                "[quick]") {
-        REPORTER.set_report(REPORT);
-        std::vector<Element*> gens
-            = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-               new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-        Semigroup<> S = Semigroup<>(gens);
-        S.set_report(REPORT);
-        really_delete_cont(gens);
+        REQUIRE(cong.nr_classes() == 2);
+        REQUIRE(cong.word_to_class_index({1}) == 0);
+        REQUIRE(cong.nr_non_trivial_classes() == 2);
 
-        // REQUIRE(S.size() == 88);
-        // REQUIRE(S.degree() == 5);
-  S.add_rule> extra(
-  S.add_rule({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1})});
-        Congruence cong(LEFT, &S, extra);
-
-        REQUIRE(cong.nr_classes() == 69);
-        REQUIRE(cong.nr_classes() == 69);
-
-        Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-        Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-        word_t   w3, w4;
-        S.factorisation(w3, S.position(t3));
-        S.factorisation(w4, S.position(t4));
-        REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-        REQUIRE(cong.word_to_class_index(w3)
-                == cong.word_to_class_index({0, 0, 1, 0, 1}));
-        REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
-                == cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
-        REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
-                != cong.word_to_class_index({1, 1}));
-        REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
-                != cong.word_to_class_index({1, 0, 0, 1}));
-
-        REQUIRE(cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
-        REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-
-        REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-        REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
-
-        t3->really_delete();
-        t4->really_delete();
-        delete t3;
-        delete t4;
+        std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+        std::transform(cong.cbegin_ntc(),
+                       cong.cend_ntc(),
+                       v.begin(),
+                       std::mem_fn(&std::vector<word_type>::size));
+        std::sort(v.begin(), v.end());
+        REQUIRE(v == std::vector<size_t>({8, 8}));
+        REQUIRE(cong.cbegin_ntc()->size() == 8);
+        REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
+                                       cong.cbegin_ntc()->cend())
+                == std::vector<word_type>({{0},
+                                           {1},
+                                           {0, 0},
+                                           {0, 1},
+                                           {1, 0},
+                                           {0, 1, 0},
+                                           {1, 0, 1},
+                                           {0, 1, 0, 1}}));
       }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("029",
+                            "left congruence on finite semigroup",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      std::vector<Element*> gens
+          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+      Semigroup<> S(gens);
+      delete_gens(gens);
+
+      // REQUIRE(S.size() == 88);
+      // REQUIRE(S.degree() == 5);
+      Congruence cong(LEFT, S);
+      cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
+
+      REQUIRE(cong.nr_classes() == 69);
+      REQUIRE(cong.nr_classes() == 69);
+
+      Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+      Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+      word_type w3 = S.factorisation(t3);
+      word_type w4 = S.factorisation(t4);
+      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
+      REQUIRE(cong.word_to_class_index(w3)
+              == cong.word_to_class_index({0, 0, 1, 0, 1}));
+      REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
+              == cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
+      REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
+              != cong.word_to_class_index({1, 1}));
+      REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
+              != cong.word_to_class_index({1, 0, 0, 1}));
+
+      REQUIRE(cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
+      REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+
+      REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+      REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+
+      delete t3;
+      delete t4;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("030",
+                            "right congruence on finite semigroup",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      std::vector<Element*> gens
+          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+      Semigroup<> S(gens);
+      delete_gens(gens);
+
+      // REQUIRE(S.size() == 88);
+      // REQUIRE(S.degree() == 5);
+      Congruence cong(RIGHT, S);
+      cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
+
+      REQUIRE(cong.nr_classes() == 72);
+      REQUIRE(cong.nr_classes() == 72);
+
+      Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+      Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+      word_type w3 = S.factorisation(t3);
+      word_type w4 = S.factorisation(t4);
+      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
+      REQUIRE(cong.word_to_class_index(w3)
+              != cong.word_to_class_index({0, 0, 1, 0, 1}));
+      REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
+              != cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
+      REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
+              != cong.word_to_class_index({1, 1}));
+      REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
+              != cong.word_to_class_index({1, 0, 0, 1}));
+
+      REQUIRE(!cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
+      REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+
+      REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+      REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+
+      delete t3;
+      delete t4;
+    }
 
       // For some reason the following test case doesn't run...
-      LIBSEMIGROUPS_TEST_CASE("009", "right congruence on finite semigroup"
-                "[quick]") {
+      LIBSEMIGROUPS_TEST_CASE("031",
+                              "right congruence on finite semigroup",
+                              "[quick]") {
         REPORTER.set_report(REPORT);
         std::vector<Element*> gens
             = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
         Semigroup<> S = Semigroup<>(gens);
-        really_delete_cont(gens);
+        delete_gens(gens);
 
         REQUIRE(S.size() == 88);
         REQUIRE(S.nrrules() == 18);
         REQUIRE(S.degree() == 5);
         Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
         Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-        word_t   w1, w2;
+        word_type   w1, w2;
         S.factorisation(w1, S.position(t1));
         S.factorisation(w2, S.position(t2));
-  S.add_rule> extra({std::make_pair(w1, w2)});
-        Congruence              cong(RIGHT, &S, extra);
+        Congruence cong(RIGHT, S);
+        cong.add_pair(w1, w2);
 
         REQUIRE(cong.nr_classes() == 72);
         REQUIRE(cong.nr_classes() == 72);
-        Element* t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
-        Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-        Element* t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
-        Element* t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
-        word_t   w3, w4, w5, w6;
+        Element*  t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
+        Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+        Element*  t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
+        Element*  t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
+        word_type w3, w4, w5, w6;
         S.factorisation(w3, S.position(t3));
         S.factorisation(w4, S.position(t4));
         S.factorisation(w5, S.position(t5));
@@ -799,12 +964,6 @@ namespace libsemigroups {
         REQUIRE(cong.contains(w5, w6));
         REQUIRE(!cong.contains(w3, w5));
 
-        t1->really_delete();
-        t2->really_delete();
-        t3->really_delete();
-        t4->really_delete();
-        t5->really_delete();
-        t6->really_delete();
         delete t1;
         delete t2;
         delete t3;
@@ -813,18 +972,25 @@ namespace libsemigroups {
         delete t6;
       }
 
-      LIBSEMIGROUPS_TEST_CASE("009", "contains", "[broken]") {
+      LIBSEMIGROUPS_TEST_CASE("032", "contains", "[broken]") {
         REPORTER.set_report(true);
-        FpSemigroup S(2, {});
-        Congruence  cong(TWOSIDED,
-                        S,
-  S.add_rule({0, 0}, {0}),
-  S.add_rule({0, 1}, {0}),
-  S.add_rule({1, 0}, {0})});
+        FpSemigroup S;
+        S.set_alphabet(2);
+        Congruence cong(TWOSIDED, S);
+        cong.add_pair({0, 0}, {0});
+        cong.add_pair({0, 1}, {0});
+        cong.add_pair({1, 0}, {0});
         // FIXME this runs forever but shouldn't!
         REQUIRE(cong.contains({0, 0}, {0}));
         REQUIRE(cong.contains({0, 1}, {0}));
         REQUIRE(cong.contains({1, 0}, {0}));
-      }*/
+      }
   }  // namespace tmp
 }  // namespace libsemigroups
+        /*fpsemigroup::KnuthBendix S;
+        S.set_alphabet(2);
+        S.add_rule({0, 0}, {0});
+        S.add_rule({0, 1}, {0});
+        S.add_rule({1, 0}, {0});
+
+        REQUIRE(S.equal_to(word_type({0, 0}), word_type({0})));*/

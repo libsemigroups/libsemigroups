@@ -61,11 +61,12 @@ namespace libsemigroups {
       class_index_type word_to_class_index(word_type const&) override;
 
       //////////////////////////////////////////////////////////////////////////
-      // CongIntf - non-pure virtual methods - publice
+      // CongIntf - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
       bool contains(word_type const&, word_type const&) override;
       bool const_contains(word_type const&, word_type const&) const override;
+      bool is_quotient_obviously_finite() override;
       bool is_quotient_obviously_infinite() override;
 
       //////////////////////////////////////////////////////////////////////////

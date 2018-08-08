@@ -386,6 +386,7 @@ namespace libsemigroups {
 
     SemigroupBase*
     KnuthBendix::isomorphic_non_fp_semigroup() {
+      LIBSEMIGROUPS_ASSERT(is_alphabet_defined());
       // TODO check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
       if (!has_isomorphic_non_fp_semigroup()) {
@@ -1035,7 +1036,7 @@ namespace libsemigroups {
       // _kb->isomorphic_non_fp_semigroup(), since this might get killed
       // during _kb->run().
       if (!dead()) {
-        _kb->isomorphic_non_fp_semigroup()->enumerate(dead());
+        _kb->isomorphic_non_fp_semigroup()->enumerate(get_dead(), LIMIT_MAX);
         if (_kb->isomorphic_non_fp_semigroup()->is_done() && !dead()) {
           set_finished(true);
         }
@@ -1056,7 +1057,7 @@ namespace libsemigroups {
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      set_finished(true);
+      set_finished(true); // TODO are all of these set_finished required??
       return _kb->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
     }
 
@@ -1089,6 +1090,14 @@ namespace libsemigroups {
       CongIntf::set_nr_generators(n);
       _kb->set_alphabet(n);
     }
+
+    bool KnuthBendix::const_contains(word_type const& lhs,
+                                     word_type const& rhs) const {
+      // FIXME Probably leaks or somehting
+      return _kb->rewrite(_kb->word_to_string(lhs))
+             == _kb->rewrite(_kb->word_to_string(rhs));
+    }
+
 
   }  // namespace congruence
 
