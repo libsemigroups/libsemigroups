@@ -39,8 +39,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   void testCaseStarting(Catch::TestCaseInfo const& testInfo) override {
     _msg = testInfo.name;
-    static std::unordered_map<std::string, LibsemigroupsLineInfo>
-      map;
+    static std::unordered_map<std::string, LibsemigroupsLineInfo> map;
     auto pos = testInfo.name.find(":");
     if (pos == std::string::npos) {
       // Just run the test, and ignore the registration of the id
@@ -50,11 +49,10 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
         = std::string(testInfo.name.cbegin(),
                       testInfo.name.cbegin() + testInfo.name.find(":"));
 
-    auto fnd_tag
-        = std::find_if(testInfo.tags.cbegin(), testInfo.tags.cend(),
-            [&exp_tag](std::string const& tag) -> bool {
-              return tag == exp_tag;
-            });
+    auto fnd_tag = std::find_if(
+        testInfo.tags.cbegin(),
+        testInfo.tags.cend(),
+        [&exp_tag](std::string const& tag) -> bool { return tag == exp_tag; });
     if (fnd_tag == testInfo.tags.end()) {
       // Just run the test, and ignore the registration of the id
       return;

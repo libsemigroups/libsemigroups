@@ -384,8 +384,7 @@ namespace libsemigroups {
       return _active_rules.size();
     }
 
-    SemigroupBase*
-    KnuthBendix::isomorphic_non_fp_semigroup() {
+    SemigroupBase* KnuthBendix::isomorphic_non_fp_semigroup() {
       LIBSEMIGROUPS_ASSERT(is_alphabet_defined());
       // TODO check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
@@ -1057,7 +1056,7 @@ namespace libsemigroups {
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      set_finished(true); // TODO are all of these set_finished required??
+      set_finished(true);  // TODO are all of these set_finished required??
       return _kb->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
     }
 
@@ -1073,11 +1072,10 @@ namespace libsemigroups {
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       // TODO check arg
-      auto S
-          = static_cast<Semigroup<KBE>*>(_kb->isomorphic_non_fp_semigroup());
+      auto S = static_cast<Semigroup<KBE>*>(_kb->isomorphic_non_fp_semigroup());
       // FIXME leaks
-      size_t pos = S->position(
-          KBE(_kb.get(), *_kb->word_to_internal_string(word)));
+      size_t pos
+          = S->position(KBE(_kb.get(), *_kb->word_to_internal_string(word)));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }
@@ -1097,7 +1095,6 @@ namespace libsemigroups {
       return _kb->rewrite(_kb->word_to_string(lhs))
              == _kb->rewrite(_kb->word_to_string(rhs));
     }
-
 
   }  // namespace congruence
 

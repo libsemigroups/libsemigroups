@@ -105,7 +105,6 @@ namespace libsemigroups {
     _report_time_interval = val;
   }
 
-
   void Runner::set_finished(bool val) const {
     *_finished = val;
   }

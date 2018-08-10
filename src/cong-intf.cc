@@ -64,7 +64,7 @@ namespace libsemigroups {
 
   void CongIntf::set_parent(SemigroupBase* prnt) {
     if (dead()) {
-      return; // TODO more like this
+      return;  // TODO more like this
     }
     LIBSEMIGROUPS_ASSERT(prnt != nullptr);
     LIBSEMIGROUPS_ASSERT(_parent == nullptr);
@@ -143,7 +143,8 @@ namespace libsemigroups {
     for (size_t pos = 0; pos < _parent->size(); ++pos) {
       _parent->factorisation(w, pos);
       _non_trivial_classes[word_to_class_index(w)].push_back(w);
-      LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < _non_trivial_classes.size());
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(w)
+                           < _non_trivial_classes.size());
     }
 
     _non_trivial_classes.erase(
@@ -155,14 +156,12 @@ namespace libsemigroups {
         _non_trivial_classes.end());
   }
 
-  std::vector<std::vector<word_type>>::const_iterator
-  CongIntf::cbegin_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongIntf::cbegin_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cbegin();
   }
 
-  std::vector<std::vector<word_type>>::const_iterator
-  CongIntf::cend_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongIntf::cend_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cend();
   }

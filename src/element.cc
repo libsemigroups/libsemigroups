@@ -310,8 +310,8 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("Bipartition: the blocks given do not "
                                     "disjoint union to the ranges [-"
                                     + to_string(-max) + ".. -1] U [1 .. "
-                                    + to_string(max) + "]: "
-                                    + to_string(deg) + " elements given");
+                                    + to_string(max) + "]: " + to_string(deg)
+                                    + " elements given");
     }
     if (max >= static_cast<int32_t>(0x40000000)) {
       throw LIBSEMIGROUPS_EXCEPTION("Bipartition: too many points");
@@ -326,21 +326,20 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION(
               "Bipartition: found 0 in a block, but every value should be "
               "in the ranges [-"
-              + to_string(-max) + " .. -1] or [1 .. " + to_string(max)
-              + "]");
+              + to_string(-max) + " .. -1] or [1 .. " + to_string(max) + "]");
         }
         if (x < 0) {
           if (out[static_cast<u_int32_t>(max - x - 1)]
               != std::numeric_limits<u_int32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found "
-                                          + to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found " + to_string(x)
+                                          + " twice");
           }
           out[static_cast<u_int32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<u_int32_t>(x - 1)]
               != std::numeric_limits<u_int32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found "
-                                          + to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("Bipartition: found " + to_string(x)
+                                          + " twice");
           }
 
           out[static_cast<u_int32_t>(x - 1)] = i;
@@ -595,8 +594,7 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION(
               "PBR: the first argument contains a vector which contains "
               + to_string(x) + " but the values must lie in the ranges [-"
-              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n)
-              + "]");
+              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n) + "]");
         }
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));
@@ -615,8 +613,7 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION(
               "PBR: the second argument contains a vector which contains "
               + to_string(x) + " but the values must lie in the ranges [-"
-              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n)
-              + "]");
+              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n) + "]");
         }
         if (x < 0) {
           v.push_back(static_cast<u_int32_t>(n - x - 1));

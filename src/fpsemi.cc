@@ -220,11 +220,11 @@ namespace libsemigroups {
     }
   }
 
-/*  // Private
-  void FpSemigroup::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
-    for (auto runner : _race) {
-      static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S);
-    }
-  }*/
+  /*  // Private
+    void FpSemigroup::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
+      for (auto runner : _race) {
+        static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S);
+      }
+    }*/
 
 }  // namespace libsemigroups

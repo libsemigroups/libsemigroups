@@ -128,13 +128,13 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase& S, policy p)
         : ToddCoxeter(type, &S, p) {}
 
-/*    ToddCoxeter::ToddCoxeter(congruence_type                   type,
-                             SemigroupBase*                    S,
-                             std::vector<relation_type> const& genpairs,
-                             policy                            p)
-        : ToddCoxeter(type, S, p) {
-      _extra = genpairs;
-    }*/
+    /*    ToddCoxeter::ToddCoxeter(congruence_type                   type,
+                                 SemigroupBase*                    S,
+                                 std::vector<relation_type> const& genpairs,
+                                 policy                            p)
+            : ToddCoxeter(type, S, p) {
+          _extra = genpairs;
+        }*/
 
     // TODO make this constructor private??
     ToddCoxeter::ToddCoxeter(congruence_type                   type,
@@ -218,8 +218,7 @@ namespace libsemigroups {
             // Quit loop if we reach an inactive coset OR we get a "stop" signal
           } while (!dead() && _current_no_add != _next && !_stop_packing);
 
-          REPORT("Lookahead complete " << oldactive - _active
-                                                << " killed");
+          REPORT("Lookahead complete " << oldactive - _active << " killed");
 
           _pack += _pack / 10;  // Raise packing threshold 10%
           _stop_packing   = false;
@@ -418,8 +417,8 @@ namespace libsemigroups {
     letter_type ToddCoxeter::class_index_to_letter(class_index_type x) {
       if (x > nr_generators()) {
         throw LIBSEMIGROUPS_EXCEPTION("invalid letter, found " + to_string(x)
-            + ", should be at most "
-            + to_string(nr_generators() + 1));
+                                      + ", should be at most "
+                                      + to_string(nr_generators() + 1));
       }
       run();
       return _class_index_to_letter[x];

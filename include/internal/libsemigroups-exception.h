@@ -33,7 +33,6 @@ namespace libsemigroups {
         : std::runtime_error(fname + ":" + to_string(linenum) + ":" + funcname
                              + ": " + msg) {}
   };
-
 }  // namespace libsemigroups
 
 #define LIBSEMIGROUPS_EXCEPTION(msg) \

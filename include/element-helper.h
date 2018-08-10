@@ -43,16 +43,16 @@ namespace libsemigroups {
 #endif
   };
 
-// TODO file an issue for HPCombi to add a PPerm class.
+  // TODO file an issue for HPCombi to add a PPerm class.
   template <size_t N> struct PPerm {
-// #ifdef LIBSEMIGROUPS_HPCOMBI
-//     using type = typename std::conditional<
-//         N >= 17,
-//         PartialPerm<typename SmallestInteger<N>::type>,
-//         HPCombi::PTransf16>::type;
-// #else
+    // #ifdef LIBSEMIGROUPS_HPCOMBI
+    //     using type = typename std::conditional<
+    //         N >= 17,
+    //         PartialPerm<typename SmallestInteger<N>::type>,
+    //         HPCombi::PTransf16>::type;
+    // #else
     using type = PartialPerm<typename SmallestInteger<N>::type>;
-// #endif
+    // #endif
   };
 
   template <size_t N> struct Perm {

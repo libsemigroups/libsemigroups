@@ -869,6 +869,5 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 99);
     }
 
-
   }  // namespace fpsemigroup_todd_coxeter
 }  // namespace libsemigroups*/

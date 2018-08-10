@@ -59,7 +59,7 @@ namespace libsemigroups {
 
     Congruence::Congruence(congruence_type type, FpSemigroup* S)
         : Congruence(type) {
-        set_nr_generators(S->alphabet().size());
+      set_nr_generators(S->alphabet().size());
       _race.set_max_threads(POSITIVE_INFINITY);
       // TODO set_parent with a future computing the
       // isomorphic_non_fp_semigroup
@@ -98,33 +98,34 @@ namespace libsemigroups {
           // below are killed then so too is the enumeration of
           // S->knuth_bendix()->isomorphic_non_fp_semigroup()
           if (S->knuth_bendix()->isomorphic_non_fp_semigroup()->is_done()) {
-
             // Method 3: Note that the
-            // S->knuth_bendix()->isomorphic_non_fp_semigroup() must be finite in
-            // this case, because otherwise it would not return true from
+            // S->knuth_bendix()->isomorphic_non_fp_semigroup() must be finite
+            // in this case, because otherwise it would not return true from
             // Semigroup::is_done. This is similar to Method 2.
-            _race.add_runner(
-                new ToddCoxeter(type,
-                                S->knuth_bendix()->isomorphic_non_fp_semigroup(),
-                                ToddCoxeter::policy::use_cayley_graph));
+            _race.add_runner(new ToddCoxeter(
+                type,
+                S->knuth_bendix()->isomorphic_non_fp_semigroup(),
+                ToddCoxeter::policy::use_cayley_graph));
             // Method 4: unlike with Method 2, this is not necessarily the same
             // as running Method 1, because the relations in
-            // S->knuth_bendix()->isomorphic_non_fp_semigroup() are likely not the
-            // same as those in S->todd_coxeter()->isomorphic_non_fp_semigroup().
+            // S->knuth_bendix()->isomorphic_non_fp_semigroup() are likely not
+            // the same as those in
+            // S->todd_coxeter()->isomorphic_non_fp_semigroup().
             // TODO:
             // - check if the relations are really the same as those in
-            //   S->todd_coxeter(), if it exists. This is probably too expensive!
+            //   S->todd_coxeter(), if it exists. This is probably too
+            //   expensive!
             // - we could just add the relations from the rws directly (rather
             // than recreating them in the isomorphic_non_fp_semigroup, which is
             // rather wasteful). If we do this, then this could be done outside
             // the inner most if-statement here.
-            _race.add_runner(
-                new ToddCoxeter(type,
-                                S->knuth_bendix()->isomorphic_non_fp_semigroup(),
-                                ToddCoxeter::policy::use_relations));
+            _race.add_runner(new ToddCoxeter(
+                type,
+                S->knuth_bendix()->isomorphic_non_fp_semigroup(),
+                ToddCoxeter::policy::use_relations));
 
-            // Goto the end here since we know that we can definitely complete at
-            // this point.
+            // Goto the end here since we know that we can definitely complete
+            // at this point.
             goto end;
           }
         }

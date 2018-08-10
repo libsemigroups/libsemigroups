@@ -37,9 +37,9 @@ namespace libsemigroups {
 
     constexpr bool REPORT = false;
 
-    congruence_type const TWOSIDED = congruence_type::TWOSIDED;
-    congruence_type const LEFT     = congruence_type::LEFT;
-    congruence_type const RIGHT    = congruence_type::RIGHT;
+    constexpr congruence_type TWOSIDED = congruence_type::TWOSIDED;
+    constexpr congruence_type LEFT     = congruence_type::LEFT;
+    constexpr congruence_type RIGHT    = congruence_type::RIGHT;
 
     LIBSEMIGROUPS_TEST_CASE("Congruence 000",
                             "left congruence on fp semigroup",

@@ -454,7 +454,7 @@ namespace libsemigroups {
                  word_type({1, 0, 0, 0, 1}));
 
       REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
-      //REQUIRE(p.finished());
+      // REQUIRE(p.finished());
       REQUIRE(!S.is_begun());
       REQUIRE(!S.is_done());
 

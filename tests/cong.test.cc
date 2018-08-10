@@ -1208,7 +1208,6 @@ std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
 
 TEST_CASE("Congruence 29: Renner monoid type B2 (E. G. presentation), q = 1",
           "[congruence][fpsemigroup][quick][29]") {
-
   Congruence cong("twosided", 6, {}, EGTypeBMonoid(2, 1));
   std::cout << to_string(EGTypeBMonoid(2, 1)) << std::endl;
   REPORTER.set_report(CONG_REPORT);
