@@ -18,6 +18,8 @@
 
 // Todd-Coxeter elements
 
+// TODO 1. smart pointer to _tc?
+//      2. put the implementation into a cc file
 #ifndef LIBSEMIGROUPS_INCLUDE_TCE_H_
 #define LIBSEMIGROUPS_INCLUDE_TCE_H_
 
@@ -32,36 +34,54 @@ namespace libsemigroups {
 
    public:
     TCE() = default;
-    // TODO smart pointer?
-    TCE(congruence::ToddCoxeter* tc, class_index_type i) : _tc(tc), _index(i) {}
+    TCE(congruence::ToddCoxeter* tc, class_index_type i)
+    noexcept : _tc(tc), _index(i) {}
 
-    bool operator==(TCE const& that) const {
-      // TODO check _tc too
+    TCE(congruence::ToddCoxeter& tc, class_index_type i)
+    noexcept : TCE(&tc, i) {}
+
+    bool operator==(TCE const& that) const noexcept {
+      LIBSEMIGROUPS_ASSERT(_tc == that._tc);
       return _index == that._index;
     }
 
-    bool operator<(TCE const& that) const {
+    bool operator<(TCE const& that) const noexcept {
+      LIBSEMIGROUPS_ASSERT(_tc == that._tc);
       return _index < that._index;
     }
 
     // Only works when that is a generator!!
     inline TCE operator*(TCE const& that) const {
-      // LIBSEMIGROUPS_ASSERT(that._index <= _tc->nr_generators());
-      return TCE(_tc, _tc->right(_index, that._index - 1));
+      LIBSEMIGROUPS_ASSERT(0 < that._index
+                           && that._index <= _tc->nr_generators());
+      return TCE(
+          _tc, _tc->table(_index, _tc->class_index_to_letter(that._index)));
     }
 
-    inline TCE one() const {
+    inline TCE one() const noexcept {
       return TCE(_tc, 0);
     }
 
-    class_index_type class_index() const {
-      return _index;
+    friend std::ostringstream& operator<<(std::ostringstream& os,
+                                          TCE const&          x) {
+      os << "TCE(" << x._index << ")";
+      return os;
     }
+
+    friend std::ostream& operator<<(std::ostream& os, TCE const& tc) {
+      os << to_string(tc);
+      return os;
+    }
+
+    friend struct ::std::hash<TCE>;
 
    private:
     congruence::ToddCoxeter* _tc;
     class_index_type         _index;
   };
+
+  static_assert(std::is_trivial<TCE>::value, "TCE is not trivial!");
+
   // TODO static_assert trivial
   template <> struct complexity<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
@@ -71,7 +91,7 @@ namespace libsemigroups {
 
   template <> struct degree<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
-      return 16;
+      return 0;
     }
   };
 
@@ -92,8 +112,7 @@ namespace libsemigroups {
   };
 
   template <> struct product<TCE> {
-    void operator()(TCE& xy, TCE const& x, TCE const& y, size_t = 0) const
-        noexcept {
+    void operator()(TCE& xy, TCE const& x, TCE const& y, size_t = 0) const {
       xy = x * y;
     }
   };
@@ -107,8 +126,8 @@ namespace libsemigroups {
 
 namespace std {
   template <> struct hash<libsemigroups::TCE> {
-    size_t operator()(libsemigroups::TCE const& x) const {
-      return x.class_index();
+    size_t operator()(libsemigroups::TCE const& x) const noexcept {
+      return x._index;
     }
   };
 }  // namespace std

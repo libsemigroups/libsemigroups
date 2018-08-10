@@ -49,10 +49,10 @@ namespace libsemigroups {
     // primarily intended for testing purposes
     static std::string string(std::chrono::nanoseconds elapsed) {
       std::string out;
-      if (string_it<std::chrono::hours>(out, elapsed, "h ", 0)) {
+      if (string_it<std::chrono::hours>(out, elapsed, "h", 0)) {
         string_it<std::chrono::minutes>(out, elapsed, "m", 0);
         return out;
-      } else if (string_it<std::chrono::minutes>(out, elapsed, "m ", 0)) {
+      } else if (string_it<std::chrono::minutes>(out, elapsed, "m", 0)) {
         string_it<std::chrono::seconds>(out, elapsed, "s", 0);
         return out;
       } else if (string_it<std::chrono::milliseconds>(out, elapsed, "ms", 9)) {

@@ -36,6 +36,7 @@
 #include "fpsemi-intf.h"
 
 namespace libsemigroups {
+  class TCE; // forward declaration
   namespace congruence {
     class ToddCoxeter;  // forward declaration
   }
@@ -46,36 +47,39 @@ namespace libsemigroups {
 
   namespace congruence {
     class ToddCoxeter : public CongIntf {
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - typedefs - private
+      ////////////////////////////////////////////////////////////////////////
       using signed_class_index_type = int64_t;
 
      public:
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - typedefs + enums - public
+      ////////////////////////////////////////////////////////////////////////
       using class_index_type = CongIntf::class_index_type;
 
       enum class policy { none = 0, use_relations = 1, use_cayley_graph = 2 };
 
-      /////////////////////////////////
-      // Constructors and destructor //
-      /////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - constructors and destructor - public
+      ////////////////////////////////////////////////////////////////////////
 
-      // TODO was private ok?
       explicit ToddCoxeter(congruence_type type);
-
-      ToddCoxeter(congruence_type                   type,
-                  SemigroupBase*                    S,
-                  std::vector<relation_type> const& genpairs,
-                  policy                            p);
 
       ToddCoxeter(congruence_type,
                   SemigroupBase*,
                   policy = policy::use_relations);
+      ToddCoxeter(congruence_type,
+                  SemigroupBase&,
+                  policy = policy::use_relations);
+      // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
+      // TODO ToddCoxeter(congruence_type type, FpSemigroup& S, policy p);
+      // TODO change to use_cayley_graph
 
-      // TODO remove the next constructor, or use it as a convenience to first
-      // construct an fpsemigroup::ToddCoxeter using relations, and then to
-      // make a congruence::ToddCoxeter using that.
-      ToddCoxeter(congruence_type                   type,
-                  size_t                            nrgens,
-                  std::vector<relation_type> const& relations,
-                  std::vector<relation_type> const& extra = {});
+      ToddCoxeter(congruence_type,
+                  size_t,
+                  std::vector<relation_type> const&,
+                  std::vector<relation_type> const& = {});
 
       explicit ToddCoxeter(fpsemigroup::ToddCoxeter&);
 
@@ -83,72 +87,61 @@ namespace libsemigroups {
 
       ~ToddCoxeter();
 
-      // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
-
-      // TODO this constructor should instantiate an FpSemigroup with nrgens,
-      // and relations, and then call the last constructor below (FpSemigroup
-      // const*, relations).
-
-      // TODO double check if the following are still required
-      // ToddCoxeter(congruence_type type, size_t nrgens);
-      //ToddCoxeter(fpsemigroup::ToddCoxeter const*);
-
-      // ToddCoxeter(FpSemigroup const*,
-      //            std::vector<relation_type> const&);
-
-      ////////////////////////////////////////////
-      // Overridden virtual methods from Runner //
-      ////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // Runner - overridden pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
-      //////////////////////////////////////////////////////////
-      // Overridden public pure virtual methods from CongIntf //
-      //////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
 
-      void                       add_pair(word_type, word_type) override;
-      size_t                     nr_classes() override;
-      SemigroupBase*             quotient_semigroup() override;
-      class_index_type           word_to_class_index(word_type const&) override;
-      word_type                  class_index_to_word(class_index_type) override;
+      void             add_pair(word_type, word_type) override;
+      size_t           nr_classes() override;
+      SemigroupBase*   quotient_semigroup() override;
+      class_index_type word_to_class_index(word_type const&) override;
+      word_type        class_index_to_word(class_index_type) override;
 
-      //////////////////////////////////////////////////////////////
-      // Overridden public non-pure virtual methods from CongIntf //
-      //////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden non-pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
 
-      bool   contains(word_type const&, word_type const&) override;
-      bool   is_quotient_obviously_finite() override;
-      bool   is_quotient_obviously_infinite() override;
-      void   set_nr_generators(size_t) override;
+      bool contains(word_type const&, word_type const&) override;
+      bool is_quotient_obviously_finite() override;
+      bool is_quotient_obviously_infinite() override;
+      void set_nr_generators(size_t) override;
 
-      ////////////////////
-      // Public methods //
-      ////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods - public
+      ////////////////////////////////////////////////////////////////////////
 
       bool             empty() const;
+      letter_type      class_index_to_letter(class_index_type x);
       policy           get_policy() const noexcept;
       void             prefill(RecVec<class_index_type> const&);
-      class_index_type right(class_index_type, letter_type);
       void             set_pack(size_t);
+      class_index_type table(class_index_type, letter_type);
 
      private:
-      ///////////////////////////////////////////////////////////
-      // Overridden private pure virtual methods from CongIntf //
-      ///////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // CongIntf - overridden pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+
       class_index_type
       const_word_to_class_index(word_type const&) const override;
 
-      //////////////////////////////////
-      // Private methods - validation //
-      //////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods (validation) - private
+      ////////////////////////////////////////////////////////////////////////
 
-      void validate_relations() const;
+      void validate_relations() const;  // TODO still required?
       void validate_table() const;
-      void validate_word(word_type const&) const;
+      void validate_word(word_type const&) const;  // TODO still required?
 
-      //////////////////////////////////////
-      // Private methods - initialisation //
-      //////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods (initialisation) - private
+      ////////////////////////////////////////////////////////////////////////
 
       void init();
       void init_after_prefill();
@@ -156,22 +149,23 @@ namespace libsemigroups {
       void prefill(SemigroupBase*);
       void use_relations_or_cayley_graph();
 
-      /////////////////////////////
-      // Private methods - other //
-      /////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods (other) - private
+      ////////////////////////////////////////////////////////////////////////
 
       void compress();
       void new_coset(class_index_type const&, letter_type const&);
       void identify_cosets(class_index_type, class_index_type);
       inline void
-           trace(class_index_type const&, relation_type const&, bool add = true);
+      trace(class_index_type const&, relation_type const&, bool add = true);
 
-      //////////////////
-      // Private data //
-      //////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - data - private
+      ////////////////////////////////////////////////////////////////////////
       // TODO use Pimpl
-      size_t _active;  // Number of active cosets
+      size_t                               _active;  // Number of active cosets
       std::vector<signed_class_index_type> _bckwd;
+      std::vector<class_index_type>        _class_index_to_letter;
       size_t                               _cosets_killed;
       class_index_type                     _current;
       class_index_type                     _current_no_add;

@@ -96,6 +96,7 @@ namespace libsemigroups {
         : CongIntf(type),
           _active(1),
           _bckwd(1, 0),
+          _class_index_to_letter(),
           _cosets_killed(0),
           _current(0),
           _current_no_add(UNDEFINED),
@@ -124,13 +125,16 @@ namespace libsemigroups {
       set_nr_generators(S->nrgens());
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type                   type,
+    ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase& S, policy p)
+        : ToddCoxeter(type, &S, p) {}
+
+/*    ToddCoxeter::ToddCoxeter(congruence_type                   type,
                              SemigroupBase*                    S,
                              std::vector<relation_type> const& genpairs,
                              policy                            p)
         : ToddCoxeter(type, S, p) {
       _extra = genpairs;
-    }
+    }*/
 
     // TODO make this constructor private??
     ToddCoxeter::ToddCoxeter(congruence_type                   type,
@@ -214,7 +218,7 @@ namespace libsemigroups {
             // Quit loop if we reach an inactive coset OR we get a "stop" signal
           } while (!dead() && _current_no_add != _next && !_stop_packing);
 
-          REPORT("Entering lookahead complete " << oldactive - _active
+          REPORT("Lookahead complete " << oldactive - _active
                                                 << " killed");
 
           _pack += _pack / 10;  // Raise packing threshold 10%
@@ -242,6 +246,12 @@ namespace libsemigroups {
         REPORT("finished!");
         set_finished(true);
         compress();
+        class_index_type max
+            = *std::max_element(_table.cbegin_row(0), _table.cend_row(0));
+        _class_index_to_letter.resize(max + 1, UNDEFINED);
+        for (letter_type i = 0; i < nr_generators(); ++i) {
+          _class_index_to_letter[_table.get(0, i)] = i;
+        }
       }
       // No return value: all info is now stored in the class
     }
@@ -280,13 +290,13 @@ namespace libsemigroups {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         // TODO replace with 0-parameter constructor when available
-        Semigroup<TCE>* Q = new Semigroup<TCE>({TCE(this, _table.get(0, 0))});
-        for (size_t i = 1; i < nr_generators(); ++i) {
+        std::vector<TCE> gens;
+        for (size_t i = 0; i < nr_generators(); ++i) {
           // We use _table.get(0, i) instead of just i, because there might be
           // more generators than cosets.
-          Q->add_generator(TCE(this, _table.get(0, i)));
+          gens.emplace_back(this, _table.get(0, i));
         }
-        set_quotient(Q);
+        set_quotient(new Semigroup<TCE>(gens));
       }
       return quotient();
     }
@@ -390,9 +400,9 @@ namespace libsemigroups {
       _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
     }
 
-    ////////////////////
-    // Public methods //
-    ////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - methods - public
+    ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::empty() const {
       return _relations.empty() && _extra.empty()
@@ -403,6 +413,16 @@ namespace libsemigroups {
                                     [](class_index_type x) -> bool {
                                       return x == UNDEFINED;
                                     })));
+    }
+
+    letter_type ToddCoxeter::class_index_to_letter(class_index_type x) {
+      if (x > nr_generators()) {
+        throw LIBSEMIGROUPS_EXCEPTION("invalid letter, found " + to_string(x)
+            + ", should be at most "
+            + to_string(nr_generators() + 1));
+      }
+      run();
+      return _class_index_to_letter[x];
     }
 
     ToddCoxeter::policy ToddCoxeter::get_policy() const noexcept {
@@ -426,7 +446,7 @@ namespace libsemigroups {
       init_after_prefill();
     }
 
-    class_index_type ToddCoxeter::right(class_index_type i, letter_type j) {
+    class_index_type ToddCoxeter::table(class_index_type i, letter_type j) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       return _table.get(i, j);
@@ -643,20 +663,15 @@ namespace libsemigroups {
       }
     }
 
-    /////////////////////////////
-    // Private methods - other //
-    /////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - methods (other) - private
+    ////////////////////////////////////////////////////////////////////////
 
     // Compress the table
     void ToddCoxeter::compress() {
-      if (dead()) {
+      if (dead() || _active == _table.nr_rows()) {
         return;
       }
-      LIBSEMIGROUPS_ASSERT(finished());
-      if (_active == _table.nr_rows()) {
-        return;
-      }
-
       RecVec<class_index_type> table(nr_generators(), _active);
 
       class_index_type pos = _id_coset;
@@ -664,11 +679,11 @@ namespace libsemigroups {
       std::unordered_map<class_index_type, class_index_type> lookup;
       size_t                                                 next_index = 0;
 
-      while (pos != _next) {
+      while (!dead() && pos != _next) {
         size_t curr_index;
         auto   it = lookup.find(pos);
         if (it == lookup.end()) {
-          lookup.insert(std::make_pair(pos, next_index));
+          lookup.emplace(pos, next_index);
           curr_index = next_index;
           next_index++;
         } else {
@@ -680,7 +695,7 @@ namespace libsemigroups {
           class_index_type val = _table.get(pos, i);
           it                   = lookup.find(val);
           if (it == lookup.end()) {
-            lookup.insert(std::make_pair(val, next_index));
+            lookup.emplace(val, next_index);
             val = next_index;
             next_index++;
           } else {

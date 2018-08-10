@@ -35,7 +35,6 @@ namespace libsemigroups {
         _parent(nullptr),
         _quotient(nullptr),
         _type(type) {}
-  // TODO move initialisation of data members into init method
 
   congruence_type CongIntf::type() const noexcept {
     return _type;
@@ -63,11 +62,14 @@ namespace libsemigroups {
     _quotient        = quotient;
   }
 
-  void CongIntf::set_parent(SemigroupBase* parent) {
-    LIBSEMIGROUPS_ASSERT(parent != nullptr);
+  void CongIntf::set_parent(SemigroupBase* prnt) {
+    if (dead()) {
+      return; // TODO more like this
+    }
+    LIBSEMIGROUPS_ASSERT(prnt != nullptr);
     LIBSEMIGROUPS_ASSERT(_parent == nullptr);
     // TODO MORE asserts (check compatibility of parent and this)
-    _parent = parent;
+    _parent = prnt;
     // TODO set quotient
   }
 

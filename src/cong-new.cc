@@ -73,7 +73,7 @@ namespace libsemigroups {
           set_parent(S->todd_coxeter()->isomorphic_non_fp_semigroup());
           // Method 2: use the Cayley graph of S and genpairs to run
           // Todd-Coxeter. If the policy here is use_relations, then this is
-          // the same as Method 0. Note that the isomorphic_non_fp_semigroup
+          // the same as Method 1. Note that the isomorphic_non_fp_semigroup
           // must be finite in this case, and it must be possible for the
           // Froidure-Pin algoritm to complete in this case because
           // Todd-Coxeter did.
@@ -81,8 +81,8 @@ namespace libsemigroups {
               new ToddCoxeter(type,
                               S->todd_coxeter()->isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_cayley_graph));
-          // Return here since we know that we can definitely complete at this
-          // point.
+          // Goto the end here since we know that we can definitely complete at
+          // this point.
           goto end;
         }
       }
@@ -122,6 +122,10 @@ namespace libsemigroups {
                 new ToddCoxeter(type,
                                 S->knuth_bendix()->isomorphic_non_fp_semigroup(),
                                 ToddCoxeter::policy::use_relations));
+
+            // Goto the end here since we know that we can definitely complete at
+            // this point.
+            goto end;
           }
         }
         // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
@@ -131,8 +135,7 @@ namespace libsemigroups {
         if (type == congruence_type::TWOSIDED) {
           // Method 6 (KBFP)
           // S->knuth_bendix() must be copied because maybe we will add more
-          // generating pairs, for thread-safety, and because
-          // congruence::KnuthBendix deletes the congruence it wraps.
+          // generating pairs.
           _race.add_runner(new congruence::KnuthBendix(S->knuth_bendix()));
         }
       }

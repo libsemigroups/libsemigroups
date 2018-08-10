@@ -49,15 +49,15 @@ TEST_CASE("Timer 01: string method (1 argument)", "[quick][timer][01]") {
   ns *= 10;
   REQUIRE(t.string(ns) == "10000ms");
   ns *= 10;
-  REQUIRE(t.string(ns) == "1m 40s");
+  REQUIRE(t.string(ns) == "1m40s");
   ns *= 10;
-  REQUIRE(t.string(ns) == "16m 40s");
+  REQUIRE(t.string(ns) == "16m40s");
   ns *= 10;
-  REQUIRE(t.string(ns) == "2h 46m");
+  REQUIRE(t.string(ns) == "2h46m");
   ns *= 10;
-  REQUIRE(t.string(ns) == "27h 46m");
+  REQUIRE(t.string(ns) == "27h46m");
   ns *= 10;
-  REQUIRE(t.string(ns) == "277h 46m");
+  REQUIRE(t.string(ns) == "277h46m");
 }
 
 TEST_CASE("Timer 02: string method (0 arguments)", "[quick][timer][02]") {

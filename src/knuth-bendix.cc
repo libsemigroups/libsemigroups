@@ -749,7 +749,7 @@ namespace libsemigroups {
 
     // KBS_2 from Sims, p77-78
     void KnuthBendix::knuth_bendix() {
-      if (finished()) {
+      if (finished() || dead()) {
         return;
       }
       Timer timer;

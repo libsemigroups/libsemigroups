@@ -128,11 +128,9 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void run() override {
-        if (finished()) {
+        if (finished() || dead()) {
           return;
         }
-        LIBSEMIGROUPS_ASSERT(has_parent());
-
         Timer t;
         init();
 
@@ -484,7 +482,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void run() override {
-        if (finished()) {
+        if (finished() || dead()) {
           return;
         }
         _kb->run();

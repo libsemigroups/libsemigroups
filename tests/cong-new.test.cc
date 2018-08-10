@@ -18,12 +18,13 @@
 
 #include "libsemigroups.tests.hpp"
 
+#include "include/internal/stl.h"
+
 #include "bmat8.h"
 #include "cong-new.h"
 #include "element-helper.h"
 #include "fpsemi.h"
 #include "semigroup.h"
-#include "tce.h"
 
 namespace libsemigroups {
   namespace tmp {
@@ -40,7 +41,7 @@ namespace libsemigroups {
     congruence_type const LEFT     = congruence_type::LEFT;
     congruence_type const RIGHT    = congruence_type::RIGHT;
 
-    LIBSEMIGROUPS_TEST_CASE("000",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 000",
                             "left congruence on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -52,7 +53,7 @@ namespace libsemigroups {
       Congruence cong(LEFT, S);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("001",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 001",
                             "2-sided congruence on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -81,7 +82,7 @@ namespace libsemigroups {
       REQUIRE(!cong.contains({1}, {0, 0, 0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("002",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 002",
                             "left congruence on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -94,7 +95,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 5);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("003",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 003",
                             "word_to_class_index for cong. on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -116,7 +117,7 @@ namespace libsemigroups {
       REQUIRE(!cong.contains({0, 0, 0, 0}, {0, 0, 1}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("004",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 004",
                             "word_to_class_index for cong. on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -142,7 +143,7 @@ namespace libsemigroups {
       REQUIRE(cong2.contains({0, 0, 0, 0}, {0, 1, 1, 0, 1, 1}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("005",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 005",
                             "trivial congruence on non-fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -155,7 +156,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 88);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("006",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 006",
                             "2-sided congruence on non-fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -170,7 +171,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 21);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("007",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 007",
                             "2-sided congruence on fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -200,7 +201,7 @@ namespace libsemigroups {
       REQUIRE(cong2.nr_classes() == 2);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("008",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 008",
                             "2-sided congruence on infinite fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -233,7 +234,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 2);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("009",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 009",
                             "2-sided congruence on infinite fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -267,7 +268,7 @@ namespace libsemigroups {
       REQUIRE(!cong.less({1, 0, 1}, {1, 0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("010",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 010",
                             "2-sided congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -313,7 +314,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 525);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("011",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 011",
                             "congruence on full PBR monoid on 2 points",
                             "[extreme]") {
       REPORTER.set_report(true);
@@ -352,7 +353,7 @@ namespace libsemigroups {
       REQUIRE(std::count(v.cbegin(), v.cend(), 41216) == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("012",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 012",
                             "2-sided congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -377,7 +378,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 32);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("013",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 013",
                             "trivial 2-sided congruence on bicyclic monoid",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -395,7 +396,7 @@ namespace libsemigroups {
       REQUIRE(cong.contains({2, 1}, {1, 2, 0, 2, 1, 1, 2}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("014",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 014",
                             "non-trivial 2-sided congruence on bicyclic monoid",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -414,7 +415,7 @@ namespace libsemigroups {
                         LibsemigroupsException);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("015",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 015",
                             "2-sided congruence on free abelian monoid",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -432,7 +433,7 @@ namespace libsemigroups {
 
     // The previous Congruence 17 test was identical to Congruence 12
 
-    LIBSEMIGROUPS_TEST_CASE("016",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 016",
                             "example where TC works but KB doesn't",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -452,7 +453,7 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 4);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("017",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 017",
                             "2-sided congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -479,7 +480,7 @@ namespace libsemigroups {
     // The next test behaves as expected but runs forever, since the nr_classes
     // method requires to know the size of the semigroup S, and we cannot
     // currently work that out.
-    LIBSEMIGROUPS_TEST_CASE("018",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 018",
                             "infinite fp semigroup from GAP library ",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -511,7 +512,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE(
-        "019",
+        "Congruence 019",
         "2-sided cong. on fp semigroup with infinite classes",
         "[quick]") {
       REPORTER.set_report(REPORT);
@@ -536,7 +537,7 @@ namespace libsemigroups {
     }
 
     // The next test is deprecated.
-    LIBSEMIGROUPS_TEST_CASE("020",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 020",
                             "trivial cong. on an fp semigroup",
                             "[quick]") {
       FpSemigroup S;
@@ -548,7 +549,9 @@ namespace libsemigroups {
       REQUIRE(cong.nr_non_trivial_classes() == 0);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("021", "duplicate generators", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Congruence 021",
+                            "duplicate generators",
+                            "[quick]") {
       REPORTER.set_report(REPORT);
       using Transf = Transf<8>::type;
       Semigroup<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -559,7 +562,9 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == S.size());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("022", "non-trivial classes", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Congruence 022",
+                            "non-trivial classes",
+                            "[quick]") {
       REPORTER.set_report(false);
 
       FpSemigroup S;
@@ -592,7 +597,7 @@ namespace libsemigroups {
 
     // FIXME in this example non-winner ToddCoxeter takes a long time to stop
     // after it is killed
-    LIBSEMIGROUPS_TEST_CASE("023",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 023",
                             "right congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -632,7 +637,9 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("024", "redundant generating pairs", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Congruence 024",
+                            "redundant generating pairs",
+                            "[quick]") {
       REPORTER.set_report(REPORT);
       FpSemigroup S;
       S.set_alphabet(1);
@@ -642,7 +649,7 @@ namespace libsemigroups {
       REQUIRE(cong.contains({0, 0}, {0, 0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("025",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 025",
                             "2-sided cong. on free semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -653,7 +660,7 @@ namespace libsemigroups {
       REQUIRE(!cong.contains({0, 0}, {0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("026",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 026",
                             "is_quotient_obviously_(in)finite",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -757,7 +764,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("027", "less", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Congruence 027", "less", "[quick]") {
       FpSemigroup S;
       S.set_alphabet(2);
       S.add_rule({0, 0}, {0});
@@ -766,7 +773,7 @@ namespace libsemigroups {
       REQUIRE(!cong.less({0, 0}, {0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("028",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 028",
                             "2-sided congruences of BMat8 semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -810,8 +817,8 @@ namespace libsemigroups {
                                            {1, 1, 0, 1, 1}}));
       }
       {
-        Semigroup<BMat8>  S({gens[0], gens[2], gens[3]});
-        Congruence cong(TWOSIDED, S);
+        Semigroup<BMat8> S({gens[0], gens[2], gens[3]});
+        Congruence       cong(TWOSIDED, S);
         cong.add_pair({1}, {0});
 
         REQUIRE(cong.nr_classes() == 2);
@@ -839,7 +846,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("029",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 029",
                             "left congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -857,8 +864,8 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 69);
       REQUIRE(cong.nr_classes() == 69);
 
-      Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-      Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+      Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+      Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
       word_type w3 = S.factorisation(t3);
       word_type w4 = S.factorisation(t4);
       REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
@@ -881,7 +888,7 @@ namespace libsemigroups {
       delete t4;
     }
 
-    LIBSEMIGROUPS_TEST_CASE("030",
+    LIBSEMIGROUPS_TEST_CASE("Congruence 030",
                             "right congruence on finite semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -899,8 +906,8 @@ namespace libsemigroups {
       REQUIRE(cong.nr_classes() == 72);
       REQUIRE(cong.nr_classes() == 72);
 
-      Element* t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-      Element* t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+      Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
+      Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
       word_type w3 = S.factorisation(t3);
       word_type w4 = S.factorisation(t4);
       REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
@@ -923,74 +930,1209 @@ namespace libsemigroups {
       delete t4;
     }
 
-      // For some reason the following test case doesn't run...
-      LIBSEMIGROUPS_TEST_CASE("031",
-                              "right congruence on finite semigroup",
-                              "[quick]") {
-        REPORTER.set_report(REPORT);
-        std::vector<Element*> gens
-            = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-               new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-        Semigroup<> S = Semigroup<>(gens);
-        delete_gens(gens);
+    // For some reason the following test case doesn't run...
+    LIBSEMIGROUPS_TEST_CASE("Congruence 031",
+                            "right congruence on finite semigroup",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      std::vector<Element*> gens
+          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+      Semigroup<> S = Semigroup<>(gens);
+      delete_gens(gens);
 
-        REQUIRE(S.size() == 88);
-        REQUIRE(S.nrrules() == 18);
-        REQUIRE(S.degree() == 5);
-        Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-        Element* t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
-        word_type   w1, w2;
-        S.factorisation(w1, S.position(t1));
-        S.factorisation(w2, S.position(t2));
-        Congruence cong(RIGHT, S);
-        cong.add_pair(w1, w2);
+      REQUIRE(S.size() == 88);
+      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.degree() == 5);
+      Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
+      Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+      word_type w1, w2;
+      S.factorisation(w1, S.position(t1));
+      S.factorisation(w2, S.position(t2));
+      Congruence cong(RIGHT, S);
+      cong.add_pair(w1, w2);
 
-        REQUIRE(cong.nr_classes() == 72);
-        REQUIRE(cong.nr_classes() == 72);
-        Element*  t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
-        Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-        Element*  t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
-        Element*  t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
-        word_type w3, w4, w5, w6;
-        S.factorisation(w3, S.position(t3));
-        S.factorisation(w4, S.position(t4));
-        S.factorisation(w5, S.position(t5));
-        S.factorisation(w6, S.position(t6));
-        REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-        REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
-        REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
+      REQUIRE(cong.nr_classes() == 72);
+      REQUIRE(cong.nr_classes() == 72);
+      Element*  t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
+      Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+      Element*  t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
+      Element*  t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
+      word_type w3, w4, w5, w6;
+      S.factorisation(w3, S.position(t3));
+      S.factorisation(w4, S.position(t4));
+      S.factorisation(w5, S.position(t5));
+      S.factorisation(w6, S.position(t6));
+      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
+      REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
+      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
 
-        REQUIRE(cong.contains(w1, w2));
-        REQUIRE(cong.contains(w5, w6));
-        REQUIRE(!cong.contains(w3, w5));
+      REQUIRE(cong.contains(w1, w2));
+      REQUIRE(cong.contains(w5, w6));
+      REQUIRE(!cong.contains(w3, w5));
 
-        delete t1;
-        delete t2;
-        delete t3;
-        delete t4;
-        delete t5;
-        delete t6;
+      delete t1;
+      delete t2;
+      delete t3;
+      delete t4;
+      delete t5;
+      delete t6;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 032", "contains", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(2);
+      Congruence cong(TWOSIDED, S);
+      cong.add_pair({0, 0}, {0});
+      cong.add_pair({0, 1}, {0});
+      cong.add_pair({1, 0}, {0});
+      REQUIRE(cong.contains({0, 0}, {0}));
+      REQUIRE(cong.contains({0, 1}, {0}));
+      REQUIRE(cong.contains({1, 0}, {0}));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Functions for subsequent tests by Florent Hivert and Joel Gay.
+    ////////////////////////////////////////////////////////////////////////
+
+    std::vector<relation_type> RennerCommonTypeBMonoid(size_t l, int q) {
+      // q is supposed to be 0 or 1
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t id = 2 * l + 1;
+
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      // identity relations
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+        rels.push_back({{id, e[i]}, {e[i]}});
+        rels.push_back({{e[i], id}, {e[i]}});
+      }
+      rels.push_back({{id, e[l]}, {e[l]}});
+      rels.push_back({{e[l], id}, {e[l]}});
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+          // default: assert(FALSE)
+      }
+      for (int i = 0; i < static_cast<int>(l); ++i) {
+        for (int j = 0; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
+        }
       }
 
-      LIBSEMIGROUPS_TEST_CASE("032", "contains", "[broken]") {
-        REPORTER.set_report(true);
-        FpSemigroup S;
-        S.set_alphabet(2);
-        Congruence cong(TWOSIDED, S);
-        cong.add_pair({0, 0}, {0});
-        cong.add_pair({0, 1}, {0});
-        cong.add_pair({1, 0}, {0});
-        // FIXME this runs forever but shouldn't!
-        REQUIRE(cong.contains({0, 0}, {0}));
-        REQUIRE(cong.contains({0, 1}, {0}));
-        REQUIRE(cong.contains({1, 0}, {0}));
+      for (size_t i = 1; i < l - 1; ++i) {
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
       }
+
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+
+      for (size_t i = 1; i < l; ++i) {
+        for (size_t j = 0; j < i; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+        }
+      }
+
+      for (size_t i = 0; i < l; ++i) {
+        for (size_t j = i + 1; j < l + 1; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+          rels.push_back({{s[i], e[j]}, {e[j]}});
+        }
+      }
+
+      for (size_t i = 0; i < l + 1; ++i) {
+        for (size_t j = 0; j < l + 1; ++j) {
+          rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
+          rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+        }
+      }
+
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+      }
+
+      return rels;
+    }
+
+    std::vector<relation_type> EGTypeBMonoid(size_t l, int q) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t id = 2 * l + 1;
+
+      std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
+
+      if (l >= 2)
+        rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
+
+      return rels;
+    }
+
+    std::vector<size_t> max_elt_B(size_t i) {
+      std::vector<size_t> t(0);
+      for (int end = i; end >= 0; end--) {
+        for (int k = 0; k <= end; k++) {
+          t.push_back(k);
+        }
+      }
+      return t;
+    }
+
+    std::vector<relation_type> RennerTypeBMonoid(size_t l, int q) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t id = 2 * l + 1;
+
+      std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
+
+      for (size_t i = 1; i < l; i++) {
+        std::vector<size_t> new_rel = max_elt_B(i);
+        new_rel.push_back(e[0]);
+        new_rel.insert(new_rel.begin(), e[0]);
+        rels.push_back({new_rel, {e[i + 1]}});
+      }
+
+      return rels;
+    }
+
+    std::vector<relation_type> RennerCommonTypeDMonoid(size_t l, int q) {
+      // q is supposed to be 0 or 1
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);  // 0 est \pi_1^f et 1 est \pi_1^e
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t f  = 2 * l + 1;
+      size_t id = 2 * l + 2;
+
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      // identity relations
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+        rels.push_back({{id, e[i]}, {e[i]}});
+        rels.push_back({{e[i], id}, {e[i]}});
+      }
+      rels.push_back({{id, e[l]}, {e[l]}});
+      rels.push_back({{e[l], id}, {e[l]}});
+      rels.push_back({{id, f}, {f}});
+      rels.push_back({{f, id}, {f}});
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+          // default: assert(FALSE)
+      }
+      for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
+        for (int j = 1; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
+        }
+      }
+      for (int i = 3; i < static_cast<int>(l);
+           ++i) {  // \pi_1^f avec les \pi_i pour i>2
+        rels.push_back({{s[0], s[i]}, {s[i], s[0]}});
+      }
+      rels.push_back({{s[0], s[1]}, {s[1], s[0]}});  // \pi_1^f avec \pi_1^e
+
+      for (size_t i = 1; i < l - 1; ++i) {  // tresses
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+      }
+      if (l > 2) {
+        rels.push_back(
+            {{s[0], s[2], s[0]}, {s[2], s[0], s[2]}});  // tresse de \pi_1^f
+      }
+
+      for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
+        for (size_t j = 0; j < i; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+        }
+        rels.push_back({{s[i], f}, {f, s[i]}});
+      }
+      rels.push_back({{s[0], f}, {f, s[0]}});        // commutation \pi_1^f et f
+      rels.push_back({{s[1], e[0]}, {e[0], s[1]}});  // commutation \pi_1^e et e
+
+      for (size_t i = 1; i < l; ++i) {  // absorption
+        for (size_t j = i + 1; j < l + 1; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+          rels.push_back({{s[i], e[j]}, {e[j]}});
+          if (i == 1) {  // cas particulier \pi_1^f
+            rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
+            rels.push_back({{s[0], e[j]}, {e[j]}});
+          }
+        }
+      }
+
+      for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
+        for (size_t j = 0; j < l + 1; ++j) {
+          rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
+          rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+        }
+        if (i > 1) {
+          rels.push_back({{f, e[i]}, {e[i], f}});
+          rels.push_back({{f, e[i]}, {e[i]}});
+        }
+      }
+      rels.push_back({{f, f}, {f}});
+      rels.push_back({{f, e[0]}, {e[1]}});
+      rels.push_back({{e[0], f}, {e[1]}});
+
+      for (size_t i = 2; i < l; ++i) {
+        rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+      }
+      rels.push_back({{e[0], s[0], e[0]}, {e[2]}});
+      rels.push_back({{f, s[1], f}, {e[2]}});
+
+      return rels;
+    }
+
+    std::vector<relation_type> EGTypeDMonoid(size_t l, int q) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t f  = 2 * l + 1;
+      size_t id = 2 * l + 2;
+
+      std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
+
+      if (l >= 3) {
+        rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
+        rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
+      }
+      return rels;
+    }
+
+    std::vector<size_t> max_elt_D(size_t i, int g) {
+      // g est 0 ou 1 : 0 pour f et 1 pour e
+      std::vector<size_t> t(0);
+      int                 parity = g;
+      for (int end = i; end > 0; end--) {
+        t.push_back(parity);
+        for (int k = 2; k <= end; k++) {
+          t.push_back(k);
+        }
+        parity = (parity + 1) % 2;
+      }
+      return t;
+    }
+
+    std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t f  = 2 * l + 1;
+      size_t id = 2 * l + 2;
+
+      std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
+
+      for (size_t i = 2; i < l; i++) {
+        std::vector<size_t> new_rel_f = max_elt_D(i, 0);
+        std::vector<size_t> new_rel_e = max_elt_D(i, 1);
+
+        if (i % 2 == 0) {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(e[0]);
+          rels.push_back({new_rel_e, {e[i + 1]}});
+
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(f);
+          rels.push_back({new_rel_f, {e[i + 1]}});
+        } else {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(f);
+          rels.push_back({new_rel_e, {e[i + 1]}});
+
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(e[0]);
+          rels.push_back({new_rel_f, {e[i + 1]}});
+        }
+      }
+      return rels;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 001",
+                            "Renner monoid type B2 (E. G. presentation), q = 1",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+
+      for (relation_type const& rl : EGTypeBMonoid(2, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 57);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 002",
+                            "Renner monoid type B2 (E. G. presentation), q = 0",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : EGTypeBMonoid(2, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 57);
+    }
+
+    // Loops for ever: Infinite monoid ???
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 003",
+                            "Renner monoid type B3 (E. G. presentation), q = 1",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(8);
+      for (relation_type const& rl : EGTypeBMonoid(3, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      S.isomorphic_non_fp_semigroup()->enumerate(8000);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 8200);
+      // REQUIRE(S.size() == 757);
+    }
+
+    // Loops for ever: Infinite monoid ???
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 004",
+                            "Renner monoid type B3 (E. G. presentation), q = 0",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(8);
+      for (relation_type const& rl : EGTypeBMonoid(3, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      S.isomorphic_non_fp_semigroup()->enumerate(8000);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 8200);
+      // REQUIRE(S.size() == 757);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 005",
+        "Renner monoid type B2 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : RennerTypeBMonoid(2, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 57);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 006",
+        "Renner monoid type B2 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : RennerTypeBMonoid(2, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 57);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 007",
+        "Renner monoid type B3 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(8);
+      for (relation_type const& rl : RennerTypeBMonoid(3, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 757);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 008",
+        "Renner monoid type B3 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(8);
+      for (relation_type const& rl : RennerTypeBMonoid(3, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.size() == 757);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 009",
+        "Renner monoid type B4 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(10);
+      for (relation_type const& rl : RennerTypeBMonoid(4, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 115);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too but is slower :)
+      REQUIRE(S.size() == 13889);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 356);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 010",
+        "Renner monoid type B4 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(10);
+      for (relation_type const& rl : RennerTypeBMonoid(4, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 115);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too :)
+      REQUIRE(S.size() == 13889);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 356);
+    }
+
+    // This appears to be an example where KB + FP is faster than TC
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 011",
+        "Renner monoid type B5 (Gay-Hivert presentation), q = 1",
+        "[extreme][hivert]") {
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(12);
+      for (relation_type const& rl : RennerTypeBMonoid(5, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 165);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.todd_coxeter()->run(); // Seemingly runs forever
+      REQUIRE(S.size() == 322021);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1453);
+
+      congruence::ToddCoxeter tc(
+          TWOSIDED,
+          S.isomorphic_non_fp_semigroup(),
+          congruence::ToddCoxeter::policy::use_cayley_graph);
+      REQUIRE(tc.nr_classes() == 322021);  // Works!
+
+      // fpsemigroup::ToddCoxeter tc(S.isomorphic_non_fp_semigroup());
+      // REQUIRE(tc.nr_rules() == 1453); FIXME this gives an error, something
+      // is wrong, every relation seems to be added twice
+      // REQUIRE(tc.size() == 322021); // Runs forever
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 012",
+        "Renner monoid type B5 (Gay-Hivert presentation), q = 0",
+        "[extreme][hivert]") {
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(12);
+      for (relation_type const& rl : RennerTypeBMonoid(5, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 165);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.todd_coxeter()->run(); // TODO Check if it runs
+      REQUIRE(S.size() == 322021);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1453);
+
+      congruence::ToddCoxeter tc(
+          TWOSIDED,
+          S.isomorphic_non_fp_semigroup(),
+          congruence::ToddCoxeter::policy::use_cayley_graph);
+      REQUIRE(tc.nr_classes() == 322021);  // Works!
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 013",
+                            "Renner monoid type D2 (E. G. presentation), q = 1",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : EGTypeDMonoid(2, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 47);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too :)
+      REQUIRE(S.size() == 37);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 014",
+                            "Renner monoid type D2 (E. G. presentation), q = 0",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : EGTypeDMonoid(2, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 47);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too :)
+      REQUIRE(S.size() == 37);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 015",
+                            "Renner monoid type D3 (E. G. presentation), q = 1",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(9);
+      for (relation_type const& rl : EGTypeDMonoid(3, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 82);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+      REQUIRE(S.size() == 541);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 016",
+                            "Renner monoid type D3 (E. G. presentation), q = 0",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(9);
+      for (relation_type const& rl : EGTypeDMonoid(3, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 82);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+      REQUIRE(S.size() == 541);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 017",
+                            "Renner monoid type D4 (E. G. presentation), q = 1",
+                            "[quick][hivert]") {  // TODO check test category
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(11);
+      for (relation_type const& rl : EGTypeDMonoid(4, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 124);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+
+      S.isomorphic_non_fp_semigroup()->enumerate(10626);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_nrrules() == 417);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 10626);
+      // REQUIRE(S.size() == 10625); // Runs forever
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 018",
+                            "Renner monoid type D4 (E. G. presentation), q = 0",
+                            "[quick][hivert]") {  // TODO check test category
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(11);
+      for (relation_type const& rl : EGTypeDMonoid(4, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 124);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+
+      S.isomorphic_non_fp_semigroup()->enumerate(10626);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_nrrules() == 417);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 10626);
+      // REQUIRE(S.size() == 10625); // Runs forever
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 019",
+        "Renner monoid type D2 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : RennerTypeDMonoid(2, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 47);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too :)
+      REQUIRE(S.size() == 37);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 020",
+        "Renner monoid type D2 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : RennerTypeDMonoid(2, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 47);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too :)
+      REQUIRE(S.size() == 37);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 021",
+        "Renner monoid type D3 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(9);
+      for (relation_type const& rl : RennerTypeDMonoid(3, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 82);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+      REQUIRE(S.size() == 541);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 022",
+        "Renner monoid type D3 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(9);
+      for (relation_type const& rl : RennerTypeDMonoid(3, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 82);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+      REQUIRE(S.size() == 541);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 023",
+        "Renner monoid type D4 (Gay-Hivert presentation), q = 1",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(11);
+      for (relation_type const& rl : RennerTypeDMonoid(4, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 126);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+
+      REQUIRE(S.size() == 10625);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 419);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 024",
+        "Renner monoid type D4 (Gay-Hivert presentation), q = 0",
+        "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(11);
+      for (relation_type const& rl : RennerTypeDMonoid(4, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 126);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 10625);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 419);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 025",
+        "Renner monoid type D5 (Gay-Hivert presentation), q = 1",
+        "[extreme][hivert]") {  // TODO check the category
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(13);
+      for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 179);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+
+      REQUIRE(S.size() == 258661);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 026",
+        "Renner monoid type D5 (Gay-Hivert presentation), q = 0",
+        "[extreme][hivert]") {  // TODO check the category
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(13);
+      for (relation_type const& rl : RennerTypeDMonoid(5, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 179);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 258661);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    }
+
+    // Takes about 4 minutes
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 027",
+        "Renner monoid type D6 (Gay-Hivert presentation), q = 1",
+        "[extreme][hivert]") {
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(15);
+      for (relation_type const& rl : RennerTypeDMonoid(6, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 241);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+
+      REQUIRE(S.size() == 7464625);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    }
+
+    // Takes about 4 minutes
+    LIBSEMIGROUPS_TEST_CASE(
+        "FpSemigroup 028",
+        "Renner monoid type D6 (Gay-Hivert presentation), q = 0",
+        "[extreme][hivert]") {
+      REPORTER.set_report(true);
+      FpSemigroup S;
+      S.set_alphabet(15);
+      for (relation_type const& rl : RennerTypeDMonoid(6, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 241);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      S.knuth_bendix()->knuth_bendix_by_overlap_length();
+      REQUIRE(S.size() == 7464625);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 4570);
+    }
+
+    std::vector<relation_type> RookMonoid(size_t l, int q) {
+      // q is supposed to be 0 or 1
+
+      std::vector<size_t> s;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);  // 0 est \pi_0
+      }
+
+      // identity relations
+      size_t                     id   = l;
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+      }
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          rels.push_back({{s[0], s[0]}, {s[0]}});
+          for (size_t i = 1; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+          // default: assert(FALSE)
+      }
+      for (int i = 0; i < static_cast<int>(l); ++i) {
+        for (int j = 0; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
+        }
+      }
+
+      for (size_t i = 1; i < l - 1; ++i) {
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+      }
+
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0]}});
+
+      return rels;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 029",
+                            "Rook monoid R5, q = 0",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : RookMonoid(5, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 33);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 1546);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 71);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 030",
+                            "Rook monoid R5, q = 1",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : RookMonoid(5, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 33);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 1546);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 71);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 031",
+                            "Rook monoid R6, q = 0",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : RookMonoid(6, 0)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 45);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 13327);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("FpSemigroup 032",
+                            "Rook monoid R6, q = 1",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : RookMonoid(6, 1)) {
+        S.add_rule(rl);
+      }
+      REQUIRE(S.nr_rules() == 45);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 13327);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
+    }
+
+    template <typename T>
+    std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
+      lhs.insert(lhs.end(), rhs.begin(), rhs.end());
+      return lhs;
+    }
+
+    std::vector<relation_type> Stell(size_t l) {
+      std::vector<size_t> pi;
+      for (size_t i = 0; i < l; ++i) {
+        pi.push_back(i);  // 0 est \pi_0
+      }
+
+      std::vector<relation_type> rels{};
+      std::vector<size_t>        t{pi[0]};
+      for (int i = 1; i < static_cast<int>(l); ++i) {
+        t.insert(t.begin(), pi[i]);
+        rels.push_back({concat(t, {pi[i]}), t});
+      }
+      return rels;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 033", "Stellar S2", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(3);
+      for (relation_type const& rl : RookMonoid(2, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 9);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 7);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 7);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(2)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 5);
+      REQUIRE(cong.nr_non_trivial_classes() == 1);
+
+      std::vector<word_type> v(cong.cbegin_ntc()->cbegin(),
+                               cong.cbegin_ntc()->cend());
+      std::sort(v.begin(), v.end());
+      REQUIRE(v == std::vector<word_type>({{0, 1, 0}, {1, 0}, {1, 0, 1}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 034", "Stellar S3", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(4);
+      for (relation_type const& rl : RookMonoid(3, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 15);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 34);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 34);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(3)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 16);
+      REQUIRE(cong.nr_non_trivial_classes() == 4);
+
+      using non_trivial_classes_type = Congruence::non_trivial_classes_type;
+
+      non_trivial_classes_type v;
+      v.reserve(cong.nr_non_trivial_classes());
+      for (auto it = cong.cbegin_ntc(); it < cong.cend_ntc(); ++it) {
+        v.push_back(std::vector<word_type>(it->cbegin(), it->cend()));
+        std::sort(v.back().begin(), v.back().end());
+      }
+      std::sort(v.begin(), v.end());
+
+      REQUIRE(v
+              == non_trivial_classes_type(
+                     {{{0, 1, 0}, {1, 0}, {1, 0, 1}},
+                      {{0, 1, 0, 2}, {1, 0, 1, 2}, {1, 0, 2}},
+                      {{0, 1, 0, 2, 1}, {1, 0, 1, 2, 1}, {1, 0, 2, 1}},
+                      {{0, 1, 0, 2, 1, 0},
+                       {0, 1, 2, 1, 0},
+                       {0, 1, 2, 1, 0, 1},
+                       {0, 2, 1, 0},
+                       {1, 0, 1, 2, 1, 0},
+                       {1, 0, 1, 2, 1, 0, 1},
+                       {1, 0, 2, 1, 0},
+                       {1, 2, 1, 0},
+                       {1, 2, 1, 0, 1},
+                       {1, 2, 1, 0, 1, 2},
+                       {2, 1, 0},
+                       {2, 1, 0, 1},
+                       {2, 1, 0, 1, 2}}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 035", "Stellar S4", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(5);
+      for (relation_type const& rl : RookMonoid(4, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 23);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 209);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 209);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(4)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 65);
+      REQUIRE(cong.nr_non_trivial_classes() == 17);
+
+      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::transform(cong.cbegin_ntc(),
+                     cong.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      std::sort(v.begin(), v.end());
+      REQUIRE(v
+              == std::vector<size_t>(
+                     {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13, 73}));
+      REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
+                  + (cong.nr_classes() - cong.nr_non_trivial_classes())
+              == 209);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 036", "Stellar S5", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(6);
+      for (relation_type const& rl : RookMonoid(5, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 33);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 1546);
+      REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 1546);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(5)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 326);
+      REQUIRE(cong.nr_non_trivial_classes() == 86);
+
+      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::transform(cong.cbegin_ntc(),
+                     cong.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      REQUIRE(std::count(v.cbegin(), v.cend(), 3) == 60);
+      REQUIRE(std::count(v.cbegin(), v.cend(), 13) == 20);
+      REQUIRE(std::count(v.cbegin(), v.cend(), 73) == 5);
+      REQUIRE(std::count(v.cbegin(), v.cend(), 501) == 1);
+      REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
+                  + (cong.nr_classes() - cong.nr_non_trivial_classes())
+              == S.size());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 037", "Stellar S6", "[quick]") {
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(7);
+      for (relation_type const& rl : RookMonoid(6, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 45);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 13327);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(6)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 1957);
+      REQUIRE(cong.nr_non_trivial_classes() == 517);
+
+      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::transform(cong.cbegin_ntc(),
+                     cong.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
+                  + (cong.nr_classes() - cong.nr_non_trivial_classes())
+              == S.size());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 038", "Stellar S7", "[standard]") {
+      // TODO check test category
+      REPORTER.set_report(REPORT);
+      FpSemigroup S;
+      S.set_alphabet(8);
+      for (relation_type const& rl : RookMonoid(7, 0)) {
+        S.add_rule(rl);
+      }
+
+      REQUIRE(S.nr_rules() == 59);
+      REQUIRE(!S.is_obviously_infinite());
+      REQUIRE(!S.knuth_bendix()->confluent());
+      REQUIRE(S.size() == 130922);
+
+      Congruence cong(TWOSIDED, S);
+      for (relation_type const& rl : Stell(7)) {
+        cong.add_pair(rl.first, rl.second);
+      }
+      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.nr_classes() == 13700);
+      REQUIRE(cong.nr_non_trivial_classes() == 3620);
+
+      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::transform(cong.cbegin_ntc(),
+                     cong.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
+                  + (cong.nr_classes() - cong.nr_non_trivial_classes())
+              == S.size());
+    }
   }  // namespace tmp
 }  // namespace libsemigroups
-        /*fpsemigroup::KnuthBendix S;
-        S.set_alphabet(2);
-        S.add_rule({0, 0}, {0});
-        S.add_rule({0, 1}, {0});
-        S.add_rule({1, 0}, {0});
-
-        REQUIRE(S.equal_to(word_type({0, 0}), word_type({0})));*/

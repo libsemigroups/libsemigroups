@@ -42,8 +42,8 @@ namespace libsemigroups {
     //! Type for indices of congruence classes in a CongIntf
     //! object.
     using class_index_type = size_t;
-    using non_trivial_class_iterator
-        = std::vector<std::vector<word_type>>::const_iterator;
+    using non_trivial_classes_type = std::vector<std::vector<word_type>>;
+    using non_trivial_class_iterator = non_trivial_classes_type::const_iterator;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongIntf - constructors + destructor - public

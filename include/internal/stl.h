@@ -54,6 +54,14 @@ namespace libsemigroups {
     return os;
   }
 
+  // A << method for pairs
+  template <typename T, typename S>
+  std::ostringstream& operator<<(std::ostringstream&    os,
+                                 std::pair<T, S> const& pair) {
+    os << "{" << to_string(pair.first) << ", " << to_string(pair.second) << "}";
+    return os;
+  }
+
   //! Returns a string representing an object of type \c T.
   //!
   //! It appears that GCC 4.9.1 (at least) do not have std::to_string

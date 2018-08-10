@@ -1208,7 +1208,9 @@ std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
 
 TEST_CASE("Congruence 29: Renner monoid type B2 (E. G. presentation), q = 1",
           "[congruence][fpsemigroup][quick][29]") {
+
   Congruence cong("twosided", 6, {}, EGTypeBMonoid(2, 1));
+  std::cout << to_string(EGTypeBMonoid(2, 1)) << std::endl;
   REPORTER.set_report(CONG_REPORT);
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 57);
@@ -1419,7 +1421,7 @@ TEST_CASE(
   REQUIRE(!cong.is_obviously_infinite());
   REQUIRE(cong.nr_classes() == 10625);
 }
-
+// HERE
 TEST_CASE(
     "Congruence 53: Renner monoid type D5 (Gay-Hivert presentation), q = 1",
     "[congruence][fpsemigroup][extreme][53]") {

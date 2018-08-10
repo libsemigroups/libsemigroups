@@ -1571,7 +1571,9 @@ namespace libsemigroups {
                           << current_max_word_length() << ", finished")
         }
       }
-      REPORT("elapsed time = " << timer);
+      if (is_begun()) {
+        REPORT("elapsed time = " << timer);
+      }
     }
 
     //! Add copies of the generators \p coll to the generators of \c this.

@@ -25,6 +25,6 @@
 #define STR(X) STR2(X)
 
 #define LIBSEMIGROUPS_TEST_CASE(id, msg, tags) \
-  TEST_CASE(id ": " msg, "[" __FILE__ "][" STR(__LINE__) "][" id "]" tags)
+  TEST_CASE(id ": " msg, "[" id "][" __FILE__ "][" STR(__LINE__) "]" tags)
 
 #endif // LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_

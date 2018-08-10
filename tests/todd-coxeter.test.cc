@@ -20,7 +20,7 @@
 
 #include <utility>
 
-#include "catch.hpp"
+#include "libsemigroups.tests.hpp"
 
 #include "internal/report.h"
 
@@ -46,6 +46,10 @@ namespace libsemigroups {
 
     constexpr bool REPORT = false;
 
+    congruence_type constexpr TWOSIDED = congruence_type::TWOSIDED;
+    congruence_type constexpr LEFT     = congruence_type::LEFT;
+    congruence_type constexpr RIGHT    = congruence_type::RIGHT;
+
     TEST_CASE("Todd-Coxeter 01: small fp semigroup",
               "[quick][todd-coxeter][01]") {
       REPORTER.set_report(REPORT);
@@ -54,7 +58,7 @@ namespace libsemigroups {
       rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
       rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
 
-      ToddCoxeter tc(congruence_type::TWOSIDED, 2, rels);
+      ToddCoxeter tc(TWOSIDED, 2, rels);
 
       REQUIRE(!tc.finished());
 
@@ -88,7 +92,7 @@ namespace libsemigroups {
              relation_type({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
                             1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                            {0})};
-      ToddCoxeter tc(congruence_type::TWOSIDED, 4, rels, {});
+      ToddCoxeter tc(TWOSIDED, 4, rels, {});
       tc.run_for(std::chrono::milliseconds(200));
       REQUIRE(tc.nr_classes() == 10752);
 
@@ -102,18 +106,16 @@ namespace libsemigroups {
     TEST_CASE("Todd-Coxeter 03: ToddCoxeter constructed with Semigroup",
               "[quick][todd-coxeter][03]") {
       REPORTER.set_report(REPORT);
-      std::vector<BMat8> gens
-          = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-             BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-             BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-             BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-      Semigroup<BMat8> S(gens);
+      Semigroup<BMat8> S(
+          {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
-      ToddCoxeter tc(congruence_type::TWOSIDED,
-                     &S,
-                     {{{0}, {1}}},
-                     ToddCoxeter::policy::use_relations);
+      ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_relations);
+
+      tc.add_pair({0}, {1});
       REQUIRE(tc.nr_classes() == 3);
     }
 
@@ -127,15 +129,10 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 88);
 
-      word_type w1, w2;
-      S.factorisation(w1, S.position(Transf({3, 4, 4, 4, 4})));
-      S.factorisation(w2, S.position(Transf({3, 1, 3, 3, 3})));
+      ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_cayley_graph);
+      tc.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf({3, 1, 3, 3, 3})));
 
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(congruence_type::TWOSIDED,
-                     &S,
-                     extra,
-                     ToddCoxeter::policy::use_cayley_graph);
       REQUIRE(tc.nr_classes() == 21);
     }
 
@@ -155,10 +152,10 @@ namespace libsemigroups {
                                               relation_type({2, 2}, {1})};
       std::vector<relation_type> extra     = {relation_type({0}, {1})};
 
-      ToddCoxeter tc1(congruence_type::TWOSIDED, 3, relations, extra);
+      ToddCoxeter tc1(TWOSIDED, 3, relations, extra);
       REQUIRE(tc1.nr_classes() == 2);
 
-      ToddCoxeter tc2(congruence_type::TWOSIDED, 3, relations, {});
+      ToddCoxeter tc2(TWOSIDED, 3, relations, {});
       REQUIRE(tc2.nr_classes() == 2);
     }
 
@@ -171,7 +168,7 @@ namespace libsemigroups {
       rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
       std::vector<relation_type> extra;
 
-      ToddCoxeter tc(congruence_type::RIGHT, 2, rels, extra);
+      ToddCoxeter tc(RIGHT, 2, rels, extra);
       REQUIRE(tc.nr_classes() == 5);
       REQUIRE(tc.finished());
     }
@@ -186,7 +183,7 @@ namespace libsemigroups {
       rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
       std::vector<relation_type> extra;
 
-      ToddCoxeter tc(congruence_type::LEFT, 2, rels, extra);
+      ToddCoxeter tc(LEFT, 2, rels, extra);
       REQUIRE(tc.word_to_class_index({0, 0, 1})
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
       REQUIRE(tc.word_to_class_index({0, 1, 1, 0, 0, 1})
@@ -205,7 +202,7 @@ namespace libsemigroups {
       rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
       std::vector<relation_type> extra;
 
-      ToddCoxeter tc1(congruence_type::TWOSIDED, 2, rels, extra);
+      ToddCoxeter tc1(TWOSIDED, 2, rels, extra);
       REQUIRE(tc1.word_to_class_index({0, 0, 1})
               == tc1.word_to_class_index({0, 0, 0, 0, 1}));
       REQUIRE(tc1.word_to_class_index({0, 1, 1, 0, 0, 1})
@@ -213,151 +210,108 @@ namespace libsemigroups {
       REQUIRE(tc1.word_to_class_index({0, 0, 0})
               != tc1.word_to_class_index({1}));
 
-      ToddCoxeter tc2(congruence_type::TWOSIDED, 2, rels, extra);
+      ToddCoxeter tc2(TWOSIDED, 2, rels, extra);
 
       REQUIRE(tc2.word_to_class_index({0, 0, 0, 0}) < tc2.nr_classes());
     }
 
-    TEST_CASE("Todd-Coxeter 12: transformation semigroup size 88",
+    TEST_CASE("Todd-Coxeter 12: 2-sided cong. trans. semigroup",
               "[quick][todd-coxeter][12]") {
       REPORTER.set_report(REPORT);
-      std::vector<Element*> vec
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(vec);
+      auto S = Semigroup<Transformation<u_int16_t>>(
+          {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+           Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nrrules() == 18);
-      REQUIRE(S.degree() == 5);
 
-      vec.push_back(new Transformation<u_int16_t>({3, 4, 4, 4, 4}));
-      word_type w1;
-      S.factorisation(w1, S.position(vec.back()));
-
-      vec.push_back(new Transformation<u_int16_t>({3, 1, 3, 3, 3}));
-      word_type w2;
-      S.factorisation(w2, S.position(vec.back()));
-
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(congruence_type::TWOSIDED,
-                     &S,
-                     extra,
-                     ToddCoxeter::policy::use_relations);
+      ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_relations);
+      tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transformation<u_int16_t>({3, 1, 3, 3, 3})));
 
       REQUIRE(tc.nr_classes() == 21);
       REQUIRE(tc.nr_classes() == 21);
 
-      vec.push_back(new Transformation<u_int16_t>({1, 3, 1, 3, 3}));
-      S.factorisation(w1, S.position(vec.back()));
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({1, 3, 1, 3, 3})))
+              == tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({4, 2, 4, 4, 2}))));
 
-      vec.push_back(new Transformation<u_int16_t>({4, 2, 4, 4, 2}));
-      S.factorisation(w2, S.position(vec.back()));
-
-      REQUIRE(tc.word_to_class_index(w1) == tc.word_to_class_index(w2));
-
-      // Partition<word_type>* ntc = tc.nontrivial_classes();
-      // REQUIRE(ntc->size() == 1);
-      // REQUIRE(ntc->at(0)->size() == 68);
-      // delete ntc;
-
-      delete_gens(vec);
+      REQUIRE(tc.nr_non_trivial_classes() == 1);
+      REQUIRE(tc.cbegin_ntc()->size() == 68);
     }
 
-    TEST_CASE(
-        "Todd-Coxeter 13: left congruence on transformation semigroup size 88",
-        "[quick][todd-coxeter][13]") {
+    TEST_CASE("Todd-Coxeter 13: left cong. trans. semigroup",
+              "[quick][todd-coxeter][13]") {
       REPORTER.set_report(REPORT);
-      std::vector<Element*> vec
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(vec);
-
-      REQUIRE(S.size() == 88);
-      REQUIRE(S.degree() == 5);
-
-      vec.push_back(new Transformation<u_int16_t>({3, 4, 4, 4, 4}));
-      word_type w1;
-      S.factorisation(w1, S.position(vec.back()));
-      vec.push_back(new Transformation<u_int16_t>({3, 1, 3, 3, 3}));
-      word_type w2;
-      S.factorisation(w2, S.position(vec.at(3)));
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(
-          congruence_type::LEFT, &S, extra, ToddCoxeter::policy::use_relations);
-
-      REQUIRE(tc.nr_classes() == 69);
-      REQUIRE(tc.nr_classes() == 69);
-
-      // Partition<word_type>* ntc = tc.nontrivial_classes();
-      // REQUIRE(ntc->size() == 1);
-      // REQUIRE(ntc->at(0)->size() == 20);
-      // delete ntc;
-
-      delete_gens(vec);
-    }
-
-    TEST_CASE(
-        "Todd-Coxeter 14: right congruence on transformation semigroup size 88",
-        "[quick][todd-coxeter][14]") {
-      REPORTER.set_report(REPORT);
-      std::vector<Element*> vec
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(vec);
+      auto S = Semigroup<Transformation<u_int16_t>>(
+          {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+           Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nrrules() == 18);
-      REQUIRE(S.degree() == 5);
 
-      word_type w1, w2;
-      vec.push_back(new Transformation<u_int16_t>({3, 4, 4, 4, 4}));
-      S.factorisation(w1, S.position(vec.back()));
-      vec.push_back(new Transformation<u_int16_t>({3, 1, 3, 3, 3}));
-      S.factorisation(w2, S.position(vec.back()));
+      ToddCoxeter tc(LEFT, S, ToddCoxeter::policy::use_relations);
+      tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transformation<u_int16_t>({3, 1, 3, 3, 3})));
 
-      ToddCoxeter tc(congruence_type::RIGHT,
-                     &S,
-                     {relation_type(w1, w2)},
-                     ToddCoxeter::policy::use_relations);
+      REQUIRE(tc.nr_classes() == 69);
+      REQUIRE(tc.nr_classes() == 69);
+
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({1, 3, 1, 3, 3})))
+              != tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({4, 2, 4, 4, 2}))));
+
+      REQUIRE(tc.nr_non_trivial_classes() == 1);
+      REQUIRE(tc.cbegin_ntc()->size() == 20);
+    }
+
+    TEST_CASE("Todd-Coxeter 14: right cong. trans. semigroup",
+              "[quick][todd-coxeter][13]") {
+      REPORTER.set_report(REPORT);
+      auto S = Semigroup<Transformation<u_int16_t>>(
+          {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
+           Transformation<u_int16_t>({3, 2, 1, 3, 3})});
+
+      REQUIRE(S.size() == 88);
+      REQUIRE(S.nrrules() == 18);
+
+      ToddCoxeter tc(RIGHT, S, ToddCoxeter::policy::use_relations);
+      tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transformation<u_int16_t>({3, 1, 3, 3, 3})));
 
       REQUIRE(tc.nr_classes() == 72);
       REQUIRE(tc.nr_classes() == 72);
 
-      word_type w3, w4, w5, w6;
-      vec.push_back(new Transformation<u_int16_t>({1, 3, 3, 3, 3}));
-      S.factorisation(w3, S.position(vec.back()));
-      vec.push_back(new Transformation<u_int16_t>({4, 2, 4, 4, 2}));
-      S.factorisation(w4, S.position(vec.back()));
-      vec.push_back(new Transformation<u_int16_t>({2, 4, 2, 2, 2}));
-      S.factorisation(w5, S.position(vec.back()));
-      vec.push_back(new Transformation<u_int16_t>({2, 3, 3, 3, 3}));
-      S.factorisation(w6, S.position(vec.back()));
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({1, 3, 1, 3, 3})))
+              != tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({4, 2, 4, 4, 2}))));
 
-      REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
-      REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
-      REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w6));
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({1, 3, 3, 3, 3})))
+              != tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({4, 2, 4, 4, 2}))));
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({2, 4, 2, 2, 2})))
+              == tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({2, 3, 3, 3, 3}))));
+      REQUIRE(tc.word_to_class_index(
+                  S.factorisation(Transformation<u_int16_t>({1, 3, 3, 3, 3})))
+              != tc.word_to_class_index(S.factorisation(
+                     Transformation<u_int16_t>({2, 3, 3, 3, 3}))));
 
-      // Partition<word_type>* ntc = tc.nontrivial_classes();
-      // REQUIRE(ntc->size() == 4);
-      // std::vector<size_t> sizes({0, 0, 0});
-      // for (size_t i = 0; i < ntc->size(); i++) {
-      //   switch (ntc->at(i)->size()) {
-      //     case 3:
-      //       sizes[0]++;
-      //       break;
-      //     case 5:
-      //       sizes[1]++;
-      //       break;
-      //     case 7:
-      //       sizes[2]++;
-      //       break;
-      //     default:
-      //       REQUIRE(false);
-      //   }
-      // }
-      // REQUIRE(sizes == std::vector<size_t>({1, 2, 1}));
-      // delete ntc;
-      delete_gens(vec);
+      REQUIRE(tc.nr_non_trivial_classes() == 4);
+
+      std::vector<size_t> v(tc.nr_non_trivial_classes(), 0);
+      std::transform(tc.cbegin_ntc(),
+                     tc.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      REQUIRE(std::count(v.cbegin(), v.cend(), 3) == 1);
+      REQUIRE(std::count(v.cbegin(), v.cend(), 5) == 2);
+      REQUIRE(std::count(v.cbegin(), v.cend(), 7) == 1);
     }
 
     TEST_CASE("Todd-Coxeter 15: transformation semigroup size 88",
@@ -374,16 +328,15 @@ namespace libsemigroups {
       REQUIRE(S.nrrules() == 18);
       REQUIRE(S.degree() == 5);
 
+      ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_cayley_graph);
+
       Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
       Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
       word_type w1, w2;
       S.factorisation(w1, S.position(t1));
       S.factorisation(w2, S.position(t2));
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(congruence_type::TWOSIDED,
-                     &S,
-                     extra,
-                     ToddCoxeter::policy::use_cayley_graph);
+
+      tc.add_pair(w1, w2);
 
       REQUIRE(tc.nr_classes() == 21);
       REQUIRE(tc.nr_classes() == 21);
@@ -417,9 +370,8 @@ namespace libsemigroups {
       word_type w1, w2;
       S.factorisation(w1, S.position(t1));
       S.factorisation(w2, S.position(t2));
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(
-          congruence_type::LEFT, &S, extra, ToddCoxeter::policy::use_relations);
+      ToddCoxeter tc(LEFT, &S, ToddCoxeter::policy::use_relations);
+      tc.add_pair(w1, w2);
 
       REPORTER.set_report(REPORT);
 
@@ -455,11 +407,8 @@ namespace libsemigroups {
       word_type w1, w2;
       S.factorisation(w1, S.position(t1));
       S.factorisation(w2, S.position(t2));
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(congruence_type::RIGHT,
-                     &S,
-                     extra,
-                     ToddCoxeter::policy::use_relations);
+      ToddCoxeter tc(RIGHT, S, ToddCoxeter::policy::use_relations);
+      tc.add_pair(w1, w2);
 
       REPORTER.set_report(REPORT);
 
@@ -507,7 +456,7 @@ namespace libsemigroups {
                                          relation_type({4, 4, 4}, {0})};
       std::vector<relation_type> extra = {};
 
-      ToddCoxeter tc(congruence_type::TWOSIDED, 5, rels, extra);
+      ToddCoxeter tc(TWOSIDED, 5, rels, extra);
       REQUIRE(tc.nr_classes() == 6);
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
     }
@@ -538,7 +487,7 @@ namespace libsemigroups {
              relation_type({2, 0, 1, 0}, {2, 0, 1}),
              relation_type({2, 0, 2, 0}, {2, 0, 2})};
       std::vector<relation_type> extra = {};
-      ToddCoxeter                tc(congruence_type::TWOSIDED, 4, rels, extra);
+      ToddCoxeter                tc(TWOSIDED, 4, rels, extra);
 
       REQUIRE(tc.nr_classes() == 16);
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
@@ -599,7 +548,7 @@ namespace libsemigroups {
              relation_type({3, 0, 3, 0}, {3, 0, 3})};
       std::vector<relation_type> extra = {};
 
-      ToddCoxeter tc(congruence_type::TWOSIDED, 11, rels, extra);
+      ToddCoxeter tc(TWOSIDED, 11, rels, extra);
 
       REQUIRE(tc.nr_classes() == 16);
       REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
@@ -634,7 +583,7 @@ namespace libsemigroups {
       std::for_each(
           table.begin() + table.nr_cols(), table.end(), [](size_t& i) { ++i; });
 
-      ToddCoxeter tc(congruence_type::TWOSIDED, 2, {}, {});
+      ToddCoxeter tc(TWOSIDED, 2, {}, {});
       REQUIRE(tc.get_policy() == ToddCoxeter::policy::none);
       tc.prefill(table);
       REQUIRE(!tc.is_quotient_obviously_infinite());
@@ -660,13 +609,11 @@ namespace libsemigroups {
              relation_type({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
              relation_type({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
 
-      ToddCoxeter tc1(
-          congruence_type::TWOSIDED, 2, rels, std::vector<relation_type>());
+      ToddCoxeter tc1(TWOSIDED, 2, rels, std::vector<relation_type>());
       tc1.set_pack(10);
       REQUIRE(tc1.nr_classes() == 78);
 
-      ToddCoxeter tc2(
-          congruence_type::LEFT, 2, rels, std::vector<relation_type>());
+      ToddCoxeter tc2(LEFT, 2, rels, std::vector<relation_type>());
       tc2.set_pack(10);
       REQUIRE(tc2.nr_classes() == 78);
     }
@@ -693,26 +640,66 @@ namespace libsemigroups {
       delete t1;
       delete t2;
 
-      std::vector<relation_type> extra({relation_type(w1, w2)});
-      ToddCoxeter                tc(congruence_type::LEFT,
-                     &S,
-                     extra,
-                     ToddCoxeter::policy::use_cayley_graph);
+      ToddCoxeter tc(LEFT, S, ToddCoxeter::policy::use_cayley_graph);
+      tc.add_pair(w1, w2);
       REQUIRE(tc.nr_classes() == 69);
     }
 
     TEST_CASE("Todd-Coxeter 25: 2-sided congruence on free semigroup",
               "[quick][todd-coxeter][25]") {
       REPORTER.set_report(REPORT);
-      ToddCoxeter tc(congruence_type::TWOSIDED, 1, {});
+      ToddCoxeter tc(TWOSIDED, 1, {});
       REQUIRE(tc.contains({0, 0}, {0, 0}));
       REQUIRE(!tc.contains({0, 0}, {0}));
     }
 
     TEST_CASE("Todd-Coxeter 27: calling run when obviously infinite",
               "[quick][todd-coxeter][27]") {
-      ToddCoxeter tc(congruence_type::TWOSIDED, 5, {});
+      ToddCoxeter tc(TWOSIDED, 5, {});
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Todd-Coxeter 030",
+                            "Stellar S3",
+                            "[quick][hivert]") {
+      REPORTER.set_report(REPORT);
+
+      congruence::ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(4);
+      tc.add_pair({3, 3}, {3});
+      tc.add_pair({0, 3}, {0});
+      tc.add_pair({3, 0}, {0});
+      tc.add_pair({1, 3}, {1});
+      tc.add_pair({3, 1}, {1});
+      tc.add_pair({2, 3}, {2});
+      tc.add_pair({3, 2}, {2});
+      tc.add_pair({0, 0}, {0});
+      tc.add_pair({1, 1}, {1});
+      tc.add_pair({2, 2}, {2});
+      tc.add_pair({0, 2}, {2, 0});
+      tc.add_pair({2, 0}, {0, 2});
+      tc.add_pair({1, 2, 1}, {2, 1, 2});
+      tc.add_pair({1, 0, 1, 0}, {0, 1, 0, 1});
+      tc.add_pair({1, 0, 1, 0}, {0, 1, 0});
+
+      REQUIRE(tc.nr_classes() == 34);
+      REQUIRE(tc.quotient_semigroup()->size() == 34);
+
+      auto S = static_cast<Semigroup<TCE>*>(tc.quotient_semigroup());
+      S->enumerate();
+      std::vector<TCE> v(S->cbegin(), S->cend());
+      std::sort(v.begin(), v.end());
+      REQUIRE(v
+              == std::vector<TCE>(
+                     {TCE(tc, 1),  TCE(tc, 2),  TCE(tc, 3),  TCE(tc, 4),
+                      TCE(tc, 5),  TCE(tc, 6),  TCE(tc, 7),  TCE(tc, 8),
+                      TCE(tc, 9),  TCE(tc, 10), TCE(tc, 11), TCE(tc, 12),
+                      TCE(tc, 13), TCE(tc, 14), TCE(tc, 15), TCE(tc, 16),
+                      TCE(tc, 17), TCE(tc, 18), TCE(tc, 19), TCE(tc, 20),
+                      TCE(tc, 21), TCE(tc, 22), TCE(tc, 23), TCE(tc, 24),
+                      TCE(tc, 25), TCE(tc, 26), TCE(tc, 27), TCE(tc, 28),
+                      TCE(tc, 29), TCE(tc, 30), TCE(tc, 31), TCE(tc, 32),
+                      TCE(tc, 33), TCE(tc, 34)}));
     }
   }  // namespace congruence_todd_coxeter
 
@@ -881,6 +868,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.size() == 99);
     }
+
 
   }  // namespace fpsemigroup_todd_coxeter
 }  // namespace libsemigroups*/

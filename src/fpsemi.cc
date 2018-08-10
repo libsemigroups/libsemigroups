@@ -110,16 +110,22 @@ namespace libsemigroups {
   }
 
   SemigroupBase* FpSemigroup::isomorphic_non_fp_semigroup() {
+    if (has_isomorphic_non_fp_semigroup()) {
+      return get_isomorphic_non_fp_semigroup();
+    }
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     // This loop is here in case one of the Runners in _race was created using
     // a non-f.p. semigroup, so we can just return that and not run the _race.
     for (auto runner : _race) {
       if (static_cast<FpSemiIntf*>(runner)->has_isomorphic_non_fp_semigroup()) {
-        return static_cast<FpSemiIntf*>(runner)->isomorphic_non_fp_semigroup();
+        set_isomorphic_non_fp_semigroup(
+            static_cast<FpSemiIntf*>(runner)->isomorphic_non_fp_semigroup());
+        return get_isomorphic_non_fp_semigroup();
       }
     }
-    return static_cast<FpSemiIntf*>(_race.winner())
-        ->isomorphic_non_fp_semigroup();
+    set_isomorphic_non_fp_semigroup(static_cast<FpSemiIntf*>(_race.winner())
+                                        ->isomorphic_non_fp_semigroup());
+    return get_isomorphic_non_fp_semigroup();
   }
 
   std::string FpSemigroup::normal_form(std::string const& w) {
@@ -177,10 +183,10 @@ namespace libsemigroups {
   bool FpSemigroup::has_knuth_bendix() const {
     try {
       knuth_bendix();
-      return true;
     } catch (...) {
       return false;
     }
+    return true;
   }
 
   fpsemigroup::ToddCoxeter* FpSemigroup::todd_coxeter() const {
@@ -190,10 +196,10 @@ namespace libsemigroups {
   bool FpSemigroup::has_todd_coxeter() const {
     try {
       todd_coxeter();
-      return true;
     } catch (...) {
       return false;
     }
+    return true;
   }
 
   //////////////////////////////////////////////////////////////////////////
