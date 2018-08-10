@@ -143,6 +143,7 @@ namespace libsemigroups {
     for (size_t pos = 0; pos < _parent->size(); ++pos) {
       _parent->factorisation(w, pos);
       _non_trivial_classes[word_to_class_index(w)].push_back(w);
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < _non_trivial_classes.size());
     }
 
     _non_trivial_classes.erase(

@@ -1384,5 +1384,7 @@ namespace libsemigroups {
 
       REQUIRE(kb.nr_classes() == 240);
     }
+
+    // TODO add tests from rws.1.test.cc
   }  // namespace knuth_bendix_congruence
 }  // namespace libsemigroups
