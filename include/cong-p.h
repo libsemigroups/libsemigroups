@@ -19,7 +19,7 @@
 // This file contains a method for enumerating a congruence by attempting to
 // find all pairs of related elements using brute force. This does not work
 // very well in most cases, due to the high complexity of the approach. Note
-// that currently it is only used with Semigroup<RWSE*>, and so doesn't
+// that currently it is only used with Semigroup<KBE>, and so doesn't
 // strictly have to be a class template.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_P_H_
@@ -538,115 +538,4 @@ namespace libsemigroups {
     // the rules from any underlying semigroup to the P.
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
-
-////////////////////////////////////////////////////////////////////////////////
-// OLD STUFF - TODO delete this
-////////////////////////////////////////////////////////////////////////////////
-
-// The following originates in the stable-1.0 branch
-/*
-    // Forward declaration
-    template <typename TElementType,
-              typename TElementHash,
-              typename TElementEqual>
-    class PE;
-
-      // FIXME it'd be better to just not have the next constructor in the case
-      // that TElementType != RWSE*.
-      P(congruence_t type, RWS* rws, std::vector<relation_t> extra = {})
-          : P(type, static_cast<Semigroup<TElementType>*>(nullptr), extra) {
-        if (!std::is_same<TElementType, RWSE*>::value) {
-          throw std::runtime_error(
-              "Something has gone wrong, this only works with RWSE*");
-        }
-        _rws = rws;
-      }
-
-      // TODO contains method (so that we can rewrite words using the rws, and
-      // if they are the same, then they represent the same class, i.e. we don't
-      // have to worry about running this at all.
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Class for elements of the quotient semigroup
-    ////////////////////////////////////////////////////////////////////////////
-
-    // FIXME the below is not finished!
-
-    template <typename TElementType,
-              typename TElementHash,
-              typename TElementEqual>
-    class PE {
-     public:
-      PE() = default;
-      PE(P<TElementType, TElementHash, TElementEqual>* p, class_index_t i)
-          : _p(p), _index(i) {}
-
-      ~PE() = default;
-
-      bool operator==(PE const& that) const {
-        return _index == that._index;
-      }
-
-      bool operator<(PE const& that) const {
-        return _index < that._index;
-      }
-
-      // Only works when that is a generator!!
-      inline PE operator*(PE const& that) const {
-        LIBSEMIGROUPS_ASSERT(that._index <= _p->nr_generators());
-        return PE(_p, _p->right(_index, that._index - 1));
-      }
-
-      inline PE one() const {
-        return PE(_p, 0);
-      }
-
-      class_index_t class_index() const {
-        return _index;
-      }
-
-     private:
-      P<TElementType, TElementHash, TElementEqual>* _p;
-      class_index_t                                 _index;
-    };
-  }  // namespace congruence
-
-  template <>
-  size_t ElementContainer<PE<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>>::
-      complexity(PE<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>) const {
-    return LIMIT_MAX;
-    }
-}  // namespace libsemigroups
-
-namespace std {
-  using libsemigroups::RWSE;
-  template <>
-  struct hash<
-      libsemigroups::PE<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>>> {
-    size_t operator()(
-        libsemigroups::PE<RWSE*, std::hash<RWSE*>, std::equal_to<RWSE*>> const&
-            x) const {
-      return x.class_index();
-    }
-  };
-}  // namespace std */
-
-// From v0.6.3
-//      result_t current_equals(word_type const& w1, word_type const& w2) final
-//      {
-//        if (is_done()) {
-//          return word_to_class_index(w1) == word_to_class_index(w2) ? TRUE
-//                                                                    : FALSE;
-//        }
-//        auto semigroup
-//            = static_cast<Semigroup<TElementType>*>(_cong._semigroup);
-//        element_type x     = semigroup->word_to_element(w1);
-//        element_type y     = semigroup->word_to_element(w2);
-//        size_t       ind_x = get_index(this->to_internal(x));
-//        size_t       ind_y = get_index(this->to_internal(y));
-//        this->external_free(x);
-//        this->external_free(y);
-//        return _lookup.find(ind_x) == _lookup.find(ind_y) ? TRUE : UNKNOWN;
-//      }
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_P_H_

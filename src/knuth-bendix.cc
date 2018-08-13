@@ -1092,7 +1092,10 @@ namespace libsemigroups {
 
     bool KnuthBendix::const_contains(word_type const& lhs,
                                      word_type const& rhs) const {
-      // FIXME Probably leaks or somehting
+      // FIXME Probably leaks or something
+      std::cout << _kb->rewrite(_kb->word_to_string(lhs)) << "\n";
+      std::cout << _kb->rewrite(_kb->word_to_string(rhs)) << "\n";
+
       return _kb->rewrite(_kb->word_to_string(lhs))
              == _kb->rewrite(_kb->word_to_string(rhs));
     }

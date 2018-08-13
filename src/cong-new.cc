@@ -80,7 +80,7 @@ namespace libsemigroups {
         // Method 1: use only the relations used to define S and genpairs to
         // run Todd-Coxeter. This runs whether or not we have computed a data
         // structure for S.
-        _race.add_runner(new ToddCoxeter(*S->todd_coxeter()));
+        _race.add_runner(new ToddCoxeter(type, *S->todd_coxeter()));
         if (S->todd_coxeter()->finished()) {
           LIBSEMIGROUPS_ASSERT(parent() == nullptr);
           set_parent(S->todd_coxeter()->isomorphic_non_fp_semigroup());

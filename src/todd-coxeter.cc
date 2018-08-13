@@ -128,15 +128,6 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase& S, policy p)
         : ToddCoxeter(type, &S, p) {}
 
-    /*    ToddCoxeter::ToddCoxeter(congruence_type                   type,
-                                 SemigroupBase*                    S,
-                                 std::vector<relation_type> const& genpairs,
-                                 policy                            p)
-            : ToddCoxeter(type, S, p) {
-          _extra = genpairs;
-        }*/
-
-    // TODO make this constructor private??
     ToddCoxeter::ToddCoxeter(congruence_type                   type,
                              size_t                            nrgens,
                              std::vector<relation_type> const& relations,
@@ -148,18 +139,19 @@ namespace libsemigroups {
       validate_relations();
     }
 
-    ToddCoxeter::ToddCoxeter(ToddCoxeter const& copy)
-        : ToddCoxeter(copy.type(),
+    ToddCoxeter::ToddCoxeter(congruence_type type, ToddCoxeter const& copy)
+        : ToddCoxeter(type,
                       copy.nr_generators(),
                       std::vector<relation_type>(copy._relations),
                       std::vector<relation_type>(copy._extra)) {
       // FIXME init_relations will be called on this at some point, and if it
       // was already called on copy, and we are a left congruence, then this
-      // will reverse the relations again.
+      // will reverse the relations again. This is even worse if the type of
+      // copy and the parameter type are not the same.
     }
 
-    ToddCoxeter::ToddCoxeter(fpsemigroup::ToddCoxeter& copy)
-        : ToddCoxeter(*copy.congruence()) {
+    ToddCoxeter::ToddCoxeter(congruence_type type, fpsemigroup::ToddCoxeter& copy)
+        : ToddCoxeter(type, *copy.congruence()) {
       LIBSEMIGROUPS_ASSERT(!has_parent());
       if (copy.finished()) {
         set_parent(copy.isomorphic_non_fp_semigroup());
@@ -594,9 +586,6 @@ namespace libsemigroups {
           if (!_extra.empty()) {
             _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
             _extra.clear();
-            // Don't reset_quotient_semigroup here since although we are
-            // changing the relations, we are not changing the semigroup over
-            // which this congruence is defined.
           }
           break;
         default:
@@ -634,6 +623,17 @@ namespace libsemigroups {
       // FIXME nothing stops this from being called multiple times
       if (has_parent()) {
         switch (_policy) {
+          case policy::none:
+            _policy = policy::use_cayley_graph;
+            // Intentional fall through
+          case policy::use_cayley_graph:
+            prefill(parent());
+#ifdef LIBSEMIGROUPS_DEBUG
+            // This is a check of program logic, since we use parent() to fill
+            // the table, so we only validate in debug mode.
+            validate_table();
+#endif
+            break;
           case policy::use_relations:
             relations(parent(), [this](word_type lhs, word_type rhs) -> void {
               _relations.emplace_back(lhs, rhs);
@@ -644,17 +644,6 @@ namespace libsemigroups {
             validate_relations();
 #endif
             break;
-          case policy::use_cayley_graph:
-            prefill(parent());
-#ifdef LIBSEMIGROUPS_DEBUG
-            // This is a check of program logic, since we use parent() to fill
-            // the table, so we only validate in debug mode.
-            validate_table();
-#endif
-            break;
-          case policy::none:
-            // So that this doesn't fail silently
-            throw INTERNAL_EXCEPTION;
         }
       }
     }

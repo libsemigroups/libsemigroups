@@ -81,9 +81,9 @@ namespace libsemigroups {
                   std::vector<relation_type> const&,
                   std::vector<relation_type> const& = {});
 
-      explicit ToddCoxeter(fpsemigroup::ToddCoxeter&);
+      explicit ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
 
-      ToddCoxeter(ToddCoxeter const&);
+      ToddCoxeter(congruence_type, ToddCoxeter const&);
 
       ~ToddCoxeter();
 

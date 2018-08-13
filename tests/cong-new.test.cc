@@ -22,6 +22,7 @@
 
 #include "bmat8.h"
 #include "cong-new.h"
+#include "cong-p.h"
 #include "element-helper.h"
 #include "fpsemi.h"
 #include "semigroup.h"
@@ -92,7 +93,7 @@ namespace libsemigroups {
       S.add_rule({0}, {1, 1});     // (a, b^2)
 
       Congruence cong(LEFT, S);
-      REQUIRE(cong.nr_classes() == 5);
+      REQUIRE(cong.nr_classes() == 3);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Congruence 003",
@@ -174,7 +175,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("Congruence 007",
                             "2-sided congruence on fp semigroup",
                             "[quick]") {
-      REPORTER.set_report(true);
+      REPORTER.set_report(REPORT);
       FpSemigroup S;
       S.set_alphabet(3);
       S.add_rule({0, 1}, {1, 0});
@@ -536,7 +537,6 @@ namespace libsemigroups {
       REQUIRE(cong.contains(x, y));
     }
 
-    // The next test is deprecated.
     LIBSEMIGROUPS_TEST_CASE("Congruence 020",
                             "trivial cong. on an fp semigroup",
                             "[quick]") {
@@ -546,7 +546,7 @@ namespace libsemigroups {
       S.add_rule("a", "b");
 
       Congruence cong(LEFT, S);
-      REQUIRE(cong.nr_non_trivial_classes() == 0);
+      REQUIRE_THROWS_AS(cong.nr_non_trivial_classes(), LibsemigroupsException);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Congruence 021",
@@ -1899,6 +1899,7 @@ namespace libsemigroups {
       REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
     }
 
+
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
       lhs.insert(lhs.end(), rhs.begin(), rhs.end());
@@ -2133,6 +2134,40 @@ namespace libsemigroups {
       REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
                   + (cong.nr_classes() - cong.nr_non_trivial_classes())
               == S.size());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Congruence 039",
+                            "left cong. on an f.p. semigroup",
+                            "[quick]") {
+      REPORTER.set_report(REPORT);
+
+      FpSemigroup S;
+      S.set_alphabet("abe");
+      S.set_identity("e");
+      S.add_rule("abb", "bb");
+      S.add_rule("bbb", "bb");
+      S.add_rule("aaaa", "a");
+      S.add_rule("baab", "bb");
+      S.add_rule("baaab", "b");
+      S.add_rule("babab", "b");
+      S.add_rule("bbaaa", "bb");
+      S.add_rule("bbaba", "bbaa");
+
+      REQUIRE(S.knuth_bendix()->confluent());
+
+      libsemigroups::congruence::KBP kbp(LEFT, S.knuth_bendix());
+      // kbp.add_pair({0}, {1, 1, 1});
+      kbp.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
+
+      REQUIRE(kbp.nr_classes() == 11);
+
+      Congruence cong1(LEFT, S);
+      cong1.add_pair({0}, {1, 1, 1});
+
+      Congruence cong2(LEFT, S);
+      cong2.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
+      REQUIRE(cong1.nr_classes() == 11);
+      REQUIRE(cong1.nr_classes() == cong2.nr_classes());
     }
   }  // namespace tmp
 }  // namespace libsemigroups
