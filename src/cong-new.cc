@@ -39,27 +39,40 @@ namespace libsemigroups {
     // Congruence - constructors - public
     //////////////////////////////////////////////////////////////////////////
 
-    Congruence::Congruence(congruence_type type) : CongIntf(type), _race() {}
+    Congruence::Congruence(congruence_type type)
+        : CongIntf(type), _race() {}
 
-    Congruence::Congruence(congruence_type type, SemigroupBase* S)
+    Congruence::Congruence(congruence_type type, SemigroupBase* S, policy plcy)
         : Congruence(type) {
-      _race.add_runner(
-          new ToddCoxeter(type, S, ToddCoxeter::policy::use_relations));
-      _race.add_runner(
-          new ToddCoxeter(type, S, ToddCoxeter::policy::use_cayley_graph));
+      switch (plcy) {
+        case policy::standard: {
+          _race.add_runner(
+              new ToddCoxeter(type, S, ToddCoxeter::policy::use_relations));
+          _race.add_runner(
+              new ToddCoxeter(type, S, ToddCoxeter::policy::use_cayley_graph));
+          break;
+        }
+        case policy::none: {
+          // Do nothing, runners must be installed using add_method.
+          break;
+        }
+      }
       set_nr_generators(S->nrgens());
       set_parent(S);
     }
 
-    Congruence::Congruence(congruence_type type, SemigroupBase& S)
-        : Congruence(type, &S) {}
+    Congruence::Congruence(congruence_type type, SemigroupBase& S, policy plcy)
+        : Congruence(type, &S, plcy) {}
 
-    Congruence::Congruence(congruence_type type, FpSemigroup& S)
-        : Congruence(type, &S) {}
+    Congruence::Congruence(congruence_type type, FpSemigroup& S, policy plcy)
+        : Congruence(type, &S, plcy) {}
 
-    Congruence::Congruence(congruence_type type, FpSemigroup* S)
+    Congruence::Congruence(congruence_type type, FpSemigroup* S, policy plcy)
         : Congruence(type) {
       set_nr_generators(S->alphabet().size());
+      if (plcy != policy::standard) {
+        goto end;
+      }
       _race.set_max_threads(POSITIVE_INFINITY);
       // TODO set_parent with a future computing the
       // isomorphic_non_fp_semigroup
@@ -71,6 +84,8 @@ namespace libsemigroups {
         if (S->todd_coxeter()->finished()) {
           LIBSEMIGROUPS_ASSERT(parent() == nullptr);
           set_parent(S->todd_coxeter()->isomorphic_non_fp_semigroup());
+          // FIXME what happens if S is deleted before this??
+
           // Method 2: use the Cayley graph of S and genpairs to run
           // Todd-Coxeter. If the policy here is use_relations, then this is
           // the same as Method 1. Note that the isomorphic_non_fp_semigroup

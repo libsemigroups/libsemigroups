@@ -211,6 +211,7 @@ namespace libsemigroups {
     return (*_alphabet_map.find(c)).second;
   }
 
+  // TODO word_type&&
   word_type FpSemiIntf::string_to_word(std::string const& s) const {
     word_type w;
     w.reserve(s.size());

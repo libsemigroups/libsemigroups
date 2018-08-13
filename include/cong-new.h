@@ -31,17 +31,27 @@ namespace libsemigroups {
   namespace tmp { // FIXME remove this
     class Congruence : public CongIntf {
      public:
+      // Execution policy:
+      // - standard: means run 1 variant of everything
+      // - none:     means no methods are added, and at least one must be added
+      //             manually via add_method
+      enum class policy { standard = 0, none = 1 };
+
       //////////////////////////////////////////////////////////////////////////
       // Congruence - constructors - public
       //////////////////////////////////////////////////////////////////////////
-      // TODO: Policy?
 
       explicit Congruence(congruence_type type);
 
-      Congruence(congruence_type type, SemigroupBase* S);
-      Congruence(congruence_type type, SemigroupBase& S);
-      Congruence(congruence_type type, FpSemigroup& S);
-      Congruence(congruence_type type, FpSemigroup* S);
+      Congruence(congruence_type type,
+                 SemigroupBase*,
+                 policy = policy::standard);
+      Congruence(congruence_type type,
+                 SemigroupBase&,
+                 policy = policy::standard);
+
+      Congruence(congruence_type type, FpSemigroup&, policy = policy::standard);
+      Congruence(congruence_type type, FpSemigroup*, policy = policy::standard);
 
       //////////////////////////////////////////////////////////////////////////
       // Runner - overridden pure virtual methods - public
@@ -87,8 +97,7 @@ namespace libsemigroups {
       /////////////////////////////////////////////////////////////////////////
       // Congruence - data - private
       /////////////////////////////////////////////////////////////////////////
-
-      Race _race;
+      Race   _race;
     };
   }  // namespace tmp
 }  // namespace libsemigroups

@@ -52,8 +52,7 @@ namespace libsemigroups {
 
     // Only works when that is a generator!!
     inline TCE operator*(TCE const& that) const {
-      LIBSEMIGROUPS_ASSERT(0 < that._index
-                           && that._index <= _tc->nr_generators());
+      // class_index_to_letter checks that "that" is really a generator
       return TCE(
           _tc, _tc->table(_index, _tc->class_index_to_letter(that._index)));
     }
@@ -82,7 +81,6 @@ namespace libsemigroups {
 
   static_assert(std::is_trivial<TCE>::value, "TCE is not trivial!");
 
-  // TODO static_assert trivial
   template <> struct complexity<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
       return LIMIT_MAX;

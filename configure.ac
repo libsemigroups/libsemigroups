@@ -65,6 +65,39 @@ AC_MSG_RESULT([$enable_debug])
 
 AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
 
+# Check if we should enable asan (AddressSanitizer)
+AC_ARG_ENABLE([asan],
+    [AS_HELP_STRING([--enable-asan], [enable asan])],
+    [],
+    [enable_asan=no])
+AC_MSG_CHECKING([whether to enable asan])
+AC_MSG_RESULT([$enable_asan])
+
+AM_CONDITIONAL([LIBSEMIGROUPS_ASAN], [test "x$enable_asan" = xyes])
+
+# Check if we should enable ubsan (UndefinedBehaviourSanitizer)
+AC_ARG_ENABLE([ubsan],
+    [AS_HELP_STRING([--enable-ubsan], [enable ubsan])],
+    [],
+    [enable_ubsan=no])
+AC_MSG_CHECKING([whether to enable ubsan])
+AC_MSG_RESULT([$enable_ubsan])
+
+AM_CONDITIONAL([LIBSEMIGROUPS_UBSAN], [test "x$enable_ubsan" = xyes])
+
+# Check if we should enable tsan (ThreadSanitizer)
+AC_ARG_ENABLE([tsan],
+    [AS_HELP_STRING([--enable-tsan], [enable tsan])],
+    [],
+    [enable_tsan=no])
+AC_MSG_CHECKING([whether to enable tsan])
+AC_MSG_RESULT([$enable_tsan])
+
+AM_CONDITIONAL([LIBSEMIGROUPS_TSAN], [test "x$enable_tsan" = xyes])
+
+AS_IF([test "x$enable_tsan" = xyes && test "x$enable_asan" = xyes],
+      [AC_MSG_ERROR([cannot use both flags --enable-tsan and --enable-asan])])
+
 # Check if stats mode is enabled
 AC_ARG_ENABLE([stats],
     [AS_HELP_STRING([--enable-stats], [enable stats mode])],

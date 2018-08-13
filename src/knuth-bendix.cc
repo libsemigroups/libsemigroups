@@ -921,8 +921,7 @@ namespace libsemigroups {
           }
           add_rule(rule1);
           // rule1 is activated, we do this after removing rules that rule1
-          // makes
-          // redundant to avoid failing to insert rule1 in _set_rules
+          // makes redundant to avoid failing to insert rule1 in _set_rules
         } else {
           _inactive_rules.push_back(rule1);
         }
@@ -942,6 +941,8 @@ namespace libsemigroups {
       }
     }
 
+    // FIXME there is a possibly infinite loop here clear_stack -> push_stack
+    // -> clear_stack and so on
     void KnuthBendix::push_stack(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (*rule->lhs() != *rule->rhs()) {

@@ -38,7 +38,9 @@ namespace libsemigroups {
         _finished(new bool(false)),
         _delete_finished(true),
         _last_report(std::chrono::high_resolution_clock::now()),
-        _run_for(FOREVER) {
+        _run_for(FOREVER),
+        _report_time_interval(),
+        _start_time() {
     report_every(std::chrono::seconds(1));
   }
 

@@ -174,7 +174,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("Congruence 007",
                             "2-sided congruence on fp semigroup",
                             "[quick]") {
-      REPORTER.set_report(REPORT);
+      REPORTER.set_report(true);
       FpSemigroup S;
       S.set_alphabet(3);
       S.add_rule({0, 1}, {1, 0});

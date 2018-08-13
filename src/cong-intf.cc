@@ -63,11 +63,11 @@ namespace libsemigroups {
   }
 
   void CongIntf::set_parent(SemigroupBase* prnt) {
-    if (dead()) {
-      return;  // TODO more like this
+    LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
+    if (prnt == _parent) {
+      return;
     }
-    LIBSEMIGROUPS_ASSERT(prnt != nullptr);
-    LIBSEMIGROUPS_ASSERT(_parent == nullptr);
+    LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
     // TODO MORE asserts (check compatibility of parent and this)
     _parent = prnt;
     // TODO set quotient

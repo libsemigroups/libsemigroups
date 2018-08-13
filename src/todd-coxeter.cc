@@ -415,12 +415,9 @@ namespace libsemigroups {
     }
 
     letter_type ToddCoxeter::class_index_to_letter(class_index_type x) {
-      if (x > nr_generators()) {
-        throw LIBSEMIGROUPS_EXCEPTION("invalid letter, found " + to_string(x)
-                                      + ", should be at most "
-                                      + to_string(nr_generators() + 1));
-      }
       run();
+      LIBSEMIGROUPS_ASSERT(x < _class_index_to_letter.size());
+      LIBSEMIGROUPS_ASSERT(_class_index_to_letter[x] != UNDEFINED);
       return _class_index_to_letter[x];
     }
 
