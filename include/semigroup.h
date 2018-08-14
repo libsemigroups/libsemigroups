@@ -48,6 +48,7 @@
 #include "internal/libsemigroups-debug.h"
 #include "internal/libsemigroups-exception.h"
 #include "internal/report.h"
+#include "internal/runner.h"
 #include "internal/stl.h"
 
 #include "adapters.h"
@@ -443,7 +444,7 @@ namespace libsemigroups {
       if (i >= _nr) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "there are only " + to_string(_nr) + " elements"
-            + (is_done() ? "" : " enumerated so far") + ", but index "
+            + (finished() ? "" : " enumerated so far") + ", but index "
             + to_string(i) + " was given");
       }
     }
@@ -543,7 +544,7 @@ namespace libsemigroups {
     //! Semigroup::Semigroup).  This method returns the length of the longest
     //! word in the generators that has so far been enumerated.
     size_t current_max_word_length() const noexcept override {
-      if (is_done()) {
+      if (finished()) {
         return _lenindex.size() - 2;
       } else if (_nr > _lenindex.back()) {
         return _lenindex.size();
@@ -578,8 +579,13 @@ namespace libsemigroups {
     //!
     //! The semigroup is fully enumerated when the product of every element
     //! by every generator is known.
-    bool is_done() const noexcept override {
+    bool finished_impl() const override {
       return (_pos >= _nr);
+    }
+
+    // TODO: remove this
+    bool is_done() const override {
+      return finished_impl();
     }
 
     //! Returns \c true if elements other than the generators have been
@@ -902,7 +908,7 @@ namespace libsemigroups {
         if (it != _map.end()) {
           return it->second;
         }
-        if (is_done()) {
+        if (finished()) {
           return UNDEFINED;
         }
         enumerate(_nr + 1);
@@ -1006,7 +1012,7 @@ namespace libsemigroups {
     //! a LIBSEMIGROUPS_EXCEPTION is thrown.
     void minimal_factorisation(word_type&         word,
                                element_index_type pos) override {
-      if (pos >= _nr && !is_done()) {
+      if (pos >= _nr && !finished()) {
         enumerate(pos + 1);
       }
       verify_element_index(pos);
@@ -1123,7 +1129,7 @@ namespace libsemigroups {
     //!
     //! \sa Semigroup::reset_next_relation.
     void next_relation(word_type& relation) override {
-      if (!is_done()) {
+      if (!finished()) {
         enumerate();
       }
 
@@ -1191,10 +1197,17 @@ namespace libsemigroups {
     //! object is destroyed.
     //!
     //! The parameter \p limit defaults to Semigroup::LIMIT_MAX.
-    void enumerate(std::atomic<bool>& killed,
-                   size_t             limit64 = LIMIT_MAX) override {
+    void enumerate(size_t limit64 = LIMIT_MAX) override {
+      run(limit64);
+    }
+
+    void run() override {
+      run(LIMIT_MAX);
+    }
+
+    void run(size_t limit64) {
       std::lock_guard<std::mutex> lg(_mtx);
-      if (_pos >= _nr || limit64 <= _nr || killed) {
+      if (_pos >= _nr || limit64 <= _nr || stopped()) {
         return;
       }
       // Ensure that limit isn't too big
@@ -1254,7 +1267,7 @@ namespace libsemigroups {
       }
 
       // product the words of length > 1 by every generator
-      bool stop = (_nr >= limit || killed);
+      bool stop = (_nr >= limit || stopped());
 
       while (_pos != _nr && !stop) {
         size_type nr_shorter_elements = _nr;
@@ -1296,7 +1309,7 @@ namespace libsemigroups {
                 _suffix.push_back(_right.get(s, j));
                 _enumerate_order.push_back(_nr);
                 _nr++;
-                stop = (_nr >= limit || killed);
+                stop = (_nr >= limit || stopped());
               }
             }
           }  // finished applying gens to <_elements.at(_pos)>
@@ -1315,33 +1328,15 @@ namespace libsemigroups {
           _wordlen++;
           _lenindex.push_back(_enumerate_order.size());
         }
-
-        if (!is_done()) {
-          REPORT("found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length() << ", so far")
-        } else {
-          REPORT("found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length() << ", finished")
-        }
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length())
       }
       REPORT("elapsed time = " << timer);
-      if (killed) {
-        REPORT("killed");
-      }
+      report_why_we_stopped(this);
 #ifdef LIBSEMIGROUPS_STATS
       REPORT("number of products = " << _nr_products);
 #endif
-    }
-
-    //! Enumerate the semigroup until \p limit elements are found.
-    //!
-    //! See Semigroup::enumerate(std::atomic<bool>& killed, size_t limit) for
-    //! more details.
-    void enumerate(size_t limit = LIMIT_MAX) override {
-      std::atomic<bool> killed(false);
-      enumerate(killed, limit);
     }
 
     //! Add copies of the generators \p coll to the generators of \c this.
@@ -1556,20 +1551,14 @@ namespace libsemigroups {
           _lenindex.push_back(_enumerate_order.size());
           _wordlen++;
         }
-
-        if (!is_done()) {
-          REPORT("found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length() << ", so far")
-        } else {
-          REPORT("found " << _nr << " elements, " << _nrrules
-                          << " rules, max word length "
-                          << current_max_word_length() << ", finished")
-        }
+        REPORT("found " << _nr << " elements, " << _nrrules
+                        << " rules, max word length "
+                        << current_max_word_length())
       }
       if (is_begun()) {
         REPORT("elapsed time = " << timer);
       }
+      report_why_we_stopped(this);
     }
 
     //! Add copies of the generators \p coll to the generators of \c this.

@@ -102,9 +102,9 @@ TEST_CASE(
   rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
   std::vector<relation_type> extra;
 
-  Congruence cong("left", 2, rels, extra);
-  REPORTER.set_report(CONG_REPORT);
-
+  Congruence cong("left", 2, rels, {});
+  REPORTER.set_report(true);
+  REQUIRE(cong.nr_classes() == 5);
   REQUIRE(cong.word_to_class_index({0, 0, 1})
           == cong.word_to_class_index({0, 0, 0, 0, 1}));
   REQUIRE(cong.test_equals({0, 1, 1, 0, 0, 1}, {0, 0, 1}));

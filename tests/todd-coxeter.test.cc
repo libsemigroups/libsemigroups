@@ -701,6 +701,15 @@ namespace libsemigroups {
                       TCE(tc, 29), TCE(tc, 30), TCE(tc, 31), TCE(tc, 32),
                       TCE(tc, 33), TCE(tc, 34)}));
     }
+
+    TEST_CASE("Todd-Coxeter 31: finite semigroup (size 5)",
+              "[todd-coxeter][quick][31]") {
+      congruence::ToddCoxeter tc(LEFT);
+      tc.set_nr_generators(2);
+      tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
+      tc.add_pair({0}, {1, 1});     // (a, b^2)
+      REQUIRE(tc.nr_classes() == 5);
+    }
   }  // namespace congruence_todd_coxeter
 
   namespace fpsemigroup_todd_coxeter {

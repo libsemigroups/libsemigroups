@@ -143,7 +143,7 @@ namespace libsemigroups {
       // ToddCoxeter - methods (initialisation) - private
       ////////////////////////////////////////////////////////////////////////
 
-      void init();
+      std::vector<relation_type>& init();
       void init_after_prefill();
       void init_relations();
       void prefill(SemigroupBase*);

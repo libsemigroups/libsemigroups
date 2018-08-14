@@ -23,12 +23,13 @@
 #include <functional>
 
 #include "internal/recvec.h"
+#include "internal/runner.h"
 
 #include "constants.h"
 #include "types.h"
 
 namespace libsemigroups {
-  class SemigroupBase {
+  class SemigroupBase : public Runner {
    public:
     //! Type used for indexing elements in a Semigroup, use this when not
     //! specifically referring to a position in _elements. It should be possible
@@ -85,7 +86,6 @@ namespace libsemigroups {
     virtual word_type factorisation(element_index_type)                     = 0;
     virtual void      reset_next_relation()                                 = 0;
     virtual void      next_relation(word_type&)                             = 0;
-    virtual void      enumerate(std::atomic<bool>&, size_t)                 = 0;
     virtual void      enumerate(size_t = LIMIT_MAX)                         = 0;
     virtual void      set_max_threads(size_t)                               = 0;
   };

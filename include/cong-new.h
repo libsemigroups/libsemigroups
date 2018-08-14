@@ -25,6 +25,8 @@
 #include "internal/race.h"
 
 #include "cong-intf.h"
+#include "knuth-bendix.h"
+#include "todd-coxeter.h"
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration
@@ -58,7 +60,12 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void run() override;
-      bool finished() const override;
+
+      //////////////////////////////////////////////////////////////////////////
+      // Runner - overridden non-pure virtual methods - protected
+      //////////////////////////////////////////////////////////////////////////
+
+      bool finished_impl() const override;
 
       //////////////////////////////////////////////////////////////////////////
       // CongIntf - overridden pure virtual methods - public
@@ -75,7 +82,8 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       bool contains(word_type const&, word_type const&) override;
-      bool const_contains(word_type const&, word_type const&) const override;
+      result_type const_contains(word_type const&,
+                                 word_type const&) const override;
       bool is_quotient_obviously_finite() override;
       bool is_quotient_obviously_infinite() override;
 
@@ -85,7 +93,19 @@ namespace libsemigroups {
 
       void add_method(Runner*);
 
+      bool has_knuth_bendix() const;
+      bool has_todd_coxeter() const;
+      congruence::KnuthBendix* knuth_bendix() const;
+      congruence::ToddCoxeter* todd_coxeter() const;
+
      private:
+      //////////////////////////////////////////////////////////////////////////
+      // Congruence - methods - private
+      //////////////////////////////////////////////////////////////////////////
+
+      template <class TCongIntfSubclass>
+      TCongIntfSubclass* find_method() const;
+
       //////////////////////////////////////////////////////////////////////////
       // CongIntf - non-pure virtual methods - private
       //////////////////////////////////////////////////////////////////////////

@@ -203,14 +203,10 @@ namespace libsemigroups {
                                 << " pairs: " << _map_next << " elements in "
                                 << _lookup.nr_blocks() << " classes");
         REPORT("elapsed time = " << t);
-        if (dead()) {
-          REPORT("killed");
-        } else if (timed_out()) {
-          REPORT("timed out!");
-        } else {
+        report_why_we_stopped(this);
+        if (!dead() && !timed_out()) {
           set_finished(true);
           delete_tmp_storage();
-          REPORT("finished!");
         }
       }
 
@@ -249,12 +245,7 @@ namespace libsemigroups {
       class_index_type word_to_class_index(word_type const& w) final {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
-        auto   x = static_cast<semigroup_type*>(parent())->word_to_element(w);
-        size_t ind_x = get_index(this->to_internal_const(x));
-        this->external_free(x);
-        LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
-        LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
-        return _class_lookup[ind_x];
+        return const_word_to_class_index(w);
       }
 
      protected:
@@ -264,18 +255,15 @@ namespace libsemigroups {
 
       class_index_type
       const_word_to_class_index(word_type const& w) const override {
-        if (!_init_done) {
+        if (!finished()) {
           return UNDEFINED;
         }
-        auto x  = static_cast<semigroup_type*>(parent())->word_to_element(w);
-        auto it = _map.find(this->to_internal_const(x));
+        auto   x = static_cast<semigroup_type*>(parent())->word_to_element(w);
+        size_t ind_x = get_index(this->to_internal_const(x));
         this->external_free(x);
-        if (it == _map.end()) {
-          return UNDEFINED;
-        }
-        LIBSEMIGROUPS_ASSERT(it->second < _class_lookup.size());
+        LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
         LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
-        return _class_lookup[it->second];
+        return _class_lookup[ind_x];
       }
 
       void init_non_trivial_classes() override {
@@ -297,6 +285,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // P - methods - protected
       ////////////////////////////////////////////////////////////////////////
+
       void internal_add_pair(internal_const_element_type x,
                              internal_const_element_type y) {
         if (!internal_equal_to()(x, y)) {
@@ -347,7 +336,7 @@ namespace libsemigroups {
       // P - methods - private
       ////////////////////////////////////////////////////////////////////////
      private:
-      size_t add_index(internal_element_type x) {
+      size_t add_index(internal_element_type x) const {
         LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
         LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
         _map.emplace(x, _map_next);
@@ -369,7 +358,7 @@ namespace libsemigroups {
             .swap(_pairs_to_mult);
       }
 
-      size_t get_index(internal_const_element_type x) {
+      size_t get_index(internal_const_element_type x) const {
         auto it = _map.find(x);
         if (it == _map.end()) {
           return add_index(this->internal_copy(x));
@@ -416,26 +405,26 @@ namespace libsemigroups {
       // P - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      std::vector<class_index_type> _class_lookup;
+      mutable std::vector<class_index_type> _class_lookup;
       std::unordered_set<
           std::pair<internal_element_type, internal_element_type>,
           PHash,
           PEqual>
            _found_pairs;
       bool _init_done;
-      UF   _lookup;
-      std::unordered_map<internal_const_element_type,
+      mutable UF   _lookup;
+      mutable std::unordered_map<internal_const_element_type,
                          size_t,
                          internal_hash,
                          internal_equal_to>
                        _map;
-      size_t           _map_next;
-      class_index_type _next_class;
+      mutable size_t           _map_next;
+      mutable class_index_type _next_class;
       size_t           _nr_non_trivial_classes;
       size_t           _nr_non_trivial_elemnts;
       std::queue<std::pair<internal_element_type, internal_element_type>>
                                          _pairs_to_mult;
-      std::vector<internal_element_type> _reverse_map;
+      mutable std::vector<internal_element_type> _reverse_map;
       internal_element_type              _tmp1;
       internal_element_type              _tmp2;
     };
@@ -467,9 +456,6 @@ namespace libsemigroups {
 
       KBP(congruence_type type, fpsemigroup::KnuthBendix* kb)
           : p_type(type), _kb(kb) {
-        // Replace the "dead" of _kb with that of this, so that if this is
-        // killed, so too is _kb.
-        _kb->replace_dead(get_dead());
         set_nr_generators(_kb->alphabet().size());
       }
 
@@ -482,18 +468,16 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void run() override {
-        if (finished() || dead()) {
+        if (stopped()) {
           return;
         }
-        _kb->run();
-        if (!dead()) {
+        _kb->run_until([this](Runner*) -> bool { return dead() || timed_out(); });
+        if (!stopped()) {
           auto S = _kb->isomorphic_non_fp_semigroup();
           set_parent(static_cast<typename p_type::semigroup_type*>(S));
           p_type::run();
         }
-        if (dead()) {
-          REPORT("killed");
-        }
+        report_why_we_stopped(this);
       }
 
       // Override the method for the class P to avoid having to know the parent

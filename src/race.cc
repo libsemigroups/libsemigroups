@@ -36,72 +36,7 @@ namespace libsemigroups {
   }
 
   Runner* Race::winner() {
-    if (_winner == nullptr) {
-      std::vector<std::thread::id> tids(_runners.size(),
-                                        std::this_thread::get_id());
-
-      size_t nr_threads = std::min(_runners.size(), _max_threads);
-
-      REPORT("using " << nr_threads << " / "
-                      << std::thread::hardware_concurrency() << " threads");
-
-      LIBSEMIGROUPS_ASSERT(nr_threads != 0);
-
-      if (nr_threads == 1) {
-        _runners.at(0)->run();
-        _winner = _runners.at(0);
-        return _winner;
-      }
-
-      auto thread_func = [this, &tids](size_t pos) {
-        tids[pos] = std::this_thread::get_id();
-        try {
-          _runners.at(pos)->run();
-        } catch (std::exception const& e) {
-          size_t tid = REPORTER.thread_id(tids[pos]);
-          REPORT("exception thrown by #" << tid << ":");
-          REPORT(e.what());
-          return;
-        }
-        // Stop two Runner* objects from killing each other
-        {
-          std::lock_guard<std::mutex> lg(_mtx);
-          if (_runners.at(pos)->finished()) {
-            for (auto it = _runners.begin(); it < _runners.begin() + pos;
-                 it++) {
-              (*it)->kill();
-            }
-            for (auto it = _runners.begin() + pos + 1; it < _runners.end();
-                 it++) {
-              (*it)->kill();
-            }
-          }
-        }
-      };
-
-      REPORTER.reset_thread_ids();
-
-      std::vector<std::thread> t;
-      for (size_t i = 0; i < nr_threads; ++i) {
-        t.push_back(std::thread(thread_func, i));
-      }
-      for (size_t i = 0; i < nr_threads; ++i) {
-        t.at(i).join();
-      }
-      for (auto method = _runners.begin(); method < _runners.end(); ++method) {
-        if ((*method)->finished() && _winner == nullptr) {
-          _winner    = *method;
-          size_t tid = REPORTER.thread_id(tids.at(method - _runners.begin()));
-          REPORT("#" << tid << " is the winner!");
-        } else {
-          delete *method;
-        }
-      }
-      LIBSEMIGROUPS_ASSERT(_winner != nullptr);
-      // TODO consider making it possible to keep the killed runners.
-      _runners.clear();
-      _runners.push_back(_winner);
-    }
+    run();
     return _winner;
   }
 

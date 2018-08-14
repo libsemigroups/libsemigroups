@@ -82,7 +82,8 @@ namespace libsemigroups {
         // size is ok.
         _semigroup->set_batch_size(steps);
       }
-      _semigroup->enumerate(_killed, _semigroup->current_size() + 1);
+      // THIS WAS NOT PREVIOUSLY COMMENTED OUT
+      // _semigroup->enumerate(_killed, _semigroup->current_size() + 1);
     }
     if (_killed) {
       REPORT("killed")

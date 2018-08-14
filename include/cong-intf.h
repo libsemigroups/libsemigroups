@@ -119,7 +119,9 @@ namespace libsemigroups {
     // Same as the above but only uses the so far computed information to
     // answer. In particular, does not call this->run(). This method may
     // return false negatives, but must not return false positives.
-    virtual bool const_contains(word_type const&, word_type const&) const;
+    enum class result_type { TRUE, FALSE, UNKNOWN };
+    virtual result_type const_contains(word_type const&,
+                                       word_type const&) const;
 
     //! Returns \c true if the congruence class of \p w1 is less than
     //! that of \p w2.
@@ -187,6 +189,8 @@ namespace libsemigroups {
     void set_parent(SemigroupBase*);
     bool has_parent() const noexcept;
     SemigroupBase* parent() const noexcept;
+
+    bool is_nr_generators_defined() const noexcept;
 
     /////////////////////////////////////////////////////////////////////////
     // CongIntf - data - protected

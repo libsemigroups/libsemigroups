@@ -25,6 +25,8 @@
 #include <atomic>
 #include <chrono>
 
+#include "report.h"
+
 namespace libsemigroups {
   class Runner {
    public:
@@ -39,21 +41,14 @@ namespace libsemigroups {
     // Runner - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    // explicit Runner(std::atomic<bool>&); // TODO remove this
     Runner();
-    virtual ~Runner();
+    virtual ~Runner() {}
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     virtual void run() = 0;
-
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual methods - public
-    ////////////////////////////////////////////////////////////////////////
-
-    virtual bool finished() const;
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - non-pure non-virtual methods - public
@@ -67,6 +62,20 @@ namespace libsemigroups {
     }
     bool timed_out() const;
 
+    template <typename TFunction, typename TIntType>
+    void run_until(TFunction const& func, TIntType check_interval) {
+      run_until(func, std::chrono::nanoseconds(check_interval));
+    }
+    template <typename TFunction>
+    void run_until(TFunction const&         func,
+                   std::chrono::nanoseconds check_interval
+                   = std::chrono::milliseconds(50)) {
+      // TODO check TFunction result etc
+      while (!func(this) && !dead() && !finished()) {
+        run_for(check_interval);
+      }
+    }
+
     // Returns true if we should report and false otherwise
     bool                              report() const;
     void                              report_every(std::chrono::nanoseconds);
@@ -74,24 +83,44 @@ namespace libsemigroups {
       report_every(std::chrono::nanoseconds(t));
     }
 
-    void  set_finished(bool) const;
-    bool& get_finished() const;
-    void  replace_finished(bool&);
+    template <typename TSubclass>
+    void report_why_we_stopped(TSubclass const*) const {
+      // TODO check TSubclass is subclass of this
+      if (finished()) {
+        ::libsemigroups::report<TSubclass>("finished!");
+      } else if (dead()) {
+        ::libsemigroups::report<TSubclass>("killed!");
+      } else if (timed_out()) {
+        ::libsemigroups::report<TSubclass>("timed out!");
+      }
+    }
 
-    void               kill(); // this is set_dead
-    bool               dead() const;
-    std::atomic<bool>& get_dead() const;
-    void               replace_dead(std::atomic<bool>&);
+    void set_finished(bool) const;
+    bool finished() const;
+
+    void kill();
+    bool dead() const;
+
+    bool stopped() const {
+      return finished() || dead() || timed_out();
+    }
+
+   protected:
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - non-pure virtual methods - protected
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO compile-time polymorphism?
+    virtual bool finished_impl() const;
+    virtual bool dead_impl() const;
 
    private:
     ////////////////////////////////////////////////////////////////////////
     // Runner - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    std::atomic<bool>*                                     _dead;
-    bool                                                   _delete_dead;
-    mutable bool*                                          _finished;
-    bool                                                   _delete_finished;
+    std::atomic<bool>                                      _dead;
+    mutable bool                                           _finished;
     mutable std::chrono::high_resolution_clock::time_point _last_report;
     std::chrono::nanoseconds                               _run_for;
     std::chrono::nanoseconds                       _report_time_interval;

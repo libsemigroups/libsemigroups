@@ -27,6 +27,8 @@
 #include "semigroup-base.h"
 
 namespace libsemigroups {
+  using result_type = CongIntf::result_type;
+
   CongIntf::CongIntf(congruence_type type)
       : Runner(),
         _delete_quotient(false),
@@ -102,9 +104,18 @@ namespace libsemigroups {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
   }
 
-  bool CongIntf::const_contains(word_type const& u, word_type const& v) const {
-    return (const_word_to_class_index(u) != UNDEFINED
-            && const_word_to_class_index(u) == const_word_to_class_index(v));
+  result_type CongIntf::const_contains(word_type const& u,
+                                       word_type const& v) const {
+    if (const_word_to_class_index(u) == UNDEFINED
+        || const_word_to_class_index(v) == UNDEFINED) {
+      return result_type::UNKNOWN;
+    } else if (const_word_to_class_index(u) == const_word_to_class_index(v)) {
+      return result_type::TRUE;
+    } else if (finished()) {
+      return result_type::FALSE;
+    } else {
+      return result_type::UNKNOWN;
+    }
   }
 
   bool CongIntf::less(word_type const& w1, word_type const& w2) {
@@ -176,4 +187,11 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-virtual methods - protected
+  /////////////////////////////////////////////////////////////////////////
+
+  bool CongIntf::is_nr_generators_defined() const noexcept {
+    return _is_nr_generators_defined;
+  }
 }  // namespace libsemigroups

@@ -34,21 +34,20 @@
 #include "libsemigroups-debug.h"
 #include "timer.h"
 
-#define REPORT(message)                                            \
-  if (REPORTER.get_report()) {                                     \
-    size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
-    REPORTER.lock();                                               \
-    REPORTER(this, __func__, __tid) << message << std::endl;       \
-    REPORTER.unlock();                                             \
+#define REPORT(message)                                                   \
+  if (REPORTER.get_report()) {                                            \
+    size_t __tid = REPORTER.thread_id(std::this_thread::get_id());        \
+    std::lock_guard<std::mutex> __lg(REPORTER.mutex());                   \
+    REPORTER.report_from<decltype(*this)>(__tid) << message << std::endl; \
   }
 
 #define REPORT_FROM_FUNC(message)                                  \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
-    REPORTER.lock();                                               \
+    std::lock_guard<std::mutex> __lg(REPORTER.mutex());                              \
     REPORTER(__func__, __tid) << message << std::endl;             \
-    REPORTER.unlock();                                             \
   }
+
 
 namespace libsemigroups {
   // CAUTION: The comments in this file are out of date.
@@ -141,13 +140,9 @@ namespace libsemigroups {
     // @func the function name part of the prefix put to std::cout
     // @thread_id the number put to std::cout to identify the thread which is
     //            printing
-    template <class T>
-    Reporter& operator()(T const* obj, char const* func, size_t tid) {
+    template <class T> Reporter& report_from(size_t tid) {
       *_ostream << get_color_prefix(tid) << "#" << tid << ": "
-                << get_class_name(obj);
-      if (!std::string(func).empty()) {
-        *_ostream << "::" << func;
-      }
+                << get_class_name<T>();
       *_ostream << ": ";
       return *this;
     }
@@ -161,17 +156,8 @@ namespace libsemigroups {
     //
     // This method locks the reporter so that if it is called by multiple
     // threads it does not give garbled output.
-    void lock() {
-      _mtx.lock();
-    }
-
-    // non-const
-    //
-    // This method unlocks the reporter so that if it is called by multiple
-    // threads
-    // another thread will be free to put to std::cout.
-    void unlock() {
-      _mtx.unlock();
+    std::mutex& mutex() {
+      return _mtx;
     }
 
     // non-const
@@ -231,9 +217,9 @@ namespace libsemigroups {
     }
 
    private:
-    template <class T> std::string get_class_name(T const* obj) {
+    template <class T> std::string get_class_name() {
       int   status;
-      char* ptr = abi::__cxa_demangle(typeid(*obj).name(), 0, 0, &status);
+      char* ptr = abi::__cxa_demangle(typeid(T).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
         std::string full = std::string(ptr);
         size_t      last = full.size();
@@ -271,6 +257,14 @@ namespace libsemigroups {
     std::atomic<bool>                           _report;
   };
 
-  extern Reporter REPORTER;
+  extern Reporter                    REPORTER;
+
+  template <typename TSubclass> void report(std::string const& msg) {
+    if (REPORTER.get_report()) {
+      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
+      std::lock_guard<std::mutex> lg(REPORTER.mutex());
+      REPORTER.report_from<TSubclass>(tid) << msg << std::endl;
+    }
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_

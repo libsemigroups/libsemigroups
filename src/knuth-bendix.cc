@@ -246,7 +246,7 @@ namespace libsemigroups {
         : KnuthBendix(new ReductionOrdering(kb->_order), kb->alphabet()) {
       set_overlap_policy(kb->_overlap_policy);
       // TODO _active_rules.reserve(kb->nr_rules());
-      for (Rule const* rule : _active_rules) {
+      for (Rule const* rule : kb->_active_rules) {
         add_rule(new_rule(rule));
       }
       // TODO set confluence if known?
@@ -801,24 +801,18 @@ namespace libsemigroups {
           clear_stack();
         }
       }
-      if (dead()) {
-        REPORT("killed");
-      } else if (timed_out()) {
-        REPORT("timed out");
-      } else {
-        // LIBSEMIGROUPS_ASSERT(_stack.empty());
-        // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
-        // and maybe more
-        if (_max_overlap == UNBOUNDED && _max_rules == UNBOUNDED) {
-          REPORT("finished");
-          _confluence_known = true;
-          _confluent        = true;
-          for (Rule* rule : _inactive_rules) {
-            delete rule;
-          }
-          _inactive_rules.clear();
-          set_finished(true);
+      // LIBSEMIGROUPS_ASSERT(_stack.empty());
+      // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
+      // and maybe more
+      if (_max_overlap == UNBOUNDED && _max_rules == UNBOUNDED && !dead()
+          && !timed_out()) {
+        _confluence_known = true;
+        _confluent        = true;
+        for (Rule* rule : _inactive_rules) {
+          delete rule;
         }
+        _inactive_rules.clear();
+        set_finished(true);
       }
       REPORT("stopping with active rules = "
              << _active_rules.size() << ", inactive rules = "
@@ -827,6 +821,7 @@ namespace libsemigroups {
       REPORT("max stack depth = " << _max_stack_depth);
 #endif
       REPORT("elapsed time = " << timer);
+      report_why_we_stopped(this);
     }
 
     void KnuthBendix::knuth_bendix_by_overlap_length() {
@@ -1000,25 +995,21 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     KnuthBendix::KnuthBendix()
+
         : CongIntf(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>()) {
-      _kb->replace_dead(get_dead());
     }
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {
-      _kb->replace_dead(get_dead());
     }
 
     KnuthBendix::KnuthBendix(SemigroupBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
-      // Replace the "dead" of _kb with that of this, so that if this is
-      // killed, so too is _kb.
-      _kb->replace_dead(get_dead());
       CongIntf::set_nr_generators(S.nrgens());
       set_parent(&S);
     }
@@ -1028,22 +1019,24 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::run() {
-      if (finished()) {
+      if (stopped()) {
         return;
       }
-      _kb->run();
+      auto stppd = [this](Runner*) -> bool {
+        return dead() || timed_out();
+      };
+      _kb->run_until(stppd);
       // It is essential that we call _kb->run() first and then
       // _kb->isomorphic_non_fp_semigroup(), since this might get killed
       // during _kb->run().
-      if (!dead()) {
-        _kb->isomorphic_non_fp_semigroup()->enumerate(get_dead(), LIMIT_MAX);
-        if (_kb->isomorphic_non_fp_semigroup()->is_done() && !dead()) {
-          set_finished(true);
+      if (!dead() && !timed_out()) {
+        auto S = _kb->isomorphic_non_fp_semigroup();
+        while (!S->is_done() && !dead() && !timed_out()) {
+          S->run_until(stppd);
         }
+        set_finished(S->is_done());
       }
-      if (dead()) {
-        REPORT("killed");
-      }
+      report_why_we_stopped(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1057,17 +1050,14 @@ namespace libsemigroups {
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      set_finished(true);  // TODO are all of these set_finished required??
       return _kb->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
     }
 
     size_t KnuthBendix::nr_classes() {
-      set_finished(true);
       return _kb->size();
     }
 
     SemigroupBase* KnuthBendix::quotient_semigroup() {
-      set_finished(true);
       return _kb->isomorphic_non_fp_semigroup();
     }
 
@@ -1085,20 +1075,31 @@ namespace libsemigroups {
     // CongIntf - overridden non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
+    CongIntf::result_type
+    KnuthBendix::const_contains(word_type const& lhs,
+                                word_type const& rhs) const {
+      // FIXME Probably leaks or something
+      if (_kb->rewrite(_kb->word_to_string(lhs))
+          == _kb->rewrite(_kb->word_to_string(rhs))) {
+        return result_type::TRUE;
+      } else if (_kb->confluent()) {
+        return result_type::FALSE;
+      } else {
+        return result_type::UNKNOWN;
+      }
+    }
+
+    bool KnuthBendix::contains(word_type const& lhs,
+                               word_type const& rhs) {
+      _kb->run();
+      return const_contains(lhs, rhs) == result_type::TRUE;
+    }
+
     void KnuthBendix::set_nr_generators(size_t n) {
       CongIntf::set_nr_generators(n);
       _kb->set_alphabet(n);
     }
 
-    bool KnuthBendix::const_contains(word_type const& lhs,
-                                     word_type const& rhs) const {
-      // FIXME Probably leaks or something
-      std::cout << _kb->rewrite(_kb->word_to_string(lhs)) << "\n";
-      std::cout << _kb->rewrite(_kb->word_to_string(rhs)) << "\n";
-
-      return _kb->rewrite(_kb->word_to_string(lhs))
-             == _kb->rewrite(_kb->word_to_string(rhs));
-    }
 
   }  // namespace congruence
 

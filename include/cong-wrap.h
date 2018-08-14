@@ -44,12 +44,6 @@ namespace libsemigroups {
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED)) {
-        // _wrapped_cong should die, if this is killed, so we replace its
-        // "dead" with the one from this.
-        _wrapped_cong->replace_dead(get_dead());
-        // This is finished if _wrapped_cong is finished, so we replace our
-        // "finished" with that of the wrapped cong.
-        replace_finished(_wrapped_cong->get_finished());
       }
 
       // FIXME avoid code duplication here
@@ -61,8 +55,6 @@ namespace libsemigroups {
         if (TAddRules) {
           add_rules(S);
         }
-        _wrapped_cong->replace_dead(get_dead());
-        replace_finished(_wrapped_cong->get_finished());
       }
 
       explicit WrappedCong(std::string const& lphbt) : WrappedCong() {
@@ -76,7 +68,8 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       void run() override {
-        _wrapped_cong->run();
+        _wrapped_cong->run_until(
+            [this](Runner*) -> bool { return dead() || timed_out(); });
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -125,6 +118,14 @@ namespace libsemigroups {
 
       size_t nr_rules() const noexcept override {
         return _nr_rules;
+      }
+
+      ////////////////////////////////////////////////////////////////////////////
+      // Runner - overridden non-pure virtual method - protected
+      ////////////////////////////////////////////////////////////////////////////
+
+      bool finished_impl() const override {
+        return _wrapped_cong->finished();
       }
 
       ////////////////////////////////////////////////////////////////////////////

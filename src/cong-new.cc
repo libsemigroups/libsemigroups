@@ -32,6 +32,7 @@
 namespace libsemigroups {
   namespace tmp {
     using ToddCoxeter      = congruence::ToddCoxeter;
+    using KnuthBendix      = congruence::KnuthBendix;
     using KBP              = congruence::KBP;
     using class_index_type = CongIntf::class_index_type;
 
@@ -176,16 +177,16 @@ namespace libsemigroups {
       }
     }
 
-    bool Congruence::finished() const {
-      // Must set_finished, since otherwise Runner methods won't function
-      // correctly.
+    //////////////////////////////////////////////////////////////////////////
+    // Runner - overridden non-pure virtual methods - protected
+    //////////////////////////////////////////////////////////////////////////
+
+    bool Congruence::finished_impl() const {
       for (auto runner : _race) {
         if (runner->finished()) {
-          set_finished(true);
           return true;
         }
       }
-      set_finished(false);
       return false;
     }
 
@@ -194,7 +195,10 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void Congruence::add_pair(word_type lhs, word_type rhs) {
-      LIBSEMIGROUPS_ASSERT(!_race.empty());
+      if (_race.empty()) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "must add at least one method before adding generating pairs");
+      }
       for (auto runner : _race) {
         static_cast<CongIntf*>(runner)->add_pair(lhs, rhs);
       }
@@ -205,6 +209,9 @@ namespace libsemigroups {
     }
 
     class_index_type Congruence::word_to_class_index(word_type const& word) {
+      LIBSEMIGROUPS_ASSERT(
+          static_cast<CongIntf*>(_race.winner())->word_to_class_index(word)
+          != UNDEFINED);
       return static_cast<CongIntf*>(_race.winner())->word_to_class_index(word);
     }
 
@@ -242,23 +249,30 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     bool Congruence::contains(word_type const& lhs, word_type const& rhs) {
-      if (const_contains(lhs, rhs)) {
-        return true;
+      result_type r = const_contains(lhs, rhs);
+      if (r != result_type::UNKNOWN) {
+        return r == result_type::TRUE;
       }
-      return static_cast<CongIntf*>(_race.winner())->contains(lhs, rhs);
+      _race.run_until([this, &lhs, &rhs]() -> bool {
+        return const_contains(lhs, rhs) != result_type::UNKNOWN;
+      });
+      return const_contains(lhs, rhs) == result_type::TRUE;
     }
 
-    bool Congruence::const_contains(word_type const& lhs,
-                                    word_type const& rhs) const {
+    CongIntf::result_type
+    Congruence::const_contains(word_type const& lhs,
+                               word_type const& rhs) const {
       if (lhs == rhs) {
-        return true;
+        return result_type::TRUE;
       }
       for (auto runner : _race) {
-        if (static_cast<CongIntf*>(runner)->const_contains(lhs, rhs)) {
-          return true;
+        result_type r
+            = static_cast<CongIntf*>(runner)->const_contains(lhs, rhs);
+        if (r != result_type::UNKNOWN) {
+          return r;
         }
       }
-      return false;
+      return result_type::UNKNOWN;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -268,6 +282,32 @@ namespace libsemigroups {
     void Congruence::add_method(Runner* r) {
       // TODO check that it is ok to add runners
       _race.add_runner(r);
+    }
+
+    KnuthBendix* Congruence::knuth_bendix() const {
+      return find_method<KnuthBendix>();
+    }
+
+    bool Congruence::has_knuth_bendix() const {
+      try {
+        knuth_bendix();
+      } catch (...) {
+        return false;
+      }
+      return true;
+    }
+
+    ToddCoxeter* Congruence::todd_coxeter() const {
+      return find_method<ToddCoxeter>();
+    }
+
+    bool Congruence::has_todd_coxeter() const {
+      try {
+        todd_coxeter();
+      } catch (...) {
+        return false;
+      }
+      return true;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -283,5 +323,24 @@ namespace libsemigroups {
           winner->cbegin_ntc(), winner->cend_ntc());
       // TODO it is rather wasteful to copy this non_trivial_classes here
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Congruence - methods - private
+    //////////////////////////////////////////////////////////////////////////
+
+    template <class TCongIntfSubclass>
+    TCongIntfSubclass* Congruence::find_method() const {
+      // We use find_if so that this works even if we haven't computed anything
+      // at all.
+      auto it = std::find_if(_race.begin(), _race.end(), [](Runner* m) {
+        return typeid(*m) == typeid(TCongIntfSubclass);
+      });
+      if (it != _race.end()) {
+        return static_cast<TCongIntfSubclass*>(*it);
+      } else {
+        throw LIBSEMIGROUPS_EXCEPTION("method not found");
+      }
+    }
+
   }  // namespace tmp
 }  // namespace libsemigroups
