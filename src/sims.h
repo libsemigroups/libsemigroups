@@ -92,6 +92,48 @@ namespace libsemigroups {
       return out;
     }
 
+    uint64_t group_mem(Permutation<PointType>* const test) {
+      if (test->degree() != _deg) {
+        return false;
+      }
+
+      bool out = true;
+
+      if (!_enumerated) {
+        _strong_gens.resize(_deg + 1);
+        _transversal.resize(_deg * _deg);
+        _transversal_inv.resize(_deg * _deg);
+
+        add_base_point(0);
+        schreier_sims_stab_chain(0);
+        _enumerated = true;
+      }
+
+      Permutation<PointType>* currenttest
+          = static_cast<Permutation<PointType>*>(test->really_copy());
+
+      Element* currenttest_copy;
+      for (uint64_t i = 0; i < _base.size(); i++) {
+        if (_transversal_inv[i * _deg + (*currenttest)[_base[i]]] == nullptr) {
+          out = false;
+          break;
+        } else if (is_identity(currenttest)) {
+          break;
+        }
+        currenttest_copy = currenttest->really_copy();
+        currenttest->redefine(
+            currenttest_copy,
+            _transversal_inv[i * _deg + (*currenttest)[_base[i]]]);
+        currenttest_copy->really_delete();
+        delete currenttest_copy;
+      }
+
+      out = out && is_identity(currenttest);
+      currenttest->really_delete();
+      delete currenttest;
+      return out;
+    }
+
    private:
     std::vector<Permutation<PointType>*>*
     really_copy_vec(std::vector<Permutation<PointType>*>* const cont) {
