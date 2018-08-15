@@ -53,8 +53,8 @@ namespace libsemigroups {
     // Only works when that is a generator!!
     inline TCE operator*(TCE const& that) const {
       // class_index_to_letter checks that "that" is really a generator
-      return TCE(
-          _tc, _tc->table(_index, _tc->class_index_to_letter(that._index)));
+      return TCE(_tc,
+                 _tc->table(_index, _tc->class_index_to_letter(that._index)));
     }
 
     inline TCE one() const noexcept {
@@ -93,17 +93,13 @@ namespace libsemigroups {
     }
   };
 
-  template <>
-  struct less<
-      TCE> {
-    bool operator()(TCE const& x,
-                    TCE const& y) const noexcept {
+  template <> struct less<TCE> {
+    bool operator()(TCE const& x, TCE const& y) const noexcept {
       return x < y;
     }
   };
 
-  template <>
-  struct one<TCE> {
+  template <> struct one<TCE> {
     TCE operator()(TCE const& x) const noexcept {
       return x.one();
     }

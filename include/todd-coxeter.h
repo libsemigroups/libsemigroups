@@ -36,7 +36,7 @@
 #include "fpsemi-intf.h"
 
 namespace libsemigroups {
-  class TCE; // forward declaration
+  class TCE;  // forward declaration
   namespace congruence {
     class ToddCoxeter;  // forward declaration
   }
@@ -142,10 +142,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       std::vector<relation_type>& init();
-      void init_after_prefill();
-      void init_relations();
-      void prefill(SemigroupBase*);
-      void use_relations_or_cayley_graph();
+      void                        init_after_prefill();
+      void                        init_relations();
+      void                        prefill(SemigroupBase*);
+      void                        use_relations_or_cayley_graph();
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods (other) - private

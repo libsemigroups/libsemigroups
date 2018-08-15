@@ -63,7 +63,7 @@ namespace libsemigroups {
     // FpSemiIntf - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void           add_rule(std::string const&, std::string const&) override;
+    void add_rule(std::string const&, std::string const&) override;
     using FpSemiIntf::add_rule;
 
     bool           equal_to(std::string const&, std::string const&) override;
@@ -85,8 +85,8 @@ namespace libsemigroups {
     // FpSemigroup - methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    bool has_knuth_bendix() const;
-    bool has_todd_coxeter() const;
+    bool                      has_knuth_bendix() const;
+    bool                      has_todd_coxeter() const;
     fpsemigroup::KnuthBendix* knuth_bendix() const;
     fpsemigroup::ToddCoxeter* todd_coxeter() const;
 

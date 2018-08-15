@@ -137,7 +137,7 @@ namespace libsemigroups {
       for (auto const& rel : _relations) {
         validate_relation(rel);
       }
-      _extra     = extra;
+      _extra = extra;
       for (auto const& rel : _extra) {
         validate_relation(rel);
       }

@@ -231,7 +231,8 @@ namespace libsemigroups {
   }
 
   void FpSemiIntf::set_isomorphic_non_fp_semigroup(
-      SemigroupBase* ismrphc_nn_fp_smgrp, bool delete_it) noexcept {
+      SemigroupBase* ismrphc_nn_fp_smgrp,
+      bool           delete_it) noexcept {
     LIBSEMIGROUPS_ASSERT(ismrphc_nn_fp_smgrp != nullptr);
     LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
     // _delete_isomorphic_non_fp_semigroup can be either true or false,

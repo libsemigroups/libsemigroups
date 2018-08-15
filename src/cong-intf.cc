@@ -155,7 +155,7 @@ namespace libsemigroups {
     // _delete_quotient can be either true or false, depending on whether qtnt
     // is coming from outside or inside.
     _delete_quotient = delete_it;
-    _quotient = qtnt;
+    _quotient        = qtnt;
   }
 
   SemigroupBase* CongIntf::get_parent() const noexcept {

@@ -147,7 +147,7 @@ namespace libsemigroups {
           _runners.push_back(_winner);
         }
       }
-        // TODO consider making it possible to keep the dead runners.
+      // TODO consider making it possible to keep the dead runners.
     }
 
     std::vector<Runner*> _runners;

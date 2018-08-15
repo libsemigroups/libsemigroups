@@ -43,8 +43,7 @@ namespace libsemigroups {
       WrappedCong()
           : _nr_rules(0),
             _wrapped_cong(
-                make_unique<wrapped_type>(congruence_type::TWOSIDED)) {
-      }
+                make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
 
       // FIXME avoid code duplication here
       explicit WrappedCong(SemigroupBase* S)
@@ -103,7 +102,8 @@ namespace libsemigroups {
       }
 
       bool equal_to(std::string const& lhs, std::string const& rhs) override {
-        return _wrapped_cong->contains(string_to_word(lhs), string_to_word(rhs));
+        return _wrapped_cong->contains(string_to_word(lhs),
+                                       string_to_word(rhs));
       }
 
       // TODO improve the many copies etc in:
@@ -184,7 +184,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
       // WrappedCong - methods - public
       ////////////////////////////////////////////////////////////////////////////
-      //TODO use shared_ptr
+      // TODO use shared_ptr
       TWrappedCong const* congruence() const {
         return _wrapped_cong.get();
       }

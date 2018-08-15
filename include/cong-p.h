@@ -276,8 +276,8 @@ namespace libsemigroups {
                                     std::vector<word_type>());
         for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
           word_type word
-              = static_cast<semigroup_type*>(get_parent())->factorisation(
-                  this->to_external(_reverse_map[ind]));
+              = static_cast<semigroup_type*>(get_parent())
+                    ->factorisation(this->to_external(_reverse_map[ind]));
           _non_trivial_classes[_class_lookup[ind]].push_back(word);
         }
       }
@@ -410,23 +410,23 @@ namespace libsemigroups {
           std::pair<internal_element_type, internal_element_type>,
           PHash,
           PEqual>
-           _found_pairs;
-      bool _init_done;
-      mutable UF   _lookup;
+                 _found_pairs;
+      bool       _init_done;
+      mutable UF _lookup;
       mutable std::unordered_map<internal_const_element_type,
-                         size_t,
-                         internal_hash,
-                         internal_equal_to>
-                       _map;
+                                 size_t,
+                                 internal_hash,
+                                 internal_equal_to>
+                               _map;
       mutable size_t           _map_next;
       mutable class_index_type _next_class;
-      size_t           _nr_non_trivial_classes;
-      size_t           _nr_non_trivial_elemnts;
+      size_t                   _nr_non_trivial_classes;
+      size_t                   _nr_non_trivial_elemnts;
       std::queue<std::pair<internal_element_type, internal_element_type>>
-                                         _pairs_to_mult;
+                                                 _pairs_to_mult;
       mutable std::vector<internal_element_type> _reverse_map;
-      internal_element_type              _tmp1;
-      internal_element_type              _tmp2;
+      internal_element_type                      _tmp1;
+      internal_element_type                      _tmp2;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -444,7 +444,7 @@ namespace libsemigroups {
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////
 
-      using p_type          = P<KBE,
+      using p_type = P<KBE,
                        hash<KBE>,
                        equal_to<KBE>,
                        SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;

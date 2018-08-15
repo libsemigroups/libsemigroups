@@ -229,8 +229,8 @@ namespace libsemigroups {
       // KnuthBendix - methods for converting ints <-> string/char - private
       //////////////////////////////////////////////////////////////////////////
 
-      static size_t                internal_char_to_uint(internal_char_type c);
-      static internal_char_type    uint_to_internal_char(size_t a);
+      static size_t               internal_char_to_uint(internal_char_type c);
+      static internal_char_type   uint_to_internal_char(size_t a);
       static internal_string_type uint_to_internal_string(size_t const);
       static word_type internal_string_to_word(internal_string_type const&);
 

@@ -125,8 +125,9 @@ namespace libsemigroups {
         return get_isomorphic_non_fp_semigroup();
       }
     }
-    set_isomorphic_non_fp_semigroup(static_cast<FpSemiIntf*>(_race.winner())
-                                        ->isomorphic_non_fp_semigroup(), false);
+    set_isomorphic_non_fp_semigroup(
+        static_cast<FpSemiIntf*>(_race.winner())->isomorphic_non_fp_semigroup(),
+        false);
     return get_isomorphic_non_fp_semigroup();
   }
 
