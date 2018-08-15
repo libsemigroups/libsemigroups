@@ -60,7 +60,8 @@ namespace libsemigroups {
   // place to cache the SemigroupBase* S.
   FpSemigroup::FpSemigroup(SemigroupBase* S) : FpSemigroup() {
     for (auto runner : _race) {
-      static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S);
+      static_cast<FpSemiIntf*>(runner)->set_isomorphic_non_fp_semigroup(S,
+                                                                        false);
       // TODO if the policy is standard, then add another ToddCoxeter with
       // policy use_cayley_graph
     }
@@ -119,12 +120,13 @@ namespace libsemigroups {
     for (auto runner : _race) {
       if (static_cast<FpSemiIntf*>(runner)->has_isomorphic_non_fp_semigroup()) {
         set_isomorphic_non_fp_semigroup(
-            static_cast<FpSemiIntf*>(runner)->isomorphic_non_fp_semigroup());
+            static_cast<FpSemiIntf*>(runner)->isomorphic_non_fp_semigroup(),
+            false);
         return get_isomorphic_non_fp_semigroup();
       }
     }
     set_isomorphic_non_fp_semigroup(static_cast<FpSemiIntf*>(_race.winner())
-                                        ->isomorphic_non_fp_semigroup());
+                                        ->isomorphic_non_fp_semigroup(), false);
     return get_isomorphic_non_fp_semigroup();
   }
 

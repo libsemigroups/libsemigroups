@@ -81,7 +81,7 @@ namespace libsemigroups {
       // structure for S.
       _race.add_runner(new ToddCoxeter(type, *S->todd_coxeter()));
       if (S->todd_coxeter()->finished()) {
-        LIBSEMIGROUPS_ASSERT(parent() == nullptr);
+        LIBSEMIGROUPS_ASSERT(!has_parent());
         set_parent(S->todd_coxeter()->isomorphic_non_fp_semigroup());
         // FIXME what happens if S is deleted before this??
 
@@ -159,7 +159,7 @@ namespace libsemigroups {
       for (auto runner : _race) {
         auto ci = static_cast<CongIntf*>(runner);
         if (!ci->has_parent()) {
-          ci->set_parent(parent());
+          ci->set_parent(get_parent());
         }
       }
     }
@@ -192,11 +192,12 @@ namespace libsemigroups {
   // CongIntf - overridden pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  void Congruence::add_pair(word_type lhs, word_type rhs) {
+  void Congruence::add_pair(word_type const& lhs, word_type const& rhs) {
     if (_race.empty()) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "must add at least one method before adding generating pairs");
     }
+    _nr_generating_pairs++;  // defined in CongIntf
     for (auto runner : _race) {
       static_cast<CongIntf*>(runner)->add_pair(lhs, rhs);
     }

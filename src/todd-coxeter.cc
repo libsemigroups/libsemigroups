@@ -134,8 +134,13 @@ namespace libsemigroups {
         : ToddCoxeter(type) {
       set_nr_generators(nrgens);
       _relations = relations;
+      for (auto const& rel : _relations) {
+        validate_relation(rel);
+      }
       _extra     = extra;
-      validate_relations();
+      for (auto const& rel : _extra) {
+        validate_relation(rel);
+      }
     }
 
     ToddCoxeter::ToddCoxeter(congruence_type type, ToddCoxeter const& copy)
@@ -248,15 +253,13 @@ namespace libsemigroups {
     // CongIntf - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
-    // FIXME should be word_type const&
-    void ToddCoxeter::add_pair(word_type lhs, word_type rhs) {
-      if (!is_nr_generators_defined()) {
-        throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before the "
-                                      "number of generators is defined");
-      } else if (_init_done) {
+    void ToddCoxeter::add_pair(word_type const& lhs, word_type const& rhs) {
+      if (_init_done) {
         // TODO allow adding of pairs here
         throw LIBSEMIGROUPS_EXCEPTION("can't add pair at this point");
       }
+      _nr_generating_pairs++;  // defined in CongIntf
+      // validate_word throws if the generators are not defined
       validate_word(lhs);
       validate_word(rhs);
       _extra.emplace_back(lhs, rhs);
@@ -286,9 +289,9 @@ namespace libsemigroups {
           // more generators than cosets.
           gens.emplace_back(this, _table.get(0, i));
         }
-        set_quotient(new Semigroup<TCE>(gens));
+        set_quotient(new Semigroup<TCE>(gens), true);
       }
-      return quotient();
+      return get_quotient();
     }
 
     class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
@@ -372,8 +375,8 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled || (has_quotient() && quotient()->is_done())
-             || (has_parent() && parent()->is_done());
+      return _prefilled || (has_quotient() && get_quotient()->is_done())
+             || (has_parent() && get_parent()->is_done());
       // 1. _prefilled means that either we were created from a SemigroupBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
@@ -467,21 +470,9 @@ namespace libsemigroups {
       return (c == UNDEFINED ? c : c - 1);
     }
 
-    //////////////////////////////////
-    // Private methods - validation //
-    //////////////////////////////////
-
-    // TODO This method should go into cong-intf
-    void ToddCoxeter::validate_relations() const {
-      for (auto const& rel : _relations) {
-        validate_word(rel.first);
-        validate_word(rel.second);
-      }
-      for (auto const& rel : _extra) {
-        validate_word(rel.first);
-        validate_word(rel.second);
-      }
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - methods (validation) - private
+    ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::validate_table() const {
       for (size_t i = 0; i < _table.nr_rows(); ++i) {
@@ -494,18 +485,6 @@ namespace libsemigroups {
                 + to_string(_table.nr_rows()) + ") or UNDEFINED, but is "
                 + to_string(c));
           }
-        }
-      }
-    }
-
-    // TODO This method should go into cong-intf
-    void ToddCoxeter::validate_word(word_type const& w) const {
-      LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
-      for (auto const& l : w) {
-        if (l >= nr_generators()) {
-          throw LIBSEMIGROUPS_EXCEPTION("invalid word, found " + to_string(l)
-                                        + " should be at most "
-                                        + to_string(nr_generators()));
         }
       }
     }
@@ -647,7 +626,7 @@ namespace libsemigroups {
             // when this is constructed from (type, ToddCoxeter&).
             // Intentional fall through
           case policy::use_cayley_graph:
-            prefill(parent());
+            prefill(get_parent());
 #ifdef LIBSEMIGROUPS_DEBUG
             // This is a check of program logic, since we use parent() to fill
             // the table, so we only validate in debug mode.
@@ -657,13 +636,20 @@ namespace libsemigroups {
                                  // this case
             break;
           case policy::use_relations:
-            relations(parent(), [this](word_type lhs, word_type rhs) -> void {
-              _relations.emplace_back(lhs, rhs);
-            });
+            relations(
+                get_parent(),
+                [this](word_type const& lhs, word_type const& rhs) -> void {
+                  _relations.emplace_back(lhs, rhs);
+                });
 #ifdef LIBSEMIGROUPS_DEBUG
             // This is a check of program logic, since we use parent() to
             // obtain the relations, so we only validate in debug mode.
-            validate_relations();
+            for (auto const& rel : _relations) {
+              validate_relation(rel);
+            }
+            for (auto const& rel : _extra) {
+              validate_relation(rel);
+            }
 #endif
             break;
         }
@@ -757,7 +743,8 @@ namespace libsemigroups {
                                       class_index_type rhs) {
       // Note that _lhs_stack and _rhs_stack may not be empty, if this was
       // killed before and has been restarted.
-      // TODO add assertion that lhs and rhs are valid values
+      LIBSEMIGROUPS_ASSERT(lhs != UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(rhs != UNDEFINED);
 
       // Make sure lhs < rhs
       if (lhs == rhs) {

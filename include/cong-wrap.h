@@ -55,6 +55,7 @@ namespace libsemigroups {
         if (TAddRules) {
           add_rules(S);
         }
+        // FIXME set_isomorphic_non_fp_semigroup??
       }
 
       explicit WrappedCong(std::string const& lphbt) : WrappedCong() {

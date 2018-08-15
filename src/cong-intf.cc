@@ -16,8 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO clean this up
-
 #include "cong-intf.h"
 
 #include "internal/libsemigroups-exception.h"
@@ -27,85 +25,34 @@
 #include "semigroup-base.h"
 
 namespace libsemigroups {
-  using result_type = CongIntf::result_type;
+
+  ////////////////////////////////////////////////////////////////////////////
+  // CongIntf - constructors + destructor - public
+  ////////////////////////////////////////////////////////////////////////////
 
   CongIntf::CongIntf(congruence_type type)
       : Runner(),
         _delete_quotient(false),
-        _is_nr_generators_defined(false),
+        _init_ntc_done(false),
         _nrgens(UNDEFINED),
         _parent(nullptr),
         _quotient(nullptr),
         _type(type) {}
 
-  congruence_type CongIntf::type() const noexcept {
-    return _type;
+  CongIntf::~CongIntf() {
+    reset_quotient();
   }
 
-  size_t CongIntf::nr_generators() const noexcept {
-    return _nrgens;
-  }
-
-  void CongIntf::reset_quotient() {
-    if (_delete_quotient) {
-      delete _quotient;
-    }
-    _delete_quotient = false;
-    _quotient        = nullptr;
-  }
-
-  void CongIntf::set_quotient(SemigroupBase* quotient) {
-    LIBSEMIGROUPS_ASSERT(quotient != nullptr);
-    LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
-    LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
-    // FIXME _delete_quotient can be either true or false, depending on whether
-    // quotient is coming from outside or inside.
-    _delete_quotient = false;
-    _quotient        = quotient;
-  }
-
-  void CongIntf::set_parent(SemigroupBase* prnt) {
-    LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
-    if (prnt == _parent) {
-      return;
-    }
-    LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
-    // TODO MORE asserts (check compatibility of parent and this)
-    _parent = prnt;
-    // TODO set quotient
-  }
-
-  bool CongIntf::has_parent() const noexcept {
-    return _parent != nullptr;
-  }
-
-  SemigroupBase* CongIntf::parent() const noexcept {
-    return _parent;
-  }
-
-  void CongIntf::set_nr_generators(size_t n) {
-    if (_is_nr_generators_defined) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "the number of generators cannot be set more than once");
-    }
-    _is_nr_generators_defined = true;
-    _nrgens                   = n;
-  }
-
-  bool CongIntf::has_quotient() const noexcept {
-    return _quotient != nullptr;
-  }
-
-  SemigroupBase* CongIntf::quotient() const noexcept {
-    return _quotient;
-  }
+  ////////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-pure virtual methods - public
+  ////////////////////////////////////////////////////////////////////////////
 
   bool CongIntf::contains(word_type const& w1, word_type const& w2) {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
   }
 
-  result_type CongIntf::const_contains(word_type const& u,
-                                       word_type const& v) const {
+  CongIntf::result_type CongIntf::const_contains(word_type const& u,
+                                                 word_type const& v) const {
     if (const_word_to_class_index(u) == UNDEFINED
         || const_word_to_class_index(v) == UNDEFINED) {
       return result_type::UNKNOWN;
@@ -122,11 +69,6 @@ namespace libsemigroups {
     return word_to_class_index(w1) < word_to_class_index(w2);
   }
 
-  void CongIntf::add_pair(std::initializer_list<size_t> l,
-                          std::initializer_list<size_t> r) {
-    add_pair(word_type(l), word_type(r));
-  }
-
   bool CongIntf::is_quotient_obviously_finite() {
     return false;
   }
@@ -135,19 +77,125 @@ namespace libsemigroups {
     return false;
   }
 
+  void CongIntf::set_nr_generators(size_t n) {
+    if (nr_generators() != UNDEFINED) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "the number of generators cannot be set more than once");
+    }
+    _nrgens = n;
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-virtual methods - public
+  /////////////////////////////////////////////////////////////////////////
+
+  void CongIntf::add_pair(std::initializer_list<size_t> l,
+                          std::initializer_list<size_t> r) {
+    add_pair(word_type(l), word_type(r));
+  }
+
+  std::vector<std::vector<word_type>>::const_iterator CongIntf::cbegin_ntc() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.cbegin();
+  }
+
+  std::vector<std::vector<word_type>>::const_iterator CongIntf::cend_ntc() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.cend();
+  }
+
+  size_t CongIntf::nr_generators() const noexcept {
+    return _nrgens;
+  }
+
+  size_t CongIntf::nr_generating_pairs() const noexcept {
+    return _nr_generating_pairs;
+  }
+
+  size_t CongIntf::nr_non_trivial_classes() {
+    init_non_trivial_classes();
+    return _non_trivial_classes.size();
+  }
+
+  SemigroupBase* CongIntf::parent_semigroup() const {
+    if (!has_parent()) {
+      throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
+    }
+    return get_parent();
+  }
+
+  congruence_type CongIntf::type() const noexcept {
+    return _type;
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-virtual methods - protected
+  /////////////////////////////////////////////////////////////////////////
+
+  SemigroupBase* CongIntf::get_quotient() const noexcept {
+    return _quotient;
+  }
+
+  bool CongIntf::has_quotient() const noexcept {
+    return _quotient != nullptr;
+  }
+
+  void CongIntf::reset_quotient() {
+    if (_delete_quotient) {
+      delete _quotient;
+    }
+    _delete_quotient = false;
+    _quotient        = nullptr;
+  }
+
+  void CongIntf::set_quotient(SemigroupBase* qtnt, bool delete_it) {
+    LIBSEMIGROUPS_ASSERT(qtnt != nullptr);
+    LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
+    LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
+    // _delete_quotient can be either true or false, depending on whether qtnt
+    // is coming from outside or inside.
+    _delete_quotient = delete_it;
+    _quotient = qtnt;
+  }
+
+  SemigroupBase* CongIntf::get_parent() const noexcept {
+    return _parent;
+  }
+
+  bool CongIntf::has_parent() const noexcept {
+    return _parent != nullptr;
+  }
+
+  void CongIntf::set_parent(SemigroupBase* prnt) {
+    LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
+    if (prnt == _parent) {
+      return;
+    }
+    LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
+    LIBSEMIGROUPS_ASSERT(prnt->nrgens() == nr_generators()
+                         || nr_generators() == UNDEFINED || dead());
+    _parent = prnt;
+    if (_nr_generating_pairs == 0) {
+      _quotient        = prnt;
+      _delete_quotient = false;
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-pure virtual methods - private
+  /////////////////////////////////////////////////////////////////////////
+
   void CongIntf::init_non_trivial_classes() {
-    // FIXME if not is proper quotient also!! If this is the case, then
-    // we might end up enumerating an infinite semigroup in the loop below.
-    if (!_non_trivial_classes.empty()) {
+    if (_init_ntc_done) {
       // There are no non-trivial classes, or we already found them.
-      // FIXME this doesn't cover the case when there are no non-triv classes
       return;
     } else if (_parent == nullptr) {
       throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
                                     "find the non-trivial classes");
     }
-
     LIBSEMIGROUPS_ASSERT(nr_classes() != POSITIVE_INFINITY);
+
+    _init_ntc_done = true;
     _non_trivial_classes.assign(nr_classes(), std::vector<word_type>());
 
     word_type w;
@@ -167,21 +215,6 @@ namespace libsemigroups {
         _non_trivial_classes.end());
   }
 
-  std::vector<std::vector<word_type>>::const_iterator CongIntf::cbegin_ntc() {
-    init_non_trivial_classes();
-    return _non_trivial_classes.cbegin();
-  }
-
-  std::vector<std::vector<word_type>>::const_iterator CongIntf::cend_ntc() {
-    init_non_trivial_classes();
-    return _non_trivial_classes.cend();
-  }
-
-  size_t CongIntf::nr_non_trivial_classes() {
-    init_non_trivial_classes();
-    return _non_trivial_classes.size();
-  }
-
   CongIntf::class_index_type
   CongIntf::const_word_to_class_index(word_type const&) const {
     return UNDEFINED;
@@ -191,7 +224,32 @@ namespace libsemigroups {
   // CongIntf - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  bool CongIntf::is_nr_generators_defined() const noexcept {
-    return _is_nr_generators_defined;
+  bool CongIntf::validate_letter(letter_type c) const {
+    if (nr_generators() == UNDEFINED) {
+      throw LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
+    }
+    return c < _nrgens;
   }
+
+  void CongIntf::validate_word(word_type const& w) const {
+    for (auto l : w) {
+      // validate_letter throws if no generators are defined
+      if (!validate_letter(l)) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter " + to_string(l) + " in word " + to_string(w)
+            + ", the valid range is [0, " + to_string(_nrgens) + ")");
+      }
+    }
+  }
+
+  void CongIntf::validate_relation(word_type const& l,
+                                   word_type const& r) const {
+    validate_word(l);
+    validate_word(r);
+  }
+
+  void CongIntf::validate_relation(relation_type const& rel) const {
+    validate_relation(rel.first, rel.second);
+  }
+
 }  // namespace libsemigroups

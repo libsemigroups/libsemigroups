@@ -111,8 +111,8 @@ namespace libsemigroups {
       REQUIRE(kb.alphabet() == "abc");
 #endif
       REQUIRE(kb.nr_rules() == 4);
-      REQUIRE(kb.normal_form(word_type({2, 0})) == word_type({0}));
-      REQUIRE(kb.normal_form(word_type({0, 2})) == word_type({0}));
+      REQUIRE(kb.normal_form({2, 0}) == word_type({0}));
+      REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
       REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));
       REQUIRE(kb.equal_to(word_type({0, 2}), word_type({0})));
       REQUIRE(kb.normal_form("ac") == "a");

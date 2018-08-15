@@ -66,7 +66,7 @@ namespace libsemigroups {
     // CongIntf - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void             add_pair(word_type, word_type) override;
+    void             add_pair(word_type const&, word_type const&) override;
     word_type        class_index_to_word(class_index_type) override;
     SemigroupBase*   quotient_semigroup() override;
     size_t           nr_classes() override;

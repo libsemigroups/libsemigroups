@@ -72,9 +72,9 @@ namespace libsemigroups {
       ToddCoxeter(congruence_type,
                   SemigroupBase&,
                   policy = policy::use_relations);
+      // TODO change to use_cayley_graph
       // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
       // TODO ToddCoxeter(congruence_type type, FpSemigroup& S, policy p);
-      // TODO change to use_cayley_graph
 
       ToddCoxeter(congruence_type,
                   size_t,
@@ -97,7 +97,7 @@ namespace libsemigroups {
       // CongIntf - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
-      void             add_pair(word_type, word_type) override;
+      void             add_pair(word_type const&, word_type const&) override;
       size_t           nr_classes() override;
       SemigroupBase*   quotient_semigroup() override;
       class_index_type word_to_class_index(word_type const&) override;
@@ -117,7 +117,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       bool             empty() const;
-      letter_type      class_index_to_letter(class_index_type x);
+      letter_type      class_index_to_letter(class_index_type);
       policy           get_policy() const noexcept;
       void             prefill(RecVec<class_index_type> const&);
       void             set_pack(size_t);
@@ -135,9 +135,7 @@ namespace libsemigroups {
       // ToddCoxeter - methods (validation) - private
       ////////////////////////////////////////////////////////////////////////
 
-      void validate_relations() const;  // TODO still required?
       void validate_table() const;
-      void validate_word(word_type const&) const;  // TODO still required?
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods (initialisation) - private

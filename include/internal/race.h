@@ -21,10 +21,7 @@
 // obtaining the winner.
 
 // TODO:
-// - implement a run_for method.
 // - consider keeping killed off methods.
-// - Race should inherit from Runner.
-//
 
 #ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_

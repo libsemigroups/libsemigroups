@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a class for creating ranges of integers.
+// This file contains a class for creating ranges of integers, for use with
+// SchreierSims.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RANGE_H_
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_RANGE_H_
@@ -28,7 +29,7 @@ namespace libsemigroups {
   class IntegralRange {
     static_assert(
         std::is_integral<TIntegralType>::value,
-        "the template parameter TIntegralType is not an integral type");
+        "the template parameter TIntegralType must be an integral type");
 
    public:
     using value_type = TIntegralType;

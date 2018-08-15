@@ -21,7 +21,6 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
 
-#include "internal/libsemigroups-exception.h"
 #include "internal/runner.h"
 
 #include "types.h"
@@ -33,14 +32,25 @@ namespace libsemigroups {
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
   class CongIntf : public Runner {
+    // Allows Congruence to use set_parent and has_parent on the Runner's it
+    // contains
     friend class Congruence;
-   public:
-    //! The different types of congruence.
 
-    //! Type for indices of congruence classes in a CongIntf
-    //! object.
-    using class_index_type = size_t;
-    using non_trivial_classes_type = std::vector<std::vector<word_type>>;
+   protected:
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - enums - protected
+    ////////////////////////////////////////////////////////////////////////////
+
+    enum class result_type { TRUE, FALSE, UNKNOWN };
+
+   public:
+    ////////////////////////////////////////////////////////////////////////////
+    // CongIntf - typedefs - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    //! Type for indices of congruence classes in a CongIntf object.
+    using class_index_type           = size_t;
+    using non_trivial_classes_type   = std::vector<std::vector<word_type>>;
     using non_trivial_class_iterator = non_trivial_classes_type::const_iterator;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -50,7 +60,7 @@ namespace libsemigroups {
     explicit CongIntf(congruence_type type);
 
     //! A default destructor.
-    virtual ~CongIntf() {}
+    virtual ~CongIntf();
 
     ////////////////////////////////////////////////////////////////////////////
     // CongIntf - pure virtual methods - public
@@ -73,8 +83,8 @@ namespace libsemigroups {
     //! \warning The method for finding the structure of a congruence may be
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
-    virtual class_index_type word_to_class_index(word_type const& word) = 0;
-    virtual word_type        class_index_to_word(class_index_type i)    = 0;
+    virtual class_index_type word_to_class_index(word_type const&) = 0;
+    virtual word_type        class_index_to_word(class_index_type) = 0;
 
     //! Returns the number of congruences classes of \c this.
     //!
@@ -88,16 +98,9 @@ namespace libsemigroups {
 
     //! Add a generating pair to the congruence. Should only be done before
     //! anything is computed about the congruence.
-    // TODO make the preceeding description more precise, and actually enforce
-    // it.
-    // TODO const&
-    virtual void add_pair(word_type, word_type) = 0;
+    virtual void add_pair(word_type const&, word_type const&) = 0;
 
     virtual SemigroupBase* quotient_semigroup() = 0;
-
-    // JDM: not sure how to implement the following, for example in the
-    // ToddCoxeter class.
-    // virtual size_t                     nr_pairs() const noexcept    = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongIntf - non-pure virtual methods - public
@@ -117,7 +120,6 @@ namespace libsemigroups {
     // Same as the above but only uses the so far computed information to
     // answer. In particular, does not call this->run(). This method may
     // return false negatives, but must not return false positives.
-    enum class result_type { TRUE, FALSE, UNKNOWN };
     virtual result_type const_contains(word_type const&,
                                        word_type const&) const;
 
@@ -144,16 +146,11 @@ namespace libsemigroups {
     virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure non-virtual methods - public
+    // CongIntf - non-virtual methods - public
     /////////////////////////////////////////////////////////////////////////
 
     // Pass by value since these must be copied anyway
     void add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>);
-
-    //! Return the type of the congruence, i.e. if it is a left, right, or
-    //! two-sided congruence.
-    congruence_type type() const noexcept;
-    size_t          nr_generators() const noexcept;
 
     //! Returns the non-trivial classes of the congruence.
     //!
@@ -165,36 +162,40 @@ namespace libsemigroups {
     //! allocate memory.
     non_trivial_class_iterator cbegin_ntc();
     non_trivial_class_iterator cend_ntc();
-    size_t                     nr_non_trivial_classes();
-    // TODO move implementation to cc file
-    SemigroupBase* parent_semigroup() const {
-      if (!has_parent()) {
-        throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
-      }
-      return parent();
-    }
+
+    //! Return the type of the congruence, i.e. if it is a left, right, or
+    //! two-sided congruence.
+    size_t          nr_generators() const noexcept;
+    size_t          nr_generating_pairs() const noexcept;
+    size_t          nr_non_trivial_classes();
+    SemigroupBase*  parent_semigroup() const;
+    congruence_type type() const noexcept;
 
    protected:
     /////////////////////////////////////////////////////////////////////////
     // CongIntf - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
-    void reset_quotient();
-    void set_quotient(SemigroupBase*);
-    bool has_quotient() const noexcept;
-    SemigroupBase* quotient() const noexcept;
+    SemigroupBase* get_quotient() const noexcept;
+    bool           has_quotient() const noexcept;
+    void           reset_quotient();
+    void           set_quotient(SemigroupBase*, bool);
 
-    void set_parent(SemigroupBase*);
-    bool has_parent() const noexcept;
-    SemigroupBase* parent() const noexcept;
+    SemigroupBase* get_parent() const noexcept;
+    bool           has_parent() const noexcept;
+    void           set_parent(SemigroupBase*);
 
-    bool is_nr_generators_defined() const noexcept;
+    bool validate_letter(letter_type) const;
+    void validate_word(word_type const&) const;
+    void validate_relation(word_type const&, word_type const&) const;
+    void validate_relation(relation_type const&) const;
 
     /////////////////////////////////////////////////////////////////////////
     // CongIntf - data - protected
     /////////////////////////////////////////////////////////////////////////
 
     std::vector<std::vector<word_type>> _non_trivial_classes;
+    size_t                              _nr_generating_pairs;
 
    private:
     /////////////////////////////////////////////////////////////////////////
@@ -211,13 +212,12 @@ namespace libsemigroups {
     // CongIntf - data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    bool                                _delete_quotient;
-    bool                                _is_nr_generators_defined;
-    size_t                              _nrgens;
-    SemigroupBase* _parent;  // TODO make this a template param, so that it can
-                             // be i.e. FpSemigroup* or SemigroupBase*
-    SemigroupBase*                      _quotient;
-    congruence_type                     _type;
+    bool            _delete_quotient;
+    bool            _init_ntc_done;
+    size_t          _nrgens;
+    SemigroupBase*  _parent;
+    SemigroupBase*  _quotient;
+    congruence_type _type;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_

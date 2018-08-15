@@ -237,7 +237,7 @@ namespace libsemigroups {
       // shouldn't we use the same alphabet as S?
       set_alphabet(S->nrgens());
       add_rules(S);
-      set_isomorphic_non_fp_semigroup(S);
+      set_isomorphic_non_fp_semigroup(S, false);
     }
 
     KnuthBendix::KnuthBendix(SemigroupBase& S) : KnuthBendix(&S) {}
@@ -390,11 +390,12 @@ namespace libsemigroups {
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
       if (!has_isomorphic_non_fp_semigroup()) {
         run();
+        // TODO use 0-param Semigroup constructor
         auto T = new Semigroup<KBE>({KBE(*this, 0)});
         for (size_t i = 1; i < alphabet().size(); ++i) {
           T->add_generator(KBE(*this, i));
         }
-        set_isomorphic_non_fp_semigroup(T);
+        set_isomorphic_non_fp_semigroup(T, true);
       }
       return get_isomorphic_non_fp_semigroup();
     }
@@ -462,7 +463,7 @@ namespace libsemigroups {
     }
 
     // Static
-    word_type // TODO &&
+    word_type  // TODO &&
     KnuthBendix::internal_string_to_word(internal_string_type const& s) {
       word_type w;
       w.reserve(s.size());
@@ -484,7 +485,7 @@ namespace libsemigroups {
     }
 
     // Static
-    internal_string_type // TODO &&
+    internal_string_type  // TODO &&
     KnuthBendix::word_to_internal_string(word_type const& u) {
       internal_string_type v;
       v.reserve(u.size());
@@ -1050,8 +1051,9 @@ namespace libsemigroups {
     // CongIntf - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
-    // TODO const&
-    void KnuthBendix::add_pair(word_type lhs, word_type rhs) {
+    void KnuthBendix::add_pair(word_type const& lhs, word_type const& rhs) {
+      _nr_generating_pairs++;  // defined in CongIntf
+      reset_quotient();
       _kb->add_rule(lhs, rhs);
     }
 
@@ -1065,7 +1067,10 @@ namespace libsemigroups {
     }
 
     SemigroupBase* KnuthBendix::quotient_semigroup() {
-      return _kb->isomorphic_non_fp_semigroup();
+      if (!has_quotient()) {
+        set_quotient(_kb->isomorphic_non_fp_semigroup(), false);
+      }
+      return get_quotient();
     }
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
@@ -1084,7 +1089,6 @@ namespace libsemigroups {
     CongIntf::result_type
     KnuthBendix::const_contains(word_type const& lhs,
                                 word_type const& rhs) const {
-      // FIXME Probably leaks or something
       if (_kb->rewrite(_kb->word_to_string(lhs))
           == _kb->rewrite(_kb->word_to_string(rhs))) {
         return result_type::TRUE;

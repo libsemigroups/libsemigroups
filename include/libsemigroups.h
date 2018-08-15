@@ -18,38 +18,46 @@
 
 // This file includes all the headers in libsemigroups, for convenience.
 
-// TODO double check!
-
 #ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
 #define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
+
+#include "internal/libsemigroups-config.h"
+#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-exception.h"
+#include "internal/race.h"
+#include "internal/range.h"
+#include "internal/recvec.h"
+#include "internal/report.h"
+#include "internal/runner.h"
+#include "internal/square.h"
+#include "internal/stl.h"
+#include "internal/timer.h"
+#include "internal/uf.h"
 
 #include "adapters.h"
 #include "blocks.h"
 #include "bmat8.h"
-#include "cong.h"
+#include "cong-intf.h"
+#include "cong-new.h"
+#include "cong-p.h"
+#include "cong-wrap.h"
 #include "constants.h"
 #include "element-helper.h"
 #include "element.h"
+#include "fpsemi-intf.h"
+#include "fpsemi.h"
 #include "hpcombi.h"
-#include "libsemigroups-config.h"
-#include "libsemigroups-debug.h"
-#include "libsemigroups-exception.h"
-#include "partition.h"
-#include "range.h"
-#include "recvec.h"
-#include "report.h"
-#include "rws.h"
-#include "rwse.h"
+#include "kb-order.h"
+#include "kbe.h"
+#include "knuth-bendix.h"
 #include "schreier-sims.h"
 #include "semigroup-base.h"
 #include "semigroup-traits.h"
 #include "semigroup.h"
 #include "semiring.h"
-#include "square.h"
-#include "stl.h"
-#include "timer.h"
+#include "tce.h"
+#include "todd-coxeter.h"
 #include "types.h"
-#include "uf.h"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"

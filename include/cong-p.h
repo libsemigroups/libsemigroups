@@ -109,7 +109,7 @@ namespace libsemigroups {
       P(congruence_type type, SemigroupBase* S) : P(type) {
         LIBSEMIGROUPS_ASSERT(S != nullptr);
         set_nr_generators(S->nrgens());
-        set_parent(static_cast<semigroup_type*>(S));
+        set_parent(S);
       }
 
       P(congruence_type type, SemigroupBase& S) : P(type, &S) {}
@@ -141,7 +141,7 @@ namespace libsemigroups {
           _pairs_to_mult.pop();
           // TODO can the previous be auto&, or does the pop make this UB?
 
-          auto prnt = static_cast<semigroup_type*>(parent());
+          auto prnt = static_cast<semigroup_type*>(get_parent());
           // Add its left and/or right multiples
           for (size_t i = 0; i < prnt->nrgens(); i++) {
             const_reference gen = prnt->generator(i);
@@ -214,13 +214,13 @@ namespace libsemigroups {
       // CongIntf - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
-      void add_pair(word_type l, word_type r) override {
+      void add_pair(word_type const& l, word_type const& r) override {
         if (!has_parent()) {
           throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                         "the parent semigroup is defined");
         }
-        auto x = static_cast<semigroup_type*>(parent())->word_to_element(l);
-        auto y = static_cast<semigroup_type*>(parent())->word_to_element(r);
+        auto x = static_cast<semigroup_type*>(get_parent())->word_to_element(l);
+        auto y = static_cast<semigroup_type*>(get_parent())->word_to_element(r);
         internal_add_pair(this->to_internal(x), this->to_internal(y));
         this->external_free(x);
         this->external_free(y);
@@ -239,7 +239,7 @@ namespace libsemigroups {
 
       size_t nr_classes() override {
         run();
-        return parent()->size() - _class_lookup.size() + _next_class;
+        return get_parent()->size() - _class_lookup.size() + _next_class;
       }
 
       class_index_type word_to_class_index(word_type const& w) final {
@@ -258,7 +258,7 @@ namespace libsemigroups {
         if (!finished()) {
           return UNDEFINED;
         }
-        auto   x = static_cast<semigroup_type*>(parent())->word_to_element(w);
+        auto x = static_cast<semigroup_type*>(get_parent())->word_to_element(w);
         size_t ind_x = get_index(this->to_internal_const(x));
         this->external_free(x);
         LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
@@ -276,7 +276,7 @@ namespace libsemigroups {
                                     std::vector<word_type>());
         for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
           word_type word
-              = static_cast<semigroup_type*>(parent())->factorisation(
+              = static_cast<semigroup_type*>(get_parent())->factorisation(
                   this->to_external(_reverse_map[ind]));
           _non_trivial_classes[_class_lookup[ind]].push_back(word);
         }
@@ -369,9 +369,9 @@ namespace libsemigroups {
       void init() {
         if (!_init_done) {
           LIBSEMIGROUPS_ASSERT(has_parent());
-          LIBSEMIGROUPS_ASSERT(parent()->nrgens() > 0);
+          LIBSEMIGROUPS_ASSERT(get_parent()->nrgens() > 0);
           _tmp1      = this->internal_copy(this->to_internal_const(
-              static_cast<semigroup_type*>(parent())->generator(0)));
+              static_cast<semigroup_type*>(get_parent())->generator(0)));
           _tmp2      = this->internal_copy(_tmp1);
           _init_done = true;
         }
@@ -473,8 +473,7 @@ namespace libsemigroups {
         }
         _kb->run_until([this](Runner*) -> bool { return dead() || timed_out(); });
         if (!stopped()) {
-          auto S = _kb->isomorphic_non_fp_semigroup();
-          set_parent(static_cast<typename p_type::semigroup_type*>(S));
+          set_parent(_kb->isomorphic_non_fp_semigroup());
           p_type::run();
         }
         report_why_we_stopped(this);
@@ -483,7 +482,7 @@ namespace libsemigroups {
       // Override the method for the class P to avoid having to know the parent
       // semigroup (found as part of KBP::run) to add a pair.
       // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
-      void add_pair(word_type l, word_type r) override {
+      void add_pair(word_type const& l, word_type const& r) override {
         internal_element_type x = new element_type(_kb, l);
         internal_element_type y = new element_type(_kb, r);
         internal_add_pair(x, y);

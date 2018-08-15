@@ -16,12 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an interface for fp semigroup like classes.
-
-// TODO - nr_relations
-//      - next_relation (can't do cbegin/cend cos the data types are
-//      different in the subclasses)??
-//      - noexcept
+// This file contains a base class for f.p. semigroup like classes.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
@@ -30,7 +25,6 @@
 #include <unordered_map>
 
 #include "internal/runner.h"
-#include "internal/stl.h"
 
 #include "types.h"
 
@@ -73,24 +67,25 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
-    virtual void      add_rule(std::initializer_list<size_t>,
-                               std::initializer_list<size_t>);
     virtual void      add_rules(SemigroupBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
     virtual void      set_alphabet(std::string const&);
-    virtual void      set_alphabet(letter_type);
+    virtual void      set_alphabet(size_t);
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiIntf - non-virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
+    void add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>);
     void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
     std::string const& alphabet() const;
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
+    word_type          normal_form(std::initializer_list<letter_type>);
+
     // Set the char in alphabet() to be the identity.
     void set_identity(std::string const&);
     void set_identity(letter_type);
@@ -99,15 +94,15 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiIntf - non-virtual methods - protected
     //////////////////////////////////////////////////////////////////////////////
-    // TODO should be noexcept
+
     size_t      char_to_uint(char) const;
-    char        uint_to_char(size_t) const;
+    char        uint_to_char(size_t) const noexcept;
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
     SemigroupBase* get_isomorphic_non_fp_semigroup() const noexcept;
-    void reset_isomorphic_non_fp_semigroup();
-    void set_isomorphic_non_fp_semigroup(SemigroupBase*);
+    void           reset_isomorphic_non_fp_semigroup() noexcept;
+    void set_isomorphic_non_fp_semigroup(SemigroupBase*, bool) noexcept;
 
     bool is_alphabet_defined() const noexcept;
 
@@ -123,31 +118,15 @@ namespace libsemigroups {
     void validate_relation(word_type const&, word_type const&) const;
 
    private:
-    //////////////////
-    // Private data //
-    //////////////////
-    std::string                           _alphabet;
-    // The unordered_map could be an array if this is too slow
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiIntf - data - private
+    //////////////////////////////////////////////////////////////////////////////
+    std::string _alphabet;
+    // TODO The unordered_map could be an array if this is too slow
     std::unordered_map<char, letter_type> _alphabet_map;
     bool                                  _delete_isomorphic_non_fp_semigroup;
     bool                                  _is_alphabet_defined;
     SemigroupBase*                        _isomorphic_non_fp_semigroup;
   };
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
-// TODO use or delete the below
-        //////////////////////////////////////
-        // Non-pure syntactic sugar methods //
-        //////////////////////////////////////
-
-// bool equal_to(std::initializer_list<letter_type> const&,
-//              std::initializer_list<letter_type> const&);
-
-// word_type normal_form(std::initializer_list<letter_type> const&);
-// TODO normal_form for word_type??
-
-// void add_rule(relation_type);
-// void add_rule(std::initializer_list<size_t>,
-//              std::initializer_list<size_t>);
-// void add_rules(std::vector<relation_type> const&);
