@@ -44,10 +44,9 @@
 #define REPORT_FROM_FUNC(message)                                  \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
-    std::lock_guard<std::mutex> __lg(REPORTER.mutex());                              \
+    std::lock_guard<std::mutex> __lg(REPORTER.mutex());            \
     REPORTER(__func__, __tid) << message << std::endl;             \
   }
-
 
 namespace libsemigroups {
   // CAUTION: The comments in this file are out of date.
@@ -257,7 +256,7 @@ namespace libsemigroups {
     std::atomic<bool>                           _report;
   };
 
-  extern Reporter                    REPORTER;
+  extern Reporter REPORTER;
 
   template <typename TSubclass> void report(std::string const& msg) {
     if (REPORTER.get_report()) {

@@ -40,8 +40,7 @@ namespace libsemigroups {
     // Congruence - constructors - public
     //////////////////////////////////////////////////////////////////////////
 
-    Congruence::Congruence(congruence_type type)
-        : CongIntf(type), _race() {}
+    Congruence::Congruence(congruence_type type) : CongIntf(type), _race() {}
 
     Congruence::Congruence(congruence_type type, SemigroupBase* S, policy plcy)
         : Congruence(type) {

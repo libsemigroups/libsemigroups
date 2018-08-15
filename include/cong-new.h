@@ -30,7 +30,7 @@
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration
-  namespace tmp { // FIXME remove this
+  namespace tmp {     // FIXME remove this
     class Congruence : public CongIntf {
      public:
       // Execution policy:
@@ -81,11 +81,11 @@ namespace libsemigroups {
       // CongIntf - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
-      bool contains(word_type const&, word_type const&) override;
+      bool        contains(word_type const&, word_type const&) override;
       result_type const_contains(word_type const&,
                                  word_type const&) const override;
-      bool is_quotient_obviously_finite() override;
-      bool is_quotient_obviously_infinite() override;
+      bool        is_quotient_obviously_finite() override;
+      bool        is_quotient_obviously_infinite() override;
 
       //////////////////////////////////////////////////////////////////////////
       // Congruence - methods - public
@@ -93,8 +93,8 @@ namespace libsemigroups {
 
       void add_method(Runner*);
 
-      bool has_knuth_bendix() const;
-      bool has_todd_coxeter() const;
+      bool                     has_knuth_bendix() const;
+      bool                     has_todd_coxeter() const;
       congruence::KnuthBendix* knuth_bendix() const;
       congruence::ToddCoxeter* todd_coxeter() const;
 
@@ -103,8 +103,7 @@ namespace libsemigroups {
       // Congruence - methods - private
       //////////////////////////////////////////////////////////////////////////
 
-      template <class TCongIntfSubclass>
-      TCongIntfSubclass* find_method() const;
+      template <class TCongIntfSubclass> TCongIntfSubclass* find_method() const;
 
       //////////////////////////////////////////////////////////////////////////
       // CongIntf - non-pure virtual methods - private
@@ -117,7 +116,7 @@ namespace libsemigroups {
       /////////////////////////////////////////////////////////////////////////
       // Congruence - data - private
       /////////////////////////////////////////////////////////////////////////
-      Race   _race;
+      Race _race;
     };
   }  // namespace tmp
 }  // namespace libsemigroups

@@ -550,8 +550,15 @@ namespace libsemigroups {
 
       result_type const_contains(word_type const&,
                                  word_type const&) const override;
-      bool contains(word_type const&, word_type const&) override;
-      void set_nr_generators(size_t) override;
+      bool        contains(word_type const&, word_type const&) override;
+      void        set_nr_generators(size_t) override;
+
+     protected:
+      ////////////////////////////////////////////////////////////////////////////
+      // Runner - overridden non-pure virtual methods - protected
+      ////////////////////////////////////////////////////////////////////////////
+
+      bool finished_impl() const override;
 
      private:
       std::unique_ptr<fpsemigroup::KnuthBendix> _kb;

@@ -64,7 +64,7 @@ namespace libsemigroups {
       }
       _start_time = std::chrono::high_resolution_clock::now();
       _run_for    = val;
-      this->run(); // should depend on the method timed_out!
+      this->run();  // should depend on the method timed_out!
       _start_time = std::chrono::high_resolution_clock::now();
       _run_for    = FOREVER;
     } else {
@@ -94,7 +94,6 @@ namespace libsemigroups {
     _last_report          = std::chrono::high_resolution_clock::now();
     _report_time_interval = val;
   }
-
 
   void Runner::set_finished(bool val) const {
     _finished = val;

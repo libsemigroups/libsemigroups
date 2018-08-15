@@ -1904,7 +1904,6 @@ namespace libsemigroups {
       REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
     }
 
-
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
       lhs.insert(lhs.end(), rhs.begin(), rhs.end());

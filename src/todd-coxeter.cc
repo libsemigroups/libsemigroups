@@ -178,7 +178,7 @@ namespace libsemigroups {
             "Todd-Coxeter will never terminate");
       }
 
-      Timer timer;
+      Timer                       timer;
       std::vector<relation_type>& rels_to_use = init();
 
       while (!dead() && !timed_out() && _current != _next) {
@@ -527,7 +527,8 @@ namespace libsemigroups {
       }
       if (_relations.empty() && !_prefilled) {
         LIBSEMIGROUPS_ASSERT(type() == congruence_type::LEFT
-            || type() == congruence_type::RIGHT || _extra.empty());
+                             || type() == congruence_type::RIGHT
+                             || _extra.empty());
         // This is a special case for left and right congruences over the free
         // semigroup, which is somehow not covered by our implementation. If
         // the type is TWOSIDED, then _extra is anyway added to the end of

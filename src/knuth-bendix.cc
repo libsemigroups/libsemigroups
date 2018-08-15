@@ -995,16 +995,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     KnuthBendix::KnuthBendix()
-
         : CongIntf(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>()) {
-    }
+          _kb(make_unique<fpsemigroup::KnuthBendix>()) {}
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {
-    }
+          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
 
     KnuthBendix::KnuthBendix(SemigroupBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
@@ -1022,9 +1019,7 @@ namespace libsemigroups {
       if (stopped()) {
         return;
       }
-      auto stppd = [this](Runner*) -> bool {
-        return dead() || timed_out();
-      };
+      auto stppd = [this](Runner*) -> bool { return dead() || timed_out(); };
       _kb->run_until(stppd);
       // It is essential that we call _kb->run() first and then
       // _kb->isomorphic_non_fp_semigroup(), since this might get killed
@@ -1034,9 +1029,17 @@ namespace libsemigroups {
         while (!S->is_done() && !dead() && !timed_out()) {
           S->run_until(stppd);
         }
-        set_finished(S->is_done());
       }
       report_why_we_stopped(this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Runner - overridden non-pure virtual method - protected
+    ////////////////////////////////////////////////////////////////////////////
+
+    bool KnuthBendix::finished_impl() const {
+      return _kb->has_isomorphic_non_fp_semigroup()
+             && _kb->isomorphic_non_fp_semigroup()->is_done();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1089,8 +1092,7 @@ namespace libsemigroups {
       }
     }
 
-    bool KnuthBendix::contains(word_type const& lhs,
-                               word_type const& rhs) {
+    bool KnuthBendix::contains(word_type const& lhs, word_type const& rhs) {
       _kb->run();
       return const_contains(lhs, rhs) == result_type::TRUE;
     }
@@ -1099,7 +1101,6 @@ namespace libsemigroups {
       CongIntf::set_nr_generators(n);
       _kb->set_alphabet(n);
     }
-
 
   }  // namespace congruence
 
