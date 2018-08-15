@@ -69,6 +69,8 @@ namespace libsemigroups {
                    >= _run_for);
   }
 
+  ////////////////////////////////////////////////////////////////////////
+
   bool Runner::report() const {
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::high_resolution_clock::now() - _last_report);
@@ -85,6 +87,18 @@ namespace libsemigroups {
     _report_time_interval = val;
   }
 
+  void Runner::report_why_we_stopped() const {
+    if (finished()) {
+      REPORT("finished!");
+    } else if (dead()) {
+      REPORT("killed!");
+    } else if (timed_out()) {
+      REPORT("timed out!");
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+
   bool Runner::finished() const
       noexcept(noexcept(dead_impl()) && noexcept(finished_impl())) {
     return !(dead_impl()) && finished_impl();
@@ -96,6 +110,8 @@ namespace libsemigroups {
     _finished = val;
   }
 
+  ////////////////////////////////////////////////////////////////////////
+
   void Runner::kill() noexcept {
     // TODO add killed-by-thread
     _dead = true;
@@ -104,6 +120,8 @@ namespace libsemigroups {
   bool Runner::dead() const noexcept {
     return dead_impl();
   }
+
+  ////////////////////////////////////////////////////////////////////////
 
   bool Runner::stopped() const {
     return finished() || dead() || timed_out();

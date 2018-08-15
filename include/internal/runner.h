@@ -86,16 +86,7 @@ namespace libsemigroups {
     template <typename TIntType> void report_every(TIntType t) {
       report_every(std::chrono::nanoseconds(t));
     }
-
-    void report_why_we_stopped() const {
-      if (finished()) {
-        REPORT("finished!");
-      } else if (dead()) {
-        REPORT("killed!");
-      } else if (timed_out()) {
-        REPORT("timed out!");
-      }
-    }
+    void report_why_we_stopped() const;
 
     void set_finished(bool) const noexcept;
     bool finished() const
