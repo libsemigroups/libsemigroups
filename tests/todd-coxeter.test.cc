@@ -27,7 +27,6 @@
 #include "bmat8.h"
 #include "element-helper.h"
 #include "element.h"
-#include "rws.h"
 #include "semigroup.h"
 #include "tce.h"
 #include "todd-coxeter.h"
