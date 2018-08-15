@@ -203,7 +203,7 @@ namespace libsemigroups {
                                 << " pairs: " << _map_next << " elements in "
                                 << _lookup.nr_blocks() << " classes");
         REPORT("elapsed time = " << t);
-        report_why_we_stopped(this);
+        report_why_we_stopped();
         if (!dead() && !timed_out()) {
           set_finished(true);
           delete_tmp_storage();
@@ -471,12 +471,12 @@ namespace libsemigroups {
         if (stopped()) {
           return;
         }
-        _kb->run_until([this](Runner*) -> bool { return dead() || timed_out(); });
+        _kb->run_until([this]() -> bool { return dead() || timed_out(); });
         if (!stopped()) {
           set_parent(_kb->isomorphic_non_fp_semigroup());
           p_type::run();
         }
-        report_why_we_stopped(this);
+        report_why_we_stopped();
       }
 
       // Override the method for the class P to avoid having to know the parent

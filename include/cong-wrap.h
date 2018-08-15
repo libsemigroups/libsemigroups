@@ -70,7 +70,7 @@ namespace libsemigroups {
 
       void run() override {
         _wrapped_cong->run_until(
-            [this](Runner*) -> bool { return dead() || timed_out(); });
+            [this]() -> bool { return dead() || timed_out(); });
       }
 
       ////////////////////////////////////////////////////////////////////////////

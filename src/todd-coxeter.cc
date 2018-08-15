@@ -245,7 +245,7 @@ namespace libsemigroups {
                       << " maximum " << _forwd.size() << ", " << _active
                       << " survived");
       REPORT("elapsed time = " << timer);
-      report_why_we_stopped(this);
+      report_why_we_stopped();
       // No return value: all info is now stored in the class
     }
 

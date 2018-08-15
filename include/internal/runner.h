@@ -51,7 +51,7 @@ namespace libsemigroups {
     virtual void run() = 0;
 
     ////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure non-virtual methods - public
+    // Runner - non-virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     // This method runs the algorithm for approximately the number of
@@ -62,18 +62,22 @@ namespace libsemigroups {
     }
     bool timed_out() const;
 
-    template <typename TFunction, typename TIntType>
-    void run_until(TFunction const& func, TIntType check_interval) {
-      run_until(func, std::chrono::nanoseconds(check_interval));
-    }
-    template <typename TFunction>
-    void run_until(TFunction const&         func,
+    template <typename TCallable>
+    void run_until(TCallable const&         func,
                    std::chrono::nanoseconds check_interval
                    = std::chrono::milliseconds(50)) {
-      // TODO check TFunction result etc
-      while (!func(this) && !dead() && !finished()) {
+      static_assert(is_callable<TCallable>::value,
+                    "the template parameter TCallable must be callable");
+      static_assert(
+          std::is_same<typename std::result_of<TCallable()>::type, bool>::value,
+          "the template parameter TCallable must return a bool");
+      while (!func() && !dead() && !finished()) {
         run_for(check_interval);
       }
+    }
+    template <typename TCallable, typename TIntType>
+    void run_until(TCallable const& func, TIntType check_interval) {
+      run_until(func, std::chrono::nanoseconds(check_interval));
     }
 
     // Returns true if we should report and false otherwise
@@ -83,27 +87,24 @@ namespace libsemigroups {
       report_every(std::chrono::nanoseconds(t));
     }
 
-    template <typename TSubclass>
-    void report_why_we_stopped(TSubclass const*) const {
-      // TODO check TSubclass is subclass of this
+    void report_why_we_stopped() const {
       if (finished()) {
-        ::libsemigroups::report<TSubclass>("finished!");
+        REPORT("finished!");
       } else if (dead()) {
-        ::libsemigroups::report<TSubclass>("killed!");
+        REPORT("killed!");
       } else if (timed_out()) {
-        ::libsemigroups::report<TSubclass>("timed out!");
+        REPORT("timed out!");
       }
     }
 
-    void set_finished(bool) const;
-    bool finished() const;
+    void set_finished(bool) const noexcept;
+    bool finished() const
+        noexcept(noexcept(dead_impl()) && noexcept(finished_impl()));
 
-    void kill();
-    bool dead() const;
+    void kill() noexcept;
+    bool dead() const noexcept;
 
-    bool stopped() const {
-      return finished() || dead() || timed_out();
-    }
+    bool stopped() const;
 
    protected:
     ////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@ namespace libsemigroups {
   constexpr std::chrono::nanoseconds Runner::FOREVER;
 
   ////////////////////////////////////////////////////////////////////////
-  // Runner - constructors + destructor - public
+  // Runner - constructor - public
   ////////////////////////////////////////////////////////////////////////
 
   Runner::Runner()
@@ -42,17 +42,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure virtual methods - public
-  ////////////////////////////////////////////////////////////////////////
-
-  bool Runner::finished() const {
-    return !(dead_impl()) && finished_impl();
-    // Since kill() may leave the object in an invalid state we only return
-    // true here if we are not dead and the object thinks it is finished.
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure non-virtual methods - public
+  // Runner - non-virtual methods - public
   ////////////////////////////////////////////////////////////////////////
 
   void Runner::run_for(std::chrono::nanoseconds val) {
@@ -95,17 +85,28 @@ namespace libsemigroups {
     _report_time_interval = val;
   }
 
-  void Runner::set_finished(bool val) const {
+  bool Runner::finished() const
+      noexcept(noexcept(dead_impl()) && noexcept(finished_impl())) {
+    return !(dead_impl()) && finished_impl();
+    // Since kill() may leave the object in an invalid state we only return
+    // true here if we are not dead and the object thinks it is finished.
+  }
+
+  void Runner::set_finished(bool val) const noexcept {
     _finished = val;
   }
 
-  void Runner::kill() {
+  void Runner::kill() noexcept {
     // TODO add killed-by-thread
     _dead = true;
   }
 
-  bool Runner::dead() const {
+  bool Runner::dead() const noexcept {
     return dead_impl();
+  }
+
+  bool Runner::stopped() const {
+    return finished() || dead() || timed_out();
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -826,7 +826,7 @@ namespace libsemigroups {
       REPORT("max stack depth = " << _max_stack_depth);
 #endif
       REPORT("elapsed time = " << timer);
-      report_why_we_stopped(this);
+      report_why_we_stopped();
     }
 
     void KnuthBendix::knuth_bendix_by_overlap_length() {
@@ -1024,7 +1024,7 @@ namespace libsemigroups {
       if (stopped()) {
         return;
       }
-      auto stppd = [this](Runner*) -> bool { return dead() || timed_out(); };
+      auto stppd = [this]() -> bool { return dead() || timed_out(); };
       _kb->run_until(stppd);
       // It is essential that we call _kb->run() first and then
       // _kb->isomorphic_non_fp_semigroup(), since this might get killed
@@ -1035,7 +1035,7 @@ namespace libsemigroups {
           S->run_until(stppd);
         }
       }
-      report_why_we_stopped(this);
+      report_why_we_stopped();
     }
 
     ////////////////////////////////////////////////////////////////////////////

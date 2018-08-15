@@ -63,6 +63,7 @@ namespace libsemigroups {
                    std::chrono::nanoseconds check_interval
                    = std::chrono::milliseconds(50)) {
       // TODO some checks that there are any runners alive, and not finished
+      // TODO check signature of TFunction
       while (!func()) {
         run_for(check_interval);
       }

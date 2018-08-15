@@ -34,11 +34,11 @@
 #include "libsemigroups-debug.h"
 #include "timer.h"
 
-#define REPORT(message)                                                   \
-  if (REPORTER.get_report()) {                                            \
-    size_t __tid = REPORTER.thread_id(std::this_thread::get_id());        \
-    std::lock_guard<std::mutex> __lg(REPORTER.mutex());                   \
-    REPORTER.report_from<decltype(*this)>(__tid) << message << std::endl; \
+#define REPORT(message)                                            \
+  if (REPORTER.get_report()) {                                     \
+    size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
+    std::lock_guard<std::mutex> __lg(REPORTER.mutex());            \
+    REPORTER.report_from(__tid, this) << message << std::endl;     \
   }
 
 #define REPORT_FROM_FUNC(message)                                  \
@@ -49,38 +49,8 @@
   }
 
 namespace libsemigroups {
-  // CAUTION: The comments in this file are out of date.
-  //
-  // This is a simple class which can be used to print information to
-  // the standard output, reporting the class and function name (if set), and
-  // thread_id.
-  //
-  // It can be used like std::cout and if its call operator is used, like:
-  //
-  //    reporter("bananas", 2) << "the dvd player is broken";
-  //    reporter("apples") << "the window is open";
-  //
-  // Then it will put the following to std::cout, if the class name is not set
-  // when the <Reporter> is constructed.
-  //
-  //    Thread #2: "bananas": the dvd player is broken
-  //    Thread #0: "apples": the window is open
-  //
-  // (where 0 is the default value of for _thread_id) or if the class name has
-  // been set:
-  //
-  //    Thread #2: class_name::bananas: the dvd player is broken
-  //    Thread #0: class_name::"apples": the window is open
-  //
-  // If the call operator has not been called before, then the prefix is not
-  // printed (and consequently the value of the thread_id is not set).
-
   class Reporter {
    public:
-    // 0 parameters
-    //
-    // The default constructor. Note that by default this will output nothing,
-    // see <Reporter::set_report> and <Reporter::set_class_name>.
     Reporter()
         : _color_prefix({"",
                          "\033[40;38;5;82m",
@@ -97,51 +67,19 @@ namespace libsemigroups {
 
     ~Reporter() {}
 
-    // non-const, template
-    // @rep a <Reporter> instance
-    // @tt  something
-    //
-    // If <rep> is set to report (see <Reporter::set_report>), then << puts tt
-    // to std::cout, otherwise this does nothing.
-    //
-    // If << is used immediately after the call operator of <rep>, then a prefix
-    // will be put to std::cout, see the top of this section.
-    //
-    // If this is used in multiple threads for the same instance of a <Reporter>
-    // then you should probably lock the reporter first, see <Reporter::lock()>.
-    // (This is not done within the method for << since if, for example, we did:
-    //
-    //    rep << "aaa" << "bbb";
-    //
-    // and
-    //
-    //    rep << "ccc" << "ddd";
-    //
-    // in separate threads then we might see:
-    //
-    //    aaacccbbbddd
-    //
-    // when we wanted to see aaabbbcccddd.
     template <class T> friend Reporter& operator<<(Reporter& rep, const T& tt) {
       *(rep._ostream) << tt;
       return rep;
     }
 
-    // non-const, template
-    //
-    // This method exists to allow std::endl to be put to a <Reporter>.
     Reporter& operator<<(std::ostream& (*function)(std::ostream&) ) {
       *_ostream << "\033[0m" << function;
       return *this;
     }
 
-    // non-const
-    // @func the function name part of the prefix put to std::cout
-    // @thread_id the number put to std::cout to identify the thread which is
-    //            printing
-    template <class T> Reporter& report_from(size_t tid) {
+    template <class T> Reporter& report_from(size_t tid, T const* ptr) {
       *_ostream << get_color_prefix(tid) << "#" << tid << ": "
-                << get_class_name<T>();
+                << get_class_name(ptr);
       *_ostream << ": ";
       return *this;
     }
@@ -151,38 +89,17 @@ namespace libsemigroups {
       return *this;
     }
 
-    // non-const
-    //
-    // This method locks the reporter so that if it is called by multiple
-    // threads it does not give garbled output.
     std::mutex& mutex() {
       return _mtx;
     }
 
-    // non-const
-    // @val if false, then nothing is put to std::out.
-    //
-    // This method set whether anything should be output, this is atomic.
     void set_report(bool val) {
       _report = val;
     }
 
-    // const
-    //
-    // This method returns true or false depending on whether or not we are
-    // reporting.
     bool get_report() const {
       return _report;
     }
-
-    // non-const, template
-    // @obj the value to set the class name to.
-    //
-    // This method can be used to set the class name used in the output. This
-    // can be used for example when a reporter class is static, and so there
-    // may be no instance of the class to use as a parameter for the
-    // constructor. It only prints the last part of the name, i.e. the part
-    // after the last ::.
 
     void set_ostream(std::ostream* os) {
       _ostream = os;
@@ -216,9 +133,9 @@ namespace libsemigroups {
     }
 
    private:
-    template <class T> std::string get_class_name() {
+    template <class T> std::string get_class_name(T const* o) {
       int   status;
-      char* ptr = abi::__cxa_demangle(typeid(T).name(), 0, 0, &status);
+      char* ptr = abi::__cxa_demangle(typeid(*o).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
         std::string full = std::string(ptr);
         size_t      last = full.size();
@@ -257,13 +174,5 @@ namespace libsemigroups {
   };
 
   extern Reporter REPORTER;
-
-  template <typename TSubclass> void report(std::string const& msg) {
-    if (REPORTER.get_report()) {
-      size_t tid = REPORTER.thread_id(std::this_thread::get_id());
-      std::lock_guard<std::mutex> lg(REPORTER.mutex());
-      REPORTER.report_from<TSubclass>(tid) << msg << std::endl;
-    }
-  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_REPORT_H_

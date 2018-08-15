@@ -1333,7 +1333,7 @@ namespace libsemigroups {
                         << current_max_word_length())
       }
       REPORT("elapsed time = " << timer);
-      report_why_we_stopped(this);
+      report_why_we_stopped();
 #ifdef LIBSEMIGROUPS_STATS
       REPORT("number of products = " << _nr_products);
 #endif
@@ -1558,7 +1558,7 @@ namespace libsemigroups {
       if (is_begun()) {
         REPORT("elapsed time = " << timer);
       }
-      report_why_we_stopped(this);
+      report_why_we_stopped();
     }
 
     //! Add copies of the generators \p coll to the generators of \c this.

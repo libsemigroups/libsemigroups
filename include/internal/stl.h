@@ -25,6 +25,7 @@
 #include <functional>
 #include <memory>
 #include <sstream>
+#include <type_traits>
 
 namespace libsemigroups {
   template <typename TValueType, typename = void> struct hash {
@@ -79,6 +80,18 @@ namespace libsemigroups {
   std::unique_ptr<T> make_unique(Ts&&... params) {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
   }
+
+  // From: https://stackoverflow.com/q/15393938/
+  // since std::is_invocable is only introduced in C++17
+  template <typename T, typename = void>
+  struct is_callable : std::is_function<T> {};
+
+  template <typename T>
+  struct is_callable<
+      T,
+      typename std::enable_if<
+          std::is_same<decltype(void(&T::operator())), void>::value>::type>
+      : std::true_type {};
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_H_
