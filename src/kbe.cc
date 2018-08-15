@@ -45,17 +45,13 @@ namespace libsemigroups {
 
   KBE::KBE(KnuthBendix* kb, internal_string_type const& w) : KBE(kb, w, true) {}
 
-  // FIXME the derefence *KnuthBendix::word_to_internal_string causes a mem
-  // leak
   KBE::KBE(KnuthBendix* kb, letter_type const& a)
-      : KBE(kb, *KnuthBendix::uint_to_internal_string(a)) {}
+      : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
 
   KBE::KBE(KnuthBendix& kb, letter_type const& a) : KBE(&kb, a) {}
 
-  // FIXME the derefence *KnuthBendix::word_to_internal_string causes a mem
-  // leak
   KBE::KBE(KnuthBendix* kb, word_type const& w)
-      : KBE(kb, *KnuthBendix::word_to_internal_string(w)) {}
+      : KBE(kb, KnuthBendix::word_to_internal_string(w)) {}
 
   KBE::KBE(KnuthBendix& kb, word_type const& w) : KBE(&kb, w) {}
 
@@ -130,8 +126,7 @@ namespace libsemigroups {
 #endif
 
   KBE::operator word_type() const {
-    // FIXME leaks
-    return *_kb->internal_string_to_word(&_kb_word);
+    return _kb->internal_string_to_word(_kb_word);
   }
 
   KBE::operator std::string() const {

@@ -456,18 +456,18 @@ namespace libsemigroups {
     }
 
     // Static
-    internal_string_type* KnuthBendix::uint_to_internal_string(size_t i) {
+    internal_string_type KnuthBendix::uint_to_internal_string(size_t const i) {
       // TODO check i is not too big
-      return new internal_string_type({uint_to_internal_char(i)});
+      return internal_string_type({uint_to_internal_char(i)});
     }
 
     // Static
-    word_type*
-    KnuthBendix::internal_string_to_word(internal_string_type const* s) {
-      word_type* w = new word_type();
-      w->reserve(s->size());
-      for (internal_char_type const& c : *s) {
-        w->push_back(internal_char_to_uint(c));
+    word_type // TODO &&
+    KnuthBendix::internal_string_to_word(internal_string_type const& s) {
+      word_type w;
+      w.reserve(s.size());
+      for (internal_char_type const& c : s) {
+        w.push_back(internal_char_to_uint(c));
       }
       return w;
     }
@@ -484,10 +484,14 @@ namespace libsemigroups {
     }
 
     // Static
-    internal_string_type*
-    KnuthBendix::word_to_internal_string(word_type const& w) {
-      internal_string_type* ww = new internal_string_type();
-      return word_to_internal_string(w, ww);
+    internal_string_type // TODO &&
+    KnuthBendix::word_to_internal_string(word_type const& u) {
+      internal_string_type v;
+      v.reserve(u.size());
+      for (size_t const& l : u) {
+        v += uint_to_internal_char(l);
+      }
+      return v;
     }
 
     internal_char_type
@@ -1067,9 +1071,8 @@ namespace libsemigroups {
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       // TODO check arg
       auto S = static_cast<Semigroup<KBE>*>(_kb->isomorphic_non_fp_semigroup());
-      // FIXME leaks
       size_t pos
-          = S->position(KBE(_kb.get(), *_kb->word_to_internal_string(word)));
+          = S->position(KBE(_kb.get(), _kb->word_to_internal_string(word)));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }

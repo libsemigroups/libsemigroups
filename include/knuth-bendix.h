@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,8 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// This file contains a class KnuthBendix which implements the Knuth-Bendix
+// algorithm for finitely presented monoids.
+
 #ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
 #define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
+
+// TODO reduce headers
 
 #include <algorithm>
 #include <atomic>
@@ -226,15 +231,15 @@ namespace libsemigroups {
 
       static size_t                internal_char_to_uint(internal_char_type c);
       static internal_char_type    uint_to_internal_char(size_t a);
-      static internal_string_type* uint_to_internal_string(size_t);
-      static word_type* internal_string_to_word(internal_string_type const*);
+      static internal_string_type uint_to_internal_string(size_t const);
+      static word_type internal_string_to_word(internal_string_type const&);
 
       // The second parameter is modified in-place and returned.
       static internal_string_type*
       word_to_internal_string(word_type const&, internal_string_type*);
 
       // Returns a pointer, the caller should delete it.
-      static internal_string_type* word_to_internal_string(word_type const&);
+      static internal_string_type word_to_internal_string(word_type const&);
 
       internal_char_type external_to_internal_char(external_char_type) const;
       external_char_type internal_to_external_char(internal_char_type) const;
