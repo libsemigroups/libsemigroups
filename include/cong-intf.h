@@ -28,14 +28,12 @@
 
 namespace libsemigroups {
   class SemigroupBase;  // Forward declaration
-  namespace tmp {
-    class Congruence;  // Forward declaration
-  }
+  class Congruence;     // Forward declaration
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
   class CongIntf : public Runner {
-    friend class tmp::Congruence;
+    friend class Congruence;
    public:
     //! The different types of congruence.
 

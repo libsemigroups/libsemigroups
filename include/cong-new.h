@@ -30,95 +30,89 @@
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration
-  namespace tmp {     // FIXME remove this
-    class Congruence : public CongIntf {
-     public:
-      // Execution policy:
-      // - standard: means run 1 variant of everything
-      // - none:     means no methods are added, and at least one must be added
-      //             manually via add_method
-      enum class policy { standard = 0, none = 1 };
+  class Congruence : public CongIntf {
+   public:
+    // Execution policy:
+    // - standard: means run 1 variant of everything
+    // - none:     means no methods are added, and at least one must be added
+    //             manually via add_method
+    enum class policy { standard = 0, none = 1 };
 
-      //////////////////////////////////////////////////////////////////////////
-      // Congruence - constructors - public
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Congruence - constructors - public
+    //////////////////////////////////////////////////////////////////////////
 
-      explicit Congruence(congruence_type type);
+    explicit Congruence(congruence_type type);
 
-      Congruence(congruence_type type,
-                 SemigroupBase*,
-                 policy = policy::standard);
-      Congruence(congruence_type type,
-                 SemigroupBase&,
-                 policy = policy::standard);
+    Congruence(congruence_type type, SemigroupBase*, policy = policy::standard);
+    Congruence(congruence_type type, SemigroupBase&, policy = policy::standard);
 
-      Congruence(congruence_type type, FpSemigroup&, policy = policy::standard);
-      Congruence(congruence_type type, FpSemigroup*, policy = policy::standard);
+    Congruence(congruence_type type, FpSemigroup&, policy = policy::standard);
+    Congruence(congruence_type type, FpSemigroup*, policy = policy::standard);
 
-      //////////////////////////////////////////////////////////////////////////
-      // Runner - overridden pure virtual methods - public
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Runner - overridden pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////
 
-      void run() override;
+    void run() override;
 
-      //////////////////////////////////////////////////////////////////////////
-      // Runner - overridden non-pure virtual methods - protected
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Runner - overridden non-pure virtual methods - protected
+    //////////////////////////////////////////////////////////////////////////
 
-      bool finished_impl() const override;
+    bool finished_impl() const override;
 
-      //////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden pure virtual methods - public
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////
 
-      void             add_pair(word_type, word_type) override;
-      word_type        class_index_to_word(class_index_type) override;
-      SemigroupBase*   quotient_semigroup() override;
-      size_t           nr_classes() override;
-      class_index_type word_to_class_index(word_type const&) override;
+    void             add_pair(word_type, word_type) override;
+    word_type        class_index_to_word(class_index_type) override;
+    SemigroupBase*   quotient_semigroup() override;
+    size_t           nr_classes() override;
+    class_index_type word_to_class_index(word_type const&) override;
 
-      //////////////////////////////////////////////////////////////////////////
-      // CongIntf - non-pure virtual methods - public
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // CongIntf - non-pure virtual methods - public
+    //////////////////////////////////////////////////////////////////////////
 
-      bool        contains(word_type const&, word_type const&) override;
-      result_type const_contains(word_type const&,
-                                 word_type const&) const override;
-      bool        is_quotient_obviously_finite() override;
-      bool        is_quotient_obviously_infinite() override;
+    bool        contains(word_type const&, word_type const&) override;
+    result_type const_contains(word_type const&,
+                               word_type const&) const override;
+    bool        is_quotient_obviously_finite() override;
+    bool        is_quotient_obviously_infinite() override;
 
-      //////////////////////////////////////////////////////////////////////////
-      // Congruence - methods - public
-      //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Congruence - methods - public
+    //////////////////////////////////////////////////////////////////////////
 
-      void add_method(Runner*);
+    void add_method(Runner*);
 
-      bool                     has_knuth_bendix() const;
-      bool                     has_todd_coxeter() const;
-      congruence::KnuthBendix* knuth_bendix() const;
-      congruence::ToddCoxeter* todd_coxeter() const;
+    bool                     has_knuth_bendix() const;
+    bool                     has_todd_coxeter() const;
+    congruence::KnuthBendix* knuth_bendix() const;
+    congruence::ToddCoxeter* todd_coxeter() const;
 
-     private:
-      //////////////////////////////////////////////////////////////////////////
-      // Congruence - methods - private
-      //////////////////////////////////////////////////////////////////////////
+   private:
+    //////////////////////////////////////////////////////////////////////////
+    // Congruence - methods - private
+    //////////////////////////////////////////////////////////////////////////
 
-      template <class TCongIntfSubclass> TCongIntfSubclass* find_method() const;
+    template <class TCongIntfSubclass> TCongIntfSubclass* find_method() const;
 
-      //////////////////////////////////////////////////////////////////////////
-      // CongIntf - non-pure virtual methods - private
-      //////////////////////////////////////////////////////////////////////////
-      // TODO use it or lose it
-      // class_index_type const_word_to_class_index(word_type const&) const
-      // override;
-      void init_non_trivial_classes() override;
+    //////////////////////////////////////////////////////////////////////////
+    // CongIntf - non-pure virtual methods - private
+    //////////////////////////////////////////////////////////////////////////
+    // TODO use it or lose it
+    // class_index_type const_word_to_class_index(word_type const&) const
+    // override;
+    void init_non_trivial_classes() override;
 
-      /////////////////////////////////////////////////////////////////////////
-      // Congruence - data - private
-      /////////////////////////////////////////////////////////////////////////
-      Race _race;
-    };
-  }  // namespace tmp
+    /////////////////////////////////////////////////////////////////////////
+    // Congruence - data - private
+    /////////////////////////////////////////////////////////////////////////
+    Race _race;
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
