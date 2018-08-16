@@ -20,8 +20,8 @@
 // methods for translating between then, for use by the Semigroup, SchreierSims,
 // and P classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_
-#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
 
 #include <type_traits>
 
@@ -131,4 +131,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_

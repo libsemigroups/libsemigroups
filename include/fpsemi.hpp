@@ -19,8 +19,8 @@
 // This file contains the declaration of a class for finitely presented
 // semigroups.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
-#define LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
+#define LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
 
 #include "internal/race.hpp"
 
@@ -108,4 +108,4 @@ namespace libsemigroups {
     Race _race;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_

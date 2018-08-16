@@ -19,8 +19,8 @@
 // This file contains function templates for adapting a class for use with
 // libsemigroups.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
-#define LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 
 #include "internal/libsemigroups-config.hpp"
 
@@ -42,4 +42,4 @@ namespace libsemigroups {
   template <typename TElementType, typename = void> struct empty_key;
 #endif
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_

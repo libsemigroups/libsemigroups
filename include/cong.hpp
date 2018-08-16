@@ -19,8 +19,8 @@
 // This file contains stuff for creating congruence over Semigroup objects or
 // over FpSemigroup objects.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
-#define LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_CONG_HPP_
+#define LIBSEMIGROUPS_INCLUDE_CONG_HPP_
 
 #include "internal/race.hpp"
 
@@ -115,4 +115,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_CONG_HPP_

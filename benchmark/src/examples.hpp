@@ -19,8 +19,8 @@
 // This file contains some function for creating semigroups of certain types
 // primarily for the purposes of testing and benchmarking.
 
-#ifndef LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_H_
-#define LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_H_
+#ifndef LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_HPP_
+#define LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_HPP_
 
 #include <libsemigroups/semigroup.h>
 
@@ -81,4 +81,4 @@ namespace libsemigroups {
     return gens;
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_H_
+#endif  // LIBSEMIGROUPS_BENCHMARK_SRC_EXAMPLES_HPP_

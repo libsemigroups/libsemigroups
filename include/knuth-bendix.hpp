@@ -19,8 +19,8 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
-#define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
+#define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
 
 // TODO reduce headers
 
@@ -570,4 +570,4 @@ namespace libsemigroups {
     };
   }  // namespace congruence
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_

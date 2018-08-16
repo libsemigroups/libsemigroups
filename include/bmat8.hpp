@@ -18,8 +18,8 @@
 
 // This file contains a declaration of fast boolean matrices up to dimension 8.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_BMAT8_H_
-#define LIBSEMIGROUPS_INCLUDE_BMAT8_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
+#define LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
 
 #include <climits>
 #include <functional>
@@ -344,4 +344,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_INCLUDE_BMAT8_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_

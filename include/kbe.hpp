@@ -19,8 +19,8 @@
 // TODO:
 // 1. Static assert that the class is trivial
 
-#ifndef LIBSEMIGROUPS_INCLUDE_KBE_H_
-#define LIBSEMIGROUPS_INCLUDE_KBE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_KBE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_KBE_HPP_
 
 #include <string>
 
@@ -225,4 +225,4 @@ namespace libsemigroups {
   template <> word_type Semigroup<KBE>::factorisation(KBE const& x);
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_KBE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_

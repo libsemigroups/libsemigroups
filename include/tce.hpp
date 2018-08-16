@@ -20,8 +20,8 @@
 
 // TODO 1. smart pointer to _tc?
 //      2. put the implementation into a cpp file
-#ifndef LIBSEMIGROUPS_INCLUDE_TCE_H_
-#define LIBSEMIGROUPS_INCLUDE_TCE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_TCE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_TCE_HPP_
 
 #include "adapters.hpp"
 #include "constants.hpp"
@@ -126,4 +126,4 @@ namespace std {
   };
 }  // namespace std
 
-#endif  // LIBSEMIGROUPS_INCLUDE_TCE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_TCE_HPP_

@@ -46,8 +46,8 @@
 // 4. random version
 // 5. try it with Digraphs
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_
-#define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
 
 #include <array>
 
@@ -419,4 +419,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_

@@ -18,8 +18,8 @@
 
 // This file includes all the headers in libsemigroups, for convenience.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
-#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
 
 #include "internal/libsemigroups-config.hpp"
 #include "internal/libsemigroups-debug.hpp"
@@ -38,9 +38,8 @@
 #include "blocks.hpp"
 #include "bmat8.hpp"
 #include "cong-base.hpp"
-#include "cong.hpp"
 #include "cong-pair.hpp"
-#include "wrap.hpp"
+#include "cong.hpp"
 #include "constants.hpp"
 #include "element.hpp"
 #include "fpsemi-base.hpp"
@@ -57,9 +56,10 @@
 #include "tce.hpp"
 #include "todd-coxeter.hpp"
 #include "types.hpp"
+#include "wrap.hpp"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 #endif
 
-#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_

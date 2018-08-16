@@ -19,8 +19,8 @@
 // This file contains two classes Runner and Race for competitively running
 // different functions/methods in different threads, and obtaining the winner.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_H_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_HPP_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_HPP_
 
 #include <atomic>
 #include <chrono>
@@ -120,4 +120,4 @@ namespace libsemigroups {
     std::chrono::high_resolution_clock::time_point _start_time;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RUNNER_HPP_

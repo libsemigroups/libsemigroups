@@ -22,8 +22,8 @@
 // * split this file into several files
 // * move all non-template definitions into cpp file
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
-#define LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
+#define LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
 
 #include <math.h>
 
@@ -2174,4 +2174,4 @@ namespace libsemigroups {
     using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_

@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
-#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_HPP_
 
 #include <atomic>
 #include <functional>
@@ -93,4 +93,4 @@ namespace libsemigroups {
   void relations(SemigroupBase*, std::function<void(word_type, word_type)>&&);
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_HPP_

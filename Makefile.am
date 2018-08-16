@@ -36,9 +36,8 @@ pkginclude_HEADERS =  include/adapters.hpp
 pkginclude_HEADERS += include/blocks.hpp
 pkginclude_HEADERS += include/bmat8.hpp
 pkginclude_HEADERS += include/cong-base.hpp
-pkginclude_HEADERS += include/cong.hpp
 pkginclude_HEADERS += include/cong-pair.hpp
-pkginclude_HEADERS += include/wrap.hpp
+pkginclude_HEADERS += include/cong.hpp
 pkginclude_HEADERS += include/constants.hpp
 pkginclude_HEADERS += include/element.hpp
 pkginclude_HEADERS += include/fpsemi-base.hpp
@@ -56,6 +55,7 @@ pkginclude_HEADERS += include/semiring.hpp
 pkginclude_HEADERS += include/tce.hpp
 pkginclude_HEADERS += include/todd-coxeter.hpp
 pkginclude_HEADERS += include/types.hpp
+pkginclude_HEADERS += include/wrap.hpp
 
 pkginclude_HEADERS += include/internal/libsemigroups-config.hpp
 pkginclude_HEADERS += include/internal/libsemigroups-debug.hpp
@@ -106,11 +106,14 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 ## Extra files for the distribution
 
+LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp
+
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION extern/HPCombi/VERSION
 
+## The following are not included in the distro
 BENCHMARK_LINT_FORMAT =  benchmark/src/bmat8.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/cong.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/examples.hpp
@@ -133,8 +136,8 @@ check_PROGRAMS = lstest
 lstest_SOURCES =  tests/main.test.cpp
 lstest_SOURCES += tests/blocks.test.cpp
 lstest_SOURCES += tests/bmat8.test.cpp
-lstest_SOURCES += tests/cong-new.test.cpp
-lstest_SOURCES += tests/cong-p.test.cpp
+lstest_SOURCES += tests/cong-pair.test.cpp
+lstest_SOURCES += tests/cong.test.cpp
 lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
 lstest_SOURCES += tests/element.test.cpp
 lstest_SOURCES += tests/hpcombi.test.cpp
@@ -220,13 +223,15 @@ check-all: check
 
 format:
 	@echo "Running clang-format . . .";
-	@clang-format -i $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES)
-	@clang-format -i $(lstest_SOURCES) $(BENCHMARK_LINT_FORMAT)
+	@clang-format -i --verbose $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES)
+	@clang-format -i --verbose $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
+	@clang-format -i --verbose $(BENCHMARK_LINT_FORMAT)
 
 lint:
 	@echo "Running cpplint . . .";
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES)
-	@cpplint $(lstest_SOURCES) $(BENCHMARK_LINT_FORMAT)
+	@cpplint $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
+	@cpplint $(BENCHMARK_LINT_FORMAT)
 
 doc:
 	@echo "Generating documentation . . ."; \

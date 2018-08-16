@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_SRC_RWS_ORDER_H_
-#define LIBSEMIGROUPS_SRC_RWS_ORDER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_KB_ORDER_HPP_
+#define LIBSEMIGROUPS_INCLUDE_KB_ORDER_HPP_
 
 #include <functional>
 #include <string>
@@ -127,4 +127,4 @@ namespace libsemigroups {
   // TODO add more reduction orderings
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_RWS_ORDER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_KB_ORDER_HPP_

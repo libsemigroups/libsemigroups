@@ -23,8 +23,8 @@
 // 1. In congruence::ToddCoxeter: add methods for add_pair, set_base, etc, for
 // use with 0-parameter constructor
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_
-#define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
+#define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
 
 #include <stack>
 #include <unordered_map>
@@ -32,8 +32,8 @@
 
 #include "internal/recvec.hpp"
 
-#include "wrap.hpp"
 #include "fpsemi-base.hpp"
+#include "wrap.hpp"
 
 namespace libsemigroups {
   class TCE;  // forward declaration
@@ -188,4 +188,4 @@ namespace libsemigroups {
     };
   }  // namespace congruence
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_

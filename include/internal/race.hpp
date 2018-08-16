@@ -23,8 +23,8 @@
 // TODO:
 // 1. consider if keeping killed off methods has any uses
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_HPP_
 
 #include <thread>
 #include <vector>
@@ -180,4 +180,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_HPP_

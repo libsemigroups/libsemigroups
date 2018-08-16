@@ -23,8 +23,8 @@
 
 #include "internal/libsemigroups-exception.hpp"
 
-#include "cong.hpp"
 #include "cong-pair.hpp"
+#include "cong.hpp"
 #include "fpsemi.hpp"
 #include "kbe.hpp"
 #include "todd-coxeter.hpp"

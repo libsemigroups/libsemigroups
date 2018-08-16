@@ -18,8 +18,8 @@
 
 // This file contains TODO
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
-#define LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
+#define LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
 
 #include "internal/libsemigroups-exception.hpp"
 #include "internal/stl.hpp"
@@ -195,4 +195,4 @@ namespace libsemigroups {
     };
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_WRAP_HPP_

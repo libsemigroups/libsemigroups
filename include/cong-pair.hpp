@@ -22,8 +22,8 @@
 // that currently it is only used with Semigroup<KBE>, and so doesn't
 // strictly have to be a class template.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_P_H_
-#define LIBSEMIGROUPS_INCLUDE_CONG_P_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
+#define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
 
 #include <queue>
 
@@ -31,10 +31,10 @@
 #include "internal/uf.hpp"
 
 #include "cong-base.hpp"
-#include "wrap.hpp"
 #include "fpsemi-base.hpp"
 #include "kbe.hpp"
 #include "semigroup.hpp"
+#include "wrap.hpp"
 
 namespace libsemigroups {
   namespace congruence {
@@ -530,4 +530,4 @@ namespace libsemigroups {
     // the rules from any underlying semigroup to the P.
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_P_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
