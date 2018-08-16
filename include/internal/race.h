@@ -41,10 +41,6 @@ namespace libsemigroups {
     Runner* winner();
     void    add_runner(Runner* r);
 
-    typename std::vector<Runner*>::iterator begin();
-    typename std::vector<Runner*>::iterator end();
-
-    // TODO check if all these iterator methods are actually used
     typename std::vector<Runner*>::const_iterator begin() const;
     typename std::vector<Runner*>::const_iterator end() const;
 
@@ -71,6 +67,7 @@ namespace libsemigroups {
 
    private:
     template <typename TFunction> void run_func(TFunction const& func) {
+      // TODO check signature of TFunction
       if (_winner == nullptr) {
         size_t nr_threads = std::min(_runners.size(), _max_threads);
         if (nr_threads == 1
@@ -87,8 +84,11 @@ namespace libsemigroups {
         std::vector<std::thread::id> tids(_runners.size(),
                                           std::this_thread::get_id());
 
-        REPORT("using " << nr_threads << " / "
-                        << std::thread::hardware_concurrency() << " threads");
+        REPORT("using ",
+               nr_threads,
+               " / ",
+               std::thread::hardware_concurrency(),
+               " threads");
 
         LIBSEMIGROUPS_ASSERT(nr_threads != 0);
 
@@ -98,7 +98,7 @@ namespace libsemigroups {
             func(_runners.at(pos));
           } catch (std::exception const& e) {
             size_t tid = REPORTER.thread_id(tids[pos]);
-            REPORT("exception thrown by #" << tid << ":");
+            REPORT("exception thrown by #", tid, ":");
             REPORT(e.what());
             return;
           }
@@ -133,7 +133,7 @@ namespace libsemigroups {
             LIBSEMIGROUPS_ASSERT(_winner == nullptr);
             _winner    = *method;
             size_t tid = REPORTER.thread_id(tids.at(method - _runners.begin()));
-            REPORT("#" << tid << " is the winner!");
+            REPORT("#", tid, " is the winner!");
             break;
           }
         }

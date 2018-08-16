@@ -167,10 +167,15 @@ namespace libsemigroups {
             }
           }
           if (report()) {
-            REPORT("found " << _found_pairs.size() << " pairs: " << _map_next
-                            << " elements in " << _lookup.nr_blocks()
-                            << " classes, " << _pairs_to_mult.size()
-                            << " pairs on the stack");
+            REPORT("found ",
+                   _found_pairs.size(),
+                   " pairs: ",
+                   _map_next,
+                   " elements in ",
+                   _lookup.nr_blocks(),
+                   " classes, ",
+                   _pairs_to_mult.size(),
+                   " pairs on the stack");
           }
         }
 
@@ -199,10 +204,14 @@ namespace libsemigroups {
           _nr_non_trivial_elemnts = _map_next;
         }
 
-        REPORT("stopping with " << _found_pairs.size()
-                                << " pairs: " << _map_next << " elements in "
-                                << _lookup.nr_blocks() << " classes");
-        REPORT("elapsed time = " << t);
+        REPORT("stopping with ",
+               _found_pairs.size(),
+               " pairs: ",
+               _map_next,
+               " elements in ",
+               _lookup.nr_blocks(),
+               " classes");
+        REPORT("elapsed time = ", t);
         report_why_we_stopped();
         if (!dead() && !timed_out()) {
           set_finished(true);

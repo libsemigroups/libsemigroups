@@ -2099,7 +2099,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence 038", "Stellar S7", "[standard]") {
     // TODO check test category
-    REPORTER.set_report(true);
+    REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
     for (relation_type const& rl : RookMonoid(7, 0)) {

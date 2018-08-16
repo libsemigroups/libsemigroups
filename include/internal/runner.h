@@ -26,6 +26,7 @@
 #include <chrono>
 
 #include "report.h"
+#include "stl.h"
 
 namespace libsemigroups {
   class Runner {

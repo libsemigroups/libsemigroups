@@ -45,15 +45,6 @@ namespace libsemigroups {
     _runners.push_back(r);
   }
 
-  typename std::vector<Runner*>::iterator Race::begin() {
-    return _runners.begin();
-  }
-
-  typename std::vector<Runner*>::iterator Race::end() {
-    return _runners.end();
-  }
-
-  // TODO check if all these iterator methods are actually used
   typename std::vector<Runner*>::const_iterator Race::begin() const {
     return _runners.cbegin();
   }

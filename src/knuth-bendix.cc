@@ -740,8 +740,10 @@ namespace libsemigroups {
             }
           }
           if (report()) {
-            REPORT("checked " << seen << " pairs of overlaps out of "
-                              << _active_rules.size() * _active_rules.size())
+            REPORT("checked ",
+                   seen,
+                   " pairs of overlaps out of ",
+                   _active_rules.size() * _active_rules.size());
           }
         }
         if (dead() || timed_out()) {
@@ -819,13 +821,16 @@ namespace libsemigroups {
         _inactive_rules.clear();
         set_finished(true);
       }
-      REPORT("stopping with active rules = "
-             << _active_rules.size() << ", inactive rules = "
-             << _inactive_rules.size() << ", rules defined = " << _total_rules);
+      REPORT("stopping with active rules = ",
+             _active_rules.size(),
+             ", inactive rules = ",
+             _inactive_rules.size(),
+             ", rules defined = ",
+             _total_rules);
 #ifdef LIBSEMIGROUPS_STATS
-      REPORT("max stack depth = " << _max_stack_depth);
+      REPORT("max stack depth = ", _max_stack_depth);
 #endif
-      REPORT("elapsed time = " << timer);
+      REPORT("elapsed time = ", timer);
       report_why_we_stopped();
     }
 
@@ -841,7 +846,7 @@ namespace libsemigroups {
       }
       _max_overlap               = max_overlap;
       _check_confluence_interval = check_confluence_interval;
-      REPORT("elapsed time = " << timer);
+      REPORT("elapsed time = ", timer);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -926,16 +931,18 @@ namespace libsemigroups {
           _inactive_rules.push_back(rule1);
         }
         if (report()) {
-          REPORT("active rules = " << _active_rules.size()
-                                   << ", inactive rules = "
-                                   << _inactive_rules.size()
-                                   << ", rules defined = " << _total_rules);
+          REPORT("active rules = ",
+                 _active_rules.size(),
+                 ", inactive rules = ",
+                 _inactive_rules.size(),
+                 ", rules defined = ",
+                 _total_rules);
 #ifdef LIBSEMIGROUPS_STATS
-          REPORT("max stack depth        = " << _max_stack_depth);
-          REPORT("max word length        = " << _max_word_length);
-          REPORT("max active word length = " << max_active_word_length());
-          REPORT("max active rules       = " << _max_active_rules);
-          REPORT("number of unique lhs   = " << _unique_lhs_rules.size());
+          REPORT("max stack depth        = ", _max_stack_depth);
+          REPORT("max word length        = ", _max_word_length);
+          REPORT("max active word length = ", max_active_word_length());
+          REPORT("max active rules       = ", _max_active_rules);
+          REPORT("number of unique lhs   = ", _unique_lhs_rules.size());
 #endif
         }
       }

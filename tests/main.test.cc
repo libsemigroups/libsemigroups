@@ -74,13 +74,22 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   }
 
   void sectionEnded(Catch::SectionStats const& sectionStats) override {
+    size_t t = static_cast<size_t>(
+                         sectionStats.durationInSeconds * std::pow(10, 9));
     std::cout << _msg << " ("
               << libsemigroups::Timer::string(
-                     std::chrono::nanoseconds(static_cast<size_t>(
-                         sectionStats.durationInSeconds * std::pow(10, 9))))
+                     std::chrono::nanoseconds(t))
               << ")" << std::endl;
+    _total_time += t;
   }
 
+  // void testRunEnded(Catch::TestRunStats const&) override {
+  // std::cout << libsemigroups::Timer::string(
+  //                 std::chrono::nanoseconds(_total_time))
+  //          << std::endl;
+  //}
+
+  size_t _total_time = 0;
   std::string _msg;
 };
 

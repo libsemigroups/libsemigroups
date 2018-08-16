@@ -194,11 +194,16 @@ namespace libsemigroups {
 
         // If the number of active cosets is too high, start a packing phase
         if (_active > _pack) {
-          REPORT(_defined << " defined, " << _forwd.size() << " max, "
-                          << _active << " active, "
-                          << (_defined - _active) - _cosets_killed
-                          << " killed, "
-                          << "current " << _current);
+          REPORT(_defined,
+                 " defined, ",
+                 _forwd.size(),
+                 " max, ",
+                 _active,
+                 " active, ",
+                 (_defined - _active) - _cosets_killed,
+                 " killed, ",
+                 "current ",
+                 _current);
           REPORT("entering lookahead phase . . .");
           _cosets_killed = _defined - _active;
 
@@ -215,7 +220,7 @@ namespace libsemigroups {
             // Quit loop if we reach an inactive coset OR we get a "stop" signal
           } while (!dead() && _current_no_add != _next && !_stop_packing);
 
-          REPORT("lookahead complete " << oldactive - _active << " killed");
+          REPORT("lookahead complete ", oldactive - _active, " killed");
 
           _pack += _pack / 10;  // Raise packing threshold 10%
           _stop_packing   = false;
@@ -241,10 +246,14 @@ namespace libsemigroups {
       }
 
       // Final report
-      REPORT(_defined << " cosets defined,"
-                      << " maximum " << _forwd.size() << ", " << _active
-                      << " survived");
-      REPORT("elapsed time = " << timer);
+      REPORT(_defined,
+             " cosets defined,",
+             " maximum ",
+             _forwd.size(),
+             ", ",
+             _active,
+             " survived");
+      REPORT("elapsed time = ", timer);
       report_why_we_stopped();
       // No return value: all info is now stored in the class
     }
@@ -888,10 +897,16 @@ namespace libsemigroups {
 
       // Statistics and packing
       if (report()) {
-        REPORT(_defined << " defined, " << _forwd.size() << " max, " << _active
-                        << " active, " << (_defined - _active) - _cosets_killed
-                        << " killed, "
-                        << "current " << (add ? _current : _current_no_add))
+        REPORT(_defined,
+               " defined, ",
+               _forwd.size(),
+               " max, ",
+               _active,
+               " active, ",
+               (_defined - _active) - _cosets_killed,
+               " killed, ",
+               "current ",
+               (add ? _current : _current_no_add));
         // If we are killing cosets too slowly, then stop packing
         if ((_defined - _active) - _cosets_killed < 100) {
           _stop_packing = true;

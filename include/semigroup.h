@@ -50,6 +50,7 @@
 #include "internal/report.h"
 #include "internal/runner.h"
 #include "internal/stl.h"
+#include "internal/timer.h"
 
 #include "adapters.h"
 #include "constants.h"
@@ -1219,7 +1220,7 @@ namespace libsemigroups {
         limit = _batch_size;
       }
 
-      REPORT("limit = " << limit);
+      REPORT("limit = ", limit);
       Timer  timer;
       size_t tid = REPORTER.thread_id(std::this_thread::get_id());
 
@@ -1328,14 +1329,17 @@ namespace libsemigroups {
           _wordlen++;
           _lenindex.push_back(_enumerate_order.size());
         }
-        REPORT("found " << _nr << " elements, " << _nrrules
-                        << " rules, max word length "
-                        << current_max_word_length())
+        REPORT("found ",
+               _nr,
+               " elements, ",
+               _nrrules,
+               " rules, max word length ",
+               current_max_word_length());
       }
-      REPORT("elapsed time = " << timer);
+      REPORT("elapsed time = ", timer);
       report_why_we_stopped();
 #ifdef LIBSEMIGROUPS_STATS
-      REPORT("number of products = " << _nr_products);
+      REPORT("number of products = ", _nr_products);
 #endif
     }
 
@@ -1551,12 +1555,15 @@ namespace libsemigroups {
           _lenindex.push_back(_enumerate_order.size());
           _wordlen++;
         }
-        REPORT("found " << _nr << " elements, " << _nrrules
-                        << " rules, max word length "
-                        << current_max_word_length())
+        REPORT("found ",
+               _nr,
+               " elements, ",
+               _nrrules,
+               " rules, max word length ",
+               current_max_word_length());
       }
       if (is_begun()) {
-        REPORT("elapsed time = " << timer);
+        REPORT("elapsed time = ", timer);
       }
       report_why_we_stopped();
     }
@@ -2175,11 +2182,11 @@ namespace libsemigroups {
       }
 
 #ifdef LIBSEMIGROUPS_STATS
-      REPORT("complexity of multiplication = " << comp);
-      REPORT("multiple words longer than " << threshold_length + 1);
-      REPORT("number of paths traced in Cayley graph = " << threshold_index);
-      REPORT("mean path length = " << total_load / threshold_index);
-      REPORT("number of products = " << _nr - threshold_index);
+      REPORT("complexity of multiplication = ", comp);
+      REPORT("multiple words longer than ", threshold_length + 1);
+      REPORT("number of paths traced in Cayley graph = ", threshold_index);
+      REPORT("mean path length = ", total_load / threshold_index);
+      REPORT("number of products = ", _nr - threshold_index);
 #endif
 
       total_load
@@ -2219,7 +2226,7 @@ namespace libsemigroups {
             ++last[i];
           }
           total_load -= thread_load;
-          REPORT("thread " << i + 1 << " has load " << thread_load)
+          REPORT("thread ", i + 1, " has load ", thread_load);
           first[i + 1] = last[i];
 
           threads.emplace_back(&Semigroup::idempotents,
@@ -2231,7 +2238,7 @@ namespace libsemigroups {
         }
         // TODO use less threads if the av_load is too low
 
-        REPORT("thread " << _max_threads << " has load " << total_load)
+        REPORT("thread ", _max_threads, " has load ", total_load);
         threads.emplace_back(&Semigroup::idempotents,
                              this,
                              first[_max_threads - 1],
@@ -2250,7 +2257,7 @@ namespace libsemigroups {
               tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
         }
       }
-      REPORT("elapsed time = " << timer);
+      REPORT("elapsed time = ", timer);
     }
 
     // Find the idempotents in the range [first, last) and store
@@ -2262,8 +2269,7 @@ namespace libsemigroups {
                      enumerate_index_type const             last,
                      enumerate_index_type const             threshold,
                      std::vector<internal_idempotent_pair>& idempotents) {
-      REPORT("first = " << first << ", last = " << last
-                        << ", diff = " << last - first);
+      REPORT("first = ", first, ", last = ", last, ", diff = ", last - first);
       Timer timer;
 
       enumerate_index_type pos = first;
@@ -2288,7 +2294,7 @@ namespace libsemigroups {
       }
 
       if (pos >= last) {
-        REPORT("elapsed time = " << timer);
+        REPORT("elapsed time = ", timer);
         return;
       }
 
@@ -2307,7 +2313,7 @@ namespace libsemigroups {
         }
       }
       this->internal_free(tmp_product);
-      REPORT("elapsed time = " << timer);
+      REPORT("elapsed time = ", timer);
     }
 
     size_t                                           _batch_size;

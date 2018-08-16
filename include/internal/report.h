@@ -28,98 +28,174 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <typeinfo>
 #include <unordered_map>
 #include <vector>
 
 #include "libsemigroups-debug.h"
-#include "timer.h"
+#include "libsemigroups-exception.h"
 
-#define REPORT(message)                                            \
+#define REPORT(...) REPORTER(this, __VA_ARGS__)
+
+/*#define REPORT_FROM_FUNC(message)                                  \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
     std::lock_guard<std::mutex> __lg(REPORTER.mutex());            \
-    REPORTER.report_from(__tid, this) << message << std::endl;     \
-  }
-
-#define REPORT_FROM_FUNC(message)                                  \
-  if (REPORTER.get_report()) {                                     \
-    size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \
-    std::lock_guard<std::mutex> __lg(REPORTER.mutex());            \
-    REPORTER(__func__, __tid) << message << std::endl;             \
-  }
+    REPORTER(__func__, __tid) << message << '\n';                  \
+  }*/
 
 namespace libsemigroups {
-  class Reporter {
+  // The following is based on Catch v2.1.0
+  class ColourGuard {
    public:
-    Reporter()
-        : _color_prefix({"",
-                         "\033[40;38;5;82m",
-                         "\033[33m",
-                         "\033[40;38;5;208m",
-                         "\033[38;5;27m"}),
-          _map(),
-          _next_tid(0),
-          _ostream(&std::cout),
-          _report(false) {
+    enum class Code {
+      None = 0,
+
+      White,
+      Red,
+      Green,
+      Blue,
+      Cyan,
+      Yellow,
+      Grey,
+
+      Bright = 0x10,
+
+      BrightRed   = Bright | Red,
+      BrightGreen = Bright | Green,
+      LightGrey   = Bright | Grey,
+      BrightWhite = Bright | White,
+    };
+
+    // Use constructed object for RAII guard
+    explicit ColourGuard(Code colourCode) {
+      use(colourCode);
+    }
+
+    explicit ColourGuard(size_t tid) {
+      static const std::vector<Code> colours = {Code::White,
+                                                Code::Green,
+                                                Code::Yellow,
+                                                Code::Blue,
+                                                Code::Red,
+                                                Code::Cyan,
+                                                Code::BrightWhite,
+                                                Code::Grey,
+                                                Code::BrightGreen,
+                                                Code::BrightRed,
+                                                Code::LightGrey};
+      use(colours[tid % colours.size()]);
+    }
+
+    ColourGuard(ColourGuard&& other) noexcept {
+      _moved       = other._moved;
+      other._moved = true;
+    }
+
+    ColourGuard& operator=(ColourGuard&& other) noexcept {
+      _moved       = other._moved;
+      other._moved = true;
+      return *this;
+    }
+
+    ~ColourGuard() {
+      if (!_moved) {
+        use(Code::None);
+      }
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, ColourGuard const&) {
+      return os;
+    }
+
+   private:
+    void use(Code colourCode) {
+      switch (colourCode) {
+        case Code::None:
+          // intentional fall through
+        case Code::White:
+          return set_colour("[0m");
+        case Code::Red:
+          return set_colour("[0;31m");
+        case Code::Green:
+          return set_colour("[0;32m");
+        case Code::Blue:
+          return set_colour("[0;34m");
+        case Code::Cyan:
+          return set_colour("[0;36m");
+        case Code::Yellow:
+          return set_colour("[0;33m");
+        case Code::Grey:
+          return set_colour("[1;30m");
+
+        case Code::LightGrey:
+          return set_colour("[0;37m");
+        case Code::BrightRed:
+          return set_colour("[1;31m");
+        case Code::BrightGreen:
+          return set_colour("[1;32m");
+        case Code::BrightWhite:
+          return set_colour("[1;37m");
+
+        case Code::Bright:
+          LIBSEMIGROUPS_EXCEPTION("not a colour");
+      }
+    }
+
+    void set_colour(const char* escapeCode) {
+      std::cout << '\033' << escapeCode;
+    }
+
+    bool _moved = false;
+  };
+
+  class Reporter {
+    using Code = ColourGuard::Code;
+
+   public:
+    Reporter() : _next_tid(0), _report(false), _thread_map() {
       // Get thread id 0 for the main thread
       thread_id(std::this_thread::get_id());
     }
 
     ~Reporter() {}
 
-    template <class T> friend Reporter& operator<<(Reporter& rep, const T& tt) {
-      *(rep._ostream) << tt;
-      return rep;
+    template <typename TThisType, typename... TParams>
+    void operator()(TThisType const* ptr, TParams... args) {
+      if (_report) {
+        size_t                      tid = thread_id(std::this_thread::get_id());
+        std::lock_guard<std::mutex> lg(_mtx);
+        ColourGuard                 cg(tid);
+        std::cout << cg << "#" << tid << ": " << class_name(ptr) << ": ";
+        int dummy[sizeof...(TParams)] = {(std::cout << args, 0)...};
+        (void) dummy;
+        std::cout << '\n';
+      }
     }
 
-    Reporter& operator<<(std::ostream& (*function)(std::ostream&) ) {
-      *_ostream << "\033[0m" << function;
-      return *this;
-    }
-
-    template <class T> Reporter& report_from(size_t tid, T const* ptr) {
-      *_ostream << get_color_prefix(tid) << "#" << tid << ": "
-                << get_class_name(ptr);
-      *_ostream << ": ";
-      return *this;
-    }
-
-    Reporter& operator()(char const* func, size_t tid) {
-      *_ostream << get_color_prefix(tid) << "#" << tid << ": " << func << ": ";
-      return *this;
-    }
-
-    std::mutex& mutex() {
-      return _mtx;
-    }
+    // Reporter& operator()(char const* func, size_t tid) {
+    //  *_ostream << color_prefix(tid) << "#" << tid << ": " << func << ": ";
+    //  return *this;
+    //}
 
     void set_report(bool val) {
       _report = val;
-    }
-
-    bool get_report() const {
-      return _report;
-    }
-
-    void set_ostream(std::ostream* os) {
-      _ostream = os;
     }
 
     void reset_thread_ids() {
       // Only do this from the main thread
       LIBSEMIGROUPS_ASSERT(thread_id(std::this_thread::get_id()) == 0);
       // Delete all thread_ids
-      _map.clear();
+      _thread_map.clear();
       _next_tid = 0;
       // Reinsert the main thread's id
       thread_id(std::this_thread::get_id());
     }
 
-    // Caution should only use this method when the reporter is locked!
     size_t thread_id(std::thread::id tid) {
       std::lock_guard<std::mutex> lg(_mtx);
-      auto                        it = _map.find(tid);
-      if (it != _map.end()) {
+      auto                        it = _thread_map.find(tid);
+      if (it != _thread_map.end()) {
         return (*it).second;
       } else {
         // Don't check the assert below because on a single thread machine
@@ -127,13 +203,17 @@ namespace libsemigroups {
         // thread will be used, and this assertion will fail.
         // LIBSEMIGROUPS_ASSERT(_next_tid <=
         // std::thread::hardware_concurrency());
-        _map.emplace(tid, _next_tid++);
+        _thread_map.emplace(tid, _next_tid++);
         return _next_tid - 1;
       }
     }
 
    private:
-    template <class T> std::string get_class_name(T const* o) {
+    template <class T> std::string class_name(T const* o) {
+      auto it = _class_name_map.find(typeid(*o).hash_code());
+      if (it != _class_name_map.end()) {
+        return (*it).second;
+      }
       int   status;
       char* ptr = abi::__cxa_demangle(typeid(*o).name(), 0, 0, &status);
       if (status == 0) {  // successfully demangled
@@ -155,22 +235,21 @@ namespace libsemigroups {
         size_t first = full.rfind("::", last - 1);
         first        = (first == std::string::npos ? 0 : first + 2);
         free(ptr);
-        return full.substr(first, last - first);
+        std::string out = full.substr(first, last - first);
+        _class_name_map.emplace(typeid(*o).hash_code(), out);
+        return out;
       }
       free(ptr);
-      return std::string();
+      std::string out;
+      _class_name_map.emplace(typeid(*o).hash_code(), out);
+      return out;
     }
 
-    std::string get_color_prefix(size_t tid) {
-      return _color_prefix[tid % _color_prefix.size()];
-    }
-
-    std::vector<std::string>                    _color_prefix;
-    std::unordered_map<std::thread::id, size_t> _map;
+    std::unordered_map<size_t, std::string>     _class_name_map;
     std::mutex                                  _mtx;
     size_t                                      _next_tid;
-    std::ostream*                               _ostream;  // For testing
     std::atomic<bool>                           _report;
+    std::unordered_map<std::thread::id, size_t> _thread_map;
   };
 
   extern Reporter REPORTER;
