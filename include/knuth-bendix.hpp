@@ -36,15 +36,15 @@
 #include <utility>
 #include <vector>
 
-#include "internal/libsemigroups-config.h"
-#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-config.hpp"
+#include "internal/libsemigroups-debug.hpp"
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "kb-order.h"
-#include "types.h"
+#include "kb-order.hpp"
+#include "types.hpp"
 
-// TODO: - move implementation to .cc file
+// TODO: - move implementation to .cpp file
 //       - don't use the typedef external_string_type in public methods, use
 //       std::string instead.
 
@@ -103,11 +103,11 @@ namespace libsemigroups {
       // KnuthBendix - forward declarations - private
       //////////////////////////////////////////////////////////////////////////
 
-      class RuleLookup;       // defined in knuth-bendix.h
-      struct OverlapMeasure;  // defined in knuth-bendix.cc
-      friend struct Rule;     // defined in knuth-bendix.h
+      class RuleLookup;       // defined in knuth-bendix.hpp
+      struct OverlapMeasure;  // defined in knuth-bendix.cpp
+      friend struct Rule;     // defined in knuth-bendix.hpp
       struct Rule;
-      friend class ::libsemigroups::KBE;  // defined in kbe.h
+      friend class ::libsemigroups::KBE;  // defined in kbe.hpp
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - typedefs - private
@@ -139,7 +139,7 @@ namespace libsemigroups {
       //!
       //! \sa KnuthBendix::set_check_confluence_interval,
       //! KnuthBendix::set_max_rules, KnuthBendix::set_max_overlap.
-      // TODO move to constants.h
+      // TODO move to constants.hpp
       static size_t const UNBOUNDED = std::numeric_limits<size_t>::max() - 2;
 
       //////////////////////////////////////////////////////////////////////////

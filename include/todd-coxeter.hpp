@@ -30,9 +30,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "internal/recvec.h"
+#include "internal/recvec.hpp"
 
-#include "cong-wrap.h"
+#include "cong-wrap.hpp"
 #include "fpsemi-base.hpp"
 
 namespace libsemigroups {

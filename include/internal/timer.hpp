@@ -23,7 +23,7 @@
 #include <iostream>
 #include <string>
 
-#include "stl.h"
+#include "stl.hpp"
 
 namespace libsemigroups {
 

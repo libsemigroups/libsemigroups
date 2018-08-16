@@ -21,7 +21,7 @@
 // obtaining the winner.
 //
 
-#include "internal/race.h"
+#include "internal/race.hpp"
 
 namespace libsemigroups {
 

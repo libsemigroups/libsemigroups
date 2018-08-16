@@ -23,7 +23,7 @@
 // delegates to the corresponding method in every fpsemigroup::FpSemiBase*
 // object in the _race.
 
-#include "fpsemi.h"
+#include "fpsemi.hpp"
 
 #include <typeinfo>
 

@@ -25,8 +25,8 @@
 #include <atomic>
 #include <chrono>
 
-#include "report.h"
-#include "stl.h"
+#include "report.hpp"
+#include "stl.hpp"
 
 namespace libsemigroups {
   class Runner {

@@ -45,17 +45,17 @@
 #include <utility>
 #include <vector>
 
-#include "internal/libsemigroups-debug.h"
-#include "internal/libsemigroups-exception.h"
-#include "internal/report.h"
-#include "internal/runner.h"
-#include "internal/stl.h"
-#include "internal/timer.h"
+#include "internal/libsemigroups-debug.hpp"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/report.hpp"
+#include "internal/runner.hpp"
+#include "internal/stl.hpp"
+#include "internal/timer.hpp"
 
 #include "adapters.hpp"
-#include "constants.h"
-#include "semigroup-base.h"
-#include "semigroup-traits.h"
+#include "constants.hpp"
+#include "semigroup-base.hpp"
+#include "semigroup-traits.hpp"
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"

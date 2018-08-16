@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "kbe.h"
+#include "kbe.hpp"
 
 #include <algorithm>
 #include <string>
 
-#include "internal/stl.h"
+#include "internal/stl.hpp"
 
 namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////

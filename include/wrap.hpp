@@ -21,13 +21,13 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_WRAP_H_
 
-#include "internal/libsemigroups-exception.h"
-#include "internal/stl.h"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/stl.hpp"
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "semigroup-base.h"
-#include "types.h"
+#include "semigroup-base.hpp"
+#include "types.hpp"
 
 namespace libsemigroups {
   namespace fpsemigroup {

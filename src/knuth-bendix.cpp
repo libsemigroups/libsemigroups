@@ -16,17 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "knuth-bendix.h"
+#include "knuth-bendix.hpp"
 
 #include <algorithm>
 #include <set>
 #include <string>
 
-#include "internal/report.h"
-#include "internal/timer.h"
+#include "internal/report.hpp"
+#include "internal/timer.hpp"
 
-#include "kbe.h"
-#include "semigroup.h"
+#include "kbe.hpp"
+#include "semigroup.hpp"
 
 namespace libsemigroups {
   namespace fpsemigroup {

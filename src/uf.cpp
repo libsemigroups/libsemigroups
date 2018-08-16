@@ -20,9 +20,9 @@
 // the integers {1 .. n}, using the UNION-FIND METHOD: new pairs can be added
 // and the appropriate classes combined quickly.
 
-#include "internal/uf.h"
+#include "internal/uf.hpp"
 
-#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-debug.hpp"
 
 namespace libsemigroups {
 

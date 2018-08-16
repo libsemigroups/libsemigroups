@@ -25,7 +25,7 @@
 
 #include <type_traits>
 
-#include "internal/stl.h"
+#include "internal/stl.hpp"
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct SemigroupTraits {

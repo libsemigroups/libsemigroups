@@ -19,7 +19,7 @@
 // This file contains an implementation of fast boolean matrices up to
 // dimension 8 x 8.
 
-#include "bmat8.h"
+#include "bmat8.hpp"
 
 #include <random>
 #include <vector>

@@ -22,11 +22,11 @@
 #include <atomic>
 #include <functional>
 
-#include "internal/recvec.h"
-#include "internal/runner.h"
+#include "internal/recvec.hpp"
+#include "internal/runner.hpp"
 
-#include "constants.h"
-#include "types.h"
+#include "constants.hpp"
+#include "types.hpp"
 
 namespace libsemigroups {
   class SemigroupBase : public Runner {

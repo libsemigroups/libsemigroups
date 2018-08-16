@@ -21,9 +21,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
 
-#include "internal/runner.h"
+#include "internal/runner.hpp"
 
-#include "types.h"
+#include "types.hpp"
 
 namespace libsemigroups {
   class SemigroupBase;  // Forward declaration

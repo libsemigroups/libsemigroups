@@ -20,7 +20,7 @@
 
 // TODO:
 // * split this file into several files
-// * move all non-template definitions into cc file
+// * move all non-template definitions into cpp file
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
 #define LIBSEMIGROUPS_INCLUDE_ELEMENT_H_
@@ -33,16 +33,16 @@
 #include <unordered_set>
 #include <vector>
 
-#include "internal/libsemigroups-debug.h"
-#include "internal/libsemigroups-exception.h"
-#include "internal/recvec.h"
-#include "internal/stl.h"
+#include "internal/libsemigroups-debug.hpp"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/recvec.hpp"
+#include "internal/stl.hpp"
 
 #include "adapters.hpp"
 #include "blocks.hpp"
-#include "constants.h"
-#include "semigroup-traits.h"
-#include "semiring.h"
+#include "constants.hpp"
+#include "semigroup-traits.hpp"
+#include "semiring.hpp"
 
 namespace libsemigroups {
   //! Abstract base class for semigroup elements
@@ -451,7 +451,7 @@ namespace libsemigroups {
     //! ostringstream
     friend std::ostringstream& operator<<(std::ostringstream&          os,
                                           ElementWithVectorData const& elt) {
-      // TODO replace this with the method in stl.h
+      // TODO replace this with the method in stl.hpp
       os << "{";
       for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
         os << to_string(*it) << ", ";

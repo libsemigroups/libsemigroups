@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "libsemigroups-debug.h"
+#include "libsemigroups-debug.hpp"
 
 namespace libsemigroups {
 

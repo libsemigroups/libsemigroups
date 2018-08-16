@@ -51,13 +51,13 @@
 
 #include <array>
 
-#include "internal/libsemigroups-config.h"
-#include "internal/range.h"
-#include "internal/square.h"
+#include "internal/libsemigroups-config.hpp"
+#include "internal/range.hpp"
+#include "internal/square.hpp"
 
 #include "adapters.hpp"
-#include "element-helper.h"
-#include "semigroup-traits.h"
+#include "elements.hpp"
+#include "semigroup-traits.hpp"
 
 namespace libsemigroups {
   template <size_t N,

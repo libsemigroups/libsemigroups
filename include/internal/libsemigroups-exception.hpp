@@ -22,7 +22,7 @@
 #include <exception>
 #include <string>
 
-#include "stl.h"
+#include "stl.hpp"
 
 namespace libsemigroups {
   struct LibsemigroupsException : public std::runtime_error {

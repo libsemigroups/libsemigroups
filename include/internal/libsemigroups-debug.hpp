@@ -23,7 +23,7 @@
 
 #include <assert.h>
 
-#include "libsemigroups-config.h"
+#include "libsemigroups-config.hpp"
 
 #ifdef LIBSEMIGROUPS_DEBUG
 #define LIBSEMIGROUPS_ASSERT(x) assert(x)

@@ -32,8 +32,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "libsemigroups-debug.h"
-#include "libsemigroups-exception.h"
+#include "libsemigroups-debug.hpp"
+#include "libsemigroups-exception.hpp"
 
 #define REPORT(...) REPORTER(this, __VA_ARGS__)
 

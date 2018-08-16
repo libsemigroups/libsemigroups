@@ -22,11 +22,11 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
 #define LIBSEMIGROUPS_INCLUDE_CONG_NEW_H_
 
-#include "internal/race.h"
+#include "internal/race.hpp"
 
 #include "cong-base.hpp"
-#include "knuth-bendix.h"
-#include "todd-coxeter.h"
+#include "knuth-bendix.hpp"
+#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration

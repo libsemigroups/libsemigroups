@@ -21,13 +21,13 @@
 
 // TODO: - do nothing if there are no generating pairs
 
-#include "internal/libsemigroups-exception.h"
+#include "internal/libsemigroups-exception.hpp"
 
-#include "cong-new.h"
-#include "cong-p.h"
-#include "fpsemi.h"
-#include "kbe.h"
-#include "todd-coxeter.h"
+#include "cong.hpp"
+#include "cong-pair.hpp"
+#include "fpsemi.hpp"
+#include "kbe.hpp"
+#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;

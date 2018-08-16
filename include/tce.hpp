@@ -19,13 +19,13 @@
 // Todd-Coxeter elements
 
 // TODO 1. smart pointer to _tc?
-//      2. put the implementation into a cc file
+//      2. put the implementation into a cpp file
 #ifndef LIBSEMIGROUPS_INCLUDE_TCE_H_
 #define LIBSEMIGROUPS_INCLUDE_TCE_H_
 
 #include "adapters.hpp"
-#include "constants.h"
-#include "todd-coxeter.h"
+#include "constants.hpp"
+#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
 

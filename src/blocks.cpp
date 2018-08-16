@@ -31,8 +31,8 @@
 
 #include <algorithm>
 
-#include "constants.h"
-#include "internal/libsemigroups-debug.h"
+#include "constants.hpp"
+#include "internal/libsemigroups-debug.hpp"
 
 namespace libsemigroups {
   Blocks::Blocks()

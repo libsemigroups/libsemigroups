@@ -27,14 +27,14 @@
 
 #include <queue>
 
-#include "internal/stl.h"
-#include "internal/uf.h"
+#include "internal/stl.hpp"
+#include "internal/uf.hpp"
 
 #include "cong-base.hpp"
-#include "cong-wrap.h"
+#include "cong-wrap.hpp"
 #include "fpsemi-base.hpp"
-#include "kbe.h"
-#include "semigroup.h"
+#include "kbe.hpp"
+#include "semigroup.hpp"
 
 namespace libsemigroups {
   namespace congruence {
@@ -443,7 +443,7 @@ namespace libsemigroups {
     // semigroup using KnuthBendix on the fp semigroup and then the pairs
     // algorithm to compute the congruence.
     //////////////////////////////////////////////////////////////////////////
-    // TODO move the implementation to a cong-p.cc file
+    // TODO move the implementation to a cong-p.cpp file
     class KBP
         : public P<KBE,
                    hash<KBE>,

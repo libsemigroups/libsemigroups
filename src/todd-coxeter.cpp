@@ -68,18 +68,18 @@
 // Now the new preimage and all the old preimages are stored.
 //////////////////////////////////////////////////////////////////////////
 
-#include "todd-coxeter.h"
+#include "todd-coxeter.hpp"
 
 #include <algorithm>
 #include <unordered_map>
 
-#include "internal/libsemigroups-debug.h"
-#include "internal/libsemigroups-exception.h"
-#include "internal/report.h"
-#include "internal/stl.h"
+#include "internal/libsemigroups-debug.hpp"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/report.hpp"
+#include "internal/stl.hpp"
 
-#include "semigroup.h"
-#include "tce.h"
+#include "semigroup.hpp"
+#include "tce.hpp"
 
 namespace libsemigroups {
 

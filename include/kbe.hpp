@@ -24,9 +24,9 @@
 
 #include <string>
 
-#include "element.h"
-#include "knuth-bendix.h"
-#include "semigroup.h"
+#include "element.hpp"
+#include "knuth-bendix.hpp"
+#include "semigroup.hpp"
 
 namespace libsemigroups {
   //! Subclass of Element that wraps an libsemigroups::internal_string_type.

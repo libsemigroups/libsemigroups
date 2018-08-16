@@ -18,8 +18,8 @@
 
 // This file contains implementations of the methods for the Runner class.
 
-#include "internal/runner.h"
-#include "internal/timer.h"
+#include "internal/runner.hpp"
+#include "internal/timer.hpp"
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////

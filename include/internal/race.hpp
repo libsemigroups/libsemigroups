@@ -29,9 +29,9 @@
 #include <thread>
 #include <vector>
 
-#include "report.h"
-#include "runner.h"
-#include "stl.h"
+#include "report.hpp"
+#include "runner.hpp"
+#include "stl.hpp"
 
 namespace libsemigroups {
   class Race {

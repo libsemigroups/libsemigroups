@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <array>
 
-#include "libsemigroups-debug.h"
+#include "libsemigroups-debug.hpp"
 
 namespace libsemigroups {
 

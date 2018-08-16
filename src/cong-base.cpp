@@ -18,11 +18,11 @@
 
 #include "cong-base.hpp"
 
-#include "internal/libsemigroups-exception.h"
-#include "internal/stl.h"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/stl.hpp"
 
-#include "constants.h"
-#include "semigroup-base.h"
+#include "constants.hpp"
+#include "semigroup-base.hpp"
 
 namespace libsemigroups {
 

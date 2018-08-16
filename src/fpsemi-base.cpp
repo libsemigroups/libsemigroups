@@ -20,11 +20,11 @@
 
 #include "fpsemi-base.hpp"
 
-#include "internal/libsemigroups-debug.h"
-#include "internal/libsemigroups-exception.h"
-#include "internal/stl.h"
+#include "internal/libsemigroups-debug.hpp"
+#include "internal/libsemigroups-exception.hpp"
+#include "internal/stl.hpp"
 
-#include "semigroup-base.h"
+#include "semigroup-base.hpp"
 
 namespace libsemigroups {
 

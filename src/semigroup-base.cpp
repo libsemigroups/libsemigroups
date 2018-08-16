@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "semigroup-base.h"
+#include "semigroup-base.hpp"
 
 namespace libsemigroups {
   void relations(SemigroupBase*                              S,

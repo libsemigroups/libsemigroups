@@ -24,9 +24,9 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "internal/libsemigroups-debug.h"
+#include "internal/libsemigroups-debug.hpp"
 
-#include "constants.h"
+#include "constants.hpp"
 
 namespace libsemigroups {
 

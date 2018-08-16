@@ -22,12 +22,12 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_H_
 
-#include "internal/race.h"
+#include "internal/race.hpp"
 
 #include "fpsemi-base.hpp"
-#include "knuth-bendix.h"
-#include "semigroup-base.h"
-#include "todd-coxeter.h"
+#include "knuth-bendix.hpp"
+#include "semigroup-base.hpp"
+#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
 

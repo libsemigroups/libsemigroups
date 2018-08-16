@@ -19,12 +19,12 @@
 // This file contains implementations of the non-template derived classes of
 // the Elements abstract base class.
 
-#include "element.h"
+#include "element.hpp"
 
 #include <algorithm>
 #include <thread>
 
-#include "internal/report.h"
+#include "internal/report.hpp"
 
 namespace libsemigroups {
 

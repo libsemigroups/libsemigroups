@@ -22,7 +22,7 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_H_
 
-#include "internal/libsemigroups-config.h"
+#include "internal/libsemigroups-config.hpp"
 
 namespace libsemigroups {
   template <typename TElementType, typename = void> struct complexity;

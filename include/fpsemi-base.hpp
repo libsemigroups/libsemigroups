@@ -24,9 +24,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "internal/runner.h"
+#include "internal/runner.hpp"
 
-#include "types.h"
+#include "types.hpp"
 
 namespace libsemigroups {
   class FpSemigroup;    // Forward declaration

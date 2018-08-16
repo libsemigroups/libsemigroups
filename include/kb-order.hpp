@@ -23,7 +23,7 @@
 #include <string>
 
 // TODO
-// - cc file
+// - cpp file
 
 namespace libsemigroups {
   //! This class provides a call operator which can be used to compare
