@@ -145,7 +145,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
 
   vec.push_back(new Transformation<u_int16_t>({3, 4, 4, 4, 4}));
@@ -218,7 +218,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
 
   word_type w1, w2;
@@ -281,7 +281,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
 
   Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
@@ -354,7 +354,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
   Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});

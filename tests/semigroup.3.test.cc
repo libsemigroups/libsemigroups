@@ -61,8 +61,8 @@ TEST_CASE("Semigroup 043: relations [copy_closure, duplicate gens]",
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.size() == 120);
-  REQUIRE(S.current_nrrules() == 33);
-  REQUIRE(S.nrrules() == 33);
+  REQUIRE(S.current_nr_rules() == 33);
+  REQUIRE(S.nr_rules() == 33);
   REQUIRE(S.current_max_word_length() == 11);
 
   std::vector<Element*> coll
@@ -100,8 +100,8 @@ TEST_CASE("Semigroup 044: relations [copy_add_generators, duplicate gens]",
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.size() == 120);
-  REQUIRE(S.current_nrrules() == 33);
-  REQUIRE(S.nrrules() == 33);
+  REQUIRE(S.current_nr_rules() == 33);
+  REQUIRE(S.nr_rules() == 33);
   REQUIRE(S.current_max_word_length() == 11);
 
   std::vector<Element*> coll
@@ -134,7 +134,7 @@ TEST_CASE("Semigroup 045: relations [from copy, not enumerated]",
 
   Semigroup<> T = Semigroup<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(T.nrrules() == S.nrrules());
+  REQUIRE(T.nr_rules() == S.nr_rules());
 
   std::vector<size_t> result;
   T.next_relation(result);
@@ -150,7 +150,7 @@ TEST_CASE("Semigroup 045: relations [from copy, not enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
 
   T.reset_next_relation();
   T.next_relation(result);
@@ -167,7 +167,7 @@ TEST_CASE("Semigroup 045: relations [from copy, not enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
   delete_gens(gens);
 }
 
@@ -187,7 +187,7 @@ TEST_CASE("Semigroup 046: relations [from copy, partly enumerated]",
 
   Semigroup<> T = Semigroup<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(T.nrrules() == S.nrrules());
+  REQUIRE(T.nr_rules() == S.nr_rules());
 
   std::vector<size_t> result;
   T.next_relation(result);
@@ -203,7 +203,7 @@ TEST_CASE("Semigroup 046: relations [from copy, partly enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
 
   T.reset_next_relation();
   T.next_relation(result);
@@ -220,7 +220,7 @@ TEST_CASE("Semigroup 046: relations [from copy, partly enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
   delete_gens(gens);
 }
 
@@ -239,7 +239,7 @@ TEST_CASE("Semigroup 047: relations [from copy, fully enumerated]",
 
   Semigroup<> T = Semigroup<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
-  REQUIRE(T.nrrules() == S.nrrules());
+  REQUIRE(T.nr_rules() == S.nr_rules());
 
   std::vector<size_t> result;
   T.next_relation(result);
@@ -255,7 +255,7 @@ TEST_CASE("Semigroup 047: relations [from copy, fully enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
 
   T.reset_next_relation();
   T.next_relation(result);
@@ -272,7 +272,7 @@ TEST_CASE("Semigroup 047: relations [from copy, fully enumerated]",
     T.next_relation(result);
     nr++;
   }
-  REQUIRE(T.nrrules() == nr);
+  REQUIRE(T.nr_rules() == nr);
   delete_gens(gens);
 }
 
@@ -312,7 +312,7 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -330,7 +330,7 @@ TEST_CASE("Semigroup 050: relations [from copy_closure, not enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -372,7 +372,7 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -390,7 +390,7 @@ TEST_CASE("Semigroup 051: relations [from copy_add_generators, not enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -433,7 +433,7 @@ TEST_CASE("Semigroup 052: relations [from copy_closure, partly enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -451,7 +451,7 @@ TEST_CASE("Semigroup 052: relations [from copy_closure, partly enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -495,7 +495,7 @@ TEST_CASE(
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -513,7 +513,7 @@ TEST_CASE(
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -556,7 +556,7 @@ TEST_CASE("Semigroup 054: relations [from copy_closure, fully enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -575,7 +575,7 @@ TEST_CASE("Semigroup 054: relations [from copy_closure, fully enumerated]",
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -619,7 +619,7 @@ TEST_CASE(
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
 
   T->reset_next_relation();
@@ -638,7 +638,7 @@ TEST_CASE(
     T->next_relation(result);
     nr++;
   }
-  REQUIRE(T->nrrules() == nr);
+  REQUIRE(T->nr_rules() == nr);
   REQUIRE(2459 == nr);
   delete T;
   delete_gens(gens);
@@ -692,13 +692,13 @@ TEST_CASE("Semigroup 056: add_generators [duplicate generators]",
   S.add_generators({gens[6]});
   REQUIRE(S.size() == 119);
   REQUIRE(S.nr_generators() == 9);
-  REQUIRE(S.nrrules() == 213);
+  REQUIRE(S.nr_rules() == 213);
 
   gens[0]->redefine(gens[3], gens[4]);
   S.add_generators({gens[0]});
   REQUIRE(S.size() == 119);
   REQUIRE(S.nr_generators() == 10);
-  REQUIRE(S.nrrules() == 267);
+  REQUIRE(S.nr_rules() == 267);
 
   REQUIRE(S.letter_to_pos(0) == 0);
   REQUIRE(S.letter_to_pos(1) == 0);
@@ -738,7 +738,7 @@ TEST_CASE("Semigroup 057: add_generators [incremental 1]",
   S.add_generators({gens[5]});
   REQUIRE(S.size() == 97);
   REQUIRE(S.nr_generators() == 8);
-  REQUIRE(S.nrrules() == 126);
+  REQUIRE(S.nr_rules() == 126);
 
   S.add_generators({gens[4], gens[5]});
   S.add_generators({gens[5]});
@@ -746,7 +746,7 @@ TEST_CASE("Semigroup 057: add_generators [incremental 1]",
   S.add_generators({gens[0], gens[0]});
   REQUIRE(S.size() == 119);
   REQUIRE(S.nr_generators() == 14);
-  REQUIRE(S.nrrules() == 253);
+  REQUIRE(S.nr_rules() == 253);
   delete_gens(gens);
 }
 

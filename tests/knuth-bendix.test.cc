@@ -44,7 +44,7 @@ namespace libsemigroups {
 
       Semigroup<Transf> S({Transf({1, 0}), Transf({0, 0})});
       REQUIRE(S.size() == 4);
-      REQUIRE(S.nrrules() == 4);
+      REQUIRE(S.nr_rules() == 4);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -61,7 +61,7 @@ namespace libsemigroups {
       Semigroup<> S = Semigroup<>(gens);
       REQUIRE(S.size() == 9);
       REQUIRE(S.degree() == 5);
-      REQUIRE(S.nrrules() == 3);
+      REQUIRE(S.nr_rules() == 3);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -79,7 +79,7 @@ namespace libsemigroups {
       Semigroup<> S = Semigroup<>(gens);
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -1212,7 +1212,7 @@ namespace libsemigroups {
       Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       KnuthBendix kb(S);
       auto        P = kb.quotient_semigroup();  // Parent

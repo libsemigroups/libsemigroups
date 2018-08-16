@@ -174,7 +174,7 @@ namespace libsemigroups {
       void add_rules(SemigroupBase* S) override {
         // TODO improve this method to avoid unnecessary conversions
         FpSemiIntf::add_rules(S);
-        _nr_rules += S->nrrules();
+        _nr_rules += S->nr_rules();
         // TODO something like the following
         // if (S->nr_rules() == this->nr_rules()) {
         //   set_isomorphic_non_fp_semigroup(S);

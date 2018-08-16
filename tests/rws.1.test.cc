@@ -42,7 +42,7 @@ TEST_CASE("RWS 01: for a transformation semigroup of size 4",
   REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
-  REQUIRE(S.nrrules() == 4);
+  REQUIRE(S.nr_rules() == 4);
   std::vector<relation_type> extra({});
   Congruence                 cong("twosided", &S, extra);
 
@@ -62,7 +62,7 @@ TEST_CASE("RWS 02: for a transformation semigroup of size 9",
   REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 9);
   REQUIRE(S.degree() == 5);
-  REQUIRE(S.nrrules() == 3);
+  REQUIRE(S.nr_rules() == 3);
   std::vector<relation_type> extra({});
   Congruence                 cong("twosided", &S, extra);
 
@@ -83,7 +83,7 @@ TEST_CASE("RWS 03: for a transformation semigroup of size 88",
   REPORTER.set_report(RWS_REPORT);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   std::vector<relation_type> extra({});
   Congruence                 cong("twosided", &S, extra);
 

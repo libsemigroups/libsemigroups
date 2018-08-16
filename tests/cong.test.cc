@@ -192,7 +192,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
   Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
@@ -271,7 +271,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
   delete_gens(gens);
 
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 18);
+  REQUIRE(S.nr_rules() == 18);
   REQUIRE(S.degree() == 5);
   Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
@@ -378,7 +378,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
   // that P does not enumerate the semigroup, they remain to remind us of the
   // size and number of rules of the semigroups.
   // REQUIRE(S.size(false) == 11804);
-  // REQUIRE(S.nrrules(false) == 2460);
+  // REQUIRE(S.nr_rules(false) == 2460);
 
   std::vector<relation_type> extra(
       {relation_type({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3})});
@@ -434,7 +434,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
-  // REQUIRE(S.nrrules() == 45416);
+  // REQUIRE(S.nr_rules() == 45416);
 
   std::vector<relation_type> extra(
       {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
@@ -488,7 +488,7 @@ TEST_CASE("Congruence 13: partial perm example",
   delete_gens(gens);
 
   // REQUIRE(S.size() == 712);
-  // REQUIRE(S.nrrules() == 1121);
+  // REQUIRE(S.nr_rules() == 1121);
 
   std::vector<relation_type> extra
       = {relation_type({5, 3, 1}, {3, 3}), relation_type({2, 7}, {1, 6, 6, 1})};
@@ -571,7 +571,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
-  // REQUIRE(S.nrrules() == 45416);
+  // REQUIRE(S.nr_rules() == 45416);
 
   std::vector<relation_type> extra(
       {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
@@ -628,7 +628,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
   delete_gens(gens);
 
   // REQUIRE(S.size() == 65536);
-  // REQUIRE(S.nrrules() == 45416);
+  // REQUIRE(S.nr_rules() == 45416);
 
   std::vector<relation_type> extra(
       {relation_type({7, 10, 9, 3, 6, 9, 4, 7, 9, 10},
@@ -1609,7 +1609,7 @@ TEST_CASE(
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   REQUIRE(S.size() == 88);
-  REQUIRE(S.nrrules() == 21);
+  REQUIRE(S.nr_rules() == 21);
   REQUIRE(S.degree() == 5);
   Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
   Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});

@@ -180,7 +180,7 @@ namespace libsemigroups {
           _max_threads(std::thread::hardware_concurrency()),
           _nr(0),
           _nrgens(gens->size()),
-          _nrrules(0),
+          _nr_rules(0),
           _pos(0),
           _pos_one(0),
           _prefix(),
@@ -229,7 +229,7 @@ namespace libsemigroups {
         auto it = _map.find(_gens[i]);
         if (it != _map.end()) {  // duplicate generator
           _letter_to_pos.push_back(it->second);
-          _nrrules++;
+          _nr_rules++;
           _duplicate_gens.emplace_back(i, _first[it->second]);
           // i.e. _gens[i] = _gens[_first[it->second]]
           // _first maps from element_index_type -> letter_type :)
@@ -295,7 +295,7 @@ namespace libsemigroups {
           _max_threads(S._max_threads),
           _nr(S._nr),
           _nrgens(S._nrgens),
-          _nrrules(S._nrrules),
+          _nr_rules(S._nr_rules),
           _pos(S._pos),
           _pos_one(S._pos_one),
           _prefix(S._prefix),
@@ -364,7 +364,7 @@ namespace libsemigroups {
           _max_threads(S._max_threads),
           _nr(S._nr),
           _nrgens(S._nrgens),
-          _nrrules(0),
+          _nr_rules(0),
           _pos(S._pos),
           _pos_one(S._pos_one),  // copy in case degree doesn't change in
                                  // add_generators
@@ -630,8 +630,8 @@ namespace libsemigroups {
     //!
     //! This is only the actual number of relations in a presentation defining
     //! the semigroup if the semigroup is fully enumerated.
-    size_t current_nrrules() const noexcept override {
-      return _nrrules;
+    size_t current_nr_rules() const noexcept override {
+      return _nr_rules;
     }
 
     //! Returns the position of the prefix of the element \c x in position
@@ -822,9 +822,9 @@ namespace libsemigroups {
     //! semigroup.
     //!
     //! \sa Semigroup::next_relation.
-    size_t nrrules() override {
+    size_t nr_rules() override {
       enumerate();
-      return _nrrules;
+      return _nr_rules;
     }
 
     //! Set a new value for the batch size.
@@ -1238,7 +1238,7 @@ namespace libsemigroups {
 
             if (it != _map.end()) {
               _right.set(i, j, it->second);
-              _nrrules++;
+              _nr_rules++;
             } else {
               is_one(_tmp_product, _nr);
               _elements.push_back(this->internal_copy(_tmp_product));
@@ -1296,7 +1296,7 @@ namespace libsemigroups {
 
               if (it != _map.end()) {
                 _right.set(i, j, it->second);
-                _nrrules++;
+                _nr_rules++;
               } else {
                 is_one(_tmp_product, _nr);
                 _elements.push_back(this->internal_copy(_tmp_product));
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
         REPORT("found ",
                _nr,
                " elements, ",
-               _nrrules,
+               _nr_rules,
                " rules, max word length ",
                current_max_word_length());
       }
@@ -1460,7 +1460,7 @@ namespace libsemigroups {
 
       // reset the data structure
       _idempotents_found = false;
-      _nrrules           = _duplicate_gens.size();
+      _nr_rules           = _duplicate_gens.size();
       _pos               = 0;
       _wordlen           = 0;
       _nrgens            = _gens.size();
@@ -1513,8 +1513,8 @@ namespace libsemigroups {
                 _enumerate_order.push_back(k);
                 old_new[k] = true;
               } else if (s == UNDEFINED || _reduced.get(s, j)) {
-                // this clause could be removed if _nrrules wasn't necessary
-                _nrrules++;
+                // this clause could be removed if _nr_rules wasn't necessary
+                _nr_rules++;
               }
             }
             for (letter_type j = old_nrgens; j < _nrgens; j++) {
@@ -1558,7 +1558,7 @@ namespace libsemigroups {
         REPORT("found ",
                _nr,
                " elements, ",
-               _nrrules,
+               _nr_rules,
                " rules, max word length ",
                current_max_word_length());
       }
@@ -2117,7 +2117,7 @@ namespace libsemigroups {
         } else {  // it->second >= old->_nr || old_new[it->second]
           // it's old
           _right.set(i, j, it->second);
-          _nrrules++;
+          _nr_rules++;
         }
       }
     }
@@ -2350,7 +2350,7 @@ namespace libsemigroups {
     mutable std::mutex              _mtx;
     size_type                       _nr;
     letter_type                     _nrgens;
-    size_t                          _nrrules;
+    size_t                          _nr_rules;
     enumerate_index_type            _pos;
     element_index_type              _pos_one;
     std::vector<element_index_type> _prefix;

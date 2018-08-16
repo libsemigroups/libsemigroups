@@ -129,28 +129,28 @@ TEST_CASE("Semigroup 028: current_position",
   S.enumerate(1024);
 
   REQUIRE(S.current_size() == 1029);
-  REQUIRE(S.current_nrrules() == 74);
+  REQUIRE(S.current_nr_rules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
   REQUIRE(S.current_position(S.at(1024)) == 1024);
 
   Element* x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5});
   REQUIRE(S.current_position(x) == 1028);
   REQUIRE(S.current_size() == 1029);
-  REQUIRE(S.current_nrrules() == 74);
+  REQUIRE(S.current_nr_rules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
   delete x;
 
   x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5, 6});
   REQUIRE(S.current_position(x) == UNDEFINED);
   REQUIRE(S.current_size() == 1029);
-  REQUIRE(S.current_nrrules() == 74);
+  REQUIRE(S.current_nr_rules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
   delete x;
 
   x = new Transformation<u_int16_t>({5, 4, 5, 1, 0, 5});
   REQUIRE(S.current_position(x) == UNDEFINED);
   REQUIRE(S.current_size() == 1029);
-  REQUIRE(S.current_nrrules() == 74);
+  REQUIRE(S.current_nr_rules() == 74);
   REQUIRE(S.current_max_word_length() == 7);
   REQUIRE(S.position(x) == 1029);
   delete x;
@@ -534,7 +534,7 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
   REQUIRE(S.current_size() == 5);
-  REQUIRE(S.current_nrrules() == 0);
+  REQUIRE(S.current_nr_rules() == 0);
   REQUIRE(S.current_max_word_length() == 1);
   REQUIRE(S.current_position(gens[1]) == 1);
 
@@ -546,13 +546,13 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
   REQUIRE(T.nr_generators() == 5);
   REQUIRE(T.degree() == 6);
   REQUIRE(T.current_size() == 5);
-  REQUIRE(T.current_nrrules() == 0);
+  REQUIRE(T.current_nr_rules() == 0);
   REQUIRE(T.current_max_word_length() == 1);
   REQUIRE(T.current_position(S.generator(1)) == 1);
 
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nr_idempotents() == 537);
-  REQUIRE(T.nrrules() == 2459);
+  REQUIRE(T.nr_rules() == 2459);
   REQUIRE(T.is_begun());
   REQUIRE(T.is_done());
   delete_gens(gens);
@@ -571,7 +571,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 2);
-  REQUIRE(S.current_nrrules() == 0);
+  REQUIRE(S.current_nr_rules() == 0);
   REQUIRE(S.current_max_word_length() == 1);
 
   std::vector<Element*> coll
@@ -588,14 +588,14 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
-  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_nr_rules() == 2418);
   REQUIRE(T->current_max_word_length() == 14);
   REQUIRE(T->current_position(S.generator(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   Semigroup<>* U = T->copy_closure(coll);
@@ -609,7 +609,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(U->current_size() == 16807);
   REQUIRE(U->current_max_word_length() == 16);
   REQUIRE(U->nr_idempotents() == 1358);
-  REQUIRE(U->nrrules() == 7901);
+  REQUIRE(U->nr_rules() == 7901);
 
   coll           = std::vector<Element*>();
   Semigroup<>* V = U->copy_closure(coll);
@@ -624,7 +624,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(V->current_size() == 16807);
   REQUIRE(V->current_max_word_length() == 16);
   REQUIRE(V->nr_idempotents() == 1358);
-  REQUIRE(V->nrrules() == 7901);
+  REQUIRE(V->nr_rules() == 7901);
 
   delete T;
   delete U;
@@ -645,7 +645,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 2);
-  REQUIRE(S.current_nrrules() == 0);
+  REQUIRE(S.current_nr_rules() == 0);
   REQUIRE(S.current_max_word_length() == 1);
 
   std::vector<Element*> coll
@@ -662,14 +662,14 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 5);
-  REQUIRE(T->current_nrrules() == 0);
+  REQUIRE(T->current_nr_rules() == 0);
   REQUIRE(T->current_max_word_length() == 1);
   REQUIRE(T->current_position(S.generator(1)) == 1);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   Semigroup<>* U = T->copy_add_generators(coll);
@@ -683,7 +683,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(U->current_size() == 16807);
   REQUIRE(U->current_max_word_length() == 16);
   REQUIRE(U->nr_idempotents() == 1358);
-  REQUIRE(U->nrrules() == 7901);
+  REQUIRE(U->nr_rules() == 7901);
 
   coll           = std::vector<Element*>();
   Semigroup<>* V = U->copy_add_generators(coll);
@@ -698,7 +698,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(V->current_size() == 16807);
   REQUIRE(V->current_max_word_length() == 16);
   REQUIRE(V->nr_idempotents() == 1358);
-  REQUIRE(V->nrrules() == 7901);
+  REQUIRE(V->nr_rules() == 7901);
 
   delete T;
   delete U;
@@ -722,7 +722,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
   REQUIRE(S.is_begun());
   REQUIRE(!S.is_done());
   REQUIRE(S.current_size() == 1006);
-  REQUIRE(S.current_nrrules() == 70);
+  REQUIRE(S.current_nr_rules() == 70);
   REQUIRE(S.current_max_word_length() == 7);
   REQUIRE(S.current_position(gens[1]) == 1);
 
@@ -734,7 +734,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
   REQUIRE(T.nr_generators() == 5);
   REQUIRE(T.degree() == 6);
   REQUIRE(T.current_size() == 1006);
-  REQUIRE(T.current_nrrules() == 70);
+  REQUIRE(T.current_nr_rules() == 70);
   REQUIRE(T.current_max_word_length() == 7);
 
   Element* x = new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5});
@@ -747,7 +747,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
 
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nr_idempotents() == 537);
-  REQUIRE(T.nrrules() == 2459);
+  REQUIRE(T.nr_rules() == 2459);
   REQUIRE(T.is_begun());
   REQUIRE(T.is_done());
   delete_gens(gens);
@@ -769,7 +769,7 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 63);
-  REQUIRE(S.current_nrrules() == 11);
+  REQUIRE(S.current_nr_rules() == 11);
   REQUIRE(S.current_max_word_length() == 7);
 
   std::vector<Element*> coll
@@ -787,13 +787,13 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
-  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_nr_rules() == 2418);
   REQUIRE(T->current_max_word_length() == 14);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
   delete T;
   delete_gens(gens);
 }
@@ -814,7 +814,7 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 63);
-  REQUIRE(S.current_nrrules() == 11);
+  REQUIRE(S.current_nr_rules() == 11);
   REQUIRE(S.current_max_word_length() == 7);
 
   std::vector<Element*> coll
@@ -831,13 +831,13 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 818);
-  REQUIRE(T->current_nrrules() == 55);
+  REQUIRE(T->current_nr_rules() == 55);
   REQUIRE(T->current_max_word_length() == 7);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
   delete T;
   delete_gens(gens);
   delete_gens(coll);
@@ -860,7 +860,7 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
   REQUIRE(S.is_done());
   REQUIRE(S.size() == 7776);
   REQUIRE(S.nr_idempotents() == 537);
-  REQUIRE(S.nrrules() == 2459);
+  REQUIRE(S.nr_rules() == 2459);
 
   Semigroup<> T = Semigroup<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
@@ -871,7 +871,7 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
   REQUIRE(T.degree() == 6);
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nr_idempotents() == 537);
-  REQUIRE(T.nrrules() == 2459);
+  REQUIRE(T.nr_rules() == 2459);
   delete_gens(gens);
 }
 
@@ -890,7 +890,7 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
-  REQUIRE(S.current_nrrules() == 25);
+  REQUIRE(S.current_nr_rules() == 25);
   REQUIRE(S.current_max_word_length() == 11);
 
   std::vector<Element*> coll
@@ -907,13 +907,13 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
-  REQUIRE(T->current_nrrules() == 2418);
+  REQUIRE(T->current_nr_rules() == 2418);
   REQUIRE(T->current_max_word_length() == 14);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
   delete T;
   delete_gens(gens);
   delete_gens(coll);
@@ -934,7 +934,7 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
-  REQUIRE(S.current_nrrules() == 25);
+  REQUIRE(S.current_nr_rules() == 25);
   REQUIRE(S.current_max_word_length() == 11);
 
   std::vector<Element*> coll
@@ -951,13 +951,13 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
   REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 6842);
-  REQUIRE(T->current_nrrules() == 1970);
+  REQUIRE(T->current_nr_rules() == 1970);
   REQUIRE(T->current_max_word_length() == 12);
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
   REQUIRE(T->nr_idempotents() == 537);
-  REQUIRE(T->nrrules() == 2459);
+  REQUIRE(T->nr_rules() == 2459);
   delete T;
   delete_gens(gens);
   delete_gens(coll);
@@ -991,7 +991,7 @@ TEST_CASE("Semigroup 041: relations [duplicate gens]",
     S.next_relation(result);
     nr++;
   }
-  REQUIRE(S.nrrules() == nr);
+  REQUIRE(S.nr_rules() == nr);
 
   S.next_relation(result);
   REQUIRE(result.empty());
@@ -1021,7 +1021,7 @@ TEST_CASE("Semigroup 042: relations", "[quick][semigroup][finite][042]") {
     S.next_relation(result);
     nr++;
   }
-  REQUIRE(S.nrrules() == nr);
+  REQUIRE(S.nr_rules() == nr);
 
   S.reset_next_relation();
   S.next_relation(result);
@@ -1039,6 +1039,6 @@ TEST_CASE("Semigroup 042: relations", "[quick][semigroup][finite][042]") {
     nr++;
   }
 
-  REQUIRE(S.nrrules() == nr);
+  REQUIRE(S.nr_rules() == nr);
   delete_gens(gens);
 }

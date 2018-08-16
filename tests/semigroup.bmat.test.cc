@@ -48,7 +48,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
                                     {0, 0, 0, 0, 0}}))
           == UNDEFINED);
   REQUIRE(S.current_size() == 4);
-  REQUIRE(S.current_nrrules() == 0);
+  REQUIRE(S.current_nr_rules() == 0);
   REQUIRE(S.length_const(0) == 1);
   REQUIRE(S.length_non_const(5) == 2);
 
@@ -77,7 +77,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
                                     {0, 0, 1, 0, 1},
                                     {0, 0, 0, 0, 0}}))
           == UNDEFINED);
-  REQUIRE(S.current_nrrules() == 13716);
+  REQUIRE(S.current_nr_rules() == 13716);
   REQUIRE(S.prefix(0) == UNDEFINED);
   REQUIRE(S.suffix(0) == UNDEFINED);
   REQUIRE(S.first_letter(0) == 0);
@@ -97,7 +97,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(!S.is_idempotent(0));
   REQUIRE(S.is_idempotent(3));
   REQUIRE(!S.is_idempotent(7));
-  REQUIRE(S.nrrules() == 13716);
+  REQUIRE(S.nr_rules() == 13716);
   REQUIRE(S.test_membership(S.generator(1)));
   REQUIRE(!S.test_membership(BMat8({{1, 0, 0, 1, 1},
                                     {0, 1, 0, 0, 1},

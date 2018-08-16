@@ -228,7 +228,7 @@ namespace libsemigroups {
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_relations);
       tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
@@ -255,7 +255,7 @@ namespace libsemigroups {
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(LEFT, S, ToddCoxeter::policy::use_relations);
       tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
@@ -282,7 +282,7 @@ namespace libsemigroups {
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(RIGHT, S, ToddCoxeter::policy::use_relations);
       tc.add_pair(S.factorisation(Transformation<u_int16_t>({3, 4, 4, 4, 4})),
@@ -333,7 +333,7 @@ namespace libsemigroups {
       delete_gens(gens);
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
       REQUIRE(S.degree() == 5);
 
       ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_cayley_graph);
@@ -408,7 +408,7 @@ namespace libsemigroups {
       delete_gens(gens);
 
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
       REQUIRE(S.degree() == 5);
       Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
       Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
@@ -883,7 +883,7 @@ namespace libsemigroups {
 
       Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE(S.size() == 88);
-      REQUIRE(S.nrrules() == 18);
+      REQUIRE(S.nr_rules() == 18);
 
       word_type w1, w2, w3, w4;
       S.factorisation(w1, S.position(Transf({3, 4, 4, 4, 4})));

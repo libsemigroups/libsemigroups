@@ -54,7 +54,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size() == 88);
-      // REQUIRE(S.nrrules() == 18);
+      // REQUIRE(S.nr_rules() == 18);
 
       P<> p(TWOSIDED, S);
       p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -83,7 +83,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 88);
-      // REQUIRE(S.nrrules(false) == 18);
+      // REQUIRE(S.nr_rules(false) == 18);
 
       P<> p(LEFT, S);
       p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -111,7 +111,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 88);
-      // REQUIRE(S.nrrules(false) == 18);
+      // REQUIRE(S.nr_rules(false) == 18);
 
       P<> p(RIGHT, S);
       p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -139,7 +139,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 53);
-      // REQUIRE(S.nrrules(false) == 20);
+      // REQUIRE(S.nr_rules(false) == 20);
 
       P<> p(TWOSIDED, &S);
 
@@ -176,7 +176,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 53);
-      // REQUIRE(S.nrrules(false) == 20);
+      // REQUIRE(S.nr_rules(false) == 20);
 
       P<> p(LEFT, S);
 
@@ -213,7 +213,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 53);
-      // REQUIRE(S.nrrules(false) == 20);
+      // REQUIRE(S.nr_rules(false) == 20);
 
       P<> p(RIGHT, S);
 
@@ -250,7 +250,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 142);
-      // REQUIRE(S.nrrules(false) == 32);
+      // REQUIRE(S.nr_rules(false) == 32);
 
       P<> p(TWOSIDED, S);
       p.add_pair({1}, {0, 0, 0, 1, 0});
@@ -290,7 +290,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 11804);
-      // REQUIRE(S.nrrules(false) == 2460);
+      // REQUIRE(S.nr_rules(false) == 2460);
 
       P<> p(TWOSIDED, S);
       p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -334,7 +334,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 11804);
-      // REQUIRE(S.nrrules(false) == 2460);
+      // REQUIRE(S.nr_rules(false) == 2460);
 
       std::vector<relation_type> extra(
           {relation_type({1, 3, 0, 1, 2, 2, 0, 2}, {1, 0, 0, 1, 3, 1})});
@@ -377,7 +377,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size(false) == 11804);
-      // REQUIRE(S.nrrules(false) == 2460);
+      // REQUIRE(S.nr_rules(false) == 2460);
       std::vector<relation_type> extra({relation_type()});
       P<>                        p(LEFT, S);
       p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -447,7 +447,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size() == 88);
-      // REQUIRE(S.nrrules() == 18);
+      // REQUIRE(S.nr_rules() == 18);
 
       P<> p(S);
       p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),
@@ -476,7 +476,7 @@ namespace libsemigroups {
       // check that P does not enumerate the semigroup, they remain to remind us
       // of the size and number of rules of the semigroups.
       // REQUIRE(S.size() == 88);
-      // REQUIRE(S.nrrules() == 18);
+      // REQUIRE(S.nr_rules() == 18);
 
       P<> p(S);
       p.add_rule("abaaabbaa", "baaab");

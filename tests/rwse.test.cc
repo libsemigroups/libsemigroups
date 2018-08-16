@@ -40,7 +40,7 @@ TEST_CASE("RWSE 01:", "[quick][rwse][01]") {
 
   REQUIRE(S.size() == 4);
   REQUIRE(S.degree() == 2);
-  REQUIRE(S.nrrules() == 4);
+  REQUIRE(S.nr_rules() == 4);
   std::vector<relation_type> extra;
   Congruence                 cong("twosided", &S, extra);
 

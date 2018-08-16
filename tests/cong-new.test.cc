@@ -278,7 +278,7 @@ namespace libsemigroups {
 
     // The following lines are intentionally commented out.
     // REQUIRE(S.size() == 11804);
-    // REQUIRE(S.nrrules() == 2460);
+    // REQUIRE(S.nr_rules() == 2460);
 
     Congruence cong(TWOSIDED, S);
     cong.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -329,7 +329,7 @@ namespace libsemigroups {
                       PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
-    // REQUIRE(S.nrrules() == 45416);
+    // REQUIRE(S.nr_rules() == 45416);
 
     Congruence cong(TWOSIDED, S);
     cong.add_pair({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
@@ -368,7 +368,7 @@ namespace libsemigroups {
                         PPerm({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
-    // REQUIRE(S.nrrules() == 1121);
+    // REQUIRE(S.nr_rules() == 1121);
 
     Congruence cong(TWOSIDED, S);
     cong.add_pair({2, 7}, {1, 6, 6, 1});
@@ -458,7 +458,7 @@ namespace libsemigroups {
     Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nrrules() == 18);
+    REQUIRE(S.nr_rules() == 18);
 
     word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
     word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
@@ -936,7 +936,7 @@ namespace libsemigroups {
     delete_gens(gens);
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nrrules() == 18);
+    REQUIRE(S.nr_rules() == 18);
     REQUIRE(S.degree() == 5);
     Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
     Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
@@ -1422,7 +1422,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is slower :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 356);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 356);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1440,7 +1440,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 356);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 356);
   }
 
   // This appears to be an example where KB + FP is faster than TC
@@ -1459,7 +1459,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.todd_coxeter()->run(); // Takes 2m30s or so to run
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1453);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 1453);
 
     congruence::ToddCoxeter tc(
         TWOSIDED,
@@ -1488,7 +1488,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.todd_coxeter()->run(); // TODO Check if it runs
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1453);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 1453);
 
     congruence::ToddCoxeter tc(
         TWOSIDED,
@@ -1511,7 +1511,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 014",
@@ -1528,7 +1528,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 015",
@@ -1545,7 +1545,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 016",
@@ -1562,7 +1562,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 017",
@@ -1579,7 +1579,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
 
     S.isomorphic_non_fp_semigroup()->enumerate(10626);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->current_nrrules() == 417);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->current_nr_rules() == 417);
     REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
@@ -1598,7 +1598,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
 
     S.isomorphic_non_fp_semigroup()->enumerate(10626);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->current_nrrules() == 417);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->current_nr_rules() == 417);
     REQUIRE(S.isomorphic_non_fp_semigroup()->current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
@@ -1618,7 +1618,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1636,7 +1636,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 54);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1654,7 +1654,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1672,7 +1672,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 148);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1690,7 +1690,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 419);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1707,7 +1707,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 419);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1725,7 +1725,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 1279);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1742,7 +1742,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 1279);
   }
 
   // Takes about 4 minutes
@@ -1761,7 +1761,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 1279);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 1279);
   }
 
   // Takes about 4 minutes
@@ -1780,7 +1780,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix()->confluent());
     S.knuth_bendix()->knuth_bendix_by_overlap_length();
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 4570);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 4570);
   }
 
   std::vector<relation_type> RookMonoid(size_t l, int q) {
@@ -1842,7 +1842,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 71);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 030",
@@ -1858,7 +1858,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 71);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 031",
@@ -1874,7 +1874,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 207);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup 032",
@@ -1890,7 +1890,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->nrrules() == 207);
+    REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 207);
   }
 
   template <typename T>

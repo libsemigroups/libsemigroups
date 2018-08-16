@@ -83,7 +83,7 @@ namespace libsemigroups_tests_fpsemi {
     really_delete_cont(gens);
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nrrules() == 18);
+    REQUIRE(S.nr_rules() == 18);
     REQUIRE(S.degree() == 5);
 
     Element* t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
