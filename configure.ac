@@ -4,7 +4,7 @@ dnl Autoconf and automake initialization.
 
 AC_PREREQ([2.69])
 AC_INIT([libsemigroups],m4_esyscmd([tr -d '\n' < VERSION]),[jdm3@st-andrews.ac.uk])
-AC_CONFIG_SRCDIR(include/libsemigroups.h)
+AC_CONFIG_SRCDIR(include/libsemigroups.hpp)
 AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
@@ -18,7 +18,7 @@ AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-AX_PREFIX_CONFIG_H([include/internal/libsemigroups-config.h],[],[config/config.h])
+AX_PREFIX_CONFIG_H([include/internal/libsemigroups-config.hpp],[],[config/config.h])
 
 AC_PROG_CXX
 AC_LANG([C++])

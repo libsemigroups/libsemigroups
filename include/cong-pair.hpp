@@ -31,7 +31,7 @@
 #include "internal/uf.hpp"
 
 #include "cong-base.hpp"
-#include "cong-wrap.hpp"
+#include "wrap.hpp"
 #include "fpsemi-base.hpp"
 #include "kbe.hpp"
 #include "semigroup.hpp"

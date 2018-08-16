@@ -40,7 +40,7 @@
 #include "cong-base.hpp"
 #include "cong.hpp"
 #include "cong-pair.hpp"
-#include "cong-wrap.hpp"
+#include "wrap.hpp"
 #include "constants.hpp"
 #include "element.hpp"
 #include "fpsemi-base.hpp"

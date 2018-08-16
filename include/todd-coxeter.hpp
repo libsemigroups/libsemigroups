@@ -32,7 +32,7 @@
 
 #include "internal/recvec.hpp"
 
-#include "cong-wrap.hpp"
+#include "wrap.hpp"
 #include "fpsemi-base.hpp"
 
 namespace libsemigroups {
