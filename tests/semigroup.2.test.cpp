@@ -17,8 +17,8 @@
 //
 
 #include "catch.hpp"
-#include "element.h"
-#include "semigroup.h"
+#include "element.hpp"
+#include "semigroup.hpp"
 
 #define SEMIGROUPS_REPORT false
 

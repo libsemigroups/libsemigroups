@@ -41,8 +41,10 @@
 #include "adapters.hpp"
 #include "blocks.hpp"
 #include "constants.hpp"
+#include "hpcombi.hpp"
 #include "semigroup-traits.hpp"
 #include "semiring.hpp"
+#include "types.hpp"
 
 namespace libsemigroups {
   //! Abstract base class for semigroup elements

@@ -23,8 +23,8 @@
 #include <utility>
 
 #include "catch.hpp"
-#include "cong-p.h"
-// #include "fpsemi.h"
+#include "cong-pair.hpp"
+// #include "fpsemi.hpp"
 
 namespace libsemigroups {
   namespace congruence {

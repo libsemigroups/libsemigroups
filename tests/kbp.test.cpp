@@ -23,7 +23,7 @@
 #include <utility>  // for std::transform
 
 #include "catch.hpp"
-#include "cong-p.h"
+#include "cong-pair.hpp"
 
 namespace libsemigroups {
   namespace congruence {

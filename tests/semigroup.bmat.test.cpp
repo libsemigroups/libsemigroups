@@ -16,9 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bmat8.h"
+#include "bmat8.hpp"
 #include "catch.hpp"
-#include "semigroup.h"
+#include "semigroup.hpp"
 
 #define SEMIGROUPS_REPORT false
 

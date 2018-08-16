@@ -28,7 +28,7 @@
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
-#include "hpcombi.hpp"
+#include "extern/HPCombi/include/hpcombi.hpp"
 
 #include "adapters.hpp"
 

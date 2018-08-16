@@ -19,10 +19,10 @@
 // reduction orderings different from shortlex
 
 #include "catch.hpp"
-#include "element-helper.h"
-#include "kbe.h"
-#include "knuth-bendix.h"
-#include "semigroup.h"
+#include "element.hpp"
+#include "kbe.hpp"
+#include "knuth-bendix.hpp"
+#include "semigroup.hpp"
 
 namespace libsemigroups {
   namespace knuth_bendix_fpsemigroup {

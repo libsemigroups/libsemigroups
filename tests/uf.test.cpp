@@ -20,7 +20,7 @@
 // of the set of integers {0 .. n-1}
 
 #include "catch.hpp"
-#include "internal/uf.h"
+#include "internal/uf.hpp"
 
 #define UF_REPORT false
 

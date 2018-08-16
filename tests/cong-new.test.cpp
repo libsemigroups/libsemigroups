@@ -18,14 +18,14 @@
 
 #include "libsemigroups.tests.hpp"
 
-#include "include/internal/stl.h"
+#include "include/internal/stl.hpp"
 
-#include "bmat8.h"
-#include "cong-new.h"
-#include "cong-p.h"
-#include "element-helper.h"
-#include "fpsemi.h"
-#include "semigroup.h"
+#include "bmat8.hpp"
+#include "cong.hpp"
+#include "cong-pair.hpp"
+#include "element.hpp"
+#include "fpsemi.hpp"
+#include "semigroup.hpp"
 
 namespace libsemigroups {
   template <class TElementType>

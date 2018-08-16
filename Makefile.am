@@ -194,7 +194,7 @@ endif
 clean-local: clean-local-check
 
 clean-local-check:
-	rm -rf $(CHECK_LOG_DIR) $(check_PROGRAMS)
+	rm -rf $(check_PROGRAMS)
 	rm -rf benchmark/src/build
 	rm -f benchmark/gbench/*.pyc
 	rm -f benchmark/gbench/__py_cache__/*.pyc
@@ -208,12 +208,8 @@ superclean: distclean
 	git clean -xdf --exclude *.swp --exclude *.swo
 .PHONY: superclean
 
-check:
-	@$(mkdir_p) $(CHECK_LOG_DIR)
-	@today=`date +%Y-%m-%d-%H-%M-%S`;                                   \
-	echo "Running the tests ($(CHECK_LOG_DIR)/$$today.log) . . .";      \
-	$(CHECK_PROG) $(CHECK_FLAGS1) $(CHECK_FLAGS2) | tee -a $(CHECK_LOG_DIR)/$$today.log; \
-	( ! grep -q -E "FAILED|failed" $(CHECK_LOG_DIR)/$$today.log )
+check: 
+	$(CHECK_PROG) $(CHECK_FLAGS1) $(CHECK_FLAGS2)
 
 check-quick: CHECK_FLAGS2 = [quick]
 check-quick: check

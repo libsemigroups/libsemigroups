@@ -21,8 +21,8 @@
 
 #include <unordered_map>
 
-#include "include/internal/stl.h"
-#include "include/internal/timer.h"
+#include "include/internal/stl.hpp"
+#include "include/internal/timer.hpp"
 
 #include "libsemigroups.tests.hpp"
 

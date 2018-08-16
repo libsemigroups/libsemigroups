@@ -19,8 +19,8 @@
 // reduction orderings different from shortlex
 
 #include "catch.hpp"
-#include "element.h"
-#include "rws.h"
+#include "element.hpp"
+#include "rws.hpp"
 
 #define RWS_REPORT false
 

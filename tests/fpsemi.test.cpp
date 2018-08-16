@@ -20,9 +20,9 @@
 
 #include <utility>
 
-#include "../src/elements.h"
-#include "../src/fpsemi.h"
-#include "../src/semigroups.h"
+#include "element.hpp"
+#include "fpsemi.hpp"
+#include "semigroup.hpp"
 
 #include "catch.hpp"
 

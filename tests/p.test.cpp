@@ -21,8 +21,8 @@
 // congruence.
 
 #include "catch.hpp"
-#include "cong.h"
-#include "element.h"
+#include "cong.hpp"
+#include "element.hpp"
 
 #define P_REPORT false
 

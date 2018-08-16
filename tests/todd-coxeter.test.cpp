@@ -22,12 +22,12 @@
 
 #include "libsemigroups.tests.hpp"
 
-#include "internal/report.h"
+#include "internal/report.hpp"
 
-#include "bmat8.h"
-#include "element-helper.h"
-#include "semigroup.h"
-#include "tce.h"
+#include "bmat8.hpp"
+#include "element.hpp"
+#include "semigroup.hpp"
+#include "tce.hpp"
 
 namespace libsemigroups {
   namespace congruence_todd_coxeter {

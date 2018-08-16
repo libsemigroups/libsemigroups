@@ -56,7 +56,7 @@
 #include "internal/square.hpp"
 
 #include "adapters.hpp"
-#include "elements.hpp"
+#include "element.hpp"
 #include "semigroup-traits.hpp"
 
 namespace libsemigroups {

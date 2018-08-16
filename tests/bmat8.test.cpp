@@ -20,10 +20,10 @@
 #include <algorithm>
 #include <unordered_set>
 
-#include "bmat8.h"
+#include "bmat8.hpp"
 #include "catch.hpp"
-#include "element.h"
-#include "semigroup.h"
+#include "element.hpp"
+#include "semigroup.hpp"
 
 #define BMAT_REPORT false
 

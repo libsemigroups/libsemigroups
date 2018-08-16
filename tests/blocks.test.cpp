@@ -16,9 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "blocks.h"
+#include "blocks.hpp"
 #include "catch.hpp"
-#include "element.h"
+#include "element.hpp"
 
 using namespace libsemigroups;
 

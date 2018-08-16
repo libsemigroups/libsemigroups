@@ -25,10 +25,10 @@
 
 #include "catch.hpp"
 
-#include "bmat8.h"
-#include "element-helper.h"
-#include "hpcombi.h"
-#include "schreier-sims.h"
+#include "bmat8.hpp"
+#include "element.hpp"
+#include "hpcombi.hpp"
+#include "schreier-sims.hpp"
 
 namespace libsemigroups {
   namespace schreier_sims {
