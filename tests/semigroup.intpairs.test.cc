@@ -112,5 +112,5 @@ TEST_CASE("Semigroup of IntPairs (non-trivial user type)",
           "[quick][semigroup][nontrivial][finite][097]") {
   Semigroup<IntPair> S({IntPair(1, 1)});
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
 }

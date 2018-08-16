@@ -58,7 +58,7 @@ TEST_CASE("Semigroup 001: small transformation semigroup",
 
   REQUIRE(S.size() == 2);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 2);
+  REQUIRE(S.nr_idempotents() == 2);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 4);
 
@@ -98,7 +98,7 @@ TEST_CASE("Semigroup 002: small partial perm semigroup",
 
   REQUIRE(S.size() == 22);
   REQUIRE(S.degree() == 11);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 9);
 
@@ -159,7 +159,7 @@ TEST_CASE("Semigroup 003: small bipartition semigroup",
 
   REQUIRE(S.size() == 10);
   REQUIRE(S.degree() == 10);
-  REQUIRE(S.nridempotents() == 6);
+  REQUIRE(S.nr_idempotents() == 6);
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.nrrules() == 14);
 
@@ -201,7 +201,7 @@ TEST_CASE("Semigroup 004: small Boolean matrix semigroup",
 
   REQUIRE(S.size() == 3);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 2);
+  REQUIRE(S.nr_idempotents() == 2);
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.nrrules() == 7);
   REQUIRE(*S[0] == *gens[0]);
@@ -236,7 +236,7 @@ TEST_CASE("Semigroup 005: small projective max plus matrix semigroup",
 
   REQUIRE(S.size() == 1);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 1);
   REQUIRE(S.nrrules() == 1);
   REQUIRE(*S[0] == id);
@@ -262,7 +262,7 @@ TEST_CASE("Semigroup 006: small matrix semigroup [Integers]",
 
   REQUIRE(S.size() == 13);
   REQUIRE(S.degree() == 2);
-  REQUIRE(S.nridempotents() == 4);
+  REQUIRE(S.nr_idempotents() == 4);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 6);
   REQUIRE(*S[0] == *(gens)[0]);
@@ -303,7 +303,7 @@ TEST_CASE("Semigroup 007: small matrix semigroup [MaxPlusSemiring]",
 
   REQUIRE(S.size() == 26);
   REQUIRE(S.degree() == 2);
-  REQUIRE(S.nridempotents() == 4);
+  REQUIRE(S.nr_idempotents() == 4);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 9);
   REQUIRE(*S[0] == *gens[0]);
@@ -342,7 +342,7 @@ TEST_CASE("Semigroup 008: small matrix semigroup [MinPlusSemiring]",
 
   REQUIRE(S.size() == 3);
   REQUIRE(S.degree() == 2);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 1);
   REQUIRE(S.nrrules() == 1);
 
@@ -379,7 +379,7 @@ TEST_CASE("Semigroup 009: small matrix semigroup [TropicalMaxPlusSemiring]",
 
   REQUIRE(S.size() == 119);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 18);
 
@@ -415,7 +415,7 @@ TEST_CASE("Semigroup 010: small matrix semigroup [TropicalMinPlusSemiring]",
 
   REQUIRE(S.size() == 1039);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 5);
+  REQUIRE(S.nr_idempotents() == 5);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 38);
 
@@ -451,7 +451,7 @@ TEST_CASE("Semigroup 011: small matrix semigroup [NaturalSemiring]",
 
   REQUIRE(S.size() == 86);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 10);
+  REQUIRE(S.nr_idempotents() == 10);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 16);
 
@@ -486,7 +486,7 @@ TEST_CASE("Semigroup 012: small pbr semigroup",
 
   REQUIRE(S.size() == 30);
   REQUIRE(S.degree() == 3);
-  REQUIRE(S.nridempotents() == 22);
+  REQUIRE(S.nr_idempotents() == 22);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 11);
 
@@ -521,7 +521,7 @@ TEST_CASE("Semigroup 013: large transformation semigroup",
 
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.nrrules() == 2459);
 }
@@ -575,7 +575,7 @@ TEST_CASE("Semigroup 014: at, position, current_*",
 
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.nrrules() == 2459);
 }
@@ -610,7 +610,7 @@ TEST_CASE("Semigroup 015: enumerate", "[quick][semigroup][finite][015]") {
 
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.nrrules() == 2459);
 }
@@ -635,7 +635,7 @@ TEST_CASE("Semigroup 016: enumerate [many stops and starts]",
 
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.nrrules() == 2459);
 }
@@ -833,7 +833,7 @@ TEST_CASE("Semigroup 021: letter_to_pos [duplicate gens]",
 
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 32);
   REQUIRE(S.nrrules() == 2621);
 }
@@ -851,35 +851,35 @@ TEST_CASE("Semigroup 022: letter_to_pos [after add_generators]",
 
   REQUIRE(S.size() == 1);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 1);
   REQUIRE(S.nrrules() == 1);
 
   S.add_generators({gens[1]});
   REQUIRE(S.size() == 2);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.nrrules() == 4);
 
   S.add_generators({gens[2]});
   REQUIRE(S.size() == 120);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.nrrules() == 25);
 
   S.add_generators({gens[3]});
   REQUIRE(S.size() == 1546);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 32);
+  REQUIRE(S.nr_idempotents() == 32);
   REQUIRE(S.nr_generators() == 4);
   REQUIRE(S.nrrules() == 495);
 
   S.add_generators({gens[4]});
   REQUIRE(S.size() == 7776);
   REQUIRE(S.degree() == 6);
-  REQUIRE(S.nridempotents() == 537);
+  REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.nrrules() == 2459);
 
@@ -908,7 +908,7 @@ TEST_CASE("Semigroup 023: cbegin_idempotents/cend [1 thread]",
     test_idempotent(S, *it);
     nr++;
   }
-  REQUIRE(nr == S.nridempotents());
+  REQUIRE(nr == S.nr_idempotents());
 }
 
 TEST_CASE("Semigroup 024: idempotent_cend/cbegin [1 thread]",
@@ -929,7 +929,7 @@ TEST_CASE("Semigroup 024: idempotent_cend/cbegin [1 thread]",
     test_idempotent(S, *it);
     nr++;
   }
-  REQUIRE(nr == S.nridempotents());
+  REQUIRE(nr == S.nr_idempotents());
 }
 
 TEST_CASE("Semigroup 025: is_idempotent [1 thread]",
@@ -952,5 +952,5 @@ TEST_CASE("Semigroup 025: is_idempotent [1 thread]",
       nr++;
     }
   }
-  REQUIRE(nr == S.nridempotents());
+  REQUIRE(nr == S.nr_idempotents());
 }

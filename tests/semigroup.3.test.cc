@@ -76,7 +76,7 @@ TEST_CASE("Semigroup 043: relations [copy_closure, duplicate gens]",
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
-  REQUIRE(T->nridempotents() == 537);
+  REQUIRE(T->nr_idempotents() == 537);
   delete T;
   delete_gens(gens);
   delete_gens(coll);
@@ -115,7 +115,7 @@ TEST_CASE("Semigroup 044: relations [copy_add_generators, duplicate gens]",
 
   REQUIRE(T->size() == 7776);
   REQUIRE(T->is_done());
-  REQUIRE(T->nridempotents() == 537);
+  REQUIRE(T->nr_idempotents() == 537);
   delete T;
   delete_gens(gens);
   delete_gens(coll);
@@ -986,7 +986,7 @@ TEST_CASE("Semigroup 070: number of idempotents",
   S.reserve(10077696);
   REPORTER.set_report(true);
   REQUIRE(S.size() == 10077696);
-  REQUIRE(S.nridempotents() == 13688);
+  REQUIRE(S.nr_idempotents() == 13688);
   REPORTER.set_report(false);
   delete sr;
   delete_gens(gens);
@@ -1003,7 +1003,7 @@ TEST_CASE("Semigroup 071: number of idempotents",
   S.reserve(4213597);
   REPORTER.set_report(true);
   REQUIRE(S.size() == 4213597);
-  REQUIRE(S.nridempotents() == 541254);
+  REQUIRE(S.nr_idempotents() == 541254);
   REPORTER.set_report(false);
   delete_gens(gens);
 }

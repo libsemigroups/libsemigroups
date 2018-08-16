@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some benchmarks for the nridempotents method for the
+// This file contains some benchmarks for the nr_idempotents method for the
 // Semigroup class defined in libsemigroups/src/semigroups.cc.
 //
 // Numbers in a suffix of a function name refer to the number of the example in
@@ -44,16 +44,16 @@ using namespace libsemigroups;
       }                                                                        \
       S.set_max_threads(state.range(0));                                       \
       auto start = std::chrono::high_resolution_clock::now();                  \
-      S.nridempotents();                                                       \
+      S.nr_idempotents();                                                       \
       auto end = std::chrono::high_resolution_clock::now();                    \
       auto elapsed_seconds                                                     \
           = std::chrono::duration_cast<std::chrono::duration<double>>(         \
               end - start);                                                    \
       state.SetIterationTime(elapsed_seconds.count());                         \
-      if (S.nridempotents() != m) {                                            \
+      if (S.nr_idempotents() != m) {                                            \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got " + std::to_string(S.nridempotents()));                   \
+            + ", got " + std::to_string(S.nr_idempotents()));                   \
       }                                                                        \
     }                                                                          \
   }                                                                            \
@@ -79,16 +79,16 @@ using namespace libsemigroups;
                                  + std::to_string(n));                         \
       }                                                                        \
       auto start = std::chrono::high_resolution_clock::now();                  \
-      S.nridempotents();                                                       \
+      S.nr_idempotents();                                                       \
       auto end = std::chrono::high_resolution_clock::now();                    \
       auto elapsed_seconds                                                     \
           = std::chrono::duration_cast<std::chrono::duration<double>>(         \
               end - start);                                                    \
       state.SetIterationTime(elapsed_seconds.count());                         \
-      if (S.nridempotents() != m) {                                            \
+      if (S.nr_idempotents() != m) {                                            \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got " + std::to_string(S.nridempotents()));                   \
+            + ", got " + std::to_string(S.nr_idempotents()));                   \
       }                                                                        \
     }                                                                          \
   }                                                                            \
@@ -100,7 +100,7 @@ using namespace libsemigroups;
 
 Semiring<int64_t>* sr1 = new TropicalMinPlusSemiring(11);
 BM_NRIDEMPOTENTS_NO_THREADS(
-    BM_nridempotents_10,
+    BM_nr_idempotents_10,
     std::vector<Element*>(
         {new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}},
                                          sr1),
@@ -110,7 +110,7 @@ BM_NRIDEMPOTENTS_NO_THREADS(
     5);
 
 BM_NRIDEMPOTENTS_NO_THREADS(
-    BM_nridempotents_62,
+    BM_nr_idempotents_62,
     std::vector<Element*>(
         {new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
          new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -124,7 +124,7 @@ BM_NRIDEMPOTENTS_NO_THREADS(
     8194);
 
 BM_NRIDEMPOTENTS_THREADS(
-    BM_nridempotents_full_trans_8,
+    BM_nr_idempotents_full_trans_8,
     std::vector<Element*>(
         {new Transformation<uint_fast8_t>({1, 2, 3, 4, 5, 6, 7, 0}),
          new Transformation<uint_fast8_t>({1, 0, 2, 3, 4, 5, 6, 7}),
@@ -134,7 +134,7 @@ BM_NRIDEMPOTENTS_THREADS(
 
 Semiring<int64_t>* sr2 = new NaturalSemiring(0, 6);
 BM_NRIDEMPOTENTS_THREADS(
-    BM_nridempotents_nat_mat,
+    BM_nr_idempotents_nat_mat,
     std::vector<Element*>(
         {new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}},
                                          sr2),
@@ -147,20 +147,20 @@ BM_NRIDEMPOTENTS_THREADS(
     10077696,
     13688);
 
-BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_uppertri_6,
+BM_NRIDEMPOTENTS_THREADS(BM_nr_idempotents_uppertri_6,
                          *upper_triangular_boolean_mat(6),
                          2097152,
                          114433);
 
-BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_unitri_7,
+BM_NRIDEMPOTENTS_THREADS(BM_nr_idempotents_unitri_7,
                          *uni_triangular_boolean_mat(7),
                          2097152,
                          96428);
 
-BM_NRIDEMPOTENTS_THREADS(BM_nridempotents_gossip_6, *gossip(6), 1092473, 203);
+BM_NRIDEMPOTENTS_THREADS(BM_nr_idempotents_gossip_6, *gossip(6), 1092473, 203);
 
 BM_NRIDEMPOTENTS_THREADS(
-    BM_nridempotents_symm_inv_8,
+    BM_nr_idempotents_symm_inv_8,
     std::vector<Element*>(
         {new PartialPerm<uint_fast8_t>({0, 1, 2, 3, 4, 5, 6, 7},
                                        {1, 2, 3, 4, 5, 6, 7, 0},
@@ -178,7 +178,7 @@ BM_NRIDEMPOTENTS_THREADS(
     256);
 
 BM_NRIDEMPOTENTS_THREADS(
-    BM_nridempotents_partition_6,
+    BM_nr_idempotents_partition_6,
     std::vector<Element*>(
         {new Bipartition({0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4}),
          new Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}),

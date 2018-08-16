@@ -37,7 +37,7 @@ TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 20);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -61,7 +61,7 @@ TEST_CASE("Semigroup of TropicalMaxPlusSemiring matrices 01",
     REQUIRE(*it * *it == *it);
     pos++;
   }
-  REQUIRE(pos == S.nridempotents());
+  REQUIRE(pos == S.nr_idempotents());
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }

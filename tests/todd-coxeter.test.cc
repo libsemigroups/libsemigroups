@@ -97,7 +97,7 @@ namespace libsemigroups {
 
       SemigroupBase* S = tc.quotient_semigroup();
       REQUIRE(S->size() == 10752);
-      REQUIRE(S->nridempotents() == 1);
+      REQUIRE(S->nr_idempotents() == 1);
       // RWS rws(S);
       // REQUIRE(rws.confluent());  // This is slow
     }

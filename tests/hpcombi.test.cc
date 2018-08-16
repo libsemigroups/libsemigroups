@@ -69,7 +69,7 @@ TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
       {Transf16({1, 2, 0})});
   REPORTER.set_report(false);
   REQUIRE(S.size() == 3);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
 }
 
 TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
@@ -105,7 +105,7 @@ TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
              {0, 1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 12, 14, 15})});
   REPORTER.set_report(true);
   REQUIRE(S.size() == 8962225);
-  REQUIRE(S.nridempotents() == 128);
+  REQUIRE(S.nr_idempotents() == 128);
   REPORTER.set_report(false);
 }
 

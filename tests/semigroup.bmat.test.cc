@@ -53,7 +53,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(S.length_non_const(5) == 2);
 
   REQUIRE(S.size() == 63904);
-  REQUIRE(S.nridempotents() == 2360);
+  REQUIRE(S.nr_idempotents() == 2360);
   REQUIRE(S.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
   REQUIRE(S.word_to_element({0, 1, 2, 0, 1, 2})
           == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
@@ -204,7 +204,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   // Copy - after enumerate
   Semigroup<BMat8> T(S);
   REQUIRE(T.size() == 63904);
-  REQUIRE(T.nridempotents() == 2360);
+  REQUIRE(T.nr_idempotents() == 2360);
   REQUIRE(T.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
   REQUIRE(T.word_to_element({0, 1, 2, 0, 1, 2})
           == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));

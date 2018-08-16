@@ -49,7 +49,7 @@ TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 4);
-  REQUIRE(S.nridempotents() == 2);
+  REQUIRE(S.nr_idempotents() == 2);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -96,7 +96,7 @@ TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
     REQUIRE(*it * *it == *it);
     pos++;
   }
-  REQUIRE(pos == S.nridempotents());
+  REQUIRE(pos == S.nr_idempotents());
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }

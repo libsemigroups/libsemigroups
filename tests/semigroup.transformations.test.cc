@@ -41,7 +41,7 @@ TEST_CASE("Semigroup of Transformations 01",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 597369);
-  REQUIRE(S.nridempotents() == 8194);
+  REQUIRE(S.nr_idempotents() == 8194);
   size_t pos = 0;
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
     REQUIRE(S.position(*it) == pos);
@@ -65,7 +65,7 @@ TEST_CASE("Semigroup of Transformations 01",
     REQUIRE(*it * *it == *it);
     pos++;
   }
-  REQUIRE(pos == S.nridempotents());
+  REQUIRE(pos == S.nr_idempotents());
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }

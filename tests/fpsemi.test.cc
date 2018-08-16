@@ -267,7 +267,7 @@ namespace libsemigroups_tests_fpsemi {
 
     SemigroupBase* T = S.isomorphic_non_fp_semigroup();
     REQUIRE(T->size() == 5);
-    REQUIRE(T->nridempotents() == 1);
+    REQUIRE(T->nr_idempotents() == 1);
   }
 
   TEST_CASE("FpSemigroup 09: add_relation", "[quick][fpsemigroup][09]") {
@@ -283,7 +283,7 @@ namespace libsemigroups_tests_fpsemi {
 
     SemigroupBase* T = S.isomorphic_non_fp_semigroup();
     REQUIRE(T->size() == 5);
-    REQUIRE(T->nridempotents() == 1);
+    REQUIRE(T->nr_idempotents() == 1);
   }
 
   TEST_CASE("FpSemigroup 10: equal_to", "[quick][fpsemigroup][10]") {

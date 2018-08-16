@@ -98,7 +98,7 @@ static void BM_size_idems_reserve_regular_bmat_5(benchmark::State& state) {
 
     auto start = std::chrono::high_resolution_clock::now();
     S.size();
-    S.nridempotents();
+    S.nr_idempotents();
 
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_seconds

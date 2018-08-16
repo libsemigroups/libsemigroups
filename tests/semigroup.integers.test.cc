@@ -97,13 +97,13 @@ namespace libsemigroups {
 TEST_CASE("Semigroup of Integers", "[quick][semigroup][integers][finite][01]") {
   Semigroup<int> S({2});
   REQUIRE(S.size() == 32);
-  REQUIRE(S.nridempotents() == 1);
+  REQUIRE(S.nr_idempotents() == 1);
   Semigroup<int>::const_iterator it = S.cbegin();
   REQUIRE(*it == 2);
 
   Semigroup<uint8_t> T({2, 3});
   REQUIRE(T.size() == 130);
-  REQUIRE(T.nridempotents() == 2);
+  REQUIRE(T.nr_idempotents() == 2);
   REQUIRE(*T.cbegin_idempotents() == 0);
   REQUIRE(*T.cbegin_idempotents() + 1 == 1);
 }

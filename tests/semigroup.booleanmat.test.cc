@@ -37,7 +37,7 @@ TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 26);
-  REQUIRE(S.nridempotents() == 4);
+  REQUIRE(S.nr_idempotents() == 4);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -66,7 +66,7 @@ TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
     REQUIRE(*it * *it == *it);
     pos++;
   }
-  REQUIRE(pos == S.nridempotents());
+  REQUIRE(pos == S.nr_idempotents());
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }

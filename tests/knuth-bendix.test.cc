@@ -1226,7 +1226,7 @@ namespace libsemigroups {
 
       REQUIRE(P != Q);
       REQUIRE(Q->size() == 21);
-      REQUIRE(Q->nridempotents() == 3);
+      REQUIRE(Q->nr_idempotents() == 3);
 
       std::vector<std::string> v(static_cast<Semigroup<KBE>*>(Q)->cbegin(),
                                  static_cast<Semigroup<KBE>*>(Q)->cend());

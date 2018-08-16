@@ -43,7 +43,7 @@ TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
   Semigroup<> S(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
-  REQUIRE(S.nridempotents() == 2360);
+  REQUIRE(S.nr_idempotents() == 2360);
   delete_gens(gens);
 }
 #endif

@@ -37,7 +37,7 @@ TEST_CASE("Semigroup of PartialPerms 01",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 102);
-  REQUIRE(S.nridempotents() == 8);
+  REQUIRE(S.nr_idempotents() == 8);
   size_t pos = 0;
 
   for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -62,7 +62,7 @@ TEST_CASE("Semigroup of PartialPerms 01",
     REQUIRE(*it * *it == *it);
     pos++;
   }
-  REQUIRE(pos == S.nridempotents());
+  REQUIRE(pos == S.nr_idempotents());
   for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
     REQUIRE(*(it - 1) < *it);
   }

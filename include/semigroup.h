@@ -800,7 +800,7 @@ namespace libsemigroups {
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.  The value of the positions, and number, of
     //! idempotents is stored after they are first computed.
-    size_t nridempotents() override {
+    size_t nr_idempotents() override {
       init_idempotents();
       return _idempotents.size();
     }
@@ -2246,12 +2246,12 @@ namespace libsemigroups {
                              threshold_index,
                              std::ref(tmp[_max_threads - 1]));
 
-        size_t nridempotents = 0;
+        size_t nr_idempotents = 0;
         for (size_t i = 0; i < _max_threads; i++) {
           threads[i].join();
-          nridempotents += tmp[i].size();
+          nr_idempotents += tmp[i].size();
         }
-        _idempotents.reserve(nridempotents);
+        _idempotents.reserve(nr_idempotents);
         for (size_t i = 0; i < _max_threads; i++) {
           std::copy(
               tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
