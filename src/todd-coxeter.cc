@@ -87,9 +87,9 @@ namespace libsemigroups {
     using signed_class_index_type = int64_t;
     using class_index_type        = CongIntf::class_index_type;
 
-    /////////////////////////////////
-    // Constructors and destructor //
-    /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - constructors and destructor - public
+    ////////////////////////////////////////////////////////////////////////
 
     ToddCoxeter::ToddCoxeter(congruence_type type)
         : CongIntf(type),
@@ -112,6 +112,7 @@ namespace libsemigroups {
           _prefilled(false),
           _preim_init(0, 0, UNDEFINED),
           _preim_next(0, 0, UNDEFINED),
+          _relations_are_reversed(false),
           _relations(),
           _rhs_stack(),
           _stop_packing(false),
@@ -133,30 +134,36 @@ namespace libsemigroups {
                              std::vector<relation_type> const& extra)
         : ToddCoxeter(type) {
       set_nr_generators(nrgens);
+      for (auto const& rel : relations) {
+        validate_relation(rel);
+      }
       _relations = relations;
-      for (auto const& rel : _relations) {
+      for (auto const& rel : extra) {
         validate_relation(rel);
       }
       _extra = extra;
-      for (auto const& rel : _extra) {
-        validate_relation(rel);
+    }
+
+    ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter const& copy)
+        : ToddCoxeter(typ) {
+      if (copy.type() != congruence_type::TWOSIDED && typ != copy.type()) {
+        throw LIBSEMIGROUPS_EXCEPTION("incompatible types, found ("
+                                      + congruence_type_to_string(copy.type())
+                                      + " / " + congruence_type_to_string(typ)
+                                      + ") but only (left / left), (right / "
+                                        "right), (two-sided / *) are valid");
       }
+      LIBSEMIGROUPS_ASSERT(!_relations_are_reversed
+                           || typ == congruence_type::LEFT);
+      set_nr_generators(copy.nr_generators());
+      _relations_are_reversed = copy._relations_are_reversed;
+      _relations = copy._relations;
+      _extra     = copy._extra;
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type type, ToddCoxeter const& copy)
-        : ToddCoxeter(type,
-                      copy.nr_generators(),
-                      std::vector<relation_type>(copy._relations),
-                      std::vector<relation_type>(copy._extra)) {
-      // FIXME init_relations will be called on this at some point, and if it
-      // was already called on copy, and we are a left congruence, then this
-      // will reverse the relations again. This is even worse if the type of
-      // copy and the parameter type are not the same.
-    }
-
-    ToddCoxeter::ToddCoxeter(congruence_type           type,
+    ToddCoxeter::ToddCoxeter(congruence_type           typ,
                              fpsemigroup::ToddCoxeter& copy)
-        : ToddCoxeter(type, *copy.congruence()) {
+        : ToddCoxeter(typ, *copy.congruence()) {
       LIBSEMIGROUPS_ASSERT(!has_parent());
       if (copy.finished()) {
         set_parent(copy.isomorphic_non_fp_semigroup());
@@ -170,9 +177,9 @@ namespace libsemigroups {
       reset_quotient();
     }
 
-    ////////////////////////////////////////////
-    // Overridden virtual methods from Runner //
-    ////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - overridden pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::run() {
       if (stopped()) {
@@ -263,15 +270,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::add_pair(word_type const& lhs, word_type const& rhs) {
-      if (_init_done) {
-        // TODO allow adding of pairs here
-        throw LIBSEMIGROUPS_EXCEPTION("can't add pair at this point");
+      if (lhs == rhs) {
+        return;
       }
-      _nr_generating_pairs++;  // defined in CongIntf
       // validate_word throws if the generators are not defined
       validate_word(lhs);
       validate_word(rhs);
-      _extra.emplace_back(lhs, rhs);
+      _nr_generating_pairs++;  // defined in CongIntf
+      word_type u = lhs;
+      word_type v = rhs;
+      if (_relations_are_reversed) {
+        std::reverse(u.begin(), u.end());
+        std::reverse(v.begin(), v.end());
+      }
+      _extra.emplace_back(std::move(u), std::move(v));
       reset_quotient();
     }
 
@@ -324,9 +336,9 @@ namespace libsemigroups {
       return out;  // TODO std::move?
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // Overridden public non-pure virtual methods from CongIntf
-    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden non-pure virtual methods - public
+    ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
       if (lhs == rhs) {
@@ -455,9 +467,9 @@ namespace libsemigroups {
       _pack = val;
     }
 
-    ///////////////////////////////////////////////////////////
-    // Overridden private pure virtual methods from CongIntf //
-    ///////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // CongIntf - overridden pure virtual methods - private
+    ////////////////////////////////////////////////////////////////////////
 
     class_index_type
     ToddCoxeter::const_word_to_class_index(word_type const& w) const {
@@ -498,9 +510,9 @@ namespace libsemigroups {
       }
     }
 
-    //////////////////////////////////////
-    // Private methods - initialisation //
-    //////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - methods (initialisation) - private
+    ////////////////////////////////////////////////////////////////////////
 
     std::vector<relation_type>& ToddCoxeter::init() {
       if (!_init_done) {
@@ -576,20 +588,23 @@ namespace libsemigroups {
       use_relations_or_cayley_graph();
 
       switch (type()) {
-        case congruence_type::LEFT:
-          for (relation_type& rel : _extra) {
-            std::reverse(rel.first.begin(), rel.first.end());
-            std::reverse(rel.second.begin(), rel.second.end());
-          }
-          for (relation_type& rel : _relations) {
-            std::reverse(rel.first.begin(), rel.first.end());
-            std::reverse(rel.second.begin(), rel.second.end());
-          }
-          break;
         case congruence_type::RIGHT:  // do nothing
           break;
+        case congruence_type::LEFT:
+          if (!_relations_are_reversed) {
+            _relations_are_reversed = true;
+            for (relation_type& rel : _extra) {
+              std::reverse(rel.first.begin(), rel.first.end());
+              std::reverse(rel.second.begin(), rel.second.end());
+            }
+            for (relation_type& rel : _relations) {
+              std::reverse(rel.first.begin(), rel.first.end());
+              std::reverse(rel.second.begin(), rel.second.end());
+            }
+          }
+          break;
         case congruence_type::TWOSIDED:
-          if (!_extra.empty()) {
+          if (!_extra.empty()) { // TODO is this if-clause necessary?
             _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
             _extra.clear();
           }
@@ -626,7 +641,8 @@ namespace libsemigroups {
     }
 
     void ToddCoxeter::use_relations_or_cayley_graph() {
-      // FIXME nothing stops this from being called multiple times
+      // This should not have been run before
+      LIBSEMIGROUPS_ASSERT(!_init_done);
       if (has_parent()) {
         switch (_policy) {
           case policy::none:

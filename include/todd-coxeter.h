@@ -81,8 +81,7 @@ namespace libsemigroups {
                   std::vector<relation_type> const&,
                   std::vector<relation_type> const& = {});
 
-      explicit ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
-
+      ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
       ToddCoxeter(congruence_type, ToddCoxeter const&);
 
       ~ToddCoxeter();
@@ -181,6 +180,7 @@ namespace libsemigroups {
       bool                         _prefilled;
       RecVec<class_index_type>     _preim_init;
       RecVec<class_index_type>     _preim_next;
+      bool                         _relations_are_reversed;
       std::vector<relation_type>   _relations;
       std::stack<class_index_type> _rhs_stack;
       bool                         _stop_packing;

@@ -25,13 +25,15 @@
 
 namespace libsemigroups {
 
-  Race::Race(size_t max_threads) : _mtx(), _winner(nullptr) {
-    unsigned int n
-        = static_cast<unsigned int>(max_threads == 0 ? 1 : max_threads);
-    _max_threads = std::min(n, std::thread::hardware_concurrency());
-  }
+  Race::Race()
+      : _max_threads(std::thread::hardware_concurrency()),
+        _mtx(),
+        _winner(nullptr) {}
 
   void Race::set_max_threads(size_t val) {
+    if (val == 0) {
+      throw LIBSEMIGROUPS_EXCEPTION("the minimum number of threads is 1");
+    }
     _max_threads = val;
   }
 
@@ -41,7 +43,9 @@ namespace libsemigroups {
   }
 
   void Race::add_runner(Runner* r) {
-    LIBSEMIGROUPS_ASSERT(_winner == nullptr);
+    if (_winner != nullptr) {
+      throw LIBSEMIGROUPS_EXCEPTION("the race is over, cannot add runners");
+    }
     _runners.push_back(r);
   }
 
@@ -57,4 +61,11 @@ namespace libsemigroups {
     return _runners.empty();
   }
 
+  void Race::run() {
+    run_func(std::mem_fn(&Runner::run));
+  }
+
+  void Race::run_for(std::chrono::nanoseconds x) {
+    run_func([&x](Runner* rnnr) -> void { rnnr->run_for(x); });
+  }
 }  // namespace libsemigroups

@@ -81,8 +81,9 @@ namespace libsemigroups {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
   }
 
-  // From: https://stackoverflow.com/q/15393938/
-  // since std::is_invocable is only introduced in C++17
+  // Since std::is_invocable is only introduced in C++17, we use this
+  // from: https://stackoverflow.com/q/15393938/
+  // Only works if there are no overloads of operator() in type T.
   template <typename T, typename = void>
   struct is_callable : std::is_function<T> {};
 

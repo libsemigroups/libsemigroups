@@ -191,6 +191,12 @@ namespace libsemigroups {
     void validate_relation(relation_type const&) const;
 
     /////////////////////////////////////////////////////////////////////////
+    // CongIntf - non-virtual static methods - protected
+    /////////////////////////////////////////////////////////////////////////
+
+    static std::string const& congruence_type_to_string(congruence_type);
+
+    /////////////////////////////////////////////////////////////////////////
     // CongIntf - data - protected
     /////////////////////////////////////////////////////////////////////////
 
@@ -218,6 +224,14 @@ namespace libsemigroups {
     SemigroupBase*  _parent;
     SemigroupBase*  _quotient;
     congruence_type _type;
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongIntf - static data members - private
+    /////////////////////////////////////////////////////////////////////////
+
+    static const std::string STRING_TWOSIDED;
+    static const std::string STRING_LEFT;
+    static const std::string STRING_RIGHT;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_

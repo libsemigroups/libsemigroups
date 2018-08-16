@@ -32,6 +32,10 @@ namespace libsemigroups {
 
   CongIntf::CongIntf(congruence_type type)
       : Runner(),
+        // Protected
+        _non_trivial_classes(),
+        _nr_generating_pairs(0),
+        // Private
         _delete_quotient(false),
         _init_ntc_done(false),
         _nrgens(UNDEFINED),
@@ -251,5 +255,28 @@ namespace libsemigroups {
   void CongIntf::validate_relation(relation_type const& rel) const {
     validate_relation(rel.first, rel.second);
   }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - non-virtual static methods - protected
+  /////////////////////////////////////////////////////////////////////////
+
+  std::string const& CongIntf::congruence_type_to_string(congruence_type typ) {
+    switch (typ) {
+      case congruence_type::TWOSIDED:
+        return STRING_TWOSIDED;
+      case congruence_type::LEFT:
+        return STRING_LEFT;
+      case congruence_type::RIGHT:
+        return STRING_RIGHT;
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongIntf - static data members - private
+  /////////////////////////////////////////////////////////////////////////
+
+  const std::string CongIntf::STRING_TWOSIDED = "two-sided";
+  const std::string CongIntf::STRING_LEFT     = "left";
+  const std::string CongIntf::STRING_RIGHT    = "right";
 
 }  // namespace libsemigroups

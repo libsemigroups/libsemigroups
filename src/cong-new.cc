@@ -196,11 +196,16 @@ namespace libsemigroups {
     if (_race.empty()) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "must add at least one method before adding generating pairs");
+    } else if (lhs == rhs) {
+      return;
     }
-    _nr_generating_pairs++;  // defined in CongIntf
     for (auto runner : _race) {
       static_cast<CongIntf*>(runner)->add_pair(lhs, rhs);
     }
+    // Increment _nr_generating_pairs after add_pair, in case an exception is
+    // thrown
+    _nr_generating_pairs++;  // defined in CongIntf
+    reset_quotient();
   }
 
   word_type Congruence::class_index_to_word(class_index_type i) {
@@ -219,12 +224,12 @@ namespace libsemigroups {
   }
 
   SemigroupBase* Congruence::quotient_semigroup() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
     return static_cast<CongIntf*>(_race.winner())->quotient_semigroup();
   }
 
   bool Congruence::is_quotient_obviously_infinite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    LIBSEMIGROUPS_ASSERT(!_race.empty()); // TODO exception
     for (auto runner : _race) {
       if (static_cast<CongIntf*>(runner)->is_quotient_obviously_infinite()) {
         return true;

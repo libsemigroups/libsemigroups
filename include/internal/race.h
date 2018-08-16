@@ -21,7 +21,7 @@
 // obtaining the winner.
 
 // TODO:
-// - consider keeping killed off methods.
+// 1. consider if keeping killed off methods has any uses
 
 #ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_RACE_H_
@@ -31,43 +31,67 @@
 
 #include "report.h"
 #include "runner.h"
+#include "stl.h"
 
 namespace libsemigroups {
   class Race {
    public:
-    explicit Race(size_t max_threads = std::thread::hardware_concurrency());
+    //! Construct an empty Race object, with maximum number of threads set to
+    //! std::thread::hardware_concurrency.
+    Race();
 
-    void    set_max_threads(size_t val);
+    //! Set the maximum number of threads, throws if try to set to 0.
+    void set_max_threads(size_t);
+
+    //! Runs the method Runner::run on every Runner in the Race, and returns
+    //! the one that finishes first. The losers are deleted.
     Runner* winner();
-    void    add_runner(Runner* r);
 
+    //! Adds a Runner to the race, throws if the race is already over.
+    void add_runner(Runner*);
+
+    //! Returns an iterator pointing to the first Runner in the Race.
     typename std::vector<Runner*>::const_iterator begin() const;
+
+    //! Returns an iterator pointing to one past the last Runner in the Race.
     typename std::vector<Runner*>::const_iterator end() const;
 
+    //! Returns \c true if there are no Runners in the race, and \c false
+    //! otherwise.
     bool empty() const;
 
-    void run() {
-      run_func(std::mem_fn(&Runner::run));
-    }
+    //! Runs the race to completion.
+    void run();
 
-    void run_for(std::chrono::nanoseconds x) {
-      run_func([&x](Runner* rnnr) -> void { rnnr->run_for(x); });
-    }
+    //! Runs the race for the specified amount of time.
+    void run_for(std::chrono::nanoseconds);
 
-    template <typename TFunction>
-    void run_until(TFunction const&         func,
+    //! Runs until \p func returns \c true, or the race is over. This
+    //! repeatedly calls Race::run_for for \p check_interval, and then checks
+    //! whether or not \p func() returns true. The object \p func can be any
+    //! callable object with 0 parameters and that returns a bool.
+    template <typename TCallable>
+    void run_until(TCallable const&         func,
                    std::chrono::nanoseconds check_interval
                    = std::chrono::milliseconds(50)) {
-      // TODO some checks that there are any runners alive, and not finished
-      // TODO check signature of TFunction
-      while (!func()) {
+      static_assert(is_callable<TCallable>::value,
+                    "the template parameter TCallable must be callable");
+      static_assert(
+          std::is_same<typename std::result_of<TCallable()>::type, bool>::value,
+          "the template parameter TCallable must return a bool");
+      while (!func() && _winner == nullptr) {
+        // if _winner != nullptr, then the race is over.
         run_for(check_interval);
       }
     }
 
    private:
-    template <typename TFunction> void run_func(TFunction const& func) {
-      // TODO check signature of TFunction
+    // Runs the callable object \p func on every Runner in parallel.
+    template <typename TCallable> void run_func(TCallable const& func) {
+      static_assert(
+          std::is_same<typename std::result_of<TCallable(Runner*)>::type,
+                       void>::value,
+          "the template parameter TCallable must be void");
       if (_winner == nullptr) {
         size_t nr_threads = std::min(_runners.size(), _max_threads);
         if (nr_threads == 1
@@ -147,7 +171,6 @@ namespace libsemigroups {
           _runners.push_back(_winner);
         }
       }
-      // TODO consider making it possible to keep the dead runners.
     }
 
     std::vector<Runner*> _runners;
