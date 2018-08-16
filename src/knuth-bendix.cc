@@ -235,7 +235,7 @@ namespace libsemigroups {
       // from S.
       // TODO what if S is the return value of isomorphic_non_fp_semigroup? Then
       // shouldn't we use the same alphabet as S?
-      set_alphabet(S->nrgens());
+      set_alphabet(S->nr_generators());
       add_rules(S);
       set_isomorphic_non_fp_semigroup(S, false);
     }
@@ -1019,7 +1019,7 @@ namespace libsemigroups {
         // FIXME don't repeat the code here from the 0-param constructor
         : CongIntf(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
-      CongIntf::set_nr_generators(S.nrgens());
+      CongIntf::set_nr_generators(S.nr_generators());
       set_parent(&S);
     }
 

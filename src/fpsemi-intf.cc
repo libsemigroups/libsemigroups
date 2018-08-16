@@ -134,9 +134,9 @@ namespace libsemigroups {
   }
 
   void FpSemiIntf::add_rules(SemigroupBase* S) {
-    if (is_alphabet_defined() && _alphabet.size() != S->nrgens()) {
+    if (is_alphabet_defined() && _alphabet.size() != S->nr_generators()) {
       throw LIBSEMIGROUPS_EXCEPTION(
-          "incompatible number of generators, found " + to_string(S->nrgens())
+          "incompatible number of generators, found " + to_string(S->nr_generators())
           + ", should be at most " + to_string(_alphabet.size()));
     }
     relations(S, [this](word_type lhs, word_type rhs) -> void {

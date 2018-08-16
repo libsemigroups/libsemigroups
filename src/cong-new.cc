@@ -56,7 +56,7 @@ namespace libsemigroups {
         break;
       }
     }
-    set_nr_generators(S->nrgens());
+    set_nr_generators(S->nr_generators());
     set_parent(S);
   }
 

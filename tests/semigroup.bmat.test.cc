@@ -59,7 +59,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
           == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
   REQUIRE(S.current_max_word_length() == 21);
   REQUIRE(S.degree() == 8);
-  REQUIRE(S.nrgens() == 4);
+  REQUIRE(S.nr_generators() == 4);
   REQUIRE(S.generator(0)
           == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
   REQUIRE(S.generator(1)
@@ -210,7 +210,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
           == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
   REQUIRE(T.current_max_word_length() == 21);
   REQUIRE(T.degree() == 8);
-  REQUIRE(T.nrgens() == 4);
+  REQUIRE(T.nr_generators() == 4);
   REQUIRE(T.generator(0)
           == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
   REQUIRE(T.generator(1)

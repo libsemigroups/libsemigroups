@@ -49,7 +49,7 @@ namespace libsemigroups {
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
     virtual size_t             current_max_word_length() const        = 0;
     virtual size_t             degree() const                         = 0;
-    virtual size_t             nrgens() const                         = 0;
+    virtual size_t             nr_generators() const                         = 0;
     virtual bool               is_done() const                        = 0;
     virtual bool               is_begun() const                       = 0;
     virtual size_t             current_size() const                   = 0;

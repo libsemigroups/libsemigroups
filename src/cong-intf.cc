@@ -176,7 +176,7 @@ namespace libsemigroups {
       return;
     }
     LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
-    LIBSEMIGROUPS_ASSERT(prnt->nrgens() == nr_generators()
+    LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
     _parent = prnt;
     if (_nr_generating_pairs == 0) {

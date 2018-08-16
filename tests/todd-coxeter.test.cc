@@ -585,7 +585,7 @@ namespace libsemigroups {
 
       // Copy the right Cayley graph of S for prefilling
       Semigroup<>::cayley_graph_type const* right = S.right_cayley_graph_copy();
-      RecVec<size_t>                        table(S.nrgens(), 1, UNDEFINED);
+      RecVec<size_t>                        table(S.nr_generators(), 1, UNDEFINED);
       table.append(*right);
       delete right;
       // TODO move this stuff into prefill

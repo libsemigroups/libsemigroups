@@ -452,8 +452,8 @@ namespace libsemigroups {
 
     // thread-safe?
     void verify_letter_index(letter_type i) const {
-      if (i >= nrgens()) {
-        throw LIBSEMIGROUPS_EXCEPTION("there are only  " + to_string(nrgens())
+      if (i >= nr_generators()) {
+        throw LIBSEMIGROUPS_EXCEPTION("there are only  " + to_string(nr_generators())
                                       + " generators, not " + to_string(i));
       }
     }
@@ -526,11 +526,11 @@ namespace libsemigroups {
       // word_to_pos is always known for generators (i.e. when w.size() == 1),
       // and word_to_pos verifies that w is valid.
       LIBSEMIGROUPS_ASSERT(w.size() > 1);
-      LIBSEMIGROUPS_ASSERT(w[0] < nrgens() && w[1] < nrgens());
+      LIBSEMIGROUPS_ASSERT(w[0] < nr_generators() && w[1] < nr_generators());
       element_type prod = this->external_copy(_tmp_product);
       product()(this->to_internal(prod), _gens[w[0]], _gens[w[1]]);
       for (auto it = w.begin() + 2; it < w.end(); ++it) {
-        LIBSEMIGROUPS_ASSERT(*it < nrgens());
+        LIBSEMIGROUPS_ASSERT(*it < nr_generators());
         swap()(_tmp_product, this->to_internal(prod));
         product()(this->to_internal(prod), _tmp_product, _gens[*it]);
       }
@@ -560,13 +560,13 @@ namespace libsemigroups {
     }
 
     //! Returns the number of generators of the semigroup.
-    size_t nrgens() const noexcept override {
+    size_t nr_generators() const noexcept override {
       return _gens.size();
     }
 
     //! Returns a const reference to the generator with index \p pos.
     //!
-    //! If \p pos is not less than Semigroup::nrgens(), a
+    //! If \p pos is not less than Semigroup::nr_generators(), a
     //! LIBSEMIGROUPS_EXCEPTION will be thrown. Note that Semigroup::gens(pos)
     //! is in general in general not in position \p pos in the semigroup, i.e.
     //! is not equal to Semigroup::at(pos).

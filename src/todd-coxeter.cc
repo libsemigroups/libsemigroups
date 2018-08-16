@@ -122,7 +122,7 @@ namespace libsemigroups {
         : ToddCoxeter(type) {
       _policy = p;
       set_parent(S);
-      set_nr_generators(S->nrgens());
+      set_nr_generators(S->nr_generators());
     }
 
     ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase& S, policy p)
@@ -618,8 +618,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!_init_done);
       LIBSEMIGROUPS_ASSERT(_policy == policy::use_cayley_graph);
       LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nrgens());
-      LIBSEMIGROUPS_ASSERT(S->nrgens() == nr_generators());
+      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nr_generators());
+      LIBSEMIGROUPS_ASSERT(S->nr_generators() == nr_generators());
       _table.add_rows(S->size());
       for (size_t i = 0; i < nr_generators(); i++) {
         _table.set(0, i, S->letter_to_pos(i) + 1);

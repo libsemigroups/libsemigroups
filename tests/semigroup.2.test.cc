@@ -543,7 +543,7 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
 
   REQUIRE(!T.is_begun());
   REQUIRE(!T.is_done());
-  REQUIRE(T.nrgens() == 5);
+  REQUIRE(T.nr_generators() == 5);
   REQUIRE(T.degree() == 6);
   REQUIRE(T.current_size() == 5);
   REQUIRE(T.current_nrrules() == 0);
@@ -568,7 +568,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 2);
   REQUIRE(S.current_nrrules() == 0);
@@ -585,7 +585,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
   REQUIRE(T->current_nrrules() == 2418);
@@ -604,7 +604,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
 
   REQUIRE(U->is_begun());
   REQUIRE(U->is_done());
-  REQUIRE(U->nrgens() == 6);
+  REQUIRE(U->nr_generators() == 6);
   REQUIRE(U->degree() == 7);
   REQUIRE(U->current_size() == 16807);
   REQUIRE(U->current_max_word_length() == 16);
@@ -619,7 +619,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(V != U);
   REQUIRE(V->is_begun());
   REQUIRE(V->is_done());
-  REQUIRE(V->nrgens() == 6);
+  REQUIRE(V->nr_generators() == 6);
   REQUIRE(V->degree() == 7);
   REQUIRE(V->current_size() == 16807);
   REQUIRE(V->current_max_word_length() == 16);
@@ -642,7 +642,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
 
   REQUIRE(!S.is_begun());
   REQUIRE(!S.is_done());
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 2);
   REQUIRE(S.current_nrrules() == 0);
@@ -659,7 +659,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
 
   REQUIRE(!T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 5);
   REQUIRE(T->current_nrrules() == 0);
@@ -678,7 +678,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
 
   REQUIRE(U->is_begun());
   REQUIRE(U->is_done());
-  REQUIRE(U->nrgens() == 6);
+  REQUIRE(U->nr_generators() == 6);
   REQUIRE(U->degree() == 7);
   REQUIRE(U->current_size() == 16807);
   REQUIRE(U->current_max_word_length() == 16);
@@ -693,7 +693,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(V != U);
   REQUIRE(V->is_begun());
   REQUIRE(V->is_done());
-  REQUIRE(V->nrgens() == 6);
+  REQUIRE(V->nr_generators() == 6);
   REQUIRE(V->degree() == 7);
   REQUIRE(V->current_size() == 16807);
   REQUIRE(V->current_max_word_length() == 16);
@@ -731,7 +731,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
 
   REQUIRE(T.is_begun());
   REQUIRE(!T.is_done());
-  REQUIRE(T.nrgens() == 5);
+  REQUIRE(T.nr_generators() == 5);
   REQUIRE(T.degree() == 6);
   REQUIRE(T.current_size() == 1006);
   REQUIRE(T.current_nrrules() == 70);
@@ -766,7 +766,7 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
 
   REQUIRE(S.is_begun());
   REQUIRE(!S.is_done());
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 63);
   REQUIRE(S.current_nrrules() == 11);
@@ -784,7 +784,7 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
   REQUIRE(T->current_nrrules() == 2418);
@@ -811,7 +811,7 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
 
   REQUIRE(S.is_begun());
   REQUIRE(!S.is_done());
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 63);
   REQUIRE(S.current_nrrules() == 11);
@@ -828,7 +828,7 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 818);
   REQUIRE(T->current_nrrules() == 55);
@@ -867,7 +867,7 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
 
   REQUIRE(T.is_begun());
   REQUIRE(T.is_done());
-  REQUIRE(T.nrgens() == 5);
+  REQUIRE(T.nr_generators() == 5);
   REQUIRE(T.degree() == 6);
   REQUIRE(T.size() == 7776);
   REQUIRE(T.nridempotents() == 537);
@@ -887,7 +887,7 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
 
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.current_nrrules() == 25);
@@ -904,7 +904,7 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 7719);
   REQUIRE(T->current_nrrules() == 2418);
@@ -931,7 +931,7 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
 
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.current_nrrules() == 25);
@@ -948,7 +948,7 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
 
   REQUIRE(T->is_begun());
   REQUIRE(!T->is_done());
-  REQUIRE(T->nrgens() == 5);
+  REQUIRE(T->nr_generators() == 5);
   REQUIRE(T->degree() == 6);
   REQUIRE(T->current_size() == 6842);
   REQUIRE(T->current_nrrules() == 1970);

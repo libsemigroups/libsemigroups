@@ -50,7 +50,7 @@ namespace libsemigroups {
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
-        FpSemiIntf::set_alphabet(S->nrgens());
+        FpSemiIntf::set_alphabet(S->nr_generators());
         if (TAddRules) {
           add_rules(S);
         }

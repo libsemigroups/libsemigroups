@@ -57,7 +57,7 @@ TEST_CASE("Semigroup 043: relations [copy_closure, duplicate gens]",
   S.enumerate(LIMIT_MAX);
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
-  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.size() == 120);
@@ -96,7 +96,7 @@ TEST_CASE("Semigroup 044: relations [copy_add_generators, duplicate gens]",
   S.enumerate(LIMIT_MAX);
   REQUIRE(S.is_begun());
   REQUIRE(S.is_done());
-  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.nr_generators() == 5);
   REQUIRE(S.degree() == 6);
   REQUIRE(S.current_size() == 120);
   REQUIRE(S.size() == 120);
@@ -659,45 +659,45 @@ TEST_CASE("Semigroup 056: add_generators [duplicate generators]",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
 
   S.add_generators(std::vector<Element*>({}));
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
 
   S.add_generators({gens[0]});
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
 
   S.add_generators({gens[1]});
   REQUIRE(S.size() == 2);
-  REQUIRE(S.nrgens() == 4);
+  REQUIRE(S.nr_generators() == 4);
 
   S.add_generators({gens[2]});
   REQUIRE(S.size() == 7);
-  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.nr_generators() == 5);
 
   S.add_generators({gens[3]});
   REQUIRE(S.size() == 18);
-  REQUIRE(S.nrgens() == 6);
+  REQUIRE(S.nr_generators() == 6);
 
   S.add_generators({gens[4]});
   REQUIRE(S.size() == 87);
-  REQUIRE(S.nrgens() == 7);
+  REQUIRE(S.nr_generators() == 7);
 
   S.add_generators({gens[5]});
   REQUIRE(S.size() == 97);
-  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.nr_generators() == 8);
 
   S.add_generators({gens[6]});
   REQUIRE(S.size() == 119);
-  REQUIRE(S.nrgens() == 9);
+  REQUIRE(S.nr_generators() == 9);
   REQUIRE(S.nrrules() == 213);
 
   gens[0]->redefine(gens[3], gens[4]);
   S.add_generators({gens[0]});
   REQUIRE(S.size() == 119);
-  REQUIRE(S.nrgens() == 10);
+  REQUIRE(S.nr_generators() == 10);
   REQUIRE(S.nrrules() == 267);
 
   REQUIRE(S.letter_to_pos(0) == 0);
@@ -732,12 +732,12 @@ TEST_CASE("Semigroup 057: add_generators [incremental 1]",
   S.add_generators({gens[2]});
   S.add_generators({gens[3]});
   REQUIRE(S.size() == 18);
-  REQUIRE(S.nrgens() == 6);
+  REQUIRE(S.nr_generators() == 6);
 
   S.add_generators({gens[4]});
   S.add_generators({gens[5]});
   REQUIRE(S.size() == 97);
-  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.nr_generators() == 8);
   REQUIRE(S.nrrules() == 126);
 
   S.add_generators({gens[4], gens[5]});
@@ -745,7 +745,7 @@ TEST_CASE("Semigroup 057: add_generators [incremental 1]",
   S.add_generators({gens[6]});
   S.add_generators({gens[0], gens[0]});
   REQUIRE(S.size() == 119);
-  REQUIRE(S.nrgens() == 14);
+  REQUIRE(S.nr_generators() == 14);
   REQUIRE(S.nrrules() == 253);
   delete_gens(gens);
 }
@@ -776,24 +776,24 @@ TEST_CASE("Semigroup 058: add_generators [incremental 2]",
   S.enumerate(LIMIT_MAX);
   REQUIRE(S.current_size() == 7);
   S.add_generators({gens[3], gens[4], gens[5]});
-  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.nr_generators() == 8);
   REQUIRE(S.letter_to_pos(5) == 7);
   REQUIRE(S.letter_to_pos(6) == 8);
   REQUIRE(S.letter_to_pos(7) == 9);
   REQUIRE(S.current_size() == 55);
 
   S.add_generators({S.at(44)});
-  REQUIRE(S.nrgens() == 9);
+  REQUIRE(S.nr_generators() == 9);
   REQUIRE(S.current_size() == 73);
   REQUIRE(S.size() == 97);
 
   S.add_generators({S.at(75)});
-  REQUIRE(S.nrgens() == 10);
+  REQUIRE(S.nr_generators() == 10);
   REQUIRE(S.current_size() == 97);
   REQUIRE(S.size() == 97);
 
   S.add_generators({gens[6]});
-  REQUIRE(S.nrgens() == 11);
+  REQUIRE(S.nr_generators() == 11);
   REQUIRE(S.size() == 119);
   delete_gens(gens);
 }
@@ -813,39 +813,39 @@ TEST_CASE("Semigroup 059: closure [duplicate generators]",
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
 
   S.closure(std::vector<Element*>({}));
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
 
   S.closure({gens[0]});
   REQUIRE(S.size() == 1);
-  REQUIRE(S.nrgens() == 2);
+  REQUIRE(S.nr_generators() == 2);
 
   S.closure({gens[1]});
   REQUIRE(S.size() == 2);
-  REQUIRE(S.nrgens() == 3);
+  REQUIRE(S.nr_generators() == 3);
 
   S.closure({gens[2]});
   REQUIRE(S.size() == 7);
-  REQUIRE(S.nrgens() == 4);
+  REQUIRE(S.nr_generators() == 4);
 
   S.closure({gens[3]});
   REQUIRE(S.size() == 18);
-  REQUIRE(S.nrgens() == 5);
+  REQUIRE(S.nr_generators() == 5);
 
   S.closure({gens[4]});
   REQUIRE(S.size() == 87);
-  REQUIRE(S.nrgens() == 6);
+  REQUIRE(S.nr_generators() == 6);
 
   S.closure({gens[5]});
   REQUIRE(S.size() == 97);
-  REQUIRE(S.nrgens() == 7);
+  REQUIRE(S.nr_generators() == 7);
 
   S.closure({gens[6]});
   REQUIRE(S.size() == 119);
-  REQUIRE(S.nrgens() == 8);
+  REQUIRE(S.nr_generators() == 8);
   delete_gens(gens);
 }
 
@@ -883,7 +883,7 @@ TEST_CASE("Semigroup 060: closure ", "[quick][semigroup][finite][060]") {
 
   S.closure(gens);
   REQUIRE(S.size() == 27);
-  REQUIRE(S.nrgens() == 10);
+  REQUIRE(S.nr_generators() == 10);
   delete_gens(gens);
 }
 

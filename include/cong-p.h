@@ -108,7 +108,7 @@ namespace libsemigroups {
 
       P(congruence_type type, SemigroupBase* S) : P(type) {
         LIBSEMIGROUPS_ASSERT(S != nullptr);
-        set_nr_generators(S->nrgens());
+        set_nr_generators(S->nr_generators());
         set_parent(S);
       }
 
@@ -143,7 +143,7 @@ namespace libsemigroups {
 
           auto prnt = static_cast<semigroup_type*>(get_parent());
           // Add its left and/or right multiples
-          for (size_t i = 0; i < prnt->nrgens(); i++) {
+          for (size_t i = 0; i < prnt->nr_generators(); i++) {
             const_reference gen = prnt->generator(i);
             if (type() == congruence_type::LEFT
                 || type() == congruence_type::TWOSIDED) {
@@ -378,7 +378,7 @@ namespace libsemigroups {
       void init() {
         if (!_init_done) {
           LIBSEMIGROUPS_ASSERT(has_parent());
-          LIBSEMIGROUPS_ASSERT(get_parent()->nrgens() > 0);
+          LIBSEMIGROUPS_ASSERT(get_parent()->nr_generators() > 0);
           _tmp1      = this->internal_copy(this->to_internal_const(
               static_cast<semigroup_type*>(get_parent())->generator(0)));
           _tmp2      = this->internal_copy(_tmp1);
