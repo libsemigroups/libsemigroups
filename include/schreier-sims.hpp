@@ -55,7 +55,7 @@
 #include "internal/range.h"
 #include "internal/square.h"
 
-#include "adapters.h"
+#include "adapters.hpp"
 #include "element-helper.h"
 #include "semigroup-traits.h"
 

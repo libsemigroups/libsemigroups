@@ -52,7 +52,7 @@
 #include "internal/stl.h"
 #include "internal/timer.h"
 
-#include "adapters.h"
+#include "adapters.hpp"
 #include "constants.h"
 #include "semigroup-base.h"
 #include "semigroup-traits.h"

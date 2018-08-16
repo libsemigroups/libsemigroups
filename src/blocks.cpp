@@ -27,7 +27,7 @@
 // <i> belongs to the <j>th block, <transverse blocks>[j] = true if block <j> is
 // transverse and false if it is not.
 
-#include "blocks.h"
+#include "blocks.hpp"
 
 #include <algorithm>
 

@@ -38,8 +38,8 @@
 #include "internal/recvec.h"
 #include "internal/stl.h"
 
-#include "adapters.h"
-#include "blocks.h"
+#include "adapters.hpp"
+#include "blocks.hpp"
 #include "constants.h"
 #include "semigroup-traits.h"
 #include "semiring.h"
@@ -2001,7 +2001,7 @@ namespace libsemigroups {
     }
   };
 
-  // Specialization of templates from adapters.h for classes // derived from
+  // Specialization of templates from adapters.hpp for classes // derived from
   // the class Element, such as Transformation<size_t> and so on . . .
   template <class TSubclass>
   struct complexity<TSubclass*,
@@ -2131,6 +2131,45 @@ namespace libsemigroups {
     bool operator()(TSubclass const* x, TSubclass const* y) const {
       return *x == *y;
     }
+  };
+
+  template <size_t N> struct Transf {
+#ifdef LIBSEMIGROUPS_HPCOMBI
+    using type = typename std::conditional<
+        N >= 17,
+        Transformation<typename SmallestInteger<N>::type>,
+        HPCombi::Transf16>::type;
+#else
+    using type = Transformation<typename SmallestInteger<N>::type>;
+#endif
+  };
+
+  // TODO file an issue for HPCombi to add a PPerm class.
+  template <size_t N> struct PPerm {
+    // #ifdef LIBSEMIGROUPS_HPCOMBI
+    //     using type = typename std::conditional<
+    //         N >= 17,
+    //         PartialPerm<typename SmallestInteger<N>::type>,
+    //         HPCombi::PTransf16>::type;
+    // #else
+    using type = PartialPerm<typename SmallestInteger<N>::type>;
+    // #endif
+  };
+
+  template <size_t N> struct Perm {
+#ifdef LIBSEMIGROUPS_HPCOMBI
+    using type = typename std::conditional<
+        N >= 17,
+        Permutation<typename SmallestInteger<N>::type>,
+        HPCombi::Perm16>::type;
+#else
+    using type = Permutation<typename SmallestInteger<N>::type>;
+#endif
+  };
+
+  class BMat8;
+  template <size_t N> struct BMat {
+    using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_H_

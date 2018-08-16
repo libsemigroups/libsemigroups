@@ -23,7 +23,7 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_TCE_H_
 #define LIBSEMIGROUPS_INCLUDE_TCE_H_
 
-#include "adapters.h"
+#include "adapters.hpp"
 #include "constants.h"
 #include "todd-coxeter.h"
 

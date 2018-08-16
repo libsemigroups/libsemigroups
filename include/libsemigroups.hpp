@@ -34,8 +34,8 @@
 #include "internal/timer.h"
 #include "internal/uf.h"
 
-#include "adapters.h"
-#include "blocks.h"
+#include "adapters.hpp"
+#include "blocks.hpp"
 #include "bmat8.h"
 #include "cong-base.hpp"
 #include "cong-new.h"

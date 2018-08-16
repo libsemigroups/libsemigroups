@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains specializations of the class adapters in adapters.h
+// This file contains specializations of the class adapters in adapters.hpp
 // for the element types in HPCombi.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_HPCOMBI_H_
@@ -30,7 +30,7 @@
 
 #include "hpcombi.hpp"
 
-#include "adapters.h"
+#include "adapters.hpp"
 
 namespace libsemigroups {
   using PTransf16 = HPCombi::PTransf16;

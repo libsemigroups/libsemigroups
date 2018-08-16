@@ -30,7 +30,7 @@
 #include "internal/libsemigroups-debug.h"
 #include "internal/stl.h"
 
-#include "adapters.h"
+#include "adapters.hpp"
 
 namespace libsemigroups {
 
@@ -274,7 +274,7 @@ namespace libsemigroups {
     }
   };
 
-  // Specialization for adapters.h structs
+  // Specialization for adapters.hpp structs
   template <> struct complexity<BMat8> {
     constexpr inline size_t operator()(BMat8 const&) const noexcept {
       return 0;
