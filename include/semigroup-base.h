@@ -49,11 +49,11 @@ namespace libsemigroups {
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
     virtual size_t             current_max_word_length() const        = 0;
     virtual size_t             degree() const                         = 0;
-    virtual size_t             nr_generators() const                         = 0;
+    virtual size_t             nr_generators() const                  = 0;
     virtual bool               is_done() const                        = 0;
     virtual bool               is_begun() const                       = 0;
     virtual size_t             current_size() const                   = 0;
-    virtual size_t             current_nr_rules() const                = 0;
+    virtual size_t             current_nr_rules() const               = 0;
     virtual element_index_type prefix(element_index_type) const       = 0;
     virtual element_index_type suffix(element_index_type) const       = 0;
     virtual letter_type        first_letter(element_index_type) const = 0;
@@ -69,9 +69,9 @@ namespace libsemigroups {
                                             element_index_type) const = 0;
     virtual element_index_type letter_to_pos(letter_type) const       = 0;
     virtual size_t             size()                                 = 0;
-    virtual size_t             nr_idempotents()                        = 0;
+    virtual size_t             nr_idempotents()                       = 0;
     virtual bool               is_idempotent(element_index_type)      = 0;
-    virtual size_t             nr_rules()                              = 0;
+    virtual size_t             nr_rules()                             = 0;
     virtual void               set_batch_size(size_t)                 = 0;
     virtual void               reserve(size_t)                        = 0;
     virtual element_index_type position_to_sorted_position(element_index_type)

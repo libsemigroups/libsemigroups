@@ -453,7 +453,8 @@ namespace libsemigroups {
     // thread-safe?
     void verify_letter_index(letter_type i) const {
       if (i >= nr_generators()) {
-        throw LIBSEMIGROUPS_EXCEPTION("there are only  " + to_string(nr_generators())
+        throw LIBSEMIGROUPS_EXCEPTION("there are only  "
+                                      + to_string(nr_generators())
                                       + " generators, not " + to_string(i));
       }
     }
@@ -1460,7 +1461,7 @@ namespace libsemigroups {
 
       // reset the data structure
       _idempotents_found = false;
-      _nr_rules           = _duplicate_gens.size();
+      _nr_rules          = _duplicate_gens.size();
       _pos               = 0;
       _wordlen           = 0;
       _nrgens            = _gens.size();

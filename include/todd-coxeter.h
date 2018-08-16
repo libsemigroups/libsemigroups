@@ -33,7 +33,7 @@
 #include "internal/recvec.h"
 
 #include "cong-wrap.h"
-#include "fpsemi-intf.h"
+#include "fpsemi-base.hpp"
 
 namespace libsemigroups {
   class TCE;  // forward declaration
@@ -46,7 +46,7 @@ namespace libsemigroups {
   }
 
   namespace congruence {
-    class ToddCoxeter : public CongIntf {
+    class ToddCoxeter : public CongBase {
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs - private
       ////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs + enums - public
       ////////////////////////////////////////////////////////////////////////
-      using class_index_type = CongIntf::class_index_type;
+      using class_index_type = CongBase::class_index_type;
 
       enum class policy { none = 0, use_relations = 1, use_cayley_graph = 2 };
 
@@ -93,7 +93,7 @@ namespace libsemigroups {
       void run() override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden pure virtual methods - public
+      // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       void             add_pair(word_type const&, word_type const&) override;
@@ -103,7 +103,7 @@ namespace libsemigroups {
       word_type        class_index_to_word(class_index_type) override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden non-pure virtual methods - public
+      // CongBase - overridden non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       bool contains(word_type const&, word_type const&) override;
@@ -124,7 +124,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden pure virtual methods - private
+      // CongBase - overridden pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type

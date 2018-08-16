@@ -33,13 +33,13 @@ namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;
   using KnuthBendix      = congruence::KnuthBendix;
   using KBP              = congruence::KBP;
-  using class_index_type = CongIntf::class_index_type;
+  using class_index_type = CongBase::class_index_type;
 
   //////////////////////////////////////////////////////////////////////////
   // Congruence - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_type type) : CongIntf(type), _race() {}
+  Congruence::Congruence(congruence_type type) : CongBase(type), _race() {}
 
   Congruence::Congruence(congruence_type type, SemigroupBase* S, policy plcy)
       : Congruence(type) {
@@ -157,7 +157,7 @@ namespace libsemigroups {
   end:
     if (has_parent()) {
       for (auto runner : _race) {
-        auto ci = static_cast<CongIntf*>(runner);
+        auto ci = static_cast<CongBase*>(runner);
         if (!ci->has_parent()) {
           ci->set_parent(get_parent());
         }
@@ -171,7 +171,7 @@ namespace libsemigroups {
 
   void Congruence::run() {
     if (!has_parent()) {
-      set_parent(static_cast<CongIntf*>(_race.winner())->parent_semigroup());
+      set_parent(static_cast<CongBase*>(_race.winner())->parent_semigroup());
     }
   }
 
@@ -189,7 +189,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // CongIntf - overridden pure virtual methods - public
+  // CongBase - overridden pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::add_pair(word_type const& lhs, word_type const& rhs) {
@@ -200,38 +200,38 @@ namespace libsemigroups {
       return;
     }
     for (auto runner : _race) {
-      static_cast<CongIntf*>(runner)->add_pair(lhs, rhs);
+      static_cast<CongBase*>(runner)->add_pair(lhs, rhs);
     }
     // Increment _nr_generating_pairs after add_pair, in case an exception is
     // thrown
-    _nr_generating_pairs++;  // defined in CongIntf
+    _nr_generating_pairs++;  // defined in CongBase
     reset_quotient();
   }
 
   word_type Congruence::class_index_to_word(class_index_type i) {
-    return static_cast<CongIntf*>(_race.winner())->class_index_to_word(i);
+    return static_cast<CongBase*>(_race.winner())->class_index_to_word(i);
   }
 
   class_index_type Congruence::word_to_class_index(word_type const& word) {
     LIBSEMIGROUPS_ASSERT(
-        static_cast<CongIntf*>(_race.winner())->word_to_class_index(word)
+        static_cast<CongBase*>(_race.winner())->word_to_class_index(word)
         != UNDEFINED);
-    return static_cast<CongIntf*>(_race.winner())->word_to_class_index(word);
+    return static_cast<CongBase*>(_race.winner())->word_to_class_index(word);
   }
 
   size_t Congruence::nr_classes() {
-    return static_cast<CongIntf*>(_race.winner())->nr_classes();
+    return static_cast<CongBase*>(_race.winner())->nr_classes();
   }
 
   SemigroupBase* Congruence::quotient_semigroup() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
-    return static_cast<CongIntf*>(_race.winner())->quotient_semigroup();
+    return static_cast<CongBase*>(_race.winner())->quotient_semigroup();
   }
 
   bool Congruence::is_quotient_obviously_infinite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty()); // TODO exception
+    LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
     for (auto runner : _race) {
-      if (static_cast<CongIntf*>(runner)->is_quotient_obviously_infinite()) {
+      if (static_cast<CongBase*>(runner)->is_quotient_obviously_infinite()) {
         return true;
       }
     }
@@ -241,7 +241,7 @@ namespace libsemigroups {
   bool Congruence::is_quotient_obviously_finite() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto runner : _race) {
-      if (static_cast<CongIntf*>(runner)->is_quotient_obviously_finite()) {
+      if (static_cast<CongBase*>(runner)->is_quotient_obviously_finite()) {
         return true;
       }
     }
@@ -249,7 +249,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  // CongIntf - overridden non-pure virtual methods - public
+  // CongBase - overridden non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
 
   bool Congruence::contains(word_type const& lhs, word_type const& rhs) {
@@ -263,13 +263,13 @@ namespace libsemigroups {
     return const_contains(lhs, rhs) == result_type::TRUE;
   }
 
-  CongIntf::result_type Congruence::const_contains(word_type const& lhs,
+  CongBase::result_type Congruence::const_contains(word_type const& lhs,
                                                    word_type const& rhs) const {
     if (lhs == rhs) {
       return result_type::TRUE;
     }
     for (auto runner : _race) {
-      result_type r = static_cast<CongIntf*>(runner)->const_contains(lhs, rhs);
+      result_type r = static_cast<CongBase*>(runner)->const_contains(lhs, rhs);
       if (r != result_type::UNKNOWN) {
         return r;
       }
@@ -313,14 +313,14 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-pure virtual methods - private
+  // CongBase - non-pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::init_non_trivial_classes() {
     if (!_non_trivial_classes.empty()) {
       return;
     }
-    auto winner          = static_cast<CongIntf*>(_race.winner());
+    auto winner          = static_cast<CongBase*>(_race.winner());
     _non_trivial_classes = std::vector<std::vector<word_type>>(
         winner->cbegin_ntc(), winner->cend_ntc());
     // TODO it is rather wasteful to copy this non_trivial_classes here
@@ -330,15 +330,15 @@ namespace libsemigroups {
   // Congruence - methods - private
   //////////////////////////////////////////////////////////////////////////
 
-  template <class TCongIntfSubclass>
-  TCongIntfSubclass* Congruence::find_method() const {
+  template <class TCongBaseSubclass>
+  TCongBaseSubclass* Congruence::find_method() const {
     // We use find_if so that this works even if we haven't computed anything
     // at all.
     auto it = std::find_if(_race.begin(), _race.end(), [](Runner* m) {
-      return typeid(*m) == typeid(TCongIntfSubclass);
+      return typeid(*m) == typeid(TCongBaseSubclass);
     });
     if (it != _race.end()) {
-      return static_cast<TCongIntfSubclass*>(*it);
+      return static_cast<TCongBaseSubclass*>(*it);
     } else {
       throw LIBSEMIGROUPS_EXCEPTION("method not found");
     }

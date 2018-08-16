@@ -197,7 +197,7 @@ namespace libsemigroups {
 
     KnuthBendix::KnuthBendix(ReductionOrdering*   order,
                              external_string_type alphabet)
-        : FpSemiIntf(),
+        : FpSemiBase(),
           _active_rules(),
           _check_confluence_interval(4096),
           _confluent(false),
@@ -311,11 +311,11 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - overridden non-pure virtual methods - public
+    // FpSemiBase - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::set_alphabet(external_string_type const& lphbt) {
-      FpSemiIntf::set_alphabet(lphbt);
+      FpSemiBase::set_alphabet(lphbt);
       _internal_is_same_as_external = true;
       for (size_t i = 0; i < lphbt.size(); ++i) {
         if (uint_to_internal_char(i) != lphbt[i]) {
@@ -326,7 +326,7 @@ namespace libsemigroups {
     }
 
     void KnuthBendix::set_alphabet(size_t n) {
-      FpSemiIntf::set_alphabet(n);
+      FpSemiBase::set_alphabet(n);
       _internal_is_same_as_external = true;
     }
 
@@ -1000,26 +1000,26 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    using class_index_type = CongIntf::class_index_type;
+    using class_index_type = CongBase::class_index_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // KnuthBendix - constructors - public
     ////////////////////////////////////////////////////////////////////////////
 
     KnuthBendix::KnuthBendix()
-        : CongIntf(congruence_type::TWOSIDED),
+        : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>()) {}
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
         // FIXME don't repeat the code here from the 0-param constructor
-        : CongIntf(congruence_type::TWOSIDED),
+        : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
 
     KnuthBendix::KnuthBendix(SemigroupBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
-        : CongIntf(congruence_type::TWOSIDED),
+        : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
-      CongIntf::set_nr_generators(S.nr_generators());
+      CongBase::set_nr_generators(S.nr_generators());
       set_parent(&S);
     }
 
@@ -1055,11 +1055,11 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden pure virtual methods - public
+    // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::add_pair(word_type const& lhs, word_type const& rhs) {
-      _nr_generating_pairs++;  // defined in CongIntf
+      _nr_generating_pairs++;  // defined in CongBase
       reset_quotient();
       _kb->add_rule(lhs, rhs);
     }
@@ -1090,10 +1090,10 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden non-pure virtual methods - public
+    // CongBase - overridden non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
-    CongIntf::result_type
+    CongBase::result_type
     KnuthBendix::const_contains(word_type const& lhs,
                                 word_type const& rhs) const {
       if (_kb->rewrite(_kb->word_to_string(lhs))
@@ -1112,7 +1112,7 @@ namespace libsemigroups {
     }
 
     void KnuthBendix::set_nr_generators(size_t n) {
-      CongIntf::set_nr_generators(n);
+      CongBase::set_nr_generators(n);
       _kb->set_alphabet(n);
     }
 

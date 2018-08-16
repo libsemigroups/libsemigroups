@@ -24,15 +24,15 @@
 #include "internal/libsemigroups-exception.h"
 #include "internal/stl.h"
 
-#include "cong-intf.h"
-#include "fpsemi-intf.h"
+#include "cong-base.hpp"
+#include "fpsemi-base.hpp"
 #include "semigroup-base.h"
 #include "types.h"
 
 namespace libsemigroups {
   namespace fpsemigroup {
     template <class TWrappedCong, bool TAddRules = true>
-    class WrappedCong : public FpSemiIntf {
+    class WrappedCong : public FpSemiBase {
      public:
       using wrapped_type = TWrappedCong;
 
@@ -50,7 +50,7 @@ namespace libsemigroups {
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
-        FpSemiIntf::set_alphabet(S->nr_generators());
+        FpSemiBase::set_alphabet(S->nr_generators());
         if (TAddRules) {
           add_rules(S);
         }
@@ -73,7 +73,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////////
-      // FpSemiIntf - overridden pure virtual methods - public
+      // FpSemiBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       void add_rule(std::string const& lhs, std::string const& rhs) override {
@@ -130,10 +130,10 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////////
-      // FpSemiIntf - overridden non-pure virtual methods - public
+      // FpSemiBase - overridden non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
-      // We override FpSemiIntf::add_rule to avoid unnecessary conversion from
+      // We override FpSemiBase::add_rule to avoid unnecessary conversion from
       // word_type -> string.
       void add_rule(word_type const& lhs, word_type const& rhs) override {
         if (lhs.empty() || rhs.empty()) {
@@ -144,36 +144,36 @@ namespace libsemigroups {
         _wrapped_cong->add_pair(lhs, rhs);
       }
 
-      // We override FpSemiIntf::equal_to to avoid unnecessary conversion from
+      // We override FpSemiBase::equal_to to avoid unnecessary conversion from
       // word_type -> string.
       bool equal_to(word_type const& lhs, word_type const& rhs) override {
         return _wrapped_cong->contains(lhs, rhs);
       }
 
-      // We override FpSemiIntf::normal_form to avoid unnecessary conversion
+      // We override FpSemiBase::normal_form to avoid unnecessary conversion
       // from word_type -> string.
       word_type normal_form(word_type const& w) override {
         return _wrapped_cong->class_index_to_word(
             _wrapped_cong->word_to_class_index(w));
       }
 
-      // We override FpSemiIntf::set_alphabet so that we can set the number of
+      // We override FpSemiBase::set_alphabet so that we can set the number of
       // generators in _wrapped_cong.
       void set_alphabet(std::string const& lphbet) override {
-        FpSemiIntf::set_alphabet(lphbet);
+        FpSemiBase::set_alphabet(lphbet);
         _wrapped_cong->set_nr_generators(lphbet.size());
       }
 
-      // We override FpSemiIntf::set_alphabet so that we can set the number of
+      // We override FpSemiBase::set_alphabet so that we can set the number of
       // generators in _wrapped_cong.
       void set_alphabet(size_t nr_letters) override {
-        FpSemiIntf::set_alphabet(nr_letters);
+        FpSemiBase::set_alphabet(nr_letters);
         _wrapped_cong->set_nr_generators(nr_letters);
       }
 
       void add_rules(SemigroupBase* S) override {
         // TODO improve this method to avoid unnecessary conversions
-        FpSemiIntf::add_rules(S);
+        FpSemiBase::add_rules(S);
         _nr_rules += S->nr_rules();
         // TODO something like the following
         // if (S->nr_rules() == this->nr_rules()) {

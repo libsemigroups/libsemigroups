@@ -24,13 +24,13 @@
 
 #include "internal/race.h"
 
-#include "cong-intf.h"
+#include "cong-base.hpp"
 #include "knuth-bendix.h"
 #include "todd-coxeter.h"
 
 namespace libsemigroups {
   class FpSemigroup;  // Forward declaration
-  class Congruence : public CongIntf {
+  class Congruence : public CongBase {
    public:
     // Execution policy:
     // - standard: means run 1 variant of everything
@@ -63,7 +63,7 @@ namespace libsemigroups {
     bool finished_impl() const override;
 
     //////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden pure virtual methods - public
+    // CongBase - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
     void             add_pair(word_type const&, word_type const&) override;
@@ -73,7 +73,7 @@ namespace libsemigroups {
     class_index_type word_to_class_index(word_type const&) override;
 
     //////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure virtual methods - public
+    // CongBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
     bool        contains(word_type const&, word_type const&) override;
@@ -98,10 +98,10 @@ namespace libsemigroups {
     // Congruence - methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    template <class TCongIntfSubclass> TCongIntfSubclass* find_method() const;
+    template <class TCongBaseSubclass> TCongBaseSubclass* find_method() const;
 
     //////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure virtual methods - private
+    // CongBase - non-pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
     // TODO use it or lose it
     // class_index_type const_word_to_class_index(word_type const&) const

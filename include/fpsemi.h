@@ -24,7 +24,7 @@
 
 #include "internal/race.h"
 
-#include "fpsemi-intf.h"
+#include "fpsemi-base.hpp"
 #include "knuth-bendix.h"
 #include "semigroup-base.h"
 #include "todd-coxeter.h"
@@ -32,13 +32,13 @@
 namespace libsemigroups {
 
   // This is a class for defining fp semigroups.
-  class FpSemigroup : public FpSemiIntf {
+  class FpSemigroup : public FpSemiBase {
    public:
     // Execution policy:
     // - standard: means run 1 variant of everything
     // - none:     means no methods are added, and at least one must be added
     //             manually via add_method
-    //  TODO enum class
+    // TODO enum class
     enum policy { standard = 0, none = 1 };
 
     //////////////////////////////////////////////////////////////////////////
@@ -60,11 +60,11 @@ namespace libsemigroups {
     // TODO finished method
 
     //////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - overridden pure virtual methods - public
+    // FpSemiBase - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
     void add_rule(std::string const&, std::string const&) override;
-    using FpSemiIntf::add_rule;
+    using FpSemiBase::add_rule;
 
     bool           equal_to(std::string const&, std::string const&) override;
     bool           is_obviously_finite() override;
@@ -75,7 +75,7 @@ namespace libsemigroups {
     size_t         size() override;
 
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - non-pure virtual methods - public
+    // FpSemiBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
     void set_alphabet(std::string const&) override;

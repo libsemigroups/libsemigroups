@@ -30,9 +30,9 @@
 #include "internal/stl.h"
 #include "internal/uf.h"
 
-#include "cong-intf.h"
+#include "cong-base.hpp"
 #include "cong-wrap.h"
-#include "fpsemi-intf.h"
+#include "fpsemi-base.hpp"
 #include "kbe.h"
 #include "semigroup.h"
 
@@ -46,7 +46,7 @@ namespace libsemigroups {
         typename TElementEqual = equal_to<TElementType>,
         class TTraits
         = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
-    class P : public CongIntf, protected TTraits {
+    class P : public CongBase, protected TTraits {
      public:
       ////////////////////////////////////////////////////////////////////////
       // P - typedefs - public
@@ -86,7 +86,7 @@ namespace libsemigroups {
           = Semigroup<TElementType, TElementHash, TElementEqual, TTraits>;
 
       explicit P(congruence_type type)
-          : CongIntf(type),
+          : CongBase(type),
             _class_lookup(),
             _found_pairs(),
             _init_done(false),
@@ -220,7 +220,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden pure virtual methods - public
+      // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair(word_type const& l, word_type const& r) override {
@@ -259,7 +259,7 @@ namespace libsemigroups {
 
      protected:
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden non-pure virtual methods - protected
+      // CongBase - overridden non-pure virtual methods - protected
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type
@@ -502,7 +502,7 @@ namespace libsemigroups {
 
      protected:
       ////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden non-pure virtual methods - private
+      // CongBase - overridden non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
       using p_type::init_non_trivial_classes;
 

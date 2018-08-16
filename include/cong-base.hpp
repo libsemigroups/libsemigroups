@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an CongIntf for congruence-like classes.
+// This file contains a base class for congruence-like classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
-#define LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
 
 #include "internal/runner.h"
 
@@ -31,39 +31,39 @@ namespace libsemigroups {
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
-  class CongIntf : public Runner {
+  class CongBase : public Runner {
     // Allows Congruence to use set_parent and has_parent on the Runner's it
     // contains
     friend class Congruence;
 
    protected:
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - enums - protected
+    // CongBase - enums - protected
     ////////////////////////////////////////////////////////////////////////////
 
     enum class result_type { TRUE, FALSE, UNKNOWN };
 
    public:
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - typedefs - public
+    // CongBase - typedefs - public
     ////////////////////////////////////////////////////////////////////////////
 
-    //! Type for indices of congruence classes in a CongIntf object.
+    //! Type for indices of congruence classes in a CongBase object.
     using class_index_type           = size_t;
     using non_trivial_classes_type   = std::vector<std::vector<word_type>>;
     using non_trivial_class_iterator = non_trivial_classes_type::const_iterator;
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - constructors + destructor - public
+    // CongBase - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
-    explicit CongIntf(congruence_type type);
+    explicit CongBase(congruence_type type);
 
     //! A default destructor.
-    virtual ~CongIntf();
+    virtual ~CongBase();
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - pure virtual methods - public
+    // CongBase - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     //! Returns the index of the congruence class corresponding to \p word.
@@ -73,7 +73,7 @@ namespace libsemigroups {
     //! defined.
     //!
     //! If \c this is defined over a semigroup with generators \f$A\f$, then
-    //! CongIntf::word_to_class_index defines a surjective function
+    //! CongBase::word_to_class_index defines a surjective function
     //! from the set of all words over \f$A\f$ to either
     //! \f$\{0, 1, \ldots, n -  1\}\f$,
     //! where \f$n\f$ is the number of classes, or to the non-negative
@@ -103,7 +103,7 @@ namespace libsemigroups {
     virtual SemigroupBase* quotient_semigroup() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure virtual methods - public
+    // CongBase - non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     //! Returns \c true if the words \p w1 and \p w2 belong to the
@@ -146,7 +146,7 @@ namespace libsemigroups {
     virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-virtual methods - public
+    // CongBase - non-virtual methods - public
     /////////////////////////////////////////////////////////////////////////
 
     // Pass by value since these must be copied anyway
@@ -173,7 +173,7 @@ namespace libsemigroups {
 
    protected:
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-virtual methods - protected
+    // CongBase - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
     SemigroupBase* get_quotient() const noexcept;
@@ -191,13 +191,13 @@ namespace libsemigroups {
     void validate_relation(relation_type const&) const;
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-virtual static methods - protected
+    // CongBase - non-virtual static methods - protected
     /////////////////////////////////////////////////////////////////////////
 
     static std::string const& congruence_type_to_string(congruence_type);
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - data - protected
+    // CongBase - data - protected
     /////////////////////////////////////////////////////////////////////////
 
     std::vector<std::vector<word_type>> _non_trivial_classes;
@@ -205,7 +205,7 @@ namespace libsemigroups {
 
    private:
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - non-pure virtual methods - private
+    // CongBase - non-pure virtual methods - private
     /////////////////////////////////////////////////////////////////////////
 
     // const_word_to_class_index is private, because the answer returned
@@ -215,7 +215,7 @@ namespace libsemigroups {
     virtual void             init_non_trivial_classes();
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - data members - private
+    // CongBase - data members - private
     /////////////////////////////////////////////////////////////////////////
 
     bool            _delete_quotient;
@@ -226,7 +226,7 @@ namespace libsemigroups {
     congruence_type _type;
 
     /////////////////////////////////////////////////////////////////////////
-    // CongIntf - static data members - private
+    // CongBase - static data members - private
     /////////////////////////////////////////////////////////////////////////
 
     static const std::string STRING_TWOSIDED;
@@ -234,4 +234,4 @@ namespace libsemigroups {
     static const std::string STRING_RIGHT;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_INTF_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_

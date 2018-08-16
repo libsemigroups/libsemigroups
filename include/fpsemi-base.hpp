@@ -18,8 +18,8 @@
 
 // This file contains a base class for f.p. semigroup like classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
-#define LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
 
 #include <string>
 #include <unordered_map>
@@ -32,19 +32,19 @@ namespace libsemigroups {
   class FpSemigroup;    // Forward declaration
   class SemigroupBase;  // Forward declaration
 
-  class FpSemiIntf : public Runner {
+  class FpSemiBase : public Runner {
     friend class libsemigroups::FpSemigroup;
 
    public:
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - constructor + destructor - public
+    // FpSemiBase - constructor + destructor - public
     //////////////////////////////////////////////////////////////////////////////
 
-    FpSemiIntf();
-    virtual ~FpSemiIntf();
+    FpSemiBase();
+    virtual ~FpSemiBase();
 
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - pure virtual methods - public
+    // FpSemiBase - pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule(std::string const&, std::string const&) = 0;
@@ -63,7 +63,7 @@ namespace libsemigroups {
     virtual size_t nr_rules() const noexcept = 0;
 
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - non-pure virtual methods - public
+    // FpSemiBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
@@ -74,7 +74,7 @@ namespace libsemigroups {
     virtual void      set_alphabet(size_t);
 
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - non-virtual methods - public
+    // FpSemiBase - non-virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
     void add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>);
@@ -92,7 +92,7 @@ namespace libsemigroups {
 
    protected:
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - non-virtual methods - protected
+    // FpSemiBase - non-virtual methods - protected
     //////////////////////////////////////////////////////////////////////////////
 
     size_t      char_to_uint(char) const;
@@ -119,7 +119,7 @@ namespace libsemigroups {
 
    private:
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiIntf - data - private
+    // FpSemiBase - data - private
     //////////////////////////////////////////////////////////////////////////////
     std::string _alphabet;
     // TODO The unordered_map could be an array if this is too slow
@@ -129,4 +129,4 @@ namespace libsemigroups {
     SemigroupBase*                        _isomorphic_non_fp_semigroup;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_

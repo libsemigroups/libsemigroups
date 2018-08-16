@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "cong-intf.h"
+#include "cong-base.hpp"
 
 #include "internal/libsemigroups-exception.h"
 #include "internal/stl.h"
@@ -27,10 +27,10 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////////
-  // CongIntf - constructors + destructor - public
+  // CongBase - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
 
-  CongIntf::CongIntf(congruence_type type)
+  CongBase::CongBase(congruence_type type)
       : Runner(),
         // Protected
         _non_trivial_classes(),
@@ -43,19 +43,19 @@ namespace libsemigroups {
         _quotient(nullptr),
         _type(type) {}
 
-  CongIntf::~CongIntf() {
+  CongBase::~CongBase() {
     reset_quotient();
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-pure virtual methods - public
+  // CongBase - non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
 
-  bool CongIntf::contains(word_type const& w1, word_type const& w2) {
+  bool CongBase::contains(word_type const& w1, word_type const& w2) {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
   }
 
-  CongIntf::result_type CongIntf::const_contains(word_type const& u,
+  CongBase::result_type CongBase::const_contains(word_type const& u,
                                                  word_type const& v) const {
     if (const_word_to_class_index(u) == UNDEFINED
         || const_word_to_class_index(v) == UNDEFINED) {
@@ -69,19 +69,19 @@ namespace libsemigroups {
     }
   }
 
-  bool CongIntf::less(word_type const& w1, word_type const& w2) {
+  bool CongBase::less(word_type const& w1, word_type const& w2) {
     return word_to_class_index(w1) < word_to_class_index(w2);
   }
 
-  bool CongIntf::is_quotient_obviously_finite() {
+  bool CongBase::is_quotient_obviously_finite() {
     return false;
   }
 
-  bool CongIntf::is_quotient_obviously_infinite() {
+  bool CongBase::is_quotient_obviously_infinite() {
     return false;
   }
 
-  void CongIntf::set_nr_generators(size_t n) {
+  void CongBase::set_nr_generators(size_t n) {
     if (nr_generators() != UNDEFINED) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "the number of generators cannot be set more than once");
@@ -90,61 +90,61 @@ namespace libsemigroups {
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-virtual methods - public
+  // CongBase - non-virtual methods - public
   /////////////////////////////////////////////////////////////////////////
 
-  void CongIntf::add_pair(std::initializer_list<size_t> l,
+  void CongBase::add_pair(std::initializer_list<size_t> l,
                           std::initializer_list<size_t> r) {
     add_pair(word_type(l), word_type(r));
   }
 
-  std::vector<std::vector<word_type>>::const_iterator CongIntf::cbegin_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongBase::cbegin_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cbegin();
   }
 
-  std::vector<std::vector<word_type>>::const_iterator CongIntf::cend_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongBase::cend_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes.cend();
   }
 
-  size_t CongIntf::nr_generators() const noexcept {
+  size_t CongBase::nr_generators() const noexcept {
     return _nrgens;
   }
 
-  size_t CongIntf::nr_generating_pairs() const noexcept {
+  size_t CongBase::nr_generating_pairs() const noexcept {
     return _nr_generating_pairs;
   }
 
-  size_t CongIntf::nr_non_trivial_classes() {
+  size_t CongBase::nr_non_trivial_classes() {
     init_non_trivial_classes();
     return _non_trivial_classes.size();
   }
 
-  SemigroupBase* CongIntf::parent_semigroup() const {
+  SemigroupBase* CongBase::parent_semigroup() const {
     if (!has_parent()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
     return get_parent();
   }
 
-  congruence_type CongIntf::type() const noexcept {
+  congruence_type CongBase::type() const noexcept {
     return _type;
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-virtual methods - protected
+  // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  SemigroupBase* CongIntf::get_quotient() const noexcept {
+  SemigroupBase* CongBase::get_quotient() const noexcept {
     return _quotient;
   }
 
-  bool CongIntf::has_quotient() const noexcept {
+  bool CongBase::has_quotient() const noexcept {
     return _quotient != nullptr;
   }
 
-  void CongIntf::reset_quotient() {
+  void CongBase::reset_quotient() {
     if (_delete_quotient) {
       delete _quotient;
     }
@@ -152,7 +152,7 @@ namespace libsemigroups {
     _quotient        = nullptr;
   }
 
-  void CongIntf::set_quotient(SemigroupBase* qtnt, bool delete_it) {
+  void CongBase::set_quotient(SemigroupBase* qtnt, bool delete_it) {
     LIBSEMIGROUPS_ASSERT(qtnt != nullptr);
     LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
     LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
@@ -162,15 +162,15 @@ namespace libsemigroups {
     _quotient        = qtnt;
   }
 
-  SemigroupBase* CongIntf::get_parent() const noexcept {
+  SemigroupBase* CongBase::get_parent() const noexcept {
     return _parent;
   }
 
-  bool CongIntf::has_parent() const noexcept {
+  bool CongBase::has_parent() const noexcept {
     return _parent != nullptr;
   }
 
-  void CongIntf::set_parent(SemigroupBase* prnt) {
+  void CongBase::set_parent(SemigroupBase* prnt) {
     LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
     if (prnt == _parent) {
       return;
@@ -186,10 +186,10 @@ namespace libsemigroups {
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-pure virtual methods - private
+  // CongBase - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void CongIntf::init_non_trivial_classes() {
+  void CongBase::init_non_trivial_classes() {
     if (_init_ntc_done) {
       // There are no non-trivial classes, or we already found them.
       return;
@@ -219,23 +219,23 @@ namespace libsemigroups {
         _non_trivial_classes.end());
   }
 
-  CongIntf::class_index_type
-  CongIntf::const_word_to_class_index(word_type const&) const {
+  CongBase::class_index_type
+  CongBase::const_word_to_class_index(word_type const&) const {
     return UNDEFINED;
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-virtual methods - protected
+  // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  bool CongIntf::validate_letter(letter_type c) const {
+  bool CongBase::validate_letter(letter_type c) const {
     if (nr_generators() == UNDEFINED) {
       throw LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
     }
     return c < _nrgens;
   }
 
-  void CongIntf::validate_word(word_type const& w) const {
+  void CongBase::validate_word(word_type const& w) const {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
@@ -246,21 +246,21 @@ namespace libsemigroups {
     }
   }
 
-  void CongIntf::validate_relation(word_type const& l,
+  void CongBase::validate_relation(word_type const& l,
                                    word_type const& r) const {
     validate_word(l);
     validate_word(r);
   }
 
-  void CongIntf::validate_relation(relation_type const& rel) const {
+  void CongBase::validate_relation(relation_type const& rel) const {
     validate_relation(rel.first, rel.second);
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - non-virtual static methods - protected
+  // CongBase - non-virtual static methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  std::string const& CongIntf::congruence_type_to_string(congruence_type typ) {
+  std::string const& CongBase::congruence_type_to_string(congruence_type typ) {
     switch (typ) {
       case congruence_type::TWOSIDED:
         return STRING_TWOSIDED;
@@ -272,11 +272,11 @@ namespace libsemigroups {
   }
 
   /////////////////////////////////////////////////////////////////////////
-  // CongIntf - static data members - private
+  // CongBase - static data members - private
   /////////////////////////////////////////////////////////////////////////
 
-  const std::string CongIntf::STRING_TWOSIDED = "two-sided";
-  const std::string CongIntf::STRING_LEFT     = "left";
-  const std::string CongIntf::STRING_RIGHT    = "right";
+  const std::string CongBase::STRING_TWOSIDED = "two-sided";
+  const std::string CongBase::STRING_LEFT     = "left";
+  const std::string CongBase::STRING_RIGHT    = "right";
 
 }  // namespace libsemigroups

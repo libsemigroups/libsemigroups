@@ -44,16 +44,16 @@ using namespace libsemigroups;
       }                                                                        \
       S.set_max_threads(state.range(0));                                       \
       auto start = std::chrono::high_resolution_clock::now();                  \
-      S.nr_idempotents();                                                       \
+      S.nr_idempotents();                                                      \
       auto end = std::chrono::high_resolution_clock::now();                    \
       auto elapsed_seconds                                                     \
           = std::chrono::duration_cast<std::chrono::duration<double>>(         \
               end - start);                                                    \
       state.SetIterationTime(elapsed_seconds.count());                         \
-      if (S.nr_idempotents() != m) {                                            \
+      if (S.nr_idempotents() != m) {                                           \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got " + std::to_string(S.nr_idempotents()));                   \
+            + ", got " + std::to_string(S.nr_idempotents()));                  \
       }                                                                        \
     }                                                                          \
   }                                                                            \
@@ -79,16 +79,16 @@ using namespace libsemigroups;
                                  + std::to_string(n));                         \
       }                                                                        \
       auto start = std::chrono::high_resolution_clock::now();                  \
-      S.nr_idempotents();                                                       \
+      S.nr_idempotents();                                                      \
       auto end = std::chrono::high_resolution_clock::now();                    \
       auto elapsed_seconds                                                     \
           = std::chrono::duration_cast<std::chrono::duration<double>>(         \
               end - start);                                                    \
       state.SetIterationTime(elapsed_seconds.count());                         \
-      if (S.nr_idempotents() != m) {                                            \
+      if (S.nr_idempotents() != m) {                                           \
         throw std::runtime_error(                                              \
             "wrong number of idempotents found, expected " + std::to_string(m) \
-            + ", got " + std::to_string(S.nr_idempotents()));                   \
+            + ", got " + std::to_string(S.nr_idempotents()));                  \
       }                                                                        \
     }                                                                          \
   }                                                                            \

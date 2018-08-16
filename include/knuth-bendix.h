@@ -39,8 +39,8 @@
 #include "internal/libsemigroups-config.h"
 #include "internal/libsemigroups-debug.h"
 
-#include "cong-intf.h"
-#include "fpsemi-intf.h"
+#include "cong-base.hpp"
+#include "fpsemi-base.hpp"
 #include "kb-order.h"
 #include "types.h"
 
@@ -61,7 +61,7 @@ namespace libsemigroups {
     //! system](https://en.wikipedia.org/wiki/Semi-Thue_system)
     //! defining a finitely presented monoid or semigroup.
 
-    class KnuthBendix : public FpSemiIntf {
+    class KnuthBendix : public FpSemiBase {
       friend class ::libsemigroups::congruence::KnuthBendix;
 
      public:
@@ -73,7 +73,7 @@ namespace libsemigroups {
       void run() override;
 
       //////////////////////////////////////////////////////////////////////////
-      // FpSemiIntf - overridden pure virtual methods - public
+      // FpSemiBase - overridden pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
       void add_rule(std::string const&, std::string const&) override;
@@ -88,15 +88,15 @@ namespace libsemigroups {
       SemigroupBase* isomorphic_non_fp_semigroup() override;
 
       //////////////////////////////////////////////////////////////////////////
-      // FpSemiIntf - overridden non-pure virtual methods - public
+      // FpSemiBase - overridden non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
       void set_alphabet(std::string const&) override;
       void set_alphabet(size_t) override;
 
-      using FpSemiIntf::add_rule;
-      using FpSemiIntf::equal_to;
-      using FpSemiIntf::normal_form;
+      using FpSemiBase::add_rule;
+      using FpSemiBase::equal_to;
+      using FpSemiBase::normal_form;
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -523,7 +523,7 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    class KnuthBendix : public CongIntf {
+    class KnuthBendix : public CongBase {
      public:
       ////////////////////////////////////////////////////////////////////////////
       // KnuthBendix - constructors - public
@@ -540,7 +540,7 @@ namespace libsemigroups {
       void run() override;
 
       ////////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden pure virtual methods - public
+      // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       void             add_pair(word_type const&, word_type const&) override;
@@ -550,7 +550,7 @@ namespace libsemigroups {
       class_index_type word_to_class_index(word_type const&) override;
 
       ////////////////////////////////////////////////////////////////////////////
-      // CongIntf - overridden non-pure virtual methods - public
+      // CongBase - overridden non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       result_type const_contains(word_type const&,

@@ -85,14 +85,14 @@ namespace libsemigroups {
 
   namespace congruence {
     using signed_class_index_type = int64_t;
-    using class_index_type        = CongIntf::class_index_type;
+    using class_index_type        = CongBase::class_index_type;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - constructors and destructor - public
     ////////////////////////////////////////////////////////////////////////
 
     ToddCoxeter::ToddCoxeter(congruence_type type)
-        : CongIntf(type),
+        : CongBase(type),
           _active(1),
           _bckwd(1, 0),
           _class_index_to_letter(),
@@ -157,8 +157,8 @@ namespace libsemigroups {
                            || typ == congruence_type::LEFT);
       set_nr_generators(copy.nr_generators());
       _relations_are_reversed = copy._relations_are_reversed;
-      _relations = copy._relations;
-      _extra     = copy._extra;
+      _relations              = copy._relations;
+      _extra                  = copy._extra;
     }
 
     ToddCoxeter::ToddCoxeter(congruence_type           typ,
@@ -266,7 +266,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden pure virtual methods - public
+    // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::add_pair(word_type const& lhs, word_type const& rhs) {
@@ -276,7 +276,7 @@ namespace libsemigroups {
       // validate_word throws if the generators are not defined
       validate_word(lhs);
       validate_word(rhs);
-      _nr_generating_pairs++;  // defined in CongIntf
+      _nr_generating_pairs++;  // defined in CongBase
       word_type u = lhs;
       word_type v = rhs;
       if (_relations_are_reversed) {
@@ -337,7 +337,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden non-pure virtual methods - public
+    // CongBase - overridden non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
@@ -347,7 +347,7 @@ namespace libsemigroups {
         // This defines the free semigroup
         return false;
       }
-      return CongIntf::contains(lhs, rhs);
+      return CongBase::contains(lhs, rhs);
     }
 
     bool ToddCoxeter::is_quotient_obviously_infinite() {
@@ -408,7 +408,7 @@ namespace libsemigroups {
     }
 
     void ToddCoxeter::set_nr_generators(size_t n) {
-      CongIntf::set_nr_generators(n);
+      CongBase::set_nr_generators(n);
       _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
       _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
       _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
@@ -468,7 +468,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongIntf - overridden pure virtual methods - private
+    // CongBase - overridden pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////
 
     class_index_type
@@ -604,7 +604,7 @@ namespace libsemigroups {
           }
           break;
         case congruence_type::TWOSIDED:
-          if (!_extra.empty()) { // TODO is this if-clause necessary?
+          if (!_extra.empty()) {  // TODO is this if-clause necessary?
             _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
             _extra.clear();
           }

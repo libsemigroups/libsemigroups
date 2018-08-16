@@ -30,7 +30,7 @@
 namespace libsemigroups {
 
   class TCE {
-    using class_index_type = CongIntf::class_index_type;
+    using class_index_type = CongBase::class_index_type;
 
    public:
     TCE() = default;

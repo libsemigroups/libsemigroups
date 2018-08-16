@@ -18,7 +18,7 @@
 
 // This file contains a base class for f.p. semigroup like classes.
 
-#include "fpsemi-intf.h"
+#include "fpsemi-base.hpp"
 
 #include "internal/libsemigroups-debug.h"
 #include "internal/libsemigroups-exception.h"
@@ -29,10 +29,10 @@
 namespace libsemigroups {
 
   //////////////////////////////////////////////////////////////////////////////
-  // FpSemiIntf - constructor + destructor - public
+  // FpSemiBase - constructor + destructor - public
   //////////////////////////////////////////////////////////////////////////////
 
-  FpSemiIntf::FpSemiIntf()
+  FpSemiBase::FpSemiBase()
       : Runner(),
         _alphabet(),
         _alphabet_map(),
@@ -40,15 +40,15 @@ namespace libsemigroups {
         _is_alphabet_defined(false),
         _isomorphic_non_fp_semigroup(nullptr) {}
 
-  FpSemiIntf::~FpSemiIntf() {
+  FpSemiBase::~FpSemiBase() {
     reset_isomorphic_non_fp_semigroup();
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // FpSemiIntf - non-pure virtual methods - public
+  // FpSemiBase - non-pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////////
 
-  void FpSemiIntf::add_rule(word_type const& lhs, word_type const& rhs) {
+  void FpSemiBase::add_rule(word_type const& lhs, word_type const& rhs) {
     if (!is_alphabet_defined()) {
       throw LIBSEMIGROUPS_EXCEPTION("cannot add rules "
                                     "before an alphabet is defined");
@@ -58,25 +58,25 @@ namespace libsemigroups {
     add_rule(word_to_string(lhs), word_to_string(rhs));
   }
 
-  void FpSemiIntf::add_rules(
+  void FpSemiBase::add_rules(
       std::vector<std::pair<std::string, std::string>> const& rels) {
     for (auto const& rel : rels) {
       add_rule(rel);
     }
   }
 
-  bool FpSemiIntf::equal_to(word_type const& u, word_type const& v) {
+  bool FpSemiBase::equal_to(word_type const& u, word_type const& v) {
     validate_word(u);
     validate_word(v);
     return equal_to(word_to_string(u), word_to_string(v));
   }
 
-  word_type FpSemiIntf::normal_form(word_type const& w) {
+  word_type FpSemiBase::normal_form(word_type const& w) {
     validate_word(w);
     return string_to_word(normal_form(word_to_string(w)));
   }
 
-  void FpSemiIntf::set_alphabet(std::string const& lphbt) {
+  void FpSemiBase::set_alphabet(std::string const& lphbt) {
     if (_is_alphabet_defined) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "the alphabet cannot be set more than once");
@@ -95,7 +95,7 @@ namespace libsemigroups {
     _is_alphabet_defined = true;
   }
 
-  void FpSemiIntf::set_alphabet(size_t const nr_letters) {
+  void FpSemiBase::set_alphabet(size_t const nr_letters) {
     if (_is_alphabet_defined) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "the alphabet cannot be set more than once");
@@ -117,27 +117,28 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // FpSemiIntf - non-virtual methods - public
+  // FpSemiBase - non-virtual methods - public
   //////////////////////////////////////////////////////////////////////////////
 
-  void FpSemiIntf::add_rule(std::initializer_list<size_t> l,
+  void FpSemiBase::add_rule(std::initializer_list<size_t> l,
                             std::initializer_list<size_t> r) {
     add_rule(word_type(l), word_type(r));
   }
 
-  void FpSemiIntf::add_rule(relation_type rel) {
+  void FpSemiBase::add_rule(relation_type rel) {
     add_rule(rel.first, rel.second);
   }
 
-  void FpSemiIntf::add_rule(std::pair<std::string, std::string> rel) {
+  void FpSemiBase::add_rule(std::pair<std::string, std::string> rel) {
     add_rule(rel.first, rel.second);
   }
 
-  void FpSemiIntf::add_rules(SemigroupBase* S) {
+  void FpSemiBase::add_rules(SemigroupBase* S) {
     if (is_alphabet_defined() && _alphabet.size() != S->nr_generators()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "incompatible number of generators, found " + to_string(S->nr_generators())
-          + ", should be at most " + to_string(_alphabet.size()));
+      throw LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
+                                    + to_string(S->nr_generators())
+                                    + ", should be at most "
+                                    + to_string(_alphabet.size()));
     }
     relations(S, [this](word_type lhs, word_type rhs) -> void {
       validate_word(lhs);
@@ -146,22 +147,22 @@ namespace libsemigroups {
     });
   }
 
-  std::string const& FpSemiIntf::alphabet() const {
+  std::string const& FpSemiBase::alphabet() const {
     if (!_is_alphabet_defined) {
       throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return _alphabet;
   }
 
-  bool FpSemiIntf::has_isomorphic_non_fp_semigroup() const noexcept {
+  bool FpSemiBase::has_isomorphic_non_fp_semigroup() const noexcept {
     return _isomorphic_non_fp_semigroup != nullptr;
   }
 
-  word_type FpSemiIntf::normal_form(std::initializer_list<letter_type> w) {
+  word_type FpSemiBase::normal_form(std::initializer_list<letter_type> w) {
     return normal_form(word_type(w));
   }
 
-  void FpSemiIntf::set_identity(std::string const& id) {
+  void FpSemiBase::set_identity(std::string const& id) {
     if (id.length() != 1) {
       throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
                                     + to_string(id.length())
@@ -178,28 +179,28 @@ namespace libsemigroups {
     }
   }
 
-  void FpSemiIntf::set_identity(letter_type id) {
+  void FpSemiBase::set_identity(letter_type id) {
     validate_letter(id);
     set_identity(std::string(1, _alphabet[id]));
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // FpSemiIntf - non-virtual methods - protected
+  // FpSemiBase - non-virtual methods - protected
   //////////////////////////////////////////////////////////////////////////////
 
-  size_t FpSemiIntf::char_to_uint(char c) const {
+  size_t FpSemiBase::char_to_uint(char c) const {
     LIBSEMIGROUPS_ASSERT(_alphabet_map.find(c) != _alphabet_map.end());
     return (*_alphabet_map.find(c)).second;
   }
 
-  char FpSemiIntf::uint_to_char(size_t a) const noexcept {
+  char FpSemiBase::uint_to_char(size_t a) const noexcept {
     LIBSEMIGROUPS_ASSERT(_is_alphabet_defined);
     LIBSEMIGROUPS_ASSERT(a < _alphabet.size());
     return _alphabet[a];
   }
 
   // TODO return rvalue reference
-  word_type FpSemiIntf::string_to_word(std::string const& s) const {
+  word_type FpSemiBase::string_to_word(std::string const& s) const {
     word_type w;
     w.reserve(s.size());
     for (char const& c : s) {
@@ -209,7 +210,7 @@ namespace libsemigroups {
   }
 
   // TODO return rvalue reference
-  std::string FpSemiIntf::word_to_string(word_type const& w) const {
+  std::string FpSemiBase::word_to_string(word_type const& w) const {
     std::string s;
     s.reserve(w.size());
     for (letter_type const& l : w) {
@@ -218,11 +219,11 @@ namespace libsemigroups {
     return s;
   }
 
-  SemigroupBase* FpSemiIntf::get_isomorphic_non_fp_semigroup() const noexcept {
+  SemigroupBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const noexcept {
     return _isomorphic_non_fp_semigroup;
   }
 
-  void FpSemiIntf::reset_isomorphic_non_fp_semigroup() noexcept {
+  void FpSemiBase::reset_isomorphic_non_fp_semigroup() noexcept {
     if (_delete_isomorphic_non_fp_semigroup) {
       delete _isomorphic_non_fp_semigroup;
     }
@@ -230,7 +231,7 @@ namespace libsemigroups {
     _isomorphic_non_fp_semigroup        = nullptr;
   }
 
-  void FpSemiIntf::set_isomorphic_non_fp_semigroup(
+  void FpSemiBase::set_isomorphic_non_fp_semigroup(
       SemigroupBase* ismrphc_nn_fp_smgrp,
       bool           delete_it) noexcept {
     LIBSEMIGROUPS_ASSERT(ismrphc_nn_fp_smgrp != nullptr);
@@ -242,25 +243,25 @@ namespace libsemigroups {
     _isomorphic_non_fp_semigroup        = ismrphc_nn_fp_smgrp;
   }
 
-  bool FpSemiIntf::is_alphabet_defined() const noexcept {
+  bool FpSemiBase::is_alphabet_defined() const noexcept {
     return _is_alphabet_defined;
   }
 
-  bool FpSemiIntf::validate_letter(char c) const {
+  bool FpSemiBase::validate_letter(char c) const {
     if (!_is_alphabet_defined) {
       throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return (_alphabet_map.find(c) != _alphabet_map.end());
   }
 
-  bool FpSemiIntf::validate_letter(letter_type c) const {
+  bool FpSemiBase::validate_letter(letter_type c) const {
     if (!_is_alphabet_defined) {
       throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return c < _alphabet.size();
   }
 
-  void FpSemiIntf::validate_word(std::string const& w) const {
+  void FpSemiBase::validate_word(std::string const& w) const {
     for (auto l : w) {
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
@@ -270,7 +271,7 @@ namespace libsemigroups {
     }
   }
 
-  void FpSemiIntf::validate_word(word_type const& w) const {
+  void FpSemiBase::validate_word(word_type const& w) const {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
@@ -281,24 +282,24 @@ namespace libsemigroups {
     }
   }
 
-  void FpSemiIntf::validate_relation(std::string const& l,
+  void FpSemiBase::validate_relation(std::string const& l,
                                      std::string const& r) const {
     validate_word(l);
     validate_word(r);
   }
 
-  void FpSemiIntf::validate_relation(
+  void FpSemiBase::validate_relation(
       std::pair<std::string, std::string> const& p) const {
     validate_relation(p.first, p.second);
   }
 
-  void FpSemiIntf::validate_relation(word_type const& l,
+  void FpSemiBase::validate_relation(word_type const& l,
                                      word_type const& r) const {
     validate_word(l);
     validate_word(r);
   }
 
-  void FpSemiIntf::validate_relation(relation_type const& r) const {
+  void FpSemiBase::validate_relation(relation_type const& r) const {
     validate_relation(r.first, r.second);
   }
 
