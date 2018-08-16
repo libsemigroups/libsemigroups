@@ -18,13 +18,13 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of ProjectiveMaxPlusMatrices 01: non-pointer "
+TEST_CASE("FroidurePin of ProjectiveMaxPlusMatrices 01: non-pointer "
           "ProjectiveMaxPlusMatrix",
           "[quick][semigroup][matrix][finite][01]") {
   Semiring<int64_t>*                   sr = new MaxPlusSemiring();
@@ -32,7 +32,7 @@ TEST_CASE("Semigroup of ProjectiveMaxPlusMatrices 01: non-pointer "
       = {ProjectiveMaxPlusMatrix({0, 1, 2, 3, 4, 1, 2, 1, 1}, sr),
          ProjectiveMaxPlusMatrix({0, 1, 1, 1, 1, 1, 0, 0, 0}, sr),
          ProjectiveMaxPlusMatrix({0, 1, 1, 0, 0, 1, 1, 0, 0}, sr)};
-  Semigroup<ProjectiveMaxPlusMatrix> S(gens);
+  FroidurePin<ProjectiveMaxPlusMatrix> S(gens);
 
   S.reserve(142);
   REPORTER.set_report(SEMIGROUPS_REPORT);

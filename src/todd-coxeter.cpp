@@ -78,7 +78,7 @@
 #include "internal/report.hpp"
 #include "internal/stl.hpp"
 
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 #include "tce.hpp"
 
 namespace libsemigroups {
@@ -118,14 +118,14 @@ namespace libsemigroups {
           _stop_packing(false),
           _table(0, 0, UNDEFINED) {}
 
-    ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase* S, policy p)
+    ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase* S, policy p)
         : ToddCoxeter(type) {
       _policy = p;
       set_parent(S);
       set_nr_generators(S->nr_generators());
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type type, SemigroupBase& S, policy p)
+    ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase& S, policy p)
         : ToddCoxeter(type, &S, p) {}
 
     ToddCoxeter::ToddCoxeter(congruence_type                   type,
@@ -297,7 +297,7 @@ namespace libsemigroups {
       }
     }
 
-    SemigroupBase* ToddCoxeter::quotient_semigroup() {
+    FroidurePinBase* ToddCoxeter::quotient_semigroup() {
       if (type() != congruence_type::TWOSIDED) {
         throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
       } else if (!has_quotient()) {
@@ -310,7 +310,7 @@ namespace libsemigroups {
           // more generators than cosets.
           gens.emplace_back(this, _table.get(0, i));
         }
-        set_quotient(new Semigroup<TCE>(gens), true);
+        set_quotient(new FroidurePin<TCE>(gens), true);
       }
       return get_quotient();
     }
@@ -329,7 +329,7 @@ namespace libsemigroups {
       // TODO check arg
       // quotient_semigroup throws if we cannot do this
       // TODO check the comment in the previous line is still accurate
-      auto S = static_cast<Semigroup<TCE>*>(quotient_semigroup());
+      auto S = static_cast<FroidurePin<TCE>*>(quotient_semigroup());
       S->enumerate();
       word_type out;
       S->minimal_factorisation(out, S->position(TCE(this, i + 1)));
@@ -353,8 +353,8 @@ namespace libsemigroups {
     bool ToddCoxeter::is_quotient_obviously_infinite() {
       LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
       if (_policy != policy::none) {
-        // _policy != none means we were created from a SemigroupBase*, which
-        // means that this is infinite if and only if the SemigroupBase* is
+        // _policy != none means we were created from a FroidurePinBase*, which
+        // means that this is infinite if and only if the FroidurePinBase* is
         // infinite too, which is not obvious (or even possible to check at
         // present).
         return false;
@@ -398,7 +398,7 @@ namespace libsemigroups {
     bool ToddCoxeter::is_quotient_obviously_finite() {
       return _prefilled || (has_quotient() && get_quotient()->is_done())
              || (has_parent() && get_parent()->is_done());
-      // 1. _prefilled means that either we were created from a SemigroupBase*
+      // 1. _prefilled means that either we were created from a FroidurePinBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
       // defined by _relations must be finite.
@@ -451,7 +451,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
       _table = table;
       validate_table();
-      // TODO Suppose that "table" is the right/left Cayley graph of a Semigroup
+      // TODO Suppose that "table" is the right/left Cayley graph of a FroidurePin
       // and add a row at the start for coset 0. See [todd-coxeter][21]. This
       // would make this method more useable.
       init_after_prefill();
@@ -614,7 +614,7 @@ namespace libsemigroups {
       }
     }
 
-    void ToddCoxeter::prefill(SemigroupBase* S) {
+    void ToddCoxeter::prefill(FroidurePinBase* S) {
       LIBSEMIGROUPS_ASSERT(!_init_done);
       LIBSEMIGROUPS_ASSERT(_policy == policy::use_cayley_graph);
       LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);

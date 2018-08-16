@@ -23,7 +23,7 @@
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
 #include "catch.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 using namespace libsemigroups;
 using namespace HPCombi;
@@ -65,7 +65,7 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
-  Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 2, 0})});
   REPORTER.set_report(false);
   REQUIRE(S.size() == 3);
@@ -73,7 +73,7 @@ TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
 }
 
 TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
-  Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
        Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
        Transf16({3, 0, 7, 2, 4, 6, 2, 4}),
@@ -90,7 +90,7 @@ TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
 const uint8_t FF = 0xFF;
 
 TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
-  Semigroup<Renner0Element,
+  FroidurePin<Renner0Element,
             std::hash<Renner0Element>,
             std::equal_to<Renner0Element>>
       S({Renner0Element({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
@@ -111,7 +111,7 @@ TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
 
 TEST_CASE("HPCombi 03: full transformation monoid 8",
           "[extreme][hpcombi][finite][03]") {
-  Semigroup<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
       {Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
        Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
        Transf16({0, 1, 2, 3, 4, 5, 6, 0})});

@@ -29,15 +29,15 @@
 #include "types.hpp"
 
 namespace libsemigroups {
-  class SemigroupBase : public Runner {
+  class FroidurePinBase : public Runner {
    public:
-    //! Type used for indexing elements in a Semigroup, use this when not
+    //! Type used for indexing elements in a FroidurePin, use this when not
     //! specifically referring to a position in _elements. It should be possible
     //! to change this type and everything will just work, provided the size of
     //! the semigroup is less than the maximum value of this type of integer.
     using size_type = size_t;
 
-    //! Type for the position of an element in an instance of Semigroup. The
+    //! Type for the position of an element in an instance of FroidurePin. The
     //! size of the semigroup being enumerated must be at most
     //! std::numeric_limits<element_index_type>::max()
     using element_index_type = size_type;
@@ -45,7 +45,7 @@ namespace libsemigroups {
     //! Type for a left or right Cayley graph of a semigroup.
     using cayley_graph_type = RecVec<element_index_type>;
 
-    virtual ~SemigroupBase() {}
+    virtual ~FroidurePinBase() {}
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
     virtual size_t             current_max_word_length() const        = 0;
     virtual size_t             degree() const                         = 0;
@@ -62,9 +62,8 @@ namespace libsemigroups {
     virtual size_t             length_const(element_index_type) const = 0;
     virtual size_t             length_non_const(element_index_type)   = 0;
 
-    virtual element_index_type product_by_reduction(element_index_type,
-                                                    element_index_type) const =
-      0;
+    virtual element_index_type
+                               product_by_reduction(element_index_type, element_index_type) const = 0;
     virtual element_index_type fast_product(element_index_type,
                                             element_index_type) const = 0;
     virtual element_index_type letter_to_pos(letter_type) const       = 0;
@@ -90,7 +89,7 @@ namespace libsemigroups {
     virtual void      set_max_threads(size_t)                               = 0;
   };
 
-  void relations(SemigroupBase*, std::function<void(word_type, word_type)>&&);
+  void relations(FroidurePinBase*, std::function<void(word_type, word_type)>&&);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_BASE_HPP_

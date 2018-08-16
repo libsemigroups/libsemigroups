@@ -18,13 +18,13 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of Bipartitions 01: non-pointer Bipartitions",
+TEST_CASE("FroidurePin of Bipartitions 01: non-pointer Bipartitions",
           "[quick][semigroup][bipart][finite][01]") {
   std::vector<Bipartition> gens = {
       Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -32,7 +32,7 @@ TEST_CASE("Semigroup of Bipartitions 01: non-pointer Bipartitions",
       Bipartition(
           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
 
-  Semigroup<Bipartition> S(gens);
+  FroidurePin<Bipartition> S(gens);
 
   S.reserve(10);
   REPORTER.set_report(SEMIGROUPS_REPORT);

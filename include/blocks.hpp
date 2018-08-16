@@ -35,7 +35,7 @@ namespace libsemigroups {
   //! class.
   //!
   //! The Blocks class is not currently used by any of the methods for the
-  //! Semigroup class but the extra methods are used in the GAP package
+  //! FroidurePin class but the extra methods are used in the GAP package
   //! [Semigroups package for GAP](https://gap-packages.github.io/Semigroups/).
   class Blocks {
    public:

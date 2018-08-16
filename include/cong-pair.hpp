@@ -19,7 +19,7 @@
 // This file contains a method for enumerating a congruence by attempting to
 // find all pairs of related elements using brute force. This does not work
 // very well in most cases, due to the high complexity of the approach. Note
-// that currently it is only used with Semigroup<KBE>, and so doesn't
+// that currently it is only used with FroidurePin<KBE>, and so doesn't
 // strictly have to be a class template.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
@@ -32,20 +32,19 @@
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
+#include "froidure-pin.hpp"
 #include "kbe.hpp"
-#include "semigroup.hpp"
 #include "wrap.hpp"
 
 namespace libsemigroups {
   namespace congruence {
     // TODO: the type of the congruence defined by class P should be a template
     // parameter
-    template <
-        typename TElementType  = Element const*,
-        typename TElementHash  = hash<TElementType>,
-        typename TElementEqual = equal_to<TElementType>,
-        class TTraits
-        = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
+    template <typename TElementType  = Element const*,
+              typename TElementHash  = hash<TElementType>,
+              typename TElementEqual = equal_to<TElementType>,
+              class TTraits
+              = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     class P : public CongBase, protected TTraits {
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -83,7 +82,7 @@ namespace libsemigroups {
       // TODO should be this and not TTraits that is used as a template
       // parameter, maybe?
       using semigroup_type
-          = Semigroup<TElementType, TElementHash, TElementEqual, TTraits>;
+          = FroidurePin<TElementType, TElementHash, TElementEqual, TTraits>;
 
       explicit P(congruence_type type)
           : CongBase(type),
@@ -106,13 +105,13 @@ namespace libsemigroups {
       // P - constructor + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      P(congruence_type type, SemigroupBase* S) : P(type) {
+      P(congruence_type type, FroidurePinBase* S) : P(type) {
         LIBSEMIGROUPS_ASSERT(S != nullptr);
         set_nr_generators(S->nr_generators());
         set_parent(S);
       }
 
-      P(congruence_type type, SemigroupBase& S) : P(type, &S) {}
+      P(congruence_type type, FroidurePinBase& S) : P(type, &S) {}
 
       ~P() {
         delete_tmp_storage();
@@ -241,7 +240,7 @@ namespace libsemigroups {
         throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
       }
 
-      SemigroupBase* quotient_semigroup() override {
+      FroidurePinBase* quotient_semigroup() override {
         // FIXME actually implement this
         throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
       }
@@ -444,11 +443,10 @@ namespace libsemigroups {
     // algorithm to compute the congruence.
     //////////////////////////////////////////////////////////////////////////
     // TODO move the implementation to a cong-p.cpp file
-    class KBP
-        : public P<KBE,
-                   hash<KBE>,
-                   equal_to<KBE>,
-                   SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
+    class KBP : public P<KBE,
+                         hash<KBE>,
+                         equal_to<KBE>,
+                         TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
       ////////////////////////////////////////////////////////////////////////
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////
@@ -456,7 +454,7 @@ namespace libsemigroups {
       using p_type = P<KBE,
                        hash<KBE>,
                        equal_to<KBE>,
-                       SemigroupTraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;
+                       TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -517,12 +515,11 @@ namespace libsemigroups {
   }  // namespace congruence
 
   namespace fpsemigroup {
-    template <
-        typename TElementType  = Element const*,
-        typename TElementHash  = hash<TElementType>,
-        typename TElementEqual = equal_to<TElementType>,
-        class TTraits
-        = SemigroupTraitsHashEqual<TElementType, TElementHash, TElementEqual>>
+    template <typename TElementType  = Element const*,
+              typename TElementHash  = hash<TElementType>,
+              typename TElementEqual = equal_to<TElementType>,
+              class TTraits
+              = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     using P = WrappedCong<
         congruence::P<TElementType, TElementHash, TElementEqual, TTraits>,
         false>;

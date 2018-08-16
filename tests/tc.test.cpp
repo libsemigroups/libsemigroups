@@ -141,7 +141,7 @@ TEST_CASE("TC 06: transformation semigroup size 88",
           "[quick][congruence][tc][finite][06]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S   = Semigroup<>(vec);
+  FroidurePin<>           S   = FroidurePin<>(vec);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -183,7 +183,7 @@ TEST_CASE("TC 07: left congruence on transformation semigroup size 88",
           "[quick][congruence][tc][finite][07]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S   = Semigroup<>(vec);
+  FroidurePin<>           S   = FroidurePin<>(vec);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -214,7 +214,7 @@ TEST_CASE("TC 08: right congruence on transformation semigroup size 88",
           "[quick][congruence][tc][finite][08]") {
   std::vector<Element*> vec = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S   = Semigroup<>(vec);
+  FroidurePin<>           S   = FroidurePin<>(vec);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -277,7 +277,7 @@ TEST_CASE("TC 09: transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][09]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -315,7 +315,7 @@ TEST_CASE("TC 10: left congruence on transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][10]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -350,7 +350,7 @@ TEST_CASE("TC 11: right congruence on transformation semigroup size 88",
           "[quick][congruence][tc][prefill][finite][11]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(TC_REPORT);
 
   REQUIRE(S.size() == 88);
@@ -526,12 +526,12 @@ TEST_CASE("TC 15: test prefilling of the table manually",
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(TC_REPORT);
   delete_gens(gens);
 
   // Copy the right Cayley graph of S for prefilling
-  Semigroup<>::cayley_graph_type const* right = S.right_cayley_graph_copy();
+  FroidurePin<>::cayley_graph_type const* right = S.right_cayley_graph_copy();
 
   // These are defining relations for S
   std::vector<relation_type> rels

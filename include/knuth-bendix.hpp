@@ -85,7 +85,7 @@ namespace libsemigroups {
       bool        equal_to(std::string const&, std::string const&) override;
       std::string normal_form(std::string const&) override;
 
-      SemigroupBase* isomorphic_non_fp_semigroup() override;
+      FroidurePinBase* isomorphic_non_fp_semigroup() override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - overridden non-pure virtual methods - public
@@ -153,8 +153,8 @@ namespace libsemigroups {
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
       explicit KnuthBendix(ReductionOrdering*, external_string_type = "");
-      explicit KnuthBendix(SemigroupBase*);
-      explicit KnuthBendix(SemigroupBase&);
+      explicit KnuthBendix(FroidurePinBase*);
+      explicit KnuthBendix(FroidurePinBase&);
       explicit KnuthBendix(KnuthBendix const*);
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
@@ -530,7 +530,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       KnuthBendix();
-      explicit KnuthBendix(SemigroupBase&);
+      explicit KnuthBendix(FroidurePinBase&);
       explicit KnuthBendix(fpsemigroup::KnuthBendix const*);
 
       ////////////////////////////////////////////////////////////////////////////
@@ -545,7 +545,7 @@ namespace libsemigroups {
 
       void             add_pair(word_type const&, word_type const&) override;
       word_type        class_index_to_word(class_index_type) override;
-      SemigroupBase*   quotient_semigroup() override;
+      FroidurePinBase* quotient_semigroup() override;
       size_t           nr_classes() override;
       class_index_type word_to_class_index(word_type const&) override;
 

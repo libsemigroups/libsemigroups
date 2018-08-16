@@ -29,8 +29,8 @@
 #include "types.hpp"
 
 namespace libsemigroups {
-  class FpSemigroup;    // Forward declaration
-  class SemigroupBase;  // Forward declaration
+  class FpSemigroup;      // Forward declaration
+  class FroidurePinBase;  // Forward declaration
 
   class FpSemiBase : public Runner {
     friend class libsemigroups::FpSemigroup;
@@ -58,7 +58,7 @@ namespace libsemigroups {
     virtual bool        equal_to(std::string const&, std::string const&) = 0;
     virtual std::string normal_form(std::string const&)                  = 0;
 
-    virtual SemigroupBase* isomorphic_non_fp_semigroup() = 0;
+    virtual FroidurePinBase* isomorphic_non_fp_semigroup() = 0;
 
     virtual size_t nr_rules() const noexcept = 0;
 
@@ -67,7 +67,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void      add_rule(word_type const&, word_type const&);
-    virtual void      add_rules(SemigroupBase*);
+    virtual void      add_rules(FroidurePinBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
     virtual void      set_alphabet(std::string const&);
@@ -100,9 +100,9 @@ namespace libsemigroups {
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
-    SemigroupBase* get_isomorphic_non_fp_semigroup() const noexcept;
-    void           reset_isomorphic_non_fp_semigroup() noexcept;
-    void set_isomorphic_non_fp_semigroup(SemigroupBase*, bool) noexcept;
+    FroidurePinBase* get_isomorphic_non_fp_semigroup() const noexcept;
+    void             reset_isomorphic_non_fp_semigroup() noexcept;
+    void set_isomorphic_non_fp_semigroup(FroidurePinBase*, bool) noexcept;
 
     bool is_alphabet_defined() const noexcept;
 
@@ -126,7 +126,7 @@ namespace libsemigroups {
     std::unordered_map<char, letter_type> _alphabet_map;
     bool                                  _delete_isomorphic_non_fp_semigroup;
     bool                                  _is_alphabet_defined;
-    SemigroupBase*                        _isomorphic_non_fp_semigroup;
+    FroidurePinBase*                      _isomorphic_non_fp_semigroup;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_

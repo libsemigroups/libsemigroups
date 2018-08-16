@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
@@ -108,9 +108,9 @@ namespace std {
 
 static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
-TEST_CASE("Semigroup of IntPairs (non-trivial user type)",
+TEST_CASE("FroidurePin of IntPairs (non-trivial user type)",
           "[quick][semigroup][nontrivial][finite][097]") {
-  Semigroup<IntPair> S({IntPair(1, 1)});
+  FroidurePin<IntPair> S({IntPair(1, 1)});
   REQUIRE(S.size() == 1);
   REQUIRE(S.nr_idempotents() == 1);
 }

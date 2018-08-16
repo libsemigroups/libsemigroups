@@ -26,8 +26,8 @@
 #include "types.hpp"
 
 namespace libsemigroups {
-  class SemigroupBase;  // Forward declaration
-  class Congruence;     // Forward declaration
+  class FroidurePinBase;  // Forward declaration
+  class Congruence;       // Forward declaration
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
@@ -100,7 +100,7 @@ namespace libsemigroups {
     //! anything is computed about the congruence.
     virtual void add_pair(word_type const&, word_type const&) = 0;
 
-    virtual SemigroupBase* quotient_semigroup() = 0;
+    virtual FroidurePinBase* quotient_semigroup() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - public
@@ -165,25 +165,25 @@ namespace libsemigroups {
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
-    size_t          nr_generators() const noexcept;
-    size_t          nr_generating_pairs() const noexcept;
-    size_t          nr_non_trivial_classes();
-    SemigroupBase*  parent_semigroup() const;
-    congruence_type type() const noexcept;
+    size_t           nr_generators() const noexcept;
+    size_t           nr_generating_pairs() const noexcept;
+    size_t           nr_non_trivial_classes();
+    FroidurePinBase* parent_semigroup() const;
+    congruence_type  type() const noexcept;
 
    protected:
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
-    SemigroupBase* get_quotient() const noexcept;
-    bool           has_quotient() const noexcept;
-    void           reset_quotient();
-    void           set_quotient(SemigroupBase*, bool);
+    FroidurePinBase* get_quotient() const noexcept;
+    bool             has_quotient() const noexcept;
+    void             reset_quotient();
+    void             set_quotient(FroidurePinBase*, bool);
 
-    SemigroupBase* get_parent() const noexcept;
-    bool           has_parent() const noexcept;
-    void           set_parent(SemigroupBase*);
+    FroidurePinBase* get_parent() const noexcept;
+    bool             has_parent() const noexcept;
+    void             set_parent(FroidurePinBase*);
 
     bool validate_letter(letter_type) const;
     void validate_word(word_type const&) const;
@@ -218,12 +218,12 @@ namespace libsemigroups {
     // CongBase - data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    bool            _delete_quotient;
-    bool            _init_ntc_done;
-    size_t          _nrgens;
-    SemigroupBase*  _parent;
-    SemigroupBase*  _quotient;
-    congruence_type _type;
+    bool             _delete_quotient;
+    bool             _init_ntc_done;
+    size_t           _nrgens;
+    FroidurePinBase* _parent;
+    FroidurePinBase* _quotient;
+    congruence_type  _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - static data members - private

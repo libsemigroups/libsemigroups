@@ -23,7 +23,7 @@
 #include "bmat8.hpp"
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define BMAT_REPORT false
 

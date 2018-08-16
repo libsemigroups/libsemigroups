@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains stuff for creating congruence over Semigroup objects or
+// This file contains stuff for creating congruence over FroidurePin objects or
 // over FpSemigroup objects.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_HPP_
@@ -44,8 +44,12 @@ namespace libsemigroups {
 
     explicit Congruence(congruence_type type);
 
-    Congruence(congruence_type type, SemigroupBase*, policy = policy::standard);
-    Congruence(congruence_type type, SemigroupBase&, policy = policy::standard);
+    Congruence(congruence_type type,
+               FroidurePinBase*,
+               policy = policy::standard);
+    Congruence(congruence_type type,
+               FroidurePinBase&,
+               policy = policy::standard);
 
     Congruence(congruence_type type, FpSemigroup&, policy = policy::standard);
     Congruence(congruence_type type, FpSemigroup*, policy = policy::standard);
@@ -68,7 +72,7 @@ namespace libsemigroups {
 
     void             add_pair(word_type const&, word_type const&) override;
     word_type        class_index_to_word(class_index_type) override;
-    SemigroupBase*   quotient_semigroup() override;
+    FroidurePinBase* quotient_semigroup() override;
     size_t           nr_classes() override;
     class_index_type word_to_class_index(word_type const&) override;
 

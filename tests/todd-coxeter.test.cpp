@@ -26,7 +26,7 @@
 
 #include "bmat8.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 #include "tce.hpp"
 
 namespace libsemigroups {
@@ -95,7 +95,7 @@ namespace libsemigroups {
       tc.run_for(std::chrono::milliseconds(200));
       REQUIRE(tc.nr_classes() == 10752);
 
-      SemigroupBase* S = tc.quotient_semigroup();
+      FroidurePinBase* S = tc.quotient_semigroup();
       REQUIRE(S->size() == 10752);
       REQUIRE(S->nr_idempotents() == 1);
       // RWS rws(S);
@@ -107,7 +107,7 @@ namespace libsemigroups {
                             "[quick]") {
       REPORTER.set_report(REPORT);
 
-      Semigroup<BMat8> S(
+      FroidurePin<BMat8> S(
           {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -121,12 +121,12 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "ToddCoxeter 005",
-        "(cong) non-trivial two-sided constructed with Semigroup",
+        "(cong) non-trivial two-sided constructed with FroidurePin",
         "[quick]") {
       REPORTER.set_report(REPORT);
 
       using Transf = Transf<5>::type;
-      Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
 
@@ -223,7 +223,7 @@ namespace libsemigroups {
                             "(cong) 2-sided cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
-      auto S = Semigroup<Transformation<u_int16_t>>(
+      auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
@@ -250,7 +250,7 @@ namespace libsemigroups {
                             "(cong) left cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
-      auto S = Semigroup<Transformation<u_int16_t>>(
+      auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
@@ -277,7 +277,7 @@ namespace libsemigroups {
                             "(cong) right cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
-      auto S = Semigroup<Transformation<u_int16_t>>(
+      auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            Transformation<u_int16_t>({3, 2, 1, 3, 3})});
 
@@ -329,7 +329,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       REQUIRE(S.size() == 88);
@@ -367,7 +367,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       REPORTER.set_report(REPORT);
       delete_gens(gens);
 
@@ -403,7 +403,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       REPORTER.set_report(REPORT);
       delete_gens(gens);
 
@@ -580,11 +580,11 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
              new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // Copy the right Cayley graph of S for prefilling
-      Semigroup<>::cayley_graph_type const* right = S.right_cayley_graph_copy();
+      FroidurePin<>::cayley_graph_type const* right = S.right_cayley_graph_copy();
       RecVec<size_t> table(S.nr_generators(), 1, UNDEFINED);
       table.append(*right);
       delete right;
@@ -640,7 +640,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       REQUIRE(S.size() == 88);
@@ -701,7 +701,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 34);
       REQUIRE(tc.quotient_semigroup()->size() == 34);
 
-      auto S = static_cast<Semigroup<TCE>*>(tc.quotient_semigroup());
+      auto S = static_cast<FroidurePin<TCE>*>(tc.quotient_semigroup());
       S->enumerate();
       std::vector<TCE> v(S->cbegin(), S->cend());
       std::sort(v.begin(), v.end());
@@ -881,7 +881,7 @@ namespace libsemigroups {
 
       using Transf = Transf<5>::type;
 
-      Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
 

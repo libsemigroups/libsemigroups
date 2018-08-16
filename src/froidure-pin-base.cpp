@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "semigroup-base.hpp"
+#include "froidure-pin-base.hpp"
 
 namespace libsemigroups {
-  void relations(SemigroupBase*                              S,
+  void relations(FroidurePinBase*                              S,
                  std::function<void(word_type, word_type)>&& hook) {
     S->enumerate();
 

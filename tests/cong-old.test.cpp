@@ -145,7 +145,7 @@ TEST_CASE("Congruence 06: 6-argument constructor (trivial cong)",
           "[quick][congruence][multithread][06]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -165,7 +165,7 @@ TEST_CASE("Congruence 07: 6-argument constructor (nontrivial cong)",
           "[quick][congruence][multithread][07]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   REQUIRE(S.size() == 88);
   REQUIRE(S.degree() == 5);
@@ -188,7 +188,7 @@ TEST_CASE("Congruence 8T: transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   REQUIRE(S.size() == 88);
@@ -223,7 +223,7 @@ TEST_CASE("Congruence 8L: left congruence on transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -266,7 +266,7 @@ TEST_CASE("Congruence 8R: right congruence on transformation semigroup size 88",
           "[quick][congruence][multithread]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -370,7 +370,7 @@ TEST_CASE("Congruence 11: congruence on big finite semigroup",
          new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
          new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -429,7 +429,7 @@ TEST_CASE("Congruence 12: Congruence on full PBR monoid on 2 points",
                                 new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -483,7 +483,7 @@ TEST_CASE("Congruence 13: partial perm example",
          new PartialPerm<u_int16_t>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
          new PartialPerm<u_int16_t>({1, 3, 4}, {5, 0, 2}, 6)};
 
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -566,7 +566,7 @@ TEST_CASE("Congruence 17: Congruence on full PBR monoid on 2 points (max 2)",
                                 new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -623,7 +623,7 @@ TEST_CASE("Congruence 18: Congruence on full PBR monoid on 2 points (max 1)",
                                 new PBR({{3}, {2, 3}, {0}, {1}})};
   REQUIRE(gens[0]->degree() == 2);
 
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -740,7 +740,7 @@ TEST_CASE("Congruence 22: duplicate generators on a finite semigroup",
          new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
          new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   Congruence cong("twosided", &S, std::vector<relation_type>());
@@ -785,7 +785,7 @@ TEST_CASE("Congruence 24: example from GAP which once messed up prefill",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6, 7}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 0, 6, 7}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 7, 6})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -856,7 +856,7 @@ TEST_CASE("Congruence 27: is_obviously_infinite",
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                 new Transformation<u_int16_t>({0, 1, 2})};
 
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
 
@@ -876,7 +876,7 @@ TEST_CASE("Congruence 28: test_less_than",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
   REPORTER.set_report(CONG_REPORT);
 
   Congruence<BMat8> cong1("twosided", &S, {relation_type({1}, {0})});
@@ -888,7 +888,7 @@ TEST_CASE("Congruence 28: test_less_than",
   REQUIRE(cong2.nr_classes() == 3);
   REQUIRE(cong2.word_to_class_index({1}) == 0);
 
-  Semigroup<BMat8>  T({gens[0], gens[2], gens[3]});
+  FroidurePin<BMat8>  T({gens[0], gens[2], gens[3]});
   Congruence<BMat8> cong3("twosided", &T, {relation_type({1}, {0})});
   cong3.force_p();
   REQUIRE(cong3.nr_classes() == 2);
@@ -1605,7 +1605,7 @@ TEST_CASE(
   std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3}),
                                 new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-  Semigroup<>           S    = Semigroup<>(gens);
+  FroidurePin<>           S    = FroidurePin<>(gens);
   REPORTER.set_report(CONG_REPORT);
   delete_gens(gens);
   REQUIRE(S.size() == 88);

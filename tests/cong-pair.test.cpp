@@ -47,7 +47,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -76,7 +76,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -104,7 +104,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -132,7 +132,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
              new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -169,7 +169,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
              new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -206,7 +206,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
              new PartialPerm<u_int16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -243,7 +243,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3}, {4, 1, 0}, 5),
              new PartialPerm<u_int16_t>({0, 1, 2, 3, 4}, {0, 2, 4, 1, 3}, 5)};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -283,7 +283,7 @@ namespace libsemigroups {
              new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
              new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
              new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -327,7 +327,7 @@ namespace libsemigroups {
              new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
              new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
              new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -370,7 +370,7 @@ namespace libsemigroups {
              new Transformation<u_int16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
              new Transformation<u_int16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
              new Transformation<u_int16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -440,7 +440,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can
@@ -469,7 +469,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       delete_gens(gens);
 
       // The following lines are intentionally commented out so that we can

@@ -26,7 +26,7 @@
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "semigroup-base.hpp"
+#include "froidure-pin-base.hpp"
 #include "types.hpp"
 
 namespace libsemigroups {
@@ -46,7 +46,7 @@ namespace libsemigroups {
                 make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
 
       // FIXME avoid code duplication here
-      explicit WrappedCong(SemigroupBase* S)
+      explicit WrappedCong(FroidurePinBase* S)
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
@@ -61,7 +61,7 @@ namespace libsemigroups {
         set_alphabet(lphbt);
       }
 
-      explicit WrappedCong(SemigroupBase& S) : WrappedCong(&S) {}
+      explicit WrappedCong(FroidurePinBase& S) : WrappedCong(&S) {}
 
       ////////////////////////////////////////////////////////////////////////////
       // Runner - overridden pure virtual method - public
@@ -113,7 +113,7 @@ namespace libsemigroups {
             _wrapped_cong->word_to_class_index(string_to_word(w))));
       }
 
-      SemigroupBase* isomorphic_non_fp_semigroup() override {
+      FroidurePinBase* isomorphic_non_fp_semigroup() override {
         return _wrapped_cong->quotient_semigroup();
       }
 
@@ -171,7 +171,7 @@ namespace libsemigroups {
         _wrapped_cong->set_nr_generators(nr_letters);
       }
 
-      void add_rules(SemigroupBase* S) override {
+      void add_rules(FroidurePinBase* S) override {
         // TODO improve this method to avoid unnecessary conversions
         FpSemiBase::add_rules(S);
         _nr_rules += S->nr_rules();

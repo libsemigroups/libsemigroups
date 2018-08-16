@@ -20,9 +20,9 @@
 
 #include "catch.hpp"
 #include "element.hpp"
+#include "froidure-pin.hpp"
 #include "kbe.hpp"
 #include "knuth-bendix.hpp"
-#include "semigroup.hpp"
 
 namespace libsemigroups {
   namespace knuth_bendix_fpsemigroup {
@@ -42,7 +42,7 @@ namespace libsemigroups {
       REPORTER.set_report(REPORT);
       using Transf = Transf<2>::type;
 
-      Semigroup<Transf> S({Transf({1, 0}), Transf({0, 0})});
+      FroidurePin<Transf> S({Transf({1, 0}), Transf({0, 0})});
       REQUIRE(S.size() == 4);
       REQUIRE(S.nr_rules() == 4);
 
@@ -58,7 +58,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       REQUIRE(S.size() == 9);
       REQUIRE(S.degree() == 5);
       REQUIRE(S.nr_rules() == 3);
@@ -76,7 +76,7 @@ namespace libsemigroups {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-      Semigroup<> S = Semigroup<>(gens);
+      FroidurePin<> S = FroidurePin<>(gens);
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
       REQUIRE(S.nr_rules() == 18);
@@ -165,7 +165,7 @@ namespace libsemigroups {
       REQUIRE(kb.nr_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_rules() == 4);
-      auto S = static_cast<Semigroup<KBE>*>(kb.isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>*>(kb.isomorphic_non_fp_semigroup());
 
       // At this point only the generators are known
       REQUIRE(S->current_size() == 2);
@@ -294,9 +294,9 @@ namespace libsemigroups {
       REQUIRE(kb.normal_form("ccc") == "");
 
       REQUIRE(kb.size() == 168);
-      auto S = static_cast<Semigroup<KBE>*>(kb.isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>*>(kb.isomorphic_non_fp_semigroup());
       REQUIRE(S->size() == 168);
-      auto T = Semigroup<KBE>({S->generator(2)});
+      auto T = FroidurePin<KBE>({S->generator(2)});
       REQUIRE(T.size() == 3);
     }
 
@@ -1209,7 +1209,7 @@ namespace libsemigroups {
               "[quick][congruence][knuth-bendix][03]") {
       REPORTER.set_report(REPORT);
       using Transf = Transf<5>::type;
-      Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
@@ -1228,8 +1228,8 @@ namespace libsemigroups {
       REQUIRE(Q->size() == 21);
       REQUIRE(Q->nr_idempotents() == 3);
 
-      std::vector<std::string> v(static_cast<Semigroup<KBE>*>(Q)->cbegin(),
-                                 static_cast<Semigroup<KBE>*>(Q)->cend());
+      std::vector<std::string> v(static_cast<FroidurePin<KBE>*>(Q)->cbegin(),
+                                 static_cast<FroidurePin<KBE>*>(Q)->cend());
       REQUIRE(v
               == std::vector<std::string>(
                      {"a",     "b",     "aa",    "ab",   "ba",   "bb",

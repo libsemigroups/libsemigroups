@@ -22,7 +22,7 @@
 
 #include "element.hpp"
 #include "fpsemi.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #include "catch.hpp"
 
@@ -79,7 +79,7 @@ namespace libsemigroups_tests_fpsemi {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-    Semigroup<> S = Semigroup<>(gens);
+    FroidurePin<> S = FroidurePin<>(gens);
     really_delete_cont(gens);
 
     REQUIRE(S.size() == 88);
@@ -265,7 +265,7 @@ namespace libsemigroups_tests_fpsemi {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.size() == 5);
 
-    SemigroupBase* T = S.isomorphic_non_fp_semigroup();
+    FroidurePinBase* T = S.isomorphic_non_fp_semigroup();
     REQUIRE(T->size() == 5);
     REQUIRE(T->nr_idempotents() == 1);
   }
@@ -281,7 +281,7 @@ namespace libsemigroups_tests_fpsemi {
     REQUIRE(S.rws()->isomorphic_non_fp_semigroup()->size() == 5);
     REQUIRE(S.size() == 5);
 
-    SemigroupBase* T = S.isomorphic_non_fp_semigroup();
+    FroidurePinBase* T = S.isomorphic_non_fp_semigroup();
     REQUIRE(T->size() == 5);
     REQUIRE(T->nr_idempotents() == 1);
   }

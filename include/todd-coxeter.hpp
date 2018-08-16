@@ -67,10 +67,10 @@ namespace libsemigroups {
       explicit ToddCoxeter(congruence_type type);
 
       ToddCoxeter(congruence_type,
-                  SemigroupBase*,
+                  FroidurePinBase*,
                   policy = policy::use_relations);
       ToddCoxeter(congruence_type,
-                  SemigroupBase&,
+                  FroidurePinBase&,
                   policy = policy::use_relations);
       // TODO change to use_cayley_graph
       // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
@@ -98,7 +98,7 @@ namespace libsemigroups {
 
       void             add_pair(word_type const&, word_type const&) override;
       size_t           nr_classes() override;
-      SemigroupBase*   quotient_semigroup() override;
+      FroidurePinBase* quotient_semigroup() override;
       class_index_type word_to_class_index(word_type const&) override;
       word_type        class_index_to_word(class_index_type) override;
 
@@ -143,7 +143,7 @@ namespace libsemigroups {
       std::vector<relation_type>& init();
       void                        init_after_prefill();
       void                        init_relations();
-      void                        prefill(SemigroupBase*);
+      void                        prefill(FroidurePinBase*);
       void                        use_relations_or_cayley_graph();
 
       ////////////////////////////////////////////////////////////////////////

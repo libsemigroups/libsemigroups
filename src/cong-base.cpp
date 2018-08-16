@@ -22,7 +22,7 @@
 #include "internal/stl.hpp"
 
 #include "constants.hpp"
-#include "semigroup-base.hpp"
+#include "froidure-pin-base.hpp"
 
 namespace libsemigroups {
 
@@ -121,7 +121,7 @@ namespace libsemigroups {
     return _non_trivial_classes.size();
   }
 
-  SemigroupBase* CongBase::parent_semigroup() const {
+  FroidurePinBase* CongBase::parent_semigroup() const {
     if (!has_parent()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
@@ -136,7 +136,7 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  SemigroupBase* CongBase::get_quotient() const noexcept {
+  FroidurePinBase* CongBase::get_quotient() const noexcept {
     return _quotient;
   }
 
@@ -152,7 +152,7 @@ namespace libsemigroups {
     _quotient        = nullptr;
   }
 
-  void CongBase::set_quotient(SemigroupBase* qtnt, bool delete_it) {
+  void CongBase::set_quotient(FroidurePinBase* qtnt, bool delete_it) {
     LIBSEMIGROUPS_ASSERT(qtnt != nullptr);
     LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
     LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
@@ -162,7 +162,7 @@ namespace libsemigroups {
     _quotient        = qtnt;
   }
 
-  SemigroupBase* CongBase::get_parent() const noexcept {
+  FroidurePinBase* CongBase::get_parent() const noexcept {
     return _parent;
   }
 
@@ -170,7 +170,7 @@ namespace libsemigroups {
     return _parent != nullptr;
   }
 
-  void CongBase::set_parent(SemigroupBase* prnt) {
+  void CongBase::set_parent(FroidurePinBase* prnt) {
     LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
     if (prnt == _parent) {
       return;

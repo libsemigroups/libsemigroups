@@ -25,8 +25,8 @@
 #include "internal/race.hpp"
 
 #include "fpsemi-base.hpp"
+#include "froidure-pin-base.hpp"
 #include "knuth-bendix.hpp"
-#include "semigroup-base.hpp"
 #include "todd-coxeter.hpp"
 
 namespace libsemigroups {
@@ -50,7 +50,7 @@ namespace libsemigroups {
     // TODO initializer list constructor
     // TODO alphabet constructor
 
-    explicit FpSemigroup(SemigroupBase*);
+    explicit FpSemigroup(FroidurePinBase*);
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - overridden pure virtual methods - public
@@ -66,13 +66,13 @@ namespace libsemigroups {
     void add_rule(std::string const&, std::string const&) override;
     using FpSemiBase::add_rule;
 
-    bool           equal_to(std::string const&, std::string const&) override;
-    bool           is_obviously_finite() override;
-    bool           is_obviously_infinite() override;
-    SemigroupBase* isomorphic_non_fp_semigroup() override;
-    std::string    normal_form(std::string const&) override;
-    size_t         nr_rules() const noexcept override;
-    size_t         size() override;
+    bool             equal_to(std::string const&, std::string const&) override;
+    bool             is_obviously_finite() override;
+    bool             is_obviously_infinite() override;
+    FroidurePinBase* isomorphic_non_fp_semigroup() override;
+    std::string      normal_form(std::string const&) override;
+    size_t           nr_rules() const noexcept override;
+    size_t           size() override;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - public

@@ -42,16 +42,16 @@
 #include "blocks.hpp"
 #include "constants.hpp"
 #include "hpcombi.hpp"
-#include "semigroup-traits.hpp"
 #include "semiring.hpp"
+#include "traits.hpp"
 #include "types.hpp"
 
 namespace libsemigroups {
   //! Abstract base class for semigroup elements
   //!
-  //! The Semigroup class consists of Element objects. Every derived class of
+  //! The FroidurePin class consists of Element objects. Every derived class of
   //! Element implements the deleted methods of Element, which are used by the
-  //! Semigroup class.
+  //! FroidurePin class.
   class Element {
    public:
     //! A constructor.
@@ -121,8 +121,8 @@ namespace libsemigroups {
     //! semiring is \f$O(3 ^ 3)\f$, and 27 is returned by
     //! MatrixOverSemiring::complexity.
     //!
-    //! The returned value is used in, for example, Semigroup::fast_product and
-    //! Semigroup::nr_idempotents to decide if it is better to multiply
+    //! The returned value is used in, for example, FroidurePin::fast_product
+    //! and FroidurePin::nr_idempotents to decide if it is better to multiply
     //! elements or follow a path in the Cayley graph.
     virtual size_t complexity() const = 0;
 
@@ -1005,14 +1005,14 @@ namespace libsemigroups {
   //!
   //! A *bipartition* is a partition of the set
   //! \f$\{0, ..., 2n - 1\}\f$ for some integer \f$n\f$; see the
-  //! [Semigroups package for GAP
-  //! documentation](https://gap-packages.github.io/Semigroups/doc/chap3_mj.html)
+  //! [FroidurePins package for GAP
+  //! documentation](https://gap-packages.github.io/FroidurePins/doc/chap3_mj.html)
   //! for more details.
 
   //! The Bipartition class is more complex (i.e. has more methods) than
-  //! strictly required by the algorithms for a Semigroup object because the
-  //! extra methods are used in the GAP package [Semigroups package for
-  //! GAP](https://gap-packages.github.io/Semigroups/).
+  //! strictly required by the algorithms for a FroidurePin object because the
+  //! extra methods are used in the GAP package [FroidurePins package for
+  //! GAP](https://gap-packages.github.io/FroidurePins/).
 
   class Bipartition
       : public ElementWithVectorDataDefaultHash<u_int32_t, Bipartition> {
@@ -1893,12 +1893,11 @@ namespace libsemigroups {
     static std::vector<RecVec<bool>>      _tmp;
   };
 
-  // SemigroupTraits specialization for derived classes of Element.
+  // Traits specialization for derived classes of Element.
   template <class TElementType>
-  struct SemigroupTraits<
-      TElementType,
-      typename std::enable_if<
-          std::is_base_of<Element, TElementType>::value>::type> {
+  struct Traits<TElementType,
+                typename std::enable_if<
+                    std::is_base_of<Element, TElementType>::value>::type> {
     static_assert(!std::is_pointer<TElementType>::value,
                   "TElementType must not be a pointer");
     using element_type       = TElementType;
@@ -1950,7 +1949,7 @@ namespace libsemigroups {
 
   // Specialization for Element* and Element const* . . .
   template <typename TElementType>
-  struct SemigroupTraits<
+  struct Traits<
       TElementType,
       typename std::enable_if<
           std::is_same<TElementType, Element*>::value
@@ -2107,7 +2106,7 @@ namespace libsemigroups {
   //!
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from an Element pointer. This is used by various methods
-  //! of the Semigroup class.
+  //! of the FroidurePin class.
   template <class TSubclass>
   struct hash<TSubclass*,
               typename std::enable_if<
@@ -2122,7 +2121,7 @@ namespace libsemigroups {
   //!
   //! This struct provides a call operator for comparing Element
   //! pointers (by comparing the Element objects they point to). This is used
-  //! by various methods of the Semigroup class.
+  //! by various methods of the FroidurePin class.
   template <class TSubclass>
   struct equal_to<
       TSubclass*,

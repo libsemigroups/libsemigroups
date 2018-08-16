@@ -18,7 +18,7 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
@@ -33,14 +33,14 @@ void delete_gens(std::vector<TElementType>& gens) {
 
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
-TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
+TEST_CASE("FroidurePin 073: regular boolean mat monoid 4 using BooleanMat",
           "[quick][semigroup][finite][073]") {
   std::vector<Element*> gens = {
       new BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
       new BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
       new BooleanMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<> S(gens);
+  FroidurePin<> S(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(S.size() == 63904);
   REQUIRE(S.nr_idempotents() == 2360);
@@ -48,14 +48,14 @@ TEST_CASE("Semigroup 073: regular boolean mat monoid 4 using BooleanMat",
 }
 #endif
 
-TEST_CASE("Semigroup 079: Exception: zero generators given",
+TEST_CASE("FroidurePin 079: Exception: zero generators given",
           "[quick][finite][semigroup][079]") {
   std::vector<Element*> gens;
 
-  REQUIRE_THROWS_AS(Semigroup<>(gens), LibsemigroupsException);
+  REQUIRE_THROWS_AS(FroidurePin<>(gens), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup 080: Exception: generators of different degrees",
+TEST_CASE("FroidurePin 080: Exception: generators of different degrees",
           "[quick][finite][semigroup][080]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -65,20 +65,20 @@ TEST_CASE("Semigroup 080: Exception: generators of different degrees",
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
          new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
-  REQUIRE_THROWS_AS(Semigroup<>(gens), LibsemigroupsException);
-  REQUIRE_THROWS_AS(Semigroup<>(gens2), LibsemigroupsException);
+  REQUIRE_THROWS_AS(FroidurePin<>(gens), LibsemigroupsException);
+  REQUIRE_THROWS_AS(FroidurePin<>(gens2), LibsemigroupsException);
 
   delete_gens(gens);
   delete_gens(gens2);
 }
 
-TEST_CASE("Semigroup 081: Exception: word_to_pos",
+TEST_CASE("FroidurePin 081: Exception: word_to_pos",
           "[quick][finite][semigroup][081]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
@@ -96,7 +96,7 @@ TEST_CASE("Semigroup 081: Exception: word_to_pos",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> U(gens2);
+  FroidurePin<> U(gens2);
 
   REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
   REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
@@ -107,13 +107,13 @@ TEST_CASE("Semigroup 081: Exception: word_to_pos",
   delete sr;
 }
 
-TEST_CASE("Semigroup 082: Exception: word_to_element",
+TEST_CASE("FroidurePin 082: Exception: word_to_element",
           "[quick][finite][semigroup][082]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
   REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}), LibsemigroupsException);
@@ -131,7 +131,7 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> U(gens2);
+  FroidurePin<> U(gens2);
 
   REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
   REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
@@ -149,7 +149,7 @@ TEST_CASE("Semigroup 082: Exception: word_to_element",
   delete sr;
 }
 
-TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
+TEST_CASE("FroidurePin 083: Exception: gens", "[quick][finite][semigroup][083]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Element*> gens;
 
@@ -160,7 +160,7 @@ TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
       }
       gens.push_back(new Transformation<size_t>(trans));
     }
-    Semigroup<Element*> S(gens);
+    FroidurePin<Element*> S(gens);
     delete_gens(gens);
 
     for (size_t j = 0; j < i; ++j) {
@@ -170,13 +170,13 @@ TEST_CASE("Semigroup 083: Exception: gens", "[quick][finite][semigroup][083]") {
   }
 }
 
-TEST_CASE("Semigroup 084: Exception: prefix",
+TEST_CASE("FroidurePin 084: Exception: prefix",
           "[quick][finite][semigroup][084]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
   delete_gens(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
@@ -186,13 +186,13 @@ TEST_CASE("Semigroup 084: Exception: prefix",
   delete sr;
 }
 
-TEST_CASE("Semigroup 085: Exception: suffix",
+TEST_CASE("FroidurePin 085: Exception: suffix",
           "[quick][finite][semigroup][085]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.suffix(i));
@@ -202,13 +202,13 @@ TEST_CASE("Semigroup 085: Exception: suffix",
   delete sr;
 }
 
-TEST_CASE("Semigroup 086: Exception: first_letter",
+TEST_CASE("FroidurePin 086: Exception: first_letter",
           "[quick][finite][semigroup][086]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.first_letter(i));
@@ -218,13 +218,13 @@ TEST_CASE("Semigroup 086: Exception: first_letter",
   delete sr;
 }
 
-TEST_CASE("Semigroup 087: Exception: final_letter",
+TEST_CASE("FroidurePin 087: Exception: final_letter",
           "[quick][finite][semigroup][087]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.final_letter(i));
@@ -234,13 +234,13 @@ TEST_CASE("Semigroup 087: Exception: final_letter",
   delete sr;
 }
 
-TEST_CASE("Semigroup 088: Exception: length_const",
+TEST_CASE("FroidurePin 088: Exception: length_const",
           "[quick][finite][semigroup][088]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     REQUIRE_NOTHROW(T.length_const(i));
@@ -250,13 +250,13 @@ TEST_CASE("Semigroup 088: Exception: length_const",
   delete sr;
 }
 
-TEST_CASE("Semigroup 089: Exception: product_by_reduction",
+TEST_CASE("FroidurePin 089: Exception: product_by_reduction",
           "[quick][finite][semigroup][089]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -274,13 +274,13 @@ TEST_CASE("Semigroup 089: Exception: product_by_reduction",
   delete sr;
 }
 
-TEST_CASE("Semigroup 090: Exception: fast_product",
+TEST_CASE("FroidurePin 090: Exception: fast_product",
           "[quick][finite][semigroup][090]") {
   Semiring<int64_t>*    sr = new Integers();
   std::vector<Element*> gens
       = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
          new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-  Semigroup<> T(gens);
+  FroidurePin<> T(gens);
 
   for (size_t i = 0; i < T.size(); ++i) {
     for (size_t j = 0; j < T.size(); ++j) {
@@ -298,7 +298,7 @@ TEST_CASE("Semigroup 090: Exception: fast_product",
   delete sr;
 }
 
-TEST_CASE("Semigroup 091: Exception: letter_to_pos",
+TEST_CASE("FroidurePin 091: Exception: letter_to_pos",
           "[quick][finite][semigroup][091]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Element*> gens;
@@ -310,7 +310,7 @@ TEST_CASE("Semigroup 091: Exception: letter_to_pos",
       }
       gens.push_back(new Transformation<size_t>(trans));
     }
-    Semigroup<> S(gens);
+    FroidurePin<> S(gens);
     delete_gens(gens);
 
     for (size_t j = 0; j < i; ++j) {
@@ -320,7 +320,7 @@ TEST_CASE("Semigroup 091: Exception: letter_to_pos",
   }
 }
 
-TEST_CASE("Semigroup 092: Exception: is_idempotent",
+TEST_CASE("FroidurePin 092: Exception: is_idempotent",
           "[quick][finite][semigroup][092]") {
   std::vector<Element*> gens
       = {new Bipartition(
@@ -329,7 +329,7 @@ TEST_CASE("Semigroup 092: Exception: is_idempotent",
              {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
          new Bipartition(
              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
-  Semigroup<> T = Semigroup<>(gens);
+  FroidurePin<> T = FroidurePin<>(gens);
   delete_gens(gens);
 
   // T has size 10
@@ -341,7 +341,7 @@ TEST_CASE("Semigroup 092: Exception: is_idempotent",
   }
 }
 
-TEST_CASE("Semigroup 093: Exception: add_generators",
+TEST_CASE("FroidurePin 093: Exception: add_generators",
           "[quick][finite][semigroup][093]") {
   std::vector<Element*> gens1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -351,8 +351,8 @@ TEST_CASE("Semigroup 093: Exception: add_generators",
              {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
          new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
-  Semigroup<> S(gens1);
-  Semigroup<> U(gens2);
+  FroidurePin<> S(gens1);
+  FroidurePin<> U(gens2);
 
   std::vector<Element*> additional_gens_1_1
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3})};

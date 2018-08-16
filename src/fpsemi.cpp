@@ -57,8 +57,8 @@ namespace libsemigroups {
   // Todd-Coxeter for example
 
   // Don't take FpSemigroup::policy as an argument here since we must have a
-  // place to cache the SemigroupBase* S.
-  FpSemigroup::FpSemigroup(SemigroupBase* S) : FpSemigroup() {
+  // place to cache the FroidurePinBase* S.
+  FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemigroup() {
     for (auto runner : _race) {
       static_cast<FpSemiBase*>(runner)->set_isomorphic_non_fp_semigroup(S,
                                                                         false);
@@ -110,7 +110,7 @@ namespace libsemigroups {
     return false;
   }
 
-  SemigroupBase* FpSemigroup::isomorphic_non_fp_semigroup() {
+  FroidurePinBase* FpSemigroup::isomorphic_non_fp_semigroup() {
     if (has_isomorphic_non_fp_semigroup()) {
       return get_isomorphic_non_fp_semigroup();
     }
@@ -224,7 +224,7 @@ namespace libsemigroups {
   }
 
   /*  // Private
-    void FpSemigroup::set_isomorphic_non_fp_semigroup(SemigroupBase* S) {
+    void FpSemigroup::set_isomorphic_non_fp_semigroup(FroidurePinBase* S) {
       for (auto runner : _race) {
         static_cast<FpSemiBase*>(runner)->set_isomorphic_non_fp_semigroup(S);
       }

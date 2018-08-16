@@ -18,13 +18,13 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-static inline size_t evaluate_reduct(Semigroup<>& S, word_type const& word) {
+static inline size_t evaluate_reduct(FroidurePin<>& S, word_type const& word) {
   letter_type out = S.letter_to_pos(word[0]);
   for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
     out = S.right(out, *it);
@@ -42,7 +42,7 @@ void delete_gens(std::vector<TElementType>& gens) {
 // FIXME the following example is extremely slow when using densehashmap.
 #if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
-static inline void test_idempotent(Semigroup<>& S, const Element* x) {
+static inline void test_idempotent(FroidurePin<>& S, const Element* x) {
   REQUIRE(S.is_idempotent(S.position(x)));
   Element* y = x->heap_copy();
   y->redefine(x, x);
@@ -51,13 +51,13 @@ static inline void test_idempotent(Semigroup<>& S, const Element* x) {
   delete y;
 }
 
-TEST_CASE("Semigroup 026: cbegin_idempotents/cend, is_idempotent [2 threads]",
+TEST_CASE("FroidurePin 026: cbegin_idempotents/cend, is_idempotent [2 threads]",
           "[standard][semigroup][finite][multithread][026]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
          new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_max_threads(2);
 
@@ -82,7 +82,7 @@ TEST_CASE("Semigroup 026: cbegin_idempotents/cend, is_idempotent [2 threads]",
 
 #endif
 
-TEST_CASE("Semigroup 027: is_done, is_begun",
+TEST_CASE("FroidurePin 027: is_done, is_begun",
           "[quick][semigroup][finite][027]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -90,7 +90,7 @@ TEST_CASE("Semigroup 027: is_done, is_begun",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
@@ -107,7 +107,7 @@ TEST_CASE("Semigroup 027: is_done, is_begun",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 028: current_position",
+TEST_CASE("FroidurePin 028: current_position",
           "[quick][semigroup][finite][028]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -115,7 +115,7 @@ TEST_CASE("Semigroup 028: current_position",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
@@ -157,7 +157,7 @@ TEST_CASE("Semigroup 028: current_position",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 029: sorted_position, sorted_at",
+TEST_CASE("FroidurePin 029: sorted_position, sorted_at",
           "[quick][semigroup][finite][029]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -165,7 +165,7 @@ TEST_CASE("Semigroup 029: sorted_position, sorted_at",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.sorted_position(gens[0]) == 310);
@@ -213,7 +213,7 @@ TEST_CASE("Semigroup 029: sorted_position, sorted_at",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 030: right/left Cayley graph",
+TEST_CASE("FroidurePin 030: right/left Cayley graph",
           "[quick][semigroup][finite][030]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -221,7 +221,7 @@ TEST_CASE("Semigroup 030: right/left Cayley graph",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.right(0, 0) == 0);
@@ -241,14 +241,14 @@ TEST_CASE("Semigroup 030: right/left Cayley graph",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 031: iterator", "[quick][semigroup][finite][031]") {
+TEST_CASE("FroidurePin 031: iterator", "[quick][semigroup][finite][031]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_size() == 5);
@@ -300,7 +300,7 @@ TEST_CASE("Semigroup 031: iterator", "[quick][semigroup][finite][031]") {
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 066: reverse iterator",
+TEST_CASE("FroidurePin 066: reverse iterator",
           "[quick][semigroup][finite][066]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -308,7 +308,7 @@ TEST_CASE("Semigroup 066: reverse iterator",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_size() == 5);
@@ -360,7 +360,7 @@ TEST_CASE("Semigroup 066: reverse iterator",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 067: iterator arithmetic",
+TEST_CASE("FroidurePin 067: iterator arithmetic",
           "[quick][semigroup][finite][067]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -368,7 +368,7 @@ TEST_CASE("Semigroup 067: iterator arithmetic",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 7776);
@@ -416,14 +416,14 @@ TEST_CASE("Semigroup 067: iterator arithmetic",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 068: iterator sorted", "[quick][semigroup][finite][068]") {
+TEST_CASE("FroidurePin 068: iterator sorted", "[quick][semigroup][finite][068]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   // Calling cbegin/cend_sorted fully enumerates the semigroup
@@ -464,7 +464,7 @@ TEST_CASE("Semigroup 068: iterator sorted", "[quick][semigroup][finite][068]") {
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 069: iterator sorted arithmetic",
+TEST_CASE("FroidurePin 069: iterator sorted arithmetic",
           "[quick][semigroup][finite][069]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -472,7 +472,7 @@ TEST_CASE("Semigroup 069: iterator sorted arithmetic",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.size() == 7776);
@@ -520,7 +520,7 @@ TEST_CASE("Semigroup 069: iterator sorted arithmetic",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 032: copy [not enumerated]",
+TEST_CASE("FroidurePin 032: copy [not enumerated]",
           "[quick][semigroup][finite][032]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -528,7 +528,7 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
@@ -538,7 +538,7 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
   REQUIRE(S.current_max_word_length() == 1);
   REQUIRE(S.current_position(gens[1]) == 1);
 
-  Semigroup<> T = Semigroup<>(S);
+  FroidurePin<> T = FroidurePin<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!T.is_begun());
@@ -558,12 +558,12 @@ TEST_CASE("Semigroup 032: copy [not enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
+TEST_CASE("FroidurePin 033: copy_closure [not enumerated]",
           "[quick][semigroup][finite][033]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
@@ -579,7 +579,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(coll);
+  FroidurePin<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -598,7 +598,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(T->nr_rules() == 2459);
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
-  Semigroup<>* U = T->copy_closure(coll);
+  FroidurePin<>* U = T->copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -612,7 +612,7 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   REQUIRE(U->nr_rules() == 7901);
 
   coll           = std::vector<Element*>();
-  Semigroup<>* V = U->copy_closure(coll);
+  FroidurePin<>* V = U->copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -632,12 +632,12 @@ TEST_CASE("Semigroup 033: copy_closure [not enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
+TEST_CASE("FroidurePin 034: copy_add_generators [not enumerated]",
           "[quick][semigroup][finite][034]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(!S.is_begun());
@@ -653,7 +653,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(coll);
+  FroidurePin<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -672,7 +672,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(T->nr_rules() == 2459);
 
   coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
-  Semigroup<>* U = T->copy_add_generators(coll);
+  FroidurePin<>* U = T->copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -686,7 +686,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   REQUIRE(U->nr_rules() == 7901);
 
   coll           = std::vector<Element*>();
-  Semigroup<>* V = U->copy_add_generators(coll);
+  FroidurePin<>* V = U->copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
 
@@ -706,7 +706,7 @@ TEST_CASE("Semigroup 034: copy_add_generators [not enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 035: copy [partly enumerated]",
+TEST_CASE("FroidurePin 035: copy [partly enumerated]",
           "[quick][semigroup][finite][035]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -714,7 +714,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(1000);
   S.enumerate(1001);
@@ -726,7 +726,7 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
   REQUIRE(S.current_max_word_length() == 7);
   REQUIRE(S.current_position(gens[1]) == 1);
 
-  Semigroup<> T = Semigroup<>(S);
+  FroidurePin<> T = FroidurePin<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
@@ -753,13 +753,13 @@ TEST_CASE("Semigroup 035: copy [partly enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
+TEST_CASE("FroidurePin 036: copy_closure [partly enumerated]",
           "[quick][semigroup][finite][036]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(60);
   S.enumerate(60);
@@ -776,7 +776,7 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(coll);
+  FroidurePin<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->generator(3)));
   REQUIRE(*coll[1] == *(T->generator(4)));
@@ -798,13 +798,13 @@ TEST_CASE("Semigroup 036: copy_closure [partly enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
+TEST_CASE("FroidurePin 037: copy_add_generators [partly enumerated]",
           "[quick][semigroup][finite][037]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.set_batch_size(60);
   S.enumerate(60);
@@ -821,7 +821,7 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(coll);
+  FroidurePin<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->generator(3)));
   REQUIRE(*coll[1] == *(T->generator(4)));
@@ -843,7 +843,7 @@ TEST_CASE("Semigroup 037: copy_add_generators [partly enumerated]",
   delete_gens(coll);
 }
 
-TEST_CASE("Semigroup 038: copy [fully enumerated]",
+TEST_CASE("FroidurePin 038: copy [fully enumerated]",
           "[quick][semigroup][finite][038]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -851,7 +851,7 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   S.enumerate(8000);
@@ -862,7 +862,7 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
   REQUIRE(S.nr_idempotents() == 537);
   REQUIRE(S.nr_rules() == 2459);
 
-  Semigroup<> T = Semigroup<>(S);
+  FroidurePin<> T = FroidurePin<>(S);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(T.is_begun());
@@ -875,13 +875,13 @@ TEST_CASE("Semigroup 038: copy [fully enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
+TEST_CASE("FroidurePin 039: copy_closure [fully enumerated]",
           "[quick][semigroup][finite][039]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.enumerate(121);
 
@@ -897,7 +897,7 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_closure(coll);
+  FroidurePin<>* T = S.copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->generator(3)));
   REQUIRE(*coll[1] == *(T->generator(4)));
@@ -919,13 +919,13 @@ TEST_CASE("Semigroup 039: copy_closure [fully enumerated]",
   delete_gens(coll);
 }
 
-TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
+TEST_CASE("FroidurePin 040: copy_add_generators [fully enumerated]",
           "[quick][semigroup][finite][040]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   S.enumerate(121);
 
@@ -941,7 +941,7 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
       = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
 
-  Semigroup<>* T = S.copy_add_generators(coll);
+  FroidurePin<>* T = S.copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   REQUIRE(*coll[0] == *(T->generator(3)));
   REQUIRE(*coll[1] == *(T->generator(4)));
@@ -963,7 +963,7 @@ TEST_CASE("Semigroup 040: copy_add_generators [fully enumerated]",
   delete_gens(coll);
 }
 
-TEST_CASE("Semigroup 041: relations [duplicate gens]",
+TEST_CASE("FroidurePin 041: relations [duplicate gens]",
           "[quick][semigroup][finite][041]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -971,7 +971,7 @@ TEST_CASE("Semigroup 041: relations [duplicate gens]",
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   std::vector<size_t> result;
@@ -998,14 +998,14 @@ TEST_CASE("Semigroup 041: relations [duplicate gens]",
   delete_gens(gens);
 }
 
-TEST_CASE("Semigroup 042: relations", "[quick][semigroup][finite][042]") {
+TEST_CASE("FroidurePin 042: relations", "[quick][semigroup][finite][042]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
          new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-  Semigroup<> S = Semigroup<>(gens);
+  FroidurePin<> S = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   std::vector<size_t> result;

@@ -18,7 +18,7 @@
 
 #include "bmat8.hpp"
 #include "catch.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
@@ -26,7 +26,7 @@ using namespace libsemigroups;
 
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
-TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
+TEST_CASE("FroidurePin of BMats 01: regular boolean mat monoid 4 using BMat8",
           "[quick][semigroup][bmat][finite][01]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -34,7 +34,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
 
   REQUIRE(S.current_max_word_length() == 1);
@@ -202,7 +202,7 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
   REQUIRE(pos == S.size());
 
   // Copy - after enumerate
-  Semigroup<BMat8> T(S);
+  FroidurePin<BMat8> T(S);
   REQUIRE(T.size() == 63904);
   REQUIRE(T.nr_idempotents() == 2360);
   REQUIRE(T.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
@@ -224,21 +224,21 @@ TEST_CASE("Semigroup of BMats 01: regular boolean mat monoid 4 using BMat8",
 }
 #endif
 
-TEST_CASE("Semigroup of BMats 02: Exception: zero generators given",
+TEST_CASE("FroidurePin of BMats 02: Exception: zero generators given",
           "[quick][finite][semigroup][bmat][02]") {
   std::vector<BMat8> gens;
 
-  REQUIRE_THROWS_AS(Semigroup<BMat8>(gens), LibsemigroupsException);
+  REQUIRE_THROWS_AS(FroidurePin<BMat8>(gens), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of BMats 03: Exception: word_to_element",
+TEST_CASE("FroidurePin of BMats 03: Exception: word_to_element",
           "[quick][finite][semigroup][bmat][03]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   REQUIRE_THROWS_AS(S.word_to_element({}), LibsemigroupsException);
   REQUIRE_NOTHROW(S.word_to_element({0}));
@@ -246,13 +246,13 @@ TEST_CASE("Semigroup of BMats 03: Exception: word_to_element",
   REQUIRE_THROWS_AS(S.word_to_element({0, 1, 0, 4}), LibsemigroupsException);
 }
 
-TEST_CASE("Semigroup of BMats 04: Exception: prefix",
+TEST_CASE("FroidurePin of BMats 04: Exception: prefix",
           "[quick][finite][semigroup][bmat][04]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   for (size_t i = 0; i < S.size(); ++i) {
     REQUIRE_NOTHROW(S.prefix(i));
@@ -260,22 +260,22 @@ TEST_CASE("Semigroup of BMats 04: Exception: prefix",
   }
 }
 
-TEST_CASE("Semigroup of BMats 05: Exception: suffix",
+TEST_CASE("FroidurePin of BMats 05: Exception: suffix",
           "[quick][finite][semigroup][bmat][085]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 }
 
-TEST_CASE("Semigroup of BMats 06: Exception: first_letter",
+TEST_CASE("FroidurePin of BMats 06: Exception: first_letter",
           "[quick][finite][semigroup][bmat][086]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   for (size_t i = 0; i < S.size(); ++i) {
     REQUIRE_NOTHROW(S.first_letter(i));
@@ -283,22 +283,22 @@ TEST_CASE("Semigroup of BMats 06: Exception: first_letter",
   }
 }
 
-TEST_CASE("Semigroup of BMats 07: Exception: final_letter",
+TEST_CASE("FroidurePin of BMats 07: Exception: final_letter",
           "[quick][finite][semigroup][bmat][087]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 }
 
-TEST_CASE("Semigroup of BMats 08: Exception: length_const",
+TEST_CASE("FroidurePin of BMats 08: Exception: length_const",
           "[quick][finite][semigroup][bmat][088]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   for (size_t i = 0; i < S.size(); ++i) {
     REQUIRE_NOTHROW(S.length_const(i));
@@ -306,12 +306,12 @@ TEST_CASE("Semigroup of BMats 08: Exception: length_const",
   }
 }
 
-TEST_CASE("Semigroup of BMats 09: Exception: product_by_reduction",
+TEST_CASE("FroidurePin of BMats 09: Exception: product_by_reduction",
           "[quick][finite][semigroup][bmat][089]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   for (size_t i = 1; i < S.size(); ++i) {
     for (size_t j = 1; j < S.size(); ++j) {
@@ -326,12 +326,12 @@ TEST_CASE("Semigroup of BMats 09: Exception: product_by_reduction",
   }
 }
 
-TEST_CASE("Semigroup of BMats 10: Exception: fast_product",
+TEST_CASE("FroidurePin of BMats 10: Exception: fast_product",
           "[quick][finite][semigroup][bmat][10]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   for (size_t i = 1; i < S.size(); ++i) {
     for (size_t j = 1; j < S.size(); ++j) {
@@ -346,14 +346,14 @@ TEST_CASE("Semigroup of BMats 10: Exception: fast_product",
   }
 }
 
-TEST_CASE("Semigroup of BMats 11: Exception: is_idempotent",
+TEST_CASE("FroidurePin of BMats 11: Exception: is_idempotent",
           "[quick][finite][semigroup][bmat][11]") {
   std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-  Semigroup<BMat8> S(gens);
+  FroidurePin<BMat8> S(gens);
 
   // S has size 63904
   for (size_t i = 0; i < 63904; ++i) {

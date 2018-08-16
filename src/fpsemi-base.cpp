@@ -24,7 +24,7 @@
 #include "internal/libsemigroups-exception.hpp"
 #include "internal/stl.hpp"
 
-#include "semigroup-base.hpp"
+#include "froidure-pin-base.hpp"
 
 namespace libsemigroups {
 
@@ -133,7 +133,7 @@ namespace libsemigroups {
     add_rule(rel.first, rel.second);
   }
 
-  void FpSemiBase::add_rules(SemigroupBase* S) {
+  void FpSemiBase::add_rules(FroidurePinBase* S) {
     if (is_alphabet_defined() && _alphabet.size() != S->nr_generators()) {
       throw LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
                                     + to_string(S->nr_generators())
@@ -219,7 +219,7 @@ namespace libsemigroups {
     return s;
   }
 
-  SemigroupBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const noexcept {
+  FroidurePinBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const noexcept {
     return _isomorphic_non_fp_semigroup;
   }
 
@@ -232,7 +232,7 @@ namespace libsemigroups {
   }
 
   void FpSemiBase::set_isomorphic_non_fp_semigroup(
-      SemigroupBase* ismrphc_nn_fp_smgrp,
+      FroidurePinBase* ismrphc_nn_fp_smgrp,
       bool           delete_it) noexcept {
     LIBSEMIGROUPS_ASSERT(ismrphc_nn_fp_smgrp != nullptr);
     LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);

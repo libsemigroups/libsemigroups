@@ -57,7 +57,7 @@
 
 #include "adapters.hpp"
 #include "element.hpp"
-#include "semigroup-traits.hpp"
+#include "traits.hpp"
 
 namespace libsemigroups {
   template <size_t N,
@@ -65,7 +65,7 @@ namespace libsemigroups {
             typename TElementType  = typename Perm<N>::type,
             typename TDomainType   = IntegralRange<TPointType, 0, N>,
             typename TElementEqual = equal_to<TElementType>,
-            class TTraits = SemigroupTraitsEqual<TElementType, TElementEqual>>
+            class TTraits          = TraitsEqual<TElementType, TElementEqual>>
   class SchreierSims : private TTraits {
     using const_element_type = typename TTraits::const_element_type;
     using const_reference    = typename TTraits::const_reference;

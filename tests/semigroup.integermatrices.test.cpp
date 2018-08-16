@@ -18,20 +18,20 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of integer matrices 01",
+TEST_CASE("FroidurePin of integer matrices 01",
           "[quick][semigroup][matrix][finite][01]") {
   Semiring<int64_t>*                       sr = new Integers();
   std::vector<MatrixOverSemiring<int64_t>> gens
       = {MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr),
          MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)};
-  Semigroup<MatrixOverSemiring<int64_t>> S
-      = Semigroup<MatrixOverSemiring<int64_t>>(gens);
+  FroidurePin<MatrixOverSemiring<int64_t>> S
+      = FroidurePin<MatrixOverSemiring<int64_t>>(gens);
 
   S.reserve(10000);
   REPORTER.set_report(SEMIGROUPS_REPORT);

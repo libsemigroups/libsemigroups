@@ -18,13 +18,13 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
+TEST_CASE("FroidurePin of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
   std::vector<PBR> gens = {PBR({{5, 3},
                                 {5, 4, 3, 0, 1, 2},
                                 {5, 4, 3, 0, 2},
@@ -43,7 +43,7 @@ TEST_CASE("Semigroup of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
                                 {5, 4, 3, 2},
                                 {5, 4, 3, 2},
                                 {4, 1, 2}})};
-  Semigroup<PBR>   S(gens);
+  FroidurePin<PBR>   S(gens);
 
   S.reserve(4);
   REPORTER.set_report(SEMIGROUPS_REPORT);

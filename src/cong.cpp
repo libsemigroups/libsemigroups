@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains stuff for creating congruence over SemigroupBase objects
+// This file contains stuff for creating congruence over FroidurePinBase objects
 // or over FpSemigroup objects.
 
 // TODO: - do nothing if there are no generating pairs
@@ -41,7 +41,7 @@ namespace libsemigroups {
 
   Congruence::Congruence(congruence_type type) : CongBase(type), _race() {}
 
-  Congruence::Congruence(congruence_type type, SemigroupBase* S, policy plcy)
+  Congruence::Congruence(congruence_type type, FroidurePinBase* S, policy plcy)
       : Congruence(type) {
     switch (plcy) {
       case policy::standard: {
@@ -60,7 +60,7 @@ namespace libsemigroups {
     set_parent(S);
   }
 
-  Congruence::Congruence(congruence_type type, SemigroupBase& S, policy plcy)
+  Congruence::Congruence(congruence_type type, FroidurePinBase& S, policy plcy)
       : Congruence(type, &S, plcy) {}
 
   Congruence::Congruence(congruence_type type, FpSemigroup& S, policy plcy)
@@ -115,7 +115,7 @@ namespace libsemigroups {
           // Method 3: Note that the
           // S->knuth_bendix()->isomorphic_non_fp_semigroup() must be finite
           // in this case, because otherwise it would not return true from
-          // Semigroup::is_done. This is similar to Method 2.
+          // FroidurePin::is_done. This is similar to Method 2.
           _race.add_runner(
               new ToddCoxeter(type,
                               S->knuth_bendix()->isomorphic_non_fp_semigroup(),
@@ -223,7 +223,7 @@ namespace libsemigroups {
     return static_cast<CongBase*>(_race.winner())->nr_classes();
   }
 
-  SemigroupBase* Congruence::quotient_semigroup() {
+  FroidurePinBase* Congruence::quotient_semigroup() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
     return static_cast<CongBase*>(_race.winner())->quotient_semigroup();
   }

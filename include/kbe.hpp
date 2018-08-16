@@ -25,14 +25,14 @@
 #include <string>
 
 #include "element.hpp"
+#include "froidure-pin.hpp"
 #include "knuth-bendix.hpp"
-#include "semigroup.hpp"
 
 namespace libsemigroups {
   //! Subclass of Element that wraps an libsemigroups::internal_string_type.
   //!
   //! This class is used to wrap libsemigroups::internal_string_type into an
-  //! Element so that it is possible to use them as generators for a Semigroup
+  //! Element so that it is possible to use them as generators for a FroidurePin
   //! object.
   class KBE : public Element {
     using KnuthBendix          = fpsemigroup::KnuthBendix;
@@ -119,7 +119,7 @@ namespace libsemigroups {
     //!
     //! Returns KBE::LIMIT_MAX since the complexity of multiplying words
     //! in a rewriting system is higher than the cost of tracing a path in the
-    //! left or right Cayley graph of a Semigroup.
+    //! left or right Cayley graph of a FroidurePin.
     size_t complexity() const override;
 
     //! Returns the degree of an KBE.
@@ -195,7 +195,7 @@ namespace std {
   //!
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from a const Element pointer. This is used by various methods
-  //! of the Semigroup class.
+  //! of the FroidurePin class.
   template <> struct hash<libsemigroups::KBE> {
     //! Hashes a KBE given by const KBE reference.
     size_t operator()(libsemigroups::KBE const& x) const {
@@ -207,7 +207,7 @@ namespace std {
   //!
   //! This struct provides a call operator for comparing const KBE
   //! references (by comparing the KBE objects they point to). This is used
-  //! by various methods of the Semigroup class.
+  //! by various methods of the FroidurePin class.
   template <> struct equal_to<libsemigroups::KBE> {
     //! Tests equality of two const KBE references via equality of the KBEs.
     bool operator()(libsemigroups::KBE const& x,
@@ -220,9 +220,9 @@ namespace std {
 namespace libsemigroups {
   //! Returns a libsemigroups::word_type which evaluates to \p x.
   //!
-  //! Specialises the factorisation method for Semigroup's of KBE's so that it
+  //! Specialises the factorisation method for FroidurePin's of KBE's so that it
   //! just returns the word inside the KBE.
-  template <> word_type Semigroup<KBE>::factorisation(KBE const& x);
+  template <> word_type FroidurePin<KBE>::factorisation(KBE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_

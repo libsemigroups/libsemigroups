@@ -18,20 +18,20 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of PartialPerms 01",
+TEST_CASE("FroidurePin of PartialPerms 01",
           "[quick][semigroup][partialperm][finite][095]") {
   std::vector<PartialPerm<u_int16_t>> gens
       = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
          PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
          PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
 
-  Semigroup<PartialPerm<u_int16_t>> S(gens);
+  FroidurePin<PartialPerm<u_int16_t>> S(gens);
 
   S.reserve(102);
   REPORTER.set_report(SEMIGROUPS_REPORT);

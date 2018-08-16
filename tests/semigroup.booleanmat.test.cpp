@@ -18,20 +18,20 @@
 
 #include "catch.hpp"
 #include "element.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 #define SEMIGROUPS_REPORT false
 
 using namespace libsemigroups;
 
-TEST_CASE("Semigroup of BooleanMats 01: non-pointer BooleanMats",
+TEST_CASE("FroidurePin of BooleanMats 01: non-pointer BooleanMats",
           "[quick][semigroup][booleanmat][finite][01]") {
   std::vector<BooleanMat> gens
       = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
          BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
          BooleanMat({0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1})};
 
-  Semigroup<BooleanMat> S(gens);
+  FroidurePin<BooleanMat> S(gens);
 
   S.reserve(26);
   REPORTER.set_report(SEMIGROUPS_REPORT);

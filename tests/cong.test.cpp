@@ -25,7 +25,7 @@
 #include "cong.hpp"
 #include "element.hpp"
 #include "fpsemi.hpp"
-#include "semigroup.hpp"
+#include "froidure-pin.hpp"
 
 namespace libsemigroups {
   template <class TElementType>
@@ -151,7 +151,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     using Transf = Transf<5>::type;
-    Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
 
     Congruence cong(TWOSIDED, S);
@@ -164,7 +164,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     using Transf = Transf<5>::type;
-    Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
 
     Congruence cong(TWOSIDED, S);
@@ -271,7 +271,7 @@ namespace libsemigroups {
                           "[quick]") {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
-    Semigroup<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                          Transf({1, 2, 4, 4, 7, 3, 0, 7}),
                          Transf({0, 6, 4, 2, 2, 6, 6, 4}),
                          Transf({3, 6, 3, 4, 0, 6, 0, 7})});
@@ -316,7 +316,7 @@ namespace libsemigroups {
                           "congruence on full PBR monoid on 2 points",
                           "[extreme]") {
     REPORTER.set_report(true);
-    Semigroup<PBR> S({PBR({{2}, {3}, {0}, {1}}),
+    FroidurePin<PBR> S({PBR({{2}, {3}, {0}, {1}}),
                       PBR({{}, {2}, {1}, {0, 3}}),
                       PBR({{0, 3}, {2}, {1}, {}}),
                       PBR({{1, 2}, {3}, {0}, {1}}),
@@ -357,7 +357,7 @@ namespace libsemigroups {
 
     using PPerm = PPerm<6>::type;
 
-    Semigroup<PPerm> S({PPerm({0, 1, 2}, {4, 0, 1}, 6),
+    FroidurePin<PPerm> S({PPerm({0, 1, 2}, {4, 0, 1}, 6),
                         PPerm({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
                         PPerm({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
                         PPerm({0, 2, 5}, {3, 4, 1}, 6),
@@ -455,7 +455,7 @@ namespace libsemigroups {
                           "[quick]") {
     REPORTER.set_report(REPORT);
     using Transf = Transf<5>::type;
-    Semigroup<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
@@ -550,7 +550,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence 021", "duplicate generators", "[quick]") {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
-    Semigroup<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                          Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                          Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                          Transf({3, 6, 3, 4, 0, 6, 0, 7})});
@@ -596,7 +596,7 @@ namespace libsemigroups {
                           "[quick]") {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
-    Semigroup<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
+    FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
                          Transf({1, 2, 3, 4, 5, 0, 6, 7}),
                          Transf({1, 0, 2, 3, 4, 5, 6, 7}),
                          Transf({0, 1, 2, 3, 4, 0, 6, 7}),
@@ -747,7 +747,7 @@ namespace libsemigroups {
     }
 
     using Transf = Transf<3>::type;
-    Semigroup<Transf> S({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    FroidurePin<Transf> S({Transf({0, 1, 0}), Transf({0, 1, 2})});
     REQUIRE(S.size() == 2);
     {
       Congruence cong(TWOSIDED, S);
@@ -778,7 +778,7 @@ namespace libsemigroups {
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     {
-      Semigroup<BMat> S(gens);
+      FroidurePin<BMat> S(gens);
 
       Congruence cong(TWOSIDED, S);
       cong.add_pair({1}, {0});
@@ -811,7 +811,7 @@ namespace libsemigroups {
                                          {1, 1, 0, 1, 1}}));
     }
     {
-      Semigroup<BMat8> S({gens[0], gens[2], gens[3]});
+      FroidurePin<BMat8> S({gens[0], gens[2], gens[3]});
       Congruence       cong(TWOSIDED, S);
       cong.add_pair({1}, {0});
 
@@ -847,7 +847,7 @@ namespace libsemigroups {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-    Semigroup<> S(gens);
+    FroidurePin<> S(gens);
     delete_gens(gens);
 
     // REQUIRE(S.size() == 88);
@@ -889,7 +889,7 @@ namespace libsemigroups {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-    Semigroup<> S(gens);
+    FroidurePin<> S(gens);
     delete_gens(gens);
 
     // REQUIRE(S.size() == 88);
@@ -932,7 +932,7 @@ namespace libsemigroups {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
            new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
-    Semigroup<> S = Semigroup<>(gens);
+    FroidurePin<> S = FroidurePin<>(gens);
     delete_gens(gens);
 
     REQUIRE(S.size() == 88);

@@ -16,9 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the SemigroupTraits class that defines the types, and
-// methods for translating between then, for use by the Semigroup, SchreierSims,
-// and P classes.
+// This file contains the Traits class that defines the types, and
+// methods for translating between then, for use by the FroidurePin,
+// SchreierSims, and P classes.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
@@ -28,7 +28,7 @@
 #include "internal/stl.hpp"
 
 namespace libsemigroups {
-  template <typename TElementType, typename = void> struct SemigroupTraits {
+  template <typename TElementType, typename = void> struct Traits {
     using element_type       = TElementType;
     using const_element_type = TElementType const;
     using reference          = TElementType&;
@@ -70,9 +70,9 @@ namespace libsemigroups {
 
   template <typename TElementType,
             typename TElementEqual = equal_to<TElementType>>
-  class SemigroupTraitsEqual : public SemigroupTraits<TElementType> {
+  class TraitsEqual : public Traits<TElementType> {
    private:
-    using base = SemigroupTraits<TElementType>;
+    using base = Traits<TElementType>;
 
    public:
     using element_type       = typename base::element_type;
@@ -102,10 +102,9 @@ namespace libsemigroups {
   template <typename TElementType,
             typename TElementHash  = hash<TElementType>,
             typename TElementEqual = equal_to<TElementType>>
-  class SemigroupTraitsHashEqual
-      : public SemigroupTraitsEqual<TElementType, TElementEqual> {
+  class TraitsHashEqual : public TraitsEqual<TElementType, TElementEqual> {
    private:
-    using base = SemigroupTraits<TElementType>;
+    using base = Traits<TElementType>;
 
    public:
     using element_type       = typename base::element_type;

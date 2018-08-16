@@ -25,8 +25,8 @@
 #include "internal/report.hpp"
 #include "internal/timer.hpp"
 
+#include "froidure-pin.hpp"
 #include "kbe.hpp"
-#include "semigroup.hpp"
 
 namespace libsemigroups {
   namespace fpsemigroup {
@@ -227,7 +227,7 @@ namespace libsemigroups {
 #endif
     }
 
-    KnuthBendix::KnuthBendix(SemigroupBase* S) : KnuthBendix() {
+    KnuthBendix::KnuthBendix(FroidurePinBase* S) : KnuthBendix() {
       // TODO move the call to add_rules to elsewhere, so that it's done in
       // knuth_bendix so that this is done in a thread, and not when KnuthBendix
       // is constructed. If it is moved, then we will have to do
@@ -240,7 +240,7 @@ namespace libsemigroups {
       set_isomorphic_non_fp_semigroup(S, false);
     }
 
-    KnuthBendix::KnuthBendix(SemigroupBase& S) : KnuthBendix(&S) {}
+    KnuthBendix::KnuthBendix(FroidurePinBase& S) : KnuthBendix(&S) {}
 
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
         : KnuthBendix(new ReductionOrdering(kb->_order), kb->alphabet()) {
@@ -384,14 +384,14 @@ namespace libsemigroups {
       return _active_rules.size();
     }
 
-    SemigroupBase* KnuthBendix::isomorphic_non_fp_semigroup() {
+    FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup() {
       LIBSEMIGROUPS_ASSERT(is_alphabet_defined());
       // TODO check that no generators/rules can be added after this has been
       // called, or if they are that _isomorphic_non_fp_semigroup is reset again
       if (!has_isomorphic_non_fp_semigroup()) {
         run();
-        // TODO use 0-param Semigroup constructor
-        auto T = new Semigroup<KBE>({KBE(*this, 0)});
+        // TODO use 0-param FroidurePin constructor
+        auto T = new FroidurePin<KBE>({KBE(*this, 0)});
         for (size_t i = 1; i < alphabet().size(); ++i) {
           T->add_generator(KBE(*this, i));
         }
@@ -1015,7 +1015,7 @@ namespace libsemigroups {
         : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
 
-    KnuthBendix::KnuthBendix(SemigroupBase& S)
+    KnuthBendix::KnuthBendix(FroidurePinBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
@@ -1073,7 +1073,7 @@ namespace libsemigroups {
       return _kb->size();
     }
 
-    SemigroupBase* KnuthBendix::quotient_semigroup() {
+    FroidurePinBase* KnuthBendix::quotient_semigroup() {
       if (!has_quotient()) {
         set_quotient(_kb->isomorphic_non_fp_semigroup(), false);
       }
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       // TODO check arg
-      auto S = static_cast<Semigroup<KBE>*>(_kb->isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>*>(_kb->isomorphic_non_fp_semigroup());
       size_t pos
           = S->position(KBE(_kb.get(), _kb->word_to_internal_string(word)));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
