@@ -16,29 +16,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "internal/containers.hpp"
+
+#include "libsemigroups.tests.hpp"
 
 using namespace libsemigroups;
 
-TEST_CASE("RecVec 01: default constructor with 3 default args",
-          "[quick][recvec][01]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "001",
+                        "default constructor with 3 default args",
+                        "[containers][quick]") {
   RecVec<bool> rv = RecVec<bool>();
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_rows() == 0);
   REQUIRE(rv.nr_cols() == 0);
 }
 
-TEST_CASE("RecVec 02: default constructor with 2 default args",
-          "[quick][recvec][02]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "002",
+                        "default constructor with 2 default args",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(5);
   REQUIRE(rv.size() == 0);
   REQUIRE(rv.nr_cols() == 5);
   REQUIRE(rv.nr_rows() == 0);
 }
 
-TEST_CASE("RecVec 03: default constructor with 1 default args",
-          "[quick][recvec][03]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "003",
+                        "default constructor with 1 default args",
+                        "[containers][quick]") {
   RecVec<bool> rv = RecVec<bool>(5, 5);
   REQUIRE(rv.size() == 25);
   REQUIRE(rv.nr_cols() == 5);
@@ -47,8 +54,10 @@ TEST_CASE("RecVec 03: default constructor with 1 default args",
       std::all_of(rv.begin(), rv.end(), [](bool val) { return val == false; }));
 }
 
-TEST_CASE("RecVec 04: default constructor with 0 default args",
-          "[quick][recvec][04]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "004",
+                        "default constructor with 0 default args",
+                        "[containers][quick]") {
   RecVec<bool> rv = RecVec<bool>(2, 7, true);
   REQUIRE(rv.size() == 14);
   REQUIRE(rv.nr_cols() == 2);
@@ -57,8 +66,10 @@ TEST_CASE("RecVec 04: default constructor with 0 default args",
       std::all_of(rv.begin(), rv.end(), [](bool val) { return val == true; }));
 }
 
-TEST_CASE("RecVec 05: copy constructor with 1 default args",
-          "[quick][recvec][05]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "005",
+                        "copy constructor with 1 default args",
+                        "[containers][quick]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv);
   REQUIRE(copy.size() == 21);
@@ -68,8 +79,10 @@ TEST_CASE("RecVec 05: copy constructor with 1 default args",
       copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec 06: copy constructor with 0 default args",
-          "[quick][recvec][06]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "006",
+                        "copy constructor with 0 default args",
+                        "[containers][quick]") {
   RecVec<size_t> rv   = RecVec<size_t>(3, 7, 666);
   RecVec<size_t> copy = RecVec<size_t>(rv, 2);
   REQUIRE(copy.size() == 35);
@@ -88,7 +101,7 @@ TEST_CASE("RecVec 06: copy constructor with 0 default args",
       copy2.begin(), copy2.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec 07: add_rows", "[quick][recvec][07]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "007", "add_rows", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows(1);
   REQUIRE(rv.size() == 24);
@@ -110,7 +123,7 @@ TEST_CASE("RecVec 07: add_rows", "[quick][recvec][07]") {
       std::all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec 08: add_rows", "[quick][recvec][08]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "008", "add_rows", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 7, 666);
   rv.add_rows(10);
   REQUIRE(rv.size() == 51);
@@ -126,7 +139,7 @@ TEST_CASE("RecVec 08: add_rows", "[quick][recvec][08]") {
       std::all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec 09: add_cols", "[quick][recvec][09]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "009", "add_cols", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2, 666);
   rv.add_cols(10);
   REQUIRE(rv.size() == 220);
@@ -142,7 +155,7 @@ TEST_CASE("RecVec 09: add_cols", "[quick][recvec][09]") {
       std::all_of(rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
 }
 
-TEST_CASE("RecVec 10: set/get", "[quick][recvec][10]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "010", "set/get", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 50, 666);
   rv.set(0, 98, 0);
   REQUIRE(rv.get(0, 98) == 0);
@@ -170,7 +183,7 @@ TEST_CASE("RecVec 10: set/get", "[quick][recvec][10]") {
   REQUIRE(check_it());
 }
 
-TEST_CASE("RecVec 11: append 1/2", "[quick][recvec][11]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "011", "append 1/2", "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(100, 50, 555);
   RecVec<size_t> rv2 = RecVec<size_t>(100, 50, 666);
   REQUIRE(rv1.size() == 5000);
@@ -202,7 +215,7 @@ TEST_CASE("RecVec 11: append 1/2", "[quick][recvec][11]") {
   REQUIRE(check_it(50, 100, 666));
 }
 
-TEST_CASE("RecVec 12: append 2/2", "[quick][recvec][12]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "012", "append 2/2", "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10, 555);
   REQUIRE(rv1.size() == 100);
   REQUIRE(rv1.nr_cols() == 10);
@@ -245,7 +258,7 @@ TEST_CASE("RecVec 12: append 2/2", "[quick][recvec][12]") {
   REQUIRE(check_it(50, 100, 666));
 }
 
-TEST_CASE("RecVec 13: count", "[quick][recvec][13]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "013", "count", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10);
   for (size_t i = 0; i < 9; i++) {
     rv.set(i, i, 1);
@@ -268,7 +281,7 @@ TEST_CASE("RecVec 13: count", "[quick][recvec][13]") {
   REQUIRE(std::count(rv.begin_row(7), rv.end_row(7), 2) == 9);
 }
 
-TEST_CASE("RecVec 14: clear", "[quick][recvec][14]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "014", "clear", "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10);
   REQUIRE(rv.size() == 100);
   REQUIRE(rv.nr_cols() == 10);
@@ -279,7 +292,10 @@ TEST_CASE("RecVec 14: clear", "[quick][recvec][14]") {
   REQUIRE(rv.nr_rows() == 0);
 }
 
-TEST_CASE("RecVec 15: begin_row and end_row", "[quick][recvec][15]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "015",
+                        "begin_row and end_row",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2);
   for (size_t i = 0; i < rv.nr_rows(); i++) {
     for (auto it = rv.begin_row(i); it < rv.end_row(i); it++) {
@@ -294,7 +310,10 @@ TEST_CASE("RecVec 15: begin_row and end_row", "[quick][recvec][15]") {
   REQUIRE(std::count(rv.begin_row(1), rv.end_row(1), 666) == 0);
 }
 
-TEST_CASE("RecVec 16: cbegin_row and cend_row", "[quick][recvec][16]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "016",
+                        "cbegin_row and cend_row",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10, 66);
   for (size_t i = 0; i < rv.nr_rows(); i++) {
     for (auto it = rv.cbegin_row(i); it < rv.cend_row(i); it++) {
@@ -303,7 +322,10 @@ TEST_CASE("RecVec 16: cbegin_row and cend_row", "[quick][recvec][16]") {
   }
 }
 
-TEST_CASE("RecVec 17: iterator operator++ (postfix)", "[quick][recvec][17]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "017",
+                        "iterator operator++ (postfix)",
+                        "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(100, 2);  // cols, rows
   rv1.add_cols(10);  // rv1 has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -361,7 +383,10 @@ TEST_CASE("RecVec 17: iterator operator++ (postfix)", "[quick][recvec][17]") {
   REQUIRE(val == (100 + 10) * 2);
 }
 
-TEST_CASE("RecVec 18: iterator operator++ (prefix)", "[quick][recvec][18]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "018",
+                        "iterator operator++ (prefix)",
+                        "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(100, 2);  // cols, rows
   for (auto it = rv1.begin(); it < rv1.end(); ++it) {
     auto tmp(it);
@@ -469,7 +494,10 @@ TEST_CASE("RecVec 18: iterator operator++ (prefix)", "[quick][recvec][18]") {
   }
 }
 
-TEST_CASE("RecVec 19: iterator operator-- (postfix)", "[quick][recvec][19]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "019",
+                        "iterator operator-- (postfix)",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2);  // cols, rows
   rv.add_cols(10);  // rv has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -505,7 +533,10 @@ TEST_CASE("RecVec 19: iterator operator-- (postfix)", "[quick][recvec][19]") {
   }
 }
 
-TEST_CASE("RecVec 20: iterator operator-- (prefix)", "[quick][recvec][20]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "020",
+                        "iterator operator-- (prefix)",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 2);  // cols, rows
   rv.add_cols(10);  // rv has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -541,7 +572,7 @@ TEST_CASE("RecVec 20: iterator operator-- (prefix)", "[quick][recvec][20]") {
   }
 }
 
-TEST_CASE("RecVec 21: operator=", "[quick][recvec][21]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "021", "operator=", "[containers][quick]") {
   RecVec<size_t> rv1     = RecVec<size_t>(10, 10, 3);
   RecVec<size_t> rv2     = RecVec<size_t>(9, 9, 2);
   rv1.           operator=(rv2);
@@ -567,7 +598,10 @@ TEST_CASE("RecVec 21: operator=", "[quick][recvec][21]") {
       rv4.begin(), rv4.end(), [](bool val) { return val == true; }));
 }
 
-TEST_CASE("RecVec 22: operator== and operator!=", "[quick][recvec][22]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "022",
+                        "operator== and operator!=",
+                        "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10, 3);
   RecVec<size_t> rv2 = RecVec<size_t>(10, 10, 2);
 
@@ -649,7 +683,10 @@ TEST_CASE("RecVec 22: operator== and operator!=", "[quick][recvec][22]") {
   REQUIRE(rv3 == rv4);
 }
 
-TEST_CASE("RecVec 23: empty and clear", "[quick][recvec][23]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "023",
+                        "empty and clear",
+                        "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10);
   REQUIRE(!rv1.empty());
   rv1.clear();
@@ -679,7 +716,7 @@ TEST_CASE("RecVec 23: empty and clear", "[quick][recvec][23]") {
   REQUIRE(rv4.nr_cols() != 0);
 }
 
-TEST_CASE("RecVec 24: max_size", "[quick][recvec][24]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "024", "max_size", "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10);
   REQUIRE(rv1.max_size() != 0);
 
@@ -687,7 +724,7 @@ TEST_CASE("RecVec 24: max_size", "[quick][recvec][24]") {
   REQUIRE(rv2.max_size() != 0);
 }
 
-TEST_CASE("RecVec 25: swap", "[quick][recvec][25]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec", "025", "swap", "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(10, 10, 3);
   RecVec<size_t> rv2 = RecVec<size_t>(9, 9, 2);
 
@@ -758,7 +795,10 @@ TEST_CASE("RecVec 25: swap", "[quick][recvec][25]") {
       rv4.begin(), rv4.end(), [](bool val) { return val == true; }));
 }
 
-TEST_CASE("RecVec 26: iterator arithmetic", "[quick][recvec][26]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "026",
+                        "iterator arithmetic",
+                        "[containers][quick]") {
   {
     RecVec<size_t> rv  = RecVec<size_t>(10, 10, 1000);
     size_t         val = 0;
@@ -938,7 +978,10 @@ TEST_CASE("RecVec 26: iterator arithmetic", "[quick][recvec][26]") {
   }
 }
 
-TEST_CASE("RecVec 27: iterator comparison", "[quick][recvec][27]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "027",
+                        "iterator comparison",
+                        "[containers][quick]") {
   {
     RecVec<size_t> rv = RecVec<size_t>(10, 10, 1000);
     REQUIRE(rv.begin() < rv.end());
@@ -965,7 +1008,10 @@ TEST_CASE("RecVec 27: iterator comparison", "[quick][recvec][27]") {
   }
 }
 
-TEST_CASE("RecVec 28: iterator operator=", "[quick][recvec][28]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "028",
+                        "iterator operator=",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(10, 10, 1000);
   {
     auto it  = rv.begin();
@@ -985,7 +1031,10 @@ TEST_CASE("RecVec 28: iterator operator=", "[quick][recvec][28]") {
   }
 }
 
-TEST_CASE("RecVec 29: iterator operator[]", "[quick][recvec][29]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "029",
+                        "iterator operator[]",
+                        "[containers][quick]") {
   {
     RecVec<size_t> rv = RecVec<size_t>(10, 10, 1000);
     {
@@ -1038,7 +1087,10 @@ TEST_CASE("RecVec 29: iterator operator[]", "[quick][recvec][29]") {
   }
 }
 
-TEST_CASE("RecVec 30: iterator operator->", "[quick][recvec][30") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "030",
+                        "iterator operator->",
+                        "[containers][quick][30") {
   RecVec<RecVec<bool>> rv = RecVec<RecVec<bool>>(13, 13, RecVec<bool>());
   {
     auto it = rv.begin();
@@ -1050,7 +1102,10 @@ TEST_CASE("RecVec 30: iterator operator->", "[quick][recvec][30") {
   }
 }
 
-TEST_CASE("RecVec 31: const_iterator operator++/--", "[quick][recvec][31]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "031",
+                        "const_iterator operator++/--",
+                        "[containers][quick]") {
   RecVec<size_t> rv1 = RecVec<size_t>(100, 2);  // cols, rows
   rv1.add_cols(10);  // rv1 has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -1110,7 +1165,10 @@ TEST_CASE("RecVec 31: const_iterator operator++/--", "[quick][recvec][31]") {
   REQUIRE(val == (100 + 10) * 2);
 }
 
-TEST_CASE("RecVec 32: const_iterator operator++/--", "[quick][recvec][32]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "032",
+                        "const_iterator operator++/--",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(1, 1, 6);  // cols, rows
 
   auto const it_b = rv.begin();
@@ -1120,7 +1178,10 @@ TEST_CASE("RecVec 32: const_iterator operator++/--", "[quick][recvec][32]") {
   REQUIRE(*(it_e - 1) == 6);
 }
 
-TEST_CASE("RecVec 33: column iterators", "[quick][recvec][33]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "033",
+                        "column iterators",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(3, 3);
   for (size_t i = 0; i < rv.nr_cols(); i++) {
     std::fill(rv.begin_column(i), rv.end_column(i), i);
@@ -1182,7 +1243,10 @@ TEST_CASE("RecVec 33: column iterators", "[quick][recvec][33]") {
   }
 }
 
-TEST_CASE("RecVec 34: column iterator arithmetic", "[quick][recvec][34]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "034",
+                        "column iterator arithmetic",
+                        "[containers][quick]") {
   {
     RecVec<size_t> rv  = RecVec<size_t>(10, 10, 1000);
     size_t         val = 0;
@@ -1275,7 +1339,10 @@ TEST_CASE("RecVec 34: column iterator arithmetic", "[quick][recvec][34]") {
   }
 }
 
-TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "035",
+                        "iterator assignment constructor",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 100);
 
   for (size_t i = 0; i < 100; i++) {
@@ -1300,7 +1367,10 @@ TEST_CASE("RecVec 35: iterator assignment constructor", "[quick][recvec][35]") {
   }
 }
 
-TEST_CASE("RecVec 36: reserve method", "[quick][recvec][36]") {
+LIBSEMIGROUPS_TEST_CASE("RecVec",
+                        "036",
+                        "reserve method",
+                        "[containers][quick]") {
   RecVec<size_t> rv = RecVec<size_t>(100, 100);
   rv.reserve(1000);
   REQUIRE(rv.nr_cols() == 100);

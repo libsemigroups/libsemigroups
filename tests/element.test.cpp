@@ -17,13 +17,15 @@
 //
 
 #include "bmat8.hpp"
-#include "catch.hpp"
 #include "element.hpp"
+#include "libsemigroups.tests.hpp"
 
 using namespace libsemigroups;
 
-TEST_CASE("Transformation 01: u_int16_t methods",
-          "[quick][element][transformation][01]") {
+LIBSEMIGROUPS_TEST_CASE("Transformation",
+                        "001",
+                        "u_int16_t methods",
+                        "[quick][element]") {
   auto x = Transformation<u_int16_t>({0, 1, 0});
   auto y = Transformation<u_int16_t>({0, 1, 0});
   REQUIRE(x == y);
@@ -52,8 +54,10 @@ TEST_CASE("Transformation 01: u_int16_t methods",
   REQUIRE(x.end() - x.begin() == 13);
 }
 
-TEST_CASE("Transformation 02: u_int16_t hash",
-          "[quick][element][transformation][02]") {
+LIBSEMIGROUPS_TEST_CASE("Transformation",
+                        "002",
+                        "u_int16_t hash",
+                        "[quick][element]") {
   Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -61,34 +65,12 @@ TEST_CASE("Transformation 02: u_int16_t hash",
   delete x;
 }
 
-/*TEST_CASE("Transformation 03: u_int16_t delete/copy",
-          "[quick][element][transformation][03]") {
-  Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-  Element* y = x->heap_copy();
-  delete x;
+// Transformation 003 was deleted
 
-  Element* expected
-      = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-
-  REQUIRE(*y == *expected);
-  Transformation<u_int16_t>& yy = *static_cast<Transformation<u_int16_t>*>(y);
-  REQUIRE(yy == *y);
-  Transformation<u_int16_t> zz(yy);
-  delete y;  // does not delete the _vector in y, yy, or zz
-  REQUIRE(zz == *expected);
-
-  x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-  REQUIRE(*x == *expected);
-  yy = *static_cast<Transformation<u_int16_t>*>(x);
-  REQUIRE(yy == *expected);
-  delete x;
-  REQUIRE(yy == *expected);
-
-  delete expected;
-}*/
-
-TEST_CASE("Transformation 04: u_int32_t methods",
-          "[quick][element][transformation][04]") {
+LIBSEMIGROUPS_TEST_CASE("Transformation",
+                        "004",
+                        "u_int32_t methods",
+                        "[quick][element]") {
   Element* x = new Transformation<u_int32_t>({0, 1, 0});
   Element* y = new Transformation<u_int32_t>({0, 1, 0});
   REQUIRE(*x == *y);
@@ -117,8 +99,10 @@ TEST_CASE("Transformation 04: u_int32_t methods",
   delete y;
 }
 
-TEST_CASE("Transformation 05: u_int32_t hash",
-          "[quick][element][transformation][05]") {
+LIBSEMIGROUPS_TEST_CASE("Transformation",
+                        "005",
+                        "u_int32_t hash",
+                        "[quick][element]") {
   Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -126,34 +110,12 @@ TEST_CASE("Transformation 05: u_int32_t hash",
   delete x;
 }
 
-/*TEST_CASE("Transformation 06: u_int32_t delete/copy",
-          "[quick][element][transformation][06]") {
-  Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-  Element* y = x->heap_copy();
-  delete x;
+// Transformation 006 deleted
 
-  Element* expected
-      = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-
-  REQUIRE(*y == *expected);
-  Transformation<u_int32_t>& yy = *static_cast<Transformation<u_int32_t>*>(y);
-  REQUIRE(yy == *y);
-  Transformation<u_int32_t> zz(yy);
-  delete y;  // does not delete the _vector in y, yy, or zz
-  REQUIRE(zz == *expected);
-
-  x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-  REQUIRE(*x == *expected);
-  yy = *static_cast<Transformation<u_int32_t>*>(x);
-  REQUIRE(yy == *expected);
-  delete x;
-  REQUIRE(yy == *expected);
-
-  delete expected;
-}*/
-
-TEST_CASE("Transformation 07: exceptions",
-          "[quick][element][transformation][07]") {
+LIBSEMIGROUPS_TEST_CASE("Transformation",
+                        "007",
+                        "exceptions",
+                        "[quick][element]") {
   REQUIRE_NOTHROW(Transformation<u_int16_t>(std::vector<u_int16_t>()));
   REQUIRE_NOTHROW(Transformation<u_int16_t>(std::vector<u_int16_t>({0})));
   REQUIRE_THROWS_AS(Transformation<u_int16_t>(std::vector<u_int16_t>({1})),
@@ -178,7 +140,10 @@ TEST_CASE("Transformation 07: exceptions",
                     LibsemigroupsException);
 }
 
-TEST_CASE("PartialPerm 01: u_int16_t methods", "[quick][element][pperm][01]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "001",
+                        "u_int16_t methods",
+                        "[quick][element]") {
   auto x = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
   auto y = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
   REQUIRE(x == y);
@@ -212,7 +177,10 @@ TEST_CASE("PartialPerm 01: u_int16_t methods", "[quick][element][pperm][01]") {
   REQUIRE(x.end() - x.begin() == x.degree());
 }
 
-TEST_CASE("PartialPerm 02: u_int16_t hash", "[quick][element][pperm][02]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "002",
+                        "u_int16_t hash",
+                        "[quick][element]") {
   Element* x = new PartialPerm<u_int16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   for (size_t i = 0; i < 1000000; i++) {
@@ -221,8 +189,10 @@ TEST_CASE("PartialPerm 02: u_int16_t hash", "[quick][element][pperm][02]") {
   delete x;
 }
 
-TEST_CASE("PartialPerm 03: u_int16_t delete/copy",
-          "[quick][element][pperm][03]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "003",
+                        "u_int16_t delete/copy",
+                        "[quick][element]") {
   Element* x = new PartialPerm<u_int16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   Element* y = x->heap_copy();
@@ -240,7 +210,10 @@ TEST_CASE("PartialPerm 03: u_int16_t delete/copy",
   delete expected;
 }
 
-TEST_CASE("PartialPerm 04: u_int32_t methods", "[quick][element][pperm][04]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "004",
+                        "u_int32_t methods",
+                        "[quick][element]") {
   auto x = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
   auto y = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(x == y);
@@ -269,7 +242,10 @@ TEST_CASE("PartialPerm 04: u_int32_t methods", "[quick][element][pperm][04]") {
   REQUIRE(id == expected);
 }
 
-TEST_CASE("PartialPerm 05: u_int32_t hash", "[quick][element][pperm][05]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "005",
+                        "u_int32_t hash",
+                        "[quick][element]") {
   Element* x = new PartialPerm<u_int32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   for (size_t i = 0; i < 1000000; i++) {
@@ -278,8 +254,10 @@ TEST_CASE("PartialPerm 05: u_int32_t hash", "[quick][element][pperm][05]") {
   delete x;
 }
 
-TEST_CASE("PartialPerm 06: u_int32_t delete/copy",
-          "[quick][element][pperm][06]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "006",
+                        "u_int32_t delete/copy",
+                        "[quick][element]") {
   Element* x = new PartialPerm<u_int32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   Element* y = x->heap_copy();
@@ -298,7 +276,10 @@ TEST_CASE("PartialPerm 06: u_int32_t delete/copy",
   delete expected;
 }
 
-TEST_CASE("PartialPerm 07: exceptions", "[quick][element][pperm][07]") {
+LIBSEMIGROUPS_TEST_CASE("PartialPerm",
+                        "007",
+                        "exceptions",
+                        "[quick][element]") {
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>()));
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({0})));
   REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEFINED})));
@@ -347,7 +328,10 @@ TEST_CASE("PartialPerm 07: exceptions", "[quick][element][pperm][07]") {
                     LibsemigroupsException);
 }
 
-TEST_CASE("BooleanMat 01: methods", "[quick][element][booleanmat][01]") {
+LIBSEMIGROUPS_TEST_CASE("BooleanMat",
+                        "001",
+                        "methods",
+                        "[quick][element]") {
   auto x = BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   auto y = BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
   auto z = BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
@@ -370,7 +354,10 @@ TEST_CASE("BooleanMat 01: methods", "[quick][element][booleanmat][01]") {
   REQUIRE(z == x);
 }
 
-TEST_CASE("BooleanMat 02: hash", "[quick][element][booleanmat][02]") {
+LIBSEMIGROUPS_TEST_CASE("BooleanMat",
+                        "002",
+                        "hash",
+                        "[quick][element]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -378,7 +365,10 @@ TEST_CASE("BooleanMat 02: hash", "[quick][element][booleanmat][02]") {
   delete x;
 }
 
-TEST_CASE("BooleanMat 03: delete/copy", "[quick][element][booleanmat][03]") {
+LIBSEMIGROUPS_TEST_CASE("BooleanMat",
+                        "003",
+                        "delete/copy",
+                        "[quick][element]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   Element* y = x->heap_copy();
   delete x;
@@ -394,8 +384,10 @@ TEST_CASE("BooleanMat 03: delete/copy", "[quick][element][booleanmat][03]") {
   delete expected;
 }
 
-TEST_CASE("Bipartition 01: overridden methods",
-          "[quick][element][bipart][01]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "001",
+                        "overridden methods",
+                        "[quick][element]") {
   auto x = Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   auto y = Bipartition(
@@ -433,7 +425,10 @@ TEST_CASE("Bipartition 01: overridden methods",
   REQUIRE(z == y);
 }
 
-TEST_CASE("Bipartition 02: hash", "[quick][element][bipart][02]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "002",
+                        "hash",
+                        "[quick][element]") {
   Element* x = new Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   for (size_t i = 0; i < 1000000; i++) {
@@ -442,8 +437,10 @@ TEST_CASE("Bipartition 02: hash", "[quick][element][bipart][02]") {
   delete x;
 }
 
-TEST_CASE("Bipartition 03: non-overridden methods",
-          "[quick][element][bipart][03]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "003",
+                        "non-overridden methods",
+                        "[quick][element]") {
   Bipartition* x = new Bipartition(
       {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
@@ -500,7 +497,10 @@ TEST_CASE("Bipartition 03: non-overridden methods",
   delete x;
 }
 
-TEST_CASE("Bipartition 04: delete/copy", "[quick][element][bipart][04]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "004",
+                        "delete/copy",
+                        "[quick][element]") {
   Element* x = new Bipartition({0, 0, 0, 0});
   Element* y = x->heap_copy();
   delete x;
@@ -516,7 +516,10 @@ TEST_CASE("Bipartition 04: delete/copy", "[quick][element][bipart][04]") {
   delete expected;
 }
 
-TEST_CASE("Bipartition 05: degree 0", "[quick][element][bipart][05]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "005",
+                        "degree 0",
+                        "[quick][element]") {
   Bipartition* x = new Bipartition(std::vector<u_int32_t>({}));
   REQUIRE(x->const_nr_blocks() == 0);
   REQUIRE(x->nr_left_blocks() == 0);
@@ -534,14 +537,16 @@ TEST_CASE("Bipartition 05: degree 0", "[quick][element][bipart][05]") {
   delete x;
 }
 
-TEST_CASE("Bipartition 06: exceptions", "[quick][bipart][06]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition", "006", "exceptions", "[quick]") {
   REQUIRE_NOTHROW(Bipartition(std::vector<u_int32_t>()));
   REQUIRE_THROWS_AS(Bipartition({0}), LibsemigroupsException);
   REQUIRE_THROWS_AS(Bipartition({1, 0}), LibsemigroupsException);
 }
 
-TEST_CASE("Bipartition 07: convenience constructor",
-          "[quick][element][bipart][07]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "007",
+                        "convenience constructor",
+                        "[quick][element]") {
   Bipartition* xx = new Bipartition(
       {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
@@ -674,8 +679,10 @@ TEST_CASE("Bipartition 07: convenience constructor",
                     LibsemigroupsException);
 }
 
-TEST_CASE("Bipartition 07: force copy constructor over move constructor",
-          "[quick][element][bipart][07]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "007",
+                        "force copy constructor over move constructor",
+                        "[quick][element]") {
   std::vector<uint32_t> xx(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   auto                  x = Bipartition(xx);
@@ -715,8 +722,10 @@ TEST_CASE("Bipartition 07: force copy constructor over move constructor",
   z.redefine(y, id, 0);
   REQUIRE(z == y);
 }
-TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
-          "[quick][element][matrix][01]") {
+LIBSEMIGROUPS_TEST_CASE("ProjectiveMaxPlusMatrix",
+                        "001",
+                        "methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
 
   auto x = ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -751,7 +760,10 @@ TEST_CASE("ProjectiveMaxPlusMatrix 01: methods",
   delete sr;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix 02: hash", "[quick][element][matrix][02]") {
+LIBSEMIGROUPS_TEST_CASE("ProjectiveMaxPlusMatrix",
+                        "002",
+                        "hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x
       = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -762,8 +774,10 @@ TEST_CASE("ProjectiveMaxPlusMatrix 02: hash", "[quick][element][matrix][02]") {
   delete sr;
 }
 
-TEST_CASE("ProjectiveMaxPlusMatrix 03: delete/copy",
-          "[quick][element][matrix][03]") {
+LIBSEMIGROUPS_TEST_CASE("ProjectiveMaxPlusMatrix",
+                        "003",
+                        "delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x
       = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -787,8 +801,10 @@ TEST_CASE("ProjectiveMaxPlusMatrix 03: delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 01: Integers methods",
-          "[quick][element][matrix][01]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "001",
+                        "Integers methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new Integers();
 
   auto x
@@ -819,8 +835,10 @@ TEST_CASE("MatrixOverSemiring 01: Integers methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 02: Integers, hash",
-          "[quick][element][matrix][02]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "002",
+                        "Integers, hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new Integers();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -831,8 +849,10 @@ TEST_CASE("MatrixOverSemiring 02: Integers, hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 03: MaxPlusSemiring methods",
-          "[quick][element][matrix][03]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "003",
+                        "MaxPlusSemiring methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
 
   auto x
@@ -862,8 +882,10 @@ TEST_CASE("MatrixOverSemiring 03: MaxPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 04: MaxPlusSemiring hash",
-          "[quick][element][matrix][04]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "004",
+                        "MaxPlusSemiring hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -874,8 +896,10 @@ TEST_CASE("MatrixOverSemiring 04: MaxPlusSemiring hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 05: MinPlusSemiring methods",
-          "[quick][element][matrix][05]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "005",
+                        "MinPlusSemiring methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MinPlusSemiring();
 
   auto x
@@ -906,8 +930,10 @@ TEST_CASE("MatrixOverSemiring 05: MinPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 06: MinPlusSemiring hash",
-          "[quick][element][matrix][06]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "006",
+                        "MinPlusSemiring hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MinPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -918,8 +944,10 @@ TEST_CASE("MatrixOverSemiring 06: MinPlusSemiring hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 07: TropicalMaxPlusSemiring methods",
-          "[quick][element][matrix][07]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "007",
+                        "TropicalMaxPlusSemiring methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(33);
 
   auto x
@@ -952,8 +980,10 @@ TEST_CASE("MatrixOverSemiring 07: TropicalMaxPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 08: TropicalMaxPlusSemiring hash",
-          "[quick][element][matrix][08]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "008",
+                        "TropicalMaxPlusSemiring hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(33);
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -964,8 +994,10 @@ TEST_CASE("MatrixOverSemiring 08: TropicalMaxPlusSemiring hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 09: TropicalMinPlusSemiring methods",
-          "[quick][element][matrix][09]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "009",
+                        "TropicalMinPlusSemiring methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMinPlusSemiring(33);
 
   auto x
@@ -996,8 +1028,10 @@ TEST_CASE("MatrixOverSemiring 09: TropicalMinPlusSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 10: TropicalMinPlusSemiring hash",
-          "[quick][element][matrix][10]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "010",
+                        "TropicalMinPlusSemiring hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMinPlusSemiring(33);
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -1008,8 +1042,10 @@ TEST_CASE("MatrixOverSemiring 10: TropicalMinPlusSemiring hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 11: NaturalSemiring methods",
-          "[quick][element][matrix][11]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "011",
+                        "NaturalSemiring methods",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new NaturalSemiring(33, 2);
 
   auto x
@@ -1039,8 +1075,10 @@ TEST_CASE("MatrixOverSemiring 11: NaturalSemiring methods",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 12: NaturalSemiring hash",
-          "[quick][element][matrix][12]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "012",
+                        "NaturalSemiring hash",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new NaturalSemiring(33, 2);
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}, sr);
@@ -1052,8 +1090,10 @@ TEST_CASE("MatrixOverSemiring 12: NaturalSemiring hash",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 13: Integers delete/copy",
-          "[quick][element][matrix][13]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "013",
+                        "Integers delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new Integers();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -1074,8 +1114,10 @@ TEST_CASE("MatrixOverSemiring 13: Integers delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 14: MaxPlusSemiring delete/copy",
-          "[quick][element][matrix][14]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "014",
+                        "MaxPlusSemiring delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MaxPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -1096,8 +1138,10 @@ TEST_CASE("MatrixOverSemiring 14: MaxPlusSemiring delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 15: MinPlusSemiring delete/copy",
-          "[quick][element][matrix][15]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "015",
+                        "MinPlusSemiring delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new MinPlusSemiring();
   Element*           x  = new MatrixOverSemiring<int64_t>(
       {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
@@ -1118,8 +1162,10 @@ TEST_CASE("MatrixOverSemiring 15: MinPlusSemiring delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 16: TropicalMaxPlusSemiring delete/copy",
-          "[quick][element][matrix][16]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "016",
+                        "TropicalMaxPlusSemiring delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(23);
   Element*           x
       = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}, sr);
@@ -1140,8 +1186,10 @@ TEST_CASE("MatrixOverSemiring 16: TropicalMaxPlusSemiring delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 17: TropicalMinPlusSemiring delete/copy",
-          "[quick][element][matrix][17]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "017",
+                        "TropicalMinPlusSemiring delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new TropicalMinPlusSemiring(23);
   Element*           x
       = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}, sr);
@@ -1162,8 +1210,10 @@ TEST_CASE("MatrixOverSemiring 17: TropicalMinPlusSemiring delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 18: NaturalSemiring delete/copy",
-          "[quick][element][matrix][18]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "018",
+                        "NaturalSemiring delete/copy",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new NaturalSemiring(23, 1);
   Element*           x
       = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}, sr);
@@ -1184,7 +1234,10 @@ TEST_CASE("MatrixOverSemiring 18: NaturalSemiring delete/copy",
   delete sr;
 }
 
-TEST_CASE("MatrixOverSemiring 19: exceptions", "[quick][element][matrix][18]") {
+LIBSEMIGROUPS_TEST_CASE("MatrixOverSemiring",
+                        "019",
+                        "exceptions",
+                        "[quick][element]") {
   Semiring<int64_t>* sr = new NaturalSemiring(23, 1);
   REQUIRE_THROWS_AS(MatrixOverSemiring<int64_t>({{0, 0}, {0, 0}}, nullptr),
                     LibsemigroupsException);
@@ -1197,8 +1250,10 @@ TEST_CASE("MatrixOverSemiring 19: exceptions", "[quick][element][matrix][18]") {
   delete sr;
 }
 
-TEST_CASE("PBR 01: universal product with convenience constructor",
-          "[quick][element][pbr][01]") {
+LIBSEMIGROUPS_TEST_CASE("PBR",
+                        "001",
+                        "universal product with convenience constructor",
+                        "[quick][element]") {
   Element* x = new PBR({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
                        {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}});
 
@@ -1242,7 +1297,10 @@ TEST_CASE("PBR 01: universal product with convenience constructor",
   delete expected;
 }
 
-TEST_CASE("PBR 02: universal product", "[quick][element][pbr][02]") {
+LIBSEMIGROUPS_TEST_CASE("PBR",
+                        "002",
+                        "universal product",
+                        "[quick][element]") {
   Element* x = new PBR({{5, 3},
                         {5, 4, 3, 0, 1, 2},
                         {5, 4, 3, 0, 2},
@@ -1278,8 +1336,10 @@ TEST_CASE("PBR 02: universal product", "[quick][element][pbr][02]") {
   delete expected;
 }
 
-TEST_CASE("PBR 03: product [bigger than previous]",
-          "[quick][element][pbr][03]") {
+LIBSEMIGROUPS_TEST_CASE("PBR",
+                        "003",
+                        "product [bigger than previous]",
+                        "[quick][element]") {
   Element* x = new PBR({{5, 3},
                         {5, 4, 3, 0, 1, 2},
                         {5, 4, 3, 0, 2},
@@ -1327,7 +1387,7 @@ TEST_CASE("PBR 03: product [bigger than previous]",
   delete expected;
 }
 
-TEST_CASE("PBR 04: hash", "[quick][element][pbr][04]") {
+LIBSEMIGROUPS_TEST_CASE("PBR", "004", "hash", "[quick][element]") {
   Element* x = new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -1335,7 +1395,7 @@ TEST_CASE("PBR 04: hash", "[quick][element][pbr][04]") {
   delete x;
 }
 
-TEST_CASE("PBR 05: delete/copy", "[quick][element][pbr][05]") {
+LIBSEMIGROUPS_TEST_CASE("PBR", "005", "delete/copy", "[quick][element]") {
   Element* x = new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
   Element* y = x->heap_copy();
   delete x;
@@ -1351,7 +1411,7 @@ TEST_CASE("PBR 05: delete/copy", "[quick][element][pbr][05]") {
   delete a;
 }
 
-TEST_CASE("PBR 06: exceptions", "[quick][element][pbr][06]") {
+LIBSEMIGROUPS_TEST_CASE("PBR", "006", "exceptions", "[quick][element]") {
   REQUIRE_THROWS_AS(PBR({{1}, {4}, {3}, {10}, {0, 2}, {0, 3, 4, 5}}),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(PBR({{4}, {3}, {0}, {0, 2}, {0, 3, 4, 5}}),
@@ -1380,7 +1440,7 @@ template <class T> bool test_inverse(Permutation<T> const& p) {
   return p * p.inverse() == p.identity() && p.inverse() * p == p.identity();
 }
 
-TEST_CASE("Permutation 01: inverse", "[quick][element][permutation][01]") {
+LIBSEMIGROUPS_TEST_CASE("Permutation", "001", "inverse", "[quick][element]") {
   // Those two constructor if not passed a vector return an element
   // with _vector set to null (see issue #87).
   // REQUIRE(test_inverse(Permutation<u_int16_t>({})));
@@ -1392,7 +1452,10 @@ TEST_CASE("Permutation 01: inverse", "[quick][element][permutation][01]") {
   REQUIRE(test_inverse(Permutation<u_int16_t>({0, 1, 2, 3, 4})));
 }
 
-TEST_CASE("Permutation 02: exceptions", "[quick][element][permutation][02]") {
+LIBSEMIGROUPS_TEST_CASE("Permutation",
+                        "002",
+                        "exceptions",
+                        "[quick][element]") {
   REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({})));
   REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({0})));
   REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({0, 1})));
@@ -1411,7 +1474,7 @@ TEST_CASE("Permutation 02: exceptions", "[quick][element][permutation][02]") {
       LibsemigroupsException);
 }
 
-TEST_CASE("SmallestInteger 01", "[quick][helpers][01]") {
+LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "001", "", "[quick][element]") {
   REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
   REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
   REQUIRE(sizeof(SmallestInteger<256>::type) == 2);
@@ -1423,7 +1486,7 @@ TEST_CASE("SmallestInteger 01", "[quick][helpers][01]") {
 #endif
 }
 
-TEST_CASE("Transf 02", "[quick][helpers][02]") {
+LIBSEMIGROUPS_TEST_CASE("Transf", "002", "", "[quick][element]") {
   auto x = Transf<3>::type({0, 1, 2});
   (void) x;
   auto y = PPerm<3>::type({0, 1, 2});

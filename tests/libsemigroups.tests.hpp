@@ -24,8 +24,9 @@
 #define STR2(X) #X
 #define STR(X) STR2(X)
 
-#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags) \
-  TEST_CASE(classname " " nr ": " msg,                    \
-            "[" classname "][" nr "][" __FILE__ "][" STR(__LINE__) "]" tags)
+#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)             \
+  TEST_CASE(classname " " nr ": " msg,                                \
+            "[" classname "][" nr "][" classname " " nr "][" __FILE__ \
+            "][" STR(__LINE__) "]" tags)
 
 #endif  // LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_

@@ -106,7 +106,7 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 ## Extra files for the distribution
 
-LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp
+LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp ## TODO include in archive
 
 EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
@@ -141,6 +141,8 @@ lstest_SOURCES += tests/cong.test.cpp
 lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
 lstest_SOURCES += tests/containers.test.cpp
 lstest_SOURCES += tests/element.test.cpp
+lstest_SOURCES += tests/fpsemi.test.cpp
+lstest_SOURCES += tests/fpsemi-examples.cpp
 lstest_SOURCES += tests/froidure-pin.1.test.cpp
 lstest_SOURCES += tests/froidure-pin.2.test.cpp
 lstest_SOURCES += tests/froidure-pin.3.test.cpp

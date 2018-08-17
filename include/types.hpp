@@ -36,11 +36,11 @@ namespace libsemigroups {
     //! can represent \c N.
     using type = typename std::conditional<
         N >= 0x100000000,
-        u_int64_t,
+        uint64_t,
         typename std::conditional<
             N >= 0x10000,
-            u_int32_t,
-            typename std::conditional<N >= 0x100, u_int16_t, u_int8_t>::type>::
+            uint32_t,
+            typename std::conditional<N >= 0x100, uint16_t, uint8_t>::type>::
             type>::type;
   };
   //! Type for the index of a generator of a semigroup.
