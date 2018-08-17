@@ -20,8 +20,8 @@
 // methods for translating between then, for use by the FroidurePin,
 // SchreierSims, and P classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_
 
 #include <type_traits>
 
@@ -130,4 +130,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_TRAITS_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_

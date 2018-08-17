@@ -33,8 +33,8 @@
 // 6. Replace typedef's with aliases. [x]
 // 7. Rename to FroidurePin
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SEMIGROUP_HPP_
-#define LIBSEMIGROUPS_INCLUDE_SEMIGROUP_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
+#define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
 
 #include <algorithm>
 #include <mutex>
@@ -2369,5 +2369,4 @@ namespace libsemigroups {
 #endif
   };
 }  // namespace libsemigroups
-
-#endif  // LIBSEMIGROUPS_INCLUDE_SEMIGROUP_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_

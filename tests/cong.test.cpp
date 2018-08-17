@@ -41,7 +41,8 @@ namespace libsemigroups {
   constexpr congruence_type LEFT     = congruence_type::LEFT;
   constexpr congruence_type RIGHT    = congruence_type::RIGHT;
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 000",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "000",
                           "left congruence on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -53,7 +54,8 @@ namespace libsemigroups {
     Congruence cong(LEFT, S);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 001",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "001",
                           "2-sided congruence on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -82,7 +84,8 @@ namespace libsemigroups {
     REQUIRE(!cong.contains({1}, {0, 0, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 002",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "002",
                           "left congruence on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -95,7 +98,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 003",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "003",
                           "word_to_class_index for cong. on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -119,7 +123,8 @@ namespace libsemigroups {
     REQUIRE(!cong.contains({0, 0, 0, 0}, {0, 0, 1}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 004",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "004",
                           "word_to_class_index for cong. on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -145,7 +150,8 @@ namespace libsemigroups {
     REQUIRE(cong2.contains({0, 0, 0, 0}, {0, 1, 1, 0, 1, 1}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 005",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "005",
                           "trivial congruence on non-fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -158,7 +164,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 88);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 006",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "006",
                           "2-sided congruence on non-fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -173,7 +180,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 21);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 007",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "007",
                           "2-sided congruence on fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -203,7 +211,8 @@ namespace libsemigroups {
     REQUIRE(cong2.nr_classes() == 2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 008",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "008",
                           "2-sided congruence on infinite fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -234,7 +243,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 009",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "009",
                           "2-sided congruence on infinite fp semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -266,7 +276,8 @@ namespace libsemigroups {
     REQUIRE(!cong.less({1, 0, 1}, {1, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 010",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "010",
                           "2-sided congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -312,7 +323,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 525);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 011",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "011",
                           "congruence on full PBR monoid on 2 points",
                           "[extreme]") {
     REPORTER.set_report(true);
@@ -350,7 +362,8 @@ namespace libsemigroups {
     REQUIRE(std::count(v.cbegin(), v.cend(), 41216) == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 012",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "012",
                           "2-sided congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -375,7 +388,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 32);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 013",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "013",
                           "trivial 2-sided congruence on bicyclic monoid",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -393,7 +407,8 @@ namespace libsemigroups {
     REQUIRE(cong.contains({2, 1}, {1, 2, 0, 2, 1, 1, 2}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 014",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "014",
                           "non-trivial 2-sided congruence on bicyclic monoid",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -412,7 +427,8 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 015",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "015",
                           "2-sided congruence on free abelian monoid",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -430,7 +446,8 @@ namespace libsemigroups {
 
   // The previous Congruence 17 test was identical to Congruence 12
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 016",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "016",
                           "example where TC works but KB doesn't",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -450,7 +467,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 4);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 017",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "017",
                           "2-sided congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -477,7 +495,8 @@ namespace libsemigroups {
   // The next test behaves as expected but runs forever, since the nr_classes
   // method requires to know the size of the semigroup S, and we cannot
   // currently work that out.
-  LIBSEMIGROUPS_TEST_CASE("Congruence 018",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "018",
                           "infinite fp semigroup from GAP library ",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -508,7 +527,8 @@ namespace libsemigroups {
     // REQUIRE(cong.nr_classes());  // Currently runs forever (and should)
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 019",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "019",
                           "2-sided cong. on fp semigroup with infinite classes",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -534,7 +554,8 @@ namespace libsemigroups {
     REQUIRE(cong.contains(x, y));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 020",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "020",
                           "trivial cong. on an fp semigroup",
                           "[quick]") {
     FpSemigroup S;
@@ -547,7 +568,10 @@ namespace libsemigroups {
     REQUIRE(cong.nr_non_trivial_classes() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 021", "duplicate generators", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "021",
+                          "duplicate generators",
+                          "[quick]") {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
     FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -558,7 +582,10 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == S.size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 022", "non-trivial classes", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "022",
+                          "non-trivial classes",
+                          "[quick]") {
     REPORTER.set_report(false);
 
     FpSemigroup S;
@@ -591,7 +618,8 @@ namespace libsemigroups {
 
   // FIXME in this example non-winner ToddCoxeter takes a long time to stop
   // after it is killed
-  LIBSEMIGROUPS_TEST_CASE("Congruence 023",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "023",
                           "right congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -631,7 +659,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 024",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "024",
                           "redundant generating pairs",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -643,7 +672,8 @@ namespace libsemigroups {
     REQUIRE(cong.contains({0, 0}, {0, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 025",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "025",
                           "2-sided cong. on free semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -654,7 +684,8 @@ namespace libsemigroups {
     REQUIRE(!cong.contains({0, 0}, {0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 026",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "026",
                           "is_quotient_obviously_(in)finite",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -758,7 +789,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 027", "less", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "027", "less", "[quick]") {
     FpSemigroup S;
     S.set_alphabet(2);
     S.add_rule({0, 0}, {0});
@@ -767,7 +798,8 @@ namespace libsemigroups {
     REQUIRE(!cong.less({0, 0}, {0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 028",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "028",
                           "2-sided congruences of BMat8 semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -840,7 +872,8 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 029",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "029",
                           "left congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -882,7 +915,8 @@ namespace libsemigroups {
     delete t4;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 030",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "030",
                           "right congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -925,7 +959,8 @@ namespace libsemigroups {
   }
 
   // For some reason the following test case doesn't run...
-  LIBSEMIGROUPS_TEST_CASE("Congruence 031",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "031",
                           "right congruence on finite semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -973,7 +1008,7 @@ namespace libsemigroups {
     delete t6;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 032", "contains", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(2);
@@ -1292,7 +1327,8 @@ namespace libsemigroups {
     return rels;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 001",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "001",
                           "Renner monoid type B2 (E. G. presentation), q = 1",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1306,7 +1342,8 @@ namespace libsemigroups {
     REQUIRE(S.size() == 57);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 002",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "002",
                           "Renner monoid type B2 (E. G. presentation), q = 0",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1320,7 +1357,8 @@ namespace libsemigroups {
   }
 
   // Loops for ever: Infinite monoid ???
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 003",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "003",
                           "Renner monoid type B3 (E. G. presentation), q = 1",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1336,7 +1374,8 @@ namespace libsemigroups {
   }
 
   // Loops for ever: Infinite monoid ???
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 004",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "004",
                           "Renner monoid type B3 (E. G. presentation), q = 0",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1352,7 +1391,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 005",
+      "FpSemigroup",
+      "005",
       "Renner monoid type B2 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1366,7 +1406,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 006",
+      "FpSemigroup",
+      "006",
       "Renner monoid type B2 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1380,7 +1421,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 007",
+      "FpSemigroup",
+      "007",
       "Renner monoid type B3 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1394,7 +1436,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 008",
+      "FpSemigroup",
+      "008",
       "Renner monoid type B3 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1408,7 +1451,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 009",
+      "FpSemigroup",
+      "009",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1426,7 +1470,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 010",
+      "FpSemigroup",
+      "010",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1445,7 +1490,8 @@ namespace libsemigroups {
 
   // This appears to be an example where KB + FP is faster than TC
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 011",
+      "FpSemigroup",
+      "011",
       "Renner monoid type B5 (Gay-Hivert presentation), q = 1",
       "[extreme][hivert]") {
     REPORTER.set_report(true);
@@ -1474,7 +1520,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 012",
+      "FpSemigroup",
+      "012",
       "Renner monoid type B5 (Gay-Hivert presentation), q = 0",
       "[extreme][hivert]") {
     REPORTER.set_report(true);
@@ -1497,7 +1544,8 @@ namespace libsemigroups {
     REQUIRE(tc.nr_classes() == 322021);  // Works!
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 013",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "013",
                           "Renner monoid type D2 (E. G. presentation), q = 1",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1514,7 +1562,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 014",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "014",
                           "Renner monoid type D2 (E. G. presentation), q = 0",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1531,7 +1580,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 54);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 015",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "015",
                           "Renner monoid type D3 (E. G. presentation), q = 1",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1548,7 +1598,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 016",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "016",
                           "Renner monoid type D3 (E. G. presentation), q = 0",
                           "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1565,7 +1616,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 017",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "017",
                           "Renner monoid type D4 (E. G. presentation), q = 1",
                           "[quick][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
@@ -1584,7 +1636,8 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 10625); // Runs forever
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 018",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "018",
                           "Renner monoid type D4 (E. G. presentation), q = 0",
                           "[quick][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
@@ -1604,7 +1657,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 019",
+      "FpSemigroup",
+      "019",
       "Renner monoid type D2 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1622,7 +1676,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 020",
+      "FpSemigroup",
+      "020",
       "Renner monoid type D2 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1640,7 +1695,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 021",
+      "FpSemigroup",
+      "021",
       "Renner monoid type D3 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1658,7 +1714,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 022",
+      "FpSemigroup",
+      "022",
       "Renner monoid type D3 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1676,7 +1733,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 023",
+      "FpSemigroup",
+      "023",
       "Renner monoid type D4 (Gay-Hivert presentation), q = 1",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1694,7 +1752,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 024",
+      "FpSemigroup",
+      "024",
       "Renner monoid type D4 (Gay-Hivert presentation), q = 0",
       "[quick][hivert]") {
     REPORTER.set_report(REPORT);
@@ -1711,7 +1770,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 025",
+      "FpSemigroup",
+      "025",
       "Renner monoid type D5 (Gay-Hivert presentation), q = 1",
       "[extreme][hivert]") {  // TODO check the category
     REPORTER.set_report(true);
@@ -1729,7 +1789,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 026",
+      "FpSemigroup",
+      "026",
       "Renner monoid type D5 (Gay-Hivert presentation), q = 0",
       "[extreme][hivert]") {  // TODO check the category
     REPORTER.set_report(true);
@@ -1747,7 +1808,8 @@ namespace libsemigroups {
 
   // Takes about 4 minutes
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 027",
+      "FpSemigroup",
+      "027",
       "Renner monoid type D6 (Gay-Hivert presentation), q = 1",
       "[extreme][hivert]") {
     REPORTER.set_report(true);
@@ -1766,7 +1828,8 @@ namespace libsemigroups {
 
   // Takes about 4 minutes
   LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup 028",
+      "FpSemigroup",
+      "028",
       "Renner monoid type D6 (Gay-Hivert presentation), q = 0",
       "[extreme][hivert]") {
     REPORTER.set_report(true);
@@ -1829,7 +1892,8 @@ namespace libsemigroups {
     return rels;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 029",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "029",
                           "Rook monoid R5, q = 0",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -1845,7 +1909,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 71);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 030",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "030",
                           "Rook monoid R5, q = 1",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -1861,7 +1926,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 71);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 031",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "031",
                           "Rook monoid R6, q = 0",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -1877,7 +1943,8 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 207);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup 032",
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "032",
                           "Rook monoid R6, q = 1",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -1914,7 +1981,7 @@ namespace libsemigroups {
     return rels;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 033", "Stellar S2", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "033", "Stellar S2", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(3);
@@ -1942,7 +2009,7 @@ namespace libsemigroups {
     REQUIRE(v == std::vector<word_type>({{0, 1, 0}, {1, 0}, {1, 0, 1}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 034", "Stellar S3", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "034", "Stellar S3", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(4);
@@ -1994,7 +2061,7 @@ namespace libsemigroups {
                      {2, 1, 0, 1, 2}}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 035", "Stellar S4", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "035", "Stellar S4", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(5);
@@ -2030,7 +2097,7 @@ namespace libsemigroups {
             == 209);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 036", "Stellar S5", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "036", "Stellar S5", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -2066,7 +2133,7 @@ namespace libsemigroups {
             == S.size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 037", "Stellar S6", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "037", "Stellar S6", "[quick]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -2097,7 +2164,7 @@ namespace libsemigroups {
             == S.size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 038", "Stellar S7", "[standard]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "038", "Stellar S7", "[standard]") {
     // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
@@ -2129,7 +2196,8 @@ namespace libsemigroups {
             == S.size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 039",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "039",
                           "left cong. on an f.p. semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);
@@ -2164,7 +2232,8 @@ namespace libsemigroups {
     REQUIRE(cong1.nr_classes() == cong2.nr_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence 040",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "040",
                           "2-sided cong. on infinite f.p. semigroup",
                           "[quick]") {
     REPORTER.set_report(REPORT);

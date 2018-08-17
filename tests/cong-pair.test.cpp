@@ -21,8 +21,8 @@
 
 #include <utility>
 
-#include "catch.hpp"
 #include "cong-pair.hpp"
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
   namespace congruence {
@@ -39,8 +39,10 @@ namespace libsemigroups {
     congruence_type const LEFT     = congruence_type::LEFT;
     congruence_type const RIGHT    = congruence_type::RIGHT;
 
-    TEST_CASE("CongP 01: 2-sided congruence on finite semigroup",
-              "[quick][cong-p][01]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "001",
+                            "(cong)   2-sided cong. on finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -68,8 +70,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 02: left congruence on finite semigroup",
-              "[quick][cong-p][02]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "002",
+                            "(cong)   left congruence on finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -96,8 +100,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 03: right congruence on finite semigroup",
-              "[quick][cong-p][03]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "003",
+                            "(cong)   right congruence on finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -124,8 +130,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 04: trivial congruence on finite semigroup",
-              "[quick][cong-p][04]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "004",
+                            "(cong)   trivial congruence on finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
@@ -161,8 +169,11 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 05: trivial left congruence on finite semigroup",
-              "[quick][cong-p][05]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "P",
+        "005",
+        "(cong)   trivial left congruence on finite semigroup",
+        "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
@@ -198,8 +209,11 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 06: trivial right congruence on finite semigroup",
-              "[quick][cong-p][06]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "P",
+        "006",
+        "(cong)   trivial right congruence on finite semigroup",
+        "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
@@ -235,8 +249,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 07: universal congruence on finite semigroup",
-              "[quick][cong-p][07]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "007",
+                            "(cong)   universal congruence on finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new PartialPerm<u_int16_t>({0, 1, 3}, {4, 1, 0}, 5),
@@ -273,8 +289,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 08: 2-sided congruence on finite semigroup",
-              "[extreme][cong-p][08]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "008",
+                            "(cong)   2-sided congruence on finite semigroup",
+                            "[extreme][cong][cong-pair]") {
       REPORTER.set_report(true);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -317,8 +335,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 09: 2-sided congruence on finite semigroup",
-              "[standard][cong-p][09]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "009",
+                            "(cong)   2-sided congruence on finite semigroup",
+                            "[standard][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -360,8 +380,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("CongP 10: left congruence on big finite semigroup",
-              "[quick][cong-p][10]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "010",
+                            "(cong)   left congruence on big finite semigroup",
+                            "[quick][cong][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -402,10 +424,8 @@ namespace libsemigroups {
     }
 
     // TODO uncomment
-    /*TEST_CASE("CongP 11: run_for", "[quick][cong-p][11]") {
-      REPORTER.set_report(REPORT);
-      RWS rws;
-      rws.set_alphabet("ab");
+    /*LIBSEMIGROUPS_TEST_CASE("P", "011", "run_for", "[quick][cong][cong-pair]")
+    { REPORTER.set_report(REPORT); RWS rws; rws.set_alphabet("ab");
       rws.add_relation("aa", "a");
       rws.add_relation("ab", "a");
       rws.add_relation("ba", "a");
@@ -432,8 +452,10 @@ namespace libsemigroups {
 
     constexpr bool REPORT = false;
 
-    TEST_CASE("FpSemiP 01: 2-sided congruence on finite semigroup",
-              "[quick][fpsemi-p][01]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "011",
+                            "(fpsemi) 2-sided congruence on finite semigroup",
+                            "[quick][fpsemi][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -461,8 +483,10 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
-    TEST_CASE("FpSemiP 02: 2-sided congruence on finite semigroup",
-              "[quick][fpsemi-p][02]") {
+    LIBSEMIGROUPS_TEST_CASE("P",
+                            "012",
+                            "(fpsemi) 2-sided congruence on finite semigroup",
+                            "[quick][fpsemi][cong-pair]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -494,8 +518,9 @@ namespace libsemigroups {
     // the P class requires a base semigroup over which to compute, in the
     // example below there is no such base semigroup.
     //
-    // TEST_CASE("FpSemiP 03: infinite fp semigroup from GAP library",
-    //           "[quick][fpsemi-p][03]") {
+    // LIBSEMIGROUPS_TEST_CASE("P", "013",
+    //                         "infinite fp semigroup from GAP library ",
+    //                         "[quick][fpsemi][cong-pair]") {
     //   REPORTER.set_report(REPORT);
     //   P<> p;
     //   p.set_alphabet(2);

@@ -24,6 +24,14 @@ quick         | < 200ms
 standard      | < 3s
 extreme       | > 3s
 
+They should be declared using 
+
+    LIBSEMIGROUPS_TEST_CASE(classname, number, message, tags)
+
+"tags" should include "[FilePrefix]" where "FilePrefix" would be
+"cong-pair" in the file "tests/cong-pair.test.cc", if the file prefix is the
+same as "classname", then it should not be included. Tags are case insensitive. 
+
 ## Making a release
 
 ### Definitions

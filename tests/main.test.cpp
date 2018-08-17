@@ -82,6 +82,8 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     _total_time += t;
   }
 
+  // The way the total time below is displayed is unattractive, so decided to
+  // leave this out for the time being.
   // void testRunEnded(Catch::TestRunStats const&) override {
   // std::cout << libsemigroups::Timer::string(
   //                 std::chrono::nanoseconds(_total_time))

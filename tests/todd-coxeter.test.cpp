@@ -47,7 +47,8 @@ namespace libsemigroups {
     congruence_type constexpr LEFT     = congruence_type::LEFT;
     congruence_type constexpr RIGHT    = congruence_type::RIGHT;
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 001",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "001",
                             "(cong) small fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -70,7 +71,8 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({0, 0, 0}) != tc.word_to_class_index({1}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 002",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "002",
                             "(cong) Example 6.6 in Sims (see also RWS 13)",
                             "[standard]") {
       // TODO double check if this is standard or not
@@ -102,7 +104,8 @@ namespace libsemigroups {
       // REQUIRE(rws.confluent());  // This is slow
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 003",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "003",
                             "(cong) constructed from semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -120,7 +123,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter 005",
+        "ToddCoxeter",
+        "005",
         "(cong) non-trivial two-sided constructed with FroidurePin",
         "[quick]") {
       REPORTER.set_report(REPORT);
@@ -137,7 +141,8 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 21);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 006",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "006",
                             "(cong) non-trivial two-sided from relations",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -161,7 +166,8 @@ namespace libsemigroups {
       REQUIRE(tc2.nr_classes() == 2);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 009",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "009",
                             "(cong) small right cong. on free semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -176,7 +182,8 @@ namespace libsemigroups {
       REQUIRE(tc.finished());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 010",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "010",
                             "(cong) left cong. on free semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -197,7 +204,8 @@ namespace libsemigroups {
               != tc.word_to_class_index({0, 0, 0, 0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 011",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "011",
                             "(cong) for small fp semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -219,7 +227,8 @@ namespace libsemigroups {
       REQUIRE(tc2.word_to_class_index({0, 0, 0, 0}) < tc2.nr_classes());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 012",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "012",
                             "(cong) 2-sided cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -246,7 +255,8 @@ namespace libsemigroups {
       REQUIRE(tc.cbegin_ntc()->size() == 68);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 013",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "013",
                             "(cong) left cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -273,7 +283,8 @@ namespace libsemigroups {
       REQUIRE(tc.cbegin_ntc()->size() == 20);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 014",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "014",
                             "(cong) right cong. trans. semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -321,7 +332,8 @@ namespace libsemigroups {
       REQUIRE(std::count(v.cbegin(), v.cend(), 7) == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 015",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "015",
                             "(cong) trans. semigroup (size 88)",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -361,7 +373,8 @@ namespace libsemigroups {
       delete t4;
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 016",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "016",
                             "(cong) left cong. on trans. semigroup (size 88)",
                             "[quick]") {
       std::vector<Element*> gens
@@ -397,7 +410,8 @@ namespace libsemigroups {
       delete t4;
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 017",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "017",
                             "(cong) right cong. on trans. semigroup (size 88)",
                             "[quick]") {
       std::vector<Element*> gens
@@ -444,7 +458,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter 018",
+        "ToddCoxeter",
+        "018",
         "(cong) finite fp-semigroup, dihedral group of order 6",
         "[quick]") {
       REPORTER.set_report(REPORT);
@@ -471,7 +486,8 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 019",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "019",
                             "(cong) finite fp-semigroup, size 016",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -504,7 +520,8 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 020",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "020",
                             "(cong) finite fp-semigroup, size 016",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -573,7 +590,8 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 021",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "021",
                             "(cong) test prefilling of the table manually",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -604,7 +622,8 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == S.size());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 022",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "022",
                             "(cong) test packing phase",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -633,7 +652,8 @@ namespace libsemigroups {
       REQUIRE(tc2.nr_classes() == 78);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 024",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "024",
                             "(cong) non-trivial left cong. from semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -660,7 +680,8 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 69);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 025",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "025",
                             "(cong) 2-sided cong. on free semigroup",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -669,14 +690,16 @@ namespace libsemigroups {
       REQUIRE(!tc.contains({0, 0}, {0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 027",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "027",
                             "(cong) calling run when obviously infinite",
                             "[quick]") {
       ToddCoxeter tc(TWOSIDED, 5, {});
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 030",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "030",
                             "(cong) Stellar S3",
                             "[quick][hivert]") {
       REPORTER.set_report(REPORT);
@@ -719,7 +742,8 @@ namespace libsemigroups {
                       TCE(tc, 33), TCE(tc, 34)}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 031",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "031",
                             "(cong) finite semigroup (size 5)",
                             "[quick]") {
       congruence::ToddCoxeter tc(LEFT);
@@ -729,7 +753,10 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 5);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 033", "(cong) exceptions", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "033",
+                            "(cong) exceptions",
+                            "[quick]") {
       {
         congruence::ToddCoxeter tc1(LEFT);
         tc1.set_nr_generators(2);
@@ -781,7 +808,10 @@ namespace libsemigroups {
     using ToddCoxeter     = fpsemigroup::ToddCoxeter;
     constexpr bool REPORT = false;
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 004", "(fpsemi) add_rule", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "004",
+                            "(fpsemi) add_rule",
+                            "[quick]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet("ab");
@@ -793,7 +823,8 @@ namespace libsemigroups {
 
     // RWS methods fail for this one
     LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter 007",
+        "ToddCoxeter",
+        "007",
         "(fpsemi) (from kbmag/standalone/kb_data/s4) (RWS 49)",
         "[quick][kbmag]") {
       REPORTER.set_report(REPORT);
@@ -820,7 +851,8 @@ namespace libsemigroups {
 
     // Second of BHN's series of increasingly complicated presentations
     // of 1. Doesn't terminate
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 008",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "008",
                             "(fpsemi) (from kbmag/standalone/kb_data/degen4b) "
                             "(RWS 65)",
                             "[extreme][kbmag][shortlex]") {
@@ -861,7 +893,8 @@ namespace libsemigroups {
       // REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 023",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "023",
                             "(fpsemi) test validate",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -875,7 +908,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter 026",
+        "ToddCoxeter",
+        "026",
         "(fpsemi) add_rules after construct. from semigroup",
         "[quick]") {
       REPORTER.set_report(REPORT);
@@ -910,7 +944,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter 028",
+        "ToddCoxeter",
+        "028",
         "(fpsemi) Sym(5) from Chapter 3, Proposition 1.1 in NR",
         "[quick]") {
       REPORTER.set_report(REPORT);
@@ -930,7 +965,8 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 120);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 029",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "029",
                             "(fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
                             "[quick]") {
       REPORTER.set_report(REPORT);
@@ -942,7 +978,8 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 243);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter 032",
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "032",
                             "(fpsemi) finite semigroup (size 99)",
                             "[quick]") {
       REPORTER.set_report(REPORT);
