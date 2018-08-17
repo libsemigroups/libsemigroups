@@ -35,7 +35,7 @@
 
 #include "internal/libsemigroups-debug.hpp"
 #include "internal/libsemigroups-exception.hpp"
-#include "internal/recvec.hpp"
+#include "internal/containers.hpp"
 #include "internal/stl.hpp"
 
 #include "adapters.hpp"

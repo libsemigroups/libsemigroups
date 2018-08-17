@@ -21,15 +21,14 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
 
+#include "internal/containers.hpp"
 #include "internal/libsemigroups-config.hpp"
 #include "internal/libsemigroups-debug.hpp"
 #include "internal/libsemigroups-exception.hpp"
 #include "internal/race.hpp"
 #include "internal/range.hpp"
-#include "internal/recvec.hpp"
 #include "internal/report.hpp"
 #include "internal/runner.hpp"
-#include "internal/square.hpp"
 #include "internal/stl.hpp"
 #include "internal/timer.hpp"
 #include "internal/uf.hpp"

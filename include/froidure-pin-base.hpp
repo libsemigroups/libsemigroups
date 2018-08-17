@@ -22,7 +22,7 @@
 #include <atomic>
 #include <functional>
 
-#include "internal/recvec.hpp"
+#include "internal/containers.hpp"
 #include "internal/runner.hpp"
 
 #include "constants.hpp"

@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RECVEC_HPP_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RECVEC_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_CONTAINERS_HPP_
+#define LIBSEMIGROUPS_INCLUDE_INTERNAL_CONTAINERS_HPP_
 
 #include <algorithm>
 #include <vector>
@@ -649,5 +649,118 @@ namespace libsemigroups {
           iterator_type,
           reference_type,
           pointer_type>::fast_iterator_methods();
+
+  template <typename T, size_t N> class SquareVector {
+    // So that SquareVector<T, N> can access private data members of
+    // SquareVector<S, M> and vice versa.
+    template <typename S, size_t M> friend class SquareVector;
+
+   public:
+    SquareVector() : _arrays(), _sizes() {
+      clear();
+    }
+
+    void clear() {
+      _sizes.fill(0);
+    }
+
+    void push_back(size_t depth, T x) {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      LIBSEMIGROUPS_ASSERT(_sizes[depth] < N);
+      _arrays[depth][_sizes[depth]] = x;
+      _sizes[depth]++;
+    }
+
+    inline T back(size_t depth) const noexcept {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth][_sizes[depth] - 1];
+    }
+
+    inline T const& at(size_t depth, size_t index) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      LIBSEMIGROUPS_ASSERT(index < _sizes[depth]);
+      return _arrays[depth][index];
+    }
+
+    inline size_t size(size_t depth) const noexcept {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _sizes[depth];
+    }
+
+    inline typename std::array<T, N>::const_iterator
+    cbegin(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].cbegin();
+    }
+
+    inline typename std::array<T, N>::const_iterator cend(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].cbegin() + _sizes[depth];
+    }
+
+    inline typename std::array<T, N>::iterator begin(size_t depth) {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].begin();
+    }
+
+    inline typename std::array<T, N>::iterator end(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].begin() + _sizes[depth];
+    }
+
+   private:
+    std::array<std::array<T, N>, N> _arrays;
+    std::array<size_t, N>           _sizes;
+  };
+
+  template <typename T, size_t N> class SquareArray {
+    // So that SquareArray<T, N> can access private data members of
+    // SquareArray<S, M> and vice versa.
+    template <typename S, size_t M> friend class SquareArray;
+
+   public:
+    SquareArray() : _arrays() {}
+
+    inline void fill(T const& value) {
+      for (auto& x : _arrays) {
+        x.fill(value);
+      }
+    }
+
+    inline std::array<T, N>& operator[](size_t depth) noexcept {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth];
+    }
+
+    inline T const& at(size_t depth, size_t index) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      LIBSEMIGROUPS_ASSERT(index < N);
+      return _arrays.at(depth).at(index);
+    }
+
+    inline typename std::array<T, N>::const_iterator
+    cbegin(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].cbegin();
+    }
+
+    inline typename std::array<T, N>::const_iterator cend(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].cend();
+    }
+
+    inline typename std::array<T, N>::iterator begin(size_t depth) {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].begin();
+    }
+
+    inline typename std::array<T, N>::iterator end(size_t depth) const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      return _arrays[depth].end();
+    }
+
+   private:
+    std::array<std::array<T, N>, N> _arrays;
+  };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RECVEC_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_CONTAINERS_HPP_

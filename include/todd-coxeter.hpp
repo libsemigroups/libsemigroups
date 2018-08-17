@@ -30,7 +30,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "internal/recvec.hpp"
+#include "internal/containers.hpp"
 
 #include "fpsemi-base.hpp"
 #include "wrap.hpp"

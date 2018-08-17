@@ -51,9 +51,9 @@
 
 #include <array>
 
+#include "internal/containers.hpp"
 #include "internal/libsemigroups-config.hpp"
 #include "internal/range.hpp"
-#include "internal/square.hpp"
 
 #include "adapters.hpp"
 #include "element.hpp"
