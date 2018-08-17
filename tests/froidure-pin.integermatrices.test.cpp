@@ -16,45 +16,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "element.hpp"
 #include "froidure-pin.hpp"
+#include "libsemigroups.tests.hpp"
 
-#define SEMIGROUPS_REPORT false
+namespace libsemigroups {
 
-using namespace libsemigroups;
+  constexpr bool REPORT = false;
 
-TEST_CASE("FroidurePin of integer matrices 01",
-          "[quick][semigroup][matrix][finite][01]") {
-  Semiring<int64_t>*                       sr = new Integers();
-  std::vector<MatrixOverSemiring<int64_t>> gens
-      = {MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr),
-         MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)};
-  FroidurePin<MatrixOverSemiring<int64_t>> S
-      = FroidurePin<MatrixOverSemiring<int64_t>>(gens);
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "106",
+                          "(integer matrices)",
+                          "[quick][froidure-pin][intmat]") {
+    REPORTER.set_report(REPORT);
+    Semiring<int64_t>*                       sr = new Integers();
+    std::vector<MatrixOverSemiring<int64_t>> gens
+        = {MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr),
+           MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)};
+    FroidurePin<MatrixOverSemiring<int64_t>> S
+        = FroidurePin<MatrixOverSemiring<int64_t>>(gens);
 
-  S.reserve(10000);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
+    S.reserve(10000);
 
-  S.enumerate(10000);
-  REQUIRE(S.current_size() == 631);
-  size_t pos = 0;
+    S.enumerate(10000);
+    REQUIRE(S.current_size() == 631);
+    size_t pos = 0;
 
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
+    for (auto it = S.cbegin(); it < S.cend(); ++it) {
+      REQUIRE(S.position(*it) == pos);
+      pos++;
+    }
+    S.enumerate(1000000);
+    REQUIRE(S.current_size() == 631);
+    REQUIRE(S.minimal_factorisation(
+                MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr)
+                * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)
+                * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr))
+            == word_type({0, 1, 0}));
+    REQUIRE(S.minimal_factorisation(52)
+            == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
+    REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{64, 0}, {-64, 0}}, sr));
+    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+                      LibsemigroupsException);
+    delete sr;
   }
-  S.enumerate(1000000);
-  REQUIRE(S.current_size() == 631);
-  REQUIRE(S.minimal_factorisation(
-              MatrixOverSemiring<int64_t>({{0, 1}, {0, -1}}, sr)
-              * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr)
-              * MatrixOverSemiring<int64_t>({{0, 1}, {2, 0}}, sr))
-          == word_type({0, 1, 0}));
-  REQUIRE(S.minimal_factorisation(52)
-          == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
-  REQUIRE(S.at(52) == MatrixOverSemiring<int64_t>({{64, 0}, {-64, 0}}, sr));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  delete sr;
-}
+}  // namespace libsemigroups

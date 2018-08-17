@@ -16,43 +16,41 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "froidure-pin.hpp"
-
-#define SEMIGROUPS_REPORT false
-
-using namespace libsemigroups;
-
-class IntPair {
- public:
-  constexpr IntPair() noexcept : _x(1), _y(1) {}
-  IntPair(int x, int y) : _x(x), _y(y) {}
-
-  IntPair operator*(IntPair const& that) const {
-    return IntPair(_x * that._x, _y * that._y);
-  }
-
-  bool operator==(IntPair const& that) const {
-    return _x == that._x && _y == that._y;
-  }
-
-  bool operator<(IntPair const& that) const {
-    return _x < that._x || (_x == that._x && _y < that._y);
-  }
-
-  size_t hash() const {
-    return _x * 17 + _y;
-  }
-
- private:
-  int _x;
-  int _y;
-};
-
-static_assert(!std::is_trivial<IntPair>::value,
-              "IntPair should be non-trivial");
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
+  constexpr bool REPORT = false;
+
+  class IntPair {
+   public:
+    constexpr IntPair() noexcept : _x(1), _y(1) {}
+    IntPair(int x, int y) : _x(x), _y(y) {}
+
+    IntPair operator*(IntPair const& that) const {
+      return IntPair(_x * that._x, _y * that._y);
+    }
+
+    bool operator==(IntPair const& that) const {
+      return _x == that._x && _y == that._y;
+    }
+
+    bool operator<(IntPair const& that) const {
+      return _x < that._x || (_x == that._x && _y < that._y);
+    }
+
+    size_t hash() const {
+      return _x * 17 + _y;
+    }
+
+   private:
+    int _x;
+    int _y;
+  };
+
+  static_assert(!std::is_trivial<IntPair>::value,
+                "IntPair should be non-trivial");
+
   template <> struct complexity<IntPair> {
     constexpr size_t operator()(IntPair) const noexcept {
       return 0;
@@ -99,18 +97,22 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 namespace std {
-  template <> struct hash<IntPair> {
-    size_t operator()(IntPair const& x) const {
+  template <> struct hash<libsemigroups::IntPair> {
+    size_t operator()(libsemigroups::IntPair const& x) const {
       return x.hash();
     }
   };
 }  // namespace std
 
-static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
+namespace libsemigroups {
+  static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
-TEST_CASE("FroidurePin of IntPairs (non-trivial user type)",
-          "[quick][semigroup][nontrivial][finite][097]") {
-  FroidurePin<IntPair> S({IntPair(1, 1)});
-  REQUIRE(S.size() == 1);
-  REQUIRE(S.nr_idempotents() == 1);
-}
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "108",
+                          "(pairs of integers) non-trivial user type",
+                          "[quick][froidure-pin][intpairs][108]") {
+    FroidurePin<IntPair> S({IntPair(1, 1)});
+    REQUIRE(S.size() == 1);
+    REQUIRE(S.nr_idempotents() == 1);
+  }
+}  // namespace libsemigroups

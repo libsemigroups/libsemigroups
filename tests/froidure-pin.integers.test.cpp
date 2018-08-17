@@ -16,14 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "froidure-pin.hpp"
-
-#define SEMIGROUPS_REPORT false
-
-using namespace libsemigroups;
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
+
+  constexpr bool REPORT = false;
+
   template <typename TIntegralType>
   struct complexity<
       TIntegralType,
@@ -92,19 +91,21 @@ namespace libsemigroups {
     }
   }
 #endif
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "107",
+                          "(integers)",
+                          "[quick][froidure-pin][ints]") {
+    FroidurePin<int> S({2});
+    REQUIRE(S.size() == 32);
+    REQUIRE(S.nr_idempotents() == 1);
+    FroidurePin<int>::const_iterator it = S.cbegin();
+    REQUIRE(*it == 2);
+
+    FroidurePin<uint8_t> T({2, 3});
+    REQUIRE(T.size() == 130);
+    REQUIRE(T.nr_idempotents() == 2);
+    REQUIRE(*T.cbegin_idempotents() == 0);
+    REQUIRE(*T.cbegin_idempotents() + 1 == 1);
+  }
 }  // namespace libsemigroups
-
-TEST_CASE("FroidurePin of Integers",
-          "[quick][semigroup][integers][finite][01]") {
-  FroidurePin<int> S({2});
-  REQUIRE(S.size() == 32);
-  REQUIRE(S.nr_idempotents() == 1);
-  FroidurePin<int>::const_iterator it = S.cbegin();
-  REQUIRE(*it == 2);
-
-  FroidurePin<uint8_t> T({2, 3});
-  REQUIRE(T.size() == 130);
-  REQUIRE(T.nr_idempotents() == 2);
-  REQUIRE(*T.cbegin_idempotents() == 0);
-  REQUIRE(*T.cbegin_idempotents() + 1 == 1);
-}

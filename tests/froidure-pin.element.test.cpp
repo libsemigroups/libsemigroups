@@ -56,7 +56,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "001",
                           "small transformation semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                   new Transformation<u_int16_t>({0, 1, 2})};
     FroidurePin<>         S    = FroidurePin<>(gens);
@@ -96,7 +96,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "002",
                           "small partial perm semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new PartialPerm<u_int16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
@@ -157,7 +157,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "003",
                           "small bipartition semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Bipartition(
                {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -204,7 +204,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "004",
                           "small Boolean matrix semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
            new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
@@ -241,7 +241,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "005",
                           "small projective max plus matrix semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>* sr = new MaxPlusSemiring();
     auto x = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
     auto id = x->identity();
@@ -269,7 +269,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "006",
                           "small matrix semigroup [Integers]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -313,7 +313,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "007",
                           "small matrix semigroup [MaxPlusSemiring]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new MaxPlusSemiring();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
@@ -356,7 +356,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "008",
                           "small matrix semigroup [MinPlusSemiring]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new MinPlusSemiring();
     std::vector<Element*> gens = {
         new MatrixOverSemiring<int64_t>({{1, 0}, {0, POSITIVE_INFINITY}}, sr)};
@@ -394,7 +394,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "009",
                           "small matrix semigroup [TropicalMaxPlusSemiring]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
     std::vector<Element*> gens = {
         new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
@@ -433,7 +433,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "010",
                           "small matrix semigroup [TropicalMinPlusSemiring]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
     std::vector<Element*> gens = {
         new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -472,7 +472,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "011",
                           "small matrix semigroup [NaturalSemiring]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
     std::vector<Element*> gens = {
         new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
@@ -511,7 +511,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "012",
                           "small pbr semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}),
            new PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}})};
@@ -544,7 +544,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "013",
                           "large transformation semigroup",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -565,7 +565,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "014",
                           "at, position, current_*",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -621,7 +621,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "015",
                           "enumerate",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -659,7 +659,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "016",
                           "enumerate [many stops and starts]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -686,7 +686,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "017",
                           "factorisation, length [1 element]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -718,7 +718,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "018",
                           "factorisation, products [all elements]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -741,7 +741,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "019",
                           "first/final letter, prefix, suffix, products",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -829,7 +829,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "020",
                           "letter_to_pos [standard]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -850,7 +850,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "021",
                           "letter_to_pos [duplicate gens]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -906,7 +906,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "022",
                           "letter_to_pos [after add_generators]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -961,7 +961,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "023",
                           "cbegin_idempotents/cend [1 thread]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -983,7 +983,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "024",
                           "idempotent_cend/cbegin [1 thread]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1006,7 +1006,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "025",
                           "is_idempotent [1 thread]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1033,7 +1033,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "026",
                           "cbegin_idempotents/cend, is_idempotent [2 threads]",
-                          "[standard][froidure-pin][multithread]") {
+                          "[standard][froidure-pin][element][multithread]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
@@ -1066,7 +1066,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "027",
                           "is_done, is_begun",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1093,7 +1093,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "028",
                           "current_position",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1145,7 +1145,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "029",
                           "sorted_position, sorted_at",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1203,7 +1203,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "030",
                           "right/left Cayley graph",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1233,7 +1233,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "031",
                           "iterator",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1295,7 +1295,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "066",
                           "reverse iterator",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1357,7 +1357,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "067",
                           "iterator arithmetic",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1415,7 +1415,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "068",
                           "iterator sorted",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1466,7 +1466,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "069",
                           "iterator sorted arithmetic",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1524,7 +1524,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "032",
                           "copy [not enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1564,7 +1564,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "033",
                           "copy_closure [not enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
@@ -1640,7 +1640,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "034",
                           "copy_add_generators [not enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
@@ -1716,7 +1716,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "035",
                           "copy [partly enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1765,7 +1765,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "036",
                           "copy_closure [partly enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1812,7 +1812,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "037",
                           "copy_add_generators [partly enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1859,7 +1859,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "038",
                           "copy [fully enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1893,7 +1893,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "039",
                           "copy_closure [fully enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1939,7 +1939,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "040",
                           "copy_add_generators [fully enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -1985,7 +1985,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "041",
                           "relations [duplicate gens]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2022,7 +2022,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "042",
                           "relations",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2069,7 +2069,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "043",
                           "relations [copy_closure, duplicate gens]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2110,7 +2110,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "044",
                           "relations [copy_add_generators, duplicate gens]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2151,7 +2151,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "045",
                           "relations [from copy, not enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2203,7 +2203,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "046",
                           "relations [from copy, partly enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2258,7 +2258,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "047",
                           "relations [from copy, fully enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2312,7 +2312,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "050",
                           "relations [from copy_closure, not enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2373,7 +2373,7 @@ namespace libsemigroups {
 
   TEST_CASE(
       "FroidurePin 051: relations [from copy_add_generators, not enumerated]",
-      "[quick][froidure-pin]") {
+      "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2435,7 +2435,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "052",
                           "relations [from copy_closure, partly enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2497,7 +2497,7 @@ namespace libsemigroups {
 
   TEST_CASE("FroidurePin 053: relations [from copy_add_generators, partly "
             "enumerated]",
-            "[quick][froidure-pin]") {
+            "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2560,7 +2560,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "054",
                           "relations [from copy_closure, fully enumerated]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2623,7 +2623,7 @@ namespace libsemigroups {
 
   TEST_CASE(
       "FroidurePin 055: relations [from copy_add_generators, fully enumerated]",
-      "[quick][froidure-pin]") {
+      "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2687,7 +2687,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "056",
                           "add_generators [duplicate generators]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2758,7 +2758,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "057",
                           "add_generators [incremental 1]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2797,7 +2797,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "058",
                           "add_generators [incremental 2]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2847,7 +2847,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "059",
                           "closure [duplicate generators]",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2900,7 +2900,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "060",
                           "closure ",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 0, 0}),
                                   new Transformation<u_int16_t>({0, 0, 1}),
                                   new Transformation<u_int16_t>({0, 0, 2}),
@@ -2941,7 +2941,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "061",
                           "factorisation ",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
            new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
@@ -2956,7 +2956,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "062",
                           "my favourite example with reserve",
-                          "[standard][froidure-pin]") {
+                          "[standard][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
            new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -2977,7 +2977,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "063",
                           "minimal_factorisation ",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
            new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
@@ -3001,7 +3001,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "064",
                           "batch_size (for an extremely large value)",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
            new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
@@ -3018,7 +3018,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "065",
                           "my favourite example without reserve",
-                          "[standard][froidure-pin]") {
+                          "[standard][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
            new Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -3039,7 +3039,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "070",
                           "number of idempotents",
-                          "[extreme][froidure-pin]") {
+                          "[extreme][froidure-pin][element]") {
     Semiring<int64_t>* sr = new NaturalSemiring(0, 6);
 
     std::vector<Element*> gens = {
@@ -3060,7 +3060,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "071",
                           "number of idempotents",
-                          "[extreme][froidure-pin]") {
+                          "[extreme][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Bipartition({0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4}),
            new Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}),
@@ -3079,7 +3079,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "073",
                           "regular boolean mat monoid 4 using BooleanMat",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new BooleanMat(
                {{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -3100,7 +3100,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "079",
                           "exception: zero generators given",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens;
 
     REQUIRE_THROWS_AS(FroidurePin<>(gens), LibsemigroupsException);
@@ -3109,7 +3109,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "080",
                           "exception: generators of different degrees",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 5})};
@@ -3128,7 +3128,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "081",
                           "exception: word_to_pos",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3165,7 +3165,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "082",
                           "exception: word_to_element",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3209,7 +3209,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "083",
                           "exception: gens",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Element*> gens;
 
@@ -3233,7 +3233,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "084",
                           "exception: prefix",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3251,7 +3251,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "085",
                           "exception: suffix",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3269,7 +3269,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "086",
                           "exception: first_letter",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3287,7 +3287,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "087",
                           "exception: final_letter",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3305,7 +3305,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "088",
                           "exception: length_const",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3323,7 +3323,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "089",
                           "exception: product_by_reduction",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3349,7 +3349,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "090",
                           "exception: fast_product",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
     std::vector<Element*> gens
         = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
@@ -3375,7 +3375,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "091",
                           "exception: letter_to_pos",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Element*> gens;
 
@@ -3399,7 +3399,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "092",
                           "exception: is_idempotent",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Bipartition(
                {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
@@ -3422,7 +3422,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "093",
                           "exception: add_generators",
-                          "[quick][froidure-pin]") {
+                          "[quick][froidure-pin][element]") {
     std::vector<Element*> gens1
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 2, 3, 2, 2, 3})};

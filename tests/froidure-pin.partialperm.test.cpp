@@ -16,54 +16,57 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "element.hpp"
 #include "froidure-pin.hpp"
+#include "libsemigroups.tests.hpp"
 
-#define SEMIGROUPS_REPORT false
+namespace libsemigroups {
 
-using namespace libsemigroups;
+  constexpr bool REPORT = false;
 
-TEST_CASE("FroidurePin of PartialPerms 01",
-          "[quick][semigroup][partialperm][finite][095]") {
-  std::vector<PartialPerm<u_int16_t>> gens
-      = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
-         PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
-         PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "109",
+                          "(partial perm)",
+                          "[quick][froidure-pin][pperm]") {
+    REPORTER.set_report(REPORT);
+    std::vector<PartialPerm<u_int16_t>> gens
+        = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
+           PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
+           PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
 
-  FroidurePin<PartialPerm<u_int16_t>> S(gens);
+    FroidurePin<PartialPerm<u_int16_t>> S(gens);
 
-  S.reserve(102);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
+    S.reserve(102);
 
-  REQUIRE(S.size() == 102);
-  REQUIRE(S.nr_idempotents() == 8);
-  size_t pos = 0;
+    REQUIRE(S.size() == 102);
+    REQUIRE(S.nr_idempotents() == 8);
+    size_t pos = 0;
 
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
+    for (auto it = S.cbegin(); it < S.cend(); ++it) {
+      REQUIRE(S.position(*it) == pos);
+      pos++;
+    }
+
+    S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+    REQUIRE(S.size() == 396);
+    S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+    REQUIRE(S.size() == 396);
+    REQUIRE(S.minimal_factorisation(
+                PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
+                * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
+            == word_type({3, 2}));
+    REQUIRE(S.minimal_factorisation(10) == word_type({2, 1}));
+    REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
+    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+                      LibsemigroupsException);
+    pos = 0;
+    for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
+      REQUIRE(*it * *it == *it);
+      pos++;
+    }
+    REQUIRE(pos == S.nr_idempotents());
+    for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
+      REQUIRE(*(it - 1) < *it);
+    }
   }
-
-  S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
-  S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
-  REQUIRE(S.size() == 396);
-  REQUIRE(S.minimal_factorisation(
-              PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
-              * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-          == word_type({3, 2}));
-  REQUIRE(S.minimal_factorisation(10) == word_type({2, 1}));
-  REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  pos = 0;
-  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-    REQUIRE(*it * *it == *it);
-    pos++;
-  }
-  REQUIRE(pos == S.nr_idempotents());
-  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-    REQUIRE(*(it - 1) < *it);
-  }
-}
+}  // namespace libsemigroups
