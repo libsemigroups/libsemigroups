@@ -336,8 +336,9 @@ TEST_CASE("FroidurePin 050: relations [from copy_closure, not enumerated]",
   delete_gens(gens);
 }
 
-TEST_CASE("FroidurePin 051: relations [from copy_add_generators, not enumerated]",
-          "[quick][semigroup][finite][051]") {
+TEST_CASE(
+    "FroidurePin 051: relations [from copy_add_generators, not enumerated]",
+    "[quick][semigroup][finite][051]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -887,7 +888,8 @@ TEST_CASE("FroidurePin 060: closure ", "[quick][semigroup][finite][060]") {
   delete_gens(gens);
 }
 
-TEST_CASE("FroidurePin 061: factorisation ", "[quick][semigroup][finite][061]") {
+TEST_CASE("FroidurePin 061: factorisation ",
+          "[quick][semigroup][finite][061]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
          new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};

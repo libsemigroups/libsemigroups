@@ -25,7 +25,7 @@
 #include "internal/libsemigroups-config.hpp"
 
 namespace libsemigroups {
-//! XXX
+  //! XXX
   template <typename TElementType, typename = void> struct complexity;
   template <typename TElementType, typename = void> struct degree;
   template <typename TElementType, typename = void> struct increase_degree_by;

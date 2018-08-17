@@ -169,7 +169,7 @@ namespace libsemigroups {
 
    private:
     std::vector<uint32_t>* _blocks;
-    std::vector<bool>*      _lookup;
+    std::vector<bool>*     _lookup;
     uint32_t               _nr_blocks;
     uint32_t               _rank;
   };

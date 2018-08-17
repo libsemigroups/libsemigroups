@@ -43,7 +43,7 @@ TEST_CASE("FroidurePin of PBRs 01", "[quick][semigroup][pbr][finite][01]") {
                                 {5, 4, 3, 2},
                                 {5, 4, 3, 2},
                                 {4, 1, 2}})};
-  FroidurePin<PBR>   S(gens);
+  FroidurePin<PBR> S(gens);
 
   S.reserve(4);
   REPORTER.set_report(SEMIGROUPS_REPORT);

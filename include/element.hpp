@@ -33,9 +33,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include "internal/containers.hpp"
 #include "internal/libsemigroups-debug.hpp"
 #include "internal/libsemigroups-exception.hpp"
-#include "internal/containers.hpp"
 #include "internal/stl.hpp"
 
 #include "adapters.hpp"

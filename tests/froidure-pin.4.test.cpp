@@ -149,7 +149,8 @@ TEST_CASE("FroidurePin 082: Exception: word_to_element",
   delete sr;
 }
 
-TEST_CASE("FroidurePin 083: Exception: gens", "[quick][finite][semigroup][083]") {
+TEST_CASE("FroidurePin 083: Exception: gens",
+          "[quick][finite][semigroup][083]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Element*> gens;
 

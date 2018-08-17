@@ -1084,7 +1084,8 @@ namespace libsemigroups {
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       // TODO check arg
-      auto S = static_cast<FroidurePin<KBE>*>(_kb->isomorphic_non_fp_semigroup());
+      auto S
+          = static_cast<FroidurePin<KBE>*>(_kb->isomorphic_non_fp_semigroup());
       size_t pos
           = S->position(KBE(_kb.get(), _kb->word_to_internal_string(word)));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);

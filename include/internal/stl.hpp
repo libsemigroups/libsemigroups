@@ -24,9 +24,9 @@
 
 #include <functional>
 #include <memory>
-#include <vector>
 #include <sstream>
 #include <type_traits>
+#include <vector>
 
 namespace libsemigroups {
   template <typename TValueType, typename = void> struct hash {

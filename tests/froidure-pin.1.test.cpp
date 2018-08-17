@@ -52,7 +52,7 @@ TEST_CASE("FroidurePin 001: small transformation semigroup",
           "[quick][semigroup][finite][001]") {
   std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
                                 new Transformation<u_int16_t>({0, 1, 2})};
-  FroidurePin<>           S    = FroidurePin<>(gens);
+  FroidurePin<>         S    = FroidurePin<>(gens);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(gens);
 

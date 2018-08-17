@@ -451,9 +451,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
       _table = table;
       validate_table();
-      // TODO Suppose that "table" is the right/left Cayley graph of a FroidurePin
-      // and add a row at the start for coset 0. See [todd-coxeter][21]. This
-      // would make this method more useable.
+      // TODO Suppose that "table" is the right/left Cayley graph of a
+      // FroidurePin and add a row at the start for coset 0. See
+      // [todd-coxeter][21]. This would make this method more useable.
       init_after_prefill();
     }
 

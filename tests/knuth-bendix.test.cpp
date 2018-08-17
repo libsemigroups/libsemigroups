@@ -1231,7 +1231,7 @@ namespace libsemigroups {
       REQUIRE(Q->nr_idempotents() == 3);
 
       std::vector<word_type> v(static_cast<FroidurePin<KBE>*>(Q)->cbegin(),
-                                 static_cast<FroidurePin<KBE>*>(Q)->cend());
+                               static_cast<FroidurePin<KBE>*>(Q)->cend());
       REQUIRE(v
               == std::vector<word_type>({{0},
                                          {1},

@@ -219,7 +219,8 @@ namespace libsemigroups {
     return s;
   }
 
-  FroidurePinBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const noexcept {
+  FroidurePinBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const
+      noexcept {
     return _isomorphic_non_fp_semigroup;
   }
 
@@ -233,7 +234,7 @@ namespace libsemigroups {
 
   void FpSemiBase::set_isomorphic_non_fp_semigroup(
       FroidurePinBase* ismrphc_nn_fp_smgrp,
-      bool           delete_it) noexcept {
+      bool             delete_it) noexcept {
     LIBSEMIGROUPS_ASSERT(ismrphc_nn_fp_smgrp != nullptr);
     LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
     // _delete_isomorphic_non_fp_semigroup can be either true or false,

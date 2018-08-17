@@ -19,7 +19,7 @@
 #include "froidure-pin-base.hpp"
 
 namespace libsemigroups {
-  void relations(FroidurePinBase*                              S,
+  void relations(FroidurePinBase*                            S,
                  std::function<void(word_type, word_type)>&& hook) {
     S->enumerate();
 

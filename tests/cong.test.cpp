@@ -272,9 +272,9 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
     FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                         Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                         Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                         Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+                           Transf({1, 2, 4, 4, 7, 3, 0, 7}),
+                           Transf({0, 6, 4, 2, 2, 6, 6, 4}),
+                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
     // The following lines are intentionally commented out.
     // REQUIRE(S.size() == 11804);
@@ -317,16 +317,16 @@ namespace libsemigroups {
                           "[extreme]") {
     REPORTER.set_report(true);
     FroidurePin<PBR> S({PBR({{2}, {3}, {0}, {1}}),
-                      PBR({{}, {2}, {1}, {0, 3}}),
-                      PBR({{0, 3}, {2}, {1}, {}}),
-                      PBR({{1, 2}, {3}, {0}, {1}}),
-                      PBR({{2}, {3}, {0}, {1, 3}}),
-                      PBR({{3}, {1}, {0}, {1}}),
-                      PBR({{3}, {2}, {0}, {0, 1}}),
-                      PBR({{3}, {2}, {0}, {1}}),
-                      PBR({{3}, {2}, {0}, {3}}),
-                      PBR({{3}, {2}, {1}, {0}}),
-                      PBR({{3}, {2, 3}, {0}, {1}})});
+                        PBR({{}, {2}, {1}, {0, 3}}),
+                        PBR({{0, 3}, {2}, {1}, {}}),
+                        PBR({{1, 2}, {3}, {0}, {1}}),
+                        PBR({{2}, {3}, {0}, {1, 3}}),
+                        PBR({{3}, {1}, {0}, {1}}),
+                        PBR({{3}, {2}, {0}, {0, 1}}),
+                        PBR({{3}, {2}, {0}, {1}}),
+                        PBR({{3}, {2}, {0}, {3}}),
+                        PBR({{3}, {2}, {1}, {0}}),
+                        PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
     // REQUIRE(S.nr_rules() == 45416);
@@ -358,14 +358,14 @@ namespace libsemigroups {
     using PPerm = PPerm<6>::type;
 
     FroidurePin<PPerm> S({PPerm({0, 1, 2}, {4, 0, 1}, 6),
-                        PPerm({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-                        PPerm({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-                        PPerm({0, 2, 5}, {3, 4, 1}, 6),
-                        PPerm({0, 2, 5}, {0, 2, 5}, 6),
-                        PPerm({0, 1, 4}, {1, 2, 0}, 6),
-                        PPerm({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-                        PPerm({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-                        PPerm({1, 3, 4}, {5, 0, 2}, 6)});
+                          PPerm({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+                          PPerm({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+                          PPerm({0, 2, 5}, {3, 4, 1}, 6),
+                          PPerm({0, 2, 5}, {0, 2, 5}, 6),
+                          PPerm({0, 1, 4}, {1, 2, 0}, 6),
+                          PPerm({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+                          PPerm({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+                          PPerm({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.nr_rules() == 1121);
@@ -551,10 +551,10 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
     FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                         Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                         Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                         Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-    Congruence        cong(TWOSIDED, S);
+                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    Congruence          cong(TWOSIDED, S);
     REQUIRE(cong.nr_classes() == S.size());
   }
 
@@ -597,10 +597,10 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     using Transf = Transf<8>::type;
     FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
-                         Transf({1, 2, 3, 4, 5, 0, 6, 7}),
-                         Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                         Transf({0, 1, 2, 3, 4, 0, 6, 7}),
-                         Transf({0, 1, 2, 3, 4, 5, 7, 6})});
+                           Transf({1, 2, 3, 4, 5, 0, 6, 7}),
+                           Transf({1, 0, 2, 3, 4, 5, 6, 7}),
+                           Transf({0, 1, 2, 3, 4, 0, 6, 7}),
+                           Transf({0, 1, 2, 3, 4, 5, 7, 6})});
     REQUIRE(S.size() == 93312);
     std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),
                                 Transf({0, 0, 0, 0, 0, 0, 6, 7}),
@@ -812,7 +812,7 @@ namespace libsemigroups {
     }
     {
       FroidurePin<BMat8> S({gens[0], gens[2], gens[3]});
-      Congruence       cong(TWOSIDED, S);
+      Congruence         cong(TWOSIDED, S);
       cong.add_pair({1}, {0});
 
       REQUIRE(cong.nr_classes() == 2);

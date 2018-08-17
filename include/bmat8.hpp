@@ -235,7 +235,6 @@ namespace libsemigroups {
     //! top-left \p dim x \p dim entries may be non-zero.
     static BMat8 random(size_t dim);
 
-
     inline void swap(BMat8& that) {
       std::swap(this->_data, that._data);
     }

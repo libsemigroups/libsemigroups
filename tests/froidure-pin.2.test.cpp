@@ -416,7 +416,8 @@ TEST_CASE("FroidurePin 067: iterator arithmetic",
   delete_gens(gens);
 }
 
-TEST_CASE("FroidurePin 068: iterator sorted", "[quick][semigroup][finite][068]") {
+TEST_CASE("FroidurePin 068: iterator sorted",
+          "[quick][semigroup][finite][068]") {
   std::vector<Element*> gens
       = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
          new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -597,7 +598,7 @@ TEST_CASE("FroidurePin 033: copy_closure [not enumerated]",
   REQUIRE(T->nr_idempotents() == 537);
   REQUIRE(T->nr_rules() == 2459);
 
-  coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+  coll             = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   FroidurePin<>* U = T->copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
@@ -611,7 +612,7 @@ TEST_CASE("FroidurePin 033: copy_closure [not enumerated]",
   REQUIRE(U->nr_idempotents() == 1358);
   REQUIRE(U->nr_rules() == 7901);
 
-  coll           = std::vector<Element*>();
+  coll             = std::vector<Element*>();
   FroidurePin<>* V = U->copy_closure(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
@@ -671,7 +672,7 @@ TEST_CASE("FroidurePin 034: copy_add_generators [not enumerated]",
   REQUIRE(T->nr_idempotents() == 537);
   REQUIRE(T->nr_rules() == 2459);
 
-  coll           = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+  coll             = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
   FroidurePin<>* U = T->copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);
@@ -685,7 +686,7 @@ TEST_CASE("FroidurePin 034: copy_add_generators [not enumerated]",
   REQUIRE(U->nr_idempotents() == 1358);
   REQUIRE(U->nr_rules() == 7901);
 
-  coll           = std::vector<Element*>();
+  coll             = std::vector<Element*>();
   FroidurePin<>* V = U->copy_add_generators(coll);
   REPORTER.set_report(SEMIGROUPS_REPORT);
   delete_gens(coll);

@@ -91,8 +91,8 @@ const uint8_t FF = 0xFF;
 
 TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
   FroidurePin<Renner0Element,
-            std::hash<Renner0Element>,
-            std::equal_to<Renner0Element>>
+              std::hash<Renner0Element>,
+              std::equal_to<Renner0Element>>
       S({Renner0Element({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
          Renner0Element(
              {FF, FF, FF, FF, FF, FF, FF, FF, 8, 9, 10, 11, 12, 13, 14, 15}),
