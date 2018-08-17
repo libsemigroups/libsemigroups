@@ -537,7 +537,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
   delete x;
 }
 
-LIBSEMIGROUPS_TEST_CASE("Bipartition", "006", "exceptions", "[quick]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition", "006", "exceptions", "[quick][element]") {
   REQUIRE_NOTHROW(Bipartition(std::vector<u_int32_t>()));
   REQUIRE_THROWS_AS(Bipartition({0}), LibsemigroupsException);
   REQUIRE_THROWS_AS(Bipartition({1, 0}), LibsemigroupsException);
@@ -680,7 +680,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
 }
 
 LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                        "007",
+                        "008",
                         "force copy constructor over move constructor",
                         "[quick][element]") {
   std::vector<uint32_t> xx(

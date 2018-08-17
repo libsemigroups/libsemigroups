@@ -193,7 +193,7 @@ namespace libsemigroups {
       Timer                       timer;
       std::vector<relation_type>& rels_to_use = init();
 
-      while (!dead() && !timed_out() && _current != _next) {
+      while (_current != _next && !dead() && !timed_out()) {
         // Apply each relation to the "_current" coset
         for (relation_type const& rel : rels_to_use) {
           trace(_current, rel);  // Allow new cosets
@@ -225,7 +225,8 @@ namespace libsemigroups {
             _current_no_add = _forwd[_current_no_add];
 
             // Quit loop if we reach an inactive coset OR we get a "stop" signal
-          } while (!dead() && _current_no_add != _next && !_stop_packing);
+          } while (!_stop_packing && _current_no_add != _next && !dead()
+                   && !timed_out());
 
           REPORT("lookahead complete ", oldactive - _active, " killed");
 

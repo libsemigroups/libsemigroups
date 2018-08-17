@@ -162,6 +162,11 @@ namespace libsemigroups {
     return normal_form(word_type(w));
   }
 
+  bool FpSemiBase::equal_to(std::initializer_list<letter_type> u,
+                                 std::initializer_list<letter_type> v) {
+    return equal_to(word_type(u), word_type(v));
+  }
+
   void FpSemiBase::set_identity(std::string const& id) {
     if (id.length() != 1) {
       throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "

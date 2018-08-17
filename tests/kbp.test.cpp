@@ -286,7 +286,7 @@ namespace libsemigroups {
         REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 0);
       }
 
-      TEST_CASE("KBP 06: left congruence on a finite fp semigroup",
+      TEST_CASE("KBP 13: left congruence on a finite fp semigroup",
                 "[quick][kbp][06]") {
         REPORTER.set_report(REPORT);
         KnuthBendix kb;

@@ -32,6 +32,7 @@
 #include "report.hpp"
 #include "runner.hpp"
 #include "stl.hpp"
+#include "timer.hpp"
 
 namespace libsemigroups {
   class Race {
@@ -73,7 +74,7 @@ namespace libsemigroups {
     template <typename TCallable>
     void run_until(TCallable const&         func,
                    std::chrono::nanoseconds check_interval
-                   = std::chrono::milliseconds(50)) {
+                   = std::chrono::milliseconds(2)) {
       static_assert(is_callable<TCallable>::value,
                     "the template parameter TCallable must be callable");
       static_assert(
@@ -82,6 +83,9 @@ namespace libsemigroups {
       while (!func() && _winner == nullptr) {
         // if _winner != nullptr, then the race is over.
         run_for(check_interval);
+        if (check_interval < std::chrono::milliseconds(1024)) {
+          check_interval *= 2;
+        }
       }
     }
 
@@ -94,17 +98,22 @@ namespace libsemigroups {
           "the template parameter TCallable must be void");
       if (_winner == nullptr) {
         size_t nr_threads = std::min(_runners.size(), _max_threads);
-        if (nr_threads == 1
-            || std::any_of(
-                   _runners.cbegin(),
-                   _runners.cend(),
-                   [](Runner* rnnr) -> bool { return rnnr->finished(); })) {
+        if (nr_threads == 1) {
+          REPORT("using 0 additional threads");
+          Timer tmr;
           func(_runners.at(0));
-          if (_runners.at(0)->finished()) {
-            _winner = _runners.at(0);
-          }
+          REPORT("elapsed time = ", tmr);
           return;
         }
+        for (size_t i = 0; i < _runners.size(); ++i) {
+          if (_runners[i]->finished()) {
+            REPORT("using 0 additional threads");
+            _winner    = _runners[i];
+            REPORT("#", i, " is already finished!");
+            return;
+          }
+        }
+
         std::vector<std::thread::id> tids(_runners.size(),
                                           std::this_thread::get_id());
 
@@ -112,8 +121,8 @@ namespace libsemigroups {
                nr_threads,
                " / ",
                std::thread::hardware_concurrency(),
-               " threads");
-
+               " additional threads");
+        Timer tmr;
         LIBSEMIGROUPS_ASSERT(nr_threads != 0);
 
         auto thread_func = [this, &func, &tids](size_t pos) {
@@ -151,6 +160,7 @@ namespace libsemigroups {
         for (size_t i = 0; i < nr_threads; ++i) {
           t.at(i).join();
         }
+        REPORT("elapsed time = ", tmr);
         for (auto method = _runners.begin(); method < _runners.end();
              ++method) {
           if ((*method)->finished()) {

@@ -36,7 +36,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "001",
                           "Renner monoid type B2 (E. G. presentation), q = 1",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -51,7 +51,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "002",
                           "Renner monoid type B2 (E. G. presentation), q = 0",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -66,7 +66,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "003",
                           "Renner monoid type B3 (E. G. presentation), q = 1",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
@@ -83,7 +83,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "004",
                           "Renner monoid type B3 (E. G. presentation), q = 0",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
@@ -100,7 +100,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "005",
       "Renner monoid type B2 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -115,7 +115,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "006",
       "Renner monoid type B2 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -130,7 +130,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "007",
       "Renner monoid type B3 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
@@ -145,7 +145,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "008",
       "Renner monoid type B3 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
@@ -160,7 +160,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "009",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(10);
@@ -179,7 +179,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "010",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(10);
@@ -199,7 +199,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "011",
       "Renner monoid type B5 (Gay-Hivert presentation), q = 1",
-      "[extreme][hivert]") {
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(12);
@@ -229,7 +229,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "012",
       "Renner monoid type B5 (Gay-Hivert presentation), q = 0",
-      "[extreme][hivert]") {
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(12);
@@ -253,7 +253,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "013",
                           "Renner monoid type D2 (E. G. presentation), q = 1",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -271,7 +271,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "014",
                           "Renner monoid type D2 (E. G. presentation), q = 0",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -289,7 +289,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "015",
                           "Renner monoid type D3 (E. G. presentation), q = 1",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
@@ -307,7 +307,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "016",
                           "Renner monoid type D3 (E. G. presentation), q = 0",
-                          "[quick][hivert]") {
+                          "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
@@ -325,7 +325,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "017",
                           "Renner monoid type D4 (E. G. presentation), q = 1",
-                          "[quick][hivert]") {  // TODO check test category
+                          "[quick][fpsemi][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -345,7 +345,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "018",
                           "Renner monoid type D4 (E. G. presentation), q = 0",
-                          "[quick][hivert]") {  // TODO check test category
+                          "[quick][fpsemi][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -366,7 +366,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "019",
       "Renner monoid type D2 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -385,7 +385,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "020",
       "Renner monoid type D2 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -404,7 +404,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "021",
       "Renner monoid type D3 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
@@ -423,7 +423,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "022",
       "Renner monoid type D3 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
@@ -442,7 +442,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "023",
       "Renner monoid type D4 (Gay-Hivert presentation), q = 1",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -461,7 +461,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "024",
       "Renner monoid type D4 (Gay-Hivert presentation), q = 0",
-      "[quick][hivert]") {
+      "[quick][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -479,7 +479,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "025",
       "Renner monoid type D5 (Gay-Hivert presentation), q = 1",
-      "[extreme][hivert]") {  // TODO check the category
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(13);
@@ -498,7 +498,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "026",
       "Renner monoid type D5 (Gay-Hivert presentation), q = 0",
-      "[extreme][hivert]") {  // TODO check the category
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(13);
@@ -517,7 +517,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "027",
       "Renner monoid type D6 (Gay-Hivert presentation), q = 1",
-      "[extreme][hivert]") {
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(15);
@@ -537,7 +537,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "028",
       "Renner monoid type D6 (Gay-Hivert presentation), q = 0",
-      "[extreme][hivert]") {
+      "[extreme][fpsemi][hivert]") {
     REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(15);
@@ -555,7 +555,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "029",
                           "Rook monoid R5, q = 0",
-                          "[quick]") {
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -572,7 +572,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "030",
                           "Rook monoid R5, q = 1",
-                          "[quick]") {
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
@@ -589,7 +589,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "031",
                           "Rook monoid R6, q = 0",
-                          "[quick]") {
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -606,7 +606,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "032",
                           "Rook monoid R6, q = 1",
-                          "[quick]") {
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
@@ -620,13 +620,13 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 207);
   }
 
-  /*LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "001", "normal_form", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "033", "normal_form", "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
-    std::vector<relation_type> rels;
-    rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-    rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
 
-    FpSemigroup S(2, rels);
+    FpSemigroup S;
+    S.set_alphabet(2);
+    S.add_rule(relation_type({0, 0, 0}, {0}));
+    S.add_rule(relation_type({0}, {1, 1}));
 
     REQUIRE(S.size() == 5);
 
@@ -637,226 +637,185 @@ namespace libsemigroups {
     REQUIRE(S.normal_form({1}) == word_type({1}));
   }
 
-  // Not sure I see the point of the next test
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-  //                         "002",
-  //                         "word_to_class_index for fp semigroup",
-  //                         "[quick]") {
-  //   std::vector<relation_type> rels;
-  //   rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-  //   rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
-  //   std::vector<relation_type> extra;
-
-  //   Congruence<> cong1("twosided", 2, rels, extra);
-
-  //   REQUIRE(cong1.word_to_class_index({0, 0, 1}) == 4);
-  //   REQUIRE(cong1.word_to_class_index({0, 0, 0, 0, 1}) == 4);
-  //   REQUIRE(cong1.word_to_class_index({0, 1, 1, 0, 0, 1}) == 4);
-  //   REQUIRE(cong1.word_to_class_index({0, 0, 0}) == 0);
-  //   REQUIRE(cong1.word_to_class_index({1}) == 1);
-
-  //   Congruence<> cong2("twosided", 2, rels, extra);
-
-  //   REQUIRE(cong2.word_to_class_index({0, 0, 0, 0}) == 2);
-  // }
-
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "003",
+                          "034",
                           "for a finite semigroup",
-                          "[quick]") {
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
 
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<> S = FroidurePin<>(gens);
-    really_delete_cont(gens);
+    using Transf = Transf<5>::type;
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
     REQUIRE(S.degree() == 5);
 
-    Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-    Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
-    Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
-    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
-    word_type w1, w2, w3, w4;
-    S.factorisation(w1, S.position(t1));
-    S.factorisation(w2, S.position(t2));
-    S.factorisation(w3, S.position(t3));
-    S.factorisation(w4, S.position(t4));
-    t1->really_delete();
-    t2->really_delete();
-    t3->really_delete();
-    t4->really_delete();
-    delete t1;
-    delete t2;
-    delete t3;
-    delete t4;
-
-    FpSemigroup T(&S);
-    T.add_relation(w1, w2);
+    FpSemigroup T(S);
+    T.add_rule(S.factorisation(Transf({3, 4, 4, 4, 4})),
+               S.factorisation(Transf({3, 1, 3, 3, 3})));
 
     REQUIRE(T.size() == 21);
-
-    REQUIRE(T.equal_to(w3, w4));
-    REQUIRE(T.normal_form(w3) == T.normal_form(w4));
+    REQUIRE(T.equal_to(S.factorisation(Transf({1, 3, 1, 3, 3})),
+                       S.factorisation(Transf({4, 2, 4, 4, 2}))));
+    REQUIRE(T.normal_form(S.factorisation(Transf({1, 3, 1, 3, 3})))
+            == T.normal_form(S.factorisation(Transf({4, 2, 4, 4, 2}))));
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-  //                         "004",
-  //                         "finite fp-semigroup, dihedral group of order
-  //                         6 ",
-  //                           "[quick][kbfp]") {
-  //   std::vector<relation_type> rels = {relation_type({0, 0}, {0}),
-  //                                   relation_type({0, 1}, {1}),
-  //                                   relation_type({1, 0}, {1}),
-  //                                   relation_type({0, 2}, {2}),
-  //                                   relation_type({2, 0}, {2}),
-  //                                   relation_type({0, 3}, {3}),
-  //                                   relation_type({3, 0}, {3}),
-  //                                   relation_type({0, 4}, {4}),
-  //                                   relation_type({4, 0}, {4}),
-  //                                   relation_type({1, 2}, {0}),
-  //                                   relation_type({2, 1}, {0}),
-  //                                   relation_type({3, 4}, {0}),
-  //                                   relation_type({4, 3}, {0}),
-  //                                   relation_type({2, 2}, {0}),
-  //                                   relation_type({1, 4, 2, 3, 3}, {0}),
-  //                                   relation_type({4, 4, 4}, {0})};
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "035",
+                          "finite fp semigroup, dihedral group of order 6",
+                          "[quick][fpsemi]") {
+    REPORTER.set_report(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("abcde");
+    S.add_rule("aa", "a");
+    S.add_rule("ab", "b");
+    S.add_rule("ba", "b");
+    S.add_rule("ac", "c");
+    S.add_rule("ca", "c");
+    S.add_rule("ad", "d");
+    S.add_rule("da", "d");
+    S.add_rule("ae", "e");
+    S.add_rule("ea", "e");
+    S.add_rule("bc", "a");
+    S.add_rule("cb", "a");
+    S.add_rule("de", "a");
+    S.add_rule("ed", "a");
+    S.add_rule("cc", "a");
+    S.add_rule("becdd", "a");
+    S.add_rule("eee", "a");
 
-  //   std::vector<relation_type> extra = {};
+    REQUIRE(S.size() == 6);
+    REQUIRE(S.equal_to("b", "c"));
+  }
 
-  //   Congruence<> cong("twosided", 5, rels, extra);
-  //   REPORTER.set_report(REPORT);
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "036",
+                          "finite fp semigroup, size 16",
+                          "[quick][fpsemi][kbfp]") {
+    REPORTER.set_report(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("0123");
 
-  //   REQUIRE(S.size() == 6);
-  //   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
-  // }
+    S.add_rule("3", "2");
+    S.add_rule("03", "02");
+    S.add_rule("11", "1");
+    S.add_rule("13", "12");
+    S.add_rule("21", "2");
+    S.add_rule("22", "2");
+    S.add_rule("23", "2");
+    S.add_rule("000", "0");
+    S.add_rule("001", "1");
+    S.add_rule("002", "2");
+    S.add_rule("012", "12");
+    S.add_rule("100", "1");
+    S.add_rule("102", "02");
+    S.add_rule("200", "2");
+    S.add_rule("0101", "101");
+    S.add_rule("0202", "202");
+    S.add_rule("1010", "101");
+    S.add_rule("1201", "101");
+    S.add_rule("1202", "202");
+    S.add_rule("2010", "201");
+    S.add_rule("2020", "202");
 
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "005", "finite fp-semigroup, size
-  // 16",
-  //           "[quick][kbfp]") {
-  //   std::vector<relation_type> rels = {relation_type({3}, {2}),
-  //                                   relation_type({0, 3}, {0, 2}),
-  //                                   relation_type({1, 1}, {1}),
-  //                                   relation_type({1, 3}, {1, 2}),
-  //                                   relation_type({2, 1}, {2}),
-  //                                   relation_type({2, 2}, {2}),
-  //                                   relation_type({2, 3}, {2}),
-  //                                   relation_type({0, 0, 0}, {0}),
-  //                                   relation_type({0, 0, 1}, {1}),
-  //                                   relation_type({0, 0, 2}, {2}),
-  //                                   relation_type({0, 1, 2}, {1, 2}),
-  //                                   relation_type({1, 0, 0}, {1}),
-  //                                   relation_type({1, 0, 2}, {0, 2}),
-  //                                   relation_type({2, 0, 0}, {2}),
-  //                                   relation_type({0, 1, 0, 1}, {1, 0, 1}),
-  //                                   relation_type({0, 2, 0, 2}, {2, 0, 2}),
-  //                                   relation_type({1, 0, 1, 0}, {1, 0, 1}),
-  //                                   relation_type({1, 2, 0, 1}, {1, 0, 1}),
-  //                                   relation_type({1, 2, 0, 2}, {2, 0, 2}),
-  //                                   relation_type({2, 0, 1, 0}, {2, 0, 1}),
-  //                                   relation_type({2, 0, 2, 0}, {2, 0, 2})};
-  //   std::vector<relation_type> extra = {};
+    REQUIRE(S.size() == 16);
+    REQUIRE(S.equal_to("2", "3"));
+  }
 
-  //   Congruence<> cong("twosided", 4, rels, extra);
-  //   REPORTER.set_report(REPORT);
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "037",
+                          "finite fp semigroup, size 16",
+                          "[quick][fpsemi]") {
+    REPORTER.set_report(REPORT);
+    FpSemigroup S;
+    S.set_alphabet(11);
 
-  //   REQUIRE(S.size() == 16);
-  //   REQUIRE(cong.word_to_class_index({2}) == cong.word_to_class_index({3}));
-  // }
+    S.add_rule(relation_type({2}, {1}));
+    S.add_rule(relation_type({4}, {3}));
+    S.add_rule(relation_type({5}, {0}));
+    S.add_rule(relation_type({6}, {3}));
+    S.add_rule(relation_type({7}, {1}));
+    S.add_rule(relation_type({8}, {3}));
+    S.add_rule(relation_type({9}, {3}));
+    S.add_rule(relation_type({10}, {0}));
+    S.add_rule(relation_type({0, 2}, {0, 1}));
+    S.add_rule(relation_type({0, 4}, {0, 3}));
+    S.add_rule(relation_type({0, 5}, {0, 0}));
+    S.add_rule(relation_type({0, 6}, {0, 3}));
+    S.add_rule(relation_type({0, 7}, {0, 1}));
+    S.add_rule(relation_type({0, 8}, {0, 3}));
+    S.add_rule(relation_type({0, 9}, {0, 3}));
+    S.add_rule(relation_type({0, 10}, {0, 0}));
+    S.add_rule(relation_type({1, 1}, {1}));
+    S.add_rule(relation_type({1, 2}, {1}));
+    S.add_rule(relation_type({1, 4}, {1, 3}));
+    S.add_rule(relation_type({1, 5}, {1, 0}));
+    S.add_rule(relation_type({1, 6}, {1, 3}));
+    S.add_rule(relation_type({1, 7}, {1}));
+    S.add_rule(relation_type({1, 8}, {1, 3}));
+    S.add_rule(relation_type({1, 9}, {1, 3}));
+    S.add_rule(relation_type({1, 10}, {1, 0}));
+    S.add_rule(relation_type({3, 1}, {3}));
+    S.add_rule(relation_type({3, 2}, {3}));
+    S.add_rule(relation_type({3, 3}, {3}));
+    S.add_rule(relation_type({3, 4}, {3}));
+    S.add_rule(relation_type({3, 5}, {3, 0}));
+    S.add_rule(relation_type({3, 6}, {3}));
+    S.add_rule(relation_type({3, 7}, {3}));
+    S.add_rule(relation_type({3, 8}, {3}));
+    S.add_rule(relation_type({3, 9}, {3}));
+    S.add_rule(relation_type({3, 10}, {3, 0}));
+    S.add_rule(relation_type({0, 0, 0}, {0}));
+    S.add_rule(relation_type({0, 0, 1}, {1}));
+    S.add_rule(relation_type({0, 0, 3}, {3}));
+    S.add_rule(relation_type({0, 1, 3}, {1, 3}));
+    S.add_rule(relation_type({1, 0, 0}, {1}));
+    S.add_rule(relation_type({1, 0, 3}, {0, 3}));
+    S.add_rule(relation_type({3, 0, 0}, {3}));
+    S.add_rule(relation_type({0, 1, 0, 1}, {1, 0, 1}));
+    S.add_rule(relation_type({0, 3, 0, 3}, {3, 0, 3}));
+    S.add_rule(relation_type({1, 0, 1, 0}, {1, 0, 1}));
+    S.add_rule(relation_type({1, 3, 0, 1}, {1, 0, 1}));
+    S.add_rule(relation_type({1, 3, 0, 3}, {3, 0, 3}));
+    S.add_rule(relation_type({3, 0, 1, 0}, {3, 0, 1}));
+    S.add_rule(relation_type({3, 0, 3, 0}, {3, 0, 3}));
 
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "006", "finite fp-semigroup, size
-  // 16",
-  //           "[quick][kbfp]") {
-  //   std::vector<relation_type> rels = {relation_type({2}, {1}),
-  //                                   relation_type({4}, {3}),
-  //                                   relation_type({5}, {0}),
-  //                                   relation_type({6}, {3}),
-  //                                   relation_type({7}, {1}),
-  //                                   relation_type({8}, {3}),
-  //                                   relation_type({9}, {3}),
-  //                                   relation_type({10}, {0}),
-  //                                   relation_type({0, 2}, {0, 1}),
-  //                                   relation_type({0, 4}, {0, 3}),
-  //                                   relation_type({0, 5}, {0, 0}),
-  //                                   relation_type({0, 6}, {0, 3}),
-  //                                   relation_type({0, 7}, {0, 1}),
-  //                                   relation_type({0, 8}, {0, 3}),
-  //                                   relation_type({0, 9}, {0, 3}),
-  //                                   relation_type({0, 10}, {0, 0}),
-  //                                   relation_type({1, 1}, {1}),
-  //                                   relation_type({1, 2}, {1}),
-  //                                   relation_type({1, 4}, {1, 3}),
-  //                                   relation_type({1, 5}, {1, 0}),
-  //                                   relation_type({1, 6}, {1, 3}),
-  //                                   relation_type({1, 7}, {1}),
-  //                                   relation_type({1, 8}, {1, 3}),
-  //                                   relation_type({1, 9}, {1, 3}),
-  //                                   relation_type({1, 10}, {1, 0}),
-  //                                   relation_type({3, 1}, {3}),
-  //                                   relation_type({3, 2}, {3}),
-  //                                   relation_type({3, 3}, {3}),
-  //                                   relation_type({3, 4}, {3}),
-  //                                   relation_type({3, 5}, {3, 0}),
-  //                                   relation_type({3, 6}, {3}),
-  //                                   relation_type({3, 7}, {3}),
-  //                                   relation_type({3, 8}, {3}),
-  //                                   relation_type({3, 9}, {3}),
-  //                                   relation_type({3, 10}, {3, 0}),
-  //                                   relation_type({0, 0, 0}, {0}),
-  //                                   relation_type({0, 0, 1}, {1}),
-  //                                   relation_type({0, 0, 3}, {3}),
-  //                                   relation_type({0, 1, 3}, {1, 3}),
-  //                                   relation_type({1, 0, 0}, {1}),
-  //                                   relation_type({1, 0, 3}, {0, 3}),
-  //                                   relation_type({3, 0, 0}, {3}),
-  //                                   relation_type({0, 1, 0, 1}, {1, 0, 1}),
-  //                                   relation_type({0, 3, 0, 3}, {3, 0, 3}),
-  //                                   relation_type({1, 0, 1, 0}, {1, 0, 1}),
-  //                                   relation_type({1, 3, 0, 1}, {1, 0, 1}),
-  //                                   relation_type({1, 3, 0, 3}, {3, 0, 3}),
-  //                                   relation_type({3, 0, 1, 0}, {3, 0, 1}),
-  //                                   relation_type({3, 0, 3, 0}, {3, 0, 3})};
-  //   std::vector<relation_type> extra = {};
+    REQUIRE(S.size() == 16);
+    REQUIRE(S.equal_to({0}, {5}));
+    REQUIRE(S.equal_to({0}, {10}));
+    REQUIRE(S.equal_to({1}, {2}));
+    REQUIRE(S.equal_to({1}, {7}));
+    REQUIRE(S.equal_to({3}, {4}));
+    REQUIRE(S.equal_to({3}, {6}));
+    REQUIRE(S.equal_to({3}, {8}));
+    REQUIRE(S.equal_to({3}, {9}));
+  }
 
-  //   Congruence<> cong("twosided", 11, rels, extra);
-  //   REPORTER.set_report(REPORT);
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "038",
+                          "fp semigroup, size 240",
+                          "[quick][fpsemi]") {
+    REPORTER.set_report(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("01");
 
-  //   REQUIRE(S.size() == 16);
-  //   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({5}));
-  //   REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({10}));
-  //   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({2}));
-  //   REQUIRE(cong.word_to_class_index({1}) == cong.word_to_class_index({7}));
-  //   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({4}));
-  //   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({6}));
-  //   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({8}));
-  //   REQUIRE(cong.word_to_class_index({3}) == cong.word_to_class_index({9}));
-  // }
+    S.add_rule("000", "0");
+    S.add_rule("1111", "1");
+    S.add_rule("01110", "00");
+    S.add_rule("1001", "11");
+    S.add_rule("001010101010", "00");
 
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "007", "fp semigroup, size 240",
-  //           "[quick]") {
-  //   std::vector<relation_type> extra
-  //       = {relation_type({0, 0, 0}, {0}),
-  //          relation_type({1, 1, 1, 1}, {1}),
-  //          relation_type({0, 1, 1, 1, 0}, {0, 0}),
-  //          relation_type({1, 0, 0, 1}, {1, 1}),
-  //          relation_type({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0})};
+    REQUIRE(S.size() == 240);
+  }
 
-  //   Congruence<> cong("twosided", 2, std::vector<relation_type>(), extra);
-  //   REPORTER.set_report(REPORT);
-
-  //   REQUIRE(S.size() == 240);
-  // }
-
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "008", "add_relation", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "039", "add_rule", "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet("ab");
     REQUIRE(S.is_obviously_infinite());
-    S.add_relation("aaa", "a");
-    S.add_relation("a", "bb");
+    S.add_rule("aaa", "a");
+    S.add_rule("a", "bb");
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.size() == 5);
 
@@ -865,15 +824,15 @@ namespace libsemigroups {
     REQUIRE(T->nr_idempotents() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "009", "add_relation", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "040", "add_rule", "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet("ab");
     REQUIRE(S.is_obviously_infinite());
-    S.add_relation("aaa", "a");
-    S.add_relation("a", "bb");
+    S.add_rule("aaa", "a");
+    S.add_rule("a", "bb");
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(S.rws()->isomorphic_non_fp_semigroup()->size() == 5);
+    REQUIRE(S.knuth_bendix()->isomorphic_non_fp_semigroup()->size() == 5);
     REQUIRE(S.size() == 5);
 
     FroidurePinBase* T = S.isomorphic_non_fp_semigroup();
@@ -881,19 +840,19 @@ namespace libsemigroups {
     REQUIRE(T->nr_idempotents() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "010", "equal_to", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "041", "equal_to", "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
 
     FpSemigroup S;
     S.set_alphabet("ab");
-    S.add_relation("aa", "a");
-    S.add_relation("ab", "a");
-    S.add_relation("ba", "a");
+    S.add_rule("aa", "a");
+    S.add_rule("ab", "a");
+    S.add_rule("ba", "a");
 
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.equal_to("ab", "a"));
     REQUIRE(S.equal_to("ba", "a"));
     REQUIRE(S.equal_to("aa", "a"));
-  }*/
+  }
 }  // namespace libsemigroups
 

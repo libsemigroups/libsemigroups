@@ -66,7 +66,7 @@ namespace libsemigroups {
     template <typename TCallable>
     void run_until(TCallable const&         func,
                    std::chrono::nanoseconds check_interval
-                   = std::chrono::milliseconds(50)) {
+                   = std::chrono::milliseconds(2)) {
       static_assert(is_callable<TCallable>::value,
                     "the template parameter TCallable must be callable");
       static_assert(
@@ -74,6 +74,9 @@ namespace libsemigroups {
           "the template parameter TCallable must return a bool");
       while (!func() && !dead() && !finished()) {
         run_for(check_interval);
+        if (check_interval < std::chrono::milliseconds(1024)) {
+          check_interval *= 2;
+        }
       }
     }
     template <typename TCallable, typename TIntType>

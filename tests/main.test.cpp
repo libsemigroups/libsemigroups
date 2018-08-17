@@ -48,20 +48,15 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     auto exp_tag
         = std::string(testInfo.name.cbegin(),
                       testInfo.name.cbegin() + testInfo.name.find(":"));
-
-    auto fnd_tag = std::find_if(
-        testInfo.tags.cbegin(),
-        testInfo.tags.cend(),
-        [&exp_tag](std::string const& tag) -> bool { return tag == exp_tag; });
-    if (fnd_tag == testInfo.tags.end()) {
+    if (!find_tag(testInfo, exp_tag)) {
       // Just run the test, and ignore the registration of the id
       return;
     }
-    auto it = map.find(*fnd_tag);
+    auto it = map.find(exp_tag);
     if (it != map.end()) {
       {
-        Catch::Colour colourGuard(Catch::Colour::Red);
-        Catch::cerr() << "Duplicate test case id: [" << *fnd_tag << "]!\n"
+        Catch::Colour colourGuard(Catch::Colour::BrightRed);
+        Catch::cerr() << "Duplicate test case: [" << exp_tag << "]!\n"
                       << "  first seen at: " << (*it).second._file << ":"
                       << (*it).second._line << "\n"
                       << "  redefined at:  " << testInfo.lineInfo.file << ":"
@@ -69,8 +64,10 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
       }
       std::exit(1);
     } else {
-      map.emplace(testInfo.tags.at(1), LibsemigroupsLineInfo(testInfo));
+      map.emplace(exp_tag, LibsemigroupsLineInfo(testInfo));
     }
+    check_category(testInfo);
+    check_file_prefix(testInfo);
   }
 
   void sectionEnded(Catch::SectionStats const& sectionStats) override {
@@ -90,7 +87,49 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   //          << std::endl;
   //}
 
-  size_t      _total_time = 0;
+  bool find_tag(Catch::TestCaseInfo const& testInfo, std::string tag) {
+    std::transform(tag.begin(), tag.end(), tag.begin(), ::tolower);
+
+    return std::find_if(testInfo.tags.cbegin(),
+                        testInfo.tags.cend(),
+                        [&tag](std::string t) -> bool {
+                          std::transform(
+                              t.begin(), t.end(), t.begin(), ::tolower);
+                          return t == tag;
+                        })
+           != testInfo.tags.cend();
+  }
+
+  void check_category(Catch::TestCaseInfo const& testInfo) {
+    if (!(find_tag(testInfo, "quick") || find_tag(testInfo, "standard")
+        || find_tag(testInfo, "extreme"))) {
+      {
+        Catch::Colour colourGuard(Catch::Colour::BrightRed);
+        Catch::cerr() << "Missing category tag: [quick|standard|extreme]!\n"
+                      << "  in test case at " << testInfo.lineInfo.file << ":"
+                      << testInfo.lineInfo.line << "\n";
+      }
+      std::exit(1);
+    }
+  }
+
+  void check_file_prefix(Catch::TestCaseInfo const& testInfo) {
+    std::string fname(testInfo.lineInfo.file);
+    auto        prefix = std::string(fname.cbegin() + fname.find("/") + 1,
+                              fname.cbegin() + fname.find("."));
+
+    if (!find_tag(testInfo, prefix)) {
+      {
+        Catch::Colour colourGuard(Catch::Colour::BrightRed);
+        Catch::cerr() << "Missing file prefix tag: [" + prefix + "]!\n"
+                      << "  in test case at " << testInfo.lineInfo.file << ":"
+                      << testInfo.lineInfo.line << "\n";
+      }
+      std::exit(1);
+    }
+  }
+
+  size_t _total_time = 0;
   std::string _msg;
 };
 

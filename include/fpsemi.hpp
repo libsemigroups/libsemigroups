@@ -25,11 +25,12 @@
 #include "internal/race.hpp"
 
 #include "fpsemi-base.hpp"
-#include "froidure-pin-base.hpp"
-#include "knuth-bendix.hpp"
 #include "todd-coxeter.hpp"
 
 namespace libsemigroups {
+  namespace fpsemigroup {
+    class KnuthBendix; // Forward declaration
+  }
 
   // This is a class for defining fp semigroups.
   class FpSemigroup : public FpSemiBase {
@@ -46,11 +47,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     explicit FpSemigroup(FpSemigroup::policy = standard);
-
-    // TODO initializer list constructor
-    // TODO alphabet constructor
-
     explicit FpSemigroup(FroidurePinBase*);
+    explicit FpSemigroup(FroidurePinBase&);
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - overridden pure virtual methods - public
@@ -73,6 +71,9 @@ namespace libsemigroups {
     std::string      normal_form(std::string const&) override;
     size_t           nr_rules() const noexcept override;
     size_t           size() override;
+
+    using FpSemiBase::normal_form;
+    using FpSemiBase::equal_to;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - public

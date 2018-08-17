@@ -126,7 +126,7 @@ TEST_CASE("FroidurePin of Transformations 05: Exception: word_to_element",
                  * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
 }
 
-TEST_CASE("FroidurePin of Transformations 05: Exception: gens",
+TEST_CASE("FroidurePin of Transformations 16: Exception: gens",
           "[quick][finite][semigroup][transformation][05]") {
   for (size_t i = 1; i < 20; ++i) {
     std::vector<Transformation<size_t>> gens;

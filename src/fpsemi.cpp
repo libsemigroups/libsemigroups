@@ -27,7 +27,13 @@
 
 #include <typeinfo>
 
-#include "cong-base.hpp"
+#include "froidure-pin-base.hpp"
+#include "knuth-bendix.hpp"
+
+// FIXME This is wasteful since it calls add_rule(rel.first,
+// rel.second), and then make_pair(rel.first, rel.second), in
+// Todd-Coxeter for example
+// JDM: I don't know where this comment came from...
 
 namespace libsemigroups {
 
@@ -52,20 +58,19 @@ namespace libsemigroups {
     }
   }
 
-  // FIXME This is wasteful since it calls add_rule(rel.first,
-  // rel.second), and then make_pair(rel.first, rel.second), in
-  // Todd-Coxeter for example
-
   // Don't take FpSemigroup::policy as an argument here since we must have a
   // place to cache the FroidurePinBase* S.
-  FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemigroup() {
-    for (auto runner : _race) {
-      static_cast<FpSemiBase*>(runner)->set_isomorphic_non_fp_semigroup(S,
-                                                                        false);
-      // TODO if the policy is standard, then add another ToddCoxeter with
-      // policy use_cayley_graph
-    }
+  FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemiBase(), _race() {
+    set_alphabet(S->nr_generators());
+    set_isomorphic_non_fp_semigroup(S, false);
+    _race.add_runner(new ToddCoxeter(S));
+    _race.add_runner(new KnuthBendix(S));
+    // TODO(1) if the policy is standard, then add another ToddCoxeter with
+    // policy use_cayley_graph (can't currently pass the policy to the
+    // fpsemigroup::ToddCoxeter).
   }
+
+  FpSemigroup::FpSemigroup(FroidurePinBase& S) : FpSemigroup(&S) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Runner - overridden pure virtual methods - public
@@ -80,6 +85,10 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   void FpSemigroup::add_rule(std::string const& lhs, std::string const& rhs) {
+    if (_race.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no methods defined, cannot add rules with no methods");
+    }
     LIBSEMIGROUPS_ASSERT(!_race.empty());
     for (auto runner : _race) {
       static_cast<FpSemiBase*>(runner)->add_rule(lhs, rhs);
@@ -91,7 +100,15 @@ namespace libsemigroups {
   }
 
   bool FpSemigroup::is_obviously_finite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    if (_race.empty()) {
+      if (is_alphabet_defined()) {
+        // Nothing in _race means no rules
+        return alphabet().empty();
+      } else {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "no alphabet or rules have been specified");
+      }
+    }
     for (auto it = _race.begin(); it < _race.end(); ++it) {
       if (static_cast<FpSemiBase*>(*it)->is_obviously_finite()) {
         return true;
@@ -101,11 +118,22 @@ namespace libsemigroups {
   }
 
   bool FpSemigroup::is_obviously_infinite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
+    if (_race.empty()) {
+      std::cout << "empty race!\n";
+      if (is_alphabet_defined()) {
+        // Nothing in _race means no rules
+        return !alphabet().empty();
+      } else {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "no alphabet or rules have been specified");
+      }
+    }
+    size_t nr = 0;
     for (auto it = _race.begin(); it < _race.end(); ++it) {
       if (static_cast<FpSemiBase*>(*it)->is_obviously_infinite()) {
         return true;
       }
+      nr++;
     }
     return false;
   }
@@ -145,8 +173,10 @@ namespace libsemigroups {
   }
 
   size_t FpSemigroup::size() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    if (is_obviously_infinite()) {
+    if (_race.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no methods defined, cannot find size with no methods");
+    } else if (is_obviously_infinite()) {
       return POSITIVE_INFINITY;
     } else {
       return static_cast<FpSemiBase*>(_race.winner())->size();
@@ -158,18 +188,16 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
 
   void FpSemigroup::set_alphabet(std::string const& lphbt) {
+    // FpSemiBase::set_alphabet throws if the alphabet is set more than once
     FpSemiBase::set_alphabet(lphbt);
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // TODO Don't allow setting the alphabet after a certain point
     for (auto runner : _race) {
       static_cast<FpSemiBase*>(runner)->set_alphabet(lphbt);
     }
   }
 
   void FpSemigroup::set_alphabet(size_t n) {
+    // FpSemiBase::set_alphabet throws if the alphabet is set more than once
     FpSemiBase::set_alphabet(n);
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // TODO Don't allow setting the alphabet after a certain point
     for (auto runner : _race) {
       static_cast<FpSemiBase*>(runner)->set_alphabet(n);
     }
