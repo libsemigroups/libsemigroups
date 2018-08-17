@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains TODO
+// This file contains wrappers for converting an CongBase -> FpSemiBase, the
+// resulting FpSemiBase delegates everything to CongBase which it wraps.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
 #define LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
@@ -102,6 +103,8 @@ namespace libsemigroups {
       }
 
       bool equal_to(std::string const& lhs, std::string const& rhs) override {
+        validate_word(lhs);
+        validate_word(rhs);
         return _wrapped_cong->contains(string_to_word(lhs),
                                        string_to_word(rhs));
       }

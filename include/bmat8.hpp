@@ -235,11 +235,6 @@ namespace libsemigroups {
     //! top-left \p dim x \p dim entries may be non-zero.
     static BMat8 random(size_t dim);
 
-    // FIXME move this into the function calling this below
-    inline size_t lz_row(size_t i) const {
-      LIBSEMIGROUPS_ASSERT(i < 8);
-      return _lzcnt_u64(this->_data << (8 * i));
-    }
 
     inline void swap(BMat8& that) {
       std::swap(this->_data, that._data);
@@ -321,17 +316,20 @@ namespace libsemigroups {
     }
   };
 
-  template <typename TIndexType> struct action<BMat8, TIndexType> {
-    inline TIndexType operator()(BMat8 const& x, TIndexType const i) const
-        noexcept {
-      LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
-      return x.lz_row(i);
-    }
-  };
+  // The following is comment out since lz_cnt is unreliable, this serves as a
+  // POC only.
+
+  // template <typename TIndexType> struct action<BMat8, TIndexType> {
+  //   inline TIndexType operator()(BMat8 const& x, TIndexType const i) const
+  //       noexcept {
+  //     LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
+  //     return _lzcnt_u64(x.to_int() << (8 * i));
+  //   }
+  // };
 
   template <> struct inverse<BMat8> {
     inline BMat8 operator()(BMat8 const& x) const noexcept {
-      LIBSEMIGROUPS_ASSERT(true);  // TODO check that x is invertible
+      LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
       return x.transpose();
     }
   };

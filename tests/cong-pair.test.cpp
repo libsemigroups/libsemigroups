@@ -16,15 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// The purpose of this file is to test the Congruence::TC class, this is
-// achieved by calling cong->p() before calculating anything about the
-// congruence.
+// The purpose of this file is to test the classes congruence::P and
+// fpsemigroup::P.
 
 #include <utility>
 
 #include "catch.hpp"
 #include "cong-pair.hpp"
-// #include "fpsemi.hpp"
 
 namespace libsemigroups {
   namespace congruence {
@@ -479,9 +477,9 @@ namespace libsemigroups {
       // REQUIRE(S.nr_rules() == 18);
 
       P<> p(S);
-      p.add_rule("abaaabbaa", "baaab");
+      p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}), word_type({1, 0, 0, 0, 1}));
 
-      REQUIRE(p.equal_to("aaab", "aabaa"));
+      REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
       REQUIRE(p.finished());
       REQUIRE(!S.is_begun());
       REQUIRE(!S.is_done());

@@ -115,7 +115,9 @@ namespace libsemigroups {
       REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
       REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));
       REQUIRE(kb.equal_to(word_type({0, 2}), word_type({0})));
+#ifdef LIBSEMIGROUPS_DEBUG
       REQUIRE(kb.normal_form("ac") == "a");
+#endif
       // REQUIRE(kb.is_obviously_infinite());
     }
 
@@ -1228,14 +1230,30 @@ namespace libsemigroups {
       REQUIRE(Q->size() == 21);
       REQUIRE(Q->nr_idempotents() == 3);
 
-      std::vector<std::string> v(static_cast<FroidurePin<KBE>*>(Q)->cbegin(),
+      std::vector<word_type> v(static_cast<FroidurePin<KBE>*>(Q)->cbegin(),
                                  static_cast<FroidurePin<KBE>*>(Q)->cend());
       REQUIRE(v
-              == std::vector<std::string>(
-                     {"a",     "b",     "aa",    "ab",   "ba",   "bb",
-                      "aaa",   "aab",   "aba",   "abb",  "baa",  "bba",
-                      "aaaa",  "abaa",  "abba",  "baaa", "bbaa", "abaaa",
-                      "abbaa", "bbaaa", "abbaaa"}));
+              == std::vector<word_type>({{0},
+                                         {1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0},
+                                         {1, 1},
+                                         {0, 0, 0},
+                                         {0, 0, 1},
+                                         {0, 1, 0},
+                                         {0, 1, 1},
+                                         {1, 0, 0},
+                                         {1, 1, 0},
+                                         {0, 0, 0, 0},
+                                         {0, 1, 0, 0},
+                                         {0, 1, 1, 0},
+                                         {1, 0, 0, 0},
+                                         {1, 1, 0, 0},
+                                         {0, 1, 0, 0, 0},
+                                         {0, 1, 1, 0, 0},
+                                         {1, 1, 0, 0, 0},
+                                         {0, 1, 1, 0, 0, 0}}));
 
       REQUIRE(
           kb.word_to_class_index(S.factorisation(Transf({1, 3, 1, 3, 3})))

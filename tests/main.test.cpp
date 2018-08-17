@@ -69,7 +69,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
       }
       std::exit(1);
     } else {
-      map.emplace(testInfo.tags.at(1), testInfo);
+      map.emplace(testInfo.tags.at(1), LibsemigroupsLineInfo(testInfo));
     }
   }
 

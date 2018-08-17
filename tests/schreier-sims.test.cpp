@@ -2883,63 +2883,69 @@ namespace libsemigroups {
                 22, 48, 42, 7,  11, 35, 3,  20, 10, 39, 43, 0})));
     }
 
-    TEST_CASE("Schreier-Sims 34: BMat8 cyclic group order 2",
-              "[quick][schreier-sims][34]") {
-      SchreierSims<8, size_t, BMat8> S;
-      S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
-                             {1, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 1, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 1, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 1, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 1}}));
-      REQUIRE(S.size() == 2);
-    }
 
-    TEST_CASE("Schreier-Sims 35: BMat8 symmetric group 8",
-              "[quick][schreier-sims][35]") {
-      SchreierSims<8, size_t, BMat8> S;
-      S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
-                             {1, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 1, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 1, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 1, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 1}}));
-      S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 1, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 1, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 1, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 1},
-                             {1, 0, 0, 0, 0, 0, 0, 0}}));
-      REQUIRE(S.size() == 40320);
-    }
+// The following are comment out since the "action" struct requires the
+// compiler intrinsic lz_cnt, which we don't currently want to rely on. This is
+// a POC, and works when lz_cnt is available and actually counts leading 0s.
 
-    TEST_CASE("Schreier-Sims 36: BMat8 dihedral group D_16",
-              "[quick][schreier-sims][36]") {
-      SchreierSims<8, size_t, BMat8> S;
-      S.add_generator(BMat8({{1, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 1},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 1, 0, 0},
-                             {0, 0, 0, 0, 1, 0, 0, 0},
-                             {0, 0, 0, 1, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0, 0, 0, 0},
-                             {0, 1, 0, 0, 0, 0, 0, 0}}));
-      S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 1, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 1, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 1, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 1, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 1},
-                             {1, 0, 0, 0, 0, 0, 0, 0}}));
-      REQUIRE(S.size() == 16);
-    }
+//     TEST_CASE("Schreier-Sims 34: BMat8 cyclic group order 2",
+//               "[quick][schreier-sims][34]") {
+//       SchreierSims<8, size_t, BMat8> S;
+//       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
+//                              {1, 0, 0, 0, 0, 0, 0, 0},
+//                              {0, 0, 1, 0, 0, 0, 0, 0},
+//                              {0, 0, 0, 1, 0, 0, 0, 0},
+//                              {0, 0, 0, 0, 1, 0, 0, 0},
+//                              {0, 0, 0, 0, 0, 1, 0, 0},
+//                              {0, 0, 0, 0, 0, 0, 1, 0},
+//                              {0, 0, 0, 0, 0, 0, 0, 1}}));
+//       REQUIRE(S.size() == 2);
+//     }
+//
+//     TEST_CASE("Schreier-Sims 35: BMat8 symmetric group 8",
+//               "[quick][schreier-sims][35]") {
+//       SchreierSims<8, size_t, BMat8> S;
+//       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
+//                              {1, 0, 0, 0, 0, 0, 0, 0},
+//                              {0, 0, 1, 0, 0, 0, 0, 0},
+//                              {0, 0, 0, 1, 0, 0, 0, 0},
+//                              {0, 0, 0, 0, 1, 0, 0, 0},
+//                              {0, 0, 0, 0, 0, 1, 0, 0},
+//                              {0, 0, 0, 0, 0, 0, 1, 0},
+//                              {0, 0, 0, 0, 0, 0, 0, 1}}));
+//       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
+//                              {0, 0, 1, 0, 0, 0, 0, 0},
+//                              {0, 0, 0, 1, 0, 0, 0, 0},
+//                              {0, 0, 0, 0, 1, 0, 0, 0},
+//                              {0, 0, 0, 0, 0, 1, 0, 0},
+//                              {0, 0, 0, 0, 0, 0, 1, 0},
+//                              {0, 0, 0, 0, 0, 0, 0, 1},
+//                              {1, 0, 0, 0, 0, 0, 0, 0}}));
+//       REQUIRE(S.size() == 40320);
+//     }
+//
+//
+//     TEST_CASE("Schreier-Sims 36: BMat8 dihedral group D_16",
+//               "[quick][schreier-sims][36]") {
+//       SchreierSims<8, size_t, BMat8> S;
+//       S.add_generator(BMat8({{1, 0, 0, 0, 0, 0, 0, 0},
+//                              {0, 0, 0, 0, 0, 0, 0, 1},
+//                              {0, 0, 0, 0, 0, 0, 1, 0},
+//                              {0, 0, 0, 0, 0, 1, 0, 0},
+//                              {0, 0, 0, 0, 1, 0, 0, 0},
+//                              {0, 0, 0, 1, 0, 0, 0, 0},
+//                              {0, 0, 1, 0, 0, 0, 0, 0},
+//                              {0, 1, 0, 0, 0, 0, 0, 0}}));
+//       S.add_generator(BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
+//                              {0, 0, 1, 0, 0, 0, 0, 0},
+//                              {0, 0, 0, 1, 0, 0, 0, 0},
+//                              {0, 0, 0, 0, 1, 0, 0, 0},
+//                              {0, 0, 0, 0, 0, 1, 0, 0},
+//                              {0, 0, 0, 0, 0, 0, 1, 0},
+//                              {0, 0, 0, 0, 0, 0, 0, 1},
+//                              {1, 0, 0, 0, 0, 0, 0, 0}}));
+//       REQUIRE(S.size() == 16);
+//     }
 
     TEST_CASE("Schreier-Sims 37: symmetric perm. group (degree 5)",
               "[quick][schreier-sims][37]") {

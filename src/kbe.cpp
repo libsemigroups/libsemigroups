@@ -59,7 +59,7 @@ namespace libsemigroups {
       : Element(cpy._hash_value), _kb(cpy._kb), _kb_word(cpy._kb_word) {}
 
   //////////////////////////////////////////////////////////////////////////////
-  // Element - n methods - public
+  // Element - methods - public
   //////////////////////////////////////////////////////////////////////////////
 
   bool KBE::operator==(Element const& that) const {

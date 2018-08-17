@@ -63,6 +63,7 @@ namespace libsemigroups {
     static_assert(std::is_same<TMaxOrMin, Max>::value
                       || std::is_same<TMaxOrMin, Min>::value,
                   "template parameter TMaxOrMin must be Max or Min");
+
     template <typename TIntegralType>
     constexpr operator TIntegralType() const noexcept {
       static_assert(
@@ -101,11 +102,15 @@ namespace libsemigroups {
   //! This variable is used to indicate that a value is undefined. For
   //! example, the cached hash value of an Element is initially set to this
   //! value.
-  constexpr struct UNDEFINED : public Constant<0> {
+  const struct UNDEFINED : public Constant<0> {
+    // Older versions of some compilers require this . . .
+    UNDEFINED() {}
   } UNDEFINED;
 
   //! Value representing \f$\infty\f$.
-  constexpr struct POSITIVE_INFINITY : public Constant<-1> {
+  const struct POSITIVE_INFINITY : public Constant<-1> {
+    // Older versions of some compilers require this . . .
+    POSITIVE_INFINITY() {}
   } POSITIVE_INFINITY;
 
   template <typename TIntegralType>
@@ -125,7 +130,9 @@ namespace libsemigroups {
   }
 
   //! Value representing \f$-\infty\f$.
-  constexpr struct NEGATIVE_INFINITY : public Constant<0, Min> {
+  const struct NEGATIVE_INFINITY : public Constant<0, Min> {
+    // Older versions of some compilers require this . . .
+    NEGATIVE_INFINITY() {}
   } NEGATIVE_INFINITY;
 
   template <typename TIntegralType>
@@ -155,7 +162,9 @@ namespace libsemigroups {
   }
 
   //!
-  constexpr struct LIMIT_MAX : public Constant<-2> {
+  const struct LIMIT_MAX : public Constant<-2> {
+    // Older versions of some compilers require this . . .
+    LIMIT_MAX() {}
   } LIMIT_MAX;
 
   template <typename TIntegralType>

@@ -24,6 +24,7 @@
 
 #include <functional>
 #include <memory>
+#include <vector>
 #include <sstream>
 #include <type_traits>
 

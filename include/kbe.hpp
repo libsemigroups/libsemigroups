@@ -172,7 +172,6 @@ namespace libsemigroups {
     Element* empty_key() const override;
 #endif
 
-    //! Returns a pointer to the internal_string_type used to create \c this.
     operator word_type() const;
     operator std::string() const;
 

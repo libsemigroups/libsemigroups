@@ -22,6 +22,8 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 
+#include <stdint.h>
+
 #include <vector>
 
 namespace libsemigroups {
@@ -57,7 +59,7 @@ namespace libsemigroups {
     //! list); this is equal to the number of blocks in the partition. A value
     //! \c true in position \f$i\f$ indicates that the \f$i\f$th block is signed
     //! (transverse) and \c false that it is unsigned.
-    Blocks(std::vector<u_int32_t>*, std::vector<bool>*);
+    Blocks(std::vector<uint32_t>*, std::vector<bool>*);
 
     //! A constructor.
     //!
@@ -79,7 +81,7 @@ namespace libsemigroups {
     //! This constructor is provided for the situation where the number of
     //! blocks in blocks is known *a priori* and so does not need to be
     //! calculated in the constructor.
-    Blocks(std::vector<u_int32_t>*, std::vector<bool>*, u_int32_t);
+    Blocks(std::vector<uint32_t>*, std::vector<bool>*, uint32_t);
 
     //! The assignment operator is deleted for Blocks to avoid unintended
     //! copying.
@@ -113,13 +115,13 @@ namespace libsemigroups {
     //!
     //! The *degree* of a Blocks object is the size of the set of
     //! which it is a partition.
-    u_int32_t degree() const;
+    uint32_t degree() const;
 
     //! Returns the index of the block containing pos.
     //!
     //! This method asserts that \p pos is valid, i.e. that it is less than the
     //! degree of \c this.
-    u_int32_t block(size_t pos) const;
+    uint32_t block(size_t pos) const;
 
     //! Returns \c true if the block with index \p index is transverse
     //!
@@ -141,13 +143,13 @@ namespace libsemigroups {
     //!
     //! This method returns the number of parts in the partition that instances
     //! of this class represent.
-    u_int32_t nr_blocks() const;
+    uint32_t nr_blocks() const;
 
     //! Returns the number of signed (transverse) blocks in \c this.
     //!
     //! Equivalently, this method returns the number of \c true values in
     //! Blocks::lookup().
-    u_int32_t rank();
+    uint32_t rank();
 
     //! Returns a hash value for a \c this.
     //!
@@ -158,18 +160,18 @@ namespace libsemigroups {
     //! Returns a const_iterator pointing to the index of the first block
     //!
     //! This method asserts that degree is not 0.
-    typename std::vector<u_int32_t>::const_iterator cbegin() const;
+    typename std::vector<uint32_t>::const_iterator cbegin() const;
 
     //! Returns a const_iterator referring to past-the-end of the last block.
     //!
     //! This method asserts that degree is not 0.
-    typename std::vector<u_int32_t>::const_iterator cend() const;
+    typename std::vector<uint32_t>::const_iterator cend() const;
 
    private:
-    std::vector<u_int32_t>* _blocks;
+    std::vector<uint32_t>* _blocks;
     std::vector<bool>*      _lookup;
-    u_int32_t               _nr_blocks;
-    u_int32_t               _rank;
+    uint32_t               _nr_blocks;
+    uint32_t               _rank;
   };
 }  // namespace libsemigroups
 

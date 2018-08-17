@@ -31,12 +31,11 @@
 
 namespace libsemigroups {
 
-  template <typename T, size_t N, class A = std::allocator<T>>
-  // FIXME remove or use the template parameter A
+  template <typename T, size_t N>
   class SquareVector {
-    // So that SquareVector<T, N, A> can access private data members of
-    // SquareVector<S, M, B> and vice versa.
-    template <typename S, size_t M, class B> friend class SquareVector;
+    // So that SquareVector<T, N> can access private data members of
+    // SquareVector<S, M> and vice versa.
+    template <typename S, size_t M> friend class SquareVector;
 
    public:
     SquareVector() : _arrays(), _sizes() {
@@ -96,11 +95,11 @@ namespace libsemigroups {
     std::array<size_t, N>           _sizes;
   };
 
-  template <typename T, size_t N, class A = std::allocator<T>>
+  template <typename T, size_t N>
   class SquareArray {
-    // So that SquareArray<T, N, A> can access private data members of
-    // SquareArray<S, M, B> and vice versa.
-    template <typename S, size_t M, class B> friend class SquareArray;
+    // So that SquareArray<T, N> can access private data members of
+    // SquareArray<S, M> and vice versa.
+    template <typename S, size_t M> friend class SquareArray;
 
    public:
     SquareArray() : _arrays() {}

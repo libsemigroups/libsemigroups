@@ -6,7 +6,8 @@ AM_CXXFLAGS =  -I$(top_srcdir)/include
 AM_CXXFLAGS += -I$(top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(top_srcdir)/extern/HPCombi/include/fallback
 AM_CXXFLAGS += -I$(top_srcdir)/extern/sparsehash-c11
-AM_CXXFLAGS += -mavx -flax-vector-conversions -mlzcnt
+AM_CXXFLAGS += -mavx -flax-vector-conversions 
+## -mlzcnt ## currently not used
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -march=native -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 

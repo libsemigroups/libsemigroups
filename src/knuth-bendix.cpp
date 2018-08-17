@@ -407,13 +407,14 @@ namespace libsemigroups {
       if (u == v) {
         return true;
       }
-      internal_string_type uu = rewrite(u);
-      internal_string_type vv = rewrite(v);
+      external_string_type uu = rewrite(u);
+      external_string_type vv = rewrite(v);
       if (uu == vv) {
         return true;
       }
-      run();  // TODO possibly use run_for here?
-      // FIXME can't use internal_rewrite on external_strings!!
+      run();  // TODO possibly use run_until here?
+      external_to_internal_string(uu);
+      external_to_internal_string(vv);
       internal_rewrite(&uu);
       internal_rewrite(&vv);
       return uu == vv;
@@ -421,6 +422,7 @@ namespace libsemigroups {
 
     external_string_type
     KnuthBendix::normal_form(external_string_type const& w) {
+      validate_word(w);
       run();
       return rewrite(w);
     }
