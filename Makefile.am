@@ -1,4 +1,4 @@
-# ############################################################################
+##############################################################################
 # Automake configuration
 ##############################################################################
 
@@ -146,17 +146,16 @@ lstest_SOURCES += tests/fpsemi-examples.cpp
 lstest_SOURCES += tests/froidure-pin.element.test.cpp
 lstest_SOURCES += tests/froidure-pin.bipart.test.cpp
 lstest_SOURCES += tests/froidure-pin.bmat8.test.cpp
-lstest_SOURCES += tests/froidure-pin.booleanmat.test.cpp
+lstest_SOURCES += tests/froidure-pin.boolmat.test.cpp
 lstest_SOURCES += tests/froidure-pin.integers.test.cpp
-lstest_SOURCES += tests/froidure-pin.integermatrices.test.cpp
+lstest_SOURCES += tests/froidure-pin.intmat.test.cpp
 lstest_SOURCES += tests/froidure-pin.intpairs.test.cpp
-lstest_SOURCES += tests/froidure-pin.partialperm.test.cpp
+lstest_SOURCES += tests/froidure-pin.pperm.test.cpp
 lstest_SOURCES += tests/froidure-pin.pbr.test.cpp
 lstest_SOURCES += tests/froidure-pin.projmaxplus.test.cpp
-lstest_SOURCES += tests/froidure-pin.transformations.test.cpp
-lstest_SOURCES += tests/froidure-pin.tropicalmaxplus.test.cpp
+lstest_SOURCES += tests/froidure-pin.transf.test.cpp
+lstest_SOURCES += tests/froidure-pin.tropmaxplus.test.cpp
 lstest_SOURCES += tests/hpcombi.test.cpp
-lstest_SOURCES += tests/kbp.test.cpp
 lstest_SOURCES += tests/knuth-bendix.test.cpp
 lstest_SOURCES += tests/schreier-sims.test.cpp
 lstest_SOURCES += tests/semiring.test.cpp

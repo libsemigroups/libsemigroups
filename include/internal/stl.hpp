@@ -24,6 +24,7 @@
 
 #include <functional>
 #include <memory>
+#include <ostream>
 #include <sstream>
 #include <type_traits>
 #include <vector>
@@ -46,10 +47,9 @@ namespace libsemigroups {
 
   // A << method for vectors
   template <typename T>
-  std::ostringstream& operator<<(std::ostringstream&   os,
-                                 std::vector<T> const& vec) {
+  std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
     os << "{";
-    for (auto it = vec.cbegin(); it < vec.cend() - 1; it++) {
+    for (auto it = vec.cbegin(); it < vec.cend() - 1; ++it) {
       os << to_string(*it) << ", ";
     }
     os << to_string(*(vec.cend() - 1)) << "}";
@@ -58,8 +58,7 @@ namespace libsemigroups {
 
   // A << method for pairs
   template <typename T, typename S>
-  std::ostringstream& operator<<(std::ostringstream&    os,
-                                 std::pair<T, S> const& pair) {
+  std::ostream& operator<<(std::ostream& os, std::pair<T, S> const& pair) {
     os << "{" << to_string(pair.first) << ", " << to_string(pair.second) << "}";
     return os;
   }
@@ -69,7 +68,7 @@ namespace libsemigroups {
   //! It appears that GCC 4.9.1 (at least) do not have std::to_string
   //! implemented, so we implement our own. This requires the operator \c <<
   //! to be implemented for an \c ostringstream& and const T& element.
-  template <typename T> std::string to_string(const T& n) {
+  template <typename T> std::string to_string(T const& n) {
     std::ostringstream stm;
     stm << n;
     return stm.str();

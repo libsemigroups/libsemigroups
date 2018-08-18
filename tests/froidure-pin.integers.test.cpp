@@ -95,7 +95,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "107",
                           "(integers)",
-                          "[quick][froidure-pin][ints]") {
+                          "[quick][froidure-pin][integers]") {
     FroidurePin<int> S({2});
     REQUIRE(S.size() == 32);
     REQUIRE(S.nr_idempotents() == 1);

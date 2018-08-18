@@ -23,6 +23,7 @@
 #include <string>
 
 #include "internal/report.hpp"
+#include "internal/stl.hpp"
 #include "internal/timer.hpp"
 
 #include "froidure-pin.hpp"
@@ -650,7 +651,7 @@ namespace libsemigroups {
         internal_string_type rhs = internal_string_type(*rule->rhs());
         internal_to_external_string(lhs);
         internal_to_external_string(rhs);
-        rules.push_back(std::make_pair(lhs, rhs));
+        rules.emplace_back(lhs, rhs);
       }
       std::sort(
           rules.begin(),
@@ -677,9 +678,7 @@ namespace libsemigroups {
     }
 
     std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
-      for (auto rule : kb._active_rules) {
-        os << *rule << std::endl;
-      }
+      os << to_string(kb.rules()) << "\n";
       return os;
     }
 

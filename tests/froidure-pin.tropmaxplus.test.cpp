@@ -27,7 +27,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "128",
                           "(tropical max-plus semiring matrices)",
-                          "[quick][froidure-pin][tropicalmaxplus]") {
+                          "[quick][froidure-pin][tropmaxplus]") {
     Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(9);
     std::vector<MatrixOverSemiring<int64_t>> gens
         = {MatrixOverSemiring<int64_t>({{1, 3}, {2, 1}}, sr),

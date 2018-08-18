@@ -67,7 +67,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
       map.emplace(exp_tag, LibsemigroupsLineInfo(testInfo));
     }
     check_category(testInfo);
-    check_file_prefix(testInfo);
+    check_file_prefixes(testInfo);
   }
 
   void sectionEnded(Catch::SectionStats const& sectionStats) override {
@@ -113,19 +113,25 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     }
   }
 
-  void check_file_prefix(Catch::TestCaseInfo const& testInfo) {
+  void check_file_prefixes(Catch::TestCaseInfo const& testInfo) {
     std::string fname(testInfo.lineInfo.file);
-    auto        prefix = std::string(fname.cbegin() + fname.find("/") + 1,
-                              fname.cbegin() + fname.find("."));
+    auto        first  = fname.cbegin() + fname.find('/') + 1;  // Skip "tests/"
+    auto        last   = fname.find('.');
+    auto        prefix = std::string(first, fname.cbegin() + last);
 
-    if (!find_tag(testInfo, prefix)) {
-      {
-        Catch::Colour colourGuard(Catch::Colour::BrightRed);
-        Catch::cerr() << "Missing file prefix tag: [" + prefix + "]!\n"
-                      << "  in test case at " << testInfo.lineInfo.file << ":"
-                      << testInfo.lineInfo.line << "\n";
+    while (last != std::string::npos && prefix != "test") {
+      if (!find_tag(testInfo, prefix)) {
+        {
+          Catch::Colour colourGuard(Catch::Colour::BrightRed);
+          Catch::cerr() << "Missing file prefix tag: [" + prefix + "]!\n"
+            << "  in test case at " << testInfo.lineInfo.file << ":"
+            << testInfo.lineInfo.line << "\n";
+        }
+        std::exit(1);
       }
-      std::exit(1);
+      first  = fname.cbegin() + last + 1;
+      last   = fname.find('.', last + 1);
+      prefix = std::string(first, fname.cbegin() + last);
     }
   }
 

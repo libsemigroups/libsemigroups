@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// Must include hpcombi.h so that LIBSEMIGROUPS_HPCOMBI is defined, if so
+// Must include hpcombi.hpp so that LIBSEMIGROUPS_HPCOMBI is defined, if so
 // specified at during configure.
 #include "hpcombi.hpp"
 
@@ -25,10 +25,10 @@
 #include "catch.hpp"
 #include "froidure-pin.hpp"
 
-using namespace libsemigroups;
 using namespace HPCombi;
 
 const uint8_t FE = 0xfe;
+const uint8_t FF = 0xFF;
 
 struct Renner0Element : public PTransf16 {
   using PTransf16::PTransf16;
@@ -62,63 +62,72 @@ namespace libsemigroups {
     }
   };
 #endif
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "001", " Transf16", "[quick][hpcombi]") {
+    FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+        {Transf16({1, 2, 0})});
+    REPORTER.set_report(false);
+    REQUIRE(S.size() == 3);
+    REQUIRE(S.nr_idempotents() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "002",
+                          " Transf16",
+                          "[standard][hpcombi]") {
+    FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+        {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
+         Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
+         Transf16({3, 0, 7, 2, 4, 6, 2, 4}),
+         Transf16({3, 2, 3, 4, 5, 3, 0, 1}),
+         Transf16({4, 3, 7, 7, 4, 5, 0, 4}),
+         Transf16({5, 6, 3, 0, 3, 0, 5, 1}),
+         Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
+         Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
+    S.reserve(600000);
+    REPORTER.set_report(false);
+    REQUIRE(S.size() == 597369);
+  }
+
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "003", " Renner0", "[extreme][hpcombi]") {
+    FroidurePin<Renner0Element,
+                std::hash<Renner0Element>,
+                std::equal_to<Renner0Element>>
+        S({Renner0Element(
+               {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
+           Renner0Element(
+               {FF, FF, FF, FF, FF, FF, FF, FF, 8, 9, 10, 11, 12, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 2, 3, 4, 5, 7, 6, 9, 8, 10, 11, 12, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 2, 3, 4, 6, 5, 7, 8, 10, 9, 11, 12, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 2, 3, 5, 4, 6, 7, 8, 9, 11, 10, 12, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15}),
+           Renner0Element(
+               {0, 1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 12, 14, 15})});
+    REPORTER.set_report(true);
+    REQUIRE(S.size() == 8962225);
+    REQUIRE(S.nr_idempotents() == 128);
+    REPORTER.set_report(false);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "003",
+                          " full transformation monoid 8",
+                          "[extreme][hpcombi]") {
+    FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
+        {Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
+         Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
+         Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
+    S.reserve(std::pow(8, 8));
+    REPORTER.set_report(true);
+    REQUIRE(S.size() == 16777216);
+    REPORTER.set_report(false);
+  }
 }  // namespace libsemigroups
-
-TEST_CASE("HPCombi 01: Transf16", "[quick][hpcombi][finite][01]") {
-  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
-      {Transf16({1, 2, 0})});
-  REPORTER.set_report(false);
-  REQUIRE(S.size() == 3);
-  REQUIRE(S.nr_idempotents() == 1);
-}
-
-TEST_CASE("HPCombi 02: Transf16", "[standard][hpcombi][finite][02]") {
-  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
-      {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
-       Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
-       Transf16({3, 0, 7, 2, 4, 6, 2, 4}),
-       Transf16({3, 2, 3, 4, 5, 3, 0, 1}),
-       Transf16({4, 3, 7, 7, 4, 5, 0, 4}),
-       Transf16({5, 6, 3, 0, 3, 0, 5, 1}),
-       Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
-       Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
-  S.reserve(600000);
-  REPORTER.set_report(false);
-  REQUIRE(S.size() == 597369);
-}
-
-const uint8_t FF = 0xFF;
-
-TEST_CASE("HPCombi 03: Renner0", "[extreme][hpcombi][finite][03]") {
-  FroidurePin<Renner0Element,
-              std::hash<Renner0Element>,
-              std::equal_to<Renner0Element>>
-      S({Renner0Element({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
-         Renner0Element(
-             {FF, FF, FF, FF, FF, FF, FF, FF, 8, 9, 10, 11, 12, 13, 14, 15}),
-         Renner0Element({0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15}),
-         Renner0Element({0, 1, 2, 3, 4, 5, 7, 6, 9, 8, 10, 11, 12, 13, 14, 15}),
-         Renner0Element({0, 1, 2, 3, 4, 6, 5, 7, 8, 10, 9, 11, 12, 13, 14, 15}),
-         Renner0Element({0, 1, 2, 3, 5, 4, 6, 7, 8, 9, 11, 10, 12, 13, 14, 15}),
-         Renner0Element({0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15}),
-         Renner0Element(
-             {0, 1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 12, 14, 15})});
-  REPORTER.set_report(true);
-  REQUIRE(S.size() == 8962225);
-  REQUIRE(S.nr_idempotents() == 128);
-  REPORTER.set_report(false);
-}
-
-TEST_CASE("HPCombi 03: full transformation monoid 8",
-          "[extreme][hpcombi][finite][03]") {
-  FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
-      {Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
-       Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
-       Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
-  S.reserve(std::pow(8, 8));
-  REPORTER.set_report(true);
-  REQUIRE(S.size() == 16777216);
-  REPORTER.set_report(false);
-}
-
 #endif

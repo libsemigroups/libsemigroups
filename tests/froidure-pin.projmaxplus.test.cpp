@@ -27,7 +27,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "111",
                           "(projective max plus matrices) non-pointer",
-                          "[quick][froidure-pin][projmaxplust]") {
+                          "[quick][froidure-pin][projmaxplus]") {
     REPORTER.set_report(REPORT);
     Semiring<int64_t>*                   sr = new MaxPlusSemiring();
     std::vector<ProjectiveMaxPlusMatrix> gens

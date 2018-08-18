@@ -19,21 +19,21 @@
 // The purpose of this file is to test the classes congruence::P and
 // fpsemigroup::P.
 
-#include <utility>
+#include <utility>  // for std::transform
 
 #include "cong-pair.hpp"
 #include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
-  namespace congruence {
-    template <class TElementType>
-    void delete_gens(std::vector<TElementType>& gens) {
-      for (auto x : gens) {
-        delete x;
-      }
+  template <class TElementType>
+  void delete_gens(std::vector<TElementType>& gens) {
+    for (auto x : gens) {
+      delete x;
     }
+  }
+  constexpr bool REPORT = false;
 
-    constexpr bool REPORT = false;
+  namespace congruence {
 
     congruence_type const TWOSIDED = congruence_type::TWOSIDED;
     congruence_type const LEFT     = congruence_type::LEFT;
@@ -423,6 +423,570 @@ namespace libsemigroups {
       REQUIRE(S.is_done());  // nr_classes requires S.size();
     }
 
+    LIBSEMIGROUPS_TEST_CASE(
+        "KBP",
+        "001",
+        "non-trivial congruence on an infinite fp semigroup",
+        "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(3);
+      kb.add_rule({0, 1}, {1, 0});
+      kb.add_rule({0, 2}, {2, 0});
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({0, 2}, {0});
+      kb.add_rule({2, 0}, {0});
+      kb.add_rule({1, 2}, {2, 1});
+      kb.add_rule({1, 1, 1}, {1});
+      kb.add_rule({1, 2}, {1});
+      kb.add_rule({2, 1}, {1});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({0}, {1});
+
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 0}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 1}));
+      REQUIRE(kbp.word_to_class_index({0})
+              == kbp.word_to_class_index({1, 0, 1}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(kbp.cbegin_ntc()->size() == 5);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KBP",
+        "002",
+        "non-trivial congruence on an infinite fp semigroup",
+        "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(4);
+      kb.add_rule({0, 1}, {1, 0});
+      kb.add_rule({0, 2}, {2, 0});
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({0, 2}, {0});
+      kb.add_rule({2, 0}, {0});
+      kb.add_rule({1, 2}, {2, 1});
+      kb.add_rule({1, 1, 1}, {1});
+      kb.add_rule({1, 2}, {1});
+      kb.add_rule({2, 1}, {1});
+      kb.add_rule({0, 3}, {0});
+      kb.add_rule({3, 0}, {0});
+      kb.add_rule({1, 3}, {1});
+      kb.add_rule({3, 1}, {1});
+      kb.add_rule({2, 3}, {2});
+      kb.add_rule({3, 2}, {2});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({0}, {1});
+
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 0}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 1}));
+      REQUIRE(kbp.word_to_class_index({0})
+              == kbp.word_to_class_index({1, 0, 1}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(kbp.cbegin_ntc()->size() == 5);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KBP",
+        "003",
+        "non-trivial congruence on an infinite fp semigroup",
+        "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(5);
+      kb.add_rule({0, 1}, {0});
+      kb.add_rule({1, 0}, {0});
+      kb.add_rule({0, 2}, {0});
+      kb.add_rule({2, 0}, {0});
+      kb.add_rule({0, 3}, {0});
+      kb.add_rule({3, 0}, {0});
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({1, 1}, {0});
+      kb.add_rule({2, 2}, {0});
+      kb.add_rule({3, 3}, {0});
+      kb.add_rule({1, 2}, {0});
+      kb.add_rule({2, 1}, {0});
+      kb.add_rule({1, 3}, {0});
+      kb.add_rule({3, 1}, {0});
+      kb.add_rule({2, 3}, {0});
+      kb.add_rule({3, 2}, {0});
+      kb.add_rule({4, 0}, {0});
+      kb.add_rule({4, 1}, {1});
+      kb.add_rule({4, 2}, {2});
+      kb.add_rule({4, 3}, {3});
+      kb.add_rule({0, 4}, {0});
+      kb.add_rule({1, 4}, {1});
+      kb.add_rule({2, 4}, {2});
+      kb.add_rule({3, 4}, {3});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({1}, {2});
+
+      REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(kbp.cbegin_ntc()->size() == 2);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{1}, {2}}));
+
+      REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KBP",
+        "004",
+        "non-trivial congruence on an infinite fp semigroup",
+        "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(5);
+      kb.add_rule({0, 1}, {0});
+      kb.add_rule({1, 0}, {0});
+      kb.add_rule({0, 2}, {0});
+      kb.add_rule({2, 0}, {0});
+      kb.add_rule({0, 3}, {0});
+      kb.add_rule({3, 0}, {0});
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({1, 1}, {0});
+      kb.add_rule({2, 2}, {0});
+      kb.add_rule({3, 3}, {0});
+      kb.add_rule({1, 2}, {0});
+      kb.add_rule({2, 1}, {0});
+      kb.add_rule({1, 3}, {0});
+      kb.add_rule({3, 1}, {0});
+      kb.add_rule({2, 3}, {0});
+      kb.add_rule({3, 2}, {0});
+      kb.add_rule({4, 0}, {0});
+      kb.add_rule({4, 1}, {2});
+      kb.add_rule({4, 2}, {3});
+      kb.add_rule({4, 3}, {1});
+      kb.add_rule({0, 4}, {0});
+      kb.add_rule({1, 4}, {2});
+      kb.add_rule({2, 4}, {3});
+      kb.add_rule({3, 4}, {1});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({2}, {3});
+
+      REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({2}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(kbp.cbegin_ntc()->size() == 3);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{2}, {3}, {1}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "005",
+                            "trivial congruence on a finite fp semigroup",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(2);
+      kb.add_rule({0, 0, 1}, {0, 0});
+      kb.add_rule({0, 0, 0, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 1}, {0, 0, 0});
+      kb.add_rule({1, 1, 1, 0}, {1, 1, 0});
+      kb.add_rule({1, 1, 1, 1}, {1, 1, 1});
+      kb.add_rule({0, 1, 0, 0, 0}, {0, 1, 0, 1});
+      kb.add_rule({0, 1, 0, 1, 0}, {0, 1, 0, 0});
+      kb.add_rule({0, 1, 0, 1, 1}, {0, 1, 0, 1});
+
+      KBP kbp(TWOSIDED, kb);
+
+      REQUIRE(kbp.nr_classes() == 27);
+      REQUIRE(kbp.word_to_class_index({0}) == 0);
+
+      REQUIRE(kbp.word_to_class_index({0, 0, 0, 0}) == 1);
+      REQUIRE(kbp.word_to_class_index({0}) == 0);
+      REQUIRE(kbp.word_to_class_index({1, 0, 1}) == 2);
+      REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 1);
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 0);
+      REQUIRE(kbp.cbegin_ntc() == kbp.cend_ntc());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "006",
+                            "universal congruence on a finite fp semigroup",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(2);
+      kb.add_rule({0, 0, 1}, {0, 0});
+      kb.add_rule({0, 0, 0, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 1}, {0, 0, 0});
+      kb.add_rule({1, 1, 1, 0}, {1, 1, 0});
+      kb.add_rule({1, 1, 1, 1}, {1, 1, 1});
+      kb.add_rule({0, 1, 0, 0, 0}, {0, 1, 0, 1});
+      kb.add_rule({0, 1, 0, 1, 0}, {0, 1, 0, 0});
+      kb.add_rule({0, 1, 0, 1, 1}, {0, 1, 0, 1});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({0}, {1});
+      kbp.add_pair({0, 0}, {0});
+
+      REQUIRE(kbp.nr_classes() == 1);
+
+      REQUIRE(kbp.cbegin_ntc()->size() == 27);
+      REQUIRE(kb.size() == 27);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{0},
+                                         {1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0},
+                                         {1, 1},
+                                         {0, 0, 0},
+                                         {1, 0, 0},
+                                         {0, 1, 0},
+                                         {1, 0, 1},
+                                         {0, 1, 1},
+                                         {1, 1, 0},
+                                         {1, 1, 1},
+                                         {1, 0, 0, 0},
+                                         {0, 1, 0, 0},
+                                         {1, 1, 0, 0},
+                                         {1, 0, 1, 0},
+                                         {0, 1, 0, 1},
+                                         {1, 1, 0, 1},
+                                         {1, 0, 1, 1},
+                                         {1, 1, 0, 0, 0},
+                                         {1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0},
+                                         {1, 0, 1, 0, 1},
+                                         {1, 1, 0, 1, 1},
+                                         {1, 1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0, 1}}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+
+      REQUIRE(kbp.word_to_class_index({0, 0, 0, 0}) == 0);
+      REQUIRE(kbp.word_to_class_index({0}) == 0);
+      REQUIRE(kbp.word_to_class_index({1, 0, 1}) == 0);
+      REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 0);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "013",
+                            "left congruence on a finite fp semigroup",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(2);
+      kb.add_rule({0, 0, 1}, {0, 0});
+      kb.add_rule({0, 0, 0, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 0}, {0, 0});
+      kb.add_rule({0, 1, 1, 1}, {0, 0, 0});
+      kb.add_rule({1, 1, 1, 0}, {1, 1, 0});
+      kb.add_rule({1, 1, 1, 1}, {1, 1, 1});
+      kb.add_rule({0, 1, 0, 0, 0}, {0, 1, 0, 1});
+      kb.add_rule({0, 1, 0, 1, 0}, {0, 1, 0, 0});
+      kb.add_rule({0, 1, 0, 1, 1}, {0, 1, 0, 1});
+
+      KBP kbp(LEFT, kb);
+      kbp.add_pair({0}, {1});
+      kbp.add_pair({0, 0}, {0});
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 6);
+
+      std::vector<size_t> v(kbp.nr_non_trivial_classes(), 0);
+      std::transform(kbp.cbegin_ntc(),
+                     kbp.cend_ntc(),
+                     v.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      std::sort(v.begin(), v.end());
+      REQUIRE(v == std::vector<size_t>({4, 4, 4, 5, 5, 5}));
+
+      REQUIRE(
+          std::vector<std::vector<word_type>>(kbp.cbegin_ntc(), kbp.cend_ntc())
+          == std::vector<std::vector<word_type>>(
+                 {{{0}, {1}, {0, 0}, {0, 1}, {0, 0, 0}},
+                  {{1, 0}, {1, 1}, {1, 0, 0}, {1, 0, 1}, {1, 0, 0, 0}},
+                  {{0, 1, 0}, {0, 1, 1}, {0, 1, 0, 0}, {0, 1, 0, 1}},
+                  {{1, 1, 0},
+                   {1, 1, 1},
+                   {1, 1, 0, 0},
+                   {1, 1, 0, 1},
+                   {1, 1, 0, 0, 0}},
+                  {{1, 0, 1, 0},
+                   {1, 0, 1, 1},
+                   {1, 0, 1, 0, 0},
+                   {1, 0, 1, 0, 1}},
+                  {{1, 1, 0, 1, 0},
+                   {1, 1, 0, 1, 1},
+                   {1, 1, 0, 1, 0, 0},
+                   {1, 1, 0, 1, 0, 1}}}));
+
+      REQUIRE(kbp.word_to_class_index({0})
+              == kbp.word_to_class_index({0, 0, 0}));
+      REQUIRE(kbp.word_to_class_index({1, 0, 1, 1})
+              == kbp.word_to_class_index({1, 0, 1, 0, 1}));
+      REQUIRE(kbp.word_to_class_index({1, 1, 0, 0})
+              != kbp.word_to_class_index({0, 1}));
+      REQUIRE(kbp.word_to_class_index({1, 0, 1, 0})
+              != kbp.word_to_class_index({1, 1, 0, 1, 0, 1}));
+
+      REQUIRE(kbp.word_to_class_index({1, 0, 1}) == 1);
+      REQUIRE(kbp.word_to_class_index({0}) == 0);
+      REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 0);
+
+      REQUIRE(kbp.nr_classes() == 6);
+    }
+
+    // KBP 07 only really tests fpsemigroup::KnuthBendix
+    LIBSEMIGROUPS_TEST_CASE(
+        "KBP",
+        "007",
+        "finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR ",
+        "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(4);
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({0, 1}, {1});
+      kb.add_rule({1, 0}, {1});
+      kb.add_rule({0, 2}, {2});
+      kb.add_rule({2, 0}, {2});
+      kb.add_rule({0, 3}, {3});
+      kb.add_rule({3, 0}, {3});
+      kb.add_rule({2, 3}, {0});
+      kb.add_rule({3, 2}, {0});
+      kb.add_rule({1, 1}, {0});
+      kb.add_rule({2, 2, 2, 2}, {0});
+      kb.add_rule({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0});
+
+      KBP kbp(TWOSIDED, kb);
+      REQUIRE(kbp.nr_classes() == 120);
+      REQUIRE(kbp.nr_non_trivial_classes() == 0);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "008",
+                            "right congruence on infinite fp semigroup",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(3);
+      kb.add_rule({1, 1, 1, 1, 1, 1, 1}, {1});
+      kb.add_rule({2, 2, 2, 2, 2}, {2});
+      kb.add_rule({1, 2, 2, 1, 0}, {1, 2, 2, 1});
+      kb.add_rule({1, 2, 2, 1, 2}, {1, 2, 2, 1});
+      kb.add_rule({1, 1, 2, 1, 2, 0}, {1, 1, 2, 1, 2});
+      kb.add_rule({1, 1, 2, 1, 2, 1}, {1, 1, 2, 1, 2});
+
+      KBP kbp(RIGHT, kb);
+      kbp.add_pair({1, 2, 2, 1}, {1, 1, 2, 1, 2});
+
+      // Generating pair
+      REQUIRE(kbp.word_to_class_index({1, 2, 2, 1})
+              == kbp.word_to_class_index({1, 1, 2, 1, 2}));
+
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
+                                     kbp.cbegin_ntc()->end())
+              == std::vector<word_type>({{1, 2, 2, 1}, {1, 1, 2, 1, 2}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "009",
+                            "finite fp semigroup, dihedral group of order 6",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(5);
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({0, 1}, {1});
+      kb.add_rule({1, 0}, {1});
+      kb.add_rule({0, 2}, {2});
+      kb.add_rule({2, 0}, {2});
+      kb.add_rule({0, 3}, {3});
+      kb.add_rule({3, 0}, {3});
+      kb.add_rule({0, 4}, {4});
+      kb.add_rule({4, 0}, {4});
+      kb.add_rule({1, 2}, {0});
+      kb.add_rule({2, 1}, {0});
+      kb.add_rule({3, 4}, {0});
+      kb.add_rule({4, 3}, {0});
+      kb.add_rule({2, 2}, {0});
+      kb.add_rule({1, 4, 2, 3, 3}, {0});
+      kb.add_rule({4, 4, 4}, {0});
+
+      KBP kbp(TWOSIDED, kb);
+
+      REQUIRE(kbp.nr_classes() == 6);
+      REQUIRE(kbp.nr_non_trivial_classes() == 0);
+      REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "010",
+                            "finite fp semigroup, size 16",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(4);
+      kb.add_rule({3}, {2});
+      kb.add_rule({0, 3}, {0, 2});
+      kb.add_rule({1, 1}, {1});
+      kb.add_rule({1, 3}, {1, 2});
+      kb.add_rule({2, 1}, {2});
+      kb.add_rule({2, 2}, {2});
+      kb.add_rule({2, 3}, {2});
+      kb.add_rule({0, 0, 0}, {0});
+      kb.add_rule({0, 0, 1}, {1});
+      kb.add_rule({0, 0, 2}, {2});
+      kb.add_rule({0, 1, 2}, {1, 2});
+      kb.add_rule({1, 0, 0}, {1});
+      kb.add_rule({1, 0, 2}, {0, 2});
+      kb.add_rule({2, 0, 0}, {2});
+      kb.add_rule({0, 1, 0, 1}, {1, 0, 1});
+      kb.add_rule({0, 2, 0, 2}, {2, 0, 2});
+      kb.add_rule({1, 0, 1, 0}, {1, 0, 1});
+      kb.add_rule({1, 2, 0, 1}, {1, 0, 1});
+      kb.add_rule({1, 2, 0, 2}, {2, 0, 2});
+      kb.add_rule({2, 0, 1, 0}, {2, 0, 1});
+      kb.add_rule({2, 0, 2, 0}, {2, 0, 2});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({2}, {3});
+
+      REQUIRE(kbp.nr_classes() == 16);
+      REQUIRE(kbp.nr_non_trivial_classes() == 0);
+      REQUIRE(kbp.word_to_class_index({2}) == kbp.word_to_class_index({3}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "011",
+                            "finite fp semigroup, size 16",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(11);
+      kb.add_rule({2}, {1});
+      kb.add_rule({4}, {3});
+      kb.add_rule({5}, {0});
+      kb.add_rule({6}, {3});
+      kb.add_rule({7}, {1});
+      kb.add_rule({8}, {3});
+      kb.add_rule({9}, {3});
+      kb.add_rule({10}, {0});
+      kb.add_rule({0, 2}, {0, 1});
+      kb.add_rule({0, 4}, {0, 3});
+      kb.add_rule({0, 5}, {0, 0});
+      kb.add_rule({0, 6}, {0, 3});
+      kb.add_rule({0, 7}, {0, 1});
+      kb.add_rule({0, 8}, {0, 3});
+      kb.add_rule({0, 9}, {0, 3});
+      kb.add_rule({0, 10}, {0, 0});
+      kb.add_rule({1, 1}, {1});
+      kb.add_rule({1, 2}, {1});
+      kb.add_rule({1, 4}, {1, 3});
+      kb.add_rule({1, 5}, {1, 0});
+      kb.add_rule({1, 6}, {1, 3});
+      kb.add_rule({1, 7}, {1});
+      kb.add_rule({1, 8}, {1, 3});
+      kb.add_rule({1, 9}, {1, 3});
+      kb.add_rule({1, 10}, {1, 0});
+      kb.add_rule({3, 1}, {3});
+      kb.add_rule({3, 2}, {3});
+      kb.add_rule({3, 3}, {3});
+      kb.add_rule({3, 4}, {3});
+      kb.add_rule({3, 5}, {3, 0});
+      kb.add_rule({3, 6}, {3});
+      kb.add_rule({3, 7}, {3});
+      kb.add_rule({3, 8}, {3});
+      kb.add_rule({3, 9}, {3});
+      kb.add_rule({3, 10}, {3, 0});
+      kb.add_rule({0, 0, 0}, {0});
+      kb.add_rule({0, 0, 1}, {1});
+      kb.add_rule({0, 0, 3}, {3});
+      kb.add_rule({0, 1, 3}, {1, 3});
+      kb.add_rule({1, 0, 0}, {1});
+      kb.add_rule({1, 0, 3}, {0, 3});
+      kb.add_rule({3, 0, 0}, {3});
+      kb.add_rule({0, 1, 0, 1}, {1, 0, 1});
+      kb.add_rule({0, 3, 0, 3}, {3, 0, 3});
+      kb.add_rule({1, 0, 1, 0}, {1, 0, 1});
+      kb.add_rule({1, 3, 0, 1}, {1, 0, 1});
+      kb.add_rule({1, 3, 0, 3}, {3, 0, 3});
+      kb.add_rule({3, 0, 1, 0}, {3, 0, 1});
+      kb.add_rule({3, 0, 3, 0}, {3, 0, 3});
+
+      KBP kbp(TWOSIDED, kb);
+      kbp.add_pair({1}, {3});
+
+      REQUIRE(kbp.nr_classes() == 3);
+      REQUIRE(kbp.nr_non_trivial_classes() == 1);
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
+                                     kbp.cbegin_ntc()->end())
+              == std::vector<word_type>({{1},
+                                         {3},
+                                         {0, 1},
+                                         {0, 3},
+                                         {1, 0},
+                                         {3, 0},
+                                         {1, 3},
+                                         {0, 1, 0},
+                                         {0, 3, 0},
+                                         {1, 0, 1},
+                                         {3, 0, 1},
+                                         {3, 0, 3},
+                                         {1, 3, 0},
+                                         {0, 3, 0, 1}}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({5}));
+      REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({10}));
+      REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
+      REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({7}));
+      REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({4}));
+      REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({6}));
+      REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({8}));
+      REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({9}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KBP",
+                            "012",
+                            "infinite fp semigroup with infinite classes",
+                            "[quick][kbp][cong-pair]") {
+      REPORTER.set_report(REPORT);
+
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(2);
+      kb.add_rule({0, 0, 0}, {0});
+      kb.add_rule({0, 1}, {1, 0});
+      kb.add_rule({0}, {0, 0});
+      KBP kbp(TWOSIDED, kb);
+
+      word_type x
+          = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+      word_type y
+          = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+      REQUIRE(kbp.contains(x, y));
+      REQUIRE(kbp.contains({0, 0}, {0}));
+      REQUIRE(!kbp.contains({1}, {0}));
+      REQUIRE(kbp.finished());
+    }
+
     // TODO uncomment
     /*LIBSEMIGROUPS_TEST_CASE("P", "011", "run_for", "[quick][cong][cong-pair]")
     { REPORTER.set_report(REPORT); RWS rws; rws.set_alphabet("ab");
@@ -442,15 +1006,6 @@ namespace libsemigroups {
   }  // namespace congruence
 
   namespace fpsemigroup {
-
-    template <class TElementType>
-    void delete_gens(std::vector<TElementType>& gens) {
-      for (auto x : gens) {
-        delete x;
-      }
-    }
-
-    constexpr bool REPORT = false;
 
     LIBSEMIGROUPS_TEST_CASE("P",
                             "011",

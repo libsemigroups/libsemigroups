@@ -27,7 +27,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "094",
                           "non-pointer bipartitions",
-                          "[quick][froidure-pin][bipartition]") {
+                          "[quick][froidure-pin][bipartition][bipart]") {
     REPORTER.set_report(REPORT);
     std::vector<Bipartition> gens
         = {Bipartition(

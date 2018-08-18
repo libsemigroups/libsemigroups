@@ -168,9 +168,11 @@ namespace libsemigroups {
       // with single default parameters:
       //    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
       // and so we have two constructors instead.
+      // TODO remove this constructor
       explicit KnuthBendix(external_string_type const& alphabet)
           : KnuthBendix(new SHORTLEX(), alphabet) {}
 
+      // TODO remove this constructor
       explicit KnuthBendix(size_t n) : KnuthBendix(new SHORTLEX()) {
         set_alphabet(n);
       }
@@ -292,7 +294,7 @@ namespace libsemigroups {
       //! This method allows a KnuthBendix object to be left shifted into a
       //! std::ostream, such as std::cout. The currently active rules of the
       //! system are represented in the output.
-      friend std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb);
+      friend std::ostream& operator<<(std::ostream&, KnuthBendix const&);
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - main methods - public
