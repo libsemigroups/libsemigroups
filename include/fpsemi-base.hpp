@@ -86,7 +86,7 @@ namespace libsemigroups {
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
     word_type          normal_form(std::initializer_list<letter_type>);
     bool               equal_to(std::initializer_list<letter_type>,
-                                std::initializer_list<letter_type>);
+                  std::initializer_list<letter_type>);
 
     // Set the char in alphabet() to be the identity.
     void set_identity(std::string const&);

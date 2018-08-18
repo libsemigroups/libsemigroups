@@ -20,11 +20,9 @@
 #include "constants.hpp"
 
 namespace libsemigroups {
-  namespace constants {
-    constexpr bool REPORT = false;
+  constexpr bool REPORT = false;
 
-    TEST_CASE("Constants 01:", "[quick][constants][01]") {
-      // REQUIRE(UNDEFINED != LIMIT_MAX);
-    }
-  }  // namespace constants
+  TEST_CASE("Constants 01:", "[quick][constants][01]") {
+    // REQUIRE(UNDEFINED != LIMIT_MAX);
+  }
 }  // namespace libsemigroups

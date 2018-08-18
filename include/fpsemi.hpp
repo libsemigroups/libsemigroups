@@ -29,7 +29,7 @@
 
 namespace libsemigroups {
   namespace fpsemigroup {
-    class KnuthBendix; // Forward declaration
+    class KnuthBendix;  // Forward declaration
   }
 
   // This is a class for defining fp semigroups.
@@ -72,8 +72,8 @@ namespace libsemigroups {
     size_t           nr_rules() const noexcept override;
     size_t           size() override;
 
-    using FpSemiBase::normal_form;
     using FpSemiBase::equal_to;
+    using FpSemiBase::normal_form;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - public

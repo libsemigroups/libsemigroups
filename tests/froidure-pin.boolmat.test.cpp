@@ -16,58 +16,61 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "element.hpp"
 #include "froidure-pin.hpp"
+#include "libsemigroups.tests.hpp"
 
-#define SEMIGROUPS_REPORT false
+namespace libsemigroups {
 
-using namespace libsemigroups;
+  bool constexpr REPORT = false;
 
-TEST_CASE("FroidurePin of BooleanMats 01: non-pointer BooleanMats",
-          "[quick][semigroup][booleanmat][finite][01]") {
-  std::vector<BooleanMat> gens
-      = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
-         BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
-         BooleanMat({0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1})};
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "129",
+                          "non-pointer BooleanMat",
+                          "[quick][froidure-pin][boolmat][booleanmat]") {
+    std::vector<BooleanMat> gens
+        = {BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}),
+           BooleanMat({0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}),
+           BooleanMat({0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1})};
 
-  FroidurePin<BooleanMat> S(gens);
+    FroidurePin<BooleanMat> S(gens);
 
-  S.reserve(26);
-  REPORTER.set_report(SEMIGROUPS_REPORT);
+    S.reserve(26);
+    REPORTER.set_report(REPORT);
 
-  REQUIRE(S.size() == 26);
-  REQUIRE(S.nr_idempotents() == 4);
-  size_t pos = 0;
+    REQUIRE(S.size() == 26);
+    REQUIRE(S.nr_idempotents() == 4);
+    size_t pos = 0;
 
-  for (auto it = S.cbegin(); it < S.cend(); ++it) {
-    REQUIRE(S.position(*it) == pos);
-    pos++;
+    for (auto it = S.cbegin(); it < S.cend(); ++it) {
+      REQUIRE(S.position(*it) == pos);
+      pos++;
+    }
+
+    S.add_generators(
+        {BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
+    REQUIRE(S.size() == 29);
+    S.closure({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
+    REQUIRE(S.size() == 29);
+    REQUIRE(S.minimal_factorisation(
+                BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
+                * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}))
+            == word_type({3, 0}));
+    REQUIRE(S.minimal_factorisation(28) == word_type({3, 0}));
+    REQUIRE(
+        S.at(28)
+        == BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
+               * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}));
+    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+                      LibsemigroupsException);
+    pos = 0;
+    for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
+      REQUIRE(*it * *it == *it);
+      pos++;
+    }
+    REQUIRE(pos == S.nr_idempotents());
+    for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
+      REQUIRE(*(it - 1) < *it);
+    }
   }
-
-  S.add_generators(
-      {BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
-  REQUIRE(S.size() == 29);
-  S.closure({BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})});
-  REQUIRE(S.size() == 29);
-  REQUIRE(S.minimal_factorisation(
-              BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
-              * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}))
-          == word_type({3, 0}));
-  REQUIRE(S.minimal_factorisation(28) == word_type({3, 0}));
-  REQUIRE(
-      S.at(28)
-      == BooleanMat({1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0})
-             * BooleanMat({0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0}));
-  REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
-                    LibsemigroupsException);
-  pos = 0;
-  for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-    REQUIRE(*it * *it == *it);
-    pos++;
-  }
-  REQUIRE(pos == S.nr_idempotents());
-  for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-    REQUIRE(*(it - 1) < *it);
-  }
-}
+}  // namespace libsemigroups

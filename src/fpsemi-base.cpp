@@ -163,7 +163,7 @@ namespace libsemigroups {
   }
 
   bool FpSemiBase::equal_to(std::initializer_list<letter_type> u,
-                                 std::initializer_list<letter_type> v) {
+                            std::initializer_list<letter_type> v) {
     return equal_to(word_type(u), word_type(v));
   }
 

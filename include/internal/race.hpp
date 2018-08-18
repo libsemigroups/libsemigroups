@@ -108,7 +108,7 @@ namespace libsemigroups {
         for (size_t i = 0; i < _runners.size(); ++i) {
           if (_runners[i]->finished()) {
             REPORT("using 0 additional threads");
-            _winner    = _runners[i];
+            _winner = _runners[i];
             REPORT("#", i, " is already finished!");
             return;
           }

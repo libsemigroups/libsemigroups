@@ -25,9 +25,9 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-            "112",
-            "(transformations) JDM favourite",
-            "[standard][froidure-pin][transformation][transf]") {
+                          "112",
+                          "(transformations) JDM favourite",
+                          "[standard][froidure-pin][transformation][transf]") {
     std::vector<Transformation<uint_fast8_t>> gens
         = {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 4, 1, 5}),
            Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7}),

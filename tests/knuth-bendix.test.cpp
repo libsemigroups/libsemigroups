@@ -25,10 +25,10 @@
 
 #include "element.hpp"
 #include "froidure-pin.hpp"
+#include "internal/stl.hpp"
 #include "kbe.hpp"
 #include "knuth-bendix.hpp"
 #include "libsemigroups.tests.hpp"
-#include "internal/stl.hpp"
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
@@ -1675,7 +1675,7 @@ namespace libsemigroups {
                             "[fail][extreme][knuth-bendix][kbmag][shortlex]") {
       REPORTER.set_report(true);
 
-      std::string lphbt = "abcdefgh";
+      std::string        lphbt = "abcdefgh";
       std::random_device rd;
       std::mt19937       g(rd());
       std::shuffle(lphbt.begin(), lphbt.end(), g);
@@ -1990,8 +1990,9 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_rules() == 1);
 
-      REQUIRE(kb.rules()
-              == std::vector<std::pair<std::string, std::string>>({{"aa", ""}}));
+      REQUIRE(
+          kb.rules()
+          == std::vector<std::pair<std::string, std::string>>({{"aa", ""}}));
     }
 
     /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "073", " (from

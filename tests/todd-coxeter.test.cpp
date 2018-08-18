@@ -30,22 +30,19 @@
 #include "tce.hpp"
 
 namespace libsemigroups {
-  namespace congruence_todd_coxeter {
 
-    template <class TElementType>
-    void delete_gens(std::vector<TElementType>& gens) {
-      for (auto x : gens) {
-        delete x;
-      }
+  template <class TElementType>
+  void delete_gens(std::vector<TElementType>& gens) {
+    for (auto x : gens) {
+      delete x;
     }
+  }
+  constexpr bool REPORT              = false;
+  congruence_type constexpr TWOSIDED = congruence_type::TWOSIDED;
+  congruence_type constexpr LEFT     = congruence_type::LEFT;
+  congruence_type constexpr RIGHT    = congruence_type::RIGHT;
 
-    using ToddCoxeter = congruence::ToddCoxeter;
-
-    constexpr bool REPORT = false;
-
-    congruence_type constexpr TWOSIDED = congruence_type::TWOSIDED;
-    congruence_type constexpr LEFT     = congruence_type::LEFT;
-    congruence_type constexpr RIGHT    = congruence_type::RIGHT;
+  namespace congruence {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "001",
@@ -802,10 +799,9 @@ namespace libsemigroups {
         REQUIRE(tc3.nr_classes() == 1);
       }
     }
-  }  // namespace congruence_todd_coxeter
+  }  // namespace congruence
 
-  namespace fpsemigroup_todd_coxeter {
-    using ToddCoxeter     = fpsemigroup::ToddCoxeter;
+  namespace fpsemigroup {
     constexpr bool REPORT = false;
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -990,6 +986,5 @@ namespace libsemigroups {
 
       REQUIRE(tc.size() == 99);
     }
-
-  }  // namespace fpsemigroup_todd_coxeter
+  }  // namespace fpsemigroup
 }  // namespace libsemigroups

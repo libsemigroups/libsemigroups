@@ -322,10 +322,11 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 148);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "017",
-                          "Renner monoid type D4 (E. G. presentation), q = 1",
-                          "[quick][fpsemi][hivert]") {  // TODO check test category
+  LIBSEMIGROUPS_TEST_CASE(
+      "FpSemigroup",
+      "017",
+      "Renner monoid type D4 (E. G. presentation), q = 1",
+      "[quick][fpsemi][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -342,10 +343,11 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 10625); // Runs forever
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "018",
-                          "Renner monoid type D4 (E. G. presentation), q = 0",
-                          "[quick][fpsemi][hivert]") {  // TODO check test category
+  LIBSEMIGROUPS_TEST_CASE(
+      "FpSemigroup",
+      "018",
+      "Renner monoid type D4 (E. G. presentation), q = 0",
+      "[quick][fpsemi][hivert]") {  // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -620,7 +622,10 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup()->nr_rules() == 207);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "033", "normal_form", "[quick][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "033",
+                          "normal_form",
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
 
     FpSemigroup S;
@@ -855,4 +860,3 @@ namespace libsemigroups {
     REQUIRE(S.equal_to("aa", "a"));
   }
 }  // namespace libsemigroups
-

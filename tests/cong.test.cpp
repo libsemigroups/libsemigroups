@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups.tests.hpp"
 #include "fpsemi-examples.hpp"
+#include "libsemigroups.tests.hpp"
 
 #include "include/internal/stl.hpp"
 
@@ -1205,7 +1205,10 @@ namespace libsemigroups {
             == S.size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "038", "Stellar S7", "[standard][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "038",
+                          "Stellar S7",
+                          "[standard][cong]") {
     // TODO check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;

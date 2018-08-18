@@ -102,7 +102,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   void check_category(Catch::TestCaseInfo const& testInfo) {
     if (!(find_tag(testInfo, "quick") || find_tag(testInfo, "standard")
-        || find_tag(testInfo, "extreme"))) {
+          || find_tag(testInfo, "extreme"))) {
       {
         Catch::Colour colourGuard(Catch::Colour::BrightRed);
         Catch::cerr() << "Missing category tag: [quick|standard|extreme]!\n"
@@ -124,8 +124,8 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
         {
           Catch::Colour colourGuard(Catch::Colour::BrightRed);
           Catch::cerr() << "Missing file prefix tag: [" + prefix + "]!\n"
-            << "  in test case at " << testInfo.lineInfo.file << ":"
-            << testInfo.lineInfo.line << "\n";
+                        << "  in test case at " << testInfo.lineInfo.file << ":"
+                        << testInfo.lineInfo.line << "\n";
         }
         std::exit(1);
       }
@@ -135,7 +135,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     }
   }
 
-  size_t _total_time = 0;
+  size_t      _total_time = 0;
   std::string _msg;
 };
 

@@ -89,7 +89,6 @@ namespace libsemigroups {
     REQUIRE(S.size() == 597369);
   }
 
-
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "003", " Renner0", "[extreme][hpcombi]") {
     FroidurePin<Renner0Element,
                 std::hash<Renner0Element>,

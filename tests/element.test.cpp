@@ -328,10 +328,7 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                     LibsemigroupsException);
 }
 
-LIBSEMIGROUPS_TEST_CASE("BooleanMat",
-                        "001",
-                        "methods",
-                        "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("BooleanMat", "001", "methods", "[quick][element]") {
   auto x = BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   auto y = BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
   auto z = BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
@@ -354,10 +351,7 @@ LIBSEMIGROUPS_TEST_CASE("BooleanMat",
   REQUIRE(z == x);
 }
 
-LIBSEMIGROUPS_TEST_CASE("BooleanMat",
-                        "002",
-                        "hash",
-                        "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("BooleanMat", "002", "hash", "[quick][element]") {
   Element* x = new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -425,10 +419,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
   REQUIRE(z == y);
 }
 
-LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                        "002",
-                        "hash",
-                        "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition", "002", "hash", "[quick][element]") {
   Element* x = new Bipartition(
       {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
   for (size_t i = 0; i < 1000000; i++) {
@@ -516,10 +507,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
   delete expected;
 }
 
-LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                        "005",
-                        "degree 0",
-                        "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition", "005", "degree 0", "[quick][element]") {
   Bipartition* x = new Bipartition(std::vector<u_int32_t>({}));
   REQUIRE(x->const_nr_blocks() == 0);
   REQUIRE(x->nr_left_blocks() == 0);
@@ -537,7 +525,10 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
   delete x;
 }
 
-LIBSEMIGROUPS_TEST_CASE("Bipartition", "006", "exceptions", "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                        "006",
+                        "exceptions",
+                        "[quick][element]") {
   REQUIRE_NOTHROW(Bipartition(std::vector<u_int32_t>()));
   REQUIRE_THROWS_AS(Bipartition({0}), LibsemigroupsException);
   REQUIRE_THROWS_AS(Bipartition({1, 0}), LibsemigroupsException);
@@ -1297,10 +1288,7 @@ LIBSEMIGROUPS_TEST_CASE("PBR",
   delete expected;
 }
 
-LIBSEMIGROUPS_TEST_CASE("PBR",
-                        "002",
-                        "universal product",
-                        "[quick][element]") {
+LIBSEMIGROUPS_TEST_CASE("PBR", "002", "universal product", "[quick][element]") {
   Element* x = new PBR({{5, 3},
                         {5, 4, 3, 0, 1, 2},
                         {5, 4, 3, 0, 2},
