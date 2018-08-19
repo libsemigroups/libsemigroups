@@ -85,6 +85,7 @@ lib_LTLIBRARIES = libsemigroups.la
 libsemigroups_la_SOURCES =  src/blocks.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-base.cpp
+libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/element.cpp
 libsemigroups_la_SOURCES += src/fpsemi-base.cpp

@@ -85,13 +85,13 @@ namespace libsemigroups {
 
     //! The assignment operator is deleted for Blocks to avoid unintended
     //! copying.
-    Blocks& operator=(Blocks const& copy) = delete;
+    Blocks& operator=(Blocks const&) = delete;
 
     //! Copy constructor
     //!
     //! Copies all the information in copy and returns a new instance of
     //! Blocks.
-    Blocks(Blocks const& copy);
+    Blocks(Blocks const&);
 
     //! Default destructor.
     //!
@@ -103,13 +103,13 @@ namespace libsemigroups {
     //! Two Blocks objects are equal if and only if their underlying signed
     //! partitions are equal. It is ok to compare blocks of different
     //! degree with this operator.
-    bool operator==(const Blocks& that) const;
+    bool operator==(Blocks const& that) const;
 
     //! Returns \c true if \c this is less than \p that.
     //!
     //! This operator defines a total order on the set of all Blocks objects
     //! (including those of different degree).
-    bool operator<(const Blocks& that) const;
+    bool operator<(Blocks const& that) const;
 
     //! Returns the degree of a Blocks object
     //!
@@ -121,7 +121,7 @@ namespace libsemigroups {
     //!
     //! This method asserts that \p pos is valid, i.e. that it is less than the
     //! degree of \c this.
-    uint32_t block(size_t pos) const;
+    uint32_t block(size_t) const;
 
     //! Returns \c true if the block with index \p index is transverse
     //!
@@ -129,7 +129,7 @@ namespace libsemigroups {
     //! transverse (or signed) block and it returns \c false if it is not
     //! transverse (or unsigned).  This method asserts that the parameter \p
     //! index is valid, i.e. that it is less than the degree of \c this.
-    bool is_transverse_block(size_t index) const;
+    bool is_transverse_block(size_t) const;
 
     //! Returns a pointer to the lookup table for block indices.
     //!

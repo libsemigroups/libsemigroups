@@ -25,7 +25,6 @@
 #include "internal/libsemigroups-config.hpp"
 
 namespace libsemigroups {
-  //! XXX
   template <typename TElementType, typename = void> struct complexity;
   template <typename TElementType, typename = void> struct degree;
   template <typename TElementType, typename = void> struct increase_degree_by;
@@ -33,7 +32,6 @@ namespace libsemigroups {
   template <typename TElementType, typename = void> struct one;
   template <typename TElementType, typename = void> struct product;
   template <typename TElementType, typename = void> struct swap;
-  // JDM: not sure that swap is used for anything . . .
 
   template <typename TElementType, typename TPointType, typename = void>
   struct action;

@@ -80,10 +80,12 @@ namespace libsemigroups {
             class TTraits
             = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
   class FroidurePin : private TTraits, public FroidurePinBase {
+   public:
     using element_type       = typename TTraits::element_type;
     using const_element_type = typename TTraits::const_element_type;
     using const_reference    = typename TTraits::const_reference;
 
+   private:
     using internal_element_type = typename TTraits::internal_element_type;
     using internal_const_element_type =
         typename TTraits::internal_const_element_type;

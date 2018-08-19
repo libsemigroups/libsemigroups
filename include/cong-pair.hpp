@@ -22,6 +22,12 @@
 // that currently it is only used with FroidurePin<KBE>, and so doesn't
 // strictly have to be a class template.
 
+// TODO(later):
+//   1. the type of the congruence defined by class P could be a template
+//      parameter
+//   2. use shared_ptr rather than raw pointer to fpsemigroup::KnuthBendix in
+//      KBP class.
+
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
 
@@ -38,51 +44,36 @@
 
 namespace libsemigroups {
   namespace congruence {
-    // TODO: the type of the congruence defined by class P should be a template
-    // parameter
     template <typename TElementType  = Element const*,
               typename TElementHash  = hash<TElementType>,
               typename TElementEqual = equal_to<TElementType>,
               class TTraits
               = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     class P : public CongBase, protected TTraits {
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // P - typedefs - public
-      ////////////////////////////////////////////////////////////////////////
-      // TODO check if the following are all actually used
-      using element_type       = typename TTraits::element_type;
-      using const_element_type = typename TTraits::const_element_type;
-      using reference          = typename TTraits::reference;
-      using const_reference    = typename TTraits::const_reference;
+     protected:
+      using froidure_pin_type
+          = FroidurePin<TElementType, TElementHash, TElementEqual, TTraits>;
 
+     protected:
       ////////////////////////////////////////////////////////////////////////
-      // P - typedefs - private
+      // P - typedefs - protected
       ////////////////////////////////////////////////////////////////////////
 
+      using const_reference    = typename froidure_pin_type::const_reference;
       using internal_element_type = typename TTraits::internal_element_type;
       using internal_const_element_type =
           typename TTraits::internal_const_element_type;
-      using internal_reference = typename TTraits::internal_reference;
-      using internal_const_reference =
-          typename TTraits::internal_const_reference;
 
       using internal_equal_to = typename TTraits::internal_equal_to;
       using internal_hash     = typename TTraits::internal_hash;
 
       using product = ::libsemigroups::product<internal_element_type>;
 
-     protected:
       ////////////////////////////////////////////////////////////////////////
       // P - constructor - protected
       ////////////////////////////////////////////////////////////////////////
       // This is protected because it is not possible to create a P object
       // without it being defined over a parent semigroup.
-
-      // TODO should be this and not TTraits that is used as a template
-      // parameter, maybe?
-      using semigroup_type
-          = FroidurePin<TElementType, TElementHash, TElementEqual, TTraits>;
 
       explicit P(congruence_type type)
           : CongBase(type),
@@ -138,9 +129,8 @@ namespace libsemigroups {
           // Get the next pair
           auto& current_pair = _pairs_to_mult.front();
           _pairs_to_mult.pop();
-          // TODO can the previous be auto&, or does the pop make this UB?
 
-          auto prnt = static_cast<semigroup_type*>(get_parent());
+          auto prnt = static_cast<froidure_pin_type*>(get_parent());
           // Add its left and/or right multiples
           for (size_t i = 0; i < prnt->nr_generators(); i++) {
             const_reference gen = prnt->generator(i);
@@ -227,8 +217,8 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                         "the parent semigroup is defined");
         }
-        auto x = static_cast<semigroup_type*>(get_parent())->word_to_element(l);
-        auto y = static_cast<semigroup_type*>(get_parent())->word_to_element(r);
+        auto x = static_cast<froidure_pin_type*>(get_parent())->word_to_element(l);
+        auto y = static_cast<froidure_pin_type*>(get_parent())->word_to_element(r);
         internal_add_pair(this->to_internal(x), this->to_internal(y));
         this->external_free(x);
         this->external_free(y);
@@ -236,7 +226,7 @@ namespace libsemigroups {
       }
 
       word_type class_index_to_word(class_index_type) override {
-        // TODO implement
+        // FIXME actually implement this
         throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
       }
 
@@ -266,7 +256,7 @@ namespace libsemigroups {
         if (!finished()) {
           return UNDEFINED;
         }
-        auto x = static_cast<semigroup_type*>(get_parent())->word_to_element(w);
+        auto x = static_cast<froidure_pin_type*>(get_parent())->word_to_element(w);
         size_t ind_x = get_index(this->to_internal_const(x));
         this->external_free(x);
         LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
@@ -284,7 +274,7 @@ namespace libsemigroups {
                                     std::vector<word_type>());
         for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
           word_type word
-              = static_cast<semigroup_type*>(get_parent())
+              = static_cast<froidure_pin_type*>(get_parent())
                     ->factorisation(this->to_external(_reverse_map[ind]));
           _non_trivial_classes[_class_lookup[ind]].push_back(word);
         }
@@ -340,10 +330,11 @@ namespace libsemigroups {
         }
       }
 
+     private:
       ////////////////////////////////////////////////////////////////////////
       // P - methods - private
       ////////////////////////////////////////////////////////////////////////
-     private:
+
       size_t add_index(internal_element_type x) const {
         LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
         LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
@@ -379,7 +370,7 @@ namespace libsemigroups {
           LIBSEMIGROUPS_ASSERT(has_parent());
           LIBSEMIGROUPS_ASSERT(get_parent()->nr_generators() > 0);
           _tmp1      = this->internal_copy(this->to_internal_const(
-              static_cast<semigroup_type*>(get_parent())->generator(0)));
+              static_cast<froidure_pin_type*>(get_parent())->generator(0)));
           _tmp2      = this->internal_copy(_tmp1);
           _init_done = true;
         }
@@ -442,11 +433,12 @@ namespace libsemigroups {
     // semigroup using KnuthBendix on the fp semigroup and then the pairs
     // algorithm to compute the congruence.
     //////////////////////////////////////////////////////////////////////////
-    // TODO move the implementation to a cong-p.cpp file
+
     class KBP : public P<KBE,
                          hash<KBE>,
                          equal_to<KBE>,
                          TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
+
       ////////////////////////////////////////////////////////////////////////
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////
@@ -461,57 +453,31 @@ namespace libsemigroups {
       // KBP - constructors - public
       ////////////////////////////////////////////////////////////////////////
 
-      KBP(congruence_type type, fpsemigroup::KnuthBendix* kb)
-          : p_type(type), _kb(kb) {
-        set_nr_generators(_kb->alphabet().size());
-      }
-
-      // For testing purposes only really
-      KBP(congruence_type type, fpsemigroup::KnuthBendix& kb)
-          : KBP(type, &kb){};
+      KBP(congruence_type, fpsemigroup::KnuthBendix*);
+      KBP(congruence_type, fpsemigroup::KnuthBendix&);
 
       ////////////////////////////////////////////////////////////////////////
       // P - overridden virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
-      void run() override {
-        if (stopped()) {
-          return;
-        }
-        _kb->run_until([this]() -> bool { return dead() || timed_out(); });
-        if (!stopped()) {
-          set_parent(_kb->isomorphic_non_fp_semigroup());
-          p_type::run();
-        }
-        report_why_we_stopped();
-      }
+      void run() override;
 
       // Override the method for the class P to avoid having to know the parent
       // semigroup (found as part of KBP::run) to add a pair.
-      // TODO this copies KBE(_kb, l) and KBE(_kb, r) twice.
-      void add_pair(word_type const& l, word_type const& r) override {
-        internal_element_type x = new element_type(_kb, l);
-        internal_element_type y = new element_type(_kb, r);
-        internal_add_pair(x, y);
-        this->internal_free(x);
-        this->internal_free(y);
-        set_finished(false);
-      }
+      void add_pair(word_type const&,  word_type const&) override;
 
      protected:
       ////////////////////////////////////////////////////////////////////////
       // CongBase - overridden non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
+
       using p_type::init_non_trivial_classes;
 
       ////////////////////////////////////////////////////////////////////////
       // KBP - data - private
       ////////////////////////////////////////////////////////////////////////
-      // TODO use shared_ptr
-
       fpsemigroup::KnuthBendix* _kb;
     };
-
   }  // namespace congruence
 
   namespace fpsemigroup {

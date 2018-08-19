@@ -28,6 +28,45 @@
 
 namespace libsemigroups {
 
+  Element::Element() : _hash_value(UNDEFINED) {}
+
+  Element::Element(size_t hv) : _hash_value(hv) {}
+
+  bool Element::operator>(Element const& that) const {
+    return that < *this;
+  }
+
+  bool Element::operator!=(Element const& that) const {
+    return !(*this == that);
+  }
+
+  bool Element::operator<=(Element const& that) const {
+    return *this < that || *this == that;
+  }
+
+  bool Element::operator>=(Element const& that) const {
+    return that <= *this;
+  }
+
+  void Element::redefine(Element const& x, Element const& y) {
+    redefine(x, y, 0);
+  }
+
+  void Element::redefine(Element const* x, Element const* y) {
+    redefine(*x, *y, 0);
+  }
+
+  void Element::redefine(Element const& x, Element const& y, size_t) {
+    redefine(x, y);
+  }
+
+  void Element::redefine(Element const* x, Element const* y, size_t) {
+    redefine(*x, *y);
+  }
+
+  void Element::reset_hash_value() const {
+    _hash_value = UNDEFINED;
+  }
   // Boolean matrices
   BooleanSemiring const* const BooleanMat::_semiring = new BooleanSemiring();
 

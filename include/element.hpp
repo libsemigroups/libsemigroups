@@ -55,21 +55,21 @@ namespace libsemigroups {
   class Element {
    public:
     //! A constructor.
-    Element() : _hash_value(UNDEFINED) {}
+    Element();
 
     //! A constructor.
     //!
     //! Constructs an element with given hash value.
-    explicit Element(size_t hv) : _hash_value(hv) {}
+    explicit Element(size_t);
 
     //! A default destructor.
-    virtual ~Element() {}
+    virtual ~Element() = default;
 
     //! Returns \c true if \c this equals \p that.
     //!
     //! This method checks the mathematical equality of two Element objects in
     //! the same subclass of Element.
-    virtual bool operator==(Element const& that) const = 0;
+    virtual bool operator==(Element const&) const = 0;
 
     //! Returns \c true if \c this is less than \p that.
     //!
@@ -77,39 +77,31 @@ namespace libsemigroups {
     //! subclass of Element with a given Element::degree. The definition of
     //! this total order depends on the method for the operator < in the
     //! subclass.
-    virtual bool operator<(const Element& that) const = 0;
+    virtual bool operator<(Element const&) const = 0;
 
     //! Returns \c true if \c this is greater than \p that.
     //!
     //! This method returns \c true if \c this is greater than \p that,
     //! under the ordering defined by the operator <.
-    bool operator>(const Element& that) const {
-      return that < *this;
-    }
+    bool operator>(Element const& that) const;
 
     //! Returns \c true if \c this is not equal to \p that.
     //!
     //! This method returns \c true if \c this is mathematically not equal to
     //! \p that.
-    bool operator!=(Element const& that) const {
-      return !(*this == that);
-    }
+    bool operator!=(Element const& that) const;
 
     //! Returns \c true if \c this is less than or equal to \p that.
     //!
     //! This method returns \c true if \c this is less than (under the order
     //! defined by the operator <) or mathematically equal to \p that.
-    bool operator<=(Element const& that) const {
-      return *this < that || *this == that;
-    }
+    bool operator<=(Element const& that) const;
 
     //! Returns \c true if \c this is less than or equal to \p that.
     //!
     //! This method returns \c true if \c this is greater than (under the order
     //! defined by the operator <) or mathematically equal to \p that.
-    bool operator>=(Element const& that) const {
-      return that <= *this;
-    }
+    bool operator>=(Element const& that) const;
 
     //! Returns the approximate time complexity of multiplying two
     //! Element objects in a given subclass.
@@ -153,7 +145,7 @@ namespace libsemigroups {
     //! Swap another Element with \c this.
     //!
     //! This method swaps the defining data of \p x and \c this.
-    virtual void swap(Element& x) = 0;
+    virtual void swap(Element&) = 0;
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -165,17 +157,13 @@ namespace libsemigroups {
     //! calls the 3 parameter version with third parameter 0. Any subclass of
     //! Element can implement either a two or three parameter version of this
     //! method and the base class method implements the other method.
-    virtual void redefine(Element const& x, Element const& y) {
-      redefine(x, y, 0);
-    }
+    virtual void redefine(Element const&, Element const&);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! This version of the method takes const pointers rather than const
     //! references, but otherwise behaves like the other Element::redefine.
-    void redefine(Element const* x, Element const* y) {
-      redefine(*x, *y, 0);
-    }
+    void redefine(Element const*, Element const*);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -196,17 +184,13 @@ namespace libsemigroups {
     //! Note that if different threads call this method on a derived class of
     //! Element where static temporary storage is used in the redefine method
     //! with the same value of \p thread_id, then bad things may happen.
-    virtual void redefine(Element const& x, Element const& y, size_t) {
-      redefine(x, y);
-    }
+    virtual void redefine(Element const&, Element const&,  size_t);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! This method differs from the the previous only in taking pointers
     //! instead of references.
-    void redefine(Element const* x, Element const* y, size_t) {
-      redefine(*x, *y);
-    }
+    void redefine(Element const*, Element const*, size_t);
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
     virtual Element* empty_key() const = 0;
@@ -224,14 +208,12 @@ namespace libsemigroups {
     //! actual data in an Element is only copied when this method is called.
     //! Otherwise, if an Element is copied, then its defining data is only
     //! stored once.
-    // FIXME delete
     virtual Element* heap_copy() const = 0;
 
     //! Returns an independent copy of the identity.
     //!
     //! This method returns a copy of the identity element (in the appropriate
     //! semigroup) which is independent from previous copies.
-    // FIXME delete
     virtual Element* heap_identity() const = 0;
 
    protected:
@@ -246,9 +228,7 @@ namespace libsemigroups {
     //! libsemigroups::Element::UNDEFINED. This is required after running
     //! Element::redefine, Element::copy, or any other method that changes the
     //! defining data of \c this.
-    void reset_hash_value() const {
-      _hash_value = UNDEFINED;
-    }
+    void reset_hash_value() const;
 
     //! This data member holds a cached version of the hash value of an Element.
     //! It is stored here if it is ever computed. It is invalidated by
@@ -433,7 +413,6 @@ namespace libsemigroups {
     //! Returns a pointer to an element that is an identity for elements
     //! of type TSubclass, and is independent from other copies that already
     //! may exist.
-    // FIXME delete
     Element* heap_identity() const override {
       return this->identity().heap_copy();
     }
@@ -442,7 +421,6 @@ namespace libsemigroups {
     //!
     //! Returns a pointer to an element that has the same defining data as \c
     //! this, but is independent in memory.
-    // FIXME delete
     Element* heap_copy() const override {
       return new TSubclass(*static_cast<TSubclass const*>(this));
     }
@@ -2066,7 +2044,6 @@ namespace libsemigroups {
     }
   };
 
-  // FIXME is this used??
   template <class TSubclass>
   struct swap<TSubclass*,
               typename std::enable_if<
