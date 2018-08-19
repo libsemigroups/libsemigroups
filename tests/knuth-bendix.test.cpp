@@ -479,9 +479,10 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
     }
 
-    TEST_CASE(
-        "KnuthBendix 020: (fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
-        "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "020",
+                            "(fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
+                            "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb("ab");
       kb.add_rule("aaa", "a");
@@ -514,10 +515,11 @@ namespace libsemigroups {
       REQUIRE(kb.size() == 99);
     }
 
-    // See KBFP 07 also. TODO remove this comment
-    TEST_CASE(
-        "KnuthBendix 021: (fpsemi) Chapter 7, Theorem 3.9 in NR (size 240)",
-        "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
+    // See KBFP 07 also.
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "021",
+                            "(fpsemi) Chapter 7, Theorem 3.9 in NR (size 240)",
+                            "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb("ab");
       kb.add_rule("aaa", "a");
@@ -656,8 +658,10 @@ namespace libsemigroups {
       //      // REQUIRE(!kb2.test_less_than("abbbaabbba", "bbbbaa"));
     }
 
-    TEST_CASE(
-        "KnuthBendix 026: (fpsemi) Chapter 11, Section 1 (q = 8, r = 5) in NR "
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "026",
+        "(fpsemi) Chapter 11, Section 1 (q = 8, r = 5) in NR "
         "(size 746)",
         "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
@@ -692,8 +696,10 @@ namespace libsemigroups {
       //      // REQUIRE(kb.test_less_than("aaa", "bbbbbbbbb"));
     }
 
-    TEST_CASE(
-        "KnuthBendix 027: (fpsemi) Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR "
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "027",
+        "(fpsemi) Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR "
         "(infinite)",
         "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
@@ -733,9 +739,10 @@ namespace libsemigroups {
       REQUIRE(kb.size() == 4);
     }
 
-    TEST_CASE(
-        "KnuthBendix 029: (fpsemi) Chapter 8, Theorem 4.2 in NR (infinite)",
-        "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "029",
+                            "(fpsemi) Chapter 8, Theorem 4.2 in NR (infinite)",
+                            "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb("ab");
       kb.add_rule("aaa", "a");
@@ -1392,9 +1399,9 @@ namespace libsemigroups {
     // very difficult calculation indeed, however.
     //
     // KBMAG does not terminate when SHORTLEX order is used.
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "054", " (from
+    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "054", "(from
     kbmag/standalone/kb_data/f27monoid)",
-              "[fails][knuth-bendix][kbmag][recursive]") {
+"[fails][knuth-bendix][kbmag][recursive]") {
       KnuthBendix kb(new RECURSIVE(), "abcdefg");
       kb.add_rule("ab", "c");
       kb.add_rule("bc", "d");
@@ -1472,9 +1479,9 @@ namespace libsemigroups {
     }
 
     //  A nonhopfian group
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "057", " (from
+    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "057", "(from
     kbmag/standalone/kb_data/nonhopf)",
-              "[quick][knuth-bendix][kbmag][recursive]") {
+"[quick][knuth-bendix][kbmag][recursive]") {
       KnuthBendix kb(new RECURSIVE(), "aAbB");
       kb.add_rule("Baab", "aaa");
       REPORTER.set_report(REPORT);
@@ -1827,9 +1834,9 @@ namespace libsemigroups {
     }
 
     // Free nilpotent group of rank 2 and class 2
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "066", " (from
+    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "066", "(from
     kbmag/standalone/kb_data/nilp2)",
-              "[quick][knuth-bendix][kbmag][recursive]") {
+"[quick][knuth-bendix][kbmag][recursive]") {
       KnuthBendix kb(new RECURSIVE(), "cCbBaA");
       kb.add_rule("ba", "abc");
       kb.add_rule("ca", "ac");
@@ -1995,9 +2002,9 @@ namespace libsemigroups {
           == std::vector<std::pair<std::string, std::string>>({{"aa", ""}}));
     }
 
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "073", " (from
+    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "073", "(from
     kbmag/standalone/kb_data/freenilpc3)",
-              "[quick][knuth-bendix][kbmag][recursive]") {
+"[quick][knuth-bendix][kbmag][recursive]") {
       KnuthBendix kb(new RECURSIVE(), "yYdDcCbBaA");
       kb.add_rule("BAba", "c");
       kb.add_rule("CAca", "d");
@@ -2435,7 +2442,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "088",
                             "free semigroup congruence (6 classes)",
-                            "[cong][congruence][knuth-bendix][cong]") {
+                            "[quick][cong][congruence][knuth-bendix][cong]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_nr_generators(5);

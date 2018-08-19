@@ -2371,8 +2371,10 @@ namespace libsemigroups {
     delete_gens(gens);
   }
 
-  TEST_CASE(
-      "FroidurePin 051: relations [from copy_add_generators, not enumerated]",
+  LIBSEMIGROUPS_TEST_CASE(
+      "FroidurePin",
+      "051",
+      " relations [from copy_add_generators, not enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
@@ -2495,9 +2497,11 @@ namespace libsemigroups {
     delete_gens(gens);
   }
 
-  TEST_CASE("FroidurePin 053: relations [from copy_add_generators, partly "
-            "enumerated]",
-            "[quick][froidure-pin][element]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "FroidurePin",
+      "053",
+      "relations [from copy_add_generators, partly enumerated]",
+      "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
@@ -2621,8 +2625,10 @@ namespace libsemigroups {
     delete_gens(gens);
   }
 
-  TEST_CASE(
-      "FroidurePin 055: relations [from copy_add_generators, fully enumerated]",
+  LIBSEMIGROUPS_TEST_CASE(
+      "FroidurePin",
+      "055",
+      "relations [from copy_add_generators, fully enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),

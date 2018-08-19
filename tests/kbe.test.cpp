@@ -29,7 +29,7 @@ namespace libsemigroups {
   using KnuthBendix     = fpsemigroup::KnuthBendix;
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("KBE", "01", "test", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 0}),
                                   new Transformation<u_int16_t>({0, 0})};
     FroidurePin<>         S    = FroidurePin<>(gens);
@@ -59,7 +59,7 @@ namespace libsemigroups {
     REQUIRE(b < aba);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KBE", "02", "factorisation", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
     std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 0}),
                                   new Transformation<u_int16_t>({0, 0})};
     FroidurePin<>         S    = FroidurePin<>(gens);

@@ -47,7 +47,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "001",
                             "(cong) small fp semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<relation_type> rels;
@@ -71,7 +71,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "002",
                             "(cong) Example 6.6 in Sims (see also RWS 13)",
-                            "[standard]") {
+                            "[todd-coxeter][standard]") {
       // TODO double check if this is standard or not
       REPORTER.set_report(REPORT);
 
@@ -104,7 +104,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "003",
                             "(cong) constructed from semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       FroidurePin<BMat8> S(
@@ -123,7 +123,7 @@ namespace libsemigroups {
         "ToddCoxeter",
         "005",
         "(cong) non-trivial two-sided constructed with FroidurePin",
-        "[quick]") {
+        "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       using Transf = Transf<5>::type;
@@ -141,7 +141,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "006",
                             "(cong) non-trivial two-sided from relations",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<relation_type> relations = {relation_type({0, 1}, {1, 0}),
@@ -166,7 +166,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "009",
                             "(cong) small right cong. on free semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<relation_type> rels;
@@ -182,7 +182,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "010",
                             "(cong) left cong. on free semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<relation_type> rels;
@@ -204,7 +204,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "011",
                             "(cong) for small fp semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels;
       rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
@@ -227,7 +227,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "012",
                             "(cong) 2-sided cong. trans. semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -255,7 +255,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "013",
                             "(cong) left cong. trans. semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -283,7 +283,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "014",
                             "(cong) right cong. trans. semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       auto S = FroidurePin<Transformation<u_int16_t>>(
           {Transformation<u_int16_t>({1, 3, 4, 2, 3}),
@@ -332,7 +332,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "015",
                             "(cong) trans. semigroup (size 88)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<Element*> gens
@@ -373,7 +373,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "016",
                             "(cong) left cong. on trans. semigroup (size 88)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
@@ -410,7 +410,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "017",
                             "(cong) right cong. on trans. semigroup (size 88)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
              new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
@@ -458,7 +458,7 @@ namespace libsemigroups {
         "ToddCoxeter",
         "018",
         "(cong) finite fp-semigroup, dihedral group of order 6",
-        "[quick]") {
+        "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels  = {relation_type({0, 0}, {0}),
                                          relation_type({0, 1}, {1}),
@@ -486,7 +486,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "019",
                             "(cong) finite fp-semigroup, size 016",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
           = {relation_type({3}, {2}),
@@ -520,7 +520,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "020",
                             "(cong) finite fp-semigroup, size 016",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
           = {relation_type({2}, {1}),
@@ -590,7 +590,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "021",
                             "(cong) test prefilling of the table manually",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
           = {new Transformation<u_int16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -622,7 +622,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "022",
                             "(cong) test packing phase",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       std::vector<relation_type> rels
           = {relation_type({0, 0, 0}, {0}),
@@ -652,7 +652,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "024",
                             "(cong) non-trivial left cong. from semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       std::vector<Element*> gens
@@ -680,7 +680,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "025",
                             "(cong) 2-sided cong. on free semigroup",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc(TWOSIDED, 1, {});
       REQUIRE(tc.contains({0, 0}, {0, 0}));
@@ -690,7 +690,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "027",
                             "(cong) calling run when obviously infinite",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       ToddCoxeter tc(TWOSIDED, 5, {});
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
     }
@@ -698,7 +698,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "030",
                             "(cong) Stellar S3",
-                            "[quick][hivert]") {
+                            "[todd-coxeter][quick][hivert]") {
       REPORTER.set_report(REPORT);
 
       congruence::ToddCoxeter tc(TWOSIDED);
@@ -742,7 +742,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "031",
                             "(cong) finite semigroup (size 5)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       congruence::ToddCoxeter tc(LEFT);
       tc.set_nr_generators(2);
       tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
@@ -753,7 +753,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "033",
                             "(cong) exceptions",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       {
         congruence::ToddCoxeter tc1(LEFT);
         tc1.set_nr_generators(2);
@@ -807,7 +807,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "004",
                             "(fpsemi) add_rule",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet("ab");
@@ -822,7 +822,7 @@ namespace libsemigroups {
         "ToddCoxeter",
         "007",
         "(fpsemi) (from kbmag/standalone/kb_data/s4) (RWS 49)",
-        "[quick][kbmag]") {
+        "[todd-coxeter][quick][kbmag]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc;
@@ -851,7 +851,7 @@ namespace libsemigroups {
                             "008",
                             "(fpsemi) (from kbmag/standalone/kb_data/degen4b) "
                             "(RWS 65)",
-                            "[extreme][kbmag][shortlex]") {
+                            "[todd-coxeter][extreme][kbmag][shortlex]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc;
@@ -892,7 +892,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "023",
                             "(fpsemi) test validate",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc;
@@ -907,7 +907,7 @@ namespace libsemigroups {
         "ToddCoxeter",
         "026",
         "(fpsemi) add_rules after construct. from semigroup",
-        "[quick]") {
+        "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       using Transf = Transf<5>::type;
@@ -943,7 +943,7 @@ namespace libsemigroups {
         "ToddCoxeter",
         "028",
         "(fpsemi) Sym(5) from Chapter 3, Proposition 1.1 in NR",
-        "[quick]") {
+        "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc("ABabe");
@@ -964,7 +964,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "029",
                             "(fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc("ab");
       tc.add_rule("aaa", "a");
@@ -977,7 +977,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "032",
                             "(fpsemi) finite semigroup (size 99)",
-                            "[quick]") {
+                            "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
       ToddCoxeter tc("ab");
       tc.add_rule("aaa", "a");

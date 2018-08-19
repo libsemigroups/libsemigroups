@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"
 #include "constants.hpp"
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
 
-  TEST_CASE("Constants 01:", "[quick][constants][01]") {
-    // REQUIRE(UNDEFINED != LIMIT_MAX);
+  LIBSEMIGROUPS_TEST_CASE("Constants", "001", "test", "[quick]") {
+    // REQUIRE(!(UNDEFINED == LIMIT_MAX));
   }
 }  // namespace libsemigroups
