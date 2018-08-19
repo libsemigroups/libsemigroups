@@ -100,13 +100,13 @@ namespace libsemigroups {
                           "115",
                           "(transformations) exception word_to_pos",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
     REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
@@ -117,23 +117,23 @@ namespace libsemigroups {
                           "116",
                           "(transformations) exception word_to_element",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
     REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
 
-    Transformation<u_int16_t> u = U.word_to_element({0, 0, 1, 2});
+    Transformation<uint16_t> u = U.word_to_element({0, 0, 1, 2});
     REQUIRE(u
-            == Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
+            == Transformation<uint16_t>({0, 1, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({0, 1, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({1, 0, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({4, 0, 1, 2, 3, 5}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -163,11 +163,11 @@ namespace libsemigroups {
                           "118",
                           "(transformations) exception prefix",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.prefix(i));
@@ -179,13 +179,13 @@ namespace libsemigroups {
                           "119",
                           "(transformations) exception suffix",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.suffix(i));
@@ -197,11 +197,11 @@ namespace libsemigroups {
                           "120",
                           "(transformations) exception first_letter",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.first_letter(i));
@@ -213,11 +213,11 @@ namespace libsemigroups {
                           "121",
                           "(transformations) exception final_letter",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.final_letter(i));
@@ -229,11 +229,11 @@ namespace libsemigroups {
                           "122",
                           "(transformations) exception length_const",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.length_const(i));
@@ -245,10 +245,10 @@ namespace libsemigroups {
                           "123",
                           "(transformations) exception product_by_reduction",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3}),
-           Transformation<u_int16_t>({3, 1, 1, 2})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3}),
+           Transformation<uint16_t>({3, 1, 1, 2})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       for (size_t j = 0; j < U.size(); ++j) {
@@ -267,10 +267,10 @@ namespace libsemigroups {
                           "124",
                           "(transformations) exception fast_product",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3}),
-           Transformation<u_int16_t>({3, 1, 1, 2})};
-    FroidurePin<Transformation<u_int16_t>> U(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3}),
+           Transformation<uint16_t>({3, 1, 1, 2})};
+    FroidurePin<Transformation<uint16_t>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       for (size_t j = 0; j < U.size(); ++j) {
@@ -312,12 +312,12 @@ namespace libsemigroups {
                           "126",
                           "(transformations) exception is_idempotent",
                           "[quick][froidure-pin][transformation][transf]") {
-    std::vector<Transformation<u_int16_t>> gens
-        = {Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           Transformation<u_int16_t>({5, 1, 3, 3, 2, 5}),
-           Transformation<u_int16_t>({2, 1, 2, 3, 4, 4}),
-           Transformation<u_int16_t>({5, 5, 2, 1, 1, 2})};
-    FroidurePin<Transformation<u_int16_t>> S(gens);
+    std::vector<Transformation<uint16_t>> gens
+        = {Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           Transformation<uint16_t>({5, 1, 3, 3, 2, 5}),
+           Transformation<uint16_t>({2, 1, 2, 3, 4, 4}),
+           Transformation<uint16_t>({5, 5, 2, 1, 1, 2})};
+    FroidurePin<Transformation<uint16_t>> S(gens);
 
     // S has size 441
     for (size_t i = 0; i < 441; ++i) {

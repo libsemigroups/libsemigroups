@@ -65,8 +65,8 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({0, 0, 0, 0, 0})};
+          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
+             new Transformation<uint16_t>({0, 0, 0, 0, 0})};
       FroidurePin<> S = FroidurePin<>(gens);
       REQUIRE(S.size() == 9);
       REQUIRE(S.degree() == 5);
@@ -85,8 +85,8 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
       std::vector<Element*> gens
-          = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-             new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
+             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
       FroidurePin<> S = FroidurePin<>(gens);
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);

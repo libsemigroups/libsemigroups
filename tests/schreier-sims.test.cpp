@@ -1261,7 +1261,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
       "024",
-      " perm. Conway group Co3 (alt.) (order 495766656000) ",
+      "perm. Conway group Co3 (alt.) (order 495766656000) ",
       "[quick][schreier-sims]") {
     constexpr size_t N = 553;
     auto             S = new SchreierSims<N>();

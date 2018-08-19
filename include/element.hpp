@@ -268,8 +268,8 @@ namespace libsemigroups {
   //! ElementWithVectorData used by certain methods to construct new instances
   //! of subclasses of ElementWithVectorData.
   //!
-  //! For example, Transformation&lt;u_int128_t&gt; is a subclass of
-  //! ElementWithVectorData&lt;u_int128_t, Transformation&lt;u_int128_t&gt;&gt;
+  //! For example, Transformation&lt;uint128_t&gt; is a subclass of
+  //! ElementWithVectorData&lt;uint128_t, Transformation&lt;uint128_t&gt;&gt;
   //! so that when the identity method in this class is called it returns a
   //! Transformation and not an ElementWithVectorData.
   template <typename TValueType, class TSubclass>
@@ -522,11 +522,11 @@ namespace libsemigroups {
   //!
   //! This is a template class for partial transformations, which is a subclass
   //! of ElementWithVectorDataDefaultHash. For example,
-  //! Transformation<u_int128_t> is a subclass of
-  //! PartialTransformation<u_int128_t, Transformation<u_int128_t>>.
+  //! Transformation<uint128_t> is a subclass of
+  //! PartialTransformation<uint128_t, Transformation<uint128_t>>.
   //!
   //! The template parameter \p TValueType is the type of image values, i.e.
-  //! u_int16_t, and so on.  The value of the template parameter \p S can be
+  //! uint16_t, and so on.  The value of the template parameter \p S can be
   //! used to reduce (or increase) the amount of memory required by instances
   //! of this class.
   //!
@@ -1015,14 +1015,14 @@ namespace libsemigroups {
   //! GAP](https://gap-packages.github.io/FroidurePins/).
 
   class Bipartition
-      : public ElementWithVectorDataDefaultHash<u_int32_t, Bipartition> {
+      : public ElementWithVectorDataDefaultHash<uint32_t, Bipartition> {
     // TODO add more explanation to the doc here
    public:
     //! A constructor.
     //!
     //! Constructs a uninitialised bipartition.
     Bipartition()
-        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(),
+        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(),
           _nr_blocks(UNDEFINED),
           _nr_left_blocks(UNDEFINED),
           _trans_blocks_lookup(),
@@ -1043,8 +1043,8 @@ namespace libsemigroups {
     //! blocks.
     //!
     //! The parameter \p blocks is copied.
-    explicit Bipartition(std::vector<u_int32_t> const& blocks)
-        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(blocks),
+    explicit Bipartition(std::vector<uint32_t> const& blocks)
+        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(blocks),
           _nr_blocks(UNDEFINED),
           _nr_left_blocks(UNDEFINED),
           _trans_blocks_lookup(),
@@ -1060,8 +1060,8 @@ namespace libsemigroups {
     //! Returns a Bipartition whose defining data is \p vec.
     //! This constructor moves the data from \p vec, meaning that \p vec is
     //! changed by this constructor.
-    explicit Bipartition(std::vector<u_int32_t>&& blocks)
-        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
+    explicit Bipartition(std::vector<uint32_t>&& blocks)
+        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
               std::move(blocks)),
           _nr_blocks(UNDEFINED),
           _nr_left_blocks(UNDEFINED),
@@ -1073,14 +1073,14 @@ namespace libsemigroups {
     //! A constructor.
     //!
     //! Converts \p blocks to a vector and uses corresponding constructor.
-    Bipartition(std::initializer_list<u_int32_t> blocks)
-        : Bipartition(std::vector<u_int32_t>(blocks)) {}
+    Bipartition(std::initializer_list<uint32_t> blocks)
+        : Bipartition(std::vector<uint32_t>(blocks)) {}
 
     //! A copy constructor.
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
     Bipartition(Bipartition const& copy)
-        : ElementWithVectorDataDefaultHash<u_int32_t, Bipartition>(
+        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
               copy._vector),
           _nr_blocks(copy._nr_blocks),
           _nr_left_blocks(copy._nr_left_blocks),
@@ -1152,26 +1152,26 @@ namespace libsemigroups {
     //!
     //! This method differs for Bipartition::nr_blocks in that the number of
     //! blocks is not cached if it has not been previously computed.
-    u_int32_t const_nr_blocks() const;
+    uint32_t const_nr_blocks() const;
 
     //! Returns the number of blocks in a bipartition.
     //!
     //! This value is cached the first time it is computed.
-    u_int32_t nr_blocks();
+    uint32_t nr_blocks();
 
     //! Returns the number of blocks containing a positive integer.
     //!
     //! The *left blocks* of a bipartition is the partition of
     //! \f$\{0, \ldots, n - 1\}\f$ induced by the bipartition. This method
     //! returns the number of blocks in this partition.
-    u_int32_t nr_left_blocks();
+    uint32_t nr_left_blocks();
 
     //! Returns the number of blocks containing a negative integer.
     //!
     //! The *right blocks* of a bipartition is the partition of
     //! \f$\{n, \ldots, 2n - 1\}\f$ induced by the bipartition. This method
     //! returns the number of blocks in this partition.
-    u_int32_t nr_right_blocks();
+    uint32_t nr_right_blocks();
 
     //! Returns \c true if the block with index \p index is transverse.
     //!
@@ -1229,13 +1229,13 @@ namespace libsemigroups {
     }
 
    private:
-    static std::vector<u_int32_t>
+    static std::vector<uint32_t>
               blocks_to_list(std::vector<std::vector<int32_t>> blocks);
-    u_int32_t fuseit(std::vector<u_int32_t>& fuse, u_int32_t pos);
+    uint32_t fuseit(std::vector<uint32_t>& fuse, uint32_t pos);
     void      init_trans_blocks_lookup();
 
-    static std::vector<std::vector<u_int32_t>> _fuse;
-    static std::vector<std::vector<u_int32_t>> _lookup;
+    static std::vector<std::vector<uint32_t>> _fuse;
+    static std::vector<std::vector<uint32_t>> _lookup;
 
     size_t            _nr_blocks;
     size_t            _nr_left_blocks;
@@ -1743,7 +1743,7 @@ namespace libsemigroups {
   //! Partitioned binary relations (PBRs) are a generalisation of bipartitions,
   //! which were introduced by
   //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
-  class PBR : public ElementWithVectorData<std::vector<u_int32_t>, PBR> {
+  class PBR : public ElementWithVectorData<std::vector<uint32_t>, PBR> {
    public:
     //! A constructor.
     //!
@@ -1752,7 +1752,7 @@ namespace libsemigroups {
     //! non-negative integer values of length \f$2n\f$ for some integer
     //! \f$n\f$, the vector in position \f$i\f$ is the list of points adjacent
     //! to \f$i\f$ in the PBR.
-    using ElementWithVectorData<std::vector<u_int32_t>,
+    using ElementWithVectorData<std::vector<uint32_t>,
                                 PBR>::ElementWithVectorData;
 
     //! A constructor.
@@ -1760,14 +1760,14 @@ namespace libsemigroups {
     //! Constructs a PBR defined by the initializer list \p vec. This list
     //! should be interpreted in the same way as \p vector in the vector
     //! constructor PBR::PBR.
-    explicit PBR(std::initializer_list<std::vector<u_int32_t>> vec);
+    explicit PBR(std::initializer_list<std::vector<uint32_t>> vec);
 
     //! A constructor.
     //!
     //! Constructs an empty (no relation) PBR of the given degree.
     explicit PBR(size_t degree)
-        : PBR(std::vector<std::vector<u_int32_t>>(degree * 2,
-                                                  std::vector<u_int32_t>())) {}
+        : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
+                                                  std::vector<uint32_t>())) {}
 
     //! Constructs a PBR from two vectors
     //!
@@ -1860,7 +1860,7 @@ namespace libsemigroups {
     void cache_hash_value() const override;
 
    private:
-    static std::vector<std::vector<u_int32_t>>
+    static std::vector<std::vector<uint32_t>>
     process_left_right(std::vector<std::vector<int32_t>> const& left,
                        std::vector<std::vector<int32_t>> const& right);
 
@@ -1872,8 +1872,8 @@ namespace libsemigroups {
     void x_dfs(std::vector<bool>& x_seen,
                std::vector<bool>& y_seen,
                RecVec<bool>&      tmp,
-               u_int32_t const&   n,
-               u_int32_t const&   i,
+               uint32_t const&   n,
+               uint32_t const&   i,
                PBR const* const   x,
                PBR const* const   y,
                size_t const&      adj);
@@ -1881,8 +1881,8 @@ namespace libsemigroups {
     void y_dfs(std::vector<bool>& x_seen,
                std::vector<bool>& y_seen,
                RecVec<bool>&      tmp,
-               u_int32_t const&   n,
-               u_int32_t const&   i,
+               uint32_t const&   n,
+               uint32_t const&   i,
                PBR const* const   x,
                PBR const* const   y,
                size_t const&      adj);

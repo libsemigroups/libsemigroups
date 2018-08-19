@@ -57,8 +57,8 @@ namespace libsemigroups {
                           "001",
                           "small transformation semigroup",
                           "[quick][froidure-pin][element]") {
-    std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
-                                  new Transformation<u_int16_t>({0, 1, 2})};
+    std::vector<Element*> gens = {new Transformation<uint16_t>({0, 1, 0}),
+                                  new Transformation<uint16_t>({0, 1, 2})};
     FroidurePin<>         S    = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -69,25 +69,25 @@ namespace libsemigroups {
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.nr_rules() == 4);
 
-    Element* expected = new Transformation<u_int16_t>({0, 1, 0});
+    Element* expected = new Transformation<uint16_t>({0, 1, 0});
     REQUIRE(*S[0] == *expected);
     delete expected;
 
-    expected = new Transformation<u_int16_t>({0, 1, 2});
+    expected = new Transformation<uint16_t>({0, 1, 2});
     REQUIRE(*S[1] == *expected);
     delete expected;
 
-    Element* x = new Transformation<u_int16_t>({0, 1, 0});
+    Element* x = new Transformation<uint16_t>({0, 1, 0});
     REQUIRE(S.position(x) == 0);
     REQUIRE(S.test_membership(x));
     delete x;
 
-    x = new Transformation<u_int16_t>({0, 1, 2});
+    x = new Transformation<uint16_t>({0, 1, 2});
     REQUIRE(S.position(x) == 1);
     REQUIRE(S.test_membership(x));
     delete x;
 
-    x = new Transformation<u_int16_t>({0, 0, 0});
+    x = new Transformation<uint16_t>({0, 0, 0});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.test_membership(x));
     delete x;
@@ -98,9 +98,9 @@ namespace libsemigroups {
                           "small partial perm semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
-           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
+           new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11)};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -111,37 +111,37 @@ namespace libsemigroups {
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.nr_rules() == 9);
 
-    Element* expected = new PartialPerm<u_int16_t>(
+    Element* expected = new PartialPerm<uint16_t>(
         {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
     REQUIRE(*S[0] == *expected);
     delete expected;
 
-    expected = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
+    expected = new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11);
     REQUIRE(*S[1] == *expected);
     delete expected;
 
-    Element* x = new Transformation<u_int16_t>({0, 1, 0});
+    Element* x = new Transformation<uint16_t>({0, 1, 0});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.test_membership(x));
     delete x;
 
-    x = new PartialPerm<u_int16_t>({}, {}, 11);
+    x = new PartialPerm<uint16_t>({}, {}, 11);
     REQUIRE(S.position(x) == 10);
     REQUIRE(S.test_membership(x));
     delete x;
 
-    x = new PartialPerm<u_int16_t>({}, {}, 9);
+    x = new PartialPerm<uint16_t>({}, {}, 9);
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.test_membership(x));
 
     delete x;
 
-    x = new PartialPerm<u_int16_t>(
+    x = new PartialPerm<uint16_t>(
         {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
     REQUIRE(S.position(x) == 0);
     REQUIRE(S.test_membership(x));
 
-    Element* y = new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11);
+    Element* y = new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11);
     REQUIRE(S.position(y) == 1);
     REQUIRE(S.test_membership(y));
 
@@ -546,11 +546,11 @@ namespace libsemigroups {
                           "large transformation semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -567,47 +567,47 @@ namespace libsemigroups {
                           "at, position, current_*",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
 
     S.set_batch_size(1024);
 
-    Element* expected = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
+    Element* expected = new Transformation<uint16_t>({5, 3, 4, 1, 2, 5});
     REQUIRE(*S.at(100) == *expected);
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     delete expected;
 
-    Element* x = new Transformation<u_int16_t>({5, 3, 4, 1, 2, 5});
+    Element* x = new Transformation<uint16_t>({5, 3, 4, 1, 2, 5});
     REQUIRE(S.position(x) == 100);
     delete x;
 
-    expected = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
+    expected = new Transformation<uint16_t>({5, 4, 3, 4, 1, 5});
     REQUIRE(*S.at(1023) == *expected);
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     delete expected;
 
-    x = new Transformation<u_int16_t>({5, 4, 3, 4, 1, 5});
+    x = new Transformation<uint16_t>({5, 4, 3, 4, 1, 5});
     REQUIRE(S.position(x) == 1023);
     delete x;
 
-    expected = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
+    expected = new Transformation<uint16_t>({5, 3, 5, 3, 4, 5});
     REQUIRE(*S.at(3000) == *expected);
     REQUIRE(S.current_size() == 3001);
     REQUIRE(S.current_nr_rules() == 526);
     REQUIRE(S.current_max_word_length() == 9);
     delete expected;
 
-    x = new Transformation<u_int16_t>({5, 3, 5, 3, 4, 5});
+    x = new Transformation<uint16_t>({5, 3, 5, 3, 4, 5});
     REQUIRE(S.position(x) == 3000);
     delete x;
 
@@ -623,11 +623,11 @@ namespace libsemigroups {
                           "enumerate",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -661,11 +661,11 @@ namespace libsemigroups {
                           "enumerate [many stops and starts]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -688,11 +688,11 @@ namespace libsemigroups {
                           "factorisation, length [1 element]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -720,11 +720,11 @@ namespace libsemigroups {
                           "factorisation, products [all elements]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -743,11 +743,11 @@ namespace libsemigroups {
                           "first/final letter, prefix, suffix, products",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -831,11 +831,11 @@ namespace libsemigroups {
                           "letter_to_pos [standard]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -852,38 +852,38 @@ namespace libsemigroups {
                           "letter_to_pos [duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -908,11 +908,11 @@ namespace libsemigroups {
                           "letter_to_pos [after add_generators]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>({gens[0]});
     REPORTER.set_report(REPORT);
 
@@ -963,11 +963,11 @@ namespace libsemigroups {
                           "cbegin_idempotents/cend [1 thread]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -985,11 +985,11 @@ namespace libsemigroups {
                           "idempotent_cend/cbegin [1 thread]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -1008,11 +1008,11 @@ namespace libsemigroups {
                           "is_idempotent [1 thread]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -1035,9 +1035,9 @@ namespace libsemigroups {
                           "cbegin_idempotents/cend, is_idempotent [2 threads]",
                           "[standard][froidure-pin][element][multithread]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 2, 3, 4, 5, 6, 0}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5, 6}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 0})};
+        = {new Transformation<uint16_t>({1, 2, 3, 4, 5, 6, 0}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5, 6}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5, 0})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_max_threads(2);
@@ -1068,11 +1068,11 @@ namespace libsemigroups {
                           "is_done, is_begun",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1095,11 +1095,11 @@ namespace libsemigroups {
                           "current_position",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     REPORTER.set_report(REPORT);
@@ -1118,21 +1118,21 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 7);
     REQUIRE(S.current_position(S.at(1024)) == 1024);
 
-    Element* x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5});
+    Element* x = new Transformation<uint16_t>({5, 1, 5, 5, 2, 5});
     REQUIRE(S.current_position(x) == 1028);
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     delete x;
 
-    x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5, 6});
+    x = new Transformation<uint16_t>({5, 1, 5, 5, 2, 5, 6});
     REQUIRE(S.current_position(x) == UNDEFINED);
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     delete x;
 
-    x = new Transformation<u_int16_t>({5, 4, 5, 1, 0, 5});
+    x = new Transformation<uint16_t>({5, 4, 5, 1, 0, 5});
     REQUIRE(S.current_position(x) == UNDEFINED);
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
@@ -1147,11 +1147,11 @@ namespace libsemigroups {
                           "sorted_position, sorted_at",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1183,14 +1183,14 @@ namespace libsemigroups {
     REQUIRE(*S.sorted_at(6810) == *S.at(1024));
     REQUIRE(S.sorted_at(6810) == S.at(1024));
 
-    Element* x = new Transformation<u_int16_t>({5, 1, 5, 5, 2, 5});
+    Element* x = new Transformation<uint16_t>({5, 1, 5, 5, 2, 5});
     REQUIRE(S.sorted_position(x) == 6908);
     REQUIRE(S.position_to_sorted_position(S.position(x)) == 6908);
     REQUIRE(*S.sorted_at(6908) == *x);
     REQUIRE(S.sorted_at(6908) == S.at(S.position(x)));
     delete x;
 
-    x = new Transformation<u_int16_t>({5, 5, 5, 1, 5, 5, 6});
+    x = new Transformation<uint16_t>({5, 5, 5, 1, 5, 5, 6});
     REQUIRE(S.sorted_position(x) == UNDEFINED);
     delete x;
 
@@ -1205,18 +1205,18 @@ namespace libsemigroups {
                           "right/left Cayley graph",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
     REQUIRE(S.right(0, 0) == 0);
     REQUIRE(S.left(0, 0) == 0);
 
-    Element* tmp = new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5});
+    Element* tmp = new Transformation<uint16_t>({0, 1, 2, 3, 4, 5});
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       for (size_t i = 0; i < 5; ++i) {
         tmp->redefine(*it, S.generator(i));
@@ -1235,11 +1235,11 @@ namespace libsemigroups {
                           "iterator",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1297,11 +1297,11 @@ namespace libsemigroups {
                           "reverse iterator",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1359,11 +1359,11 @@ namespace libsemigroups {
                           "iterator arithmetic",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1417,11 +1417,11 @@ namespace libsemigroups {
                           "iterator sorted",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1468,11 +1468,11 @@ namespace libsemigroups {
                           "iterator sorted arithmetic",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1526,11 +1526,11 @@ namespace libsemigroups {
                           "copy [not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1566,8 +1566,8 @@ namespace libsemigroups {
                           "copy_closure [not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1580,9 +1580,9 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 1);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -1602,7 +1602,7 @@ namespace libsemigroups {
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
 
-    coll             = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+    coll             = {new Transformation<uint16_t>({6, 0, 1, 2, 3, 5, 6})};
     FroidurePin<>* U = T->copy_closure(coll);
     REPORTER.set_report(REPORT);
     delete_gens(coll);
@@ -1642,8 +1642,8 @@ namespace libsemigroups {
                           "copy_add_generators [not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1656,9 +1656,9 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 1);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -1678,7 +1678,7 @@ namespace libsemigroups {
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
 
-    coll             = {new Transformation<u_int16_t>({6, 0, 1, 2, 3, 5, 6})};
+    coll             = {new Transformation<uint16_t>({6, 0, 1, 2, 3, 5, 6})};
     FroidurePin<>* U = T->copy_add_generators(coll);
     REPORTER.set_report(REPORT);
     delete_gens(coll);
@@ -1718,11 +1718,11 @@ namespace libsemigroups {
                           "copy [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_batch_size(1000);
@@ -1746,11 +1746,11 @@ namespace libsemigroups {
     REQUIRE(T.current_nr_rules() == 70);
     REQUIRE(T.current_max_word_length() == 7);
 
-    Element* x = new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5});
+    Element* x = new Transformation<uint16_t>({0, 1, 2, 3, 4, 5});
     REQUIRE(T.current_position(x) == 0);
     delete x;
 
-    x = new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5});
+    x = new Transformation<uint16_t>({1, 0, 2, 3, 4, 5});
     REQUIRE(T.current_position(x) == 1);
     delete x;
 
@@ -1767,9 +1767,9 @@ namespace libsemigroups {
                           "copy_closure [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_batch_size(60);
@@ -1784,8 +1784,8 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 7);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -1814,9 +1814,9 @@ namespace libsemigroups {
                           "copy_add_generators [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_batch_size(60);
@@ -1831,8 +1831,8 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 7);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -1861,11 +1861,11 @@ namespace libsemigroups {
                           "copy [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -1895,9 +1895,9 @@ namespace libsemigroups {
                           "copy_closure [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.enumerate(121);
@@ -1911,8 +1911,8 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -1941,9 +1941,9 @@ namespace libsemigroups {
                           "copy_add_generators [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.enumerate(121);
@@ -1957,8 +1957,8 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -1987,11 +1987,11 @@ namespace libsemigroups {
                           "relations [duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2024,11 +2024,11 @@ namespace libsemigroups {
                           "relations",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2071,11 +2071,11 @@ namespace libsemigroups {
                           "relations [copy_closure, duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2091,10 +2091,10 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -2112,11 +2112,11 @@ namespace libsemigroups {
                           "relations [copy_add_generators, duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2132,10 +2132,10 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -2153,11 +2153,11 @@ namespace libsemigroups {
                           "relations [from copy, not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2205,11 +2205,11 @@ namespace libsemigroups {
                           "relations [from copy, partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2260,11 +2260,11 @@ namespace libsemigroups {
                           "relations [from copy, fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2314,9 +2314,9 @@ namespace libsemigroups {
                           "relations [from copy_closure, not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2324,8 +2324,8 @@ namespace libsemigroups {
     REQUIRE(!S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -2374,12 +2374,12 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
       "051",
-      " relations [from copy_add_generators, not enumerated]",
+      "relations [from copy_add_generators, not enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2387,8 +2387,8 @@ namespace libsemigroups {
     REQUIRE(!S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -2439,9 +2439,9 @@ namespace libsemigroups {
                           "relations [from copy_closure, partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_batch_size(100);
@@ -2452,8 +2452,8 @@ namespace libsemigroups {
     REQUIRE(!S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -2503,9 +2503,9 @@ namespace libsemigroups {
       "relations [from copy_add_generators, partly enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     S.set_batch_size(100);
@@ -2516,8 +2516,8 @@ namespace libsemigroups {
     REQUIRE(!S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -2566,9 +2566,9 @@ namespace libsemigroups {
                           "relations [from copy_closure, fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2578,8 +2578,8 @@ namespace libsemigroups {
     REQUIRE(S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_closure(coll);
     REPORTER.set_report(REPORT);
@@ -2631,9 +2631,9 @@ namespace libsemigroups {
       "relations [from copy_add_generators, fully enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
@@ -2643,8 +2643,8 @@ namespace libsemigroups {
     REQUIRE(S.is_done());
 
     std::vector<Element*> coll
-        = {new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<>* T = S.copy_add_generators(coll);
     REPORTER.set_report(REPORT);
@@ -2695,13 +2695,13 @@ namespace libsemigroups {
                           "add_generators [duplicate generators]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
-           new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
-           new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
-           new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
-           new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+        = {new Transformation<uint16_t>({0, 1, 0, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 3, 5, 5, 4}),
+           new Transformation<uint16_t>({1, 0, 2, 4, 4, 5}),
+           new Transformation<uint16_t>({4, 3, 3, 1, 0, 5}),
+           new Transformation<uint16_t>({4, 3, 5, 1, 0, 5}),
+           new Transformation<uint16_t>({5, 5, 2, 3, 4, 0})};
 
     FroidurePin<> S = FroidurePin<>({gens[0], gens[0]});
     REPORTER.set_report(REPORT);
@@ -2766,13 +2766,13 @@ namespace libsemigroups {
                           "add_generators [incremental 1]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
-           new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
-           new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
-           new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
-           new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+        = {new Transformation<uint16_t>({0, 1, 0, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 3, 5, 5, 4}),
+           new Transformation<uint16_t>({1, 0, 2, 4, 4, 5}),
+           new Transformation<uint16_t>({4, 3, 3, 1, 0, 5}),
+           new Transformation<uint16_t>({4, 3, 5, 1, 0, 5}),
+           new Transformation<uint16_t>({5, 5, 2, 3, 4, 0})};
 
     FroidurePin<> S = FroidurePin<>({gens[0], gens[0]});
     REPORTER.set_report(REPORT);
@@ -2805,13 +2805,13 @@ namespace libsemigroups {
                           "add_generators [incremental 2]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
-           new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
-           new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
-           new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
-           new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+        = {new Transformation<uint16_t>({0, 1, 0, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 3, 5, 5, 4}),
+           new Transformation<uint16_t>({1, 0, 2, 4, 4, 5}),
+           new Transformation<uint16_t>({4, 3, 3, 1, 0, 5}),
+           new Transformation<uint16_t>({4, 3, 5, 1, 0, 5}),
+           new Transformation<uint16_t>({5, 5, 2, 3, 4, 0})};
 
     FroidurePin<> T = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
@@ -2855,13 +2855,13 @@ namespace libsemigroups {
                           "closure [duplicate generators]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 0, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 3, 5, 5, 4}),
-           new Transformation<u_int16_t>({1, 0, 2, 4, 4, 5}),
-           new Transformation<u_int16_t>({4, 3, 3, 1, 0, 5}),
-           new Transformation<u_int16_t>({4, 3, 5, 1, 0, 5}),
-           new Transformation<u_int16_t>({5, 5, 2, 3, 4, 0})};
+        = {new Transformation<uint16_t>({0, 1, 0, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 3, 5, 5, 4}),
+           new Transformation<uint16_t>({1, 0, 2, 4, 4, 5}),
+           new Transformation<uint16_t>({4, 3, 3, 1, 0, 5}),
+           new Transformation<uint16_t>({4, 3, 5, 1, 0, 5}),
+           new Transformation<uint16_t>({5, 5, 2, 3, 4, 0})};
 
     FroidurePin<> S = FroidurePin<>({gens[0], gens[0]});
     REPORTER.set_report(REPORT);
@@ -2907,33 +2907,33 @@ namespace libsemigroups {
                           "060",
                           "closure ",
                           "[quick][froidure-pin][element]") {
-    std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 0, 0}),
-                                  new Transformation<u_int16_t>({0, 0, 1}),
-                                  new Transformation<u_int16_t>({0, 0, 2}),
-                                  new Transformation<u_int16_t>({0, 1, 0}),
-                                  new Transformation<u_int16_t>({0, 1, 1}),
-                                  new Transformation<u_int16_t>({0, 1, 2}),
-                                  new Transformation<u_int16_t>({0, 2, 0}),
-                                  new Transformation<u_int16_t>({0, 2, 1}),
-                                  new Transformation<u_int16_t>({0, 2, 2}),
-                                  new Transformation<u_int16_t>({1, 0, 0}),
-                                  new Transformation<u_int16_t>({1, 0, 1}),
-                                  new Transformation<u_int16_t>({1, 0, 2}),
-                                  new Transformation<u_int16_t>({1, 1, 0}),
-                                  new Transformation<u_int16_t>({1, 1, 1}),
-                                  new Transformation<u_int16_t>({1, 1, 2}),
-                                  new Transformation<u_int16_t>({1, 2, 0}),
-                                  new Transformation<u_int16_t>({1, 2, 1}),
-                                  new Transformation<u_int16_t>({1, 2, 2}),
-                                  new Transformation<u_int16_t>({2, 0, 0}),
-                                  new Transformation<u_int16_t>({2, 0, 1}),
-                                  new Transformation<u_int16_t>({2, 0, 2}),
-                                  new Transformation<u_int16_t>({2, 1, 0}),
-                                  new Transformation<u_int16_t>({2, 1, 1}),
-                                  new Transformation<u_int16_t>({2, 1, 2}),
-                                  new Transformation<u_int16_t>({2, 2, 0}),
-                                  new Transformation<u_int16_t>({2, 2, 1}),
-                                  new Transformation<u_int16_t>({2, 2, 2})};
+    std::vector<Element*> gens = {new Transformation<uint16_t>({0, 0, 0}),
+                                  new Transformation<uint16_t>({0, 0, 1}),
+                                  new Transformation<uint16_t>({0, 0, 2}),
+                                  new Transformation<uint16_t>({0, 1, 0}),
+                                  new Transformation<uint16_t>({0, 1, 1}),
+                                  new Transformation<uint16_t>({0, 1, 2}),
+                                  new Transformation<uint16_t>({0, 2, 0}),
+                                  new Transformation<uint16_t>({0, 2, 1}),
+                                  new Transformation<uint16_t>({0, 2, 2}),
+                                  new Transformation<uint16_t>({1, 0, 0}),
+                                  new Transformation<uint16_t>({1, 0, 1}),
+                                  new Transformation<uint16_t>({1, 0, 2}),
+                                  new Transformation<uint16_t>({1, 1, 0}),
+                                  new Transformation<uint16_t>({1, 1, 1}),
+                                  new Transformation<uint16_t>({1, 1, 2}),
+                                  new Transformation<uint16_t>({1, 2, 0}),
+                                  new Transformation<uint16_t>({1, 2, 1}),
+                                  new Transformation<uint16_t>({1, 2, 2}),
+                                  new Transformation<uint16_t>({2, 0, 0}),
+                                  new Transformation<uint16_t>({2, 0, 1}),
+                                  new Transformation<uint16_t>({2, 0, 2}),
+                                  new Transformation<uint16_t>({2, 1, 0}),
+                                  new Transformation<uint16_t>({2, 1, 1}),
+                                  new Transformation<uint16_t>({2, 1, 2}),
+                                  new Transformation<uint16_t>({2, 2, 0}),
+                                  new Transformation<uint16_t>({2, 2, 1}),
+                                  new Transformation<uint16_t>({2, 2, 2})};
 
     FroidurePin<> S = FroidurePin<>({gens[0]});
     REPORTER.set_report(REPORT);
@@ -2949,8 +2949,8 @@ namespace libsemigroups {
                           "factorisation ",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
-           new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+        = {new Transformation<uint16_t>({1, 1, 4, 5, 4, 5}),
+           new Transformation<uint16_t>({2, 3, 2, 3, 5, 5})};
 
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
@@ -2985,8 +2985,8 @@ namespace libsemigroups {
                           "minimal_factorisation ",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
-           new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+        = {new Transformation<uint16_t>({1, 1, 4, 5, 4, 5}),
+           new Transformation<uint16_t>({2, 3, 2, 3, 5, 5})};
 
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
@@ -2995,7 +2995,7 @@ namespace libsemigroups {
 
     REQUIRE(S.factorisation(gens[0]) == word_type({0}));
 
-    Element* x = new Transformation<u_int16_t>({4, 1, 4, 1, 4, 5});
+    Element* x = new Transformation<uint16_t>({4, 1, 4, 1, 4, 5});
     REQUIRE_THROWS_AS(S.minimal_factorisation(x), LibsemigroupsException);
     delete x;
 
@@ -3009,8 +3009,8 @@ namespace libsemigroups {
                           "batch_size (for an extremely large value)",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 1, 4, 5, 4, 5}),
-           new Transformation<u_int16_t>({2, 3, 2, 3, 5, 5})};
+        = {new Transformation<uint16_t>({1, 1, 4, 5, 4, 5}),
+           new Transformation<uint16_t>({2, 3, 2, 3, 5, 5})};
     FroidurePin<> S = FroidurePin<>(gens);
 
     REPORTER.set_report(REPORT);
@@ -3117,12 +3117,12 @@ namespace libsemigroups {
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 4, 5, 5})};
     std::vector<Element*> gens2
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10),
-           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
+           new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
     REQUIRE_THROWS_AS(FroidurePin<>(gens), LibsemigroupsException);
     REQUIRE_THROWS_AS(FroidurePin<>(gens2), LibsemigroupsException);
@@ -3152,11 +3152,11 @@ namespace libsemigroups {
     REQUIRE(T.current_position(T.word_to_element({0, 0, 1, 1})) == 6);
 
     std::vector<Element*> gens2
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> U(gens2);
 
     REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
@@ -3189,11 +3189,11 @@ namespace libsemigroups {
                    * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr));
 
     std::vector<Element*> gens2
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 0, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}),
-           new Transformation<u_int16_t>({5, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 1, 2, 3, 4, 5})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
+           new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
     FroidurePin<> U(gens2);
 
     REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
@@ -3201,10 +3201,10 @@ namespace libsemigroups {
 
     Element* u = U.word_to_element({0, 0, 1, 2});
     REQUIRE(*u
-            == Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({0, 1, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({1, 0, 2, 3, 4, 5})
-                   * Transformation<u_int16_t>({4, 0, 1, 2, 3, 5}));
+            == Transformation<uint16_t>({0, 1, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({0, 1, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({1, 0, 2, 3, 4, 5})
+                   * Transformation<uint16_t>({4, 0, 1, 2, 3, 5}));
     delete t;
     delete u;
     delete_gens(gens);
@@ -3430,29 +3430,29 @@ namespace libsemigroups {
                           "exception: add_generators",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens1
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 4, 5}),
-           new Transformation<u_int16_t>({1, 2, 3, 2, 2, 3})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
+           new Transformation<uint16_t>({1, 2, 3, 2, 2, 3})};
     std::vector<Element*> gens2
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
-           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
+           new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11)};
 
     FroidurePin<> S(gens1);
     FroidurePin<> U(gens2);
 
     std::vector<Element*> additional_gens_1_1
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 3, 3})};
     std::vector<Element*> additional_gens_1_2
-        = {new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3}),
-           new Transformation<u_int16_t>({0, 1, 2, 3, 3, 3, 3})};
+        = {new Transformation<uint16_t>({0, 1, 2, 3, 3, 3}),
+           new Transformation<uint16_t>({0, 1, 2, 3, 3, 3, 3})};
     std::vector<Element*> additional_gens_2_1
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
-           new PartialPerm<u_int16_t>({2, 5, 1}, {6, 0, 3}, 11)};
+           new PartialPerm<uint16_t>({2, 5, 1}, {6, 0, 3}, 11)};
     std::vector<Element*> additional_gens_2_2
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
-           new PartialPerm<u_int16_t>({2, 5, 1}, {6, 0, 3}, 12)};
+           new PartialPerm<uint16_t>({2, 5, 1}, {6, 0, 3}, 12)};
 
     REQUIRE_NOTHROW(S.add_generators(additional_gens_1_1));
     REQUIRE_THROWS_AS(S.add_generators(additional_gens_1_2),

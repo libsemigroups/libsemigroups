@@ -24,18 +24,18 @@ using namespace libsemigroups;
 
 LIBSEMIGROUPS_TEST_CASE("Transformation",
                         "001",
-                        "u_int16_t methods",
+                        "uint16_t methods",
                         "[quick][element]") {
-  auto x = Transformation<u_int16_t>({0, 1, 0});
-  auto y = Transformation<u_int16_t>({0, 1, 0});
+  auto x = Transformation<uint16_t>({0, 1, 0});
+  auto y = Transformation<uint16_t>({0, 1, 0});
   REQUIRE(x == y);
   REQUIRE(y * y == x);
   REQUIRE((x < y) == false);
 
-  auto z = Transformation<u_int16_t>({0, 1, 0, 3});
+  auto z = Transformation<uint16_t>({0, 1, 0, 3});
   REQUIRE(x < z);
 
-  auto expected = Transformation<u_int16_t>({0, 0, 0});
+  auto expected = Transformation<uint16_t>({0, 0, 0});
   REQUIRE(expected < x);
 
   REQUIRE(x.degree() == 3);
@@ -46,7 +46,7 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
   REQUIRE(y.crank() == 2);
   auto id = x.identity();
 
-  expected = Transformation<u_int16_t>({0, 1, 2});
+  expected = Transformation<uint16_t>({0, 1, 2});
   REQUIRE(id == expected);
 
   x.increase_degree_by(10);
@@ -56,9 +56,9 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
 
 LIBSEMIGROUPS_TEST_CASE("Transformation",
                         "002",
-                        "u_int16_t hash",
+                        "uint16_t hash",
                         "[quick][element]") {
-  Element* x = new Transformation<u_int16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
+  Element* x = new Transformation<uint16_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
   }
@@ -69,15 +69,15 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
 
 LIBSEMIGROUPS_TEST_CASE("Transformation",
                         "004",
-                        "u_int32_t methods",
+                        "uint32_t methods",
                         "[quick][element]") {
-  Element* x = new Transformation<u_int32_t>({0, 1, 0});
-  Element* y = new Transformation<u_int32_t>({0, 1, 0});
+  Element* x = new Transformation<uint32_t>({0, 1, 0});
+  Element* y = new Transformation<uint32_t>({0, 1, 0});
   REQUIRE(*x == *y);
   x->redefine(y, y);
   REQUIRE(*x == *y);
   REQUIRE((*x < *y) == false);
-  Element* expected = new Transformation<u_int32_t>({0, 0, 0});
+  Element* expected = new Transformation<uint32_t>({0, 0, 0});
   REQUIRE(*expected < *x);
 
   delete expected;
@@ -86,12 +86,12 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
   REQUIRE(y->degree() == 3);
   REQUIRE(x->complexity() == 3);
   REQUIRE(y->complexity() == 3);
-  REQUIRE(static_cast<Transformation<u_int32_t>*>(x)->crank() == 2);
-  REQUIRE(static_cast<Transformation<u_int32_t>*>(y)->crank() == 2);
-  Transformation<u_int32_t> id
-      = static_cast<Transformation<u_int32_t>*>(x)->identity();
+  REQUIRE(static_cast<Transformation<uint32_t>*>(x)->crank() == 2);
+  REQUIRE(static_cast<Transformation<uint32_t>*>(y)->crank() == 2);
+  Transformation<uint32_t> id
+      = static_cast<Transformation<uint32_t>*>(x)->identity();
 
-  expected = new Transformation<u_int32_t>({0, 1, 2});
+  expected = new Transformation<uint32_t>({0, 1, 2});
   REQUIRE(id == *expected);
   delete expected;
 
@@ -101,9 +101,9 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
 
 LIBSEMIGROUPS_TEST_CASE("Transformation",
                         "005",
-                        "u_int32_t hash",
+                        "uint32_t hash",
                         "[quick][element]") {
-  Element* x = new Transformation<u_int32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
+  Element* x = new Transformation<uint32_t>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
   }
@@ -116,36 +116,36 @@ LIBSEMIGROUPS_TEST_CASE("Transformation",
                         "007",
                         "exceptions",
                         "[quick][element]") {
-  REQUIRE_NOTHROW(Transformation<u_int16_t>(std::vector<u_int16_t>()));
-  REQUIRE_NOTHROW(Transformation<u_int16_t>(std::vector<u_int16_t>({0})));
-  REQUIRE_THROWS_AS(Transformation<u_int16_t>(std::vector<u_int16_t>({1})),
+  REQUIRE_NOTHROW(Transformation<uint16_t>(std::vector<uint16_t>()));
+  REQUIRE_NOTHROW(Transformation<uint16_t>(std::vector<uint16_t>({0})));
+  REQUIRE_THROWS_AS(Transformation<uint16_t>(std::vector<uint16_t>({1})),
                     LibsemigroupsException);
 
-  REQUIRE_NOTHROW(Transformation<u_int16_t>(std::vector<u_int16_t>({0, 1, 2})));
+  REQUIRE_NOTHROW(Transformation<uint16_t>(std::vector<uint16_t>({0, 1, 2})));
   REQUIRE_NOTHROW(
-      Transformation<u_int16_t>(std::initializer_list<u_int16_t>({0, 1, 2})));
+      Transformation<uint16_t>(std::initializer_list<uint16_t>({0, 1, 2})));
   // Implicit type initializer lists are not accepted.
-  // REQUIRE_NOTHROW(Transformation<u_int16_t>({0, 1, 2})));
+  // REQUIRE_NOTHROW(Transformation<uint16_t>({0, 1, 2})));
 
-  std::vector<u_int16_t> pimgs = {1, 2, 3};
-  // REQUIRE_NOTHROW(Transformation<u_int16_t>(pimgs));
-  REQUIRE_THROWS_AS(Transformation<u_int16_t>({1, 2, 3}),
+  std::vector<uint16_t> pimgs = {1, 2, 3};
+  // REQUIRE_NOTHROW(Transformation<uint16_t>(pimgs));
+  REQUIRE_THROWS_AS(Transformation<uint16_t>({1, 2, 3}),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      Transformation<u_int16_t>(std::initializer_list<u_int16_t>({1, 2, 3})),
+      Transformation<uint16_t>(std::initializer_list<uint16_t>({1, 2, 3})),
       LibsemigroupsException);
 
-  REQUIRE_THROWS_AS(Transformation<u_int16_t>(std::initializer_list<u_int16_t>(
+  REQUIRE_THROWS_AS(Transformation<uint16_t>(std::initializer_list<uint16_t>(
                         {UNDEFINED, UNDEFINED, UNDEFINED})),
                     LibsemigroupsException);
 }
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "001",
-                        "u_int16_t methods",
+                        "uint16_t methods",
                         "[quick][element]") {
-  auto x = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
-  auto y = PartialPerm<u_int16_t>({4, 5, 0}, {9, 0, 1}, 10);
+  auto x = PartialPerm<uint16_t>({4, 5, 0}, {9, 0, 1}, 10);
+  auto y = PartialPerm<uint16_t>({4, 5, 0}, {9, 0, 1}, 10);
   REQUIRE(x == y);
   auto yy = x * x;
   REQUIRE(yy.at(0) == UNDEFINED);
@@ -157,7 +157,7 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
 
   REQUIRE(yy < y);
   REQUIRE(!(x < x));
-  auto expected = PartialPerm<u_int16_t>({UNDEFINED, UNDEFINED, UNDEFINED});
+  auto expected = PartialPerm<uint16_t>({UNDEFINED, UNDEFINED, UNDEFINED});
   REQUIRE(expected < x);
 
   REQUIRE(x.degree() == 10);
@@ -169,7 +169,7 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
   REQUIRE(x.crank() == 3);
   auto id = x.identity();
 
-  expected = PartialPerm<u_int16_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  expected = PartialPerm<uint16_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   REQUIRE(id == expected);
 
   x.increase_degree_by(10);
@@ -179,9 +179,9 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "002",
-                        "u_int16_t hash",
+                        "uint16_t hash",
                         "[quick][element]") {
-  Element* x = new PartialPerm<u_int16_t>(
+  Element* x = new PartialPerm<uint16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -191,20 +191,20 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "003",
-                        "u_int16_t delete/copy",
+                        "uint16_t delete/copy",
                         "[quick][element]") {
-  Element* x = new PartialPerm<u_int16_t>(
+  Element* x = new PartialPerm<uint16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   Element* y = x->heap_copy();
   delete x;
 
-  Element* expected = new PartialPerm<u_int16_t>(
+  Element* expected = new PartialPerm<uint16_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   REQUIRE(*y == *expected);
 
-  PartialPerm<u_int16_t> yy = *static_cast<PartialPerm<u_int16_t>*>(y);
+  PartialPerm<uint16_t> yy = *static_cast<PartialPerm<uint16_t>*>(y);
   REQUIRE(yy == *y);
-  PartialPerm<u_int16_t> zz(yy);
+  PartialPerm<uint16_t> zz(yy);
   delete y;  // does not delete the _vector in y, yy, or zz
   REQUIRE(zz == *expected);
   delete expected;
@@ -212,10 +212,10 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "004",
-                        "u_int32_t methods",
+                        "uint32_t methods",
                         "[quick][element]") {
-  auto x = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
-  auto y = PartialPerm<u_int32_t>({4, 5, 0}, {10, 0, 1}, 11);
+  auto x = PartialPerm<uint32_t>({4, 5, 0}, {10, 0, 1}, 11);
+  auto y = PartialPerm<uint32_t>({4, 5, 0}, {10, 0, 1}, 11);
   REQUIRE(x == y);
   auto xx = x * x;
   REQUIRE(xx.at(0) == UNDEFINED);
@@ -226,7 +226,7 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
   REQUIRE(xx.at(5) == 1);
   REQUIRE((xx < y) == true);
 
-  auto z = PartialPerm<u_int32_t>({UNDEFINED, UNDEFINED, UNDEFINED});
+  auto z = PartialPerm<uint32_t>({UNDEFINED, UNDEFINED, UNDEFINED});
   REQUIRE(z < x);
 
   REQUIRE(x.degree() == 11);
@@ -238,15 +238,15 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
   REQUIRE(y.crank() == 3);
   auto id = x.identity();
 
-  auto expected = PartialPerm<u_int32_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+  auto expected = PartialPerm<uint32_t>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
   REQUIRE(id == expected);
 }
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "005",
-                        "u_int32_t hash",
+                        "uint32_t hash",
                         "[quick][element]") {
-  Element* x = new PartialPerm<u_int32_t>(
+  Element* x = new PartialPerm<uint32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   for (size_t i = 0; i < 1000000; i++) {
     x->hash_value();
@@ -256,20 +256,20 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
 
 LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "006",
-                        "u_int32_t delete/copy",
+                        "uint32_t delete/copy",
                         "[quick][element]") {
-  Element* x = new PartialPerm<u_int32_t>(
+  Element* x = new PartialPerm<uint32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   Element* y = x->heap_copy();
   delete x;
 
-  Element* expected = new PartialPerm<u_int32_t>(
+  Element* expected = new PartialPerm<uint32_t>(
       {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10);
   REQUIRE(*y == *expected);
 
-  PartialPerm<u_int32_t> yy = *static_cast<PartialPerm<u_int32_t>*>(y);
+  PartialPerm<uint32_t> yy = *static_cast<PartialPerm<uint32_t>*>(y);
   REQUIRE(yy == *y);
-  PartialPerm<u_int32_t> zz(yy);
+  PartialPerm<uint32_t> zz(yy);
   delete y;  // does not delete the _vector in y, yy, or zz
   REQUIRE(zz == *expected);
 
@@ -280,50 +280,50 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
                         "007",
                         "exceptions",
                         "[quick][element]") {
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>()));
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({0})));
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEFINED})));
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1})),
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(std::vector<uint16_t>()));
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(std::vector<uint16_t>({0})));
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(std::vector<uint16_t>({UNDEFINED})));
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1})),
                     LibsemigroupsException);
 
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(std::vector<u_int16_t>({0, 1, 2})));
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(std::vector<uint16_t>({0, 1, 2})));
   REQUIRE_NOTHROW(
-      PartialPerm<u_int16_t>(std::initializer_list<u_int16_t>({0, 1, 2})));
+      PartialPerm<uint16_t>(std::initializer_list<uint16_t>({0, 1, 2})));
   REQUIRE_NOTHROW(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({0, UNDEFINED, 2})));
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(
-      std::vector<u_int16_t>({0, UNDEFINED, 5, UNDEFINED, UNDEFINED, 1})));
+      PartialPerm<uint16_t>(std::vector<uint16_t>({0, UNDEFINED, 2})));
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(
+      std::vector<uint16_t>({0, UNDEFINED, 5, UNDEFINED, UNDEFINED, 1})));
 
-  std::vector<u_int16_t> pimgs = {1, 2, 3};
-  // REQUIRE_NOTHROW(PartialPerm<u_int16_t>(pimgs));
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 2, 3})),
+  std::vector<uint16_t> pimgs = {1, 2, 3};
+  // REQUIRE_NOTHROW(PartialPerm<uint16_t>(pimgs));
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2, 3})),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({UNDEFINED, UNDEFINED, 3})),
+      PartialPerm<uint16_t>(std::vector<uint16_t>({UNDEFINED, UNDEFINED, 3})),
       LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, UNDEFINED, 1})),
+      PartialPerm<uint16_t>(std::vector<uint16_t>({1, UNDEFINED, 1})),
       LibsemigroupsException);
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>(
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>(
                         {3, UNDEFINED, 2, 1, UNDEFINED, 3})),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::initializer_list<u_int16_t>({1, 2, 3})),
+      PartialPerm<uint16_t>(std::initializer_list<uint16_t>({1, 2, 3})),
       LibsemigroupsException);
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(
-      std::vector<u_int16_t>({1, 2}), std::vector<u_int16_t>({0, 3}), 5));
-  REQUIRE_NOTHROW(PartialPerm<u_int16_t>(
-      std::vector<u_int16_t>({1, 2}), std::vector<u_int16_t>({0, 5}), 6));
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 2}),
-                                           std::vector<u_int16_t>({0}),
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(
+      std::vector<uint16_t>({1, 2}), std::vector<uint16_t>({0, 3}), 5));
+  REQUIRE_NOTHROW(PartialPerm<uint16_t>(
+      std::vector<uint16_t>({1, 2}), std::vector<uint16_t>({0, 5}), 6));
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2}),
+                                           std::vector<uint16_t>({0}),
                                            5),
                     LibsemigroupsException);
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 2}),
-                                           std::vector<u_int16_t>({0, 5}),
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2}),
+                                           std::vector<uint16_t>({0, 5}),
                                            4),
                     LibsemigroupsException);
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 5}),
-                                           std::vector<u_int16_t>({0, 2}),
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 5}),
+                                           std::vector<uint16_t>({0, 2}),
                                            4),
                     LibsemigroupsException);
 }
@@ -508,7 +508,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
 }
 
 LIBSEMIGROUPS_TEST_CASE("Bipartition", "005", "degree 0", "[quick][element]") {
-  Bipartition* x = new Bipartition(std::vector<u_int32_t>({}));
+  Bipartition* x = new Bipartition(std::vector<uint32_t>({}));
   REQUIRE(x->const_nr_blocks() == 0);
   REQUIRE(x->nr_left_blocks() == 0);
 
@@ -529,7 +529,7 @@ LIBSEMIGROUPS_TEST_CASE("Bipartition",
                         "006",
                         "exceptions",
                         "[quick][element]") {
-  REQUIRE_NOTHROW(Bipartition(std::vector<u_int32_t>()));
+  REQUIRE_NOTHROW(Bipartition(std::vector<uint32_t>()));
   REQUIRE_THROWS_AS(Bipartition({0}), LibsemigroupsException);
   REQUIRE_THROWS_AS(Bipartition({1, 0}), LibsemigroupsException);
 }
@@ -1431,34 +1431,34 @@ template <class T> bool test_inverse(Permutation<T> const& p) {
 LIBSEMIGROUPS_TEST_CASE("Permutation", "001", "inverse", "[quick][element]") {
   // Those two constructor if not passed a vector return an element
   // with _vector set to null (see issue #87).
-  // REQUIRE(test_inverse(Permutation<u_int16_t>({})));
-  // REQUIRE(test_inverse(Permutation<u_int16_t>({0})));
-  REQUIRE(test_inverse(Permutation<u_int16_t>({1, 0})));
-  REQUIRE(test_inverse(Permutation<u_int16_t>({0, 1})));
-  REQUIRE(test_inverse(Permutation<u_int16_t>({2, 0, 1, 4, 3})));
-  REQUIRE(test_inverse(Permutation<u_int16_t>({4, 2, 0, 1, 3})));
-  REQUIRE(test_inverse(Permutation<u_int16_t>({0, 1, 2, 3, 4})));
+  // REQUIRE(test_inverse(Permutation<uint16_t>({})));
+  // REQUIRE(test_inverse(Permutation<uint16_t>({0})));
+  REQUIRE(test_inverse(Permutation<uint16_t>({1, 0})));
+  REQUIRE(test_inverse(Permutation<uint16_t>({0, 1})));
+  REQUIRE(test_inverse(Permutation<uint16_t>({2, 0, 1, 4, 3})));
+  REQUIRE(test_inverse(Permutation<uint16_t>({4, 2, 0, 1, 3})));
+  REQUIRE(test_inverse(Permutation<uint16_t>({0, 1, 2, 3, 4})));
 }
 
 LIBSEMIGROUPS_TEST_CASE("Permutation",
                         "002",
                         "exceptions",
                         "[quick][element]") {
-  REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({})));
-  REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({0})));
-  REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({0, 1})));
-  REQUIRE_NOTHROW(Permutation<u_int16_t>(std::vector<u_int16_t>({1, 0})));
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 2})),
+  REQUIRE_NOTHROW(Permutation<uint16_t>(std::vector<uint16_t>({})));
+  REQUIRE_NOTHROW(Permutation<uint16_t>(std::vector<uint16_t>({0})));
+  REQUIRE_NOTHROW(Permutation<uint16_t>(std::vector<uint16_t>({0, 1})));
+  REQUIRE_NOTHROW(Permutation<uint16_t>(std::vector<uint16_t>({1, 0})));
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2})),
                     LibsemigroupsException);
-  REQUIRE_THROWS_AS(PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 0, 3})),
+  REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 0, 3})),
                     LibsemigroupsException);
   REQUIRE_NOTHROW(
-      Permutation<u_int16_t>(std::vector<u_int16_t>({1, 4, 0, 3, 2})));
+      Permutation<uint16_t>(std::vector<uint16_t>({1, 4, 0, 3, 2})));
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 0, 3, 6, 4})),
+      PartialPerm<uint16_t>(std::vector<uint16_t>({1, 0, 3, 6, 4})),
       LibsemigroupsException);
   REQUIRE_THROWS_AS(
-      PartialPerm<u_int16_t>(std::vector<u_int16_t>({1, 5, 0, 3, 2})),
+      PartialPerm<uint16_t>(std::vector<uint16_t>({1, 5, 0, 3, 2})),
       LibsemigroupsException);
 }
 

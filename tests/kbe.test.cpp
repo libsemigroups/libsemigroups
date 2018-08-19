@@ -30,8 +30,8 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-    std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 0}),
-                                  new Transformation<u_int16_t>({0, 0})};
+    std::vector<Element*> gens = {new Transformation<uint16_t>({1, 0}),
+                                  new Transformation<uint16_t>({0, 0})};
     FroidurePin<>         S    = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);
@@ -60,8 +60,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-    std::vector<Element*> gens = {new Transformation<u_int16_t>({1, 0}),
-                                  new Transformation<u_int16_t>({0, 0})};
+    std::vector<Element*> gens = {new Transformation<uint16_t>({1, 0}),
+                                  new Transformation<uint16_t>({0, 0})};
     FroidurePin<>         S    = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
     delete_gens(gens);

@@ -33,17 +33,17 @@ void delete_gens(std::vector<TElementType>& gens) {
 static void BM_Congruence_full_PBR_monoid(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {
-        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+        new PBR(std::vector<std::vector<uint32_t>>({{2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{}, {2}, {1}, {0, 3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{0, 3}, {2}, {1}, {}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{1, 2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{2}, {3}, {0}, {1, 3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {1}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {0, 1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {1}, {0}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2, 3}, {0}, {1}}))};
 
     Semigroup<> S(gens);
     REPORTER.set_report(false);
@@ -75,17 +75,17 @@ static void BM_Congruence_full_PBR_monoid_max_2(benchmark::State& state) {
   REPORTER.set_report(false);
   while (state.KeepRunning()) {
     std::vector<Element*> gens = {
-        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{}, {2}, {1}, {0, 3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{0, 3}, {2}, {1}, {}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{1, 2}, {3}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{2}, {3}, {0}, {1, 3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {1}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {0, 1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {1}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {0}, {3}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2}, {1}, {0}})),
-        new PBR(std::vector<std::vector<u_int32_t>>({{3}, {2, 3}, {0}, {1}}))};
+        new PBR(std::vector<std::vector<uint32_t>>({{2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{}, {2}, {1}, {0, 3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{0, 3}, {2}, {1}, {}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{1, 2}, {3}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{2}, {3}, {0}, {1, 3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {1}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {0, 1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {1}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {0}, {3}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2}, {1}, {0}})),
+        new PBR(std::vector<std::vector<uint32_t>>({{3}, {2, 3}, {0}, {1}}))};
 
     Semigroup<> S(gens);
     delete_gens(gens);

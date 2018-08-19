@@ -29,12 +29,12 @@ namespace libsemigroups {
                           "(partial perm)",
                           "[quick][froidure-pin][pperm]") {
     REPORTER.set_report(REPORT);
-    std::vector<PartialPerm<u_int16_t>> gens
-        = {PartialPerm<u_int16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
-           PartialPerm<u_int16_t>({1, 2, 3}, {0, 5, 2}, 6),
-           PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
+    std::vector<PartialPerm<uint16_t>> gens
+        = {PartialPerm<uint16_t>({0, 3, 4, 5}, {1, 0, 3, 2}, 6),
+           PartialPerm<uint16_t>({1, 2, 3}, {0, 5, 2}, 6),
+           PartialPerm<uint16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6)};
 
-    FroidurePin<PartialPerm<u_int16_t>> S(gens);
+    FroidurePin<PartialPerm<uint16_t>> S(gens);
 
     S.reserve(102);
 
@@ -47,16 +47,16 @@ namespace libsemigroups {
       pos++;
     }
 
-    S.add_generators({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+    S.add_generators({PartialPerm<uint16_t>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
-    S.closure({PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)});
+    S.closure({PartialPerm<uint16_t>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
     REQUIRE(S.minimal_factorisation(
-                PartialPerm<u_int16_t>({0, 1, 2}, {3, 4, 5}, 6)
-                * PartialPerm<u_int16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
+                PartialPerm<uint16_t>({0, 1, 2}, {3, 4, 5}, 6)
+                * PartialPerm<uint16_t>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
             == word_type({3, 2}));
     REQUIRE(S.minimal_factorisation(10) == word_type({2, 1}));
-    REQUIRE(S.at(10) == PartialPerm<u_int16_t>({2, 3, 5}, {5, 2, 0}, 6));
+    REQUIRE(S.at(10) == PartialPerm<uint16_t>({2, 3, 5}, {5, 2, 0}, 6));
     REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
                       LibsemigroupsException);
     pos = 0;

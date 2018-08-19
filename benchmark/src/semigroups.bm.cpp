@@ -34,7 +34,7 @@ void delete_gens(std::vector<TElementType>& gens) {
   }
 }
 
-typedef std::vector<std::vector<u_int32_t>> PBR_Input;
+typedef std::vector<std::vector<uint32_t>> PBR_Input;
 
 auto& MINUS_INFTY = Semiring<int64_t>::MINUS_INFTY;
 auto& INFTY       = Semiring<int64_t>::INFTY;
@@ -44,8 +44,8 @@ auto& INFTY       = Semiring<int64_t>::INFTY;
 
 static void BM_size_small_trans_01(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<Element*> gens = {new Transformation<u_int16_t>({0, 1, 0}),
-                                  new Transformation<u_int16_t>({0, 1, 2})};
+    std::vector<Element*> gens = {new Transformation<uint16_t>({0, 1, 0}),
+                                  new Transformation<uint16_t>({0, 1, 2})};
     Semigroup<>           S(gens);
     delete_gens(gens);
 
@@ -58,9 +58,9 @@ BENCHMARK(BM_size_small_trans_01)->MinTime(1)->Unit(benchmark::kMicrosecond);
 static void BM_size_small_pperm_02(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<Element*> gens
-        = {new PartialPerm<u_int16_t>(
+        = {new PartialPerm<uint16_t>(
                {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11),
-           new PartialPerm<u_int16_t>({4, 5, 0}, {10, 0, 1}, 11)};
+           new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11)};
     Semigroup<> S(gens);
     delete_gens(gens);
 

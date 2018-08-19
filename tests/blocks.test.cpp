@@ -24,7 +24,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "001", "empty blocks", "[quick]") {
     Blocks b1;
-    Blocks b2 = Blocks(new std::vector<u_int32_t>({0, 1, 2, 1, 0, 2}),
+    Blocks b2 = Blocks(new std::vector<uint32_t>({0, 1, 2, 1, 0, 2}),
                        new std::vector<bool>({true, false, true}));
     REQUIRE(b1 == b1);
     REQUIRE(!(b1 == b2));
@@ -37,7 +37,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "002", "non-empty blocks", "[quick]") {
-    Blocks b = Blocks(new std::vector<u_int32_t>({0, 1, 2, 1, 0, 2}),
+    Blocks b = Blocks(new std::vector<uint32_t>({0, 1, 2, 1, 0, 2}),
                       new std::vector<bool>({true, false, true}));
     REQUIRE(b == b);
     REQUIRE(!(b < b));
@@ -138,7 +138,7 @@ namespace libsemigroups {
                           "copy [non-empty blocks]",
                           "[quick]") {
     Blocks* b = new Blocks(
-        new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, false}));
     Blocks c(*b);
 
@@ -157,10 +157,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "007", "hash value", "[quick]") {
     Blocks* b = new Blocks(
-        new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, false}));
     Blocks* c = new Blocks(
-        new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, true}));
     REQUIRE(b->hash_value() != c->hash_value());
     delete b;
@@ -173,17 +173,17 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "008", "operator<", "[quick]") {
     Blocks* b = new Blocks(
-        new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, false}));
     Blocks* c = new Blocks(
-        new std::vector<u_int32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, true}));
     REQUIRE(*c < *b);
     REQUIRE(!(*b < *c));
     delete c;
 
     c = new Blocks(
-        new std::vector<u_int32_t>({0, 1, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+        new std::vector<uint32_t>({0, 1, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
         new std::vector<bool>({false, true, true}));
     REQUIRE(*b < *c);
     REQUIRE(!(*c < *b));

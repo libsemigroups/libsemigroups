@@ -27,9 +27,9 @@ using namespace libsemigroups;
 
 static void BM_Transf_No_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536, 17);
+    std::vector<uint32_t> vec(65536, 17);
     try {
-      auto x = Transformation<u_int32_t>(vec);
+      auto x = Transformation<uint32_t>(vec);
     } catch (...) {
     }
   }
@@ -39,9 +39,9 @@ BENCHMARK(BM_Transf_No_Except_No_Move)->MinTime(1);
 
 static void BM_Transf_No_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536, 17);
+    std::vector<uint32_t> vec(65536, 17);
     try {
-      auto x = Transformation<u_int32_t>(std::move(vec));
+      auto x = Transformation<uint32_t>(std::move(vec));
     } catch (...) {
     }
   }
@@ -51,10 +51,10 @@ BENCHMARK(BM_Transf_No_Except_Move)->MinTime(1);
 
 static void BM_Transf_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65535, 17);
+    std::vector<uint32_t> vec(65535, 17);
     vec.push_back(65537);
     try {
-      auto x = Transformation<u_int32_t>(vec);
+      auto x = Transformation<uint32_t>(vec);
     } catch (...) {
     }
   }
@@ -64,10 +64,10 @@ BENCHMARK(BM_Transf_Except_No_Move)->MinTime(1);
 
 static void BM_Transf_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65535, 17);
+    std::vector<uint32_t> vec(65535, 17);
     vec.push_back(65537);
     try {
-      auto x = Transformation<u_int32_t>(std::move(vec));
+      auto x = Transformation<uint32_t>(std::move(vec));
     } catch (...) {
     }
   }
@@ -77,8 +77,8 @@ BENCHMARK(BM_Transf_Except_Move)->MinTime(1);
 
 static void BM_Transf_Identity(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536, 17);
-    auto                   x     = Transformation<u_int32_t>(std::move(vec));
+    std::vector<uint32_t> vec(65536, 17);
+    auto                   x     = Transformation<uint32_t>(std::move(vec));
     auto                   start = std::chrono::high_resolution_clock::now();
     auto                   y     = x.identity();
     auto                   end   = std::chrono::high_resolution_clock::now();
@@ -93,10 +93,10 @@ BENCHMARK(BM_Transf_Identity)->UseManualTime()->MinTime(1);
 
 static void BM_PPerm_No_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     try {
-      auto x = PartialPerm<u_int32_t>(vec);
+      auto x = PartialPerm<uint32_t>(vec);
     } catch (...) {
     }
   }
@@ -106,10 +106,10 @@ BENCHMARK(BM_PPerm_No_Except_No_Move)->MinTime(1);
 
 static void BM_PPerm_No_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     try {
-      auto x = PartialPerm<u_int32_t>(std::move(vec));
+      auto x = PartialPerm<uint32_t>(std::move(vec));
     } catch (...) {
     }
   }
@@ -119,11 +119,11 @@ BENCHMARK(BM_PPerm_No_Except_Move)->MinTime(1);
 
 static void BM_PPerm_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     vec.push_back(0);
     try {
-      auto x = PartialPerm<u_int32_t>(vec);
+      auto x = PartialPerm<uint32_t>(vec);
     } catch (...) {
     }
   }
@@ -133,11 +133,11 @@ BENCHMARK(BM_PPerm_Except_No_Move)->MinTime(1);
 
 static void BM_PPerm_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     vec.push_back(0);
     try {
-      auto x = PartialPerm<u_int32_t>(std::move(vec));
+      auto x = PartialPerm<uint32_t>(std::move(vec));
     } catch (...) {
     }
   }
@@ -147,9 +147,9 @@ BENCHMARK(BM_PPerm_Except_Move)->MinTime(1);
 
 static void BM_PPerm_Identity(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
-    auto x     = Transformation<u_int32_t>(std::move(vec));
+    auto x     = Transformation<uint32_t>(std::move(vec));
     auto start = std::chrono::high_resolution_clock::now();
     auto y     = x.identity();
     auto end   = std::chrono::high_resolution_clock::now();
@@ -164,7 +164,7 @@ BENCHMARK(BM_PPerm_Identity)->UseManualTime()->MinTime(1);
 
 static void BM_Bipart_No_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     try {
       auto x = Bipartition(vec);
@@ -177,7 +177,7 @@ BENCHMARK(BM_Bipart_No_Except_No_Move)->MinTime(1);
 
 static void BM_Bipart_No_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     try {
       auto x = Bipartition(std::move(vec));
@@ -190,7 +190,7 @@ BENCHMARK(BM_Bipart_No_Except_Move)->MinTime(1);
 
 static void BM_Bipart_Except_No_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     vec.push_back(65537);
     try {
@@ -204,7 +204,7 @@ BENCHMARK(BM_Bipart_Except_No_Move)->MinTime(1);
 
 static void BM_Bipart_Except_Move(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     vec.push_back(65537);
     try {
@@ -218,7 +218,7 @@ BENCHMARK(BM_Bipart_Except_Move)->MinTime(1);
 
 static void BM_Bipart_Identity(benchmark::State& state) {
   while (state.KeepRunning()) {
-    std::vector<u_int32_t> vec(65536);
+    std::vector<uint32_t> vec(65536);
     std::iota(vec.begin(), vec.end(), 0);
     auto x     = Bipartition(std::move(vec));
     auto start = std::chrono::high_resolution_clock::now();

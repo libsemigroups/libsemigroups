@@ -879,8 +879,8 @@ namespace libsemigroups {
                           "[quick][cong]") {
     REPORTER.set_report(REPORT);
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-           new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
+           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
     FroidurePin<> S(gens);
     delete_gens(gens);
 
@@ -892,8 +892,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 69);
     REQUIRE(cong.nr_classes() == 69);
 
-    Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-    Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+    Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
+    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
     word_type w3 = S.factorisation(t3);
     word_type w4 = S.factorisation(t4);
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
@@ -922,8 +922,8 @@ namespace libsemigroups {
                           "[quick][cong]") {
     REPORTER.set_report(REPORT);
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-           new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
+           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
     FroidurePin<> S(gens);
     delete_gens(gens);
 
@@ -935,8 +935,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 72);
     REQUIRE(cong.nr_classes() == 72);
 
-    Element*  t3 = new Transformation<u_int16_t>({1, 3, 1, 3, 3});
-    Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
+    Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
+    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
     word_type w3 = S.factorisation(t3);
     word_type w4 = S.factorisation(t4);
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
@@ -966,16 +966,16 @@ namespace libsemigroups {
                           "[quick][cong]") {
     REPORTER.set_report(REPORT);
     std::vector<Element*> gens
-        = {new Transformation<u_int16_t>({1, 3, 4, 2, 3}),
-           new Transformation<u_int16_t>({3, 2, 1, 3, 3})};
+        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
+           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
     FroidurePin<> S = FroidurePin<>(gens);
     delete_gens(gens);
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
     REQUIRE(S.degree() == 5);
-    Element*  t1 = new Transformation<u_int16_t>({3, 4, 4, 4, 4});
-    Element*  t2 = new Transformation<u_int16_t>({3, 1, 3, 3, 3});
+    Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
+    Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
     word_type w1, w2;
     S.factorisation(w1, S.position(t1));
     S.factorisation(w2, S.position(t2));
@@ -984,10 +984,10 @@ namespace libsemigroups {
 
     REQUIRE(cong.nr_classes() == 72);
     REQUIRE(cong.nr_classes() == 72);
-    Element*  t3 = new Transformation<u_int16_t>({1, 3, 3, 3, 3});
-    Element*  t4 = new Transformation<u_int16_t>({4, 2, 4, 4, 2});
-    Element*  t5 = new Transformation<u_int16_t>({2, 3, 2, 2, 2});
-    Element*  t6 = new Transformation<u_int16_t>({2, 3, 3, 3, 3});
+    Element*  t3 = new Transformation<uint16_t>({1, 3, 3, 3, 3});
+    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
+    Element*  t5 = new Transformation<uint16_t>({2, 3, 2, 2, 2});
+    Element*  t6 = new Transformation<uint16_t>({2, 3, 3, 3, 3});
     word_type w3, w4, w5, w6;
     S.factorisation(w3, S.position(t3));
     S.factorisation(w4, S.position(t4));
