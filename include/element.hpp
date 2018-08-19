@@ -1080,8 +1080,7 @@ namespace libsemigroups {
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
     Bipartition(Bipartition const& copy)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
-              copy._vector),
+        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(copy._vector),
           _nr_blocks(copy._nr_blocks),
           _nr_left_blocks(copy._nr_left_blocks),
           _trans_blocks_lookup(copy._trans_blocks_lookup),
@@ -1230,9 +1229,9 @@ namespace libsemigroups {
 
    private:
     static std::vector<uint32_t>
-              blocks_to_list(std::vector<std::vector<int32_t>> blocks);
+             blocks_to_list(std::vector<std::vector<int32_t>> blocks);
     uint32_t fuseit(std::vector<uint32_t>& fuse, uint32_t pos);
-    void      init_trans_blocks_lookup();
+    void     init_trans_blocks_lookup();
 
     static std::vector<std::vector<uint32_t>> _fuse;
     static std::vector<std::vector<uint32_t>> _lookup;
@@ -1767,7 +1766,7 @@ namespace libsemigroups {
     //! Constructs an empty (no relation) PBR of the given degree.
     explicit PBR(size_t degree)
         : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
-                                                  std::vector<uint32_t>())) {}
+                                                 std::vector<uint32_t>())) {}
 
     //! Constructs a PBR from two vectors
     //!
@@ -1872,8 +1871,8 @@ namespace libsemigroups {
     void x_dfs(std::vector<bool>& x_seen,
                std::vector<bool>& y_seen,
                RecVec<bool>&      tmp,
-               uint32_t const&   n,
-               uint32_t const&   i,
+               uint32_t const&    n,
+               uint32_t const&    i,
                PBR const* const   x,
                PBR const* const   y,
                size_t const&      adj);
@@ -1881,8 +1880,8 @@ namespace libsemigroups {
     void y_dfs(std::vector<bool>& x_seen,
                std::vector<bool>& y_seen,
                RecVec<bool>&      tmp,
-               uint32_t const&   n,
-               uint32_t const&   i,
+               uint32_t const&    n,
+               uint32_t const&    i,
                PBR const* const   x,
                PBR const* const   y,
                size_t const&      adj);

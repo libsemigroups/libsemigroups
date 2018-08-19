@@ -19,8 +19,8 @@
 // The purpose of this file is to test the UF class which describes a partition
 // of the set of integers {0, ..., n - 1 }
 
-#include "libsemigroups.tests.hpp"
 #include "internal/uf.hpp"
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
 
@@ -48,7 +48,10 @@ namespace libsemigroups {
     REQUIRE(*uf2.get_table() == UF::table_t({0, 1, 2, 2, 3, 4, 2, 2, 6, 5, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("UF", "004", "copy constructor with blocks", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("UF",
+                          "004",
+                          "copy constructor with blocks",
+                          "[quick]") {
     UF            uf({0, 0, 1, 2, 4, 5, 3});
     UF::blocks_t* b = uf.get_blocks();
 

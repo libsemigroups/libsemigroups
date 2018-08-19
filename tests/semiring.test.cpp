@@ -46,10 +46,7 @@ namespace libsemigroups {
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Semiring",
-                          "003",
-                          "boolean semiring",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Semiring", "003", "boolean semiring", "[quick]") {
     BooleanSemiring* sr = new BooleanSemiring();
 
     REQUIRE(sr->one());

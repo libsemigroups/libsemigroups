@@ -315,16 +315,16 @@ LIBSEMIGROUPS_TEST_CASE("PartialPerm",
   REQUIRE_NOTHROW(PartialPerm<uint16_t>(
       std::vector<uint16_t>({1, 2}), std::vector<uint16_t>({0, 5}), 6));
   REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2}),
-                                           std::vector<uint16_t>({0}),
-                                           5),
+                                          std::vector<uint16_t>({0}),
+                                          5),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 2}),
-                                           std::vector<uint16_t>({0, 5}),
-                                           4),
+                                          std::vector<uint16_t>({0, 5}),
+                                          4),
                     LibsemigroupsException);
   REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 5}),
-                                           std::vector<uint16_t>({0, 2}),
-                                           4),
+                                          std::vector<uint16_t>({0, 2}),
+                                          4),
                     LibsemigroupsException);
 }
 

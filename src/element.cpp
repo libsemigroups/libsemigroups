@@ -97,7 +97,7 @@ namespace libsemigroups {
 
   // the identity of this
   Bipartition Bipartition::identity() const {
-    size_t const           n = this->degree();
+    size_t const          n = this->degree();
     std::vector<uint32_t> vector(2 * n);
     std::iota(vector.begin(), vector.begin() + n, 0);
     std::iota(vector.begin() + n, vector.end(), 0);
@@ -176,7 +176,7 @@ namespace libsemigroups {
   }
 
   inline uint32_t Bipartition::fuseit(std::vector<uint32_t>& fuse,
-                                       uint32_t               pos) {
+                                      uint32_t               pos) {
     while (fuse[pos] < pos) {
       pos = fuse[pos];
     }
@@ -261,7 +261,7 @@ namespace libsemigroups {
     init_trans_blocks_lookup();
     return new Blocks(
         new std::vector<uint32_t>(_vector.begin(),
-                                   _vector.begin() + (_vector.size() / 2)),
+                                  _vector.begin() + (_vector.size() / 2)),
         new std::vector<bool>(_trans_blocks_lookup));
   }
 
@@ -271,7 +271,7 @@ namespace libsemigroups {
     }
 
     std::vector<uint32_t>* blocks        = new std::vector<uint32_t>();
-    std::vector<bool>*      blocks_lookup = new std::vector<bool>();
+    std::vector<bool>*     blocks_lookup = new std::vector<bool>();
 
     // must reindex the blocks
     std::vector<uint32_t>& lookup
@@ -317,8 +317,8 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("Bipartition: too many points");
     }
 
-    std::vector<uint32_t> out = std::vector<uint32_t>(
-        2 * max, std::numeric_limits<uint32_t>::max());
+    std::vector<uint32_t> out
+        = std::vector<uint32_t>(2 * max, std::numeric_limits<uint32_t>::max());
 
     for (uint32_t i = 0; i < blocks.size(); ++i) {
       for (int32_t x : blocks[i]) {
@@ -368,8 +368,7 @@ namespace libsemigroups {
   void PBR::validate() const {
     size_t n = this->_vector.size();
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    if (n == 1
-        && this->_vector[0][0] == std::numeric_limits<uint32_t>::max()) {
+    if (n == 1 && this->_vector[0][0] == std::numeric_limits<uint32_t>::max()) {
       return;
     }
 #endif
@@ -405,7 +404,7 @@ namespace libsemigroups {
 
   PBR PBR::identity() const {
     std::vector<std::vector<uint32_t>> adj;
-    size_t                              n = this->degree();
+    size_t                             n = this->degree();
     adj.reserve(2 * n);
     for (uint32_t i = 0; i < 2 * n; i++) {
       adj.push_back(std::vector<uint32_t>());
@@ -535,8 +534,8 @@ namespace libsemigroups {
   void PBR::x_dfs(std::vector<bool>& x_seen,
                   std::vector<bool>& y_seen,
                   RecVec<bool>&      tmp,
-                  uint32_t const&   n,
-                  uint32_t const&   i,
+                  uint32_t const&    n,
+                  uint32_t const&    i,
                   PBR const* const   x,
                   PBR const* const   y,
                   size_t const&      adj) {
@@ -555,8 +554,8 @@ namespace libsemigroups {
   void PBR::y_dfs(std::vector<bool>& x_seen,
                   std::vector<bool>& y_seen,
                   RecVec<bool>&      tmp,
-                  uint32_t const&   n,
-                  uint32_t const&   i,
+                  uint32_t const&    n,
+                  uint32_t const&    i,
                   PBR const* const   x,
                   PBR const* const   y,
                   size_t const&      adj) {
@@ -575,7 +574,7 @@ namespace libsemigroups {
   std::vector<std::vector<uint32_t>>
   PBR::process_left_right(std::vector<std::vector<int32_t>> const& left,
                           std::vector<std::vector<int32_t>> const& right) {
-    size_t                              n = left.size();
+    size_t                             n = left.size();
     std::vector<std::vector<uint32_t>> out;
     std::vector<uint32_t>              v;
 

@@ -1258,11 +1258,10 @@ namespace libsemigroups {
     delete S;
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "SchreierSims",
-      "024",
-      "perm. Conway group Co3 (alt.) (order 495766656000) ",
-      "[quick][schreier-sims]") {
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "024",
+                          "perm. Conway group Co3 (alt.) (order 495766656000) ",
+                          "[quick][schreier-sims]") {
     constexpr size_t N = 553;
     auto             S = new SchreierSims<N>();
     using Perm         = std::remove_pointer<decltype(S)>::type::element_type;

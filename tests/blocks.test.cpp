@@ -182,9 +182,8 @@ namespace libsemigroups {
     REQUIRE(!(*b < *c));
     delete c;
 
-    c = new Blocks(
-        new std::vector<uint32_t>({0, 1, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
-        new std::vector<bool>({false, true, true}));
+    c = new Blocks(new std::vector<uint32_t>({0, 1, 1, 0, 2, 0, 1, 2, 2, 1, 0}),
+                   new std::vector<bool>({false, true, true}));
     REQUIRE(*b < *c);
     REQUIRE(!(*c < *b));
     delete b;

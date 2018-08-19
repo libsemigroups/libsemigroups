@@ -46,7 +46,7 @@ namespace libsemigroups {
   }
 
   Blocks::Blocks(std::vector<uint32_t>* blocks,
-                 std::vector<bool>*      lookup,
+                 std::vector<bool>*     lookup,
                  uint32_t               nr_blocks)
       : _blocks(blocks),
         _lookup(lookup),
