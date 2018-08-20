@@ -653,7 +653,6 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
-    REQUIRE(S.degree() == 5);
 
     FpSemigroup T(S);
     T.add_rule(S.factorisation(Transf({3, 4, 4, 4, 4})),

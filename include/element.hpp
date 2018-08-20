@@ -428,15 +428,10 @@ namespace libsemigroups {
     //! Insertion operator
     //!
     //! This method allows ElementWithVectorData objects to be inserted into an
-    //! ostringstream
+    //! ostringstream.
     friend std::ostringstream& operator<<(std::ostringstream&          os,
                                           ElementWithVectorData const& elt) {
-      // TODO replace this with the method in stl.hpp
-      os << "{";
-      for (auto it = elt.cbegin(); it < elt.cend() - 1; it++) {
-        os << to_string(*it) << ", ";
-      }
-      os << to_string(*(elt.cend() - 1)) << "}";
+      os << elt._vector;
       return os;
     }
 
@@ -629,7 +624,7 @@ namespace libsemigroups {
     }
 
    private:
-    // Used for determining rank
+    // Used for determining rank, FIXME not thread-safe
     static std::vector<bool> _lookup;
   };
 
@@ -693,9 +688,7 @@ namespace libsemigroups {
     //! where the image of a point *i* is given by \p vec[i].
     explicit Transformation(std::vector<TValueType> const& vec)
         : TransfBase<TValueType, Transformation<TValueType>>(vec) {
-#ifdef LIBSEMIGROUPS_DENSEHASHMAP
       validate();
-#endif
     }
 
     //! A constructor.
@@ -999,19 +992,12 @@ namespace libsemigroups {
     //! A constructor.
     //!
     //! Constructs a uninitialised bipartition.
-    Bipartition()
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {}
+    Bipartition();
 
     //! A constructor.
     //!
     //! Constructs a uninitialised bipartition of degree \p degree.
-    explicit Bipartition(size_t degree) : Bipartition() {
-      this->_vector.resize(2 * degree);
-    }
+    explicit Bipartition(size_t);
 
     //! A constructor.
     //!
@@ -1021,14 +1007,7 @@ namespace libsemigroups {
     //! blocks.
     //!
     //! The parameter \p blocks is copied.
-    explicit Bipartition(std::vector<uint32_t> const& blocks)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(blocks),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {
-      validate();
-    }
+    explicit Bipartition(std::vector<uint32_t> const&);
 
     //! A constructor.
     //!
@@ -1038,31 +1017,17 @@ namespace libsemigroups {
     //! Returns a Bipartition whose defining data is \p vec.
     //! This constructor moves the data from \p vec, meaning that \p vec is
     //! changed by this constructor.
-    explicit Bipartition(std::vector<uint32_t>&& blocks)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
-              std::move(blocks)),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {
-      validate();
-    }
+    explicit Bipartition(std::vector<uint32_t>&&);
 
     //! A constructor.
     //!
     //! Converts \p blocks to a vector and uses corresponding constructor.
-    Bipartition(std::initializer_list<uint32_t> blocks)
-        : Bipartition(std::vector<uint32_t>(blocks)) {}
+    Bipartition(std::initializer_list<uint32_t> blocks);
 
     //! A copy constructor.
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
-    Bipartition(Bipartition const& copy)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(copy._vector),
-          _nr_blocks(copy._nr_blocks),
-          _nr_left_blocks(copy._nr_left_blocks),
-          _trans_blocks_lookup(copy._trans_blocks_lookup),
-          _rank(copy._rank) {}
+    Bipartition(Bipartition const&) = default;
 
     //! A constructor.
     //!
@@ -1070,8 +1035,7 @@ namespace libsemigroups {
     //! ranges [-n .. -1] U [1 .. n] for some positive integer *n*, called the
     //! degree of the bipartition. The bipartition constructed has equivalence
     //! classes given by the vectors in \p blocks.
-    Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks)
-        : Bipartition(blocks_to_list(blocks)) {}
+    Bipartition(std::initializer_list<std::vector<int32_t>> const&);
 
     //! Validates the data defining \c this.
     //!
@@ -1116,7 +1080,7 @@ namespace libsemigroups {
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
     void
-    redefine(Element const& x, Element const& y, size_t thread_id) override;
+    redefine(Element const&, Element const&, size_t) override;
 
     //! Returns the number of transverse blocks.
     //!
@@ -1157,7 +1121,7 @@ namespace libsemigroups {
     //! This method asserts that the parameter \p index is less than the
     //! number
     //! of blocks in the bipartition.
-    bool is_transverse_block(size_t index);
+    bool is_transverse_block(size_t);
 
     //! Return the left blocks of a bipartition
     //!
@@ -1178,10 +1142,7 @@ namespace libsemigroups {
     //! This method sets the cached value of the number of blocks of \c this
     //! to \p nr_blocks. It asserts that either there is no existing cached
     //! value or \p nr_blocks equals the existing cached value.
-    inline void set_nr_blocks(size_t nr_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
-      _nr_blocks = nr_blocks;
-    }
+    void set_nr_blocks(size_t);
 
     //! Set the cached number of left blocks
     //!
@@ -1189,21 +1150,14 @@ namespace libsemigroups {
     //! \c this to \p nr_left_blocks. It asserts that either there is no
     //! existing cached value or \p nr_left_blocks equals the existing cached
     //! value.
-    inline void set_nr_left_blocks(size_t nr_left_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_left_blocks == UNDEFINED
-                           || _nr_left_blocks == nr_left_blocks);
-      _nr_left_blocks = nr_left_blocks;
-    }
+    void set_nr_left_blocks(size_t);
 
     //! Set the cached rank
     //!
     //! This method sets the cached value of the rank of \c this to \p rank.
     //! It asserts that either there is no existing cached value or
     //! \p rank equals the existing cached value.
-    inline void set_rank(size_t rank) {
-      LIBSEMIGROUPS_ASSERT(_rank == UNDEFINED || _rank == rank);
-      _rank = rank;
-    }
+    void set_rank(size_t);
 
    private:
     static std::vector<uint32_t>
@@ -1519,11 +1473,8 @@ namespace libsemigroups {
     //!
     //! The parameter \p matrix is converted into its normal form when
     //! when the object is constructed.
-    ProjectiveMaxPlusMatrix(std::vector<int64_t> const& matrix,
-                            Semiring<int64_t> const*    semiring)
-        : MatrixOverSemiringBase(matrix, semiring) {
-      after();  // this is to put the matrix in normal form
-    }
+    ProjectiveMaxPlusMatrix(std::vector<int64_t> const& ,
+                            Semiring<int64_t> const*    );
 
     //! A constructor.
     //!
@@ -1532,15 +1483,10 @@ namespace libsemigroups {
     //!
     //! The copy of the parameter \p matrix in the object constructed is
     //! converted into its normal form when the object is constructed.
-    ProjectiveMaxPlusMatrix(std::vector<std::vector<int64_t>> const& matrix,
-                            Semiring<int64_t> const*                 semiring)
-        : MatrixOverSemiringBase(matrix, semiring) {
-      after();  // this is to put the matrix in normal form
-    }
-
+    ProjectiveMaxPlusMatrix(std::vector<std::vector<int64_t>> const&,
+                            Semiring<int64_t> const*                 );
     //! A copy constructor.
-    ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const& copy)
-        : MatrixOverSemiringBase(copy) {}
+    ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const&) = default;
 
     //! Returns the product of \c this and \p y
     //!
@@ -1550,37 +1496,21 @@ namespace libsemigroups {
     //! ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(degree) in
     //! Element::redefine (as for MatrixOverSemiring).
     ProjectiveMaxPlusMatrix
-    operator*(ElementWithVectorData const& y) const override {
-      ProjectiveMaxPlusMatrix xy(std::vector<int64_t>(pow(y.degree(), 2)),
-                                 this->semiring());
-      xy.Element::redefine(*this, y);
-      return xy;
-    }
+    operator*(ElementWithVectorData const&) const override;
 
    private:
     // This constructor only exists to make the empty_key method for
     // ElementWithVectorData work, and because the compiler complains about the
     // Element::operator* without it.
-    explicit ProjectiveMaxPlusMatrix(int64_t x) : MatrixOverSemiringBase(x) {}
+    explicit ProjectiveMaxPlusMatrix(int64_t);
 
     friend class ElementWithVectorData<int64_t, ProjectiveMaxPlusMatrix>;
-    explicit ProjectiveMaxPlusMatrix(std::vector<int64_t> matrix)
-        : MatrixOverSemiringBase(matrix) {}
+
+    // FIXME pass by value, really?
+    explicit ProjectiveMaxPlusMatrix(std::vector<int64_t>);
 
     // A function applied after redefinition
-    inline void after() final {
-      int64_t norm = std::numeric_limits<int64_t>::min();
-      for (auto const& x : _vector) {
-        if (x != NEGATIVE_INFINITY && x > norm) {
-          norm = x;
-        }
-      }
-      for (auto& x : _vector) {
-        if (x != NEGATIVE_INFINITY) {
-          x -= norm;
-        }
-      }
-    }
+    void after() final;
   };
 
   //! Template class for permutations.
@@ -1662,33 +1592,28 @@ namespace libsemigroups {
     //! \f$n ^  2\f$ for some integer \f$n\f$, so that the value in position
     //! \f$ni + j\f$ is the entry in row \f$i\f$ and column \f$j\f$ of
     //! the constructed matrix.
-    explicit BooleanMat(std::vector<bool> const& matrix)
-        : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
+    explicit BooleanMat(std::vector<bool> const&);
 
     //! A constructor.
     //!
     //! Constructs a boolean matrix defined by matrix, which is copied into the
     //! constructed boolean matrix; see BooleanMat::BooleanMat for more
     //! details.
-    explicit BooleanMat(std::vector<std::vector<bool>> const& matrix)
-        : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
+    explicit BooleanMat(std::vector<std::vector<bool>> const&);
 
     //! A constructor.
     //!
     //! Constructs a boolean matrix of the specified degree
-    explicit BooleanMat(size_t degree)
-        : BooleanMat(std::vector<bool>(degree * degree)) {}
+    explicit BooleanMat(size_t);
 
     //! A copy constructor.
-    BooleanMat(BooleanMat const& copy)
-        : MatrixOverSemiringBase<bool, BooleanMat>(copy._vector,
-                                                   copy._semiring) {}
+    BooleanMat(BooleanMat const&);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
     //! This method asserts that the dimensions of \p x, \p y, and \c this, are
     //! all equal, and that neither \p x nor \p y equals \c this.
-    void redefine(Element const& x, Element const& y);
+    void redefine(Element const&, Element const&);
 
     // There is a specialization of std::hash for std::vector<bool> but for
     // some reason it causes a dramatic slow down in some of the benchmarks if
@@ -1704,13 +1629,13 @@ namespace libsemigroups {
     // This constructor only exists to make the empty_key method for
     // ElementWithVectorData work, and because the compiler complains about the
     // Element::operator* without it.
-    explicit BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
+    explicit BooleanMat(bool);
 
     // The next constructor only exists to allow the identity method for
     // MatrixOverSemiringBase to work.
     friend class MatrixOverSemiringBase<bool, BooleanMat>;
-    BooleanMat(std::vector<bool> matrix, Semiring<bool> const* semiring)
-        : MatrixOverSemiringBase<bool, BooleanMat>(matrix, semiring) {}
+    // FIXME pass by value?
+    BooleanMat(std::vector<bool>, Semiring<bool> const*);
 
     static BooleanSemiring const* const _semiring;
   };
@@ -1737,14 +1662,12 @@ namespace libsemigroups {
     //! Constructs a PBR defined by the initializer list \p vec. This list
     //! should be interpreted in the same way as \p vector in the vector
     //! constructor PBR::PBR.
-    explicit PBR(std::initializer_list<std::vector<uint32_t>> vec);
+    explicit PBR(std::initializer_list<std::vector<uint32_t>>);
 
     //! A constructor.
     //!
     //! Constructs an empty (no relation) PBR of the given degree.
-    explicit PBR(size_t degree)
-        : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
-                                                 std::vector<uint32_t>())) {}
+    explicit PBR(size_t);
 
     //! Constructs a PBR from two vectors
     //!
@@ -1753,9 +1676,8 @@ namespace libsemigroups {
     //! the vector in position \f$i\f$ of \p left is the list of points
     //! adjacent to \f$i\f$ in the PBR, and the vector in position \f$i\f$
     //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
-    PBR(std::initializer_list<std::vector<int32_t>> const& left,
-        std::initializer_list<std::vector<int32_t>> const& right)
-        : PBR(process_left_right(left, right)) {}
+    PBR(std::initializer_list<std::vector<int32_t>> const&,
+        std::initializer_list<std::vector<int32_t>> const&);
 
     //! Validates the data defining \c this.
     //!
@@ -1806,63 +1728,40 @@ namespace libsemigroups {
     //! Insertion operator
     //!
     //! This method allows PBR objects to be inserted into an ostringstream
-    friend std::ostringstream& operator<<(std::ostringstream& os,
-                                          PBR const&          pbr) {
-      os << "{";
-      for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
-        os << "{";
-        for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
-          os << pbr[i][j] << ", ";
-        }
-        os << to_string(pbr[i].back()) << "}, ";
-      }
-
-      os << "{";
-      for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
-        os << pbr[2 * pbr.degree() - 1][j] << ", ";
-      }
-      os << to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
-      return os;
-    }
+    friend std::ostringstream& operator<<(std::ostringstream&, PBR const&);
 
     //! Insertion operator
     //!
     //! This method allows PBR objects to be inserted into an ostream.
-    friend std::ostream& operator<<(std::ostream& os, PBR const& pbr) {
-      os << to_string(pbr);
-      return os;
-    }
+    friend std::ostream& operator<<(std::ostream&, PBR const&);
 
    protected:
     void cache_hash_value() const override;
 
    private:
     static std::vector<std::vector<uint32_t>>
-    process_left_right(std::vector<std::vector<int32_t>> const& left,
-                       std::vector<std::vector<int32_t>> const& right);
+    process_left_right(std::vector<std::vector<int32_t>> const&,
+                       std::vector<std::vector<int32_t>> const&);
 
-    void unite_rows(RecVec<bool>& out,
-                    RecVec<bool>& tmp,
-                    size_t const& vertex1,
-                    size_t const& vertex2);
+    void unite_rows(RecVec<bool>&, RecVec<bool>&, size_t const&, size_t const&);
 
-    void x_dfs(std::vector<bool>& x_seen,
-               std::vector<bool>& y_seen,
-               RecVec<bool>&      tmp,
-               uint32_t const&    n,
-               uint32_t const&    i,
-               PBR const* const   x,
-               PBR const* const   y,
-               size_t const&      adj);
+    void x_dfs(std::vector<bool>&,
+               std::vector<bool>&,
+               RecVec<bool>&,
+               uint32_t const&,
+               uint32_t const&,
+               PBR const* const,
+               PBR const* const,
+               size_t const&);
 
-    void y_dfs(std::vector<bool>& x_seen,
-               std::vector<bool>& y_seen,
-               RecVec<bool>&      tmp,
-               uint32_t const&    n,
-               uint32_t const&    i,
-               PBR const* const   x,
-               PBR const* const   y,
-               size_t const&      adj);
+    void y_dfs(std::vector<bool>&,
+               std::vector<bool>&,
+               RecVec<bool>&,
+               uint32_t const&,
+               uint32_t const&,
+               PBR const* const,
+               PBR const* const,
+               size_t const&);
 
     static std::vector<std::vector<bool>> _x_seen;
     static std::vector<std::vector<bool>> _y_seen;
@@ -2071,7 +1970,7 @@ namespace libsemigroups {
   struct hash<TSubclass,
               typename std::enable_if<
                   std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Hashes a Transformation given by const Transformation pointer.
+    //! Hashes a \p TSubclass given by const reference.
     size_t operator()(TSubclass const& x) const {
       return x.hash_value();
     }

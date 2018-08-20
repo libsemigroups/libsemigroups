@@ -22,7 +22,7 @@
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
-#include "catch.hpp"
+#include "libsemigroups.tests.hpp"
 #include "froidure-pin.hpp"
 
 using namespace HPCombi;
