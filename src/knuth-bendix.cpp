@@ -298,7 +298,7 @@ namespace libsemigroups {
     class KnuthBendix::KnuthBendixImpl {
      public:
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - forward declarations - public
+      // KnuthBendixImpl - friend declarations - public
       //////////////////////////////////////////////////////////////////////////
 
       friend struct Rule;                 // defined in knuth-bendix.cpp

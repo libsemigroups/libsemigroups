@@ -135,7 +135,7 @@ CHECK_FLAGS2  = [quick],[standard]
 
 check_PROGRAMS = lstest
 
-lstest_SOURCES = tests/blocks.test.cpp
+lstest_SOURCES =  tests/blocks.test.cpp
 lstest_SOURCES += tests/bmat8.test.cpp
 lstest_SOURCES += tests/cong-pair.test.cpp
 lstest_SOURCES += tests/cong.test.cpp
