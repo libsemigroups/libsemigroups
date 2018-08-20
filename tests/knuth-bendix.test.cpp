@@ -165,7 +165,9 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("012");
+      KnuthBendix kb;
+      kb.set_alphabet("012");
+
       REQUIRE(kb.alphabet() == "012");
       REQUIRE(kb.nr_rules() == 0);
 
@@ -219,7 +221,9 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("01");
+      KnuthBendix kb;
+      kb.set_alphabet("01");
+
       kb.add_rule("000", "");
       kb.add_rule("111", "");
       kb.add_rule("010101", "");
@@ -237,7 +241,9 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("abcd");
+      KnuthBendix kb;
+      kb.set_alphabet("abcd");
+
       kb.add_rule("ab", "");
       kb.add_rule("ba", "");
       kb.add_rule("cd", "");
@@ -254,7 +260,9 @@ namespace libsemigroups {
                             "009",
                             "(fpsemi) Example 5.1 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       REPORTER.set_report(REPORT);
 
       kb.add_rule("aA", "");
@@ -273,7 +281,9 @@ namespace libsemigroups {
                             "010",
                             "(fpsemi) Example 5.3 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bbb", "");
@@ -289,7 +299,9 @@ namespace libsemigroups {
                             "011",
                             "(fpsemi) Example 5.4 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      KnuthBendix kb("Bab");
+      KnuthBendix kb;
+      kb.set_alphabet("Bab");
+
       REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bB", "");
@@ -306,7 +318,9 @@ namespace libsemigroups {
                             "012",
                             "(fpsemi) Example 6.4 in Sims (size 168)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
       REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bc", "");
@@ -336,7 +350,8 @@ namespace libsemigroups {
                             "(fpsemi) Example 6.6 in Sims",
                             "[extreme][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(true);
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
 
       kb.add_rule("aa", "");
       kb.add_rule("bc", "");
@@ -355,7 +370,9 @@ namespace libsemigroups {
                             "014",
                             "(fpsemi) Chapter 10, Section 4 in NR (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
       REPORTER.set_report(REPORT);
 
       kb.add_rule("aaaa", "a");
@@ -379,7 +396,9 @@ namespace libsemigroups {
                             "1.1 in NR "
                             "(size 120)",
                             "[knuth-bendix][fpsemi][quick]") {
-      KnuthBendix kb("ABab");
+      KnuthBendix kb;
+      kb.set_alphabet("ABab");
+
       REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bbbbb", "");
@@ -408,7 +427,9 @@ namespace libsemigroups {
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("abAB");
+      KnuthBendix kb;
+      kb.set_alphabet("abAB");
+
       kb.add_rule("aaaaaaa", "");
       kb.add_rule("bb", "ababab");
       kb.add_rule("bb", "aaaabaaaabaaaabaaaab");
@@ -432,7 +453,9 @@ namespace libsemigroups {
                             "(fpsemi) bicyclic monoid (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("ab", "");
 
       REQUIRE(kb.confluent());
@@ -447,7 +470,9 @@ namespace libsemigroups {
                             "(fpsemi) plactic monoid of degree 2 (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
       kb.add_rule("aba", "baa");
       kb.add_rule("bba", "bab");
       kb.add_rule("ac", "");
@@ -468,7 +493,9 @@ namespace libsemigroups {
                             "1.1 in "
                             "NR (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       REPORTER.set_report(REPORT);
       kb.add_rule("aa", "a");
       kb.add_rule("bb", "b");
@@ -484,7 +511,9 @@ namespace libsemigroups {
                             "(fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbb", "b");
       kb.add_rule("ababababab", "aa");
@@ -502,7 +531,9 @@ namespace libsemigroups {
                             "(fpsemi) finite semigroup (size 99)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbb", "b");
       kb.add_rule("abababab", "aa");
@@ -521,7 +552,9 @@ namespace libsemigroups {
                             "(fpsemi) Chapter 7, Theorem 3.9 in NR (size 240)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbb", "b");
       kb.add_rule("abbba", "aa");
@@ -541,7 +574,9 @@ namespace libsemigroups {
                             "(size 11)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abcde");
+      KnuthBendix kb;
+      kb.set_alphabet("abcde");
+
       kb.add_rule("ab", "c");
       kb.add_rule("bc", "d");
       kb.add_rule("cd", "e");
@@ -561,7 +596,9 @@ namespace libsemigroups {
                             "(infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abcdef");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdef");
+
       kb.add_rule("ab", "");
       kb.add_rule("bc", "d");
       kb.add_rule("cd", "e");
@@ -612,7 +649,9 @@ namespace libsemigroups {
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbbb", "b");
       kb.add_rule("abbbabb", "bba");
@@ -665,7 +704,9 @@ namespace libsemigroups {
         "(size 746)",
         "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbbbbbbb", "b");
       kb.add_rule("abbbbbabb", "bba");
@@ -703,7 +744,9 @@ namespace libsemigroups {
         "(infinite)",
         "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ABCabc");
+      KnuthBendix kb;
+      kb.set_alphabet("ABCabc");
+
       kb.add_rule("aA", "");
       kb.add_rule("Aa", "");
       kb.add_rule("bB", "");
@@ -727,7 +770,9 @@ namespace libsemigroups {
                             "abaabba) in NR (size 4)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbbbbb", "b");
       kb.add_rule("abaabba", "bb");
@@ -744,7 +789,9 @@ namespace libsemigroups {
                             "(fpsemi) Chapter 8, Theorem 4.2 in NR (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("bbbb", "b");
       kb.add_rule("bababababab", "b");
@@ -764,7 +811,9 @@ namespace libsemigroups {
                             "(fpsemi) equal_to fp semigroup",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
       kb.add_rule("ab", "ba");
       kb.add_rule("ac", "ca");
       kb.add_rule("aa", "a");
@@ -791,7 +840,8 @@ namespace libsemigroups {
         "(fpsemi) equal_to free semigroup",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb(2);
+      KnuthBendix kb;
+      kb.set_alphabet(2);
       REQUIRE(!kb.equal_to(word_type({0}), word_type({1})));
       REQUIRE(kb.equal_to(word_type({0}), word_type({0})));
       REQUIRE(kb.equal_to(word_type({0, 0, 0, 0, 0, 0, 0}),
@@ -805,7 +855,9 @@ namespace libsemigroups {
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abcdefg");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefg");
+
       kb.add_rule("abcd", "ce");
       kb.add_rule("df", "dg");
 
@@ -831,7 +883,9 @@ namespace libsemigroups {
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abcdefgh");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefgh");
+
       kb.add_rule("abcd", "ce");
       kb.add_rule("df", "hd");
 
@@ -854,7 +908,9 @@ namespace libsemigroups {
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abcdefgh");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefgh");
+
       kb.add_rule("afh", "bgh");
       kb.add_rule("hc", "d");
 
@@ -877,7 +933,9 @@ namespace libsemigroups {
       REPORTER.set_report(REPORT);
       // The following permits a more complex test of case (6), which also
       // involves using the case (2) code to change the prefix being looked for:
-      KnuthBendix kb("abcdefghij");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefghij");
+
       kb.add_rule("afh", "bgh");
       kb.add_rule("hc", "de");
       kb.add_rule("ei", "j");
@@ -903,7 +961,9 @@ namespace libsemigroups {
       // A slightly more complicated presentation for testing case (6), in which
       // the max piece suffixes of the first two relation words no longer agree
       // (since fh and gh are now pieces).
-      KnuthBendix kb("abcdefghijkl");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefghijkl");
+
       kb.add_rule("afh", "bgh");
       kb.add_rule("hc", "de");
       kb.add_rule("ei", "j");
@@ -927,7 +987,9 @@ namespace libsemigroups {
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("cab");
+      KnuthBendix kb;
+      kb.set_alphabet("cab");
+
       kb.add_rule("aabc", "acba");
 
       REQUIRE(kb.is_obviously_infinite());
@@ -946,7 +1008,9 @@ namespace libsemigroups {
         "038",
         "(fpsemi) Von Dyck (2,3,7) group (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
-      KnuthBendix kb("ABabc");
+      KnuthBendix kb;
+      kb.set_alphabet("ABabc");
+
       kb.add_rule("aaaa", "AAA");
       kb.add_rule("bb", "B");
       kb.add_rule("BA", "c");
@@ -969,14 +1033,16 @@ namespace libsemigroups {
         "presentation (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("ABabc");
+      KnuthBendix kb;
+      kb.set_alphabet("ABabc");
+
       kb.add_rule("aaaa", "AAA");
       kb.add_rule("bb", "B");
       kb.add_rule("abababa", "BABABAB");
       kb.add_rule("BA", "c");
 
       REQUIRE(!kb.confluent());
-      kb.set_overlap_policy(KnuthBendix::overlap_policy::max_AB_BC);
+      kb.set_overlap_policy(KnuthBendix::overlap_policy::MAX_AB_BC);
       kb.set_max_rules(100);
       kb.knuth_bendix();
       REQUIRE(kb.nr_rules() == 101);
@@ -996,7 +1062,9 @@ namespace libsemigroups {
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
       REPORTER.set_report(REPORT);
 
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
       kb.add_rule("bbbbbbb", "b");
       kb.add_rule("ccccc", "c");
       kb.add_rule("bccba", "bccb");
@@ -1037,7 +1105,9 @@ namespace libsemigroups {
                             "041",
                             "(fpsemi) rewriting system from Congruence 20",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      KnuthBendix kb("ab");
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+
       kb.add_rule("aaa", "a");
       kb.add_rule("ab", "ba");
       kb.add_rule("aa", "a");
@@ -1054,7 +1124,8 @@ namespace libsemigroups {
                             "overlap lengths)",
                             "[extreme][knuth-bendix][fpsemigroup][fpsemi]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("abc");
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
 
       kb.add_rule("aa", "");
       kb.add_rule("bc", "");
@@ -1111,7 +1182,9 @@ namespace libsemigroups {
         "(fpsemi) (from kbmag/standalone/kb_data/f27) (infinite)",
         "[extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
       REPORTER.set_report(true);
-      KnuthBendix kb("aAbBcCdDyYfFgG");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcCdDyYfFgG");
+
       kb.add_rule("ab", "c");
       kb.add_rule("bc", "d");
       kb.add_rule("cd", "y");
@@ -1140,7 +1213,9 @@ namespace libsemigroups {
         "(fpsemi) (from kbmag/standalone/kb_data/l32ext)",
         "[fail][extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
       REPORTER.set_report(true);
-      KnuthBendix kb("abB");
+      KnuthBendix kb;
+      kb.set_alphabet("abB");
+
       kb.add_rule("aa", "");
       kb.add_rule("BB", "b");
       kb.add_rule("BaBaBaB", "abababa");
@@ -1161,7 +1236,9 @@ namespace libsemigroups {
         "(fpsemi) (from kbmag/standalone/kb_data/ab2)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
       REPORTER.set_report(REPORT);
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       kb.add_rule("Bab", "a");
 
       REQUIRE(kb.confluent());
@@ -1187,8 +1264,12 @@ namespace libsemigroups {
         "(fpsemi) (from kbmag/standalone/kb_data/d22) "
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
-      // KnuthBendix kb("aAbBcCdDyYfF");
-      KnuthBendix kb("ABCDYFabcdyf");
+      // KnuthBendix kb;
+      // kb.set_alphabet("aAbBcCdDyYfF");
+
+      KnuthBendix kb;
+      kb.set_alphabet("ABCDYFabcdyf");
+
       kb.add_rule("aCAd", "");
       kb.add_rule("bfBY", "");
       kb.add_rule("cyCD", "");
@@ -1239,7 +1320,9 @@ namespace libsemigroups {
         "049",
         "(fpsemi) (from kbmag/standalone/kb_data/s4)",
         "[fail][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
-      KnuthBendix kb("abB");
+      KnuthBendix kb;
+      kb.set_alphabet("abB");
+
       kb.add_rule("bb", "B");
       kb.add_rule("BaBa", "abab");
       REPORTER.set_report(REPORT);
@@ -1299,7 +1382,9 @@ namespace libsemigroups {
                             "051",
                             "(from kbmag/standalone/kb_data/f25monoid)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("abcde");
+      KnuthBendix kb;
+      kb.set_alphabet("abcde");
+
       kb.add_rule("ab", "c");
       kb.add_rule("bc", "d");
       kb.add_rule("cd", "e");
@@ -1353,7 +1438,9 @@ namespace libsemigroups {
                             "052",
                             "(from kbmag/standalone/kb_data/degen4a)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbBcC");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcC");
+
       kb.add_rule("Aba", "bb");
       kb.add_rule("Bcb", "cc");
       kb.add_rule("Cac", "aa");
@@ -1378,7 +1465,9 @@ namespace libsemigroups {
                             "053",
                             "(from kbmag/standalone/kb_data/torus)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAcCbBdD");
+      KnuthBendix kb;
+      kb.set_alphabet("aAcCbBdD");
+
       kb.add_rule("ABab", "DCdc");
       REPORTER.set_report(REPORT);
 
@@ -1424,7 +1513,9 @@ namespace libsemigroups {
                             "055",
                             "(from kbmag/standalone/kb_data/3a6)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("abAB");
+      KnuthBendix kb;
+      kb.set_alphabet("abAB");
+
       kb.add_rule("aaa", "");
       kb.add_rule("bbb", "");
       kb.add_rule("abababab", "");
@@ -1468,7 +1559,9 @@ namespace libsemigroups {
                             "056",
                             "(from kbmag/standalone/kb_data/f2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
@@ -1504,7 +1597,9 @@ namespace libsemigroups {
                             "(from kbmag/standalone/kb_data/s16)",
                             "[fail][extreme][knuth-bendix][kbmag][shortlex]") {
       REPORTER.set_report(true);
-      KnuthBendix kb("abcdefghijklmno");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefghijklmno");
+
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
       kb.add_rule("da", "ad");
@@ -1624,7 +1719,9 @@ namespace libsemigroups {
                             "059",
                             "(from kbmag/standalone/kb_data/a4monoid)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("abB");
+      KnuthBendix kb;
+      kb.set_alphabet("abB");
+
       kb.add_rule("bb", "B");
       kb.add_rule("BaB", "aba");
       REPORTER.set_report(REPORT);
@@ -1656,7 +1753,9 @@ namespace libsemigroups {
                             "060",
                             "(from kbmag/standalone/kb_data/degen3)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       kb.add_rule("ab", "");
       kb.add_rule("abb", "");
       REPORTER.set_report(REPORT);
@@ -1686,7 +1785,8 @@ namespace libsemigroups {
       std::random_device rd;
       std::mt19937       g(rd());
       std::shuffle(lphbt.begin(), lphbt.end(), g);
-      KnuthBendix kb(lphbt);
+      KnuthBendix kb;
+      kb.set_alphabet(lphbt);
       std::cout << kb.alphabet() << "\n";
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
@@ -1729,7 +1829,9 @@ namespace libsemigroups {
                             "062",
                             "(from kbmag/standalone/kb_data/ab1)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aA");
+      KnuthBendix kb;
+      kb.set_alphabet("aA");
+
       REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
@@ -1744,7 +1846,9 @@ namespace libsemigroups {
                             "063",
                             "(from kbmag/standalone/kb_data/degen2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aA");
+      KnuthBendix kb;
+      kb.set_alphabet("aA");
+
       kb.add_rule("a", "");
       REPORTER.set_report(REPORT);
 
@@ -1764,7 +1868,9 @@ namespace libsemigroups {
                             "064",
                             "(from kbmag/standalone/kb_data/f25)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbBcCdDyY");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcCdDyY");
+
       kb.add_rule("ab", "c");
       kb.add_rule("bc", "d");
       kb.add_rule("cd", "y");
@@ -1820,7 +1926,9 @@ namespace libsemigroups {
                             "065",
                             "(from kbmag/standalone/kb_data/degen4b)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbBcC");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcC");
+
       kb.add_rule("bbABaBcbCCAbaBBccBCbccBCb", "");
       kb.add_rule("ccBCbCacAABcbCCaaCAcaaCAc", "");
       kb.add_rule("aaCAcAbaBBCacAAbbABabbABa", "");
@@ -1858,7 +1966,9 @@ namespace libsemigroups {
                             "067",
                             "(from kbmag/standalone/kb_data/funny3)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbBcC");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcC");
+
       kb.add_rule("aaa", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ccc", "");
@@ -1884,7 +1994,9 @@ namespace libsemigroups {
                             "068",
                             "(from kbmag/standalone/kb_data/f27_2gen)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       kb.add_rule("bababbababbabbababbab", "a");
       kb.add_rule("abbabbababbaba", "b");
       REPORTER.set_report(REPORT);
@@ -1902,7 +2014,9 @@ namespace libsemigroups {
                             "069",
                             "(from kbmag/standalone/kb_data/m11)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("abB");
+      KnuthBendix kb;
+      kb.set_alphabet("abB");
+
       kb.add_rule("BB", "bb");
       kb.add_rule("BaBaBaBaBaB", "abababababa");
       kb.add_rule("bbabbabba", "abbabbabb");
@@ -1922,7 +2036,9 @@ namespace libsemigroups {
                             "070",
                             "(from kbmag/standalone/kb_data/e8)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("abcdefgh");
+      KnuthBendix kb;
+      kb.set_alphabet("abcdefgh");
+
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
       kb.add_rule("da", "ad");
@@ -1966,7 +2082,9 @@ namespace libsemigroups {
                             "071",
                             "(from kbmag/standalone/kb_data/237)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("aAbBc");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBc");
+
       kb.add_rule("aaaa", "AAA");
       kb.add_rule("bb", "B");
       kb.add_rule("BA", "c");
@@ -1987,7 +2105,9 @@ namespace libsemigroups {
                             "072",
                             "(from kbmag/standalone/kb_data/c2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("a");
+      KnuthBendix kb;
+      kb.set_alphabet("a");
+
       kb.add_rule("aa", "");
       REPORTER.set_report(REPORT);
 
@@ -2038,7 +2158,9 @@ namespace libsemigroups {
                             "074",
                             "(from kbmag/standalone/kb_data/cosets)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("HaAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("HaAbB");
+
       kb.add_rule("aaa", "");
       kb.add_rule("bbbb", "");
       kb.add_rule("abab", "");
@@ -2090,7 +2212,9 @@ namespace libsemigroups {
                             "075",
                             "Example 5.1 in Sims (KnuthBendix 09 again)",
                             "[quick][knuth-bendix][fpsemigroup]") {
-      KnuthBendix kb("aAbB");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbB");
+
       REPORTER.set_report(REPORT);
 
       kb.add_rule("aA", "");
@@ -2113,7 +2237,9 @@ namespace libsemigroups {
                             "kbmag/standalone/kb_data/verifynilp)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
       REPORTER.set_report(true);
-      KnuthBendix kb("hHgGfFyYdDcCbBaA");
+      KnuthBendix kb;
+      kb.set_alphabet("hHgGfFyYdDcCbBaA");
+
       kb.add_rule("BAba", "c");
       kb.add_rule("CAca", "d");
       kb.add_rule("DAda", "y");
@@ -2135,7 +2261,9 @@ namespace libsemigroups {
                             "(KnuthBendix 66 again) (from "
                             "kbmag/standalone/kb_data/nilp2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
-      KnuthBendix kb("cCbBaA");
+      KnuthBendix kb;
+      kb.set_alphabet("cCbBaA");
+
       kb.add_rule("ba", "abc");
       kb.add_rule("ca", "ac");
       kb.add_rule("cb", "bc");
@@ -2191,7 +2319,9 @@ namespace libsemigroups {
                             "079",
                             "KnuthBendix 71 again",
                             "[extreme][knuth-bendix][shortlex]") {
-      KnuthBendix kb("aAbBc");
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBc");
+
       kb.add_rule("BA", "c");
       kb.add_rule("Bb", "bB");
       kb.add_rule("bb", "B");
@@ -2276,7 +2406,7 @@ namespace libsemigroups {
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ababab", "");
-      kb.set_overlap_policy(KnuthBendix::overlap_policy::max_AB_BC);
+      kb.set_overlap_policy(KnuthBendix::overlap_policy::MAX_AB_BC);
 
       REQUIRE(!kb.confluent());
 
@@ -2297,7 +2427,8 @@ namespace libsemigroups {
       kb1.add_rule("bbb", "");
       kb1.add_rule("ababab", "");
       os << kb1;  // Does not do anything visible
-      KnuthBendix kb2("cbaB");
+      KnuthBendix kb2;
+      kb2.set_alphabet("cbaB");
       kb2.add_rule("aa", "");
       kb2.add_rule("bB", "");
       kb2.add_rule("bbb", "");
@@ -2324,7 +2455,9 @@ namespace libsemigroups {
                             "084",
                             "set_max_overlap",
                             "[quick][knuth-bendix]") {
-      KnuthBendix kb("Bab");
+      KnuthBendix kb;
+      kb.set_alphabet("Bab");
+
       kb.add_rule("aa", "");
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");

@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO:
-// 1. Static assert that the class is trivial
+// This file contains TODO
+//
+// For technical reasons this is implemented in knuth-bendix.cpp
 
 #ifndef LIBSEMIGROUPS_INCLUDE_KBE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_KBE_HPP_
@@ -37,7 +38,7 @@ namespace libsemigroups {
   //! object.
   class KBE : public Element {
     using KnuthBendix          = fpsemigroup::KnuthBendix;
-    using internal_string_type = KnuthBendix::internal_string_type;
+    using internal_string_type = std::string;
 
    private:
     KBE(KnuthBendix*, internal_string_type, bool);

@@ -44,13 +44,8 @@
 #include "reduct.hpp"
 #include "types.hpp"
 
-// TODO: - move implementation to .cpp file
-//       - don't use the typedef external_string_type in public methods, use
-//       std::string instead.
-
 namespace libsemigroups {
-  class KBE;  // Forward declaration
-
+  class KBE;
   namespace congruence {
     class KnuthBendix;  // Forward declaration
   }
@@ -63,6 +58,7 @@ namespace libsemigroups {
 
     class KnuthBendix : public FpSemiBase {
       friend class ::libsemigroups::congruence::KnuthBendix;
+      friend class ::libsemigroups::KBE;  // defined in kbe.hpp
 
      public:
       // TODO typedef isomorphic_non_fp_semigroup_type
@@ -98,28 +94,6 @@ namespace libsemigroups {
       using FpSemiBase::equal_to;
       using FpSemiBase::normal_form;
 
-     private:
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - forward declarations - private
-      //////////////////////////////////////////////////////////////////////////
-
-      class RuleLookup;       // defined in knuth-bendix.hpp
-      struct OverlapMeasure;  // defined in knuth-bendix.cpp
-      friend struct Rule;     // defined in knuth-bendix.hpp
-      struct Rule;
-      friend class ::libsemigroups::KBE;  // defined in kbe.hpp
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - typedefs - private
-      //////////////////////////////////////////////////////////////////////////
-
-      using internal_char_type = char;
-      using external_char_type = char;
-
-      using internal_string_type = std::string;
-      using external_string_type = std::string;
-
-     public:
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - static data members and enums - public
       //////////////////////////////////////////////////////////////////////////
@@ -129,18 +103,10 @@ namespace libsemigroups {
       //! \f$BC\f$:
       //! * ***ABC***:        \f$d(AB, BC) = |A| + |B| + |C|\f$
       //! * ***AB_BC***:      \f$d(AB, BC) = |AB| + |BC|\f$
-      //! * ***max_AB_BC***:  \f$d(AB, BC) = max(|AB|, |BC|)\f$
+      //! * ***MAX_AB_BC***:  \f$d(AB, BC) = max(|AB|, |BC|)\f$
       //!
       //! \sa KnuthBendix::set_overlap_policy.
-      // TODO enum class
-      enum overlap_policy { ABC = 0, AB_BC = 1, max_AB_BC = 2 };
-
-      //! The constant value represents an UNBOUNDED quantity.
-      //!
-      //! \sa KnuthBendix::set_check_confluence_interval,
-      //! KnuthBendix::set_max_rules, KnuthBendix::set_max_overlap.
-      // TODO move to constants.hpp
-      static size_t const UNBOUNDED = std::numeric_limits<size_t>::max() - 2;
+      enum class overlap_policy { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - constructors and destructor - public
@@ -152,30 +118,14 @@ namespace libsemigroups {
       //! This constructs a rewriting system with no rules, and with the
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
-      explicit KnuthBendix(ReductionOrdering*, external_string_type = "");
+      explicit KnuthBendix(ReductionOrdering*);
       explicit KnuthBendix(FroidurePinBase*);
       explicit KnuthBendix(FroidurePinBase&);
       explicit KnuthBendix(KnuthBendix const*);
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
       //! reduction ordering.
-      KnuthBendix() : KnuthBendix(new SHORTLEX()) {}
-
-      //! Constructs a rewriting system with no rules, and the SHORTLEX
-      //! reduction ordering and using the alphabet specified by the parameter
-      //! \p alphabet.
-      // Apparently old versions of GCC (4.8.2) don't like explicit constructors
-      // with single default parameters:
-      //    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
-      // and so we have two constructors instead.
-      // TODO remove this constructor
-      explicit KnuthBendix(external_string_type const& alphabet)
-          : KnuthBendix(new SHORTLEX(), alphabet) {}
-
-      // TODO remove this constructor
-      explicit KnuthBendix(size_t n) : KnuthBendix(new SHORTLEX()) {
-        set_alphabet(n);
-      }
+      KnuthBendix();
 
       //! A default destructor
       //!
@@ -226,47 +176,6 @@ namespace libsemigroups {
       //! \sa KnuthBendix::overlap_measure.
       void set_overlap_policy(overlap_policy);
 
-     private:
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - methods for converting ints <-> string/char - private
-      //////////////////////////////////////////////////////////////////////////
-
-      static size_t               internal_char_to_uint(internal_char_type c);
-      static internal_char_type   uint_to_internal_char(size_t a);
-      static internal_string_type uint_to_internal_string(size_t const);
-      static word_type internal_string_to_word(internal_string_type const&);
-
-      // The second parameter is modified in-place and returned.
-      static internal_string_type*
-      word_to_internal_string(word_type const&, internal_string_type*);
-
-      // Returns a pointer, the caller should delete it.
-      static internal_string_type word_to_internal_string(word_type const&);
-
-      internal_char_type external_to_internal_char(external_char_type) const;
-      external_char_type internal_to_external_char(internal_char_type) const;
-      void external_to_internal_string(external_string_type& w) const;
-      void internal_to_external_string(internal_string_type& w) const;
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - methods for rules - private
-      //////////////////////////////////////////////////////////////////////////
-
-      Rule* new_rule() const;
-      Rule* new_rule(internal_string_type* lhs,
-                     internal_string_type* rhs) const;
-      Rule* new_rule(Rule const* rule) const;
-      Rule* new_rule(internal_string_type::const_iterator begin_lhs,
-                     internal_string_type::const_iterator end_lhs,
-                     internal_string_type::const_iterator begin_rhs,
-                     internal_string_type::const_iterator end_rhs) const;
-
-      void add_rule(Rule* rule);
-
-      std::list<Rule const*>::iterator
-      remove_rule(std::list<Rule const*>::iterator it);
-
-     public:
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - methods for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
@@ -280,16 +189,15 @@ namespace libsemigroups {
       //! reduction ordering of the rewriting system. The rules are sorted
       //! according to the reduction ordering used by the rewriting system, on
       //! the first entry.
-      std::vector<std::pair<external_string_type, external_string_type>>
-      rules() const;
+      std::vector<std::pair<std::string, std::string>> rules() const;
 
       //! Rewrites the word \p w in-place according to the current rules in the
       //! rewriting system, and returns it.
-      external_string_type* rewrite(external_string_type* w) const;
+      std::string* rewrite(std::string*) const;
 
       //! Rewrites a copy of the word \p w rewritten according to the current
       //! rules in the rewriting system.
-      external_string_type rewrite(external_string_type w) const;
+      std::string rewrite(std::string) const;
 
       //! This method allows a KnuthBendix object to be left shifted into a
       //! std::ostream, such as std::cout. The currently active rules of the
@@ -328,199 +236,13 @@ namespace libsemigroups {
 
      private:
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - methods and data - private
+      // KnuthBendix - data - private
       //////////////////////////////////////////////////////////////////////////
-
-      // Rewrites the word pointed to by \p w in-place according to the current
-      // rules in the rewriting system.
-      void internal_rewrite(internal_string_type* w) const;
-      void clear_stack();
-      void push_stack(Rule* rule);
-      void overlap(Rule const* u, Rule const* v);
-
-      std::list<Rule const*>           _active_rules;
-      size_t                           _check_confluence_interval;
-      mutable std::atomic<bool>        _confluent;
-      mutable std::atomic<bool>        _confluence_known;
-      mutable std::list<Rule*>         _inactive_rules;
-      bool                             _internal_is_same_as_external;
-      size_t                           _max_overlap;
-      size_t                           _max_rules;
-      size_t                           _min_length_lhs_rule;
-      std::list<Rule const*>::iterator _next_rule_it1;
-      std::list<Rule const*>::iterator _next_rule_it2;
-      ReductionOrdering const*         _order;
-      OverlapMeasure*                  _overlap_measure;
-      overlap_policy                   _overlap_policy;
-      std::set<RuleLookup>             _set_rules;
-      std::stack<Rule*>                _stack;
-      internal_string_type*            _tmp_word1;
-      internal_string_type*            _tmp_word2;
-      mutable size_t                   _total_rules;
-
-#ifdef LIBSEMIGROUPS_STATS
-      size_t                                   max_active_word_length();
-      size_t                                   _max_stack_depth;
-      size_t                                   _max_word_length;
-      size_t                                   _max_active_word_length;
-      size_t                                   _max_active_rules;
-      std::unordered_set<internal_string_type> _unique_lhs_rules;
-#endif
-    };
-
-    // Class for rules in rewriting systems.
-    struct KnuthBendix::Rule {
-      friend std::ostream& operator<<(std::ostream& os, Rule const& rule) {
-        os << rule.internal_to_external_string(rule.lhs()) << " -> "
-           << rule.internal_to_external_string(rule.rhs());
-        return os;
-      }
-
-      external_string_type
-      internal_to_external_string(internal_string_type const* word) const {
-        external_string_type str(*word);
-        _kb->internal_to_external_string(str);
-        return str;
-      }
-
-      // Returns the left hand side of the rule, which is guaranteed to be
-      // greater than its right hand side according to the reduction ordering of
-      // the KnuthBendix used to construct this.
-      internal_string_type const* lhs() const {
-        return const_cast<internal_string_type const*>(_lhs);
-      }
-
-      // Returns the right hand side of the rule, which is guaranteed to be
-      // less than its left hand side according to the reduction ordering of
-      // the KnuthBendix used to construct this.
-      internal_string_type const* rhs() const {
-        return const_cast<internal_string_type const*>(_rhs);
-      }
-
-      // The Rule class does not support an assignment contructor to avoid
-      // accidental copying.
-      Rule& operator=(Rule const& copy) = delete;
-
-      // The Rule class does not support a copy contructor to avoid
-      // accidental copying.
-      Rule(Rule const& copy) = delete;
-
-      // Construct from KnuthBendix with new but empty internal_string_type's
-      explicit Rule(KnuthBendix const* kb, int64_t id)
-          : _kb(kb),
-            _lhs(new internal_string_type()),
-            _rhs(new internal_string_type()),
-            _id(-1 * id) {
-        LIBSEMIGROUPS_ASSERT(_id < 0);
-      }
-
-      // Destructor, deletes pointers used to create the rule.
-      ~Rule() {
-        delete _lhs;
-        delete _rhs;
-      }
-
-      void rewrite() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        _kb->internal_rewrite(_lhs);
-        _kb->internal_rewrite(_rhs);
-        reorder();
-      }
-
-      void rewrite_rhs() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        _kb->internal_rewrite(_rhs);
-      }
-
-      void clear() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        _lhs->clear();
-        _rhs->clear();
-      }
-
-      inline bool active() const {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        return (_id > 0);
-      }
-
-      void deactivate() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        if (active()) {
-          _id *= -1;
-        }
-      }
-
-      void activate() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        if (!active()) {
-          _id *= -1;
-        }
-      }
-
-      void set_id(int64_t id) {
-        LIBSEMIGROUPS_ASSERT(id > 0);
-        LIBSEMIGROUPS_ASSERT(!active());
-        _id = -1 * id;
-      }
-
-      int64_t id() const {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        return _id;
-      }
-
-      void reorder() {
-        if ((*(_kb->_order))(_rhs, _lhs)) {
-          std::swap(_lhs, _rhs);
-        }
-      }
-
-      KnuthBendix const*    _kb;
-      internal_string_type* _lhs;
-      internal_string_type* _rhs;
-      int64_t               _id;
-    };
-
-    // Simple class wrapping a two iterators to an internal_string_type and a
-    // Rule const*
-    class KnuthBendix::RuleLookup {
-     public:
-      RuleLookup() : _rule(nullptr) {}
-
-      explicit RuleLookup(KnuthBendix::Rule* rule)
-          : _first(rule->lhs()->cbegin()),
-            _last(rule->lhs()->cend()),
-            _rule(rule) {}
-
-      RuleLookup& operator()(internal_string_type::iterator const& first,
-                             internal_string_type::iterator const& last) {
-        _first = first;
-        _last  = last;
-        return *this;
-      }
-
-      Rule const* rule() const {
-        return _rule;
-      }
-
-      // This implements reverse lex comparison of this and that, which
-      // satisfies the requirement of std::set that equivalent items be
-      // incomparable, so, for example bcbc and abcbc are considered equivalent,
-      // but abcba and bcbc are not.
-      bool operator<(RuleLookup const& that) const {
-        auto it_this = _last - 1;
-        auto it_that = that._last - 1;
-        while (it_this > _first && it_that > that._first
-               && *it_this == *it_that) {
-          --it_that;
-          --it_this;
-        }
-        return *it_this < *it_that;
-      }
-
-     private:
-      internal_string_type::const_iterator _first;
-      internal_string_type::const_iterator _last;
-      Rule const*                          _rule;
+      class KnuthBendixImpl;  // forward declaration
+      struct Rule;            // forward declaration
+      class RuleLookup;       // forward declaration
+      struct OverlapMeasure;  // forward declaration
+      KnuthBendixImpl* _impl;
     };
   }  // namespace fpsemigroup
 
