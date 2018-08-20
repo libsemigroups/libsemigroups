@@ -59,7 +59,7 @@ namespace libsemigroups {
       // P - typedefs - protected
       ////////////////////////////////////////////////////////////////////////
 
-      using const_reference    = typename froidure_pin_type::const_reference;
+      using const_reference       = typename froidure_pin_type::const_reference;
       using internal_element_type = typename TTraits::internal_element_type;
       using internal_const_element_type =
           typename TTraits::internal_const_element_type;
@@ -217,8 +217,10 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                         "the parent semigroup is defined");
         }
-        auto x = static_cast<froidure_pin_type*>(get_parent())->word_to_element(l);
-        auto y = static_cast<froidure_pin_type*>(get_parent())->word_to_element(r);
+        auto x
+            = static_cast<froidure_pin_type*>(get_parent())->word_to_element(l);
+        auto y
+            = static_cast<froidure_pin_type*>(get_parent())->word_to_element(r);
         internal_add_pair(this->to_internal(x), this->to_internal(y));
         this->external_free(x);
         this->external_free(y);
@@ -256,7 +258,8 @@ namespace libsemigroups {
         if (!finished()) {
           return UNDEFINED;
         }
-        auto x = static_cast<froidure_pin_type*>(get_parent())->word_to_element(w);
+        auto x
+            = static_cast<froidure_pin_type*>(get_parent())->word_to_element(w);
         size_t ind_x = get_index(this->to_internal_const(x));
         this->external_free(x);
         LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
@@ -438,7 +441,6 @@ namespace libsemigroups {
                          hash<KBE>,
                          equal_to<KBE>,
                          TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
-
       ////////////////////////////////////////////////////////////////////////
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////
@@ -464,7 +466,7 @@ namespace libsemigroups {
 
       // Override the method for the class P to avoid having to know the parent
       // semigroup (found as part of KBP::run) to add a pair.
-      void add_pair(word_type const&,  word_type const&) override;
+      void add_pair(word_type const&, word_type const&) override;
 
      protected:
       ////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,7 @@
 #include "knuth-bendix.hpp"
 
 namespace libsemigroups {
+
   //! Subclass of Element that wraps an libsemigroups::internal_string_type.
   //!
   //! This class is used to wrap libsemigroups::internal_string_type into an
@@ -46,7 +47,7 @@ namespace libsemigroups {
     //!
     //! Constructs a KBE which does not represent a word or have an
     //! associated rewriting system.
-    KBE();
+    KBE() = default;
 
     //! Constructor from a rewriting system and a word.
     //!
@@ -89,28 +90,27 @@ namespace libsemigroups {
     KBE(KnuthBendix&, word_type const&);
 
     //! A copy constructor.
-    KBE(KBE const&);
+    KBE(KBE const&) = default;
 
     //! Returns \c true if \c this equals \p that.
     //!
     //! This method checks the mathematical equality of two KBE, in other
     //! words whether or not they represent that the same reduced word of the
     //! rewriting system they are defined over.
-    bool operator==(Element const& that) const override;
+    bool operator==(Element const&) const override;
 
     //! Returns \c true if \c this is less than that and \c false if it is
     //! not.
     //!
     //! This defines a total order on KBEs that is the short-lex order on all
     //! words.
-    // TODO should use the reduction ordering of KnuthBendix.
-    bool operator<(Element const& that) const override;
+    bool operator<(Element const&) const override;
 
     //! Copy \p x into \c this.
     //!
     //! This method copies the KBE pointed to by \p x into \c this by
     //! changing \c this in-place.
-    void swap(Element& x) override;
+    void swap(Element&) override;
 
     //! Returns the approximate time complexity of multiplying two
     //! KBE's.
@@ -166,7 +166,7 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void redefine(Element const& x, Element const& y, size_t tid = 0) override;
+    void redefine(Element const&, Element const&, size_t = 0) override;
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
     Element* empty_key() const override;
@@ -185,7 +185,6 @@ namespace libsemigroups {
       return new KBE(std::move(x->identity()));
     }
   };
-
 }  // namespace libsemigroups
 
 namespace std {

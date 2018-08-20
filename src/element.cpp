@@ -126,58 +126,58 @@ namespace libsemigroups {
   // Bipartitions
   ////////////////////////////////////////////////////////////////////////
 
-    Bipartition::Bipartition()
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {}
+  Bipartition::Bipartition()
+      : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(),
+        _nr_blocks(UNDEFINED),
+        _nr_left_blocks(UNDEFINED),
+        _trans_blocks_lookup(),
+        _rank(UNDEFINED) {}
 
-    Bipartition::Bipartition(size_t degree) : Bipartition() {
-      this->_vector.resize(2 * degree);
-    }
+  Bipartition::Bipartition(size_t degree) : Bipartition() {
+    this->_vector.resize(2 * degree);
+  }
 
-    Bipartition::Bipartition(std::vector<uint32_t> const& blocks)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(blocks),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {
-      validate();
-    }
+  Bipartition::Bipartition(std::vector<uint32_t> const& blocks)
+      : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(blocks),
+        _nr_blocks(UNDEFINED),
+        _nr_left_blocks(UNDEFINED),
+        _trans_blocks_lookup(),
+        _rank(UNDEFINED) {
+    validate();
+  }
 
-    Bipartition::Bipartition(std::vector<uint32_t>&& blocks)
-        : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
-              std::move(blocks)),
-          _nr_blocks(UNDEFINED),
-          _nr_left_blocks(UNDEFINED),
-          _trans_blocks_lookup(),
-          _rank(UNDEFINED) {
-      validate();
-    }
+  Bipartition::Bipartition(std::vector<uint32_t>&& blocks)
+      : ElementWithVectorDataDefaultHash<uint32_t, Bipartition>(
+            std::move(blocks)),
+        _nr_blocks(UNDEFINED),
+        _nr_left_blocks(UNDEFINED),
+        _trans_blocks_lookup(),
+        _rank(UNDEFINED) {
+    validate();
+  }
 
-    Bipartition::Bipartition(std::initializer_list<uint32_t> blocks)
-        : Bipartition(std::vector<uint32_t>(blocks)) {}
+  Bipartition::Bipartition(std::initializer_list<uint32_t> blocks)
+      : Bipartition(std::vector<uint32_t>(blocks)) {}
 
-    Bipartition::Bipartition(
-        std::initializer_list<std::vector<int32_t>> const& blocks)
-        : Bipartition(blocks_to_list(blocks)) {}
+  Bipartition::Bipartition(
+      std::initializer_list<std::vector<int32_t>> const& blocks)
+      : Bipartition(blocks_to_list(blocks)) {}
 
-    void Bipartition::set_nr_blocks(size_t nr_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
-      _nr_blocks = nr_blocks;
-    }
+  void Bipartition::set_nr_blocks(size_t nr_blocks) {
+    LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
+    _nr_blocks = nr_blocks;
+  }
 
-    void Bipartition::set_nr_left_blocks(size_t nr_left_blocks) {
-      LIBSEMIGROUPS_ASSERT(_nr_left_blocks == UNDEFINED
-                           || _nr_left_blocks == nr_left_blocks);
-      _nr_left_blocks = nr_left_blocks;
-    }
+  void Bipartition::set_nr_left_blocks(size_t nr_left_blocks) {
+    LIBSEMIGROUPS_ASSERT(_nr_left_blocks == UNDEFINED
+                         || _nr_left_blocks == nr_left_blocks);
+    _nr_left_blocks = nr_left_blocks;
+  }
 
-    void Bipartition::set_rank(size_t rank) {
-      LIBSEMIGROUPS_ASSERT(_rank == UNDEFINED || _rank == rank);
-      _rank = rank;
-    }
+  void Bipartition::set_rank(size_t rank) {
+    LIBSEMIGROUPS_ASSERT(_rank == UNDEFINED || _rank == rank);
+    _rank = rank;
+  }
 
   std::vector<std::vector<uint32_t>>
       Bipartition::_fuse(std::thread::hardware_concurrency());
@@ -194,8 +194,7 @@ namespace libsemigroups {
       return;
 #endif
     } else if (n % 2 != 0) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "expected argument of even length");
+      throw LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
     size_t next = 0;
     for (size_t i = 0; i < n; ++i) {
@@ -454,15 +453,13 @@ namespace libsemigroups {
         if (x < 0) {
           if (out[static_cast<uint32_t>(max - x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x)
-                                          + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x) + " twice");
           }
           out[static_cast<uint32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<uint32_t>(x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x)
-                                          + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x) + " twice");
           }
 
           out[static_cast<uint32_t>(x - 1)] = i;
@@ -529,7 +526,7 @@ namespace libsemigroups {
   std::vector<std::vector<bool>>
       PBR::_x_seen(std::thread::hardware_concurrency());
   std::vector<std::vector<bool>>
-                            PBR::_y_seen(std::thread::hardware_concurrency());
+      PBR::_y_seen(std::thread::hardware_concurrency());
 
   std::vector<RecVec<bool>> PBR::_out(std::thread::hardware_concurrency());
   std::vector<RecVec<bool>> PBR::_tmp(std::thread::hardware_concurrency());
@@ -546,8 +543,7 @@ namespace libsemigroups {
     validate();
   }
 
-  std::ostringstream& operator<<(std::ostringstream& os,
-                                        PBR const&          pbr) {
+  std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
     os << "{";
     for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
       os << "{";
@@ -584,9 +580,8 @@ namespace libsemigroups {
       for (auto const& v : this->_vector.at(u)) {
         if (v >= n) {
           throw LIBSEMIGROUPS_EXCEPTION(
-              "entry out of bounds, vertex " + to_string(u)
-              + " is adjacent to " + to_string(v) + ", should be less than "
-              + to_string(n));
+              "entry out of bounds, vertex " + to_string(u) + " is adjacent to "
+              + to_string(v) + ", should be less than " + to_string(n));
         }
       }
     }

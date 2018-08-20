@@ -41,7 +41,7 @@
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "kb-order.hpp"
+#include "reduct.hpp"
 #include "types.hpp"
 
 // TODO: - move implementation to .cpp file

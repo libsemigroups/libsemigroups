@@ -184,7 +184,7 @@ namespace libsemigroups {
     //! Note that if different threads call this method on a derived class of
     //! Element where static temporary storage is used in the redefine method
     //! with the same value of \p thread_id, then bad things may happen.
-    virtual void redefine(Element const&, Element const&,  size_t);
+    virtual void redefine(Element const&, Element const&, size_t);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -1079,8 +1079,7 @@ namespace libsemigroups {
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this method with the same value of \p thread_id then bad
     //! things will happen.
-    void
-    redefine(Element const&, Element const&, size_t) override;
+    void redefine(Element const&, Element const&, size_t) override;
 
     //! Returns the number of transverse blocks.
     //!
@@ -1473,8 +1472,8 @@ namespace libsemigroups {
     //!
     //! The parameter \p matrix is converted into its normal form when
     //! when the object is constructed.
-    ProjectiveMaxPlusMatrix(std::vector<int64_t> const& ,
-                            Semiring<int64_t> const*    );
+    ProjectiveMaxPlusMatrix(std::vector<int64_t> const&,
+                            Semiring<int64_t> const*);
 
     //! A constructor.
     //!
@@ -1484,7 +1483,7 @@ namespace libsemigroups {
     //! The copy of the parameter \p matrix in the object constructed is
     //! converted into its normal form when the object is constructed.
     ProjectiveMaxPlusMatrix(std::vector<std::vector<int64_t>> const&,
-                            Semiring<int64_t> const*                 );
+                            Semiring<int64_t> const*);
     //! A copy constructor.
     ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const&) = default;
 

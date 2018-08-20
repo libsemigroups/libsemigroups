@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains function templates for adapting a class for use with
-// libsemigroups.
+//! \file
+//! This file contains function templates for adapting a user-defined type so
+//! that it can be used with libsemigroups.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
