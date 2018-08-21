@@ -517,6 +517,8 @@ namespace libsemigroups {
 
     std::vector<relation_type>& ToddCoxeter::init() {
       if (!_init_done) {
+        // Add the relations/Cayley graph from parent() if any.
+        use_relations_or_cayley_graph();
         init_relations();
         _init_done = true;
         // The following is here to avoid doing it repeatedly in repeated calls
@@ -526,6 +528,9 @@ namespace libsemigroups {
           trace(_id_coset, rel);  // Allow new cosets
         }
       }
+      // This is required in case we called add_pair since the last time init()
+      // was run.
+      init_relations();
       if (_relations.empty() && !_prefilled) {
         LIBSEMIGROUPS_ASSERT(type() == congruence_type::LEFT
                              || type() == congruence_type::RIGHT
@@ -580,14 +585,7 @@ namespace libsemigroups {
       _defined = _active;
     }
 
-    // Private: do not call this directly, use init() instead!
     void ToddCoxeter::init_relations() {
-      // This should not have been run before
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-
-      // Add the relations/Cayley graph from parent() if any.
-      use_relations_or_cayley_graph();
-
       switch (type()) {
         case congruence_type::RIGHT:  // do nothing
           break;

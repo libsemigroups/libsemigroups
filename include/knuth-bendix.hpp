@@ -22,30 +22,15 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
 
-// TODO reduce headers
-
-#include <algorithm>
-#include <atomic>
-#include <list>
-#include <ostream>
-#include <set>
-#include <stack>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-
-#include "internal/libsemigroups-config.hpp"
-#include "internal/libsemigroups-debug.hpp"
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "reduct.hpp"
 #include "types.hpp"
 
 namespace libsemigroups {
-  class KBE;
+  class KBE;                // Forward declaration
+  class ReductionOrdering;  // Forward declaration
   namespace congruence {
     class KnuthBendix;  // Forward declaration
   }
@@ -61,7 +46,6 @@ namespace libsemigroups {
       friend class ::libsemigroups::KBE;  // defined in kbe.hpp
 
      public:
-      // TODO typedef isomorphic_non_fp_semigroup_type
       //////////////////////////////////////////////////////////////////////////
       // Runner - overridden virtual methods - public
       //////////////////////////////////////////////////////////////////////////
@@ -238,10 +222,16 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private
       //////////////////////////////////////////////////////////////////////////
+
+      struct Settings {
+        Settings();
+        size_t         _check_confluence_interval;
+        size_t         _max_overlap;
+        size_t         _max_rules;
+        overlap_policy _overlap_policy;
+      } _settings;
+
       class KnuthBendixImpl;  // forward declaration
-      struct Rule;            // forward declaration
-      class RuleLookup;       // forward declaration
-      struct OverlapMeasure;  // forward declaration
       KnuthBendixImpl* _impl;
     };
   }  // namespace fpsemigroup

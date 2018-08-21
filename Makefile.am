@@ -67,6 +67,7 @@ pkginclude_HEADERS += include/internal/range.hpp
 pkginclude_HEADERS += include/internal/report.hpp
 pkginclude_HEADERS += include/internal/runner.hpp
 pkginclude_HEADERS += include/internal/stl.hpp
+pkginclude_HEADERS += include/internal/string.hpp
 pkginclude_HEADERS += include/internal/timer.hpp
 pkginclude_HEADERS += include/internal/uf.hpp
 
@@ -110,7 +111,10 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp ## TODO include in archive
 
-EXTRA_DIST = $(LINT_FORMAT_FILES_EXTRA)
+EXTRA_DIST =  src/knuth-bendix/knuth-bendix-impl.hpp 
+EXTRA_DIST += src/knuth-bendix/overlap.hpp 
+EXTRA_DIST += src/knuth-bendix/rule.hpp 
+EXTRA_DIST += $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION extern/HPCombi/VERSION
