@@ -16,6 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// It is intentional that there is no implementation file for the class in this
+// file.
+
 #ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_TIMER_HPP_
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_TIMER_HPP_
 

@@ -154,12 +154,12 @@ namespace libsemigroups {
       void new_coset(class_index_type const&, letter_type const&);
       void identify_cosets(class_index_type, class_index_type);
       inline void
-      trace(class_index_type const&, relation_type const&, bool add = true);
+      trace(class_index_type const&, relation_type const&, bool = true);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - data - private
       ////////////////////////////////////////////////////////////////////////
-      // TODO use Pimpl
+      // TODO(later): Pimpl
       size_t                               _active;  // Number of active cosets
       std::vector<signed_class_index_type> _bckwd;
       std::vector<class_index_type>        _class_index_to_letter;

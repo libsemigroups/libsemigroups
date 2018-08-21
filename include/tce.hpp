@@ -16,67 +16,49 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// Todd-Coxeter elements
+//
 
-// TODO 1. smart pointer to _tc?
-//      2. put the implementation into a cpp file
 #ifndef LIBSEMIGROUPS_INCLUDE_TCE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TCE_HPP_
 
 #include "adapters.hpp"
 #include "constants.hpp"
-#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
+  // Forward declarations
+  namespace congruence {
+    class ToddCoxeter;
+  }
+  namespace fpsemigroup {
+    template <class T, bool S> class WrappedCong;
+    using ToddCoxeter
+        = WrappedCong<congruence::ToddCoxeter, true>;
+  }
 
   class TCE {
-    using class_index_type = CongBase::class_index_type;
-
    public:
+    using class_index_type = size_t;
     TCE() = default;
-    TCE(congruence::ToddCoxeter* tc, class_index_type i)
-    noexcept : _tc(tc), _index(i) {}
+    TCE(congruence::ToddCoxeter*, class_index_type) noexcept;
+    TCE(congruence::ToddCoxeter&, class_index_type) noexcept;
 
-    TCE(congruence::ToddCoxeter& tc, class_index_type i)
-    noexcept : TCE(&tc, i) {}
-
-    bool operator==(TCE const& that) const noexcept {
-      LIBSEMIGROUPS_ASSERT(_tc == that._tc);
-      return _index == that._index;
-    }
-
-    bool operator<(TCE const& that) const noexcept {
-      LIBSEMIGROUPS_ASSERT(_tc == that._tc);
-      return _index < that._index;
-    }
+    bool operator==(TCE const&) const noexcept;
+    bool operator<(TCE const&) const noexcept;
 
     // Only works when that is a generator!!
-    inline TCE operator*(TCE const& that) const {
-      // class_index_to_letter checks that "that" is really a generator
-      return TCE(_tc,
-                 _tc->table(_index, _tc->class_index_to_letter(that._index)));
-    }
+    TCE operator*(TCE const&) const;
+    TCE one() const noexcept;
 
-    inline TCE one() const noexcept {
-      return TCE(_tc, 0);
-    }
-
-    friend std::ostringstream& operator<<(std::ostringstream& os,
-                                          TCE const&          x) {
-      os << "TCE(" << x._index << ")";
-      return os;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, TCE const& tc) {
-      os << to_string(tc);
-      return os;
-    }
-
+    friend std::ostringstream& operator<<(std::ostringstream&, TCE const&);
+    friend std::ostream&       operator<<(std::ostream&, TCE const&);
     friend struct ::std::hash<TCE>;
 
    private:
     congruence::ToddCoxeter* _tc;
-    class_index_type         _index;
+    // Note that the class_index_type below is the actual class_index_type used
+    // in the ToddCoxeter class and not that number minus 1, which is what
+    // "class_index" means in the context of CongBase objects.
+    class_index_type _index;
   };
 
   static_assert(std::is_trivial<TCE>::value, "TCE is not trivial!");

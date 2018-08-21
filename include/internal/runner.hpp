@@ -106,7 +106,7 @@ namespace libsemigroups {
     // Runner - non-pure virtual methods - protected
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO compile-time polymorphism?
+    // TODO(later) compile-time polymorphism?
     virtual bool finished_impl() const;
     virtual bool dead_impl() const;
 

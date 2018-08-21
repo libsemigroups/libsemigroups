@@ -30,7 +30,6 @@ namespace libsemigroups {
   //! The type SmallestInteger<N>::type contains the smallest (in terms of
   //! memory required) unsigned integer type which can represent the
   //! non-negative integer \c N.
-  // (i.e. >= or >)
   template <size_t N> struct SmallestInteger {
     //! The smallest (in terms of memory required) unsigned integer type which
     //! can represent \c N.

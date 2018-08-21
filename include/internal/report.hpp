@@ -37,6 +37,7 @@
 
 #define REPORT(...) REPORTER(this, __VA_ARGS__)
 
+// FIXME(now) delete it or use it!
 /*#define REPORT_FROM_FUNC(message)                                  \
   if (REPORTER.get_report()) {                                     \
     size_t __tid = REPORTER.thread_id(std::this_thread::get_id()); \

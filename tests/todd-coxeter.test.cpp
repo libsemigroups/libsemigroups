@@ -28,6 +28,7 @@
 #include "element.hpp"
 #include "froidure-pin.hpp"
 #include "tce.hpp"
+#include "todd-coxeter.hpp"
 
 namespace libsemigroups {
 
