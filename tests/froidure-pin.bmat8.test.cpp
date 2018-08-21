@@ -40,7 +40,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(S.current_max_word_length() == 1);
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(!S.is_begun());
     REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == UNDEFINED);
     REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
@@ -70,7 +70,7 @@ namespace libsemigroups {
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
     REQUIRE(S.generator(3)
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.is_begun());
     REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == 7);
     REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
@@ -136,25 +136,9 @@ namespace libsemigroups {
     REQUIRE(S.sorted_at(18184) == S.generator(0) * S.generator(3));
 
     REQUIRE(S.right(0, 3) == 7);
-    RecVec<size_t>* right = S.right_cayley_graph_copy();
-
-    for (size_t i = 0; i < 63904; ++i) {
-      for (size_t j = 0; j < 4; ++j) {
-        REQUIRE(right->get(i, j) == S.right(i, j));
-      }
-    }
-    delete right;
     REQUIRE(S.right(0, 3) == 7);
 
     REQUIRE(S.left(0, 3) == 7);
-    RecVec<size_t>* left = S.left_cayley_graph_copy();
-
-    for (size_t i = 0; i < 63904; ++i) {
-      for (size_t j = 0; j < 4; ++j) {
-        REQUIRE(left->get(i, j) == S.left(i, j));
-      }
-    }
-    delete left;
     REQUIRE(S.left(0, 3) == 7);
 
     word_type w;
@@ -222,7 +206,7 @@ namespace libsemigroups {
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
     REQUIRE(T.generator(3)
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
-    REQUIRE(T.is_done());
+    REQUIRE(T.finished());
     REQUIRE(T.is_begun());
   }
 #endif

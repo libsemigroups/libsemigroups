@@ -16,11 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a method for enumerating a congruence by attempting to
-// find all pairs of related elements using brute force. This does not work
-// very well in most cases, due to the high complexity of the approach. Note
-// that currently it is only used with FroidurePin<KBE>, and so doesn't
-// strictly have to be a class template.
+// This file contains implementations of the methods for congruence::P.
 
 // TODO(later):
 //   1. the type of the congruence defined by class P could be a template
@@ -28,10 +24,10 @@
 //   2. use shared_ptr rather than raw pointer to fpsemigroup::KnuthBendix in
 //      KBP class.
 
-#define TEMPLATE_PARAMS                                                 \
+#define _T                                                               \
   typename TElementType, typename TElementHash, typename TElementEqual, \
       class TTraits  // NOLINT()
-#define TYPES TElementType, TElementHash, TElementEqual, TTraits
+#define _S TElementType, TElementHash, TElementEqual, TTraits
 
 namespace libsemigroups {
   namespace congruence {
@@ -41,8 +37,8 @@ namespace libsemigroups {
     // P - constructor - protected
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    P<TYPES>::P(congruence_type type)
+    template <_T>
+    P<_S>::P(congruence_type type)
         : CongBase(type),
           _class_lookup(),
           _found_pairs(),
@@ -62,19 +58,18 @@ namespace libsemigroups {
     // P - constructor + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    P<TYPES>::P(congruence_type type, FroidurePinBase* S) : P(type) {
+    template <_T>
+    P<_S>::P(congruence_type type, FroidurePinBase* S) : P(type) {
       LIBSEMIGROUPS_ASSERT(S != nullptr);
       set_nr_generators(S->nr_generators());
       set_parent(S);
     }
 
-    template <TEMPLATE_PARAMS>
-    P<TYPES>::P(congruence_type type, FroidurePinBase& S)
-        : P(type, &S) {}
+    template <_T>
+    P<_S>::P(congruence_type type, FroidurePinBase& S) : P(type, &S) {}
 
-    template <TEMPLATE_PARAMS>
-    P<TYPES>::~P() {
+    template <_T>
+    P<_S>::~P() {
       delete_tmp_storage();
       this->internal_free(_tmp1);
       this->internal_free(_tmp2);
@@ -87,8 +82,8 @@ namespace libsemigroups {
     // Runner - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::run() {
+    template <_T>
+    void P<_S>::run() {
       if (finished() || dead()) {
         return;
       }
@@ -179,8 +174,8 @@ namespace libsemigroups {
     // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::add_pair(word_type const& l, word_type const& r) {
+    template <_T>
+    void P<_S>::add_pair(word_type const& l, word_type const& r) {
       if (!has_parent()) {
         throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                       "the parent semigroup is defined");
@@ -195,27 +190,26 @@ namespace libsemigroups {
       set_finished(false);
     }
 
-    template <TEMPLATE_PARAMS>
-    word_type P<TYPES>::class_index_to_word(class_index_type) {
+    template <_T>
+    word_type P<_S>::class_index_to_word(class_index_type) {
       // FIXME(now) actually implement this
       throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
-    template <TEMPLATE_PARAMS>
-    FroidurePinBase* P<TYPES>::quotient_semigroup() {
+    template <_T>
+    FroidurePinBase* P<_S>::quotient_semigroup() {
       // FIXME(now) actually implement this
       throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
-    template <TEMPLATE_PARAMS>
-    size_t P<TYPES>::nr_classes() {
+    template <_T>
+    size_t P<_S>::nr_classes() {
       run();
       return get_parent()->size() - _class_lookup.size() + _next_class;
     }
 
-    template <TEMPLATE_PARAMS>
-    class_index_type
-    P<TYPES>::word_to_class_index(word_type const& w) {
+    template <_T>
+    class_index_type P<_S>::word_to_class_index(word_type const& w) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       return const_word_to_class_index(w);
@@ -225,9 +219,8 @@ namespace libsemigroups {
     // CongBase - overridden non-pure virtual methods - protected
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    class_index_type
-    P<TYPES>::const_word_to_class_index(word_type const& w) const {
+    template <_T>
+    class_index_type P<_S>::const_word_to_class_index(word_type const& w) const {
       if (!finished()) {
         return UNDEFINED;
       }
@@ -240,8 +233,8 @@ namespace libsemigroups {
       return _class_lookup[ind_x];
     }
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::init_non_trivial_classes() {
+    template <_T>
+    void P<_S>::init_non_trivial_classes() {
       run();
       LIBSEMIGROUPS_ASSERT(_reverse_map.size() >= _nr_non_trivial_elemnts);
       LIBSEMIGROUPS_ASSERT(_class_lookup.size() >= _nr_non_trivial_elemnts);
@@ -261,9 +254,9 @@ namespace libsemigroups {
     // P - methods - protected
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::internal_add_pair(internal_const_element_type x,
-                                               internal_const_element_type y) {
+    template <_T>
+    void P<_S>::internal_add_pair(internal_const_element_type x,
+                                 internal_const_element_type y) {
       if (!internal_equal_to()(x, y)) {
         internal_element_type xx, yy;
         bool                  xx_new = false, yy_new = false;
@@ -312,8 +305,8 @@ namespace libsemigroups {
     // P - methods - private
     ////////////////////////////////////////////////////////////////////////
 
-    template <TEMPLATE_PARAMS>
-    size_t P<TYPES>::add_index(internal_element_type x) const {
+    template <_T>
+    size_t P<_S>::add_index(internal_element_type x) const {
       LIBSEMIGROUPS_ASSERT(_reverse_map.size() == _map_next);
       LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
       _map.emplace(x, _map_next);
@@ -325,8 +318,8 @@ namespace libsemigroups {
       return _map_next++;
     }
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::delete_tmp_storage() {
+    template <_T>
+    void P<_S>::delete_tmp_storage() {
       std::unordered_set<
           std::pair<internal_element_type, internal_element_type>,
           PHash,
@@ -336,8 +329,8 @@ namespace libsemigroups {
           .swap(_pairs_to_mult);
     }
 
-    template <TEMPLATE_PARAMS>
-    size_t P<TYPES>::get_index(internal_const_element_type x) const {
+    template <_T>
+    size_t P<_S>::get_index(internal_const_element_type x) const {
       auto it = _map.find(x);
       if (it == _map.end()) {
         return add_index(this->internal_copy(x));
@@ -345,8 +338,8 @@ namespace libsemigroups {
       return it->second;
     }
 
-    template <TEMPLATE_PARAMS>
-    void P<TYPES>::init() {
+    template <_T>
+    void P<_S>::init() {
       if (!_init_done) {
         LIBSEMIGROUPS_ASSERT(has_parent());
         LIBSEMIGROUPS_ASSERT(get_parent()->nr_generators() > 0);
@@ -356,6 +349,8 @@ namespace libsemigroups {
         _init_done = true;
       }
     }
-
   }  // namespace congruence
 }  // namespace libsemigroups
+
+#undef S
+#undef T

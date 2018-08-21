@@ -672,7 +672,7 @@ namespace libsemigroups {
 
     S.set_batch_size(128);
 
-    for (size_t i = 1; !S.is_done(); i++) {
+    for (size_t i = 1; !S.finished(); i++) {
       S.enumerate(i * 128);
     }
 
@@ -1065,7 +1065,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "027",
-                          "is_done, is_begun",
+                          "finished, is_begun",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
@@ -1077,16 +1077,16 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     S.set_batch_size(1024);
     S.enumerate(10);
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     S.enumerate(8000);
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     delete_gens(gens);
   }
 
@@ -1175,7 +1175,7 @@ namespace libsemigroups {
     REQUIRE(*S.sorted_at(1606) == *gens[4]);
     REQUIRE(S.sorted_at(1606) == S.at(4));
 
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
 
     REQUIRE(S.sorted_position(S.at(1024)) == 6810);
     REQUIRE(S.position_to_sorted_position(1024) == 6810);
@@ -1427,7 +1427,7 @@ namespace libsemigroups {
 
     // Calling cbegin/cend_sorted fully enumerates the semigroup
     { auto it = S.cbegin_sorted(); }
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
 
     size_t pos = 0;
     for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); it++) {
@@ -1535,7 +1535,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 5);
     REQUIRE(S.current_nr_rules() == 0);
     REQUIRE(S.current_max_word_length() == 1);
@@ -1545,7 +1545,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!T.is_begun());
-    REQUIRE(!T.is_done());
+    REQUIRE(!T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 5);
@@ -1557,7 +1557,7 @@ namespace libsemigroups {
     REQUIRE(T.nr_idempotents() == 537);
     REQUIRE(T.nr_rules() == 2459);
     REQUIRE(T.is_begun());
-    REQUIRE(T.is_done());
+    REQUIRE(T.finished());
     delete_gens(gens);
   }
 
@@ -1572,7 +1572,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 2);
@@ -1589,7 +1589,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 7719);
@@ -1598,7 +1598,7 @@ namespace libsemigroups {
     REQUIRE(T->current_position(S.generator(1)) == 1);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
 
@@ -1608,7 +1608,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(U->is_begun());
-    REQUIRE(U->is_done());
+    REQUIRE(U->finished());
     REQUIRE(U->nr_generators() == 6);
     REQUIRE(U->degree() == 7);
     REQUIRE(U->current_size() == 16807);
@@ -1623,7 +1623,7 @@ namespace libsemigroups {
 
     REQUIRE(V != U);
     REQUIRE(V->is_begun());
-    REQUIRE(V->is_done());
+    REQUIRE(V->finished());
     REQUIRE(V->nr_generators() == 6);
     REQUIRE(V->degree() == 7);
     REQUIRE(V->current_size() == 16807);
@@ -1648,7 +1648,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 2);
@@ -1665,7 +1665,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(!T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 5);
@@ -1674,7 +1674,7 @@ namespace libsemigroups {
     REQUIRE(T->current_position(S.generator(1)) == 1);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
 
@@ -1684,7 +1684,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(U->is_begun());
-    REQUIRE(U->is_done());
+    REQUIRE(U->finished());
     REQUIRE(U->nr_generators() == 6);
     REQUIRE(U->degree() == 7);
     REQUIRE(U->current_size() == 16807);
@@ -1699,7 +1699,7 @@ namespace libsemigroups {
 
     REQUIRE(V != U);
     REQUIRE(V->is_begun());
-    REQUIRE(V->is_done());
+    REQUIRE(V->finished());
     REQUIRE(V->nr_generators() == 6);
     REQUIRE(V->degree() == 7);
     REQUIRE(V->current_size() == 16807);
@@ -1729,7 +1729,7 @@ namespace libsemigroups {
     S.enumerate(1001);
 
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 1006);
     REQUIRE(S.current_nr_rules() == 70);
     REQUIRE(S.current_max_word_length() == 7);
@@ -1739,7 +1739,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(T.is_begun());
-    REQUIRE(!T.is_done());
+    REQUIRE(!T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 1006);
@@ -1758,7 +1758,7 @@ namespace libsemigroups {
     REQUIRE(T.nr_idempotents() == 537);
     REQUIRE(T.nr_rules() == 2459);
     REQUIRE(T.is_begun());
-    REQUIRE(T.is_done());
+    REQUIRE(T.finished());
     delete_gens(gens);
   }
 
@@ -1776,7 +1776,7 @@ namespace libsemigroups {
     S.enumerate(60);
 
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 63);
@@ -1794,7 +1794,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 7719);
@@ -1802,7 +1802,7 @@ namespace libsemigroups {
     REQUIRE(T->current_max_word_length() == 14);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
     delete T;
@@ -1823,7 +1823,7 @@ namespace libsemigroups {
     S.enumerate(60);
 
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 63);
@@ -1840,7 +1840,7 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
 
     REQUIRE(T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 818);
@@ -1848,7 +1848,7 @@ namespace libsemigroups {
     REQUIRE(T->current_max_word_length() == 7);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
     delete T;
@@ -1872,7 +1872,7 @@ namespace libsemigroups {
     S.enumerate(8000);
 
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.size() == 7776);
     REQUIRE(S.nr_idempotents() == 537);
     REQUIRE(S.nr_rules() == 2459);
@@ -1881,7 +1881,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(T.is_begun());
-    REQUIRE(T.is_done());
+    REQUIRE(T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.size() == 7776);
@@ -1903,7 +1903,7 @@ namespace libsemigroups {
     S.enumerate(121);
 
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
@@ -1920,7 +1920,7 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
 
     REQUIRE(T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 7719);
@@ -1928,7 +1928,7 @@ namespace libsemigroups {
     REQUIRE(T->current_max_word_length() == 14);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
     delete T;
@@ -1949,7 +1949,7 @@ namespace libsemigroups {
     S.enumerate(121);
 
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
@@ -1966,7 +1966,7 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
 
     REQUIRE(T->is_begun());
-    REQUIRE(!T->is_done());
+    REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
     REQUIRE(T->current_size() == 6842);
@@ -1974,7 +1974,7 @@ namespace libsemigroups {
     REQUIRE(T->current_max_word_length() == 12);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     REQUIRE(T->nr_rules() == 2459);
     delete T;
@@ -2081,7 +2081,7 @@ namespace libsemigroups {
 
     S.enumerate(LIMIT_MAX);
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
@@ -2100,7 +2100,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     delete T;
     delete_gens(gens);
@@ -2122,7 +2122,7 @@ namespace libsemigroups {
 
     S.enumerate(LIMIT_MAX);
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
@@ -2141,7 +2141,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(T->size() == 7776);
-    REQUIRE(T->is_done());
+    REQUIRE(T->finished());
     REQUIRE(T->nr_idempotents() == 537);
     delete T;
     delete_gens(gens);
@@ -2321,7 +2321,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
@@ -2384,7 +2384,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     REQUIRE(!S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
@@ -2449,7 +2449,7 @@ namespace libsemigroups {
     S.enumerate(10);
 
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
@@ -2513,7 +2513,7 @@ namespace libsemigroups {
     S.enumerate(10);
 
     REQUIRE(S.is_begun());
-    REQUIRE(!S.is_done());
+    REQUIRE(!S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
@@ -2575,7 +2575,7 @@ namespace libsemigroups {
     S.enumerate(8000);
 
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
@@ -2640,7 +2640,7 @@ namespace libsemigroups {
     S.enumerate(8000);
 
     REQUIRE(S.is_begun());
-    REQUIRE(S.is_done());
+    REQUIRE(S.finished());
 
     std::vector<Element*> coll
         = {new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),

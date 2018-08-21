@@ -397,8 +397,8 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled || (has_quotient() && get_quotient()->is_done())
-             || (has_parent() && get_parent()->is_done());
+      return _prefilled || (has_quotient() && get_quotient()->finished())
+             || (has_parent() && get_parent()->finished());
       // 1. _prefilled means that either we were created from a FroidurePinBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup

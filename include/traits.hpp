@@ -33,6 +33,8 @@ namespace libsemigroups {
     using const_element_type = TElementType const;
     using reference          = TElementType&;
     using const_reference    = TElementType const&;
+    using pointer            = TElementType*;        // no internal equivalent
+    using const_pointer      = TElementType const*;  // no internal equivalent
 
     using internal_element_type       = element_type;
     using internal_const_element_type = const_element_type;
@@ -79,6 +81,8 @@ namespace libsemigroups {
     using const_element_type = typename base::const_element_type;
     using reference          = typename base::reference;
     using const_reference    = typename base::const_reference;
+    using pointer            = typename base::pointer;
+    using const_pointer      = typename base::const_pointer;
 
     using internal_element_type = typename base::internal_element_type;
     using internal_const_element_type =
@@ -111,6 +115,8 @@ namespace libsemigroups {
     using const_element_type = typename base::const_element_type;
     using reference          = typename base::reference;
     using const_reference    = typename base::const_reference;
+    using pointer            = typename base::pointer;
+    using const_pointer      = typename base::const_pointer;
 
     using internal_element_type = typename base::internal_element_type;
     using internal_const_element_type =

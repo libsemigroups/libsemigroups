@@ -42,15 +42,11 @@ namespace libsemigroups {
     //! std::numeric_limits<element_index_type>::max()
     using element_index_type = size_type;
 
-    //! Type for a left or right Cayley graph of a semigroup.
-    using cayley_graph_type = RecVec<element_index_type>;
-
     virtual ~FroidurePinBase() {}
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
     virtual size_t             current_max_word_length() const        = 0;
     virtual size_t             degree() const                         = 0;
     virtual size_t             nr_generators() const                  = 0;
-    virtual bool               is_done() const                        = 0;
     virtual bool               is_begun() const                       = 0;
     virtual size_t             current_size() const                   = 0;
     virtual size_t             current_nr_rules() const               = 0;
@@ -77,9 +73,7 @@ namespace libsemigroups {
     virtual element_index_type position_to_sorted_position(element_index_type)
         = 0;
     virtual element_index_type right(element_index_type, letter_type)       = 0;
-    virtual cayley_graph_type* right_cayley_graph_copy()                    = 0;
     virtual element_index_type left(element_index_type, letter_type)        = 0;
-    virtual cayley_graph_type* left_cayley_graph_copy()                     = 0;
     virtual void      minimal_factorisation(word_type&, element_index_type) = 0;
     virtual word_type minimal_factorisation(element_index_type)             = 0;
     virtual void      factorisation(word_type&, element_index_type)         = 0;

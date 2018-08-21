@@ -123,7 +123,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::is_obviously_finite() {
       return has_isomorphic_non_fp_semigroup()
-             && isomorphic_non_fp_semigroup()->is_done();
+             && isomorphic_non_fp_semigroup()->finished();
     }
 
     bool KnuthBendix::is_obviously_infinite() {
@@ -275,7 +275,7 @@ namespace libsemigroups {
       // during _kb->run().
       if (!_kb->dead() && !_kb->timed_out()) {
         auto S = _kb->isomorphic_non_fp_semigroup();
-        while (!S->is_done() && !_kb->dead() && !_kb->timed_out()) {
+        while (!S->finished() && !_kb->dead() && !_kb->timed_out()) {
           S->run_until(stppd);
         }
       }
@@ -288,7 +288,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::finished_impl() const {
       return _kb->has_isomorphic_non_fp_semigroup()
-             && _kb->isomorphic_non_fp_semigroup()->is_done();
+             && _kb->isomorphic_non_fp_semigroup()->finished();
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -20,7 +20,6 @@
 
 // TODO:
 // * split this file into several files
-// * move all non-template definitions into cpp file
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
@@ -1779,6 +1778,8 @@ namespace libsemigroups {
     using const_element_type = TElementType const;
     using reference          = TElementType&;
     using const_reference    = TElementType const&;
+    using pointer            = TElementType*;
+    using const_pointer      = TElementType const*;
 
     using internal_element_type       = TElementType*;
     using internal_const_element_type = TElementType const*;
@@ -1833,6 +1834,8 @@ namespace libsemigroups {
     using const_element_type = Element const*;
     using reference          = element_type;
     using const_reference    = const_element_type;
+    using pointer            = element_type;
+    using const_pointer      = const_element_type;
 
     using internal_element_type       = element_type;
     using internal_const_element_type = const_element_type;

@@ -111,11 +111,11 @@ namespace libsemigroups {
         // TODO remove the if-condition, make it so that if the ToddCoxeter's
         // below are killed then so too is the enumeration of
         // S->knuth_bendix()->isomorphic_non_fp_semigroup()
-        if (S->knuth_bendix()->isomorphic_non_fp_semigroup()->is_done()) {
+        if (S->knuth_bendix()->isomorphic_non_fp_semigroup()->finished()) {
           // Method 3: Note that the
           // S->knuth_bendix()->isomorphic_non_fp_semigroup() must be finite
           // in this case, because otherwise it would not return true from
-          // FroidurePin::is_done. This is similar to Method 2.
+          // FroidurePin::finished. This is similar to Method 2.
           _race.add_runner(
               new ToddCoxeter(type,
                               S->knuth_bendix()->isomorphic_non_fp_semigroup(),
