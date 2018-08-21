@@ -92,7 +92,6 @@ libsemigroups_la_SOURCES += src/element.cpp
 libsemigroups_la_SOURCES += src/fpsemi-base.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
-libsemigroups_la_SOURCES += src/kbe.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/reduct.cpp
@@ -111,9 +110,8 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp ## TODO include in archive
 
-EXTRA_DIST =  src/knuth-bendix/knuth-bendix-impl.hpp 
-EXTRA_DIST += src/knuth-bendix/overlap.hpp 
-EXTRA_DIST += src/knuth-bendix/rule.hpp 
+EXTRA_DIST =  src/kbe-impl.hpp 
+EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile

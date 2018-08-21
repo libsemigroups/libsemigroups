@@ -93,6 +93,5 @@ namespace libsemigroups {
       typename std::enable_if<
           std::is_same<decltype(void(&T::operator())), void>::value>::type>
       : std::true_type {};
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_STL_HPP_

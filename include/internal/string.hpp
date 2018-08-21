@@ -29,10 +29,9 @@ namespace libsemigroups {
 
   // Replace [it1_begin .. it1_begin + (it2_end - it2_begin)] by
   // [it2_begin .. it2_end], no checks performed.
-  static inline void
-  string_replace(std::string::iterator       it1_begin,
-                 std::string::const_iterator it2_begin,
-                 std::string::const_iterator it2_end) {
+  static inline void string_replace(std::string::iterator       it1_begin,
+                                    std::string::const_iterator it2_begin,
+                                    std::string::const_iterator it2_end) {
     while (it2_begin < it2_end) {
       *it1_begin = *it2_begin;
       ++it1_begin;
@@ -42,11 +41,10 @@ namespace libsemigroups {
 
   // Returns true if [first_prefix, last_prefix) is a prefix of [first_word,
   // last_word).
-  static inline bool
-  is_prefix(std::string::const_iterator const& first_word,
-            std::string::const_iterator const& last_word,
-            std::string::const_iterator const& first_prefix,
-            std::string::const_iterator const& last_prefix) {
+  static inline bool is_prefix(std::string::const_iterator const& first_word,
+                               std::string::const_iterator const& last_word,
+                               std::string::const_iterator const& first_prefix,
+                               std::string::const_iterator const& last_prefix) {
     LIBSEMIGROUPS_ASSERT(first_word <= last_word);
     // We don't care if first_prefix > last_prefix
     if (last_prefix - first_prefix > last_word - first_word) {
@@ -59,11 +57,10 @@ namespace libsemigroups {
 
   static inline std::pair<std::string::const_iterator,
                           std::string::const_iterator>
-  maximum_common_prefix(
-      std::string::const_iterator        first_word1,
-      std::string::const_iterator const& last_word1,
-      std::string::const_iterator        first_word2,
-      std::string::const_iterator const& last_word2) {
+  maximum_common_prefix(std::string::const_iterator        first_word1,
+                        std::string::const_iterator const& last_word1,
+                        std::string::const_iterator        first_word2,
+                        std::string::const_iterator const& last_word2) {
     while (*first_word1 == *first_word2 && first_word1 < last_word1
            && first_word2 < last_word2) {
       ++first_word1;
@@ -75,11 +72,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
   // Returns true if [first_suffix, last_suffix) is a suffix of [first_word,
   // last_word).
-  static inline bool
-  is_suffix(std::string::const_iterator const& first_word,
-            std::string::const_iterator const& last_word,
-            std::string::const_iterator const& first_suffix,
-            std::string::const_iterator const& last_suffix) {
+  static inline bool is_suffix(std::string::const_iterator const& first_word,
+                               std::string::const_iterator const& last_word,
+                               std::string::const_iterator const& first_suffix,
+                               std::string::const_iterator const& last_suffix) {
     LIBSEMIGROUPS_ASSERT(first_word <= last_word);
     // We don't care if first_suffix > last_suffix
     if (last_suffix - first_suffix > last_word - first_word) {

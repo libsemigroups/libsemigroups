@@ -16,37 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "knuth-bendix.hpp"
+#include "knuth-bendix-impl.hpp"
 
-#include <algorithm>
-#include <list>
-#include <ostream>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-
-#include "internal/libsemigroups-config.hpp"
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/report.hpp"
-#include "internal/stl.hpp"
-#include "internal/string.hpp"
-#include "internal/timer.hpp"
-
-#include "froidure-pin.hpp"
-#include "kbe.hpp"
-#include "reduct.hpp"
-#include "types.hpp"
+// Include kbe-impl.hpp after knuth-bendix-impl.hpp since KBE depends on
+// KnuthBendixImpl.
+#include "kbe-impl.hpp"
 
 namespace libsemigroups {
-
   namespace fpsemigroup {
-
-    // Include KnuthBendix::KnuthBendixImpl
-#include "knuth-bendix/knuth-bendix-impl.hpp"
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix::Settings - constructor - public
@@ -76,6 +53,7 @@ namespace libsemigroups {
 
     void KnuthBendix::set_overlap_policy(overlap_policy p) {
       _settings._overlap_policy = p;
+      _impl->set_overlap_policy(p);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -89,25 +67,24 @@ namespace libsemigroups {
         : FpSemiBase(), _impl(new KnuthBendixImpl(this, order)) {}
 
     KnuthBendix::KnuthBendix(FroidurePinBase* S) : KnuthBendix() {
-      // TODO move the call to add_rules to elsewhere, so that it's done in
-      // knuth_bendix so that this is done in a thread, and not when KnuthBendix
-      // is constructed. If it is moved, then we will have to do
-      // add_rules(S) to add_rule() so that we don't lose the relations
-      // from S.
-      // TODO what if S is the return value of isomorphic_non_fp_semigroup? Then
-      // shouldn't we use the same alphabet as S?
+      // TODO(now) move the call to add_rules to elsewhere, so that it's done
+      // in knuth_bendix so that this is done in a thread, and not when
+      // KnuthBendix is constructed. If it is moved, then we will have to do
+      // add_rules(S) to add_rule() so that we don't lose the relations from S.
+      // TODO(now) what if S is the return value of
+      // isomorphic_non_fp_semigroup? Then shouldn't we use the same alphabet
+      // as S?
       set_alphabet(S->nr_generators());
-      set_isomorphic_non_fp_semigroup(S, false);
-      // false is for "do not delete"
+      set_isomorphic_non_fp_semigroup(S, false); // false = "do not delete"
       add_rules(S);
     }
 
     KnuthBendix::KnuthBendix(FroidurePinBase& S) : KnuthBendix(&S) {}
 
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
-        : KnuthBendix(new ReductionOrdering(kb->_impl->_order)) {
-      // TODO _active_rules.reserve(kb->nr_rules());
-      // TODO set confluence if known?
+        : KnuthBendix(new ReductionOrdering(kb->_impl->order())) {
+      // TODO(later) _active_rules.reserve(kb->nr_rules());
+      // TODO(now)   set confluence if known?
       set_alphabet(kb->alphabet());
       _settings._overlap_policy = kb->_settings._overlap_policy;
       _impl->add_rules(kb->_impl);
@@ -123,18 +100,12 @@ namespace libsemigroups {
 
     void KnuthBendix::set_alphabet(std::string const& lphbt) {
       FpSemiBase::set_alphabet(lphbt);
-      _impl->_internal_is_same_as_external = true;
-      for (size_t i = 0; i < lphbt.size(); ++i) {
-        if (_impl->uint_to_internal_char(i) != lphbt[i]) {
-          _impl->_internal_is_same_as_external = false;
-          return;
-        }
-      }
+      _impl->set_internal_alphabet(lphbt);
     }
 
     void KnuthBendix::set_alphabet(size_t n) {
       FpSemiBase::set_alphabet(n);
-      _impl->_internal_is_same_as_external = true;
+      _impl->set_internal_alphabet();
     }
 
     void KnuthBendix::add_rule(std::string const& p, std::string const& q) {
@@ -159,11 +130,11 @@ namespace libsemigroups {
       if (is_obviously_finite()) {
         // In this case the semigroup defined by the KnuthBendix is finite.
         return false;
-      } else if (alphabet().size() > _impl->_active_rules.size()) {
+      } else if (alphabet().size() > nr_rules()) {
         return true;
       }
 
-      // TODO:
+      // TODO(now):
       // - check that every generator i occurs in the lhs of some rule (if not,
       //   then if two words have different numbers of i in them, then they are
       //   not the same.
@@ -183,16 +154,17 @@ namespace libsemigroups {
     }
 
     size_t KnuthBendix::nr_rules() const noexcept {
-      return _impl->_active_rules.size();
+      return _impl->nr_rules();
     }
 
     FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup() {
       LIBSEMIGROUPS_ASSERT(is_alphabet_defined());
-      // TODO check that no generators/rules can be added after this has been
-      // called, or if they are that _isomorphic_non_fp_semigroup is reset again
+      // TODO(now) check that no generators/rules can be added after this has
+      // been called, or if they are that _isomorphic_non_fp_semigroup is reset
+      // again
       if (!has_isomorphic_non_fp_semigroup()) {
         run();
-        // TODO use 0-param FroidurePin constructor
+        // TODO(later) use 0-param FroidurePin constructor
         auto T = new FroidurePin<KBE>({KBE(*this, 0)});
         for (size_t i = 1; i < alphabet().size(); ++i) {
           T->add_generator(KBE(*this, i));
@@ -262,11 +234,6 @@ namespace libsemigroups {
       _impl->knuth_bendix_by_overlap_length();
       report_why_we_stopped();
     }
-
-    //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix private methods
-    //////////////////////////////////////////////////////////////////////////
-
   }  // namespace fpsemigroup
 
   namespace congruence {
@@ -351,11 +318,10 @@ namespace libsemigroups {
     }
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
-      // TODO check arg
+      validate_word(word);
       auto S
           = static_cast<FroidurePin<KBE>*>(_kb->isomorphic_non_fp_semigroup());
-      size_t pos = S->position(
-          KBE(_kb.get(), _kb->_impl->word_to_internal_string(word)));
+      size_t pos = S->position(KBE(_kb.get(), word));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }
@@ -388,114 +354,4 @@ namespace libsemigroups {
     }
 
   }  // namespace congruence
-
-  //////////////////////////////////////////////////////////////////////////////
-  // KBE - constructors - private
-  //////////////////////////////////////////////////////////////////////////////
-
-  KBE::KBE(KnuthBendix* kb, internal_string_type w, bool reduce)
-      : Element(), _kb(kb), _kb_word(w) {
-    if (reduce) {
-      _kb->_impl->internal_rewrite(&_kb_word);
-    }
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // KBE - constructors - public
-  //////////////////////////////////////////////////////////////////////////////
-
-  KBE::KBE(KnuthBendix* kb) : KBE(kb, "", false) {}
-
-  KBE::KBE(KnuthBendix* kb, internal_string_type const& w) : KBE(kb, w, true) {}
-
-  KBE::KBE(KnuthBendix* kb, letter_type const& a)
-      : KBE(kb, KnuthBendix::KnuthBendixImpl::uint_to_internal_string(a)) {}
-
-  KBE::KBE(KnuthBendix& kb, letter_type const& a) : KBE(&kb, a) {}
-
-  KBE::KBE(KnuthBendix* kb, word_type const& w)
-      : KBE(kb, KnuthBendix::KnuthBendixImpl::word_to_internal_string(w)) {}
-
-  KBE::KBE(KnuthBendix& kb, word_type const& w) : KBE(&kb, w) {}
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Element - overriden methods - public
-  //////////////////////////////////////////////////////////////////////////////
-
-  bool KBE::operator==(Element const& that) const {
-    return static_cast<KBE const&>(that)._kb_word == this->_kb_word;
-  }
-
-  bool KBE::operator<(Element const& that) const {
-    internal_string_type const& u = this->_kb_word;
-    internal_string_type const& v = static_cast<KBE const&>(that)._kb_word;
-    if (u != v && (u.size() < v.size() || (u.size() == v.size() && u < v))) {
-      // TODO allow other reduction orders here
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void KBE::swap(Element& x) {
-    auto& xx = static_cast<KBE&>(x);
-    _kb_word.swap(xx._kb_word);
-    std::swap(_kb, xx._kb);
-    std::swap(this->_hash_value, xx._hash_value);
-  }
-
-  size_t KBE::complexity() const {
-    return LIMIT_MAX;
-  }
-
-  size_t KBE::degree() const {
-    return 0;
-  }
-
-  KBE KBE::identity() const {
-    return KBE(_kb);
-  }
-
-  KBE* KBE::heap_copy() const {
-    return new KBE(*this);
-  }
-
-  KBE* KBE::heap_identity() const {
-    return this->identity().heap_copy();
-  }
-
-  void KBE::cache_hash_value() const {
-    this->_hash_value = hash<internal_string_type>{}(_kb_word);
-  }
-
-  void KBE::redefine(Element const& x, Element const& y, size_t) {
-    auto const& xx = static_cast<KBE const&>(x);
-    auto const& yy = static_cast<KBE const&>(y);
-    LIBSEMIGROUPS_ASSERT(xx._kb == yy._kb);
-    _kb_word.clear();
-    _kb_word.append(xx._kb_word);
-    _kb_word.append(yy._kb_word);
-    _kb->_impl->internal_rewrite(&_kb_word);
-    this->reset_hash_value();
-  }
-
-#ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  Element* KBE::empty_key() const {
-    return new KBE(_kb, "supercalifragilisticexpialidocious");
-  }
-#endif
-
-  KBE::operator word_type() const {
-    return _kb->_impl->internal_string_to_word(_kb_word);
-  }
-
-  KBE::operator std::string() const {
-    std::string out(_kb_word);
-    _kb->_impl->internal_to_external_string(out);  // changes out in-place
-    return out;
-  }
-
-  template <> word_type FroidurePin<KBE>::factorisation(KBE const& x) {
-    return x;
-  }
 }  // namespace libsemigroups

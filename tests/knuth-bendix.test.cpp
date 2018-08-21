@@ -2482,6 +2482,34 @@ namespace libsemigroups {
       kb.add_rule("cca", "ccae");
       kb.knuth_bendix();  // I guess this shouldn't work, and indeed it doesn't!
     }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "093",
+                            "add_rule after knuth_bendix",
+                            "[quick][knuth-bendix][fpsemigroup]") {
+      REPORTER.set_report(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("Bab");
+      kb.add_rule("aa", "");
+      kb.add_rule("bB", "");
+      kb.add_rule("bbb", "");
+      kb.add_rule("ababab", "");
+      kb.set_overlap_policy(KnuthBendix::overlap_policy::MAX_AB_BC);
+
+      REQUIRE(!kb.confluent());
+      kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
+
+      REQUIRE(kb.equal_to("aa", ""));
+      REQUIRE(!kb.equal_to("a", "b"));
+      kb.add_rule("a", "b");
+      // FIXME(now) add_rule doesn't seem to do anything
+      // REQUIRE(kb.nr_rules() == 12);
+      // REQUIRE(!kb.confluent() == 12);
+      // REQUIRE(kb.size() < 12);
+    }
   }  // namespace fpsemigroup
 
   namespace congruence {
