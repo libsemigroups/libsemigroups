@@ -26,20 +26,29 @@
 #include "internal/libsemigroups-config.hpp"
 
 namespace libsemigroups {
-  template <typename TElementType, typename = void> struct complexity;
-  template <typename TElementType, typename = void> struct degree;
-  template <typename TElementType, typename = void> struct increase_degree_by;
-  template <typename TElementType, typename = void> struct less;
-  template <typename TElementType, typename = void> struct one;
-  template <typename TElementType, typename = void> struct product;
-  template <typename TElementType, typename = void> struct swap;
+  template <typename TElementType, typename = void>
+  struct complexity;
+  template <typename TElementType, typename = void>
+  struct degree;
+  template <typename TElementType, typename = void>
+  struct increase_degree_by;
+  template <typename TElementType, typename = void>
+  struct less;
+  template <typename TElementType, typename = void>
+  struct one;
+  template <typename TElementType, typename = void>
+  struct product;
+  template <typename TElementType, typename = void>
+  struct swap;
 
   template <typename TElementType, typename TPointType, typename = void>
   struct action;
-  template <typename TElementType, typename = void> struct inverse;
+  template <typename TElementType, typename = void>
+  struct inverse;
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <typename TElementType, typename = void> struct empty_key;
+  template <typename TElementType, typename = void>
+  struct empty_key;
 #endif
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_

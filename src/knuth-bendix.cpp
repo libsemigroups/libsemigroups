@@ -75,7 +75,7 @@ namespace libsemigroups {
       // isomorphic_non_fp_semigroup? Then shouldn't we use the same alphabet
       // as S?
       set_alphabet(S->nr_generators());
-      set_isomorphic_non_fp_semigroup(S, false); // false = "do not delete"
+      set_isomorphic_non_fp_semigroup(S, false);  // false = "do not delete"
       add_rules(S);
     }
 

@@ -57,8 +57,9 @@ namespace libsemigroups {
 
     // This method runs the algorithm for approximately the number of
     // nanoseconds indicated by the argument.
-    void                              run_for(std::chrono::nanoseconds);
-    template <typename TIntType> void run_for(TIntType t) {
+    void run_for(std::chrono::nanoseconds);
+    template <typename TIntType>
+    void run_for(TIntType t) {
       run_for(std::chrono::nanoseconds(t));
     }
     bool timed_out() const;
@@ -85,9 +86,10 @@ namespace libsemigroups {
     }
 
     // Returns true if we should report and false otherwise
-    bool                              report() const;
-    void                              report_every(std::chrono::nanoseconds);
-    template <typename TIntType> void report_every(TIntType t) {
+    bool report() const;
+    void report_every(std::chrono::nanoseconds);
+    template <typename TIntType>
+    void report_every(TIntType t) {
       report_every(std::chrono::nanoseconds(t));
     }
     void report_why_we_stopped() const;

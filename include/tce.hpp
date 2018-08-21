@@ -30,15 +30,15 @@ namespace libsemigroups {
     class ToddCoxeter;
   }
   namespace fpsemigroup {
-    template <class T, bool S> class WrappedCong;
-    using ToddCoxeter
-        = WrappedCong<congruence::ToddCoxeter, true>;
-  }
+    template <class T, bool S>
+    class WrappedCong;
+    using ToddCoxeter = WrappedCong<congruence::ToddCoxeter, true>;
+  }  // namespace fpsemigroup
 
   class TCE {
    public:
     using class_index_type = size_t;
-    TCE() = default;
+    TCE()                  = default;
     TCE(congruence::ToddCoxeter*, class_index_type) noexcept;
     TCE(congruence::ToddCoxeter&, class_index_type) noexcept;
 
@@ -63,37 +63,43 @@ namespace libsemigroups {
 
   static_assert(std::is_trivial<TCE>::value, "TCE is not trivial!");
 
-  template <> struct complexity<TCE> {
+  template <>
+  struct complexity<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
       return LIMIT_MAX;
     }
   };
 
-  template <> struct degree<TCE> {
+  template <>
+  struct degree<TCE> {
     constexpr size_t operator()(TCE const&) const noexcept {
       return 0;
     }
   };
 
-  template <> struct less<TCE> {
+  template <>
+  struct less<TCE> {
     bool operator()(TCE const& x, TCE const& y) const noexcept {
       return x < y;
     }
   };
 
-  template <> struct one<TCE> {
+  template <>
+  struct one<TCE> {
     TCE operator()(TCE const& x) const noexcept {
       return x.one();
     }
   };
 
-  template <> struct product<TCE> {
+  template <>
+  struct product<TCE> {
     void operator()(TCE& xy, TCE const& x, TCE const& y, size_t = 0) const {
       xy = x * y;
     }
   };
 
-  template <> struct swap<TCE> {
+  template <>
+  struct swap<TCE> {
     void operator()(TCE& x, TCE& y) const noexcept {
       std::swap(x, y);
     }
@@ -101,7 +107,8 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 namespace std {
-  template <> struct hash<libsemigroups::TCE> {
+  template <>
+  struct hash<libsemigroups::TCE> {
     size_t operator()(libsemigroups::TCE const& x) const noexcept {
       return x._index;
     }

@@ -269,29 +269,34 @@ namespace libsemigroups {
   };
 
   // Specialization for adapters.hpp structs
-  template <> struct complexity<BMat8> {
+  template <>
+  struct complexity<BMat8> {
     constexpr inline size_t operator()(BMat8 const&) const noexcept {
       return 0;
     }
   };
 
-  template <> struct degree<BMat8> {
+  template <>
+  struct degree<BMat8> {
     constexpr inline size_t operator()(BMat8 const&) const noexcept {
       return 8;
     }
   };
 
-  template <> struct increase_degree_by<BMat8> {
+  template <>
+  struct increase_degree_by<BMat8> {
     inline void operator()(BMat8 const&) const noexcept {}
   };
 
-  template <> struct less<BMat8> {
+  template <>
+  struct less<BMat8> {
     inline bool operator()(BMat8 const& x, BMat8 const& y) const noexcept {
       return x < y;
     }
   };
 
-  template <> struct one<BMat8> {
+  template <>
+  struct one<BMat8> {
     inline BMat8 operator()(BMat8 const& x) const noexcept {
       return x.one();
     }
@@ -301,7 +306,8 @@ namespace libsemigroups {
     }
   };
 
-  template <> struct product<BMat8> {
+  template <>
+  struct product<BMat8> {
     inline void
     operator()(BMat8& xy, BMat8 const& x, BMat8 const& y, size_t = 0) const
         noexcept {
@@ -309,7 +315,8 @@ namespace libsemigroups {
     }
   };
 
-  template <> struct swap<BMat8> {
+  template <>
+  struct swap<BMat8> {
     inline void operator()(BMat8& x, BMat8& y) const noexcept {
       std::swap(x, y);
     }
@@ -326,7 +333,8 @@ namespace libsemigroups {
   //   }
   // };
 
-  template <> struct inverse<BMat8> {
+  template <>
+  struct inverse<BMat8> {
     inline BMat8 operator()(BMat8 const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
       return x.transpose();
@@ -335,7 +343,8 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 namespace std {
-  template <> struct hash<libsemigroups::BMat8> {
+  template <>
+  struct hash<libsemigroups::BMat8> {
     size_t operator()(libsemigroups::BMat8 const& bm) const {
       return hash<uint64_t>()(bm.to_int());
     }

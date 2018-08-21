@@ -153,4 +153,4 @@ namespace libsemigroups {
     };  // iterator_base definition ends
   }     // namespace internal
 }  // namespace libsemigroups
-#endif // LIBSEMIGROUPS_INCLUDE_INTERNAL_ITERATOR_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_ITERATOR_HPP_

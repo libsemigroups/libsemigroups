@@ -102,7 +102,8 @@ namespace libsemigroups {
     // Congruence - methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    template <class TCongBaseSubclass> TCongBaseSubclass* find_method() const;
+    template <class TCongBaseSubclass>
+    TCongBaseSubclass* find_method() const;
 
     //////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private

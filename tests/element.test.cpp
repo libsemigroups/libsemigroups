@@ -1424,7 +1424,8 @@ LIBSEMIGROUPS_TEST_CASE("PBR", "006", "exceptions", "[quick][element]") {
       LibsemigroupsException);
 }
 
-template <class T> bool test_inverse(Permutation<T> const& p) {
+template <class T>
+bool test_inverse(Permutation<T> const& p) {
   return p * p.inverse() == p.identity() && p.inverse() * p == p.identity();
 }
 

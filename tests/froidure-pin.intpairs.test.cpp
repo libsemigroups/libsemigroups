@@ -51,38 +51,44 @@ namespace libsemigroups {
   static_assert(!std::is_trivial<IntPair>::value,
                 "IntPair should be non-trivial");
 
-  template <> struct complexity<IntPair> {
+  template <>
+  struct complexity<IntPair> {
     constexpr size_t operator()(IntPair) const noexcept {
       return 0;
     }
   };
 
-  template <> struct degree<IntPair> {
+  template <>
+  struct degree<IntPair> {
     constexpr size_t operator()(IntPair) const noexcept {
       return 0;
     }
   };
 
-  template <> struct increase_degree_by<IntPair> {
+  template <>
+  struct increase_degree_by<IntPair> {
     IntPair operator()(IntPair const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(false);
       return x;
     }
   };
 
-  template <> struct less<IntPair> {
+  template <>
+  struct less<IntPair> {
     bool operator()(IntPair x, IntPair y) const noexcept {
       return x < y;
     }
   };
 
-  template <> struct one<IntPair> {
+  template <>
+  struct one<IntPair> {
     constexpr IntPair operator()(IntPair) const noexcept {
       return IntPair();
     }
   };
 
-  template <> struct product<IntPair> {
+  template <>
+  struct product<IntPair> {
     void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const
         noexcept {
       xy = x * y;
@@ -90,14 +96,16 @@ namespace libsemigroups {
   };
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  template <> IntPair empty_key(IntPair) {
+  template <>
+  IntPair empty_key(IntPair) {
     return IntPair();
   }
 #endif
 }  // namespace libsemigroups
 
 namespace std {
-  template <> struct hash<libsemigroups::IntPair> {
+  template <>
+  struct hash<libsemigroups::IntPair> {
     size_t operator()(libsemigroups::IntPair const& x) const {
       return x.hash();
     }

@@ -612,7 +612,8 @@ namespace libsemigroups {
       //               table.begin() + table.nr_cols(),
       //               [&j](size_t& i) { i = j++; });
       // std::for_each(
-      //     table.begin() + table.nr_cols(), table.end(), [](size_t& i) { ++i; });
+      //     table.begin() + table.nr_cols(), table.end(), [](size_t& i) { ++i;
+      //     });
 
       // ToddCoxeter tc(TWOSIDED, 2, {}, {});
       // REQUIRE(tc.get_policy() == ToddCoxeter::policy::none);

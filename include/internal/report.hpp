@@ -210,7 +210,8 @@ namespace libsemigroups {
     }
 
    private:
-    template <class T> std::string class_name(T const* o) {
+    template <class T>
+    std::string class_name(T const* o) {
       auto it = _class_name_map.find(typeid(*o).hash_code());
       if (it != _class_name_map.end()) {
         return (*it).second;

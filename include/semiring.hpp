@@ -40,7 +40,8 @@ namespace libsemigroups {
   //!
   //! More information about semirings can be found on
   //! [Wikipedia](https://en.wikipedia.org/wiki/Semiring).
-  template <typename T> class Semiring {
+  template <typename T>
+  class Semiring {
    public:
     //! A default destructor.
     virtual ~Semiring() {}

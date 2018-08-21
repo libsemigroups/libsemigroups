@@ -245,4 +245,3 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-

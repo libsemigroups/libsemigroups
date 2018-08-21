@@ -91,7 +91,8 @@ namespace libsemigroups {
 
    private:
     // Runs the callable object \p func on every Runner in parallel.
-    template <typename TCallable> void run_func(TCallable const& func) {
+    template <typename TCallable>
+    void run_func(TCallable const& func) {
       static_assert(
           std::is_same<typename std::result_of<TCallable(Runner*)>::type,
                        void>::value,

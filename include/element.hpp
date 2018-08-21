@@ -1962,7 +1962,8 @@ namespace libsemigroups {
     }
   };
 
-  template <typename TValueType> struct inverse<Permutation<TValueType>*> {
+  template <typename TValueType>
+  struct inverse<Permutation<TValueType>*> {
     Permutation<TValueType>* operator()(Permutation<TValueType>* x) {
       return new Permutation<TValueType>(std::move(x->inverse()));
     }
@@ -2011,7 +2012,8 @@ namespace libsemigroups {
     }
   };
 
-  template <size_t N> struct Transf {
+  template <size_t N>
+  struct Transf {
 #ifdef LIBSEMIGROUPS_HPCOMBI
     using type = typename std::conditional<
         N >= 17,
@@ -2023,7 +2025,8 @@ namespace libsemigroups {
   };
 
   // TODO file an issue for HPCombi to add a PPerm class.
-  template <size_t N> struct PPerm {
+  template <size_t N>
+  struct PPerm {
     // #ifdef LIBSEMIGROUPS_HPCOMBI
     //     using type = typename std::conditional<
     //         N >= 17,
@@ -2034,7 +2037,8 @@ namespace libsemigroups {
     // #endif
   };
 
-  template <size_t N> struct Perm {
+  template <size_t N>
+  struct Perm {
 #ifdef LIBSEMIGROUPS_HPCOMBI
     using type = typename std::conditional<
         N >= 17,
@@ -2046,7 +2050,8 @@ namespace libsemigroups {
   };
 
   class BMat8;
-  template <size_t N> struct BMat {
+  template <size_t N>
+  struct BMat {
     using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
   };
 }  // namespace libsemigroups

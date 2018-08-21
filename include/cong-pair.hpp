@@ -183,7 +183,6 @@ namespace libsemigroups {
                          hash<KBE>,
                          equal_to<KBE>,
                          TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
-
       ////////////////////////////////////////////////////////////////////////
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////

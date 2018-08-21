@@ -58,9 +58,8 @@ namespace libsemigroups {
     virtual size_t             length_const(element_index_type) const = 0;
     virtual size_t             length_non_const(element_index_type)   = 0;
 
-    virtual element_index_type product_by_reduction(element_index_type,
-                                                    element_index_type)
-                               const = 0;
+    virtual element_index_type
+                               product_by_reduction(element_index_type, element_index_type) const = 0;
     virtual element_index_type fast_product(element_index_type,
                                             element_index_type) const = 0;
     virtual element_index_type letter_to_pos(letter_type) const       = 0;

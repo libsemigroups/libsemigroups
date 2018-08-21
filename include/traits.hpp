@@ -28,7 +28,8 @@
 #include "internal/stl.hpp"
 
 namespace libsemigroups {
-  template <typename TElementType, typename = void> struct Traits {
+  template <typename TElementType, typename = void>
+  struct Traits {
     using element_type       = TElementType;
     using const_element_type = TElementType const;
     using reference          = TElementType&;

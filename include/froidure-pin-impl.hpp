@@ -37,7 +37,6 @@
 #define LETTER_TYPE TEMPLATE letter_type
 #define CONST_REFERENCE TEMPLATE typename FROIDURE_PIN::const_reference
 #define ELEMENT_TYPE TEMPLATE typename FROIDURE_PIN::element_type
-#define FROIDURE_PIN_PTR TEMPLATE FROIDURE_PIN*
 #define WORD_TYPE TEMPLATE word_type
 
 namespace libsemigroups {
@@ -1181,12 +1180,12 @@ namespace libsemigroups {
   }
 
   VOID FROIDURE_PIN::closure_update(element_index_type i,
-                                           letter_type        j,
-                                           letter_type        b,
-                                           element_index_type s,
-                                           size_type          old_nr,
-                                           size_t const&      tid,
-                                           std::vector<bool>& old_new) {
+                                    letter_type        j,
+                                    letter_type        b,
+                                    element_index_type s,
+                                    size_type          old_nr,
+                                    size_t const&      tid,
+                                    std::vector<bool>& old_new) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       element_index_type r = _right.get(s, j);
       if (_found_one && r == _pos_one) {

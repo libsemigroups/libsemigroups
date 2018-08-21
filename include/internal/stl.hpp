@@ -30,20 +30,23 @@
 #include <vector>
 
 namespace libsemigroups {
-  template <typename TValueType, typename = void> struct hash {
+  template <typename TValueType, typename = void>
+  struct hash {
     size_t operator()(TValueType const& x) const {
       return std::hash<TValueType>()(x);
     }
   };
 
-  template <typename TValueType, typename = void> struct equal_to {
+  template <typename TValueType, typename = void>
+  struct equal_to {
     size_t operator()(TValueType const& x, TValueType const& y) const {
       return std::equal_to<TValueType>()(x, y);
     }
   };
 
   // Forward declaration
-  template <typename T> std::string to_string(const T& n);
+  template <typename T>
+  std::string to_string(const T& n);
 
   // A << method for vectors
   template <typename T>
@@ -68,7 +71,8 @@ namespace libsemigroups {
   //! It appears that GCC 4.9.1 (at least) do not have std::to_string
   //! implemented, so we implement our own. This requires the operator \c <<
   //! to be implemented for an \c ostringstream& and const T& element.
-  template <typename T> std::string to_string(T const& n) {
+  template <typename T>
+  std::string to_string(T const& n) {
     std::ostringstream stm;
     stm << n;
     return stm.str();

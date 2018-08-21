@@ -59,7 +59,8 @@ namespace libsemigroups {
     }
   };
 
-  template <int64_t TOffset, class TMaxOrMin = Max> struct Constant {
+  template <int64_t TOffset, class TMaxOrMin = Max>
+  struct Constant {
     static_assert(std::is_same<TMaxOrMin, Max>::value
                       || std::is_same<TMaxOrMin, Min>::value,
                   "template parameter TMaxOrMin must be Max or Min");

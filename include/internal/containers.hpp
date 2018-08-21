@@ -30,10 +30,12 @@ namespace libsemigroups {
   //! The unique template parameter **T** is the type of the objects stored in
   //! the <RecVec>.
 
-  template <typename T, class A = std::allocator<T>> class RecVec {
+  template <typename T, class A = std::allocator<T>>
+  class RecVec {
     // So that RecVec<T> can access private data members of RecVec<S> and vice
     // versa.
-    template <typename S, class B> friend class RecVec;
+    template <typename S, class B>
+    friend class RecVec;
 
    public:
     typedef A                                           allocator_type;
@@ -220,7 +222,8 @@ namespace libsemigroups {
     // of \c this and \p copy are equal.
     //
     // Asserts that the numbers of columns are equal.
-    template <typename S, class B> void append(const RecVec<S, B>& copy) {
+    template <typename S, class B>
+    void append(const RecVec<S, B>& copy) {
       LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
 
       size_t old_nr_rows = _nr_rows;
@@ -650,10 +653,12 @@ namespace libsemigroups {
           reference_type,
           pointer_type>::fast_iterator_methods();
 
-  template <typename T, size_t N> class SquareVector {
+  template <typename T, size_t N>
+  class SquareVector {
     // So that SquareVector<T, N> can access private data members of
     // SquareVector<S, M> and vice versa.
-    template <typename S, size_t M> friend class SquareVector;
+    template <typename S, size_t M>
+    friend class SquareVector;
 
    public:
     SquareVector() : _arrays(), _sizes() {
@@ -713,10 +718,12 @@ namespace libsemigroups {
     std::array<size_t, N>           _sizes;
   };
 
-  template <typename T, size_t N> class SquareArray {
+  template <typename T, size_t N>
+  class SquareArray {
     // So that SquareArray<T, N> can access private data members of
     // SquareArray<S, M> and vice versa.
-    template <typename S, size_t M> friend class SquareArray;
+    template <typename S, size_t M>
+    friend class SquareArray;
 
    public:
     SquareArray() : _arrays() {}

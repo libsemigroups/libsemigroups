@@ -181,7 +181,8 @@ namespace libsemigroups {
     internal_string_type _kb_word;
   };
 
-  template <> struct one<KBE*> {
+  template <>
+  struct one<KBE*> {
     KBE* operator()(KBE const* x) {
       return new KBE(std::move(x->identity()));
     }
@@ -195,7 +196,8 @@ namespace std {
   //! This struct provides a call operator for obtaining a hash value for the
   //! Element from a const Element pointer. This is used by various methods
   //! of the FroidurePin class.
-  template <> struct hash<libsemigroups::KBE> {
+  template <>
+  struct hash<libsemigroups::KBE> {
     //! Hashes a KBE given by const KBE reference.
     size_t operator()(libsemigroups::KBE const& x) const {
       return x.hash_value();
@@ -207,7 +209,8 @@ namespace std {
   //! This struct provides a call operator for comparing const KBE
   //! references (by comparing the KBE objects they point to). This is used
   //! by various methods of the FroidurePin class.
-  template <> struct equal_to<libsemigroups::KBE> {
+  template <>
+  struct equal_to<libsemigroups::KBE> {
     //! Tests equality of two const KBE references via equality of the KBEs.
     bool operator()(libsemigroups::KBE const& x,
                     libsemigroups::KBE const& y) const {
@@ -221,7 +224,8 @@ namespace libsemigroups {
   //!
   //! Specialises the factorisation method for FroidurePin's of KBE's so that it
   //! just returns the word inside the KBE.
-  template <> word_type FroidurePin<KBE>::factorisation(KBE const& x);
+  template <>
+  word_type FroidurePin<KBE>::factorisation(KBE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_
