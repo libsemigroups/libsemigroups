@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file includes all the headers in libsemigroups, for convenience.
+//! \file
+//! This file includes all the headers in libsemigroups, for convenience.
 
 #ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
@@ -33,20 +34,15 @@
 #include "internal/timer.hpp"
 #include "internal/uf.hpp"
 
-#include "adapters.hpp"
 #include "blocks.hpp"
 #include "bmat8.hpp"
 #include "cong-base.hpp"
 #include "cong-pair.hpp"
 #include "cong.hpp"
 #include "constants.hpp"
-#include "element.hpp"
 #include "fpsemi-base.hpp"
 #include "fpsemi.hpp"
 #include "froidure-pin-base.hpp"
-#include "froidure-pin.hpp"
-#include "hpcombi.hpp"
-#include "kbe.hpp"
 #include "knuth-bendix.hpp"
 #include "reduct.hpp"
 #include "schreier-sims.hpp"

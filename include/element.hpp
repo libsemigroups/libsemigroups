@@ -37,7 +37,6 @@
 #include "internal/libsemigroups-exception.hpp"
 #include "internal/stl.hpp"
 
-#include "adapters.hpp"
 #include "blocks.hpp"
 #include "constants.hpp"
 #include "hpcombi.hpp"

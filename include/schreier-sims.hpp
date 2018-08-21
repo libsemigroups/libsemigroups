@@ -55,7 +55,6 @@
 #include "internal/libsemigroups-config.hpp"
 #include "internal/range.hpp"
 
-#include "adapters.hpp"
 #include "element.hpp"
 #include "traits.hpp"
 

@@ -30,7 +30,6 @@
 
 #include "cong-base.hpp"
 #include "fpsemi-base.hpp"
-#include "froidure-pin.hpp"
 #include "kbe.hpp"
 #include "wrap.hpp"
 
