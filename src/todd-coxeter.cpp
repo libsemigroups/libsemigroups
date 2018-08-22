@@ -197,12 +197,18 @@ namespace libsemigroups {
       }
 
       Timer                       timer;
-      std::vector<relation_type>& rels_to_use = init();
+      init();
 
       while (_current != _next && !dead() && !timed_out()) {
         // Apply each relation to the "_current" coset
-        for (relation_type const& rel : rels_to_use) {
+        for (relation_type const& rel : _relations) {
           trace(_current, rel);  // Allow new cosets
+        }
+        if (type() == congruence_type::TWOSIDED
+            || (_relations.empty() && !_prefilled)) {
+          for (relation_type const& rel : _extra) {
+            trace(_current, rel);  // Allow new cosets
+          }
         }
 
         // If the number of active cosets is too high, start a packing phase
@@ -225,8 +231,14 @@ namespace libsemigroups {
 
           do {
             // Apply every relation to the "_current_no_add" coset
-            for (relation_type const& rel : rels_to_use) {
+            for (relation_type const& rel : _relations) {
               trace(_current_no_add, rel, false);  // Don't allow new cosets
+            }
+            if (type() == congruence_type::TWOSIDED
+                || (_relations.empty() && !_prefilled)) {
+              for (relation_type const& rel : _extra) {
+                trace(_current, rel);  // Allow new cosets
+              }
             }
             _current_no_add = _forwd[_current_no_add];
 
@@ -521,7 +533,7 @@ namespace libsemigroups {
     // ToddCoxeter - methods (initialisation) - private
     ////////////////////////////////////////////////////////////////////////
 
-    std::vector<relation_type>& ToddCoxeter::init() {
+    void ToddCoxeter::init() {
       if (!_init_done) {
         // Add the relations/Cayley graph from parent() if any.
         use_relations_or_cayley_graph();
@@ -533,26 +545,10 @@ namespace libsemigroups {
         for (relation_type const& rel : _extra) {
           trace(_id_coset, rel);  // Allow new cosets
         }
-      }
-      // This is required in case we called add_pair since the last time init()
-      // was run.
-      init_relations();
-      if (_relations.empty() && !_prefilled) {
-        LIBSEMIGROUPS_ASSERT(type() == congruence_type::LEFT
-                             || type() == congruence_type::RIGHT
-                             || _extra.empty());
-        // This is a special case for left and right congruences over the free
-        // semigroup, which is somehow not covered by our implementation. If
-        // the type is TWOSIDED, then _extra is anyway added to the end of
-        // _relations. Otherwise, if _relations is empty and we have not
-        // prefilled the table, then without this step, this function returns
-        // after tracing the "extra" relations on the first coset only, and
-        // this can leave _table in an invalid state. If there are any
-        // relations in "_relations" at all, then the "_extra" relations are
-        // traced on all the cosets, and there is no problem.
-        return _extra;
       } else {
-        return _relations;
+        // This is required in case we called add_pair since the last time
+        // init() was run.
+        init_relations();
       }
     }
 
@@ -593,8 +589,6 @@ namespace libsemigroups {
 
     void ToddCoxeter::init_relations() {
       switch (type()) {
-        case congruence_type::RIGHT:  // do nothing
-          break;
         case congruence_type::LEFT:
           if (!_relations_are_reversed) {
             _relations_are_reversed = true;
@@ -608,11 +602,9 @@ namespace libsemigroups {
             }
           }
           break;
-        case congruence_type::TWOSIDED:
-          if (!_extra.empty()) {  // TODO is this if-clause necessary?
-            _relations.insert(_relations.end(), _extra.cbegin(), _extra.cend());
-            _extra.clear();
-          }
+        case congruence_type::RIGHT:
+          // intentional fall through
+        case congruence_type::TWOSIDED:  // do nothing
           break;
         default:
           LIBSEMIGROUPS_ASSERT(false);
