@@ -198,22 +198,6 @@ namespace libsemigroups {
   // CongBase - overridden pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  void Congruence::add_pair(word_type const& lhs, word_type const& rhs) {
-    if (_race.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "must add at least one method before adding generating pairs");
-    } else if (lhs == rhs) {
-      return;
-    }
-    for (auto runner : _race) {
-      static_cast<CongBase*>(runner)->add_pair(lhs, rhs);
-    }
-    // Increment _nr_generating_pairs after add_pair, in case an exception is
-    // thrown
-    _nr_generating_pairs++;  // defined in CongBase
-    reset_quotient();
-  }
-
   word_type Congruence::class_index_to_word(class_index_type i) {
     return static_cast<CongBase*>(_race.winner())->class_index_to_word(i);
   }
@@ -289,6 +273,10 @@ namespace libsemigroups {
 
   void Congruence::add_method(Runner* r) {
     // TODO check that it is ok to add runners
+    // Add any existing pairs
+    for (auto it = cbegin_generating_pairs(); it < cend_generating_pairs(); ++it) {
+      static_cast<CongBase*>(r)->add_pair(it->first, it->second);
+    }
     _race.add_runner(r);
   }
 
@@ -316,6 +304,16 @@ namespace libsemigroups {
       return false;
     }
     return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // CongBase - overridden pure virtual methods - private
+  //////////////////////////////////////////////////////////////////////////
+
+  void Congruence::add_pair_impl(word_type const& u, word_type const& v) {
+    for (auto runner : _race) {
+      static_cast<CongBase*>(runner)->add_pair(u, v);
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////

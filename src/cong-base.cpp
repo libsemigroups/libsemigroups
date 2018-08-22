@@ -35,7 +35,6 @@ namespace libsemigroups {
       : Runner(),
         // Protected
         _non_trivial_classes(),
-        _nr_generating_pairs(0),
         // Private
         _delete_quotient(false),
         _init_ntc_done(false),
@@ -51,6 +50,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
   // CongBase - non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
+
 
   bool CongBase::contains(word_type const& w1, word_type const& w2) {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
@@ -88,6 +88,7 @@ namespace libsemigroups {
           "the number of generators cannot be set more than once");
     }
     _nrgens = n;
+    set_nr_generators_impl(n);
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -97,6 +98,27 @@ namespace libsemigroups {
   void CongBase::add_pair(std::initializer_list<size_t> l,
                           std::initializer_list<size_t> r) {
     add_pair(word_type(l), word_type(r));
+  }
+
+  void CongBase::add_pair(word_type const& u, word_type const& v) {
+    validate_word(u);
+    validate_word(v);
+    if (u != v) {
+      _gen_pairs.emplace_back(u, v);
+      // Note that _gen_pairs might contain pairs of distinct words that
+      // represent the same element of the parent semigroup (if any).
+      reset_quotient();
+      set_finished(false);
+      add_pair_impl(u, v);
+    }
+  }
+
+  CongBase::const_iterator CongBase::cbegin_generating_pairs() const {
+    return _gen_pairs.cbegin();
+  }
+
+  CongBase::const_iterator CongBase::cend_generating_pairs() const {
+    return _gen_pairs.cend();
   }
 
   std::vector<std::vector<word_type>>::const_iterator CongBase::cbegin_ntc() {
@@ -114,7 +136,7 @@ namespace libsemigroups {
   }
 
   size_t CongBase::nr_generating_pairs() const noexcept {
-    return _nr_generating_pairs;
+    return _gen_pairs.size();
   }
 
   size_t CongBase::nr_non_trivial_classes() {
@@ -136,6 +158,7 @@ namespace libsemigroups {
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
+
 
   FroidurePinBase* CongBase::get_quotient() const noexcept {
     return _quotient;
@@ -180,7 +203,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
     _parent = prnt;
-    if (_nr_generating_pairs == 0) {
+    if (_gen_pairs.empty()) {
       _quotient        = prnt;
       _delete_quotient = false;
     }
@@ -225,6 +248,10 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
+  void CongBase::set_nr_generators_impl(size_t) {
+    // do nothing
+  }
+
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
@@ -256,6 +283,7 @@ namespace libsemigroups {
   void CongBase::validate_relation(relation_type const& rel) const {
     validate_relation(rel.first, rel.second);
   }
+
 
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual static methods - protected

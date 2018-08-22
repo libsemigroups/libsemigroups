@@ -165,9 +165,9 @@ namespace libsemigroups {
 
       // We override FpSemiBase::set_alphabet so that we can set the number of
       // generators in _wrapped_cong.
-      void set_alphabet(std::string const& lphbet) override {
-        FpSemiBase::set_alphabet(lphbet);
-        _wrapped_cong->set_nr_generators(lphbet.size());
+      void set_alphabet(std::string const& lphbt) override {
+        FpSemiBase::set_alphabet(lphbt);
+        _wrapped_cong->set_nr_generators(lphbt.size());
       }
 
       // We override FpSemiBase::set_alphabet so that we can set the number of

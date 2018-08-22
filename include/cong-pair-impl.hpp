@@ -182,20 +182,6 @@ namespace libsemigroups {
     // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
-    VOID P_CLASS::add_pair(word_type const& l, word_type const& r) {
-      if (!has_parent()) {
-        throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
-                                      "the parent semigroup is defined");
-      }
-      auto x
-          = static_cast<froidure_pin_type*>(get_parent())->word_to_element(l);
-      auto y
-          = static_cast<froidure_pin_type*>(get_parent())->word_to_element(r);
-      internal_add_pair(this->to_internal(x), this->to_internal(y));
-      this->external_free(x);
-      this->external_free(y);
-      set_finished(false);
-    }
 
     WORD_TYPE P_CLASS::class_index_to_word(class_index_type) {
       // FIXME(now) actually implement this
@@ -251,6 +237,23 @@ namespace libsemigroups {
                   ->factorisation(this->to_external(_reverse_map[ind]));
         _non_trivial_classes[_class_lookup[ind]].push_back(word);
       }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongBase - pure virtual methods - private
+    /////////////////////////////////////////////////////////////////////////
+
+    VOID P_CLASS::add_pair_impl(word_type const& u, word_type const& v) {
+      if (!has_parent()) {
+        throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
+                                      "the parent semigroup is defined");
+      }
+      auto prnt = static_cast<froidure_pin_type*>(get_parent());
+      auto x    = prnt->word_to_element(u);
+      auto y    = prnt->word_to_element(v);
+      internal_add_pair(this->to_internal(x), this->to_internal(y));
+      this->external_free(x);
+      this->external_free(y);
     }
 
     ////////////////////////////////////////////////////////////////////////

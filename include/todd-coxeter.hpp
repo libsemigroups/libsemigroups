@@ -21,7 +21,7 @@
 
 // TODO:
 // 1. In congruence::ToddCoxeter: add methods for add_pair, set_base, etc, for
-// use with 0-parameter constructor
+// use with 0-parameter constructor, and remove other methods/constructors
 
 #ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
@@ -101,7 +101,6 @@ namespace libsemigroups {
       // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
-      void             add_pair(word_type const&, word_type const&) override;
       size_t           nr_classes() override;
       FroidurePinBase* quotient_semigroup() override;
       class_index_type word_to_class_index(word_type const&) override;
@@ -114,7 +113,6 @@ namespace libsemigroups {
       bool contains(word_type const&, word_type const&) override;
       bool is_quotient_obviously_finite() override;
       bool is_quotient_obviously_infinite() override;
-      void set_nr_generators(size_t) override;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods - public
@@ -123,7 +121,6 @@ namespace libsemigroups {
       bool             empty() const;
       letter_type      class_index_to_letter(class_index_type);
       policy           get_policy() const noexcept;
-      void             prefill(RecVec<class_index_type> const&);
       void             set_pack(size_t);
       class_index_type table(class_index_type, letter_type);
 
@@ -132,8 +129,15 @@ namespace libsemigroups {
       // CongBase - overridden pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
+      void add_pair_impl(word_type const&, word_type const&) override;
+
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden non-pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+
       class_index_type
-      const_word_to_class_index(word_type const&) const override;
+           const_word_to_class_index(word_type const&) const override;
+      void set_nr_generators_impl(size_t) override;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods (validation) - private
@@ -146,10 +150,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void init();
-      void                        init_after_prefill();
-      void                        init_relations();
-      void                        prefill(FroidurePinBase*);
-      void                        use_relations_or_cayley_graph();
+      void init_after_prefill();
+      void init_relations();
+      void prefill(FroidurePinBase*);
+      void use_relations_or_cayley_graph();
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods (other) - private

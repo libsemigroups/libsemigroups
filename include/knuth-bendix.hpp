@@ -263,7 +263,6 @@ namespace libsemigroups {
       // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
-      void             add_pair(word_type const&, word_type const&) override;
       word_type        class_index_to_word(class_index_type) override;
       FroidurePinBase* quotient_semigroup() override;
       size_t           nr_classes() override;
@@ -276,7 +275,6 @@ namespace libsemigroups {
       result_type const_contains(word_type const&,
                                  word_type const&) const override;
       bool        contains(word_type const&, word_type const&) override;
-      void        set_nr_generators(size_t) override;
 
      protected:
       ////////////////////////////////////////////////////////////////////////////
@@ -286,6 +284,21 @@ namespace libsemigroups {
       bool finished_impl() const override;
 
      private:
+      ////////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////////
+      void add_pair_impl(word_type const&, word_type const&) override;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden non-pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////////
+
+      void set_nr_generators_impl(size_t) override;
+
+      ////////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - data - private
+      ////////////////////////////////////////////////////////////////////////////
+
       std::unique_ptr<fpsemigroup::KnuthBendix> _kb;
     };
   }  // namespace congruence

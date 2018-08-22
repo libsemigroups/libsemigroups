@@ -52,13 +52,12 @@ namespace libsemigroups {
     // Override the method for the class P to avoid having to know the parent
     // semigroup (found as part of KBP::run) to add a pair.
     // TODO(later) this copies KBE(_kb, l) and KBE(_kb, r) twice.
-    void KBP::add_pair(word_type const& l, word_type const& r) {
-      internal_element_type x = new element_type(_kb, l);
-      internal_element_type y = new element_type(_kb, r);
+    void KBP::add_pair_impl(word_type const& u, word_type const& v) {
+      internal_element_type x = new element_type(_kb, u);
+      internal_element_type y = new element_type(_kb, v);
       internal_add_pair(x, y);
       this->internal_free(x);
       this->internal_free(y);
-      set_finished(false);
     }
   }  // namespace congruence
 }  // namespace libsemigroups

@@ -88,6 +88,7 @@ namespace libsemigroups {
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
     virtual class_index_type word_to_class_index(word_type const&) = 0;
+    // TODO class_index_type const
     virtual word_type        class_index_to_word(class_index_type) = 0;
 
     //! Returns the number of congruences classes of \c this.
@@ -100,15 +101,7 @@ namespace libsemigroups {
     //! general, and this method may never terminate.
     virtual size_t nr_classes() = 0;
 
-    //! Add a generating pair to the congruence. Should only be done before
-    //! anything is computed about the congruence.
-    virtual void add_pair(word_type const&, word_type const&) = 0;
-
     virtual FroidurePinBase* quotient_semigroup() = 0;
-
-    virtual std::vector<word_type>::const_iterator cbegin_generating_pairs()
-        = 0;
-    virtual std::vector<word_type>::const_iterator cend_generating_pairs() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - public
@@ -151,11 +144,19 @@ namespace libsemigroups {
 
     virtual bool is_quotient_obviously_finite();
     virtual bool is_quotient_obviously_infinite();
-    virtual void set_nr_generators(size_t);
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - public
     /////////////////////////////////////////////////////////////////////////
+
+    void set_nr_generators(size_t);
+
+    void add_pair(word_type const& u, word_type const& v);
+
+    using const_iterator = std::vector<relation_type>::const_iterator;
+
+    const_iterator cbegin_generating_pairs() const;
+    const_iterator cend_generating_pairs() const;
 
     // Pass by value since these must be copied anyway
     void add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>);
@@ -171,12 +172,13 @@ namespace libsemigroups {
     non_trivial_class_iterator cbegin_ntc();
     non_trivial_class_iterator cend_ntc();
 
-    //! Return the type of the congruence, i.e. if it is a left, right, or
-    //! two-sided congruence.
     size_t           nr_generators() const noexcept;
     size_t           nr_generating_pairs() const noexcept;
     size_t           nr_non_trivial_classes();
     FroidurePinBase* parent_semigroup() const;
+
+    //! Return the type of the congruence, i.e. if it is a left, right, or
+    //! two-sided congruence.
     congruence_type  type() const noexcept;
 
    protected:
@@ -209,9 +211,14 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     std::vector<std::vector<word_type>> _non_trivial_classes;
-    size_t                              _nr_generating_pairs;
 
    private:
+    /////////////////////////////////////////////////////////////////////////
+    // CongBase - pure virtual methods - private
+    /////////////////////////////////////////////////////////////////////////
+
+    virtual void add_pair_impl(word_type const&, word_type const&) = 0;
+
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
     /////////////////////////////////////////////////////////////////////////
@@ -221,17 +228,19 @@ namespace libsemigroups {
     // (i.e the return value should not change).
     virtual class_index_type const_word_to_class_index(word_type const&) const;
     virtual void             init_non_trivial_classes();
+    virtual void             set_nr_generators_impl(size_t);
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    bool             _delete_quotient;
-    bool             _init_ntc_done;
-    size_t           _nrgens;
-    FroidurePinBase* _parent;
-    FroidurePinBase* _quotient;
-    congruence_type  _type;
+    bool                       _delete_quotient;
+    bool                       _init_ntc_done;
+    size_t                     _nrgens;
+    std::vector<relation_type> _gen_pairs;
+    FroidurePinBase*           _parent;
+    FroidurePinBase*           _quotient;
+    congruence_type            _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - static data members - private

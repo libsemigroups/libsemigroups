@@ -78,7 +78,6 @@ namespace libsemigroups {
     // CongBase - overridden pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void             add_pair(word_type const&, word_type const&) override;
     word_type        class_index_to_word(class_index_type) override;
     FroidurePinBase* quotient_semigroup() override;
     size_t           nr_classes() override;
@@ -107,17 +106,23 @@ namespace libsemigroups {
 
    private:
     //////////////////////////////////////////////////////////////////////////
-    // Congruence - methods - private
+    // CongBase - pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    template <class TCongBaseSubclass>
-    TCongBaseSubclass* find_method() const;
+    void add_pair_impl(word_type const&, word_type const&) override;
 
     //////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
 
     void init_non_trivial_classes() override;
+
+    //////////////////////////////////////////////////////////////////////////
+    // Congruence - methods - private
+    //////////////////////////////////////////////////////////////////////////
+
+    template <class TCongBaseSubclass>
+    TCongBaseSubclass* find_method() const;
 
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private

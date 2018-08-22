@@ -101,7 +101,6 @@ namespace libsemigroups {
       // CongBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
-      void             add_pair(word_type const&, word_type const&) override;
       word_type        class_index_to_word(class_index_type) override;
       FroidurePinBase* quotient_semigroup() override;
       size_t           nr_classes() override;
@@ -124,6 +123,12 @@ namespace libsemigroups {
                              internal_const_element_type);
 
      private:
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+
+      void add_pair_impl(word_type const&, word_type const&) override;
+
       ////////////////////////////////////////////////////////////////////////
       // P - methods - private
       ////////////////////////////////////////////////////////////////////////
@@ -218,11 +223,15 @@ namespace libsemigroups {
 
       void run() override;
 
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // P - overridden pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+
       // Override the method for the class P to avoid having to know the parent
       // semigroup (found as part of KBP::run) to add a pair.
-      void add_pair(word_type const&, word_type const&) override;
+      void add_pair_impl(word_type const&, word_type const&) override;
 
-     protected:
       ////////////////////////////////////////////////////////////////////////
       // CongBase - overridden non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////

@@ -19,12 +19,14 @@
 // This file contains an implementation of the Todd-Coxeter algorithm for
 // semigroups.
 
-// TODO:
+// TODO(now)
+// 1. allow inverses
+// 2. add constructor from RWS, see comments in somewhere in here?
+
+// TODO(later)
 // 1. there doesn't seem to be any reason to store _relations as pairs, maybe
 //    better to store it as a flat vector, this might reduce code duplication
 //    too.
-// 3. allow inverses
-// 4. add constructor from RWS, see comments in somewhere in here??
 
 //////////////////////////////////////////////////////////////////////////
 // NOTES on the data structures used by Todd-Coxeter
@@ -196,7 +198,7 @@ namespace libsemigroups {
             "Todd-Coxeter will never terminate");
       }
 
-      Timer                       timer;
+      Timer timer;
       init();
 
       while (_current != _next && !dead() && !timed_out()) {
@@ -288,23 +290,6 @@ namespace libsemigroups {
     // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeter::add_pair(word_type const& lhs, word_type const& rhs) {
-      if (lhs == rhs) {
-        return;
-      }
-      // validate_word throws if the generators are not defined
-      validate_word(lhs);
-      validate_word(rhs);
-      _nr_generating_pairs++;  // defined in CongBase
-      word_type u = lhs;
-      word_type v = rhs;
-      if (_relations_are_reversed) {
-        std::reverse(u.begin(), u.end());
-        std::reverse(v.begin(), v.end());
-      }
-      _extra.emplace_back(std::move(u), std::move(v));
-      reset_quotient();
-    }
 
     size_t ToddCoxeter::nr_classes() {
       if (is_quotient_obviously_infinite()) {
@@ -345,14 +330,15 @@ namespace libsemigroups {
     }
 
     word_type ToddCoxeter::class_index_to_word(class_index_type i) {
-      // TODO check arg
-      // quotient_semigroup throws if we cannot do this
-      // TODO check the comment in the previous line is still accurate
-      auto S = static_cast<FroidurePin<TCE>*>(quotient_semigroup());
-      S->enumerate();
-      word_type out;
-      S->minimal_factorisation(out, S->position(TCE(this, i + 1)));
-      return out;  // TODO std::move?
+      if (i >= nr_classes()) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid class index, should be in the range [0, "
+            + to_string(nr_classes()) + "), not " + to_string(i));
+      }
+
+      // FIXME(now) quotient_semigroup throws if this is not 2-sided
+      auto fp = static_cast<FroidurePin<TCE>*>(quotient_semigroup());
+      return fp->minimal_factorisation(TCE(this, i + 1));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -426,12 +412,6 @@ namespace libsemigroups {
       // means it is finite.
     }
 
-    void ToddCoxeter::set_nr_generators(size_t n) {
-      CongBase::set_nr_generators(n);
-      _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - methods - public
@@ -459,23 +439,6 @@ namespace libsemigroups {
       return _policy;
     }
 
-    void ToddCoxeter::prefill(RecVec<class_index_type> const& table) {
-      // TODO assertions -> exceptions
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_policy == policy::none);
-      LIBSEMIGROUPS_ASSERT(!has_parent());
-      LIBSEMIGROUPS_ASSERT(table.nr_rows() > 0);
-      LIBSEMIGROUPS_ASSERT(table.nr_cols() == nr_generators());
-      LIBSEMIGROUPS_ASSERT(_relations.empty());
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
-      _table = table;
-      validate_table();
-      // TODO Suppose that "table" is the right/left Cayley graph of a
-      // FroidurePin and add a row at the start for coset 0. See
-      // [todd-coxeter][21]. This would make this method more useable.
-      init_after_prefill();
-    }
-
     class_index_type ToddCoxeter::table(class_index_type i, letter_type j) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
@@ -488,6 +451,20 @@ namespace libsemigroups {
 
     ////////////////////////////////////////////////////////////////////////
     // CongBase - overridden pure virtual methods - private
+    ////////////////////////////////////////////////////////////////////////
+
+    void ToddCoxeter::add_pair_impl(word_type const& u, word_type const& v) {
+      word_type U = u;
+      word_type V = v;
+      if (_relations_are_reversed) {
+        std::reverse(U.begin(), U.end());
+        std::reverse(V.begin(), V.end());
+      }
+      _extra.emplace_back(std::move(U), std::move(V));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // CongBase - overridden non-pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////
 
     class_index_type
@@ -509,6 +486,13 @@ namespace libsemigroups {
       }
       return (c == UNDEFINED ? c : c - 1);
     }
+
+    void ToddCoxeter::set_nr_generators_impl(size_t n) {
+      _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
+      _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
+      _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
+    }
+
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - methods (validation) - private
@@ -558,6 +542,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!_init_done);
       LIBSEMIGROUPS_ASSERT(_relations.empty());
       _prefilled = true;
+      validate_table();
       _active    = _table.nr_rows();
       _id_coset  = 0;
 

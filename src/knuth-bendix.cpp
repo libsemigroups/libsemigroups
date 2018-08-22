@@ -270,13 +270,15 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongBase(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {}
+          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {
+      set_nr_generators(kb->alphabet().size());
+    }
 
     KnuthBendix::KnuthBendix(FroidurePinBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
-      CongBase::set_nr_generators(S.nr_generators());
+      set_nr_generators(S.nr_generators());
       set_parent(&S);
     }
 
@@ -314,12 +316,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - overridden pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
-
-    void KnuthBendix::add_pair(word_type const& lhs, word_type const& rhs) {
-      _nr_generating_pairs++;  // defined in CongBase
-      reset_quotient();
-      _kb->add_rule(lhs, rhs);
-    }
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
@@ -368,10 +364,27 @@ namespace libsemigroups {
       return const_contains(lhs, rhs) == result_type::TRUE;
     }
 
-    void KnuthBendix::set_nr_generators(size_t n) {
-      CongBase::set_nr_generators(n);
-      _kb->set_alphabet(n);
+    ////////////////////////////////////////////////////////////////////////////
+    // CongBase - overridden pure virtual methods - private
+    ////////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::add_pair_impl(word_type const& u, word_type const& v) {
+      _kb->add_rule(u, v);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // CongBase - overridden non-pure virtual methods - private
+    ////////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::set_nr_generators_impl(size_t n) {
+      if (!_kb->is_alphabet_defined()) {
+        _kb->set_alphabet(n);
+      } else if (_kb->alphabet().size() != n) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "incompatible number of generators, should be "
+            + to_string(_kb->alphabet().size()) + ", but found "
+            + to_string(n));
+      }
+    }
   }  // namespace congruence
 }  // namespace libsemigroups
