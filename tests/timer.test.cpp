@@ -15,12 +15,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <chrono>
-#include <iostream>
-#include <thread>
+#include <chrono>    // for nanoseconds, milliseconds, durati...
+#include <iostream>  // for string, ostringstream, ostream
+#include <string>    // for operator==
+#include <thread>    // for sleep_for
 
-#include "internal/timer.hpp"
-#include "libsemigroups.tests.hpp"
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/timer.hpp"  // for Timer, operator<<
 
 namespace libsemigroups {
 

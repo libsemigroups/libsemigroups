@@ -22,27 +22,30 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
 
-#include <algorithm>
-#include <mutex>
-#include <numeric>
-#include <string>
-#include <thread>
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include <stddef.h>  // for size_t
 
-#include "internal/iterator.hpp"
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/libsemigroups-exception.hpp"
-#include "internal/report.hpp"
-#include "internal/runner.hpp"
-#include "internal/stl.hpp"
-#include "internal/timer.hpp"
+#include <iterator>       // for reverse_iterator
+#include <mutex>          // for mutex
+#include <thread>         // for get_id
+#include <type_traits>    // for is_const, remove_pointer
+#include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
+#include <vector>         // for vector
 
-#include "adapters.hpp"
-#include "constants.hpp"
-#include "froidure-pin-base.hpp"
-#include "traits.hpp"
+#include "internal/containers.hpp"            // for RecVec
+#include "internal/iterator.hpp"              // for iterator_base
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "internal/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/report.hpp"                   // for REPORT
+#include "internal/stl.hpp"                      // for equal_to, hash
+#include "internal/timer.hpp"                    // for Timer
+
+#include "adapters.hpp"           // for complexity, degree, increase_degree_by
+#include "constants.hpp"          // for UNDEFINED, LIMIT_MAX
+#include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
+#include "traits.hpp"             // for TraitsHashEqual
+#include "types.hpp"              // for letter_type, word_type
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
@@ -783,7 +786,7 @@ namespace libsemigroups {
     // FroidurePin - iterators - private
     ////////////////////////////////////////////////////////////////////////
 
-    // Forward declarations
+    // Forward declarations - implemented in froidure-pin-impl.hpp
     struct iterator_methods;
     struct iterator_methods_pair_first;
 

@@ -16,6 +16,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <memory>    // for unique_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for operator!=, operator==
+
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/stl.hpp"                      // for make_unique
+
+#include "cong-base.hpp"          // for CongBase, CongBase::...
+#include "fpsemi-base.hpp"        // for FpSemiBase
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "froidure-pin.hpp"       // for FroidurePin
+#include "kbe.hpp"                // for KBE
+#include "knuth-bendix.hpp"       // for KnuthBendix, KnuthBe...
+#include "types.hpp"              // for word_type
+
+namespace libsemigroups {
+  class ReductionOrdering;
+}
+
 #include "knuth-bendix-impl.hpp"
 
 // Include kbe-impl.hpp after knuth-bendix-impl.hpp since KBE depends on

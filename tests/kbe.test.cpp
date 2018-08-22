@@ -16,8 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "kbe.hpp"
-#include "libsemigroups.tests.hpp"
+#include <vector>  // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CAS
+
+#include "element.hpp"       // for Element
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "kbe.hpp"           // for KBE
+#include "knuth-bendix.hpp"  // for KnuthBendix
 
 namespace libsemigroups {
   template <class TElementType>

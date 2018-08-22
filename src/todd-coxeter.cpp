@@ -70,16 +70,21 @@
 
 #include "todd-coxeter.hpp"
 
-#include <algorithm>
-#include <unordered_map>
+#include <algorithm>      // for reverse, max_element
+#include <string>         // for operator+, basic_string
+#include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
 
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/libsemigroups-exception.hpp"
-#include "internal/report.hpp"
-#include "internal/stl.hpp"
+#include "internal/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/report.hpp"                   // for REPORT
+#include "internal/stl.hpp"                      // for to_string
+#include "internal/timer.hpp"                    // for Timer
 
-#include "froidure-pin.hpp"
-#include "tce.hpp"
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "froidure-pin.hpp"       // for FroidurePin
+#include "tce.hpp"                // for TCE
 
 namespace libsemigroups {
 

@@ -19,7 +19,7 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_SEMIRING_HPP_
 #define LIBSEMIGROUPS_INCLUDE_SEMIRING_HPP_
 
-#include <cstdint>
+#include <cinttypes>  // for int64_t
 
 namespace libsemigroups {
 

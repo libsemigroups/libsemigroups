@@ -21,9 +21,6 @@
 
 #include "bmat8.hpp"
 
-#include <random>
-#include <vector>
-
 namespace libsemigroups {
   static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
 

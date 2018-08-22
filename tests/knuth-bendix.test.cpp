@@ -23,14 +23,27 @@
 #include <algorithm>
 #include <random>
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "internal/stl.hpp"
-#include "kbe.hpp"
-#include "knuth-bendix.hpp"
-#include "libsemigroups.tests.hpp"
+#include <algorithm>  // for shuffle
+#include <chrono>     // for duration, hours
+#include <iostream>   // for string, operator<<, ost...
+#include <random>     // for mt19937, random_device
+#include <string>     // for operator==, allocator
+#include <utility>    // for operator==, pair
+#include <vector>     // for vector, __vector_base<>...
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "internal/report.hpp"                // for REPORTER, Reporter
+
+#include "element.hpp"       // for Element, Transf, Transf...
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_...
+#include "kbe.hpp"           // for KBE
+#include "knuth-bendix.hpp"  // for KnuthBendix, operator<<
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
+  struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
   template <class TElementType>

@@ -18,19 +18,25 @@
 
 // The purpose of this file is to test the ToddCoxeter classes.
 
-#include <utility>
+#include <algorithm>   // for count, sort, transform
+#include <chrono>      // for duration, milliseconds
+#include <cstddef>     // for size_t
+#include <functional>  // for mem_fn
+#include <vector>      // for vector
 
-#include "libsemigroups.tests.hpp"
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "internal/report.hpp"
-
-#include "bmat8.hpp"
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "tce.hpp"
-#include "todd-coxeter.hpp"
+#include "bmat8.hpp"              // for Bmat8
+#include "cong-base.hpp"          // for congruence_type
+#include "element.hpp"            // for Element, Transf, Transf<>::type
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "froidure-pin.hpp"       // for FroidurePin, FroidurePin<>::eleme...
+#include "tce.hpp"                // for TCE
+#include "todd-coxeter.hpp"       // for ToddCoxeter
+#include "types.hpp"              // for relation_type, word_type
 
 namespace libsemigroups {
+  struct LibsemigroupsException;
 
   template <class TElementType>
   void delete_gens(std::vector<TElementType>& gens) {

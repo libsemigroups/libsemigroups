@@ -22,14 +22,22 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONG_HPP_
 
-#include "internal/race.hpp"
+#include <stddef.h>  // for size_t
 
-#include "cong-base.hpp"
-#include "knuth-bendix.hpp"
-#include "todd-coxeter.hpp"
+#include "internal/race.hpp"    // for Race
+#include "internal/runner.hpp"  // for Runner
+
+#include "cong-base.hpp"  // for congruence_type, CongBase::class_index_type
+#include "types.hpp"      // for word_type
 
 namespace libsemigroups {
-  class FpSemigroup;  // Forward declaration
+  class FpSemigroup;      // Forward declaration
+  class FroidurePinBase;  // Forward declaration, constructor parameters
+  namespace congruence {
+    class KnuthBendix;
+    class ToddCoxeter;
+  }  // namespace congruence
+
   class Congruence : public CongBase {
    public:
     // Execution policy:

@@ -21,10 +21,15 @@
 
 #include "element.hpp"
 
-#include <algorithm>
-#include <thread>
+#include <algorithm>  // for fill, max_element, find
+#include <cmath>      // for abs
+#include <ostream>    // for operator<<, basic_ostream, ostringstream
+#include <thread>     // for thread, get_id
 
-#include "internal/report.hpp"
+#include "internal/report.hpp"  // for REPORTER, Reporter
+
+#include "blocks.hpp"    // for Blocks
+#include "semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
 
 namespace libsemigroups {
 

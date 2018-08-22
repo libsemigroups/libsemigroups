@@ -18,11 +18,12 @@
 
 #include "cong-base.hpp"
 
-#include "internal/libsemigroups-exception.hpp"
-#include "internal/stl.hpp"
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/stl.hpp"                      // for to_string
 
-#include "constants.hpp"
-#include "froidure-pin-base.hpp"
+#include "constants.hpp"          // for UNDEFINED
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
 
 namespace libsemigroups {
 

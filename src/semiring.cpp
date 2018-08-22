@@ -18,14 +18,11 @@
 
 #include "semiring.hpp"
 
-#include <limits.h>
+#include <algorithm>  // for min, max
 
-#include <algorithm>
-#include <cstdint>
+#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
-#include "internal/libsemigroups-debug.hpp"
-
-#include "constants.hpp"
+#include "constants.hpp"  // for POSITIVE_INFINITY
 
 namespace libsemigroups {
 

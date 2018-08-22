@@ -16,11 +16,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bmat8.hpp"
-#include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <vector>  // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+
+#include "bmat8.hpp"         // for BMat8
+#include "froidure-pin.hpp"  // for FroidurePin, FroidurePi...
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
+  struct LibsemigroupsException;
 
   bool constexpr REPORT = false;
 

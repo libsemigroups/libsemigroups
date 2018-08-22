@@ -19,7 +19,11 @@
 // TODO 1. smart pointer to _tc?
 
 #include "tce.hpp"
-#include "todd-coxeter.hpp"
+
+#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+
+#include "cong-base.hpp"     // for CongBase::class_index_type
+#include "todd-coxeter.hpp"  // for congruence::ToddCoxeter
 
 namespace libsemigroups {
 

@@ -21,13 +21,19 @@
 
 // TODO: - do nothing if there are no generating pairs
 
-#include "internal/libsemigroups-exception.hpp"
-
-#include "cong-pair.hpp"
 #include "cong.hpp"
-#include "fpsemi.hpp"
-#include "kbe.hpp"
-#include "todd-coxeter.hpp"
+
+#include <string>       // for string
+#include <type_traits>  // for enable_if<>::type
+#include <vector>       // for operator==, vector
+
+#include "cong-pair.hpp"                         // for KBP
+#include "fpsemi.hpp"                            // for FpSemigroup
+#include "froidure-pin-base.hpp"                 // for FroidurePinBase
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "knuth-bendix.hpp"                      // for KnuthBendix
+#include "todd-coxeter.hpp"                      // for ToddCoxeter
 
 namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;

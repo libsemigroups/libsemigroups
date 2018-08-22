@@ -16,9 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups.tests.hpp"
+
 #include "blocks.hpp"
 #include "element.hpp"
-#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
 

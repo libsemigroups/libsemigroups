@@ -21,7 +21,7 @@
 
 #include "fpsemi-examples.hpp"
 
-#include <cstdlib>
+#include <cstdlib>  // for size_t, abs
 
 namespace libsemigroups {
   std::vector<relation_type> RookMonoid(size_t l, int q) {

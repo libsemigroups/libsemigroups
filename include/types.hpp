@@ -19,9 +19,12 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_TYPES_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TYPES_HPP_
 
-#include <type_traits>
-#include <utility>
-#include <vector>
+#include <stddef.h>  // for size_t
+
+#include <cstdint>      // for uint8_t, uint16_t, uint32_t, uint64_t
+#include <type_traits>  // for conditional
+#include <utility>      // for pair
+#include <vector>       // for vector
 
 namespace libsemigroups {
   //! Provides a type giving the smallest unsigned integer type capable of

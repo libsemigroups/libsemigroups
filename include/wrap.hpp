@@ -22,13 +22,16 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
 #define LIBSEMIGROUPS_INCLUDE_WRAP_HPP_
 
-#include "internal/libsemigroups-exception.hpp"
-#include "internal/stl.hpp"
+#include <memory>    // for unique_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for string
 
-#include "cong-base.hpp"
-#include "fpsemi-base.hpp"
-#include "froidure-pin-base.hpp"
-#include "types.hpp"
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/stl.hpp"                      // for make_unique
+
+#include "cong-base.hpp"          // for congruence_type, con...
+#include "fpsemi-base.hpp"        // for FpSemiBase
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
 
 namespace libsemigroups {
   namespace fpsemigroup {

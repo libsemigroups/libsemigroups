@@ -25,10 +25,13 @@
 
 #include "fpsemi.hpp"
 
-#include <typeinfo>
+#include <iostream>  // for string, operator<<
 
-#include "froidure-pin-base.hpp"
-#include "knuth-bendix.hpp"
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "knuth-bendix.hpp"       // for KnuthBendix
 
 // FIXME This is wasteful since it calls add_rule(rel.first,
 // rel.second), and then make_pair(rel.first, rel.second), in
@@ -36,6 +39,7 @@
 // JDM: I don't know where this comment came from...
 
 namespace libsemigroups {
+  class Runner;  // Forward declaration
 
   using ToddCoxeter = fpsemigroup::ToddCoxeter;
   using KnuthBendix = fpsemigroup::KnuthBendix;

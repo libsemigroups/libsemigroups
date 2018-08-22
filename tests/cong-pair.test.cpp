@@ -19,10 +19,22 @@
 // The purpose of this file is to test the classes congruence::P and
 // fpsemigroup::P.
 
-#include <utility>  // for std::transform
+#include <algorithm>   // for sort, transform
+#include <functional>  // for mem_fn
+#include <string>      // for string
+#include <vector>      // for vector
 
-#include "cong-pair.hpp"
-#include "libsemigroups.tests.hpp"
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/report.hpp"  // for REPORTER, Reporter
+
+#include "cong-base.hpp"     // for congruence_type, CongBase::non_tr...
+#include "cong-pair.hpp"     // for KBP, P
+#include "element.hpp"       // for Element
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "knuth-bendix.hpp"  // for KnuthBendix
+#include "types.hpp"         // for relation_type, word_type
+#include "wrap.hpp"          // for WrappedCong
 
 namespace libsemigroups {
   template <class TElementType>

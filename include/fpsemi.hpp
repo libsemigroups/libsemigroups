@@ -22,12 +22,17 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
 
-#include "internal/race.hpp"
+#include <stddef.h>  // for size_t
 
-#include "fpsemi-base.hpp"
-#include "todd-coxeter.hpp"
+#include <string>  // for string
+
+#include "internal/race.hpp"  // for Race
+
+#include "fpsemi-base.hpp"   // for FpSemiBase
+#include "todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
+  class FroidurePinBase;  // Forward declaration
   namespace fpsemigroup {
     class KnuthBendix;  // Forward declaration
   }

@@ -16,11 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <vector>  // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "element.hpp"       // for Bipartition
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 
 namespace libsemigroups {
+  // Forward declaration
+  struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
 

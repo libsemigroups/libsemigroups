@@ -19,8 +19,13 @@
 // The purpose of this file is to test the UF class which describes a partition
 // of the set of integers {0, ..., n - 1 }
 
-#include "internal/uf.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <vector>  // for operator==, vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/uf.hpp"  // for UF, UF::blocks_t, UF::table_t
 
 namespace libsemigroups {
 

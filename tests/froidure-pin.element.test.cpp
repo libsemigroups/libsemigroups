@@ -16,11 +16,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <cinttypes>  // for int64_t
+#include <iterator>   // for reverse_iterator, opera...
+#include <vector>     // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/iterator.hpp"              // for iterator_base, operator+
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "internal/report.hpp"                // for REPORTER, Reporter
+
+#include "element.hpp"       // for Element
+#include "froidure-pin.hpp"  // for FroidurePin, FroidurePi...
+#include "semiring.hpp"      // for Integers, Semiring, Max...
+#include "traits.hpp"        // for TraitsHashEqual
+#include "types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
+  struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
   static inline size_t evaluate_reduct(FroidurePin<>&   S,

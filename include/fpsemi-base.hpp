@@ -21,19 +21,22 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
 
-#include <string>
-#include <unordered_map>
+#include <stddef.h>       // for size_t
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
+#include <vector>         // for vector
 
-#include "internal/runner.hpp"
+#include "internal/runner.hpp"  // for Runner
 
-#include "types.hpp"
+#include "types.hpp"  // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
   class FpSemigroup;      // Forward declaration
   class FroidurePinBase;  // Forward declaration
 
   class FpSemiBase : public Runner {
-    friend class libsemigroups::FpSemigroup;
+    friend class FpSemigroup;
 
    public:
     //////////////////////////////////////////////////////////////////////////////

@@ -24,27 +24,36 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
 
-#include <math.h>
+#include <math.h>    // for sqrt, pow
+#include <stddef.h>  // for size_t
 
-#include <algorithm>
-#include <numeric>
-#include <string>
-#include <unordered_set>
-#include <vector>
+#include <algorithm>  // for max_element
+#include <cstdint>    // for uint32_t, int32_t, int64_t
+#include <limits>     // for numeric_limits
+#include <numeric>    // for iota
+#include <ostream>    // for ostream
+#include <sstream>    // for ostringstream
+#include <string>     // for string
+#include <vector>     // for vector
 
-#include "internal/containers.hpp"
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/libsemigroups-exception.hpp"
-#include "internal/stl.hpp"
+#include "internal/containers.hpp"               // for RecVec
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/stl.hpp"  // for to_string, hash, equal_to, less
 
-#include "blocks.hpp"
-#include "constants.hpp"
-#include "hpcombi.hpp"
-#include "semiring.hpp"
-#include "traits.hpp"
-#include "types.hpp"
+#include "adapters.hpp"   // for complexity, degree, increase_degree_by, . . .
+#include "constants.hpp"  // for UNDEFINED
+#include "traits.hpp"     // for Traits
+#include "types.hpp"      // for SmallestInteger
 
 namespace libsemigroups {
+  // Forward declarations
+  class BMat8;
+  class Blocks;
+  struct BooleanSemiring;
+  template <typename T>
+  class Semiring;
+
   //! Abstract base class for semigroup elements
   //!
   //! The FroidurePin class consists of Element objects. Every derived class of

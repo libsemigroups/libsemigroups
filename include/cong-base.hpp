@@ -21,13 +21,17 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_
 
-#include "internal/runner.hpp"
+#include <stddef.h>  // for size_t
+#include <string>    // for string
+#include <vector>    // for vector
 
-#include "types.hpp"
+#include "internal/runner.hpp"  // for Runner
+
+#include "types.hpp"  // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
-  class FroidurePinBase;  // Forward declaration
-  class Congruence;       // Forward declaration
+  class FroidurePinBase;  // Forward declaration, for function members
+  class Congruence;       // Forward declaration, for friendship
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 

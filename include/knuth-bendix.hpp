@@ -22,17 +22,23 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
 
-#include <string>
+#include <iosfwd>    // for string, ostream
+#include <memory>    // for unique_ptr
+#include <stddef.h>  // for size_t
+#include <utility>   // for pair
+#include <vector>    // for vector
 
-#include "cong-base.hpp"
-#include "fpsemi-base.hpp"
-#include "types.hpp"
+#include "cong-base.hpp"    // for CongBase::class_index_type, CongBase, Con...
+#include "fpsemi-base.hpp"  // for FpSemiBase
+#include "types.hpp"        // for word_type
 
 namespace libsemigroups {
-  class KBE;                // Forward declaration
-  class ReductionOrdering;  // Forward declaration
+  // Forward declarations
+  class FroidurePinBase;
+  class KBE;
+  class ReductionOrdering;
   namespace congruence {
-    class KnuthBendix;  // Forward declaration
+    class KnuthBendix;
   }
 
   namespace fpsemigroup {
@@ -231,7 +237,7 @@ namespace libsemigroups {
         overlap_policy _overlap_policy;
       } _settings;
 
-      class KnuthBendixImpl;  // forward declaration
+      class KnuthBendixImpl;  // Forward declaration
       KnuthBendixImpl* _impl;
     };
   }  // namespace fpsemigroup

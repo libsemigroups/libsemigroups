@@ -23,9 +23,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_
 
-#include <type_traits>
+#include <stddef.h>  // for size_t
 
-#include "internal/stl.hpp"
+#include "internal/stl.hpp"  // for equal_to, hash
 
 namespace libsemigroups {
   template <typename TElementType, typename = void>

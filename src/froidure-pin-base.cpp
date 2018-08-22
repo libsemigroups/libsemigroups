@@ -18,6 +18,8 @@
 
 #include "froidure-pin-base.hpp"
 
+#include <vector>
+
 namespace libsemigroups {
   void relations(FroidurePinBase*                            S,
                  std::function<void(word_type, word_type)>&& hook) {

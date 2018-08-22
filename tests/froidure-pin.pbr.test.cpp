@@ -16,9 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <cstdint>      // for uint8_t
+#include <type_traits>  // for enable_if, is_integral
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "internal/iterator.hpp"             // for iterator_base
+#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+
+#include "element.hpp"       // for PBR
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_i...
 
 namespace libsemigroups {
 

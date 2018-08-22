@@ -16,11 +16,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint_fast8_t, uint16_t
+
+#include <vector>  // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "element.hpp"       // for Transformation
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+
 #include "element.hpp"
 #include "froidure-pin.hpp"
 #include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
+  // Forward declaration
+  struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
 

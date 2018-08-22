@@ -49,14 +49,22 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
 
-#include <array>
+#include <stddef.h>  // for size_t
 
-#include "internal/containers.hpp"
-#include "internal/libsemigroups-config.hpp"
-#include "internal/range.hpp"
+#include <array>          // for array
+#include <string>         // for operator+, basic_string
+#include <unordered_set>  // for unordered_set
 
-#include "element.hpp"
-#include "traits.hpp"
+#include "internal/containers.hpp"               // for SquareArray, SquareV...
+#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "internal/range.hpp"                    // for IntegralRange
+#include "internal/stl.hpp"                      // for to_string, equal_to
+
+#include "adapters.hpp"  // for action, degree, inverse
+#include "element.hpp"   // for Perm
+#include "traits.hpp"    // for TraitsEqual
+#include "types.hpp"     // for SmallestInteger
 
 namespace libsemigroups {
   template <size_t N,

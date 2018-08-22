@@ -22,9 +22,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 
-#include <stdint.h>
+#include <stdint.h>  // for uint32_t, size_t
 
-#include <vector>
+#include <vector>  // for vector, vector<>::const_iterator
 
 namespace libsemigroups {
 

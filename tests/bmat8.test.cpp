@@ -15,11 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>
-#include <unordered_set>
+#include <iosfwd>  // for ostream, ostringstream, stringbuf
+#include <vector>  // for vector
+
+#include "libsemigroups.tests.hpp"
 
 #include "bmat8.hpp"
-#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
 

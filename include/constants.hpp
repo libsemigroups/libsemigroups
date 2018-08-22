@@ -37,8 +37,8 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONSTANTS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONSTANTS_HPP_
 
-#include <algorithm>
-#include <type_traits>
+#include <cinttypes>  // for int64_t
+#include <limits>     // for numeric_limits
 
 namespace libsemigroups {
   struct Min {

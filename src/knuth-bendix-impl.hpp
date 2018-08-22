@@ -22,32 +22,33 @@
 #ifndef LIBSEMIGROUPS_SRC_KNUTH_BENDIX_IMPL_HPP_
 #define LIBSEMIGROUPS_SRC_KNUTH_BENDIX_IMPL_HPP_
 
-#include "knuth-bendix.hpp"
+#include <stddef.h>                           // for size_t
+#include <cinttypes>              // for int64_t
+#include <algorithm>                          // for max, min
+#include <atomic>                             // for atomic
+#include <limits>                             // for numeric_limits
+#include <list>                               // for list, list<>::iterator
+#include <ostream>                            // for string
+#include <set>                                // for set
+#include <stack>                              // for stack
+#include <string>                             // for operator!=, basic_strin...
+#include <type_traits>                        // for swap
+#include <utility>                            // for pair
+#include <vector>                             // for vector
 
-#include <algorithm>
-#include <list>
-#include <ostream>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "internal/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "internal/report.hpp"                // for REPORT
+#include "internal/string.hpp"                // for is_suffix, maximum_comm...
+#include "internal/timer.hpp"                 // for Timer
 
-#include "internal/libsemigroups-config.hpp"
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/report.hpp"
-#include "internal/stl.hpp"
-#include "internal/string.hpp"
-#include "internal/timer.hpp"
-
-#include "froidure-pin.hpp"
-#include "kbe.hpp"
-#include "reduct.hpp"
-#include "types.hpp"
+#include "constants.hpp"     // for POSITIVE_INFINITY
+#include "knuth-bendix.hpp"  // for KnuthBendix, KnuthBendi...
+#include "reduct.hpp"        // for ReductionOrdering
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
+  class KBE;  // Forward declarations
   namespace fpsemigroup {
     class KnuthBendix::KnuthBendixImpl {
       using external_string_type = std::string;

@@ -21,16 +21,19 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
 #define LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
 
-#include <climits>
-#include <functional>
-#include <iostream>
-#include <random>
-#include <x86intrin.h>
+#include <algorithm>  // for uniform_int_distribution, swap
+#include <climits>    // for CHAR_BIT
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint64_t
+#include <iostream>   // for operator<<, ostringstream
+#include <random>     // for mt19937, random_device
+#include <utility>    // for hash
+#include <vector>     // for vector
 
-#include "internal/libsemigroups-debug.hpp"
-#include "internal/stl.hpp"
+#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "internal/stl.hpp"                  // for to_string
 
-#include "adapters.hpp"
+#include "adapters.hpp"  // for complexity, degree, etc . . .
 
 namespace libsemigroups {
 

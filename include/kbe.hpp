@@ -18,16 +18,21 @@
 
 // This file contains TODO
 //
-// For technical reasons this is implemented in knuth-bendix.cpp
+// For technical reasons this is implemented in src/kbe-impl.hpp
 
 #ifndef LIBSEMIGROUPS_INCLUDE_KBE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_KBE_HPP_
 
-#include <string>
+#include <cstddef>     // for size_t
+#include <functional>  // for equal_to
+#include <string>      // for string
+#include <utility>     // for hash
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "knuth-bendix.hpp"
+#include "adapters.hpp"      // for one
+#include "element.hpp"       // for Element
+#include "froidure-pin.hpp"  // for FroidurePin
+#include "knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
 
@@ -225,7 +230,11 @@ namespace libsemigroups {
   //! Specialises the factorisation method for FroidurePin's of KBE's so that it
   //! just returns the word inside the KBE.
   template <>
-  word_type FroidurePin<KBE>::factorisation(KBE const& x);
+  word_type FroidurePin<KBE,
+                        hash<KBE>,
+                        equal_to<KBE>,
+                        TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>::
+      factorisation(KBE const& x);
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_

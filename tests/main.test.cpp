@@ -19,12 +19,14 @@
 #define CATCH_CONFIG_FAST_COMPILE
 #define CATCH_CONFIG_MAIN
 
-#include <unordered_map>
+#include <cstdlib>        // for exit, size_t
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
 
-#include "include/internal/stl.hpp"
-#include "include/internal/timer.hpp"
+#include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "libsemigroups.tests.hpp"
+#include "include/internal/stl.hpp"    // for to_string
+#include "include/internal/timer.hpp"  // for Timer
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)

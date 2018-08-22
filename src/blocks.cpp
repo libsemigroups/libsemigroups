@@ -29,10 +29,11 @@
 
 #include "blocks.hpp"
 
-#include <algorithm>
+#include <algorithm>  // for max_element, count
+#include <cstdint>    // for uint32_t
 
-#include "constants.hpp"
-#include "internal/libsemigroups-debug.hpp"
+#include "constants.hpp"                     // for UNDEFINED
+#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
   Blocks::Blocks()

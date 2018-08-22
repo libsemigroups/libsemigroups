@@ -26,21 +26,26 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
 
-#include <stack>
-#include <unordered_map>
-#include <vector>
+#include <stddef.h>  // for size_t
 
-#include "internal/containers.hpp"
+#include <cinttypes>      // for int64_t
+#include <stack>          // for stack
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
+#include <vector>         // for vector
 
-#include "fpsemi-base.hpp"
-#include "wrap.hpp"
+#include "internal/containers.hpp"  // for RecVec
+
+#include "cong-base.hpp"  // for congruence_type, CongBase, CongBa...
+#include "types.hpp"      // for relation_type, word_type, letter_...
+#include "wrap.hpp"       // for WrappedCong
 
 namespace libsemigroups {
-  class TCE;  // forward declaration
+  // Forward declarations
+  class TCE;
   namespace congruence {
-    class ToddCoxeter;  // forward declaration
+    class ToddCoxeter;
   }
-
   namespace fpsemigroup {
     using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
   }

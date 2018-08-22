@@ -23,12 +23,17 @@
 //
 //   http://brauer.maths.qmul.ac.uk/Atlas/
 
-#include "element.hpp"
-#include "hpcombi.hpp"
-#include "libsemigroups.tests.hpp"
-#include "schreier-sims.hpp"
+#include <stddef.h>  // for size_t
+
+#include <cstdint>  // for uint64_t
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "element.hpp"        // for Permutation
+#include "schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 
 namespace libsemigroups {
+  struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
 

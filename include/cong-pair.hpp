@@ -23,17 +23,30 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
 #define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
 
-#include <queue>
+#include <stddef.h>  // for size_t
 
-#include "internal/stl.hpp"
-#include "internal/uf.hpp"
+#include <queue>          // for queue
+#include <unordered_map>  // for unordered_map
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for pair
+#include <vector>         // for vector
 
-#include "cong-base.hpp"
-#include "fpsemi-base.hpp"
-#include "kbe.hpp"
-#include "wrap.hpp"
+#include "internal/stl.hpp"  // for equal_to, hash
+#include "internal/uf.hpp"   // for UF
+
+#include "adapters.hpp"      // for product
+#include "cong-base.hpp"     // for CongBase::class_index_type, congruence_type
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type, FroidurePin
+#include "kbe.hpp"           // for KBE
+#include "knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "traits.hpp"        // for TraitsHashEqual
+#include "types.hpp"         // for word_type
+#include "wrap.hpp"          // for WrappedCong
 
 namespace libsemigroups {
+  class Element;          // Forward declaration, for default template parameter
+  class FroidurePinBase;  // Forward declaration, for constructor parameter
+
   namespace congruence {
     // Implemented in cong-pair-impl.hpp
     template <typename TElementType  = Element const*,

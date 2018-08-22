@@ -21,6 +21,9 @@
 // TODO(now):   double check "noexcept" usage!
 // TODO(later): make const member functions thread-safe
 
+#ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_
+#define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_
+
 #define TEMPLATE                    \
   template <typename TElementType,  \
             typename TElementHash,  \
@@ -1464,5 +1467,5 @@ namespace libsemigroups {
       return &(this->to_external_const((*it).first));
     }
   };
-
 }  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_

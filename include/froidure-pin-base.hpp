@@ -19,14 +19,13 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_
 
-#include <atomic>
-#include <functional>
+#include <functional>  // for function
+#include <stddef.h>    // for size_t
 
-#include "internal/containers.hpp"
-#include "internal/runner.hpp"
+#include "internal/runner.hpp"  // for Runner
 
-#include "constants.hpp"
-#include "types.hpp"
+#include "constants.hpp"  // for LIMIT_MAX
+#include "types.hpp"      // for word_type, letter_type
 
 namespace libsemigroups {
   class FroidurePinBase : public Runner {
@@ -59,7 +58,9 @@ namespace libsemigroups {
     virtual size_t             length_non_const(element_index_type)   = 0;
 
     virtual element_index_type
-                               product_by_reduction(element_index_type, element_index_type) const = 0;
+                               product_by_reduction(element_index_type,
+                                                    element_index_type) const =
+                               0;
     virtual element_index_type fast_product(element_index_type,
                                             element_index_type) const = 0;
     virtual element_index_type letter_to_pos(letter_type) const       = 0;

@@ -19,8 +19,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_REDUCT_HPP_
 #define LIBSEMIGROUPS_INCLUDE_REDUCT_HPP_
 
-#include <functional>
-#include <string>
+#include <functional>  // for function
+#include <stddef.h>    // for size_t
+#include <string>      // for string
 
 namespace libsemigroups {
   //! This class provides a call operator which can be used to compare

@@ -24,6 +24,9 @@
 //   2. use shared_ptr rather than raw pointer to fpsemigroup::KnuthBendix in
 //      KBP class.
 
+#ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_
+#define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_
+
 #define TEMPLATE                    \
   template <typename TElementType,  \
             typename TElementHash,  \
@@ -346,3 +349,4 @@ namespace libsemigroups {
     }
   }  // namespace congruence
 }  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_

@@ -21,14 +21,18 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_TCE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_TCE_HPP_
 
-#include "adapters.hpp"
-#include "constants.hpp"
+#include <cstddef>  // for size_t
+#include <ostream>  // for ostream
+#include <sstream>  // for ostringstream
+
+#include "adapters.hpp"   // for complexity, degree, less, one, product, ...
+#include "constants.hpp"  // for LIMIT_MAX
 
 namespace libsemigroups {
   // Forward declarations
   namespace congruence {
     class ToddCoxeter;
-  }
+  }  // namespace congruence
   namespace fpsemigroup {
     template <class T, bool S>
     class WrappedCong;

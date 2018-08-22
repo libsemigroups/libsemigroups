@@ -16,11 +16,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "element.hpp"
-#include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include <stddef.h>  // for size_t
+
+#include <cinttypes>  // for int64_t
+#include <vector>     // for vector
+
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "element.hpp"       // for ProjectiveMaxPlusMatrix
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "semiring.hpp"      // for MaxPlusSemiring, Semiring
 
 namespace libsemigroups {
+  // Forward declaration
+  struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
 

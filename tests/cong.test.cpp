@@ -16,19 +16,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "fpsemi-examples.hpp"
-#include "libsemigroups.tests.hpp"
+#include "fpsemi-examples.hpp"      // for RookMonoid
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "include/internal/stl.hpp"
+#include "internal/report.hpp"  // for REPORTER, Reporter
 
-#include "bmat8.hpp"
-#include "cong-pair.hpp"
-#include "cong.hpp"
-#include "element.hpp"
-#include "fpsemi.hpp"
-#include "froidure-pin.hpp"
+#include "bmat8.hpp"         // for BMat8
+#include "cong-pair.hpp"     // for KBP
+#include "cong.hpp"          // for Congruence
+#include "element.hpp"       // for Element
+#include "fpsemi.hpp"        // for FpSemigroup
+#include "froidure-pin.hpp"  // for FroidurePin
+#include "knuth-bendix.hpp"  // for KnuthBendix
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
+  // Forward declarations
+  struct LibsemigroupsException;
+
   constexpr bool REPORT = false;
 
   template <class TElementType>
