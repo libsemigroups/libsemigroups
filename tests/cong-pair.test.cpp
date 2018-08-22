@@ -998,23 +998,6 @@ namespace libsemigroups {
       REQUIRE(!kbp.contains({1}, {0}));
       REQUIRE(kbp.finished());
     }
-
-    // TODO uncomment
-    /*LIBSEMIGROUPS_TEST_CASE("P", "011", "run_for", "[quick][cong][cong-pair]")
-    { REPORTER.set_report(REPORT); RWS rws; rws.set_alphabet("ab");
-      rws.add_relation("aa", "a");
-      rws.add_relation("ab", "a");
-      rws.add_relation("ba", "a");
-
-      P<RWSE*> p(TWOSIDED, &rws);
-
-      REQUIRE(p.contains({0, 0}, {0}));
-      REQUIRE(p.contains({0, 1}, {0}));
-      REQUIRE(p.contains({1, 0}, {0}));
-
-      p.add_pair({1, 1, 1, 1, 1, 1, 1}, {1});
-      p.run_for(std::chrono::milliseconds(200));
-    }*/
   }  // namespace congruence
 
   namespace fpsemigroup {

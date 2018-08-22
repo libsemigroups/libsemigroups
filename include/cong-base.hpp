@@ -106,6 +106,10 @@ namespace libsemigroups {
 
     virtual FroidurePinBase* quotient_semigroup() = 0;
 
+    virtual std::vector<word_type>::const_iterator cbegin_generating_pairs()
+        = 0;
+    virtual std::vector<word_type>::const_iterator cend_generating_pairs() = 0;
+
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
