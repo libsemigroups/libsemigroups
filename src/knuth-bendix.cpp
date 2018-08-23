@@ -279,7 +279,7 @@ namespace libsemigroups {
         : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
       set_nr_generators(S.nr_generators());
-      set_parent(&S);
+      set_parent_semigroup(&S);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -326,12 +326,6 @@ namespace libsemigroups {
       return _kb->size();
     }
 
-    FroidurePinBase* KnuthBendix::quotient_semigroup() {
-      if (!has_quotient()) {
-        set_quotient(_kb->isomorphic_non_fp_semigroup(), false);
-      }
-      return get_quotient();
-    }
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       validate_word(word);
@@ -370,6 +364,10 @@ namespace libsemigroups {
 
     void KnuthBendix::add_pair_impl(word_type const& u, word_type const& v) {
       _kb->add_rule(u, v);
+    }
+
+    std::shared_ptr<FroidurePinBase> KnuthBendix::quotient_impl() {
+      return _kb->isomorphic_non_fp_semigroup();
     }
 
     ////////////////////////////////////////////////////////////////////////////

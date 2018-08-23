@@ -102,7 +102,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       word_type        class_index_to_word(class_index_type) override;
-      FroidurePinBase* quotient_semigroup() override;
       size_t           nr_classes() override;
       class_index_type word_to_class_index(word_type const& w) override;
 

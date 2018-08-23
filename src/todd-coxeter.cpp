@@ -128,7 +128,7 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase* S, policy p)
         : ToddCoxeter(type) {
       _policy = p;
-      set_parent(S);
+      set_parent_semigroup(S);
       set_nr_generators(S->nr_generators());
     }
 
@@ -172,17 +172,13 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type           typ,
                              fpsemigroup::ToddCoxeter& copy)
         : ToddCoxeter(typ, *copy.congruence()) {
-      LIBSEMIGROUPS_ASSERT(!has_parent());
+      LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
       if (copy.finished()) {
-        set_parent(copy.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(copy.isomorphic_non_fp_semigroup());
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_relations;
         // FIXME assertion failure if we use_cayley_graph
       }
-    }
-
-    ToddCoxeter::~ToddCoxeter() {
-      reset_quotient();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -301,23 +297,6 @@ namespace libsemigroups {
       }
     }
 
-    FroidurePinBase* ToddCoxeter::quotient_semigroup() {
-      if (type() != congruence_type::TWOSIDED) {
-        throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
-      } else if (!has_quotient()) {
-        run();
-        LIBSEMIGROUPS_ASSERT(finished());
-        // TODO replace with 0-parameter constructor when available
-        std::vector<TCE> gens;
-        for (size_t i = 0; i < nr_generators(); ++i) {
-          // We use _table.get(0, i) instead of just i, because there might be
-          // more generators than cosets.
-          gens.emplace_back(this, _table.get(0, i));
-        }
-        set_quotient(new FroidurePin<TCE>(gens), true);
-      }
-      return get_quotient();
-    }
 
     class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
       run();
@@ -401,8 +380,9 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled || (has_quotient() && get_quotient()->finished())
-             || (has_parent() && get_parent()->finished());
+      return _prefilled
+             || (has_quotient_semigroup() && quotient_semigroup()->finished())
+             || (has_parent_semigroup_semigroup() && parent_semigroup()->finished());
       // 1. _prefilled means that either we were created from a FroidurePinBase*
       // with _policy = use_cayley_graph and we successfully prefilled the
       // table, or we manually prefilled the table.  In this case the semigroup
@@ -411,7 +391,6 @@ namespace libsemigroups {
       // 2. the quotient semigroup being defined and fully enumerated
       // means it is finite.
     }
-
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - methods - public
@@ -461,6 +440,22 @@ namespace libsemigroups {
         std::reverse(V.begin(), V.end());
       }
       _extra.emplace_back(std::move(U), std::move(V));
+    }
+
+    std::shared_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
+      if (type() != congruence_type::TWOSIDED) {
+        throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
+      }
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      // TODO replace with 0-parameter constructor when available
+      std::vector<TCE> gens;
+      for (size_t i = 0; i < nr_generators(); ++i) {
+        // We use _table.get(0, i) instead of just i, because there might be
+        // more generators than cosets.
+        gens.emplace_back(this, _table.get(0, i));
+      }
+      return std::shared_ptr<FroidurePinBase>(new FroidurePin<TCE>(gens));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -625,7 +620,7 @@ namespace libsemigroups {
     void ToddCoxeter::use_relations_or_cayley_graph() {
       // This should not have been run before
       LIBSEMIGROUPS_ASSERT(!_init_done);
-      if (has_parent()) {
+      if (has_parent_semigroup_semigroup()) {
         switch (_policy) {
           case policy::none:
             _policy = policy::use_cayley_graph;
@@ -633,7 +628,7 @@ namespace libsemigroups {
             // when this is constructed from (type, ToddCoxeter&).
             // Intentional fall through
           case policy::use_cayley_graph:
-            prefill(get_parent());
+            prefill(parent_semigroup().get());
 #ifdef LIBSEMIGROUPS_DEBUG
             // This is a check of program logic, since we use parent() to fill
             // the table, so we only validate in debug mode.
@@ -644,7 +639,7 @@ namespace libsemigroups {
             break;
           case policy::use_relations:
             relations(
-                get_parent(),
+                parent_semigroup().get(),
                 [this](word_type const& lhs, word_type const& rhs) -> void {
                   _relations.emplace_back(lhs, rhs);
                 });

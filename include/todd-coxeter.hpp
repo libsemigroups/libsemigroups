@@ -89,7 +89,7 @@ namespace libsemigroups {
       ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
       ToddCoxeter(congruence_type, ToddCoxeter const&);
 
-      ~ToddCoxeter();
+      ~ToddCoxeter() = default;
 
       ////////////////////////////////////////////////////////////////////////
       // Runner - overridden pure virtual methods - public
@@ -102,7 +102,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       size_t           nr_classes() override;
-      FroidurePinBase* quotient_semigroup() override;
       class_index_type word_to_class_index(word_type const&) override;
       word_type        class_index_to_word(class_index_type) override;
 
@@ -130,6 +129,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
+      std::shared_ptr<FroidurePinBase> quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // CongBase - overridden non-pure virtual methods - private

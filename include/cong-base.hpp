@@ -36,7 +36,7 @@ namespace libsemigroups {
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
 
   class CongBase : public Runner {
-    // Allows Congruence to use set_parent and has_parent on the Runner's it
+    // Allows Congruence to use set_parent_semigroup on the Runner's it
     // contains
     friend class Congruence;
 
@@ -101,7 +101,6 @@ namespace libsemigroups {
     //! general, and this method may never terminate.
     virtual size_t nr_classes() = 0;
 
-    virtual FroidurePinBase* quotient_semigroup() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - public
@@ -158,6 +157,7 @@ namespace libsemigroups {
     const_iterator cbegin_generating_pairs() const;
     const_iterator cend_generating_pairs() const;
 
+
     // Pass by value since these must be copied anyway
     void add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>);
 
@@ -175,7 +175,12 @@ namespace libsemigroups {
     size_t           nr_generators() const noexcept;
     size_t           nr_generating_pairs() const noexcept;
     size_t           nr_non_trivial_classes();
-    FroidurePinBase* parent_semigroup() const;
+
+    std::shared_ptr<FroidurePinBase> quotient_semigroup();
+    bool has_quotient_semigroup() const noexcept;
+
+    std::shared_ptr<FroidurePinBase> parent_semigroup() const;
+    bool has_parent_semigroup() const noexcept;
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
@@ -186,14 +191,8 @@ namespace libsemigroups {
     // CongBase - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
-    FroidurePinBase* get_quotient() const noexcept;
-    bool             has_quotient() const noexcept;
-    void             reset_quotient();
-    void             set_quotient(FroidurePinBase*, bool);
-
-    FroidurePinBase* get_parent() const noexcept;
-    bool             has_parent() const noexcept;
-    void             set_parent(FroidurePinBase*);
+    void set_parent_semigroup(std::shared_ptr<FroidurePinBase>&);
+    void set_parent_semigroup(FroidurePinBase*);
 
     bool validate_letter(letter_type) const;
     void validate_word(word_type const&) const;
@@ -218,6 +217,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
+    virtual std::shared_ptr<FroidurePinBase> quotient_impl()       = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
@@ -234,13 +234,12 @@ namespace libsemigroups {
     // CongBase - data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    bool                       _delete_quotient;
-    bool                       _init_ntc_done;
-    size_t                     _nrgens;
-    std::vector<relation_type> _gen_pairs;
-    FroidurePinBase*           _parent;
-    FroidurePinBase*           _quotient;
-    congruence_type            _type;
+    bool                             _init_ntc_done;
+    size_t                           _nrgens;
+    std::vector<relation_type>       _gen_pairs;
+    std::shared_ptr<FroidurePinBase> _parent;
+    std::shared_ptr<FroidurePinBase> _quotient;
+    congruence_type                  _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - static data members - private

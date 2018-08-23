@@ -36,7 +36,6 @@ namespace libsemigroups {
         // Protected
         _non_trivial_classes(),
         // Private
-        _delete_quotient(false),
         _init_ntc_done(false),
         _nrgens(UNDEFINED),
         _parent(nullptr),
@@ -44,7 +43,6 @@ namespace libsemigroups {
         _type(type) {}
 
   CongBase::~CongBase() {
-    reset_quotient();
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -107,7 +105,7 @@ namespace libsemigroups {
       _gen_pairs.emplace_back(u, v);
       // Note that _gen_pairs might contain pairs of distinct words that
       // represent the same element of the parent semigroup (if any).
-      reset_quotient();
+      _quotient.reset();
       set_finished(false);
       add_pair_impl(u, v);
     }
@@ -144,11 +142,31 @@ namespace libsemigroups {
     return _non_trivial_classes.size();
   }
 
-  FroidurePinBase* CongBase::parent_semigroup() const {
-    if (!has_parent()) {
+  bool CongBase::has_parent_semigroup() const noexcept {
+    return _parent != nullptr;
+  }
+
+  std::shared_ptr<FroidurePinBase> CongBase::parent_semigroup() const {
+    if (!has_parent_semigroup()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
-    return get_parent();
+    return _parent;
+  }
+
+  bool CongBase::has_quotient_semigroup() const noexcept {
+    return _quotient != nullptr;
+  }
+
+  std::shared_ptr<FroidurePinBase> CongBase::quotient_semigroup() {
+    if (type() != congruence_type::TWOSIDED) {
+      throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
+    } else if (is_quotient_obviously_infinite()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "cannot find the quotient semigroup, it is infinite");
+    } else if (_quotient == nullptr) {
+      _quotient = quotient_impl();
+    }
+    return _quotient;
   }
 
   congruence_type CongBase::type() const noexcept {
@@ -159,54 +177,22 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-
-  FroidurePinBase* CongBase::get_quotient() const noexcept {
-    return _quotient;
-  }
-
-  bool CongBase::has_quotient() const noexcept {
-    return _quotient != nullptr;
-  }
-
-  void CongBase::reset_quotient() {
-    if (_delete_quotient) {
-      delete _quotient;
-    }
-    _delete_quotient = false;
-    _quotient        = nullptr;
-  }
-
-  void CongBase::set_quotient(FroidurePinBase* qtnt, bool delete_it) {
-    LIBSEMIGROUPS_ASSERT(qtnt != nullptr);
-    LIBSEMIGROUPS_ASSERT(_quotient == nullptr);
-    LIBSEMIGROUPS_ASSERT(_type == congruence_type::TWOSIDED);
-    // _delete_quotient can be either true or false, depending on whether qtnt
-    // is coming from outside or inside.
-    _delete_quotient = delete_it;
-    _quotient        = qtnt;
-  }
-
-  FroidurePinBase* CongBase::get_parent() const noexcept {
-    return _parent;
-  }
-
-  bool CongBase::has_parent() const noexcept {
-    return _parent != nullptr;
-  }
-
-  void CongBase::set_parent(FroidurePinBase* prnt) {
+  void CongBase::set_parent_semigroup(FroidurePinBase* prnt) {
     LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
-    if (prnt == _parent) {
+    if (prnt == _parent.get()) {
       return;
     }
     LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
     LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
-    _parent = prnt;
+    _parent = std::shared_ptr<FroidurePinBase>(prnt);
     if (_gen_pairs.empty()) {
-      _quotient        = prnt;
-      _delete_quotient = false;
+      _quotient = std::shared_ptr<FroidurePinBase>(prnt);
     }
+  }
+
+  void CongBase::set_parent_semigroup(std::shared_ptr<FroidurePinBase>& prnt) {
+    set_parent_semigroup(prnt.get());
   }
 
   /////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,7 @@ namespace libsemigroups {
       }
     }
     set_nr_generators(S->nr_generators());
-    set_parent(S);
+    set_parent_semigroup(S);
   }
 
   Congruence::Congruence(congruence_type type, FroidurePinBase& S, policy plcy)
@@ -76,19 +76,17 @@ namespace libsemigroups {
       : Congruence(type) {
     set_nr_generators(S->alphabet().size());
     if (plcy != policy::standard) {
-      goto end;
+      return;
     }
     _race.set_max_threads(POSITIVE_INFINITY);
-    // TODO set_parent with a future computing the
-    // isomorphic_non_fp_semigroup
     if (S->has_todd_coxeter()) {
       // Method 1: use only the relations used to define S and genpairs to
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
       _race.add_runner(new ToddCoxeter(type, *S->todd_coxeter()));
       if (S->todd_coxeter()->finished()) {
-        LIBSEMIGROUPS_ASSERT(!has_parent());
-        set_parent(S->todd_coxeter()->isomorphic_non_fp_semigroup());
+        LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
+        set_parent_semigroup(S->todd_coxeter()->isomorphic_non_fp_semigroup());
         // FIXME what happens if S is deleted before this??
 
         // Method 2: use the Cayley graph of S and genpairs to run
@@ -101,21 +99,21 @@ namespace libsemigroups {
             new ToddCoxeter(type,
                             S->todd_coxeter()->isomorphic_non_fp_semigroup(),
                             ToddCoxeter::policy::use_cayley_graph));
-        // Goto the end here since we know that we can definitely complete at
+        // Return here since we know that we can definitely complete at
         // this point.
-        goto end;
+        return;
       }
     }
     if (S->has_knuth_bendix()) {
       if (S->knuth_bendix()->finished()) {
-        if (!has_parent()) {
-          set_parent(S->knuth_bendix()->isomorphic_non_fp_semigroup());
+         if (!has_parent_semigroup()) {
+           set_parent_semigroup(S->knuth_bendix()->isomorphic_non_fp_semigroup());
           // Even if the FpSemigroup S is infinite, the
           // isomorphic_non_fp_semigroup() can still be useful in this case,
           // for example, when factorizing elements.
-        }
-        // TODO remove the if-condition, make it so that if the ToddCoxeter's
-        // below are killed then so too is the enumeration of
+         }
+        // TODO(now) remove the if-condition, make it so that if the
+        // ToddCoxeter's below are killed then so too is the enumeration of
         // S->knuth_bendix()->isomorphic_non_fp_semigroup()
         if (S->knuth_bendix()->isomorphic_non_fp_semigroup()->finished()) {
           // Method 3: Note that the
@@ -141,12 +139,12 @@ namespace libsemigroups {
           // the inner most if-statement here.
           _race.add_runner(
               new ToddCoxeter(type,
-                              S->knuth_bendix()->isomorphic_non_fp_semigroup(),
+                              S->knuth_bendix(),
                               ToddCoxeter::policy::use_relations));
 
-          // Goto the end here since we know that we can definitely complete
-          // at this point.
-          goto end;
+          // Return here since we know that we can definitely complete at this
+          // point.
+          return;
         }
       }
       // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
@@ -160,15 +158,6 @@ namespace libsemigroups {
         _race.add_runner(new congruence::KnuthBendix(S->knuth_bendix()));
       }
     }
-  end:
-    if (has_parent()) {
-      for (auto runner : _race) {
-        auto ci = static_cast<CongBase*>(runner);
-        if (!ci->has_parent()) {
-          ci->set_parent(get_parent());
-        }
-      }
-    }
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -176,9 +165,9 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::run() {
-    if (!has_parent()) {
-      set_parent(static_cast<CongBase*>(_race.winner())->parent_semigroup());
-    }
+    //if (!has_parent_semigroup()) {
+    //  set_parent_semigroup(static_cast<CongBase*>(_race.winner())->parent_semigroup());
+    //}
   }
 
   //////////////////////////////////////////////////////////////////////////
