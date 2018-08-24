@@ -69,7 +69,6 @@ namespace libsemigroups {
       bool        equal_to(std::string const&, std::string const&) override;
       std::string normal_form(std::string const&) override;
 
-      FroidurePinBase* isomorphic_non_fp_semigroup() override;
 
       //! Returns the current number of active rules in the rewriting system.
       size_t nr_rules() const noexcept override;
@@ -224,6 +223,7 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void add_rule_impl(std::string const&, std::string const&) override;
+      FroidurePinBase* isomorphic_non_fp_semigroup_impl() override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - private

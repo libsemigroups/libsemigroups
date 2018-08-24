@@ -106,9 +106,6 @@ namespace libsemigroups {
             _wrapped_cong->word_to_class_index(string_to_word(w))));
       }
 
-      FroidurePinBase* isomorphic_non_fp_semigroup() override {
-        return &_wrapped_cong->quotient_semigroup();
-      }
 
       size_t nr_rules() const noexcept override {
         return _nr_rules;
@@ -157,6 +154,10 @@ namespace libsemigroups {
         // This is only ever called if u and v are valid
         _nr_rules++;
         _wrapped_cong->add_pair(string_to_word(u), string_to_word(v));
+      }
+
+      FroidurePinBase* isomorphic_non_fp_semigroup_impl() override {
+        return &_wrapped_cong->quotient_semigroup();
       }
 
       //////////////////////////////////////////////////////////////////////////

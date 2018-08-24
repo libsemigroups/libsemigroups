@@ -134,25 +134,6 @@ namespace libsemigroups {
     return false;
   }
 
-  FroidurePinBase* FpSemigroup::isomorphic_non_fp_semigroup() {
-    if (has_isomorphic_non_fp_semigroup()) {
-      return get_isomorphic_non_fp_semigroup();
-    }
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    // This loop is here in case one of the Runners in _race was created using
-    // a non-f.p. semigroup, so we can just return that and not run the _race.
-    for (auto runner : _race) {
-      if (static_cast<FpSemiBase*>(runner)->has_isomorphic_non_fp_semigroup()) {
-        set_isomorphic_non_fp_semigroup(
-            static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup());
-        return get_isomorphic_non_fp_semigroup();
-      }
-    }
-    set_isomorphic_non_fp_semigroup(
-        static_cast<FpSemiBase*>(_race.winner())->isomorphic_non_fp_semigroup());
-    return get_isomorphic_non_fp_semigroup();
-  }
-
   std::string FpSemigroup::normal_form(std::string const& w) {
     return static_cast<FpSemiBase*>(_race.winner())->normal_form(w);
   }
@@ -217,6 +198,22 @@ namespace libsemigroups {
     }
   }
 
+  FroidurePinBase* FpSemigroup::isomorphic_non_fp_semigroup_impl() {
+    if (_race.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no methods defined, cannot find an isomorphic non-fp semigroup");
+    }
+    // This loop is here in case one of the Runners in _race was created using
+    // a non-f.p. semigroup, so we can just return that and not run the _race.
+    for (auto runner : _race) {
+      if (static_cast<FpSemiBase*>(runner)->has_isomorphic_non_fp_semigroup()) {
+        return static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup();
+      }
+    }
+    return static_cast<FpSemiBase*>(_race.winner())
+        ->isomorphic_non_fp_semigroup();
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////////
@@ -250,12 +247,4 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("method not found");
     }
   }
-
-  /*  // Private
-    void FpSemigroup::set_isomorphic_non_fp_semigroup(FroidurePinBase* S) {
-      for (auto runner : _race) {
-        static_cast<FpSemiBase*>(runner)->set_isomorphic_non_fp_semigroup(S);
-      }
-    }*/
-
 }  // namespace libsemigroups

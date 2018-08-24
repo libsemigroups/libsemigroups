@@ -71,7 +71,6 @@ namespace libsemigroups {
     bool             equal_to(std::string const&, std::string const&) override;
     bool             is_obviously_finite() override;
     bool             is_obviously_infinite() override;
-    FroidurePinBase* isomorphic_non_fp_semigroup() override;
     std::string      normal_form(std::string const&) override;
     size_t           nr_rules() const noexcept override;
     size_t           size() override;
@@ -97,6 +96,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     void add_rule_impl(std::string const&, std::string const&) override;
+    FroidurePinBase* isomorphic_non_fp_semigroup_impl() override;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - private

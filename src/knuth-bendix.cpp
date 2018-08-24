@@ -116,9 +116,6 @@ namespace libsemigroups {
     // FpSemiBase - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void KnuthBendix::add_rule_impl(std::string const& p, std::string const& q) {
-      _impl->add_rule(p, q);
-    }
 
     bool KnuthBendix::is_obviously_finite() {
       return has_isomorphic_non_fp_semigroup()
@@ -156,22 +153,6 @@ namespace libsemigroups {
       return _impl->nr_rules();
     }
 
-    FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup() {
-      LIBSEMIGROUPS_ASSERT(!alphabet().empty());
-      // TODO(now) check that no generators/rules can be added after this has
-      // been called, or if they are that _isomorphic_non_fp_semigroup is reset
-      // again
-      if (!has_isomorphic_non_fp_semigroup()) {
-        run();
-        // TODO(later) use 0-param FroidurePin constructor
-        auto T = new FroidurePin<KBE>({KBE(*this, 0)});
-        for (size_t i = 1; i < alphabet().size(); ++i) {
-          T->add_generator(KBE(*this, i));
-        }
-        set_isomorphic_non_fp_semigroup(T);
-      }
-      return get_isomorphic_non_fp_semigroup();
-    }
 
     bool KnuthBendix::equal_to(std::string const& u, std::string const& v) {
       validate_word(u);
@@ -232,6 +213,29 @@ namespace libsemigroups {
     void KnuthBendix::knuth_bendix_by_overlap_length() {
       _impl->knuth_bendix_by_overlap_length();
       report_why_we_stopped();
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - pure virtual methods - private
+    //////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::add_rule_impl(std::string const& p,
+                                    std::string const& q) {
+      _impl->add_rule(p, q);
+    }
+
+    FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup_impl() {
+      LIBSEMIGROUPS_ASSERT(!alphabet().empty());
+      // TODO(now) check that no generators/rules can be added after this has
+      // been called, or if they are that _isomorphic_non_fp_semigroup is reset
+      // again
+      run();
+      // TODO(later) use 0-param FroidurePin constructor
+      auto T = new FroidurePin<KBE>({KBE(*this, 0)});
+      for (size_t i = 1; i < alphabet().size(); ++i) {
+        T->add_generator(KBE(*this, i));
+      }
+      return T;
     }
 
     //////////////////////////////////////////////////////////////////////////

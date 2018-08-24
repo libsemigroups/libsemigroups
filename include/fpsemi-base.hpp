@@ -65,8 +65,6 @@ namespace libsemigroups {
     virtual bool        equal_to(std::string const&, std::string const&) = 0;
     virtual std::string normal_form(std::string const&)                  = 0;
 
-    virtual FroidurePinBase* isomorphic_non_fp_semigroup() = 0;
-
     virtual size_t nr_rules() const noexcept = 0;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -94,8 +92,11 @@ namespace libsemigroups {
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
+    FroidurePinBase*   isomorphic_non_fp_semigroup();
+
     word_type          normal_form(std::initializer_list<letter_type>);
-    bool               equal_to(std::initializer_list<letter_type>,
+
+    bool equal_to(std::initializer_list<letter_type>,
                   std::initializer_list<letter_type>);
 
     // Set the char in alphabet() to be the identity.
@@ -113,8 +114,7 @@ namespace libsemigroups {
     size_t char_to_uint(char) const;
     char   uint_to_char(size_t) const noexcept;
 
-    FroidurePinBase* get_isomorphic_non_fp_semigroup() const noexcept;
-    void             set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;
+    void set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;
 
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;
@@ -133,6 +133,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule_impl(std::string const&, std::string const&) = 0;
+    virtual FroidurePinBase* isomorphic_non_fp_semigroup_impl()        = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - private

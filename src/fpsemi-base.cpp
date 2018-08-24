@@ -175,6 +175,13 @@ namespace libsemigroups {
     return _isomorphic_non_fp_semigroup != nullptr;
   }
 
+  FroidurePinBase* FpSemiBase::isomorphic_non_fp_semigroup() {
+    if (_isomorphic_non_fp_semigroup == nullptr) {
+      _isomorphic_non_fp_semigroup = isomorphic_non_fp_semigroup_impl();
+    }
+    return _isomorphic_non_fp_semigroup;
+  }
+
   word_type FpSemiBase::normal_form(std::initializer_list<letter_type> w) {
     return normal_form(word_type(w));
   }
@@ -206,6 +213,24 @@ namespace libsemigroups {
     set_identity(std::string(1, _alphabet[id]));
   }
 
+  word_type FpSemiBase::string_to_word(std::string const& s) const {
+    word_type w;
+    w.reserve(s.size());
+    for (char const& c : s) {
+      w.push_back(char_to_uint(c));
+    }
+    return w;
+  }
+
+  std::string FpSemiBase::word_to_string(word_type const& w) const {
+    std::string s;
+    s.reserve(w.size());
+    for (letter_type const& l : w) {
+      s.push_back(uint_to_char(l));
+    }
+    return s;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-virtual methods - protected
   //////////////////////////////////////////////////////////////////////////////
@@ -221,44 +246,14 @@ namespace libsemigroups {
     return _alphabet[a];
   }
 
-  // TODO return rvalue reference
-  word_type FpSemiBase::string_to_word(std::string const& s) const {
-    word_type w;
-    w.reserve(s.size());
-    for (char const& c : s) {
-      w.push_back(char_to_uint(c));
-    }
-    return w;
-  }
-
-  // TODO return rvalue reference
-  std::string FpSemiBase::word_to_string(word_type const& w) const {
-    std::string s;
-    s.reserve(w.size());
-    for (letter_type const& l : w) {
-      s.push_back(uint_to_char(l));
-    }
-    return s;
-  }
-
-  FroidurePinBase* FpSemiBase::get_isomorphic_non_fp_semigroup() const
-      noexcept {
-    return _isomorphic_non_fp_semigroup;
-  }
-
-  void FpSemiBase::reset() noexcept {
-    set_finished(false);
-    _isomorphic_non_fp_semigroup = nullptr;
-  }
-
-  void FpSemiBase::set_isomorphic_non_fp_semigroup(
-      FroidurePinBase* ismrphc_nn_fp_smgrp) noexcept {
-    LIBSEMIGROUPS_ASSERT(ismrphc_nn_fp_smgrp != nullptr);
+  void
+  FpSemiBase::set_isomorphic_non_fp_semigroup(FroidurePinBase* S) noexcept {
+    LIBSEMIGROUPS_ASSERT(S != nullptr);
     LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
     // _delete_isomorphic_non_fp_semigroup can be either true or false,
     // depending on whether ismrphc_nn_fp_smgrp is coming from outside or
     // inside.
-    _isomorphic_non_fp_semigroup        = ismrphc_nn_fp_smgrp;
+    _isomorphic_non_fp_semigroup = S;
   }
 
   bool FpSemiBase::validate_letter(char c) const {
@@ -341,4 +336,13 @@ namespace libsemigroups {
     });
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiBase - non-virtual methods - private
+  //////////////////////////////////////////////////////////////////////////////
+
+  void FpSemiBase::reset() noexcept {
+    set_finished(false);
+    _isomorphic_non_fp_semigroup = nullptr;
+  }
 }  // namespace libsemigroups
+
