@@ -43,6 +43,7 @@
 
 #include "adapters.hpp"   // for complexity, degree, increase_degree_by, . . .
 #include "constants.hpp"  // for UNDEFINED
+#include "hpcombi.hpp"    // HPCombi::Perm16, Transf16, . . .
 #include "traits.hpp"     // for Traits
 #include "types.hpp"      // for SmallestInteger
 

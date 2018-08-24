@@ -135,6 +135,5 @@ namespace libsemigroups {
       }
     };
   };
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_TRAITS_HPP_

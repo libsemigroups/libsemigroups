@@ -210,7 +210,7 @@ namespace libsemigroups {
     //! FroidurePin::position_current with argument \c x.
     //!
     //! \sa FroidurePin::word_to_element.
-    element_index_type word_to_pos(word_type const& w) const override;
+    element_index_type word_to_pos(word_type const&) const override;
 
     //! Returns a copy of the element of \c this represented by the word
     //! \p w.
@@ -226,6 +226,10 @@ namespace libsemigroups {
     //!
     //! \sa FroidurePin::word_to_pos.
     element_type word_to_element(word_type const&) const;
+
+    //! Returns \c true if the parameters represent the same element of the
+    //! semigroup and \c false otherwise.
+    bool equal_to(word_type const&, word_type const&) const override;
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!

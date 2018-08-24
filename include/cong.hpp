@@ -79,7 +79,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     word_type        class_index_to_word(class_index_type) override;
-    FroidurePinBase* quotient_semigroup() override;
     size_t           nr_classes() override;
     class_index_type word_to_class_index(word_type const&) override;
 
@@ -109,7 +108,8 @@ namespace libsemigroups {
     // CongBase - pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    void add_pair_impl(word_type const&, word_type const&) override;
+    void             add_pair_impl(word_type const&, word_type const&) override;
+    FroidurePinBase* quotient_impl() override;
 
     //////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private

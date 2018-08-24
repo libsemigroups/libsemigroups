@@ -86,6 +86,7 @@
 
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
 #include "froidure-pin.hpp"       // for FroidurePin
+#include "knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
 #include "tce.hpp"                // for TCE
 
 namespace libsemigroups {
@@ -178,8 +179,22 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_relations;
         // FIXME assertion failure if we use_cayley_graph
+        // TODO(now) should be use_cayley_graph
       }
     }
+
+    // ToddCoxeter::ToddCoxeter(congruence_type typ, fpsemigroup::KnuthBendix& kb)
+    //     : ToddCoxeter(typ) {
+    //   set_nr_generators(kb.alphabet().size());
+    //   for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
+    //     add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
+    //   }
+    //   if (kb.finished()) {
+    //     set_parent_semigroup(kb.isomorphic_non_fp_semigroup());
+    //     LIBSEMIGROUPS_ASSERT(_policy == policy::none);
+    //     _policy = policy::use_cayley_graph;
+    //   }
+    // }
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - overridden pure virtual methods - public
@@ -240,7 +255,8 @@ namespace libsemigroups {
             }
             _current_no_add = _forwd[_current_no_add];
 
-            // Quit loop if we reach an inactive coset OR we get a "stop" signal
+            // Quit loop if we reach an inactive coset OR we get a "stop"
+            // signal
           } while (!_stop_packing && _current_no_add != _next && !dead()
                    && !timed_out());
 
@@ -280,355 +296,351 @@ namespace libsemigroups {
       REPORT("elapsed time = ", timer);
       report_why_we_stopped();
       // No return value: all info is now stored in the class
-    }
+      }
 
-    ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - public
-    ////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
 
+      size_t ToddCoxeter::nr_classes() {
+        if (is_quotient_obviously_infinite()) {
+          return POSITIVE_INFINITY;
+        } else {
+          run();
+          LIBSEMIGROUPS_ASSERT(finished());
+          return _active - 1;
+        }
+      }
 
-    size_t ToddCoxeter::nr_classes() {
-      if (is_quotient_obviously_infinite()) {
-        return POSITIVE_INFINITY;
-      } else {
+      class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
-        return _active - 1;
-      }
-    }
-
-
-    class_index_type ToddCoxeter::word_to_class_index(word_type const& w) {
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      class_index_type c = const_word_to_class_index(w);
-      // c is in the range 1, ..., _active because 0 represents the identity
-      // coset, and does not correspond to an element.
-      LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
-      return c;
-    }
-
-    word_type ToddCoxeter::class_index_to_word(class_index_type i) {
-      if (i >= nr_classes()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
-            "invalid class index, should be in the range [0, "
-            + to_string(nr_classes()) + "), not " + to_string(i));
+        class_index_type c = const_word_to_class_index(w);
+        // c is in the range 1, ..., _active because 0 represents the identity
+        // coset, and does not correspond to an element.
+        LIBSEMIGROUPS_ASSERT(c < _active || c == UNDEFINED);
+        return c;
       }
 
-      // FIXME(now) quotient_semigroup throws if this is not 2-sided
-      auto fp = static_cast<FroidurePin<TCE>*>(quotient_semigroup());
-      return fp->minimal_factorisation(TCE(this, i + 1));
-    }
+      word_type ToddCoxeter::class_index_to_word(class_index_type i) {
+        if (i >= nr_classes()) {
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "invalid class index, should be in the range [0, "
+              + to_string(nr_classes()) + "), not " + to_string(i));
+        }
 
-    ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - public
-    ////////////////////////////////////////////////////////////////////////
+        // FIXME(now) quotient_semigroup throws if this is not 2-sided
+        auto fp = static_cast<FroidurePin<TCE>*>(quotient_semigroup());
+        return fp->minimal_factorisation(TCE(this, i + 1));
+      }
 
-    bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
-      if (lhs == rhs) {
-        return true;
-      } else if (!_prefilled && _relations.empty() && _extra.empty()) {
-        // This defines the free semigroup
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden non-pure virtual methods - public
+      ////////////////////////////////////////////////////////////////////////
+
+      bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
+        if (lhs == rhs) {
+          return true;
+        } else if (!_prefilled && _relations.empty() && _extra.empty()) {
+          // This defines the free semigroup
+          return false;
+        }
+        return CongBase::contains(lhs, rhs);
+      }
+
+      bool ToddCoxeter::is_quotient_obviously_infinite() {
+        LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
+        if (_policy != policy::none) {
+          // _policy != none means we were created from a FroidurePinBase*,
+          // which means that this is infinite if and only if the
+          // FroidurePinBase* is infinite too, which is not obvious (or even
+          // possible to check at present).
+          return false;
+        } else if (_prefilled) {
+          return false;
+        }
+        init();
+        if (nr_generators() > _relations.size() + _extra.size()) {
+          return true;
+        }
+        auto is_letter_in_word = [](word_type const& w, size_t gen) {
+          return (std::find(w.cbegin(), w.cend(), gen) != w.cend());
+        };
+
+        // Does there exist a generator which appears in no relation?
+        for (size_t gen = 0; gen < nr_generators(); ++gen) {
+          bool found = false;
+          for (auto it = _relations.cbegin(); it < _relations.cend() && !found;
+               ++it) {
+            found = is_letter_in_word((*it).first, gen)
+                    || is_letter_in_word((*it).second, gen);
+          }
+          for (auto it = _extra.cbegin(); it < _extra.cend() && !found; ++it) {
+            found = is_letter_in_word((*it).first, gen)
+                    || is_letter_in_word((*it).second, gen);
+          }
+          if (!found) {
+            return true;  // We found a generator not in any relation.
+          }
+        }
+        // Otherwise, every generator occurs at least once in a relation.
         return false;
+        // TODO: check that for every generator there exists a word in one of
+        // the relations consisting solely of that generator, otherwise the
+        // order of that generator is infinite.
+        // TODO: check if the number of occurrences of a given letter is
+        // constant on both sides of every relation, if so then again that
+        // letter has infinite order.
       }
-      return CongBase::contains(lhs, rhs);
-    }
 
-    bool ToddCoxeter::is_quotient_obviously_infinite() {
-      LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
-      if (_policy != policy::none) {
-        // _policy != none means we were created from a FroidurePinBase*, which
-        // means that this is infinite if and only if the FroidurePinBase* is
-        // infinite too, which is not obvious (or even possible to check at
-        // present).
-        return false;
-      } else if (_prefilled) {
-        return false;
+      bool ToddCoxeter::is_quotient_obviously_finite() {
+        return _prefilled
+               || (has_quotient_semigroup() && quotient_semigroup()->finished())
+               || (has_parent_semigroup() && parent_semigroup()->finished());
+        // 1. _prefilled means that either we were created from a
+        // FroidurePinBase* with _policy = use_cayley_graph and we successfully
+        // prefilled the table, or we manually prefilled the table.  In this
+        // case the semigroup defined by _relations must be finite.
+        //
+        // 2. the quotient semigroup being defined and fully enumerated
+        // means it is finite.
       }
-      init();
-      if (nr_generators() > _relations.size() + _extra.size()) {
-        return true;
-      }
-      auto is_letter_in_word = [](word_type const& w, size_t gen) {
-        return (std::find(w.cbegin(), w.cend(), gen) != w.cend());
-      };
 
-      // Does there exist a generator which appears in no relation?
-      for (size_t gen = 0; gen < nr_generators(); ++gen) {
-        bool found = false;
-        for (auto it = _relations.cbegin(); it < _relations.cend() && !found;
-             ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods - public
+      ////////////////////////////////////////////////////////////////////////
+
+      bool ToddCoxeter::empty() const {
+        return _relations.empty() && _extra.empty()
+               && (_table.empty()
+                   || (_table.nr_rows() == 1
+                       && std::all_of(_table.cbegin_row(0),
+                                      _table.cend_row(0),
+                                      [](class_index_type x) -> bool {
+                                        return x == UNDEFINED;
+                                      })));
+      }
+
+      letter_type ToddCoxeter::class_index_to_letter(class_index_type x) {
+        run();
+        LIBSEMIGROUPS_ASSERT(x < _class_index_to_letter.size());
+        LIBSEMIGROUPS_ASSERT(_class_index_to_letter[x] != UNDEFINED);
+        return _class_index_to_letter[x];
+      }
+
+      ToddCoxeter::policy ToddCoxeter::get_policy() const noexcept {
+        return _policy;
+      }
+
+      class_index_type ToddCoxeter::table(class_index_type i, letter_type j) {
+        run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        return _table.get(i, j);
+      }
+
+      void ToddCoxeter::set_pack(size_t val) {
+        _pack = val;
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
+
+      void ToddCoxeter::add_pair_impl(word_type const& u, word_type const& v) {
+        word_type U = u;
+        word_type V = v;
+        if (_relations_are_reversed) {
+          std::reverse(U.begin(), U.end());
+          std::reverse(V.begin(), V.end());
         }
-        for (auto it = _extra.cbegin(); it < _extra.cend() && !found; ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
+        _extra.emplace_back(std::move(U), std::move(V));
+      }
+
+      FroidurePinBase* ToddCoxeter::quotient_impl() {
+        if (type() != congruence_type::TWOSIDED) {
+          throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
         }
-        if (!found) {
-          return true;  // We found a generator not in any relation.
+        run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        // TODO replace with 0-parameter constructor when available
+        std::vector<TCE> gens;
+        for (size_t i = 0; i < nr_generators(); ++i) {
+          // We use _table.get(0, i) instead of just i, because there might be
+          // more generators than cosets.
+          gens.emplace_back(this, _table.get(0, i));
         }
+        return new FroidurePin<TCE>(gens);
       }
-      // Otherwise, every generator occurs at least once in a relation.
-      return false;
-      // TODO: check that for every generator there exists a word in one of the
-      // relations consisting solely of that generator, otherwise the order of
-      // that generator is infinite.
-      // TODO: check if the number of occurrences of a given letter is constant
-      // on both sides of every relation, if so then again that letter has
-      // infinite order.
-    }
 
-    bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled
-             || (has_quotient_semigroup() && quotient_semigroup()->finished())
-             || (has_parent_semigroup_semigroup() && parent_semigroup()->finished());
-      // 1. _prefilled means that either we were created from a FroidurePinBase*
-      // with _policy = use_cayley_graph and we successfully prefilled the
-      // table, or we manually prefilled the table.  In this case the semigroup
-      // defined by _relations must be finite.
-      //
-      // 2. the quotient semigroup being defined and fully enumerated
-      // means it is finite.
-    }
+      ////////////////////////////////////////////////////////////////////////
+      // CongBase - overridden non-pure virtual methods - private
+      ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - methods - public
-    ////////////////////////////////////////////////////////////////////////
+      class_index_type ToddCoxeter::const_word_to_class_index(
+          word_type const& w) const {
+        validate_word(w);
+        class_index_type c = _id_coset;
 
-    bool ToddCoxeter::empty() const {
-      return _relations.empty() && _extra.empty()
-             && (_table.empty()
-                 || (_table.nr_rows() == 1
-                     && std::all_of(_table.cbegin_row(0),
-                                    _table.cend_row(0),
-                                    [](class_index_type x) -> bool {
-                                      return x == UNDEFINED;
-                                    })));
-    }
-
-    letter_type ToddCoxeter::class_index_to_letter(class_index_type x) {
-      run();
-      LIBSEMIGROUPS_ASSERT(x < _class_index_to_letter.size());
-      LIBSEMIGROUPS_ASSERT(_class_index_to_letter[x] != UNDEFINED);
-      return _class_index_to_letter[x];
-    }
-
-    ToddCoxeter::policy ToddCoxeter::get_policy() const noexcept {
-      return _policy;
-    }
-
-    class_index_type ToddCoxeter::table(class_index_type i, letter_type j) {
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      return _table.get(i, j);
-    }
-
-    void ToddCoxeter::set_pack(size_t val) {
-      _pack = val;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - private
-    ////////////////////////////////////////////////////////////////////////
-
-    void ToddCoxeter::add_pair_impl(word_type const& u, word_type const& v) {
-      word_type U = u;
-      word_type V = v;
-      if (_relations_are_reversed) {
-        std::reverse(U.begin(), U.end());
-        std::reverse(V.begin(), V.end());
-      }
-      _extra.emplace_back(std::move(U), std::move(V));
-    }
-
-    std::shared_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
-      if (type() != congruence_type::TWOSIDED) {
-        throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
-      }
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      // TODO replace with 0-parameter constructor when available
-      std::vector<TCE> gens;
-      for (size_t i = 0; i < nr_generators(); ++i) {
-        // We use _table.get(0, i) instead of just i, because there might be
-        // more generators than cosets.
-        gens.emplace_back(this, _table.get(0, i));
-      }
-      return std::shared_ptr<FroidurePinBase>(new FroidurePin<TCE>(gens));
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - private
-    ////////////////////////////////////////////////////////////////////////
-
-    class_index_type
-    ToddCoxeter::const_word_to_class_index(word_type const& w) const {
-      validate_word(w);
-      class_index_type c = _id_coset;
-
-      if (type() == congruence_type::LEFT) {
-        // Iterate in reverse order
-        for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
-             ++rit) {
-          c = _table.get(c, *rit);
+        if (type() == congruence_type::LEFT) {
+          // Iterate in reverse order
+          for (auto rit = w.crbegin(); rit != w.crend() && c != UNDEFINED;
+               ++rit) {
+            c = _table.get(c, *rit);
+          }
+        } else {
+          // Iterate in sequential order
+          for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
+            c = _table.get(c, *it);
+          }
         }
-      } else {
-        // Iterate in sequential order
-        for (auto it = w.cbegin(); it != w.cend() && c != UNDEFINED; ++it) {
-          c = _table.get(c, *it);
-        }
+        return (c == UNDEFINED ? c : c - 1);
       }
-      return (c == UNDEFINED ? c : c - 1);
-    }
 
-    void ToddCoxeter::set_nr_generators_impl(size_t n) {
-      _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
-    }
+      void ToddCoxeter::set_nr_generators_impl(size_t n) {
+        _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
+        _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
+        _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
+      }
 
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods (validation) - private
+      ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - methods (validation) - private
-    ////////////////////////////////////////////////////////////////////////
-
-    void ToddCoxeter::validate_table() const {
-      for (size_t i = 0; i < _table.nr_rows(); ++i) {
-        for (size_t j = 0; j < _table.nr_cols(); ++j) {
-          class_index_type c = _table.get(i, j);
-          if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
-            throw LIBSEMIGROUPS_EXCEPTION(
-                "invalid table, the entry in row " + to_string(i)
-                + " and column " + to_string(j) + " should be in the range [1, "
-                + to_string(_table.nr_rows()) + ") or UNDEFINED, but is "
-                + to_string(c));
+      void ToddCoxeter::validate_table() const {
+        for (size_t i = 0; i < _table.nr_rows(); ++i) {
+          for (size_t j = 0; j < _table.nr_cols(); ++j) {
+            class_index_type c = _table.get(i, j);
+            if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
+              throw LIBSEMIGROUPS_EXCEPTION(
+                  "invalid table, the entry in row " + to_string(i)
+                  + " and column " + to_string(j)
+                  + " should be in the range [1, " + to_string(_table.nr_rows())
+                  + ") or UNDEFINED, but is " + to_string(c));
+            }
           }
         }
       }
-    }
 
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - methods (initialisation) - private
-    ////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - methods (initialisation) - private
+      ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeter::init() {
-      if (!_init_done) {
-        // Add the relations/Cayley graph from parent() if any.
-        use_relations_or_cayley_graph();
-        init_relations();
-        _init_done = true;
-        // The following is here to avoid doing it repeatedly in repeated calls
-        // to run().
-        // Apply each "extra" relation to the first coset only
-        for (relation_type const& rel : _extra) {
-          trace(_id_coset, rel);  // Allow new cosets
+      void ToddCoxeter::init() {
+        if (!_init_done) {
+          // Add the relations/Cayley graph from parent() if any.
+          use_relations_or_cayley_graph();
+          init_relations();
+          _init_done = true;
+          // The following is here to avoid doing it repeatedly in repeated
+          // calls to run(). Apply each "extra" relation to the first coset only
+          for (relation_type const& rel : _extra) {
+            trace(_id_coset, rel);  // Allow new cosets
+          }
+        } else {
+          // This is required in case we called add_pair since the last time
+          // init() was run.
+          init_relations();
         }
-      } else {
-        // This is required in case we called add_pair since the last time
-        // init() was run.
-        init_relations();
-      }
-    }
-
-    void ToddCoxeter::init_after_prefill() {
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == nr_generators());
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() > 1);
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_relations.empty());
-      _prefilled = true;
-      validate_table();
-      _active    = _table.nr_rows();
-      _id_coset  = 0;
-
-      _forwd.reserve(_active);
-      _bckwd.reserve(_active);
-
-      for (size_t i = 1; i < _active; i++) {
-        _forwd.push_back(i + 1);
-        _bckwd.push_back(i - 1);
       }
 
-      _forwd[0]           = 1;
-      _forwd[_active - 1] = UNDEFINED;
+      void ToddCoxeter::init_after_prefill() {
+        LIBSEMIGROUPS_ASSERT(_table.nr_cols() == nr_generators());
+        LIBSEMIGROUPS_ASSERT(_table.nr_rows() > 1);
+        LIBSEMIGROUPS_ASSERT(!_init_done);
+        LIBSEMIGROUPS_ASSERT(_relations.empty());
+        _prefilled = true;
+        validate_table();
+        _active   = _table.nr_rows();
+        _id_coset = 0;
 
-      _last = _active - 1;
+        _forwd.reserve(_active);
+        _bckwd.reserve(_active);
 
-      _preim_init.add_rows(_table.nr_rows());
-      _preim_next.add_rows(_table.nr_rows());
+        for (size_t i = 1; i < _active; i++) {
+          _forwd.push_back(i + 1);
+          _bckwd.push_back(i - 1);
+        }
 
-      for (class_index_type c = 0; c < _active; c++) {
+        _forwd[0]           = 1;
+        _forwd[_active - 1] = UNDEFINED;
+
+        _last = _active - 1;
+
+        _preim_init.add_rows(_table.nr_rows());
+        _preim_next.add_rows(_table.nr_rows());
+
+        for (class_index_type c = 0; c < _active; c++) {
+          for (size_t i = 0; i < nr_generators(); i++) {
+            class_index_type b = _table.get(c, i);
+            _preim_next.set(c, i, _preim_init.get(b, i));
+            _preim_init.set(b, i, c);
+          }
+        }
+        _defined = _active;
+      }
+
+      void ToddCoxeter::init_relations() {
+        switch (type()) {
+          case congruence_type::LEFT:
+            if (!_relations_are_reversed) {
+              _relations_are_reversed = true;
+              for (relation_type& rel : _extra) {
+                std::reverse(rel.first.begin(), rel.first.end());
+                std::reverse(rel.second.begin(), rel.second.end());
+              }
+              for (relation_type& rel : _relations) {
+                std::reverse(rel.first.begin(), rel.first.end());
+                std::reverse(rel.second.begin(), rel.second.end());
+              }
+            }
+            break;
+          case congruence_type::RIGHT:
+            // intentional fall through
+          case congruence_type::TWOSIDED:  // do nothing
+            break;
+          default:
+            LIBSEMIGROUPS_ASSERT(false);
+        }
+      }
+
+      void ToddCoxeter::prefill(FroidurePinBase * S) {
+        LIBSEMIGROUPS_ASSERT(!_init_done);
+        LIBSEMIGROUPS_ASSERT(_policy == policy::use_cayley_graph);
+        LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
+        LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nr_generators());
+        LIBSEMIGROUPS_ASSERT(S->nr_generators() == nr_generators());
+        _table.add_rows(S->size());
         for (size_t i = 0; i < nr_generators(); i++) {
-          class_index_type b = _table.get(c, i);
-          _preim_next.set(c, i, _preim_init.get(b, i));
-          _preim_init.set(b, i, c);
+          _table.set(0, i, S->letter_to_pos(i) + 1);
         }
-      }
-      _defined = _active;
-    }
-
-    void ToddCoxeter::init_relations() {
-      switch (type()) {
-        case congruence_type::LEFT:
-          if (!_relations_are_reversed) {
-            _relations_are_reversed = true;
-            for (relation_type& rel : _extra) {
-              std::reverse(rel.first.begin(), rel.first.end());
-              std::reverse(rel.second.begin(), rel.second.end());
-            }
-            for (relation_type& rel : _relations) {
-              std::reverse(rel.first.begin(), rel.first.end());
-              std::reverse(rel.second.begin(), rel.second.end());
+        if (type() == congruence_type::LEFT) {
+          for (size_t row = 0; row < S->size(); ++row) {
+            for (size_t col = 0; col < nr_generators(); ++col) {
+              _table.set(row + 1, col, S->left(row, col) + 1);
             }
           }
-          break;
-        case congruence_type::RIGHT:
-          // intentional fall through
-        case congruence_type::TWOSIDED:  // do nothing
-          break;
-        default:
-          LIBSEMIGROUPS_ASSERT(false);
-      }
-    }
-
-    void ToddCoxeter::prefill(FroidurePinBase* S) {
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      LIBSEMIGROUPS_ASSERT(_policy == policy::use_cayley_graph);
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() == 1);
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == S->nr_generators());
-      LIBSEMIGROUPS_ASSERT(S->nr_generators() == nr_generators());
-      _table.add_rows(S->size());
-      for (size_t i = 0; i < nr_generators(); i++) {
-        _table.set(0, i, S->letter_to_pos(i) + 1);
-      }
-      if (type() == congruence_type::LEFT) {
-        for (size_t row = 0; row < S->size(); ++row) {
-          for (size_t col = 0; col < nr_generators(); ++col) {
-            _table.set(row + 1, col, S->left(row, col) + 1);
+        } else {
+          for (size_t row = 0; row < S->size(); ++row) {
+            for (size_t col = 0; col < nr_generators(); ++col) {
+              _table.set(row + 1, col, S->right(row, col) + 1);
+            }
           }
         }
-      } else {
-        for (size_t row = 0; row < S->size(); ++row) {
-          for (size_t col = 0; col < nr_generators(); ++col) {
-            _table.set(row + 1, col, S->right(row, col) + 1);
-          }
-        }
+        init_after_prefill();
       }
-      init_after_prefill();
-    }
 
-    void ToddCoxeter::use_relations_or_cayley_graph() {
-      // This should not have been run before
-      LIBSEMIGROUPS_ASSERT(!_init_done);
-      if (has_parent_semigroup_semigroup()) {
-        switch (_policy) {
-          case policy::none:
-            _policy = policy::use_cayley_graph;
-            // FIXME this can lead to the addition of redundant relations
-            // when this is constructed from (type, ToddCoxeter&).
-            // Intentional fall through
-          case policy::use_cayley_graph:
-            prefill(parent_semigroup().get());
+      void ToddCoxeter::use_relations_or_cayley_graph() {
+        // This should not have been run before
+        LIBSEMIGROUPS_ASSERT(!_init_done);
+        if (has_parent_semigroup()) {
+          switch (_policy) {
+            case policy::none:
+              _policy = policy::use_cayley_graph;
+              // FIXME this can lead to the addition of redundant relations
+              // when this is constructed from (type, ToddCoxeter&).
+              // Intentional fall through
+            case policy::use_cayley_graph:
+              prefill(parent_semigroup());
 #ifdef LIBSEMIGROUPS_DEBUG
             // This is a check of program logic, since we use parent() to fill
             // the table, so we only validate in debug mode.
@@ -639,7 +651,7 @@ namespace libsemigroups {
             break;
           case policy::use_relations:
             relations(
-                parent_semigroup().get(),
+                parent_semigroup(),
                 [this](word_type const& lhs, word_type const& rhs) -> void {
                   _relations.emplace_back(lhs, rhs);
                 });

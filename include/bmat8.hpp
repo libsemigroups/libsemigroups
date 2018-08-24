@@ -318,13 +318,6 @@ namespace libsemigroups {
     }
   };
 
-  template <>
-  struct swap<BMat8> {
-    inline void operator()(BMat8& x, BMat8& y) const noexcept {
-      std::swap(x, y);
-    }
-  };
-
   // The following is comment out since lz_cnt is unreliable, this serves as a
   // POC only.
 

@@ -61,6 +61,12 @@ namespace libsemigroups {
     // CongBase - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
+    CongBase()                = delete;
+    CongBase(CongBase const&) = delete;
+    CongBase& operator=(CongBase const&) = delete;
+    CongBase(CongBase&&)                 = delete;
+    CongBase& operator=(CongBase&&) = delete;
+
     explicit CongBase(congruence_type type);
 
     //! A default destructor.
@@ -100,7 +106,6 @@ namespace libsemigroups {
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this method may never terminate.
     virtual size_t nr_classes() = 0;
-
 
     ////////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - public
@@ -157,7 +162,6 @@ namespace libsemigroups {
     const_iterator cbegin_generating_pairs() const;
     const_iterator cend_generating_pairs() const;
 
-
     // Pass by value since these must be copied anyway
     void add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>);
 
@@ -176,10 +180,10 @@ namespace libsemigroups {
     size_t           nr_generating_pairs() const noexcept;
     size_t           nr_non_trivial_classes();
 
-    std::shared_ptr<FroidurePinBase> quotient_semigroup();
+    FroidurePinBase* quotient_semigroup();
     bool has_quotient_semigroup() const noexcept;
 
-    std::shared_ptr<FroidurePinBase> parent_semigroup() const;
+    FroidurePinBase* parent_semigroup() const;
     bool has_parent_semigroup() const noexcept;
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
@@ -191,7 +195,6 @@ namespace libsemigroups {
     // CongBase - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
-    void set_parent_semigroup(std::shared_ptr<FroidurePinBase>&);
     void set_parent_semigroup(FroidurePinBase*);
 
     bool validate_letter(letter_type) const;
@@ -208,7 +211,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
     // CongBase - data - protected
     /////////////////////////////////////////////////////////////////////////
-
+    // TODO(now) make this not private
     std::vector<std::vector<word_type>> _non_trivial_classes;
 
    private:
@@ -217,7 +220,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
-    virtual std::shared_ptr<FroidurePinBase> quotient_impl()       = 0;
+    virtual FroidurePinBase* quotient_impl()                       = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
@@ -237,8 +240,12 @@ namespace libsemigroups {
     bool                             _init_ntc_done;
     size_t                           _nrgens;
     std::vector<relation_type>       _gen_pairs;
-    std::shared_ptr<FroidurePinBase> _parent;
-    std::shared_ptr<FroidurePinBase> _quotient;
+    // Any derived class of CongBase always owns _quotient, and never owns
+    // _parent. At present, it we make congruence rho using _quotient, it
+    // should not be possible for rho to go out of scope before this does, so
+    // this should be safe.
+    FroidurePinBase*                 _parent;
+    FroidurePinBase*                 _quotient;
     congruence_type                  _type;
 
     /////////////////////////////////////////////////////////////////////////

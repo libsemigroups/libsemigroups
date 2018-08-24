@@ -101,13 +101,6 @@ namespace libsemigroups {
       xy = x * y;
     }
   };
-
-  template <>
-  struct swap<TCE> {
-    void operator()(TCE& x, TCE& y) const noexcept {
-      std::swap(x, y);
-    }
-  };
 }  // namespace libsemigroups
 
 namespace std {

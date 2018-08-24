@@ -382,6 +382,18 @@ namespace libsemigroups {
     return prod;
   }
 
+  BOOL FROIDURE_PIN::equal_to(word_type const& u, word_type const& v) const {
+    element_index_type u_pos = word_to_pos(u); // validates u
+    element_index_type v_pos = word_to_pos(v); // validates v
+    if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
+      LIBSEMIGROUPS_ASSERT(u_pos != UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(v_pos != UNDEFINED);
+      return u_pos == v_pos;
+    } else {
+      return word_to_element(u) == word_to_element(v);
+    }
+  }
+
   SIZE_T FROIDURE_PIN::current_max_word_length() const noexcept {
     if (finished()) {
       return _lenindex.size() - 2;

@@ -47,6 +47,7 @@ namespace libsemigroups {
     class ToddCoxeter;
   }
   namespace fpsemigroup {
+    class KnuthBendix;
     using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
   }
 
@@ -61,6 +62,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs + enums - public
       ////////////////////////////////////////////////////////////////////////
+
       using class_index_type = CongBase::class_index_type;
 
       enum class policy { none = 0, use_relations = 1, use_cayley_graph = 2 };
@@ -88,6 +90,7 @@ namespace libsemigroups {
 
       ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
       ToddCoxeter(congruence_type, ToddCoxeter const&);
+      // ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
 
       ~ToddCoxeter() = default;
 
@@ -129,7 +132,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
-      std::shared_ptr<FroidurePinBase> quotient_impl() override;
+      FroidurePinBase* quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // CongBase - overridden non-pure virtual methods - private

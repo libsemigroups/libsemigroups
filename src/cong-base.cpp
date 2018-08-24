@@ -43,6 +43,9 @@ namespace libsemigroups {
         _type(type) {}
 
   CongBase::~CongBase() {
+    if (_parent != _quotient) {
+      delete _quotient;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -101,14 +104,20 @@ namespace libsemigroups {
   void CongBase::add_pair(word_type const& u, word_type const& v) {
     validate_word(u);
     validate_word(v);
-    if (u != v) {
-      _gen_pairs.emplace_back(u, v);
-      // Note that _gen_pairs might contain pairs of distinct words that
-      // represent the same element of the parent semigroup (if any).
-      _quotient.reset();
-      set_finished(false);
-      add_pair_impl(u, v);
+    if (u == v) {
+      return;
+    } else if (has_parent_semigroup()) {
+      if (has_parent_semigroup() && parent_semigroup()->equal_to(u, v)) {
+        return;
+      }
     }
+    _gen_pairs.emplace_back(u, v);
+    // Note that _gen_pairs might contain pairs of distinct words that
+    // represent the same element of the parent semigroup (if any).
+    delete _quotient;
+    _quotient = nullptr;
+    set_finished(false);
+    add_pair_impl(u, v);
   }
 
   CongBase::const_iterator CongBase::cbegin_generating_pairs() const {
@@ -146,7 +155,7 @@ namespace libsemigroups {
     return _parent != nullptr;
   }
 
-  std::shared_ptr<FroidurePinBase> CongBase::parent_semigroup() const {
+  FroidurePinBase* CongBase::parent_semigroup() const {
     if (!has_parent_semigroup()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
@@ -157,7 +166,7 @@ namespace libsemigroups {
     return _quotient != nullptr;
   }
 
-  std::shared_ptr<FroidurePinBase> CongBase::quotient_semigroup() {
+  FroidurePinBase* CongBase::quotient_semigroup() {
     if (type() != congruence_type::TWOSIDED) {
       throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
@@ -179,20 +188,16 @@ namespace libsemigroups {
 
   void CongBase::set_parent_semigroup(FroidurePinBase* prnt) {
     LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
-    if (prnt == _parent.get()) {
+    if (prnt == _parent) {
       return;
     }
     LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
     LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
-    _parent = std::shared_ptr<FroidurePinBase>(prnt);
+    _parent = prnt;
     if (_gen_pairs.empty()) {
-      _quotient = std::shared_ptr<FroidurePinBase>(prnt);
+      _quotient = prnt;
     }
-  }
-
-  void CongBase::set_parent_semigroup(std::shared_ptr<FroidurePinBase>& prnt) {
-    set_parent_semigroup(prnt.get());
   }
 
   /////////////////////////////////////////////////////////////////////////

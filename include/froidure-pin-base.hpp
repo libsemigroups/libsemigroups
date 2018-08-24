@@ -43,12 +43,13 @@ namespace libsemigroups {
 
     virtual ~FroidurePinBase() {}
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
-    virtual size_t             current_max_word_length() const        = 0;
-    virtual size_t             degree() const                         = 0;
-    virtual size_t             nr_generators() const                  = 0;
-    virtual bool               is_begun() const                       = 0;
-    virtual size_t             current_size() const                   = 0;
-    virtual size_t             current_nr_rules() const               = 0;
+    virtual bool   equal_to(word_type const&, word_type const&) const = 0;
+    virtual size_t current_max_word_length() const                    = 0;
+    virtual size_t degree() const                                     = 0;
+    virtual size_t nr_generators() const                              = 0;
+    virtual bool   is_begun() const                                   = 0;
+    virtual size_t current_size() const                               = 0;
+    virtual size_t current_nr_rules() const                           = 0;
     virtual element_index_type prefix(element_index_type) const       = 0;
     virtual element_index_type suffix(element_index_type) const       = 0;
     virtual letter_type        first_letter(element_index_type) const = 0;
@@ -57,8 +58,7 @@ namespace libsemigroups {
     virtual size_t             length_const(element_index_type) const = 0;
     virtual size_t             length_non_const(element_index_type)   = 0;
 
-    virtual element_index_type
-                               product_by_reduction(element_index_type,
+    virtual element_index_type product_by_reduction(element_index_type,
                                                     element_index_type) const =
                                0;
     virtual element_index_type fast_product(element_index_type,

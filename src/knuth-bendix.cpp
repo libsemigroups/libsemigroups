@@ -366,7 +366,7 @@ namespace libsemigroups {
       _kb->add_rule(u, v);
     }
 
-    std::shared_ptr<FroidurePinBase> KnuthBendix::quotient_impl() {
+    FroidurePinBase* KnuthBendix::quotient_impl() {
       return _kb->isomorphic_non_fp_semigroup();
     }
 

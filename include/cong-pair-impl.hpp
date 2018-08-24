@@ -104,7 +104,7 @@ namespace libsemigroups {
         auto& current_pair = _pairs_to_mult.front();
         _pairs_to_mult.pop();
 
-        auto prnt = static_cast<froidure_pin_type*>(parent_semigroup().get());
+        auto prnt = static_cast<froidure_pin_type*>(parent_semigroup());
         // Add its left and/or right multiples
         for (size_t i = 0; i < prnt->nr_generators(); i++) {
           const_reference gen = prnt->generator(i);
@@ -188,12 +188,6 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
-    TEMPLATE
-    FroidurePinBase* P_CLASS::quotient_semigroup() {
-      // FIXME(now) actually implement this
-      throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
-    }
-
     SIZE_T P_CLASS::nr_classes() {
       run();
       return parent_semigroup()->size() - _class_lookup.size() + _next_class;
@@ -214,7 +208,7 @@ namespace libsemigroups {
       if (!finished()) {
         return UNDEFINED;
       }
-      auto   fp    = static_cast<froidure_pin_type*>(parent_semigroup().get());
+      auto   fp    = static_cast<froidure_pin_type*>(parent_semigroup());
       auto   x     = fp->word_to_element(w);
       size_t ind_x = get_index(this->to_internal_const(x));
       this->external_free(x);
@@ -231,7 +225,7 @@ namespace libsemigroups {
 
       _non_trivial_classes.assign(_nr_non_trivial_classes,
                                   std::vector<word_type>());
-      auto fp = static_cast<froidure_pin_type*>(parent_semigroup().get())
+      auto fp = static_cast<froidure_pin_type*>(parent_semigroup());
       for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
         word_type word
             = fp->factorisation(this->to_external(_reverse_map[ind]));
@@ -248,12 +242,18 @@ namespace libsemigroups {
         throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                       "the parent semigroup is defined");
       }
-      auto prnt = static_cast<froidure_pin_type*>(parent_semigroup().get());
+      auto prnt = static_cast<froidure_pin_type*>(parent_semigroup());
       auto x    = prnt->word_to_element(u);
       auto y    = prnt->word_to_element(v);
       internal_add_pair(this->to_internal(x), this->to_internal(y));
       this->external_free(x);
       this->external_free(y);
+    }
+
+    TEMPLATE
+    FroidurePinBase* P_CLASS::quotient_impl() {
+      // FIXME(now) actually implement this
+      throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -344,7 +344,7 @@ namespace libsemigroups {
       if (!_init_done) {
         LIBSEMIGROUPS_ASSERT(has_parent_semigroup());
         LIBSEMIGROUPS_ASSERT(parent_semigroup()->nr_generators() > 0);
-        auto fp = static_cast<froidure_pin_type*>(parent_semigroup().get());
+        auto fp = static_cast<froidure_pin_type*>(parent_semigroup());
         _tmp1 = this->internal_copy(this->to_internal_const(fp->generator(0)));
         _tmp2 = this->internal_copy(_tmp1);
         _init_done = true;

@@ -125,22 +125,17 @@ namespace libsemigroups {
                               S->knuth_bendix()->isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_cayley_graph));
           // Method 4: unlike with Method 2, this is not necessarily the same
-          // as running Method 1, because the relations in
-          // S->knuth_bendix()->isomorphic_non_fp_semigroup() are likely not
-          // the same as those in
-          // S->todd_coxeter()->isomorphic_non_fp_semigroup().
+          // as running Method 1, because the relations in S->knuth_bendix()
+          // are likely not the same as those in S->todd_coxeter().
           // TODO:
           // - check if the relations are really the same as those in
           //   S->todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          // - we could just add the relations from the rws directly (rather
-          // than recreating them in the isomorphic_non_fp_semigroup, which is
-          // rather wasteful). If we do this, then this could be done outside
-          // the inner most if-statement here.
           _race.add_runner(
               new ToddCoxeter(type,
-                              S->knuth_bendix(),
+                              S->knuth_bendix()->isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_relations));
+          // _race.add_runner(new ToddCoxeter(type, *S->knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.
@@ -148,7 +143,8 @@ namespace libsemigroups {
         }
       }
       // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
-      // then attempts to run the exhaustive pairs algorithm on that.
+      // then attempts to run the exhaustive pairs algorithm on that. Yes, this
+      // method sucks, but there are examples where this is useful.
       _race.add_runner(new KBP(type, S->knuth_bendix()));
 
       if (type == congruence_type::TWOSIDED) {
@@ -202,10 +198,6 @@ namespace libsemigroups {
     return static_cast<CongBase*>(_race.winner())->nr_classes();
   }
 
-  FroidurePinBase* Congruence::quotient_semigroup() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
-    return static_cast<CongBase*>(_race.winner())->quotient_semigroup();
-  }
 
   bool Congruence::is_quotient_obviously_infinite() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
@@ -303,6 +295,14 @@ namespace libsemigroups {
     for (auto runner : _race) {
       static_cast<CongBase*>(runner)->add_pair(u, v);
     }
+  }
+
+  FroidurePinBase* Congruence::quotient_impl() {
+    if (_race.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no methods defined, cannot find the quotient with no methods");
+    }
+    return static_cast<CongBase*>(_race.winner())->quotient_semigroup();
   }
 
   //////////////////////////////////////////////////////////////////////////

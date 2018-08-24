@@ -19,11 +19,15 @@
 //! \file
 //! This file contains function templates for adapting a user-defined type so
 //! that it can be used with libsemigroups.
+//!
+//! To use the TODO
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 
-#include "internal/libsemigroups-config.hpp"
+#include <utility> // for std::swap
+
+#include "internal/libsemigroups-config.hpp" // for LIBSEMIGROUPS_DENSEHASHMAP
 
 namespace libsemigroups {
   template <typename TElementType, typename = void>
@@ -39,7 +43,11 @@ namespace libsemigroups {
   template <typename TElementType, typename = void>
   struct product;
   template <typename TElementType, typename = void>
-  struct swap;
+  struct swap {
+    void operator() (TElementType& x, TElementType& y) {
+      std::swap(x, y);
+    }
+  };
 
   template <typename TElementType, typename TPointType, typename = void>
   struct action;

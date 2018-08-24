@@ -95,6 +95,11 @@ namespace libsemigroups {
     void set_identity(std::string const&);
     void set_identity(letter_type);
 
+    word_type   string_to_word(std::string const&) const;
+    std::string word_to_string(word_type const&) const;
+
+    bool is_alphabet_defined() const noexcept;
+
    protected:
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - protected
@@ -102,14 +107,10 @@ namespace libsemigroups {
 
     size_t      char_to_uint(char) const;
     char        uint_to_char(size_t) const noexcept;
-    word_type   string_to_word(std::string const&) const;
-    std::string word_to_string(word_type const&) const;
 
     FroidurePinBase* get_isomorphic_non_fp_semigroup() const noexcept;
     void             reset_isomorphic_non_fp_semigroup() noexcept;
     void set_isomorphic_non_fp_semigroup(FroidurePinBase*, bool) noexcept;
-
-    bool is_alphabet_defined() const noexcept;
 
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;
