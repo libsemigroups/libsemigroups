@@ -138,15 +138,6 @@ namespace libsemigroups {
     return static_cast<FpSemiBase*>(_race.winner())->normal_form(w);
   }
 
-  size_t FpSemigroup::nr_rules() const noexcept {
-    if (_race.empty()) {
-      return 0;
-    } else {
-      // FIXME this is bad
-      return static_cast<FpSemiBase*>(*_race.begin())->nr_rules();
-    }
-  }
-
   size_t FpSemigroup::size() {
     if (_race.empty()) {
       throw LIBSEMIGROUPS_EXCEPTION(

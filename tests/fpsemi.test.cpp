@@ -173,7 +173,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 115);
+    REQUIRE(S.nr_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is slower :)
@@ -192,7 +192,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 115);
+    REQUIRE(S.nr_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
@@ -266,7 +266,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(2, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 47);
+    REQUIRE(S.nr_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
@@ -284,7 +284,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(2, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 47);
+    REQUIRE(S.nr_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
@@ -302,7 +302,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(3, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 82);
+    REQUIRE(S.nr_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
@@ -320,7 +320,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(3, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 82);
+    REQUIRE(S.nr_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
@@ -339,7 +339,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 124);
+    REQUIRE(S.nr_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
@@ -360,7 +360,7 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 124);
+    REQUIRE(S.nr_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
@@ -381,7 +381,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(2, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 47);
+    REQUIRE(S.nr_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
@@ -400,7 +400,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(2, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 47);
+    REQUIRE(S.nr_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
@@ -419,7 +419,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(3, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 82);
+    REQUIRE(S.nr_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
@@ -438,7 +438,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(3, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 82);
+    REQUIRE(S.nr_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
@@ -457,7 +457,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 126);
+    REQUIRE(S.nr_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
@@ -476,7 +476,7 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 126);
+    REQUIRE(S.nr_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 10625);

@@ -69,6 +69,7 @@ namespace libsemigroups {
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.size() == 4);
     }
 
@@ -87,7 +88,7 @@ namespace libsemigroups {
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.size() == 9);
       delete_gens(gens);
     }
@@ -107,7 +108,7 @@ namespace libsemigroups {
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 18);
+      REQUIRE(kb.nr_active_rules() == 18);
       REQUIRE(kb.size() == 88);
       delete_gens(gens);
     }
@@ -136,7 +137,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       REQUIRE(kb.alphabet() == "abc");
 #endif
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.normal_form({2, 0}) == word_type({0}));
       REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
       REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));
@@ -169,7 +170,7 @@ namespace libsemigroups {
       kb.add_rule({0}, {1});
 
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -182,7 +183,7 @@ namespace libsemigroups {
       kb.set_alphabet("012");
 
       REQUIRE(kb.alphabet() == "012");
-      REQUIRE(kb.nr_rules() == 0);
+      REQUIRE(kb.nr_active_rules() == 0);
 
       kb.add_rule("01", "10");
       kb.add_rule("02", "20");
@@ -196,9 +197,9 @@ namespace libsemigroups {
       kb.add_rule("21", "1");
       kb.add_rule("0", "1");
 
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       auto S = static_cast<FroidurePin<KBE>*>(kb.isomorphic_non_fp_semigroup());
 
       // At this point only the generators are known
@@ -244,7 +245,7 @@ namespace libsemigroups {
       REQUIRE(kb.alphabet() == "01");
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
     }
 
@@ -265,7 +266,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
       REQUIRE(kb.confluent());
     }
 
@@ -286,7 +287,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
       REQUIRE(kb.confluent());
     }
 
@@ -304,7 +305,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 6);
+      REQUIRE(kb.nr_active_rules() == 6);
       REQUIRE(kb.confluent());
     }
 
@@ -323,7 +324,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
     }
 
@@ -346,7 +347,7 @@ namespace libsemigroups {
       REQUIRE(!kb.is_obviously_infinite());
       REQUIRE(!kb.is_obviously_finite());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 40);
+      REQUIRE(kb.nr_active_rules() == 40);
       REQUIRE(kb.confluent());
       REQUIRE(kb.normal_form("cc") == "b");
       REQUIRE(kb.normal_form("ccc") == "");
@@ -374,7 +375,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 1026);
+      REQUIRE(kb.nr_active_rules() == 1026);
       REQUIRE(kb.confluent());
       // TODO find size when compiled without debug mode
     }
@@ -396,7 +397,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 31);
+      REQUIRE(kb.nr_active_rules() == 31);
       REQUIRE(kb.confluent());
     }
 
@@ -427,7 +428,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 36);
+      REQUIRE(kb.nr_active_rules() == 36);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 120);
     }
@@ -456,7 +457,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 152);
+      REQUIRE(kb.nr_active_rules() == 152);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 336);
     }
@@ -473,7 +474,7 @@ namespace libsemigroups {
 
       REQUIRE(kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
       REQUIRE(kb.confluent());
       REQUIRE(kb.is_obviously_infinite());
     }
@@ -496,7 +497,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.confluent());
     }
 
@@ -515,7 +516,7 @@ namespace libsemigroups {
 
       REQUIRE(kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 2);
+      REQUIRE(kb.nr_active_rules() == 2);
       REQUIRE(kb.confluent());
     }
 
@@ -534,7 +535,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 12);
+      REQUIRE(kb.nr_active_rules() == 12);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 243);
     }
@@ -554,7 +555,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 9);
+      REQUIRE(kb.nr_active_rules() == 9);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 99);
     }
@@ -576,7 +577,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 24);
+      REQUIRE(kb.nr_active_rules() == 24);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 240);
     }
@@ -598,7 +599,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 24);
+      REQUIRE(kb.nr_active_rules() == 24);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 11);
     }
@@ -621,7 +622,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 35);
+      REQUIRE(kb.nr_active_rules() == 35);
       REQUIRE(kb.confluent());
     }
 
@@ -671,7 +672,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 20);
+      REQUIRE(kb.nr_active_rules() == 20);
       REQUIRE(kb.confluent());
 
       // Check that rewrite to a non-pointer argument does not rewrite its
@@ -728,7 +729,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 105);
+      REQUIRE(kb.nr_active_rules() == 105);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 746);
 
@@ -772,7 +773,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 16);
+      REQUIRE(kb.nr_active_rules() == 16);
       REQUIRE(kb.confluent());
     }
 
@@ -792,7 +793,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 4);
+      REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 4);
     }
@@ -812,7 +813,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
       REQUIRE(kb.confluent());
 
       //  REQUIRE(!kb.test_less_than("bababababab", "aaaaa"));
@@ -882,7 +883,7 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("abcdf", "cef"));
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.confluent());
       REQUIRE(kb.equal_to("dfabcdf", "dfabcdg"));
       REQUIRE(kb.equal_to("abcdf", "ceg"));
@@ -934,7 +935,7 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("afd", "bgd"));
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -961,7 +962,7 @@ namespace libsemigroups {
                         LibsemigroupsException);
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 5);
+      REQUIRE(kb.nr_active_rules() == 5);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -988,7 +989,7 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("afdj", "bgdj"));
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 7);
+      REQUIRE(kb.nr_active_rules() == 7);
     }
 
     // TODO check that this is really confluent, with different alphabet
@@ -1012,7 +1013,7 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("aabcabc", "aabccba"));
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
@@ -1032,7 +1033,7 @@ namespace libsemigroups {
       REPORTER.set_report(REPORT);
       kb.knuth_bendix();
 
-      REQUIRE(kb.nr_rules() == 6);
+      REQUIRE(kb.nr_active_rules() == 6);
       REQUIRE(kb.confluent());
       REQUIRE(!kb.equal_to("a", "b"));
       REQUIRE(!kb.equal_to("aabcabc", "aabccba"));
@@ -1058,12 +1059,12 @@ namespace libsemigroups {
       kb.set_overlap_policy(KnuthBendix::overlap_policy::MAX_AB_BC);
       kb.set_max_rules(100);
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 101);
+      REQUIRE(kb.nr_active_rules() == 101);
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 101);
+      REQUIRE(kb.nr_active_rules() == 101);
       kb.set_max_rules(250);
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 255);
+      REQUIRE(kb.nr_active_rules() == 255);
       // kb.set_max_rules(POSITIVE_INFINITY);
       // kb.knuth_bendix();
     }
@@ -1086,10 +1087,10 @@ namespace libsemigroups {
       kb.add_rule("bbcbcb", "bbcbc");
 
       REQUIRE(!kb.confluent());
-      REQUIRE(kb.nr_rules() == 6);
+      REQUIRE(kb.nr_active_rules() == 6);
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
 
       REQUIRE(kb.equal_to("bbbbbbb", "b"));
       REQUIRE(kb.equal_to("ccccc", "c"));
@@ -1155,7 +1156,7 @@ namespace libsemigroups {
       kb.set_check_confluence_interval(LIMIT_MAX);
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 1026);
+      REQUIRE(kb.nr_active_rules() == 1026);
     }
 
     // This example verifies the nilpotence of the group using the Sims
@@ -1184,7 +1185,7 @@ namespace libsemigroups {
 
     //   kb.knuth_bendix();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_rules() == 32767);
+    //   REQUIRE(kb.nr_active_rules() == 32767);
     // }
 
     // Fibonacci group F(2,7) - order 29 - works better with largish tidyint
@@ -1211,7 +1212,7 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       // Fails to terminate, or is very slow, with knuth_bendix
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 47);
+      REQUIRE(kb.nr_active_rules() == 47);
       // REQUIRE(kb.size() == 29);
       // KBMAG does not terminate with this example :-)
       // TODO Add inverses here, maybe this is why we terminate but KBMAG does
@@ -1238,7 +1239,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32750);
+      REQUIRE(kb.nr_active_rules() == 32750);
     }
 
     // 2-generator free abelian group (with this ordering KB terminates - but no
@@ -1258,7 +1259,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
 
       REQUIRE(kb.equal_to("Bab", "a"));
     }
@@ -1295,7 +1296,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
 
       REQUIRE(kb.equal_to("bfBY", ""));
       REQUIRE(kb.equal_to("cyCD", ""));
@@ -1323,7 +1324,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 0);
+      REQUIRE(kb.nr_active_rules() == 0);
     }
 
     // knuth_bendix/2 fails to terminate
@@ -1344,7 +1345,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }
 
     // This example verifies the nilpotence of the group using the Sims
@@ -1374,7 +1375,7 @@ namespace libsemigroups {
     //
     //   kb.knuth_bendix();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_rules() == 9);
+    //   REQUIRE(kb.nr_active_rules() == 9);
     //
     //   REQUIRE(kb.equal_to("BAba", "c"));
     //   REQUIRE(kb.equal_to("CAca", "d"));
@@ -1409,7 +1410,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 24);
+      REQUIRE(kb.nr_active_rules() == 24);
 
       REQUIRE(kb.equal_to("ab", "c"));
       REQUIRE(kb.equal_to("bc", "d"));
@@ -1463,7 +1464,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
 
       REQUIRE(kb.equal_to("Aba", "bb"));
       REQUIRE(kb.equal_to("Bcb", "cc"));
@@ -1488,7 +1489,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
 
       REQUIRE(kb.equal_to("DCdc", "ABab"));
       REQUIRE(kb.rules()
@@ -1518,7 +1519,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }*/
 
     //  3-fold cover of A_6
@@ -1539,7 +1540,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.nr_active_rules() == 11);
 
       REQUIRE(kb.equal_to("aaa", ""));
       REQUIRE(kb.equal_to("bbb", ""));
@@ -1581,7 +1582,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 0);
+      REQUIRE(kb.nr_active_rules() == 0);
     }
 
     //  A nonhopfian group
@@ -1596,7 +1597,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
 
       REQUIRE(kb.equal_to("Baab", "aaa"));
       REQUIRE(kb.rules() == std::vector<std::pair<std::string,
@@ -1723,7 +1724,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }
 
     // Presentation of group A_4 regarded as monoid presentation - gives
@@ -1743,7 +1744,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 6);
+      REQUIRE(kb.nr_active_rules() == 6);
 
       REQUIRE(kb.equal_to("bb", "B"));
       REQUIRE(kb.equal_to("BaB", "aba"));
@@ -1777,7 +1778,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 2);
+      REQUIRE(kb.nr_active_rules() == 2);
 
       REQUIRE(kb.equal_to("b", ""));
       REQUIRE(kb.equal_to("a", ""));
@@ -1834,7 +1835,7 @@ namespace libsemigroups {
       kb.run_for(std::chrono::hours(1));
       // kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }
 
     // infinite cyclic group
@@ -1851,7 +1852,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 0);
+      REQUIRE(kb.nr_active_rules() == 0);
     }
 
     // A generator, but trivial.
@@ -1869,7 +1870,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
 
       REQUIRE(kb.equal_to("a", ""));
       REQUIRE(kb.rules()
@@ -1895,7 +1896,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 24);
+      REQUIRE(kb.nr_active_rules() == 24);
 
       REQUIRE(kb.equal_to("ab", "c"));
       REQUIRE(kb.equal_to("bc", "d"));
@@ -1951,7 +1952,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32766);
+      REQUIRE(kb.nr_active_rules() == 32766);
     }
 
     // Free nilpotent group of rank 2 and class 2
@@ -1969,7 +1970,7 @@ namespace libsemigroups {
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
 
-      REQUIRE(kb.nr_rules() == 3);
+      REQUIRE(kb.nr_active_rules() == 3);
       // TODO KBMAG says this terminates with 32758 rules, maybe that was with
       // shortlex order?
     }*/
@@ -1997,7 +1998,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }
 
     // Two generator presentation of Fibonacci group F(2,7) - order 29. Large
@@ -2018,7 +2019,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32763);
+      REQUIRE(kb.nr_active_rules() == 32763);
     }
 
     // Mathieu group M_11
@@ -2040,7 +2041,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32761);
+      REQUIRE(kb.nr_active_rules() == 32761);
     }
 
     // Weyl group E8 (all gens involutory).
@@ -2086,7 +2087,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 32767);
     }
 
     // Von Dyck (2,3,7) group - infinite hyperbolic - small tidyint works better
@@ -2107,7 +2108,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 42);
+      REQUIRE(kb.nr_active_rules() == 42);
       // KBMAG stops with 32767 rules and is not confluent
       std::cout << kb;
       REQUIRE(kb.rules() == std::vector<std::pair<std::string, std::string>>());
@@ -2128,7 +2129,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 1);
+      REQUIRE(kb.nr_active_rules() == 1);
 
       REQUIRE(
           kb.rules()
@@ -2152,7 +2153,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 7);
+      REQUIRE(kb.nr_active_rules() == 7);
 
       REQUIRE(kb.equal_to("BAba", "c"));
       REQUIRE(kb.equal_to("CAca", "d"));
@@ -2187,7 +2188,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 14);
+      REQUIRE(kb.nr_active_rules() == 14);
 
       REQUIRE(kb.equal_to("aaa", ""));
       REQUIRE(kb.equal_to("Hb", "H"));
@@ -2239,7 +2240,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 8);
+      REQUIRE(kb.nr_active_rules() == 8);
       REQUIRE(kb.confluent());
     }
 
@@ -2288,7 +2289,7 @@ namespace libsemigroups {
       // The following never terminates
       // kb.knuth_bendix_by_overlap_length();
       // REQUIRE(kb.confluent());
-      // REQUIRE(kb.nr_rules() == 32758);
+      // REQUIRE(kb.nr_active_rules() == 32758);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -2304,27 +2305,27 @@ namespace libsemigroups {
       kb.add_rule("ababababababab", "");
       kb.add_rule("abacabacabacabac", "");
 
-      REQUIRE(kb.nr_rules() == 5);
+      REQUIRE(kb.nr_active_rules() == 5);
       REQUIRE(!kb.confluent());
 
       kb.set_max_rules(10);
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 10);
+      REQUIRE(kb.nr_active_rules() == 10);
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 10);
+      REQUIRE(kb.nr_active_rules() == 10);
       REQUIRE(!kb.confluent());
 
       kb.set_max_rules(20);
       kb.knuth_bendix();
-      REQUIRE(kb.nr_rules() == 21);
+      REQUIRE(kb.nr_active_rules() == 21);
       REQUIRE(!kb.confluent());
 
       kb.set_max_rules(LIMIT_MAX);
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 40);
+      REQUIRE(kb.nr_active_rules() == 40);
     }
 
     // Von Dyck (2,3,7) group - infinite hyperbolic
@@ -2383,7 +2384,7 @@ namespace libsemigroups {
       kb.set_max_rules(32768);
       kb.knuth_bendix();
       REQUIRE(!kb.confluent());
-      REQUIRE(kb.nr_rules() == 42);
+      REQUIRE(kb.nr_active_rules() == 42);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -2403,7 +2404,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
     }
 
@@ -2424,7 +2425,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
     }
 
@@ -2511,7 +2512,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_rules() == 11);
+      REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);
 
@@ -2519,7 +2520,7 @@ namespace libsemigroups {
       REQUIRE(!kb.equal_to("a", "b"));
       kb.add_rule("a", "b");
       // FIXME(now) add_rule doesn't seem to do anything
-      // REQUIRE(kb.nr_rules() == 12);
+      // REQUIRE(kb.nr_active_rules() == 12);
       // REQUIRE(!kb.confluent() == 12);
       // REQUIRE(kb.size() < 12);
     }

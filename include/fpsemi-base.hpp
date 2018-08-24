@@ -65,7 +65,6 @@ namespace libsemigroups {
     virtual bool        equal_to(std::string const&, std::string const&) = 0;
     virtual std::string normal_form(std::string const&)                  = 0;
 
-    virtual size_t nr_rules() const noexcept = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - public
@@ -91,6 +90,8 @@ namespace libsemigroups {
     void add_rules(FroidurePinBase*);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
+    size_t nr_rules() const noexcept;
+
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
     FroidurePinBase*   isomorphic_non_fp_semigroup();
 
@@ -114,7 +115,7 @@ namespace libsemigroups {
     size_t char_to_uint(char) const;
     char   uint_to_char(size_t) const noexcept;
 
-    void set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;
+    void set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept; // NOLINT()
 
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;
@@ -153,10 +154,10 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - data - private
     //////////////////////////////////////////////////////////////////////////////
-    std::string _alphabet;
-    // TODO The unordered_map could be an array if this is too slow
+    std::string                           _alphabet;
     std::unordered_map<char, letter_type> _alphabet_map;
     FroidurePinBase*                      _isomorphic_non_fp_semigroup;
+    std::vector<std::pair<std::string, std::string>> _rules;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_

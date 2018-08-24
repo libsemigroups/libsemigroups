@@ -72,7 +72,6 @@ namespace libsemigroups {
     bool             is_obviously_finite() override;
     bool             is_obviously_infinite() override;
     std::string      normal_form(std::string const&) override;
-    size_t           nr_rules() const noexcept override;
     size_t           size() override;
 
     using FpSemiBase::equal_to;

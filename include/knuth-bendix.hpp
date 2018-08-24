@@ -70,9 +70,6 @@ namespace libsemigroups {
       std::string normal_form(std::string const&) override;
 
 
-      //! Returns the current number of active rules in the rewriting system.
-      size_t nr_rules() const noexcept override;
-
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
@@ -165,6 +162,9 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - methods for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
+
+      //! Returns the current number of active rules in the rewriting system.
+      size_t nr_active_rules() const noexcept;
 
       //! This method returns a vector consisting of the pairs of strings which
       //! represent the rules of the rewriting system. The \c first entry in

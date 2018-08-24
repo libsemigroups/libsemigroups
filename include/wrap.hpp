@@ -45,21 +45,18 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       WrappedCong()
-          : _nr_rules(0),
-            _wrapped_cong(
+          : _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
 
-      // FIXME avoid code duplication here
       explicit WrappedCong(FroidurePinBase* S)
-          : _nr_rules(0),
-            _wrapped_cong(
+          : _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
         set_alphabet(S->nr_generators());
         if (TAddRules) {
           add_rules(S);
         }
       }
-
+      // TODO remove this constructor
       explicit WrappedCong(std::string const& lphbt) : WrappedCong() {
         set_alphabet(lphbt);
       }
@@ -106,11 +103,6 @@ namespace libsemigroups {
             _wrapped_cong->word_to_class_index(string_to_word(w))));
       }
 
-
-      size_t nr_rules() const noexcept override {
-        return _nr_rules;
-      }
-
       ////////////////////////////////////////////////////////////////////////////
       // Runner - overridden non-pure virtual method - protected
       ////////////////////////////////////////////////////////////////////////////
@@ -152,7 +144,6 @@ namespace libsemigroups {
 
       void add_rule_impl(std::string const& u, std::string const& v) override {
         // This is only ever called if u and v are valid
-        _nr_rules++;
         _wrapped_cong->add_pair(string_to_word(u), string_to_word(v));
       }
 
@@ -176,7 +167,6 @@ namespace libsemigroups {
       // from word_type -> string.
       void add_rule_impl(word_type const& u, word_type const& v) override {
         // This is only ever called if u and v are valid
-        _nr_rules++;
         _wrapped_cong->add_pair(u, v);
       }
 
@@ -186,14 +176,12 @@ namespace libsemigroups {
           validate_word(rhs);
           add_rule(lhs, rhs);
         });
-        _nr_rules += S->nr_rules();
       }
 
       //////////////////////////////////////////////////////////////////////////
       // WrappedCong - data - private
       //////////////////////////////////////////////////////////////////////////
 
-      size_t                        _nr_rules;
       std::unique_ptr<TWrappedCong> _wrapped_cong;
     };
   }  // namespace fpsemigroup

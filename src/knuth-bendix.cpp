@@ -149,10 +149,9 @@ namespace libsemigroups {
       }
     }
 
-    size_t KnuthBendix::nr_rules() const noexcept {
+    size_t KnuthBendix::nr_active_rules() const noexcept {
       return _impl->nr_rules();
     }
-
 
     bool KnuthBendix::equal_to(std::string const& u, std::string const& v) {
       validate_word(u);

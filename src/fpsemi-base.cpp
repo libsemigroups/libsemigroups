@@ -117,7 +117,7 @@ namespace libsemigroups {
                                                        string_to_word(v)))) {
       return;
     }
-    // TODO _gen_pairs.emplace_back(u, v);
+    _rules.emplace_back(u, v);
     add_rule_impl(u, v);
     reset();
   }
@@ -130,7 +130,7 @@ namespace libsemigroups {
             && isomorphic_non_fp_semigroup()->equal_to(u, v))) {
       return;
     }
-    // TODO _gen_pairs.emplace_back(u, v);
+    _rules.emplace_back(word_to_string(u), word_to_string(v));
     add_rule_impl(u, v);
     reset();
   }
@@ -170,6 +170,9 @@ namespace libsemigroups {
     }
   }
 
+  size_t FpSemiBase::nr_rules() const noexcept {
+    return _rules.size();
+  }
 
   bool FpSemiBase::has_isomorphic_non_fp_semigroup() const noexcept {
     return _isomorphic_non_fp_semigroup != nullptr;
