@@ -66,7 +66,7 @@ namespace libsemigroups {
   // place to cache the FroidurePinBase* S.
   FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemiBase(), _race() {
     set_alphabet(S->nr_generators());
-    set_isomorphic_non_fp_semigroup(S, false);
+    set_isomorphic_non_fp_semigroup(S);
     _race.add_runner(new ToddCoxeter(S));
     _race.add_runner(new KnuthBendix(S));
     // TODO(1) if the policy is standard, then add another ToddCoxeter with
@@ -105,12 +105,13 @@ namespace libsemigroups {
 
   bool FpSemigroup::is_obviously_finite() {
     if (_race.empty()) {
-      if (is_alphabet_defined()) {
-        // Nothing in _race means no rules
-        return alphabet().empty();
-      } else {
+      if (alphabet().empty()) {
+        // TODO(now) is this consistent with CongBase?
         throw LIBSEMIGROUPS_EXCEPTION(
             "no alphabet or rules have been specified");
+      } else {
+        // Nothing in _race means no rules
+        return true;
       }
     }
     for (auto it = _race.begin(); it < _race.end(); ++it) {
@@ -124,10 +125,11 @@ namespace libsemigroups {
   bool FpSemigroup::is_obviously_infinite() {
     if (_race.empty()) {
       std::cout << "empty race!\n";
-      if (is_alphabet_defined()) {
+      if (!alphabet().empty()) {
         // Nothing in _race means no rules
-        return !alphabet().empty();
+        return true;
       } else {
+        // TODO(now) is this consistent with CongBase?
         throw LIBSEMIGROUPS_EXCEPTION(
             "no alphabet or rules have been specified");
       }
@@ -152,14 +154,12 @@ namespace libsemigroups {
     for (auto runner : _race) {
       if (static_cast<FpSemiBase*>(runner)->has_isomorphic_non_fp_semigroup()) {
         set_isomorphic_non_fp_semigroup(
-            static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup(),
-            false);
+            static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup());
         return get_isomorphic_non_fp_semigroup();
       }
     }
     set_isomorphic_non_fp_semigroup(
-        static_cast<FpSemiBase*>(_race.winner())->isomorphic_non_fp_semigroup(),
-        false);
+        static_cast<FpSemiBase*>(_race.winner())->isomorphic_non_fp_semigroup());
     return get_isomorphic_non_fp_semigroup();
   }
 
@@ -184,26 +184,6 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     } else {
       return static_cast<FpSemiBase*>(_race.winner())->size();
-    }
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // FpSemiBase - non-pure virtual methods - public
-  //////////////////////////////////////////////////////////////////////////////
-
-  void FpSemigroup::set_alphabet(std::string const& lphbt) {
-    // FpSemiBase::set_alphabet throws if the alphabet is set more than once
-    FpSemiBase::set_alphabet(lphbt);
-    for (auto runner : _race) {
-      static_cast<FpSemiBase*>(runner)->set_alphabet(lphbt);
-    }
-  }
-
-  void FpSemigroup::set_alphabet(size_t n) {
-    // FpSemiBase::set_alphabet throws if the alphabet is set more than once
-    FpSemiBase::set_alphabet(n);
-    for (auto runner : _race) {
-      static_cast<FpSemiBase*>(runner)->set_alphabet(n);
     }
   }
 
@@ -235,6 +215,22 @@ namespace libsemigroups {
       return false;
     }
     return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiBase - non-pure virtual methods - private
+  //////////////////////////////////////////////////////////////////////////////
+
+  void FpSemigroup::set_alphabet_impl(std::string const& lphbt) {
+    for (auto runner : _race) {
+      static_cast<FpSemiBase*>(runner)->set_alphabet(lphbt);
+    }
+  }
+
+  void FpSemigroup::set_alphabet_impl(size_t n) {
+    for (auto runner : _race) {
+      static_cast<FpSemiBase*>(runner)->set_alphabet(n);
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////

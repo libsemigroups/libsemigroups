@@ -53,13 +53,13 @@ namespace libsemigroups {
 
      public:
       //////////////////////////////////////////////////////////////////////////
-      // Runner - overridden virtual methods - public
+      // Runner - virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
       //////////////////////////////////////////////////////////////////////////
-      // FpSemiBase - overridden pure virtual methods - public
+      // FpSemiBase - pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
       void add_rule(std::string const&, std::string const&) override;
@@ -74,11 +74,9 @@ namespace libsemigroups {
       FroidurePinBase* isomorphic_non_fp_semigroup() override;
 
       //////////////////////////////////////////////////////////////////////////
-      // FpSemiBase - overridden non-pure virtual methods - public
+      // FpSemiBase - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
-      void set_alphabet(std::string const&) override;
-      void set_alphabet(size_t) override;
 
       using FpSemiBase::add_rule;
       using FpSemiBase::equal_to;
@@ -226,6 +224,13 @@ namespace libsemigroups {
 
      private:
       //////////////////////////////////////////////////////////////////////////
+      // FpSemiBase - non-pure virtual methods - private
+      //////////////////////////////////////////////////////////////////////////
+
+      void set_alphabet_impl(std::string const&) override;
+      void set_alphabet_impl(size_t) override;
+
+      //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private
       //////////////////////////////////////////////////////////////////////////
 
@@ -254,13 +259,13 @@ namespace libsemigroups {
       explicit KnuthBendix(fpsemigroup::KnuthBendix const*);
 
       ////////////////////////////////////////////////////////////////////////////
-      // Runner - overridden pure virtual methods - public
+      // Runner - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
       ////////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - public
+      // CongBase - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       word_type        class_index_to_word(class_index_type) override;
@@ -268,7 +273,7 @@ namespace libsemigroups {
       class_index_type word_to_class_index(word_type const&) override;
 
       ////////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - public
+      // CongBase - non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
       result_type const_contains(word_type const&,
@@ -277,21 +282,21 @@ namespace libsemigroups {
 
      protected:
       ////////////////////////////////////////////////////////////////////////////
-      // Runner - overridden non-pure virtual methods - protected
+      // Runner - non-pure virtual methods - protected
       ////////////////////////////////////////////////////////////////////////////
 
       bool finished_impl() const override;
 
      private:
       ////////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - private
+      // CongBase - pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
       FroidurePinBase* quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - private
+      // CongBase - non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////////
 
       void set_nr_generators_impl(size_t) override;

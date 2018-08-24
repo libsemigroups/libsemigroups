@@ -64,7 +64,7 @@ namespace libsemigroups {
     CongBase& operator=(CongBase&&) = delete;
 
     //! Constructor
-    explicit CongBase(congruence_type type);
+    explicit CongBase(congruence_type);
 
     //! A default destructor.
     virtual ~CongBase();
@@ -101,7 +101,6 @@ namespace libsemigroups {
     //! \warning The problem of determining the number of classes of a
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this method may never terminate.
-    // TODO(now) const
     virtual size_t nr_classes() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -143,6 +142,7 @@ namespace libsemigroups {
     //! undecidable in general, and this method may never terminate.
     virtual bool less(word_type const&, word_type const&);
 
+    // TODO make these non-virtual
     virtual bool is_quotient_obviously_finite();
     virtual bool is_quotient_obviously_infinite();
 
@@ -215,9 +215,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
-
-    // TODO(now) const
-    virtual FroidurePinBase* quotient_impl() = 0;
+    virtual FroidurePinBase* quotient_impl()                       = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
@@ -227,8 +225,7 @@ namespace libsemigroups {
     // depends on the state of the object, but word_to_class_index does not
     // (i.e the return value should not change).
     virtual class_index_type const_word_to_class_index(word_type const&) const;
-    // TODO(now) const
-    virtual void set_nr_generators_impl(size_t);
+    virtual void             set_nr_generators_impl(size_t);
     virtual std::shared_ptr<non_trivial_classes_type>
     non_trivial_classes_impl();
 

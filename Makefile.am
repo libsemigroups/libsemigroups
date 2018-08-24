@@ -113,10 +113,10 @@ libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 ## Extra files for the distribution
 
-LINT_FORMAT_FILES_EXTRA = tests/libsemigroups.tests.hpp ## TODO include in archive
+LINT_FORMAT_FILES_EXTRA =  src/kbe-impl.hpp 
+LINT_FORMAT_FILES_EXTRA += src/knuth-bendix-impl.hpp 
+LINT_FORMAT_FILES_EXTRA += tests/libsemigroups.tests.hpp
 
-EXTRA_DIST =  src/kbe-impl.hpp 
-EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile

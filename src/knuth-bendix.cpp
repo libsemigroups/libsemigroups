@@ -87,16 +87,14 @@ namespace libsemigroups {
         : FpSemiBase(), _impl(new KnuthBendixImpl(this, order)) {}
 
     KnuthBendix::KnuthBendix(FroidurePinBase* S) : KnuthBendix() {
+      set_alphabet(S->nr_generators());
       // TODO(now) move the call to add_rules to elsewhere, so that it's done
       // in knuth_bendix so that this is done in a thread, and not when
       // KnuthBendix is constructed. If it is moved, then we will have to do
       // add_rules(S) to add_rule() so that we don't lose the relations from S.
-      // TODO(now) what if S is the return value of
-      // isomorphic_non_fp_semigroup? Then shouldn't we use the same alphabet
-      // as S?
-      set_alphabet(S->nr_generators());
-      set_isomorphic_non_fp_semigroup(S, false);  // false = "do not delete"
       add_rules(S);
+      // Do not set isomorphic_non_fp_semigroup so we are guaranteed that it
+      // returns a FroidurePin of KBE's.
     }
 
     KnuthBendix::KnuthBendix(FroidurePinBase& S) : KnuthBendix(&S) {}
@@ -118,18 +116,8 @@ namespace libsemigroups {
     // FpSemiBase - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void KnuthBendix::set_alphabet(std::string const& lphbt) {
-      FpSemiBase::set_alphabet(lphbt);
-      _impl->set_internal_alphabet(lphbt);
-    }
-
-    void KnuthBendix::set_alphabet(size_t n) {
-      FpSemiBase::set_alphabet(n);
-      _impl->set_internal_alphabet();
-    }
-
     void KnuthBendix::add_rule(std::string const& p, std::string const& q) {
-      if (!is_alphabet_defined()) {
+      if (alphabet().empty()) {
         throw LIBSEMIGROUPS_EXCEPTION("KnuthBendix::add_rule: cannot add rules "
                                       "before an alphabet is defined");
       }
@@ -137,7 +125,6 @@ namespace libsemigroups {
       validate_word(q);
       if (p != q) {
         _impl->add_rule(p, q);
-        reset_isomorphic_non_fp_semigroup();
       }
     }
 
@@ -178,7 +165,7 @@ namespace libsemigroups {
     }
 
     FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup() {
-      LIBSEMIGROUPS_ASSERT(is_alphabet_defined());
+      LIBSEMIGROUPS_ASSERT(!alphabet().empty());
       // TODO(now) check that no generators/rules can be added after this has
       // been called, or if they are that _isomorphic_non_fp_semigroup is reset
       // again
@@ -189,7 +176,7 @@ namespace libsemigroups {
         for (size_t i = 1; i < alphabet().size(); ++i) {
           T->add_generator(KBE(*this, i));
         }
-        set_isomorphic_non_fp_semigroup(T, true);
+        set_isomorphic_non_fp_semigroup(T);
       }
       return get_isomorphic_non_fp_semigroup();
     }
@@ -254,6 +241,19 @@ namespace libsemigroups {
       _impl->knuth_bendix_by_overlap_length();
       report_why_we_stopped();
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - non-pure virtual methods - private
+    //////////////////////////////////////////////////////////////////////////
+
+    void KnuthBendix::set_alphabet_impl(std::string const& lphbt) {
+      _impl->set_internal_alphabet(lphbt);
+    }
+
+    void KnuthBendix::set_alphabet_impl(size_t) {
+      _impl->set_internal_alphabet();
+    }
+
   }  // namespace fpsemigroup
 
   namespace congruence {
@@ -374,7 +374,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::set_nr_generators_impl(size_t n) {
-      if (!_kb->is_alphabet_defined()) {
+      if (_kb->alphabet().empty()) {
         _kb->set_alphabet(n);
       } else if (_kb->alphabet().size() != n) {
         throw LIBSEMIGROUPS_EXCEPTION(

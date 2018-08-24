@@ -54,11 +54,10 @@ namespace libsemigroups {
           : _nr_rules(0),
             _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
-        FpSemiBase::set_alphabet(S->nr_generators());
+        set_alphabet(S->nr_generators());
         if (TAddRules) {
           add_rules(S);
         }
-        // FIXME set_isomorphic_non_fp_semigroup??
       }
 
       explicit WrappedCong(std::string const& lphbt) : WrappedCong() {
@@ -81,7 +80,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       void add_rule(std::string const& lhs, std::string const& rhs) override {
-        if (!is_alphabet_defined()) {
+        if (alphabet().empty()) {
           throw LIBSEMIGROUPS_EXCEPTION(
               "cannot add rules before an alphabet is defined");
         }
@@ -163,19 +162,6 @@ namespace libsemigroups {
             _wrapped_cong->word_to_class_index(w));
       }
 
-      // We override FpSemiBase::set_alphabet so that we can set the number of
-      // generators in _wrapped_cong.
-      void set_alphabet(std::string const& lphbt) override {
-        FpSemiBase::set_alphabet(lphbt);
-        _wrapped_cong->set_nr_generators(lphbt.size());
-      }
-
-      // We override FpSemiBase::set_alphabet so that we can set the number of
-      // generators in _wrapped_cong.
-      void set_alphabet(size_t nr_letters) override {
-        FpSemiBase::set_alphabet(nr_letters);
-        _wrapped_cong->set_nr_generators(nr_letters);
-      }
 
       void add_rules(FroidurePinBase* S) override {
         // TODO improve this method to avoid unnecessary conversions
@@ -196,6 +182,22 @@ namespace libsemigroups {
       }
 
      private:
+      //////////////////////////////////////////////////////////////////////////
+      // FpSemiBase - non-pure virtual methods - private
+      //////////////////////////////////////////////////////////////////////////
+
+      void set_alphabet_impl(std::string const& lphbt) override {
+        _wrapped_cong->set_nr_generators(lphbt.size());
+      }
+
+      void set_alphabet_impl(size_t nr_letters) override {
+        _wrapped_cong->set_nr_generators(nr_letters);
+      }
+
+      //////////////////////////////////////////////////////////////////////////
+      // WrappedCong - data - private
+      //////////////////////////////////////////////////////////////////////////
+
       size_t                        _nr_rules;
       std::unique_ptr<TWrappedCong> _wrapped_cong;
     };

@@ -43,6 +43,12 @@ namespace libsemigroups {
     // FpSemiBase - constructor + destructor - public
     //////////////////////////////////////////////////////////////////////////////
 
+    // FpSemiBase is non-copyable, and non-movable.
+    FpSemiBase(FpSemiBase const&) = delete;
+    FpSemiBase& operator=(FpSemiBase const&) = delete;
+    FpSemiBase(FpSemiBase&&)                 = delete;
+    FpSemiBase& operator=(FpSemiBase&&) = delete;
+
     FpSemiBase();
     virtual ~FpSemiBase();
 
@@ -73,19 +79,20 @@ namespace libsemigroups {
     virtual void      add_rules(FroidurePinBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
-    virtual void      set_alphabet(std::string const&);
-    virtual void      set_alphabet(size_t);
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
+
+    void               set_alphabet(std::string const&);
+    void               set_alphabet(size_t);
+    std::string const& alphabet() const noexcept;
 
     void add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>);
     void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
-    std::string const& alphabet() const;
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
     word_type          normal_form(std::initializer_list<letter_type>);
     bool               equal_to(std::initializer_list<letter_type>,
@@ -98,8 +105,6 @@ namespace libsemigroups {
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
-    bool is_alphabet_defined() const noexcept;
-
    protected:
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - protected
@@ -109,8 +114,7 @@ namespace libsemigroups {
     char   uint_to_char(size_t) const noexcept;
 
     FroidurePinBase* get_isomorphic_non_fp_semigroup() const noexcept;
-    void             reset_isomorphic_non_fp_semigroup() noexcept;
-    void set_isomorphic_non_fp_semigroup(FroidurePinBase*, bool) noexcept;
+    void             set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;
 
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;
@@ -125,13 +129,24 @@ namespace libsemigroups {
 
    private:
     //////////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - non-virtual methods - private
+    //////////////////////////////////////////////////////////////////////////////
+
+    void             reset() noexcept;
+
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - non-pure virtual methods - private
+    //////////////////////////////////////////////////////////////////////////////
+
+    virtual void set_alphabet_impl(std::string const&);
+    virtual void set_alphabet_impl(size_t);
+
+    //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - data - private
     //////////////////////////////////////////////////////////////////////////////
     std::string _alphabet;
     // TODO The unordered_map could be an array if this is too slow
     std::unordered_map<char, letter_type> _alphabet_map;
-    bool                                  _delete_isomorphic_non_fp_semigroup;
-    bool                                  _is_alphabet_defined;
     FroidurePinBase*                      _isomorphic_non_fp_semigroup;
   };
 }  // namespace libsemigroups

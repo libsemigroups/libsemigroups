@@ -22,19 +22,19 @@
 #ifndef LIBSEMIGROUPS_SRC_KNUTH_BENDIX_IMPL_HPP_
 #define LIBSEMIGROUPS_SRC_KNUTH_BENDIX_IMPL_HPP_
 
-#include <stddef.h>                           // for size_t
-#include <cinttypes>              // for int64_t
-#include <algorithm>                          // for max, min
-#include <atomic>                             // for atomic
-#include <limits>                             // for numeric_limits
-#include <list>                               // for list, list<>::iterator
-#include <ostream>                            // for string
-#include <set>                                // for set
-#include <stack>                              // for stack
-#include <string>                             // for operator!=, basic_strin...
-#include <type_traits>                        // for swap
-#include <utility>                            // for pair
-#include <vector>                             // for vector
+#include <algorithm>    // for max, min
+#include <atomic>       // for atomic
+#include <cinttypes>    // for int64_t
+#include <limits>       // for numeric_limits
+#include <list>         // for list, list<>::iterator
+#include <ostream>      // for string
+#include <set>          // for set
+#include <stack>        // for stack
+#include <stddef.h>     // for size_t
+#include <string>       // for operator!=, basic_strin...
+#include <type_traits>  // for swap
+#include <utility>      // for pair
+#include <vector>       // for vector
 
 #include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "internal/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT

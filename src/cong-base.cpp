@@ -83,8 +83,11 @@ namespace libsemigroups {
 
   void CongBase::set_nr_generators(size_t n) {
     if (nr_generators() != UNDEFINED) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "the number of generators cannot be set more than once");
+      if (nr_generators() != n) {
+        throw LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
+      } else {
+        return; // do nothing
+      }
     }
     _nr_gens = n;
     set_nr_generators_impl(n);
