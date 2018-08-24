@@ -79,18 +79,6 @@ namespace libsemigroups {
       // FpSemiBase - overridden pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
-      void add_rule(std::string const& lhs, std::string const& rhs) override {
-        if (alphabet().empty()) {
-          throw LIBSEMIGROUPS_EXCEPTION(
-              "cannot add rules before an alphabet is defined");
-        }
-        // We perform these checks here because string_to_word fails if lhs/rhs
-        // are not valid, and string_to_word does not checks.
-        validate_word(lhs);
-        validate_word(rhs);
-        _nr_rules++;
-        _wrapped_cong->add_pair(string_to_word(lhs), string_to_word(rhs));
-      }
 
       bool is_obviously_finite() override {
         return _wrapped_cong->is_quotient_obviously_finite();
@@ -138,16 +126,6 @@ namespace libsemigroups {
       // FpSemiBase - overridden non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
-      // We override FpSemiBase::add_rule to avoid unnecessary conversion from
-      // word_type -> string.
-      void add_rule(word_type const& lhs, word_type const& rhs) override {
-        if (lhs.empty() || rhs.empty()) {
-          throw LIBSEMIGROUPS_EXCEPTION("rules must be non-empty");
-        }
-        validate_word(lhs);
-        validate_word(rhs);
-        _wrapped_cong->add_pair(lhs, rhs);
-      }
 
       // We override FpSemiBase::equal_to to avoid unnecessary conversion from
       // word_type -> string.
@@ -162,17 +140,6 @@ namespace libsemigroups {
             _wrapped_cong->word_to_class_index(w));
       }
 
-
-      void add_rules(FroidurePinBase* S) override {
-        // TODO improve this method to avoid unnecessary conversions
-        FpSemiBase::add_rules(S);
-        _nr_rules += S->nr_rules();
-        // TODO something like the following
-        // if (S->nr_rules() == this->nr_rules()) {
-        //   set_isomorphic_non_fp_semigroup(S);
-        // }
-      }
-
       ////////////////////////////////////////////////////////////////////////////
       // WrappedCong - methods - public
       ////////////////////////////////////////////////////////////////////////////
@@ -183,6 +150,16 @@ namespace libsemigroups {
 
      private:
       //////////////////////////////////////////////////////////////////////////
+      // FpSemiBase - pure virtual methods - private
+      //////////////////////////////////////////////////////////////////////////
+
+      void add_rule_impl(std::string const& u, std::string const& v) override {
+        // This is only ever called if u and v are valid
+        _nr_rules++;
+        _wrapped_cong->add_pair(string_to_word(u), string_to_word(v));
+      }
+
+      //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - private
       //////////////////////////////////////////////////////////////////////////
 
@@ -192,6 +169,23 @@ namespace libsemigroups {
 
       void set_alphabet_impl(size_t nr_letters) override {
         _wrapped_cong->set_nr_generators(nr_letters);
+      }
+
+      // We override FpSemiBase::add_rule_impl to avoid unnecessary conversion
+      // from word_type -> string.
+      void add_rule_impl(word_type const& u, word_type const& v) override {
+        // This is only ever called if u and v are valid
+        _nr_rules++;
+        _wrapped_cong->add_pair(u, v);
+      }
+
+      void add_rules_impl(FroidurePinBase* S) override {
+        relations(*S, [this](word_type lhs, word_type rhs) -> void {
+          validate_word(lhs);
+          validate_word(rhs);
+          add_rule(lhs, rhs);
+        });
+        _nr_rules += S->nr_rules();
       }
 
       //////////////////////////////////////////////////////////////////////////

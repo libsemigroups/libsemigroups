@@ -62,8 +62,6 @@ namespace libsemigroups {
       // FpSemiBase - pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
-      void add_rule(std::string const&, std::string const&) override;
-
       bool   is_obviously_finite() override;
       bool   is_obviously_infinite() override;
       size_t size() override;
@@ -73,12 +71,13 @@ namespace libsemigroups {
 
       FroidurePinBase* isomorphic_non_fp_semigroup() override;
 
+      //! Returns the current number of active rules in the rewriting system.
+      size_t nr_rules() const noexcept override;
+
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
-
-      using FpSemiBase::add_rule;
       using FpSemiBase::equal_to;
       using FpSemiBase::normal_form;
 
@@ -168,9 +167,6 @@ namespace libsemigroups {
       // KnuthBendix - methods for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
 
-      //! Returns the current number of active rules in the rewriting system.
-      size_t nr_rules() const noexcept override;
-
       //! This method returns a vector consisting of the pairs of strings which
       //! represent the rules of the rewriting system. The \c first entry in
       //! every such pair is greater than the \c second according to the
@@ -223,6 +219,12 @@ namespace libsemigroups {
       void knuth_bendix_by_overlap_length();
 
      private:
+      //////////////////////////////////////////////////////////////////////////
+      // FpSemiBase - pure virtual methods - private
+      //////////////////////////////////////////////////////////////////////////
+
+      void add_rule_impl(std::string const&, std::string const&) override;
+
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - private
       //////////////////////////////////////////////////////////////////////////

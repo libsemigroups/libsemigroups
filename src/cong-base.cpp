@@ -108,10 +108,8 @@ namespace libsemigroups {
     validate_word(v);
     if (u == v) {
       return;
-    } else if (has_parent_semigroup()) {
-      if (has_parent_semigroup() && parent_semigroup().equal_to(u, v)) {
-        return;
-      }
+    } else if (has_parent_semigroup() && parent_semigroup().equal_to(u, v)) {
+      return;
     }
     // Note that _gen_pairs might contain pairs of distinct words that
     // represent the same element of the parent semigroup (if any).

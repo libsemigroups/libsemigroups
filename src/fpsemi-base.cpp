@@ -47,23 +47,6 @@ namespace libsemigroups {
   // FpSemiBase - non-pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////////
 
-  void FpSemiBase::add_rule(word_type const& lhs, word_type const& rhs) {
-    if (_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "cannot add rules before an alphabet is defined");
-    }
-    validate_word(lhs);
-    validate_word(rhs);
-    add_rule(word_to_string(lhs), word_to_string(rhs));
-  }
-
-  void FpSemiBase::add_rules(
-      std::vector<std::pair<std::string, std::string>> const& rels) {
-    for (auto const& rel : rels) {
-      add_rule(rel);
-    }
-  }
-
   bool FpSemiBase::equal_to(word_type const& u, word_type const& v) {
     validate_word(u);
     validate_word(v);
@@ -125,6 +108,32 @@ namespace libsemigroups {
     return _alphabet;
   }
 
+  void FpSemiBase::add_rule(std::string const& u, std::string const& v) {
+    validate_word(u);
+    validate_word(v);
+    if (u == v
+        || (has_isomorphic_non_fp_semigroup()
+            && isomorphic_non_fp_semigroup()->equal_to(string_to_word(u),
+                                                       string_to_word(v)))) {
+      return;
+    }
+    // TODO _gen_pairs.emplace_back(u, v);
+    add_rule_impl(u, v);
+    reset();
+  }
+
+  void FpSemiBase::add_rule(word_type const& u, word_type const& v) {
+    validate_word(u);
+    validate_word(v);
+    if (u == v
+        || (has_isomorphic_non_fp_semigroup()
+            && isomorphic_non_fp_semigroup()->equal_to(u, v))) {
+      return;
+    }
+    // TODO _gen_pairs.emplace_back(u, v);
+    add_rule_impl(u, v);
+    reset();
+  }
 
   void FpSemiBase::add_rule(std::initializer_list<size_t> l,
                             std::initializer_list<size_t> r) {
@@ -146,11 +155,19 @@ namespace libsemigroups {
                                     + ", should be at most "
                                     + to_string(_alphabet.size()));
     }
-    relations(*S, [this](word_type lhs, word_type rhs) -> void {
-      validate_word(lhs);
-      validate_word(rhs);
-      add_rule(word_to_string(lhs), word_to_string(rhs));
-    });
+    add_rules_impl(S);
+    reset();
+    // TODO something like the following
+    // if (this->nr_rules() == 0) {
+    //   set_isomorphic_non_fp_semigroup(S);
+    // }
+  }
+
+  void FpSemiBase::add_rules(
+      std::vector<std::pair<std::string, std::string>> const& rels) {
+    for (auto const& rel : rels) {
+      add_rule(rel);
+    }
   }
 
 
@@ -310,6 +327,18 @@ namespace libsemigroups {
 
   void FpSemiBase::set_alphabet_impl(size_t) {
     // do nothing
+  }
+
+  void FpSemiBase::add_rule_impl(word_type const& u, word_type const& v) {
+    add_rule_impl(word_to_string(u), word_to_string(v));
+  }
+
+  void FpSemiBase::add_rules_impl(FroidurePinBase* S) {
+    relations(*S, [this](word_type lhs, word_type rhs) -> void {
+      validate_word(lhs);
+      validate_word(rhs);
+      add_rule(word_to_string(lhs), word_to_string(rhs));
+    });
   }
 
 }  // namespace libsemigroups

@@ -56,8 +56,6 @@ namespace libsemigroups {
     // FpSemiBase - pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
-    virtual void add_rule(std::string const&, std::string const&) = 0;
-
     // Pure methods (attributes of an f.p. semigroup)
     virtual bool   is_obviously_finite()   = 0;
     virtual bool   is_obviously_infinite() = 0;
@@ -75,8 +73,6 @@ namespace libsemigroups {
     // FpSemiBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////////
 
-    virtual void      add_rule(word_type const&, word_type const&);
-    virtual void      add_rules(FroidurePinBase*);
     virtual bool      equal_to(word_type const&, word_type const&);
     virtual word_type normal_form(word_type const&);
 
@@ -88,9 +84,13 @@ namespace libsemigroups {
     void               set_alphabet(size_t);
     std::string const& alphabet() const noexcept;
 
+    void add_rule(std::string const&, std::string const&);
+    void add_rule(word_type const&, word_type const&);
     void add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>);
     void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
+
+    void add_rules(FroidurePinBase*);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
@@ -129,10 +129,10 @@ namespace libsemigroups {
 
    private:
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiBase - non-virtual methods - private
+    // FpSemiBase - pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////////
 
-    void             reset() noexcept;
+    virtual void add_rule_impl(std::string const&, std::string const&) = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - private
@@ -140,6 +140,14 @@ namespace libsemigroups {
 
     virtual void set_alphabet_impl(std::string const&);
     virtual void set_alphabet_impl(size_t);
+    virtual void add_rule_impl(word_type const&, word_type const&);
+    virtual void add_rules_impl(FroidurePinBase*);
+
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - non-virtual methods - private
+    //////////////////////////////////////////////////////////////////////////////
+
+    void reset() noexcept;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - data - private

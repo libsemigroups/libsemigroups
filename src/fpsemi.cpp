@@ -88,16 +88,6 @@ namespace libsemigroups {
   // FpSemiBase - overridden pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  void FpSemigroup::add_rule(std::string const& lhs, std::string const& rhs) {
-    if (_race.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
-          "no methods defined, cannot add rules with no methods");
-    }
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    for (auto runner : _race) {
-      static_cast<FpSemiBase*>(runner)->add_rule(lhs, rhs);
-    }
-  }
 
   bool FpSemigroup::equal_to(std::string const& u, std::string const& v) {
     return static_cast<FpSemiBase*>(_race.winner())->equal_to(u, v);
@@ -215,6 +205,16 @@ namespace libsemigroups {
       return false;
     }
     return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // FpSemiBase - pure virtual methods - private
+  //////////////////////////////////////////////////////////////////////////////
+
+  void FpSemigroup::add_rule_impl(std::string const& u, std::string const& v) {
+    for (auto runner : _race) {
+      static_cast<FpSemiBase*>(runner)->add_rule(u, v);
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

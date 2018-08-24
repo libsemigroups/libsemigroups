@@ -116,16 +116,8 @@ namespace libsemigroups {
     // FpSemiBase - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void KnuthBendix::add_rule(std::string const& p, std::string const& q) {
-      if (alphabet().empty()) {
-        throw LIBSEMIGROUPS_EXCEPTION("KnuthBendix::add_rule: cannot add rules "
-                                      "before an alphabet is defined");
-      }
-      validate_word(p);
-      validate_word(q);
-      if (p != q) {
-        _impl->add_rule(p, q);
-      }
+    void KnuthBendix::add_rule_impl(std::string const& p, std::string const& q) {
+      _impl->add_rule(p, q);
     }
 
     bool KnuthBendix::is_obviously_finite() {
