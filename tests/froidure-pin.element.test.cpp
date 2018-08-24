@@ -94,17 +94,17 @@ namespace libsemigroups {
 
     Element* x = new Transformation<uint16_t>({0, 1, 0});
     REQUIRE(S.position(x) == 0);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new Transformation<uint16_t>({0, 1, 2});
     REQUIRE(S.position(x) == 1);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new Transformation<uint16_t>({0, 0, 0});
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
   }
 
@@ -137,32 +137,32 @@ namespace libsemigroups {
 
     Element* x = new Transformation<uint16_t>({0, 1, 0});
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     x = new PartialPerm<uint16_t>({}, {}, 11);
     REQUIRE(S.position(x) == 10);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new PartialPerm<uint16_t>({}, {}, 9);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
 
     delete x;
 
     x = new PartialPerm<uint16_t>(
         {0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11);
     REQUIRE(S.position(x) == 0);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
 
     Element* y = new PartialPerm<uint16_t>({4, 5, 0}, {10, 0, 1}, 11);
     REQUIRE(S.position(y) == 1);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
 
     y->redefine(x, x);
     REQUIRE(S.position(y) == 2);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
 
     REQUIRE(*y == *S[2]);
     delete x;
@@ -194,24 +194,24 @@ namespace libsemigroups {
     REQUIRE(*S[2] == *gens[2]);
 
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     REQUIRE(S.position(gens[2]) == 2);
-    REQUIRE(S.test_membership(gens[2]));
+    REQUIRE(S.contains(gens[2]));
 
     Element* y = new Bipartition(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     REQUIRE(S.position(y) == 2);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
     y->redefine(gens[0], gens[1]);
     REQUIRE(S.position(y) == 4);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
     y->redefine(gens[1], gens[2]);
     REQUIRE(S.position(y) == 7);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
     delete y;
     delete_gens(gens);
   }
@@ -237,18 +237,18 @@ namespace libsemigroups {
     REQUIRE(*S[1] == *gens[2]);
 
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     REQUIRE(S.position(gens[2]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     Element* y = new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     y->redefine(gens[0], gens[0]);
     REQUIRE(S.position(y) == 2);
-    REQUIRE(S.test_membership(y));
+    REQUIRE(S.contains(y));
     delete y;
     delete_gens(gens);
   }
@@ -272,11 +272,11 @@ namespace libsemigroups {
     REQUIRE(*S[0] == id);
 
     REQUIRE(S.position(&id) == 0);
-    REQUIRE(S.test_membership(&id));
+    REQUIRE(S.contains(&id));
 
     x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
     delete sr;
   }
@@ -301,24 +301,24 @@ namespace libsemigroups {
     REQUIRE(*S[1] == *(gens)[1]);
 
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
 
     x->redefine(gens[1], gens[1]);
     REQUIRE(S.position(x) == 4);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
                                         sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     delete sr;
@@ -345,23 +345,23 @@ namespace libsemigroups {
     REQUIRE(*S[1] == *gens[1]);
 
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[1], gens[1]);
     REQUIRE(S.position(x) == 5);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
                                         sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     delete sr;
@@ -386,20 +386,20 @@ namespace libsemigroups {
 
     REQUIRE(*S[0] == *gens[0]);
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[0], gens[0]);
     REQUIRE(S.position(x) == 1);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
                                         sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     delete sr;
@@ -426,19 +426,19 @@ namespace libsemigroups {
 
     REQUIRE(*S[0] == *gens[0]);
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[0], gens[0]);
     REQUIRE(S.position(x) == 2);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     delete sr;
@@ -465,19 +465,19 @@ namespace libsemigroups {
 
     REQUIRE(*S[0] == *gens[0]);
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[0], gens[0]);
     REQUIRE(S.position(x) == 2);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     delete sr;
@@ -504,19 +504,19 @@ namespace libsemigroups {
 
     REQUIRE(*S[0] == *gens[0]);
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
 
     Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     delete x;
 
     x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[1], gens[0]);
     REQUIRE(S.position(x) == 4);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
 
     delete sr;
@@ -541,17 +541,17 @@ namespace libsemigroups {
 
     REQUIRE(*S[0] == *gens[0]);
     REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.test_membership(gens[0]));
+    REQUIRE(S.contains(gens[0]));
     REQUIRE(*S[1] == *gens[1]);
     REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.test_membership(gens[1]));
+    REQUIRE(S.contains(gens[1]));
 
     Element* x = new PBR({{}, {}, {}, {}, {}, {}});
     REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.test_membership(x));
+    REQUIRE(!S.contains(x));
     x->redefine(gens[1], gens[1]);
     REQUIRE(S.position(x) == 5);
-    REQUIRE(S.test_membership(x));
+    REQUIRE(S.contains(x));
     delete x;
     delete_gens(gens);
   }
@@ -1262,13 +1262,13 @@ namespace libsemigroups {
     size_t size = S.current_size();
     for (auto it = S.cbegin(); it < S.cend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.current_size());
     REQUIRE(5 == S.current_size());
@@ -1280,13 +1280,13 @@ namespace libsemigroups {
     size = S.current_size();
     for (auto it = S.cbegin(); it < S.cend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.current_size());
     REQUIRE(S.current_size() < 7776);
@@ -1295,13 +1295,13 @@ namespace libsemigroups {
     size = S.size();
     for (auto it = S.cbegin(); it < S.cend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.size());
     delete_gens(gens);
@@ -1324,13 +1324,13 @@ namespace libsemigroups {
     size_t size = S.current_size();
     for (auto it = S.crbegin(); it < S.crend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.crbegin(); it < S.crend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.current_size());
     REQUIRE(5 == S.current_size());
@@ -1342,13 +1342,13 @@ namespace libsemigroups {
     size = S.current_size();
     for (auto it = S.crbegin(); it < S.crend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.crbegin(); it < S.crend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.current_size());
     REQUIRE(S.current_size() < 7776);
@@ -1357,13 +1357,13 @@ namespace libsemigroups {
     size = S.size();
     for (auto it = S.crbegin(); it < S.crend(); it++) {
       size--;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
     for (auto it = S.crbegin(); it < S.crend(); ++it) {
       size++;
-      REQUIRE(S.test_membership(*it));
+      REQUIRE(S.contains(*it));
     }
     REQUIRE(size == S.size());
     delete_gens(gens);

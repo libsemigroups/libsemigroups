@@ -383,8 +383,8 @@ namespace libsemigroups {
   }
 
   BOOL FROIDURE_PIN::equal_to(word_type const& u, word_type const& v) const {
-    element_index_type u_pos = word_to_pos(u); // validates u
-    element_index_type v_pos = word_to_pos(v); // validates v
+    element_index_type u_pos = word_to_pos(u);  // validates u
+    element_index_type v_pos = word_to_pos(v);  // validates v
     if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
       LIBSEMIGROUPS_ASSERT(u_pos != UNDEFINED);
       LIBSEMIGROUPS_ASSERT(v_pos != UNDEFINED);
@@ -570,7 +570,7 @@ namespace libsemigroups {
     return _elements.size();
   }
 
-  BOOL FROIDURE_PIN::test_membership(const_reference x) {
+  BOOL FROIDURE_PIN::contains(const_reference x) {
     return (position(x) != UNDEFINED);
   }
 
@@ -1091,7 +1091,7 @@ namespace libsemigroups {
       return;
     } else {
       for (const_reference x : coll) {
-        if (!test_membership(x)) {
+        if (!contains(x)) {
           add_generators({x});
         }
       }

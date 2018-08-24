@@ -43,13 +43,14 @@
 namespace libsemigroups {
   // Forward declarations
   class TCE;
+  class FroidurePinBase;
   namespace congruence {
     class ToddCoxeter;
   }
   namespace fpsemigroup {
     class KnuthBendix;
     using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
-  }
+  }  // namespace fpsemigroup
 
   namespace congruence {
     class ToddCoxeter : public CongBase {
@@ -90,7 +91,7 @@ namespace libsemigroups {
 
       ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
       ToddCoxeter(congruence_type, ToddCoxeter const&);
-      // ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
+      // TODO(now) ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
 
       ~ToddCoxeter() = default;
 
@@ -132,6 +133,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
+      // Guaranteed to return a FroidurePin<TCE>*.
       FroidurePinBase* quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
@@ -155,7 +157,7 @@ namespace libsemigroups {
       void init();
       void init_after_prefill();
       void init_relations();
-      void prefill(FroidurePinBase*);
+      void prefill(FroidurePinBase&);
       void use_relations_or_cayley_graph();
 
       ////////////////////////////////////////////////////////////////////////

@@ -2563,21 +2563,21 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       KnuthBendix kb(S);
-      auto        P = kb.quotient_semigroup();
-      REQUIRE(P->size() == 88);
+      auto&       P = kb.quotient_semigroup();
+      REQUIRE(P.size() == 88);
       kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
 
       REQUIRE(kb.nr_classes() == 21);
       REQUIRE(kb.nr_classes() == 21);
-      auto Q = kb.quotient_semigroup();  // quotient
+      auto& Q = kb.quotient_semigroup();  // quotient
 
-      REQUIRE(P != Q);
-      REQUIRE(Q->size() == 21);
-      REQUIRE(Q->nr_idempotents() == 3);
+      REQUIRE(&P != &Q);
+      REQUIRE(Q.size() == 21);
+      REQUIRE(Q.nr_idempotents() == 3);
 
-      std::vector<word_type> v(static_cast<FroidurePin<KBE>*>(Q)->cbegin(),
-                               static_cast<FroidurePin<KBE>*>(Q)->cend());
+      std::vector<word_type> v(static_cast<FroidurePin<KBE>&>(Q).cbegin(),
+                               static_cast<FroidurePin<KBE>&>(Q).cend());
       REQUIRE(v
               == std::vector<word_type>({{0},
                                          {1},

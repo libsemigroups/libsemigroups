@@ -101,9 +101,9 @@ namespace libsemigroups {
       tc.run_for(std::chrono::milliseconds(200));
       REQUIRE(tc.nr_classes() == 10752);
 
-      FroidurePinBase* S = tc.quotient_semigroup();
-      REQUIRE(S->size() == 10752);
-      REQUIRE(S->nr_idempotents() == 1);
+      auto& S = tc.quotient_semigroup();
+      REQUIRE(S.size() == 10752);
+      REQUIRE(S.nr_idempotents() == 1);
       // RWS rws(S);
       // REQUIRE(rws.confluent());  // This is slow
     }
@@ -729,11 +729,11 @@ namespace libsemigroups {
       tc.add_pair({1, 0, 1, 0}, {0, 1, 0});
 
       REQUIRE(tc.nr_classes() == 34);
-      REQUIRE(tc.quotient_semigroup()->size() == 34);
+      REQUIRE(tc.quotient_semigroup().size() == 34);
 
-      auto S = static_cast<FroidurePin<TCE>*>(tc.quotient_semigroup());
-      S->enumerate();
-      std::vector<TCE> v(S->cbegin(), S->cend());
+      auto& S = static_cast<FroidurePin<TCE>&>(tc.quotient_semigroup());
+      S.enumerate();
+      std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());
       REQUIRE(v
               == std::vector<TCE>(

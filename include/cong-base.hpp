@@ -90,11 +90,8 @@ namespace libsemigroups {
     //! \warning The method for finding the structure of a congruence may be
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
-    // TODO(now) const
     virtual class_index_type word_to_class_index(word_type const&) = 0;
-    // TODO(now) class_index_type const
-    // TODO(now) const
-    virtual word_type class_index_to_word(class_index_type) = 0;
+    virtual word_type        class_index_to_word(class_index_type) = 0;
 
     //! Returns the number of congruences classes of \c this.
     //!
@@ -120,7 +117,6 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    // TODO(now) const
     virtual bool contains(word_type const&, word_type const&);
 
     // Same as the above but only uses the so far computed information to
@@ -145,12 +141,9 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
-    // TODO(now) const
     virtual bool less(word_type const&, word_type const&);
 
-    // TODO(now) const
     virtual bool is_quotient_obviously_finite();
-    // TODO(now) const
     virtual bool is_quotient_obviously_infinite();
 
     /////////////////////////////////////////////////////////////////////////
@@ -175,26 +168,23 @@ namespace libsemigroups {
     //! classes, then this method will only terminate when it can no longer
     //! allocate memory.
 
-    // TODO(now) const
     non_trivial_class_iterator cbegin_ntc();
-    // TODO(now) const
     non_trivial_class_iterator cend_ntc();
 
     size_t nr_generators() const noexcept;
     size_t nr_generating_pairs() const noexcept;
-    // TODO(now) const
     size_t nr_non_trivial_classes();
 
-    // TODO(now) const
-    // TODO(now) return FroidurePinBase const&
-    FroidurePinBase* quotient_semigroup();
+    //! \warning if closure, or add_generators, are run on the return value of
+    //! this member function, then the congruence represented by this will be
+    //! corrupted.
+    FroidurePinBase& quotient_semigroup();
     bool             has_quotient_semigroup() const noexcept;
 
-    // TODO(now) return FroidurePinBase const&
     //! Returns a const reference to the parent semigroup over which the
     //! congruence that an instance of CongBase represents, if it is defined,
     //! and throws a LibsemigroupsException if it is not defined.
-    FroidurePinBase* parent_semigroup() const;
+    FroidurePinBase& parent_semigroup() const;
     bool             has_parent_semigroup() const noexcept;
 
     //! Return the type of the congruence, i.e. if it is a left, right, or

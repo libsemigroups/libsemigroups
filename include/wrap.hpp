@@ -120,7 +120,7 @@ namespace libsemigroups {
       }
 
       FroidurePinBase* isomorphic_non_fp_semigroup() override {
-        return _wrapped_cong->quotient_semigroup();
+        return &_wrapped_cong->quotient_semigroup();
       }
 
       size_t nr_rules() const noexcept override {

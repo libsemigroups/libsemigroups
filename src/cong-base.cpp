@@ -106,7 +106,7 @@ namespace libsemigroups {
     if (u == v) {
       return;
     } else if (has_parent_semigroup()) {
-      if (has_parent_semigroup() && parent_semigroup()->equal_to(u, v)) {
+      if (has_parent_semigroup() && parent_semigroup().equal_to(u, v)) {
         return;
       }
     }
@@ -152,18 +152,18 @@ namespace libsemigroups {
     return _parent != nullptr;
   }
 
-  FroidurePinBase* CongBase::parent_semigroup() const {
+  FroidurePinBase& CongBase::parent_semigroup() const {
     if (!has_parent_semigroup()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
-    return _parent;
+    return *_parent;
   }
 
   bool CongBase::has_quotient_semigroup() const noexcept {
     return _quotient != nullptr;
   }
 
-  FroidurePinBase* CongBase::quotient_semigroup() {
+  FroidurePinBase& CongBase::quotient_semigroup() {
     if (type() != congruence_type::TWOSIDED) {
       throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
@@ -172,7 +172,7 @@ namespace libsemigroups {
     } else if (_quotient == nullptr) {
       _quotient = quotient_impl();
     }
-    return _quotient;
+    return *_quotient;
   }
 
   congruence_type CongBase::type() const noexcept {
@@ -192,9 +192,6 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
     _parent = prnt;
-    if (_gen_pairs.empty()) {
-      _quotient = prnt;
-    }
     reset();
   }
 
@@ -217,23 +214,20 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
                                     "find the non-trivial classes");
     }
-    auto ntc = non_trivial_classes_type(
-        nr_classes(), std::vector<word_type>());
+    auto ntc = non_trivial_classes_type(nr_classes(), std::vector<word_type>());
 
     word_type w;
     for (size_t pos = 0; pos < _parent->size(); ++pos) {
       _parent->factorisation(w, pos);
       ntc[word_to_class_index(w)].push_back(w);
-      LIBSEMIGROUPS_ASSERT(word_to_class_index(w)
-                           < ntc.size());
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < ntc.size());
     }
-    ntc.erase(
-        std::remove_if(ntc.begin(),
-                       ntc.end(),
-                       [](std::vector<word_type> const& klass) -> bool {
-                         return klass.size() <= 1;
-                       }),
-        ntc.end());
+    ntc.erase(std::remove_if(ntc.begin(),
+                             ntc.end(),
+                             [](std::vector<word_type> const& klass) -> bool {
+                               return klass.size() <= 1;
+                             }),
+              ntc.end());
     return std::make_shared<non_trivial_classes_type>(ntc);
   }
 
@@ -244,7 +238,7 @@ namespace libsemigroups {
   void CongBase::init_non_trivial_classes() {
     if (!_init_ntc_done) {
       _non_trivial_classes = non_trivial_classes_impl();
-      _init_ntc_done = true;
+      _init_ntc_done       = true;
     }
   }
 
@@ -286,7 +280,6 @@ namespace libsemigroups {
   void CongBase::validate_relation(relation_type const& rel) const {
     validate_relation(rel.first, rel.second);
   }
-
 
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual static methods - protected

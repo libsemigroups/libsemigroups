@@ -143,7 +143,7 @@ namespace libsemigroups {
                                     + ", should be at most "
                                     + to_string(_alphabet.size()));
     }
-    relations(S, [this](word_type lhs, word_type rhs) -> void {
+    relations(*S, [this](word_type lhs, word_type rhs) -> void {
       validate_word(lhs);
       validate_word(rhs);
       add_rule(word_to_string(lhs), word_to_string(rhs));

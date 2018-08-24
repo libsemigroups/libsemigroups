@@ -105,8 +105,8 @@ namespace libsemigroups {
     // FpSemiBase - non-virtual methods - protected
     //////////////////////////////////////////////////////////////////////////////
 
-    size_t      char_to_uint(char) const;
-    char        uint_to_char(size_t) const noexcept;
+    size_t char_to_uint(char) const;
+    char   uint_to_char(size_t) const noexcept;
 
     FroidurePinBase* get_isomorphic_non_fp_semigroup() const noexcept;
     void             reset_isomorphic_non_fp_semigroup() noexcept;

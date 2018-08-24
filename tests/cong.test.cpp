@@ -652,7 +652,7 @@ namespace libsemigroups {
                                 Transf({0, 1, 2, 3, 4, 5, 7, 6})};
     REQUIRE(
         std::all_of(elms.cbegin(), elms.cend(), [&S](Transf const& x) -> bool {
-          return S.test_membership(x);
+          return S.contains(x);
         }));
 
     Congruence cong(RIGHT, S);

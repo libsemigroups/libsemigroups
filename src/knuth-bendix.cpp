@@ -326,7 +326,6 @@ namespace libsemigroups {
       return _kb->size();
     }
 
-
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       validate_word(word);
       auto S

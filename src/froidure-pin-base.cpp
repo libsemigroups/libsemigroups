@@ -21,25 +21,25 @@
 #include <vector>
 
 namespace libsemigroups {
-  void relations(FroidurePinBase*                            S,
+  void relations(FroidurePinBase&                            S,
                  std::function<void(word_type, word_type)>&& hook) {
-    S->enumerate();
+    S.enumerate();
 
     std::vector<size_t> relation;  // a triple
-    S->reset_next_relation();
-    S->next_relation(relation);
+    S.reset_next_relation();
+    S.next_relation(relation);
 
     while (relation.size() == 2 && !relation.empty()) {
       hook(word_type({relation[0]}), word_type({relation[1]}));
-      S->next_relation(relation);
+      S.next_relation(relation);
     }
     word_type lhs, rhs;  // changed in-place by factorisation
     while (!relation.empty()) {
-      S->factorisation(lhs, relation[0]);
-      S->factorisation(rhs, relation[2]);
+      S.factorisation(lhs, relation[0]);
+      S.factorisation(rhs, relation[2]);
       lhs.push_back(relation[1]);
       hook(lhs, rhs);
-      S->next_relation(relation);
+      S.next_relation(relation);
     }
   }
 }  // namespace libsemigroups

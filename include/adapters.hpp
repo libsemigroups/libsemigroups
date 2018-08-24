@@ -25,9 +25,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 
-#include <utility> // for std::swap
+#include <utility>  // for std::swap
 
-#include "internal/libsemigroups-config.hpp" // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
 
 namespace libsemigroups {
   template <typename TElementType, typename = void>
@@ -44,7 +44,7 @@ namespace libsemigroups {
   struct product;
   template <typename TElementType, typename = void>
   struct swap {
-    void operator() (TElementType& x, TElementType& y) {
+    void operator()(TElementType& x, TElementType& y) {
       std::swap(x, y);
     }
   };

@@ -21,8 +21,8 @@
 // efficiency) it depends on some of the implementational details of the
 // KnuthBendix class.
 
-#ifndef LIBSEMIGROUPS_SRC_KNUTH_BENDIX_KBE_IMPL_HPP_
-#define LIBSEMIGROUPS_SRC_KNUTH_BENDIX_KBE_IMPL_HPP_
+#ifndef LIBSEMIGROUPS_SRC_KBE_IMPL_HPP_
+#define LIBSEMIGROUPS_SRC_KBE_IMPL_HPP_
 
 namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
@@ -135,4 +135,4 @@ namespace libsemigroups {
     return x;
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_KNUTH_BENDIX_KBE_IMPL_HPP_
+#endif  // LIBSEMIGROUPS_SRC_KBE_IMPL_HPP_

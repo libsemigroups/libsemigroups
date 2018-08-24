@@ -106,12 +106,13 @@ namespace libsemigroups {
     }
     if (S->has_knuth_bendix()) {
       if (S->knuth_bendix()->finished()) {
-         if (!has_parent_semigroup()) {
-           set_parent_semigroup(S->knuth_bendix()->isomorphic_non_fp_semigroup());
+        if (!has_parent_semigroup()) {
+          set_parent_semigroup(
+              S->knuth_bendix()->isomorphic_non_fp_semigroup());
           // Even if the FpSemigroup S is infinite, the
           // isomorphic_non_fp_semigroup() can still be useful in this case,
           // for example, when factorizing elements.
-         }
+        }
         // TODO(now) remove the if-condition, make it so that if the
         // ToddCoxeter's below are killed then so too is the enumeration of
         // S->knuth_bendix()->isomorphic_non_fp_semigroup()
@@ -161,7 +162,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::run() {
-    //if (!has_parent_semigroup()) {
+    // if (!has_parent_semigroup()) {
     //  set_parent_semigroup(static_cast<CongBase*>(_race.winner())->parent_semigroup());
     //}
   }
@@ -197,7 +198,6 @@ namespace libsemigroups {
   size_t Congruence::nr_classes() {
     return static_cast<CongBase*>(_race.winner())->nr_classes();
   }
-
 
   bool Congruence::is_quotient_obviously_infinite() {
     LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
@@ -255,7 +255,8 @@ namespace libsemigroups {
   void Congruence::add_method(Runner* r) {
     // TODO check that it is ok to add runners
     // Add any existing pairs
-    for (auto it = cbegin_generating_pairs(); it < cend_generating_pairs(); ++it) {
+    for (auto it = cbegin_generating_pairs(); it < cend_generating_pairs();
+         ++it) {
       static_cast<CongBase*>(r)->add_pair(it->first, it->second);
     }
     _race.add_runner(r);
@@ -302,7 +303,7 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION(
           "no methods defined, cannot find the quotient with no methods");
     }
-    return static_cast<CongBase*>(_race.winner())->quotient_semigroup();
+    return &(static_cast<CongBase*>(_race.winner())->quotient_semigroup());
   }
 
   //////////////////////////////////////////////////////////////////////////

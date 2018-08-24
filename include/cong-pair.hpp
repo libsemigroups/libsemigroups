@@ -111,7 +111,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type
-           const_word_to_class_index(word_type const&) const override;
+      const_word_to_class_index(word_type const&) const override;
 
       // non_trivial_classes_impl is private in CongBase but protected here
       // since uses it and derives from class P.

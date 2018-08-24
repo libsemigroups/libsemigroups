@@ -109,12 +109,12 @@ namespace libsemigroups {
     REQUIRE(S.is_idempotent(3));
     REQUIRE(!S.is_idempotent(7));
     REQUIRE(S.nr_rules() == 13716);
-    REQUIRE(S.test_membership(S.generator(1)));
-    REQUIRE(!S.test_membership(BMat8({{1, 0, 0, 1, 1},
-                                      {0, 1, 0, 0, 1},
-                                      {1, 0, 1, 0, 1},
-                                      {0, 0, 1, 0, 1},
-                                      {0, 0, 0, 0, 0}})));
+    REQUIRE(S.contains(S.generator(1)));
+    REQUIRE(!S.contains(BMat8({{1, 0, 0, 1, 1},
+                               {0, 1, 0, 0, 1},
+                               {1, 0, 1, 0, 1},
+                               {0, 0, 1, 0, 1},
+                               {0, 0, 0, 0, 0}})));
     REQUIRE(S.position(S.generator(1)) == 1);
     REQUIRE(S.position(S.generator(0) * S.generator(3)) == 7);
     REQUIRE(S.position(BMat8({{1, 0, 0, 1, 1},

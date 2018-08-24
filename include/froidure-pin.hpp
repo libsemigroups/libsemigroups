@@ -456,7 +456,7 @@ namespace libsemigroups {
     //! the semigroup. The semigroup is enumerated in batches until \p x is
     //! found or the semigroup is fully enumerated but \p x was not found (see
     //! FroidurePin::set_batch_size).
-    bool test_membership(const_reference);
+    bool contains(const_reference);
 
     //! Returns the position of \p x in \c this, or FroidurePin::UNDEFINED if \p
     //! x is not an element of \c this.
