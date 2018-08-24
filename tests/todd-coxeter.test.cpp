@@ -955,7 +955,8 @@ namespace libsemigroups {
         "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
-      ToddCoxeter tc("ABabe");
+      ToddCoxeter tc;
+      tc.set_alphabet("ABabe");
       tc.set_identity("e");
       tc.add_rule("aa", "e");
       tc.add_rule("bbbbb", "e");
@@ -975,7 +976,8 @@ namespace libsemigroups {
                             "(fpsemi) Chapter 7, Theorem 3.6 in NR (size 243)",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      ToddCoxeter tc("ab");
+      ToddCoxeter tc;
+      tc.set_alphabet("ab");
       tc.add_rule("aaa", "a");
       tc.add_rule("bbbb", "b");
       tc.add_rule("ababababab", "aa");
@@ -988,7 +990,8 @@ namespace libsemigroups {
                             "(fpsemi) finite semigroup (size 99)",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      ToddCoxeter tc("ab");
+      ToddCoxeter tc;
+      tc.set_alphabet("ab");
       tc.add_rule("aaa", "a");
       tc.add_rule("bbbb", "b");
       tc.add_rule("abababab", "aa");

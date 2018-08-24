@@ -56,10 +56,6 @@ namespace libsemigroups {
           add_rules(S);
         }
       }
-      // TODO remove this constructor
-      explicit WrappedCong(std::string const& lphbt) : WrappedCong() {
-        set_alphabet(lphbt);
-      }
 
       explicit WrappedCong(FroidurePinBase& S) : WrappedCong(&S) {}
 
