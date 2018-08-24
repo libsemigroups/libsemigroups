@@ -172,7 +172,13 @@ namespace libsemigroups {
       //! reduction ordering of the rewriting system. The rules are sorted
       //! according to the reduction ordering used by the rewriting system, on
       //! the first entry.
+      // TODO delete this
       std::vector<std::pair<std::string, std::string>> rules() const;
+      // using FpSemiBase::const_iterator;
+
+      // TODO these will have to be derived from iterator_base
+      // const_iterator cbegin_active_rules() const;
+      // const_iterator cend_active_rules() const;
 
       //! Rewrites the word \p w in-place according to the current rules in the
       //! rewriting system, and returns it.

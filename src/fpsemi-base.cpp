@@ -234,6 +234,14 @@ namespace libsemigroups {
     return s;
   }
 
+  FpSemiBase::const_iterator FpSemiBase::cbegin_rules() const {
+    return _rules.cbegin();
+  }
+
+  FpSemiBase::const_iterator FpSemiBase::cend_rules() const {
+    return _rules.cend();
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-virtual methods - protected
   //////////////////////////////////////////////////////////////////////////////

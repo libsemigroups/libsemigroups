@@ -107,6 +107,11 @@ namespace libsemigroups {
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
+    using const_iterator
+        = std::vector<std::pair<std::string, std::string>>::const_iterator;
+    const_iterator cbegin_rules() const;
+    const_iterator cend_rules() const;
+
    protected:
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - protected

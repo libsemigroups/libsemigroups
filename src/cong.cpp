@@ -132,11 +132,11 @@ namespace libsemigroups {
           // - check if the relations are really the same as those in
           //   S->todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          _race.add_runner(
-              new ToddCoxeter(type,
-                              S->knuth_bendix()->isomorphic_non_fp_semigroup(),
-                              ToddCoxeter::policy::use_relations));
-          // _race.add_runner(new ToddCoxeter(type, *S->knuth_bendix()));
+          // _race.add_runner(
+          //    new ToddCoxeter(type,
+          //                    S->knuth_bendix()->isomorphic_non_fp_semigroup(),
+          //                    ToddCoxeter::policy::use_relations));
+           _race.add_runner(new ToddCoxeter(type, *S->knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.

@@ -186,20 +186,20 @@ namespace libsemigroups {
       }
     }
 
-    // ToddCoxeter::ToddCoxeter(congruence_type typ, fpsemigroup::KnuthBendix&
-    // kb)
-    //     : ToddCoxeter(typ) {
-    //   set_nr_generators(kb.alphabet().size());
-    //   for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
-    //     add_pair(kb.string_to_word(it->first),
-    //     kb.string_to_word(it->second));
-    //   }
-    //   if (kb.finished()) {
-    //     set_parent_semigroup(kb.isomorphic_non_fp_semigroup());
-    //     LIBSEMIGROUPS_ASSERT(_policy == policy::none);
-    //     _policy = policy::use_cayley_graph;
-    //   }
-    // }
+    ToddCoxeter::ToddCoxeter(congruence_type typ, fpsemigroup::KnuthBendix&
+    kb)
+        : ToddCoxeter(typ) {
+      set_nr_generators(kb.alphabet().size());
+      for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
+        add_pair(kb.string_to_word(it->first),
+        kb.string_to_word(it->second));
+      }
+      if (kb.finished()) {
+        set_parent_semigroup(kb.isomorphic_non_fp_semigroup());
+        LIBSEMIGROUPS_ASSERT(_policy == policy::none);
+        _policy = policy::use_cayley_graph;
+      }
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - overridden pure virtual methods - public

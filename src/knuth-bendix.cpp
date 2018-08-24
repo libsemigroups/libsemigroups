@@ -177,6 +177,16 @@ namespace libsemigroups {
     // KnuthBendix public methods for rules and rewriting
     //////////////////////////////////////////////////////////////////////////
 
+    using const_iterator = FpSemiBase::const_iterator;
+
+    // TODO  implement these!
+    /*const_iterator cbegin_active_rules() const {
+      return _impl->cbegin_active_rules();
+    }
+
+    const_iterator cend_active_rules() const {
+      return _impl->cend_active_rules();
+    }*/
     std::vector<std::pair<std::string, std::string>>
     KnuthBendix::rules() const {
       return _impl->rules();

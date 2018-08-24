@@ -81,8 +81,6 @@ namespace libsemigroups {
                   FroidurePinBase&,
                   policy = policy::use_relations);
       // TODO change to use_cayley_graph
-      // TODO ToddCoxeter(congruence_type type, FpSemigroup* S, policy p);
-      // TODO ToddCoxeter(congruence_type type, FpSemigroup& S, policy p);
 
       ToddCoxeter(congruence_type,
                   size_t,
@@ -91,7 +89,7 @@ namespace libsemigroups {
 
       ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
       ToddCoxeter(congruence_type, ToddCoxeter const&);
-      // TODO(now) ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
+      ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
 
       ~ToddCoxeter() = default;
 
