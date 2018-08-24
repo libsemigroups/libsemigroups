@@ -152,6 +152,8 @@ namespace libsemigroups {
       _extra = extra;
     }
 
+    // Construct a ToddCoxeter object representing a congruence over the
+    // semigroup defined by copy (the quotient that is).
     ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter const& copy)
         : ToddCoxeter(typ) {
       if (copy.type() != congruence_type::TWOSIDED && typ != copy.type()) {
@@ -167,7 +169,8 @@ namespace libsemigroups {
       set_nr_generators(copy.nr_generators());
       _relations_are_reversed = copy._relations_are_reversed;
       _relations              = copy._relations;
-      _extra                  = copy._extra;
+      _relations.insert(
+          _relations.end(), copy._extra.cbegin(), copy._extra.cend());
     }
 
     ToddCoxeter::ToddCoxeter(congruence_type           typ,

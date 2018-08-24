@@ -40,17 +40,12 @@ namespace libsemigroups {
     // contains
     friend class Congruence;
 
-   protected:
+   public:
     ////////////////////////////////////////////////////////////////////////////
-    // CongBase - enums - protected
+    // CongBase - typedefs + enums - public
     ////////////////////////////////////////////////////////////////////////////
 
     enum class result_type { TRUE, FALSE, UNKNOWN };
-
-   public:
-    ////////////////////////////////////////////////////////////////////////////
-    // CongBase - typedefs - public
-    ////////////////////////////////////////////////////////////////////////////
 
     //! Type for indices of congruence classes in a CongBase object.
     using class_index_type           = size_t;
@@ -61,12 +56,14 @@ namespace libsemigroups {
     // CongBase - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
+    // CongBase is non-copyable, and non-movable.
     CongBase()                = delete;
     CongBase(CongBase const&) = delete;
     CongBase& operator=(CongBase const&) = delete;
     CongBase(CongBase&&)                 = delete;
     CongBase& operator=(CongBase&&) = delete;
 
+    //! Constructor
     explicit CongBase(congruence_type type);
 
     //! A default destructor.
@@ -93,9 +90,11 @@ namespace libsemigroups {
     //! \warning The method for finding the structure of a congruence may be
     //! non-deterministic, and the return value of this method may vary
     //! between different instances of the same congruence.
+    // TODO(now) const
     virtual class_index_type word_to_class_index(word_type const&) = 0;
-    // TODO class_index_type const
-    virtual word_type        class_index_to_word(class_index_type) = 0;
+    // TODO(now) class_index_type const
+    // TODO(now) const
+    virtual word_type class_index_to_word(class_index_type) = 0;
 
     //! Returns the number of congruences classes of \c this.
     //!
@@ -105,6 +104,7 @@ namespace libsemigroups {
     //! \warning The problem of determining the number of classes of a
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this method may never terminate.
+    // TODO(now) const
     virtual size_t nr_classes() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -120,6 +120,7 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
+    // TODO(now) const
     virtual bool contains(word_type const&, word_type const&);
 
     // Same as the above but only uses the so far computed information to
@@ -144,9 +145,12 @@ namespace libsemigroups {
     //!
     //! \warning The problem of determining the return value of this method is
     //! undecidable in general, and this method may never terminate.
+    // TODO(now) const
     virtual bool less(word_type const&, word_type const&);
 
+    // TODO(now) const
     virtual bool is_quotient_obviously_finite();
+    // TODO(now) const
     virtual bool is_quotient_obviously_infinite();
 
     /////////////////////////////////////////////////////////////////////////
@@ -154,16 +158,13 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     void set_nr_generators(size_t);
-
-    void add_pair(word_type const& u, word_type const& v);
+    void add_pair(word_type const&, word_type const&);
+    void add_pair(std::initializer_list<letter_type>,
+                  std::initializer_list<letter_type>);
 
     using const_iterator = std::vector<relation_type>::const_iterator;
-
     const_iterator cbegin_generating_pairs() const;
     const_iterator cend_generating_pairs() const;
-
-    // Pass by value since these must be copied anyway
-    void add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>);
 
     //! Returns the non-trivial classes of the congruence.
     //!
@@ -173,22 +174,32 @@ namespace libsemigroups {
     //! \warning If \c this has infinitely many non-trivial congruence
     //! classes, then this method will only terminate when it can no longer
     //! allocate memory.
+
+    // TODO(now) const
     non_trivial_class_iterator cbegin_ntc();
+    // TODO(now) const
     non_trivial_class_iterator cend_ntc();
 
-    size_t           nr_generators() const noexcept;
-    size_t           nr_generating_pairs() const noexcept;
-    size_t           nr_non_trivial_classes();
+    size_t nr_generators() const noexcept;
+    size_t nr_generating_pairs() const noexcept;
+    // TODO(now) const
+    size_t nr_non_trivial_classes();
 
+    // TODO(now) const
+    // TODO(now) return FroidurePinBase const&
     FroidurePinBase* quotient_semigroup();
-    bool has_quotient_semigroup() const noexcept;
+    bool             has_quotient_semigroup() const noexcept;
 
+    // TODO(now) return FroidurePinBase const&
+    //! Returns a const reference to the parent semigroup over which the
+    //! congruence that an instance of CongBase represents, if it is defined,
+    //! and throws a LibsemigroupsException if it is not defined.
     FroidurePinBase* parent_semigroup() const;
-    bool has_parent_semigroup() const noexcept;
+    bool             has_parent_semigroup() const noexcept;
 
     //! Return the type of the congruence, i.e. if it is a left, right, or
     //! two-sided congruence.
-    congruence_type  type() const noexcept;
+    congruence_type type() const noexcept;
 
    protected:
     /////////////////////////////////////////////////////////////////////////
@@ -208,19 +219,15 @@ namespace libsemigroups {
 
     static std::string const& congruence_type_to_string(congruence_type);
 
-    /////////////////////////////////////////////////////////////////////////
-    // CongBase - data - protected
-    /////////////////////////////////////////////////////////////////////////
-    // TODO(now) make this not private
-    std::vector<std::vector<word_type>> _non_trivial_classes;
-
    private:
     /////////////////////////////////////////////////////////////////////////
     // CongBase - pure virtual methods - private
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
-    virtual FroidurePinBase* quotient_impl()                       = 0;
+
+    // TODO(now) const
+    virtual FroidurePinBase* quotient_impl() = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
@@ -230,23 +237,41 @@ namespace libsemigroups {
     // depends on the state of the object, but word_to_class_index does not
     // (i.e the return value should not change).
     virtual class_index_type const_word_to_class_index(word_type const&) const;
-    virtual void             init_non_trivial_classes();
-    virtual void             set_nr_generators_impl(size_t);
+    // TODO(now) const
+    virtual void set_nr_generators_impl(size_t);
+    virtual std::shared_ptr<non_trivial_classes_type>
+    non_trivial_classes_impl();
 
     /////////////////////////////////////////////////////////////////////////
-    // CongBase - data members - private
+    // CongBase - non-virtual methods - private
     /////////////////////////////////////////////////////////////////////////
 
-    bool                             _init_ntc_done;
-    size_t                           _nrgens;
-    std::vector<relation_type>       _gen_pairs;
-    // Any derived class of CongBase always owns _quotient, and never owns
-    // _parent. At present, it we make congruence rho using _quotient, it
-    // should not be possible for rho to go out of scope before this does, so
-    // this should be safe.
-    FroidurePinBase*                 _parent;
-    FroidurePinBase*                 _quotient;
-    congruence_type                  _type;
+    void init_non_trivial_classes();
+
+    // Reset all mutable data to "not known" and set finished() to false.
+    // Any call to a non-const member function should call reset, if it
+    // actually does anything.
+    void reset();
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongBase - non-mutable data members - private
+    /////////////////////////////////////////////////////////////////////////
+
+    // Only data members which (potentially) change the mathematical object
+    // defined by *this are non-mutable.
+
+    std::vector<relation_type> _gen_pairs;
+    size_t                     _nr_gens;
+    FroidurePinBase*           _parent;
+    congruence_type            _type;
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongBase - mutable data members - private
+    /////////////////////////////////////////////////////////////////////////
+
+    mutable bool                                      _init_ntc_done;
+    mutable FroidurePinBase*                          _quotient;
+    mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - static data members - private

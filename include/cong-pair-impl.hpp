@@ -36,12 +36,12 @@
 
 #define VOID TEMPLATE void
 #define SIZE_T TEMPLATE size_t
-#define CLASS_INDEX_TYPE TEMPLATE class_index_type
+#define CLASS_INDEX_TYPE TEMPLATE CongBase::class_index_type
+#define SHARED_PTR_NON_TRIV_CLASSES \
+  TEMPLATE std::shared_ptr<CongBase::non_trivial_classes_type>
 
 namespace libsemigroups {
   namespace congruence {
-    using class_index_type = CongBase::class_index_type;
-
     ////////////////////////////////////////////////////////////////////////
     // P - constructor - protected
     ////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Runner - overridden pure virtual methods - public
+    // Runner - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     VOID P_CLASS::run() {
@@ -179,7 +179,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - public
+    // CongBase - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
 
@@ -200,7 +200,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - protected
+    // CongBase - non-pure virtual methods - protected
     ////////////////////////////////////////////////////////////////////////
 
     CLASS_INDEX_TYPE
@@ -215,22 +215,6 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(ind_x < _class_lookup.size());
       LIBSEMIGROUPS_ASSERT(_class_lookup.size() == _map.size());
       return _class_lookup[ind_x];
-    }
-
-    VOID P_CLASS::init_non_trivial_classes() {
-      run();
-      LIBSEMIGROUPS_ASSERT(_reverse_map.size() >= _nr_non_trivial_elemnts);
-      LIBSEMIGROUPS_ASSERT(_class_lookup.size() >= _nr_non_trivial_elemnts);
-      LIBSEMIGROUPS_ASSERT(has_parent_semigroup());
-
-      _non_trivial_classes.assign(_nr_non_trivial_classes,
-                                  std::vector<word_type>());
-      auto fp = static_cast<froidure_pin_type*>(parent_semigroup());
-      for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
-        word_type word
-            = fp->factorisation(this->to_external(_reverse_map[ind]));
-        _non_trivial_classes[_class_lookup[ind]].push_back(word);
-      }
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -254,6 +238,27 @@ namespace libsemigroups {
     FroidurePinBase* P_CLASS::quotient_impl() {
       // FIXME(now) actually implement this
       throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // CongBase - non-pure virtual methods - private
+    /////////////////////////////////////////////////////////////////////////
+
+    SHARED_PTR_NON_TRIV_CLASSES P_CLASS::non_trivial_classes_impl() {
+      run();
+      LIBSEMIGROUPS_ASSERT(_reverse_map.size() >= _nr_non_trivial_elemnts);
+      LIBSEMIGROUPS_ASSERT(_class_lookup.size() >= _nr_non_trivial_elemnts);
+      LIBSEMIGROUPS_ASSERT(has_parent_semigroup());
+
+      auto ntc = non_trivial_classes_type(_nr_non_trivial_classes,
+                                          std::vector<word_type>());
+      auto fp = static_cast<froidure_pin_type*>(parent_semigroup());
+      for (size_t ind = 0; ind < _nr_non_trivial_elemnts; ++ind) {
+        word_type word
+            = fp->factorisation(this->to_external(_reverse_map[ind]));
+        ntc[_class_lookup[ind]].push_back(word);
+      }
+      return std::make_shared<non_trivial_classes_type>(ntc);
     }
 
     ////////////////////////////////////////////////////////////////////////

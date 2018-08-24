@@ -309,14 +309,11 @@ namespace libsemigroups {
   // CongBase - non-pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
 
-  void Congruence::init_non_trivial_classes() {
-    if (!_non_trivial_classes.empty()) {
-      return;
-    }
-    auto winner          = static_cast<CongBase*>(_race.winner());
-    _non_trivial_classes = std::vector<std::vector<word_type>>(
-        winner->cbegin_ntc(), winner->cend_ntc());
-    // TODO it is rather wasteful to copy this non_trivial_classes here
+  std::shared_ptr<CongBase::non_trivial_classes_type>
+  Congruence::non_trivial_classes_impl() {
+    auto winner = static_cast<CongBase*>(_race.winner());
+    winner->init_non_trivial_classes();
+    return winner->_non_trivial_classes;
   }
 
   //////////////////////////////////////////////////////////////////////////

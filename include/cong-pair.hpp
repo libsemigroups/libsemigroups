@@ -92,13 +92,13 @@ namespace libsemigroups {
       ~P();
 
       ////////////////////////////////////////////////////////////////////////
-      // Runner - overridden pure virtual methods - public
+      // Runner - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - public
+      // CongBase - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       word_type        class_index_to_word(class_index_type) override;
@@ -107,12 +107,16 @@ namespace libsemigroups {
 
      protected:
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - protected
+      // CongBase - non-pure virtual methods - protected
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type
            const_word_to_class_index(word_type const&) const override;
-      void init_non_trivial_classes() override;
+
+      // non_trivial_classes_impl is private in CongBase but protected here
+      // since uses it and derives from class P.
+      std::shared_ptr<non_trivial_classes_type>
+      non_trivial_classes_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // P - methods - protected
@@ -123,7 +127,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - private
+      // CongBase - pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
@@ -218,14 +222,14 @@ namespace libsemigroups {
       KBP(congruence_type, fpsemigroup::KnuthBendix&);
 
       ////////////////////////////////////////////////////////////////////////
-      // P - overridden virtual methods - public
+      // P - virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // P - overridden pure virtual methods - private
+      // P - pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
       // Override the method for the class P to avoid having to know the parent
@@ -233,10 +237,10 @@ namespace libsemigroups {
       void add_pair_impl(word_type const&, word_type const&) override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - private
+      // CongBase - non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
-      using p_type::init_non_trivial_classes;
+      using p_type::non_trivial_classes_impl;
 
       ////////////////////////////////////////////////////////////////////////
       // KBP - data - private

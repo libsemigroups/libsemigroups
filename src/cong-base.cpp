@@ -33,25 +33,23 @@ namespace libsemigroups {
 
   CongBase::CongBase(congruence_type type)
       : Runner(),
-        // Protected
-        _non_trivial_classes(),
-        // Private
-        _init_ntc_done(false),
-        _nrgens(UNDEFINED),
+        // Mutable
+        _gen_pairs(),
+        _nr_gens(UNDEFINED),
         _parent(nullptr),
-        _quotient(nullptr),
-        _type(type) {}
-
-  CongBase::~CongBase() {
-    if (_parent != _quotient) {
-      delete _quotient;
-    }
+        _type(type),
+        // Non-mutable
+        _init_ntc_done(),
+        _quotient(),
+        _non_trivial_classes() {
+    reset();
   }
+
+  CongBase::~CongBase() {}
 
   ////////////////////////////////////////////////////////////////////////////
   // CongBase - non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
-
 
   bool CongBase::contains(word_type const& w1, word_type const& w2) {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
@@ -88,8 +86,9 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION(
           "the number of generators cannot be set more than once");
     }
-    _nrgens = n;
+    _nr_gens = n;
     set_nr_generators_impl(n);
+    reset();
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -111,13 +110,11 @@ namespace libsemigroups {
         return;
       }
     }
-    _gen_pairs.emplace_back(u, v);
     // Note that _gen_pairs might contain pairs of distinct words that
     // represent the same element of the parent semigroup (if any).
-    delete _quotient;
-    _quotient = nullptr;
-    set_finished(false);
+    _gen_pairs.emplace_back(u, v);
     add_pair_impl(u, v);
+    reset();
   }
 
   CongBase::const_iterator CongBase::cbegin_generating_pairs() const {
@@ -130,16 +127,16 @@ namespace libsemigroups {
 
   std::vector<std::vector<word_type>>::const_iterator CongBase::cbegin_ntc() {
     init_non_trivial_classes();
-    return _non_trivial_classes.cbegin();
+    return _non_trivial_classes->cbegin();
   }
 
   std::vector<std::vector<word_type>>::const_iterator CongBase::cend_ntc() {
     init_non_trivial_classes();
-    return _non_trivial_classes.cend();
+    return _non_trivial_classes->cend();
   }
 
   size_t CongBase::nr_generators() const noexcept {
-    return _nrgens;
+    return _nr_gens;
   }
 
   size_t CongBase::nr_generating_pairs() const noexcept {
@@ -148,7 +145,7 @@ namespace libsemigroups {
 
   size_t CongBase::nr_non_trivial_classes() {
     init_non_trivial_classes();
-    return _non_trivial_classes.size();
+    return _non_trivial_classes->size();
   }
 
   bool CongBase::has_parent_semigroup() const noexcept {
@@ -198,41 +195,12 @@ namespace libsemigroups {
     if (_gen_pairs.empty()) {
       _quotient = prnt;
     }
+    reset();
   }
 
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
-
-  void CongBase::init_non_trivial_classes() {
-    if (_init_ntc_done) {
-      // There are no non-trivial classes, or we already found them.
-      return;
-    } else if (_parent == nullptr) {
-      throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
-                                    "find the non-trivial classes");
-    }
-    LIBSEMIGROUPS_ASSERT(nr_classes() != POSITIVE_INFINITY);
-
-    _init_ntc_done = true;
-    _non_trivial_classes.assign(nr_classes(), std::vector<word_type>());
-
-    word_type w;
-    for (size_t pos = 0; pos < _parent->size(); ++pos) {
-      _parent->factorisation(w, pos);
-      _non_trivial_classes[word_to_class_index(w)].push_back(w);
-      LIBSEMIGROUPS_ASSERT(word_to_class_index(w)
-                           < _non_trivial_classes.size());
-    }
-
-    _non_trivial_classes.erase(
-        std::remove_if(_non_trivial_classes.begin(),
-                       _non_trivial_classes.end(),
-                       [](std::vector<word_type> const& klass) -> bool {
-                         return klass.size() <= 1;
-                       }),
-        _non_trivial_classes.end());
-  }
 
   CongBase::class_index_type
   CongBase::const_word_to_class_index(word_type const&) const {
@@ -243,6 +211,50 @@ namespace libsemigroups {
     // do nothing
   }
 
+  std::shared_ptr<CongBase::non_trivial_classes_type>
+  CongBase::non_trivial_classes_impl() {
+    if (_parent == nullptr) {
+      throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
+                                    "find the non-trivial classes");
+    }
+    auto ntc = non_trivial_classes_type(
+        nr_classes(), std::vector<word_type>());
+
+    word_type w;
+    for (size_t pos = 0; pos < _parent->size(); ++pos) {
+      _parent->factorisation(w, pos);
+      ntc[word_to_class_index(w)].push_back(w);
+      LIBSEMIGROUPS_ASSERT(word_to_class_index(w)
+                           < ntc.size());
+    }
+    ntc.erase(
+        std::remove_if(ntc.begin(),
+                       ntc.end(),
+                       [](std::vector<word_type> const& klass) -> bool {
+                         return klass.size() <= 1;
+                       }),
+        ntc.end());
+    return std::make_shared<non_trivial_classes_type>(ntc);
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  // CongBase - non-virtual methods - private
+  /////////////////////////////////////////////////////////////////////////
+
+  void CongBase::init_non_trivial_classes() {
+    if (!_init_ntc_done) {
+      _non_trivial_classes = non_trivial_classes_impl();
+      _init_ntc_done = true;
+    }
+  }
+
+  void CongBase::reset() {
+    set_finished(false);
+    _init_ntc_done = false;
+    _quotient      = nullptr;
+    _non_trivial_classes.reset();
+  }
+
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
@@ -251,7 +263,7 @@ namespace libsemigroups {
     if (nr_generators() == UNDEFINED) {
       throw LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
     }
-    return c < _nrgens;
+    return c < _nr_gens;
   }
 
   void CongBase::validate_word(word_type const& w) const {
@@ -260,7 +272,7 @@ namespace libsemigroups {
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "invalid letter " + to_string(l) + " in word " + to_string(w)
-            + ", the valid range is [0, " + to_string(_nrgens) + ")");
+            + ", the valid range is [0, " + to_string(_nr_gens) + ")");
       }
     }
   }

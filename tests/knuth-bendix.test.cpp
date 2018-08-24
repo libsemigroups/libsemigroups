@@ -2550,9 +2550,6 @@ namespace libsemigroups {
       REQUIRE(kb.word_to_class_index({0, 0, 0, 0}) == 2);
     }
 
-    // Knuth-Bendix (cong) 02 was identical to Knuth-Bendix (cong)
-    // 01, so removed it
-
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "087",
                             "(cong) finite transformation semigroup "
@@ -2566,8 +2563,8 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       KnuthBendix kb(S);
-      auto        P = kb.quotient_semigroup();  // Parent
-      REQUIRE(P == &S);                         // Pointers the same
+      auto        P = kb.quotient_semigroup();
+      REQUIRE(P->size() == 88);
       kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
 

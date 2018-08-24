@@ -115,7 +115,8 @@ namespace libsemigroups {
     // CongBase - non-pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    void init_non_trivial_classes() override;
+    std::shared_ptr<CongBase::non_trivial_classes_type>
+    non_trivial_classes_impl() override;
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - methods - private
