@@ -114,7 +114,6 @@ namespace libsemigroups {
 
   bool FpSemigroup::is_obviously_infinite() {
     if (_race.empty()) {
-      std::cout << "empty race!\n";
       if (!alphabet().empty()) {
         // Nothing in _race means no rules
         return true;
@@ -153,8 +152,8 @@ namespace libsemigroups {
   // FpSemigroup - non-virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  fpsemigroup::KnuthBendix* FpSemigroup::knuth_bendix() const {
-    return find_method<KnuthBendix>();
+  fpsemigroup::KnuthBendix& FpSemigroup::knuth_bendix() const {
+    return *find_method<KnuthBendix>();
   }
 
   bool FpSemigroup::has_knuth_bendix() const {
@@ -166,8 +165,8 @@ namespace libsemigroups {
     return true;
   }
 
-  fpsemigroup::ToddCoxeter* FpSemigroup::todd_coxeter() const {
-    return find_method<ToddCoxeter>();
+  fpsemigroup::ToddCoxeter& FpSemigroup::todd_coxeter() const {
+    return *find_method<ToddCoxeter>();
   }
 
   bool FpSemigroup::has_todd_coxeter() const {
@@ -198,11 +197,11 @@ namespace libsemigroups {
     // a non-f.p. semigroup, so we can just return that and not run the _race.
     for (auto runner : _race) {
       if (static_cast<FpSemiBase*>(runner)->has_isomorphic_non_fp_semigroup()) {
-        return static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup();
+        return &(static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup());
       }
     }
-    return static_cast<FpSemiBase*>(_race.winner())
-        ->isomorphic_non_fp_semigroup();
+    return &(static_cast<FpSemiBase*>(_race.winner())
+        ->isomorphic_non_fp_semigroup());
   }
 
   //////////////////////////////////////////////////////////////////////////////

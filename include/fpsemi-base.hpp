@@ -93,7 +93,7 @@ namespace libsemigroups {
     size_t nr_rules() const noexcept;
 
     bool               has_isomorphic_non_fp_semigroup() const noexcept;
-    FroidurePinBase*   isomorphic_non_fp_semigroup();
+    FroidurePinBase&   isomorphic_non_fp_semigroup();
 
     word_type          normal_form(std::initializer_list<letter_type>);
 

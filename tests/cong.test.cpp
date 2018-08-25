@@ -206,7 +206,7 @@ namespace libsemigroups {
     S.add_rule({0}, {1});
 
     REQUIRE(S.size() == 2);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 2);
+    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 2);
 
     Congruence cong1(TWOSIDED, S.isomorphic_non_fp_semigroup());
     cong1.add_pair({0}, {1});
@@ -1037,9 +1037,9 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 9);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(S.knuth_bendix()->confluent());
+    REQUIRE(S.knuth_bendix().confluent());
     REQUIRE(S.size() == 7);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 7);
+    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 7);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(2)) {
@@ -1065,9 +1065,9 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 15);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 34);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 34);
+    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 34);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(3)) {
@@ -1117,9 +1117,9 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 23);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 209);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 209);
+    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 209);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(4)) {
@@ -1153,9 +1153,9 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 33);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup()->size() == 1546);
+    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 1546);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(5)) {
@@ -1189,7 +1189,7 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 45);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 13327);
 
     Congruence cong(TWOSIDED, S);
@@ -1224,7 +1224,7 @@ namespace libsemigroups {
 
     REQUIRE(S.nr_rules() == 59);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 130922);
 
     Congruence cong(TWOSIDED, S);
@@ -1263,8 +1263,8 @@ namespace libsemigroups {
     S.add_rule("bbaaa", "bb");
     S.add_rule("bbaba", "bbaa");
 
-    REQUIRE(S.knuth_bendix()->confluent());
-    REQUIRE(S.knuth_bendix()->nr_rules() == 13);
+    REQUIRE(S.knuth_bendix().confluent());
+    REQUIRE(S.knuth_bendix().nr_rules() == 13);
 
     libsemigroups::congruence::KBP kbp(LEFT, S.knuth_bendix());
     // kbp.add_pair({0}, {1, 1, 1});

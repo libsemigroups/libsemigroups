@@ -83,10 +83,10 @@ namespace libsemigroups {
       // Method 1: use only the relations used to define S and genpairs to
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
-      _race.add_runner(new ToddCoxeter(type, *S->todd_coxeter()));
-      if (S->todd_coxeter()->finished()) {
+      _race.add_runner(new ToddCoxeter(type, S->todd_coxeter()));
+      if (S->todd_coxeter().finished()) {
         LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
-        set_parent_semigroup(S->todd_coxeter()->isomorphic_non_fp_semigroup());
+        set_parent_semigroup(&S->todd_coxeter().isomorphic_non_fp_semigroup());
         // FIXME what happens if S is deleted before this??
 
         // Method 2: use the Cayley graph of S and genpairs to run
@@ -97,7 +97,7 @@ namespace libsemigroups {
         // Todd-Coxeter did.
         _race.add_runner(
             new ToddCoxeter(type,
-                            S->todd_coxeter()->isomorphic_non_fp_semigroup(),
+                            S->todd_coxeter().isomorphic_non_fp_semigroup(),
                             ToddCoxeter::policy::use_cayley_graph));
         // Return here since we know that we can definitely complete at
         // this point.
@@ -105,25 +105,25 @@ namespace libsemigroups {
       }
     }
     if (S->has_knuth_bendix()) {
-      if (S->knuth_bendix()->finished()) {
+      if (S->knuth_bendix().finished()) {
         if (!has_parent_semigroup()) {
-          set_parent_semigroup(
-              S->knuth_bendix()->isomorphic_non_fp_semigroup());
+          set_parent_semigroup(&
+              S->knuth_bendix().isomorphic_non_fp_semigroup());
           // Even if the FpSemigroup S is infinite, the
           // isomorphic_non_fp_semigroup() can still be useful in this case,
           // for example, when factorizing elements.
         }
         // TODO(now) remove the if-condition, make it so that if the
         // ToddCoxeter's below are killed then so too is the enumeration of
-        // S->knuth_bendix()->isomorphic_non_fp_semigroup()
-        if (S->knuth_bendix()->isomorphic_non_fp_semigroup()->finished()) {
+        // S->knuth_bendix().isomorphic_non_fp_semigroup()
+        if (S->knuth_bendix().isomorphic_non_fp_semigroup().finished()) {
           // Method 3: Note that the
-          // S->knuth_bendix()->isomorphic_non_fp_semigroup() must be finite
+          // S->knuth_bendix().isomorphic_non_fp_semigroup() must be finite
           // in this case, because otherwise it would not return true from
           // FroidurePin::finished. This is similar to Method 2.
           _race.add_runner(
               new ToddCoxeter(type,
-                              S->knuth_bendix()->isomorphic_non_fp_semigroup(),
+                              &S->knuth_bendix().isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_cayley_graph));
           // Method 4: unlike with Method 2, this is not necessarily the same
           // as running Method 1, because the relations in S->knuth_bendix()
@@ -132,11 +132,7 @@ namespace libsemigroups {
           // - check if the relations are really the same as those in
           //   S->todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          // _race.add_runner(
-          //    new ToddCoxeter(type,
-          //                    S->knuth_bendix()->isomorphic_non_fp_semigroup(),
-          //                    ToddCoxeter::policy::use_relations));
-           _race.add_runner(new ToddCoxeter(type, *S->knuth_bendix()));
+           _race.add_runner(new ToddCoxeter(type, S->knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.
@@ -152,7 +148,7 @@ namespace libsemigroups {
         // Method 6 (KBFP)
         // S->knuth_bendix() must be copied because maybe we will add more
         // generating pairs.
-        _race.add_runner(new congruence::KnuthBendix(S->knuth_bendix()));
+        _race.add_runner(new congruence::KnuthBendix(&S->knuth_bendix()));
       }
     }
   }

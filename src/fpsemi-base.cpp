@@ -113,8 +113,8 @@ namespace libsemigroups {
     validate_word(v);
     if (u == v
         || (has_isomorphic_non_fp_semigroup()
-            && isomorphic_non_fp_semigroup()->equal_to(string_to_word(u),
-                                                       string_to_word(v)))) {
+            && isomorphic_non_fp_semigroup().equal_to(string_to_word(u),
+                                                      string_to_word(v)))) {
       return;
     }
     _rules.emplace_back(u, v);
@@ -127,7 +127,7 @@ namespace libsemigroups {
     validate_word(v);
     if (u == v
         || (has_isomorphic_non_fp_semigroup()
-            && isomorphic_non_fp_semigroup()->equal_to(u, v))) {
+            && isomorphic_non_fp_semigroup().equal_to(u, v))) {
       return;
     }
     _rules.emplace_back(word_to_string(u), word_to_string(v));
@@ -178,11 +178,11 @@ namespace libsemigroups {
     return _isomorphic_non_fp_semigroup != nullptr;
   }
 
-  FroidurePinBase* FpSemiBase::isomorphic_non_fp_semigroup() {
+  FroidurePinBase& FpSemiBase::isomorphic_non_fp_semigroup() {
     if (_isomorphic_non_fp_semigroup == nullptr) {
       _isomorphic_non_fp_semigroup = isomorphic_non_fp_semigroup_impl();
     }
-    return _isomorphic_non_fp_semigroup;
+    return *_isomorphic_non_fp_semigroup;
   }
 
   word_type FpSemiBase::normal_form(std::initializer_list<letter_type> w) {

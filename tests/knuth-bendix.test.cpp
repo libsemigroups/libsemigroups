@@ -200,19 +200,19 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 4);
-      auto S = static_cast<FroidurePin<KBE>*>(kb.isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>&>(kb.isomorphic_non_fp_semigroup());
 
       // At this point only the generators are known
-      REQUIRE(S->current_size() == 2);
-      std::vector<std::string> v(S->cbegin(), S->cend());
+      REQUIRE(S.current_size() == 2);
+      std::vector<std::string> v(S.cbegin(), S.cend());
       REQUIRE(v == std::vector<std::string>({"0", "2"}));
 
-      S->set_batch_size(10);
-      S->enumerate(10);
-      REQUIRE(S->current_size() == 12);
+      S.set_batch_size(10);
+      S.enumerate(10);
+      REQUIRE(S.current_size() == 12);
       v.clear();
-      v.insert(v.begin(), S->cbegin(), S->cend());
-      REQUIRE(v.size() == S->current_size());
+      v.insert(v.begin(), S.cbegin(), S.cend());
+      REQUIRE(v.size() == S.current_size());
       REQUIRE(v
               == std::vector<std::string>({"0",
                                            "2",
@@ -353,10 +353,13 @@ namespace libsemigroups {
       REQUIRE(kb.normal_form("ccc") == "");
 
       REQUIRE(kb.size() == 168);
-      auto S = static_cast<FroidurePin<KBE>*>(kb.isomorphic_non_fp_semigroup());
-      REQUIRE(S->size() == 168);
-      auto T = FroidurePin<KBE>({S->generator(2)});
+      auto S = static_cast<FroidurePin<KBE>&>(kb.isomorphic_non_fp_semigroup());
+      REQUIRE(S.size() == 168);
+      REQUIRE(std::string(S.generator(2)) == "c");
+      auto T = FroidurePin<KBE>({S.generator(2)});
       REQUIRE(T.size() == 3);
+      REQUIRE(std::vector<std::string>(T.cbegin(), T.cend())
+              == std::vector<std::string>({"c", "b", ""}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",

@@ -52,8 +52,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     explicit FpSemigroup(FpSemigroup::policy = standard);
-    explicit FpSemigroup(FroidurePinBase*);
     explicit FpSemigroup(FroidurePinBase&);
+    explicit FpSemigroup(FroidurePinBase*);
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual methods - public
@@ -68,11 +68,11 @@ namespace libsemigroups {
 
     using FpSemiBase::add_rule;
 
-    bool             equal_to(std::string const&, std::string const&) override;
-    bool             is_obviously_finite() override;
-    bool             is_obviously_infinite() override;
-    std::string      normal_form(std::string const&) override;
-    size_t           size() override;
+    bool        equal_to(std::string const&, std::string const&) override;
+    bool        is_obviously_finite() override;
+    bool        is_obviously_infinite() override;
+    std::string normal_form(std::string const&) override;
+    size_t      size() override;
 
     using FpSemiBase::equal_to;
     using FpSemiBase::normal_form;
@@ -83,8 +83,8 @@ namespace libsemigroups {
 
     bool                      has_knuth_bendix() const;
     bool                      has_todd_coxeter() const;
-    fpsemigroup::KnuthBendix* knuth_bendix() const;
-    fpsemigroup::ToddCoxeter* todd_coxeter() const;
+    fpsemigroup::KnuthBendix& knuth_bendix() const;
+    fpsemigroup::ToddCoxeter& todd_coxeter() const;
 
     // TODO further methods:
     // - add_method

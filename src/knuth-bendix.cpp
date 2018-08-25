@@ -119,7 +119,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::is_obviously_finite() {
       return has_isomorphic_non_fp_semigroup()
-             && isomorphic_non_fp_semigroup()->finished();
+             && isomorphic_non_fp_semigroup().finished();
     }
 
     bool KnuthBendix::is_obviously_infinite() {
@@ -145,7 +145,7 @@ namespace libsemigroups {
       if (is_obviously_infinite()) {
         return POSITIVE_INFINITY;
       } else {
-        return isomorphic_non_fp_semigroup()->size();
+        return isomorphic_non_fp_semigroup().size();
       }
     }
 
@@ -301,9 +301,9 @@ namespace libsemigroups {
       // _kb->isomorphic_non_fp_semigroup(), since this might get killed
       // during _kb->run().
       if (!_kb->dead() && !_kb->timed_out()) {
-        auto S = _kb->isomorphic_non_fp_semigroup();
-        while (!S->finished() && !_kb->dead() && !_kb->timed_out()) {
-          S->run_until(stppd);
+        auto& S = _kb->isomorphic_non_fp_semigroup();
+        while (!S.finished() && !_kb->dead() && !_kb->timed_out()) {
+          S.run_until(stppd);
         }
       }
       report_why_we_stopped();
@@ -315,7 +315,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::finished_impl() const {
       return _kb->has_isomorphic_non_fp_semigroup()
-             && _kb->isomorphic_non_fp_semigroup()->finished();
+             && _kb->isomorphic_non_fp_semigroup().finished();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -324,7 +324,7 @@ namespace libsemigroups {
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      return _kb->isomorphic_non_fp_semigroup()->minimal_factorisation(i);
+      return _kb->isomorphic_non_fp_semigroup().minimal_factorisation(i);
     }
 
     size_t KnuthBendix::nr_classes() {
@@ -334,8 +334,8 @@ namespace libsemigroups {
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       validate_word(word);
       auto S
-          = static_cast<FroidurePin<KBE>*>(_kb->isomorphic_non_fp_semigroup());
-      size_t pos = S->position(KBE(_kb.get(), word));
+          = static_cast<FroidurePin<KBE>&>(_kb->isomorphic_non_fp_semigroup());
+      size_t pos = S.position(KBE(_kb.get(), word));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }
@@ -371,7 +371,7 @@ namespace libsemigroups {
     }
 
     FroidurePinBase* KnuthBendix::quotient_impl() {
-      return _kb->isomorphic_non_fp_semigroup();
+      return &_kb->isomorphic_non_fp_semigroup();
     }
 
     ////////////////////////////////////////////////////////////////////////////
