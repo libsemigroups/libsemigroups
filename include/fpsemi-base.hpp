@@ -18,6 +18,13 @@
 
 // This file contains a base class for f.p. semigroup like classes.
 
+// TODO(now)
+// 1. FpSemiBase::make_confluent
+//   * if a knuth_bendix wins, then just replace _rules by the active rules
+//   of the knuth_bendix
+//   * if a ToddCoxeter wins, then use FroidurePin to produce a confluent
+//   set of rules.
+
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_
 
@@ -111,6 +118,7 @@ namespace libsemigroups {
         = std::vector<std::pair<std::string, std::string>>::const_iterator;
     const_iterator cbegin_rules() const;
     const_iterator cend_rules() const;
+
 
    protected:
     //////////////////////////////////////////////////////////////////////////////

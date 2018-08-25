@@ -19,6 +19,10 @@
 // This file contains the declaration of a class for finitely presented
 // semigroups.
 
+// TODO(now)
+// 1. add FpSemigroup::add_method
+// 2. FpSemigroup::policy -> enum class
+
 #ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
 
@@ -44,7 +48,6 @@ namespace libsemigroups {
     // - standard: means run 1 variant of everything
     // - none:     means no methods are added, and at least one must be added
     //             manually via add_method
-    // TODO enum class
     enum policy { standard = 0, none = 1 };
 
     //////////////////////////////////////////////////////////////////////////
@@ -60,7 +63,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void run() override;
-    // TODO finished method
 
     //////////////////////////////////////////////////////////////////////////
     // FpSemiBase - pure virtual methods - public
@@ -86,8 +88,6 @@ namespace libsemigroups {
     fpsemigroup::KnuthBendix& knuth_bendix() const;
     fpsemigroup::ToddCoxeter& todd_coxeter() const;
 
-    // TODO further methods:
-    // - add_method
 
    private:
     //////////////////////////////////////////////////////////////////////////////

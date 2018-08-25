@@ -20,7 +20,7 @@
 //! This file contains function templates for adapting a user-defined type so
 //! that it can be used with libsemigroups.
 //!
-//! To use the TODO
+//! To use the TODO(now)
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_

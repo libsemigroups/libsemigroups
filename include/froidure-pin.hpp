@@ -92,11 +92,6 @@ namespace libsemigroups {
     using product = ::libsemigroups::product<internal_element_type>;
     using swap    = ::libsemigroups::swap<internal_element_type>;
 
-    // TODO(now) remove the comment out lines here
-    // static_assert(std::is_trivial<internal_element_type>::value,
-    //              "internal_element_type must be trivial");
-    // static_assert(std::is_trivial<internal_const_element_type>::value,
-    //              "internal_const_element_type must be trivial");
     static_assert(
         std::is_const<internal_const_element_type>::value
             || std::is_const<typename std::remove_pointer<

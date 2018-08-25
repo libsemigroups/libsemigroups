@@ -18,8 +18,8 @@
 
 // This file contains the declaration of the element class and its subclasses.
 
-// TODO:
-// * split this file into several files
+// TODO(later)
+// 1. split this file into several files
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
@@ -995,7 +995,7 @@ namespace libsemigroups {
 
   class Bipartition
       : public ElementWithVectorDataDefaultHash<uint32_t, Bipartition> {
-    // TODO add more explanation to the doc here
+    // TODO(later) add more explanation to the doc here
    public:
     //! A constructor.
     //!
@@ -1379,7 +1379,7 @@ namespace libsemigroups {
       // from a semigroup and another from an ideal of that semigroup).
       // LIBSEMIGROUPS_ASSERT(xx->semiring() == yy->semiring() &&
       // xx->semiring() == this->semiring());
-      // TODO verify that x, y, and this are defined over the same semiring.
+      // TODO(later) verify that x, y, and this are defined over the same semiring.
       size_t const deg = this->degree();
 
       for (size_t i = 0; i < deg; i++) {
@@ -2033,7 +2033,7 @@ namespace libsemigroups {
 #endif
   };
 
-  // TODO file an issue for HPCombi to add a PPerm class.
+  // TODO(now) file an issue for HPCombi to add a PPerm class.
   template <size_t N>
   struct PPerm {
     // #ifdef LIBSEMIGROUPS_HPCOMBI

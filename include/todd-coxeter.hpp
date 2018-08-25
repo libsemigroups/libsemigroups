@@ -19,7 +19,7 @@
 // This file contains a declaration of a class for performing the Todd-Coxeter
 // algorithm for semigroups.
 
-// TODO:
+// TODO(now)
 // 1. In congruence::ToddCoxeter: add methods for add_pair, set_base, etc, for
 // use with 0-parameter constructor, and remove other methods/constructors
 
