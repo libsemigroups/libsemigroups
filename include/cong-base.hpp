@@ -34,7 +34,9 @@ namespace libsemigroups {
   class Congruence;       // Forward declaration, for friendship
 
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
+  enum class result_type { TRUE, FALSE, UNKNOWN };
 
+  template <class TParentType>
   class CongBase : public Runner {
     // Allows Congruence to use set_parent_semigroup on the Runner's it
     // contains
@@ -45,7 +47,6 @@ namespace libsemigroups {
     // CongBase - typedefs + enums - public
     ////////////////////////////////////////////////////////////////////////////
 
-    enum class result_type { TRUE, FALSE, UNKNOWN };
 
     //! Type for indices of congruence classes in a CongBase object.
     using class_index_type           = size_t;
@@ -251,19 +252,19 @@ namespace libsemigroups {
 
     std::vector<relation_type> _gen_pairs;
     size_t                     _nr_gens;
-    FroidurePinBase*           _parent;
+    TParentType*               _parent;
     congruence_type            _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable bool                                      _init_ntc_done;
-    mutable bool                                      _is_obviously_finite_known;
-    mutable bool                                      _is_obviously_finite;
-    mutable bool                                      _is_obviously_infinite_known;
-    mutable bool                                      _is_obviously_infinite;
-    mutable FroidurePinBase*                          _quotient;
+    mutable bool             _init_ntc_done;
+    mutable bool             _is_obviously_finite_known;
+    mutable bool             _is_obviously_finite;
+    mutable bool             _is_obviously_infinite_known;
+    mutable bool             _is_obviously_infinite;
+    mutable FroidurePinBase* _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////
@@ -275,4 +276,5 @@ namespace libsemigroups {
     static const std::string STRING_RIGHT;
   };
 }  // namespace libsemigroups
+#include "cong-base-impl.hpp"
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_BASE_HPP_

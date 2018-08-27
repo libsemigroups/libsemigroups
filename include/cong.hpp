@@ -38,7 +38,7 @@ namespace libsemigroups {
     class ToddCoxeter;
   }  // namespace congruence
 
-  class Congruence : public CongBase {
+  class Congruence : public CongBase<FroidurePinBase> {
    public:
     // Execution policy:
     // - standard: means run 1 variant of everything

@@ -93,7 +93,7 @@ namespace libsemigroups {
 
   namespace congruence {
     using signed_class_index_type = int64_t;
-    using class_index_type        = CongBase::class_index_type;
+    using class_index_type        = CongBase<FroidurePinBase>::class_index_type;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - constructors and destructor - public

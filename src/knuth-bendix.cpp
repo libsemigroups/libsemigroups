@@ -261,7 +261,7 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    using class_index_type = CongBase::class_index_type;
+    using class_index_type = CongBase<FroidurePinBase>::class_index_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // KnuthBendix - constructors - public
@@ -343,7 +343,7 @@ namespace libsemigroups {
     // CongBase - overridden non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
-    CongBase::result_type
+    result_type
     KnuthBendix::const_contains(word_type const& lhs,
                                 word_type const& rhs) const {
       if (_kb->rewrite(_kb->word_to_string(lhs))

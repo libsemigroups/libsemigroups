@@ -417,7 +417,7 @@ namespace libsemigroups {
                           "014",
                           "non-trivial 2-sided congruence on bicyclic monoid",
                           "[quick][cong]") {
-    REPORTER.set_report(REPORT);
+    REPORTER.set_report(true);
     FpSemigroup S;
     S.set_alphabet(3);
     S.set_identity(0);

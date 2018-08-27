@@ -39,7 +39,7 @@ namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;
   using KnuthBendix      = congruence::KnuthBendix;
   using KBP              = congruence::KBP;
-  using class_index_type = CongBase::class_index_type;
+  using class_index_type = CongBase<FroidurePinBase>::class_index_type;
 
   //////////////////////////////////////////////////////////////////////////
   // Congruence - constructors - public
@@ -84,10 +84,10 @@ namespace libsemigroups {
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
       _race.add_runner(new ToddCoxeter(type, S->todd_coxeter()));
+
       if (S->todd_coxeter().finished()) {
         LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
         set_parent_semigroup(&S->todd_coxeter().isomorphic_non_fp_semigroup());
-        // FIXME what happens if S is deleted before this??
 
         // Method 2: use the Cayley graph of S and genpairs to run
         // Todd-Coxeter. If the policy here is use_relations, then this is
@@ -99,6 +99,7 @@ namespace libsemigroups {
             new ToddCoxeter(type,
                             S->todd_coxeter().isomorphic_non_fp_semigroup(),
                             ToddCoxeter::policy::use_cayley_graph));
+
         // Return here since we know that we can definitely complete at
         // this point.
         return;
@@ -125,6 +126,7 @@ namespace libsemigroups {
               new ToddCoxeter(type,
                               &S->knuth_bendix().isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_cayley_graph));
+
           // Method 4: unlike with Method 2, this is not necessarily the same
           // as running Method 1, because the relations in S->knuth_bendix()
           // are likely not the same as those in S->todd_coxeter().
@@ -139,6 +141,7 @@ namespace libsemigroups {
           return;
         }
       }
+
       // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
       // then attempts to run the exhaustive pairs algorithm on that. Yes, this
       // method sucks, but there are examples where this is useful.
@@ -210,8 +213,8 @@ namespace libsemigroups {
     return const_contains(lhs, rhs) == result_type::TRUE;
   }
 
-  CongBase::result_type Congruence::const_contains(word_type const& lhs,
-                                                   word_type const& rhs) const {
+  result_type Congruence::const_contains(word_type const& lhs,
+                                         word_type const& rhs) const {
     if (lhs == rhs) {
       return result_type::TRUE;
     }
@@ -286,7 +289,7 @@ namespace libsemigroups {
   // CongBase - non-pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
 
-  std::shared_ptr<CongBase::non_trivial_classes_type>
+  std::shared_ptr<CongBase<FroidurePinBase>::non_trivial_classes_type>
   Congruence::non_trivial_classes_impl() {
     auto winner = static_cast<CongBase*>(_race.winner());
     winner->init_non_trivial_classes();

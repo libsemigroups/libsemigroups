@@ -53,10 +53,12 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    class ToddCoxeter : public CongBase {
+    class ToddCoxeter : public CongBase<FroidurePinBase> {
+
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs - private
       ////////////////////////////////////////////////////////////////////////
+
       using signed_class_index_type = int64_t;
 
      public:

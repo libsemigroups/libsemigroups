@@ -36,6 +36,7 @@ ACLOCAL_AMFLAGS	= -I m4
 pkginclude_HEADERS =  include/adapters.hpp
 pkginclude_HEADERS += include/blocks.hpp
 pkginclude_HEADERS += include/bmat8.hpp
+pkginclude_HEADERS += include/cong-base-impl.hpp
 pkginclude_HEADERS += include/cong-base.hpp
 pkginclude_HEADERS += include/cong-pair-impl.hpp
 pkginclude_HEADERS += include/cong-pair.hpp
@@ -88,7 +89,6 @@ lib_LTLIBRARIES = libsemigroups.la
 ## libsemigroups sources
 libsemigroups_la_SOURCES =  src/blocks.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
-libsemigroups_la_SOURCES += src/cong-base.cpp
 libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/element.cpp
@@ -117,7 +117,7 @@ LINT_FORMAT_FILES_EXTRA =  src/kbe-impl.hpp
 LINT_FORMAT_FILES_EXTRA += src/knuth-bendix-impl.hpp 
 LINT_FORMAT_FILES_EXTRA += tests/libsemigroups.tests.hpp
 
-EXTRA_DIST += $(LINT_FORMAT_FILES_EXTRA)
+EXTRA_DIST =  $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION extern/HPCombi/VERSION
