@@ -116,7 +116,6 @@ namespace libsemigroups {
     // FpSemiBase - overridden non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-
     bool KnuthBendix::is_obviously_finite() {
       return has_isomorphic_non_fp_semigroup()
              && isomorphic_non_fp_semigroup().finished();

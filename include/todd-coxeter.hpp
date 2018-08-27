@@ -112,8 +112,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       bool contains(word_type const&, word_type const&) override;
-      bool is_quotient_obviously_finite() override;
-      bool is_quotient_obviously_infinite() override;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods - public
@@ -141,6 +139,8 @@ namespace libsemigroups {
       class_index_type
            const_word_to_class_index(word_type const&) const override;
       void set_nr_generators_impl(size_t) override;
+      bool is_quotient_obviously_finite_impl() override;
+      bool is_quotient_obviously_infinite_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - methods (validation) - private

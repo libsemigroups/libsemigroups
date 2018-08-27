@@ -89,8 +89,8 @@ namespace libsemigroups {
     bool        contains(word_type const&, word_type const&) override;
     result_type const_contains(word_type const&,
                                word_type const&) const override;
-    bool        is_quotient_obviously_finite() override;
-    bool        is_quotient_obviously_infinite() override;
+    bool        is_quotient_obviously_finite_impl() override;
+    bool        is_quotient_obviously_infinite_impl() override;
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - methods - public

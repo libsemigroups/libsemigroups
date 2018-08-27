@@ -18,6 +18,7 @@
 
 #include "cong-base.hpp"
 
+#include "internal/containers.hpp"               // for RecVec
 #include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "internal/stl.hpp"                      // for to_string
@@ -33,13 +34,17 @@ namespace libsemigroups {
 
   CongBase::CongBase(congruence_type type)
       : Runner(),
-        // Mutable
+        // Non-mutable
         _gen_pairs(),
         _nr_gens(UNDEFINED),
         _parent(nullptr),
         _type(type),
-        // Non-mutable
+        // Mutable
         _init_ntc_done(),
+        _is_obviously_finite_known(false),
+        _is_obviously_finite(false),
+        _is_obviously_infinite_known(false),
+        _is_obviously_infinite(false),
         _quotient(),
         _non_trivial_classes() {
     reset();
@@ -73,11 +78,11 @@ namespace libsemigroups {
     return word_to_class_index(w1) < word_to_class_index(w2);
   }
 
-  bool CongBase::is_quotient_obviously_finite() {
+  bool CongBase::is_quotient_obviously_finite_impl() {
     return false;
   }
 
-  bool CongBase::is_quotient_obviously_infinite() {
+  bool CongBase::is_quotient_obviously_infinite_impl() {
     return false;
   }
 
@@ -86,7 +91,7 @@ namespace libsemigroups {
       if (nr_generators() != n) {
         throw LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
       } else {
-        return; // do nothing
+        return;  // do nothing
       }
     }
     _nr_gens = n;
@@ -180,6 +185,127 @@ namespace libsemigroups {
     return _type;
   }
 
+  // FIXME(now) the following method does not work when used with an
+  // FpSemigroup (in particular, when it is infinite), because the relations of
+  // the FpSemigroup are not in _gen_pairs (which is correct), and there is no
+  // parent semigroup, and so the method below returns false positives.
+
+  bool CongBase::is_quotient_obviously_infinite() {
+    if (_is_obviously_infinite_known) {
+      return _is_obviously_infinite;
+    }
+    REPORT("checking if the quotient is obviously infinite . . .");
+    if (nr_generators() == UNDEFINED || (has_parent_semigroup())
+        || (has_quotient_semigroup() && quotient_semigroup().finished())) {
+      // In the case that has_ parent_semigroup() it is not possible to
+      // determine whether or not the quotient is infinite, since the parent
+      // semigroup can be finite or infinite (it is undecidable in general
+      // whether or not it is infinite), and the quotient is not defined by the
+      // generating pairs, so analysing the generating pairs (as below) does not
+      // yield the correct answer.
+      REPORT("the quotient is not obviously infinite (generators undefined, or "
+             "obviously finite)");
+      _is_obviously_infinite_known = true;
+      _is_obviously_infinite       = false;
+      return false;
+    } else if (is_quotient_obviously_infinite_impl()) {
+      // The derived class of CongBase knows the quotient is infinite, or more
+      // relations than generators
+      REPORT("the quotient is obviously infinite (infinite parent)");
+      _is_obviously_finite_known   = true;
+      _is_obviously_finite         = false;
+      _is_obviously_infinite_known = true;
+      _is_obviously_infinite       = true;
+      return true;
+    }
+    size_t n = nr_generators();
+    // If i = 0, ..., n - 1, then seen[i] is set to false if generator i either
+    // does not occur in any relation, or in every relation there are the same
+    // number of generators i on both sides of the relation.
+    //
+    // If i = n, ..., 2n - 1, then seen[i] is set to false if there is no
+    // relation where one side consists solely of generator i - n.
+    std::vector<bool> res(2 * n, false);
+
+    std::unordered_map<letter_type, int64_t> map;
+    bool                                     skip = false;
+
+    for (auto const& pair : _gen_pairs) {
+      map.clear();
+      if (!skip && (pair.first.empty() || pair.second.empty())) {
+        skip = true;
+        std::fill(res.begin() + n, res.end(), true);
+      }
+      for (auto x : pair.first) {
+        auto it = map.find(x);
+        if (it == map.end()) {
+          map.emplace(x, 1);
+        } else {
+          it->second++;
+        }
+      }
+      if (map.size() == 1) {
+        res[map.begin()->first + n] = true;
+      }
+      for (auto x : pair.second) {
+        auto it = map.find(x);
+        if (it == map.end()) {
+          map.emplace(x, -1);
+        } else {
+          it->second--;
+        }
+      }
+      if (!skip && !pair.second.empty()
+          && std::all_of(pair.second.cbegin() + 1,
+                         pair.second.cend(),
+                         [&pair](letter_type i) -> bool {
+                           return i == pair.second[0];
+                         })) {
+        res[pair.second[0] + n] = true;
+      }
+      for (auto const& x : map) {
+        if (x.second != 0) {
+          res[x.first] = true;
+        }
+      }
+    }
+    auto it = std::find_if_not(
+            res.cbegin(), res.cend(), [](bool val) -> bool { return val; });
+    if (it != res.cend()) {
+      auto gen = static_cast<size_t>(it - res.cbegin());
+      gen = (gen > n ? gen - n : gen);
+      REPORT("the quotient is obviously infinite (generator ",
+             gen,
+             " has infinite order)");
+      _is_obviously_finite_known   = true;
+      _is_obviously_finite         = false;
+      _is_obviously_infinite_known = true;
+      _is_obviously_infinite       = true;
+      return true;
+    } else {
+      REPORT("the quotient is not obviously infinite");
+      _is_obviously_infinite_known = true;
+      _is_obviously_infinite       = false;
+      return false;
+    }
+  }
+
+  bool CongBase::is_quotient_obviously_finite() {
+    if (is_quotient_obviously_finite_impl()
+        || (has_quotient_semigroup() && quotient_semigroup().finished())
+        || (has_parent_semigroup() && parent_semigroup().finished())) {
+      _is_obviously_finite_known   = true;
+      _is_obviously_finite         = true;
+      _is_obviously_infinite_known = true;
+      _is_obviously_infinite       = false;
+      return true;
+    } else {
+      _is_obviously_finite_known = true;
+      _is_obviously_finite       = false;
+      return false;
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
@@ -245,9 +371,13 @@ namespace libsemigroups {
 
   void CongBase::reset() {
     set_finished(false);
-    _init_ntc_done = false;
-    _quotient      = nullptr;
     _non_trivial_classes.reset();
+    _init_ntc_done               = false;
+    _quotient                    = nullptr;
+    _is_obviously_finite_known   = false;
+    _is_obviously_finite         = false;
+    _is_obviously_infinite_known = false;
+    _is_obviously_infinite       = false;
   }
 
   /////////////////////////////////////////////////////////////////////////

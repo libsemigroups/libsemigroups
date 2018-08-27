@@ -201,7 +201,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Runner - overridden pure virtual methods - public
+    // Runner - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::run() {
@@ -303,7 +303,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - public
+    // CongBase - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     size_t ToddCoxeter::nr_classes() {
@@ -340,7 +340,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - public
+    // CongBase - non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
@@ -353,63 +353,6 @@ namespace libsemigroups {
       return CongBase::contains(lhs, rhs);
     }
 
-    bool ToddCoxeter::is_quotient_obviously_infinite() {
-      LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
-      if (_policy != policy::none) {
-        // _policy != none means we were created from a FroidurePinBase*,
-        // which means that this is infinite if and only if the
-        // FroidurePinBase* is infinite too, which is not obvious (or even
-        // possible to check at present).
-        return false;
-      } else if (_prefilled) {
-        return false;
-      }
-      init();
-      if (nr_generators() > _relations.size() + _extra.size()) {
-        return true;
-      }
-      auto is_letter_in_word = [](word_type const& w, size_t gen) {
-        return (std::find(w.cbegin(), w.cend(), gen) != w.cend());
-      };
-
-      // Does there exist a generator which appears in no relation?
-      for (size_t gen = 0; gen < nr_generators(); ++gen) {
-        bool found = false;
-        for (auto it = _relations.cbegin(); it < _relations.cend() && !found;
-             ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
-        }
-        for (auto it = _extra.cbegin(); it < _extra.cend() && !found; ++it) {
-          found = is_letter_in_word((*it).first, gen)
-                  || is_letter_in_word((*it).second, gen);
-        }
-        if (!found) {
-          return true;  // We found a generator not in any relation.
-        }
-      }
-      // Otherwise, every generator occurs at least once in a relation.
-      return false;
-      // TODO: check that for every generator there exists a word in one of
-      // the relations consisting solely of that generator, otherwise the
-      // order of that generator is infinite.
-      // TODO: check if the number of occurrences of a given letter is
-      // constant on both sides of every relation, if so then again that
-      // letter has infinite order.
-    }
-
-    bool ToddCoxeter::is_quotient_obviously_finite() {
-      return _prefilled
-             || (has_quotient_semigroup() && quotient_semigroup().finished())
-             || (has_parent_semigroup() && parent_semigroup().finished());
-      // 1. _prefilled means that either we were created from a
-      // FroidurePinBase* with _policy = use_cayley_graph and we successfully
-      // prefilled the table, or we manually prefilled the table.  In this
-      // case the semigroup defined by _relations must be finite.
-      //
-      // 2. the quotient semigroup being defined and fully enumerated
-      // means it is finite.
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - methods - public
@@ -448,7 +391,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - private
+    // CongBase - pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeter::add_pair_impl(word_type const& u, word_type const& v) {
@@ -478,7 +421,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - private
+    // CongBase - non-pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////
 
     class_index_type
@@ -505,6 +448,32 @@ namespace libsemigroups {
       _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
       _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
       _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
+    }
+
+    bool ToddCoxeter::is_quotient_obviously_infinite_impl() {
+      LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
+      if (_policy != policy::none) {
+        // _policy != none means we were created from a FroidurePinBase*,
+        // which means that this is infinite if and only if the
+        // FroidurePinBase* is infinite too, which is not obvious (or even
+        // possible to check at present).
+        return false;
+      } else if (_prefilled) {
+        return false;
+      }
+      init();
+      return nr_generators() > _relations.size() + _extra.size();
+    }
+
+    bool ToddCoxeter::is_quotient_obviously_finite_impl() {
+      return _prefilled;
+      // 1. _prefilled means that either we were created from a
+      // FroidurePinBase* with _policy = use_cayley_graph and we successfully
+      // prefilled the table, or we manually prefilled the table.  In this
+      // case the semigroup defined by _relations must be finite.
+      //
+      // 2. the quotient or parent semigroup being defined and fully enumerated
+      // means it is finite.
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -666,9 +635,7 @@ namespace libsemigroups {
             for (auto const& rel : _relations) {
               validate_relation(rel);
             }
-            for (auto const& rel : _extra) {
-              validate_relation(rel);
-            }
+            // We don't add anything to _extra here so no need to check.
 #endif
             break;
         }

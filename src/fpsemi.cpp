@@ -123,12 +123,10 @@ namespace libsemigroups {
             "no alphabet or rules have been specified");
       }
     }
-    size_t nr = 0;
     for (auto it = _race.begin(); it < _race.end(); ++it) {
       if (static_cast<FpSemiBase*>(*it)->is_obviously_infinite()) {
         return true;
       }
-      nr++;
     }
     return false;
   }

@@ -142,9 +142,6 @@ namespace libsemigroups {
     //! undecidable in general, and this method may never terminate.
     virtual bool less(word_type const&, word_type const&);
 
-    // TODO make these non-virtual
-    virtual bool is_quotient_obviously_finite();
-    virtual bool is_quotient_obviously_infinite();
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - public
@@ -191,6 +188,9 @@ namespace libsemigroups {
     //! two-sided congruence.
     congruence_type type() const noexcept;
 
+    bool is_quotient_obviously_finite();
+    bool is_quotient_obviously_infinite();
+
    protected:
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - protected
@@ -228,6 +228,8 @@ namespace libsemigroups {
     virtual void             set_nr_generators_impl(size_t);
     virtual std::shared_ptr<non_trivial_classes_type>
     non_trivial_classes_impl();
+    virtual bool is_quotient_obviously_finite_impl();
+    virtual bool is_quotient_obviously_infinite_impl();
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - private
@@ -257,6 +259,10 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     mutable bool                                      _init_ntc_done;
+    mutable bool                                      _is_obviously_finite_known;
+    mutable bool                                      _is_obviously_finite;
+    mutable bool                                      _is_obviously_infinite_known;
+    mutable bool                                      _is_obviously_infinite;
     mutable FroidurePinBase*                          _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 

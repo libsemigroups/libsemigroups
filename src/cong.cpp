@@ -107,8 +107,8 @@ namespace libsemigroups {
     if (S->has_knuth_bendix()) {
       if (S->knuth_bendix().finished()) {
         if (!has_parent_semigroup()) {
-          set_parent_semigroup(&
-              S->knuth_bendix().isomorphic_non_fp_semigroup());
+          set_parent_semigroup(
+              &S->knuth_bendix().isomorphic_non_fp_semigroup());
           // Even if the FpSemigroup S is infinite, the
           // isomorphic_non_fp_semigroup() can still be useful in this case,
           // for example, when factorizing elements.
@@ -132,7 +132,7 @@ namespace libsemigroups {
           // - check if the relations are really the same as those in
           //   S->todd_coxeter(), if it exists. This is probably too
           //   expensive!
-           _race.add_runner(new ToddCoxeter(type, S->knuth_bendix()));
+          _race.add_runner(new ToddCoxeter(type, S->knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.
@@ -154,7 +154,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // Runner - overridden pure virtual methods - public
+  // Runner - pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::run() {
@@ -164,7 +164,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // Runner - overridden non-pure virtual methods - protected
+  // Runner - non-pure virtual methods - protected
   //////////////////////////////////////////////////////////////////////////
 
   bool Congruence::finished_impl() const {
@@ -177,7 +177,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // CongBase - overridden pure virtual methods - public
+  // CongBase - pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
   word_type Congruence::class_index_to_word(class_index_type i) {
@@ -195,28 +195,8 @@ namespace libsemigroups {
     return static_cast<CongBase*>(_race.winner())->nr_classes();
   }
 
-  bool Congruence::is_quotient_obviously_infinite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());  // TODO exception
-    for (auto runner : _race) {
-      if (static_cast<CongBase*>(runner)->is_quotient_obviously_infinite()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool Congruence::is_quotient_obviously_finite() {
-    LIBSEMIGROUPS_ASSERT(!_race.empty());
-    for (auto runner : _race) {
-      if (static_cast<CongBase*>(runner)->is_quotient_obviously_finite()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   ////////////////////////////////////////////////////////////////////////////
-  // CongBase - overridden non-pure virtual methods - public
+  // CongBase - non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
 
   bool Congruence::contains(word_type const& lhs, word_type const& rhs) {
@@ -285,7 +265,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // CongBase - overridden pure virtual methods - private
+  // CongBase - pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
 
   void Congruence::add_pair_impl(word_type const& u, word_type const& v) {
@@ -311,6 +291,24 @@ namespace libsemigroups {
     auto winner = static_cast<CongBase*>(_race.winner());
     winner->init_non_trivial_classes();
     return winner->_non_trivial_classes;
+  }
+
+  bool Congruence::is_quotient_obviously_infinite_impl() {
+    for (auto runner : _race) {
+      if (static_cast<CongBase*>(runner)->is_quotient_obviously_infinite()) {
+        return true;
+      }
+    }
+    return false;  // Returns false if _race is empty
+  }
+
+  bool Congruence::is_quotient_obviously_finite_impl() {
+    for (auto runner : _race) {
+      if (static_cast<CongBase*>(runner)->is_quotient_obviously_finite()) {
+        return true;
+      }
+    }
+    return false;  // Returns false if _race is empty
   }
 
   //////////////////////////////////////////////////////////////////////////
