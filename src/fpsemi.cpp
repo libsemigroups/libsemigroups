@@ -66,7 +66,6 @@ namespace libsemigroups {
   // place to cache the FroidurePinBase* S.
   FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemiBase(), _race() {
     set_alphabet(S->nr_generators());
-    set_isomorphic_non_fp_semigroup(S);
     _race.add_runner(new ToddCoxeter(S));
     _race.add_runner(new KnuthBendix(S));
     // TODO(1) if the policy is standard, then add another ToddCoxeter with

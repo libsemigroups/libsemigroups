@@ -164,10 +164,6 @@ namespace libsemigroups {
     }
     add_rules_impl(S);
     reset();
-    // TODO something like the following
-    // if (this->nr_rules() == 0) {
-    //   set_isomorphic_non_fp_semigroup(S);
-    // }
   }
 
   void FpSemiBase::add_rules(
@@ -307,16 +303,6 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(!_alphabet.empty());
     LIBSEMIGROUPS_ASSERT(a < _alphabet.size());
     return _alphabet[a];
-  }
-
-  void
-  FpSemiBase::set_isomorphic_non_fp_semigroup(FroidurePinBase* S) noexcept {
-    LIBSEMIGROUPS_ASSERT(S != nullptr);
-    LIBSEMIGROUPS_ASSERT(_isomorphic_non_fp_semigroup == nullptr);
-    // _delete_isomorphic_non_fp_semigroup can be either true or false,
-    // depending on whether ismrphc_nn_fp_smgrp is coming from outside or
-    // inside.
-    _isomorphic_non_fp_semigroup = S;
   }
 
   bool FpSemiBase::validate_letter(char c) const {

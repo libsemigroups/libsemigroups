@@ -127,9 +127,6 @@ namespace libsemigroups {
     size_t char_to_uint(char) const;
     char   uint_to_char(size_t) const noexcept;
 
-    void
-    set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;  // NOLINT()
-
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;
 
