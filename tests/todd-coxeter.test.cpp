@@ -81,22 +81,22 @@ namespace libsemigroups {
       // TODO double check if this is standard or not
       REPORTER.set_report(REPORT);
 
-      std::vector<relation_type> rels
-          = {relation_type({0, 0}, {0}),
-             relation_type({1, 0}, {1}),
-             relation_type({0, 1}, {1}),
-             relation_type({2, 0}, {2}),
-             relation_type({0, 2}, {2}),
-             relation_type({3, 0}, {3}),
-             relation_type({0, 3}, {3}),
-             relation_type({1, 1}, {0}),
-             relation_type({2, 3}, {0}),
-             relation_type({2, 2, 2}, {0}),
-             relation_type({1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0}),
-             relation_type({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
-                            1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
-                           {0})};
-      ToddCoxeter tc(TWOSIDED, 4, rels, {});
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(4);
+      tc.add_pair({0, 0}, {0});
+      tc.add_pair({1, 0}, {1});
+      tc.add_pair({0, 1}, {1});
+      tc.add_pair({2, 0}, {2});
+      tc.add_pair({0, 2}, {2});
+      tc.add_pair({3, 0}, {3});
+      tc.add_pair({0, 3}, {3});
+      tc.add_pair({1, 1}, {0});
+      tc.add_pair({2, 3}, {0});
+      tc.add_pair({2, 2, 2}, {0});
+      tc.add_pair({1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0});
+      tc.add_pair({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
+                   1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
+                  {0});
       tc.run_for(std::chrono::milliseconds(200));
       REQUIRE(tc.nr_classes() == 10752);
 
@@ -149,24 +149,39 @@ namespace libsemigroups {
                             "(cong) non-trivial two-sided from relations",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
+      {
+        ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(3);
+        tc.add_pair({0, 1}, {1, 0});
+        tc.add_pair({0, 2}, {2, 2});
+        tc.add_pair({0, 2}, {0});
+        tc.add_pair({0, 2}, {0});
+        tc.add_pair({2, 2}, {0});
+        tc.add_pair({1, 2}, {1, 2});
+        tc.add_pair({1, 2}, {2, 2});
+        tc.add_pair({1, 2, 2}, {1});
+        tc.add_pair({1, 2}, {1});
+        tc.add_pair({2, 2}, {1});
+        tc.add_pair({0}, {1});
 
-      std::vector<relation_type> relations = {relation_type({0, 1}, {1, 0}),
-                                              relation_type({0, 2}, {2, 2}),
-                                              relation_type({0, 2}, {0}),
-                                              relation_type({0, 2}, {0}),
-                                              relation_type({2, 2}, {0}),
-                                              relation_type({1, 2}, {1, 2}),
-                                              relation_type({1, 2}, {2, 2}),
-                                              relation_type({1, 2, 2}, {1}),
-                                              relation_type({1, 2}, {1}),
-                                              relation_type({2, 2}, {1})};
-      std::vector<relation_type> extra     = {relation_type({0}, {1})};
+        REQUIRE(tc.nr_classes() == 2);
+      }
+      {
+        ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(3);
+        tc.add_pair({0, 1}, {1, 0});
+        tc.add_pair({0, 2}, {2, 2});
+        tc.add_pair({0, 2}, {0});
+        tc.add_pair({0, 2}, {0});
+        tc.add_pair({2, 2}, {0});
+        tc.add_pair({1, 2}, {1, 2});
+        tc.add_pair({1, 2}, {2, 2});
+        tc.add_pair({1, 2, 2}, {1});
+        tc.add_pair({1, 2}, {1});
+        tc.add_pair({2, 2}, {1});
 
-      ToddCoxeter tc1(TWOSIDED, 3, relations, extra);
-      REQUIRE(tc1.nr_classes() == 2);
-
-      ToddCoxeter tc2(TWOSIDED, 3, relations, {});
-      REQUIRE(tc2.nr_classes() == 2);
+        REQUIRE(tc.nr_classes() == 2);
+      }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -175,12 +190,11 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
-      std::vector<relation_type> rels;
-      rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-      rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
-      std::vector<relation_type> extra;
-
-      ToddCoxeter tc(RIGHT, 2, rels, extra);
+      ToddCoxeter tc(RIGHT);
+      tc.set_nr_generators(2);
+      tc.add_pair({0, 0, 0}, {0});
+      tc.add_pair({0}, {1, 1});
+      // TODO(now) can we get away with add_pair here??
       REQUIRE(tc.nr_classes() == 5);
       REQUIRE(tc.finished());
     }
@@ -191,12 +205,11 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
-      std::vector<relation_type> rels;
-      rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-      rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
-      std::vector<relation_type> extra;
+      ToddCoxeter tc(LEFT);
+      tc.set_nr_generators(2);
+      tc.add_pair({0, 0, 0}, {0});
+      tc.add_pair({0}, {1, 1});
 
-      ToddCoxeter tc(LEFT, 2, rels, extra);
       REQUIRE(tc.word_to_class_index({0, 0, 1})
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
       REQUIRE(tc.word_to_class_index({0, 1, 1, 0, 0, 1})
@@ -212,22 +225,27 @@ namespace libsemigroups {
                             "(cong) for small fp semigroup",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      std::vector<relation_type> rels;
-      rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-      rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
-      std::vector<relation_type> extra;
+      {
+        ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(2);
+        tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
+        tc.add_pair({0}, {1, 1});     // (a, b^2)
 
-      ToddCoxeter tc1(TWOSIDED, 2, rels, extra);
-      REQUIRE(tc1.word_to_class_index({0, 0, 1})
-              == tc1.word_to_class_index({0, 0, 0, 0, 1}));
-      REQUIRE(tc1.word_to_class_index({0, 1, 1, 0, 0, 1})
-              == tc1.word_to_class_index({0, 0, 0, 0, 1}));
-      REQUIRE(tc1.word_to_class_index({0, 0, 0})
-              != tc1.word_to_class_index({1}));
+        REQUIRE(tc.word_to_class_index({0, 0, 1})
+                == tc.word_to_class_index({0, 0, 0, 0, 1}));
+        REQUIRE(tc.word_to_class_index({0, 1, 1, 0, 0, 1})
+                == tc.word_to_class_index({0, 0, 0, 0, 1}));
+        REQUIRE(tc.word_to_class_index({0, 0, 0})
+                != tc.word_to_class_index({1}));
+      }
+      {
+        ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(2);
+        tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
+        tc.add_pair({0}, {1, 1});     // (a, b^2)
 
-      ToddCoxeter tc2(TWOSIDED, 2, rels, extra);
-
-      REQUIRE(tc2.word_to_class_index({0, 0, 0, 0}) < tc2.nr_classes());
+        REQUIRE(tc.word_to_class_index({0, 0, 0, 0}) < tc.nr_classes());
+      }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -370,10 +388,7 @@ namespace libsemigroups {
       S.factorisation(w4, S.position(t4));
       REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
 
-      delete t1;
-      delete t2;
-      delete t3;
-      delete t4;
+      delete t1, delete t2, delete t3, delete t4;
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -397,8 +412,6 @@ namespace libsemigroups {
       ToddCoxeter tc(LEFT, &S, ToddCoxeter::policy::use_relations);
       tc.add_pair(w1, w2);
 
-      REPORTER.set_report(REPORT);
-
       REQUIRE(tc.nr_classes() == 69);
       REQUIRE(tc.nr_classes() == 69);
       Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
@@ -407,10 +420,7 @@ namespace libsemigroups {
       S.factorisation(w3, S.position(t3));
       S.factorisation(w4, S.position(t4));
 
-      delete t1;
-      delete t2;
-      delete t3;
-      delete t4;
+      delete t1, delete t2, delete t3, delete t4;
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -451,13 +461,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
       REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
       REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w6));
-
-      delete t1;
-      delete t2;
-      delete t3;
-      delete t4;
-      delete t5;
-      delete t6;
+      delete t1, delete t2, delete t3, delete t4, delete t5, delete t6;
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -466,25 +470,25 @@ namespace libsemigroups {
         "(cong) finite fp-semigroup, dihedral group of order 6",
         "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      std::vector<relation_type> rels  = {relation_type({0, 0}, {0}),
-                                         relation_type({0, 1}, {1}),
-                                         relation_type({1, 0}, {1}),
-                                         relation_type({0, 2}, {2}),
-                                         relation_type({2, 0}, {2}),
-                                         relation_type({0, 3}, {3}),
-                                         relation_type({3, 0}, {3}),
-                                         relation_type({0, 4}, {4}),
-                                         relation_type({4, 0}, {4}),
-                                         relation_type({1, 2}, {0}),
-                                         relation_type({2, 1}, {0}),
-                                         relation_type({3, 4}, {0}),
-                                         relation_type({4, 3}, {0}),
-                                         relation_type({2, 2}, {0}),
-                                         relation_type({1, 4, 2, 3, 3}, {0}),
-                                         relation_type({4, 4, 4}, {0})};
-      std::vector<relation_type> extra = {};
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(5);
+      tc.add_pair({0, 0}, {0});
+      tc.add_pair({0, 1}, {1});
+      tc.add_pair({1, 0}, {1});
+      tc.add_pair({0, 2}, {2});
+      tc.add_pair({2, 0}, {2});
+      tc.add_pair({0, 3}, {3});
+      tc.add_pair({3, 0}, {3});
+      tc.add_pair({0, 4}, {4});
+      tc.add_pair({4, 0}, {4});
+      tc.add_pair({1, 2}, {0});
+      tc.add_pair({2, 1}, {0});
+      tc.add_pair({3, 4}, {0});
+      tc.add_pair({4, 3}, {0});
+      tc.add_pair({2, 2}, {0});
+      tc.add_pair({1, 4, 2, 3, 3}, {0});
+      tc.add_pair({4, 4, 4}, {0});
 
-      ToddCoxeter tc(TWOSIDED, 5, rels, extra);
       REQUIRE(tc.nr_classes() == 6);
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
     }
@@ -494,30 +498,29 @@ namespace libsemigroups {
                             "(cong) finite fp-semigroup, size 016",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      std::vector<relation_type> rels
-          = {relation_type({3}, {2}),
-             relation_type({0, 3}, {0, 2}),
-             relation_type({1, 1}, {1}),
-             relation_type({1, 3}, {1, 2}),
-             relation_type({2, 1}, {2}),
-             relation_type({2, 2}, {2}),
-             relation_type({2, 3}, {2}),
-             relation_type({0, 0, 0}, {0}),
-             relation_type({0, 0, 1}, {1}),
-             relation_type({0, 0, 2}, {2}),
-             relation_type({0, 1, 2}, {1, 2}),
-             relation_type({1, 0, 0}, {1}),
-             relation_type({1, 0, 2}, {0, 2}),
-             relation_type({2, 0, 0}, {2}),
-             relation_type({0, 1, 0, 1}, {1, 0, 1}),
-             relation_type({0, 2, 0, 2}, {2, 0, 2}),
-             relation_type({1, 0, 1, 0}, {1, 0, 1}),
-             relation_type({1, 2, 0, 1}, {1, 0, 1}),
-             relation_type({1, 2, 0, 2}, {2, 0, 2}),
-             relation_type({2, 0, 1, 0}, {2, 0, 1}),
-             relation_type({2, 0, 2, 0}, {2, 0, 2})};
-      std::vector<relation_type> extra = {};
-      ToddCoxeter                tc(TWOSIDED, 4, rels, extra);
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(4);
+      tc.add_pair({3}, {2});
+      tc.add_pair({0, 3}, {0, 2});
+      tc.add_pair({1, 1}, {1});
+      tc.add_pair({1, 3}, {1, 2});
+      tc.add_pair({2, 1}, {2});
+      tc.add_pair({2, 2}, {2});
+      tc.add_pair({2, 3}, {2});
+      tc.add_pair({0, 0, 0}, {0});
+      tc.add_pair({0, 0, 1}, {1});
+      tc.add_pair({0, 0, 2}, {2});
+      tc.add_pair({0, 1, 2}, {1, 2});
+      tc.add_pair({1, 0, 0}, {1});
+      tc.add_pair({1, 0, 2}, {0, 2});
+      tc.add_pair({2, 0, 0}, {2});
+      tc.add_pair({0, 1, 0, 1}, {1, 0, 1});
+      tc.add_pair({0, 2, 0, 2}, {2, 0, 2});
+      tc.add_pair({1, 0, 1, 0}, {1, 0, 1});
+      tc.add_pair({1, 2, 0, 1}, {1, 0, 1});
+      tc.add_pair({1, 2, 0, 2}, {2, 0, 2});
+      tc.add_pair({2, 0, 1, 0}, {2, 0, 1});
+      tc.add_pair({2, 0, 2, 0}, {2, 0, 2});
 
       REQUIRE(tc.nr_classes() == 16);
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
@@ -528,59 +531,57 @@ namespace libsemigroups {
                             "(cong) finite fp-semigroup, size 016",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      std::vector<relation_type> rels
-          = {relation_type({2}, {1}),
-             relation_type({4}, {3}),
-             relation_type({5}, {0}),
-             relation_type({6}, {3}),
-             relation_type({7}, {1}),
-             relation_type({8}, {3}),
-             relation_type({9}, {3}),
-             relation_type({10}, {0}),
-             relation_type({0, 2}, {0, 1}),
-             relation_type({0, 4}, {0, 3}),
-             relation_type({0, 5}, {0, 0}),
-             relation_type({0, 6}, {0, 3}),
-             relation_type({0, 7}, {0, 1}),
-             relation_type({0, 8}, {0, 3}),
-             relation_type({0, 9}, {0, 3}),
-             relation_type({0, 10}, {0, 0}),
-             relation_type({1, 1}, {1}),
-             relation_type({1, 2}, {1}),
-             relation_type({1, 4}, {1, 3}),
-             relation_type({1, 5}, {1, 0}),
-             relation_type({1, 6}, {1, 3}),
-             relation_type({1, 7}, {1}),
-             relation_type({1, 8}, {1, 3}),
-             relation_type({1, 9}, {1, 3}),
-             relation_type({1, 10}, {1, 0}),
-             relation_type({3, 1}, {3}),
-             relation_type({3, 2}, {3}),
-             relation_type({3, 3}, {3}),
-             relation_type({3, 4}, {3}),
-             relation_type({3, 5}, {3, 0}),
-             relation_type({3, 6}, {3}),
-             relation_type({3, 7}, {3}),
-             relation_type({3, 8}, {3}),
-             relation_type({3, 9}, {3}),
-             relation_type({3, 10}, {3, 0}),
-             relation_type({0, 0, 0}, {0}),
-             relation_type({0, 0, 1}, {1}),
-             relation_type({0, 0, 3}, {3}),
-             relation_type({0, 1, 3}, {1, 3}),
-             relation_type({1, 0, 0}, {1}),
-             relation_type({1, 0, 3}, {0, 3}),
-             relation_type({3, 0, 0}, {3}),
-             relation_type({0, 1, 0, 1}, {1, 0, 1}),
-             relation_type({0, 3, 0, 3}, {3, 0, 3}),
-             relation_type({1, 0, 1, 0}, {1, 0, 1}),
-             relation_type({1, 3, 0, 1}, {1, 0, 1}),
-             relation_type({1, 3, 0, 3}, {3, 0, 3}),
-             relation_type({3, 0, 1, 0}, {3, 0, 1}),
-             relation_type({3, 0, 3, 0}, {3, 0, 3})};
-      std::vector<relation_type> extra = {};
-
-      ToddCoxeter tc(TWOSIDED, 11, rels, extra);
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(11);
+      tc.add_pair({2}, {1});
+      tc.add_pair({4}, {3});
+      tc.add_pair({5}, {0});
+      tc.add_pair({6}, {3});
+      tc.add_pair({7}, {1});
+      tc.add_pair({8}, {3});
+      tc.add_pair({9}, {3});
+      tc.add_pair({10}, {0});
+      tc.add_pair({0, 2}, {0, 1});
+      tc.add_pair({0, 4}, {0, 3});
+      tc.add_pair({0, 5}, {0, 0});
+      tc.add_pair({0, 6}, {0, 3});
+      tc.add_pair({0, 7}, {0, 1});
+      tc.add_pair({0, 8}, {0, 3});
+      tc.add_pair({0, 9}, {0, 3});
+      tc.add_pair({0, 10}, {0, 0});
+      tc.add_pair({1, 1}, {1});
+      tc.add_pair({1, 2}, {1});
+      tc.add_pair({1, 4}, {1, 3});
+      tc.add_pair({1, 5}, {1, 0});
+      tc.add_pair({1, 6}, {1, 3});
+      tc.add_pair({1, 7}, {1});
+      tc.add_pair({1, 8}, {1, 3});
+      tc.add_pair({1, 9}, {1, 3});
+      tc.add_pair({1, 10}, {1, 0});
+      tc.add_pair({3, 1}, {3});
+      tc.add_pair({3, 2}, {3});
+      tc.add_pair({3, 3}, {3});
+      tc.add_pair({3, 4}, {3});
+      tc.add_pair({3, 5}, {3, 0});
+      tc.add_pair({3, 6}, {3});
+      tc.add_pair({3, 7}, {3});
+      tc.add_pair({3, 8}, {3});
+      tc.add_pair({3, 9}, {3});
+      tc.add_pair({3, 10}, {3, 0});
+      tc.add_pair({0, 0, 0}, {0});
+      tc.add_pair({0, 0, 1}, {1});
+      tc.add_pair({0, 0, 3}, {3});
+      tc.add_pair({0, 1, 3}, {1, 3});
+      tc.add_pair({1, 0, 0}, {1});
+      tc.add_pair({1, 0, 3}, {0, 3});
+      tc.add_pair({3, 0, 0}, {3});
+      tc.add_pair({0, 1, 0, 1}, {1, 0, 1});
+      tc.add_pair({0, 3, 0, 3}, {3, 0, 3});
+      tc.add_pair({1, 0, 1, 0}, {1, 0, 1});
+      tc.add_pair({1, 3, 0, 1}, {1, 0, 1});
+      tc.add_pair({1, 3, 0, 3}, {3, 0, 3});
+      tc.add_pair({3, 0, 1, 0}, {3, 0, 1});
+      tc.add_pair({3, 0, 3, 0}, {3, 0, 3});
 
       REQUIRE(tc.nr_classes() == 16);
       REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
@@ -593,68 +594,55 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "021",
-                            "(cong) test prefilling of the table manually",
-                            "[todd-coxeter][quick]") {
-      REPORTER.set_report(REPORT);
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
-             new Transformation<uint16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-      FroidurePin<> S = FroidurePin<>(gens);
-      delete_gens(gens);
-
-      // Copy the right Cayley graph of S for prefilling
-      // FroidurePin<>::cayley_graph_type const* right
-      //    = S.right_cayley_graph_copy();
-      // RecVec<size_t> table(S.nr_generators(), 1, UNDEFINED);
-      // table.append(*right);
-      // delete right;
-      // TODO(now) rework this ToddCoxeter 021
-      // // TODO(now) move this stuff into prefill
-      // size_t j = 1;
-      // std::for_each(table.begin(),
-      //               table.begin() + table.nr_cols(),
-      //               [&j](size_t& i) { i = j++; });
-      // std::for_each(
-      //     table.begin() + table.nr_cols(), table.end(), [](size_t& i) { ++i;
-      //     });
-
-      // ToddCoxeter tc(TWOSIDED, 2, {}, {});
-      // REQUIRE(tc.get_policy() == ToddCoxeter::policy::none);
-      // tc.prefill(table);
-      // REQUIRE(!tc.is_quotient_obviously_infinite());
-      // REQUIRE(tc.nr_classes() == S.size());
-    }
+    // ToddCoxeter 021 removed
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "022",
                             "(cong) test packing phase",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      std::vector<relation_type> rels
-          = {relation_type({0, 0, 0}, {0}),
-             relation_type({1, 0, 0}, {1, 0}),
-             relation_type({1, 0, 1, 1, 1}, {1, 0}),
-             relation_type({1, 1, 1, 1, 1}, {1, 1}),
-             relation_type({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
-             relation_type({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0}),
-             relation_type({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0}),
-             relation_type({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
-             relation_type({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0}),
-             relation_type({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1}),
-             relation_type({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1}),
-             relation_type({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0}),
-             relation_type({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0}),
-             relation_type({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0})};
+      {
+        ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(2);
+        tc.set_pack(10);
+        tc.add_pair({0, 0, 0}, {0});
+        tc.add_pair({1, 0, 0}, {1, 0});
+        tc.add_pair({1, 0, 1, 1, 1}, {1, 0});
+        tc.add_pair({1, 1, 1, 1, 1}, {1, 1});
+        tc.add_pair({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
+        tc.add_pair({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0});
+        tc.add_pair({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0});
+        tc.add_pair({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
+        tc.add_pair({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1});
+        tc.add_pair({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
+        tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-      ToddCoxeter tc1(TWOSIDED, 2, rels, std::vector<relation_type>());
-      tc1.set_pack(10);
-      REQUIRE(tc1.nr_classes() == 78);
+        REQUIRE(tc.nr_classes() == 78);
+      }
+      {
+        ToddCoxeter tc(LEFT);
+        tc.set_nr_generators(2);
+        tc.set_pack(10);
+        tc.add_pair({0, 0, 0}, {0});
+        tc.add_pair({1, 0, 0}, {1, 0});
+        tc.add_pair({1, 0, 1, 1, 1}, {1, 0});
+        tc.add_pair({1, 1, 1, 1, 1}, {1, 1});
+        tc.add_pair({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
+        tc.add_pair({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0});
+        tc.add_pair({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0});
+        tc.add_pair({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
+        tc.add_pair({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1});
+        tc.add_pair({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
+        tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
+        tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-      ToddCoxeter tc2(LEFT, 2, rels, std::vector<relation_type>());
-      tc2.set_pack(10);
-      REQUIRE(tc2.nr_classes() == 78);
+        REQUIRE(tc.nr_classes() == 78);
+      }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -677,8 +665,7 @@ namespace libsemigroups {
       word_type w1, w2;
       S.factorisation(w1, S.position(t1));
       S.factorisation(w2, S.position(t2));
-      delete t1;
-      delete t2;
+      delete t1, delete t2;
 
       ToddCoxeter tc(LEFT, S, ToddCoxeter::policy::use_cayley_graph);
       tc.add_pair(w1, w2);
@@ -690,7 +677,8 @@ namespace libsemigroups {
                             "(cong) 2-sided cong. on free semigroup",
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
-      ToddCoxeter tc(TWOSIDED, 1, {});
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(1);
       REQUIRE(tc.contains({0, 0}, {0, 0}));
       REQUIRE(!tc.contains({0, 0}, {0}));
     }
@@ -699,7 +687,8 @@ namespace libsemigroups {
                             "027",
                             "(cong) calling run when obviously infinite",
                             "[todd-coxeter][quick]") {
-      ToddCoxeter tc(TWOSIDED, 5, {});
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(5);
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
     }
 

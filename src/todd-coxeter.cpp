@@ -137,22 +137,6 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase& S, policy p)
         : ToddCoxeter(type, &S, p) {}
 
-    ToddCoxeter::ToddCoxeter(congruence_type                   type,
-                             size_t                            nrgens,
-                             std::vector<relation_type> const& relations,
-                             std::vector<relation_type> const& extra)
-        : ToddCoxeter(type) {
-      set_nr_generators(nrgens);
-      for (auto const& rel : relations) {
-        validate_relation(rel);
-      }
-      _relations = relations;
-      for (auto const& rel : extra) {
-        validate_relation(rel);
-      }
-      _extra = extra;
-    }
-
     // Construct a ToddCoxeter object representing a congruence over the
     // semigroup defined by copy (the quotient that is).
     ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter const& copy)
