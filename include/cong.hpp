@@ -38,6 +38,11 @@ namespace libsemigroups {
     class ToddCoxeter;
   }  // namespace congruence
 
+  namespace internal {
+    template <class TPtrType>
+    class owned_ptr;
+  }  // namespace internal
+
   class Congruence : public CongBase {
    public:
     // Execution policy:
@@ -108,8 +113,8 @@ namespace libsemigroups {
     // CongBase - pure virtual methods - private
     //////////////////////////////////////////////////////////////////////////
 
-    void             add_pair_impl(word_type const&, word_type const&) override;
-    FroidurePinBase* quotient_impl() override;
+    void add_pair_impl(word_type const&, word_type const&) override;
+    internal::owned_ptr<FroidurePinBase> quotient_impl() override;
 
     //////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private

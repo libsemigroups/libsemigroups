@@ -33,6 +33,7 @@
 #include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "knuth-bendix.hpp"                      // for KnuthBendix
+#include "owned_ptr.hpp"                         // for owned_ptr
 #include "todd-coxeter.hpp"                      // for ToddCoxeter
 
 namespace libsemigroups {
@@ -277,12 +278,13 @@ namespace libsemigroups {
     }
   }
 
-  FroidurePinBase* Congruence::quotient_impl() {
+  internal::owned_ptr<FroidurePinBase> Congruence::quotient_impl() {
     if (_race.empty()) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "no methods defined, cannot find the quotient with no methods");
     }
-    return &(static_cast<CongBase*>(_race.winner())->quotient_semigroup());
+    return internal::owned_ptr<FroidurePinBase>(
+        &(static_cast<CongBase*>(_race.winner())->quotient_semigroup()));
   }
 
   //////////////////////////////////////////////////////////////////////////

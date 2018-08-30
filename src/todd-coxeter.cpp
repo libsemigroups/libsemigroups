@@ -387,7 +387,7 @@ namespace libsemigroups {
       _extra.emplace_back(std::move(U), std::move(V));
     }
 
-    FroidurePinBase* ToddCoxeter::quotient_impl() {
+    internal::owned_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
       if (type() != congruence_type::TWOSIDED) {
         throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
       }
@@ -400,7 +400,8 @@ namespace libsemigroups {
         // more generators than cosets.
         gens.emplace_back(this, _table.get(0, i));
       }
-      return new FroidurePin<TCE>(gens);
+      return internal::owned_ptr<FroidurePinBase>(new FroidurePin<TCE>(gens),
+                                                  this);
     }
 
     ////////////////////////////////////////////////////////////////////////

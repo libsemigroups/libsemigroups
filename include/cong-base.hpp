@@ -27,7 +27,8 @@
 
 #include "internal/runner.hpp"  // for Runner
 
-#include "types.hpp"  // for word_type, letter_type, relation_type
+#include "owned_ptr.hpp"  // owned_ptr
+#include "types.hpp"      // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, for function members
@@ -213,7 +214,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
-    virtual FroidurePinBase* quotient_impl()                       = 0;
+    virtual internal::owned_ptr<FroidurePinBase> quotient_impl()         = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private
@@ -259,12 +260,12 @@ namespace libsemigroups {
     // CongBase - mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable bool             _init_ntc_done;
-    mutable bool             _is_obviously_finite_known;
-    mutable bool             _is_obviously_finite;
-    mutable bool             _is_obviously_infinite_known;
-    mutable bool             _is_obviously_infinite;
-    mutable FroidurePinBase* _quotient;
+    mutable bool                                 _init_ntc_done;
+    mutable bool                                 _is_obviously_finite_known;
+    mutable bool                                 _is_obviously_finite;
+    mutable bool                                 _is_obviously_infinite_known;
+    mutable bool                                 _is_obviously_infinite;
+    mutable internal::owned_ptr<FroidurePinBase> _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////

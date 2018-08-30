@@ -83,8 +83,6 @@ namespace libsemigroups {
     virtual void      enumerate(size_t = LIMIT_MAX)                         = 0;
     virtual void      set_max_threads(size_t)                               = 0;
   };
-
   void relations(FroidurePinBase&, std::function<void(word_type, word_type)>&&);
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_

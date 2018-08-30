@@ -45,12 +45,14 @@ namespace libsemigroups {
         _is_obviously_finite(false),
         _is_obviously_infinite_known(false),
         _is_obviously_infinite(false),
-        _quotient(),
+        _quotient(nullptr),
         _non_trivial_classes() {
     reset();
   }
 
-  CongBase::~CongBase() {}
+  CongBase::~CongBase() {
+    _quotient.free_from(this);
+  }
 
   ////////////////////////////////////////////////////////////////////////////
   // CongBase - non-pure virtual methods - public
@@ -170,14 +172,16 @@ namespace libsemigroups {
   }
 
   FroidurePinBase& CongBase::quotient_semigroup() {
-    if (type() != congruence_type::TWOSIDED) {
+    if (_quotient != nullptr) {
+      LIBSEMIGROUPS_ASSERT(type() == congruence_type::TWOSIDED);
+      return *_quotient;
+    } else if (type() != congruence_type::TWOSIDED) {
       throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "cannot find the quotient semigroup, it is infinite");
-    } else if (_quotient == nullptr) {
-      _quotient = quotient_impl();
     }
+    _quotient = quotient_impl();
     return *_quotient;
   }
 

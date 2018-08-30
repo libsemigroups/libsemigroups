@@ -234,7 +234,7 @@ namespace libsemigroups {
     }
 
     TEMPLATE
-    FroidurePinBase* P_CLASS::quotient_impl() {
+    internal::owned_ptr<FroidurePinBase> P_CLASS::quotient_impl() {
       // FIXME(now) actually implement this
       throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }

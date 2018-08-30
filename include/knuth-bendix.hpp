@@ -40,6 +40,10 @@ namespace libsemigroups {
   namespace congruence {
     class KnuthBendix;
   }
+  namespace internal {
+    template <class TPtrType>
+    class owned_ptr;
+  }
 
   namespace fpsemigroup {
     //! This class is used to represent a
@@ -299,7 +303,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
-      FroidurePinBase* quotient_impl() override;
+      internal::owned_ptr<FroidurePinBase> quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////////
       // CongBase - non-pure virtual methods - private

@@ -52,6 +52,11 @@ namespace libsemigroups {
     using ToddCoxeter = WrappedCong<congruence::ToddCoxeter>;
   }  // namespace fpsemigroup
 
+  namespace internal {
+    template <class TPtrType>
+    class owned_ptr;
+  }
+
   namespace congruence {
     class ToddCoxeter : public CongBase {
       ////////////////////////////////////////////////////////////////////////
@@ -126,7 +131,7 @@ namespace libsemigroups {
 
       void add_pair_impl(word_type const&, word_type const&) override;
       // Guaranteed to return a FroidurePin<TCE>*.
-      FroidurePinBase* quotient_impl() override;
+      internal::owned_ptr<FroidurePinBase> quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // CongBase - non-pure virtual methods - private

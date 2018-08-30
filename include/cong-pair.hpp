@@ -43,10 +43,11 @@
 #include "types.hpp"         // for word_type
 #include "wrap.hpp"          // for WrappedCong
 
+// TODO(now) forward declare owned_ptr or include it
+
 namespace libsemigroups {
   class Element;          // Forward declaration, for default template parameter
   class FroidurePinBase;  // Forward declaration, for constructor parameter
-
   namespace congruence {
     // Implemented in cong-pair-impl.hpp
     template <typename TElementType  = Element const*,
@@ -131,7 +132,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
-      FroidurePinBase* quotient_impl() override;
+      internal::owned_ptr<FroidurePinBase> quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // P - methods - private
