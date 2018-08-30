@@ -30,6 +30,7 @@
 #include "froidure-pin.hpp"       // for FroidurePin
 #include "kbe.hpp"                // for KBE
 #include "knuth-bendix.hpp"       // for KnuthBendix, KnuthBe...
+#include "obvinf.hpp"             // for IsObviouslyInfinite
 #include "types.hpp"              // for word_type
 
 namespace libsemigroups {
@@ -113,32 +114,9 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // FpSemiBase - overridden non-pure virtual methods - public
+    // FpSemiBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    bool KnuthBendix::is_obviously_finite() {
-      return has_isomorphic_non_fp_semigroup()
-             && isomorphic_non_fp_semigroup().finished();
-    }
-
-    bool KnuthBendix::is_obviously_infinite() {
-      if (is_obviously_finite()) {
-        // In this case the semigroup defined by the KnuthBendix is finite.
-        return false;
-      } else if (alphabet().size() > nr_rules()) {
-        return true;
-      }
-
-      // TODO(now):
-      // - check that every generator i occurs in the lhs of some rule (if not,
-      //   then if two words have different numbers of i in them, then they are
-      //   not the same.
-      //
-      // - check that for every generator there is a lhs consisting solely of
-      //   that generator (otherwise the generators has infinite order).
-
-      return false;
-    }
 
     size_t KnuthBendix::size() {
       if (is_obviously_infinite()) {
@@ -165,7 +143,7 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // Overridden virtual methods from Runner
+    // virtual methods from Runner
     //////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::run() {
@@ -258,6 +236,14 @@ namespace libsemigroups {
       _impl->set_internal_alphabet();
     }
 
+    bool KnuthBendix::is_obviously_infinite_impl() {
+      if (alphabet().size() > nr_rules()) {
+        return true;
+      }
+      internal::IsObviouslyInfinite<char, std::string> ioi(alphabet().size());
+      ioi.add_rules(cbegin_rules(), cend_rules());
+      return ioi.result();
+    }
   }  // namespace fpsemigroup
 
   namespace congruence {
@@ -287,7 +273,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Runner - overridden pure virtual methods - public
+    // Runner - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::run() {
@@ -309,7 +295,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Runner - overridden non-pure virtual method - protected
+    // Runner - non-pure virtual method - protected
     ////////////////////////////////////////////////////////////////////////////
 
     bool KnuthBendix::finished_impl() const {
@@ -318,7 +304,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - public
+    // CongBase - pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
@@ -340,12 +326,11 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - public
+    // CongBase - non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
-    result_type
-    KnuthBendix::const_contains(word_type const& lhs,
-                                word_type const& rhs) const {
+    result_type KnuthBendix::const_contains(word_type const& lhs,
+                                            word_type const& rhs) const {
       if (_kb->rewrite(_kb->word_to_string(lhs))
           == _kb->rewrite(_kb->word_to_string(rhs))) {
         return result_type::TRUE;
@@ -362,7 +347,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden pure virtual methods - private
+    // CongBase - pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::add_pair_impl(word_type const& u, word_type const& v) {
@@ -374,7 +359,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongBase - overridden non-pure virtual methods - private
+    // CongBase - non-pure virtual methods - private
     ////////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::set_nr_generators_impl(size_t n) {

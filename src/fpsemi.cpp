@@ -77,7 +77,7 @@ namespace libsemigroups {
   FpSemigroup::FpSemigroup(FroidurePinBase& S) : FpSemigroup(&S) {}
 
   ////////////////////////////////////////////////////////////////////////
-  // Runner - overridden pure virtual methods - public
+  // Runner - pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////
 
   void FpSemigroup::run() {
@@ -85,9 +85,8 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // FpSemiBase - overridden pure virtual methods - public
+  // FpSemiBase - pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
-
 
   bool FpSemigroup::equal_to(std::string const& u, std::string const& v) {
     return static_cast<FpSemiBase*>(_race.winner())->equal_to(u, v);

@@ -97,13 +97,13 @@ namespace libsemigroups {
       ~ToddCoxeter() = default;
 
       ////////////////////////////////////////////////////////////////////////
-      // Runner - overridden pure virtual methods - public
+      // Runner - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       void run() override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - public
+      // CongBase - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       size_t           nr_classes() override;
@@ -111,7 +111,7 @@ namespace libsemigroups {
       word_type        class_index_to_word(class_index_type) override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - public
+      // CongBase - non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////
 
       bool contains(word_type const&, word_type const&) override;
@@ -128,7 +128,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden pure virtual methods - private
+      // CongBase - pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
@@ -136,7 +136,7 @@ namespace libsemigroups {
       FroidurePinBase* quotient_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
-      // CongBase - overridden non-pure virtual methods - private
+      // CongBase - non-pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////
 
       class_index_type

@@ -62,8 +62,6 @@ namespace libsemigroups {
       // FpSemiBase - pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////
 
-      bool   is_obviously_finite() override;
-      bool   is_obviously_infinite() override;
       size_t size() override;
 
       bool        equal_to(std::string const&, std::string const&) override;
@@ -237,6 +235,7 @@ namespace libsemigroups {
 
       void set_alphabet_impl(std::string const&) override;
       void set_alphabet_impl(size_t) override;
+      bool is_obviously_infinite_impl() override;
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private

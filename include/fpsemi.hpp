@@ -71,8 +71,8 @@ namespace libsemigroups {
     using FpSemiBase::add_rule;
 
     bool        equal_to(std::string const&, std::string const&) override;
-    bool        is_obviously_finite() override;
-    bool        is_obviously_infinite() override;
+    bool        is_obviously_finite();
+    bool        is_obviously_infinite();
     std::string normal_form(std::string const&) override;
     size_t      size() override;
 
@@ -87,7 +87,6 @@ namespace libsemigroups {
     bool                      has_todd_coxeter() const;
     fpsemigroup::KnuthBendix& knuth_bendix() const;
     fpsemigroup::ToddCoxeter& todd_coxeter() const;
-
 
    private:
     //////////////////////////////////////////////////////////////////////////////

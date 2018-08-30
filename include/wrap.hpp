@@ -60,7 +60,7 @@ namespace libsemigroups {
       explicit WrappedCong(FroidurePinBase& S) : WrappedCong(&S) {}
 
       ////////////////////////////////////////////////////////////////////////////
-      // Runner - overridden pure virtual method - public
+      // Runner - pure virtual method - public
       ////////////////////////////////////////////////////////////////////////////
 
       void run() override {
@@ -69,17 +69,8 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////////
-      // FpSemiBase - overridden pure virtual methods - public
+      // FpSemiBase - pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
-
-
-      bool is_obviously_finite() override {
-        return _wrapped_cong->is_quotient_obviously_finite();
-      }
-
-      bool is_obviously_infinite() override {
-        return _wrapped_cong->is_quotient_obviously_infinite();
-      }
 
       size_t size() override {
         return _wrapped_cong->nr_classes();
@@ -100,7 +91,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////////
-      // Runner - overridden non-pure virtual method - protected
+      // Runner - non-pure virtual method - protected
       ////////////////////////////////////////////////////////////////////////////
 
       bool finished_impl() const override {
@@ -108,7 +99,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////////
-      // FpSemiBase - overridden non-pure virtual methods - public
+      // FpSemiBase - non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
 
@@ -172,6 +163,14 @@ namespace libsemigroups {
           validate_word(rhs);
           add_rule(lhs, rhs);
         });
+      }
+
+      bool is_obviously_finite_impl() override {
+        return _wrapped_cong->is_quotient_obviously_finite();
+      }
+
+      bool is_obviously_infinite_impl() override {
+        return _wrapped_cong->is_quotient_obviously_infinite();
       }
 
       //////////////////////////////////////////////////////////////////////////

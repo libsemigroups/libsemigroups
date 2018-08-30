@@ -197,14 +197,13 @@ namespace libsemigroups {
     if (nr_generators() == UNDEFINED) {
         // If nr_generators() is undefined, then there is no quotient yet,
         // and so it is not obviously infinite, or anything!
-        REPORT("the quotient is not obviously infinite (no generators yet "
-               "defined)");
+        REPORT("not obviously infinite (no generators yet defined)");
         set_is_quotient_obviously_infinite(false);
         return false;
     } else if (has_quotient_semigroup() && quotient_semigroup().finished()) {
         // If the quotient FroidurePin is fully enumerated, it must be
         // finite, and hence this is not (obviously) infinite.
-      REPORT("the quotient is not obviously infinite (it is finite)");
+      REPORT("not obviously infinite (finite)");
       set_is_quotient_obviously_finite(true); // FINITE!
       return false;
     } else if (is_quotient_obviously_infinite_impl()) {

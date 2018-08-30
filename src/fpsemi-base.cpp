@@ -37,9 +37,16 @@ namespace libsemigroups {
 
   FpSemiBase::FpSemiBase()
       : Runner(),
+        // Non-mutable
         _alphabet(),
         _alphabet_map(),
-        _isomorphic_non_fp_semigroup(nullptr) {}
+        _rules(),
+        // Mutable
+        _isomorphic_non_fp_semigroup(nullptr),
+        _is_obviously_finite_known(false),
+        _is_obviously_finite(false),
+        _is_obviously_infinite_known(false),
+        _is_obviously_infinite(false) {}
 
   FpSemiBase::~FpSemiBase() {}
 
@@ -242,6 +249,52 @@ namespace libsemigroups {
     return _rules.cend();
   }
 
+
+  bool FpSemiBase::is_obviously_infinite() {
+    if (_is_obviously_infinite_known) {
+      return _is_obviously_infinite;
+    }
+    REPORT("checking if the quotient is obviously infinite . . .");
+    // If has_parent_semigroup(), then that is either finite (and so this is
+    // not obviously infinite), or infinite, which is undecidable in general,
+    // so we leave the answer to this question to
+    // is_quotient_obviously_infinite_impl in the derived class.
+    if (alphabet().empty()) {
+        // If nr_generators() is undefined, then there is no quotient yet,
+        // and so it is not obviously infinite, or anything!
+        REPORT("not obviously infinite (no alphabet defined)");
+        set_is_obviously_infinite(false);
+        return false;
+    } else if (has_isomorphic_non_fp_semigroup()
+               && isomorphic_non_fp_semigroup().finished()) {
+      // If the isomorphic FroidurePin is fully enumerated, it must be
+      // finite, and hence this is not (obviously) infinite.
+      REPORT("not obviously infinite (finite)");
+      set_is_obviously_finite(true); // FINITE!
+      return false;
+    } else if (is_obviously_infinite_impl()) {
+      // The derived class of FpSemiBase knows the quotient is infinite
+      set_is_obviously_infinite(true);
+      return true;
+    }
+    set_is_obviously_infinite(false);
+    return false;
+  }
+
+  bool FpSemiBase::is_obviously_finite() {
+    if (_is_obviously_finite_known) {
+      return _is_obviously_finite;
+    }
+    if ((has_isomorphic_non_fp_semigroup()
+         && isomorphic_non_fp_semigroup().finished())
+        || is_obviously_finite_impl()) {
+      set_is_obviously_finite(true);
+      return true;
+    }
+    set_is_obviously_finite(false);
+    return false;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-virtual methods - protected
   //////////////////////////////////////////////////////////////////////////////
@@ -347,6 +400,14 @@ namespace libsemigroups {
     });
   }
 
+  bool FpSemiBase::is_obviously_finite_impl() {
+    return false;
+  }
+
+  bool FpSemiBase::is_obviously_infinite_impl() {
+    return false;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-virtual methods - private
   //////////////////////////////////////////////////////////////////////////////
@@ -354,6 +415,32 @@ namespace libsemigroups {
   void FpSemiBase::reset() noexcept {
     set_finished(false);
     _isomorphic_non_fp_semigroup = nullptr;
+    _is_obviously_finite_known   = false;
+    _is_obviously_finite         = false;
+    _is_obviously_infinite_known = false;
+    _is_obviously_infinite       = false;
+  }
+
+  void FpSemiBase::set_is_obviously_finite(bool val) const {
+    if (_is_obviously_finite_known && val != _is_obviously_finite) {
+      throw LIBSEMIGROUPS_EXCEPTION("value is already set to the opposite");
+    }
+    _is_obviously_finite_known = true;
+    _is_obviously_finite       = val;
+    if (val) {
+      set_is_obviously_infinite(false);
+    }
+  }
+
+  void FpSemiBase::set_is_obviously_infinite(bool val) const {
+    if (_is_obviously_infinite_known && val != _is_obviously_infinite) {
+      throw LIBSEMIGROUPS_EXCEPTION("value is already set to the opposite");
+    }
+    _is_obviously_infinite_known = true;
+    _is_obviously_infinite       = val;
+    if (val) {
+      set_is_obviously_finite(false);
+    }
   }
 }  // namespace libsemigroups
 

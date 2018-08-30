@@ -64,8 +64,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     // Pure methods (attributes of an f.p. semigroup)
-    virtual bool   is_obviously_finite()   = 0;
-    virtual bool   is_obviously_infinite() = 0;
     virtual size_t size()                  = 0;
 
     // Pure methods (for elements of fp semigroups)
@@ -119,6 +117,8 @@ namespace libsemigroups {
     const_iterator cbegin_rules() const;
     const_iterator cend_rules() const;
 
+    bool is_obviously_finite();
+    bool is_obviously_infinite();
 
    protected:
     //////////////////////////////////////////////////////////////////////////////
@@ -157,20 +157,34 @@ namespace libsemigroups {
     virtual void set_alphabet_impl(size_t);
     virtual void add_rule_impl(word_type const&, word_type const&);
     virtual void add_rules_impl(FroidurePinBase*);
+    virtual bool is_obviously_infinite_impl();
+    virtual bool is_obviously_finite_impl();
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - private
     //////////////////////////////////////////////////////////////////////////////
 
     void reset() noexcept;
+    void set_is_obviously_infinite(bool) const;
+    void set_is_obviously_finite(bool) const;
 
     //////////////////////////////////////////////////////////////////////////////
-    // FpSemiBase - data - private
+    // FpSemiBase - non-mutable data - private
     //////////////////////////////////////////////////////////////////////////////
-    std::string                           _alphabet;
-    std::unordered_map<char, letter_type> _alphabet_map;
-    FroidurePinBase*                      _isomorphic_non_fp_semigroup;
+
+    std::string                                      _alphabet;
+    std::unordered_map<char, letter_type>            _alphabet_map;
     std::vector<std::pair<std::string, std::string>> _rules;
+
+    //////////////////////////////////////////////////////////////////////////////
+    // FpSemiBase - mutable data - private
+    //////////////////////////////////////////////////////////////////////////////
+
+    mutable FroidurePinBase* _isomorphic_non_fp_semigroup;
+    mutable bool             _is_obviously_finite_known;
+    mutable bool             _is_obviously_finite;
+    mutable bool             _is_obviously_infinite_known;
+    mutable bool             _is_obviously_infinite;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_

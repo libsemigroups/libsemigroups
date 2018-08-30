@@ -33,6 +33,9 @@ namespace libsemigroups {
   namespace internal {
     template <typename TLetterType, typename TWordType>
     class IsObviouslyInfinite {
+      using const_iterator
+          = typename std::vector<std::pair<TWordType, TWordType>>::const_iterator;
+
      public:
       explicit IsObviouslyInfinite(size_t n)
           : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique() {}
@@ -40,27 +43,26 @@ namespace libsemigroups {
       explicit IsObviouslyInfinite(std::string const& lphbt)
           : IsObviouslyInfinite(lphbt.size()) {}
 
-      void
-      add_rules(std::vector<std::pair<TWordType, TWordType>> const& rules) {
+      void add_rules(const_iterator first, const_iterator last) {
         std::unordered_map<TLetterType, size_t> map;
 
-        for (auto const& pair : rules) {
-          if (pair.first.empty() || pair.second.empty()) {
+        for (auto it = first; it < last; ++it) {
+          if ((*it).first.empty() || (*it).second.empty()) {
             _empty_word = true;
           }
           _map.clear();
-          plus_letters_in_word(pair.first);
+          plus_letters_in_word((*it).first);
           if (!_empty_word && _map.size() == 1) {
-            _unique.insert(pair.first[0]);
+            _unique.insert((*it).first[0]);
           }
-          minus_letters_in_word(pair.second);
-          if (!_empty_word && !pair.second.empty()
-              && std::all_of(pair.second.cbegin() + 1,
-                             pair.second.cend(),
-                             [&pair](TLetterType i) -> bool {
-                               return i == pair.second[0];
+          minus_letters_in_word((*it).second);
+          if (!_empty_word && !(*it).second.empty()
+              && std::all_of((*it).second.cbegin() + 1,
+                             (*it).second.cend(),
+                             [&it](TLetterType i) -> bool {
+                               return i == (*it).second[0];
                              })) {
-            _unique.insert(pair.second[0]);
+            _unique.insert((*it).second[0]);
           }
           for (auto const& x : _map) {
             if (x.second != 0) {
