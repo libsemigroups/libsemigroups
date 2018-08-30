@@ -521,8 +521,7 @@ namespace libsemigroups {
     S.add_rule({1, 2}, {1});
     S.add_rule({2, 1}, {1});
 
-    REQUIRE(!S.is_obviously_infinite());
-    // TODO it is obviously infinite, must update the method
+    REQUIRE(S.is_obviously_infinite());
 
     Congruence cong(TWOSIDED, S);
     cong.add_pair({0}, {1});
@@ -721,7 +720,7 @@ namespace libsemigroups {
       S.add_rule({0, 0}, {0});
       Congruence cong(TWOSIDED, S);
       cong.add_pair({1, 2}, {1});
-      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.is_quotient_obviously_infinite());
       REQUIRE(!cong.is_quotient_obviously_finite());
     }
     {
@@ -750,7 +749,7 @@ namespace libsemigroups {
       S.add_rule({0, 0}, {0});
       Congruence cong(RIGHT, S);
       cong.add_pair({1, 2}, {1});
-      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.is_quotient_obviously_infinite());
       REQUIRE(!cong.is_quotient_obviously_finite());
     }
     {
@@ -779,7 +778,7 @@ namespace libsemigroups {
       S.add_rule({0, 0}, {0});
       Congruence cong(LEFT, S);
       cong.add_pair({1, 2}, {1});
-      REQUIRE(!cong.is_quotient_obviously_infinite());
+      REQUIRE(cong.is_quotient_obviously_infinite());
       REQUIRE(!cong.is_quotient_obviously_finite());
     }
 

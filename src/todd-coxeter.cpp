@@ -87,6 +87,7 @@
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
 #include "froidure-pin.hpp"       // for FroidurePin
 #include "knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
+#include "obvinf.hpp"             // for IsObviouslyInfinite
 #include "tce.hpp"                // for TCE
 
 namespace libsemigroups {
@@ -451,29 +452,26 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_infinite_impl() {
-      LIBSEMIGROUPS_ASSERT(nr_generators() != UNDEFINED);
-      if (_policy != policy::none) {
-        // _policy != none means we were created from a FroidurePinBase*,
-        // which means that this is infinite if and only if the
-        // FroidurePinBase* is infinite too, which is not obvious (or even
-        // possible to check at present).
-        return false;
-      } else if (_prefilled) {
-        return false;
-      }
       init();
-      return nr_generators() > _relations.size() + _extra.size();
+      if (_prefilled) {
+        return false;
+      } else if (nr_generators() > _relations.size() + _extra.size()) {
+        return true;
+      }
+      internal::IsObviouslyInfinite<letter_type, word_type> ioi(
+          nr_generators());
+      ioi.add_rules(_relations);
+      ioi.add_rules(_extra);
+      return ioi.result();
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite_impl() {
+      init();
       return _prefilled;
-      // 1. _prefilled means that either we were created from a
-      // FroidurePinBase* with _policy = use_cayley_graph and we successfully
-      // prefilled the table, or we manually prefilled the table.  In this
-      // case the semigroup defined by _relations must be finite.
-      //
-      // 2. the quotient or parent semigroup being defined and fully enumerated
-      // means it is finite.
+      // _prefilled means that either we were created from a FroidurePinBase*
+      // with _policy = use_cayley_graph and we successfully prefilled the
+      // table, or we manually prefilled the table.  In this case the semigroup
+      // defined by _relations must be finite.
     }
 
     ////////////////////////////////////////////////////////////////////////

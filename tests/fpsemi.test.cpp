@@ -859,7 +859,7 @@ namespace libsemigroups {
     S.add_rule("ab", "a");
     S.add_rule("ba", "a");
 
-    REQUIRE(!S.is_obviously_infinite());
+    REQUIRE(S.is_obviously_infinite());
     REQUIRE(S.equal_to("ab", "a"));
     REQUIRE(S.equal_to("ba", "a"));
     REQUIRE(S.equal_to("aa", "a"));

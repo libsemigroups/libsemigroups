@@ -84,6 +84,7 @@ namespace libsemigroups {
                   policy = policy::use_relations);
       // TODO change to use_cayley_graph
 
+      // TODO(now) make the next constructor private
       ToddCoxeter(congruence_type,
                   size_t,
                   std::vector<relation_type> const&,

@@ -57,11 +57,10 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       REPORTER.set_report(REPORT);
 
-      std::vector<relation_type> rels;
-      rels.push_back(relation_type({0, 0, 0}, {0}));  // (a^3, a)
-      rels.push_back(relation_type({0}, {1, 1}));     // (a, b^2)
-
-      ToddCoxeter tc(TWOSIDED, 2, rels);
+      ToddCoxeter tc(TWOSIDED);
+      tc.set_nr_generators(2);
+      tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
+      tc.add_pair({0}, {1, 1});     // (a, b^2)
 
       REQUIRE(!tc.finished());
 

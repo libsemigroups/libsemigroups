@@ -242,6 +242,9 @@ namespace libsemigroups {
     // actually does anything.
     void reset();
 
+    void set_is_quotient_obviously_infinite(bool) const;
+    void set_is_quotient_obviously_finite(bool) const;
+
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-mutable data members - private
     /////////////////////////////////////////////////////////////////////////
