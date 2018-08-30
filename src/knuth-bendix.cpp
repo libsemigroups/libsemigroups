@@ -261,7 +261,7 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    using class_index_type = CongBase<FroidurePinBase>::class_index_type;
+    using class_index_type = CongBase::class_index_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // KnuthBendix - constructors - public

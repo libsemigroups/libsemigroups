@@ -36,9 +36,9 @@
 
 #define VOID TEMPLATE void
 #define SIZE_T TEMPLATE size_t
-#define CLASS_INDEX_TYPE TEMPLATE CongBase<FroidurePinBase>::class_index_type
+#define CLASS_INDEX_TYPE TEMPLATE CongBase::class_index_type
 #define SHARED_PTR_NON_TRIV_CLASSES \
-  TEMPLATE std::shared_ptr<CongBase<FroidurePinBase>::non_trivial_classes_type>
+  TEMPLATE std::shared_ptr<CongBase::non_trivial_classes_type>
 
 namespace libsemigroups {
   namespace congruence {

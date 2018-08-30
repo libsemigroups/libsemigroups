@@ -39,7 +39,7 @@ namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;
   using KnuthBendix      = congruence::KnuthBendix;
   using KBP              = congruence::KBP;
-  using class_index_type = CongBase<FroidurePinBase>::class_index_type;
+  using class_index_type = CongBase::class_index_type;
 
   //////////////////////////////////////////////////////////////////////////
   // Congruence - constructors - public
@@ -289,7 +289,7 @@ namespace libsemigroups {
   // CongBase - non-pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
 
-  std::shared_ptr<CongBase<FroidurePinBase>::non_trivial_classes_type>
+  std::shared_ptr<CongBase::non_trivial_classes_type>
   Congruence::non_trivial_classes_impl() {
     auto winner = static_cast<CongBase*>(_race.winner());
     winner->init_non_trivial_classes();

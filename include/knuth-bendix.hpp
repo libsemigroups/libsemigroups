@@ -256,7 +256,7 @@ namespace libsemigroups {
   }  // namespace fpsemigroup
 
   namespace congruence {
-    class KnuthBendix : public CongBase<FroidurePinBase> {
+    class KnuthBendix : public CongBase {
      public:
       ////////////////////////////////////////////////////////////////////////////
       // KnuthBendix - constructors - public

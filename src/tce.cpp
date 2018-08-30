@@ -28,8 +28,7 @@
 namespace libsemigroups {
 
   static_assert(
-      std::is_same<TCE::class_index_type,
-                   CongBase<FroidurePinBase>::class_index_type>::value,
+      std::is_same<TCE::class_index_type, CongBase::class_index_type>::value,
       "class_index_type is incorrect");
 
   TCE::TCE(congruence::ToddCoxeter* tc, class_index_type i) noexcept

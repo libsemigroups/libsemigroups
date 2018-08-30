@@ -16,8 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_BASE_IMPL_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_BASE_IMPL_HPP_
+#include "cong-base.hpp"
 
 #include "internal/containers.hpp"               // for RecVec
 #include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
@@ -33,8 +32,7 @@ namespace libsemigroups {
   // CongBase - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  CongBase<TParentType>::CongBase(congruence_type type)
+  CongBase::CongBase(congruence_type type)
       : Runner(),
         // Non-mutable
         _gen_pairs(),
@@ -52,22 +50,18 @@ namespace libsemigroups {
     reset();
   }
 
-  template <class TParentType>
-  CongBase<TParentType>::~CongBase() {}
+  CongBase::~CongBase() {}
 
   ////////////////////////////////////////////////////////////////////////////
   // CongBase - non-pure virtual methods - public
   ////////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  bool CongBase<TParentType>::contains(word_type const& w1,
-                                       word_type const& w2) {
+  bool CongBase::contains(word_type const& w1, word_type const& w2) {
     return w1 == w2 || word_to_class_index(w1) == word_to_class_index(w2);
   }
 
-  template <class TParentType>
-  result_type CongBase<TParentType>::const_contains(word_type const& u,
-                                                    word_type const& v) const {
+  CongBase::result_type CongBase::const_contains(word_type const& u,
+                                                 word_type const& v) const {
     if (const_word_to_class_index(u) == UNDEFINED
         || const_word_to_class_index(v) == UNDEFINED) {
       return result_type::UNKNOWN;
@@ -80,23 +74,19 @@ namespace libsemigroups {
     }
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::less(word_type const& w1, word_type const& w2) {
+  bool CongBase::less(word_type const& w1, word_type const& w2) {
     return word_to_class_index(w1) < word_to_class_index(w2);
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::is_quotient_obviously_finite_impl() {
+  bool CongBase::is_quotient_obviously_finite_impl() {
     return false;
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::is_quotient_obviously_infinite_impl() {
+  bool CongBase::is_quotient_obviously_infinite_impl() {
     return false;
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::set_nr_generators(size_t n) {
+  void CongBase::set_nr_generators(size_t n) {
     if (nr_generators() != UNDEFINED) {
       if (nr_generators() != n) {
         throw LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
@@ -113,14 +103,12 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - public
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  void CongBase<TParentType>::add_pair(std::initializer_list<size_t> l,
-                                       std::initializer_list<size_t> r) {
+  void CongBase::add_pair(std::initializer_list<size_t> l,
+                          std::initializer_list<size_t> r) {
     add_pair(word_type(l), word_type(r));
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::add_pair(word_type const& u, word_type const& v) {
+  void CongBase::add_pair(word_type const& u, word_type const& v) {
     validate_word(u);
     validate_word(v);
     if (u == v) {
@@ -135,68 +123,53 @@ namespace libsemigroups {
     reset();
   }
 
-  template <class TParentType>
-  typename CongBase<TParentType>::const_iterator
-  CongBase<TParentType>::cbegin_generating_pairs() const {
+  CongBase::const_iterator CongBase::cbegin_generating_pairs() const {
     return _gen_pairs.cbegin();
   }
 
-  template <class TParentType>
-  typename CongBase<TParentType>::const_iterator
-  CongBase<TParentType>::cend_generating_pairs() const {
+  CongBase::const_iterator CongBase::cend_generating_pairs() const {
     return _gen_pairs.cend();
   }
 
-  template <class TParentType>
-  std::vector<std::vector<word_type>>::const_iterator
-  CongBase<TParentType>::cbegin_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongBase::cbegin_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes->cbegin();
   }
 
-  template <class TParentType>
-  std::vector<std::vector<word_type>>::const_iterator
-  CongBase<TParentType>::cend_ntc() {
+  std::vector<std::vector<word_type>>::const_iterator CongBase::cend_ntc() {
     init_non_trivial_classes();
     return _non_trivial_classes->cend();
   }
 
-  template <class TParentType>
-  size_t CongBase<TParentType>::nr_generators() const noexcept {
+  size_t CongBase::nr_generators() const noexcept {
     return _nr_gens;
   }
 
-  template <class TParentType>
-  size_t CongBase<TParentType>::nr_generating_pairs() const noexcept {
+  size_t CongBase::nr_generating_pairs() const noexcept {
     return _gen_pairs.size();
   }
 
-  template <class TParentType>
-  size_t CongBase<TParentType>::nr_non_trivial_classes() {
+  size_t CongBase::nr_non_trivial_classes() {
     init_non_trivial_classes();
     return _non_trivial_classes->size();
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::has_parent_semigroup() const noexcept {
+  bool CongBase::has_parent_semigroup() const noexcept {
     return _parent != nullptr;
   }
 
-  template <class TParentType>
-  FroidurePinBase& CongBase<TParentType>::parent_semigroup() const {
+  FroidurePinBase& CongBase::parent_semigroup() const {
     if (!has_parent_semigroup()) {
       throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
     return *_parent;
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::has_quotient_semigroup() const noexcept {
+  bool CongBase::has_quotient_semigroup() const noexcept {
     return _quotient != nullptr;
   }
 
-  template <class TParentType>
-  FroidurePinBase& CongBase<TParentType>::quotient_semigroup() {
+  FroidurePinBase& CongBase::quotient_semigroup() {
     if (type() != congruence_type::TWOSIDED) {
       throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
@@ -208,8 +181,7 @@ namespace libsemigroups {
     return *_quotient;
   }
 
-  template <class TParentType>
-  congruence_type CongBase<TParentType>::type() const noexcept {
+  congruence_type CongBase::type() const noexcept {
     return _type;
   }
 
@@ -218,8 +190,7 @@ namespace libsemigroups {
   // the FpSemigroup are not in _gen_pairs (which is correct), and there is no
   // parent semigroup, and so the method below returns false positives.
 
-  template <class TParentType>
-  bool CongBase<TParentType>::is_quotient_obviously_infinite() {
+  bool CongBase::is_quotient_obviously_infinite() {
     if (_is_obviously_infinite_known) {
       return _is_obviously_infinite;
     }
@@ -248,11 +219,11 @@ namespace libsemigroups {
       return true;
     }
     size_t n = nr_generators();
-    // If i = 0, ..., n - 1, then res[i] is set to false if generator i either
+    // If i = 0, ..., n - 1, then seen[i] is set to false if generator i either
     // does not occur in any relation, or in every relation there are the same
     // number of generators i on both sides of the relation.
     //
-    // If i = n, ..., 2n - 1, then res[i] is set to false if there is no
+    // If i = n, ..., 2n - 1, then seen[i] is set to false if there is no
     // relation where one side consists solely of generator i - n.
     std::vector<bool> res(2 * n, false);
 
@@ -299,10 +270,10 @@ namespace libsemigroups {
       }
     }
     auto it = std::find_if_not(
-        res.cbegin(), res.cend(), [](bool val) -> bool { return val; });
+            res.cbegin(), res.cend(), [](bool val) -> bool { return val; });
     if (it != res.cend()) {
       auto gen = static_cast<size_t>(it - res.cbegin());
-      gen      = (gen > n ? gen - n : gen);
+      gen = (gen > n ? gen - n : gen);
       REPORT("the quotient is obviously infinite (generator ",
              gen,
              " has infinite order)");
@@ -319,8 +290,7 @@ namespace libsemigroups {
     }
   }
 
-  template <class TParentType>
-  bool CongBase<TParentType>::is_quotient_obviously_finite() {
+  bool CongBase::is_quotient_obviously_finite() {
     if (is_quotient_obviously_finite_impl()
         || (has_quotient_semigroup() && quotient_semigroup().finished())
         || (has_parent_semigroup() && parent_semigroup().finished())) {
@@ -340,8 +310,7 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  void CongBase<TParentType>::set_parent_semigroup(FroidurePinBase* prnt) {
+  void CongBase::set_parent_semigroup(FroidurePinBase* prnt) {
     LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
     if (prnt == _parent) {
       return;
@@ -357,20 +326,17 @@ namespace libsemigroups {
   // CongBase - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  typename CongBase<TParentType>::class_index_type
-  CongBase<TParentType>::const_word_to_class_index(word_type const&) const {
+  CongBase::class_index_type
+  CongBase::const_word_to_class_index(word_type const&) const {
     return UNDEFINED;
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::set_nr_generators_impl(size_t) {
+  void CongBase::set_nr_generators_impl(size_t) {
     // do nothing
   }
 
-  template <class TParentType>
-  std::shared_ptr<typename CongBase<TParentType>::non_trivial_classes_type>
-  CongBase<TParentType>::non_trivial_classes_impl() {
+  std::shared_ptr<CongBase::non_trivial_classes_type>
+  CongBase::non_trivial_classes_impl() {
     if (_parent == nullptr) {
       throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
                                     "find the non-trivial classes");
@@ -396,16 +362,14 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  void CongBase<TParentType>::init_non_trivial_classes() {
+  void CongBase::init_non_trivial_classes() {
     if (!_init_ntc_done) {
       _non_trivial_classes = non_trivial_classes_impl();
       _init_ntc_done       = true;
     }
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::reset() {
+  void CongBase::reset() {
     set_finished(false);
     _non_trivial_classes.reset();
     _init_ntc_done               = false;
@@ -420,16 +384,14 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  bool CongBase<TParentType>::validate_letter(letter_type c) const {
+  bool CongBase::validate_letter(letter_type c) const {
     if (nr_generators() == UNDEFINED) {
       throw LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
     }
     return c < _nr_gens;
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::validate_word(word_type const& w) const {
+  void CongBase::validate_word(word_type const& w) const {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
@@ -440,16 +402,13 @@ namespace libsemigroups {
     }
   }
 
-  template <class TParentType>
-  void CongBase<TParentType>::validate_relation(word_type const& l,
-                                                word_type const& r) const {
+  void CongBase::validate_relation(word_type const& l,
+                                   word_type const& r) const {
     validate_word(l);
     validate_word(r);
   }
 
-  template <class TParentType>
-  void
-  CongBase<TParentType>::validate_relation(relation_type const& rel) const {
+  void CongBase::validate_relation(relation_type const& rel) const {
     validate_relation(rel.first, rel.second);
   }
 
@@ -457,9 +416,7 @@ namespace libsemigroups {
   // CongBase - non-virtual static methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  std::string const&
-  CongBase<TParentType>::congruence_type_to_string(congruence_type typ) {
+  std::string const& CongBase::congruence_type_to_string(congruence_type typ) {
     switch (typ) {
       case congruence_type::TWOSIDED:
         return STRING_TWOSIDED;
@@ -474,12 +431,8 @@ namespace libsemigroups {
   // CongBase - static data members - private
   /////////////////////////////////////////////////////////////////////////
 
-  template <class TParentType>
-  const std::string CongBase<TParentType>::STRING_TWOSIDED = "two-sided";
-  template <class TParentType>
-  const std::string CongBase<TParentType>::STRING_LEFT = "left";
-  template <class TParentType>
-  const std::string CongBase<TParentType>::STRING_RIGHT = "right";
+  const std::string CongBase::STRING_TWOSIDED = "two-sided";
+  const std::string CongBase::STRING_LEFT     = "left";
+  const std::string CongBase::STRING_RIGHT    = "right";
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_BASE_IMPL_HPP_

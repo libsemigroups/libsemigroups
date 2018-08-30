@@ -54,7 +54,7 @@ namespace libsemigroups {
               typename TElementEqual = equal_to<TElementType>,
               class TTraits
               = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
-    class P : public CongBase<FroidurePinBase>, protected TTraits {
+    class P : public CongBase, protected TTraits {
      protected:
       using froidure_pin_type
           = FroidurePin<TElementType, TElementHash, TElementEqual, TTraits>;
