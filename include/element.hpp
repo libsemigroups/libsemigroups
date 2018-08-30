@@ -1379,7 +1379,8 @@ namespace libsemigroups {
       // from a semigroup and another from an ideal of that semigroup).
       // LIBSEMIGROUPS_ASSERT(xx->semiring() == yy->semiring() &&
       // xx->semiring() == this->semiring());
-      // TODO(later) verify that x, y, and this are defined over the same semiring.
+      // TODO(later) verify that x, y, and this are defined over the same
+      // semiring.
       size_t const deg = this->degree();
 
       for (size_t i = 0; i < deg; i++) {

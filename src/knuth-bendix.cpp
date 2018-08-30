@@ -117,7 +117,6 @@ namespace libsemigroups {
     // FpSemiBase - non-pure virtual methods - public
     //////////////////////////////////////////////////////////////////////////
 
-
     size_t KnuthBendix::size() {
       if (is_obviously_infinite()) {
         return POSITIVE_INFINITY;

@@ -51,6 +51,7 @@ pkginclude_HEADERS += include/hpcombi.hpp
 pkginclude_HEADERS += include/kbe.hpp
 pkginclude_HEADERS += include/knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups.hpp
+pkginclude_HEADERS += include/obvinf.hpp
 pkginclude_HEADERS += include/reduct.hpp
 pkginclude_HEADERS += include/schreier-sims.hpp
 pkginclude_HEADERS += include/semiring.hpp

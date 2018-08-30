@@ -145,7 +145,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       REQUIRE(kb.normal_form("ac") == "a");
 #endif
-      // REQUIRE(kb.is_obviously_infinite());
+      REQUIRE(kb.is_obviously_infinite());
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",

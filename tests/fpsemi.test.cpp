@@ -865,7 +865,10 @@ namespace libsemigroups {
     REQUIRE(S.equal_to("aa", "a"));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "042", "cbegin/cend_rules", "[quick][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "042",
+                          "cbegin/cend_rules",
+                          "[quick][fpsemi]") {
     REPORTER.set_report(REPORT);
 
     FpSemigroup S;

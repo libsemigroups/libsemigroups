@@ -64,12 +64,11 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     // Pure methods (attributes of an f.p. semigroup)
-    virtual size_t size()                  = 0;
+    virtual size_t size() = 0;
 
     // Pure methods (for elements of fp semigroups)
     virtual bool        equal_to(std::string const&, std::string const&) = 0;
     virtual std::string normal_form(std::string const&)                  = 0;
-
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - public
@@ -97,10 +96,10 @@ namespace libsemigroups {
 
     size_t nr_rules() const noexcept;
 
-    bool               has_isomorphic_non_fp_semigroup() const noexcept;
-    FroidurePinBase&   isomorphic_non_fp_semigroup();
+    bool             has_isomorphic_non_fp_semigroup() const noexcept;
+    FroidurePinBase& isomorphic_non_fp_semigroup();
 
-    word_type          normal_form(std::initializer_list<letter_type>);
+    word_type normal_form(std::initializer_list<letter_type>);
 
     bool equal_to(std::initializer_list<letter_type>,
                   std::initializer_list<letter_type>);
@@ -128,7 +127,8 @@ namespace libsemigroups {
     size_t char_to_uint(char) const;
     char   uint_to_char(size_t) const noexcept;
 
-    void set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept; // NOLINT()
+    void
+    set_isomorphic_non_fp_semigroup(FroidurePinBase*) noexcept;  // NOLINT()
 
     bool validate_letter(char) const;
     bool validate_letter(letter_type) const;

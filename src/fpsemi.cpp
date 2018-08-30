@@ -194,11 +194,12 @@ namespace libsemigroups {
     // a non-f.p. semigroup, so we can just return that and not run the _race.
     for (auto runner : _race) {
       if (static_cast<FpSemiBase*>(runner)->has_isomorphic_non_fp_semigroup()) {
-        return &(static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup());
+        return &(
+            static_cast<FpSemiBase*>(runner)->isomorphic_non_fp_semigroup());
       }
     }
     return &(static_cast<FpSemiBase*>(_race.winner())
-        ->isomorphic_non_fp_semigroup());
+                 ->isomorphic_non_fp_semigroup());
   }
 
   //////////////////////////////////////////////////////////////////////////////

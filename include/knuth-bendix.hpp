@@ -67,7 +67,6 @@ namespace libsemigroups {
       bool        equal_to(std::string const&, std::string const&) override;
       std::string normal_form(std::string const&) override;
 
-
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - public
       //////////////////////////////////////////////////////////////////////////

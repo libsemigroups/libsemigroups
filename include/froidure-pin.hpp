@@ -983,7 +983,7 @@ namespace libsemigroups {
     // Type for a left or right Cayley graph of a semigroup.
     using cayley_graph_type = RecVec<element_index_type>;
 
-    size_t                                           _batch_size; // setting
+    size_t                                           _batch_size;  // setting
     size_t                                           _degree;
     std::vector<std::pair<letter_type, letter_type>> _duplicate_gens;
     std::vector<internal_element_type>               _elements;
@@ -1013,7 +1013,7 @@ namespace libsemigroups {
                        internal_equal_to>
         _map;
 #endif
-    size_t                          _max_threads; // setting
+    size_t                          _max_threads;  // setting
     mutable std::mutex              _mtx;
     size_type                       _nr;
     letter_type                     _nrgens;

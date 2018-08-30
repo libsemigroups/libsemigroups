@@ -191,8 +191,7 @@ namespace libsemigroups {
         : ToddCoxeter(typ) {
       set_nr_generators(kb.alphabet().size());
       for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
-        add_pair(kb.string_to_word(it->first),
-        kb.string_to_word(it->second));
+        add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
       }
       if (kb.finished()) {
         set_parent_semigroup(&kb.isomorphic_non_fp_semigroup());
@@ -353,7 +352,6 @@ namespace libsemigroups {
       }
       return CongBase::contains(lhs, rhs);
     }
-
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - methods - public

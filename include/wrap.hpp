@@ -102,7 +102,6 @@ namespace libsemigroups {
       // FpSemiBase - non-pure virtual methods - public
       ////////////////////////////////////////////////////////////////////////////
 
-
       // We override FpSemiBase::equal_to to avoid unnecessary conversion from
       // word_type -> string.
       bool equal_to(word_type const& lhs, word_type const& rhs) override {

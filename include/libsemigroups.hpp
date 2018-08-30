@@ -44,6 +44,7 @@
 #include "fpsemi.hpp"
 #include "froidure-pin-base.hpp"
 #include "knuth-bendix.hpp"
+#include "obvinf.hpp"
 #include "reduct.hpp"
 #include "schreier-sims.hpp"
 #include "semiring.hpp"

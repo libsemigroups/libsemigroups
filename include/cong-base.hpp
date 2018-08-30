@@ -46,7 +46,6 @@ namespace libsemigroups {
     // CongBase - typedefs + enums - public
     ////////////////////////////////////////////////////////////////////////////
 
-
     //! Type for indices of congruence classes in a CongBase object.
     using class_index_type           = size_t;
     using non_trivial_classes_type   = std::vector<std::vector<word_type>>;
@@ -142,7 +141,6 @@ namespace libsemigroups {
     //! undecidable in general, and this method may never terminate.
     virtual bool less(word_type const&, word_type const&);
 
-
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-virtual methods - public
     /////////////////////////////////////////////////////////////////////////
@@ -227,7 +225,7 @@ namespace libsemigroups {
     virtual class_index_type const_word_to_class_index(word_type const&) const;
     virtual void             set_nr_generators_impl(size_t);
     virtual std::shared_ptr<non_trivial_classes_type>
-    non_trivial_classes_impl();
+                 non_trivial_classes_impl();
     virtual bool is_quotient_obviously_finite_impl();
     virtual bool is_quotient_obviously_infinite_impl();
 
@@ -261,12 +259,12 @@ namespace libsemigroups {
     // CongBase - mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable bool                                      _init_ntc_done;
-    mutable bool                                      _is_obviously_finite_known;
-    mutable bool                                      _is_obviously_finite;
-    mutable bool                                      _is_obviously_infinite_known;
-    mutable bool                                      _is_obviously_infinite;
-    mutable FroidurePinBase*                          _quotient;
+    mutable bool             _init_ntc_done;
+    mutable bool             _is_obviously_finite_known;
+    mutable bool             _is_obviously_finite;
+    mutable bool             _is_obviously_infinite_known;
+    mutable bool             _is_obviously_infinite;
+    mutable FroidurePinBase* _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////

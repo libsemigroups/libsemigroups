@@ -249,7 +249,6 @@ namespace libsemigroups {
     return _rules.cend();
   }
 
-
   bool FpSemiBase::is_obviously_infinite() {
     if (_is_obviously_infinite_known) {
       return _is_obviously_infinite;
@@ -260,17 +259,17 @@ namespace libsemigroups {
     // so we leave the answer to this question to
     // is_quotient_obviously_infinite_impl in the derived class.
     if (alphabet().empty()) {
-        // If nr_generators() is undefined, then there is no quotient yet,
-        // and so it is not obviously infinite, or anything!
-        REPORT("not obviously infinite (no alphabet defined)");
-        set_is_obviously_infinite(false);
-        return false;
+      // If nr_generators() is undefined, then there is no quotient yet,
+      // and so it is not obviously infinite, or anything!
+      REPORT("not obviously infinite (no alphabet defined)");
+      set_is_obviously_infinite(false);
+      return false;
     } else if (has_isomorphic_non_fp_semigroup()
                && isomorphic_non_fp_semigroup().finished()) {
       // If the isomorphic FroidurePin is fully enumerated, it must be
       // finite, and hence this is not (obviously) infinite.
       REPORT("not obviously infinite (finite)");
-      set_is_obviously_finite(true); // FINITE!
+      set_is_obviously_finite(true);  // FINITE!
       return false;
     } else if (is_obviously_infinite_impl()) {
       // The derived class of FpSemiBase knows the quotient is infinite
@@ -443,4 +442,3 @@ namespace libsemigroups {
     }
   }
 }  // namespace libsemigroups
-

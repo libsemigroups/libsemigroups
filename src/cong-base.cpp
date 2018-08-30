@@ -61,7 +61,7 @@ namespace libsemigroups {
   }
 
   result_type CongBase::const_contains(word_type const& u,
-                                                 word_type const& v) const {
+                                       word_type const& v) const {
     if (const_word_to_class_index(u) == UNDEFINED
         || const_word_to_class_index(v) == UNDEFINED) {
       return result_type::UNKNOWN;
@@ -195,16 +195,16 @@ namespace libsemigroups {
     // so we leave the answer to this question to
     // is_quotient_obviously_infinite_impl in the derived class.
     if (nr_generators() == UNDEFINED) {
-        // If nr_generators() is undefined, then there is no quotient yet,
-        // and so it is not obviously infinite, or anything!
-        REPORT("not obviously infinite (no generators yet defined)");
-        set_is_quotient_obviously_infinite(false);
-        return false;
+      // If nr_generators() is undefined, then there is no quotient yet,
+      // and so it is not obviously infinite, or anything!
+      REPORT("not obviously infinite (no generators yet defined)");
+      set_is_quotient_obviously_infinite(false);
+      return false;
     } else if (has_quotient_semigroup() && quotient_semigroup().finished()) {
-        // If the quotient FroidurePin is fully enumerated, it must be
-        // finite, and hence this is not (obviously) infinite.
+      // If the quotient FroidurePin is fully enumerated, it must be
+      // finite, and hence this is not (obviously) infinite.
       REPORT("not obviously infinite (finite)");
-      set_is_quotient_obviously_finite(true); // FINITE!
+      set_is_quotient_obviously_finite(true);  // FINITE!
       return false;
     } else if (is_quotient_obviously_infinite_impl()) {
       // The derived class of CongBase knows the quotient is infinite

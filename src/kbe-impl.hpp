@@ -131,7 +131,8 @@ namespace libsemigroups {
     return out;
   }
 
-  template <> word_type FroidurePin<KBE>::factorisation(KBE const& x) {
+  template <>
+  word_type FroidurePin<KBE>::factorisation(KBE const& x) {
     return x;
   }
 }  // namespace libsemigroups
