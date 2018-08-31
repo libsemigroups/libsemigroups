@@ -209,7 +209,8 @@ namespace libsemigroups {
       _impl->add_rule(p, q);
     }
 
-    FroidurePinBase* KnuthBendix::isomorphic_non_fp_semigroup_impl() {
+    internal::owned_ptr<FroidurePinBase>
+    KnuthBendix::isomorphic_non_fp_semigroup_impl() {
       LIBSEMIGROUPS_ASSERT(!alphabet().empty());
       // TODO(now) check that no generators/rules can be added after this has
       // been called, or if they are that _isomorphic_non_fp_semigroup is reset
@@ -220,7 +221,7 @@ namespace libsemigroups {
       for (size_t i = 1; i < alphabet().size(); ++i) {
         T->add_generator(KBE(*this, i));
       }
-      return T;
+      return internal::owned_ptr<FroidurePinBase>(T, this);
     }
 
     //////////////////////////////////////////////////////////////////////////

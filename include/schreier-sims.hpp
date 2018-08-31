@@ -40,11 +40,13 @@
 //    * internal_const_element_type []
 //    * internal_reference []
 //    * internal_const_reference []
-// 1. iterator to the elements (maybe)
+// 1. iterator to the elements (Finn requires this)
 // 2. stabilizer method
 // 3. change base
 // 4. random version
 // 5. try it with Digraphs
+// 6. add a closure method (i.e. only adds a generator if it's not there
+//                          already)
 
 #ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_

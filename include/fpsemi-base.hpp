@@ -36,7 +36,8 @@
 
 #include "internal/runner.hpp"  // for Runner
 
-#include "types.hpp"  // for word_type, letter_type, relation_type
+#include "owned_ptr.hpp"  // for owned_ptr
+#include "types.hpp"      // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
   class FpSemigroup;      // Forward declaration
@@ -144,7 +145,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule_impl(std::string const&, std::string const&) = 0;
-    virtual FroidurePinBase* isomorphic_non_fp_semigroup_impl()        = 0;
+    virtual internal::owned_ptr<FroidurePinBase>
+    isomorphic_non_fp_semigroup_impl() = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - private
@@ -177,7 +179,7 @@ namespace libsemigroups {
     // FpSemiBase - mutable data - private
     //////////////////////////////////////////////////////////////////////////////
 
-    mutable FroidurePinBase* _isomorphic_non_fp_semigroup;
+    mutable internal::owned_ptr<FroidurePinBase> _isomorphic_non_fp_semigroup;
     mutable bool             _is_obviously_finite_known;
     mutable bool             _is_obviously_finite;
     mutable bool             _is_obviously_infinite_known;
