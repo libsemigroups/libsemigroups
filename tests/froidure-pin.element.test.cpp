@@ -1241,7 +1241,6 @@ namespace libsemigroups {
       }
     }
     delete tmp;
-    // TODO(JDM) more tests
     delete_gens(gens);
   }
 

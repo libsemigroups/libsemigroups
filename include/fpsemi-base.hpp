@@ -109,6 +109,13 @@ namespace libsemigroups {
     void set_identity(std::string const&);
     void set_identity(letter_type);
 
+    //! Returns the identity of this, or throws an exception if there isn't
+    //! one.
+    std::string const& identity() const;
+
+    void set_inverses(std::string const&);
+    std::string const& inverses() const;
+
     word_type   string_to_word(std::string const&) const;
     std::string word_to_string(word_type const&) const;
 
@@ -158,6 +165,11 @@ namespace libsemigroups {
     virtual void add_rules_impl(FroidurePinBase&);
     virtual bool is_obviously_infinite_impl();
     virtual bool is_obviously_finite_impl();
+    // Use validate_word_impl to impose or lift any further restrictions on
+    // valid words, for example, ToddCoxeter does not allow empty words (and so
+    // neither does FpSemiBase), but KnuthBendix does.
+    virtual void validate_word_impl(std::string const&) const;
+    virtual void validate_word_impl(word_type const&) const;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - private
@@ -173,6 +185,8 @@ namespace libsemigroups {
 
     std::string                                      _alphabet;
     std::unordered_map<char, letter_type>            _alphabet_map;
+    std::string                                      _identity;
+    std::string                                      _inverses;
     std::vector<std::pair<std::string, std::string>> _rules;
 
     //////////////////////////////////////////////////////////////////////////////

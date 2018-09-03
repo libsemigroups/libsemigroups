@@ -470,6 +470,7 @@ namespace libsemigroups {
     cong.add_pair({0}, {1});
 
     REQUIRE(cong.nr_classes() == 4);
+    REQUIRE(!cong.quotient_semigroup().is_monoid());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -568,7 +569,8 @@ namespace libsemigroups {
     S.add_rule("a", "b");
 
     Congruence cong(LEFT, S);
-    // TODO is the next line correct?
+    // No generating pairs for the congruence (not the fp semigroup) means no
+    // non-trivial classes.
     REQUIRE(cong.nr_non_trivial_classes() == 0);
   }
 
@@ -1210,7 +1212,7 @@ namespace libsemigroups {
                           "038",
                           "Stellar S7",
                           "[standard][cong]") {
-    // TODO check test category
+    // TODO(now) check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);

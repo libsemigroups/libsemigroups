@@ -743,6 +743,8 @@ namespace libsemigroups {
     //! supported by the hardware.
     void set_max_threads(size_t) noexcept override;
 
+    bool is_monoid() override;
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - validation methods - private

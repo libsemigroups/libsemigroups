@@ -246,7 +246,7 @@ namespace libsemigroups {
     REQUIRE(S.nr_rules() == 165);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
-    // S.todd_coxeter().run(); // TODO Check if it runs
+    // S.todd_coxeter().run(); // TODO(now) Check if it runs
     REQUIRE(S.size() == 322021);
     REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1453);
 
@@ -333,7 +333,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "017",
       "Renner monoid type D4 (E. G. presentation), q = 1",
-      "[quick][fpsemi][hivert]") {  // TODO check test category
+      "[quick][fpsemi][hivert]") {  // TODO(now) check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -354,7 +354,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "018",
       "Renner monoid type D4 (E. G. presentation), q = 0",
-      "[quick][fpsemi][hivert]") {  // TODO check test category
+      "[quick][fpsemi][hivert]") {  // TODO(now) check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);

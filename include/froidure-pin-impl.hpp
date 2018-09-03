@@ -1129,6 +1129,11 @@ namespace libsemigroups {
     _max_threads = std::min(n, std::thread::hardware_concurrency());
   }
 
+  BOOL FROIDURE_PIN::is_monoid() {
+    run();
+    return _found_one;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // FroidurePin - validation methods - private
   ////////////////////////////////////////////////////////////////////////

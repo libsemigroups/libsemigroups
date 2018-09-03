@@ -40,6 +40,8 @@ namespace libsemigroups {
         // Non-mutable
         _alphabet(),
         _alphabet_map(),
+        _identity(),
+        _inverses(),
         _rules(),
         // Mutable
         _isomorphic_non_fp_semigroup(nullptr),
@@ -81,8 +83,9 @@ namespace libsemigroups {
     for (size_t i = 0; i < lphbt.size(); ++i) {
       if (_alphabet_map.find(lphbt[i]) != _alphabet_map.end()) {
         _alphabet_map.clear();  // Strong exception guarantee
-        throw LIBSEMIGROUPS_EXCEPTION("duplicate letter " + to_string(lphbt[i])
-                                      + " in alphabet");
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid alphabet, it contains the duplicate letter "
+            + to_string(lphbt[i]));
       }
       _alphabet_map.emplace(lphbt[i], i);
     }
@@ -199,6 +202,7 @@ namespace libsemigroups {
     return equal_to(word_type(u), word_type(v));
   }
 
+  // Note that this can be called repeatedly, and that's fine.
   void FpSemiBase::set_identity(std::string const& id) {
     if (id.length() != 1) {
       throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
@@ -206,6 +210,7 @@ namespace libsemigroups {
                                     + " letters, should be single letter");
     }
     validate_letter(id[0]);
+    _identity = id[0];
     for (auto l : alphabet()) {
       if (l == id[0]) {
         add_rule(id + id, id);
@@ -219,6 +224,55 @@ namespace libsemigroups {
   void FpSemiBase::set_identity(letter_type id) {
     validate_letter(id);
     set_identity(std::string(1, _alphabet[id]));
+  }
+
+  std::string const& FpSemiBase::identity() const {
+    if (!_identity.empty()) {
+      return _identity;
+    } else {
+      throw LIBSEMIGROUPS_EXCEPTION("no identity has been defined");
+    }
+  }
+
+  void FpSemiBase::set_inverses(std::string const& inv) {
+    if (_alphabet.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no alphabet has been defined, define an alphabet first");
+    } else if (_identity.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "no identity has been defined, define an identity first");
+    } else if (_alphabet.size() != inv.size()) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid inverses, expected "
+                                    + to_string(_alphabet.size())
+                                    + " but found " + to_string(inv.size()));
+    }
+
+    validate_word(inv);
+
+    std::string cpy = inv;
+    std::sort(cpy.begin(), cpy.end());
+    for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
+      if (*it == *(it + 1)) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "invalid inverses, it contains the duplicate letter "
+            + to_string(*it));
+      }
+    }
+
+    _inverses = inv;
+
+    for (size_t i = 0; i < _alphabet.size(); ++i) {
+      add_rule(std::string(_alphabet[i], 1) + _inverses[i], _identity);
+      add_rule(std::string(_inverses[i], 1) + _alphabet[i], _identity);
+    }
+  }
+
+  std::string const& FpSemiBase::inverses() const {
+    if (!_inverses.empty()) {
+      return _inverses;
+    } else {
+      throw LIBSEMIGROUPS_EXCEPTION("no inverses have been defined");
+    }
   }
 
   word_type FpSemiBase::string_to_word(std::string const& s) const {
@@ -322,24 +376,21 @@ namespace libsemigroups {
   }
 
   void FpSemiBase::validate_word(std::string const& w) const {
-    if (w.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
-                                    "words must be non-empty");
-    }
     for (auto l : w) {
+      // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "invalid letter " + to_string(l) + " in word " + w
             + ", valid letters are \"" + _alphabet + "\"");
       }
     }
+    // Use validate_word_impl to impose or lift any further restrictions on
+    // valid words, for example, ToddCoxeter does not allow empty words (and so
+    // neither does FpSemiBase), but KnuthBendix does.
+    validate_word_impl(w);
   }
 
   void FpSemiBase::validate_word(word_type const& w) const {
-    if (w.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
-                                    "words must be non-empty");
-    }
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
@@ -348,6 +399,10 @@ namespace libsemigroups {
             + ", the valid range is [0, " + to_string(_alphabet.size()) + ")");
       }
     }
+    // Use validate_word_impl to impose or lift any further restrictions on
+    // valid words, for example, ToddCoxeter does not allow empty words (and so
+    // neither does FpSemiBase), but KnuthBendix does.
+    validate_word_impl(w);
   }
 
   void FpSemiBase::validate_relation(std::string const& l,
@@ -401,6 +456,20 @@ namespace libsemigroups {
 
   bool FpSemiBase::is_obviously_infinite_impl() {
     return false;
+  }
+
+  void FpSemiBase::validate_word_impl(std::string const& w) const {
+    if (w.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+                                    "words must be non-empty");
+    }
+  }
+
+  void FpSemiBase::validate_word_impl(word_type const& w) const {
+    if (w.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+                                    "words must be non-empty");
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

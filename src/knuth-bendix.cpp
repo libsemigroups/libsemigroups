@@ -242,6 +242,10 @@ namespace libsemigroups {
       ioi.add_rules(cbegin_rules(), cend_rules());
       return ioi.result();
     }
+
+    void KnuthBendix::validate_word_impl(std::string const&) const {
+      // do nothing, the empty string is allowed!
+    }
   }  // namespace fpsemigroup
 
   namespace congruence {

@@ -67,6 +67,7 @@ namespace libsemigroups {
     virtual size_t             size()                                 = 0;
     virtual size_t             nr_idempotents()                       = 0;
     virtual bool               is_idempotent(element_index_type)      = 0;
+    virtual bool               is_monoid()                            = 0;
     virtual size_t             nr_rules()                             = 0;
     virtual void               set_batch_size(size_t)                 = 0;
     virtual void               reserve(size_t)                        = 0;

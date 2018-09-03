@@ -241,6 +241,7 @@ namespace libsemigroups {
       void set_alphabet_impl(std::string const&) override;
       void set_alphabet_impl(size_t) override;
       bool is_obviously_infinite_impl() override;
+      void validate_word_impl(std::string const&) const override;
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private

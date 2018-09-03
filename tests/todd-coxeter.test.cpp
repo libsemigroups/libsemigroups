@@ -31,6 +31,7 @@
 #include "element.hpp"            // for Element, Transf, Transf<>::type
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
 #include "froidure-pin.hpp"       // for FroidurePin, FroidurePin<>::eleme...
+#include "knuth-bendix.hpp"       // for KnuthBendix
 #include "tce.hpp"                // for TCE
 #include "todd-coxeter.hpp"       // for ToddCoxeter
 #include "types.hpp"              // for relation_type, word_type
@@ -48,6 +49,7 @@ namespace libsemigroups {
   congruence_type constexpr TWOSIDED = congruence_type::TWOSIDED;
   congruence_type constexpr LEFT     = congruence_type::LEFT;
   congruence_type constexpr RIGHT    = congruence_type::RIGHT;
+  using KnuthBendix                  = fpsemigroup::KnuthBendix;
 
   namespace congruence {
 
@@ -78,7 +80,7 @@ namespace libsemigroups {
                             "002",
                             "(cong) Example 6.6 in Sims (see also RWS 13)",
                             "[todd-coxeter][standard]") {
-      // TODO double check if this is standard or not
+      // TODO(now) double check if this is standard or not
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc(TWOSIDED);
@@ -838,8 +840,7 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 24);
       REQUIRE(tc.isomorphic_non_fp_semigroup().size() == 24);
       REQUIRE(tc.normal_form("aaaaaaaaaaaaaaaaaaa") == "a");
-      // TODO uncomment the next line
-      //  REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
+      REQUIRE(KnuthBendix(tc.isomorphic_non_fp_semigroup()).confluent());
     }
 
     // Second of BHN's series of increasingly complicated presentations
@@ -848,11 +849,12 @@ namespace libsemigroups {
                             "008",
                             "(fpsemi) (from kbmag/standalone/kb_data/degen4b) "
                             "(RWS 65)",
-                            "[todd-coxeter][extreme][kbmag][shortlex]") {
-      REPORTER.set_report(REPORT);
+                            "[fails][todd-coxeter][kbmag][shortlex]") {
+      REPORTER.set_report(true);
 
       ToddCoxeter tc;
       tc.set_alphabet("abcdefg");
+      // TODO(now) replace with set_identity and set_inverse
       // Inverses . . .
       tc.add_rule("ad", "g");
       tc.add_rule("da", "g");
@@ -882,8 +884,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.size() == 1);
       REQUIRE(tc.isomorphic_non_fp_semigroup().size() == 1);
-      // TODO uncomment the next line
-      // REQUIRE(RWS(tc.isomorphic_non_fp_semigroup()).confluent());
+      REQUIRE(KnuthBendix(tc.isomorphic_non_fp_semigroup()).confluent());
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO
+// TODO(later)
 // 1. The other examples from Sims' book (Chapters 5 and 6) which use
 //    reduction orderings different from shortlex
 // 2. Examples from MAF
@@ -380,7 +380,8 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.nr_active_rules() == 1026);
       REQUIRE(kb.confluent());
-      // TODO find size when compiled without debug mode
+      // TODO(now) find size when compiled without debug mode
+      // REQUIRE(kb.size() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -700,18 +701,6 @@ namespace libsemigroups {
       REQUIRE(kb.rewrite("abbbaabbba") == kb.rewrite("bbbbaa"));
 
       REQUIRE(kb.size() == 86);
-
-      // TODO add to the congruence tests for KnuthBendix
-      //      // REQUIRE(!kb.test_less_than("abbbaabbba", "bbbbaa"));
-      //      // REQUIRE(!kb.test_less_than("abba", "abba"));
-
-      //      // Call test_less_than without knuth_bendix first
-      // KnuthBendix kb2;
-      // REPORTER.set_report(REPORT);
-      // kb2.add_rule("aaa", "a");
-      // kb2.add_rule("bbbbb", "b");
-      // kb2.add_rule("abbbabb", "bba");
-      //      // REQUIRE(!kb2.test_less_than("abbbaabbba", "bbbbaa"));
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -750,8 +739,6 @@ namespace libsemigroups {
       REQUIRE(kb.rewrite("bbbbbbbbaabbbbbbbbaa") == kb.rewrite("bbbbbbbbaa"));
       REQUIRE(kb.rewrite("bbbaa") == kb.rewrite("baabb"));
       REQUIRE(kb.rewrite("abbbbbaabbbbba") == kb.rewrite("bbbbbbbbaa"));
-      // TODO add to congruence test
-      //      // REQUIRE(kb.test_less_than("aaa", "bbbbbbbbb"));
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -819,8 +806,8 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 8);
       REQUIRE(kb.confluent());
 
-      //  REQUIRE(!kb.test_less_than("bababababab", "aaaaa"));
-      //  REQUIRE(kb.test_less_than("aaaaa", "bababababab"));
+      //  REQUIRE(!kb.less("bababababab", "aaaaa"));
+      //  REQUIRE(kb.less("aaaaa", "bababababab"));
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -995,22 +982,19 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 7);
     }
 
-    // TODO check that this is really confluent, with different alphabet
-    // ordering knuth_bendix runs forever.
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "037: (fpsemi) from GAP smalloverlap gap/test.gi",
-        "85 "
-        "(infinite)",
+        "037",
+        "(fpsemi) from GAP smalloverlap gap/test.gi:85 (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb;
-      kb.set_alphabet("cab");
+      kb.set_alphabet("cab"); // runs forever with a different order
 
       kb.add_rule("aabc", "acba");
 
       REQUIRE(kb.is_obviously_infinite());
-      REQUIRE(kb.confluent());
+      REQUIRE(kb.confluent()); // Confirmed with GAP
 
       REQUIRE(!kb.equal_to("a", "b"));
       REQUIRE(kb.equal_to("aabcabc", "aabccba"));
@@ -1018,6 +1002,9 @@ namespace libsemigroups {
       kb.knuth_bendix();
       REQUIRE(kb.nr_active_rules() == 1);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
+      REQUIRE(kb.rules()
+              == std::vector<std::pair<std::string, std::string>>(
+                     {{"aabc", "acba"}}));
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -1172,7 +1159,7 @@ namespace libsemigroups {
     // kbmag/standalone/kb_data/heinnilp)",
     //           "[fails][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]")
     //           {
-    //   // TODO fails because internal_rewrite expect rules to be length
+    //   // TODO(later) fails because internal_rewrite expect rules to be length
     //   reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
     //   kb.add_rule("BAba", "c");
     //   kb.add_rule("CAca", "d");
@@ -1218,7 +1205,7 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 47);
       // REQUIRE(kb.size() == 29);
       // KBMAG does not terminate with this example :-)
-      // TODO Add inverses here, maybe this is why we terminate but KBMAG does
+      // TODO(now) Add inverses here, maybe this is why we terminate but KBMAG does
       // not, i.e. the two presentations are not the same.
     }
 
@@ -1272,9 +1259,9 @@ namespace libsemigroups {
 
     // knuth_bendix/2 does not terminate with the given ordering, terminates
     // almost immediately with the standard order.
-    // TODO double check that something isn't going wrong in the nonstandard
-    // alphabet case.
-    // TODO Change this to a group presentation.
+    // TODO(now) double check that something isn't going wrong in the
+    // nonstandard alphabet case.
+    // TODO(now) Change this to a group presentation.
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "047",
@@ -1959,24 +1946,23 @@ namespace libsemigroups {
     }
 
     // Free nilpotent group of rank 2 and class 2
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "066", "(from
-    kbmag/standalone/kb_data/nilp2)",
-"[quick][knuth-bendix][kbmag][recursive]") {
-      KnuthBendix kb(new RECURSIVE(), "cCbBaA");
-      kb.add_rule("ba", "abc");
-      kb.add_rule("ca", "ac");
-      kb.add_rule("cb", "bc");
-      REPORTER.set_report(REPORT);
-
-      REQUIRE(kb.confluent());
-
-      kb.knuth_bendix();
-      REQUIRE(kb.confluent());
-
-      REQUIRE(kb.nr_active_rules() == 3);
-      // TODO KBMAG says this terminates with 32758 rules, maybe that was with
-      // shortlex order?
-    }*/
+    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+    //                         "066",
+    //                         "(from kbmag/standalone/kb_data/nilp2)",
+    //                         "[quick][knuth-bendix][kbmag][recursive]") {
+    //   KnuthBendix kb(new RECURSIVE(), "cCbBaA");
+    //   kb.add_rule("ba", "abc");
+    //   kb.add_rule("ca", "ac");
+    //   kb.add_rule("cb", "bc");
+    //   REPORTER.set_report(REPORT);
+    //
+    //   REQUIRE(kb.confluent());
+    //
+    //   kb.knuth_bendix();
+    //   REQUIRE(kb.confluent());
+    //
+    //   REQUIRE(kb.nr_active_rules() == 3);
+    // }
 
     // knuth_bendix/2 don't finish
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -2773,6 +2759,48 @@ namespace libsemigroups {
       kb.add_pair({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0});
 
       REQUIRE(kb.nr_classes() == 240);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "094",
+                            "(cong) less",
+                            "[quick][congruence][knuth-bendix][cong]") {
+      REPORTER.set_report(REPORT);
+      {
+        KnuthBendix kb;
+        kb.set_nr_generators(2);
+        kb.add_pair({0, 0, 0}, {0});
+        kb.add_pair({1, 1, 1, 1, 1}, {1});
+        kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+        kb.run();
+
+        REQUIRE(!kb.less({0, 1, 1, 1, 0, 0, 1, 1, 1, 0}, {1, 1, 1, 1, 0, 0}));
+        REQUIRE(!kb.less({0, 1, 1, 0}, {0, 1, 1, 0}));
+      }
+      {
+        KnuthBendix kb;
+        kb.set_nr_generators(2);
+        kb.add_pair({0, 0, 0}, {0});
+        kb.add_pair({1, 1, 1, 1, 1}, {1});
+        kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+
+        REQUIRE(!kb.less({0, 1, 1, 1, 0, 0, 1, 1, 1, 0}, {1, 1, 1, 1, 0, 0}));
+        REQUIRE(!kb.less({0, 1, 1, 0}, {0, 1, 1, 0}));
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "095",
+                            "(cong) less",
+                            "[quick][congruence][knuth-bendix][cong]") {
+      REPORTER.set_report(REPORT);
+      KnuthBendix kb;
+      kb.set_nr_generators(2);
+      kb.add_pair({0, 0, 0}, {0});
+      kb.add_pair({1, 1, 1, 1, 1, 1, 1, 1, 1}, {1});
+      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+
+      REQUIRE(kb.less({0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1}));
     }
   }  // namespace congruence
 }  // namespace libsemigroups
