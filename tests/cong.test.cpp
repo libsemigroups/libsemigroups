@@ -459,10 +459,9 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet("abBe");
+    REQUIRE_THROWS_AS(S.add_rule("aa", ""), LibsemigroupsException);
     S.set_identity("e");
     S.add_rule("aa", "e");
-    // FIXME S.add_rule("aa", ""); causes seg fault, should be allowed or give
-    // sensible exception
     S.add_rule("BB", "b");
     S.add_rule("BaBaBaB", "abababa");
     S.add_rule("aBabaBabaBabaBab", "BabaBabaBabaBaba");
@@ -610,7 +609,7 @@ namespace libsemigroups {
     S.add_rule({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
     S.add_rule({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-    // FIXME this test fails if we don't run the next line, since the
+    // TODO(later) this test fails if we don't run the next line, since the
     // congruence below has no parent
     REQUIRE(S.size() == 78);
 
@@ -621,8 +620,6 @@ namespace libsemigroups {
     REQUIRE(cong.cbegin_ntc()->size() == 78);
   }
 
-  // FIXME in this example non-winner ToddCoxeter takes a long time to stop
-  // after it is killed
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "023",
                           "right congruence on finite semigroup",

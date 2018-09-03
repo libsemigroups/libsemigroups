@@ -264,6 +264,13 @@ namespace libsemigroups {
   std::shared_ptr<CongBase::non_trivial_classes_type>
   CongBase::non_trivial_classes_impl() {
     if (_parent == nullptr) {
+      // This means this was constructed from an fp semigroup that did not have
+      // an isomorphic FroidurePin instance computed at the time. Since we
+      // don't currently store the fp semigroup, we cannot ask for the
+      // isomorphic FroidurePin now.
+      //
+      // TODO(later) store the FpSemigroup used to create this and here try
+      // to compute the isomorphic FroidurePin.
       throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
                                     "find the non-trivial classes");
     }

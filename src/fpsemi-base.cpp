@@ -322,6 +322,10 @@ namespace libsemigroups {
   }
 
   void FpSemiBase::validate_word(std::string const& w) const {
+    if (w.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+                                    "words must be non-empty");
+    }
     for (auto l : w) {
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
@@ -332,6 +336,10 @@ namespace libsemigroups {
   }
 
   void FpSemiBase::validate_word(word_type const& w) const {
+    if (w.empty()) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+                                    "words must be non-empty");
+    }
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {

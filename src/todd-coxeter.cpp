@@ -485,8 +485,8 @@ namespace libsemigroups {
         _init_done = true;
         // The following is here to avoid doing it repeatedly in repeated
         // calls to run(). Apply each "extra" relation to the first coset only
-        for (relation_type const& rel : _extra) {
-          trace(_id_coset, rel);  // Allow new cosets
+        for (auto it = _extra.cbegin(); it < _extra.cend() && !dead(); ++it) {
+          trace(_id_coset, *it);  // Allow new cosets
         }
       } else {
         // This is required in case we called add_pair since the last time
@@ -588,8 +588,6 @@ namespace libsemigroups {
         switch (_policy) {
           case policy::none:
             _policy = policy::use_cayley_graph;
-            // FIXME this can lead to the addition of redundant relations
-            // when this is constructed from (type, ToddCoxeter&).
             // Intentional fall through
           case policy::use_cayley_graph:
             prefill(parent_semigroup());

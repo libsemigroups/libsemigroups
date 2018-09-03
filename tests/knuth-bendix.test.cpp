@@ -2511,10 +2511,9 @@ namespace libsemigroups {
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ababab", "");
-      kb.set_overlap_policy(KnuthBendix::overlap_policy::MAX_AB_BC);
 
       REQUIRE(!kb.confluent());
-      kb.knuth_bendix_by_overlap_length();
+      kb.knuth_bendix();
       REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);
@@ -2522,10 +2521,25 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("aa", ""));
       REQUIRE(!kb.equal_to("a", "b"));
       kb.add_rule("a", "b");
-      // FIXME(now) add_rule doesn't seem to do anything
-      // REQUIRE(kb.nr_active_rules() == 12);
-      // REQUIRE(!kb.confluent() == 12);
-      // REQUIRE(kb.size() < 12);
+      REQUIRE(kb.nr_rules() == 5);
+      // Adding a rule does not change the number of active rules until *after*
+      // kb.knuth_bendix() is called again.
+      REQUIRE(kb.nr_active_rules() == 11);
+
+      using rules_type = std::vector<std::pair<std::string, std::string>>;
+
+      REQUIRE(rules_type(kb.cbegin_rules(), kb.cend_rules())
+              == rules_type({{"aa", ""},
+                             {"bB", ""},
+                             {"bbb", ""},
+                             {"ababab", ""},
+                             {"a", "b"}}));
+
+      REQUIRE(!kb.confluent());
+      REQUIRE(kb.size() == 1);
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.nr_active_rules() == 3);
+      REQUIRE(kb.rules() == rules_type({{"B", ""}, {"a", ""}, {"b", "a"}}));
     }
   }  // namespace fpsemigroup
 

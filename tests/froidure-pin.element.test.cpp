@@ -1042,7 +1042,7 @@ namespace libsemigroups {
     }
     REQUIRE(nr == S.nr_idempotents());
   }
-// FIXME the following example is extremely slow when using densehashmap.
+// FIXME(later) the following example is extremely slow when using densehashmap.
 #if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
