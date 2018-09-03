@@ -212,23 +212,24 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(5, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 165);
+    REQUIRE(S.nr_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     // S.todd_coxeter().run(); // Takes 2m30s or so to run
     REQUIRE(S.size() == 322021);
     REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1453);
-
-    congruence::ToddCoxeter tc(
-        TWOSIDED,
-        S.isomorphic_non_fp_semigroup(),
-        congruence::ToddCoxeter::policy::use_cayley_graph);
-    REQUIRE(tc.nr_classes() == 322021);  // Works!
-
-    // fpsemigroup::ToddCoxeter tc(S.isomorphic_non_fp_semigroup());
-    // REQUIRE(tc.nr_rules() == 1453); FIXME this gives an error, something
-    // is wrong, every relation seems to be added twice
-    // REQUIRE(tc.size() == 322021); // Runs forever
+    {
+      congruence::ToddCoxeter tc(
+          TWOSIDED,
+          S.isomorphic_non_fp_semigroup(),
+          congruence::ToddCoxeter::policy::use_cayley_graph);
+      REQUIRE(tc.nr_classes() == 322021);  // Works!
+    }
+    {
+      fpsemigroup::ToddCoxeter tc(S.isomorphic_non_fp_semigroup());
+      REQUIRE(tc.nr_rules() == 1453);
+      REQUIRE(tc.size() == 322021); // Runs forever
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE(
