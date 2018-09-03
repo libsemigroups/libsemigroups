@@ -58,14 +58,10 @@ namespace libsemigroups {
     explicit Congruence(congruence_type type);
 
     Congruence(congruence_type type,
-               FroidurePinBase*,
-               policy = policy::standard);
-    Congruence(congruence_type type,
                FroidurePinBase&,
                policy = policy::standard);
 
     Congruence(congruence_type type, FpSemigroup&, policy = policy::standard);
-    Congruence(congruence_type type, FpSemigroup*, policy = policy::standard);
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual methods - public
@@ -105,8 +101,8 @@ namespace libsemigroups {
 
     bool                     has_knuth_bendix() const;
     bool                     has_todd_coxeter() const;
-    congruence::KnuthBendix* knuth_bendix() const;
-    congruence::ToddCoxeter* todd_coxeter() const;
+    congruence::KnuthBendix& knuth_bendix() const;
+    congruence::ToddCoxeter& todd_coxeter() const;
 
    private:
     //////////////////////////////////////////////////////////////////////////

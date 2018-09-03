@@ -48,7 +48,9 @@ namespace libsemigroups {
         _is_obviously_infinite_known(false),
         _is_obviously_infinite(false) {}
 
-  FpSemiBase::~FpSemiBase() {}
+  FpSemiBase::~FpSemiBase() {
+    _isomorphic_non_fp_semigroup.free_from(this);
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-pure virtual methods - public
@@ -155,10 +157,10 @@ namespace libsemigroups {
     add_rule(rel.first, rel.second);
   }
 
-  void FpSemiBase::add_rules(FroidurePinBase* S) {
-    if (!_alphabet.empty() && _alphabet.size() != S->nr_generators()) {
+  void FpSemiBase::add_rules(FroidurePinBase& S) {
+    if (!_alphabet.empty() && _alphabet.size() != S.nr_generators()) {
       throw LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
-                                    + to_string(S->nr_generators())
+                                    + to_string(S.nr_generators())
                                     + ", should be at most "
                                     + to_string(_alphabet.size()));
     }
@@ -377,8 +379,8 @@ namespace libsemigroups {
     add_rule_impl(word_to_string(u), word_to_string(v));
   }
 
-  void FpSemiBase::add_rules_impl(FroidurePinBase* S) {
-    relations(*S, [this](word_type lhs, word_type rhs) -> void {
+  void FpSemiBase::add_rules_impl(FroidurePinBase& S) {
+    relations(S, [this](word_type lhs, word_type rhs) -> void {
       validate_word(lhs);
       validate_word(rhs);
       add_rule(word_to_string(lhs), word_to_string(rhs));

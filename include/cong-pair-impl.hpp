@@ -68,14 +68,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     TEMPLATE
-    P_CLASS::P(congruence_type type, FroidurePinBase* S) : P(type) {
-      LIBSEMIGROUPS_ASSERT(S != nullptr);
-      set_nr_generators(S->nr_generators());
+    P_CLASS::P(congruence_type type, FroidurePinBase& S) : P(type) {
+      set_nr_generators(S.nr_generators());
       set_parent_semigroup(S);
     }
-
-    TEMPLATE
-    P_CLASS::P(congruence_type type, FroidurePinBase& S) : P(type, &S) {}
 
     TEMPLATE
     P_CLASS::~P() {

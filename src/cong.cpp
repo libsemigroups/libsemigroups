@@ -48,7 +48,7 @@ namespace libsemigroups {
 
   Congruence::Congruence(congruence_type type) : CongBase(type), _race() {}
 
-  Congruence::Congruence(congruence_type type, FroidurePinBase* S, policy plcy)
+  Congruence::Congruence(congruence_type type, FroidurePinBase& S, policy plcy)
       : Congruence(type) {
     switch (plcy) {
       case policy::standard: {
@@ -63,32 +63,26 @@ namespace libsemigroups {
         break;
       }
     }
-    set_nr_generators(S->nr_generators());
+    set_nr_generators(S.nr_generators());
     set_parent_semigroup(S);
   }
 
-  Congruence::Congruence(congruence_type type, FroidurePinBase& S, policy plcy)
-      : Congruence(type, &S, plcy) {}
-
   Congruence::Congruence(congruence_type type, FpSemigroup& S, policy plcy)
-      : Congruence(type, &S, plcy) {}
-
-  Congruence::Congruence(congruence_type type, FpSemigroup* S, policy plcy)
       : Congruence(type) {
-    set_nr_generators(S->alphabet().size());
+    set_nr_generators(S.alphabet().size());
     if (plcy != policy::standard) {
       return;
     }
     _race.set_max_threads(POSITIVE_INFINITY);
-    if (S->has_todd_coxeter()) {
+    if (S.has_todd_coxeter()) {
       // Method 1: use only the relations used to define S and genpairs to
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
-      _race.add_runner(new ToddCoxeter(type, S->todd_coxeter()));
+      _race.add_runner(new ToddCoxeter(type, S.todd_coxeter()));
 
-      if (S->todd_coxeter().finished()) {
+      if (S.todd_coxeter().finished()) {
         LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
-        set_parent_semigroup(&S->todd_coxeter().isomorphic_non_fp_semigroup());
+        set_parent_semigroup(S.todd_coxeter().isomorphic_non_fp_semigroup());
 
         // Method 2: use the Cayley graph of S and genpairs to run
         // Todd-Coxeter. If the policy here is use_relations, then this is
@@ -98,7 +92,7 @@ namespace libsemigroups {
         // Todd-Coxeter did.
         _race.add_runner(
             new ToddCoxeter(type,
-                            S->todd_coxeter().isomorphic_non_fp_semigroup(),
+                            S.todd_coxeter().isomorphic_non_fp_semigroup(),
                             ToddCoxeter::policy::use_cayley_graph));
 
         // Return here since we know that we can definitely complete at
@@ -106,36 +100,35 @@ namespace libsemigroups {
         return;
       }
     }
-    if (S->has_knuth_bendix()) {
-      if (S->knuth_bendix().finished()) {
+    if (S.has_knuth_bendix()) {
+      if (S.knuth_bendix().finished()) {
         if (!has_parent_semigroup()) {
-          set_parent_semigroup(
-              &S->knuth_bendix().isomorphic_non_fp_semigroup());
+          set_parent_semigroup(S.knuth_bendix().isomorphic_non_fp_semigroup());
           // Even if the FpSemigroup S is infinite, the
           // isomorphic_non_fp_semigroup() can still be useful in this case,
           // for example, when factorizing elements.
         }
         // TODO(now) remove the if-condition, make it so that if the
         // ToddCoxeter's below are killed then so too is the enumeration of
-        // S->knuth_bendix().isomorphic_non_fp_semigroup()
-        if (S->knuth_bendix().isomorphic_non_fp_semigroup().finished()) {
+        // S.knuth_bendix().isomorphic_non_fp_semigroup()
+        if (S.knuth_bendix().isomorphic_non_fp_semigroup().finished()) {
           // Method 3: Note that the
-          // S->knuth_bendix().isomorphic_non_fp_semigroup() must be finite
+          // S.knuth_bendix().isomorphic_non_fp_semigroup() must be finite
           // in this case, because otherwise it would not return true from
           // FroidurePin::finished. This is similar to Method 2.
           _race.add_runner(
               new ToddCoxeter(type,
-                              &S->knuth_bendix().isomorphic_non_fp_semigroup(),
+                              S.knuth_bendix().isomorphic_non_fp_semigroup(),
                               ToddCoxeter::policy::use_cayley_graph));
 
           // Method 4: unlike with Method 2, this is not necessarily the same
-          // as running Method 1, because the relations in S->knuth_bendix()
-          // are likely not the same as those in S->todd_coxeter().
+          // as running Method 1, because the relations in S.knuth_bendix()
+          // are likely not the same as those in S.todd_coxeter().
           // TODO:
           // - check if the relations are really the same as those in
-          //   S->todd_coxeter(), if it exists. This is probably too
+          //   S.todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          _race.add_runner(new ToddCoxeter(type, S->knuth_bendix()));
+          _race.add_runner(new ToddCoxeter(type, S.knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.
@@ -146,13 +139,13 @@ namespace libsemigroups {
       // Method 5 (KBP): runs Knuth-Bendix on the original fp semigroup, and
       // then attempts to run the exhaustive pairs algorithm on that. Yes, this
       // method sucks, but there are examples where this is useful.
-      _race.add_runner(new KBP(type, S->knuth_bendix()));
+      _race.add_runner(new KBP(type, S.knuth_bendix()));
 
       if (type == congruence_type::TWOSIDED) {
         // Method 6 (KBFP)
-        // S->knuth_bendix() must be copied because maybe we will add more
+        // S.knuth_bendix() must be copied because maybe we will add more
         // generating pairs.
-        _race.add_runner(new congruence::KnuthBendix(&S->knuth_bendix()));
+        _race.add_runner(new congruence::KnuthBendix(&S.knuth_bendix()));
       }
     }
   }
@@ -242,8 +235,8 @@ namespace libsemigroups {
     _race.add_runner(r);
   }
 
-  KnuthBendix* Congruence::knuth_bendix() const {
-    return find_method<KnuthBendix>();
+  KnuthBendix& Congruence::knuth_bendix() const {
+    return *find_method<KnuthBendix>();
   }
 
   bool Congruence::has_knuth_bendix() const {
@@ -255,8 +248,8 @@ namespace libsemigroups {
     return true;
   }
 
-  ToddCoxeter* Congruence::todd_coxeter() const {
-    return find_method<ToddCoxeter>();
+  ToddCoxeter& Congruence::todd_coxeter() const {
+    return *find_method<ToddCoxeter>();
   }
 
   bool Congruence::has_todd_coxeter() const {

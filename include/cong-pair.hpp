@@ -88,7 +88,6 @@ namespace libsemigroups {
       // P - constructor + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      P(congruence_type, FroidurePinBase*);
       P(congruence_type, FroidurePinBase&);
       ~P();
 
@@ -219,7 +218,6 @@ namespace libsemigroups {
       // KBP - constructors - public
       ////////////////////////////////////////////////////////////////////////
 
-      KBP(congruence_type, fpsemigroup::KnuthBendix*);
       KBP(congruence_type, fpsemigroup::KnuthBendix&);
 
       ////////////////////////////////////////////////////////////////////////
@@ -247,7 +245,7 @@ namespace libsemigroups {
       // KBP - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      fpsemigroup::KnuthBendix* _kb;
+      fpsemigroup::KnuthBendix& _kb;
     };
 
   }  // namespace congruence

@@ -87,8 +87,8 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(ReductionOrdering* order)
         : FpSemiBase(), _impl(new KnuthBendixImpl(this, order)) {}
 
-    KnuthBendix::KnuthBendix(FroidurePinBase* S) : KnuthBendix() {
-      set_alphabet(S->nr_generators());
+    KnuthBendix::KnuthBendix(FroidurePinBase& S) : KnuthBendix() {
+      set_alphabet(S.nr_generators());
       // TODO(now) move the call to add_rules to elsewhere, so that it's done
       // in knuth_bendix so that this is done in a thread, and not when
       // KnuthBendix is constructed. If it is moved, then we will have to do
@@ -97,8 +97,6 @@ namespace libsemigroups {
       // Do not set isomorphic_non_fp_semigroup so we are guaranteed that it
       // returns a FroidurePin of KBE's.
     }
-
-    KnuthBendix::KnuthBendix(FroidurePinBase& S) : KnuthBendix(&S) {}
 
     KnuthBendix::KnuthBendix(KnuthBendix const* kb)
         : KnuthBendix(new ReductionOrdering(kb->_impl->order())) {
@@ -174,7 +172,7 @@ namespace libsemigroups {
 
     std::string KnuthBendix::rewrite(std::string w) const {
       rewrite(&w);
-      return w;
+      return w; // TODO(now) std::move
     }
 
     std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
@@ -269,7 +267,7 @@ namespace libsemigroups {
         : CongBase(congruence_type::TWOSIDED),
           _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
       set_nr_generators(S.nr_generators());
-      set_parent_semigroup(&S);
+      set_parent_semigroup(S);
     }
 
     ////////////////////////////////////////////////////////////////////////////

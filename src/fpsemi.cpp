@@ -64,8 +64,8 @@ namespace libsemigroups {
 
   // Don't take FpSemigroup::policy as an argument here since we must have a
   // place to cache the FroidurePinBase* S.
-  FpSemigroup::FpSemigroup(FroidurePinBase* S) : FpSemiBase(), _race() {
-    set_alphabet(S->nr_generators());
+  FpSemigroup::FpSemigroup(FroidurePinBase& S) : FpSemiBase(), _race() {
+    set_alphabet(S.nr_generators());
     _race.add_runner(new ToddCoxeter(S));
     _race.add_runner(new KnuthBendix(S));
     // TODO(1) if the policy is standard, then add another ToddCoxeter with
@@ -73,7 +73,6 @@ namespace libsemigroups {
     // fpsemigroup::ToddCoxeter).
   }
 
-  FpSemigroup::FpSemigroup(FroidurePinBase& S) : FpSemigroup(&S) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Runner - pure virtual methods - public

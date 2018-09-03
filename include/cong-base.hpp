@@ -195,7 +195,7 @@ namespace libsemigroups {
     // CongBase - non-virtual methods - protected
     /////////////////////////////////////////////////////////////////////////
 
-    void set_parent_semigroup(FroidurePinBase*);
+    void set_parent_semigroup(FroidurePinBase&);
 
     bool validate_letter(letter_type) const;
     void validate_word(word_type const&) const;

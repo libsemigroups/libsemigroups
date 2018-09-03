@@ -237,15 +237,14 @@ namespace libsemigroups {
   // CongBase - non-virtual methods - protected
   /////////////////////////////////////////////////////////////////////////
 
-  void CongBase::set_parent_semigroup(FroidurePinBase* prnt) {
-    LIBSEMIGROUPS_ASSERT(prnt != nullptr || dead());
-    if (prnt == _parent) {
+  void CongBase::set_parent_semigroup(FroidurePinBase& prnt) {
+    if (&prnt == _parent) {
       return;
     }
     LIBSEMIGROUPS_ASSERT(_parent == nullptr || dead());
-    LIBSEMIGROUPS_ASSERT(prnt->nr_generators() == nr_generators()
+    LIBSEMIGROUPS_ASSERT(prnt.nr_generators() == nr_generators()
                          || nr_generators() == UNDEFINED || dead());
-    _parent = prnt;
+    _parent = &prnt;
     reset();
   }
 

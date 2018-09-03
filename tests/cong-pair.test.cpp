@@ -159,7 +159,7 @@ namespace libsemigroups {
       // REQUIRE(S.size(false) == 53);
       // REQUIRE(S.nr_rules(false) == 20);
 
-      P<> p(TWOSIDED, &S);
+      P<> p(TWOSIDED, S);
 
       // Class indices are assigned starting at 0
       REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);

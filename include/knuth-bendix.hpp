@@ -103,8 +103,8 @@ namespace libsemigroups {
       //! reduction ordering ReductionOrdering specifed by the parameter \p
       //! order.
       explicit KnuthBendix(ReductionOrdering*);
-      explicit KnuthBendix(FroidurePinBase*);
       explicit KnuthBendix(FroidurePinBase&);
+      // TODO(now) remove this
       explicit KnuthBendix(KnuthBendix const*);
 
       //! Constructs a rewriting system with no rules, and the SHORTLEX
@@ -177,12 +177,13 @@ namespace libsemigroups {
       std::vector<std::pair<std::string, std::string>> rules() const;
       // using FpSemiBase::const_iterator;
 
-      // TODO these will have to be derived from iterator_base
+      // TODO(now) these will have to be derived from iterator_base
       // const_iterator cbegin_active_rules() const;
       // const_iterator cend_active_rules() const;
 
       //! Rewrites the word \p w in-place according to the current rules in the
       //! rewriting system, and returns it.
+      // TODO(now) change to void rewrite(std::string&);
       std::string* rewrite(std::string*) const;
 
       //! Rewrites a copy of the word \p w rewritten according to the current

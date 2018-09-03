@@ -56,7 +56,6 @@ namespace libsemigroups {
 
     explicit FpSemigroup(FpSemigroup::policy = standard);
     explicit FpSemigroup(FroidurePinBase&);
-    explicit FpSemigroup(FroidurePinBase*);
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual methods - public

@@ -92,7 +92,7 @@ namespace libsemigroups {
     void add_rule(relation_type rel);
     void add_rule(std::pair<std::string, std::string>);
 
-    void add_rules(FroidurePinBase*);
+    void add_rules(FroidurePinBase&);
     void add_rules(std::vector<std::pair<std::string, std::string>> const&);
 
     size_t nr_rules() const noexcept;
@@ -155,7 +155,7 @@ namespace libsemigroups {
     virtual void set_alphabet_impl(std::string const&);
     virtual void set_alphabet_impl(size_t);
     virtual void add_rule_impl(word_type const&, word_type const&);
-    virtual void add_rules_impl(FroidurePinBase*);
+    virtual void add_rules_impl(FroidurePinBase&);
     virtual bool is_obviously_infinite_impl();
     virtual bool is_obviously_finite_impl();
 

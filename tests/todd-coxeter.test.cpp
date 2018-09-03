@@ -409,7 +409,7 @@ namespace libsemigroups {
       word_type w1, w2;
       S.factorisation(w1, S.position(t1));
       S.factorisation(w2, S.position(t2));
-      ToddCoxeter tc(LEFT, &S, ToddCoxeter::policy::use_relations);
+      ToddCoxeter tc(LEFT, S, ToddCoxeter::policy::use_relations);
       tc.add_pair(w1, w2);
 
       REQUIRE(tc.nr_classes() == 69);

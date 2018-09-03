@@ -48,16 +48,14 @@ namespace libsemigroups {
           : _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
 
-      explicit WrappedCong(FroidurePinBase* S)
+      explicit WrappedCong(FroidurePinBase& S)
           : _wrapped_cong(
                 make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
-        set_alphabet(S->nr_generators());
+        set_alphabet(S.nr_generators());
         if (TAddRules) {
           add_rules(S);
         }
       }
-
-      explicit WrappedCong(FroidurePinBase& S) : WrappedCong(&S) {}
 
       ////////////////////////////////////////////////////////////////////////////
       // Runner - pure virtual method - public
@@ -158,8 +156,8 @@ namespace libsemigroups {
         _wrapped_cong->add_pair(u, v);
       }
 
-      void add_rules_impl(FroidurePinBase* S) override {
-        relations(*S, [this](word_type lhs, word_type rhs) -> void {
+      void add_rules_impl(FroidurePinBase& S) override {
+        relations(S, [this](word_type lhs, word_type rhs) -> void {
           validate_word(lhs);
           validate_word(rhs);
           add_rule(lhs, rhs);

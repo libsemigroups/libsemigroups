@@ -127,15 +127,12 @@ namespace libsemigroups {
           _stop_packing(false),
           _table(0, 0, UNDEFINED) {}
 
-    ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase* S, policy p)
+    ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase& S, policy p)
         : ToddCoxeter(type) {
       _policy = p;
       set_parent_semigroup(S);
-      set_nr_generators(S->nr_generators());
+      set_nr_generators(S.nr_generators());
     }
-
-    ToddCoxeter::ToddCoxeter(congruence_type type, FroidurePinBase& S, policy p)
-        : ToddCoxeter(type, &S, p) {}
 
     // Construct a ToddCoxeter object representing a congruence over the
     // semigroup defined by copy (the quotient that is).
@@ -163,7 +160,7 @@ namespace libsemigroups {
         : ToddCoxeter(typ, *copy.congruence()) {
       LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
       if (copy.finished()) {
-        set_parent_semigroup(&copy.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(copy.isomorphic_non_fp_semigroup());
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_relations;
         // FIXME assertion failure if we use_cayley_graph
@@ -178,7 +175,7 @@ namespace libsemigroups {
         add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
       }
       if (kb.finished()) {
-        set_parent_semigroup(&kb.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(kb.isomorphic_non_fp_semigroup());
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_cayley_graph;
       }

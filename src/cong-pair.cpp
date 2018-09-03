@@ -24,14 +24,10 @@ namespace libsemigroups {
     // KBP - constructors - public
     ////////////////////////////////////////////////////////////////////////
 
-    KBP::KBP(congruence_type type, fpsemigroup::KnuthBendix* kb)
-        : p_type(type), _kb(kb) {
-      set_nr_generators(_kb->alphabet().size());
-    }
-
-    // For testing purposes only really
     KBP::KBP(congruence_type type, fpsemigroup::KnuthBendix& kb)
-        : KBP(type, &kb){};
+        : p_type(type), _kb(kb) {
+      set_nr_generators(_kb.alphabet().size());
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // P - virtual methods - public
@@ -41,9 +37,9 @@ namespace libsemigroups {
       if (stopped()) {
         return;
       }
-      _kb->run_until([this]() -> bool { return dead() || timed_out(); });
+      _kb.run_until([this]() -> bool { return dead() || timed_out(); });
       if (!stopped()) {
-        set_parent_semigroup(&_kb->isomorphic_non_fp_semigroup());
+        set_parent_semigroup(_kb.isomorphic_non_fp_semigroup());
         p_type::run();
       }
       report_why_we_stopped();
