@@ -140,7 +140,10 @@ AC_MSG_RESULT([$enable_compile_warnings])
 
 AS_IF([test "x$enable_compile_warnings" != "xno"],
   [ax_enable_compile_warnings=yes
-   AX_COMPILER_FLAGS_CXXFLAGS([WARNING_CXXFLAGS])
+   AX_COMPILER_FLAGS_CXXFLAGS([WARNING_CXXFLAGS], [], [ dnl
+       -pedantic dnl
+       -Wno-c++11-extensions dnl
+       -Wold-style-cast])
    AC_SUBST([WARNING_CXXFLAGS])])
 
 # Check if code coverage mode is enabled

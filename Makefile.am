@@ -15,9 +15,7 @@ AM_LDFLAGS  =  -no-undefined
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
-AM_CXXFLAGS += -g3 -O0
-AM_CXXFLAGS += -fno-omit-frame-pointer -pedantic
-AM_CXXFLAGS += -Wno-c++11-extensions -Wold-style-cast
+AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer 
 else
 AM_CPPFLAGS = -DNDEBUG
 endif

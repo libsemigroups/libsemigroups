@@ -22,8 +22,8 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
 
-#include <stdint.h>  // for uint32_t
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
 #include <vector>  // for vector, vector<>::const_iterator
 

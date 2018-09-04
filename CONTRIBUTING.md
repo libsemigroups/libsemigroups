@@ -12,7 +12,7 @@ check program produced by `make check`. Similarly to run valgrind you have
 to do:
 
     ./configure --enable-debug && make check-am 
-    libtool --mode=execute valgrind --leak-check=full ./lstest -d yes [quick],[standard] 2>&1 | tee --append valgrind.txt
+    libtool --mode=execute valgrind --leak-check=full ./lstest [quick],[standard] 2>&1 | tee --append valgrind.txt
 
 ## Adding new test cases
 
