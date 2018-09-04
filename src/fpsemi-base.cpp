@@ -44,6 +44,7 @@ namespace libsemigroups {
         _inverses(),
         _rules(),
         // Mutable
+        _identity_defined(false),
         _isomorphic_non_fp_semigroup(nullptr),
         _is_obviously_finite_known(false),
         _is_obviously_finite(false),
@@ -204,21 +205,18 @@ namespace libsemigroups {
 
   // Note that this can be called repeatedly, and that's fine.
   void FpSemiBase::set_identity(std::string const& id) {
-    if (id.length() != 1) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
-                                    + to_string(id.length())
-                                    + " letters, should be single letter");
-    }
-    validate_letter(id[0]);
-    _identity = id[0];
-    for (auto l : alphabet()) {
-      if (l == id[0]) {
-        add_rule(id + id, id);
-      } else {
-        add_rule(to_string(l) + id, to_string(l));
-        add_rule(id + to_string(l), to_string(l));
+    if (validate_identity_impl(id) && id.length() == 1) {
+      _identity = id[0];
+      for (auto l : alphabet()) {
+        if (l == id[0]) {
+          add_rule(id + id, id);
+        } else {
+          add_rule(to_string(l) + id, to_string(l));
+          add_rule(id + to_string(l), to_string(l));
+        }
       }
     }
+    _identity_defined = true;
   }
 
   void FpSemiBase::set_identity(letter_type id) {
@@ -227,7 +225,7 @@ namespace libsemigroups {
   }
 
   std::string const& FpSemiBase::identity() const {
-    if (!_identity.empty()) {
+    if (_identity_defined) {
       return _identity;
     } else {
       throw LIBSEMIGROUPS_EXCEPTION("no identity has been defined");
@@ -238,7 +236,7 @@ namespace libsemigroups {
     if (_alphabet.empty()) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "no alphabet has been defined, define an alphabet first");
-    } else if (_identity.empty()) {
+    } else if (!_identity_defined) {
       throw LIBSEMIGROUPS_EXCEPTION(
           "no identity has been defined, define an identity first");
     } else if (_alphabet.size() != inv.size()) {
@@ -262,8 +260,8 @@ namespace libsemigroups {
     _inverses = inv;
 
     for (size_t i = 0; i < _alphabet.size(); ++i) {
-      add_rule(std::string(_alphabet[i], 1) + _inverses[i], _identity);
-      add_rule(std::string(_inverses[i], 1) + _alphabet[i], _identity);
+      add_rule(std::string(1, _alphabet[i]) + _inverses[i], _identity);
+      add_rule(std::string(1, _inverses[i]) + _alphabet[i], _identity);
     }
   }
 
@@ -346,6 +344,51 @@ namespace libsemigroups {
     return false;
   }
 
+  std::string FpSemiBase::to_gap_string() {
+    std::string out = "free := FreeMonoid(";
+    for (auto x : alphabet()) {
+      out += std::string("\"") + x + "\"";
+      if (x != alphabet().back()) {
+        out += ",";
+      }
+    }
+    out += ");\n";
+    out += "AssignGeneratorVariables(free);\n";
+    out += "rules := [\n";
+    for (auto it = cbegin_rules(); it < cend_rules(); ++it) {
+      out += "          [";
+      if (it->first.empty()) {
+        out += "One(free)";
+      } else {
+        for (auto const& l : (*it).first) {
+          out += l;
+          if (l != (*it).first.back()) {
+            out += " * ";
+          }
+        }
+        out += ", ";
+      }
+      if (it->second.empty()) {
+        out += "One(free)";
+      } else {
+        for (auto const& l : (*it).second) {
+          out += l;
+          if (l != (*it).second.back()) {
+            out += " * ";
+          }
+        }
+      }
+      if (it != cend_rules() - 1) {
+        out += "],\n";
+      } else {
+        out += "]\n";
+      }
+    }
+    out += "         ];\n";
+    out += "S := free / rules;\n";
+    return out;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // FpSemiBase - non-virtual methods - protected
   //////////////////////////////////////////////////////////////////////////////
@@ -380,7 +423,7 @@ namespace libsemigroups {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter " + to_string(l) + " in word " + w
+            "invalid letter " + std::string(1, l) + " in word " + w
             + ", valid letters are \"" + _alphabet + "\"");
       }
     }
@@ -470,6 +513,16 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
                                     "words must be non-empty");
     }
+  }
+
+  bool FpSemiBase::validate_identity_impl(std::string const& id) const {
+    if (id.length() != 1) {
+      throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
+                                    + to_string(id.length())
+                                    + " letters, should be single letter");
+    }
+    validate_letter(id[0]);
+    return true;
   }
 
   //////////////////////////////////////////////////////////////////////////////

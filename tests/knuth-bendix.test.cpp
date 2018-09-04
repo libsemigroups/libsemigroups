@@ -274,10 +274,10 @@ namespace libsemigroups {
                             "009",
                             "(fpsemi) Example 5.1 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
-
-      REPORTER.set_report(REPORT);
 
       kb.add_rule("aA", "");
       kb.add_rule("Aa", "");
@@ -295,10 +295,10 @@ namespace libsemigroups {
                             "010",
                             "(fpsemi) Example 5.3 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("ab");
 
-      REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ababab", "");
@@ -313,10 +313,10 @@ namespace libsemigroups {
                             "011",
                             "(fpsemi) Example 5.4 in Sims (infinite)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("Bab");
 
-      REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");
@@ -332,10 +332,11 @@ namespace libsemigroups {
                             "012",
                             "(fpsemi) Example 6.4 in Sims (size 168)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("abc");
 
-      REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bc", "");
       kb.add_rule("bbb", "");
@@ -362,6 +363,7 @@ namespace libsemigroups {
               == std::vector<std::string>({"c", "b", ""}));
     }
 
+    // Takes approx. 1m33s
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "013",
                             "(fpsemi) Example 6.6 in Sims",
@@ -380,18 +382,16 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.nr_active_rules() == 1026);
       REQUIRE(kb.confluent());
-      // TODO(now) find size when compiled without debug mode
-      // REQUIRE(kb.size() == 0);
+      REQUIRE(kb.size() == 10752);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "014",
                             "(fpsemi) Chapter 10, Section 4 in NR (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("abc");
-
-      REPORTER.set_report(REPORT);
 
       kb.add_rule("aaaa", "a");
       kb.add_rule("bbbb", "b");
@@ -414,10 +414,11 @@ namespace libsemigroups {
                             "1.1 in NR "
                             "(size 120)",
                             "[knuth-bendix][fpsemi][quick]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("ABab");
 
-      REPORTER.set_report(REPORT);
       kb.add_rule("aa", "");
       kb.add_rule("bbbbb", "");
       kb.add_rule("babababa", "");
@@ -511,10 +512,10 @@ namespace libsemigroups {
                             "1.1 in "
                             "NR (infinite)",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("ab");
 
-      REPORTER.set_report(REPORT);
       kb.add_rule("aa", "a");
       kb.add_rule("bb", "b");
 
@@ -989,12 +990,12 @@ namespace libsemigroups {
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       REPORTER.set_report(REPORT);
       KnuthBendix kb;
-      kb.set_alphabet("cab"); // runs forever with a different order
+      kb.set_alphabet("cab");  // runs forever with a different order
 
       kb.add_rule("aabc", "acba");
 
       REQUIRE(kb.is_obviously_infinite());
-      REQUIRE(kb.confluent()); // Confirmed with GAP
+      REQUIRE(kb.confluent());  // Confirmed with GAP
 
       REQUIRE(!kb.equal_to("a", "b"));
       REQUIRE(kb.equal_to("aabcabc", "aabccba"));
@@ -1012,6 +1013,8 @@ namespace libsemigroups {
         "038",
         "(fpsemi) Von Dyck (2,3,7) group (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("ABabc");
 
@@ -1020,7 +1023,6 @@ namespace libsemigroups {
       kb.add_rule("BA", "c");
 
       REQUIRE(!kb.confluent());
-      REPORTER.set_report(REPORT);
       kb.knuth_bendix();
 
       REQUIRE(kb.nr_active_rules() == 6);
@@ -1109,6 +1111,7 @@ namespace libsemigroups {
                             "041",
                             "(fpsemi) rewriting system from Congruence 20",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("ab");
 
@@ -1122,6 +1125,7 @@ namespace libsemigroups {
 
     // The next test meets the definition of a standard test but causes valgrind
     // on travis to timeout.
+    // Takes approx. 2.6s
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "042",
                             "(fpsemi) Example 6.6 in Sims (with limited "
@@ -1155,10 +1159,11 @@ namespace libsemigroups {
     // mean left-normed commutators. The presentation here was derived by first
     // applying the NQA to find the maximal nilpotent quotient, and then
     // introducing new generators for the PCP generators.
-    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "043", "(fpsemi) (from
-    // kbmag/standalone/kb_data/heinnilp)",
-    //           "[fails][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]")
-    //           {
+    // LIBSEMIGROUPS_TEST_CASE(
+    //     "KnuthBendix",
+    //     "043",
+    //     "(fpsemi) (from kbmag/standalone/kb_data/heinnilp)",
+    //     "[fail][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]") {
     //   // TODO(later) fails because internal_rewrite expect rules to be length
     //   reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
     //   kb.add_rule("BAba", "c");
@@ -1176,14 +1181,14 @@ namespace libsemigroups {
     //   kb.knuth_bendix();
     //   REQUIRE(kb.confluent());
     //   REQUIRE(kb.nr_active_rules() == 32767);
-    // }
+    //  }
 
-    // Fibonacci group F(2,7) - order 29 - works better with largish tidyint
-    // knuth_bendix does not terminate
+    // Fibonacci group F(2,7) - without inverses
+    // Takes approx. 36s
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "044",
-        "(fpsemi) (from kbmag/standalone/kb_data/f27) (infinite)",
+        "(fpsemi) (from kbmag/standalone/kb_data/f27) (infinite) (1 / 2)",
         "[extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
       REPORTER.set_report(true);
       KnuthBendix kb;
@@ -1203,22 +1208,21 @@ namespace libsemigroups {
       // Fails to terminate, or is very slow, with knuth_bendix
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 47);
-      // REQUIRE(kb.size() == 29);
-      // KBMAG does not terminate with this example :-)
-      // TODO(now) Add inverses here, maybe this is why we terminate but KBMAG does
-      // not, i.e. the two presentations are not the same.
+      REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
     // An extension of 2^6 be L32
-    // knuth_bendix/2 does not terminate
+    // Takes approx. 1m33s
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "045",
         "(fpsemi) (from kbmag/standalone/kb_data/l32ext)",
-        "[fail][extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+        "[extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
       REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("abB");
+      kb.set_identity("");
+      kb.set_inverses("aBb");
 
       kb.add_rule("aa", "");
       kb.add_rule("BB", "b");
@@ -1229,7 +1233,8 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32750);
+      REQUIRE(kb.nr_active_rules() == 1026);
+      REQUIRE(kb.size() == 10752);
     }
 
     // 2-generator free abelian group (with this ordering KB terminates - but no
@@ -1257,17 +1262,16 @@ namespace libsemigroups {
     // This group is actually D_22 (although it wasn't meant to be). All
     // generators are unexpectedly involutory.
 
-    // knuth_bendix/2 does not terminate with the given ordering, terminates
+    // knuth_bendix does not terminate with the given ordering, terminates
     // almost immediately with the standard order.
-    // TODO(now) double check that something isn't going wrong in the
-    // nonstandard alphabet case.
-    // TODO(now) Change this to a group presentation.
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "047",
-        "(fpsemi) (from kbmag/standalone/kb_data/d22) "
+        "(fpsemi) (from kbmag/standalone/kb_data/d22) (1 / 3)"
         "(infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       // KnuthBendix kb;
       // kb.set_alphabet("aAbBcCdDyYfF");
 
@@ -1280,8 +1284,6 @@ namespace libsemigroups {
       kb.add_rule("dFDa", "");
       kb.add_rule("ybYA", "");
       kb.add_rule("fCFB", "");
-      REPORTER.set_report(REPORT);
-
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
@@ -1297,18 +1299,30 @@ namespace libsemigroups {
       REQUIRE(kb.equal_to("adFD", ""));
       REQUIRE(kb.equal_to("daCA", ""));
 
+      REQUIRE(
+          kb.rules()
+          == std::vector<std::pair<std::string, std::string>>({{"aCA", "FDa"},
+                                                               {"dFD", "CAd"},
+                                                               {"CAda", ""},
+                                                               {"FDad", ""},
+                                                               {"bfBY", ""},
+                                                               {"cyCD", ""},
+                                                               {"fCFB", ""},
+                                                               {"ybYA", ""}}));
+      // Verified with GAP
+
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
     // No generators - no anything!
-    // JDM: arguably this should throw an exception
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "048",
         "(fpsemi) (from kbmag/standalone/kb_data/degen1)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
-      KnuthBendix kb;
       REPORTER.set_report(REPORT);
+
+      KnuthBendix kb;
 
       REQUIRE(kb.confluent());
 
@@ -1317,25 +1331,28 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 0);
     }
 
-    // knuth_bendix/2 fails to terminate
     // Symmetric group S_4
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "049",
         "(fpsemi) (from kbmag/standalone/kb_data/s4)",
-        "[fail][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("abB");
+      kb.set_identity("");
+      kb.set_inverses("aBb");
 
       kb.add_rule("bb", "B");
       kb.add_rule("BaBa", "abab");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 11);
+      REQUIRE(kb.size() == 24);
     }
 
     // This example verifies the nilpotence of the group using the Sims
@@ -1345,10 +1362,11 @@ namespace libsemigroups {
     // maximal nilpotent quotient, and then introducing new generators for the
     // PCP generators. It is essential for success that reasonably low values of
     // the maxstoredlen parameter are given.
-    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "050", "(fpsemi) (from
-    // kbmag/standalone/kb_data/verifynilp)",
-    //           "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]")
-    //           {
+    // LIBSEMIGROUPS_TEST_CASE(
+    //     "KnuthBendix",
+    //     "050",
+    //     "(fpsemi) (from kbmag/standalone/kb_data/verifynilp)",
+    //     "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]") {}
     //   KnuthBendix kb(new RECURSIVE(), "hHgGfFyYdDcCbBaA");
     //   kb.add_rule("BAba", "c");
     //   kb.add_rule("CAca", "d");
@@ -1386,6 +1404,8 @@ namespace libsemigroups {
                             "051",
                             "(from kbmag/standalone/kb_data/f25monoid)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("abcde");
 
@@ -1394,7 +1414,6 @@ namespace libsemigroups {
       kb.add_rule("cd", "e");
       kb.add_rule("de", "a");
       kb.add_rule("ea", "b");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -1442,13 +1461,14 @@ namespace libsemigroups {
                             "052",
                             "(from kbmag/standalone/kb_data/degen4a)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbBcC");
 
       kb.add_rule("Aba", "bb");
       kb.add_rule("Bcb", "cc");
       kb.add_rule("Cac", "aa");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -1469,11 +1489,12 @@ namespace libsemigroups {
                             "053",
                             "(from kbmag/standalone/kb_data/torus)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAcCbBdD");
 
       kb.add_rule("ABab", "DCdc");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -1492,31 +1513,34 @@ namespace libsemigroups {
     // very difficult calculation indeed, however.
     //
     // KBMAG does not terminate when SHORTLEX order is used.
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "054", "(from
-    kbmag/standalone/kb_data/f27monoid)",
-"[fails][knuth-bendix][kbmag][recursive]") {
-      KnuthBendix kb(new RECURSIVE(), "abcdefg");
-      kb.add_rule("ab", "c");
-      kb.add_rule("bc", "d");
-      kb.add_rule("cd", "e");
-      kb.add_rule("de", "f");
-      kb.add_rule("ef", "g");
-      kb.add_rule("fg", "a");
-      kb.add_rule("ga", "b");
-      REPORTER.set_report(REPORT);
+    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+    //                         "054",
+    //                         "(from kbmag/standalone/kb_data/f27monoid)",
+    //                         "[fail][knuth-bendix][kbmag][recursive]") {
+    //   KnuthBendix kb(new RECURSIVE(), "abcdefg");
+    //   kb.add_rule("ab", "c");
+    //   kb.add_rule("bc", "d");
+    //   kb.add_rule("cd", "e");
+    //   kb.add_rule("de", "f");
+    //   kb.add_rule("ef", "g");
+    //   kb.add_rule("fg", "a");
+    //   kb.add_rule("ga", "b");
+    //   REPORTER.set_report(REPORT);
 
-      REQUIRE(!kb.confluent());
+    //   REQUIRE(!kb.confluent());
 
-      kb.knuth_bendix();
-      REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
-    }*/
+    //   kb.knuth_bendix();
+    //   REQUIRE(kb.confluent());
+    //   REQUIRE(kb.nr_active_rules() == 32767);
+    // }
 
     //  3-fold cover of A_6
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "055",
                             "(from kbmag/standalone/kb_data/3a6)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("abAB");
 
@@ -1524,7 +1548,6 @@ namespace libsemigroups {
       kb.add_rule("bbb", "");
       kb.add_rule("abababab", "");
       kb.add_rule("aBaBaBaBaB", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -1563,10 +1586,10 @@ namespace libsemigroups {
                             "056",
                             "(from kbmag/standalone/kb_data/f2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
-
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -1576,33 +1599,35 @@ namespace libsemigroups {
     }
 
     //  A nonhopfian group
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "057", "(from
-    kbmag/standalone/kb_data/nonhopf)",
-"[quick][knuth-bendix][kbmag][recursive]") {
-      KnuthBendix kb(new RECURSIVE(), "aAbB");
-      kb.add_rule("Baab", "aaa");
-      REPORTER.set_report(REPORT);
+    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+    //                         "057",
+    //                         "(from kbmag/standalone/kb_data/nonhopf)",
+    //                         "[quick][knuth-bendix][kbmag][recursive]") {
+    //   KnuthBendix kb(new RECURSIVE(), "aAbB");
+    //   kb.add_rule("Baab", "aaa");
+    //   REPORTER.set_report(REPORT);
 
-      REQUIRE(kb.confluent());
+    //   REQUIRE(kb.confluent());
 
-      kb.knuth_bendix();
-      REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 1);
+    //   kb.knuth_bendix();
+    //   REQUIRE(kb.confluent());
+    //   REQUIRE(kb.nr_active_rules() == 1);
 
-      REQUIRE(kb.equal_to("Baab", "aaa"));
-      REQUIRE(kb.rules() == std::vector<std::pair<std::string,
-    std::string>>({}));
-    }*/
+    //   REQUIRE(kb.equal_to("Baab", "aaa"));
+    //   REQUIRE(kb.rules()
+    //           == std::vector<std::pair<std::string, std::string>>({}));
+    // }
 
     // Symmetric group S_16
-    // knuth_bendix/2 fail to terminate
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "058",
                             "(from kbmag/standalone/kb_data/s16)",
-                            "[fail][extreme][knuth-bendix][kbmag][shortlex]") {
-      REPORTER.set_report(true);
+                            "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("abcdefghijklmno");
+      kb.set_identity("");
+      kb.set_inverses("abcdefghijklmno");
 
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
@@ -1712,9 +1737,13 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
 
-      kb.knuth_bendix_by_overlap_length();
+      // kb.knuth_bendix_by_overlap_length();
+      kb.knuth_bendix();  // faster
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 211);
+      // REQUIRE(kb.size() == 20922789888000);
+      // TODO(later) uncomment this line, currently this uses the Froidure-Pin
+      // algorithm which will use too much memory.
     }
 
     // Presentation of group A_4 regarded as monoid presentation - gives
@@ -1723,12 +1752,13 @@ namespace libsemigroups {
                             "059",
                             "(from kbmag/standalone/kb_data/a4monoid)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("abB");
 
       kb.add_rule("bb", "B");
       kb.add_rule("BaB", "aba");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -1757,12 +1787,12 @@ namespace libsemigroups {
                             "060",
                             "(from kbmag/standalone/kb_data/degen3)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
-
       kb.add_rule("ab", "");
       kb.add_rule("abb", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -1778,20 +1808,17 @@ namespace libsemigroups {
     }
 
     // Symmetric group S_9
-    // knuth_bendix/2 fail to terminate
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "061",
                             "(from kbmag/standalone/kb_data/s9)",
-                            "[fail][extreme][knuth-bendix][kbmag][shortlex]") {
-      REPORTER.set_report(true);
+                            "[standard][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
 
-      std::string        lphbt = "abcdefgh";
-      std::random_device rd;
-      std::mt19937       g(rd());
-      std::shuffle(lphbt.begin(), lphbt.end(), g);
       KnuthBendix kb;
-      kb.set_alphabet(lphbt);
-      std::cout << kb.alphabet() << "\n";
+      kb.set_alphabet("abcdefgh");
+      kb.set_identity("");
+      kb.set_inverses("abcdefgh");
+
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
       kb.add_rule("da", "ad");
@@ -1822,10 +1849,10 @@ namespace libsemigroups {
       kb.add_rule("hgh", "ghg");
 
       REQUIRE(!kb.confluent());
-      kb.run_for(std::chrono::hours(1));
-      // kb.knuth_bendix_by_overlap_length();
+      kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 57);
+      REQUIRE(kb.size() == 362880);
     }
 
     // infinite cyclic group
@@ -1833,10 +1860,9 @@ namespace libsemigroups {
                             "062",
                             "(from kbmag/standalone/kb_data/ab1)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aA");
-
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -1850,11 +1876,11 @@ namespace libsemigroups {
                             "063",
                             "(from kbmag/standalone/kb_data/degen2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aA");
-
       kb.add_rule("a", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -1872,6 +1898,8 @@ namespace libsemigroups {
                             "064",
                             "(from kbmag/standalone/kb_data/f25)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbBcCdDyY");
 
@@ -1880,7 +1908,6 @@ namespace libsemigroups {
       kb.add_rule("cd", "y");
       kb.add_rule("dy", "a");
       kb.add_rule("ya", "b");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -1924,25 +1951,29 @@ namespace libsemigroups {
     }
 
     // Second of BHN's series of increasingly complicated presentations of 1.
-    // Works quickest with large value of tidyint knuth_bendix/2 fail to
-    // terminate
+    // Works quickest with large value of tidyint
+    // Takes > 1m (knuth_bendix), didn't run to the end
+    // Takes approx. 26s (knuth_bendix_by_overlap_length)
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "065",
                             "(from kbmag/standalone/kb_data/degen4b)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("aAbBcC");
+      kb.set_identity("");
+      kb.set_inverses("AaBbCc");
 
       kb.add_rule("bbABaBcbCCAbaBBccBCbccBCb", "");
       kb.add_rule("ccBCbCacAABcbCCaaCAcaaCAc", "");
       kb.add_rule("aaCAcAbaBBCacAAbbABabbABa", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32766);
+      REQUIRE(kb.nr_active_rules() == 6);
+      REQUIRE(kb.size() == 1);
     }
 
     // Free nilpotent group of rank 2 and class 2
@@ -1964,13 +1995,16 @@ namespace libsemigroups {
     //   REQUIRE(kb.nr_active_rules() == 3);
     // }
 
-    // knuth_bendix/2 don't finish
+    // Takes approx. 2s
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "067",
                             "(from kbmag/standalone/kb_data/funny3)",
-                            "[extreme][knuth-bendix][kbmag][shortlex]") {
+                            "[standard][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aAbBcC");
+      kb.set_identity("");
+      kb.set_inverses("AaBbCc");
 
       kb.add_rule("aaa", "");
       kb.add_rule("bbb", "");
@@ -1981,67 +2015,77 @@ namespace libsemigroups {
       kb.add_rule("abcABCabcABCabcABC", "");
       kb.add_rule("BcabCABcabCABcabCA", "");
       kb.add_rule("cbACBacbACBacbACBa", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
+      // kb.knuth_bendix() // also works, but is slower
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 8);
+      REQUIRE(kb.size() == 3);
     }
 
     // Two generator presentation of Fibonacci group F(2,7) - order 29. Large
     // value of tidyint works better.
-    // knuth_bendix/2 don't finish
+    // Takes approx. 19s (knuth_bendix_by_overlap_length)
+    // Takes > 19s (knuth_bendix), didn't run to the end
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "068",
                             "(from kbmag/standalone/kb_data/f27_2gen)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
+      kb.set_identity("");
+      kb.set_inverses("AaBb");
 
       kb.add_rule("bababbababbabbababbab", "a");
       kb.add_rule("abbabbababbaba", "b");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32763);
+      REQUIRE(kb.nr_active_rules() == 19);
+      REQUIRE(kb.size() == 29);
     }
 
     // Mathieu group M_11
-    // knuth_bendix/2 don't finish
+    // Takes approx. 2m9s (majority in checking confluence)
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "069",
                             "(from kbmag/standalone/kb_data/m11)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("abB");
+      kb.set_identity("");
+      kb.set_inverses("aBb");
 
       kb.add_rule("BB", "bb");
       kb.add_rule("BaBaBaBaBaB", "abababababa");
       kb.add_rule("bbabbabba", "abbabbabb");
       kb.add_rule("aBaBababaBabaBBaBab", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
-      kb.knuth_bendix();
+      kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32761);
+      REQUIRE(kb.nr_active_rules() == 1731);
+      REQUIRE(kb.size() == 7920);
     }
 
     // Weyl group E8 (all gens involutory).
-    // knuth_bendix/2 don't finish
+    // Takes approx. 8s
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "070",
                             "(from kbmag/standalone/kb_data/e8)",
                             "[extreme][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("abcdefgh");
-
+      kb.set_identity("");
+      kb.set_inverses("abcdefgh");
       kb.add_rule("bab", "aba");
       kb.add_rule("ca", "ac");
       kb.add_rule("da", "ad");
@@ -2070,37 +2114,70 @@ namespace libsemigroups {
       kb.add_rule("gfg", "fgf");
       kb.add_rule("hf", "fh");
       kb.add_rule("hgh", "ghg");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
-
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32767);
+      REQUIRE(kb.nr_active_rules() == 192);
+      // REQUIRE(kb.size() == 696729600);
+      // TODO(later) uncomment this line, currently this uses the Froidure-Pin
+      // algorithm which will use too much memory.
     }
 
     // Von Dyck (2,3,7) group - infinite hyperbolic - small tidyint works better
-    // knuth_bendix/knuth_bendix_by_overlap_length do not terminate
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "071",
                             "(from kbmag/standalone/kb_data/237)",
-                            "[extreme][knuth-bendix][kbmag][shortlex]") {
+                            "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aAbBc");
+      kb.set_identity("");
+      kb.set_inverses("AaBbc");
 
       kb.add_rule("aaaa", "AAA");
       kb.add_rule("bb", "B");
       kb.add_rule("BA", "c");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 42);
-      // KBMAG stops with 32767 rules and is not confluent
-      std::cout << kb;
-      REQUIRE(kb.rules() == std::vector<std::pair<std::string, std::string>>());
+      REQUIRE(kb.nr_active_rules() == 32);
+      REQUIRE(kb.rules()
+              == std::vector<std::pair<std::string, std::string>>(
+                     {{"Aa", ""},
+                      {"Ac", "b"},
+                      {"BA", "c"},
+                      {"BB", "b"},
+                      {"Bb", ""},
+                      {"Bc", "bA"},
+                      {"aA", ""},
+                      {"ab", "c"},
+                      {"bB", ""},
+                      {"ba", "AB"},
+                      {"bb", "B"},
+                      {"bc", "A"},
+                      {"cB", "a"},
+                      {"ca", "B"},
+                      {"cb", "aB"},
+                      {"cc", ""},
+                      {"BaB", "bAb"},
+                      {"bAB", "Ba"},
+                      {"cAB", "aBa"},
+                      {"AAAA", "aaa"},
+                      {"AAAb", "aaac"},
+                      {"aaaa", "AAA"},
+                      {"bAbA", "Bac"},
+                      {"cAAA", "Baaa"},
+                      {"cAbA", "aBac"},
+                      {"ABaaa", "bAAA"},
+                      {"Baaac", "cAAb"},
+                      {"bAABaac", "BacAAb"},
+                      {"cAABaac", "aBacAAb"},
+                      {"BaaaBaaa", "cAAbAAA"},
+                      {"bAABaaBaaa", "BacAAbAAA"},
+                      {"cAABaaBaaa", "aBacAAbAAA"}}));
     }
 
     // Cyclic group of order 2.
@@ -2108,11 +2185,11 @@ namespace libsemigroups {
                             "072",
                             "(from kbmag/standalone/kb_data/c2)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("a");
-
       kb.add_rule("aa", "");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(kb.confluent());
 
@@ -2125,35 +2202,36 @@ namespace libsemigroups {
           == std::vector<std::pair<std::string, std::string>>({{"aa", ""}}));
     }
 
-    /*LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "073", "(from
-    kbmag/standalone/kb_data/freenilpc3)",
-"[quick][knuth-bendix][kbmag][recursive]") {
-      KnuthBendix kb(new RECURSIVE(), "yYdDcCbBaA");
-      kb.add_rule("BAba", "c");
-      kb.add_rule("CAca", "d");
-      kb.add_rule("CBcb", "y");
-      kb.add_rule("da", "ad");
-      kb.add_rule("ya", "ay");
-      kb.add_rule("db", "bd");
-      kb.add_rule("yb", "by");
-      REPORTER.set_report(REPORT);
+    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+    //                         "073",
+    //                         "(from kbmag/standalone/kb_data/freenilpc3)",
+    //                         "[quick][knuth-bendix][kbmag][recursive]") {
+    //   KnuthBendix kb(new RECURSIVE(), "yYdDcCbBaA");
+    //   kb.add_rule("BAba", "c");
+    //   kb.add_rule("CAca", "d");
+    //   kb.add_rule("CBcb", "y");
+    //   kb.add_rule("da", "ad");
+    //   kb.add_rule("ya", "ay");
+    //   kb.add_rule("db", "bd");
+    //   kb.add_rule("yb", "by");
+    //   REPORTER.set_report(REPORT);
 
-      REQUIRE(kb.confluent());
+    //   REQUIRE(kb.confluent());
 
-      kb.knuth_bendix();
-      REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 7);
+    //   kb.knuth_bendix();
+    //   REQUIRE(kb.confluent());
+    //   REQUIRE(kb.nr_active_rules() == 7);
 
-      REQUIRE(kb.equal_to("BAba", "c"));
-      REQUIRE(kb.equal_to("CAca", "d"));
-      REQUIRE(kb.equal_to("CBcb", "y"));
-      REQUIRE(kb.equal_to("da", "ad"));
-      REQUIRE(kb.equal_to("ya", "ay"));
-      REQUIRE(kb.equal_to("db", "bd"));
-      REQUIRE(kb.equal_to("yb", "by"));
-      REQUIRE(kb.rules() == std::vector<std::pair<std::string,
-    std::string>>({}));
-    }*/
+    //   REQUIRE(kb.equal_to("BAba", "c"));
+    //   REQUIRE(kb.equal_to("CAca", "d"));
+    //   REQUIRE(kb.equal_to("CBcb", "y"));
+    //   REQUIRE(kb.equal_to("da", "ad"));
+    //   REQUIRE(kb.equal_to("ya", "ay"));
+    //   REQUIRE(kb.equal_to("db", "bd"));
+    //   REQUIRE(kb.equal_to("yb", "by"));
+    //   REQUIRE(kb.rules()
+    //           == std::vector<std::pair<std::string, std::string>>({}));
+    // }
 
     // The group is S_4, and the subgroup H of order 4. There are 30 reduced
     // words - 24 for the group elements, and 6 for the 6 cosets Hg.
@@ -2161,6 +2239,7 @@ namespace libsemigroups {
                             "074",
                             "(from kbmag/standalone/kb_data/cosets)",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("HaAbB");
 
@@ -2171,7 +2250,6 @@ namespace libsemigroups {
       kb.add_rule("HH", "H");
       kb.add_rule("aH", "H");
       kb.add_rule("bH", "H");
-      REPORTER.set_report(REPORT);
 
       REQUIRE(!kb.confluent());
 
@@ -2215,10 +2293,10 @@ namespace libsemigroups {
                             "075",
                             "Example 5.1 in Sims (KnuthBendix 09 again)",
                             "[quick][knuth-bendix][fpsemigroup]") {
+      REPORTER.set_report(REPORT);
+
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
-
-      REPORTER.set_report(REPORT);
 
       kb.add_rule("aA", "");
       kb.add_rule("Aa", "");
@@ -2234,14 +2312,18 @@ namespace libsemigroups {
     }
 
     // knuth_bendix/knuth_bendix_by_overlap_length fail to terminate
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "076",
-                            "(KnuthBendix 50 again) (from "
-                            "kbmag/standalone/kb_data/verifynilp)",
-                            "[extreme][knuth-bendix][kbmag][shortlex]") {
+    // TODO(later) implement "maxstoredlen" as in KBMAG, see
+    // kbmag/standalone/kb_data/verifynilp
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "076",
+        "(KnuthBendix 050 again) (from kbmag/standalone/kb_data/verifynilp)",
+        "[fail][knuth-bendix][kbmag][shortlex]") {
       REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("hHgGfFyYdDcCbBaA");
+      kb.set_identity("");
+      kb.set_inverses("HhGgFfYyDdCcBbAa");
 
       kb.add_rule("BAba", "c");
       kb.add_rule("CAca", "d");
@@ -2259,23 +2341,24 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "077",
-                            "(KnuthBendix 66 again) (from "
-                            "kbmag/standalone/kb_data/nilp2)",
-                            "[quick][knuth-bendix][kbmag][shortlex]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "077",
+        "(KnuthBendix 066 again) (from kbmag/standalone/kb_data/nilp2)",
+        "[quick][knuth-bendix][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("cCbBaA");
+      kb.set_identity("");
+      kb.set_inverses("CcBbAa");
 
       kb.add_rule("ba", "abc");
       kb.add_rule("ca", "ac");
       kb.add_rule("cb", "bc");
-      REPORTER.set_report(true);
 
       REQUIRE(!kb.confluent());
-      // This fails if clear_stack_interval is set to 50.
 
-      // The following never terminates
+      // The following never terminates (requires recursive order?)
       // kb.knuth_bendix_by_overlap_length();
       // REQUIRE(kb.confluent());
       // REQUIRE(kb.nr_active_rules() == 32758);
@@ -2320,10 +2403,13 @@ namespace libsemigroups {
     // Von Dyck (2,3,7) group - infinite hyperbolic
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "079",
-                            "KnuthBendix 71 again",
-                            "[extreme][knuth-bendix][shortlex]") {
+                            "KnuthBendix 071 again",
+                            "[quick][knuth-bendix][shortlex]") {
+      REPORTER.set_report(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aAbBc");
+      kb.set_identity("");
+      kb.set_inverses("AaBbc");
 
       kb.add_rule("BA", "c");
       kb.add_rule("Bb", "bB");
@@ -2367,13 +2453,11 @@ namespace libsemigroups {
       kb.add_rule("BaAAaAaAAaAAA", "cAAaAAaAaAAa");
       kb.add_rule("BaAaAAaAAaAAA", "cAAaAaAAaAAa");
       kb.add_rule("BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
-      REPORTER.set_report(true);
 
       REQUIRE(!kb.confluent());
-      kb.set_max_rules(32768);
       kb.knuth_bendix();
-      REQUIRE(!kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 42);
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.nr_active_rules() == 69);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -2472,7 +2556,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "085",
                             "Ceitin's undecidable word problem example",
-                            "[fail][extreme][knuth-bendix]") {
+                            "[fail][knuth-bendix]") {
       REPORTER.set_report(true);
       KnuthBendix kb;
       kb.set_alphabet("abcde");
@@ -2526,6 +2610,86 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.rules() == rules_type({{"B", ""}, {"a", ""}, {"b", "a"}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "096",
+        "(fpsemi) (from kbmag/standalone/kb_data/d22) (2 / 3) (finite)",
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+
+      KnuthBendix kb;
+      kb.set_alphabet("ABCDYFabcdyf");
+      kb.set_identity("");
+      kb.set_inverses("abcdyfABCDYF");
+
+      kb.add_rule("aCAd", "");
+      kb.add_rule("bfBY", "");
+      kb.add_rule("cyCD", "");
+      kb.add_rule("dFDa", "");
+      kb.add_rule("ybYA", "");
+      kb.add_rule("fCFB", "");
+      REQUIRE(!kb.confluent());
+
+      kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.nr_rules() == 30);
+      REQUIRE(kb.size() == 22);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "097",
+        "(fpsemi) (from kbmag/standalone/kb_data/d22) (3 / 3) (finite)",
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+      REPORTER.set_report(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcCdDyYfF");
+      kb.set_identity("");
+      kb.set_inverses("AaBbCcDdYyFf");
+
+      kb.add_rule("aCAd", "");
+      kb.add_rule("bfBY", "");
+      kb.add_rule("cyCD", "");
+      kb.add_rule("dFDa", "");
+      kb.add_rule("ybYA", "");
+      kb.add_rule("fCFB", "");
+      REQUIRE(!kb.confluent());
+
+      kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.nr_rules() == 30);
+      REQUIRE(kb.size() == 22);
+    }
+
+    // Fibonacci group F(2,7) - order 29 - works better with largish tidyint
+    // Takes approx. 50s
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "098",
+        "(fpsemi) (from kbmag/standalone/kb_data/f27) (finite) (2 / 2)",
+        "[extreme][knuth-bendix][fpsemigroup][fpsemi][kbmag][shortlex]") {
+      REPORTER.set_report(true);
+      KnuthBendix kb;
+      kb.set_alphabet("aAbBcCdDyYfFgG");
+      kb.set_identity("");
+      kb.set_inverses("AaBbCcDdYyFfGg");
+
+      kb.add_rule("ab", "c");
+      kb.add_rule("bc", "d");
+      kb.add_rule("cd", "y");
+      kb.add_rule("dy", "f");
+      kb.add_rule("yf", "g");
+      kb.add_rule("fg", "a");
+      kb.add_rule("ga", "b");
+
+      REQUIRE(!kb.confluent());
+
+      kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.nr_active_rules() == 194);
+      REQUIRE(kb.size() == 29);
     }
   }  // namespace fpsemigroup
 

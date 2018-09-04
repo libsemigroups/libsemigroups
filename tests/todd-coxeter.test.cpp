@@ -76,11 +76,11 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({0, 0, 0}) != tc.word_to_class_index({1}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "002",
-                            "(cong) Example 6.6 in Sims (see also RWS 13)",
-                            "[todd-coxeter][standard]") {
-      // TODO(now) double check if this is standard or not
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "002",
+        "(cong) Example 6.6 in Sims (see also KnuthBendix 013)",
+        "[todd-coxeter][standard]") {
       REPORTER.set_report(REPORT);
 
       ToddCoxeter tc(TWOSIDED);
@@ -100,13 +100,13 @@ namespace libsemigroups {
                    1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                   {0});
       tc.run_for(std::chrono::milliseconds(200));
+      // Without set_pack it takes 6 times longer to run
+      tc.set_pack(POSITIVE_INFINITY);
       REQUIRE(tc.nr_classes() == 10752);
 
       auto& S = tc.quotient_semigroup();
       REQUIRE(S.size() == 10752);
       REQUIRE(S.nr_idempotents() == 1);
-      // RWS rws(S);
-      // REQUIRE(rws.confluent());  // This is slow
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -196,7 +196,6 @@ namespace libsemigroups {
       tc.set_nr_generators(2);
       tc.add_pair({0, 0, 0}, {0});
       tc.add_pair({0}, {1, 1});
-      // TODO(now) can we get away with add_pair here??
       REQUIRE(tc.nr_classes() == 5);
       REQUIRE(tc.finished());
     }
@@ -816,11 +815,11 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 5);
     }
 
-    // RWS methods fail for this one
+    // KnuthBendix methods fail for this one
     LIBSEMIGROUPS_TEST_CASE(
         "ToddCoxeter",
         "007",
-        "(fpsemi) (from kbmag/standalone/kb_data/s4) (RWS 49)",
+        "(fpsemi) (from kbmag/standalone/kb_data/s4) (KnuthBendix 49)",
         "[todd-coxeter][quick][kbmag]") {
       REPORTER.set_report(REPORT);
 
@@ -848,35 +847,16 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "008",
                             "(fpsemi) (from kbmag/standalone/kb_data/degen4b) "
-                            "(RWS 65)",
-                            "[fails][todd-coxeter][kbmag][shortlex]") {
+                            "(KnuthBendix 065)",
+                            "[fail][todd-coxeter][kbmag][shortlex]") {
       REPORTER.set_report(true);
 
       ToddCoxeter tc;
-      tc.set_alphabet("abcdefg");
-      // TODO(now) replace with set_identity and set_inverse
-      // Inverses . . .
-      tc.add_rule("ad", "g");
-      tc.add_rule("da", "g");
-      tc.add_rule("be", "g");
-      tc.add_rule("eb", "g");
-      tc.add_rule("cf", "g");
-      tc.add_rule("fc", "g");
+      tc.congruence().set_pack(POSITIVE_INFINITY);
 
-      // Identity . . .
-      tc.add_rule("ag", "a");
-      tc.add_rule("bg", "b");
-      tc.add_rule("cg", "c");
-      tc.add_rule("dg", "d");
-      tc.add_rule("eg", "e");
-      tc.add_rule("fg", "f");
-      tc.add_rule("ga", "a");
-      tc.add_rule("gb", "b");
-      tc.add_rule("gc", "c");
-      tc.add_rule("gd", "d");
-      tc.add_rule("ge", "e");
-      tc.add_rule("gf", "f");
-      tc.add_rule("gg", "g");
+      tc.set_alphabet("abcdefg");
+      tc.set_identity("g");
+      tc.set_inverses("defabcg");
 
       tc.add_rule("bbdeaecbffdbaeeccefbccefb", "g");
       tc.add_rule("ccefbfacddecbffaafdcaafdc", "g");

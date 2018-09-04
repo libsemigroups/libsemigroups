@@ -1675,7 +1675,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "026",
                           "perm. Fischer group Fi22 (order 64561751654400)",
-                          "[quick][schreier-sims]") {
+                          "[standard][schreier-sims]") {
     // Slower than GAP
     constexpr size_t N = 3511;
     auto             S = new SchreierSims<N>();

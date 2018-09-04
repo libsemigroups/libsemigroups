@@ -104,12 +104,13 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   void check_category(Catch::TestCaseInfo const& testInfo) {
     if (!(find_tag(testInfo, "quick") || find_tag(testInfo, "standard")
-          || find_tag(testInfo, "extreme"))) {
+          || find_tag(testInfo, "extreme") || find_tag(testInfo, "fail"))) {
       {
         Catch::Colour colourGuard(Catch::Colour::BrightRed);
-        Catch::cerr() << "Missing category tag: [quick|standard|extreme]!\n"
-                      << "  in test case at " << testInfo.lineInfo.file << ":"
-                      << testInfo.lineInfo.line << "\n";
+        Catch::cerr()
+            << "Missing category tag: [quick|standard|extreme|fail]!\n"
+            << "  in test case at " << testInfo.lineInfo.file << ":"
+            << testInfo.lineInfo.line << "\n";
       }
       std::exit(1);
     }

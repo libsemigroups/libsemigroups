@@ -1212,7 +1212,6 @@ namespace libsemigroups {
                           "038",
                           "Stellar S7",
                           "[standard][cong]") {
-    // TODO(now) check test category
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);

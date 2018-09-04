@@ -214,7 +214,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual void add_pair_impl(word_type const&, word_type const&) = 0;
-    virtual internal::owned_ptr<FroidurePinBase> quotient_impl()         = 0;
+    virtual internal::owned_ptr<FroidurePinBase> quotient_impl()   = 0;
 
     /////////////////////////////////////////////////////////////////////////
     // CongBase - non-pure virtual methods - private

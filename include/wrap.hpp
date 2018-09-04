@@ -116,9 +116,9 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
       // WrappedCong - methods - public
       ////////////////////////////////////////////////////////////////////////////
-      // TODO use shared_ptr
-      TWrappedCong const* congruence() const {
-        return _wrapped_cong.get();
+
+      TWrappedCong& congruence() const {
+        return *_wrapped_cong.get();
       }
 
      private:

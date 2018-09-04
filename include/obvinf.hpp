@@ -33,8 +33,8 @@ namespace libsemigroups {
   namespace internal {
     template <typename TLetterType, typename TWordType>
     class IsObviouslyInfinite {
-      using const_iterator
-          = typename std::vector<std::pair<TWordType, TWordType>>::const_iterator;
+      using const_iterator =
+          typename std::vector<std::pair<TWordType, TWordType>>::const_iterator;
 
      public:
       explicit IsObviouslyInfinite(size_t n)

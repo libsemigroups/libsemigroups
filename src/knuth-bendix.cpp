@@ -172,7 +172,7 @@ namespace libsemigroups {
 
     std::string KnuthBendix::rewrite(std::string w) const {
       rewrite(&w);
-      return w; // TODO(now) std::move
+      return w;  // TODO(now) std::move
     }
 
     std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
@@ -245,6 +245,20 @@ namespace libsemigroups {
 
     void KnuthBendix::validate_word_impl(std::string const&) const {
       // do nothing, the empty string is allowed!
+    }
+
+    bool KnuthBendix::validate_identity_impl(std::string const& id) const {
+      if (id.length() > 1) {
+        throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
+                                      + to_string(id.length())
+                                      + " letters, should be 0 or 1 letters");
+      }
+      if (id.length() == 1) {
+        validate_letter(id[0]);
+        return true;  // Add rules for the identity
+      } else {
+        return false;  // Don't add rules for the identity
+      }
     }
   }  // namespace fpsemigroup
 

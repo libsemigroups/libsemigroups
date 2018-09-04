@@ -157,7 +157,7 @@ namespace libsemigroups {
 
     ToddCoxeter::ToddCoxeter(congruence_type           typ,
                              fpsemigroup::ToddCoxeter& copy)
-        : ToddCoxeter(typ, *copy.congruence()) {
+        : ToddCoxeter(typ, copy.congruence()) {
       LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
       if (copy.finished()) {
         set_parent_semigroup(copy.isomorphic_non_fp_semigroup());

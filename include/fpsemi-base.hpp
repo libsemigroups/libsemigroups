@@ -105,7 +105,7 @@ namespace libsemigroups {
     bool equal_to(std::initializer_list<letter_type>,
                   std::initializer_list<letter_type>);
 
-    // Set the char in alphabet() to be the identity.
+    // Set a char in alphabet() to be the identity.
     void set_identity(std::string const&);
     void set_identity(letter_type);
 
@@ -113,7 +113,7 @@ namespace libsemigroups {
     //! one.
     std::string const& identity() const;
 
-    void set_inverses(std::string const&);
+    void               set_inverses(std::string const&);
     std::string const& inverses() const;
 
     word_type   string_to_word(std::string const&) const;
@@ -126,6 +126,8 @@ namespace libsemigroups {
 
     bool is_obviously_finite();
     bool is_obviously_infinite();
+
+    std::string to_gap_string();
 
    protected:
     //////////////////////////////////////////////////////////////////////////////
@@ -170,6 +172,8 @@ namespace libsemigroups {
     // neither does FpSemiBase), but KnuthBendix does.
     virtual void validate_word_impl(std::string const&) const;
     virtual void validate_word_impl(word_type const&) const;
+    // Returns true if we should add rules for the identity and false if not.
+    virtual bool validate_identity_impl(std::string const&) const;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-virtual methods - private
@@ -193,11 +197,12 @@ namespace libsemigroups {
     // FpSemiBase - mutable data - private
     //////////////////////////////////////////////////////////////////////////////
 
+    bool                                         _identity_defined;
     mutable internal::owned_ptr<FroidurePinBase> _isomorphic_non_fp_semigroup;
-    mutable bool             _is_obviously_finite_known;
-    mutable bool             _is_obviously_finite;
-    mutable bool             _is_obviously_infinite_known;
-    mutable bool             _is_obviously_infinite;
+    mutable bool                                 _is_obviously_finite_known;
+    mutable bool                                 _is_obviously_finite;
+    mutable bool                                 _is_obviously_infinite_known;
+    mutable bool                                 _is_obviously_infinite;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_BASE_HPP_

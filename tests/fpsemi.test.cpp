@@ -166,7 +166,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "009",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 1",
-      "[quick][fpsemi][hivert]") {
+      "[standard][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(10);
@@ -185,7 +185,7 @@ namespace libsemigroups {
       "FpSemigroup",
       "010",
       "Renner monoid type B4 (Gay-Hivert presentation), q = 0",
-      "[quick][fpsemi][hivert]") {
+      "[standard][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(10);
@@ -228,7 +228,7 @@ namespace libsemigroups {
     {
       fpsemigroup::ToddCoxeter tc(S.isomorphic_non_fp_semigroup());
       REQUIRE(tc.nr_rules() == 1453);
-      REQUIRE(tc.size() == 322021); // Runs forever
+      REQUIRE(tc.size() == 322021);  // Runs forever
     }
   }
 
@@ -243,10 +243,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(5, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 165);
+    REQUIRE(S.nr_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
-    // S.todd_coxeter().run(); // TODO(now) Check if it runs
+    // Doesn't terminate, or show signs that it will, in 5 minutes or so
+    // S.todd_coxeter().run();
     REQUIRE(S.size() == 322021);
     REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1453);
 
@@ -329,11 +330,10 @@ namespace libsemigroups {
     REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 148);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup",
-      "017",
-      "Renner monoid type D4 (E. G. presentation), q = 1",
-      "[quick][fpsemi][hivert]") {  // TODO(now) check test category
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "017",
+                          "Renner monoid type D4 (E. G. presentation), q = 1",
+                          "[standard][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
@@ -350,11 +350,10 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 10625); // Runs forever
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "FpSemigroup",
-      "018",
-      "Renner monoid type D4 (E. G. presentation), q = 0",
-      "[quick][fpsemi][hivert]") {  // TODO(now) check test category
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "018",
+                          "Renner monoid type D4 (E. G. presentation), q = 0",
+                          "[standard][fpsemi][hivert]") {
     REPORTER.set_report(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
