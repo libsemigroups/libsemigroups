@@ -100,8 +100,7 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
 
-  bool Runner::finished() const
-      noexcept(noexcept(dead_impl()) && noexcept(finished_impl())) {
+  bool Runner::finished() const {
     return !(dead_impl()) && finished_impl();
     // Since kill() may leave the object in an invalid state we only return
     // true here if we are not dead and the object thinks it is finished.

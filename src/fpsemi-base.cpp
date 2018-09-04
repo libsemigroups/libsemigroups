@@ -20,6 +20,7 @@
 
 #include "fpsemi-base.hpp"
 
+#include <algorithm>  // for sort
 #include <string>  // for operator+, basic_string
 
 #include "internal/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG

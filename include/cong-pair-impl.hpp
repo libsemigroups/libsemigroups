@@ -98,7 +98,6 @@ namespace libsemigroups {
       while (!_pairs_to_mult.empty() && !dead() && !timed_out()) {
         // Get the next pair
         auto& current_pair = _pairs_to_mult.front();
-        _pairs_to_mult.pop();
 
         auto prnt = static_cast<froidure_pin_type&>(parent_semigroup());
         // Add its left and/or right multiples
@@ -121,6 +120,7 @@ namespace libsemigroups {
             internal_add_pair(_tmp1, _tmp2);
           }
         }
+        _pairs_to_mult.pop();
         if (report()) {
           REPORT("found ",
                  _found_pairs.size(),

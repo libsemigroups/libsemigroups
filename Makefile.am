@@ -197,7 +197,7 @@ lstest_LDADD = libsemigroups.la
 @CODE_COVERAGE_RULES@
 
 all-local: libsemigroups.la
-	@command -v ctags >/dev/null 2>&1 && ctags -R 
+	@if [ -x "$(command -v ctags)" ]; then ctags -R; fi
 if LIBSEMIGROUPS_DEBUG
 	@echo "********************************************************************"
 	@echo "************************ Debug mode enabled ************************"

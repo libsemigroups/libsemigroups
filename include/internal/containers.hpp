@@ -20,6 +20,7 @@
 #define LIBSEMIGROUPS_INCLUDE_INTERNAL_CONTAINERS_HPP_
 
 #include <algorithm>
+#include <array>
 #include <vector>
 
 #include "libsemigroups-debug.hpp"

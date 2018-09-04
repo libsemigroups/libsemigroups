@@ -379,6 +379,8 @@ namespace libsemigroups {
         return STRING_LEFT;
       case congruence_type::RIGHT:
         return STRING_RIGHT;
+      default:
+        throw LIBSEMIGROUPS_EXCEPTION("incorrect type");
     }
   }
 

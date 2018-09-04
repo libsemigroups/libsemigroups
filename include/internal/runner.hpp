@@ -95,8 +95,7 @@ namespace libsemigroups {
     void report_why_we_stopped() const;
 
     void set_finished(bool) const noexcept;
-    bool finished() const
-        noexcept(noexcept(dead_impl()) && noexcept(finished_impl()));
+    bool finished() const;
 
     void kill() noexcept;
     bool dead() const noexcept;
