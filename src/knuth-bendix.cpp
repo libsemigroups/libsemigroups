@@ -34,7 +34,7 @@
 #include "types.hpp"              // for word_type
 
 namespace libsemigroups {
-  class ReductionOrdering;
+  class ReductionOrdering; // Forward declaration
 }
 
 #include "knuth-bendix-impl.hpp"
@@ -73,8 +73,9 @@ namespace libsemigroups {
     }
 
     void KnuthBendix::set_overlap_policy(overlap_policy p) {
-      _settings._overlap_policy = p;
       _impl->set_overlap_policy(p);
+      // the next line must be after _impl->set_overlap_policy
+      _settings._overlap_policy = p;
     }
 
     //////////////////////////////////////////////////////////////////////////

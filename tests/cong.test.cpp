@@ -955,14 +955,21 @@ namespace libsemigroups {
     REQUIRE(!cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
     REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
 
-    REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-    REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+    if (!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1})) {
+      // This depends on which method for cong wins!
+      REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+      REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+    } else {
+      REQUIRE(cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+      REQUIRE(!cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+    }
 
     delete t3;
     delete t4;
   }
 
-  // For some reason the following test case doesn't run...
+  // For some reason the following test case doesn't run..., i.e. it is not run
+  // when we run all the tests.
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "031",
                           "right congruence on finite semigroup",

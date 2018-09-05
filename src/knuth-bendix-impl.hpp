@@ -287,6 +287,7 @@ namespace libsemigroups {
           : KnuthBendixImpl(kb, new SHORTLEX()) {}
 
       ~KnuthBendixImpl() {
+        delete _overlap_measure;
         delete _order;
         delete _tmp_word1;
         delete _tmp_word2;

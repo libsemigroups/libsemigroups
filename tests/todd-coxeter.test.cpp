@@ -797,6 +797,131 @@ namespace libsemigroups {
         REQUIRE(tc3.nr_classes() == 1);
       }
     }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "034",
+                            "(cong) obviously infinite",
+                            "[todd-coxeter][quick]") {
+      {
+        congruence::ToddCoxeter tc(LEFT);
+        tc.set_nr_generators(3);
+        tc.add_pair({0, 0, 0}, {0});
+        REQUIRE(tc.nr_classes() == POSITIVE_INFINITY);
+        REQUIRE(!tc.is_quotient_obviously_finite());
+      }
+      {
+        congruence::ToddCoxeter tc(RIGHT);
+        tc.set_nr_generators(3);
+        tc.add_pair({0, 0, 0}, {0});
+        REQUIRE(tc.nr_classes() == POSITIVE_INFINITY);
+        REQUIRE(!tc.is_quotient_obviously_finite());
+      }
+      {
+        congruence::ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(3);
+        tc.add_pair({0, 0, 0}, {0});
+        REQUIRE(tc.nr_classes() == POSITIVE_INFINITY);
+        REQUIRE(!tc.is_quotient_obviously_finite());
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "035",
+                            "(cong) exceptions",
+                            "[todd-coxeter][quick]") {
+      {
+        congruence::ToddCoxeter tc(RIGHT);
+        tc.set_nr_generators(2);
+        tc.add_pair({0, 0, 0}, {0});
+        tc.add_pair({0}, {1, 1});
+        REQUIRE(tc.nr_classes() == 5);
+        // FIXME(now) this shouldn't throw
+        REQUIRE_THROWS_AS(tc.class_index_to_word(0), LibsemigroupsException);
+        // This next one should throw
+        REQUIRE_THROWS_AS(tc.quotient_semigroup(), LibsemigroupsException);
+      }
+      {
+        congruence::ToddCoxeter tc(TWOSIDED);
+        tc.set_nr_generators(2);
+        tc.add_pair({0, 0, 0}, {0});
+        tc.add_pair({0}, {1, 1});
+        REQUIRE(tc.nr_classes() == 5);
+        REQUIRE(tc.class_index_to_word(0) == word_type({0}));
+        REQUIRE(tc.class_index_to_word(1) == word_type({1}));
+        REQUIRE(tc.class_index_to_word(2) == word_type({0, 0}));
+        REQUIRE(tc.class_index_to_word(3) == word_type({0, 1}));
+        REQUIRE(tc.class_index_to_word(4) == word_type({0, 0, 1}));
+        REQUIRE_THROWS_AS(tc.class_index_to_word(5), LibsemigroupsException);
+        REQUIRE_THROWS_AS(tc.class_index_to_word(100), LibsemigroupsException);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "036",
+                            "(cong) get_policy",
+                            "[todd-coxeter][quick]") {
+      {
+        congruence::ToddCoxeter tc(LEFT);
+        REQUIRE(tc.get_policy() == ToddCoxeter::policy::none);
+        REQUIRE(!tc.is_quotient_obviously_finite());
+        REQUIRE(!tc.is_quotient_obviously_infinite());
+        tc.set_nr_generators(2);
+        REQUIRE(!tc.is_quotient_obviously_finite());
+        REQUIRE(tc.is_quotient_obviously_infinite());
+      }
+      {
+        FroidurePin<BMat8> S(
+            {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+
+        ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_relations);
+        REQUIRE(S.size() == 2);
+        REQUIRE(tc.get_policy() == ToddCoxeter::policy::use_relations);
+        REQUIRE(tc.has_parent_semigroup());
+        REQUIRE(tc.is_quotient_obviously_finite());
+        REQUIRE(!tc.is_quotient_obviously_infinite());
+      }
+      {
+        FroidurePin<BMat8> S(
+            {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+
+        ToddCoxeter tc(TWOSIDED, S, ToddCoxeter::policy::use_cayley_graph);
+        REQUIRE(tc.get_policy() == ToddCoxeter::policy::use_cayley_graph);
+        REQUIRE(tc.is_quotient_obviously_finite());
+        REQUIRE(!tc.is_quotient_obviously_infinite());
+      }
+      {
+        FroidurePin<BMat8> S(
+            {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+
+        ToddCoxeter tc(TWOSIDED, S);
+        REQUIRE(tc.get_policy() == ToddCoxeter::policy::use_cayley_graph);
+        REQUIRE(tc.is_quotient_obviously_finite());
+        REQUIRE(!tc.is_quotient_obviously_infinite());
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "037",
+                            "(cong) empty",
+                            "[todd-coxeter][quick]") {
+      {
+        congruence::ToddCoxeter tc(LEFT);
+        REQUIRE(tc.empty());
+        tc.set_nr_generators(3);
+        REQUIRE(tc.empty());
+        tc.add_pair({0}, {2});
+        REQUIRE(!tc.empty());
+      }
+      {
+        FroidurePin<BMat8> S(
+            {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+
+        ToddCoxeter tc(TWOSIDED, S);
+        REQUIRE(tc.empty());
+        tc.add_pair({0}, {0, 0});
+        REQUIRE(!tc.empty());
+      }
+    }
   }  // namespace congruence
 
   namespace fpsemigroup {
