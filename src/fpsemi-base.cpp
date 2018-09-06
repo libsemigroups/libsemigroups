@@ -532,7 +532,7 @@ namespace libsemigroups {
 
   void FpSemiBase::reset() noexcept {
     set_finished(false);
-    _isomorphic_non_fp_semigroup = nullptr;
+    _isomorphic_non_fp_semigroup.free_from(this);
     _is_obviously_finite_known   = false;
     _is_obviously_finite         = false;
     _is_obviously_infinite_known = false;

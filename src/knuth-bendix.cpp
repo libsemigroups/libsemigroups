@@ -34,7 +34,7 @@
 #include "types.hpp"              // for word_type
 
 namespace libsemigroups {
-  class ReductionOrdering; // Forward declaration
+  class ReductionOrdering;  // Forward declaration
 }
 
 #include "knuth-bendix-impl.hpp"

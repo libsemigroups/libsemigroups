@@ -29,9 +29,8 @@
 #include "stl.hpp"
 
 namespace libsemigroups {
-    constexpr std::chrono::nanoseconds FOREVER
-        = std::chrono::nanoseconds::max();
-    // TODO(now) move to constants.hpp
+  constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
+  // TODO(now) move to constants.hpp
 
   class Runner {
    public:

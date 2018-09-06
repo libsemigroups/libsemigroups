@@ -2833,6 +2833,7 @@ namespace libsemigroups {
               8,  29, 49, 25, 41, 33, 17, 45, 13, 1,  53, 40, 18, 28, 27,
               15, 32, 5,  38, 14, 47, 24, 56, 52, 54, 2,  55, 50, 19, 31,
               22, 48, 42, 7,  11, 35, 3,  20, 10, 39, 43, 0})));
+    delete S;
   }
 
   // The following are comment out since the "action" struct requires the

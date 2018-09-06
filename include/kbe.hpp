@@ -189,7 +189,7 @@ namespace libsemigroups {
   template <>
   struct one<KBE*> {
     KBE* operator()(KBE const* x) {
-      return new KBE(std::move(x->identity()));
+      return new KBE(x->identity());
     }
   };
 }  // namespace libsemigroups

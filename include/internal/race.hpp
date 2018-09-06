@@ -40,6 +40,7 @@ namespace libsemigroups {
     //! Construct an empty Race object, with maximum number of threads set to
     //! std::thread::hardware_concurrency.
     Race();
+    ~Race();
 
     //! Set the maximum number of threads, throws if try to set to 0.
     void set_max_threads(size_t);

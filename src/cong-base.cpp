@@ -306,7 +306,7 @@ namespace libsemigroups {
     set_finished(false);
     _non_trivial_classes.reset();
     _init_ntc_done               = false;
-    _quotient                    = nullptr;
+    _quotient.free_from(this);
     _is_obviously_finite_known   = false;
     _is_obviously_finite         = false;
     _is_obviously_infinite_known = false;

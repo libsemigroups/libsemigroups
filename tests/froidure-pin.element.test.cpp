@@ -3158,12 +3158,16 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
     REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
     REQUIRE(T.word_to_pos({0, 0, 1, 1}) == UNDEFINED);
-    REQUIRE(T.current_position(T.word_to_element({0, 0, 1, 1})) == UNDEFINED);
+    auto* w = T.word_to_element({0, 0, 1, 1});
+    REQUIRE(T.current_position(w) == UNDEFINED);
     REQUIRE_THROWS_AS(T.word_to_pos({0, 0, 1, 2}), LibsemigroupsException);
+    delete w;
 
     REQUIRE(T.size() == 13);
     REQUIRE(T.word_to_pos({0, 0, 1, 1}) == 6);
-    REQUIRE(T.current_position(T.word_to_element({0, 0, 1, 1})) == 6);
+    w = T.word_to_element({0, 0, 1, 1});
+    REQUIRE(T.current_position(w) == 6);
+    delete w;
 
     std::vector<Element*> gens2
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),

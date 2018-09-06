@@ -30,19 +30,13 @@ namespace libsemigroups {
     class owned_ptr {
      public:
       explicit owned_ptr(TPtrType* ptr, void* owner = nullptr)
-          : _ptr(ptr), _owner(owner) {}
+          : _owner(owner), _ptr(ptr) {}
 
       owned_ptr(owned_ptr const&) = default;
       owned_ptr& operator=(owned_ptr const&) = default;
       owned_ptr(owned_ptr&&)                 = default;
       owned_ptr& operator=(owned_ptr&&) = default;
       ~owned_ptr()                      = default;
-
-      owned_ptr& operator=(std::nullptr_t const&) {
-        _ptr   = nullptr;
-        _owner = nullptr;
-        return *this;
-      }
 
       TPtrType& operator*() {
         return *_ptr;
@@ -51,8 +45,9 @@ namespace libsemigroups {
       void free_from(void* obj) {
         if (obj == _owner) {
           delete _ptr;
-          _ptr = nullptr;
         }
+        _owner = nullptr;
+        _ptr   = nullptr;
       }
 
       bool operator!=(std::nullptr_t const&) {
@@ -64,8 +59,8 @@ namespace libsemigroups {
       }
 
      private:
-      TPtrType* _ptr;
       void*     _owner;
+      TPtrType* _ptr;
     };
   }  // namespace internal
 }  // namespace libsemigroups

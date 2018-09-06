@@ -385,9 +385,6 @@ namespace libsemigroups {
     }
 
     internal::owned_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
-      if (type() != congruence_type::TWOSIDED) {
-        throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
-      }
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       // TODO replace with 0-parameter constructor when available

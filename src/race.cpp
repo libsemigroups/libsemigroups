@@ -23,12 +23,25 @@
 
 #include "internal/race.hpp"
 
+#include <algorithm> // for find
+
 namespace libsemigroups {
 
   Race::Race()
       : _max_threads(std::thread::hardware_concurrency()),
         _mtx(),
         _winner(nullptr) {}
+
+  Race::~Race() {
+    if (_winner != nullptr
+        && std::find(_runners.cbegin(), _runners.cend(), _winner)
+               == _runners.cend()) {
+      delete _winner;
+    }
+    for (auto rnnr : _runners) {
+      delete rnnr;
+    }
+  }
 
   void Race::set_max_threads(size_t val) {
     if (val == 0) {
