@@ -305,7 +305,7 @@ namespace libsemigroups {
   void CongBase::reset() {
     set_finished(false);
     _non_trivial_classes.reset();
-    _init_ntc_done               = false;
+    _init_ntc_done = false;
     _quotient.free_from(this);
     _is_obviously_finite_known   = false;
     _is_obviously_finite         = false;

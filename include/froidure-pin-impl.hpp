@@ -390,9 +390,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(v_pos != UNDEFINED);
       return u_pos == v_pos;
     } else {
-      element_type uu = word_to_element(u);
-      element_type vv = word_to_element(v);
-      auto res = (uu == vv);
+      element_type uu  = word_to_element(u);
+      element_type vv  = word_to_element(v);
+      auto         res = (uu == vv);
       this->external_free(uu);
       this->external_free(vv);
       return res;

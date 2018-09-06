@@ -23,7 +23,7 @@
 
 #include "internal/race.hpp"
 
-#include <algorithm> // for find
+#include <algorithm>  // for find
 
 namespace libsemigroups {
 
