@@ -82,17 +82,17 @@ namespace libsemigroups {
 
       if (S.todd_coxeter().finished()) {
         LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
-        set_parent_semigroup(S.todd_coxeter().isomorphic_non_fp_semigroup());
+        set_parent_semigroup(S.todd_coxeter().froidure_pin());
 
         // Method 2: use the Cayley graph of S and genpairs to run
         // Todd-Coxeter. If the policy here is use_relations, then this is
-        // the same as Method 1. Note that the isomorphic_non_fp_semigroup
+        // the same as Method 1. Note that the froidure_pin
         // must be finite in this case, and it must be possible for the
         // Froidure-Pin algoritm to complete in this case because
         // Todd-Coxeter did.
         _race.add_runner(
             new ToddCoxeter(type,
-                            S.todd_coxeter().isomorphic_non_fp_semigroup(),
+                            S.todd_coxeter().froidure_pin(),
                             ToddCoxeter::policy::use_cayley_graph));
 
         // Return here since we know that we can definitely complete at
@@ -103,22 +103,22 @@ namespace libsemigroups {
     if (S.has_knuth_bendix()) {
       if (S.knuth_bendix().finished()) {
         if (!has_parent_semigroup()) {
-          set_parent_semigroup(S.knuth_bendix().isomorphic_non_fp_semigroup());
+          set_parent_semigroup(S.knuth_bendix().froidure_pin());
           // Even if the FpSemigroup S is infinite, the
-          // isomorphic_non_fp_semigroup() can still be useful in this case,
+          // froidure_pin() can still be useful in this case,
           // for example, when factorizing elements.
         }
         // TODO(now) remove the if-condition, make it so that if the
         // ToddCoxeter's below are killed then so too is the enumeration of
-        // S.knuth_bendix().isomorphic_non_fp_semigroup()
-        if (S.knuth_bendix().isomorphic_non_fp_semigroup().finished()) {
+        // S.knuth_bendix().froidure_pin()
+        if (S.knuth_bendix().froidure_pin().finished()) {
           // Method 3: Note that the
-          // S.knuth_bendix().isomorphic_non_fp_semigroup() must be finite
+          // S.knuth_bendix().froidure_pin() must be finite
           // in this case, because otherwise it would not return true from
           // FroidurePin::finished. This is similar to Method 2.
           _race.add_runner(
               new ToddCoxeter(type,
-                              S.knuth_bendix().isomorphic_non_fp_semigroup(),
+                              S.knuth_bendix().froidure_pin(),
                               ToddCoxeter::policy::use_cayley_graph));
 
           // Method 4: unlike with Method 2, this is not necessarily the same

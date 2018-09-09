@@ -231,8 +231,7 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
 
       void add_rule_impl(std::string const&, std::string const&) override;
-      internal::owned_ptr<FroidurePinBase>
-      isomorphic_non_fp_semigroup_impl() override;
+      internal::owned_ptr<FroidurePinBase> froidure_pin_impl() override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemiBase - non-pure virtual methods - private

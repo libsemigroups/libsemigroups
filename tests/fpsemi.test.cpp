@@ -80,8 +80,8 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
-    S.isomorphic_non_fp_semigroup().enumerate(8000);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_size() == 8200);
+    S.froidure_pin().enumerate(8000);
+    REQUIRE(S.froidure_pin().current_size() == 8200);
     // REQUIRE(S.size() == 757);
   }
 
@@ -97,8 +97,8 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
-    S.isomorphic_non_fp_semigroup().enumerate(8000);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_size() == 8200);
+    S.froidure_pin().enumerate(8000);
+    REQUIRE(S.froidure_pin().current_size() == 8200);
     // REQUIRE(S.size() == 757);
   }
 
@@ -178,7 +178,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too but is slower :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 356);
+    REQUIRE(S.froidure_pin().nr_rules() == 356);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -197,7 +197,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 356);
+    REQUIRE(S.froidure_pin().nr_rules() == 356);
   }
 
   // This appears to be an example where KB + FP is faster than TC
@@ -217,16 +217,16 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.todd_coxeter().run(); // Takes 2m30s or so to run
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1453);
+    REQUIRE(S.froidure_pin().nr_rules() == 1453);
     {
       congruence::ToddCoxeter tc(
           TWOSIDED,
-          S.isomorphic_non_fp_semigroup(),
+          S.froidure_pin(),
           congruence::ToddCoxeter::policy::use_cayley_graph);
       REQUIRE(tc.nr_classes() == 322021);  // Works!
     }
     {
-      fpsemigroup::ToddCoxeter tc(S.isomorphic_non_fp_semigroup());
+      fpsemigroup::ToddCoxeter tc(S.froidure_pin());
       REQUIRE(tc.nr_rules() == 1453);
       REQUIRE(tc.size() == 322021);  // Runs forever
     }
@@ -249,11 +249,11 @@ namespace libsemigroups {
     // Doesn't terminate, or show signs that it will, in 5 minutes or so
     // S.todd_coxeter().run();
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1453);
+    REQUIRE(S.froidure_pin().nr_rules() == 1453);
 
     congruence::ToddCoxeter tc(
         TWOSIDED,
-        S.isomorphic_non_fp_semigroup(),
+        S.froidure_pin(),
         congruence::ToddCoxeter::policy::use_cayley_graph);
     REQUIRE(tc.nr_classes() == 322021);  // Works!
   }
@@ -273,7 +273,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 54);
+    REQUIRE(S.froidure_pin().nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -291,7 +291,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 54);
+    REQUIRE(S.froidure_pin().nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -309,7 +309,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 148);
+    REQUIRE(S.froidure_pin().nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -327,7 +327,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 148);
+    REQUIRE(S.froidure_pin().nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -344,9 +344,9 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
 
-    S.isomorphic_non_fp_semigroup().enumerate(10626);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_nr_rules() == 417);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_size() == 10626);
+    S.froidure_pin().enumerate(10626);
+    REQUIRE(S.froidure_pin().current_nr_rules() == 417);
+    REQUIRE(S.froidure_pin().current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
 
@@ -364,9 +364,9 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
 
-    S.isomorphic_non_fp_semigroup().enumerate(10626);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_nr_rules() == 417);
-    REQUIRE(S.isomorphic_non_fp_semigroup().current_size() == 10626);
+    S.froidure_pin().enumerate(10626);
+    REQUIRE(S.froidure_pin().current_nr_rules() == 417);
+    REQUIRE(S.froidure_pin().current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
 
@@ -386,7 +386,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 54);
+    REQUIRE(S.froidure_pin().nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -405,7 +405,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 54);
+    REQUIRE(S.froidure_pin().nr_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -424,7 +424,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 148);
+    REQUIRE(S.froidure_pin().nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -443,7 +443,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     // S.knuth_bendix().run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 148);
+    REQUIRE(S.froidure_pin().nr_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -462,7 +462,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
 
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 419);
+    REQUIRE(S.froidure_pin().nr_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -480,7 +480,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 419);
+    REQUIRE(S.froidure_pin().nr_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -499,7 +499,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
 
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1279);
+    REQUIRE(S.froidure_pin().nr_rules() == 1279);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -517,7 +517,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1279);
+    REQUIRE(S.froidure_pin().nr_rules() == 1279);
   }
 
   // Takes about 4 minutes
@@ -537,7 +537,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
 
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 1279);
+    REQUIRE(S.froidure_pin().nr_rules() == 1279);
   }
 
   // Takes about 4 minutes
@@ -557,7 +557,7 @@ namespace libsemigroups {
     REQUIRE(!S.knuth_bendix().confluent());
     S.knuth_bendix().knuth_bendix_by_overlap_length();
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 4570);
+    REQUIRE(S.froidure_pin().nr_rules() == 4570);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -574,7 +574,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 71);
+    REQUIRE(S.froidure_pin().nr_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -591,7 +591,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 71);
+    REQUIRE(S.froidure_pin().nr_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -608,7 +608,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 207);
+    REQUIRE(S.froidure_pin().nr_rules() == 207);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -625,7 +625,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.isomorphic_non_fp_semigroup().nr_rules() == 207);
+    REQUIRE(S.froidure_pin().nr_rules() == 207);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -829,7 +829,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.size() == 5);
 
-    FroidurePinBase& T = S.isomorphic_non_fp_semigroup();
+    FroidurePinBase& T = S.froidure_pin();
     REQUIRE(T.size() == 5);
     REQUIRE(T.nr_idempotents() == 1);
   }
@@ -842,10 +842,10 @@ namespace libsemigroups {
     S.add_rule("aaa", "a");
     S.add_rule("a", "bb");
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(S.knuth_bendix().isomorphic_non_fp_semigroup().size() == 5);
+    REQUIRE(S.knuth_bendix().froidure_pin().size() == 5);
     REQUIRE(S.size() == 5);
 
-    FroidurePinBase& T = S.isomorphic_non_fp_semigroup();
+    FroidurePinBase& T = S.froidure_pin();
     REQUIRE(T.size() == 5);
     REQUIRE(T.nr_idempotents() == 1);
   }

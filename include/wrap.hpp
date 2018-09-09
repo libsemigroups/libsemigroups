@@ -131,8 +131,7 @@ namespace libsemigroups {
         _wrapped_cong->add_pair(string_to_word(u), string_to_word(v));
       }
 
-      internal::owned_ptr<FroidurePinBase>
-      isomorphic_non_fp_semigroup_impl() override {
+      internal::owned_ptr<FroidurePinBase> froidure_pin_impl() override {
         return internal::owned_ptr<FroidurePinBase>(
             &_wrapped_cong->quotient_semigroup());
       }

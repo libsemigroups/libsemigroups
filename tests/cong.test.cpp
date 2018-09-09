@@ -206,9 +206,9 @@ namespace libsemigroups {
     S.add_rule({0}, {1});
 
     REQUIRE(S.size() == 2);
-    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 2);
+    REQUIRE(S.froidure_pin().size() == 2);
 
-    Congruence cong1(TWOSIDED, S.isomorphic_non_fp_semigroup());
+    Congruence cong1(TWOSIDED, S.froidure_pin());
     cong1.add_pair({0}, {1});
     REQUIRE(cong1.nr_classes() == 2);
 
@@ -1044,7 +1044,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.knuth_bendix().confluent());
     REQUIRE(S.size() == 7);
-    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 7);
+    REQUIRE(S.froidure_pin().size() == 7);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(2)) {
@@ -1072,7 +1072,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 34);
-    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 34);
+    REQUIRE(S.froidure_pin().size() == 34);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(3)) {
@@ -1124,7 +1124,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 209);
-    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 209);
+    REQUIRE(S.froidure_pin().size() == 209);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(4)) {
@@ -1160,7 +1160,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix().confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.isomorphic_non_fp_semigroup().size() == 1546);
+    REQUIRE(S.froidure_pin().size() == 1546);
 
     Congruence cong(TWOSIDED, S);
     for (relation_type const& rl : Stell(5)) {

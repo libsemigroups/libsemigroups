@@ -39,7 +39,7 @@ namespace libsemigroups {
       }
       _kb.run_until([this]() -> bool { return dead() || timed_out(); });
       if (!stopped()) {
-        set_parent_semigroup(_kb.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(_kb.froidure_pin());
         p_type::run();
       }
       report_why_we_stopped();

@@ -962,9 +962,9 @@ namespace libsemigroups {
       tc.add_rule("cd", "c");
       tc.add_rule("dc", "c");
       REQUIRE(tc.size() == 24);
-      REQUIRE(tc.isomorphic_non_fp_semigroup().size() == 24);
+      REQUIRE(tc.froidure_pin().size() == 24);
       REQUIRE(tc.normal_form("aaaaaaaaaaaaaaaaaaa") == "a");
-      REQUIRE(KnuthBendix(tc.isomorphic_non_fp_semigroup()).confluent());
+      REQUIRE(KnuthBendix(tc.froidure_pin()).confluent());
     }
 
     // Second of BHN's series of increasingly complicated presentations
@@ -988,8 +988,8 @@ namespace libsemigroups {
       tc.add_rule("aafdcdbaeefacddbbdeabbdea", "g");
 
       REQUIRE(tc.size() == 1);
-      REQUIRE(tc.isomorphic_non_fp_semigroup().size() == 1);
-      REQUIRE(KnuthBendix(tc.isomorphic_non_fp_semigroup()).confluent());
+      REQUIRE(tc.froidure_pin().size() == 1);
+      REQUIRE(KnuthBendix(tc.froidure_pin()).confluent());
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1029,7 +1029,7 @@ namespace libsemigroups {
       tc1.add_rule(w1, w2);
 
       REQUIRE(tc1.size() == 21);
-      REQUIRE(tc1.size() == tc1.isomorphic_non_fp_semigroup().size());
+      REQUIRE(tc1.size() == tc1.froidure_pin().size());
       REQUIRE(tc1.equal_to(w3, w4));
       REQUIRE(tc1.normal_form(w3) == tc1.normal_form(w4));
 
@@ -1037,7 +1037,7 @@ namespace libsemigroups {
       tc2.add_rule(w1, w2);
 
       REQUIRE(tc2.size() == 21);
-      REQUIRE(tc2.size() == tc2.isomorphic_non_fp_semigroup().size());
+      REQUIRE(tc2.size() == tc2.froidure_pin().size());
       REQUIRE(tc2.equal_to(w3, w4));
       REQUIRE(tc2.normal_form(w3) == tc2.normal_form(w4));
     }

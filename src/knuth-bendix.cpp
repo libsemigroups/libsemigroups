@@ -95,7 +95,7 @@ namespace libsemigroups {
       // KnuthBendix is constructed. If it is moved, then we will have to do
       // add_rules(S) to add_rule() so that we don't lose the relations from S.
       add_rules(S);
-      // Do not set isomorphic_non_fp_semigroup so we are guaranteed that it
+      // Do not set froidure_pin so we are guaranteed that it
       // returns a FroidurePin of KBE's.
     }
 
@@ -120,7 +120,7 @@ namespace libsemigroups {
       if (is_obviously_infinite()) {
         return POSITIVE_INFINITY;
       } else {
-        return isomorphic_non_fp_semigroup().size();
+        return froidure_pin().size();
       }
     }
 
@@ -208,11 +208,10 @@ namespace libsemigroups {
       _impl->add_rule(p, q);
     }
 
-    internal::owned_ptr<FroidurePinBase>
-    KnuthBendix::isomorphic_non_fp_semigroup_impl() {
+    internal::owned_ptr<FroidurePinBase> KnuthBendix::froidure_pin_impl() {
       LIBSEMIGROUPS_ASSERT(!alphabet().empty());
       // TODO(now) check that no generators/rules can be added after this has
-      // been called, or if they are that _isomorphic_non_fp_semigroup is reset
+      // been called, or if they are that _froidure_pin is reset
       // again
       run();
       // TODO(later) use 0-param FroidurePin constructor
@@ -300,10 +299,10 @@ namespace libsemigroups {
       auto stppd = [this]() -> bool { return _kb->dead() || _kb->timed_out(); };
       _kb->run_until(stppd);
       // It is essential that we call _kb->run() first and then
-      // _kb->isomorphic_non_fp_semigroup(), since this might get killed
+      // _kb->froidure_pin(), since this might get killed
       // during _kb->run().
       if (!_kb->dead() && !_kb->timed_out()) {
-        auto& S = _kb->isomorphic_non_fp_semigroup();
+        auto& S = _kb->froidure_pin();
         while (!S.finished() && !_kb->dead() && !_kb->timed_out()) {
           S.run_until(stppd);
         }
@@ -316,8 +315,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     bool KnuthBendix::finished_impl() const {
-      return _kb->has_isomorphic_non_fp_semigroup()
-             && _kb->isomorphic_non_fp_semigroup().finished();
+      return _kb->has_froidure_pin() && _kb->froidure_pin().finished();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -326,7 +324,7 @@ namespace libsemigroups {
 
     word_type KnuthBendix::class_index_to_word(class_index_type i) {
       // i is checked in minimal_factorisation
-      return _kb->isomorphic_non_fp_semigroup().minimal_factorisation(i);
+      return _kb->froidure_pin().minimal_factorisation(i);
     }
 
     size_t KnuthBendix::nr_classes() {
@@ -335,8 +333,7 @@ namespace libsemigroups {
 
     class_index_type KnuthBendix::word_to_class_index(word_type const& word) {
       validate_word(word);
-      auto S
-          = static_cast<FroidurePin<KBE>&>(_kb->isomorphic_non_fp_semigroup());
+      auto   S   = static_cast<FroidurePin<KBE>&>(_kb->froidure_pin());
       size_t pos = S.position(KBE(_kb.get(), word));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
@@ -372,8 +369,7 @@ namespace libsemigroups {
     }
 
     internal::owned_ptr<FroidurePinBase> KnuthBendix::quotient_impl() {
-      return internal::owned_ptr<FroidurePinBase>(
-          &_kb->isomorphic_non_fp_semigroup());
+      return internal::owned_ptr<FroidurePinBase>(&_kb->froidure_pin());
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -200,7 +200,7 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 4);
-      auto S = static_cast<FroidurePin<KBE>&>(kb.isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>&>(kb.froidure_pin());
 
       // At this point only the generators are known
       REQUIRE(S.current_size() == 2);
@@ -354,7 +354,7 @@ namespace libsemigroups {
       REQUIRE(kb.normal_form("ccc") == "");
 
       REQUIRE(kb.size() == 168);
-      auto S = static_cast<FroidurePin<KBE>&>(kb.isomorphic_non_fp_semigroup());
+      auto S = static_cast<FroidurePin<KBE>&>(kb.froidure_pin());
       REQUIRE(S.size() == 168);
       REQUIRE(std::string(S.generator(2)) == "c");
       auto T = FroidurePin<KBE>({S.generator(2)});

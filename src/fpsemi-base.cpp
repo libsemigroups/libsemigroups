@@ -41,19 +41,19 @@ namespace libsemigroups {
         // Non-mutable
         _alphabet(),
         _alphabet_map(),
+        _identity_defined(false),
         _identity(),
         _inverses(),
         _rules(),
         // Mutable
-        _identity_defined(false),
-        _isomorphic_non_fp_semigroup(nullptr),
+        _froidure_pin(nullptr),
         _is_obviously_finite_known(false),
         _is_obviously_finite(false),
         _is_obviously_infinite_known(false),
         _is_obviously_infinite(false) {}
 
   FpSemiBase::~FpSemiBase() {
-    _isomorphic_non_fp_semigroup.free_from(this);
+    _froidure_pin.free_from(this);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -126,9 +126,8 @@ namespace libsemigroups {
     validate_word(u);
     validate_word(v);
     if (u == v
-        || (has_isomorphic_non_fp_semigroup()
-            && isomorphic_non_fp_semigroup().equal_to(string_to_word(u),
-                                                      string_to_word(v)))) {
+        || (has_froidure_pin()
+            && froidure_pin().equal_to(string_to_word(u), string_to_word(v)))) {
       return;
     }
     _rules.emplace_back(u, v);
@@ -139,9 +138,7 @@ namespace libsemigroups {
   void FpSemiBase::add_rule(word_type const& u, word_type const& v) {
     validate_word(u);
     validate_word(v);
-    if (u == v
-        || (has_isomorphic_non_fp_semigroup()
-            && isomorphic_non_fp_semigroup().equal_to(u, v))) {
+    if (u == v || (has_froidure_pin() && froidure_pin().equal_to(u, v))) {
       return;
     }
     _rules.emplace_back(word_to_string(u), word_to_string(v));
@@ -184,15 +181,15 @@ namespace libsemigroups {
     return _rules.size();
   }
 
-  bool FpSemiBase::has_isomorphic_non_fp_semigroup() const noexcept {
-    return _isomorphic_non_fp_semigroup != nullptr;
+  bool FpSemiBase::has_froidure_pin() const noexcept {
+    return _froidure_pin != nullptr;
   }
 
-  FroidurePinBase& FpSemiBase::isomorphic_non_fp_semigroup() {
-    if (_isomorphic_non_fp_semigroup == nullptr) {
-      _isomorphic_non_fp_semigroup = isomorphic_non_fp_semigroup_impl();
+  FroidurePinBase& FpSemiBase::froidure_pin() {
+    if (_froidure_pin == nullptr) {
+      _froidure_pin = froidure_pin_impl();
     }
-    return *_isomorphic_non_fp_semigroup;
+    return *_froidure_pin;
   }
 
   word_type FpSemiBase::normal_form(std::initializer_list<letter_type> w) {
@@ -315,8 +312,7 @@ namespace libsemigroups {
       REPORT("not obviously infinite (no alphabet defined)");
       set_is_obviously_infinite(false);
       return false;
-    } else if (has_isomorphic_non_fp_semigroup()
-               && isomorphic_non_fp_semigroup().finished()) {
+    } else if (has_froidure_pin() && froidure_pin().finished()) {
       // If the isomorphic FroidurePin is fully enumerated, it must be
       // finite, and hence this is not (obviously) infinite.
       REPORT("not obviously infinite (finite)");
@@ -335,8 +331,7 @@ namespace libsemigroups {
     if (_is_obviously_finite_known) {
       return _is_obviously_finite;
     }
-    if ((has_isomorphic_non_fp_semigroup()
-         && isomorphic_non_fp_semigroup().finished())
+    if ((has_froidure_pin() && froidure_pin().finished())
         || is_obviously_finite_impl()) {
       set_is_obviously_finite(true);
       return true;
@@ -532,7 +527,7 @@ namespace libsemigroups {
 
   void FpSemiBase::reset() noexcept {
     set_finished(false);
-    _isomorphic_non_fp_semigroup.free_from(this);
+    _froidure_pin.free_from(this);
     _is_obviously_finite_known   = false;
     _is_obviously_finite         = false;
     _is_obviously_infinite_known = false;

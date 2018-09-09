@@ -97,8 +97,8 @@ namespace libsemigroups {
 
     size_t nr_rules() const noexcept;
 
-    bool             has_isomorphic_non_fp_semigroup() const noexcept;
-    FroidurePinBase& isomorphic_non_fp_semigroup();
+    bool             has_froidure_pin() const noexcept;
+    FroidurePinBase& froidure_pin();
 
     word_type normal_form(std::initializer_list<letter_type>);
 
@@ -154,8 +154,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule_impl(std::string const&, std::string const&) = 0;
-    virtual internal::owned_ptr<FroidurePinBase>
-    isomorphic_non_fp_semigroup_impl() = 0;
+    virtual internal::owned_ptr<FroidurePinBase> froidure_pin_impl()   = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     // FpSemiBase - non-pure virtual methods - private
@@ -189,6 +188,7 @@ namespace libsemigroups {
 
     std::string                                      _alphabet;
     std::unordered_map<char, letter_type>            _alphabet_map;
+    bool                                             _identity_defined;
     std::string                                      _identity;
     std::string                                      _inverses;
     std::vector<std::pair<std::string, std::string>> _rules;
@@ -197,8 +197,7 @@ namespace libsemigroups {
     // FpSemiBase - mutable data - private
     //////////////////////////////////////////////////////////////////////////////
 
-    bool                                         _identity_defined;
-    mutable internal::owned_ptr<FroidurePinBase> _isomorphic_non_fp_semigroup;
+    mutable internal::owned_ptr<FroidurePinBase> _froidure_pin;
     mutable bool                                 _is_obviously_finite_known;
     mutable bool                                 _is_obviously_finite;
     mutable bool                                 _is_obviously_infinite_known;

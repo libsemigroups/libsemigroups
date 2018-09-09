@@ -160,7 +160,7 @@ namespace libsemigroups {
         : ToddCoxeter(typ, copy.congruence()) {
       LIBSEMIGROUPS_ASSERT(!has_parent_semigroup());
       if (copy.finished()) {
-        set_parent_semigroup(copy.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(copy.froidure_pin());
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_relations;
         // FIXME assertion failure if we use_cayley_graph
@@ -175,7 +175,7 @@ namespace libsemigroups {
         add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
       }
       if (kb.finished()) {
-        set_parent_semigroup(kb.isomorphic_non_fp_semigroup());
+        set_parent_semigroup(kb.froidure_pin());
         LIBSEMIGROUPS_ASSERT(_policy == policy::none);
         _policy = policy::use_cayley_graph;
       }
