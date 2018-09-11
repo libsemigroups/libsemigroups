@@ -1,10 +1,2 @@
-.dirstamp
-*.lo
-.deps
-.libs
-html
-.report.h.swo
-.semigroups.cc.swo
-.semigroups.h.swo
-test/test
-*.o
+search
+.*
