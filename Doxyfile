@@ -874,7 +874,7 @@ RECURSIVE              = NO
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =  include/internal/*
+EXCLUDE                =
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -901,8 +901,7 @@ EXCLUDE_PATTERNS       =
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        = _hash_value REPORTER Rule RuleLookup OverlapMeasure \
-                          rws_word_t RWS::Rule RWS::RuleLookup RWS::OverlapMeasure
+EXCLUDE_SYMBOLS        = libsemigroups::internal::*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

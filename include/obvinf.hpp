@@ -17,7 +17,7 @@
 //
 
 // This file contains a helper class for checking whether or not a congruence
-// defined by
+// defined by TODO
 
 #ifndef LIBSEMIGROUPS_INCLUDE_OBVINF_HPP_
 #define LIBSEMIGROUPS_INCLUDE_OBVINF_HPP_

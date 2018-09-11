@@ -25,7 +25,7 @@
 
 #include <stddef.h>  // for size_t
 
-#include "internal/stl.hpp"  // for equal_to, hash
+#include "stl.hpp"  // for internal::equal_to, internal::hash
 
 namespace libsemigroups {
   template <typename TElementType, typename = void>
@@ -72,7 +72,7 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementEqual = equal_to<TElementType>>
+            typename TElementEqual = internal::equal_to<TElementType>>
   class TraitsEqual : public Traits<TElementType> {
    private:
     using base = Traits<TElementType>;
@@ -105,8 +105,8 @@ namespace libsemigroups {
   };
 
   template <typename TElementType,
-            typename TElementHash  = hash<TElementType>,
-            typename TElementEqual = equal_to<TElementType>>
+            typename TElementHash  = internal::hash<TElementType>,
+            typename TElementEqual = internal::equal_to<TElementType>>
   class TraitsHashEqual : public TraitsEqual<TElementType, TElementEqual> {
    private:
     using base = Traits<TElementType>;

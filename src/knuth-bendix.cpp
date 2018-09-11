@@ -20,18 +20,17 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for operator!=, operator==
 
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/stl.hpp"                      // for make_unique
-
-#include "cong-base.hpp"          // for CongBase, CongBase::...
-#include "fpsemi-base.hpp"        // for FpSemiBase
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "froidure-pin.hpp"       // for FroidurePin
-#include "kbe.hpp"                // for KBE
-#include "knuth-bendix.hpp"       // for KnuthBendix, KnuthBe...
-#include "obvinf.hpp"             // for IsObviouslyInfinite
-#include "types.hpp"              // for word_type
+#include "cong-base.hpp"                // for CongBase, CongBase::...
+#include "fpsemi-base.hpp"              // for FpSemiBase
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "froidure-pin.hpp"             // for FroidurePin
+#include "kbe.hpp"                      // for KBE
+#include "knuth-bendix.hpp"             // for KnuthBendix, KnuthBe...
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "obvinf.hpp"                   // for IsObviouslyInfinite
+#include "stl.hpp"                      // for internal::make_unique
+#include "types.hpp"                    // for word_type
 
 namespace libsemigroups {
   class ReductionOrdering;  // Forward declaration
@@ -177,7 +176,7 @@ namespace libsemigroups {
     }
 
     std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
-      os << to_string(kb.rules()) << "\n";
+      os << internal::to_string(kb.rules()) << "\n";
       return os;
     }
 
@@ -250,7 +249,7 @@ namespace libsemigroups {
     bool KnuthBendix::validate_identity_impl(std::string const& id) const {
       if (id.length() > 1) {
         throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
-                                      + to_string(id.length())
+                                      + internal::to_string(id.length())
                                       + " letters, should be 0 or 1 letters");
       }
       if (id.length() == 1) {
@@ -271,19 +270,19 @@ namespace libsemigroups {
 
     KnuthBendix::KnuthBendix()
         : CongBase(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>()) {}
+          _kb(internal::make_unique<fpsemigroup::KnuthBendix>()) {}
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const* kb)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongBase(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>(kb)) {
+          _kb(internal::make_unique<fpsemigroup::KnuthBendix>(kb)) {
       set_nr_generators(kb->alphabet().size());
     }
 
     KnuthBendix::KnuthBendix(FroidurePinBase& S)
         // FIXME don't repeat the code here from the 0-param constructor
         : CongBase(congruence_type::TWOSIDED),
-          _kb(make_unique<fpsemigroup::KnuthBendix>(S)) {
+          _kb(internal::make_unique<fpsemigroup::KnuthBendix>(S)) {
       set_nr_generators(S.nr_generators());
       set_parent_semigroup(S);
     }
@@ -382,8 +381,8 @@ namespace libsemigroups {
       } else if (_kb->alphabet().size() != n) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "incompatible number of generators, should be "
-            + to_string(_kb->alphabet().size()) + ", but found "
-            + to_string(n));
+            + internal::to_string(_kb->alphabet().size()) + ", but found "
+            + internal::to_string(n));
       }
     }
   }  // namespace congruence

@@ -21,8 +21,7 @@
 #include <thread>    // for sleep_for
 
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "internal/timer.hpp"  // for Timer, operator<<
+#include "timer.hpp"                // for internal::Timer, operator<<
 
 namespace libsemigroups {
 
@@ -30,7 +29,7 @@ namespace libsemigroups {
                           "001",
                           "string method (1 argument)",
                           "[quick]") {
-    Timer                    t;
+    internal::Timer          t;
     std::chrono::nanoseconds ns(1);
     REQUIRE(t.string(ns) == "1ns");
     ns *= 10;
@@ -69,13 +68,13 @@ namespace libsemigroups {
                           "002",
                           "string method (0 arguments)",
                           "[quick]") {
-    Timer t;
+    internal::Timer t;
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     t.string();  // Can't really test this
   }
 
   LIBSEMIGROUPS_TEST_CASE("Timer", "003", "reset/elapsed method", "[quick]") {
-    Timer t;
+    internal::Timer t;
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     auto e = std::chrono::duration_cast<std::chrono::milliseconds>(t.elapsed());
     REQUIRE(e.count() >= 5);
@@ -89,7 +88,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Timer", "004", "operator<<", "[quick]") {
     std::ostringstream os;
-    Timer              t;
+    internal::Timer    t;
     os << t;
   }
 }  // namespace libsemigroups

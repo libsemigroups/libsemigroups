@@ -18,9 +18,8 @@
 #include <iosfwd>  // for ostream, ostringstream, stringbuf
 #include <vector>  // for vector
 
-#include "libsemigroups.tests.hpp"
-
 #include "bmat8.hpp"
+#include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
 

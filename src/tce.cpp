@@ -20,10 +20,9 @@
 
 #include "tce.hpp"
 
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-
-#include "cong-base.hpp"     // for CongBase::class_index_type
-#include "todd-coxeter.hpp"  // for congruence::ToddCoxeter
+#include "cong-base.hpp"            // for CongBase::class_index_type
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "todd-coxeter.hpp"         // for congruence::ToddCoxeter
 
 namespace libsemigroups {
 
@@ -64,7 +63,7 @@ namespace libsemigroups {
   }
 
   std::ostream& operator<<(std::ostream& os, TCE const& tc) {
-    os << to_string(tc);
+    os << internal::to_string(tc);
     return os;
   }
 }  // namespace libsemigroups

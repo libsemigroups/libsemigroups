@@ -24,7 +24,7 @@
 #define LIBSEMIGROUPS_INCLUDE_KBE_HPP_
 
 #include <cstddef>     // for size_t
-#include <functional>  // for equal_to
+#include <functional>  // for internal::equal_to
 #include <string>      // for string
 #include <utility>     // for hash
 
@@ -230,10 +230,11 @@ namespace libsemigroups {
   //! Specialises the factorisation method for FroidurePin's of KBE's so that it
   //! just returns the word inside the KBE.
   template <>
-  word_type FroidurePin<KBE,
-                        hash<KBE>,
-                        equal_to<KBE>,
-                        TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>::
+  word_type FroidurePin<
+      KBE,
+      internal::hash<KBE>,
+      internal::equal_to<KBE>,
+      TraitsHashEqual<KBE, internal::hash<KBE>, internal::equal_to<KBE>>>::
       factorisation(KBE const& x);
 }  // namespace libsemigroups
 

@@ -20,9 +20,8 @@
 
 #include <algorithm>  // for min, max
 
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-
-#include "constants.hpp"  // for POSITIVE_INFINITY
+#include "constants.hpp"            // for POSITIVE_INFINITY
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

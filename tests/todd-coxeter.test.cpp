@@ -24,17 +24,16 @@
 #include <functional>  // for mem_fn
 #include <vector>      // for vector
 
+#include "bmat8.hpp"                // for Bmat8
+#include "cong-base.hpp"            // for congruence_type
+#include "element.hpp"              // for Element, Transf, Transf<>::type
+#include "froidure-pin-base.hpp"    // for FroidurePinBase
+#include "froidure-pin.hpp"         // for FroidurePin, FroidurePin<>::eleme...
+#include "knuth-bendix.hpp"         // for KnuthBendix
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "bmat8.hpp"              // for Bmat8
-#include "cong-base.hpp"          // for congruence_type
-#include "element.hpp"            // for Element, Transf, Transf<>::type
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "froidure-pin.hpp"       // for FroidurePin, FroidurePin<>::eleme...
-#include "knuth-bendix.hpp"       // for KnuthBendix
-#include "tce.hpp"                // for TCE
-#include "todd-coxeter.hpp"       // for ToddCoxeter
-#include "types.hpp"              // for relation_type, word_type
+#include "tce.hpp"                  // for TCE
+#include "todd-coxeter.hpp"         // for ToddCoxeter
+#include "types.hpp"                // for relation_type, word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

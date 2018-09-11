@@ -20,9 +20,6 @@
 //    reduction orderings different from shortlex
 // 2. Examples from MAF
 
-#include <algorithm>
-#include <random>
-
 #include <algorithm>  // for shuffle
 #include <chrono>     // for duration, hours
 #include <iostream>   // for string, operator<<, ost...
@@ -31,16 +28,14 @@
 #include <utility>    // for operator==, pair
 #include <vector>     // for vector, __vector_base<>...
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "internal/report.hpp"                // for REPORTER, Reporter
-
-#include "element.hpp"       // for Element, Transf, Transf...
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_...
-#include "kbe.hpp"           // for KBE
-#include "knuth-bendix.hpp"  // for KnuthBendix, operator<<
-#include "types.hpp"         // for word_type
+#include "element.hpp"               // for Element, Transf, Transf...
+#include "froidure-pin.hpp"          // for FroidurePin<>::element_...
+#include "kbe.hpp"                   // for KBE
+#include "knuth-bendix.hpp"          // for KnuthBendix, operator<<
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups.tests.hpp"   // for LIBSEMIGROUPS_TEST_CASE
+#include "report.hpp"                // for REPORTER, Reporter
+#include "types.hpp"                 // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

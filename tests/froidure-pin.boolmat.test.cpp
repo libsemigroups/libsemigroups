@@ -16,15 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
 #include <stddef.h>  // for size_t
 
 #include <vector>  // for vector
 
-#include "element.hpp"       // for BooleanMat
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
-#include "semiring.hpp"      // for BooleanSemiring
+#include "element.hpp"              // for BooleanMat
+#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "semiring.hpp"             // for BooleanSemiring
 
 namespace libsemigroups {
   // Forward declaration

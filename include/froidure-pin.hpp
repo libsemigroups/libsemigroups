@@ -32,20 +32,19 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "internal/containers.hpp"            // for RecVec
-#include "internal/iterator.hpp"              // for iterator_base
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
-#include "internal/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/report.hpp"                   // for REPORT
-#include "internal/stl.hpp"                      // for equal_to, hash
-#include "internal/timer.hpp"                    // for Timer
-
 #include "adapters.hpp"           // for complexity, degree, increase_degree_by
 #include "constants.hpp"          // for UNDEFINED, LIMIT_MAX
+#include "containers.hpp"         // for RecVec
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "traits.hpp"             // for TraitsHashEqual
-#include "types.hpp"              // for letter_type, word_type
+#include "iterator.hpp"           // for iterator_base
+#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "report.hpp"                   // for REPORT
+#include "stl.hpp"                      // for equal_to, hash
+#include "timer.hpp"                    // for internal::Timer
+#include "traits.hpp"                   // for TraitsHashEqual
+#include "types.hpp"                    // for letter_type, word_type
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
 #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
@@ -65,8 +64,8 @@ namespace libsemigroups {
   //! right Cayley graphs are determined, and a confluent terminating
   //! presentation for the semigroup is known.
   template <typename TElementType  = Element const*,
-            typename TElementHash  = hash<TElementType>,
-            typename TElementEqual = equal_to<TElementType>,
+            typename TElementHash  = internal::hash<TElementType>,
+            typename TElementEqual = internal::equal_to<TElementType>,
             class TTraits
             = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
   class FroidurePin : private TTraits, public FroidurePinBase {
@@ -983,7 +982,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // Type for a left or right Cayley graph of a semigroup.
-    using cayley_graph_type = RecVec<element_index_type>;
+    using cayley_graph_type = internal::RecVec<element_index_type>;
 
     size_t                                           _batch_size;  // setting
     size_t                                           _degree;
@@ -1023,7 +1022,7 @@ namespace libsemigroups {
     enumerate_index_type            _pos;
     element_index_type              _pos_one;
     std::vector<element_index_type> _prefix;
-    RecVec<bool>                    _reduced;
+    internal::RecVec<bool>          _reduced;
     letter_type                     _relation_gen;
     enumerate_index_type            _relation_pos;
     cayley_graph_type               _right;

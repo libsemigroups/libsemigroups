@@ -19,8 +19,8 @@
 // This file contains a class for creating ranges of integers, for use with
 // SchreierSims.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_RANGE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_RANGE_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_RANGE_HPP_
+#define LIBSEMIGROUPS_INCLUDE_RANGE_HPP_
 
 #include <type_traits>
 
@@ -90,4 +90,4 @@ namespace libsemigroups {
     iterator _end;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_RANGE_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_RANGE_HPP_

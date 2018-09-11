@@ -91,7 +91,7 @@ namespace libsemigroups {
       if (finished() || dead()) {
         return;
       }
-      Timer t;
+      internal::Timer t;
       init();
 
       size_t tid = REPORTER.thread_id(std::this_thread::get_id());

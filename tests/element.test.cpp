@@ -20,13 +20,12 @@
 
 #include <vector>  // for vector
 
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-
-#include "blocks.hpp"    // for Blocks
-#include "bmat8.hpp"     // for BMat8
-#include "element.hpp"   // for Bipartition, Element
-#include "semiring.hpp"  // for Semiring, MaxPlusSemiring
-#include "types.hpp"     // for SmallestInteger, Smalle...
+#include "blocks.hpp"                // for Blocks
+#include "bmat8.hpp"                 // for BMat8
+#include "element.hpp"               // for Bipartition, Element
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "semiring.hpp"              // for Semiring, MaxPlusSemiring
+#include "types.hpp"                 // for SmallestInteger, Smalle...
 
 namespace libsemigroups {
   struct LibsemigroupsException;

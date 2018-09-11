@@ -30,9 +30,8 @@
 
 #include <string>  // for string
 
-#include "internal/race.hpp"  // for Race
-
 #include "fpsemi-base.hpp"   // for FpSemiBase
+#include "race.hpp"          // for Race
 #include "todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
@@ -113,7 +112,7 @@ namespace libsemigroups {
     // FpSemigroup - data - private
     //////////////////////////////////////////////////////////////////////////
 
-    Race _race;
+    internal::Race _race;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_

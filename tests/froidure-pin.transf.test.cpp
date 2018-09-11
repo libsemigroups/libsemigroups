@@ -21,13 +21,11 @@
 
 #include <vector>  // for vector
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "element.hpp"       // for Transformation
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
-
+#include "element.hpp"  // for Transformation
 #include "element.hpp"
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "froidure-pin.hpp"
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {

@@ -21,13 +21,11 @@
 #include <cstdint>      // for uint8_t
 #include <type_traits>  // for enable_if, is_integral
 
+#include "element.hpp"              // for PBR
+#include "froidure-pin.hpp"         // for FroidurePin<>::element_i...
+#include "iterator.hpp"             // for iterator_base
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "internal/iterator.hpp"             // for iterator_base
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-
-#include "element.hpp"       // for PBR
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_i...
 
 namespace libsemigroups {
 

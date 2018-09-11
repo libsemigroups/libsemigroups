@@ -57,23 +57,22 @@
 #include <string>         // for operator+, basic_string
 #include <unordered_set>  // for unordered_set
 
-#include "internal/containers.hpp"               // for SquareArray, SquareV...
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/range.hpp"                    // for IntegralRange
-#include "internal/stl.hpp"                      // for to_string, equal_to
-
-#include "adapters.hpp"  // for action, degree, inverse
-#include "element.hpp"   // for Perm
-#include "traits.hpp"    // for TraitsEqual
-#include "types.hpp"     // for SmallestInteger
+#include "adapters.hpp"    // for action, degree, inverse
+#include "containers.hpp"  // for internal::SquareArray, internal::SquareV...
+#include "element.hpp"     // for Perm
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "range.hpp"                    // for IntegralRange
+#include "stl.hpp"                      // for internal::to_string, equal_to
+#include "traits.hpp"                   // for TraitsEqual
+#include "types.hpp"                    // for SmallestInteger
 
 namespace libsemigroups {
   template <size_t N,
             typename TPointType    = typename SmallestInteger<N>::type,
             typename TElementType  = typename Perm<N>::type,
             typename TDomainType   = IntegralRange<TPointType, 0, N>,
-            typename TElementEqual = equal_to<TElementType>,
+            typename TElementEqual = internal::equal_to<TElementType>,
             class TTraits          = TraitsEqual<TElementType, TElementEqual>>
   class SchreierSims : private TTraits {
     using const_element_type = typename TTraits::const_element_type;
@@ -128,8 +127,9 @@ namespace libsemigroups {
     void add_generator(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "the degree of the generator must be " + to_string(N) + ", not "
-            + to_string(degree()(this->to_internal_const(x))));
+            "the degree of the generator must be " + internal::to_string(N)
+            + ", not "
+            + internal::to_string(degree()(this->to_internal_const(x))));
       } else if (!contains(x)) {
         _finished = false;
         _strong_gens.push_back(0, this->internal_copy(_tmp_element2));
@@ -138,9 +138,10 @@ namespace libsemigroups {
 
     const_reference generator(size_t index) {
       if (index >= _strong_gens.size(0)) {
-        throw LIBSEMIGROUPS_EXCEPTION("the argument must be at most "
-                                      + to_string(_strong_gens.size(0))
-                                      + ", not " + to_string(index));
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "the argument must be at most "
+            + internal::to_string(_strong_gens.size(0)) + ", not "
+            + internal::to_string(index));
       }
       return this->to_external_const(_strong_gens.at(0, index));
     }
@@ -164,8 +165,9 @@ namespace libsemigroups {
     element_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "the degree of the generator must be " + to_string(N) + ", not "
-            + to_string(degree()(this->to_internal_const(x))));
+            "the degree of the generator must be " + internal::to_string(N)
+            + ", not "
+            + internal::to_string(degree()(this->to_internal_const(x))));
       }
       element_type cpy = this->external_copy(this->to_internal_const(x));
       swap()(this->to_internal(cpy), _tmp_element2);
@@ -221,11 +223,11 @@ namespace libsemigroups {
     void add_base_point(point_type const pt) {
       if (pt >= N - 1) {
         throw LIBSEMIGROUPS_EXCEPTION("the new base point must be at most "
-                                      + to_string(N) + ", not "
-                                      + to_string(pt));
+                                      + internal::to_string(N) + ", not "
+                                      + internal::to_string(pt));
       } else if (_base_size == N) {
         throw LIBSEMIGROUPS_EXCEPTION("the current base has size "
-                                      + to_string(N)
+                                      + internal::to_string(N)
                                       + ", cannot add further points");
       } else if (finished()) {
         throw LIBSEMIGROUPS_EXCEPTION("cannot add "
@@ -233,7 +235,7 @@ namespace libsemigroups {
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
-            throw LIBSEMIGROUPS_EXCEPTION(to_string(pt)
+            throw LIBSEMIGROUPS_EXCEPTION(internal::to_string(pt)
                                           + " is already a base point");
           }
         }
@@ -244,8 +246,8 @@ namespace libsemigroups {
     point_type base(index_type const index) const {
       if (index >= _base_size) {
         throw LIBSEMIGROUPS_EXCEPTION("the index must be at most "
-                                      + to_string(_base_size) + ", not "
-                                      + to_string(index));
+                                      + internal::to_string(_base_size)
+                                      + ", not " + internal::to_string(index));
       }
       return _base[index];
     }
@@ -412,20 +414,19 @@ namespace libsemigroups {
       return N;
     }
 
-    std::array<point_type, N>              _base;
-    index_type                             _base_size;
-    TDomainType                            _domain;
-    bool                                   _finished;
-    internal_element_type                  _one;
-    SquareVector<point_type, N>            _orbits;
-    SquareArray<bool, N>                   _orbits_lookup;
-    SquareVector<internal_element_type, N> _strong_gens;
-    internal_element_type                  _tmp_element1;
-    internal_element_type                  _tmp_element2;
-    SquareArray<internal_element_type, N>  _transversal;
-    SquareArray<internal_element_type, N>  _inversal;
+    std::array<point_type, N>                        _base;
+    index_type                                       _base_size;
+    TDomainType                                      _domain;
+    bool                                             _finished;
+    internal_element_type                            _one;
+    internal::SquareVector<point_type, N>            _orbits;
+    internal::SquareArray<bool, N>                   _orbits_lookup;
+    internal::SquareVector<internal_element_type, N> _strong_gens;
+    internal_element_type                            _tmp_element1;
+    internal_element_type                            _tmp_element2;
+    internal::SquareArray<internal_element_type, N>  _transversal;
+    internal::SquareArray<internal_element_type, N>  _inversal;
   };
-
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_

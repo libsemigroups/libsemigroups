@@ -18,13 +18,11 @@
 
 #include "cong-base.hpp"
 
-#include "internal/containers.hpp"               // for RecVec
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/stl.hpp"                      // for to_string
-
-#include "constants.hpp"          // for UNDEFINED
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "constants.hpp"                // for UNDEFINED
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "stl.hpp"                      // for internal::to_string
 
 namespace libsemigroups {
 
@@ -350,9 +348,10 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter " + to_string(l) + " in word " + to_string(w)
-            + ", the valid range is [0, " + to_string(_nr_gens) + ")");
+        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + internal::to_string(l)
+                                      + " in word " + internal::to_string(w)
+                                      + ", the valid range is [0, "
+                                      + internal::to_string(_nr_gens) + ")");
       }
     }
   }

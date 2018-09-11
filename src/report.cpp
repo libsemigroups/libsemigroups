@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "internal/report.hpp"
+#include "report.hpp"
 
 namespace libsemigroups {
-  Reporter REPORTER;
-}
+  internal::Reporter REPORTER;
+}  // namespace libsemigroups

@@ -26,12 +26,11 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/stl.hpp"                      // for make_unique
-
-#include "cong-base.hpp"          // for congruence_type, con...
-#include "fpsemi-base.hpp"        // for FpSemiBase
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "cong-base.hpp"                // for congruence_type, con...
+#include "fpsemi-base.hpp"              // for FpSemiBase
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "stl.hpp"                      // for internal::make_unique
 
 namespace libsemigroups {
   namespace fpsemigroup {
@@ -45,12 +44,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       WrappedCong()
-          : _wrapped_cong(
-                make_unique<wrapped_type>(congruence_type::TWOSIDED)) {}
+          : _wrapped_cong(internal::make_unique<wrapped_type>(
+                congruence_type::TWOSIDED)) {}
 
       explicit WrappedCong(FroidurePinBase& S)
           : _wrapped_cong(
-                make_unique<wrapped_type>(congruence_type::TWOSIDED, S)) {
+                internal::make_unique<wrapped_type>(congruence_type::TWOSIDED,
+                                                    S)) {
         set_alphabet(S.nr_generators());
         if (TAddRules) {
           add_rules(S);

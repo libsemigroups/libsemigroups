@@ -19,11 +19,10 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for integral_constant<>::value
 
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups.tests.hpp"           // for LIBSEMIGROUPS_TEST_CASE
-
-#include "adapters.hpp"      // for complexity etc
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_i...
+#include "adapters.hpp"             // for complexity etc
+#include "froidure-pin.hpp"         // for FroidurePin<>::element_i...
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   constexpr bool REPORT = false;

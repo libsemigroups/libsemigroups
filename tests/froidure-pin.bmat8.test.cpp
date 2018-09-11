@@ -20,13 +20,11 @@
 
 #include <vector>  // for vector
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-
-#include "bmat8.hpp"         // for BMat8
-#include "froidure-pin.hpp"  // for FroidurePin, FroidurePi...
-#include "types.hpp"         // for word_type
+#include "bmat8.hpp"                 // for BMat8
+#include "froidure-pin.hpp"          // for FroidurePin, FroidurePi...
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "libsemigroups.tests.hpp"   // for LIBSEMIGROUPS_TEST_CASE
+#include "types.hpp"                 // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

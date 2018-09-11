@@ -102,8 +102,9 @@ namespace libsemigroups {
       size_t degree = internal_degree()(this->to_internal_const((*gens)[i]));
       if (degree != _degree) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "generator " + to_string(i) + " has degree " + to_string(degree)
-            + " but should have degree " + to_string(_degree));
+            "generator " + internal::to_string(i) + " has degree "
+            + internal::to_string(degree) + " but should have degree "
+            + internal::to_string(_degree));
       }
     }
     for (const_reference x : *gens) {
@@ -753,8 +754,8 @@ namespace libsemigroups {
     }
 
     REPORT("limit = ", limit);
-    Timer  timer;
-    size_t tid = REPORTER.thread_id(std::this_thread::get_id());
+    internal::Timer timer;
+    size_t          tid = REPORTER.thread_id(std::this_thread::get_id());
 
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
@@ -891,13 +892,13 @@ namespace libsemigroups {
           = internal_degree()(this->to_internal_const(*it));
       if (degree != _degree) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "new generator " + to_string(it - coll.begin()) + " has degree "
-            + to_string(degree) + " but should have degree "
-            + to_string(_degree));
+            "new generator " + internal::to_string(it - coll.begin())
+            + " has degree " + internal::to_string(degree)
+            + " but should have degree " + internal::to_string(_degree));
       }
     }
-    Timer  timer;
-    size_t tid = REPORTER.thread_id(std::this_thread::get_id());
+    internal::Timer timer;
+    size_t          tid = REPORTER.thread_id(std::this_thread::get_id());
 
     // get some parameters from the old semigroup
     letter_type old_nrgens  = _nrgens;
@@ -972,7 +973,8 @@ namespace libsemigroups {
     // Add columns for new generators
     // FIXME isn't this a bit wasteful, we could recycle the old _reduced, to
     // avoid reallocation
-    _reduced = RecVec<bool>(_nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
+    _reduced = internal::RecVec<bool>(
+        _nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
     _left.add_cols(_nrgens - _left.nr_cols());
     _right.add_cols(_nrgens - _right.nr_cols());
 
@@ -1146,17 +1148,17 @@ namespace libsemigroups {
   VOID FROIDURE_PIN::validate_element_index(element_index_type i) const {
     if (i >= _nr) {
       throw LIBSEMIGROUPS_EXCEPTION(
-          "there are only " + to_string(_nr) + " elements"
+          "there are only " + internal::to_string(_nr) + " elements"
           + (finished() ? "" : " enumerated so far") + ", but index "
-          + to_string(i) + " was given");
+          + internal::to_string(i) + " was given");
     }
   }
 
   VOID FROIDURE_PIN::validate_letter_index(letter_type i) const {
     if (i >= nr_generators()) {
-      throw LIBSEMIGROUPS_EXCEPTION("there are only  "
-                                    + to_string(nr_generators())
-                                    + " generators, not " + to_string(i));
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "there are only  " + internal::to_string(nr_generators())
+          + " generators, not " + internal::to_string(i));
     }
   }
 
@@ -1309,7 +1311,7 @@ namespace libsemigroups {
     enumerate();
     _is_idempotent.resize(_nr, false);
 
-    Timer timer;
+    internal::Timer timer;
 
     // Find the threshold beyond which it is quicker to simply product
     // elements rather than follow a path in the Cayley graph. This is the
@@ -1412,7 +1414,7 @@ namespace libsemigroups {
       enumerate_index_type const             threshold,
       std::vector<internal_idempotent_pair>& idempotents) {
     REPORT("first = ", first, ", last = ", last, ", diff = ", last - first);
-    Timer timer;
+    internal::Timer timer;
 
     enumerate_index_type pos = first;
 

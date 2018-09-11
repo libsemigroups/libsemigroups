@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_ITERATOR_HPP_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_ITERATOR_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_
+#define LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_
 
 #include <vector>
 
@@ -153,4 +153,4 @@ namespace libsemigroups {
     };  // iterator_base definition ends
   }     // namespace internal
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_ITERATOR_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_

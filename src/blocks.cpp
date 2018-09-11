@@ -32,8 +32,8 @@
 #include <algorithm>  // for max_element, count
 #include <cstdint>    // for uint32_t
 
-#include "constants.hpp"                     // for UNDEFINED
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "constants.hpp"            // for UNDEFINED
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
   Blocks::Blocks()

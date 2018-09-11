@@ -21,64 +21,66 @@
 // obtaining the winner.
 //
 
-#include "internal/race.hpp"
+#include "race.hpp"
 
 #include <algorithm>  // for find
 
 namespace libsemigroups {
+  namespace internal {
 
-  Race::Race()
-      : _max_threads(std::thread::hardware_concurrency()),
-        _mtx(),
-        _winner(nullptr) {}
+    Race::Race()
+        : _max_threads(std::thread::hardware_concurrency()),
+          _mtx(),
+          _winner(nullptr) {}
 
-  Race::~Race() {
-    if (_winner != nullptr
-        && std::find(_runners.cbegin(), _runners.cend(), _winner)
-               == _runners.cend()) {
-      delete _winner;
+    Race::~Race() {
+      if (_winner != nullptr
+          && std::find(_runners.cbegin(), _runners.cend(), _winner)
+                 == _runners.cend()) {
+        delete _winner;
+      }
+      for (auto rnnr : _runners) {
+        delete rnnr;
+      }
     }
-    for (auto rnnr : _runners) {
-      delete rnnr;
+
+    void Race::set_max_threads(size_t val) {
+      if (val == 0) {
+        throw LIBSEMIGROUPS_EXCEPTION("the minimum number of threads is 1");
+      }
+      _max_threads = val;
     }
-  }
 
-  void Race::set_max_threads(size_t val) {
-    if (val == 0) {
-      throw LIBSEMIGROUPS_EXCEPTION("the minimum number of threads is 1");
+    Runner* Race::winner() {
+      run();
+      return _winner;
     }
-    _max_threads = val;
-  }
 
-  Runner* Race::winner() {
-    run();
-    return _winner;
-  }
-
-  void Race::add_runner(Runner* r) {
-    if (_winner != nullptr) {
-      throw LIBSEMIGROUPS_EXCEPTION("the race is over, cannot add runners");
+    void Race::add_runner(Runner* r) {
+      if (_winner != nullptr) {
+        throw LIBSEMIGROUPS_EXCEPTION("the race is over, cannot add runners");
+      }
+      _runners.push_back(r);
     }
-    _runners.push_back(r);
-  }
 
-  typename std::vector<Runner*>::const_iterator Race::begin() const {
-    return _runners.cbegin();
-  }
+    typename std::vector<Runner*>::const_iterator Race::begin() const {
+      return _runners.cbegin();
+    }
 
-  typename std::vector<Runner*>::const_iterator Race::end() const {
-    return _runners.cend();
-  }
+    typename std::vector<Runner*>::const_iterator Race::end() const {
+      return _runners.cend();
+    }
 
-  bool Race::empty() const {
-    return _runners.empty();
-  }
+    bool Race::empty() const {
+      return _runners.empty();
+    }
 
-  void Race::run() {
-    run_func(std::mem_fn(&Runner::run));
-  }
+    void Race::run() {
+      run_func(std::mem_fn(&Runner::run));
+    }
 
-  void Race::run_for(std::chrono::nanoseconds x) {
-    run_func([&x](Runner* rnnr) -> void { rnnr->run_for(x); });
-  }
+    void Race::run_for(std::chrono::nanoseconds x) {
+      run_func([&x](Runner* rnnr) -> void { rnnr->run_for(x); });
+    }
+  }  // namespace internal
 }  // namespace libsemigroups

@@ -30,10 +30,9 @@
 #include <utility>    // for hash
 #include <vector>     // for vector
 
-#include "internal/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "internal/stl.hpp"                  // for to_string
-
-#include "adapters.hpp"  // for complexity, degree, etc . . .
+#include "adapters.hpp"             // for complexity, degree, etc . . .
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "stl.hpp"                  // for internal::to_string
 
 namespace libsemigroups {
 
@@ -223,7 +222,7 @@ namespace libsemigroups {
     //!
     //! This method allows BMat8 objects to be inserted into a ostream.
     friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << to_string(bm);
+      os << internal::to_string(bm);
       return os;
     }
 

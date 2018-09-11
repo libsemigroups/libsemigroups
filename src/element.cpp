@@ -26,9 +26,8 @@
 #include <ostream>    // for operator<<, basic_ostream, ostringstream
 #include <thread>     // for thread, get_id
 
-#include "internal/report.hpp"  // for REPORTER, Reporter
-
 #include "blocks.hpp"    // for Blocks
+#include "report.hpp"    // for REPORTER, Reporter
 #include "semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
 
 namespace libsemigroups {
@@ -207,9 +206,10 @@ namespace libsemigroups {
       if (j == next) {
         ++next;
       } else if (j > next) {
-        throw LIBSEMIGROUPS_EXCEPTION("expected " + to_string(next)
-                                      + " but found " + to_string(j)
-                                      + ", in position " + to_string(i));
+        throw LIBSEMIGROUPS_EXCEPTION("expected " + internal::to_string(next)
+                                      + " but found " + internal::to_string(j)
+                                      + ", in position "
+                                      + internal::to_string(i));
       }
     }
   }
@@ -434,11 +434,12 @@ namespace libsemigroups {
       }
     }
     if (deg < 2 * max) {
-      throw LIBSEMIGROUPS_EXCEPTION("the blocks given do not "
-                                    "disjoint union to the ranges [-"
-                                    + to_string(-max) + ".. -1] U [1 .. "
-                                    + to_string(max) + "]: " + to_string(deg)
-                                    + " elements given");
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "the blocks given do not "
+          "disjoint union to the ranges [-"
+          + internal::to_string(-max) + ".. -1] U [1 .. "
+          + internal::to_string(max) + "]: " + internal::to_string(deg)
+          + " elements given");
     }
     if (max >= static_cast<int32_t>(0x40000000)) {
       throw LIBSEMIGROUPS_EXCEPTION("too many points");
@@ -453,18 +454,21 @@ namespace libsemigroups {
           throw LIBSEMIGROUPS_EXCEPTION(
               "found 0 in a block, but every value should be "
               "in the ranges [-"
-              + to_string(-max) + " .. -1] or [1 .. " + to_string(max) + "]");
+              + internal::to_string(-max) + " .. -1] or [1 .. "
+              + internal::to_string(max) + "]");
         }
         if (x < 0) {
           if (out[static_cast<uint32_t>(max - x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
+                                          + " twice");
           }
           out[static_cast<uint32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<uint32_t>(x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + to_string(x) + " twice");
+            throw LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
+                                          + " twice");
           }
 
           out[static_cast<uint32_t>(x - 1)] = i;
@@ -533,8 +537,10 @@ namespace libsemigroups {
   std::vector<std::vector<bool>>
       PBR::_y_seen(std::thread::hardware_concurrency());
 
-  std::vector<RecVec<bool>> PBR::_out(std::thread::hardware_concurrency());
-  std::vector<RecVec<bool>> PBR::_tmp(std::thread::hardware_concurrency());
+  std::vector<internal::RecVec<bool>>
+      PBR::_out(std::thread::hardware_concurrency());
+  std::vector<internal::RecVec<bool>>
+      PBR::_tmp(std::thread::hardware_concurrency());
   PBR::PBR(size_t degree)
       : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
                                                std::vector<uint32_t>())) {}
@@ -555,19 +561,19 @@ namespace libsemigroups {
       for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
         os << pbr[i][j] << ", ";
       }
-      os << to_string(pbr[i].back()) << "}, ";
+      os << internal::to_string(pbr[i].back()) << "}, ";
     }
 
     os << "{";
     for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
       os << pbr[2 * pbr.degree() - 1][j] << ", ";
     }
-    os << to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
+    os << internal::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
     return os;
   }
 
   std::ostream& operator<<(std::ostream& os, PBR const& pbr) {
-    os << to_string(pbr);
+    os << internal::to_string(pbr);
     return os;
   }
 
@@ -585,8 +591,9 @@ namespace libsemigroups {
       for (auto const& v : this->_vector.at(u)) {
         if (v >= n) {
           throw LIBSEMIGROUPS_EXCEPTION(
-              "entry out of bounds, vertex " + to_string(u) + " is adjacent to "
-              + to_string(v) + ", should be less than " + to_string(n));
+              "entry out of bounds, vertex " + internal::to_string(u)
+              + " is adjacent to " + internal::to_string(v)
+              + ", should be less than " + internal::to_string(n));
         }
       }
     }
@@ -644,10 +651,10 @@ namespace libsemigroups {
 
     uint32_t const n = this->degree();
 
-    std::vector<bool>& x_seen = _x_seen[thread_id];
-    std::vector<bool>& y_seen = _y_seen[thread_id];
-    RecVec<bool>&      tmp    = _tmp[thread_id];
-    RecVec<bool>&      out    = _out[thread_id];
+    std::vector<bool>&      x_seen = _x_seen[thread_id];
+    std::vector<bool>&      y_seen = _y_seen[thread_id];
+    internal::RecVec<bool>& tmp    = _tmp[thread_id];
+    internal::RecVec<bool>& out    = _out[thread_id];
 
     if (x_seen.size() != 2 * n) {
       x_seen.clear();
@@ -727,23 +734,23 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
-  inline void PBR::unite_rows(RecVec<bool>& out,
-                              RecVec<bool>& tmp,
-                              size_t const& i,
-                              size_t const& j) {
+  inline void PBR::unite_rows(internal::RecVec<bool>& out,
+                              internal::RecVec<bool>& tmp,
+                              size_t const&           i,
+                              size_t const&           j) {
     for (size_t k = 0; k < out.nr_cols(); k++) {
       out.set(i, k, (out.get(i, k) || tmp.get(j, k + 1)));
     }
   }
 
-  void PBR::x_dfs(std::vector<bool>& x_seen,
-                  std::vector<bool>& y_seen,
-                  RecVec<bool>&      tmp,
-                  uint32_t const&    n,
-                  uint32_t const&    i,
-                  PBR const* const   x,
-                  PBR const* const   y,
-                  size_t const&      adj) {
+  void PBR::x_dfs(std::vector<bool>&      x_seen,
+                  std::vector<bool>&      y_seen,
+                  internal::RecVec<bool>& tmp,
+                  uint32_t const&         n,
+                  uint32_t const&         i,
+                  PBR const* const        x,
+                  PBR const* const        y,
+                  size_t const&           adj) {
     if (!x_seen[i]) {
       x_seen[i] = true;
       for (auto const& j : (*x)[i]) {
@@ -756,14 +763,14 @@ namespace libsemigroups {
     }
   }
 
-  void PBR::y_dfs(std::vector<bool>& x_seen,
-                  std::vector<bool>& y_seen,
-                  RecVec<bool>&      tmp,
-                  uint32_t const&    n,
-                  uint32_t const&    i,
-                  PBR const* const   x,
-                  PBR const* const   y,
-                  size_t const&      adj) {
+  void PBR::y_dfs(std::vector<bool>&      x_seen,
+                  std::vector<bool>&      y_seen,
+                  internal::RecVec<bool>& tmp,
+                  uint32_t const&         n,
+                  uint32_t const&         i,
+                  PBR const* const        x,
+                  PBR const* const        y,
+                  size_t const&           adj) {
     if (!y_seen[i]) {
       y_seen[i] = true;
       for (auto const& j : (*y)[i]) {
@@ -797,8 +804,10 @@ namespace libsemigroups {
             || x > static_cast<int32_t>(n)) {
           throw LIBSEMIGROUPS_EXCEPTION(
               "the first argument contains a vector which contains "
-              + to_string(x) + " but the values must lie in the ranges [-"
-              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n) + "]");
+              + internal::to_string(x)
+              + " but the values must lie in the ranges [-"
+              + internal::to_string(n) + " .. -1] or " + "[1 .. "
+              + internal::to_string(n) + "]");
         }
         if (x < 0) {
           v.push_back(static_cast<uint32_t>(n - x - 1));
@@ -816,8 +825,10 @@ namespace libsemigroups {
             || x > static_cast<int32_t>(n)) {
           throw LIBSEMIGROUPS_EXCEPTION(
               "the second argument contains a vector which contains "
-              + to_string(x) + " but the values must lie in the ranges [-"
-              + to_string(n) + " .. -1] or " + "[1 .. " + to_string(n) + "]");
+              + internal::to_string(x)
+              + " but the values must lie in the ranges [-"
+              + internal::to_string(n) + " .. -1] or " + "[1 .. "
+              + internal::to_string(n) + "]");
         }
         if (x < 0) {
           v.push_back(static_cast<uint32_t>(n - x - 1));

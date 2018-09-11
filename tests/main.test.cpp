@@ -25,13 +25,13 @@
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "include/internal/stl.hpp"    // for to_string
-#include "include/internal/timer.hpp"  // for Timer
+#include "include/stl.hpp"    // for internal::to_string
+#include "include/timer.hpp"  // for internal::Timer
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)
       : _file(testInfo.lineInfo.file),
-        _line(libsemigroups::to_string(testInfo.lineInfo.line)) {}
+        _line(libsemigroups::internal::to_string(testInfo.lineInfo.line)) {}
   std::string _file;
   std::string _line;
 };
@@ -76,7 +76,8 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     size_t t
         = static_cast<size_t>(sectionStats.durationInSeconds * std::pow(10, 9));
     std::cout << _msg << " ("
-              << libsemigroups::Timer::string(std::chrono::nanoseconds(t))
+              << libsemigroups::internal::Timer::string(
+                     std::chrono::nanoseconds(t))
               << ")" << std::endl;
     _total_time += t;
   }
@@ -84,7 +85,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   // The way the total time below is displayed is unattractive, so decided to
   // leave this out for the time being.
   // void testRunEnded(Catch::TestRunStats const&) override {
-  // std::cout << libsemigroups::Timer::string(
+  // std::cout << libsemigroups::internal::Timer::string(
   //                 std::chrono::nanoseconds(_total_time))
   //          << std::endl;
   //}

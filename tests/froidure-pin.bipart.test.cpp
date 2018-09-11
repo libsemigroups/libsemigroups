@@ -20,10 +20,9 @@
 
 #include <vector>  // for vector
 
+#include "element.hpp"              // for Bipartition
+#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "element.hpp"       // for Bipartition
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 
 namespace libsemigroups {
   // Forward declaration

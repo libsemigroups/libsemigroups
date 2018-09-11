@@ -36,16 +36,15 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "internal/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "internal/report.hpp"                // for REPORT
-#include "internal/string.hpp"                // for is_suffix, maximum_comm...
-#include "internal/timer.hpp"                 // for Timer
-
-#include "constants.hpp"     // for POSITIVE_INFINITY
-#include "knuth-bendix.hpp"  // for KnuthBendix, KnuthBendi...
-#include "reduct.hpp"        // for ReductionOrdering
-#include "types.hpp"         // for word_type
+#include "constants.hpp"             // for POSITIVE_INFINITY
+#include "knuth-bendix.hpp"          // for KnuthBendix, KnuthBendi...
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "reduct.hpp"                // for ReductionOrdering
+#include "report.hpp"                // for REPORT
+#include "string.hpp"                // for internal::is_suffix, maximum_comm...
+#include "timer.hpp"                 // for internal::Timer
+#include "types.hpp"                 // for word_type
 
 namespace libsemigroups {
   class KBE;  // Forward declarations
@@ -644,11 +643,11 @@ namespace libsemigroups {
           if (it != _set_rules.end()) {
             Rule const* rule = (*it).rule();
             if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
-              LIBSEMIGROUPS_ASSERT(is_suffix(
+              LIBSEMIGROUPS_ASSERT(internal::is_suffix(
                   v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
               v_end -= rule->lhs()->size();
               w_begin -= rule->rhs()->size();
-              string_replace(
+              internal::string_replace(
                   w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
             }
           }
@@ -743,7 +742,7 @@ namespace libsemigroups {
                         <= _kb->_settings._max_overlap);
              --it) {
           // Check if B = [it, u->lhs()->cend()) is a prefix of v->lhs()
-          if (is_prefix(
+          if (internal::is_prefix(
                   v->lhs()->cbegin(), v->lhs()->cend(), it, u->lhs()->cend())) {
             // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j
             // This version of new_rule does not reorder
@@ -801,10 +800,11 @@ namespace libsemigroups {
                    --it) {
                 // Find longest common prefix of suffix B of rule1.lhs() defined
                 // by it and R = rule2.lhs()
-                auto prefix = maximum_common_prefix(it,
-                                                    rule1->lhs()->cend(),
-                                                    rule2->lhs()->cbegin(),
-                                                    rule2->lhs()->cend());
+                auto prefix
+                    = internal::maximum_common_prefix(it,
+                                                      rule1->lhs()->cend(),
+                                                      rule2->lhs()->cbegin(),
+                                                      rule2->lhs()->cend());
                 if (prefix.first == rule1->lhs()->cend()
                     || prefix.second == rule2->lhs()->cend()) {
                   word1.clear();
@@ -846,7 +846,7 @@ namespace libsemigroups {
         if (_kb->finished() || _kb->dead()) {
           return;
         }
-        Timer timer;
+        internal::Timer timer;
         if (_stack.empty() && confluent() && !_kb->dead()) {
           // _stack can be non-empty if non-reduced rules were used to define
           // the KnuthBendix.  If _stack is non-empty, then it means that the
@@ -925,9 +925,9 @@ namespace libsemigroups {
       }
 
       void knuth_bendix_by_overlap_length() {
-        Timer  timer;
-        size_t max_overlap = _kb->_settings._max_overlap;
-        size_t check_confluence_interval
+        internal::Timer timer;
+        size_t          max_overlap = _kb->_settings._max_overlap;
+        size_t          check_confluence_interval
             = _kb->_settings._check_confluence_interval;
         _kb->_settings._max_overlap               = 1;
         _kb->_settings._check_confluence_interval = POSITIVE_INFINITY;

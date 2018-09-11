@@ -16,19 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "bmat8.hpp"                // for BMat8
+#include "cong-pair.hpp"            // for KBP
+#include "cong.hpp"                 // for Congruence
+#include "element.hpp"              // for Element
 #include "fpsemi-examples.hpp"      // for RookMonoid
+#include "fpsemi.hpp"               // for FpSemigroup
+#include "froidure-pin.hpp"         // for FroidurePin
+#include "knuth-bendix.hpp"         // for KnuthBendix
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "internal/report.hpp"  // for REPORTER, Reporter
-
-#include "bmat8.hpp"         // for BMat8
-#include "cong-pair.hpp"     // for KBP
-#include "cong.hpp"          // for Congruence
-#include "element.hpp"       // for Element
-#include "fpsemi.hpp"        // for FpSemigroup
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "knuth-bendix.hpp"  // for KnuthBendix
-#include "types.hpp"         // for word_type
+#include "report.hpp"               // for REPORTER, Reporter
+#include "types.hpp"                // for word_type
 
 namespace libsemigroups {
   // Forward declarations

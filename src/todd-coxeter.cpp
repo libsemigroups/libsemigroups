@@ -77,18 +77,17 @@
 #include <unordered_map>  // for unordered_map
 #include <utility>        // for pair
 
-#include "internal/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/report.hpp"                   // for REPORT
-#include "internal/stl.hpp"                      // for to_string
-#include "internal/timer.hpp"                    // for Timer
-
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "froidure-pin.hpp"       // for FroidurePin
-#include "knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
-#include "obvinf.hpp"             // for IsObviouslyInfinite
-#include "tce.hpp"                // for TCE
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "froidure-pin.hpp"             // for FroidurePin
+#include "knuth-bendix.hpp"             // for fpsemigroup::KnuthBendix
+#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "obvinf.hpp"                   // for IsObviouslyInfinite
+#include "report.hpp"                   // for REPORT
+#include "stl.hpp"                      // for internal::to_string
+#include "tce.hpp"                      // for TCE
+#include "timer.hpp"                    // for internal::Timer
 
 namespace libsemigroups {
 
@@ -194,7 +193,7 @@ namespace libsemigroups {
             "Todd-Coxeter will never terminate");
       }
 
-      Timer timer;
+      internal::Timer timer;
       init();
 
       while (_current != _next && !dead() && !timed_out()) {
@@ -311,7 +310,8 @@ namespace libsemigroups {
       if (i >= nr_classes()) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "invalid class index, should be in the range [0, "
-            + to_string(nr_classes()) + "), not " + to_string(i));
+            + internal::to_string(nr_classes()) + "), not "
+            + internal::to_string(i));
       }
 
       // FIXME(now) quotient_semigroup throws if this is not 2-sided
@@ -423,9 +423,9 @@ namespace libsemigroups {
     }
 
     void ToddCoxeter::set_nr_generators_impl(size_t n) {
-      _preim_init = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _preim_next = RecVec<class_index_type>(n, 1, UNDEFINED),
-      _table      = RecVec<class_index_type>(n, 1, UNDEFINED);
+      _preim_init = internal::RecVec<class_index_type>(n, 1, UNDEFINED),
+      _preim_next = internal::RecVec<class_index_type>(n, 1, UNDEFINED),
+      _table      = internal::RecVec<class_index_type>(n, 1, UNDEFINED);
     }
 
     bool ToddCoxeter::is_quotient_obviously_infinite_impl() {
@@ -461,10 +461,11 @@ namespace libsemigroups {
           class_index_type c = _table.get(i, j);
           if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
             throw LIBSEMIGROUPS_EXCEPTION(
-                "invalid table, the entry in row " + to_string(i)
-                + " and column " + to_string(j) + " should be in the range [1, "
-                + to_string(_table.nr_rows()) + ") or UNDEFINED, but is "
-                + to_string(c));
+                "invalid table, the entry in row " + internal::to_string(i)
+                + " and column " + internal::to_string(j)
+                + " should be in the range [1, "
+                + internal::to_string(_table.nr_rows())
+                + ") or UNDEFINED, but is " + internal::to_string(c));
           }
         }
       }
@@ -624,7 +625,7 @@ namespace libsemigroups {
       if (dead() || _active == _table.nr_rows()) {
         return;
       }
-      RecVec<class_index_type> table(nr_generators(), _active);
+      internal::RecVec<class_index_type> table(nr_generators(), _active);
 
       class_index_type pos = _id_coset;
       // old number to new numbers lookup

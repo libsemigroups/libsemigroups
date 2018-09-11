@@ -18,8 +18,8 @@
 
 // This file contains implementations of the methods for the Runner class.
 
-#include "internal/runner.hpp"
-#include "internal/timer.hpp"
+#include "runner.hpp"
+#include "timer.hpp"
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace libsemigroups {
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished_impl()) {
       if (val != FOREVER) {
-        REPORT("running for approx. ", Timer::string(val));
+        REPORT("running for approx. ", internal::Timer::string(val));
       } else {
         REPORT("running until finished, with no time limit");
       }

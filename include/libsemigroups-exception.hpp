@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_EXCEPTION_HPP_
-#define LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_EXCEPTION_HPP_
+#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_
+#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_
 
 #include <exception>
 #include <string>
@@ -30,8 +30,8 @@ namespace libsemigroups {
                            int                linenum,
                            std::string const& funcname,
                            std::string const& msg)
-        : std::runtime_error(fname + ":" + to_string(linenum) + ":" + funcname
-                             + ": " + msg) {}
+        : std::runtime_error(fname + ":" + internal::to_string(linenum) + ":"
+                             + funcname + ": " + msg) {}
   };
 }  // namespace libsemigroups
 
@@ -40,4 +40,4 @@ namespace libsemigroups {
 #define INTERNAL_EXCEPTION \
   LIBSEMIGROUPS_EXCEPTION("internal error, something went wrong")
 
-#endif  // LIBSEMIGROUPS_INCLUDE_INTERNAL_LIBSEMIGROUPS_EXCEPTION_HPP_
+#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_

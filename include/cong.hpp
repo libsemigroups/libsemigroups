@@ -24,10 +24,9 @@
 
 #include <stddef.h>  // for size_t
 
-#include "internal/race.hpp"    // for Race
-#include "internal/runner.hpp"  // for Runner
-
 #include "cong-base.hpp"  // for congruence_type, CongBase::class_index_type
+#include "race.hpp"       // for Race
+#include "runner.hpp"     // for Runner
 #include "types.hpp"      // for word_type
 
 namespace libsemigroups {
@@ -130,7 +129,7 @@ namespace libsemigroups {
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
 
-    Race _race;
+    internal::Race _race;
   };
 }  // namespace libsemigroups
 

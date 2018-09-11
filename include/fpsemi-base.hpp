@@ -34,9 +34,8 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "internal/runner.hpp"  // for Runner
-
 #include "owned_ptr.hpp"  // for owned_ptr
+#include "runner.hpp"     // for Runner
 #include "types.hpp"      // for word_type, letter_type, relation_type
 
 namespace libsemigroups {

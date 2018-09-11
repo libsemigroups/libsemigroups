@@ -27,14 +27,14 @@
 #include <type_traits>  // for enable_if<>::type
 #include <vector>       // for operator==, vector
 
-#include "cong-pair.hpp"                         // for KBP
-#include "fpsemi.hpp"                            // for FpSemigroup
-#include "froidure-pin-base.hpp"                 // for FroidurePinBase
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "knuth-bendix.hpp"                      // for KnuthBendix
-#include "owned_ptr.hpp"                         // for owned_ptr
-#include "todd-coxeter.hpp"                      // for ToddCoxeter
+#include "cong-pair.hpp"                // for KBP
+#include "fpsemi.hpp"                   // for FpSemigroup
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "knuth-bendix.hpp"             // for KnuthBendix
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "owned_ptr.hpp"                // for owned_ptr
+#include "todd-coxeter.hpp"             // for ToddCoxeter
 
 namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;

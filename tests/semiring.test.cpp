@@ -17,8 +17,7 @@
 //
 
 #include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "semiring.hpp"  // for BooleanSemiring, NaturalSemiring
+#include "semiring.hpp"             // for BooleanSemiring, NaturalSemiring
 
 namespace libsemigroups {
 

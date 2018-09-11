@@ -34,11 +34,10 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "internal/containers.hpp"  // for RecVec
-
-#include "cong-base.hpp"  // for congruence_type, CongBase, CongBa...
-#include "types.hpp"      // for relation_type, word_type, letter_...
-#include "wrap.hpp"       // for WrappedCong
+#include "cong-base.hpp"   // for congruence_type, CongBase, CongBa...
+#include "containers.hpp"  // for internal::internal::RecVec
+#include "types.hpp"       // for relation_type, word_type, letter_...
+#include "wrap.hpp"        // for WrappedCong
 
 namespace libsemigroups {
   // Forward declarations
@@ -186,15 +185,15 @@ namespace libsemigroups {
       class_index_type             _next;
       size_t _pack;  // Nr of active cosets allowed before a
                      // packing phase starts
-      policy                       _policy;
-      bool                         _prefilled;
-      RecVec<class_index_type>     _preim_init;
-      RecVec<class_index_type>     _preim_next;
-      bool                         _relations_are_reversed;
-      std::vector<relation_type>   _relations;
-      std::stack<class_index_type> _rhs_stack;
-      bool                         _stop_packing;
-      RecVec<class_index_type>     _table;
+      policy                             _policy;
+      bool                               _prefilled;
+      internal::RecVec<class_index_type> _preim_init;
+      internal::RecVec<class_index_type> _preim_next;
+      bool                               _relations_are_reversed;
+      std::vector<relation_type>         _relations;
+      std::stack<class_index_type>       _rhs_stack;
+      bool                               _stop_packing;
+      internal::RecVec<class_index_type> _table;
     };
   }  // namespace congruence
 }  // namespace libsemigroups

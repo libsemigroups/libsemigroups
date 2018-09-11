@@ -23,12 +23,11 @@
 #include <algorithm>  // for sort
 #include <string>     // for operator+, basic_string
 
-#include "internal/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/stl.hpp"                      // for to_string
-
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "stl.hpp"                      // for internal::to_string
 
 namespace libsemigroups {
 
@@ -87,7 +86,7 @@ namespace libsemigroups {
         _alphabet_map.clear();  // Strong exception guarantee
         throw LIBSEMIGROUPS_EXCEPTION(
             "invalid alphabet, it contains the duplicate letter "
-            + to_string(lphbt[i]));
+            + internal::to_string(lphbt[i]));
       }
       _alphabet_map.emplace(lphbt[i], i);
     }
@@ -162,9 +161,9 @@ namespace libsemigroups {
   void FpSemiBase::add_rules(FroidurePinBase& S) {
     if (!_alphabet.empty() && _alphabet.size() != S.nr_generators()) {
       throw LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
-                                    + to_string(S.nr_generators())
+                                    + internal::to_string(S.nr_generators())
                                     + ", should be at most "
-                                    + to_string(_alphabet.size()));
+                                    + internal::to_string(_alphabet.size()));
     }
     add_rules_impl(S);
     reset();
@@ -209,8 +208,8 @@ namespace libsemigroups {
         if (l == id[0]) {
           add_rule(id + id, id);
         } else {
-          add_rule(to_string(l) + id, to_string(l));
-          add_rule(id + to_string(l), to_string(l));
+          add_rule(internal::to_string(l) + id, internal::to_string(l));
+          add_rule(id + internal::to_string(l), internal::to_string(l));
         }
       }
     }
@@ -238,9 +237,9 @@ namespace libsemigroups {
       throw LIBSEMIGROUPS_EXCEPTION(
           "no identity has been defined, define an identity first");
     } else if (_alphabet.size() != inv.size()) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid inverses, expected "
-                                    + to_string(_alphabet.size())
-                                    + " but found " + to_string(inv.size()));
+      throw LIBSEMIGROUPS_EXCEPTION(
+          "invalid inverses, expected " + internal::to_string(_alphabet.size())
+          + " but found " + internal::to_string(inv.size()));
     }
 
     validate_word(inv);
@@ -251,7 +250,7 @@ namespace libsemigroups {
       if (*it == *(it + 1)) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "invalid inverses, it contains the duplicate letter "
-            + to_string(*it));
+            + internal::to_string(*it));
       }
     }
 
@@ -434,8 +433,9 @@ namespace libsemigroups {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
         throw LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter " + to_string(l) + " in word " + to_string(w)
-            + ", the valid range is [0, " + to_string(_alphabet.size()) + ")");
+            "invalid letter " + internal::to_string(l) + " in word "
+            + internal::to_string(w) + ", the valid range is [0, "
+            + internal::to_string(_alphabet.size()) + ")");
       }
     }
     // Use validate_word_impl to impose or lift any further restrictions on
@@ -514,7 +514,7 @@ namespace libsemigroups {
   bool FpSemiBase::validate_identity_impl(std::string const& id) const {
     if (id.length() != 1) {
       throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
-                                    + to_string(id.length())
+                                    + internal::to_string(id.length())
                                     + " letters, should be single letter");
     }
     validate_letter(id[0]);

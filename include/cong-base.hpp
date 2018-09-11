@@ -25,9 +25,8 @@
 #include <string>    // for string
 #include <vector>    // for vector
 
-#include "internal/runner.hpp"  // for Runner
-
 #include "owned_ptr.hpp"  // owned_ptr
+#include "runner.hpp"     // for Runner
 #include "types.hpp"      // for word_type, letter_type, relation_type
 
 namespace libsemigroups {

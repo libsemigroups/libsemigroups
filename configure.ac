@@ -18,7 +18,7 @@ AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
-AX_PREFIX_CONFIG_H([include/internal/libsemigroups-config.hpp],[],[config/config.h])
+AX_PREFIX_CONFIG_H([include/libsemigroups-config.hpp],[],[config/config.h])
 
 AC_PROG_CXX
 AC_LANG([C++])

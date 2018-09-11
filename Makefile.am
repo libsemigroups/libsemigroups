@@ -37,6 +37,7 @@ pkginclude_HEADERS += include/cong-pair-impl.hpp
 pkginclude_HEADERS += include/cong-pair.hpp
 pkginclude_HEADERS += include/cong.hpp
 pkginclude_HEADERS += include/constants.hpp
+pkginclude_HEADERS += include/containers.hpp
 pkginclude_HEADERS += include/element.hpp
 pkginclude_HEADERS += include/fpsemi-base.hpp
 pkginclude_HEADERS += include/fpsemi.hpp
@@ -44,32 +45,31 @@ pkginclude_HEADERS += include/froidure-pin-base.hpp
 pkginclude_HEADERS += include/froidure-pin-impl.hpp
 pkginclude_HEADERS += include/froidure-pin.hpp
 pkginclude_HEADERS += include/hpcombi.hpp
+pkginclude_HEADERS += include/iterator.hpp
 pkginclude_HEADERS += include/kbe.hpp
 pkginclude_HEADERS += include/knuth-bendix.hpp
+pkginclude_HEADERS += include/libsemigroups-config.hpp
+pkginclude_HEADERS += include/libsemigroups-debug.hpp
+pkginclude_HEADERS += include/libsemigroups-exception.hpp
 pkginclude_HEADERS += include/libsemigroups.hpp
 pkginclude_HEADERS += include/obvinf.hpp
+pkginclude_HEADERS += include/race.hpp
+pkginclude_HEADERS += include/range.hpp
 pkginclude_HEADERS += include/reduct.hpp
+pkginclude_HEADERS += include/report.hpp
+pkginclude_HEADERS += include/runner.hpp
 pkginclude_HEADERS += include/schreier-sims.hpp
 pkginclude_HEADERS += include/semiring.hpp
+pkginclude_HEADERS += include/stl.hpp
+pkginclude_HEADERS += include/string.hpp
 pkginclude_HEADERS += include/tce.hpp
+pkginclude_HEADERS += include/timer.hpp
 pkginclude_HEADERS += include/todd-coxeter.hpp
 pkginclude_HEADERS += include/traits.hpp
 pkginclude_HEADERS += include/types.hpp
+pkginclude_HEADERS += include/uf.hpp
 pkginclude_HEADERS += include/wrap.hpp
 
-pkginclude_HEADERS += include/internal/containers.hpp
-pkginclude_HEADERS += include/internal/iterator.hpp
-pkginclude_HEADERS += include/internal/libsemigroups-config.hpp
-pkginclude_HEADERS += include/internal/libsemigroups-debug.hpp
-pkginclude_HEADERS += include/internal/libsemigroups-exception.hpp
-pkginclude_HEADERS += include/internal/race.hpp
-pkginclude_HEADERS += include/internal/range.hpp
-pkginclude_HEADERS += include/internal/report.hpp
-pkginclude_HEADERS += include/internal/runner.hpp
-pkginclude_HEADERS += include/internal/stl.hpp
-pkginclude_HEADERS += include/internal/string.hpp
-pkginclude_HEADERS += include/internal/timer.hpp
-pkginclude_HEADERS += include/internal/uf.hpp
 
 if LIBSEMIGROUPS_HPCOMBI
 pkginclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
@@ -210,7 +210,7 @@ clean-local-check:
 .PHONY: clean-local-check
 
 distclean-local: distclean-local-check
-	rm -f include/internal/libsemigroups-config.hpp
+	rm -f include/libsemigroups-config.hpp
 .PHONY: distclean-local-check
 
 superclean: distclean

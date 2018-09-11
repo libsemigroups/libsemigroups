@@ -36,16 +36,15 @@
 #include <string>     // for string
 #include <vector>     // for vector
 
-#include "internal/containers.hpp"               // for RecVec
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "internal/stl.hpp"  // for to_string, hash, equal_to, less
-
-#include "adapters.hpp"   // for complexity, degree, increase_degree_by, . . .
-#include "constants.hpp"  // for UNDEFINED
-#include "hpcombi.hpp"    // HPCombi::Perm16, Transf16, . . .
-#include "traits.hpp"     // for Traits
-#include "types.hpp"      // for SmallestInteger
+#include "adapters.hpp"    // for complexity, degree, increase_degree_by, . . .
+#include "constants.hpp"   // for UNDEFINED
+#include "containers.hpp"  // for internal::internal::RecVec
+#include "hpcombi.hpp"     // HPCombi::Perm16, Transf16, . . .
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "stl.hpp"     // for internal::to_string, hash, equal_to, less
+#include "traits.hpp"  // for Traits
+#include "types.hpp"   // for SmallestInteger
 
 namespace libsemigroups {
   // Forward declarations
@@ -449,7 +448,7 @@ namespace libsemigroups {
     //! ostream.
     friend std::ostream& operator<<(std::ostream&                os,
                                     ElementWithVectorData const& elt) {
-      os << to_string(elt);
+      os << internal::to_string(elt);
       return os;
     }
 
@@ -570,10 +569,10 @@ namespace libsemigroups {
     void validate() const {
       for (auto const& val : this->_vector) {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
-          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
-                                        + to_string(static_cast<size_t>(val))
-                                        + ", must be less than "
-                                        + to_string(this->degree()));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "image value out of bounds, found "
+              + internal::to_string(static_cast<size_t>(val))
+              + ", must be less than " + internal::to_string(this->degree()));
         }
       }
     }
@@ -733,10 +732,10 @@ namespace libsemigroups {
       size_t deg = this->degree();
       for (auto const& val : this->_vector) {
         if (val >= deg) {
-          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
-                                        + to_string(static_cast<size_t>(val))
-                                        + ", must be less than "
-                                        + to_string(deg));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "image value out of bounds, found "
+              + internal::to_string(static_cast<size_t>(val))
+              + ", must be less than " + internal::to_string(deg));
         }
       }
     }
@@ -838,9 +837,9 @@ namespace libsemigroups {
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "domain value out of bounds, found "
-            + to_string(static_cast<size_t>(
+            + internal::to_string(static_cast<size_t>(
                   *std::max_element(dom.cbegin(), dom.cend())))
-            + ", must be less than " + to_string(deg));
+            + ", must be less than " + internal::to_string(deg));
       }
       this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
@@ -872,13 +871,14 @@ namespace libsemigroups {
       for (auto const& val : this->_vector) {
         if (val != UNDEFINED) {
           if (val < 0 || val >= this->degree()) {
-            throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
-                                          + to_string(static_cast<size_t>(val))
-                                          + ", must be less than "
-                                          + to_string(this->degree()));
+            throw LIBSEMIGROUPS_EXCEPTION(
+                "image value out of bounds, found "
+                + internal::to_string(static_cast<size_t>(val))
+                + ", must be less than " + internal::to_string(this->degree()));
           } else if (present[val]) {
             throw LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value " + to_string(static_cast<size_t>(val)));
+                "duplicate image value "
+                + internal::to_string(static_cast<size_t>(val)));
           }
           present[val] = true;
         }
@@ -1312,9 +1312,10 @@ namespace libsemigroups {
       }
       for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
-          throw LIBSEMIGROUPS_EXCEPTION("matrix contains entry "
-                                        + to_string(static_cast<size_t>(x))
-                                        + " not in the underlying semiring");
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "matrix contains entry "
+              + internal::to_string(static_cast<size_t>(x))
+              + " not in the underlying semiring");
         }
       }
     }
@@ -1547,13 +1548,14 @@ namespace libsemigroups {
       std::vector<bool> present(this->degree(), false);
       for (auto const& val : this->_vector) {
         if (val < 0 || val >= this->degree()) {
-          throw LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
-                                        + to_string(static_cast<size_t>(val))
-                                        + ", must be less than "
-                                        + to_string(this->degree()));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "image value out of bounds, found "
+              + internal::to_string(static_cast<size_t>(val))
+              + ", must be less than " + internal::to_string(this->degree()));
         } else if (present[val]) {
-          throw LIBSEMIGROUPS_EXCEPTION("duplicate image value "
-                                        + to_string(static_cast<size_t>(val)));
+          throw LIBSEMIGROUPS_EXCEPTION(
+              "duplicate image value "
+              + internal::to_string(static_cast<size_t>(val)));
         }
         present[val] = true;
       }
@@ -1751,11 +1753,14 @@ namespace libsemigroups {
     process_left_right(std::vector<std::vector<int32_t>> const&,
                        std::vector<std::vector<int32_t>> const&);
 
-    void unite_rows(RecVec<bool>&, RecVec<bool>&, size_t const&, size_t const&);
+    void unite_rows(internal::RecVec<bool>&,
+                    internal::RecVec<bool>&,
+                    size_t const&,
+                    size_t const&);
 
     void x_dfs(std::vector<bool>&,
                std::vector<bool>&,
-               RecVec<bool>&,
+               internal::RecVec<bool>&,
                uint32_t const&,
                uint32_t const&,
                PBR const* const,
@@ -1764,17 +1769,17 @@ namespace libsemigroups {
 
     void y_dfs(std::vector<bool>&,
                std::vector<bool>&,
-               RecVec<bool>&,
+               internal::RecVec<bool>&,
                uint32_t const&,
                uint32_t const&,
                PBR const* const,
                PBR const* const,
                size_t const&);
 
-    static std::vector<std::vector<bool>> _x_seen;
-    static std::vector<std::vector<bool>> _y_seen;
-    static std::vector<RecVec<bool>>      _out;
-    static std::vector<RecVec<bool>>      _tmp;
+    static std::vector<std::vector<bool>>      _x_seen;
+    static std::vector<std::vector<bool>>      _y_seen;
+    static std::vector<internal::RecVec<bool>> _out;
+    static std::vector<internal::RecVec<bool>> _tmp;
   };
 
   // Traits specialization for derived classes of Element.
@@ -1980,9 +1985,9 @@ namespace libsemigroups {
   };
 
   template <class TSubclass>
-  struct hash<TSubclass,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+  struct internal::hash<TSubclass,
+                        typename std::enable_if<
+                            std::is_base_of<Element, TSubclass>::value>::type> {
     //! Hashes a \p TSubclass given by const reference.
     size_t operator()(TSubclass const& x) const {
       return x.hash_value();
@@ -1996,9 +2001,9 @@ namespace libsemigroups {
   //! Element from an Element pointer. This is used by various methods
   //! of the FroidurePin class.
   template <class TSubclass>
-  struct hash<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+  struct internal::hash<TSubclass*,
+                        typename std::enable_if<
+                            std::is_base_of<Element, TSubclass>::value>::type> {
     //! Hashes an Element given by Element pointer.
     size_t operator()(TSubclass const* x) const {
       return x->hash_value();
@@ -2011,7 +2016,7 @@ namespace libsemigroups {
   //! pointers (by comparing the Element objects they point to). This is used
   //! by various methods of the FroidurePin class.
   template <class TSubclass>
-  struct equal_to<
+  struct internal::equal_to<
       TSubclass*,
       typename std::enable_if<
           std::is_base_of<libsemigroups::Element, TSubclass>::value>::type> {

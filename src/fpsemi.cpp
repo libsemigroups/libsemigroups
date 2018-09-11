@@ -27,11 +27,10 @@
 
 #include <iostream>  // for string, operator<<
 
-#include "internal/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "internal/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "knuth-bendix.hpp"       // for KnuthBendix
+#include "froidure-pin-base.hpp"        // for FroidurePinBase
+#include "knuth-bendix.hpp"             // for KnuthBendix
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 // FIXME This is wasteful since it calls add_rule(rel.first,
 // rel.second), and then make_pair(rel.first, rel.second), in

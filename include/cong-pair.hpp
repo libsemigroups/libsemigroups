@@ -31,16 +31,15 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "internal/stl.hpp"  // for equal_to, hash
-#include "internal/uf.hpp"   // for UF
-
 #include "adapters.hpp"      // for product
 #include "cong-base.hpp"     // for CongBase::class_index_type, congruence_type
 #include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type, FroidurePin
 #include "kbe.hpp"           // for KBE
 #include "knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "stl.hpp"           // for equal_to, hash
 #include "traits.hpp"        // for TraitsHashEqual
 #include "types.hpp"         // for word_type
+#include "uf.hpp"            // for UF
 #include "wrap.hpp"          // for WrappedCong
 
 // TODO(now) forward declare owned_ptr or include it
@@ -51,8 +50,8 @@ namespace libsemigroups {
   namespace congruence {
     // Implemented in cong-pair-impl.hpp
     template <typename TElementType  = Element const*,
-              typename TElementHash  = hash<TElementType>,
-              typename TElementEqual = equal_to<TElementType>,
+              typename TElementHash  = internal::hash<TElementType>,
+              typename TElementEqual = internal::equal_to<TElementType>,
               class TTraits
               = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     class P : public CongBase, protected TTraits {
@@ -201,17 +200,20 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     class KBP : public P<KBE,
-                         hash<KBE>,
-                         equal_to<KBE>,
-                         TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>> {
+                         internal::hash<KBE>,
+                         internal::equal_to<KBE>,
+                         TraitsHashEqual<KBE,
+                                         internal::hash<KBE>,
+                                         internal::equal_to<KBE>>> {
       ////////////////////////////////////////////////////////////////////////
       // KBP - typedefs - private
       ////////////////////////////////////////////////////////////////////////
 
-      using p_type = P<KBE,
-                       hash<KBE>,
-                       equal_to<KBE>,
-                       TraitsHashEqual<KBE, hash<KBE>, equal_to<KBE>>>;
+      using p_type = P<
+          KBE,
+          internal::hash<KBE>,
+          internal::equal_to<KBE>,
+          TraitsHashEqual<KBE, internal::hash<KBE>, internal::equal_to<KBE>>>;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -252,8 +254,8 @@ namespace libsemigroups {
 
   namespace fpsemigroup {
     template <typename TElementType  = Element const*,
-              typename TElementHash  = hash<TElementType>,
-              typename TElementEqual = equal_to<TElementType>,
+              typename TElementHash  = internal::hash<TElementType>,
+              typename TElementEqual = internal::equal_to<TElementType>,
               class TTraits
               = TraitsHashEqual<TElementType, TElementHash, TElementEqual>>
     using P = WrappedCong<

@@ -22,9 +22,8 @@
 #include <functional>  // for function
 #include <stddef.h>    // for size_t
 
-#include "internal/runner.hpp"  // for Runner
-
 #include "constants.hpp"  // for LIMIT_MAX
+#include "runner.hpp"     // for Runner
 #include "types.hpp"      // for word_type, letter_type
 
 namespace libsemigroups {

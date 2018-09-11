@@ -27,7 +27,7 @@
 
 #include <utility>  // for std::swap
 
-#include "internal/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
 
 namespace libsemigroups {
   template <typename TElementType, typename = void>
