@@ -153,6 +153,44 @@ namespace libsemigroups {
       return _degree_bound;
     }
 
+    //! Returns the id of the strongly connected component of a node
+    //!
+    //! Every node in \c this lies in a strongly connected component.
+    //! This function returns the id number of the SCC containing \p node.
+    //! If this has not been calculated, it will be at this point.
+    TIntType get_scc_id(TIntType node) {
+      if (node >= nr_nodes()) {
+        throw LibsemigroupsException("get_scc_id: first argument larger than "
+                                     "number of nodes - 1");
+      }
+      if (!_has_scc) {
+        gabow_scc();
+      }
+      return _cc_ids[node];
+    }
+
+    //! Returns the maximum degree of this digraph
+    //!
+    //! This function returns the maximum degree of a node in \c this.
+    TIntType max_degree() {
+      if (nr_nodes() == 0) {
+        return 0;
+      }
+      return *std::max_element(_next_edge_pos.begin(), _next_edge_pos.end());
+    }
+
+   private:
+    //! Sets a value in the underlying RecVec
+    //!
+    //! Sets the (\p i, \p j)th position of the underlying recvec to \p k.
+    void inline set(TIntType i, TIntType j, TIntType k) {
+      LIBSEMIGROUPS_ASSERT(i < nr_nodes() && k < nr_nodes());
+      LIBSEMIGROUPS_ASSERT(j < _recvec.nr_cols());
+
+      _recvec.set(i, j, k);
+      _has_scc = false;
+    }
+
     //! Calculate the strongly connected components of \c this
     //!
     //! This function calculates the strongly connected components of \c this
@@ -221,44 +259,6 @@ namespace libsemigroups {
         _cc_ids[i] -= nr_nodes();
       }
       _has_scc = true;
-    }
-
-    //! Returns the id of the strongly connected component of a node
-    //!
-    //! Every node in \c this lies in a strongly connected component.
-    //! This function returns the id number of the SCC containing \p node.
-    //! If this has not been calculated, it will be at this point.
-    TIntType get_scc_id(TIntType node) {
-      if (node >= nr_nodes()) {
-        throw LibsemigroupsException("get_scc_id: first argument larger than "
-                                     "number of nodes - 1");
-      }
-      if (!_has_scc) {
-        gabow_scc();
-      }
-      return _cc_ids[node];
-    }
-
-    //! Returns the maximum degree of this digraph
-    //!
-    //! This function returns the maximum degree of a node in \c this.
-    TIntType max_degree() {
-      if (nr_nodes() == 0) {
-        return 0;
-      }
-      return *std::max_element(_next_edge_pos.begin(), _next_edge_pos.end());
-    }
-
-   private:
-    //! Sets a value in the underlying RecVec
-    //!
-    //! Sets the (\p i, \p j)th position of the underlying recvec to \p k.
-    void inline set(TIntType i, TIntType j, TIntType k) {
-      LIBSEMIGROUPS_ASSERT(i < nr_nodes() && k < nr_nodes());
-      LIBSEMIGROUPS_ASSERT(j < _recvec.nr_cols());
-
-      _recvec.set(i, j, k);
-      _has_scc = false;
     }
 
     //! A vector containing the id of the SCC of each node
