@@ -233,7 +233,6 @@ namespace libsemigroups {
     //! Returns the current value of
     size_t concurrency_threshold() const noexcept override;
 
-
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - methods - public
     ////////////////////////////////////////////////////////////////////////
@@ -461,7 +460,6 @@ namespace libsemigroups {
     //!
     //! \sa FroidurePin::next_relation.
     size_t nr_rules() override;
-
 
     //! Requests that the capacity (i.e. number of elements) of the semigroup
     //! be at least enough to contain n elements.
@@ -766,7 +764,6 @@ namespace libsemigroups {
     template <class TCollection>
     FroidurePin* copy_closure(TCollection const&);
 
-
     bool is_monoid() override;
 
    private:
@@ -982,9 +979,9 @@ namespace libsemigroups {
     struct Settings {
       Settings();
       Settings(Settings const&) = default;
-      size_t         _batch_size;
-      size_t         _concurrency_threshold;
-      size_t         _max_threads;
+      size_t _batch_size;
+      size_t _concurrency_threshold;
+      size_t _max_threads;
     } _settings;
 
     size_t                                           _degree;

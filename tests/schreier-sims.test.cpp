@@ -2991,10 +2991,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.add_generator(Perm({2, 3, 0, 1, 4, 6})),
                       LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(S.generator(10),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(S.generator(2),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.generator(10), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.generator(2), LibsemigroupsException);
     REQUIRE_NOTHROW(S.generator(0));
     REQUIRE_NOTHROW(S.generator(1));
 

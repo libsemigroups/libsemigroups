@@ -36,8 +36,6 @@
 #include <string>     // for string
 #include <vector>     // for vector
 
-#include <iostream> // FIXME delete
-
 #include "adapters.hpp"    // for complexity, degree, increase_degree_by, . . .
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for internal::internal::RecVec
@@ -47,7 +45,6 @@
 #include "stl.hpp"     // for internal::to_string, hash, equal_to, less
 #include "traits.hpp"  // for Traits
 #include "types.hpp"   // for SmallestInteger
-
 
 namespace libsemigroups {
   // Forward declarations

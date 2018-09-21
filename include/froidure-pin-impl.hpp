@@ -504,8 +504,6 @@ namespace libsemigroups {
     return _final[pos];
   }
 
-
-
   SIZE_T FROIDURE_PIN::length_const(element_index_type pos) const {
     validate_element_index(pos);
     return _length[pos];
@@ -1582,7 +1580,6 @@ namespace libsemigroups {
       return &(this->to_external_const((*it).first));
     }
   };
-
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_

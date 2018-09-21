@@ -42,9 +42,9 @@ namespace libsemigroups {
 
     virtual ~FroidurePinBase() {}
 
-    virtual size_t             batch_size() const                     = 0;
-    virtual size_t             concurrency_threshold() const          = 0;
-    virtual size_t             max_threads() const                    = 0;
+    virtual size_t batch_size() const            = 0;
+    virtual size_t concurrency_threshold() const = 0;
+    virtual size_t max_threads() const           = 0;
 
     virtual void set_batch_size(size_t)            = 0;
     virtual void set_concurrency_threshold(size_t) = 0;

@@ -97,7 +97,7 @@ namespace libsemigroups {
 
     auto x = KBE(kb, 0);
     REQUIRE(x == KBE(kb, 0));
-    x.increase_degree_by(1000); // Does nothing
+    x.increase_degree_by(1000);  // Does nothing
     REQUIRE(x == KBE(kb, 0));
   }
 }  // namespace libsemigroups

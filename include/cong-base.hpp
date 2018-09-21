@@ -259,10 +259,10 @@ namespace libsemigroups {
     // CongBase - mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable bool                                 _init_ntc_done;
-    mutable bool                                 _is_obviously_finite;
-    mutable bool                                 _is_obviously_infinite;
-    mutable internal::owned_ptr<FroidurePinBase> _quotient;
+    mutable bool                                      _init_ntc_done;
+    mutable bool                                      _is_obviously_finite;
+    mutable bool                                      _is_obviously_infinite;
+    mutable internal::owned_ptr<FroidurePinBase>      _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////

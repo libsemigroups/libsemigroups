@@ -74,9 +74,9 @@ namespace libsemigroups {
     }
 
     void Race::run() {
-        if (empty()) {
-          throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run");
-        }
+      if (empty()) {
+        throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run");
+      }
       run_func(std::mem_fn(&Runner::run));
     }
 

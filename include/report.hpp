@@ -254,6 +254,5 @@ namespace libsemigroups {
     ~ReportGuard();
   };
 
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_REPORT_HPP_

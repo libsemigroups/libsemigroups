@@ -24,7 +24,7 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  constexpr bool REPORT              = false;
+  constexpr bool REPORT = false;
   namespace internal {
 
     class TestRunner : public Runner {
@@ -39,10 +39,7 @@ namespace libsemigroups {
       }
     };
 
-    LIBSEMIGROUPS_TEST_CASE("Race",
-                            "001",
-                            "run_for",
-                            "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_for", "[quick]") {
       Race rc;
       rc.set_max_threads(1);
       rc.add_runner(new TestRunner());
@@ -51,30 +48,23 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race",
-                            "002",
-                            "run_until",
-                            "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "002", "run_until", "[quick]") {
       Race rc;
       rc.add_runner(new TestRunner());
-      size_t nr = 0;
-      auto foo = [&nr]() -> bool { return ++nr == 2; };
+      size_t nr  = 0;
+      auto   foo = [&nr]() -> bool { return ++nr == 2; };
       rc.run_until(foo, std::chrono::milliseconds(10));
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race",
-                            "003",
-                            "exceptions",
-                            "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "003", "exceptions", "[quick]") {
       Race rc;
       REQUIRE_THROWS_AS(rc.set_max_threads(0), LibsemigroupsException);
       REQUIRE_THROWS_AS(rc.run_for(std::chrono::milliseconds(10)),
                         LibsemigroupsException);
       REQUIRE_THROWS_AS(rc.run_until([]() -> bool { return true; }),
                         LibsemigroupsException);
-      REQUIRE_THROWS_AS(rc.run(),
-                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(rc.run(), LibsemigroupsException);
 
       rc.add_runner(new TestRunner());
       rc.run_for(std::chrono::milliseconds(10));
@@ -85,4 +75,3 @@ namespace libsemigroups {
     }
   }  // namespace internal
 }  // namespace libsemigroups
-

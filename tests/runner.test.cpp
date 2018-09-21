@@ -24,7 +24,7 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  constexpr bool REPORT              = false;
+  constexpr bool REPORT = false;
   namespace internal {
 
     class TestRunner : public Runner {
@@ -39,10 +39,7 @@ namespace libsemigroups {
       }
     };
 
-    LIBSEMIGROUPS_TEST_CASE("Runner",
-                            "001",
-                            "run_for",
-                            "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Runner", "001", "run_for", "[quick]") {
       TestRunner tr;
       tr.run_for(std::chrono::milliseconds(10));
       REQUIRE(tr.finished());
@@ -51,4 +48,3 @@ namespace libsemigroups {
     }
   }  // namespace internal
 }  // namespace libsemigroups
-

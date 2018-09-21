@@ -75,14 +75,11 @@ namespace libsemigroups {
     REQUIRE(S.size() == 3);
     REQUIRE(S.nr_idempotents() == 1);
     REQUIRE(std::vector<Transf16>(S.cbegin_sorted(), S.cend_sorted())
-            == std::vector<Transf16>({ Transf16({}), Transf16({1, 2, 0}),
-              Transf16({2, 0, 1})}));
+            == std::vector<Transf16>(
+                   {Transf16({}), Transf16({1, 2, 0}), Transf16({2, 0, 1})}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi",
-                          "002",
-                          "Transf16",
-                          "[standard][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "002", "Transf16", "[standard][hpcombi]") {
     REPORTER.set_report(REPORT);
     FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
         {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),

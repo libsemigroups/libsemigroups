@@ -2524,7 +2524,7 @@ namespace libsemigroups {
                             "083",
                             "set_confluence_interval",
                             "[quick][knuth-bendix]") {
-      KnuthBendix        kb;
+      KnuthBendix kb;
       kb.set_alphabet("Bab");
       kb.add_rule("aa", "");
       kb.add_rule("bB", "");
