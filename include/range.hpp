@@ -85,6 +85,8 @@ namespace libsemigroups {
       return _end;
     }
 
+    using const_iterator = iterator;
+
    private:
     iterator _begin;
     iterator _end;

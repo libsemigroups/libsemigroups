@@ -27,7 +27,7 @@
 #include "types.hpp"      // for word_type, letter_type
 
 namespace libsemigroups {
-  class FroidurePinBase : public Runner {
+  class FroidurePinBase : public internal::Runner {
    public:
     //! Type used for indexing elements in a FroidurePin, use this when not
     //! specifically referring to a position in _elements. It should be possible
@@ -41,6 +41,15 @@ namespace libsemigroups {
     using element_index_type = size_type;
 
     virtual ~FroidurePinBase() {}
+
+    virtual size_t             batch_size() const                     = 0;
+    virtual size_t             concurrency_threshold() const          = 0;
+    virtual size_t             max_threads() const                    = 0;
+
+    virtual void set_batch_size(size_t)            = 0;
+    virtual void set_concurrency_threshold(size_t) = 0;
+    virtual void set_max_threads(size_t)           = 0;
+
     virtual element_index_type word_to_pos(word_type const&) const    = 0;
     virtual bool   equal_to(word_type const&, word_type const&) const = 0;
     virtual size_t current_max_word_length() const                    = 0;
@@ -53,7 +62,6 @@ namespace libsemigroups {
     virtual element_index_type suffix(element_index_type) const       = 0;
     virtual letter_type        first_letter(element_index_type) const = 0;
     virtual letter_type        final_letter(element_index_type) const = 0;
-    virtual size_t             batch_size() const                     = 0;
     virtual size_t             length_const(element_index_type) const = 0;
     virtual size_t             length_non_const(element_index_type)   = 0;
 
@@ -68,7 +76,6 @@ namespace libsemigroups {
     virtual bool               is_idempotent(element_index_type)      = 0;
     virtual bool               is_monoid()                            = 0;
     virtual size_t             nr_rules()                             = 0;
-    virtual void               set_batch_size(size_t)                 = 0;
     virtual void               reserve(size_t)                        = 0;
     virtual element_index_type position_to_sorted_position(element_index_type)
         = 0;
@@ -81,7 +88,6 @@ namespace libsemigroups {
     virtual void      reset_next_relation()                                 = 0;
     virtual void      next_relation(word_type&)                             = 0;
     virtual void      enumerate(size_t = LIMIT_MAX)                         = 0;
-    virtual void      set_max_threads(size_t)                               = 0;
   };
   void relations(FroidurePinBase&, std::function<void(word_type, word_type)>&&);
 }  // namespace libsemigroups

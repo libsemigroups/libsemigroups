@@ -84,4 +84,20 @@ namespace libsemigroups {
     KBE aaa(kb, word_type({0, 0, 0}));
     REQUIRE(T.factorisation(&aaa) == word_type({0}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("KBE", "003", "increase_degree_by", "[quick]") {
+    std::vector<Element*> gens = {new Transformation<uint16_t>({1, 0}),
+                                  new Transformation<uint16_t>({0, 0})};
+    FroidurePin<>         S    = FroidurePin<>(gens);
+    REPORTER.set_report(REPORT);
+    delete_gens(gens);
+
+    KnuthBendix kb(S);
+    REQUIRE(kb.confluent());
+
+    auto x = KBE(kb, 0);
+    REQUIRE(x == KBE(kb, 0));
+    x.increase_degree_by(1000); // Does nothing
+    REQUIRE(x == KBE(kb, 0));
+  }
 }  // namespace libsemigroups

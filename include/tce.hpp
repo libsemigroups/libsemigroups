@@ -33,11 +33,6 @@ namespace libsemigroups {
   namespace congruence {
     class ToddCoxeter;
   }  // namespace congruence
-  namespace fpsemigroup {
-    template <class T, bool S>
-    class WrappedCong;
-    using ToddCoxeter = WrappedCong<congruence::ToddCoxeter, true>;
-  }  // namespace fpsemigroup
 
   class TCE {
    public:

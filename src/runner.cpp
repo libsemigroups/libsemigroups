@@ -22,115 +22,116 @@
 #include "timer.hpp"
 
 namespace libsemigroups {
-  ////////////////////////////////////////////////////////////////////////
-  // Runner - constructor - public
-  ////////////////////////////////////////////////////////////////////////
+  namespace internal {
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - constructor - public
+    ////////////////////////////////////////////////////////////////////////
 
-  Runner::Runner()
-      : _dead(false),
-        _finished(false),
-        _last_report(std::chrono::high_resolution_clock::now()),
-        _run_for(FOREVER),
-        _report_time_interval(),
-        _start_time() {
-    report_every(std::chrono::seconds(1));
-  }
+    Runner::Runner()
+        : _dead(false),
+          _finished(false),
+          _last_report(std::chrono::high_resolution_clock::now()),
+          _run_for(FOREVER),
+          _report_time_interval(),
+          _start_time() {
+      report_every(std::chrono::seconds(1));
+    }
 
-  ////////////////////////////////////////////////////////////////////////
-  // Runner - non-virtual methods - public
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - non-virtual methods - public
+    ////////////////////////////////////////////////////////////////////////
 
-  void Runner::run_for(std::chrono::nanoseconds val) {
-    if (!finished_impl()) {
-      if (val != FOREVER) {
-        REPORT("running for approx. ", internal::Timer::string(val));
+    void Runner::run_for(std::chrono::nanoseconds val) {
+      if (!finished_impl()) {
+        if (val != FOREVER) {
+          REPORT("running for approx. ", internal::Timer::string(val));
+        } else {
+          REPORT("running until finished, with no time limit");
+        }
+        _start_time = std::chrono::high_resolution_clock::now();
+        _run_for    = val;
+        this->run();  // should depend on the method timed_out!
+        _start_time = std::chrono::high_resolution_clock::now();
+        _run_for    = FOREVER;
       } else {
-        REPORT("running until finished, with no time limit");
+        REPORT("already finished, not running");
       }
-      _start_time = std::chrono::high_resolution_clock::now();
-      _run_for    = val;
-      this->run();  // should depend on the method timed_out!
-      _start_time = std::chrono::high_resolution_clock::now();
-      _run_for    = FOREVER;
-    } else {
-      REPORT("already finished, not running");
     }
-  }
 
-  bool Runner::timed_out() const {
-    return (finished_impl()
-            || std::chrono::duration_cast<std::chrono::nanoseconds>(
-                   std::chrono::high_resolution_clock::now() - _start_time)
-                   >= _run_for);
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-
-  bool Runner::report() const {
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now() - _last_report);
-    if (elapsed > _report_time_interval) {
-      _last_report = std::chrono::high_resolution_clock::now();
-      return true;
-    } else {
-      return false;
+    bool Runner::timed_out() const {
+      return (finished_impl()
+              || std::chrono::duration_cast<std::chrono::nanoseconds>(
+                     std::chrono::high_resolution_clock::now() - _start_time)
+                     >= _run_for);
     }
-  }
 
-  void Runner::report_every(std::chrono::nanoseconds val) {
-    _last_report          = std::chrono::high_resolution_clock::now();
-    _report_time_interval = val;
-  }
+    ////////////////////////////////////////////////////////////////////////
 
-  void Runner::report_why_we_stopped() const {
-    if (finished()) {
-      REPORT("finished!");
-    } else if (dead()) {
-      REPORT("killed!");
-    } else if (timed_out()) {
-      REPORT("timed out!");
+    bool Runner::report() const {
+      auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+          std::chrono::high_resolution_clock::now() - _last_report);
+      if (elapsed > _report_time_interval) {
+        _last_report = std::chrono::high_resolution_clock::now();
+        return true;
+      } else {
+        return false;
+      }
     }
-  }
 
-  ////////////////////////////////////////////////////////////////////////
+    void Runner::report_every(std::chrono::nanoseconds val) {
+      _last_report          = std::chrono::high_resolution_clock::now();
+      _report_time_interval = val;
+    }
 
-  bool Runner::finished() const {
-    return !(dead_impl()) && finished_impl();
-    // Since kill() may leave the object in an invalid state we only return
-    // true here if we are not dead and the object thinks it is finished.
-  }
+    void Runner::report_why_we_stopped() const {
+      if (finished()) {
+        REPORT("finished!");
+      } else if (dead()) {
+        REPORT("killed!");
+      } else if (timed_out()) {
+        REPORT("timed out!");
+      }
+    }
 
-  void Runner::set_finished(bool val) const noexcept {
-    _finished = val;
-  }
+    ////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////
+    bool Runner::finished() const {
+      return !(dead_impl()) && finished_impl();
+      // Since kill() may leave the object in an invalid state we only return
+      // true here if we are not dead and the object thinks it is finished.
+    }
 
-  void Runner::kill() noexcept {
-    // TODO add killed-by-thread
-    _dead = true;
-  }
+    void Runner::set_finished(bool val) const noexcept {
+      _finished = val;
+    }
 
-  bool Runner::dead() const noexcept {
-    return dead_impl();
-  }
+    ////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////
+    void Runner::kill() noexcept {
+      // TODO add killed-by-thread
+      _dead = true;
+    }
 
-  bool Runner::stopped() const {
-    return finished() || dead() || timed_out();
-  }
+    bool Runner::dead() const noexcept {
+      return dead_impl();
+    }
 
-  ////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure virtual methods - protected
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
 
-  bool Runner::dead_impl() const {
-    return _dead;
-  }
+    bool Runner::stopped() const {
+      return finished() || dead() || timed_out();
+    }
 
-  bool Runner::finished_impl() const {
-    return _finished;
-  }
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - non-pure virtual methods - protected
+    ////////////////////////////////////////////////////////////////////////
 
+    bool Runner::dead_impl() const {
+      return _dead;
+    }
+
+    bool Runner::finished_impl() const {
+      return _finished;
+    }
+  }  // namespace internal
 }  // namespace libsemigroups

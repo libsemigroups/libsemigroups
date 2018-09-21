@@ -16,8 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains TODO
-//
+//! \file
+//! This file contains the declaration of the class KBE, which can be used as
+//! the element_type for a FroidurePin instance. This class essentially wraps a
+//! reduced word of a KnuthBendix instance.
+
 // For technical reasons this is implemented in src/kbe-impl.hpp
 
 #ifndef LIBSEMIGROUPS_INCLUDE_KBE_HPP_
@@ -188,9 +191,7 @@ namespace libsemigroups {
 
   template <>
   struct one<KBE*> {
-    KBE* operator()(KBE const* x) {
-      return new KBE(x->identity());
-    }
+    KBE* operator()(KBE const*);
   };
 }  // namespace libsemigroups
 

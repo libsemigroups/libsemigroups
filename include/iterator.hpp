@@ -54,11 +54,6 @@ namespace libsemigroups {
 
       iterator_base(iterator_base const& that) : iterator_base(that._it_vec) {}
 
-      iterator_base& operator=(iterator_base const& that) {
-        _it_vec = that._it_vec;
-        return *this;
-      }
-
       virtual ~iterator_base() {}
 
       bool operator==(iterator_base const& that) const {

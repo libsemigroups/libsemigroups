@@ -43,6 +43,41 @@
 #define WORD_TYPE TEMPLATE word_type
 
 namespace libsemigroups {
+  ////////////////////////////////////////////////////////////////////////
+  // FroidurePin - settings - public
+  ////////////////////////////////////////////////////////////////////////
+
+  TEMPLATE FROIDURE_PIN::Settings::Settings()
+      : _batch_size(8192),
+        _concurrency_threshold(823543),
+        _max_threads(std::thread::hardware_concurrency()) {}
+
+  VOID FROIDURE_PIN::set_max_threads(size_t nr_threads) noexcept {
+    // TODO check noexcept is ok
+    unsigned int n
+        = static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+    _settings._max_threads = std::min(n, std::thread::hardware_concurrency());
+  }
+
+  SIZE_T FROIDURE_PIN::max_threads() const noexcept {
+    return _settings._max_threads;
+  }
+
+  VOID FROIDURE_PIN::set_batch_size(size_t batch_size) noexcept {
+    _settings._batch_size = batch_size;
+  }
+
+  SIZE_T FROIDURE_PIN::batch_size() const noexcept {
+    return _settings._batch_size;
+  }
+
+  VOID FROIDURE_PIN::set_concurrency_threshold(size_t thrshld) noexcept {
+    _settings._concurrency_threshold = thrshld;
+  }
+
+  SIZE_T FROIDURE_PIN::concurrency_threshold() const noexcept {
+    return _settings._concurrency_threshold;
+  }
 
   // using enumerate_index_type = FroidurePinBase::size_type;
   using element_index_type = FroidurePinBase::element_index_type;
@@ -53,8 +88,7 @@ namespace libsemigroups {
 
   TEMPLATE
   FROIDURE_PIN::FroidurePin(std::vector<element_type> const* gens)
-      : _batch_size(8192),
-        _degree(UNDEFINED),
+      : _degree(UNDEFINED),
         _duplicate_gens(),
         _elements(),
         _enumerate_order(),
@@ -71,7 +105,6 @@ namespace libsemigroups {
         _lenindex(),
         _letter_to_pos(),
         _map(),
-        _max_threads(std::thread::hardware_concurrency()),
         _nr(0),
         _nrgens(gens->size()),
         _nr_rules(0),
@@ -160,7 +193,7 @@ namespace libsemigroups {
 
   TEMPLATE
   FROIDURE_PIN::FroidurePin(FroidurePin const& S)
-      : _batch_size(S._batch_size),
+      : _settings(S._settings),
         _degree(S._degree),
         _duplicate_gens(S._duplicate_gens),
         _elements(),
@@ -177,7 +210,6 @@ namespace libsemigroups {
         _length(S._length),
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
-        _max_threads(S._max_threads),
         _nr(S._nr),
         _nrgens(S._nrgens),
         _nr_rules(S._nr_rules),
@@ -253,7 +285,7 @@ namespace libsemigroups {
   TEMPLATE
   FROIDURE_PIN::FroidurePin(FroidurePin const&               S,
                             std::vector<element_type> const* coll)
-      : _batch_size(S._batch_size),
+      : _settings(S._settings),
         _degree(S._degree),  // copy for comparison in add_generators
         _duplicate_gens(S._duplicate_gens),
         _elements(),
@@ -265,7 +297,6 @@ namespace libsemigroups {
         _is_idempotent(S._is_idempotent),
         _left(S._left),
         _letter_to_pos(S._letter_to_pos),
-        _max_threads(S._max_threads),
         _nr(S._nr),
         _nrgens(S._nrgens),
         _nr_rules(0),
@@ -473,9 +504,8 @@ namespace libsemigroups {
     return _final[pos];
   }
 
-  SIZE_T FROIDURE_PIN::batch_size() const noexcept {
-    return _batch_size;
-  }
+
+
   SIZE_T FROIDURE_PIN::length_const(element_index_type pos) const {
     validate_element_index(pos);
     return _length[pos];
@@ -543,10 +573,6 @@ namespace libsemigroups {
     return _nr_rules;
   }
 
-  VOID FROIDURE_PIN::set_batch_size(size_t batch_size) noexcept {
-    _batch_size = batch_size;
-  }
-
   VOID FROIDURE_PIN::reserve(size_t n) {
     // Since the FroidurePin we are enumerating is bounded in size by the
     // maximum value of an element_index_t, we cast the argument here to this
@@ -594,7 +620,7 @@ namespace libsemigroups {
         return UNDEFINED;
       }
       enumerate(_nr + 1);
-      // _nr + 1 means we enumerate _batch_size more elements
+      // _nr + 1 means we enumerate batch_size() more elements
     }
   }
 
@@ -747,10 +773,10 @@ namespace libsemigroups {
     // Ensure that limit isn't too big
     size_type limit = static_cast<size_type>(limit64);
 
-    if (LIMIT_MAX - _batch_size > _nr) {
-      limit = std::max(limit, _nr + _batch_size);
-    } else {  // _batch_size is very big for some reason
-      limit = _batch_size;
+    if (LIMIT_MAX - batch_size() > _nr) {
+      limit = std::max(limit, _nr + batch_size());
+    } else {  // batch_size() is very big for some reason
+      limit = batch_size();
     }
 
     REPORT("limit = ", limit);
@@ -1129,13 +1155,6 @@ namespace libsemigroups {
     }
   }
 
-  VOID FROIDURE_PIN::set_max_threads(size_t nr_threads) noexcept {
-    // TODO check noexcept is ok
-    unsigned int n
-        = static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
-    _max_threads = std::min(n, std::thread::hardware_concurrency());
-  }
-
   BOOL FROIDURE_PIN::is_monoid() {
     run();
     return _found_one;
@@ -1338,23 +1357,21 @@ namespace libsemigroups {
            * (_nr
               - (threshold_length == 0 ? 0 : _lenindex[threshold_length - 1]));
 
-    size_t concurrency_threshold = 823543;
-
-    if (_max_threads == 1 || size() < concurrency_threshold) {
+    if (max_threads() == 1 || size() < concurrency_threshold()) {
       // Use only 1 thread
       idempotents(0, _nr, threshold_index, _idempotents);
     } else {
       // Use > 1 threads
-      size_t                            mean_load = total_load / _max_threads;
+      size_t                            mean_load = total_load / max_threads();
       size_t                            len       = 1;
-      std::vector<enumerate_index_type> first(_max_threads, 0);
-      std::vector<enumerate_index_type> last(_max_threads, _nr);
+      std::vector<enumerate_index_type> first(max_threads(), 0);
+      std::vector<enumerate_index_type> last(max_threads(), _nr);
       std::vector<std::vector<internal_idempotent_pair>> tmp(
-          _max_threads, std::vector<internal_idempotent_pair>());
+          max_threads(), std::vector<internal_idempotent_pair>());
       std::vector<std::thread> threads;
       REPORTER.reset_thread_ids();
 
-      for (size_t i = 0; i < _max_threads - 1; i++) {
+      for (size_t i = 0; i < max_threads() - 1; i++) {
         size_t thread_load = 0;
         last[i]            = first[i];
         while (thread_load < mean_load && last[i] < threshold_index) {
@@ -1381,21 +1398,21 @@ namespace libsemigroups {
       }
       // TODO use less threads if the av_load is too low
 
-      REPORT("thread ", _max_threads, " has load ", total_load);
+      REPORT("thread ", max_threads(), " has load ", total_load);
       threads.emplace_back(&FroidurePin::idempotents,
                            this,
-                           first[_max_threads - 1],
-                           last[_max_threads - 1],
+                           first[max_threads() - 1],
+                           last[max_threads() - 1],
                            threshold_index,
-                           std::ref(tmp[_max_threads - 1]));
+                           std::ref(tmp[max_threads() - 1]));
 
       size_t nr_idempotents = 0;
-      for (size_t i = 0; i < _max_threads; i++) {
+      for (size_t i = 0; i < max_threads(); i++) {
         threads[i].join();
         nr_idempotents += tmp[i].size();
       }
       _idempotents.reserve(nr_idempotents);
-      for (size_t i = 0; i < _max_threads; i++) {
+      for (size_t i = 0; i < max_threads(); i++) {
         std::copy(
             tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
       }
@@ -1461,6 +1478,80 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // FroidurePin - iterators - public
+  ////////////////////////////////////////////////////////////////////////
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::cbegin() const {
+    return const_iterator(_elements.cbegin());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::begin() const {
+    return cbegin();
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::cend() const {
+    return const_iterator(_elements.cend());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::end() const {
+    return cend();
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_reverse_iterator FROIDURE_PIN::crbegin() const {
+    return const_reverse_iterator(cend());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_reverse_iterator FROIDURE_PIN::crend() const {
+    return const_reverse_iterator(cbegin());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator_sorted FROIDURE_PIN::cbegin_sorted() {
+    init_sorted();
+    return const_iterator_pair_first(_sorted.cbegin());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator_sorted FROIDURE_PIN::cend_sorted() {
+    init_sorted();
+    return const_iterator_pair_first(_sorted.cend());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_reverse_iterator_sorted
+  FROIDURE_PIN::crbegin_sorted() {
+    init_sorted();
+    return const_reverse_iterator_pair_first(cend_sorted());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_reverse_iterator_sorted
+  FROIDURE_PIN::crend_sorted() {
+    init_sorted();
+    return const_reverse_iterator_pair_first(cbegin_sorted());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator_idempotents
+  FROIDURE_PIN::cbegin_idempotents() {
+    init_idempotents();
+    return const_iterator_pair_first(_idempotents.cbegin());
+  }
+
+  TEMPLATE
+  typename FROIDURE_PIN::const_iterator_idempotents
+  FROIDURE_PIN::cend_idempotents() {
+    init_idempotents();
+    return const_iterator_pair_first(_idempotents.cend());
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // FroidurePin - iterators - private
   ////////////////////////////////////////////////////////////////////////
 
@@ -1491,5 +1582,7 @@ namespace libsemigroups {
       return &(this->to_external_const((*it).first));
     }
   };
+
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_

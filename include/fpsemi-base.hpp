@@ -42,7 +42,7 @@ namespace libsemigroups {
   class FpSemigroup;      // Forward declaration
   class FroidurePinBase;  // Forward declaration
 
-  class FpSemiBase : public Runner {
+  class FpSemiBase : public internal::Runner {
     friend class FpSemigroup;
 
    public:
@@ -197,9 +197,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////////
 
     mutable internal::owned_ptr<FroidurePinBase> _froidure_pin;
-    mutable bool                                 _is_obviously_finite_known;
     mutable bool                                 _is_obviously_finite;
-    mutable bool                                 _is_obviously_infinite_known;
     mutable bool                                 _is_obviously_infinite;
   };
 }  // namespace libsemigroups

@@ -358,4 +358,18 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(T.add_generators(additional_gens_2),
                       LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "130",
+                          "(transformations) multithread nr_idempotents",
+                          "[quick][froidure-pin][transformation][transf]") {
+    FroidurePin<Transformation<uint_fast8_t>> S(
+        {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
+         Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7})});
+    S.set_max_threads(2);
+    S.set_concurrency_threshold(0);
+    REQUIRE(S.max_threads() == 2);
+    REQUIRE(S.concurrency_threshold() == 0);
+    REQUIRE(S.nr_idempotents() == 72);
+  }
 }  // namespace libsemigroups

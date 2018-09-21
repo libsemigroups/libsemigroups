@@ -734,6 +734,25 @@ namespace libsemigroups {
                       TCE(tc, 25), TCE(tc, 26), TCE(tc, 27), TCE(tc, 28),
                       TCE(tc, 29), TCE(tc, 30), TCE(tc, 31), TCE(tc, 32),
                       TCE(tc, 33), TCE(tc, 34)}));
+      REQUIRE(std::vector<TCE>(S.cbegin_sorted(), S.cend_sorted())
+              == std::vector<TCE>(
+                     {TCE(tc, 1),  TCE(tc, 2),  TCE(tc, 3),  TCE(tc, 4),
+                      TCE(tc, 5),  TCE(tc, 6),  TCE(tc, 7),  TCE(tc, 8),
+                      TCE(tc, 9),  TCE(tc, 10), TCE(tc, 11), TCE(tc, 12),
+                      TCE(tc, 13), TCE(tc, 14), TCE(tc, 15), TCE(tc, 16),
+                      TCE(tc, 17), TCE(tc, 18), TCE(tc, 19), TCE(tc, 20),
+                      TCE(tc, 21), TCE(tc, 22), TCE(tc, 23), TCE(tc, 24),
+                      TCE(tc, 25), TCE(tc, 26), TCE(tc, 27), TCE(tc, 28),
+                      TCE(tc, 29), TCE(tc, 30), TCE(tc, 31), TCE(tc, 32),
+                      TCE(tc, 33), TCE(tc, 34)}));
+      REQUIRE(internal::to_string(TCE(tc, 1)) == "TCE(1)");
+
+      std::ostringstream oss;
+      oss << TCE(tc, 10);  // Does not do anything visible
+
+      std::stringbuf buf;
+      std::ostream   os(&buf);
+      os << TCE(tc, 32);  // Does not do anything visible
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1089,7 +1108,10 @@ namespace libsemigroups {
       tc.add_rule("bbbb", "b");
       tc.add_rule("abababab", "aa");
 
+      REQUIRE(!tc.is_obviously_finite());
       REQUIRE(tc.size() == 99);
+      REQUIRE(tc.finished());
+      REQUIRE(tc.is_obviously_finite());
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

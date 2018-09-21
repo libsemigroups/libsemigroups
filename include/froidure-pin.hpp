@@ -16,6 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+//! \file
+//!
+//! This file contains a declaration of the class template FroidurePin which
+//! implements the Froidure-Pin algorithm as described in [Algorithms for
+//! computing finite semigroups](https://www.irif.fr/~jep/PDF/Rio.pdf)
+//!
+//! For technical reasons the implementation of the methods of the FroidurePin
+//! class template is contained in include/froidure-pin-impl.hpp.
+
 // TODO(now)
 // 1. Update the doc
 
@@ -186,6 +195,46 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
+    // FroidurePin - settings - public
+    ////////////////////////////////////////////////////////////////////////
+
+    //! Set a new value for the batch size.
+    //!
+    //! The *batch size* is the number of new elements to be found by any call
+    //! to FroidurePin::enumerate. A call to enumerate returns between 0 and
+    //! approximately the batch size.
+    //!
+    //! The default value of the batch size is 8192.
+    //!
+    //! This is used by, for example, FroidurePin::position so that it is
+    //! possible to find the position of an element without fully enumerating
+    //! the semigroup.
+    void set_batch_size(size_t) noexcept override;
+
+    //! Returns the current value of the batch size. This is the minimum
+    //! number of elements enumerated in any call to FroidurePin::enumerate.
+    size_t batch_size() const noexcept override;
+
+    //! Set the maximum number of threads that any method of an instance of
+    //! FroidurePin can use.
+    //!
+    //! This method sets the maximum number of threads to be used by any method
+    //! of a FroidurePin object. The number of threads is limited to the maximum
+    //! of 1 and the minimum of \p nr_threads and the number of threads
+    //! supported by the hardware.
+    void set_max_threads(size_t) noexcept override;
+
+    //! Returns the current value of
+    size_t max_threads() const noexcept override;
+
+    //! Returns the current value of
+    void set_concurrency_threshold(size_t) noexcept override;
+
+    //! Returns the current value of
+    size_t concurrency_threshold() const noexcept override;
+
+
+    ////////////////////////////////////////////////////////////////////////
     // FroidurePin - methods - public
     ////////////////////////////////////////////////////////////////////////
 
@@ -329,10 +378,6 @@ namespace libsemigroups {
     //! element of the semigroup, or a LIBSEMIGROUPS_EXCEPTION will be thrown.
     letter_type final_letter(element_index_type pos) const override;
 
-    //! Returns the current value of the batch size. This is the minimum
-    //! number of elements enumerated in any call to FroidurePin::enumerate.
-    size_t batch_size() const noexcept override;
-
     //! Returns the length of the element in position \c pos of the semigroup.
     //!
     //! The parameter \p pos must be a valid position of an already enumerated
@@ -417,18 +462,6 @@ namespace libsemigroups {
     //! \sa FroidurePin::next_relation.
     size_t nr_rules() override;
 
-    //! Set a new value for the batch size.
-    //!
-    //! The *batch size* is the number of new elements to be found by any call
-    //! to FroidurePin::enumerate. A call to enumerate returns between 0 and
-    //! approximately the batch size.
-    //!
-    //! The default value of the batch size is 8192.
-    //!
-    //! This is used by, for example, FroidurePin::position so that it is
-    //! possible to find the position of an element without fully enumerating
-    //! the semigroup.
-    void set_batch_size(size_t) noexcept override;
 
     //! Requests that the capacity (i.e. number of elements) of the semigroup
     //! be at least enough to contain n elements.
@@ -733,14 +766,6 @@ namespace libsemigroups {
     template <class TCollection>
     FroidurePin* copy_closure(TCollection const&);
 
-    //! Set the maximum number of threads that any method of an instance of
-    //! FroidurePin can use.
-    //!
-    //! This method sets the maximum number of threads to be used by any method
-    //! of a FroidurePin object. The number of threads is limited to the maximum
-    //! of 1 and the minimum of \p nr_threads and the number of threads
-    //! supported by the hardware.
-    void set_max_threads(size_t) noexcept override;
 
     bool is_monoid() override;
 
@@ -855,9 +880,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_iterator cbegin() const {
-      return const_iterator(_elements.cbegin());
-    }
+    const_iterator cbegin() const;
 
     //! Returns a const iterator pointing to the first element of the
     //! semigroup.
@@ -865,9 +888,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_iterator begin() const {
-      return cbegin();
-    }
+    const_iterator begin() const;
 
     //! Returns a const iterator pointing to one past the last currently known
     //! element of the semigroup.
@@ -875,9 +896,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_iterator cend() const {
-      return const_iterator(_elements.cend());
-    }
+    const_iterator cend() const;
 
     //! Returns a const iterator pointing to one past the last currently known
     //! element of the semigroup.
@@ -885,9 +904,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_iterator end() const {
-      return cend();
-    }
+    const_iterator end() const;
 
     //! Returns a const reverse iterator pointing to the last currently known
     //! element of the semigroup.
@@ -895,9 +912,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_reverse_iterator crbegin() const {
-      return const_reverse_iterator(cend());
-    }
+    const_reverse_iterator crbegin() const;
 
     //! Returns a const reverse iterator pointing to one before the first
     //! element of the semigroup.
@@ -905,9 +920,7 @@ namespace libsemigroups {
     //! This method does not perform any enumeration of the semigroup, the
     //! iterator returned may be invalidated by any call to a non-const method
     //! of the FroidurePin class.
-    const_reverse_iterator crend() const {
-      return const_reverse_iterator(cbegin());
-    }
+    const_reverse_iterator crend() const;
 
     //! Returns a const iterator pointing to the first element of the semigroup
     //! when the elements are sorted by Element::operator<.
@@ -915,10 +928,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! FroidurePin class.
-    const_iterator_sorted cbegin_sorted() {
-      init_sorted();
-      return const_iterator_pair_first(_sorted.cbegin());
-    }
+    const_iterator_sorted cbegin_sorted();
 
     //! Returns a const iterator pointing to one past the last element of the
     //! semigroup when the elements are sorted by Element::operator<.
@@ -926,10 +936,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! FroidurePin class.
-    const_iterator_sorted cend_sorted() {
-      init_sorted();
-      return const_iterator_pair_first(_sorted.cend());
-    }
+    const_iterator_sorted cend_sorted();
 
     //! Returns a const iterator pointing to the last element of the semigroup
     //! when the elements are sorted by Element::operator<.
@@ -937,10 +944,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! FroidurePin class.
-    const_reverse_iterator_sorted crbegin_sorted() {
-      init_sorted();
-      return const_reverse_iterator_pair_first(cend_sorted());
-    }
+    const_reverse_iterator_sorted crbegin_sorted();
 
     //! Returns a const iterator pointing to one before the first element of
     //! the semigroup when the elements are sorted by Element::operator<.
@@ -948,10 +952,7 @@ namespace libsemigroups {
     //! This method fully enumerates the semigroup, the returned iterator
     //! returned may be invalidated by any call to a non-const method of the
     //! FroidurePin class.
-    const_reverse_iterator_sorted crend_sorted() {
-      init_sorted();
-      return const_reverse_iterator_pair_first(cbegin_sorted());
-    }
+    const_reverse_iterator_sorted crend_sorted();
 
     //! Returns a const iterator pointing at the first idempotent in the
     //! semigroup.
@@ -962,20 +963,14 @@ namespace libsemigroups {
     //!
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
-    const_iterator_idempotents cbegin_idempotents() {
-      init_idempotents();
-      return const_iterator_pair_first(_idempotents.cbegin());
-    }
+    const_iterator_idempotents cbegin_idempotents();
 
     //! Returns a const iterator referring to past the end of the last
     //! idempotent in the semigroup.
     //!
     //! This method involves fully enumerating the semigroup, if it is not
     //! already fully enumerated.
-    const_iterator_idempotents cend_idempotents() {
-      init_idempotents();
-      return const_iterator_pair_first(_idempotents.cend());
-    }
+    const_iterator_idempotents cend_idempotents();
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -984,7 +979,14 @@ namespace libsemigroups {
     // Type for a left or right Cayley graph of a semigroup.
     using cayley_graph_type = internal::RecVec<element_index_type>;
 
-    size_t                                           _batch_size;  // setting
+    struct Settings {
+      Settings();
+      Settings(Settings const&) = default;
+      size_t         _batch_size;
+      size_t         _concurrency_threshold;
+      size_t         _max_threads;
+    } _settings;
+
     size_t                                           _degree;
     std::vector<std::pair<letter_type, letter_type>> _duplicate_gens;
     std::vector<internal_element_type>               _elements;
@@ -1014,7 +1016,6 @@ namespace libsemigroups {
                        internal_equal_to>
         _map;
 #endif
-    size_t                          _max_threads;  // setting
     mutable std::mutex              _mtx;
     size_type                       _nr;
     letter_type                     _nrgens;

@@ -30,6 +30,16 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
+  LIBSEMIGROUPS_TEST_CASE("Element",
+                          "001",
+                          "comparison operators",
+                          "[quick][element]") {
+
+    auto x = Transformation<uint16_t>({0, 1, 0});
+    auto y = Transformation<uint16_t>({0, 1});
+    REQUIRE(x > y);
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Transformation",
                           "001",
                           "uint16_t methods",

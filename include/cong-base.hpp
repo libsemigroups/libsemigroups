@@ -36,7 +36,7 @@ namespace libsemigroups {
   enum class congruence_type { LEFT = 0, RIGHT = 1, TWOSIDED = 2 };
   enum class result_type { TRUE, FALSE, UNKNOWN };
 
-  class CongBase : public Runner {
+  class CongBase : public internal::Runner {
     // Allows Congruence to use set_parent_semigroup on the Runner's it
     // contains
     friend class Congruence;
@@ -260,9 +260,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     mutable bool                                 _init_ntc_done;
-    mutable bool                                 _is_obviously_finite_known;
     mutable bool                                 _is_obviously_finite;
-    mutable bool                                 _is_obviously_infinite_known;
     mutable bool                                 _is_obviously_infinite;
     mutable internal::owned_ptr<FroidurePinBase> _quotient;
     mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;

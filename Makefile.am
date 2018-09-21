@@ -70,7 +70,6 @@ pkginclude_HEADERS += include/types.hpp
 pkginclude_HEADERS += include/uf.hpp
 pkginclude_HEADERS += include/wrap.hpp
 
-
 if LIBSEMIGROUPS_HPCOMBI
 pkginclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
 pkginclude_HEADERS += extern/HPCombi/include/perm16.hpp
@@ -135,7 +134,7 @@ else
 CHECK_PROG    = ./lstest$(EXEEXT)
 endif
 CHECK_FLAGS1  = --use-colour yes --order lex --abort
-CHECK_FLAGS2  = [quick],[standard]
+CHECK_FLAGS2  = [quick]
 
 check_PROGRAMS = lstest
 
@@ -164,6 +163,8 @@ lstest_SOURCES += tests/hpcombi.test.cpp
 lstest_SOURCES += tests/kbe.test.cpp
 lstest_SOURCES += tests/knuth-bendix.test.cpp
 lstest_SOURCES += tests/main.test.cpp
+lstest_SOURCES += tests/race.test.cpp
+lstest_SOURCES += tests/runner.test.cpp
 lstest_SOURCES += tests/schreier-sims.test.cpp
 lstest_SOURCES += tests/semiring.test.cpp
 lstest_SOURCES += tests/timer.test.cpp
@@ -199,9 +200,6 @@ if LIBSEMIGROUPS_DEBUG
 	@echo "********************************************************************"
 endif
 
-clean-local: clean-local-check
-	rm -f tags
-
 clean-local-check:
 	rm -rf $(check_PROGRAMS)
 	rm -rf benchmark/src/build
@@ -220,8 +218,8 @@ superclean: distclean
 check:
 	$(CHECK_PROG) $(CHECK_FLAGS1) $(CHECK_FLAGS2)
 
-check-quick: CHECK_FLAGS2 = [quick]
-check-quick: check
+check-standard: CHECK_FLAGS2 = [quick],[standard]
+check-standard: check
 
 check-all: CHECK_FLAGS2 =
 check-all: check

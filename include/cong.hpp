@@ -96,7 +96,7 @@ namespace libsemigroups {
     // Congruence - methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    void add_method(Runner*);
+    void add_method(internal::Runner*);
 
     bool                     has_knuth_bendix() const;
     bool                     has_todd_coxeter() const;

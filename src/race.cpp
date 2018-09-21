@@ -23,7 +23,7 @@
 
 #include "race.hpp"
 
-#include <algorithm>  // for find
+#include "libsemigroups-exception.hpp"  // for LibsemigroupException
 
 namespace libsemigroups {
   namespace internal {
@@ -34,14 +34,12 @@ namespace libsemigroups {
           _winner(nullptr) {}
 
     Race::~Race() {
-      if (_winner != nullptr
-          && std::find(_runners.cbegin(), _runners.cend(), _winner)
-                 == _runners.cend()) {
-        delete _winner;
-      }
       for (auto rnnr : _runners) {
-        delete rnnr;
+        if (rnnr != _winner) {
+          delete rnnr;
+        }
       }
+      delete _winner;
     }
 
     void Race::set_max_threads(size_t val) {
@@ -76,10 +74,16 @@ namespace libsemigroups {
     }
 
     void Race::run() {
+        if (empty()) {
+          throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run");
+        }
       run_func(std::mem_fn(&Runner::run));
     }
 
     void Race::run_for(std::chrono::nanoseconds x) {
+      if (empty()) {
+        throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_for");
+      }
       run_func([&x](Runner* rnnr) -> void { rnnr->run_for(x); });
     }
   }  // namespace internal

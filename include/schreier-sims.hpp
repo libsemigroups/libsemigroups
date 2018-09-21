@@ -90,6 +90,7 @@ namespace libsemigroups {
    public:
     using element_type = typename TTraits::element_type;
     using point_type   = TPointType;
+    using domain_type  = TDomainType;
 
    private:
     // gcc apparently requires the extra qualification on the aliases below
@@ -144,6 +145,10 @@ namespace libsemigroups {
             + internal::to_string(index));
       }
       return this->to_external_const(_strong_gens.at(0, index));
+    }
+
+    size_t nr_generators() const noexcept {
+      return _strong_gens.size(0);
     }
 
     bool empty() {
@@ -221,21 +226,17 @@ namespace libsemigroups {
     }
 
     void add_base_point(point_type const pt) {
-      if (pt >= N - 1) {
+      if (pt >= N) {
         throw LIBSEMIGROUPS_EXCEPTION("the new base point must be at most "
-                                      + internal::to_string(N) + ", not "
-                                      + internal::to_string(pt));
-      } else if (_base_size == N) {
-        throw LIBSEMIGROUPS_EXCEPTION("the current base has size "
-                                      + internal::to_string(N)
-                                      + ", cannot add further points");
+                                      + internal::to_string(N - 1) + ", not "
+                                      + internal::to_string(size_t(pt)));
       } else if (finished()) {
         throw LIBSEMIGROUPS_EXCEPTION("cannot add "
                                       "further base points");
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
-            throw LIBSEMIGROUPS_EXCEPTION(internal::to_string(pt)
+            throw LIBSEMIGROUPS_EXCEPTION(internal::to_string(size_t(pt))
                                           + " is already a base point");
           }
         }
@@ -342,9 +343,7 @@ namespace libsemigroups {
         }
         if (k == _base_size) {  // all base points fixed
           point_type pt = first_non_fixed_point(x);
-          if (pt != N) {
-            internal_add_base_point(pt);
-          }
+          internal_add_base_point(pt);
         }
       }
 
@@ -411,12 +410,15 @@ namespace libsemigroups {
           return *it;
         }
       }
-      return N;
+      // It is currently not possible to add the identity as a generator since
+      // add_generator checks containment and every group contains its identity
+      // element.
+      LIBSEMIGROUPS_ASSERT(false);
     }
 
     std::array<point_type, N>                        _base;
     index_type                                       _base_size;
-    TDomainType                                      _domain;
+    domain_type                                      _domain;
     bool                                             _finished;
     internal_element_type                            _one;
     internal::SquareVector<point_type, N>            _orbits;

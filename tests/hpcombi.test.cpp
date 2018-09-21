@@ -56,6 +56,9 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
+
+  constexpr bool REPORT = false;
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <>
   struct empty_key<Renner0Element> {
@@ -65,18 +68,22 @@ namespace libsemigroups {
   };
 #endif
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "001", " Transf16", "[quick][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "001", "Transf16", "[quick][hpcombi]") {
+    REPORTER.set_report(REPORT);
     FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
         {Transf16({1, 2, 0})});
-    REPORTER.set_report(false);
     REQUIRE(S.size() == 3);
     REQUIRE(S.nr_idempotents() == 1);
+    REQUIRE(std::vector<Transf16>(S.cbegin_sorted(), S.cend_sorted())
+            == std::vector<Transf16>({ Transf16({}), Transf16({1, 2, 0}),
+              Transf16({2, 0, 1})}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
                           "002",
-                          " Transf16",
+                          "Transf16",
                           "[standard][hpcombi]") {
+    REPORTER.set_report(REPORT);
     FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
         {Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
          Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -87,11 +94,11 @@ namespace libsemigroups {
          Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
          Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
     S.reserve(600000);
-    REPORTER.set_report(false);
     REQUIRE(S.size() == 597369);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "003", " Renner0", "[extreme][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "003", "Renner0", "[extreme][hpcombi]") {
+    REPORTER.set_report(true);
     FroidurePin<Renner0Element,
                 std::hash<Renner0Element>,
                 std::equal_to<Renner0Element>>
@@ -111,24 +118,21 @@ namespace libsemigroups {
                {0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15}),
            Renner0Element(
                {0, 1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 12, 14, 15})});
-    REPORTER.set_report(true);
     REQUIRE(S.size() == 8962225);
     REQUIRE(S.nr_idempotents() == 128);
-    REPORTER.set_report(false);
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
-                          "003",
-                          " full transformation monoid 8",
+                          "004",
+                          "full transformation monoid 8",
                           "[extreme][hpcombi]") {
+    REPORTER.set_report(true);
     FroidurePin<Transf16, std::hash<Transf16>, std::equal_to<Transf16>> S(
         {Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
          Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
          Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
     S.reserve(std::pow(8, 8));
-    REPORTER.set_report(true);
     REQUIRE(S.size() == 16777216);
-    REPORTER.set_report(false);
   }
 }  // namespace libsemigroups
 #endif

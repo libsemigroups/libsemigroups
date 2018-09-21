@@ -2977,4 +2977,66 @@ namespace libsemigroups {
         Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
     REQUIRE(S.size() == static_cast<uint64_t>(177843714048000));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "039",
+                          "exceptions",
+                          "[quick][schreier-sims]") {
+    SchreierSims<5, size_t, Permutation<size_t>> S;
+    using Perm = Permutation<size_t>;
+    S.add_generator(Perm({1, 2, 3, 4, 0}));
+    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    REQUIRE(S.size() == static_cast<uint64_t>(120));
+    REQUIRE_THROWS_AS(S.add_generator(Perm({0, 1, 2})), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.add_generator(Perm({2, 3, 0, 1, 4, 6})),
+                      LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(S.generator(10),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.generator(2),
+                      LibsemigroupsException);
+    REQUIRE_NOTHROW(S.generator(0));
+    REQUIRE_NOTHROW(S.generator(1));
+
+    REQUIRE_THROWS_AS(S.sift(Perm({2, 3, 0, 1, 4, 6})), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.sift(Perm({2, 0, 1})), LibsemigroupsException);
+    REQUIRE_NOTHROW(S.sift(S.generator(1)));
+
+    REQUIRE(S.contains(S.generator(1)));
+    REQUIRE(S.contains(S.generator(0)));
+    REQUIRE(S.contains(Perm({0, 3, 1, 4, 2})));
+    REQUIRE(!S.contains(Perm({2, 3, 0, 1, 4, 6})));
+    REQUIRE(!S.contains(Perm({2, 0, 1})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "040",
+                          "exceptions",
+                          "[quick][schreier-sims]") {
+    SchreierSims<5, size_t, Permutation<size_t>> S;
+    using Perm = Permutation<size_t>;
+    S.add_generator(Perm({1, 2, 3, 4, 0}));
+    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);
+    for (size_t i = 1; i < 5; ++i) {
+      REQUIRE_NOTHROW(S.add_base_point(i));
+    }
+    REQUIRE_THROWS_AS(S.add_base_point(5), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.add_base_point(100), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "041",
+                          "trivial group",
+                          "[quick][schreier-sims]") {
+    SchreierSims<5> S;
+    using Perm = typename decltype(S)::element_type;
+    S.add_generator(Perm({1, 2, 3, 4, 0}));
+    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);
+    for (size_t i = 1; i < 5; ++i) {
+      REQUIRE_NOTHROW(S.add_base_point(i));
+    }
+    REQUIRE_THROWS_AS(S.add_base_point(6), LibsemigroupsException);
+  }
 }  // namespace libsemigroups

@@ -131,6 +131,10 @@ namespace libsemigroups {
     return out;
   }
 
+  KBE* one<KBE*>::operator()(KBE const* x) {
+    return new KBE(x->identity());
+  }
+
   template <>
   word_type FroidurePin<KBE>::factorisation(KBE const& x) {
     return x;

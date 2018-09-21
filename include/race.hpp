@@ -73,6 +73,8 @@ namespace libsemigroups {
       //! repeatedly calls Race::run_for for \p check_interval, and then checks
       //! whether or not \p func() returns true. The object \p func can be any
       //! callable object with 0 parameters and that returns a bool.
+      // This is definitely tested but doesn't show up in the code coverage for
+      // some reason.
       template <typename TCallable>
       void run_until(TCallable const&         func,
                      std::chrono::nanoseconds check_interval
@@ -82,6 +84,9 @@ namespace libsemigroups {
         static_assert(std::is_same<typename std::result_of<TCallable()>::type,
                                    bool>::value,
                       "the template parameter TCallable must return a bool");
+        if (empty()) {
+          throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
+        }
         while (!func() && _winner == nullptr) {
           // if _winner != nullptr, then the race is over.
           run_for(check_interval);
@@ -99,12 +104,14 @@ namespace libsemigroups {
             std::is_same<typename std::result_of<TCallable(Runner*)>::type,
                          void>::value,
             "the template parameter TCallable must be void");
+        LIBSEMIGROUPS_ASSERT(!empty());
         if (_winner == nullptr) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);
           if (nr_threads == 1) {
             REPORT("using 0 additional threads");
             internal::Timer tmr;
             func(_runners.at(0));
+            _winner = _runners.at(0);
             REPORT("elapsed time = ", tmr);
             return;
           }

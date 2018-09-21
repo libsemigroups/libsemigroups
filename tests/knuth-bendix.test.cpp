@@ -2524,7 +2524,6 @@ namespace libsemigroups {
                             "083",
                             "set_confluence_interval",
                             "[quick][knuth-bendix]") {
-      std::ostringstream os;
       KnuthBendix        kb;
       kb.set_alphabet("Bab");
       kb.add_rule("aa", "");
@@ -2968,4 +2967,5 @@ namespace libsemigroups {
       REQUIRE(kb.less({0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1}));
     }
   }  // namespace congruence
+
 }  // namespace libsemigroups

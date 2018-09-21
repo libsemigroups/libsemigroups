@@ -65,10 +65,10 @@ namespace libsemigroups {
         } else if (string_it<std::chrono::microseconds>(
                        out, elapsed, "\u03BCs", 9)) {
           return out;
-        } else if (string_it<std::chrono::nanoseconds>(out, elapsed, "ns", 0)) {
+        } else {
+          string_it<std::chrono::nanoseconds>(out, elapsed, "ns", 0);
           return out;
         }
-        return out;
       }
 
       // String containing the somewhat human readable amount of time since the

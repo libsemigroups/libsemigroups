@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -559,16 +559,8 @@ namespace libsemigroups {
         return iterator(*this, _vec.end());
       }
 
-      const_iterator begin() const {
-        return cbegin();
-      }
-
       const_iterator cbegin() const {
         return const_iterator(*this, _vec.begin());
-      }
-
-      const_iterator end() const {
-        return cend();
       }
 
       const_iterator cend() const {

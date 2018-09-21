@@ -443,6 +443,9 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeter::is_quotient_obviously_finite_impl() {
+      if (finished()) {
+        return true;
+      }
       init();
       return _prefilled;
       // _prefilled means that either we were created from a FroidurePinBase*
