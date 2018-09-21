@@ -20,4 +20,12 @@
 
 namespace libsemigroups {
   internal::Reporter REPORTER;
+
+  ReportGuard::ReportGuard() {
+    REPORTER.set_report(true);
+  }
+
+  ReportGuard::~ReportGuard() {
+    REPORTER.set_report(false);
+  }
 }  // namespace libsemigroups

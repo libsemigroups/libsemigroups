@@ -248,5 +248,12 @@ namespace libsemigroups {
   }  // namespace internal
 
   extern internal::Reporter REPORTER;
+
+  struct ReportGuard {
+    ReportGuard();
+    ~ReportGuard();
+  };
+
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_REPORT_HPP_

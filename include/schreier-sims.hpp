@@ -342,7 +342,7 @@ namespace libsemigroups {
           ++k;
         }
         if (k == _base_size) {  // all base points fixed
-          point_type pt = first_non_fixed_point(x);
+          point_type pt = *first_non_fixed_point(x);
           internal_add_base_point(pt);
         }
       }
@@ -382,7 +382,7 @@ namespace libsemigroups {
                 propagate = true;
               } else if (!internal_equal_to()(_tmp_element2, _one)) {
                 propagate = true;
-                internal_add_base_point(first_non_fixed_point(_tmp_element2));
+                internal_add_base_point(*first_non_fixed_point(_tmp_element2));
               }
               if (propagate) {
                 LIBSEMIGROUPS_ASSERT(i + 1 <= static_cast<int>(depth));
@@ -404,16 +404,18 @@ namespace libsemigroups {
       _finished = true;
     }
 
-    point_type first_non_fixed_point(internal_const_element_type x) {
+    typename domain_type::const_iterator
+    first_non_fixed_point(internal_const_element_type x) {
       for (auto it = _domain.cbegin(); it < _domain.cend(); ++it) {
         if (*it != action()(x, *it)) {
-          return *it;
+          return it;
         }
       }
       // It is currently not possible to add the identity as a generator since
       // add_generator checks containment and every group contains its identity
       // element.
       LIBSEMIGROUPS_ASSERT(false);
+      return _domain.cend();
     }
 
     std::array<point_type, N>                        _base;
