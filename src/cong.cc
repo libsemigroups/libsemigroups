@@ -190,9 +190,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(winner->is_done());
     } else {
       if (_semigroup != nullptr) {
-        auto prefillit = [this](Congruence::DATA* data) {
-          static_cast<TC*>(data)->prefill();
-        };
+        auto prefillit
+            = [](Congruence::DATA* data) { static_cast<TC*>(data)->prefill(); };
 
         std::vector<DATA*> data = {new TC(*this), new TC(*this)};
         std::vector<std::function<void(DATA*)>> funcs = {prefillit};
