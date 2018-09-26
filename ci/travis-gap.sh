@@ -13,6 +13,8 @@ INITIALDIR=`pwd`
 
 # Download and compile GAP
 cd ..
+# The next line is required by semigroups/scripts/travis-test.sh
+export GAPROOT=`pwd`/gap
 git clone -b $GAP_BRANCH --depth=1 https://github.com/$GAP_FORK/gap.git gap
 cd gap
 ./autogen.sh
@@ -79,4 +81,6 @@ rm packages-required-master.tar.gz
 
 # Run the tests defined in Semigroups
 cd semigroups
+# The next line is needed by scripts/travis-test.sh
+export SUITE="test"
 scripts/travis-test.sh
