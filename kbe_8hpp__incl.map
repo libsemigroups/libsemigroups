@@ -1,0 +1,23 @@
+<map id="include/kbe.hpp" name="include/kbe.hpp">
+<area shape="rect" id="node6" href="$adapters_8hpp.html" title="This file contains function templates for adapting a user&#45;defined type so that it can be used with li..." alt="" coords="1487,379,1586,404"/>
+<area shape="rect" id="node8" href="$element_8hpp_source.html" title="element.hpp" alt="" coords="1281,225,1376,251"/>
+<area shape="rect" id="node33" href="$types_8hpp_source.html" title="types.hpp" alt="" coords="2658,299,2737,324"/>
+<area shape="rect" id="node34" href="$froidure-pin_8hpp.html" title="This file contains a declaration of the class template FroidurePin which implements the Froidure&#45;Pin ..." alt="" coords="1941,79,2056,104"/>
+<area shape="rect" id="node47" href="$knuth-bendix_8hpp_source.html" title="knuth&#45;bendix.hpp" alt="" coords="3112,79,3235,104"/>
+<area shape="rect" id="node7" href="$libsemigroups-config_8hpp_source.html" title="libsemigroups&#45;config.hpp" alt="" coords="770,459,940,484"/>
+<area shape="rect" id="node19" href="$constants_8hpp_source.html" title="constants.hpp" alt="" coords="1276,299,1380,324"/>
+<area shape="rect" id="node22" href="$containers_8hpp_source.html" title="containers.hpp" alt="" coords="987,299,1096,324"/>
+<area shape="rect" id="node24" href="$libsemigroups-debug_8hpp_source.html" title="libsemigroups&#45;debug.hpp" alt="" coords="1016,379,1187,404"/>
+<area shape="rect" id="node26" href="$hpcombi_8hpp_source.html" title="hpcombi.hpp" alt="" coords="786,299,884,324"/>
+<area shape="rect" id="node28" href="$libsemigroups-exception_8hpp_source.html" title="libsemigroups&#45;exception.hpp" alt="" coords="1807,379,1998,404"/>
+<area shape="rect" id="node30" href="$stl_8hpp_source.html" title="stl.hpp" alt="" coords="1183,459,1244,484"/>
+<area shape="rect" id="node32" href="$traits_8hpp_source.html" title="traits.hpp" alt="" coords="1810,299,1886,324"/>
+<area shape="rect" id="node39" href="$froidure-pin-base_8hpp_source.html" title="froidure&#45;pin&#45;base.hpp" alt="" coords="2221,152,2369,177"/>
+<area shape="rect" id="node42" href="$report_8hpp_source.html" title="report.hpp" alt="" coords="2214,299,2296,324"/>
+<area shape="rect" id="node44" href="$iterator_8hpp_source.html" title="iterator.hpp" alt="" coords="3341,225,3430,251"/>
+<area shape="rect" id="node45" href="$timer_8hpp_source.html" title="timer.hpp" alt="" coords="1910,299,1986,324"/>
+<area shape="rect" id="node46" href="$froidure-pin-impl_8hpp_source.html" title="froidure&#45;pin&#45;impl.hpp" alt="" coords="1334,152,1477,177"/>
+<area shape="rect" id="node40" href="$runner_8hpp_source.html" title="runner.hpp" alt="" coords="2267,225,2352,251"/>
+<area shape="rect" id="node49" href="$cong-base_8hpp_source.html" title="cong&#45;base.hpp" alt="" coords="2761,152,2871,177"/>
+<area shape="rect" id="node50" href="$fpsemi-base_8hpp_source.html" title="fpsemi&#45;base.hpp" alt="" coords="2915,152,3035,177"/>
+</map>
