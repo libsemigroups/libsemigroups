@@ -328,7 +328,7 @@ namespace libsemigroups {
       }
 
       iterator_base operator--(int) {
-        iterator_base tmp(*this);
+        iterator_base  tmp(*this);
         iterator_base::operator--();
         return tmp;
       }

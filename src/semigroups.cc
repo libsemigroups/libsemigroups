@@ -1011,25 +1011,37 @@ namespace libsemigroups {
 
     // Find the threshold beyond which it is quicker to simply multiply
     // elements rather than follow a path in the Cayley graph. This is the
-    // enumerate_index_t i for which length(i) >= 2 * complexity.
-    size_t complexity       = _tmp_product->complexity();
-    size_t threshold_length = std::min(_lenindex.size() - 2, complexity - 1);
-    enumerate_index_t threshold_index = _lenindex[threshold_length];
+    // enumerate_index_t i for which length(i) >= complexity.
+    size_t complexity
+        = std::max(size_t{_tmp_product->complexity() / 2}, size_t{1});
+    LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
+    // threshold_length = the min. length of a word which is >= complexity.
+    // if a word has length strictly greater than threshold_length, then we
+    // multiply, otherwise we trace in the Cayley graph.
+    size_t threshold_length = std::min(complexity, current_max_word_length());
+    LIBSEMIGROUPS_ASSERT(threshold_length < _lenindex.size());
+
+    enumerate_index_t threshold_index = _lenindex.at(threshold_length);
 
     size_t total_load = 0;
     for (size_t i = 1; i <= threshold_length; ++i) {
+      // _lenindex[i - 1] is the element_index_t where words of length i begin
+      // so _lenindex[i] - _lenindex[i - 1]) is the number of words of length i.
       total_load += i * (_lenindex[i] - _lenindex[i - 1]);
     }
 
 #ifdef LIBSEMIGROUPS_STATS
     REPORT("complexity of multiplication = " << complexity);
-    REPORT("multiple words longer than " << threshold_length + 1);
+    REPORT("multiple words longer than " << threshold_length);
     REPORT("number of paths traced in Cayley graph = " << threshold_index);
     REPORT("mean path length = " << total_load / threshold_index);
     REPORT("number of products = " << _nr - threshold_index);
 #endif
 
-    total_load += complexity * (_nr - _lenindex[threshold_length - 1]);
+    // _lenindex.at(threshold_length) is the element_index_t where words of
+    // length (threshold_length + 1) begin
+    LIBSEMIGROUPS_ASSERT(_nr >= _lenindex.at(threshold_length));
+    total_load += complexity * (_nr - _lenindex.at(threshold_length));
 
     size_t concurrency_threshold = 823543;
 
