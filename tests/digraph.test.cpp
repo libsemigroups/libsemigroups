@@ -16,11 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <iostream> // FIXME for debugging remove
+
 #include "digraph.hpp"
 #include "forest.hpp"
 #include "libsemigroups.tests.hpp"
 
 namespace libsemigroups {
+
+  ActionDigraph<size_t> cycle(size_t n) {
+    ActionDigraph<size_t> g(n);
+    for (size_t i = 0; i < n - 1; ++i) {
+      g.add_edge(i, 0, i + 1);
+    }
+    g.add_edge(n - 1, 0, 0);
+    return g;
+  }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "001",
@@ -92,15 +103,9 @@ namespace libsemigroups {
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
     for (size_t j = 10; j < 100; ++j) {
-      ActionDigraph<size_t> cycle(j + 1);
-
+      auto g = cycle(j);
       for (size_t i = 0; i < j; ++i) {
-        cycle.add_edge(i, 0, i + 1);
-      }
-      cycle.add_edge(j, 0, 0);
-
-      for (size_t i = 0; i < j; ++i) {
-        REQUIRE(cycle.scc_id(i) == 0);
+        REQUIRE(g.scc_id(i) == 0);
       }
     }
   }
@@ -191,6 +196,7 @@ namespace libsemigroups {
           graph.add_edge(i, j, j);
         }
       }
+      REQUIRE(graph.nr_scc() == 1);
 
       Forest forest = graph.spanning_forest();
 

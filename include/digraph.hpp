@@ -208,69 +208,67 @@ namespace libsemigroups {
         throw LIBSEMIGROUPS_EXCEPTION("digraph not fully defined, can't find "
                                       "strongly connected components");
       }
+      _cc_comps.clear();
+      _cc_ids.assign(nr_nodes(), UNDEFINED);
 
-      _cc_ids                    = std::vector<TIntType>(_recvec.nr_rows(), 0);
-      _cc_comps                  = std::vector<std::vector<TIntType>>();
-      size_t                end1 = 0;
-      std::vector<TIntType> stack1(_recvec.nr_rows() + 1, UNDEFINED);
-      std::stack<TIntType>  stack2;
-      std::vector<TIntType> framevec
-          = std::vector<TIntType>(2 * nr_nodes() + 1);
-      auto frame = framevec.begin();
+      size_t                                           deg = _recvec.nr_cols();
+      static std::stack<TIntType>                      stack1;
+      static std::stack<TIntType>                      stack2;
+      static std::stack<std::pair<TIntType, TIntType>> frame;
+      static std::vector<TIntType> preorder(nr_nodes(), UNDEFINED);
+      preorder.assign(nr_nodes(), UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(stack1.empty());
+      LIBSEMIGROUPS_ASSERT(stack2.empty());
+      LIBSEMIGROUPS_ASSERT(frame.empty());
 
-      TIntType w;
-      size_t   count = nr_nodes();
+      TIntType C     = 0;
+      TIntType index = 0;
 
-      for (TIntType v = 0; v < nr_nodes(); ++v) {
-        if (_cc_ids[v] == 0) {
-          TIntType level = 1;
-          frame[0]       = v;
-          frame[1]       = 0;
-          stack1[++end1] = v;
-          stack2.push(end1);
-          _cc_ids[v] = end1;
-          while (1) {
-            if (frame[1] >= _recvec.nr_cols()) {
-              if (stack2.top() == _cc_ids[frame[0]]) {
-                stack2.pop();
-                do {
-                  w          = stack1[end1--];
-                  _cc_ids[w] = count;
-                } while (w != frame[0]);
-                count++;
-                _cc_comps.push_back(std::vector<TIntType>());
-              }
-              level--;
-              if (level == 0) {
-                break;
-              }
-              frame -= 2;
-            } else {
-              w = get(frame[0], frame[1]);
-              frame[1] += 1;
-              TIntType idw = _cc_ids[w];
+      for (TIntType w = 0; w < nr_nodes(); ++w) {
+        if (_cc_ids[w] == UNDEFINED) {
+          frame.emplace(w, 0);
+          do {
+          dfs_start:
+            TIntType  v = frame.top().first;
+            TIntType& i = frame.top().second;
 
-              if (idw == 0) {
-                level++;
-                frame += 2;
-                frame[0]       = w;
-                frame[1]       = 0;
-                stack1[++end1] = w;
-                stack2.push(end1);
-                _cc_ids[w] = end1;
-              } else {
-                while (stack2.top() > idw) {
+            preorder[v] = C++;
+            stack1.push(v);
+            stack2.push(v);
+            for (; i < deg; ++i) {
+            dfs_end:
+              TIntType u = _recvec.get(v, i);
+              if (preorder[u] == UNDEFINED) {
+                frame.emplace(u, 0);
+                goto dfs_start;
+              } else if (_cc_ids[u] == UNDEFINED) {
+                while (preorder[stack2.top()] > preorder[u]) {
                   stack2.pop();
                 }
               }
             }
-          }
+            if (v == stack2.top()) {
+              _cc_comps.emplace_back();
+              TIntType x;
+              do {
+                x = stack1.top();
+                stack1.pop();
+                _cc_ids[x] = index;
+                _cc_comps[index].push_back(x);
+              } while (x != v);
+              ++index;
+              stack2.pop();
+            }
+            frame.pop();
+            if (!frame.empty()) {
+              v = frame.top().first;
+              i = frame.top().second;
+              goto dfs_end;
+            } else {
+              break;
+            }
+          } while (true);
         }
-      }
-
-      for (size_t i = 0; i < nr_nodes(); ++i) {
-        _cc_ids[i] -= nr_nodes();
-        _cc_comps[_cc_ids[i]].push_back(i);
       }
       _has_scc = true;
     }
