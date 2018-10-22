@@ -200,9 +200,9 @@ namespace libsemigroups {
 
       Forest forest = graph.spanning_forest();
 
-      REQUIRE(forest.parent(0) == UNDEFINED);
-      for (size_t i = 1; i < k; ++i) {
-        REQUIRE(forest.parent(i) == 0);
+      REQUIRE(forest.parent(1) == UNDEFINED);
+      for (size_t i = 0; i < k - 1; ++i) {
+        REQUIRE(forest.parent(i) == 1);
       }
     }
   }

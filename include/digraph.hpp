@@ -56,7 +56,7 @@ namespace libsemigroups {
     //! This constructor takes the initial degree bound and the initial
     //! number of nodes of the graph.
     explicit ActionDigraph(TIntType nr_nodes = 0)
-        : _cc_ids(), _has_scc(false), _recvec(0, nr_nodes, UNDEFINED) {}
+        : _recvec(0, nr_nodes, UNDEFINED), _scc() {}
 
     // TODO: think about this
     // ActionDigraph &operator=(ActionDigraph const &graph) = delete;
@@ -67,7 +67,7 @@ namespace libsemigroups {
     void inline add_nodes(size_t nr) {
       _recvec.add_rows(nr);
       _has_root_paths = false;
-      _has_scc        = false;
+      _scc._defined   = false;
     }
 
     //! Add an edge to this digraph
@@ -89,7 +89,7 @@ namespace libsemigroups {
       }
       _recvec.set(i, lbl, j);
       _has_root_paths = false;
-      _has_scc        = false;
+      _scc._defined   = false;
     }
 
     //! Returns the node which is the end of the \p j-th edge of \p i.
@@ -140,22 +140,22 @@ namespace libsemigroups {
                                       "number of nodes - 1");
       }
       gabow_scc();
-      return _cc_ids[node];
+      return _scc._id[node];
     }
 
     TIntType nr_scc() {
       gabow_scc();
-      return _cc_comps.size();
+      return _scc._comps.size();
     }
 
     typename std::vector<std::vector<TIntType>>::const_iterator cbegin_sccs() {
       gabow_scc();
-      return _cc_comps.cbegin();
+      return _scc._comps.cbegin();
     }
 
     typename std::vector<std::vector<TIntType>>::const_iterator cend_sccs() {
       gabow_scc();
-      return _cc_comps.cend();
+      return _scc._comps.cend();
     }
 
     //! Returns a Forest comprised of spanning trees for each SCC
@@ -169,13 +169,13 @@ namespace libsemigroups {
       std::queue<TIntType> queue;
       gabow_scc();
       for (size_t i = 0; i < nr_scc(); ++i) {
-        queue.push(_cc_comps[i][0]);
-        seen[_cc_comps[i][0]] = true;
+        queue.push(_scc._comps[i][0]);
+        seen[_scc._comps[i][0]] = true;
         do {
           size_t x = queue.front();
           for (size_t j = 0; j < _recvec.nr_cols(); ++j) {
             size_t y = get(x, j);
-            if (!seen[y] && _cc_ids[y] == _cc_ids[x]) {
+            if (!seen[y] && _scc._id[y] == _scc._id[x]) {
               forest.set(y, x, j);
               queue.push(y);
               seen[y] = true;
@@ -202,20 +202,20 @@ namespace libsemigroups {
     //! The implementation is strongly based on that in the Digraphs package
     //! (https://github.com/gap-packages/Digraphs)
     void gabow_scc() const {
-      if (_has_scc) {
+      if (_scc._defined) {
         return;
       } else if (!validate()) {
         throw LIBSEMIGROUPS_EXCEPTION("digraph not fully defined, can't find "
                                       "strongly connected components");
       }
-      _cc_comps.clear();
-      _cc_ids.assign(nr_nodes(), UNDEFINED);
+      _scc._comps.clear();
+      _scc._id.assign(nr_nodes(), UNDEFINED);
 
       size_t                                           deg = _recvec.nr_cols();
       static std::stack<TIntType>                      stack1;
       static std::stack<TIntType>                      stack2;
       static std::stack<std::pair<TIntType, TIntType>> frame;
-      static std::vector<TIntType> preorder(nr_nodes(), UNDEFINED);
+      static std::vector<TIntType> preorder;
       preorder.assign(nr_nodes(), UNDEFINED);
       LIBSEMIGROUPS_ASSERT(stack1.empty());
       LIBSEMIGROUPS_ASSERT(stack2.empty());
@@ -225,7 +225,7 @@ namespace libsemigroups {
       TIntType index = 0;
 
       for (TIntType w = 0; w < nr_nodes(); ++w) {
-        if (_cc_ids[w] == UNDEFINED) {
+        if (_scc._id[w] == UNDEFINED) {
           frame.emplace(w, 0);
           do {
           dfs_start:
@@ -241,24 +241,28 @@ namespace libsemigroups {
               if (preorder[u] == UNDEFINED) {
                 frame.emplace(u, 0);
                 goto dfs_start;
-              } else if (_cc_ids[u] == UNDEFINED) {
+              } else if (_scc._id[u] == UNDEFINED) {
+                LIBSEMIGROUPS_ASSERT(!stack2.empty());
                 while (preorder[stack2.top()] > preorder[u]) {
                   stack2.pop();
                 }
               }
             }
             if (v == stack2.top()) {
-              _cc_comps.emplace_back();
+              _scc._comps.emplace_back();
               TIntType x;
               do {
+                LIBSEMIGROUPS_ASSERT(!stack1.empty());
                 x = stack1.top();
                 stack1.pop();
-                _cc_ids[x] = index;
-                _cc_comps[index].push_back(x);
+                _scc._id[x] = index;
+                _scc._comps[index].push_back(x);
               } while (x != v);
               ++index;
+              LIBSEMIGROUPS_ASSERT(!stack2.empty());
               stack2.pop();
             }
+            LIBSEMIGROUPS_ASSERT(!frame.empty());
             frame.pop();
             if (!frame.empty()) {
               v = frame.top().first;
@@ -270,7 +274,7 @@ namespace libsemigroups {
           } while (true);
         }
       }
-      _has_scc = true;
+      _scc._defined = true;
     }
 
     void compute_scc_root_paths() {
@@ -294,13 +298,13 @@ namespace libsemigroups {
 
       for (size_t i = 0; i < nr_scc(); ++i) {
         queue = std::queue<size_t>();
-        queue.push(_cc_comps[i][0]);
-        seen[_cc_comps[i][0]] = true;
+        queue.push(_scc._comps[i][0]);
+        seen[_scc._comps[i][0]] = true;
         while (!queue.empty()) {
           x = queue.front();
           for (size_t j = 0; j < reverse_edges[x].size(); ++j) {
             y = reverse_edges[x][j];
-            if (!seen[y] && _cc_ids[y] == _cc_ids[x]) {
+            if (!seen[y] && _scc._id[y] == _scc._id[x]) {
               queue.push(y);
               seen[y] = true;
               paths[y].push_back(reverse_labels[x][j]);
@@ -313,25 +317,17 @@ namespace libsemigroups {
       _root_paths     = paths;
       _has_root_paths = true;
     }
-    // A vector containing the id of the SCC of each node
-    mutable std::vector<TIntType> _cc_ids;
 
-    // A vector of vectors containing the SCCs, with each component sorted.
-    mutable std::vector<std::vector<size_t>> _cc_comps;
-
-    // A TIntType representing the current bound on the degree of each node.
-    TIntType _degree_bound;
-
-    // A boolean flag indicating whether paths to the minimum element of each
-    // SCC of \p this from each element in the SCC are known
-    bool _has_root_paths;
-
-    // A boolean flag indicating whether the SCCs of \p this are known
-    mutable bool _has_scc;
-
-    // A RecVec<TIntType> which is the underlying data structure for \p this
     internal::RecVec<TIntType> _recvec;
 
+    mutable struct SCC {
+      SCC() : _comps(), _defined(false), _id() {}
+      std::vector<std::vector<size_t>> _comps;
+      bool                             _defined;
+      std::vector<TIntType>            _id;
+    } _scc;
+
+    bool                               _has_root_paths;
     std::vector<std::vector<TIntType>> _root_paths;
   };
 }  // namespace libsemigroups
