@@ -331,13 +331,18 @@ struct LibsemigroupsException;
                           "scc large cycle",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph = cycle(100000);
+    using node_type = decltype(graph)::node_type;
 
-    REQUIRE(std::all_of(graph.cbegin(), graph.cend(), [&graph](size_t i) -> bool {
+    REQUIRE(std::all_of(graph.cbegin(), graph.cend(), [&graph](node_type i) -> bool {
       return graph.scc_id(i) == 0;
     }));
     cycle(graph, 10101);
     REQUIRE(std::all_of(
-        graph.cbegin() + 100000, graph.cend(), [&graph](size_t i) -> bool {
+        graph.cbegin(), graph.cend() - 10101, [&graph](node_type i) -> bool {
+          return graph.scc_id(i) == 0;
+        }));
+    REQUIRE(std::all_of(
+        graph.cbegin() + 100000, graph.cend(), [&graph](node_type i) -> bool {
           return graph.scc_id(i) == 1;
         }));
   }

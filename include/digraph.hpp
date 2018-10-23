@@ -52,6 +52,9 @@ namespace libsemigroups {
     static_assert(std::is_unsigned<TIntType>(), "TIntType is not unsigned!");
 
    public:
+    // TODO typedefs
+    using node_type = TIntType;
+
     //! A constructor
     //!
     //! This constructor takes the initial degree bound and the initial
