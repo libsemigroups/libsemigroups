@@ -160,9 +160,13 @@ namespace libsemigroups {
       return _scc._comps.cend();
     }
 
-    /*typename IntegralRange<TIntType>::const_iterator cbegin() {
-      return
-    }*/
+    typename IntegralRange<TIntType>::const_iterator cbegin() {
+      return IntegralRange<TIntType>(0, nr_nodes()).cbegin();
+    }
+
+    typename IntegralRange<TIntType>::const_iterator cend() {
+      return IntegralRange<TIntType>(0, nr_nodes()).cend();
+    }
 
     //! Returns a Forest comprised of spanning trees for each SCC
     //!
