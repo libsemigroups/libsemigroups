@@ -237,7 +237,7 @@ namespace libsemigroups {
       TIntType index = 0;
 
       for (TIntType w = 0; w < nr_nodes(); ++w) {
-        if (_scc._id.at(w) == UNDEFINED) {
+        if (_scc._id[w] == UNDEFINED) {
           frame.emplace(w, 0);
           do {
           dfs_start:
@@ -245,20 +245,20 @@ namespace libsemigroups {
             TIntType v = frame.top().first;
             TIntType i = frame.top().second;
 
-            preorder.at(v) = C++;
+            preorder[v] = C++;
             stack1.push(v);
             stack2.push(v);
             for (; i < deg; ++i) {
             dfs_end:
               LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < deg);
               TIntType u = _recvec.get(v, i);
-              if (preorder.at(u) == UNDEFINED) {
+              if (preorder[u] == UNDEFINED) {
                 frame.top().second = i;
                 frame.emplace(u, 0);
                 goto dfs_start;
-              } else if (_scc._id.at(u) == UNDEFINED) {
+              } else if (_scc._id[u] == UNDEFINED) {
                 LIBSEMIGROUPS_ASSERT(!stack2.empty());
-                while (preorder.at(stack2.top()) > preorder.at(u)) {
+                while (preorder[stack2.top()] > preorder[u]) {
                   stack2.pop();
                 }
               }
@@ -269,8 +269,8 @@ namespace libsemigroups {
               do {
                 LIBSEMIGROUPS_ASSERT(!stack1.empty());
                 x = stack1.top();
-                _scc._id.at(x) = index;
-                _scc._comps.at(index).push_back(x);
+                _scc._id[x] = index;
+                _scc._comps[index].push_back(x);
                 stack1.pop();
               } while (x != v);
               ++index;
