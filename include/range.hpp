@@ -23,6 +23,7 @@
 #define LIBSEMIGROUPS_INCLUDE_RANGE_HPP_
 
 #include <type_traits>
+#include <vector>
 
 namespace libsemigroups {
   template <typename TIntegralType, size_t TBegin = 0, size_t TEnd = 0>
@@ -42,6 +43,17 @@ namespace libsemigroups {
 
     class iterator {
       friend class IntegralRange;
+
+     using size_type = typename std::vector<TIntegralType>::size_type;
+      using difference_type =
+          typename std::vector<TIntegralType>::difference_type;
+      using const_pointer = typename std::vector<TIntegralType>::const_pointer;
+      using pointer       = typename std::vector<TIntegralType>::pointer;
+      using const_reference =
+          typename std::vector<TIntegralType>::const_reference;
+      using reference         = const_reference;
+      using value_type        = TIntegralType;
+      using iterator_category = std::random_access_iterator_tag;
 
      public:
       TIntegralType operator*() const {
