@@ -43,8 +43,8 @@ namespace libsemigroups {
 
     class iterator {
       friend class IntegralRange;
-
-     using size_type = typename std::vector<TIntegralType>::size_type;
+     public:
+      using size_type = typename std::vector<TIntegralType>::size_type;
       using difference_type =
           typename std::vector<TIntegralType>::difference_type;
       using const_pointer = typename std::vector<TIntegralType>::const_pointer;
@@ -55,9 +55,28 @@ namespace libsemigroups {
       using value_type        = TIntegralType;
       using iterator_category = std::random_access_iterator_tag;
 
-     public:
-      TIntegralType operator*() const {
-        return _i;
+      bool operator==(iterator const& that) const {
+        return _i == that._i;
+      }
+
+      bool operator!=(iterator const& that) const {
+        return _i != that._i;
+      }
+
+      bool operator<(iterator const& that) const {
+        return _i < that._i;
+      }
+
+      bool operator>(iterator const& that) const {
+        return _i > that._i;
+      }
+
+      bool operator<=(iterator const& that) const {
+        return operator<(that) || operator==(that);
+      }
+
+      bool operator>=(iterator const& that) const {
+        return operator>(that) || operator==(that);
       }
 
       iterator const& operator++() {
@@ -71,22 +90,53 @@ namespace libsemigroups {
         return copy;
       }
 
-      bool operator==(iterator const& other) const {
-        return _i == other._i;
-      }
-
-      bool operator!=(iterator const& other) const {
-        return _i != other._i;
-      }
-
-      bool operator<(iterator const& other) const {
-        return _i < other._i;
+      iterator operator--(int) {
+        iterator  tmp(*this);
+        iterator::operator--();
+        return tmp;
       }
 
       iterator operator+(size_type val) const {
         iterator out(*this);
         out._i += val;
         return out;
+      }
+
+      friend iterator operator+(size_type val, iterator const& it) {
+        return it + val;
+      }
+
+      iterator operator-(size_type val) const {
+        iterator out(*this);
+        return out -= val;
+      }
+
+
+      iterator& operator--() {
+        --_i;
+        return *this;
+      }
+
+      iterator& operator+=(size_type val) {
+        _i += val;
+        return *this;
+      }
+
+      iterator& operator-=(size_type val) {
+        _i -= val;
+        return *this;
+      }
+
+      difference_type operator-(iterator that) const {
+        return _i - that._i;
+      }
+
+      TIntegralType operator[](size_type pos) const {
+        return *(*this + pos);
+      }
+
+      TIntegralType operator*() const {
+        return _i;
       }
 
      protected:
