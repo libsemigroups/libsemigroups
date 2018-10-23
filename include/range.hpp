@@ -33,6 +33,7 @@ namespace libsemigroups {
 
    public:
     using value_type = TIntegralType;
+    using size_type = TIntegralType;
 
     IntegralRange() : _begin(TBegin), _end(TEnd) {}
 
@@ -68,6 +69,12 @@ namespace libsemigroups {
 
       bool operator<(iterator const& other) const {
         return _i < other._i;
+      }
+
+      iterator operator+(size_type val) const {
+        iterator out(*this);
+        out._i += val;
+        return out;
       }
 
      protected:

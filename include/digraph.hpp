@@ -160,11 +160,13 @@ namespace libsemigroups {
       return _scc._comps.cend();
     }
 
-    typename IntegralRange<TIntType>::const_iterator cbegin() {
+    using const_iterator_nodes = typename IntegralRange<TIntType>::const_iterator;
+
+    const_iterator_nodes cbegin() {
       return IntegralRange<TIntType>(0, nr_nodes()).cbegin();
     }
 
-    typename IntegralRange<TIntType>::const_iterator cend() {
+    const_iterator_nodes cend() {
       return IntegralRange<TIntType>(0, nr_nodes()).cend();
     }
 
