@@ -28,7 +28,8 @@ namespace libsemigroups {
   class Forest {
    public:
     explicit Forest(size_t n)
-        : _edge_label(n, UNDEFINED), _parent(n, UNDEFINED) {}
+        : _edge_label(n, static_cast<size_t>(UNDEFINED)),
+          _parent(n, static_cast<size_t>(UNDEFINED)) {}
 
     void set(size_t node, size_t parent, size_t gen) noexcept {
       // TODO(FLS): add assertions

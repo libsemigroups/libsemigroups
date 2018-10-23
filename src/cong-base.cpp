@@ -18,6 +18,8 @@
 
 #include "cong-base.hpp"
 
+#include <algorithm>  // for iota
+
 #include "constants.hpp"                // for UNDEFINED
 #include "froidure-pin-base.hpp"        // for FroidurePinBase
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
