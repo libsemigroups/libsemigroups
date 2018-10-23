@@ -17,6 +17,7 @@
 //
 
 #include <iostream> // FIXME for debugging remove
+#include <numeric> // for iota
 
 #include "digraph.hpp"
 #include "forest.hpp"
@@ -31,6 +32,15 @@ namespace libsemigroups {
     }
     g.add_edge(n - 1, 0, 0);
     return g;
+  }
+
+  void cycle(ActionDigraph<size_t>& digraph, size_t n) {
+    size_t old_nodes = digraph.nr_nodes();
+    digraph.add_nodes(n);
+    for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
+      digraph.add_edge(i, 0, i + 1);
+    }
+    digraph.add_edge(digraph.nr_nodes() - 1, 0, old_nodes);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -102,11 +112,17 @@ namespace libsemigroups {
                           "005",
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
-    for (size_t j = 10; j < 100; ++j) {
-      auto g = cycle(j);
-      for (size_t i = 0; i < j; ++i) {
-        REQUIRE(g.scc_id(i) == 0);
-      }
+
+    auto g = cycle(32);
+    REQUIRE(g.scc_id(0) == 0);
+    g = cycle(33);
+    REQUIRE(std::vector<std::vector<size_t>>(g.cbegin_sccs(), g.cend_sccs())
+            == std::vector<std::vector<size_t>>(
+                   {{32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22,
+                     21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+                     10, 9,  8,  7,  6,  5,  4,  3,  2,  1,  0}}));
+    for (size_t i = 0; i < 33; ++i) {
+      REQUIRE(g.scc_id(i) == 0);
     }
   }
 
@@ -200,10 +216,9 @@ namespace libsemigroups {
 
       Forest forest = graph.spanning_forest();
 
-      REQUIRE(forest.parent(1) == UNDEFINED);
-      for (size_t i = 0; i < k - 1; ++i) {
-        REQUIRE(forest.parent(i) == 1);
-      }
+      REQUIRE(forest.parent(k - 1) == UNDEFINED);
+      REQUIRE(std::vector<size_t>(forest.cbegin_parent(), forest.cend_parent())
+              == std::vector<size_t>{});
     }
   }
 
@@ -211,7 +226,8 @@ namespace libsemigroups {
                           "011",
                           "Spanning forest - disjoint cycles",
                           "[quick][digraph]") {
-    for (size_t j = 2; j < 50; ++j) {
+    //for (size_t j = 2; j < 50; ++j) {
+      size_t j = 33;
       ActionDigraph<size_t> graph;
 
       for (size_t k = 0; k < 10; ++k) {
@@ -226,14 +242,10 @@ namespace libsemigroups {
       }
       Forest forest = graph.spanning_forest();
 
-      for (size_t i = 0; i < 10 * j; ++i) {
-        if (i % j == 0) {
-          REQUIRE(forest.parent(i) == UNDEFINED);
-        } else {
-          REQUIRE(forest.parent(i) == i - 1);
-        }
-      }
-    }
+      REQUIRE(std::vector<size_t>(forest.cbegin_parent(), forest.cend_parent())
+              == std::vector<size_t>{});
+
+    //}
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -284,5 +296,24 @@ namespace libsemigroups {
         REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
       }
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "014",
+                          "scc large cycle",
+                          "[quick][digraph]") {
+    ActionDigraph<size_t> graph = cycle(100000);
+    cycle(graph, 10101);
+    std::vector<size_t> v(100000);
+    std::iota(v.begin(), v.end(), 0);
+
+    REQUIRE(std::all_of(v.cbegin(), v.cend(), [&graph](size_t i) -> bool {
+      return graph.scc_id(i) == 0;
+    }));
+    v.assign(10101, 0);
+    std::iota(v.begin(), v.end(), 100000);
+    REQUIRE(std::all_of(v.cbegin(), v.cend(), [&graph](size_t i) -> bool {
+      return graph.scc_id(i) == 1;
+    }));
   }
 }  // namespace libsemigroups

@@ -45,6 +45,14 @@ namespace libsemigroups {
       return _parent[i];
     }
 
+    std::vector<size_t>::const_iterator cbegin_parent() const {
+      return _parent.cbegin();
+    }
+
+    std::vector<size_t>::const_iterator cend_parent() const {
+      return _parent.cend();
+    }
+
     size_t label(size_t i) const noexcept {
       // TODO(FLS): add assertions
       return _edge_label[i];

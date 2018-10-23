@@ -19,13 +19,14 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
 #define LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
 
-#include "containers.hpp"
-#include "forest.hpp"
-#include "libsemigroups-exception.hpp"
-
 #include <algorithm>
 #include <queue>
 #include <stack>
+
+#include "containers.hpp"
+#include "forest.hpp"
+#include "range.hpp"
+#include "libsemigroups-exception.hpp"
 
 namespace libsemigroups {
   //! Class for directed Cayley graphs
@@ -140,6 +141,7 @@ namespace libsemigroups {
                                       "number of nodes - 1");
       }
       gabow_scc();
+      LIBSEMIGROUPS_ASSERT(node < _scc._id.size());
       return _scc._id[node];
     }
 
@@ -157,6 +159,10 @@ namespace libsemigroups {
       gabow_scc();
       return _scc._comps.cend();
     }
+
+    /*typename IntegralRange<TIntType>::const_iterator cbegin() {
+      return
+    }*/
 
     //! Returns a Forest comprised of spanning trees for each SCC
     //!
@@ -225,25 +231,28 @@ namespace libsemigroups {
       TIntType index = 0;
 
       for (TIntType w = 0; w < nr_nodes(); ++w) {
-        if (_scc._id[w] == UNDEFINED) {
+        if (_scc._id.at(w) == UNDEFINED) {
           frame.emplace(w, 0);
           do {
           dfs_start:
-            TIntType  v = frame.top().first;
-            TIntType& i = frame.top().second;
+            LIBSEMIGROUPS_ASSERT(!frame.empty());
+            TIntType v = frame.top().first;
+            TIntType i = frame.top().second;
 
-            preorder[v] = C++;
+            preorder.at(v) = C++;
             stack1.push(v);
             stack2.push(v);
             for (; i < deg; ++i) {
             dfs_end:
+              LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < deg);
               TIntType u = _recvec.get(v, i);
-              if (preorder[u] == UNDEFINED) {
+              if (preorder.at(u) == UNDEFINED) {
+                frame.top().second = i;
                 frame.emplace(u, 0);
                 goto dfs_start;
-              } else if (_scc._id[u] == UNDEFINED) {
+              } else if (_scc._id.at(u) == UNDEFINED) {
                 LIBSEMIGROUPS_ASSERT(!stack2.empty());
-                while (preorder[stack2.top()] > preorder[u]) {
+                while (preorder.at(stack2.top()) > preorder.at(u)) {
                   stack2.pop();
                 }
               }
@@ -254,9 +263,9 @@ namespace libsemigroups {
               do {
                 LIBSEMIGROUPS_ASSERT(!stack1.empty());
                 x = stack1.top();
+                _scc._id.at(x) = index;
+                _scc._comps.at(index).push_back(x);
                 stack1.pop();
-                _scc._id[x] = index;
-                _scc._comps[index].push_back(x);
               } while (x != v);
               ++index;
               LIBSEMIGROUPS_ASSERT(!stack2.empty());
