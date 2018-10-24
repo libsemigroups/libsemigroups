@@ -327,7 +327,7 @@ namespace libsemigroups {
       _scc._defined = true;
     }
 
-    void compute_scc_root_paths() {
+    void compute_scc_root_paths() const {
       if (_root_paths._defined) {
         return;
       }

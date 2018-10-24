@@ -289,10 +289,9 @@ namespace libsemigroups {
       }
 
       for (size_t i = 0; i < k; ++i) {
-        size_t              pos  = i;
-        std::vector<size_t> path = graph.get_root_path(i);
-        for (size_t x : path) {
-          pos = graph.get(pos, x);
+        size_t pos = i;
+        for (auto it = graph.cbegin_path_to_root(i); it < graph.cend_path_to_root(i); ++it) {
+          pos = graph.get(pos, *it);
         }
         REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
       }
@@ -315,10 +314,11 @@ namespace libsemigroups {
       }
 
       for (size_t i = 0; i < graph.nr_nodes(); ++i) {
-        size_t              pos  = i;
-        std::vector<size_t> path = graph.get_root_path(i);
-        for (size_t x : path) {
-          pos = graph.get(pos, x);
+        size_t pos = i;
+        for (auto it = graph.cbegin_path_to_root(i);
+             it < graph.cend_path_to_root(i);
+             ++it) {
+          pos = graph.get(pos, *it);
         }
         REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
       }
