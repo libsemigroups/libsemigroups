@@ -23,22 +23,28 @@
 
 namespace libsemigroups {
 
-  TEST_CASE("Minimal row_orb 01", "[quick][orb-min][01]") {
-    RowOrb row_orb;
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "001",
+                          "row and column basis orbits for BMat8",
+                          "[quick]") {
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
     row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
     row_orb.add_generator(BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}));
 
     REQUIRE(row_orb.size() == 1);
 
-    ColOrb col_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Left> col_orb;
     col_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
     col_orb.add_generator(BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}));
 
     REQUIRE(col_orb.size() == 1);
   }
 
-  TEST_CASE("Minimal row_orb 02", "[quick][orb-min][02]") {
-    RowOrb row_orb;
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "002",
+                          "row and column basis orbits for BMat8",
+                          "[quick]") {
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
     row_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .row_space_basis());
@@ -56,7 +62,7 @@ namespace libsemigroups {
 
     REQUIRE(row_orb.size() == 553);
 
-    ColOrb col_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Left> col_orb;
     col_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .col_space_basis());
@@ -75,8 +81,11 @@ namespace libsemigroups {
     REQUIRE(col_orb.size() == 553);
   }
 
-  TEST_CASE("Minimal row_orb 03", "[quick][orb-min][03]") {
-    RowOrb row_orb;
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "003",
+                          "add generators after enumeration",
+                          "[quick]") {
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
     row_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .row_space_basis());
@@ -97,7 +106,7 @@ namespace libsemigroups {
 
     REQUIRE(row_orb.size() == 553);
 
-    ColOrb col_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Left> col_orb;
     col_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .col_space_basis());
@@ -119,8 +128,11 @@ namespace libsemigroups {
     REQUIRE(col_orb.size() == 553);
   }
 
-  TEST_CASE("Minimal row_orb 04: multipliers", "[quick][orb-min][04]") {
-    RowOrb row_orb;
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "004",
+                          "multipliers for BMat8 row and column orbits",
+                          "[quick]") {
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
     row_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .row_space_basis());
@@ -145,7 +157,7 @@ namespace libsemigroups {
               == row_orb.at(i));
     }
 
-    ColOrb col_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Left> col_orb;
     col_orb.add_seed(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
             .col_space_basis());
@@ -171,7 +183,10 @@ namespace libsemigroups {
     }
   }
 
-  TEST_CASE("Minimal row_orb 05", "[orb-min][05][standard]") {
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "005",
+                          "orbits for regular boolean mat monoid 5",
+                          "[standard]") {
     const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
                                                       {1, 0, 0, 0, 0},
                                                       {0, 0, 1, 0, 0},
@@ -192,8 +207,8 @@ namespace libsemigroups {
                                                       {0, 0, 1, 0, 0},
                                                       {0, 0, 0, 1, 0},
                                                       {0, 0, 0, 0, 1}})};
-    RowOrb                   row_orb;
-    ColOrb                   col_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Left>  col_orb;
 
     row_orb.add_seed(BMat8::one());
     col_orb.add_seed(BMat8::one());
@@ -208,7 +223,10 @@ namespace libsemigroups {
     REQUIRE(col_orb.size() == 110519);
   }
 
-  TEST_CASE("Minimal row_orb 06", "[orb-min][06][extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "006",
+                          "orbits for regular boolean mat monoid 6",
+                          "[standard]") {
     const std::vector<BMat8> reg_bmat6_gens = {BMat8({{0, 1, 0, 0, 0, 0},
                                                       {1, 0, 0, 0, 0, 0},
                                                       {0, 0, 1, 0, 0, 0},
@@ -233,7 +251,7 @@ namespace libsemigroups {
                                                       {0, 0, 0, 1, 0, 0},
                                                       {0, 0, 0, 0, 1, 0},
                                                       {0, 0, 0, 0, 0, 0}})};
-    RowOrb                   row_orb;
+    Orb<BMat8, BMat8, LeftOrRight::Right> row_orb;
 
     row_orb.add_seed(BMat8::one());
     for (BMat8 g : reg_bmat6_gens) {
