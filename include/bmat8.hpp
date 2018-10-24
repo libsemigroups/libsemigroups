@@ -133,11 +133,7 @@ namespace libsemigroups {
     //! This method sets the (\p i, \p j)th entry of \c this to \p val.
     //! Uses the bit twiddle for setting bits found
     //! <a href=http://graphics.stanford.edu/~seander/bithacks>here</a>.
-    inline void set(size_t i, size_t j, bool val) {
-      LIBSEMIGROUPS_ASSERT(i < 8);
-      LIBSEMIGROUPS_ASSERT(j < 8);
-      _data ^= (-val ^ _data) & BIT_MASK[8 * i + j];
-    }
+    void set(size_t, size_t, bool);
 
     //! Returns the integer representation of \c this.
     //!
@@ -169,25 +165,7 @@ namespace libsemigroups {
     //! boolean semiring) of two BMat8 objects.
     //! Uses the technique given <a href="https://stackoverflow.com/a/18448513">
     //! here</a>.
-    inline BMat8 operator*(BMat8 const& that) const {
-      uint64_t y    = that.transpose()._data;
-      uint64_t data = 0;
-      uint64_t tmp  = 0;
-      uint64_t diag = 0x8040201008040201;
-      for (int i = 0; i < 8; ++i) {
-        tmp = _data & y;
-        tmp |= tmp >> 1;
-        tmp |= tmp >> 2;
-        tmp |= tmp >> 4;
-        tmp &= 0x0101010101010101;
-        tmp *= 255;
-        tmp &= diag;
-        data |= tmp;
-        y    = cyclic_shift(y);
-        diag = cyclic_shift(diag);
-      }
-      return BMat8(data);
-    }
+    BMat8 operator*(BMat8 const& that) const;
 
     //! Returns the identity BMat8
     //!
@@ -248,26 +226,16 @@ namespace libsemigroups {
     }
 #endif
 
+    BMat8 row_space_basis() const;
+    BMat8 col_space_basis() const;
+
    private:
+    void sort_rows();
+
     uint64_t                                       _data;
     static std::random_device                      _rd;
     static std::mt19937                            _gen;
     static std::uniform_int_distribution<uint64_t> _dist;
-    static std::vector<uint64_t> const             ROW_MASK;
-    static std::vector<uint64_t> const             COL_MASK;
-    static std::vector<uint64_t> const             BIT_MASK;
-
-    // Cyclically shifts bits to left by 8m
-    // https://stackoverflow.com/a/776523
-    static inline uint64_t cyclic_shift(uint64_t n, uint64_t m = 1) {
-      const unsigned int mask
-          = (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
-
-      // assert ( (c<=mask) &&"rotate by type width or more");
-      unsigned int c = 8 * m;
-      c &= mask;
-      return (n << c) | (n >> ((-c) & mask));
-    }
   };
 
   // Specialization for adapters.hpp structs
@@ -303,7 +271,7 @@ namespace libsemigroups {
       return x.one();
     }
 
-    inline BMat8 operator()(size_t) const noexcept {
+    inline BMat8 operator()(size_t = 0) const noexcept {
       return BMat8::one();
     }
   };

@@ -62,13 +62,15 @@ namespace libsemigroups {
         typename std::vector<std::vector<TIntType>>::const_iterator;
     using const_iterator_nodes =
         typename IntegralRange<TIntType>::const_iterator;
+    using const_iterator_scc_roots =
+        typename std::vector<TIntType>::const_iterator;
 
     //! A constructor
     //!
     //! This constructor takes the initial degree bound and the initial
     //! number of nodes of the graph.
-    explicit ActionDigraph(TIntType nr_nodes = 0)
-        : _recvec(0, nr_nodes, UNDEFINED), _scc() {}
+    explicit ActionDigraph(TIntType degree = 0, TIntType nr_nodes = 0)
+        : _recvec(degree, nr_nodes, UNDEFINED), _scc() {}
 
     ActionDigraph(ActionDigraph const&) = default;
     ActionDigraph(ActionDigraph&&)      = default;
@@ -146,7 +148,7 @@ namespace libsemigroups {
     //! Every node in \c this lies in a strongly connected component.
     //! This function returns the id number of the SCC containing \p node.
     //! If this has not been calculated, it will be at this point.
-    TIntType scc_id(node_type node) {
+    TIntType scc_id(node_type node) const {
       if (node >= nr_nodes()) {
         // TODO(FLS) reword as per new style
         throw LIBSEMIGROUPS_EXCEPTION("argument larger than "
@@ -181,11 +183,13 @@ namespace libsemigroups {
       return IntegralRange<TIntType>(0, nr_nodes()).cend();
     }
 
-    const_iterator_scc cbegin_scc(scc_index_type i) {
+    const_iterator_scc cbegin_scc(scc_index_type i) const {
+      gabow_scc();
       return _scc._comps[scc_id(i)].cbegin();
     }
 
-    const_iterator_scc cend_scc(scc_index_type i) {
+    const_iterator_scc cend_scc(scc_index_type i) const {
+      gabow_scc();
       return _scc._comps[scc_id(i)].cend();
     }
 
@@ -233,6 +237,10 @@ namespace libsemigroups {
     const_iterator_path_to_root cend_path_to_root(node_type node) const {
       compute_scc_root_paths();
       return _root_paths._root_paths[node].cend();
+    }
+
+    node_type root_of_scc(node_type node) const {
+      return *cbegin_scc(scc_id(node));
     }
 
    private:

@@ -31,26 +31,29 @@
 #include "adapters.hpp"
 #include "constants.hpp"
 #include "digraph.hpp"
+#include "runner.hpp"
 #include "timer.hpp"
 
 namespace libsemigroups {
-  // TODO make subclass of Runner
-  enum class LeftOrRight {LEFT = 0, RIGHT = 1};
+  enum class Side {LEFT = 0, RIGHT = 1};
 
-  template <typename TPointType,
-            typename TElementType,
-            LeftOrRight TLeftOrRight = LeftOrRight::RIGHT>
-  class Orb {
+  template <typename TElementType,
+            typename TPointType,
+            typename TActionType
+            = ::libsemigroups::action<TElementType, TPointType>,
+            Side TLeftOrRight = Side::RIGHT>
+  class Orb : public internal::Runner {
    public:
     using element_type = TElementType;
     using point_type   = TPointType;
     using index_type   = size_t;
     using scc_index_type = ActionDigraph<size_t>::scc_index_type;
     using const_iterator_scc = ActionDigraph<size_t>::const_iterator_scc;
+    using const_iterator_sccs = ActionDigraph<size_t>::const_iterator_sccs;
 
    private:
     // gcc apparently requires the extra qualification on the aliases below
-    using action  = ::libsemigroups::action<element_type, point_type>;
+    using action  = TActionType;
     using one     = ::libsemigroups::one<element_type>;
     using product = ::libsemigroups::product<element_type>;
     using swap    = ::libsemigroups::swap<element_type>;
@@ -59,7 +62,7 @@ namespace libsemigroups {
     auto internal_product(element_type&       xy,
                           element_type const& x,
                           element_type const& y)
-        -> typename std::enable_if<LeftOrRight::RIGHT == TLeftOrRight, SFINAE>::type {
+        -> typename std::enable_if<Side::RIGHT == TLeftOrRight, SFINAE>::type {
       product()(xy, x, y);
     }
 
@@ -67,31 +70,35 @@ namespace libsemigroups {
     auto internal_product(element_type&       xy,
                           element_type const& x,
                           element_type const& y)
-        -> typename std::enable_if<LeftOrRight::LEFT == TLeftOrRight, SFINAE>::type {
+        -> typename std::enable_if<Side::LEFT == TLeftOrRight, SFINAE>::type {
       product()(xy, y, x);
     }
 
    public:
-    Orb() : _enumerated(false), _gens(), _graph(0), _map(), _orb() {}
+    Orb() : _gens(), _graph(0), _map(), _orb() {}
 
     void add_seed(point_type seed) {
       _map.insert(std::make_pair(seed, _orb.size()));
       _orb.push_back(seed);
-      _enumerated = false;
+      set_finished(false);
     }
 
     void add_generator(element_type gen) {
       // TODO: what if partial enumerated?
       _gens.push_back(gen);
-      _enumerated = false;
+      set_finished(false);
     }
 
     void enumerate() {
-      if (_enumerated) {
+      run();
+    }
+
+    void run() {
+      if (finished()) {
         return;
       }
       _graph = ActionDigraph<size_t>(_gens.size(), _orb.size());
-      for (size_t i = 0; i < _orb.size(); i++) {
+      for (size_t i = 0; i < _orb.size() && !stopped(); i++) {
         for (size_t j = 0; j < _gens.size(); ++j) {
           point_type pt = action()(_orb[i], _gens[j]);
           auto  it = _map.find(pt);
@@ -104,12 +111,14 @@ namespace libsemigroups {
             _graph.add_edge(i, (*it).second, j);
           }
         }
+        if (report()) {
+          REPORT("found ",  _orb.size(), " points, so far");
+        }
       }
-      _enumerated = true;
-    }
-
-    bool finished() const {
-      return _enumerated;
+      if (_pos == _orb.size()) {
+        set_finished(true);
+      }
+      report_why_we_stopped();
     }
 
     size_t position(point_type pt) {
@@ -159,20 +168,23 @@ namespace libsemigroups {
 
     element_type multiplier_from_scc_root(index_type pos) {
       element_type out = one()(); // TODO Not general enough
-      while (_graph.spanning_forest()->parent(pos) != UNDEFINED) {
-        out = internal_product(_gens[_graph.spanning_forest()->label(pos)], out);
-        pos = _graph.spanning_forest()->parent(pos);
+      element_type tmp = one()(); // TODO Not general enough
+      while (_graph.spanning_forest().parent(pos) != UNDEFINED) {
+        swap()(tmp, out);
+        internal_product(out, _gens[_graph.spanning_forest().label(pos)], tmp);
+        pos = _graph.spanning_forest().parent(pos);
       }
       return out;
     }
 
     element_type multiplier_to_scc_root(index_type pos) {
       if (pos >= current_size()) {
-        throw LIBSEMIGROUPS_EXCEPTION("index out of range, expected value in [0, " +
-                                      internal::to_string(current_size()) + ") but found "
-                                      + internal::to_string(pos));
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "index out of range, expected value in [0, "
+            + internal::to_string(current_size()) + ") but found "
+            + internal::to_string(pos));
       }
-      element_type out = one()(); // TODO Not general enough
+      element_type out = one()();  // TODO Not general enough
       element_type tmp = one()(); // TODO Not general enough
       for (auto it = _graph.cbegin_path_to_root(pos);
            it < _graph.cbegin_path_to_root(pos);
@@ -192,12 +204,32 @@ namespace libsemigroups {
       return _graph.cend_scc(i);
     }
 
+    const_iterator_sccs cbegin_sccs() {
+      return _graph.cbegin_sccs();
+    }
+
+    const_iterator_sccs cend_sccs() {
+      return _graph.cend_sccs();
+    }
+
+    point_type root_of_scc(point_type x) {
+      return _orb[_graph.root_of_scc(position(x))];
+    }
+
+    point_type root_of_scc(index_type pos) {
+      return _orb[_graph.root_of_scc(pos)];
+    }
+
+    size_t nr_scc() const {
+      return _graph.nr_scc();
+    }
+
    private:
-    bool                                   _enumerated;
     std::vector<element_type>              _gens;
     ActionDigraph<size_t>                  _graph;
     std::unordered_map<point_type, size_t> _map;
     std::vector<point_type>                _orb;
+    size_t                                 _pos;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_ORB_HPP_

@@ -363,7 +363,7 @@ namespace libsemigroups {
                           "130",
                           "(transformations) multithread nr_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
-    // ReportGuard();
+    auto rg = ReportGuard();
     FroidurePin<Transformation<uint_fast8_t>> S(
         {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7})});
