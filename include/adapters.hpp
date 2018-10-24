@@ -54,6 +54,11 @@ namespace libsemigroups {
   template <typename TElementType, typename = void>
   struct inverse;
 
+  template <typename TElementType, typename TPointType, typename = void>
+  struct left_action;
+  template <typename TElementType, typename TPointType, typename = void>
+  struct right_action;
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <typename TElementType, typename = void>
   struct empty_key;

@@ -25,8 +25,8 @@
 
 #include "containers.hpp"
 #include "forest.hpp"
-#include "range.hpp"
 #include "libsemigroups-exception.hpp"
+#include "range.hpp"
 
 namespace libsemigroups {
   //! Class for directed Cayley graphs
@@ -52,8 +52,16 @@ namespace libsemigroups {
     static_assert(std::is_unsigned<TIntType>(), "TIntType is not unsigned!");
 
    public:
-    // TODO typedefs
-    using node_type = TIntType;
+    using node_type          = TIntType;
+    using label_type         = TIntType;
+    using scc_index_type     = TIntType;
+    using const_iterator_scc = typename std::vector<TIntType>::const_iterator;
+    using const_iterator_path_to_root =
+        typename std::vector<TIntType>::const_iterator;
+    using const_iterator_sccs =
+        typename std::vector<std::vector<TIntType>>::const_iterator;
+    using const_iterator_nodes =
+        typename IntegralRange<TIntType>::const_iterator;
 
     //! A constructor
     //!
@@ -62,23 +70,25 @@ namespace libsemigroups {
     explicit ActionDigraph(TIntType nr_nodes = 0)
         : _recvec(0, nr_nodes, UNDEFINED), _scc() {}
 
-    // TODO: think about this
-    // ActionDigraph &operator=(ActionDigraph const &graph) = delete;
+    ActionDigraph(ActionDigraph const&) = default;
+    ActionDigraph(ActionDigraph&&)      = default;
+    ActionDigraph& operator=(ActionDigraph const&) = default;
+    ActionDigraph& operator=(ActionDigraph&&) = default;
+    ~ActionDigraph()                          = default;
 
     //! Add some nodes to the graph
     //!
     //! Adds \p nr nodes to \c this.
     void inline add_nodes(size_t nr) {
       _recvec.add_rows(nr);
-      _has_root_paths = false;
-      _scc._defined   = false;
+      reset();
     }
 
     //! Add an edge to this digraph
     //!
     //! If \p i and \p j are nodes in \c this, then this function
     //! adds an edge from \p i to \p j.
-    void inline add_edge(TIntType i, TIntType lbl, TIntType j) {
+    void inline add_edge(node_type i, node_type j, label_type lbl) {
       if (i >= nr_nodes()) {
         // TODO(FLS) reword as per new style
         throw LIBSEMIGROUPS_EXCEPTION("first argument larger than "
@@ -92,15 +102,14 @@ namespace libsemigroups {
         _recvec.add_cols(lbl - _recvec.nr_cols() + 1);
       }
       _recvec.set(i, lbl, j);
-      _has_root_paths = false;
-      _scc._defined   = false;
+      reset();
     }
 
     //! Returns the node which is the end of the \p j-th edge of \p i.
     //!
     //! Returns the thing in the (\p i, \p j)th position of the
     //! underlying RecVec, i.e. the \p j-th edge from node \p i.
-    TIntType inline get(TIntType i, TIntType j) const {
+    TIntType inline get(node_type i, label_type j) const {
       if (i >= nr_nodes()) {
         throw LIBSEMIGROUPS_EXCEPTION(
             "node index out of range, found " + internal::to_string(i)
@@ -116,19 +125,19 @@ namespace libsemigroups {
     //! Returns the number of nodes of \c this
     //!
     //! Returns the number of nodes of \c this
-    TIntType inline nr_nodes() const {
+    TIntType inline nr_nodes() const noexcept {
       return _recvec.nr_rows();
     }
 
     //! Returns the number of edges of \c this
     //!
     //! Returns the total number of edges of \c this
-    TIntType nr_edges() const {
+    TIntType nr_edges() const noexcept {
       return nr_nodes() * _recvec.nr_cols()
              - std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED);
     }
 
-    bool validate() const {
+    bool validate() const noexcept {
       return std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED) == 0;
     }
 
@@ -137,7 +146,7 @@ namespace libsemigroups {
     //! Every node in \c this lies in a strongly connected component.
     //! This function returns the id number of the SCC containing \p node.
     //! If this has not been calculated, it will be at this point.
-    TIntType scc_id(TIntType node) {
+    TIntType scc_id(node_type node) {
       if (node >= nr_nodes()) {
         // TODO(FLS) reword as per new style
         throw LIBSEMIGROUPS_EXCEPTION("argument larger than "
@@ -148,29 +157,36 @@ namespace libsemigroups {
       return _scc._id[node];
     }
 
-    TIntType nr_scc() {
+    TIntType nr_scc() const {
       gabow_scc();
       return _scc._comps.size();
     }
 
-    typename std::vector<std::vector<TIntType>>::const_iterator cbegin_sccs() {
+
+    const_iterator_sccs cbegin_sccs() const {
       gabow_scc();
       return _scc._comps.cbegin();
     }
 
-    typename std::vector<std::vector<TIntType>>::const_iterator cend_sccs() {
+    const_iterator_sccs cend_sccs() const {
       gabow_scc();
       return _scc._comps.cend();
     }
 
-    using const_iterator_nodes = typename IntegralRange<TIntType>::const_iterator;
-
-    const_iterator_nodes cbegin() {
+    const_iterator_nodes cbegin() const {
       return IntegralRange<TIntType>(0, nr_nodes()).cbegin();
     }
 
-    const_iterator_nodes cend() {
+    const_iterator_nodes cend() const {
       return IntegralRange<TIntType>(0, nr_nodes()).cend();
+    }
+
+    const_iterator_scc cbegin_scc(scc_index_type i) {
+      return _scc._comps[scc_id(i)].cbegin();
+    }
+
+    const_iterator_scc cend_scc(scc_index_type i) {
+      return _scc._comps[scc_id(i)].cend();
     }
 
     //! Returns a Forest comprised of spanning trees for each SCC
@@ -178,38 +194,54 @@ namespace libsemigroups {
     //! This function returns a Forest which contains the nodes of \c this,
     //! where the forest contains a spanning tree for each strongly connected
     //! component, rooted on the minimum element index of that component.
-    Forest spanning_forest() {
-      std::vector<bool>    seen(nr_nodes(), false);
-      Forest               forest(nr_nodes());
-      std::queue<TIntType> queue;
-      gabow_scc();
-      for (size_t i = 0; i < nr_scc(); ++i) {
-        queue.push(_scc._comps[i][0]);
-        seen[_scc._comps[i][0]] = true;
-        do {
-          size_t x = queue.front();
-          for (size_t j = 0; j < _recvec.nr_cols(); ++j) {
-            size_t y = get(x, j);
-            if (!seen[y] && _scc._id[y] == _scc._id[x]) {
-              forest.set(y, x, j);
-              queue.push(y);
-              seen[y] = true;
+    Forest const& spanning_forest() const {
+      if (!_scc_forest._defined) {
+        gabow_scc();
+
+        std::vector<bool>    seen(nr_nodes(), false);
+        std::queue<TIntType> queue;
+
+        _scc_forest._forest.clear();
+        _scc_forest._forest.add_nodes(nr_nodes());
+
+        for (size_t i = 0; i < nr_scc(); ++i) {
+          queue.push(_scc._comps[i][0]);
+          seen[_scc._comps[i][0]] = true;
+          do {
+            size_t x = queue.front();
+            for (size_t j = 0; j < _recvec.nr_cols(); ++j) {
+              size_t y = get(x, j);
+              if (!seen[y] && _scc._id[y] == _scc._id[x]) {
+                _scc_forest._forest.set(y, x, j);
+                queue.push(y);
+                seen[y] = true;
+              }
             }
-          }
-          queue.pop();
-        } while (!queue.empty());
+            queue.pop();
+          } while (!queue.empty());
+        }
+        _scc_forest._defined = true;
       }
-      return forest;
+      return _scc_forest._forest;
     }
 
-    std::vector<TIntType> const& get_root_path(TIntType pos) {
-      if (!_has_root_paths) {
-        compute_scc_root_paths();
-      }
-      return _root_paths[pos];
+    const_iterator_path_to_root cbegin_path_to_root(node_type node) const {
+      compute_scc_root_paths();
+      return _root_paths._root_paths[node].cbegin();
+    }
+
+    const_iterator_path_to_root cend_path_to_root(node_type node) const {
+      compute_scc_root_paths();
+      return _root_paths._root_paths[node].cend();
     }
 
    private:
+    void reset() {
+      _root_paths._defined = false;
+      _scc._defined        = false;
+      _scc_forest._defined = false;
+    }
+
     //! Calculate the strongly connected components of \c this
     //!
     //! This function calculates the strongly connected components of \c this
@@ -230,7 +262,7 @@ namespace libsemigroups {
       static std::stack<TIntType>                      stack1;
       static std::stack<TIntType>                      stack2;
       static std::stack<std::pair<TIntType, TIntType>> frame;
-      static std::vector<TIntType> preorder;
+      static std::vector<TIntType>                     preorder;
       preorder.assign(nr_nodes(), UNDEFINED);
       LIBSEMIGROUPS_ASSERT(stack1.empty());
       LIBSEMIGROUPS_ASSERT(stack2.empty());
@@ -271,7 +303,7 @@ namespace libsemigroups {
               TIntType x;
               do {
                 LIBSEMIGROUPS_ASSERT(!stack1.empty());
-                x = stack1.top();
+                x           = stack1.top();
                 _scc._id[x] = index;
                 _scc._comps[index].push_back(x);
                 stack1.pop();
@@ -296,6 +328,9 @@ namespace libsemigroups {
     }
 
     void compute_scc_root_paths() {
+      if (_root_paths._defined) {
+        return;
+      }
       std::vector<std::vector<TIntType>> paths(nr_nodes(),
                                                std::vector<TIntType>());
       std::vector<std::vector<TIntType>> reverse_edges(nr_nodes(),
@@ -332,21 +367,32 @@ namespace libsemigroups {
           queue.pop();
         }
       }
-      _root_paths     = paths;
-      _has_root_paths = true;
+      _root_paths._root_paths = paths;
+      _root_paths._defined    = true;
     }
 
     internal::RecVec<TIntType> _recvec;
 
-    mutable struct SCC {
-      SCC() : _comps(), _defined(false), _id() {}
+    struct Attr {
+      Attr() : _defined(false) {}
+      bool _defined;
+    };
+
+    mutable struct RootPaths : public Attr {
+      RootPaths() : Attr(), _root_paths() {}
+      std::vector<std::vector<TIntType>> _root_paths;
+    } _root_paths;
+
+    mutable struct SCC : public Attr {
+      SCC() : Attr(), _comps(), _id() {}
       std::vector<std::vector<size_t>> _comps;
-      bool                             _defined;
       std::vector<TIntType>            _id;
     } _scc;
 
-    bool                               _has_root_paths;
-    std::vector<std::vector<TIntType>> _root_paths;
+    mutable struct SCCForest : public Attr {
+      SCCForest() : Attr(), _forest() {}
+      Forest _forest;
+    } _scc_forest;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_

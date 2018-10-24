@@ -27,12 +27,17 @@
 namespace libsemigroups {
   class Forest {
    public:
-    explicit Forest(size_t n)
+    explicit Forest(size_t n = 0)
         : _edge_label(n, static_cast<size_t>(UNDEFINED)),
           _parent(n, static_cast<size_t>(UNDEFINED)) {}
 
+    void add_nodes(size_t n) {
+      _edge_label.insert(_edge_label.cend(), n, static_cast<size_t>(UNDEFINED));
+      _parent.insert(_parent.cend(), n, static_cast<size_t>(UNDEFINED));
+    }
+
     void set(size_t node, size_t parent, size_t gen) noexcept {
-      // TODO(FLS): add assertions
+      // TODO(FLS): add assertions or exceptions
       _parent[node]     = parent;
       _edge_label[node] = gen;
     }
@@ -42,7 +47,7 @@ namespace libsemigroups {
     }
 
     size_t parent(size_t i) const noexcept {
-      // TODO(FLS): add assertions
+      // TODO(FLS): add assertions or exceptions
       return _parent[i];
     }
 
@@ -55,8 +60,13 @@ namespace libsemigroups {
     }
 
     size_t label(size_t i) const noexcept {
-      // TODO(FLS): add assertions
+      // TODO(FLS): add assertions or exceptions
       return _edge_label[i];
+    }
+
+    void clear() {
+      _edge_label.clear();
+      _parent.clear();
     }
 
    private:

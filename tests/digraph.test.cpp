@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <stddef.h>                 // for size_t
-#include <vector>                   // for vector
+#include <stddef.h>  // for size_t
+#include <vector>    // for vector
 
 #include "catch.hpp"                // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "digraph.hpp"              // for ActionDigraph
@@ -26,11 +26,11 @@
 
 namespace libsemigroups {
 
-struct LibsemigroupsException;
+  struct LibsemigroupsException;
   ActionDigraph<size_t> cycle(size_t n) {
     ActionDigraph<size_t> g(n);
     for (size_t i = 0; i < n - 1; ++i) {
-      g.add_edge(i, 0, i + 1);
+      g.add_edge(i, i + 1, 0);
     }
     g.add_edge(n - 1, 0, 0);
     return g;
@@ -40,9 +40,9 @@ struct LibsemigroupsException;
     size_t old_nodes = digraph.nr_nodes();
     digraph.add_nodes(n);
     for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
-      digraph.add_edge(i, 0, i + 1);
+      digraph.add_edge(i, i + 1, 0);
     }
-    digraph.add_edge(digraph.nr_nodes() - 1, 0, old_nodes);
+    digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -87,7 +87,7 @@ struct LibsemigroupsException;
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
-        g.add_edge(i, j, (7 * i + 23 * j) % 17);
+        g.add_edge(i, (7 * i + 23 * j) % 17, j);
       }
     }
 
@@ -102,7 +102,7 @@ struct LibsemigroupsException;
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 10; ++j) {
-        g.add_edge(i, 31 + j, (7 * i + 23 * j) % 17);
+        g.add_edge(i, (7 * i + 23 * j) % 17, 31 + j);
       }
     }
 
@@ -114,7 +114,6 @@ struct LibsemigroupsException;
                           "005",
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
-
     auto g = cycle(32);
     REQUIRE(g.scc_id(0) == 0);
     g = cycle(33);
@@ -152,9 +151,9 @@ struct LibsemigroupsException;
       for (size_t k = 0; k < 10; ++k) {
         graph.add_nodes(j);
         for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-          graph.add_edge(i, 0, i + 1);
+          graph.add_edge(i, i + 1, 0);
         }
-        graph.add_edge((k + 1) * j - 1, 0, k * j);
+        graph.add_edge((k + 1) * j - 1, k * j, 0);
       }
       for (size_t i = 0; i < 10 * j; ++i) {
         REQUIRE(graph.scc_id(i) == i / j);
@@ -189,14 +188,14 @@ struct LibsemigroupsException;
     REQUIRE_THROWS_AS(graph.get(10, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(graph.get(0, 1), LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(graph.add_edge(0, 0, 10), LibsemigroupsException);
+    REQUIRE_THROWS_AS(graph.add_edge(0, 10, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(graph.add_edge(10, 0, 0), LibsemigroupsException);
     for (size_t i = 0; i < 5; ++i) {
-      graph.add_edge(0, i, 1);
-      graph.add_edge(2, i, 2);
+      graph.add_edge(0, 1, i);
+      graph.add_edge(2, 2, i);
     }
-    REQUIRE_NOTHROW(graph.add_edge(0, 0, 1));
-    REQUIRE_NOTHROW(graph.add_edge(2, 0, 2));
+    REQUIRE_NOTHROW(graph.add_edge(0, 1, 0));
+    REQUIRE_NOTHROW(graph.add_edge(2, 2, 0));
 
     REQUIRE_THROWS_AS(graph.scc_id(10), LibsemigroupsException);
   }
@@ -232,9 +231,9 @@ struct LibsemigroupsException;
     for (size_t k = 0; k < 10; ++k) {
       graph.add_nodes(j);
       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-        graph.add_edge(i, 0, i + 1);
+        graph.add_edge(i, i + 1, 0);
       }
-      graph.add_edge((k + 1) * j - 1, 0, k * j);
+      graph.add_edge((k + 1) * j - 1, k * j, 0);
     }
     for (size_t i = 0; i < 10 * j; ++i) {
       REQUIRE(graph.scc_id(i) == i / j);
@@ -310,9 +309,9 @@ struct LibsemigroupsException;
       for (size_t k = 0; k < 6; ++k) {
         graph.add_nodes(j);
         for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-          graph.add_edge(i, 0, i + 1);
+          graph.add_edge(i, i + 1, 0);
         }
-        graph.add_edge((k + 1) * j - 1, 0, k * j);
+        graph.add_edge((k + 1) * j - 1, k * j, 0);
       }
 
       for (size_t i = 0; i < graph.nr_nodes(); ++i) {
@@ -331,11 +330,12 @@ struct LibsemigroupsException;
                           "scc large cycle",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph = cycle(100000);
-    using node_type = decltype(graph)::node_type;
+    using node_type             = decltype(graph)::node_type;
 
-    REQUIRE(std::all_of(graph.cbegin(), graph.cend(), [&graph](node_type i) -> bool {
-      return graph.scc_id(i) == 0;
-    }));
+    REQUIRE(std::all_of(
+        graph.cbegin(), graph.cend(), [&graph](node_type i) -> bool {
+          return graph.scc_id(i) == 0;
+        }));
     cycle(graph, 10101);
     REQUIRE(std::all_of(
         graph.cbegin(), graph.cend() - 10101, [&graph](node_type i) -> bool {
