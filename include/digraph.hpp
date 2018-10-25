@@ -25,6 +25,7 @@
 
 #include "containers.hpp"
 #include "forest.hpp"
+#include "iterator.hpp"
 #include "libsemigroups-exception.hpp"
 #include "range.hpp"
 
@@ -56,21 +57,35 @@ namespace libsemigroups {
     using label_type         = TIntType;
     using scc_index_type     = TIntType;
     using const_iterator_scc = typename std::vector<TIntType>::const_iterator;
-    using const_iterator_path_to_root =
-        typename std::vector<TIntType>::const_iterator;
     using const_iterator_sccs =
         typename std::vector<std::vector<TIntType>>::const_iterator;
     using const_iterator_nodes =
         typename IntegralRange<TIntType>::const_iterator;
-    using const_iterator_scc_roots =
-        typename std::vector<TIntType>::const_iterator;
 
+   private:
+    struct iterator_methods {
+      node_type const& indirection(const_iterator_sccs it) const {
+        return *(*it).cbegin();
+      }
+
+      node_type const* addressof(const_iterator_sccs it) const {
+        return &(*(*it).cbegin());
+      }
+    };
+
+   public:
+    using const_iterator_scc_roots
+        = internal::iterator_base<std::vector<TIntType>,
+                                  node_type const*,
+                                  node_type const&,
+                                  node_type,
+                                  iterator_methods>;
     //! A constructor
     //!
     //! This constructor takes the initial degree bound and the initial
     //! number of nodes of the graph.
     explicit ActionDigraph(TIntType degree = 0, TIntType nr_nodes = 0)
-        : _recvec(degree, nr_nodes, UNDEFINED), _scc() {}
+        : _recvec(degree, nr_nodes, UNDEFINED), _scc_back_forest(),  _scc_forest(), _scc() {}
 
     ActionDigraph(ActionDigraph const&) = default;
     ActionDigraph(ActionDigraph&&)      = default;
@@ -92,13 +107,13 @@ namespace libsemigroups {
     //! adds an edge from \p i to \p j.
     void inline add_edge(node_type i, node_type j, label_type lbl) {
       if (i >= nr_nodes()) {
-        // TODO(FLS) reword as per new style
-        throw LIBSEMIGROUPS_EXCEPTION("first argument larger than "
-                                      "number of nodes - 1");
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "first node value out of range, got " + internal::to_string(i)
+            + ", expected less than " + internal::to_string(nr_nodes()));
       } else if (j >= nr_nodes()) {
-        // TODO(FLS) reword as per new style
-        throw LIBSEMIGROUPS_EXCEPTION("second argument larger than "
-                                      "number of nodes - 1");
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "second node value out of range, got " + internal::to_string(j)
+            + ", expected less than " + internal::to_string(nr_nodes()));
       }
       if (lbl >= _recvec.nr_cols()) {
         _recvec.add_cols(lbl - _recvec.nr_cols() + 1);
@@ -143,6 +158,10 @@ namespace libsemigroups {
       return std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED) == 0;
     }
 
+    TIntType out_degree() const noexcept {  // TODO noexcept ok?
+      return _recvec.nr_cols();
+    }
+
     //! Returns the id of the strongly connected component of a node
     //!
     //! Every node in \c this lies in a strongly connected component.
@@ -164,7 +183,6 @@ namespace libsemigroups {
       return _scc._comps.size();
     }
 
-
     const_iterator_sccs cbegin_sccs() const {
       gabow_scc();
       return _scc._comps.cbegin();
@@ -185,12 +203,12 @@ namespace libsemigroups {
 
     const_iterator_scc cbegin_scc(scc_index_type i) const {
       gabow_scc();
-      return _scc._comps[scc_id(i)].cbegin();
+      return _scc._comps[i].cbegin();
     }
 
     const_iterator_scc cend_scc(scc_index_type i) const {
       gabow_scc();
-      return _scc._comps[scc_id(i)].cend();
+      return _scc._comps[i].cend();
     }
 
     //! Returns a Forest comprised of spanning trees for each SCC
@@ -200,6 +218,7 @@ namespace libsemigroups {
     //! component, rooted on the minimum element index of that component.
     Forest const& spanning_forest() const {
       if (!_scc_forest._defined) {
+        // Validity checked in gabow_scc
         gabow_scc();
 
         std::vector<bool>    seen(nr_nodes(), false);
@@ -229,25 +248,71 @@ namespace libsemigroups {
       return _scc_forest._forest;
     }
 
-    const_iterator_path_to_root cbegin_path_to_root(node_type node) const {
-      compute_scc_root_paths();
-      return _root_paths._root_paths[node].cbegin();
-    }
+    Forest const& reverse_spanning_forest() const {
+      if (!_scc_back_forest._defined) {
+        // Validity checked in gabow_scc
+        gabow_scc();
 
-    const_iterator_path_to_root cend_path_to_root(node_type node) const {
-      compute_scc_root_paths();
-      return _root_paths._root_paths[node].cend();
+        _scc_back_forest._forest.clear();
+        _scc_back_forest._forest.add_nodes(nr_nodes());
+
+        std::vector<std::vector<TIntType>> reverse_edges(
+            nr_nodes(), std::vector<TIntType>());
+        std::vector<std::vector<TIntType>> reverse_labels(
+            nr_nodes(), std::vector<TIntType>());
+
+        for (size_t i = 0; i < nr_nodes(); ++i) {
+          size_t const scc_id_i = scc_id(i);
+          for (size_t j = 0; j < out_degree(); ++j) {
+            size_t const k = get(i, j);
+            if (scc_id(k) == scc_id_i) {
+              reverse_edges[k].push_back(i);
+              reverse_labels[k].push_back(j);
+            }
+          }
+        }
+        std::queue<size_t> queue;
+        std::vector<bool>  seen(nr_nodes(), false);
+
+        for (size_t i = 0; i < nr_scc(); ++i) {
+          LIBSEMIGROUPS_ASSERT(queue.empty());
+          queue.push(_scc._comps[i][0]);
+          seen[_scc._comps[i][0]] = true;
+          while (!queue.empty()) {
+            size_t x = queue.front();
+            for (size_t j = 0; j < reverse_edges[x].size(); ++j) {
+              size_t y = reverse_edges[x][j];
+              if (!seen[y]) {
+                queue.push(y);
+                seen[y] = true;
+                _scc_back_forest._forest.set(y, x, reverse_labels[x][j]);
+              }
+            }
+            queue.pop();
+          }
+        }
+        _scc_back_forest._defined = true;
+      }
+      return _scc_back_forest._forest;
     }
 
     node_type root_of_scc(node_type node) const {
       return *cbegin_scc(scc_id(node));
     }
 
+    const_iterator_scc_roots cbegin_scc_roots() const {
+      return const_iterator_scc_roots(cbegin_sccs());
+    }
+
+    const_iterator_scc_roots cend_scc_roots() const {
+      return const_iterator_scc_roots(cend_sccs());
+    }
+
    private:
     void reset() {
-      _root_paths._defined = false;
-      _scc._defined        = false;
-      _scc_forest._defined = false;
+      _scc_back_forest._defined = false;
+      _scc._defined             = false;
+      _scc_forest._defined      = false;
     }
 
     //! Calculate the strongly connected components of \c this
@@ -335,50 +400,6 @@ namespace libsemigroups {
       _scc._defined = true;
     }
 
-    void compute_scc_root_paths() const {
-      if (_root_paths._defined) {
-        return;
-      }
-      std::vector<std::vector<TIntType>> paths(nr_nodes(),
-                                               std::vector<TIntType>());
-      std::vector<std::vector<TIntType>> reverse_edges(nr_nodes(),
-                                                       std::vector<TIntType>());
-      std::vector<std::vector<TIntType>> reverse_labels(
-          nr_nodes(), std::vector<TIntType>());
-      std::vector<bool>  seen(nr_nodes(), false);
-      size_t             x;
-      size_t             y;
-      std::queue<size_t> queue;
-      gabow_scc();
-      for (size_t i = 0; i < nr_nodes(); ++i) {
-        for (size_t j = 0; j < _recvec.nr_cols(); ++j) {
-          reverse_edges[get(i, j)].push_back(i);
-          reverse_labels[get(i, j)].push_back(j);
-        }
-      }
-
-      for (size_t i = 0; i < nr_scc(); ++i) {
-        queue = std::queue<size_t>();
-        queue.push(_scc._comps[i][0]);
-        seen[_scc._comps[i][0]] = true;
-        while (!queue.empty()) {
-          x = queue.front();
-          for (size_t j = 0; j < reverse_edges[x].size(); ++j) {
-            y = reverse_edges[x][j];
-            if (!seen[y] && _scc._id[y] == _scc._id[x]) {
-              queue.push(y);
-              seen[y] = true;
-              paths[y].push_back(reverse_labels[x][j]);
-              paths[y].insert(paths[y].end(), paths[x].begin(), paths[x].end());
-            }
-          }
-          queue.pop();
-        }
-      }
-      _root_paths._root_paths = paths;
-      _root_paths._defined    = true;
-    }
-
     internal::RecVec<TIntType> _recvec;
 
     struct Attr {
@@ -386,21 +407,21 @@ namespace libsemigroups {
       bool _defined;
     };
 
-    mutable struct RootPaths : public Attr {
-      RootPaths() : Attr(), _root_paths() {}
-      std::vector<std::vector<TIntType>> _root_paths;
-    } _root_paths;
+    mutable struct SCCBackForest : public Attr {
+      SCCBackForest() : Attr(), _forest() {}
+      Forest _forest;
+    } _scc_back_forest;
+
+    mutable struct SCCForwardForest : public Attr {
+      SCCForwardForest() : Attr(), _forest() {}
+      Forest _forest;
+    } _scc_forest;
 
     mutable struct SCC : public Attr {
       SCC() : Attr(), _comps(), _id() {}
       std::vector<std::vector<size_t>> _comps;
       std::vector<TIntType>            _id;
     } _scc;
-
-    mutable struct SCCForest : public Attr {
-      SCCForest() : Attr(), _forest() {}
-      Forest _forest;
-    } _scc_forest;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_

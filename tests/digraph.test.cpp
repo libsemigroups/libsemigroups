@@ -275,55 +275,55 @@ namespace libsemigroups {
                 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, UNDEFINED}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "012",
-                          "scc root paths - complete graphs",
-                          "[quick][digraph]") {
-    for (size_t k = 2; k < 50; ++k) {
-      ActionDigraph<size_t> graph(k);
+//  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+//                          "012",
+//                          "scc root paths - complete graphs",
+//                          "[quick][digraph]") {
+//    for (size_t k = 2; k < 50; ++k) {
+//      ActionDigraph<size_t> graph(k);
+//
+//      for (size_t i = 0; i < k; ++i) {
+//        for (size_t j = 0; j < k; ++j) {
+//          graph.add_edge(i, j, j);
+//        }
+//      }
+//
+//      for (size_t i = 0; i < k; ++i) {
+//        size_t pos = i;
+//        for (auto it = graph.cbegin_path_to_root(i); it < graph.cend_path_to_root(i); ++it) {
+//          pos = graph.get(pos, *it);
+//        }
+//        REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
+//      }
+//    }
+//  }
 
-      for (size_t i = 0; i < k; ++i) {
-        for (size_t j = 0; j < k; ++j) {
-          graph.add_edge(i, j, j);
-        }
-      }
+ // LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+ //                         "013",
+ //                         "scc root paths - disjoint cycles",
+ //                         "[quick][digraph]") {
+ //   for (size_t j = 2; j < 35; ++j) {
+ //     ActionDigraph<size_t> graph;
 
-      for (size_t i = 0; i < k; ++i) {
-        size_t pos = i;
-        for (auto it = graph.cbegin_path_to_root(i); it < graph.cend_path_to_root(i); ++it) {
-          pos = graph.get(pos, *it);
-        }
-        REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
-      }
-    }
-  }
+ //     for (size_t k = 0; k < 6; ++k) {
+ //       graph.add_nodes(j);
+ //       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
+ //         graph.add_edge(i, i + 1, 0);
+ //       }
+ //       graph.add_edge((k + 1) * j - 1, k * j, 0);
+ //     }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "013",
-                          "scc root paths - disjoint cycles",
-                          "[quick][digraph]") {
-    for (size_t j = 2; j < 35; ++j) {
-      ActionDigraph<size_t> graph;
-
-      for (size_t k = 0; k < 6; ++k) {
-        graph.add_nodes(j);
-        for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-          graph.add_edge(i, i + 1, 0);
-        }
-        graph.add_edge((k + 1) * j - 1, k * j, 0);
-      }
-
-      for (size_t i = 0; i < graph.nr_nodes(); ++i) {
-        size_t pos = i;
-        for (auto it = graph.cbegin_path_to_root(i);
-             it < graph.cend_path_to_root(i);
-             ++it) {
-          pos = graph.get(pos, *it);
-        }
-        REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
-      }
-    }
-  }
+ //     for (size_t i = 0; i < graph.nr_nodes(); ++i) {
+ //       size_t pos = i;
+ //       for (auto it = graph.cbegin_path_to_root(i);
+ //            it < graph.cend_path_to_root(i);
+ //            ++it) {
+ //         pos = graph.get(pos, *it);
+ //       }
+ //       REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
+ //     }
+ //   }
+ // }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "014",

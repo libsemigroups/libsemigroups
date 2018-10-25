@@ -23,24 +23,24 @@
 
 namespace libsemigroups {
 
-  template <> struct right_action<BMat8, BMat8> {
-    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const
-        noexcept {
+  template <>
+  struct right_action<BMat8, BMat8> {
+    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const noexcept {
       return (pt * x).row_space_basis();
     }
   };
 
-  template <> struct left_action<BMat8, BMat8> {
-    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const
-        noexcept {
+  template <>
+  struct left_action<BMat8, BMat8> {
+    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const noexcept {
       return (x * pt).col_space_basis();
     }
   };
 
   using row_action_type = right_action<BMat8, BMat8>;
   using col_action_type = left_action<BMat8, BMat8>;
-  using row_orb_type =  Orb<BMat8, BMat8, row_action_type, Side::RIGHT>;
-  using col_orb_type =  Orb<BMat8, BMat8, col_action_type, Side::LEFT>;
+  using row_orb_type    = Orb<BMat8, BMat8, row_action_type, Side::RIGHT>;
+  using col_orb_type    = Orb<BMat8, BMat8, col_action_type, Side::LEFT>;
 
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "001",
@@ -169,12 +169,28 @@ namespace libsemigroups {
 
     REQUIRE(row_orb.size() == 553);
     REQUIRE(row_orb.nr_scc() == 14);
-    REQUIRE(std::vector<size_t>(row_orb.cbegin_sccs(), row_orb.cend_sccs()) == 14);
+    REQUIRE(std::vector<size_t>(row_orb.cbegin_scc_roots(),
+                                row_orb.cend_scc_roots())
+            == std::vector<size_t>({277,
+                                    317,
+                                    160,
+                                    119,
+                                    267,
+                                    116,
+                                    411,
+                                    497,
+                                    183,
+                                    272,
+                                    154,
+                                    443,
+                                    65,
+                                    101}));
 
     for (size_t i = 0; i < row_orb.size(); ++i) {
       REQUIRE(
-          row_orb.at(i) * row_orb.multiplier_to_scc_root(i)
-          == row_orb.root_of_scc(i));
+          row_orb.position((row_orb.at(i) * row_orb.multiplier_to_scc_root(i))
+                               .row_space_basis())
+          == row_orb.position(row_orb.root_of_scc(i)));
       REQUIRE((row_orb.at(i) * row_orb.multiplier_to_scc_root(i)
                * row_orb.multiplier_from_scc_root(i))
                   .row_space_basis()
@@ -231,8 +247,8 @@ namespace libsemigroups {
                                                       {0, 0, 1, 0, 0},
                                                       {0, 0, 0, 1, 0},
                                                       {0, 0, 0, 0, 1}})};
-    row_orb_type row_orb;
-    col_orb_type  col_orb;
+    row_orb_type             row_orb;
+    col_orb_type             col_orb;
 
     row_orb.add_seed(BMat8::one());
     col_orb.add_seed(BMat8::one());
@@ -277,7 +293,7 @@ namespace libsemigroups {
                                                       {0, 0, 0, 1, 0, 0},
                                                       {0, 0, 0, 0, 1, 0},
                                                       {0, 0, 0, 0, 0, 0}})};
-    row_orb_type row_orb;
+    row_orb_type             row_orb;
 
     row_orb.add_seed(BMat8::one());
     for (BMat8 g : reg_bmat6_gens) {

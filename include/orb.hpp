@@ -50,6 +50,8 @@ namespace libsemigroups {
     using scc_index_type = ActionDigraph<size_t>::scc_index_type;
     using const_iterator_scc = ActionDigraph<size_t>::const_iterator_scc;
     using const_iterator_sccs = ActionDigraph<size_t>::const_iterator_sccs;
+    using const_iterator_scc_roots
+        = ActionDigraph<size_t>::const_iterator_scc_roots;
 
    private:
     // gcc apparently requires the extra qualification on the aliases below
@@ -75,11 +77,12 @@ namespace libsemigroups {
     }
 
    public:
-    Orb() : _gens(), _graph(0), _map(), _orb() {}
+    Orb() : _gens(), _graph(), _map(), _orb(), _pos(0) {}
 
     void add_seed(point_type seed) {
       _map.insert(std::make_pair(seed, _orb.size()));
       _orb.push_back(seed);
+      _graph.add_nodes(1);
       set_finished(false);
     }
 
@@ -96,9 +99,27 @@ namespace libsemigroups {
     void run() {
       if (finished()) {
         return;
+      } else if (_graph.nr_nodes() != 0 && _graph.out_degree() < _gens.size()) {
+        size_t old_nr_gens = _graph.out_degree();
+        for (size_t i = 0; i < _pos; i++) {
+          for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
+            point_type pt = action()(_orb[i], _gens[j]);
+            auto  it = _map.find(pt);
+            if (it == _map.end()) {
+              _map.emplace(pt, _orb.size());
+              _graph.add_nodes(1);
+              _graph.add_edge(i, _orb.size(), j);
+              _orb.push_back(pt);
+            } else {
+              _graph.add_edge(i, (*it).second, j);
+            }
+          }
+        }
       }
-      _graph = ActionDigraph<size_t>(_gens.size(), _orb.size());
-      for (size_t i = 0; i < _orb.size() && !stopped(); i++) {
+      // TODO add "columns" to _graph so that it doesn't use too much space.
+
+      size_t i = _pos;
+      for (; i < _orb.size() && !stopped(); i++) {
         for (size_t j = 0; j < _gens.size(); ++j) {
           point_type pt = action()(_orb[i], _gens[j]);
           auto  it = _map.find(pt);
@@ -115,6 +136,7 @@ namespace libsemigroups {
           REPORT("found ",  _orb.size(), " points, so far");
         }
       }
+      _pos = i;
       if (_pos == _orb.size()) {
         set_finished(true);
       }
@@ -167,6 +189,12 @@ namespace libsemigroups {
     }
 
     element_type multiplier_from_scc_root(index_type pos) {
+      if (pos >= current_size()) {
+        throw LIBSEMIGROUPS_EXCEPTION(
+            "index out of range, expected value in [0, "
+            + internal::to_string(current_size()) + ") but found "
+            + internal::to_string(pos));
+      }
       element_type out = one()(); // TODO Not general enough
       element_type tmp = one()(); // TODO Not general enough
       while (_graph.spanning_forest().parent(pos) != UNDEFINED) {
@@ -184,14 +212,12 @@ namespace libsemigroups {
             + internal::to_string(current_size()) + ") but found "
             + internal::to_string(pos));
       }
-      element_type out = one()();  // TODO Not general enough
+      element_type out = one()(); // TODO Not general enough
       element_type tmp = one()(); // TODO Not general enough
-      for (auto it = _graph.cbegin_path_to_root(pos);
-           it < _graph.cbegin_path_to_root(pos);
-           ++it) {
-        LIBSEMIGROUPS_ASSERT(*it < _gens.size());
+      while (_graph.reverse_spanning_forest().parent(pos) != UNDEFINED) {
         swap()(tmp, out);
-        internal_product(out, tmp, _gens[*it]);
+        internal_product(out, tmp, _gens[_graph.reverse_spanning_forest().label(pos)]);
+        pos = _graph.reverse_spanning_forest().parent(pos);
       }
       return out;
     }
@@ -220,8 +246,21 @@ namespace libsemigroups {
       return _orb[_graph.root_of_scc(pos)];
     }
 
+    const_iterator_scc_roots cbegin_scc_roots() {
+      return _graph.cbegin_scc_roots();
+    }
+
+    const_iterator_scc_roots cend_scc_roots() {
+      return _graph.cend_scc_roots();
+    }
+
     size_t nr_scc() const {
       return _graph.nr_scc();
+    }
+
+    ActionDigraph<size_t> const& action_digraph() {
+      enumerate();
+      return _graph;
     }
 
    private:
