@@ -167,13 +167,6 @@ namespace libsemigroups {
     //! here</a>.
     BMat8 operator*(BMat8 const& that) const;
 
-    //! Returns the identity BMat8
-    //!
-    //! This method returns the 8 x 8 BMat8 with 1s on the main diagonal.
-    static inline BMat8 one() {
-      return BMat8(0x8040201008040201);
-    }
-
     //! Insertion operator
     //!
     //! This method allows BMat8 objects to be inserted into an ostringstream
@@ -228,6 +221,72 @@ namespace libsemigroups {
 
     BMat8 row_space_basis() const;
     BMat8 col_space_basis() const;
+
+    std::vector<uint8_t> rows() const {
+      std::vector<uint8_t> rows;
+      for (size_t i = 0; i < 8; ++i) {
+        uint8_t row = static_cast<uint8_t>(_data << (8 * i) >> 56);
+        rows.push_back(row);
+      }
+      return rows;
+    }
+
+    size_t row_space_size() const;
+    size_t col_space_size() const {
+      return transpose().row_space_size();
+    }
+
+    //! Returns the number of non-zero rows in \c this.
+    //!
+    //! BMat8s do not know their "dimension" - in effect they are all of
+    //! dimension 8. However, this method can be used to obtain the number of
+    //! non-zero rows of \c this.
+    size_t nr_rows() const {
+      size_t count = 0;
+      for (size_t i = 0; i < 8; ++i) {
+        if (_data << (8 * i) >> 56 > 0) {
+          count++;
+        }
+      }
+      return count;
+    }
+
+    //! Returns the number of non-zero rows in \c this
+    //!
+    //! BMat8s do not know their "dimension" - in effect they are all of
+    //! dimension 8. However, this method can be used to obtain the number of
+    //! non-zero rows of \c this.
+    size_t nr_cols() const {
+      return transpose().nr_rows();
+    }
+
+    //! Returns whether \c this is a regular element of the full boolean matrix
+    //! monoid of appropriate size.
+    bool is_regular_element() const {
+      return *this
+                 * BMat8(
+                       ~(*this * BMat8(~_data).transpose() * (*this)).to_int())
+                       .transpose()
+                 * (*this)
+             == *this;
+    }
+
+    size_t min_possible_dim() const {
+      size_t i = 1;
+      size_t x = transpose().to_int();
+      while ((_data >> (8 * i)) << (8 * i) == _data
+             && (x >> (8 * i)) << (8 * i) == x && i < 9) {
+        ++i;
+      }
+      return 9 - i;
+    }
+
+    static bool is_group_index(BMat8 const& x, BMat8 const& y);
+
+    //! Returns the identity BMat8
+    //!
+    //! This method returns the dim x dim BMat8 with 1s on the main diagonal.
+    static BMat8 one(size_t dim = 8);
 
    private:
     void sort_rows();

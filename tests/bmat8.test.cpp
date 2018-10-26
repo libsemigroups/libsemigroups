@@ -15,14 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <iosfwd>  // for ostream, ostringstream, stringbuf
-#include <vector>  // for vector
-#include <unordered_set> // for unordered_set
+#include <iosfwd>         // for ostream, ostringstream, stringbuf
+#include <set>            // for set
+#include <unordered_set>  // for unordered_set
+#include <vector>         // for vector
 
 #include "bmat8.hpp"
-#include "timer.hpp"
+#include "froidure-pin.hpp"
 #include "libsemigroups.tests.hpp"
-
+#include "timer.hpp"
 
 namespace libsemigroups {
 
@@ -234,10 +235,7 @@ namespace libsemigroups {
     BMat8 zeros(0);
     REQUIRE(bm == zeros);
   }
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "008",
-                          "row space basis",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "008", "row space basis", "[quick]") {
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
               {1, 1, 1, 1, 1, 1, 0, 1},
@@ -294,10 +292,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "009",
-                          "col space basis",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "009", "col space basis", "[quick]") {
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
               {1, 1, 1, 1, 1, 1, 0, 1},
@@ -354,11 +349,8 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "010",
-                          "row space basis",
-                          "[quick]") {
-    internal::Timer                    t;
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "010", "row space basis", "[quick]") {
+    internal::Timer          t;
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -392,8 +384,8 @@ namespace libsemigroups {
     // std::cout << t;
   }
 
-  /*LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "010",
+  LIBSEMIGROUPS_TEST_CASE("BMat8",
+                          "011",
                           "is_group_index",
                           "[quick]") {
     BMat8 idem = BMat8::one();
@@ -417,9 +409,9 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    Semigroup<BMat8> S(gens);
+    FroidurePin<BMat8> S(gens);
     REQUIRE(S.size() == 209);
-    REQUIRE(S.nridempotents() == 16);
+    REQUIRE(S.nr_idempotents() == 16);
 
     std::vector<std::vector<BMat8>> group_indices;
     for (auto it = S.begin(); it < S.end(); it++) {
@@ -440,7 +432,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "011",
+                          "012",
                           "nr_rows, nr_cols",
                           "[quick]") {
     BMat8 idem1 = BMat8::one();
@@ -467,7 +459,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    Semigroup<BMat8> S(gens);
+    FroidurePin<BMat8> S(gens);
 
     for (auto it = S.begin(); it < S.end(); it++) {
       REQUIRE((*it).nr_rows() <= 8);
@@ -478,71 +470,22 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "012",
-                          "nr_rows_in_basis, nr_cols_in_basis",
-                          "[quick]") {
-    BMat8 idem = BMat8::one();
-    BMat8 one  = BMat8::one();
-    BMat8 zero = BMat8(0);
-
-    REQUIRE(one.nr_rows_in_basis() == 8);
-    REQUIRE(one.nr_cols_in_basis() == 8);
-    for (size_t i = 0; i < 8; ++i) {
-      idem.set(7 - i, 7 - i, false);
-
-      REQUIRE(idem.nr_rows_in_basis() == 7 - i);
-      REQUIRE(idem.nr_cols_in_basis() == 7 - i);
-    }
-
-    const std::vector<BMat8> gens
-        = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-
-    Semigroup<BMat8> S(gens);
-
-    for (auto it = S.begin(); it < S.end(); it++) {
-      BMat8 x    = *it;
-      BMat8 rows = x.row_space_basis();
-      BMat8 cols = x.col_space_basis();
-      REQUIRE(rows.nr_rows_in_basis() <= 8);
-      REQUIRE(cols.nr_cols_in_basis() <= 8);
-
-      REQUIRE(rows.nr_rows_in_basis() <= rows.nr_rows());
-      REQUIRE(cols.nr_cols_in_basis() <= cols.nr_cols());
-
-      for (auto it2 = S.begin(); it2 < S.end(); it2++) {
-        BMat8 y = *it2;
-        REQUIRE((x * y).row_space_basis().nr_rows_in_basis()
-                <= rows.nr_rows_in_basis());
-        REQUIRE((y * x).col_space_basis().nr_cols_in_basis()
-                <= cols.nr_cols_in_basis());
-      }
-    }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "013",
-                          "row_space, col_space",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "013", "row_space, col_space", "[quick]") {
     BMat8 idem1 = BMat8::one();
     BMat8 idem2 = BMat8::one();
     BMat8 one   = BMat8::one();
     BMat8 zero  = BMat8(0);
 
-    REQUIRE(one.row_space().size() == 256);
-    REQUIRE(one.col_space().size() == 256);
+    REQUIRE(one.row_space_size() == 256);
+    REQUIRE(one.col_space_size() == 256);
     for (size_t i = 0; i < 8; ++i) {
       idem1.set(7 - i, 7 - i, false);
       idem2.set(i, i, false);
 
-      REQUIRE(idem1.row_space().size() == pow(2, 7 - i));
-      REQUIRE(idem1.col_space().size() == pow(2, 7 - i));
-      REQUIRE(idem2.row_space().size() == pow(2, 7 - i));
-      REQUIRE(idem2.col_space().size() == pow(2, 7 - i));
+      REQUIRE(idem1.row_space_size() == pow(2, 7 - i));
+      REQUIRE(idem1.col_space_size() == pow(2, 7 - i));
+      REQUIRE(idem2.row_space_size() == pow(2, 7 - i));
+      REQUIRE(idem2.col_space_size() == pow(2, 7 - i));
     }
 
     const std::vector<BMat8> gens
@@ -552,24 +495,75 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    Semigroup<BMat8> S(gens);
+    FroidurePin<BMat8> S(gens);
 
     for (auto it = S.begin(); it < S.end(); it++) {
       BMat8 x    = *it;
       BMat8 rows = x.row_space_basis();
       BMat8 cols = x.col_space_basis();
-      REQUIRE(x.row_space().size() <= 16);
-      REQUIRE(x.col_space().size() <= 16);
+      REQUIRE(x.row_space_size() <= 16);
+      REQUIRE(x.col_space_size() <= 16);
 
-      REQUIRE(rows.row_space().size() <= pow(2, rows.nr_rows()));
-      REQUIRE(cols.col_space().size() <= pow(2, cols.nr_cols()));
+      REQUIRE(rows.row_space_size() <= pow(2, rows.nr_rows()));
+      REQUIRE(cols.col_space_size() <= pow(2, cols.nr_cols()));
 
       for (auto it2 = S.begin(); it2 < S.end(); it2++) {
         BMat8 y = *it2;
-        REQUIRE((x * y).row_space().size() <= x.row_space().size());
-        REQUIRE((x * y).col_space().size() <= x.col_space().size());
+        REQUIRE((x * y).row_space_size() <= x.row_space_size());
+        REQUIRE((x * y).col_space_size() <= x.col_space_size());
       }
     }
+
+    BMat8 bm1({{0, 0, 0, 1, 0, 0, 1, 1},
+               {0, 0, 1, 0, 0, 1, 0, 1},
+               {1, 1, 0, 0, 1, 1, 0, 1},
+               {1, 1, 0, 0, 0, 0, 0, 1},
+               {0, 1, 0, 0, 0, 0, 1, 1},
+               {0, 1, 0, 1, 1, 1, 1, 1},
+               {0, 1, 0, 1, 0, 1, 0, 1},
+               {0, 1, 0, 0, 0, 0, 1, 0}});
+    BMat8 bmm1({{1, 1, 0, 1, 0, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 0, 1, 1, 1, 1, 1},
+                {0, 1, 1, 1, 0, 1, 1, 1},
+                {0, 1, 1, 1, 0, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1}});
+    BMat8 bm2({{1, 1}, {0, 1}});
+    BMat8 bm2t({{1, 0}, {1, 1}});
+    BMat8 bm3({{0, 0, 0, 1, 0, 0, 1, 1},
+               {1, 1, 1, 1, 1, 1, 0, 1},
+               {0, 1, 1, 1, 1, 1, 0, 1},
+               {1, 1, 0, 1, 1, 1, 1, 1},
+               {0, 0, 1, 0, 0, 1, 1, 1},
+               {1, 1, 0, 0, 0, 0, 0, 1},
+               {0, 1, 0, 0, 0, 0, 1, 1},
+               {0, 1, 1, 1, 1, 0, 1, 0}});
+    BMat8 bm3t({{0, 1, 0, 1, 0, 1, 0, 0},
+                {0, 1, 1, 1, 0, 1, 1, 1},
+                {0, 1, 1, 0, 1, 0, 0, 1},
+                {1, 1, 1, 1, 0, 0, 0, 1},
+                {0, 1, 1, 1, 0, 0, 0, 1},
+                {0, 1, 1, 1, 1, 0, 0, 0},
+                {1, 0, 0, 1, 1, 0, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 0}});
+    BMat8 bm({{0, 0, 0, 1, 0, 0, 1, 1},
+              {1, 1, 1, 1, 1, 1, 0, 1},
+              {0, 1, 1, 1, 0, 1, 0, 1},
+              {1, 1, 0, 1, 1, 1, 1, 1},
+              {0, 0, 1, 0, 0, 1, 1, 1},
+              {1, 1, 0, 0, 0, 0, 0, 1},
+              {0, 1, 0, 0, 0, 0, 1, 1},
+              {0, 1, 1, 1, 1, 0, 1, 0}});
+
+    REQUIRE(22 == bm.row_space_size());
+    REQUIRE(31 == bm1.row_space_size());
+    REQUIRE(6 == bmm1.row_space_size());
+    REQUIRE(3 == bm2.row_space_size());
+    REQUIRE(3 == bm2t.row_space_size());
+    REQUIRE(21 == bm3.row_space_size());
+    REQUIRE(21 == bm3t.row_space_size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "014", "rows", "[quick]") {
@@ -592,7 +586,7 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    Semigroup<BMat8> S(gens);
+    FroidurePin<BMat8> S(gens);
 
     for (auto it = S.begin(); it < S.end(); it++) {
       BMat8                x          = *it;
@@ -614,5 +608,117 @@ namespace libsemigroups {
       REQUIRE(x * x == x);
       REQUIRE(x.min_possible_dim() == i);
     }
-  }*/
+  }
+
+  /*
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "count row space sizes", "[extreme]") {
+    const std::vector<BMat8> bmat4_gens
+        = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+           BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
+           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 1}}),
+           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
+           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}),
+           BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}})};
+
+    const std::vector<BMat8> bmat5_gens = {BMat8({{1, 0, 0, 0, 0},
+                                                  {0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                           BMat8({{0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1},
+                                                  {1, 0, 0, 0, 0}}),
+                                           BMat8({{0, 1, 0, 0, 0},
+                                                  {1, 0, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                           BMat8({{1, 0, 0, 0, 0},
+                                                  {0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {1, 0, 0, 0, 1}}),
+                                           BMat8({{1, 1, 0, 0, 0},
+                                                  {1, 0, 1, 0, 0},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 0, 1, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                           BMat8({{1, 1, 0, 0, 0},
+                                                  {1, 0, 1, 0, 0},
+                                                  {0, 1, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                           BMat8({{1, 1, 1, 0, 0},
+                                                  {1, 0, 0, 1, 0},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 0, 1, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                           BMat8({{1, 1, 0, 0, 0},
+                                                  {1, 0, 1, 0, 0},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 0, 1, 0, 1},
+                                                  {0, 0, 0, 1, 1}}),
+                                           BMat8({{1, 1, 1, 1, 0},
+                                                  {1, 0, 0, 0, 1},
+                                                  {0, 1, 0, 0, 1},
+                                                  {0, 0, 1, 0, 1},
+                                                  {0, 0, 0, 1, 1}}),
+                                           BMat8({{1, 0, 0, 0, 0},
+                                                  {0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 0}}),
+                                           BMat8({{1, 1, 1, 0, 0},
+                                                  {1, 0, 0, 1, 0},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 0, 1, 0, 1},
+                                                  {0, 0, 0, 1, 1}}),
+                                           BMat8({{1, 1, 1, 0, 0},
+                                                  {1, 0, 0, 1, 0},
+                                                  {1, 0, 0, 0, 1},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 0, 1, 0, 1}}),
+                                           BMat8({{1, 1, 1, 0, 0},
+                                                  {1, 0, 0, 1, 1},
+                                                  {0, 1, 0, 1, 0},
+                                                  {0, 1, 0, 0, 1},
+                                                  {0, 0, 1, 1, 0}}),
+                                           BMat8({{1, 1, 1, 0, 0},
+                                                  {1, 1, 0, 1, 0},
+                                                  {1, 0, 0, 0, 1},
+                                                  {0, 1, 0, 0, 1},
+                                                  {0, 0, 1, 1, 1}})};
+
+    FroidurePin<BMat8> S(bmat4_gens);
+    REQUIRE(S.size() == 65536);
+
+    //FroidurePin<BMat8> T(bmat5_gens);
+    //REQUIRE(T.size() == 33554432);
+
+    std::vector<size_t> nr_with_rank_dim4(17, 0);
+    for (auto it = S.cbegin(); it < S.cend(); it++) {
+      nr_with_rank_dim4[(*it).row_space_size()]++;
+    }
+
+    std::vector<size_t> nr_with_rank_dim5(32, 0);
+    for (auto it = T.cbegin(); it < T.cend(); it++) {
+      nr_with_rank_dim5[(*it).row_space_size()]++;
+    }
+
+    std::cout << "full boolean mat monoid 4: row rank counts: " << std::endl;
+    for (size_t i = 0; i < nr_with_rank_dim4.size(); ++i) {
+      std::cout << internal::to_string(i) << ": "
+                << internal::to_string(nr_with_rank_dim4[i]) << std::endl;
+    }
+    std::cout << "full boolean mat monoid 5: row rank counts: " << std::endl;
+    for (size_t i = 0; i < nr_with_rank_dim5.size(); ++i) {
+      std::cout << internal::to_string(i) << ": "
+                << internal::to_string(nr_with_rank_dim5[i]) << std::endl;
+    }
+  }
+  */
 }  // namespace libsemigroups

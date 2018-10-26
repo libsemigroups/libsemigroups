@@ -108,6 +108,16 @@ namespace libsemigroups {
                                           0x4,
                                           0x2,
                                           0x1};
+
+  std::vector<BMat8> const BMAT8_ONES = {BMat8(0x8000000000000000),
+                                         BMat8(0x8040000000000000),
+                                         BMat8(0x8040200000000000),
+                                         BMat8(0x8040201000000000),
+                                         BMat8(0x8040201008000000),
+                                         BMat8(0x8040201008040000),
+                                         BMat8(0x8040201008040200),
+                                         BMat8(0x8040201008040201)};
+
   // Cyclically shifts bits to left by 8m
   // https://stackoverflow.com/a/776523
   static uint64_t cyclic_shift(uint64_t n) {
@@ -275,5 +285,37 @@ namespace libsemigroups {
       diag = cyclic_shift(diag);
     }
     return BMat8(data);
+  }
+
+  size_t BMat8::row_space_size() const {
+    std::array<char, 256> lookup;
+    lookup.fill(0);
+    std::vector<uint8_t> row_vec = row_space_basis().rows();
+    auto last = std::remove(row_vec.begin(), row_vec.end(), 0);
+    row_vec.erase(last, row_vec.end());
+    for (uint8_t x : row_vec) {
+      lookup[x] = true;
+    }
+    std::vector<uint8_t> row_space(row_vec.begin(), row_vec.end());
+    for (size_t i = 0; i < row_space.size(); ++i) {
+      for (uint8_t row : row_vec) {
+        uint8_t x = row_space[i] | row;
+        if (!lookup[x]) {
+          row_space.push_back(x);
+          lookup[x] = true;
+        }
+      }
+    }
+    return row_space.size() + 1;
+  }
+
+  bool BMat8::is_group_index(BMat8 const& x, BMat8 const& y) {
+    LIBSEMIGROUPS_ASSERT(x.col_space_basis() == x && y.row_space_basis() == y);
+    return (y * x).row_space_basis() == x.row_space_basis()
+           && (y * x).col_space_basis() == y.col_space_basis();
+  }
+
+  BMat8 BMat8::one(size_t dim) {
+    return BMAT8_ONES[dim - 1];
   }
 }  // namespace libsemigroups
