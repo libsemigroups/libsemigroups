@@ -18,6 +18,7 @@
 
 #include <stddef.h>  // for size_t
 
+#include <iostream>  // for experimenting, FIXME remove
 #include <vector>  // for vector
 
 #include "bmat8.hpp"                 // for BMat8
@@ -377,4 +378,24 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(S.is_idempotent(63904 + i), LibsemigroupsException);
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "131",
+                          "(BMat8) find an element",
+                          "[quick][froidure-pin][bmat8]") {
+    FroidurePin<BMat8> S({BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
+                          BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
+                          BMat8({{1, 0, 0}, {0, 1, 0}, {1, 0, 1}}),
+                          BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}),
+                          BMat8({{1, 1, 0}, {1, 0, 1}, {0, 1, 1}})});
+    REQUIRE(S.size() == 512);
+    BMat8 y({{1, 1, 0}, {1, 0, 1}, {0, 0, 0}});
+    std::cout << y.row_space_basis() << std::endl;
+    for (auto x : S) {
+      if (y.row_space_basis() == (y.row_space_basis() * x).row_space_basis()) {
+        std::cout << x << std::endl;
+      }
+    }
+  }
+
 }  // namespace libsemigroups
