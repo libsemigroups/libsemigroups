@@ -33,6 +33,7 @@
 #include "digraph.hpp"
 #include "runner.hpp"
 #include "timer.hpp"
+#include "traits.hpp"
 
 namespace libsemigroups {
   enum class Side {LEFT = 0, RIGHT = 1};
@@ -40,12 +41,32 @@ namespace libsemigroups {
   template <typename TElementType,
             typename TPointType,
             typename TActionType
-            = ::libsemigroups::action<TElementType, TPointType>,
-            Side TLeftOrRight = Side::RIGHT>
-  class Orb : public internal::Runner {
+            = ::libsemigroups::right_action<TElementType, TPointType>,
+            Side TLeftOrRight    = Side::RIGHT,
+            typename TPointHash  = internal::hash<TElementType>,
+            typename TPointEqual = internal::equal_to<TElementType>,
+            typename TTraits
+            = TraitsHashEqual<TPointType, TPointHash, TPointEqual>>
+  class Orb : public internal::Runner, private TTraits {
+    using internal_point_type = typename TTraits::internal_element_type;
+    using internal_const_point_type =
+        typename TTraits::internal_const_element_type;
+    using internal_const_reference = typename TTraits::internal_const_reference;
+
+    using internal_equal_to = typename TTraits::internal_equal_to;
+    using internal_hash     = typename TTraits::internal_hash;
+
+    static_assert(
+        std::is_const<internal_const_point_type>::value
+            || std::is_const<typename std::remove_pointer<
+                   internal_const_point_type>::type>::value,
+        "internal_const_element_type must be const or pointer to const");
+
    public:
     using element_type = TElementType;
     using point_type   = TPointType;
+    using const_reference_point_type = typename TTraits::const_reference;
+
     using index_type   = size_t;
     using scc_index_type = ActionDigraph<size_t>::scc_index_type;
     using const_iterator_scc = ActionDigraph<size_t>::const_iterator_scc;
@@ -77,11 +98,25 @@ namespace libsemigroups {
     }
 
    public:
-    Orb() : _gens(), _graph(), _map(), _orb(), _pos(0) {}
+    Orb() : _gens(), _graph(), _map(), _orb(), _pos(0), _tmp_point(), _tmp_point_init(false) {}
 
-    void add_seed(point_type seed) {
-      _map.insert(std::make_pair(seed, _orb.size()));
-      _orb.push_back(seed);
+    ~Orb() {
+      if (_tmp_point_init) {
+        this->internal_free(_tmp_point);
+      }
+      for (auto pt : _orb) {
+        this->internal_free(pt);
+      }
+    }
+
+    void add_seed(const_reference_point_type seed) {
+      auto internal_seed = this->internal_copy(this->to_internal_const(seed));
+      if (!_tmp_point_init) {
+        _tmp_point_init = true;
+        _tmp_point = this->internal_copy(internal_seed);
+      }
+      _map.emplace(internal_seed, _orb.size());
+      _orb.push_back(internal_seed);
       _graph.add_nodes(1);
       set_finished(false);
     }
@@ -103,13 +138,13 @@ namespace libsemigroups {
         size_t old_nr_gens = _graph.out_degree();
         for (size_t i = 0; i < _pos; i++) {
           for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
-            point_type pt = action()(_orb[i], _gens[j]);
-            auto  it = _map.find(pt);
+            action()(this->to_external(_tmp_point), this->to_external_const(_orb[i]), _gens[j]);
+            auto  it = _map.find(_tmp_point);
             if (it == _map.end()) {
-              _map.emplace(pt, _orb.size());
               _graph.add_nodes(1);
               _graph.add_edge(i, _orb.size(), j);
-              _orb.push_back(pt);
+              _orb.push_back(this->internal_copy(_tmp_point));
+              _map.emplace(_orb.back(), _orb.size() - 1);
             } else {
               _graph.add_edge(i, (*it).second, j);
             }
@@ -121,13 +156,13 @@ namespace libsemigroups {
       size_t i = _pos;
       for (; i < _orb.size() && !stopped(); i++) {
         for (size_t j = 0; j < _gens.size(); ++j) {
-          point_type pt = action()(_orb[i], _gens[j]);
-          auto  it = _map.find(pt);
+          action()(this->to_external(_tmp_point), this->to_external_const(_orb[i]), _gens[j]);
+          auto  it = _map.find(_tmp_point);
           if (it == _map.end()) {
-            _map.emplace(pt, _orb.size());
             _graph.add_nodes(1);
             _graph.add_edge(i, _orb.size(), j);
-            _orb.push_back(pt);
+	    _orb.push_back(this->internal_copy(_tmp_point));
+	    _map.emplace(_orb.back(), _orb.size() - 1);
           } else {
             _graph.add_edge(i, (*it).second, j);
           }
@@ -143,8 +178,8 @@ namespace libsemigroups {
       report_why_we_stopped();
     }
 
-    size_t position(point_type pt) {
-      auto it = _map.find(pt);
+    size_t position(const_reference_point_type pt) {
+      auto it = _map.find(this->to_internal_const(pt));
       if (it != _map.end()) {
         return (*it).second;
       } else {
@@ -264,11 +299,17 @@ namespace libsemigroups {
     }
 
    private:
-    std::vector<element_type>              _gens;
-    ActionDigraph<size_t>                  _graph;
-    std::unordered_map<point_type, size_t> _map;
-    std::vector<point_type>                _orb;
-    size_t                                 _pos;
+    std::vector<element_type> _gens;
+    ActionDigraph<size_t>     _graph;
+    std::unordered_map<internal_point_type,
+                       size_t,
+                       internal_hash,
+                       internal_equal_to>
+                                     _map;
+    std::vector<internal_point_type> _orb;
+    size_t                           _pos;
+    internal_point_type              _tmp_point;
+    bool                             _tmp_point_init;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_INCLUDE_ORB_HPP_
