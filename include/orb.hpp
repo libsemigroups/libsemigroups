@@ -36,7 +36,7 @@
 #include "traits.hpp"
 
 namespace libsemigroups {
-  enum class Side {LEFT = 0, RIGHT = 1};
+  enum class Side { LEFT = 0, RIGHT = 1 };
 
   template <typename TElementType,
             typename TPointType,
@@ -63,13 +63,13 @@ namespace libsemigroups {
         "internal_const_element_type must be const or pointer to const");
 
    public:
-    using element_type = TElementType;
-    using point_type   = TPointType;
+    using element_type               = TElementType;
+    using point_type                 = TPointType;
     using const_reference_point_type = typename TTraits::const_reference;
 
-    using index_type   = size_t;
-    using scc_index_type = ActionDigraph<size_t>::scc_index_type;
-    using const_iterator_scc = ActionDigraph<size_t>::const_iterator_scc;
+    using index_type          = size_t;
+    using scc_index_type      = ActionDigraph<size_t>::scc_index_type;
+    using const_iterator_scc  = ActionDigraph<size_t>::const_iterator_scc;
     using const_iterator_sccs = ActionDigraph<size_t>::const_iterator_sccs;
     using const_iterator_scc_roots
         = ActionDigraph<size_t>::const_iterator_scc_roots;
@@ -84,21 +84,28 @@ namespace libsemigroups {
     template <typename SFINAE = void>
     auto internal_product(element_type&       xy,
                           element_type const& x,
-                          element_type const& y)
-        -> typename std::enable_if<Side::RIGHT == TLeftOrRight, SFINAE>::type {
+                          element_type const& y) ->
+        typename std::enable_if<Side::RIGHT == TLeftOrRight, SFINAE>::type {
       product()(xy, x, y);
     }
 
     template <typename SFINAE = void>
     auto internal_product(element_type&       xy,
                           element_type const& x,
-                          element_type const& y)
-        -> typename std::enable_if<Side::LEFT == TLeftOrRight, SFINAE>::type {
+                          element_type const& y) ->
+        typename std::enable_if<Side::LEFT == TLeftOrRight, SFINAE>::type {
       product()(xy, y, x);
     }
 
    public:
-    Orb() : _gens(), _graph(), _map(), _orb(), _pos(0), _tmp_point(), _tmp_point_init(false) {}
+    Orb()
+        : _gens(),
+          _graph(),
+          _map(),
+          _orb(),
+          _pos(0),
+          _tmp_point(),
+          _tmp_point_init(false) {}
 
     ~Orb() {
       if (_tmp_point_init) {
@@ -113,7 +120,7 @@ namespace libsemigroups {
       auto internal_seed = this->internal_copy(this->to_internal_const(seed));
       if (!_tmp_point_init) {
         _tmp_point_init = true;
-        _tmp_point = this->internal_copy(internal_seed);
+        _tmp_point      = this->internal_copy(internal_seed);
       }
       _map.emplace(internal_seed, _orb.size());
       _orb.push_back(internal_seed);
@@ -138,8 +145,10 @@ namespace libsemigroups {
         size_t old_nr_gens = _graph.out_degree();
         for (size_t i = 0; i < _pos; i++) {
           for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
-            action()(this->to_external(_tmp_point), this->to_external_const(_orb[i]), _gens[j]);
-            auto  it = _map.find(_tmp_point);
+            action()(this->to_external(_tmp_point),
+                     this->to_external_const(_orb[i]),
+                     _gens[j]);
+            auto it = _map.find(_tmp_point);
             if (it == _map.end()) {
               _graph.add_nodes(1);
               _graph.add_edge(i, _orb.size(), j);
@@ -156,19 +165,21 @@ namespace libsemigroups {
       size_t i = _pos;
       for (; i < _orb.size() && !stopped(); i++) {
         for (size_t j = 0; j < _gens.size(); ++j) {
-          action()(this->to_external(_tmp_point), this->to_external_const(_orb[i]), _gens[j]);
-          auto  it = _map.find(_tmp_point);
+          action()(this->to_external(_tmp_point),
+                   this->to_external_const(_orb[i]),
+                   _gens[j]);
+          auto it = _map.find(_tmp_point);
           if (it == _map.end()) {
             _graph.add_nodes(1);
             _graph.add_edge(i, _orb.size(), j);
-	    _orb.push_back(this->internal_copy(_tmp_point));
-	    _map.emplace(_orb.back(), _orb.size() - 1);
+            _orb.push_back(this->internal_copy(_tmp_point));
+            _map.emplace(_orb.back(), _orb.size() - 1);
           } else {
             _graph.add_edge(i, (*it).second, j);
           }
         }
         if (report()) {
-          REPORT("found ",  _orb.size(), " points, so far");
+          REPORT("found ", _orb.size(), " points, so far");
         }
       }
       _pos = i;
@@ -230,8 +241,8 @@ namespace libsemigroups {
             + internal::to_string(current_size()) + ") but found "
             + internal::to_string(pos));
       }
-      element_type out = one()(); // TODO Not general enough
-      element_type tmp = one()(); // TODO Not general enough
+      element_type out = one()();  // TODO Not general enough
+      element_type tmp = one()();  // TODO Not general enough
       while (_graph.spanning_forest().parent(pos) != UNDEFINED) {
         swap()(tmp, out);
         internal_product(out, _gens[_graph.spanning_forest().label(pos)], tmp);
@@ -247,11 +258,12 @@ namespace libsemigroups {
             + internal::to_string(current_size()) + ") but found "
             + internal::to_string(pos));
       }
-      element_type out = one()(); // TODO Not general enough
-      element_type tmp = one()(); // TODO Not general enough
+      element_type out = one()();  // TODO Not general enough
+      element_type tmp = one()();  // TODO Not general enough
       while (_graph.reverse_spanning_forest().parent(pos) != UNDEFINED) {
         swap()(tmp, out);
-        internal_product(out, tmp, _gens[_graph.reverse_spanning_forest().label(pos)]);
+        internal_product(
+            out, tmp, _gens[_graph.reverse_spanning_forest().label(pos)]);
         pos = _graph.reverse_spanning_forest().parent(pos);
       }
       return out;

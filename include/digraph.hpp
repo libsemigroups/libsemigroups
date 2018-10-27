@@ -85,7 +85,10 @@ namespace libsemigroups {
     //! This constructor takes the initial degree bound and the initial
     //! number of nodes of the graph.
     explicit ActionDigraph(TIntType nr_nodes = 0, TIntType degree = 0)
-        : _recvec(degree, nr_nodes, UNDEFINED), _scc_back_forest(),  _scc_forest(), _scc() {}
+        : _recvec(degree, nr_nodes, UNDEFINED),
+          _scc_back_forest(),
+          _scc_forest(),
+          _scc() {}
 
     ActionDigraph(ActionDigraph const&) = default;
     ActionDigraph(ActionDigraph&&)      = default;

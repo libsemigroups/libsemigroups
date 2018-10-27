@@ -291,7 +291,7 @@ namespace libsemigroups {
     std::array<char, 256> lookup;
     lookup.fill(0);
     std::vector<uint8_t> row_vec = row_space_basis().rows();
-    auto last = std::remove(row_vec.begin(), row_vec.end(), 0);
+    auto                 last = std::remove(row_vec.begin(), row_vec.end(), 0);
     row_vec.erase(last, row_vec.end());
     for (uint8_t x : row_vec) {
       lookup[x] = true;

@@ -34,7 +34,7 @@ namespace libsemigroups {
 
    public:
     using value_type = TIntegralType;
-    using size_type = TIntegralType;
+    using size_type  = TIntegralType;
 
     IntegralRange() : _begin(TBegin), _end(TEnd) {}
 
@@ -43,6 +43,7 @@ namespace libsemigroups {
 
     class iterator {
       friend class IntegralRange;
+
      public:
       using size_type = typename std::vector<TIntegralType>::size_type;
       using difference_type =
@@ -110,7 +111,6 @@ namespace libsemigroups {
         iterator out(*this);
         return out -= val;
       }
-
 
       iterator& operator--() {
         --_i;

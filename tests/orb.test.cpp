@@ -349,7 +349,6 @@ namespace libsemigroups {
     }
   };
 
-
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "009",
                           "partial perm image orbit",
@@ -409,4 +408,3 @@ namespace libsemigroups {
     REQUIRE(o.action_digraph().nr_scc() == 17);
   }
 }  // namespace libsemigroups
-

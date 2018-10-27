@@ -19,7 +19,7 @@
 #include <stddef.h>  // for size_t
 
 #include <iostream>  // for experimenting, FIXME remove
-#include <vector>  // for vector
+#include <vector>    // for vector
 
 #include "bmat8.hpp"                 // for BMat8
 #include "froidure-pin.hpp"          // for FroidurePin, FroidurePi...

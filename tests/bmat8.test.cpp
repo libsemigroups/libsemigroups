@@ -384,10 +384,7 @@ namespace libsemigroups {
     // std::cout << t;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "011",
-                          "is_group_index",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "011", "is_group_index", "[quick]") {
     BMat8 idem = BMat8::one();
     BMat8 one  = BMat8::one();
     BMat8 zero = BMat8(0);
@@ -431,10 +428,7 @@ namespace libsemigroups {
     REQUIRE(group_indices.size() == 16);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8",
-                          "012",
-                          "nr_rows, nr_cols",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "012", "nr_rows, nr_cols", "[quick]") {
     BMat8 idem1 = BMat8::one();
     BMat8 idem2 = BMat8::one();
     BMat8 one   = BMat8::one();
@@ -600,7 +594,7 @@ namespace libsemigroups {
   }
 
   // FIXME this test currently fails
-  //LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "one", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "one", "[quick]") {
   //  BMat8 one = BMat8::one();
   //  for (size_t i = 1; i < 8; ++i) {
   //    BMat8 x = BMat8::one(i);
