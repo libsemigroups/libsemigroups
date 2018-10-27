@@ -20,8 +20,8 @@
 
 // TODO: exception safety!
 
-#ifndef LIBSEMIGROUPS_SRC_BMAT8_SEMI_H_
-#define LIBSEMIGROUPS_SRC_BMAT8_SEMI_H_
+#ifndef LIBSEMIGROUPS_INCLUDE_KONIECZNY_HPP_
+#define LIBSEMIGROUPS_INCLUDE_KONIECZNY_HPP_
 
 #include <algorithm>
 #include <map>
@@ -62,20 +62,6 @@ namespace libsemigroups {
         hash ^= x.to_int() + 0x9e3779b97f4a7c16 + (hash << 6) + (hash >> 2);
       }
       return hash;
-    }
-  };
-
-  template <>
-  struct right_action<BMat8, BMat8> {
-    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const noexcept {
-      return (pt * x).row_space_basis();
-    }
-  };
-
-  template <>
-  struct left_action<BMat8, BMat8> {
-    BMat8 operator()(BMat8 const& pt, BMat8 const& x) const noexcept {
-      return (x * pt).col_space_basis();
     }
   };
 
@@ -617,7 +603,6 @@ namespace libsemigroups {
 
     void compute_H_gens() {
       _H_gens.clear();
-      BMat8  row_basis     = _rep.row_space_basis();
       BMat8  col_basis     = _rep.col_space_basis();
       size_t col_basis_pos = _parent->_col_orb.position(col_basis);
       size_t col_basis_scc_id
@@ -728,7 +713,7 @@ namespace libsemigroups {
       }
     }
 
-    void init() {
+    void init() override {
       if (_computed) {
         return;
       }
@@ -792,7 +777,7 @@ namespace libsemigroups {
     }
 
    private:
-    void init() {
+    void init() override {
       if (_computed) {
         return;
       }
@@ -814,7 +799,6 @@ namespace libsemigroups {
           for (auto idem_it = D->cbegin_left_idem_reps();
                idem_it < D->cend_left_idem_reps();
                idem_it++) {
-            BMat8 f = *idem_it;
             if (_rep * (*idem_it) == _rep) {
               _left_idem_above = *idem_it;
               _left_idem_class = D;
@@ -858,9 +842,6 @@ namespace libsemigroups {
       BMat8 left_idem_right_mult
           = _left_idem_class
                 ->cbegin_right_mults()[std::get<1>(left_idem_indices)];
-      BMat8 left_idem_left_mult_inv
-          = _left_idem_class
-                ->cbegin_left_mults_inv()[std::get<0>(left_idem_indices)];
 
       std::pair<size_t, size_t> right_idem_indices
           = _right_idem_class->index_positions(_right_idem_above);
@@ -870,9 +851,6 @@ namespace libsemigroups {
       BMat8 right_idem_right_mult
           = _right_idem_class
                 ->cbegin_right_mults()[std::get<1>(right_idem_indices)];
-      BMat8 right_idem_right_mult_inv
-          = _right_idem_class
-                ->cbegin_right_mults_inv()[std::get<1>(right_idem_indices)];
 
       std::vector<BMat8> _left_idem_H_class;
       std::vector<BMat8> _right_idem_H_class;
@@ -1168,4 +1146,4 @@ namespace libsemigroups {
     }
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_SRC_BMAT8_SEMI_H_
+#endif  // LIBSEMIGROUPS_INCLUDE_KONIECZNY_HPP_

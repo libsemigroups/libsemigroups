@@ -344,6 +344,21 @@ namespace libsemigroups {
     }
   };
 
+  template <>
+  struct right_action<BMat8, BMat8> {
+    void operator()(BMat8& res, BMat8 const& pt, BMat8 const& x) const
+        noexcept {
+      res = (pt * x).row_space_basis();
+    }
+  };
+
+  template <>
+  struct left_action<BMat8, BMat8> {
+    void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {
+      res = (x * pt).col_space_basis();
+    }
+  };
+
   // The following is comment out since lz_cnt is unreliable, this serves as a
   // POC only.
 

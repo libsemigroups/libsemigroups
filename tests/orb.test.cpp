@@ -25,21 +25,6 @@
 
 namespace libsemigroups {
 
-  template <>
-  struct right_action<BMat8, BMat8> {
-    void operator()(BMat8& res, BMat8 const& pt, BMat8 const& x) const
-        noexcept {
-      res = (pt * x).row_space_basis();
-    }
-  };
-
-  template <>
-  struct left_action<BMat8, BMat8> {
-    void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {
-      res = (x * pt).col_space_basis();
-    }
-  };
-
   using row_action_type = right_action<BMat8, BMat8>;
   using col_action_type = left_action<BMat8, BMat8>;
   using row_orb_type    = Orb<BMat8, BMat8, row_action_type, Side::RIGHT>;
