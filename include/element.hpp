@@ -979,7 +979,7 @@ namespace libsemigroups {
     }
 
     PartialPerm<TValueType> image() const {
-      std::vector<TValueType> img(this->degree(), UNDEFINED);
+      std::vector<TValueType> img(this->degree(), static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
       for (size_t i = 0; i < size; ++i) {
         if (this->_vector[i] != UNDEFINED) {
@@ -990,7 +990,7 @@ namespace libsemigroups {
     }
 
     PartialPerm<TValueType> domain() const {
-      std::vector<TValueType> dom(this->degree(), UNDEFINED);
+      std::vector<TValueType> dom(this->degree(), static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
       for (size_t i = 0; i < size; ++i) {
         if (this->_vector[i] != UNDEFINED) {
