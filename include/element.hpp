@@ -366,6 +366,13 @@ namespace libsemigroups {
       std::swap(this->_hash_value, xx._hash_value);
     }
 
+    void swap(Element&& x) {
+      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
+      auto&& xx = static_cast<ElementWithVectorData&&>(x);
+      _vector.swap(xx._vector);
+      std::swap(this->_hash_value, xx._hash_value);
+    }
+
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
     Element* empty_key() const override {
       // + 2 since bipartition must be of even degree!
@@ -969,6 +976,28 @@ namespace libsemigroups {
       return this->_vector.size()
              - std::count(
                    this->_vector.cbegin(), this->_vector.cend(), UNDEFINED);
+    }
+
+    PartialPerm<TValueType> image() const {
+      std::vector<TValueType> img(this->degree(), UNDEFINED);
+      size_t const size = this->_vector.size();
+      for (size_t i = 0; i < size; ++i) {
+        if (this->_vector[i] != UNDEFINED) {
+          img[this->_vector[i]] = this->_vector[i];
+        }
+      }
+      return PartialPerm<TValueType>(img);
+    }
+
+    PartialPerm<TValueType> domain() const {
+      std::vector<TValueType> dom(this->degree(), UNDEFINED);
+      size_t const size = this->_vector.size();
+      for (size_t i = 0; i < size; ++i) {
+        if (this->_vector[i] != UNDEFINED) {
+          dom[i] = i;
+        }
+      }
+      return PartialPerm<TValueType>(dom);
     }
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
@@ -2039,17 +2068,16 @@ namespace libsemigroups {
 #endif
   };
 
-  // TODO(now) file an issue for HPCombi to add a PPerm class.
   template <size_t N>
   struct PPerm {
-    // #ifdef LIBSEMIGROUPS_HPCOMBI
-    //     using type = typename std::conditional<
-    //         N >= 17,
-    //         PartialPerm<typename SmallestInteger<N>::type>,
-    //         HPCombi::PTransf16>::type;
-    // #else
+#ifdef LIBSEMIGROUPS_HPCOMBI
+    using type = typename std::conditional<
+        N >= 17,
+        PartialPerm<typename SmallestInteger<N>::type>,
+        HPCombi::PPerm16>::type;
+#else
     using type = PartialPerm<typename SmallestInteger<N>::type>;
-    // #endif
+#endif
   };
 
   template <size_t N>
