@@ -93,6 +93,8 @@ namespace libsemigroups {
 
       void set_finished(bool) const noexcept;
       bool finished() const;
+      void set_started(bool) const noexcept;
+      bool started() const;
 
       void kill() noexcept;
       bool dead() const noexcept;
@@ -105,8 +107,9 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // TODO(later) compile-time polymorphism?
-      virtual bool finished_impl() const;
       virtual bool dead_impl() const;
+      virtual bool finished_impl() const;
+      virtual bool started_impl() const;
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -119,6 +122,7 @@ namespace libsemigroups {
       std::chrono::nanoseconds                               _run_for;
       std::chrono::nanoseconds                       _report_time_interval;
       std::chrono::high_resolution_clock::time_point _start_time;
+      mutable bool                                   _started;
     };
   }  // namespace internal
 }  // namespace libsemigroups

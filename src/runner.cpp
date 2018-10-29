@@ -33,7 +33,8 @@ namespace libsemigroups {
           _last_report(std::chrono::high_resolution_clock::now()),
           _run_for(FOREVER),
           _report_time_interval(),
-          _start_time() {
+          _start_time(),
+          _started(false) {
       report_every(std::chrono::seconds(1));
     }
 
@@ -101,8 +102,16 @@ namespace libsemigroups {
       // true here if we are not dead and the object thinks it is finished.
     }
 
+    bool Runner::started() const {
+      return started_impl();
+    }
+
     void Runner::set_finished(bool val) const noexcept {
       _finished = val;
+    }
+
+    void Runner::set_started(bool val) const noexcept {
+      _started = val;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -132,6 +141,10 @@ namespace libsemigroups {
 
     bool Runner::finished_impl() const {
       return _finished;
+    }
+
+    bool Runner::started_impl() const {
+      return _started;
     }
   }  // namespace internal
 }  // namespace libsemigroups

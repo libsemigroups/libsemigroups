@@ -139,6 +139,16 @@ namespace libsemigroups {
       return x.inverse();
     }
   };
+
+  template <typename TIntType>
+  struct on_points<HPCombi::Perm16, TIntType> {
+    void operator()(TIntType&              res,
+                    TIntType const&        pt,
+                    HPCombi::Perm16 const& p) const noexcept {
+      LIBSEMIGROUPS_ASSERT(pt < 16);
+      res = static_cast<TIntType>(p[pt]);
+    }
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI

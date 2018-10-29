@@ -101,4 +101,28 @@ namespace libsemigroups {
         : std::true_type {};
   }  // namespace internal
 }  // namespace libsemigroups
+
+namespace std {
+  template <typename TValueType, size_t N>
+  struct hash<std::array<TValueType, N>> {
+    size_t operator()(std::array<TValueType, N> const& ar) const {
+      size_t seed = 0;
+      for (auto const& x : ar) {
+        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+      }
+      return seed;
+    }
+  };
+
+  template <typename TValueType>
+  struct hash<std::vector<TValueType>> {
+    size_t operator()(std::vector<TValueType> const& vec) const {
+      size_t seed = 0;
+      for (auto const& x : vec) {
+        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+      }
+      return seed;
+    }
+  };
+}  // namespace std
 #endif  // LIBSEMIGROUPS_INCLUDE_STL_HPP_

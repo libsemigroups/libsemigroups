@@ -584,7 +584,7 @@ namespace libsemigroups {
 
     for (auto it = S.begin(); it < S.end(); it++) {
       BMat8                x          = *it;
-      std::vector<uint8_t> rows       = x.rows();
+      rows       = x.rows();
       std::vector<uint8_t> basis_rows = x.row_space_basis().rows();
       for (uint8_t row : basis_rows) {
         REQUIRE((row == 0

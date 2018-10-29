@@ -25,6 +25,7 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 
+#include <algorithm>  // for std::sort
 #include <utility>  // for std::swap
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
@@ -58,6 +59,36 @@ namespace libsemigroups {
   struct left_action;
   template <typename TElementType, typename TPointType, typename = void>
   struct right_action;
+
+  template <typename TElementType, typename TPointType, typename = void>
+  struct on_points;
+
+  template <typename TElementType,
+            typename TPointType,
+            typename TContainerType = std::vector<TPointType>,
+            typename                = void>
+  struct on_tuples {
+    void operator()(TContainerType&       res,
+                    TContainerType const& pt,
+                    TElementType const&   p) const {
+      for (size_t i = 0; i < pt.size(); ++i) {
+        on_points<TElementType, TPointType>()(res[i], pt[i], p);
+      }
+    }
+  };
+
+  template <typename TElementType,
+            typename TPointType,
+            typename TContainerType = std::vector<TPointType>,
+            typename                = void>
+  struct on_sets {
+    void operator()(TContainerType&       res,
+                    TContainerType const& pt,
+                    TElementType const&   p) const {
+      on_tuples<TElementType, TPointType, TContainerType>()(res, pt, p);
+      std::sort(res.begin(), res.end());
+    }
+  };
 
 #ifdef LIBSEMIGROUPS_DENSEHASHMAP
   template <typename TElementType, typename = void>

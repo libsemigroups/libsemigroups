@@ -85,7 +85,7 @@ namespace libsemigroups {
                                    bool>::value,
                       "the template parameter TCallable must return a bool");
         if (empty()) {
-          throw LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
+          LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
         }
         while (!func() && _winner == nullptr) {
           // if _winner != nullptr, then the race is over.

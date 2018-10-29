@@ -35,8 +35,11 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#define LIBSEMIGROUPS_EXCEPTION(msg) \
-  LibsemigroupsException(__FILE__, __LINE__, __func__, msg)
+#define LIBSEMIGROUPS_EXCEPTION(msg)   \
+  std::stringstream _libsemigroups_ss; \
+  _libsemigroups_ss << msg;            \
+  throw LibsemigroupsException(        \
+      __FILE__, __LINE__, __func__, _libsemigroups_ss.str());
 #define INTERNAL_EXCEPTION \
   LIBSEMIGROUPS_EXCEPTION("internal error, something went wrong")
 

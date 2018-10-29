@@ -15,6 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(now):
+// 1. iwyu
+// 2. add examples from Orb
+
 #include "bmat8.hpp"
 #include "element.hpp"
 #include "hpcombi.hpp"
@@ -337,6 +341,7 @@ namespace libsemigroups {
     o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                           16));
+    o.reserve(70000);
     REQUIRE(o.size() == 65536);
   }
 
@@ -371,9 +376,11 @@ namespace libsemigroups {
     o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                           16));
+    o.reserve(70000);
     REQUIRE(o.size() == 65536);
     REQUIRE(o.action_digraph().nr_scc() == 17);
   }
+
   template <>
   struct left_action<HPCombi::PPerm16, HPCombi::PPerm16> {
     void operator()(HPCombi::PPerm16&       res,
@@ -382,6 +389,7 @@ namespace libsemigroups {
       res = (pt * x).right_one();
     }
   };
+
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "010",
                           "partial perm image orbit",
@@ -406,5 +414,79 @@ namespace libsemigroups {
                           16));
     REQUIRE(o.size() == 65536);
     REQUIRE(o.action_digraph().nr_scc() == 17);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb", "011", "permutation on integers", "[quick]") {
+    using Perm = Perm<8>::type;
+    Orb<Perm, u_int8_t, on_points<Perm, u_int8_t>> o;
+    o.add_seed(0);
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
+
+    REQUIRE(o.size() == 8);
+    REQUIRE(o.action_digraph().nr_scc() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "012",
+                          "permutation on sets, arrays",
+                          "[quick]") {
+    using Perm = Perm<10>::type;
+
+    Orb<Perm,
+        std::array<u_int8_t, 10>,
+        on_sets<Perm, u_int8_t, std::array<u_int8_t, 10>>>
+        o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+
+    REQUIRE(o.size() == 1261);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "013",
+                          "permutation on tuples, arrays",
+                          "[quick]") {
+    using Perm = Perm<10>::type;
+
+    Orb<Perm,
+        std::array<u_int8_t, 10>,
+        on_tuples<Perm, u_int8_t, std::array<u_int8_t, 10>>>
+        o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+
+    REQUIRE(o.size() == 30240);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "014",
+                          "permutation on sets, vectors",
+                          "[quick]") {
+    using Perm = Perm<10>::type;
+
+    Orb<Perm, std::vector<u_int8_t>, on_sets<Perm, u_int8_t>> o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+    REQUIRE(o.size() == 252); // FIXME!! Wrong answer
+    REQUIRE(std::vector<std::vector<u_int8_t>>(o.cbegin(), o.cend())
+            == std::vector<std::vector<u_int8_t>>({}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "015",
+                          "permutation on tuples, vectors",
+                          "[quick]") {
+    using Perm = Perm<10>::type;
+
+    Orb<Perm, std::vector<u_int8_t>, on_tuples<Perm, u_int8_t>> o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+
+    REQUIRE(o.size() == 30240);
   }
 }  // namespace libsemigroups

@@ -2056,6 +2056,16 @@ namespace libsemigroups {
     }
   };
 
+  template <typename TIntType>
+  struct on_points<Permutation<TIntType>, TIntType> {
+    void operator()(TIntType&                    res,
+                    TIntType const&              pt,
+                    Permutation<TIntType> const& p) const noexcept {
+      LIBSEMIGROUPS_ASSERT(pt < p.degree());
+      res = p[pt];
+    }
+  };
+
   template <size_t N>
   struct Transf {
 #ifdef LIBSEMIGROUPS_HPCOMBI
