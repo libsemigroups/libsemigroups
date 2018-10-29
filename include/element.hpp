@@ -576,10 +576,9 @@ namespace libsemigroups {
     void validate() const {
       for (auto const& val : this->_vector) {
         if ((val < 0 || val >= this->degree()) && val != UNDEFINED) {
-          throw LIBSEMIGROUPS_EXCEPTION(
-              "image value out of bounds, found "
-              + internal::to_string(static_cast<size_t>(val))
-              + ", must be less than " + internal::to_string(this->degree()));
+          LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                  << static_cast<size_t>(val)
+                                  << ", must be less than " << this->degree());
         }
       }
     }
@@ -739,10 +738,9 @@ namespace libsemigroups {
       size_t deg = this->degree();
       for (auto const& val : this->_vector) {
         if (val >= deg) {
-          throw LIBSEMIGROUPS_EXCEPTION(
-              "image value out of bounds, found "
-              + internal::to_string(static_cast<size_t>(val))
-              + ", must be less than " + internal::to_string(deg));
+          LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                  << static_cast<size_t>(val)
+                                  << ", must be less than " << deg);
         }
       }
     }
@@ -839,14 +837,15 @@ namespace libsemigroups {
         : PartialTransformation<TValueType, PartialPerm<TValueType>>(
               std::vector<TValueType>()) {
       if (dom.size() != ran.size()) {
-        throw LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch");
+        LIBSEMIGROUPS_EXCEPTION(
+            "domain and range size mismatch, domain has size "
+            << dom.size() << " but range has size " << ran.size());
       } else if (!(dom.empty()
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "domain value out of bounds, found "
-            + internal::to_string(static_cast<size_t>(
-                  *std::max_element(dom.cbegin(), dom.cend())))
-            + ", must be less than " + internal::to_string(deg));
+            << static_cast<size_t>(*std::max_element(dom.cbegin(), dom.cend()))
+            << ", must be less than " << deg);
       }
       this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
@@ -878,14 +877,13 @@ namespace libsemigroups {
       for (auto const& val : this->_vector) {
         if (val != UNDEFINED) {
           if (val < 0 || val >= this->degree()) {
-            throw LIBSEMIGROUPS_EXCEPTION(
-                "image value out of bounds, found "
-                + internal::to_string(static_cast<size_t>(val))
-                + ", must be less than " + internal::to_string(this->degree()));
+            LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                    << static_cast<size_t>(val)
+                                    << ", must be less than "
+                                    << this->degree());
           } else if (present[val]) {
-            throw LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value "
-                + internal::to_string(static_cast<size_t>(val)));
+            LIBSEMIGROUPS_EXCEPTION("duplicate image value "
+                                    << static_cast<size_t>(val));
           }
           present[val] = true;
         }
@@ -1303,15 +1301,15 @@ namespace libsemigroups {
           _degree(),
           _semiring(semiring) {
       if (semiring == nullptr) {
-        throw LIBSEMIGROUPS_EXCEPTION("semiring is nullptr");
+        LIBSEMIGROUPS_EXCEPTION("semiring is nullptr");
       } else if (matrix.empty()) {
-        throw LIBSEMIGROUPS_EXCEPTION("matrix has dimension 0");
+        LIBSEMIGROUPS_EXCEPTION("matrix has dimension 0");
       } else if (!all_of(matrix.cbegin(),
                          matrix.cend(),
                          [&matrix](std::vector<TValueType> row) {
                            return row.size() == matrix.size();
                          })) {
-        throw LIBSEMIGROUPS_EXCEPTION("matrix is not square");
+        LIBSEMIGROUPS_EXCEPTION("matrix is not square");
       }
       _degree = matrix[0].size();
       this->_vector.reserve(matrix.size() * matrix.size());
@@ -1336,15 +1334,14 @@ namespace libsemigroups {
     //! not in the underlying semiring.
     void validate() const {
       if (this->degree() * this->degree() != this->_vector.size()) {
-        throw LIBSEMIGROUPS_EXCEPTION("matrix must have "
-                                      "size that is a perfect square");
+        LIBSEMIGROUPS_EXCEPTION(
+            "matrix must have size that is a perfect square");
       }
       for (auto x : this->_vector) {
         if (!this->_semiring->contains(x)) {
-          throw LIBSEMIGROUPS_EXCEPTION(
-              "matrix contains entry "
-              + internal::to_string(static_cast<size_t>(x))
-              + " not in the underlying semiring");
+          LIBSEMIGROUPS_EXCEPTION("matrix contains entry "
+                                  << static_cast<size_t>(x)
+                                  << " not in the underlying semiring");
         }
       }
     }
@@ -1577,14 +1574,13 @@ namespace libsemigroups {
       std::vector<bool> present(this->degree(), false);
       for (auto const& val : this->_vector) {
         if (val < 0 || val >= this->degree()) {
-          throw LIBSEMIGROUPS_EXCEPTION(
+          LIBSEMIGROUPS_EXCEPTION(
               "image value out of bounds, found "
-              + internal::to_string(static_cast<size_t>(val))
-              + ", must be less than " + internal::to_string(this->degree()));
+              <<static_cast<size_t>(val)
+              << ", must be less than " <<this->degree());
         } else if (present[val]) {
-          throw LIBSEMIGROUPS_EXCEPTION(
-              "duplicate image value "
-              + internal::to_string(static_cast<size_t>(val)));
+          LIBSEMIGROUPS_EXCEPTION("duplicate image value "
+                                  << static_cast<size_t>(val));
         }
         present[val] = true;
       }

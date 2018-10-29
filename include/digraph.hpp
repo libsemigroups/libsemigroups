@@ -19,33 +19,27 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
 #define LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
 
-#include <algorithm>
-#include <queue>
-#include <stack>
+#include <queue>        // for queue
+#include <stack>        // for stack
+#include <stddef.h>     // for size_t
+#include <type_traits>  // for is_integral, is_unsigned
+#include <vector>       // for vector
 
-#include "containers.hpp"
-#include "forest.hpp"
-#include "iterator.hpp"
-#include "libsemigroups-exception.hpp"
-#include "range.hpp"
+#include "containers.hpp"               // for RecVec
+#include "forest.hpp"                   // for Forest
+#include "iterator.hpp"                 // for iterator_base
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "range.hpp"                    // for IntegralRange
 
 namespace libsemigroups {
-  //! Class for directed Cayley graphs
+  //! Class for out-regular digraphs
   //!
-  //! This class represents directed Cayley graphs. If the digraph has \p n
-  //! nodes, they are represented by the numbers {0, ..., n}.  The underlying
-  //! data structure is a RecVec which the Digraph contains. Digraph does not
-  //! inherit from RecVec, in order to stop users altering the graphs in ways
-  //! that affect what the graph knows about itself.
+  //! This class represents out-regular digraphs. If the digraph has \p n
+  //! nodes, they are represented by the numbers {0, ..., n - 1}.
   //!
-  //! These graphs are principally designed to be used as Cayley graphs, which
-  //! has affected some design decisions. For example, the edges in a digraph
-  //! cannot be deleted, as no need is seen for this.  This simplifies some of
-  //! the code.  Also, this is a fairly minimal implementation which only
-  //! includes the functionality which is useful for Cayley graphs.  When a
-  //! digraph of this type is created, a bound on the degree must be specified.
-  //! This can be increased later (e.g. if more generators are to be included
-  //! in the Cayley digraph).
+  //! These graphs are principally designed to be used those associated to the
+  //! action of a semigroup.
   template <typename TIntType>
   class ActionDigraph {
     static_assert(std::is_integral<TIntType>(),
@@ -61,6 +55,8 @@ namespace libsemigroups {
         typename std::vector<std::vector<TIntType>>::const_iterator;
     using const_iterator_nodes =
         typename IntegralRange<TIntType>::const_iterator;
+    using const_iterator_edges =
+        typename internal::RecVec<TIntType>::const_iterator;
 
    private:
     struct iterator_methods {
@@ -85,7 +81,9 @@ namespace libsemigroups {
     //! This constructor takes the initial degree bound and the initial
     //! number of nodes of the graph.
     explicit ActionDigraph(TIntType nr_nodes = 0, TIntType degree = 0)
-        : _recvec(degree, nr_nodes, UNDEFINED),
+        : _degree(degree),
+          _nr_nodes(nr_nodes),
+          _recvec(degree, nr_nodes, UNDEFINED),
           _scc_back_forest(),
           _scc_forest(),
           _scc() {}
@@ -100,8 +98,24 @@ namespace libsemigroups {
     //!
     //! Adds \p nr nodes to \c this.
     void inline add_nodes(size_t nr) {
-      _recvec.add_rows(nr);
+      if (nr > _recvec.nr_rows() - _nr_nodes) {
+        _recvec.add_rows(nr - (_recvec.nr_rows() - _nr_nodes));
+      }
+      _nr_nodes += nr;
       reset();
+    }
+
+    void inline add_to_out_degree(size_t nr) {
+      if (nr > _recvec.nr_cols() - _degree) {
+        _recvec.add_cols(nr - (_recvec.nr_cols() - _degree));
+      }
+      _degree += nr;
+      reset();
+    }
+
+    void reserve(TIntType nr_ndes, TIntType out_dgree) const noexcept {
+      _recvec.add_cols(out_dgree - _recvec.nr_cols());
+      _recvec.add_rows(nr_ndes - _recvec.nr_rows());
     }
 
     //! Add an edge to this digraph
@@ -110,16 +124,15 @@ namespace libsemigroups {
     //! adds an edge from \p i to \p j.
     void inline add_edge(node_type i, node_type j, label_type lbl) {
       if (i >= nr_nodes()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
-            "first node value out of range, got " + internal::to_string(i)
-            + ", expected less than " + internal::to_string(nr_nodes()));
+        LIBSEMIGROUPS_EXCEPTION("first node value out of range, got "
+                                << i << ", expected less than " << nr_nodes());
       } else if (j >= nr_nodes()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
-            "second node value out of range, got " + internal::to_string(j)
-            + ", expected less than " + internal::to_string(nr_nodes()));
-      }
-      if (lbl >= _recvec.nr_cols()) {
-        _recvec.add_cols(lbl - _recvec.nr_cols() + 1);
+        LIBSEMIGROUPS_EXCEPTION("second node value out of range, got "
+                                << j << +", expected less than " << nr_nodes());
+      } else if (lbl >= out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION("label value out of range, got "
+                                << lbl << ", expected less than "
+                                << out_degree());
       }
       _recvec.set(i, lbl, j);
       reset();
@@ -131,13 +144,11 @@ namespace libsemigroups {
     //! underlying RecVec, i.e. the \p j-th edge from node \p i.
     TIntType inline get(node_type i, label_type j) const {
       if (i >= nr_nodes()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
-            "node index out of range, found " + internal::to_string(i)
-            + " expected at most " + internal::to_string(nr_nodes() - 1));
-      } else if (j >= _recvec.nr_cols() || _recvec.get(i, j) == UNDEFINED) {
-        throw LIBSEMIGROUPS_EXCEPTION("edge index out of range, edge "
-                                      + internal::to_string(j)
-                                      + " does not exist");
+        LIBSEMIGROUPS_EXCEPTION("node index out of range, found "
+                                << i << " expected at most " << nr_nodes() - 1);
+      } else if (j >= _degree) {
+        LIBSEMIGROUPS_EXCEPTION("edge index out of range, found "
+                                << j << " expected at most " << _degree - 1);
       }
       return _recvec.get(i, j);
     }
@@ -146,23 +157,26 @@ namespace libsemigroups {
     //!
     //! Returns the number of nodes of \c this
     TIntType inline nr_nodes() const noexcept {
-      return _recvec.nr_rows();
+      return _nr_nodes;
     }
 
     //! Returns the number of edges of \c this
     //!
     //! Returns the total number of edges of \c this
     TIntType nr_edges() const noexcept {
-      return nr_nodes() * _recvec.nr_cols()
+      return _recvec.nr_rows() * _recvec.nr_cols()
              - std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED);
     }
 
     bool validate() const noexcept {
-      return std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED) == 0;
+      using diff_type = typename decltype(_recvec.cbegin())::difference_type;
+      return std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED)
+             == static_cast<diff_type>(_recvec.nr_cols() * (_recvec.nr_rows() - nr_nodes()) +
+                                       nr_nodes() * (_recvec.nr_cols() - out_degree()));
     }
 
-    TIntType out_degree() const noexcept {  // TODO noexcept ok?
-      return _recvec.nr_cols();
+    TIntType out_degree() const noexcept {
+      return _degree;
     }
 
     //! Returns the id of the strongly connected component of a node
@@ -172,9 +186,8 @@ namespace libsemigroups {
     //! If this has not been calculated, it will be at this point.
     TIntType scc_id(node_type node) const {
       if (node >= nr_nodes()) {
-        // TODO(FLS) reword as per new style
-        throw LIBSEMIGROUPS_EXCEPTION("argument larger than "
-                                      "number of nodes - 1");
+        LIBSEMIGROUPS_EXCEPTION("node index out of range, found "
+                                << node << " expected at most " << _degree - 1);
       }
       gabow_scc();
       LIBSEMIGROUPS_ASSERT(node < _scc._id.size());
@@ -214,6 +227,14 @@ namespace libsemigroups {
       return _scc._comps[i].cend();
     }
 
+    const_iterator_edges cbegin_edges(node_type i) const {
+      return _recvec.cbegin_row(i);
+    }
+
+    const_iterator_edges cend_edges(node_type i) const {
+      return _recvec.cend_row(i);
+    }
+
     //! Returns a Forest comprised of spanning trees for each SCC
     //!
     //! This function returns a Forest which contains the nodes of \c this,
@@ -235,7 +256,7 @@ namespace libsemigroups {
           seen[_scc._comps[i][0]] = true;
           do {
             size_t x = queue.front();
-            for (size_t j = 0; j < _recvec.nr_cols(); ++j) {
+            for (size_t j = 0; j < _degree; ++j) {
               size_t y = get(x, j);
               if (!seen[y] && _scc._id[y] == _scc._id[x]) {
                 _scc_forest._forest.set(y, x, j);
@@ -318,23 +339,16 @@ namespace libsemigroups {
       _scc_forest._defined      = false;
     }
 
-    //! Calculate the strongly connected components of \c this
-    //!
-    //! This function calculates the strongly connected components of \c this
-    //! using Gabow's algorithm
-    //! The implementation is strongly based on that in the Digraphs package
-    //! (https://github.com/gap-packages/Digraphs)
     void gabow_scc() const {
       if (_scc._defined) {
         return;
       } else if (!validate()) {
-        throw LIBSEMIGROUPS_EXCEPTION("digraph not fully defined, can't find "
-                                      "strongly connected components");
+        LIBSEMIGROUPS_EXCEPTION("digraph not fully defined, cannot find "
+                                "strongly connected components");
       }
       _scc._comps.clear();
       _scc._id.assign(nr_nodes(), UNDEFINED);
 
-      size_t                                           deg = _recvec.nr_cols();
       static std::stack<TIntType>                      stack1;
       static std::stack<TIntType>                      stack2;
       static std::stack<std::pair<TIntType, TIntType>> frame;
@@ -359,9 +373,9 @@ namespace libsemigroups {
             preorder[v] = C++;
             stack1.push(v);
             stack2.push(v);
-            for (; i < deg; ++i) {
+            for (; i < _degree; ++i) {
             dfs_end:
-              LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < deg);
+              LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < _degree);
               TIntType u = _recvec.get(v, i);
               if (preorder[u] == UNDEFINED) {
                 frame.top().second = i;
@@ -403,7 +417,9 @@ namespace libsemigroups {
       _scc._defined = true;
     }
 
-    internal::RecVec<TIntType> _recvec;
+    TIntType                   _degree;
+    TIntType                   _nr_nodes;
+    mutable internal::RecVec<TIntType> _recvec;
 
     struct Attr {
       Attr() : _defined(false) {}

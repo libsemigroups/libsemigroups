@@ -27,8 +27,9 @@
 namespace libsemigroups {
 
   struct LibsemigroupsException;
+
   ActionDigraph<size_t> cycle(size_t n) {
-    ActionDigraph<size_t> g(n);
+    ActionDigraph<size_t> g(n, 1);
     for (size_t i = 0; i < n - 1; ++i) {
       g.add_edge(i, i + 1, 0);
     }
@@ -83,7 +84,7 @@ namespace libsemigroups {
                           "004",
                           "add edges",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g(17);
+    ActionDigraph<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
@@ -99,6 +100,11 @@ namespace libsemigroups {
         REQUIRE(g.get(i, j) == (7 * i + 23 * j) % 17);
       }
     }
+
+    g.add_to_out_degree(10);
+    REQUIRE(g.out_degree() == 41);
+    REQUIRE(g.nr_nodes() == 17);
+    REQUIRE(!g.validate());
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 10; ++j) {
@@ -145,20 +151,20 @@ namespace libsemigroups {
                           "007",
                           "strongly connected components - disjoint cycles",
                           "[quick][digraph]") {
+    ActionDigraph<size_t> g;
+    g.add_to_out_degree(1);
     for (size_t j = 2; j < 50; ++j) {
-      ActionDigraph<size_t> graph;
-
-      for (size_t k = 0; k < 10; ++k) {
-        graph.add_nodes(j);
-        for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-          graph.add_edge(i, i + 1, 0);
-        }
-        graph.add_edge((k + 1) * j - 1, k * j, 0);
-      }
-      for (size_t i = 0; i < 10 * j; ++i) {
-        REQUIRE(graph.scc_id(i) == i / j);
-      }
+      cycle(g, j);
+      REQUIRE(std::count_if(
+                  g.cbegin(),
+                  g.cend(),
+                  [&g, j](size_t nd) -> bool { return g.scc_id(nd) == j - 2; })
+              == j);
     }
+
+    REQUIRE(g.nr_nodes() == 1224);
+    REQUIRE(g.nr_edges() == 1224);
+    REQUIRE(g.validate());
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -166,7 +172,7 @@ namespace libsemigroups {
                           "Strongly connected components - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
-      ActionDigraph<size_t> graph(k);
+      ActionDigraph<size_t> graph(k, k);
 
       for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < k; ++j) {
@@ -184,9 +190,9 @@ namespace libsemigroups {
                           "009",
                           "exceptions",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph(10);
+    ActionDigraph<size_t> graph(10, 5);
     REQUIRE_THROWS_AS(graph.get(10, 0), LibsemigroupsException);
-    REQUIRE_THROWS_AS(graph.get(0, 1), LibsemigroupsException);
+    REQUIRE(graph.get(0, 1) == UNDEFINED);
 
     REQUIRE_THROWS_AS(graph.add_edge(0, 10, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(graph.add_edge(10, 0, 0), LibsemigroupsException);
@@ -205,7 +211,7 @@ namespace libsemigroups {
                           "Spanning forest - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
-      ActionDigraph<size_t> graph(k);
+      ActionDigraph<size_t> graph(k, k);
 
       for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < k; ++j) {
@@ -227,6 +233,7 @@ namespace libsemigroups {
                           "[quick][digraph]") {
     size_t                j = 33;
     ActionDigraph<size_t> graph;
+    graph.add_to_out_degree(1);
 
     for (size_t k = 0; k < 10; ++k) {
       graph.add_nodes(j);
@@ -275,7 +282,7 @@ namespace libsemigroups {
                 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, UNDEFINED}));
   }
 
-  // TODO uncomment this
+  // TODO(FLS) uncomment this
   //  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
   //                          "012",
   //                          "scc root paths - complete graphs",

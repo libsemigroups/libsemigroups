@@ -200,7 +200,7 @@ namespace libsemigroups {
       return;
 #endif
     } else if (n % 2 != 0) {
-      throw LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
+      LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
     size_t next = 0;
     for (size_t i = 0; i < n; ++i) {
@@ -208,7 +208,7 @@ namespace libsemigroups {
       if (j == next) {
         ++next;
       } else if (j > next) {
-        throw LIBSEMIGROUPS_EXCEPTION("expected " + internal::to_string(next)
+        LIBSEMIGROUPS_EXCEPTION("expected " + internal::to_string(next)
                                       + " but found " + internal::to_string(j)
                                       + ", in position "
                                       + internal::to_string(i));
@@ -436,7 +436,7 @@ namespace libsemigroups {
       }
     }
     if (deg < 2 * max) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the blocks given do not "
           "disjoint union to the ranges [-"
           + internal::to_string(-max) + ".. -1] U [1 .. "
@@ -444,7 +444,7 @@ namespace libsemigroups {
           + " elements given");
     }
     if (max >= static_cast<int32_t>(0x40000000)) {
-      throw LIBSEMIGROUPS_EXCEPTION("too many points");
+      LIBSEMIGROUPS_EXCEPTION("too many points");
     }
 
     std::vector<uint32_t> out
@@ -453,7 +453,7 @@ namespace libsemigroups {
     for (uint32_t i = 0; i < blocks.size(); ++i) {
       for (int32_t x : blocks[i]) {
         if (x == 0) {
-          throw LIBSEMIGROUPS_EXCEPTION(
+          LIBSEMIGROUPS_EXCEPTION(
               "found 0 in a block, but every value should be "
               "in the ranges [-"
               + internal::to_string(-max) + " .. -1] or [1 .. "
@@ -462,14 +462,14 @@ namespace libsemigroups {
         if (x < 0) {
           if (out[static_cast<uint32_t>(max - x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
+            LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
                                           + " twice");
           }
           out[static_cast<uint32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<uint32_t>(x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
-            throw LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
+            LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
                                           + " twice");
           }
 
@@ -587,12 +587,12 @@ namespace libsemigroups {
     }
 #endif
     if (n % 2 == 1) {
-      throw LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
+      LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
     for (size_t u = 0; u < n; ++u) {
       for (auto const& v : this->_vector.at(u)) {
         if (v >= n) {
-          throw LIBSEMIGROUPS_EXCEPTION(
+          LIBSEMIGROUPS_EXCEPTION(
               "entry out of bounds, vertex " + internal::to_string(u)
               + " is adjacent to " + internal::to_string(v)
               + ", should be less than " + internal::to_string(n));
@@ -793,18 +793,18 @@ namespace libsemigroups {
     std::vector<uint32_t>              v;
 
     if (n != right.size()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the two vectors must have the same length");
     }
     if (n > 0x40000000) {
-      throw LIBSEMIGROUPS_EXCEPTION("too many points!");
+      LIBSEMIGROUPS_EXCEPTION("too many points!");
     }
     for (std::vector<int32_t> vec : left) {
       v = std::vector<uint32_t>();
       for (int32_t x : vec) {
         if (x == 0 || x < -static_cast<int32_t>(n)
             || x > static_cast<int32_t>(n)) {
-          throw LIBSEMIGROUPS_EXCEPTION(
+          LIBSEMIGROUPS_EXCEPTION(
               "the first argument contains a vector which contains "
               + internal::to_string(x)
               + " but the values must lie in the ranges [-"
@@ -825,7 +825,7 @@ namespace libsemigroups {
       for (int32_t x : vec) {
         if (x == 0 || x < -static_cast<int32_t>(n)
             || x > static_cast<int32_t>(n)) {
-          throw LIBSEMIGROUPS_EXCEPTION(
+          LIBSEMIGROUPS_EXCEPTION(
               "the second argument contains a vector which contains "
               + internal::to_string(x)
               + " but the values must lie in the ranges [-"

@@ -74,15 +74,15 @@ namespace libsemigroups {
 
   void FpSemiBase::set_alphabet(std::string const& lphbt) {
     if (!_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the alphabet cannot be set more than once");
     } else if (lphbt.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
+      LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
     }
     for (size_t i = 0; i < lphbt.size(); ++i) {
       if (_alphabet_map.find(lphbt[i]) != _alphabet_map.end()) {
         _alphabet_map.clear();  // Strong exception guarantee
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "invalid alphabet, it contains the duplicate letter "
             + internal::to_string(lphbt[i]));
       }
@@ -95,12 +95,12 @@ namespace libsemigroups {
 
   void FpSemiBase::set_alphabet(size_t const nr_letters) {
     if (!_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the alphabet cannot be set more than once");
     } else if (nr_letters == 0) {
-      throw LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
+      LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
     } else if (nr_letters > 256) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the alphabet must contain at most 256 letters");
     }
     for (size_t i = 0; i < nr_letters; ++i) {
@@ -158,7 +158,7 @@ namespace libsemigroups {
 
   void FpSemiBase::add_rules(FroidurePinBase& S) {
     if (!_alphabet.empty() && _alphabet.size() != S.nr_generators()) {
-      throw LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
+      LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
                                     + internal::to_string(S.nr_generators())
                                     + ", should be at most "
                                     + internal::to_string(_alphabet.size()));
@@ -223,19 +223,19 @@ namespace libsemigroups {
     if (_identity_defined) {
       return _identity;
     } else {
-      throw LIBSEMIGROUPS_EXCEPTION("no identity has been defined");
+      LIBSEMIGROUPS_EXCEPTION("no identity has been defined");
     }
   }
 
   void FpSemiBase::set_inverses(std::string const& inv) {
     if (_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "no alphabet has been defined, define an alphabet first");
     } else if (!_identity_defined) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "no identity has been defined, define an identity first");
     } else if (_alphabet.size() != inv.size()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "invalid inverses, expected " + internal::to_string(_alphabet.size())
           + " but found " + internal::to_string(inv.size()));
     }
@@ -246,7 +246,7 @@ namespace libsemigroups {
     std::sort(cpy.begin(), cpy.end());
     for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
       if (*it == *(it + 1)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "invalid inverses, it contains the duplicate letter "
             + internal::to_string(*it));
       }
@@ -264,7 +264,7 @@ namespace libsemigroups {
     if (!_inverses.empty()) {
       return _inverses;
     } else {
-      throw LIBSEMIGROUPS_EXCEPTION("no inverses have been defined");
+      LIBSEMIGROUPS_EXCEPTION("no inverses have been defined");
     }
   }
 
@@ -387,14 +387,14 @@ namespace libsemigroups {
 
   bool FpSemiBase::validate_letter(char c) const {
     if (_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
+      LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return (_alphabet_map.find(c) != _alphabet_map.end());
   }
 
   bool FpSemiBase::validate_letter(letter_type c) const {
     if (_alphabet.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
+      LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     }
     return c < _alphabet.size();
   }
@@ -403,7 +403,7 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "invalid letter " + std::string(1, l) + " in word " + w
             + ", valid letters are \"" + _alphabet + "\"");
       }
@@ -418,7 +418,7 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "invalid letter " + internal::to_string(l) + " in word "
             + internal::to_string(w) + ", the valid range is [0, "
             + internal::to_string(_alphabet.size()) + ")");
@@ -485,21 +485,21 @@ namespace libsemigroups {
 
   void FpSemiBase::validate_word_impl(std::string const& w) const {
     if (w.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+      LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
                                     "words must be non-empty");
     }
   }
 
   void FpSemiBase::validate_word_impl(word_type const& w) const {
     if (w.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
+      LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
                                     "words must be non-empty");
     }
   }
 
   bool FpSemiBase::validate_identity_impl(std::string const& id) const {
     if (id.length() != 1) {
-      throw LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
+      LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
                                     + internal::to_string(id.length())
                                     + " letters, should be single letter");
     }

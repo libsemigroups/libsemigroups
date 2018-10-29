@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2017 James D. Mitchell
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains ...
+//! \file
+//!
+//! This file contains a generic implementation of a class Orb which represents
+//! the action of a semigroup on a set.
+
+// TODO(now):
+// 1. A reserve method.
+// 2. Check that all of the methods actually work now (i.e. they have not been
+//    revised).
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ORB_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ORB_HPP_
@@ -36,6 +44,7 @@
 #include "traits.hpp"
 
 namespace libsemigroups {
+
   enum class Side { LEFT = 0, RIGHT = 1 };
 
   template <typename TElementType,
@@ -43,11 +52,15 @@ namespace libsemigroups {
             typename TActionType
             = ::libsemigroups::right_action<TElementType, TPointType>,
             Side TLeftOrRight    = Side::RIGHT,
-            typename TPointHash  = internal::hash<TElementType>,
-            typename TPointEqual = internal::equal_to<TElementType>,
+            typename TPointHash  = internal::hash<TPointType>,
+            typename TPointEqual = internal::equal_to<TPointType>,
             typename TTraits
             = TraitsHashEqual<TPointType, TPointHash, TPointEqual>>
   class Orb : public internal::Runner, private TTraits {
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - typedefs - private
+    ////////////////////////////////////////////////////////////////////////
+
     using internal_point_type = typename TTraits::internal_element_type;
     using internal_const_point_type =
         typename TTraits::internal_const_element_type;
@@ -63,6 +76,10 @@ namespace libsemigroups {
         "internal_const_element_type must be const or pointer to const");
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - typedefs - public
+    ////////////////////////////////////////////////////////////////////////
+
     using element_type               = TElementType;
     using point_type                 = TPointType;
     using const_reference_point_type = typename TTraits::const_reference;
@@ -73,13 +90,26 @@ namespace libsemigroups {
     using const_iterator_sccs = ActionDigraph<size_t>::const_iterator_sccs;
     using const_iterator_scc_roots
         = ActionDigraph<size_t>::const_iterator_scc_roots;
+    using const_iterator = typename std::vector<point_type>::const_iterator;
 
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - internal types with call operators - private
+    ////////////////////////////////////////////////////////////////////////
+
     // gcc apparently requires the extra qualification on the aliases below
     using action  = TActionType;
     using one     = ::libsemigroups::one<element_type>;
     using product = ::libsemigroups::product<element_type>;
     using swap    = ::libsemigroups::swap<element_type>;
+
+    static_assert(std::is_trivially_default_constructible<action>::value,
+                  "the third template parameter TActionType is not trivially "
+                  "default constructible");
+
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - product functions for left/right multiplication  - private
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename SFINAE = void>
     auto internal_product(element_type&       xy,
@@ -98,6 +128,10 @@ namespace libsemigroups {
     }
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - constructor + destructor - public
+    ////////////////////////////////////////////////////////////////////////
+
     Orb()
         : _gens(),
           _graph(),
@@ -105,7 +139,7 @@ namespace libsemigroups {
           _orb(),
           _pos(0),
           _tmp_point(),
-          _tmp_point_init(false) {}
+          _tmp_point_init(false) { }
 
     ~Orb() {
       if (_tmp_point_init) {
@@ -114,6 +148,16 @@ namespace libsemigroups {
       for (auto pt : _orb) {
         this->internal_free(pt);
       }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - initialisation member functions - public
+    ////////////////////////////////////////////////////////////////////////
+
+    void reserve(size_t val) {
+      _graph.reserve(val, _gens.size());
+      _map.reserve(val);
+      _orb.reserve(val);
     }
 
     void add_seed(const_reference_point_type seed) {
@@ -129,10 +173,13 @@ namespace libsemigroups {
     }
 
     void add_generator(element_type gen) {
-      // TODO: what if partial enumerated?
       _gens.push_back(gen);
       set_finished(false);
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - main method - public
+    ////////////////////////////////////////////////////////////////////////
 
     void enumerate() {
       run();
@@ -141,8 +188,11 @@ namespace libsemigroups {
     void run() {
       if (finished()) {
         return;
-      } else if (_graph.nr_nodes() != 0 && _graph.out_degree() < _gens.size()) {
-        size_t old_nr_gens = _graph.out_degree();
+      }
+      size_t old_nr_gens = _graph.out_degree();
+      _graph.add_to_out_degree(_gens.size() - _graph.out_degree());
+      if (started() && old_nr_gens < _gens.size()) {
+        // Generators were added after the last call to run
         for (size_t i = 0; i < _pos; i++) {
           for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
             action()(this->to_external(_tmp_point),
@@ -160,36 +210,38 @@ namespace libsemigroups {
           }
         }
       }
-      // TODO add "columns" to _graph so that it doesn't use too much space.
+      set_started(true);
 
-      size_t i = _pos;
-      for (; i < _orb.size() && !stopped(); i++) {
+      for (; _pos < _orb.size() && !stopped(); ++_pos) {
         for (size_t j = 0; j < _gens.size(); ++j) {
           action()(this->to_external(_tmp_point),
-                   this->to_external_const(_orb[i]),
+                   this->to_external_const(_orb[_pos]),
                    _gens[j]);
           auto it = _map.find(_tmp_point);
           if (it == _map.end()) {
             _graph.add_nodes(1);
-            _graph.add_edge(i, _orb.size(), j);
+            _graph.add_edge(_pos, _orb.size(), j);
             _orb.push_back(this->internal_copy(_tmp_point));
             _map.emplace(_orb.back(), _orb.size() - 1);
           } else {
-            _graph.add_edge(i, (*it).second, j);
+            _graph.add_edge(_pos, (*it).second, j);
           }
         }
         if (report()) {
           REPORT("found ", _orb.size(), " points, so far");
         }
       }
-      _pos = i;
       if (_pos == _orb.size()) {
         set_finished(true);
       }
       report_why_we_stopped();
     }
 
-    size_t position(const_reference_point_type pt) {
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - public member functions
+    ////////////////////////////////////////////////////////////////////////
+
+    index_type position(const_reference_point_type pt) {
       auto it = _map.find(this->to_internal_const(pt));
       if (it != _map.end()) {
         return (*it).second;
@@ -198,6 +250,7 @@ namespace libsemigroups {
       }
     }
 
+    // FIXME this isn't correct (the return type is wrong
     typename std::vector<point_type>::const_iterator find(point_type pt) {
       auto it = _map.find(pt);
       if (it != _map.end()) {
@@ -207,20 +260,17 @@ namespace libsemigroups {
       }
     }
 
-    virtual void reserve(size_t n) {
-      _map.reserve(n);
-      _orb.reserve(n);
-    }
-
     bool empty() const {
       return _orb.empty();
     }
 
+    // FIXME return type should be const&
     inline point_type operator[](size_t pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _orb.size());
       return _orb[pos];
     }
 
+    // FIXME return type should be const&
     inline point_type at(size_t pos) const {
       return _orb.at(pos);
     }
@@ -236,7 +286,7 @@ namespace libsemigroups {
 
     element_type multiplier_from_scc_root(index_type pos) {
       if (pos >= current_size()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        (
             "index out of range, expected value in [0, "
             + internal::to_string(current_size()) + ") but found "
             + internal::to_string(pos));
@@ -253,7 +303,7 @@ namespace libsemigroups {
 
     element_type multiplier_to_scc_root(index_type pos) {
       if (pos >= current_size()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        (
             "index out of range, expected value in [0, "
             + internal::to_string(current_size()) + ") but found "
             + internal::to_string(pos));
@@ -267,6 +317,14 @@ namespace libsemigroups {
         pos = _graph.reverse_spanning_forest().parent(pos);
       }
       return out;
+    }
+
+    const_iterator cbegin() const {
+      return _orb.cbegin();
+    }
+
+    const_iterator cend() const {
+      return _orb.cend();
     }
 
     const_iterator_scc cbegin_scc(scc_index_type i) {

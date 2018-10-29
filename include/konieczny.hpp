@@ -401,7 +401,7 @@ namespace libsemigroups {
           _row_basis_positions(),
           _stab_chain() {
       if (idem_rep * idem_rep != idem_rep) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "RegularDClass: the representative given should be idempotent");
       }
     }
@@ -753,7 +753,7 @@ namespace libsemigroups {
           _right_idem_class(),
           _row_basis_positions() {
       if (rep * rep == rep) {
-        throw LIBSEMIGROUPS_EXCEPTION("NonRegularDClass: the representative "
+        LIBSEMIGROUPS_EXCEPTION("NonRegularDClass: the representative "
                                       "given should not be idempotent");
       }
     }

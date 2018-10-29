@@ -434,14 +434,14 @@ namespace libsemigroups {
     using Perm = Perm<10>::type;
 
     Orb<Perm,
-        std::array<u_int8_t, 10>,
-        on_sets<Perm, u_int8_t, std::array<u_int8_t, 10>>>
+        std::array<u_int8_t, 5>,
+        on_sets<Perm, u_int8_t, std::array<u_int8_t, 5>>>
         o;
     o.add_seed({0, 1, 2, 3, 4});
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
 
-    REQUIRE(o.size() == 1261);
+    REQUIRE(o.size() == 252);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Orb",
@@ -471,9 +471,7 @@ namespace libsemigroups {
     o.add_seed({0, 1, 2, 3, 4});
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
-    REQUIRE(o.size() == 252); // FIXME!! Wrong answer
-    REQUIRE(std::vector<std::vector<u_int8_t>>(o.cbegin(), o.cend())
-            == std::vector<std::vector<u_int8_t>>({}));
+    REQUIRE(o.size() == 252);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Orb",

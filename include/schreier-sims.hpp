@@ -127,7 +127,7 @@ namespace libsemigroups {
 
     void add_generator(const_reference x) {
       if (!has_valid_degree(x)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "the degree of the generator must be " + internal::to_string(N)
             + ", not "
             + internal::to_string(degree()(this->to_internal_const(x))));
@@ -139,7 +139,7 @@ namespace libsemigroups {
 
     const_reference generator(size_t index) {
       if (index >= _strong_gens.size(0)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "the argument must be at most "
             + internal::to_string(_strong_gens.size(0)) + ", not "
             + internal::to_string(index));
@@ -169,7 +169,7 @@ namespace libsemigroups {
 
     element_type sift(const_reference x) {
       if (!has_valid_degree(x)) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "the degree of the generator must be " + internal::to_string(N)
             + ", not "
             + internal::to_string(degree()(this->to_internal_const(x))));
@@ -227,16 +227,16 @@ namespace libsemigroups {
 
     void add_base_point(point_type const pt) {
       if (pt >= N) {
-        throw LIBSEMIGROUPS_EXCEPTION("the new base point must be at most "
+        LIBSEMIGROUPS_EXCEPTION("the new base point must be at most "
                                       + internal::to_string(N - 1) + ", not "
                                       + internal::to_string(size_t(pt)));
       } else if (finished()) {
-        throw LIBSEMIGROUPS_EXCEPTION("cannot add "
+        LIBSEMIGROUPS_EXCEPTION("cannot add "
                                       "further base points");
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
-            throw LIBSEMIGROUPS_EXCEPTION(internal::to_string(size_t(pt))
+            LIBSEMIGROUPS_EXCEPTION(internal::to_string(size_t(pt))
                                           + " is already a base point");
           }
         }
@@ -246,7 +246,7 @@ namespace libsemigroups {
 
     point_type base(index_type const index) const {
       if (index >= _base_size) {
-        throw LIBSEMIGROUPS_EXCEPTION("the index must be at most "
+        LIBSEMIGROUPS_EXCEPTION("the index must be at most "
                                       + internal::to_string(_base_size)
                                       + ", not " + internal::to_string(index));
       }

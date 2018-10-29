@@ -89,7 +89,7 @@ namespace libsemigroups {
   void CongBase::set_nr_generators(size_t n) {
     if (nr_generators() != UNDEFINED) {
       if (nr_generators() != n) {
-        throw LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
+        LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
       } else {
         return;  // do nothing
       }
@@ -160,7 +160,7 @@ namespace libsemigroups {
 
   FroidurePinBase& CongBase::parent_semigroup() const {
     if (!has_parent_semigroup()) {
-      throw LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
+      LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
     }
     return *_parent;
   }
@@ -174,9 +174,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(type() == congruence_type::TWOSIDED);
       return *_quotient;
     } else if (type() != congruence_type::TWOSIDED) {
-      throw LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
+      LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "cannot find the quotient semigroup, it is infinite");
     }
     _quotient = quotient_impl();
@@ -257,8 +257,8 @@ namespace libsemigroups {
       //
       // TODO(later) store the FpSemigroup used to create this and here try
       // to compute the isomorphic FroidurePin.
-      throw LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
-                                    "find the non-trivial classes");
+      LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
+                              "find the non-trivial classes");
     }
     auto ntc = non_trivial_classes_type(nr_classes(), std::vector<word_type>());
 
@@ -303,7 +303,7 @@ namespace libsemigroups {
 
   bool CongBase::validate_letter(letter_type c) const {
     if (nr_generators() == UNDEFINED) {
-      throw LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
+      LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
     }
     return c < _nr_gens;
   }
@@ -312,7 +312,7 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        throw LIBSEMIGROUPS_EXCEPTION("invalid letter " + internal::to_string(l)
+        LIBSEMIGROUPS_EXCEPTION("invalid letter " + internal::to_string(l)
                                       + " in word " + internal::to_string(w)
                                       + ", the valid range is [0, "
                                       + internal::to_string(_nr_gens) + ")");
@@ -343,7 +343,7 @@ namespace libsemigroups {
       case congruence_type::RIGHT:
         return STRING_RIGHT;
       default:
-        throw LIBSEMIGROUPS_EXCEPTION("incorrect type");
+        LIBSEMIGROUPS_EXCEPTION("incorrect type");
     }
   }
 

@@ -273,7 +273,7 @@ namespace libsemigroups {
 
   internal::owned_ptr<FroidurePinBase> Congruence::quotient_impl() {
     if (_race.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "no methods defined, cannot find the quotient with no methods");
     }
     return internal::owned_ptr<FroidurePinBase>(
@@ -323,7 +323,7 @@ namespace libsemigroups {
     if (it != _race.end()) {
       return static_cast<TCongBaseSubclass*>(*it);
     } else {
-      throw LIBSEMIGROUPS_EXCEPTION("method not found");
+      LIBSEMIGROUPS_EXCEPTION("method not found");
     }
   }
 }  // namespace libsemigroups

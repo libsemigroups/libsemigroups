@@ -92,7 +92,7 @@ namespace libsemigroups {
     if (_race.empty()) {
       if (alphabet().empty()) {
         // TODO(now) is this consistent with CongBase?
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "no alphabet or rules have been specified");
       } else {
         // Nothing in _race means no rules
@@ -114,7 +114,7 @@ namespace libsemigroups {
         return true;
       } else {
         // TODO(now) is this consistent with CongBase?
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "no alphabet or rules have been specified");
       }
     }
@@ -132,7 +132,7 @@ namespace libsemigroups {
 
   size_t FpSemigroup::size() {
     if (_race.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "no methods defined, cannot find size with no methods");
     } else if (is_obviously_infinite()) {
       return POSITIVE_INFINITY;
@@ -183,7 +183,7 @@ namespace libsemigroups {
 
   internal::owned_ptr<FroidurePinBase> FpSemigroup::froidure_pin_impl() {
     if (_race.empty()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "no methods defined, cannot find an isomorphic FroidurePin");
     }
     // This loop is here in case one of the Runners in _race was created using
@@ -228,7 +228,7 @@ namespace libsemigroups {
     if (it != _race.end()) {
       return static_cast<TFpSemiBaseSubclass*>(*it);
     } else {
-      throw LIBSEMIGROUPS_EXCEPTION("method not found");
+      LIBSEMIGROUPS_EXCEPTION("method not found");
     }
   }
 }  // namespace libsemigroups

@@ -120,7 +120,7 @@ namespace libsemigroups {
         _tmp_product(),
         _wordlen(0) {  // (length of the current word) - 1
     if (_nrgens == 0) {
-      throw LIBSEMIGROUPS_EXCEPTION("no generators given");
+      LIBSEMIGROUPS_EXCEPTION("no generators given");
     }
 #ifdef LIBSEMIGROUPS_STATS
     _nr_products = 0;
@@ -134,7 +134,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < _nrgens; ++i) {
       size_t degree = internal_degree()(this->to_internal_const((*gens)[i]));
       if (degree != _degree) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "generator " + internal::to_string(i) + " has degree "
             + internal::to_string(degree) + " but should have degree "
             + internal::to_string(_degree));
@@ -382,7 +382,7 @@ namespace libsemigroups {
   ELEMENT_INDEX_TYPE FROIDURE_PIN::word_to_pos(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
     if (w.size() == 0) {
-      throw LIBSEMIGROUPS_EXCEPTION("the given word has length 0");
+      LIBSEMIGROUPS_EXCEPTION("the given word has length 0");
     }
     for (auto x : w) {
       validate_letter_index(x);
@@ -684,7 +684,7 @@ namespace libsemigroups {
   WORD_TYPE FROIDURE_PIN::minimal_factorisation(const_reference x) {
     element_index_type pos = this->position(x);
     if (pos == UNDEFINED) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "the argument is not an element of the semigroup");
     }
     return minimal_factorisation(pos);
@@ -915,7 +915,7 @@ namespace libsemigroups {
       element_index_type degree
           = internal_degree()(this->to_internal_const(*it));
       if (degree != _degree) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "new generator " + internal::to_string(it - coll.begin())
             + " has degree " + internal::to_string(degree)
             + " but should have degree " + internal::to_string(_degree));
@@ -1164,7 +1164,7 @@ namespace libsemigroups {
 
   VOID FROIDURE_PIN::validate_element_index(element_index_type i) const {
     if (i >= _nr) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "there are only " + internal::to_string(_nr) + " elements"
           + (finished() ? "" : " enumerated so far") + ", but index "
           + internal::to_string(i) + " was given");
@@ -1173,7 +1173,7 @@ namespace libsemigroups {
 
   VOID FROIDURE_PIN::validate_letter_index(letter_type i) const {
     if (i >= nr_generators()) {
-      throw LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION(
           "there are only  " + internal::to_string(nr_generators())
           + " generators, not " + internal::to_string(i));
     }

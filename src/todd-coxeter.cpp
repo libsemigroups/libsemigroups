@@ -138,7 +138,7 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter const& copy)
         : ToddCoxeter(typ) {
       if (copy.type() != congruence_type::TWOSIDED && typ != copy.type()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "incompatible types of congruence, found ("
             + congruence_type_to_string(copy.type()) + " / "
             + congruence_type_to_string(typ)
@@ -188,7 +188,7 @@ namespace libsemigroups {
       if (stopped()) {
         return;
       } else if (is_quotient_obviously_infinite()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "there are infinitely many classes in the congruence and "
             "Todd-Coxeter will never terminate");
       }
@@ -308,7 +308,7 @@ namespace libsemigroups {
 
     word_type ToddCoxeter::class_index_to_word(class_index_type i) {
       if (i >= nr_classes()) {
-        throw LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION(
             "invalid class index, should be in the range [0, "
             + internal::to_string(nr_classes()) + "), not "
             + internal::to_string(i));
@@ -463,7 +463,7 @@ namespace libsemigroups {
         for (size_t j = 0; j < _table.nr_cols(); ++j) {
           class_index_type c = _table.get(i, j);
           if (c == 0 || (c != UNDEFINED && c >= _table.nr_rows())) {
-            throw LIBSEMIGROUPS_EXCEPTION(
+            LIBSEMIGROUPS_EXCEPTION(
                 "invalid table, the entry in row " + internal::to_string(i)
                 + " and column " + internal::to_string(j)
                 + " should be in the range [1, "

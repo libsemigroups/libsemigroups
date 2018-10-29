@@ -180,7 +180,7 @@ namespace libsemigroups {
 
     WORD_TYPE P_CLASS::class_index_to_word(class_index_type) {
       // FIXME(now) actually implement this
-      throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
     SIZE_T P_CLASS::nr_classes() {
@@ -218,7 +218,7 @@ namespace libsemigroups {
 
     VOID P_CLASS::add_pair_impl(word_type const& u, word_type const& v) {
       if (!has_parent_semigroup()) {
-        throw LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
+        LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
                                       "the parent semigroup is defined");
       }
       auto prnt = static_cast<froidure_pin_type&>(parent_semigroup());
@@ -232,7 +232,7 @@ namespace libsemigroups {
     TEMPLATE
     internal::owned_ptr<FroidurePinBase> P_CLASS::quotient_impl() {
       // FIXME(now) actually implement this
-      throw LIBSEMIGROUPS_EXCEPTION("not yet implemented");
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
 
     /////////////////////////////////////////////////////////////////////////
