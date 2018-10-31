@@ -238,7 +238,11 @@ TAB_SIZE               = 4
 # "Side Effects:". You can put \n's in the value part of an alias to insert
 # newlines.
 
-ALIASES                =
+ALIASES                =  libsemigroups_example="\par Example:\n \code" 
+ALIASES                += libsemigroups_end_example="\endcode" 
+ALIASES                += libsemigroups_nothrow="\b No-throw \b guarantee\n This function never throws exceptions.\n" 
+ALIASES                += libsemigroups_iterator="\par Iterator validity\n This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this are invalidated by a call to this function." 
+ALIASES                += libsemigroups_no_exception="\par Exceptions\n This function guarantees not to throw a LibsemigroupsException. If an exception is thrown, \c this is guaranteed not to be modified."
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

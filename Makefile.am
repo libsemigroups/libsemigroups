@@ -140,7 +140,10 @@ endif
 CHECK_FLAGS1  = --use-colour yes --order lex --abort
 CHECK_FLAGS2  = [quick]
 
-check_PROGRAMS = lstest
+check_PROGRAMS = test_digraph
+
+test_digraph_SOURCES =  tests/test_digraph.cpp
+test_digraph_SOURCES += tests/test_main.cpp
 
 lstest_SOURCES =  tests/blocks.test.cpp
 lstest_SOURCES += tests/bmat8.test.cpp
@@ -148,7 +151,6 @@ lstest_SOURCES += tests/cong-pair.test.cpp
 lstest_SOURCES += tests/cong.test.cpp
 lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
 lstest_SOURCES += tests/containers.test.cpp
-lstest_SOURCES += tests/digraph.test.cpp
 lstest_SOURCES += tests/element.test.cpp
 lstest_SOURCES += tests/forest.test.cpp
 lstest_SOURCES += tests/fpsemi-examples.cpp
@@ -196,6 +198,7 @@ endif
 
 lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 lstest_LDADD = libsemigroups.la
+test_digraph_LDADD = libsemigroups.la
 
 ## Make targets
 

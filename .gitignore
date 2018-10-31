@@ -41,3 +41,6 @@ benchmark/CMakeFiles
 benchmark/CMakeCache.txt
 libsemigroups-config.hpp
 extern/*
+test_*.o
+benchmark/build
+*.o.*
