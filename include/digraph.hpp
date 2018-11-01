@@ -1,6 +1,7 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2018 Finn Smith
+// Copyright (C) 2018 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,6 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
+// TODO(FLS)
+// 1. Complete the doc
+// 2. Double-check that validate_whatever is used wherever it should be
+// 3. More benchmarks (that don't seg fault)
+// 4. Check for noexcept (that it's used correctly, and not missing somewhere
+//    it could be used.
 
 //! \file
 //!
@@ -58,13 +66,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     struct iterator_methods_scc_roots {
-      TIntType const&
-      indirection(typename std::vector<TIntType>::const_iterator it) const {
+      TIntType const& indirection(
+          typename std::vector<std::vector<TIntType>>::const_iterator it)
+          const {
         return *(*it).cbegin();
       }
 
       TIntType const*
-      addressof(typename std::vector<TIntType>::const_iterator it) const {
+      addressof(typename std::vector<std::vector<TIntType>>::const_iterator it)
+          const {
         return &(*(*it).cbegin());
       }
     };
@@ -75,14 +85,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! Alias for the type of nodes in a digraph.
-    using node_type          = TIntType;
+    using node_type = TIntType;
 
     //! Alias for the type of edge labels in a digraph.
-    using label_type         = TIntType;
+    using label_type = TIntType;
 
     //! Alias for the type of an index in a strongly connected component of
     //! a digraph.
-    using scc_index_type     = TIntType;
+    using scc_index_type = TIntType;
 
     //! Alias for the type of an iterator pointing to the nodes of a digraph.
     using const_iterator_nodes =
@@ -120,12 +130,12 @@ namespace libsemigroups {
     //! @{
     //! Constructor
     //!
-    //! Constructs an ActionDigraph instance with \p nr_ndes nodes and out-degree
-    //! \p dgree.
+    //! Constructs an ActionDigraph instance with \p nr_ndes nodes and
+    //! out-degree \p dgree.
     explicit ActionDigraph(TIntType nr_ndes = 0, TIntType dgree = 0)
         : _degree(dgree),
           _nr_nodes(nr_ndes),
-          _recvec(dgree, nr_ndes, UNDEFINED),
+          _recvec(_degree, _nr_nodes, UNDEFINED),
           _scc_back_forest(),
           _scc_forest(),
           _scc() {}
@@ -136,7 +146,8 @@ namespace libsemigroups {
     ActionDigraph& operator=(ActionDigraph&&) = default;
     ~ActionDigraph()                          = default;
 
-    static ActionDigraph random(std::mt19937 mt, TIntType nr_ndes, TIntType dgree) {
+    static ActionDigraph
+    random(TIntType nr_ndes, TIntType dgree, std::mt19937 mt = std::mt19937()) {
       std::uniform_int_distribution<TIntType> dist(0, nr_ndes);
       ActionDigraph<TIntType>                 g(nr_ndes, dgree);
       LIBSEMIGROUPS_ASSERT(g._recvec.nr_rows() == nr_ndes);
@@ -144,6 +155,7 @@ namespace libsemigroups {
       std::generate(g._recvec.begin(), g._recvec.end(), [&dist, &mt]() {
         return dist(mt);
       });
+      return g;
     }
 
     //!@}
@@ -152,8 +164,6 @@ namespace libsemigroups {
     // ActionDigraph - modifiers - public
     ////////////////////////////////////////////////////////////////////////
     //! \name Modifiers
-    //! The member functions in this section can be used to modify an instance
-    //! of ActionDigraph.
 
     //! @{
     //! Adds \p nr nodes to \c this.
@@ -202,8 +212,8 @@ namespace libsemigroups {
 
     //! Reserve capacity
     //!
-    //! Ensures that \c this has capacity for \p nr_ndes nodes each with \p out_dgree
-    //! out-edges.
+    //! Ensures that \c this has capacity for \p nr_ndes nodes each with \p
+    //! out_dgree out-edges.
     //!
     //! \libsemigroups_iterator
     //!
@@ -216,18 +226,17 @@ namespace libsemigroups {
     //!@}
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - nodes, neighbours, etc - public
+    // ActionDigraph - nodes, neighbors, etc - public
     ////////////////////////////////////////////////////////////////////////
 
     //! \name Nodes, edges, neighbors
-    //! The member functions in this section can be used to find attributes of
-    //! a digraph relating to nodes, edges, and neighbors.
 
     //! @{
     //! Returns the node adjacent to \p v via the edge labelled \p lbl. If
     //! there is no such node, then Libsemigroups::UNDEFINED is returned.
     //!
-    //! \exception Throws a LibsemigroupsException if \p v or \p lbl is not valid.
+    //! \exception Throws a LibsemigroupsException if \p v or \p lbl is not
+    //! valid.
     TIntType inline neighbor(node_type v, label_type lbl) const {
       validate_node(v);
       validate_label(lbl);
@@ -244,7 +253,7 @@ namespace libsemigroups {
     //! Returns the number of edges of \c this
     //!
     //! Returns the total number of edges of \c this
-    TIntType nr_edges() const noexcept {
+    size_t nr_edges() const noexcept {
       return _recvec.nr_rows() * _recvec.nr_cols()
              - std::count(_recvec.cbegin(), _recvec.cend(), UNDEFINED);
     }
@@ -258,24 +267,42 @@ namespace libsemigroups {
     bool validate() const noexcept {
       return nr_edges() == nr_nodes() * out_degree();
     }
+
+    const_iterator_nodes cbegin_nodes() const {
+      return IntegralRange<TIntType>(0, nr_nodes()).cbegin();
+    }
+
+    const_iterator_nodes cend_nodes() const {
+      return IntegralRange<TIntType>(0, nr_nodes()).cend();
+    }
+
+    const_iterator_edges cbegin_edges(node_type i) const {
+      validate_node(i);
+      return _recvec.cbegin_row(i);
+    }
+
+    const_iterator_edges cend_edges(node_type i) const {
+      validate_node(i);
+      return _recvec.cend_row(i);
+    }
     //!@}
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - strongly connected components - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \name Strongly connected components
+
+    //! @{
     //! Returns the id of the strongly connected component of a node
     //!
     //! Every node in \c this lies in a strongly connected component (SCC).
     //! This function returns the id number of the SCC containing \p node.
-    TIntType scc_id(node_type node) const {
-      if (node >= nr_nodes()) {
-        LIBSEMIGROUPS_EXCEPTION("node index out of range, found "
-                                << node << " expected at most " << _degree - 1);
-      }
+    TIntType scc_id(node_type nd) const {
+      validate_node(nd);
       gabow_scc();
-      LIBSEMIGROUPS_ASSERT(node < _scc._id.size());
-      return _scc._id[node];
+      LIBSEMIGROUPS_ASSERT(nd < _scc._id.size());
+      return _scc._id[nd];
     }
 
     //! Returns the number of strongly connected components in \p this.
@@ -285,6 +312,11 @@ namespace libsemigroups {
     TIntType nr_scc() const {
       gabow_scc();
       return _scc._comps.size();
+    }
+
+    node_type root_of_scc(node_type nd) const {
+      // nd is validated in scc_id
+      return *cbegin_scc(scc_id(nd));
     }
 
     const_iterator_sccs cbegin_sccs() const {
@@ -297,32 +329,34 @@ namespace libsemigroups {
       return _scc._comps.cend();
     }
 
-    const_iterator_nodes cbegin() const {
-      return IntegralRange<TIntType>(0, nr_nodes()).cbegin();
-    }
-
-    const_iterator_nodes cend() const {
-      return IntegralRange<TIntType>(0, nr_nodes()).cend();
-    }
-
     const_iterator_scc cbegin_scc(scc_index_type i) const {
       gabow_scc();
+      validate_scc_index(i);
       return _scc._comps[i].cbegin();
     }
 
     const_iterator_scc cend_scc(scc_index_type i) const {
       gabow_scc();
+      validate_scc_index(i);
       return _scc._comps[i].cend();
     }
 
-    const_iterator_edges cbegin_edges(node_type i) const {
-      return _recvec.cbegin_row(i);
+    const_iterator_scc_roots cbegin_scc_roots() const {
+      return const_iterator_scc_roots(cbegin_sccs());
     }
 
-    const_iterator_edges cend_edges(node_type i) const {
-      return _recvec.cend_row(i);
+    const_iterator_scc_roots cend_scc_roots() const {
+      return const_iterator_scc_roots(cend_sccs());
     }
+    //!@}
 
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - spanning forests - public
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \name Spanning forests of strongly connected components
+
+    //! @{
     //! Returns a Forest comprised of spanning trees for each SCC
     //!
     //! This function returns a Forest which contains the nodes of \c this,
@@ -345,7 +379,7 @@ namespace libsemigroups {
           do {
             size_t x = queue.front();
             for (size_t j = 0; j < _degree; ++j) {
-              size_t y = neighbor(x, j);
+              size_t y = _recvec.get(x, j);
               if (!seen[y] && _scc._id[y] == _scc._id[x]) {
                 _scc_forest._forest.set(y, x, j);
                 queue.push(y);
@@ -376,7 +410,7 @@ namespace libsemigroups {
         for (size_t i = 0; i < nr_nodes(); ++i) {
           size_t const scc_id_i = scc_id(i);
           for (size_t j = 0; j < out_degree(); ++j) {
-            size_t const k = neighbor(i, j);
+            size_t const k = _recvec.get(i, j);
             if (scc_id(k) == scc_id_i) {
               reverse_edges[k].push_back(i);
               reverse_labels[k].push_back(j);
@@ -407,20 +441,13 @@ namespace libsemigroups {
       }
       return _scc_back_forest._forest;
     }
-
-    node_type root_of_scc(node_type node) const {
-      return *cbegin_scc(scc_id(node));
-    }
-
-    const_iterator_scc_roots cbegin_scc_roots() const {
-      return const_iterator_scc_roots(cbegin_sccs());
-    }
-
-    const_iterator_scc_roots cend_scc_roots() const {
-      return const_iterator_scc_roots(cend_sccs());
-    }
+    //!@}
 
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - validation - private
+    ////////////////////////////////////////////////////////////////////////
+
     void validate_node(node_type v) const {
       if (v >= nr_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, got "
@@ -437,11 +464,26 @@ namespace libsemigroups {
       }
     }
 
+    void validate_scc_index(scc_index_type i) const {
+      if (i >= nr_scc()) {
+        LIBSEMIGROUPS_EXCEPTION("scc index out of bounds, got "
+                                << i << ", expected at most " << nr_scc() - 1);
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - reset (after calling a modifier) - private
+    ////////////////////////////////////////////////////////////////////////
+
     void reset() {
       _scc_back_forest._defined = false;
       _scc._defined             = false;
       _scc_forest._defined      = false;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - strongly connected components - private
+    ////////////////////////////////////////////////////////////////////////
 
     void gabow_scc() const {
       if (_scc._defined) {
@@ -468,58 +510,58 @@ namespace libsemigroups {
       for (TIntType w = 0; w < nr_nodes(); ++w) {
         if (_scc._id[w] == UNDEFINED) {
           frame.emplace(w, 0);
-          do {
-          dfs_start:
-            LIBSEMIGROUPS_ASSERT(!frame.empty());
-            TIntType v = frame.top().first;
-            TIntType i = frame.top().second;
+        dfs_start:
+          LIBSEMIGROUPS_ASSERT(!frame.empty());
+          TIntType v = frame.top().first;
+          TIntType i = frame.top().second;
 
-            preorder[v] = C++;
-            stack1.push(v);
-            stack2.push(v);
-            for (; i < _degree; ++i) {
-            dfs_end:
-              LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < _degree);
-              TIntType u = _recvec.get(v, i);
-              if (preorder[u] == UNDEFINED) {
-                frame.top().second = i;
-                frame.emplace(u, 0);
-                goto dfs_start;
-              } else if (_scc._id[u] == UNDEFINED) {
-                LIBSEMIGROUPS_ASSERT(!stack2.empty());
-                while (preorder[stack2.top()] > preorder[u]) {
-                  stack2.pop();
-                }
+          preorder[v] = C++;
+          stack1.push(v);
+          stack2.push(v);
+          for (; i < _degree; ++i) {
+          dfs_end:
+            LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < _degree);
+            TIntType u = _recvec.get(v, i);
+            if (preorder[u] == UNDEFINED) {
+              frame.top().second = i;
+              frame.emplace(u, 0);
+              goto dfs_start;
+            } else if (_scc._id[u] == UNDEFINED) {
+              LIBSEMIGROUPS_ASSERT(!stack2.empty());
+              while (preorder[stack2.top()] > preorder[u]) {
+                stack2.pop();
               }
             }
-            if (v == stack2.top()) {
-              _scc._comps.emplace_back();
-              TIntType x;
-              do {
-                LIBSEMIGROUPS_ASSERT(!stack1.empty());
-                x           = stack1.top();
-                _scc._id[x] = index;
-                _scc._comps[index].push_back(x);
-                stack1.pop();
-              } while (x != v);
-              ++index;
-              LIBSEMIGROUPS_ASSERT(!stack2.empty());
-              stack2.pop();
-            }
-            LIBSEMIGROUPS_ASSERT(!frame.empty());
-            frame.pop();
-            if (!frame.empty()) {
-              v = frame.top().first;
-              i = frame.top().second;
-              goto dfs_end;
-            } else {
-              break;
-            }
-          } while (true);
+          }
+          if (v == stack2.top()) {
+            _scc._comps.emplace_back();
+            TIntType x;
+            do {
+              LIBSEMIGROUPS_ASSERT(!stack1.empty());
+              x           = stack1.top();
+              _scc._id[x] = index;
+              _scc._comps[index].push_back(x);
+              stack1.pop();
+            } while (x != v);
+            ++index;
+            LIBSEMIGROUPS_ASSERT(!stack2.empty());
+            stack2.pop();
+          }
+          LIBSEMIGROUPS_ASSERT(!frame.empty());
+          frame.pop();
+          if (!frame.empty()) {
+            v = frame.top().first;
+            i = frame.top().second;
+            goto dfs_end;
+          }
         }
       }
       _scc._defined = true;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - data members - private
+    ////////////////////////////////////////////////////////////////////////
 
     TIntType                           _degree;
     TIntType                           _nr_nodes;
@@ -545,7 +587,6 @@ namespace libsemigroups {
       std::vector<std::vector<size_t>> _comps;
       std::vector<TIntType>            _id;
     } _scc;
-
   };
 
 }  // namespace libsemigroups

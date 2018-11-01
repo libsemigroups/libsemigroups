@@ -23,6 +23,11 @@ if HPCOMBI_CONSTEXPR_FUN_ARGS
 AM_CPPFLAGS += -DHPCOMBI_CONSTEXPR_FUN_ARGS
 endif
 
+AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
+AM_CXXFLAGS += $(CODE_COVERAGE_CXXFLAGS)
+
+LIBS     = $(AM_LDFLAGS) 
+
 ACLOCAL_AMFLAGS	= -I m4
 
 ## We include libsemigroups-config.hpp in the distribution even though it is
@@ -105,11 +110,8 @@ libsemigroups_la_SOURCES += src/tce.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 
-libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
-libsemigroups_la_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
-libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
-
-libsemigroups_la_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
+libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
+libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 ## Extra files for the distribution
 
@@ -129,76 +131,78 @@ BENCHMARK_LINT_FORMAT += benchmark/src/examples.hpp
 BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
 
-## lstest sources
+## For testing . . .
 
-CHECK_LOG_DIR = tests/log
-if LIBSEMIGROUPS_ASAN
-CHECK_PROG    = ASAN_OPTIONS=detect_leaks=1 ./lstest$(EXEEXT)
-else
-CHECK_PROG    = ./lstest$(EXEEXT)
-endif
+CHECK_PROG    = ./test_all$(EXEEXT)
 CHECK_FLAGS1  = --use-colour yes --order lex --abort
 CHECK_FLAGS2  = [quick]
 
-check_PROGRAMS = test_digraph
+check_PROGRAMS = test_all test_digraph test_orb
+
+LDADD = libsemigroups.la
+
+test_all_SOURCES =  tests/test_main.cpp
+test_all_SOURCES += tests/test_digraph.cpp
+test_all_SOURCES += tests/test_orb.cpp
 
 test_digraph_SOURCES =  tests/test_digraph.cpp
 test_digraph_SOURCES += tests/test_main.cpp
 
-lstest_SOURCES =  tests/blocks.test.cpp
-lstest_SOURCES += tests/bmat8.test.cpp
-lstest_SOURCES += tests/cong-pair.test.cpp
-lstest_SOURCES += tests/cong.test.cpp
-lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
-lstest_SOURCES += tests/containers.test.cpp
-lstest_SOURCES += tests/element.test.cpp
-lstest_SOURCES += tests/forest.test.cpp
-lstest_SOURCES += tests/fpsemi-examples.cpp
-lstest_SOURCES += tests/fpsemi.test.cpp
-lstest_SOURCES += tests/froidure-pin.bipart.test.cpp
-lstest_SOURCES += tests/froidure-pin.bmat8.test.cpp
-lstest_SOURCES += tests/froidure-pin.boolmat.test.cpp
-lstest_SOURCES += tests/froidure-pin.element.test.cpp
-lstest_SOURCES += tests/froidure-pin.integers.test.cpp
-lstest_SOURCES += tests/froidure-pin.intmat.test.cpp
-lstest_SOURCES += tests/froidure-pin.intpairs.test.cpp
-lstest_SOURCES += tests/froidure-pin.pbr.test.cpp
-lstest_SOURCES += tests/froidure-pin.pperm.test.cpp
-lstest_SOURCES += tests/froidure-pin.projmaxplus.test.cpp
-lstest_SOURCES += tests/froidure-pin.transf.test.cpp
-lstest_SOURCES += tests/froidure-pin.tropmaxplus.test.cpp
-lstest_SOURCES += tests/hpcombi.test.cpp
-lstest_SOURCES += tests/kbe.test.cpp
-lstest_SOURCES += tests/knuth-bendix.test.cpp
-lstest_SOURCES += tests/konieczny.test.cpp
-lstest_SOURCES += tests/main.test.cpp
-lstest_SOURCES += tests/orb.test.cpp
-lstest_SOURCES += tests/race.test.cpp
-lstest_SOURCES += tests/runner.test.cpp
-lstest_SOURCES += tests/schreier-sims.test.cpp
-lstest_SOURCES += tests/semiring.test.cpp
-lstest_SOURCES += tests/timer.test.cpp
-lstest_SOURCES += tests/todd-coxeter.test.cpp
-lstest_SOURCES += tests/uf.test.cpp
-
-lstest_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
-lstest_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
-lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
-if LIBSEMIGROUPS_ASAN
-lstest_CXXFLAGS += -fno-omit-frame-pointer -fsanitize=address
-endif
-if LIBSEMIGROUPS_UBSAN
-lstest_CXXFLAGS += -fsanitize=undefined
-endif
-if LIBSEMIGROUPS_TSAN
-lstest_CXXFLAGS += -fsanitize=thread
-endif
-## Not currently supported on Mac OSX
-## lstest_CXXFLAGS += -fsanitize=memory -fPIE -pie
-
-lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
-lstest_LDADD = libsemigroups.la
-test_digraph_LDADD = libsemigroups.la
+test_orb_SOURCES =  tests/test_orb.cpp
+test_orb_SOURCES += tests/test_main.cpp
+ 
+# lstest_SOURCES =  tests/blocks.test.cpp
+# lstest_SOURCES += tests/bmat8.test.cpp
+# lstest_SOURCES += tests/cong-pair.test.cpp
+# lstest_SOURCES += tests/cong.test.cpp
+# lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
+# lstest_SOURCES += tests/containers.test.cpp
+# lstest_SOURCES += tests/element.test.cpp
+# lstest_SOURCES += tests/forest.test.cpp
+# lstest_SOURCES += tests/fpsemi-examples.cpp
+# lstest_SOURCES += tests/fpsemi.test.cpp
+# lstest_SOURCES += tests/froidure-pin.bipart.test.cpp
+# lstest_SOURCES += tests/froidure-pin.bmat8.test.cpp
+# lstest_SOURCES += tests/froidure-pin.boolmat.test.cpp
+# lstest_SOURCES += tests/froidure-pin.element.test.cpp
+# lstest_SOURCES += tests/froidure-pin.integers.test.cpp
+# lstest_SOURCES += tests/froidure-pin.intmat.test.cpp
+# lstest_SOURCES += tests/froidure-pin.intpairs.test.cpp
+# lstest_SOURCES += tests/froidure-pin.pbr.test.cpp
+# lstest_SOURCES += tests/froidure-pin.pperm.test.cpp
+# lstest_SOURCES += tests/froidure-pin.projmaxplus.test.cpp
+# lstest_SOURCES += tests/froidure-pin.transf.test.cpp
+# lstest_SOURCES += tests/froidure-pin.tropmaxplus.test.cpp
+# lstest_SOURCES += tests/hpcombi.test.cpp
+# lstest_SOURCES += tests/kbe.test.cpp
+# lstest_SOURCES += tests/knuth-bendix.test.cpp
+# lstest_SOURCES += tests/konieczny.test.cpp
+# lstest_SOURCES += tests/main.test.cpp
+# lstest_SOURCES += tests/orb.test.cpp
+# lstest_SOURCES += tests/race.test.cpp
+# lstest_SOURCES += tests/runner.test.cpp
+# lstest_SOURCES += tests/schreier-sims.test.cpp
+# lstest_SOURCES += tests/semiring.test.cpp
+# lstest_SOURCES += tests/timer.test.cpp
+# lstest_SOURCES += tests/todd-coxeter.test.cpp
+# lstest_SOURCES += tests/uf.test.cpp
+# 
+# lstest_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
+# lstest_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
+# lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
+# if LIBSEMIGROUPS_ASAN
+# lstest_CXXFLAGS += -fno-omit-frame-pointer -fsanitize=address
+# endif
+# if LIBSEMIGROUPS_UBSAN
+# lstest_CXXFLAGS += -fsanitize=undefined
+# endif
+# if LIBSEMIGROUPS_TSAN
+# lstest_CXXFLAGS += -fsanitize=thread
+# endif
+# ## Not currently supported on Mac OSX
+# ## lstest_CXXFLAGS += -fsanitize=memory -fPIE -pie
+# 
+# lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
 
 ## Make targets
 
@@ -234,7 +238,7 @@ check-standard: check
 
 check-all: CHECK_FLAGS2 =
 check-all: check
-.PHONY: check-quick, check-all
+.PHONY: check-standard, check-all
 
 format:
 	@echo "Running clang-format . . .";

@@ -116,24 +116,6 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     }
   }
 
-  // TODO this is not used, remove it
-  void check_file_prefixes(Catch::TestCaseInfo const& testInfo) {
-    std::string fname(testInfo.lineInfo.file);
-    auto        first  = fname.cbegin() + fname.find('/') + 1;  // Skip "tests/"
-    auto        last   = fname.find('.');
-    auto        prefix = std::string(first, fname.cbegin() + last);
-
-    if (!find_tag(testInfo, prefix)) {
-      {
-        Catch::Colour colourGuard(Catch::Colour::BrightRed);
-        Catch::cerr() << "Missing file prefix tag: [" + prefix + "]!\n"
-                      << "  in test case at " << testInfo.lineInfo.file << ":"
-                      << testInfo.lineInfo.line << "\n";
-      }
-      std::exit(1);
-    }
-  }
-
   size_t      _total_time = 0;
   std::string _msg;
 };

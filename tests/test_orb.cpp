@@ -19,13 +19,15 @@
 // 1. iwyu
 // 2. add examples from Orb
 
+#include "catch.hpp"                // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "bmat8.hpp"
 #include "element.hpp"
 #include "hpcombi.hpp"
-#include "libsemigroups.tests.hpp"
 #include "orb.hpp"
 #include "report.hpp"
 #include "timer.hpp"
+
+#include "test_main.hpp"
 
 namespace libsemigroups {
 

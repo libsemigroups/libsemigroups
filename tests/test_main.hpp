@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_
-#define LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_
+#ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+#define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
 #define STR2(X) #X
 #define STR(X) STR2(X)
@@ -27,4 +27,4 @@
             "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
             "][" STR(__LINE__) "]" tags)
 
-#endif  // LIBSEMIGROUPS_TESTS_LIBSEMIGROUPS_TESTS_HPP_
+#endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

@@ -44,3 +44,7 @@ extern/*
 test_*.o
 benchmark/build
 *.o.*
+*.info
+*.tmp
+test_digraph
+coverage

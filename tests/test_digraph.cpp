@@ -28,22 +28,39 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  ActionDigraph<size_t> cycle(size_t n) {
-    ActionDigraph<size_t> g(n, 1);
-    for (size_t i = 0; i < n - 1; ++i) {
-      g.add_edge(i, i + 1, 0);
-    }
-    g.add_edge(n - 1, 0, 0);
-    return g;
-  }
-
-  void cycle(ActionDigraph<size_t>& digraph, size_t n) {
+  void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
     size_t old_nodes = digraph.nr_nodes();
     digraph.add_nodes(n);
     for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
       digraph.add_edge(i, i + 1, 0);
     }
     digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
+  }
+
+  ActionDigraph<size_t> cycle(size_t n) {
+    ActionDigraph<size_t> g(0, 1);
+    add_cycle(g, n);
+    return g;
+  }
+
+  void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+    if (n != digraph.out_degree()) {
+      throw std::runtime_error("can't do it!");
+    }
+    size_t old_nodes = digraph.nr_nodes();
+    digraph.add_nodes(n);
+
+    for (size_t i = old_nodes; i < digraph.nr_nodes(); ++i) {
+      for (size_t j = old_nodes; j < digraph.nr_nodes(); ++j) {
+        digraph.add_edge(i, j, j - old_nodes);
+      }
+    }
+  }
+
+  ActionDigraph<size_t> clique(size_t n) {
+    ActionDigraph<size_t> g(0, n);
+    add_clique(g, n);
+    return g;
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -87,6 +104,8 @@ namespace libsemigroups {
     ActionDigraph<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
+      // The digraph isn't fully defined
+      REQUIRE_THROWS_AS(g.nr_scc(), LibsemigroupsException);
       for (size_t j = 0; j < 31; ++j) {
         g.add_edge(i, (7 * i + 23 * j) % 17, j);
       }
@@ -94,6 +113,7 @@ namespace libsemigroups {
 
     REQUIRE(g.nr_edges() == 31 * 17);
     REQUIRE(g.nr_nodes() == 17);
+    REQUIRE_THROWS_AS(g.add_edge(0, 0, 32), LibsemigroupsException);
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
@@ -135,7 +155,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "006",
-                          "Strongly connected components - no edges",
+                          "strongly connected components - no edges",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph = ActionDigraph<size_t>(0);
     for (size_t j = 1; j < 100; ++j) {
@@ -154,10 +174,10 @@ namespace libsemigroups {
     ActionDigraph<size_t> g;
     g.add_to_out_degree(1);
     for (size_t j = 2; j < 50; ++j) {
-      cycle(g, j);
+      add_cycle(g, j);
       REQUIRE(std::count_if(
-                  g.cbegin(),
-                  g.cend(),
+                  g.cbegin_nodes(),
+                  g.cend_nodes(),
                   [&g, j](size_t nd) -> bool { return g.scc_id(nd) == j - 2; })
               == j);
     }
@@ -169,7 +189,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "008",
-                          "Strongly connected components - complete graphs",
+                          "strongly connected components - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
       ActionDigraph<size_t> graph(k, k);
@@ -208,7 +228,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "010",
-                          "Spanning forest - complete graphs",
+                          "spanning forest - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
       ActionDigraph<size_t> graph(k, k);
@@ -221,15 +241,15 @@ namespace libsemigroups {
       }
       REQUIRE(graph.nr_scc() == 1);
 
-      Forest forest = graph.spanning_forest();
-
+      Forest const& forest = graph.spanning_forest();
       REQUIRE(forest.parent(k - 1) == UNDEFINED);
+      Forest const& tserof = graph.reverse_spanning_forest();
     }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "011",
-                          "Spanning forest - disjoint cycles",
+                          "spanning forest - disjoint cycles",
                           "[quick][digraph]") {
     size_t                j = 33;
     ActionDigraph<size_t> graph;
@@ -342,17 +362,174 @@ namespace libsemigroups {
     using node_type             = decltype(graph)::node_type;
 
     REQUIRE(std::all_of(
-        graph.cbegin(), graph.cend(), [&graph](node_type i) -> bool {
+        graph.cbegin_nodes(), graph.cend_nodes(), [&graph](node_type i) -> bool {
           return graph.scc_id(i) == 0;
         }));
-    cycle(graph, 10101);
+    add_cycle(graph, 10101);
     REQUIRE(std::all_of(
-        graph.cbegin(), graph.cend() - 10101, [&graph](node_type i) -> bool {
-          return graph.scc_id(i) == 0;
-        }));
+        graph.cbegin_nodes(),
+        graph.cend_nodes() - 10101,
+        [&graph](node_type i) -> bool { return graph.scc_id(i) == 0; }));
     REQUIRE(std::all_of(
-        graph.cbegin() + 100000, graph.cend(), [&graph](node_type i) -> bool {
-          return graph.scc_id(i) == 1;
-        }));
+        graph.cbegin_nodes() + 100000,
+        graph.cend_nodes(),
+        [&graph](node_type i) -> bool { return graph.scc_id(i) == 1; }));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "015",
+                          "random",
+                          "[quick][digraph]") {
+    ActionDigraph<size_t> graph = ActionDigraph<size_t>::random(10, 10);
+    REQUIRE(graph.nr_nodes() == 10);
+    REQUIRE(graph.nr_edges() == 100);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "016",
+                          "reserve",
+                          "[quick][digraph]") {
+    ActionDigraph<size_t> graph;
+    graph.reserve(10, 10);
+    REQUIRE(graph.nr_nodes() == 0);
+    REQUIRE(graph.nr_edges() == 0);
+    graph.add_nodes(1);
+    REQUIRE(graph.nr_nodes() == 1);
+    graph.add_nodes(9);
+    REQUIRE(graph.nr_nodes() == 10);
+    REQUIRE(graph.nr_edges() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "017",
+                          "default constructors",
+                          "[quick][digraph]") {
+    auto g1 = cycle(10);
+
+    // Copy constructor
+    auto g2(g1);
+    REQUIRE(g2.nr_edges() == 10);
+    REQUIRE(g2.nr_nodes() == 10);
+    REQUIRE(g2.nr_scc() == 1);
+
+    // Move constructor
+    auto g3(std::move(g2));
+    REQUIRE(g3.nr_edges() == 10);
+    REQUIRE(g3.nr_nodes() == 10);
+    REQUIRE(g3.nr_scc() == 1);
+
+    // Copy assignment
+    g2 = g3;
+    REQUIRE(g2.nr_edges() == 10);
+    REQUIRE(g2.nr_nodes() == 10);
+    REQUIRE(g2.nr_scc() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "018",
+                          "iterators",
+                          "[quick][digraph]") {
+    using node_type = decltype(clique(1))::node_type;
+
+    for (size_t n = 10; n < 512; n *= 4) {
+      auto g = clique(n);
+      REQUIRE(g.nr_nodes() == n);
+      REQUIRE(g.nr_edges() == n * n);
+      REQUIRE(g.nr_scc() == 1);
+
+      add_clique(g, n);
+
+      REQUIRE(g.nr_nodes() == 2 * n);
+      REQUIRE(g.nr_edges() == 2 * n * n);
+      REQUIRE(g.nr_scc() == 2);
+
+      auto expected   = std::vector<node_type>(n, 0);
+      std::iota(expected.begin(), expected.end(), 0);
+      auto result = std::vector<node_type>(g.cbegin_scc(0), g.cend_scc(0));
+      std::sort(result.begin(), result.end());
+      REQUIRE(result == expected);
+
+      std::iota(expected.begin(), expected.end(), n);
+      result.assign(g.cbegin_scc(1), g.cend_scc(1));
+      std::sort(result.begin(), result.end());
+      REQUIRE(result == expected);
+      REQUIRE_THROWS_AS(g.cbegin_scc(2), LibsemigroupsException);
+      REQUIRE_THROWS_AS(g.cend_scc(2), LibsemigroupsException);
+
+      result.assign(g.cbegin_scc_roots(), g.cend_scc_roots());
+      std::transform(result.begin(),
+                     result.end(),
+                     result.begin(),
+                     [&g](node_type i) { return g.scc_id(i); });
+
+      REQUIRE(result == std::vector<node_type>({0, 1}));
+    }
+    {
+      auto g = clique(10);
+      for (size_t n = 0; n < 99; ++n) {
+        add_clique(g, 10);
+      }
+      REQUIRE(g.nr_nodes() == 1000);
+      REQUIRE(g.nr_edges() == 10000);
+      REQUIRE(g.nr_scc() == 100);
+
+      auto result
+          = std::vector<node_type>(g.cbegin_scc_roots(), g.cend_scc_roots());
+      std::transform(result.begin(),
+                     result.end(),
+                     result.begin(),
+                     [&g](node_type i) { return g.scc_id(i); });
+
+      auto expected   = std::vector<node_type>(100, 0);
+      std::iota(expected.begin(), expected.end(), 0);
+
+      REQUIRE(result == expected);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "019",
+                          "iterator to edges",
+                          "[quick][digraph]") {
+    for (size_t n = 10; n < 512; n *= 4) {
+      auto g = clique(n);
+      REQUIRE(g.nr_nodes() == n);
+      REQUIRE(g.nr_edges() == n * n);
+      REQUIRE(g.nr_scc() == 1);
+
+      using node_type = decltype(g)::node_type;
+
+      auto expected   = std::vector<node_type>(n, 0);
+      std::iota(expected.begin(), expected.end(), 0);
+
+      for (auto it = g.cbegin_nodes(); it < g.cend_nodes(); ++it) {
+        auto result
+            = std::vector<node_type>(g.cbegin_edges(*it), g.cend_edges(*it));
+        REQUIRE(result == expected);
+      }
+      REQUIRE_THROWS_AS(g.cbegin_edges(n), LibsemigroupsException);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "020",
+                          "root of scc",
+                          "[quick][digraph]") {
+    auto g = clique(10);
+    for (size_t n = 0; n < 99; ++n) {
+      add_clique(g, 10);
+    }
+    REQUIRE(g.nr_nodes() == 1000);
+    REQUIRE(g.nr_edges() == 10000);
+    REQUIRE(g.nr_scc() == 100);
+
+    using node_type = decltype(g)::node_type;
+
+    for (auto it = g.cbegin_sccs(); it < g.cend_sccs(); ++it) {
+      REQUIRE(std::all_of(it->cbegin(), it->cend(), [&g](node_type v) {
+        return g.root_of_scc(v) == *g.cbegin_scc(g.scc_id(v));
+      }));
+    }
+    REQUIRE_THROWS_AS(g.root_of_scc(1000), LibsemigroupsException);
   }
 }  // namespace libsemigroups

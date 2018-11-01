@@ -22,8 +22,7 @@
 //! the action of a semigroup on a set.
 
 // TODO(now):
-// 1. A reserve method.
-// 2. Check that all of the methods actually work now (i.e. they have not been
+// 1. Check that all of the methods actually work now (i.e. they have not been
 //    revised).
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ORB_HPP_
