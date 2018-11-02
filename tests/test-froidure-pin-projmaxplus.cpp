@@ -23,7 +23,7 @@
 
 #include "element.hpp"              // for ProjectiveMaxPlusMatrix
 #include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "semiring.hpp"             // for MaxPlusSemiring, Semiring
 
 namespace libsemigroups {

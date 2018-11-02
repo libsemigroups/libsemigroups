@@ -22,7 +22,7 @@
 
 #include "element.hpp"              // for BooleanMat
 #include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "semiring.hpp"             // for BooleanSemiring
 
 namespace libsemigroups {

@@ -25,8 +25,8 @@
 #include "element.hpp"
 #include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups.tests.hpp"
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"
 
 namespace libsemigroups {
   // Forward declaration

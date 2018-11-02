@@ -16,7 +16,7 @@
 //
 
 #include "forest.hpp"
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include <stddef.h>                 // for size_t
 
 namespace libsemigroups {

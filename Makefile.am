@@ -117,7 +117,7 @@ libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 LINT_FORMAT_FILES_EXTRA =  src/kbe-impl.hpp 
 LINT_FORMAT_FILES_EXTRA += src/knuth-bendix-impl.hpp 
-LINT_FORMAT_FILES_EXTRA += tests/libsemigroups.tests.hpp
+## ?? LINT_FORMAT_FILES_EXTRA += tests/libsemigroups.tests.hpp
 
 EXTRA_DIST =  $(LINT_FORMAT_FILES_EXTRA)
 EXTRA_DIST += tests/catch.hpp

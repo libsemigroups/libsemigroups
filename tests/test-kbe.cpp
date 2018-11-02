@@ -22,7 +22,7 @@
 #include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
 #include "kbe.hpp"                  // for KBE
 #include "knuth-bendix.hpp"         // for KnuthBendix
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CAS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CAS
 
 namespace libsemigroups {
   template <class TElementType>

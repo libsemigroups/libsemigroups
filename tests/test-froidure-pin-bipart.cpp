@@ -22,7 +22,7 @@
 
 #include "element.hpp"              // for Bipartition
 #include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   // Forward declaration

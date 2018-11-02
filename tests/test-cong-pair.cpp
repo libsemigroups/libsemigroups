@@ -29,7 +29,7 @@
 #include "element.hpp"              // for Element
 #include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
 #include "knuth-bendix.hpp"         // for KnuthBendix
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "report.hpp"               // for REPORTER, Reporter
 #include "types.hpp"                // for relation_type, word_type
 #include "wrap.hpp"                 // for WrappedCong

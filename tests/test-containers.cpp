@@ -17,7 +17,7 @@
 //
 
 #include "containers.hpp"
-#include "libsemigroups.tests.hpp"
+#include "test-main.hpp"
 
 namespace libsemigroups {
   namespace internal {

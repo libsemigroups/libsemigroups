@@ -18,7 +18,7 @@
 
 // The purpose of this file is to test the Runner class.
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "runner.hpp"               // for Race
 
 namespace libsemigroups {

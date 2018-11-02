@@ -17,7 +17,7 @@
 //
 
 #include "constants.hpp"
-#include "libsemigroups.tests.hpp"
+#include "test-main.hpp"
 
 namespace libsemigroups {
   constexpr bool REPORT = false;

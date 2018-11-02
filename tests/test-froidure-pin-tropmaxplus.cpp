@@ -24,7 +24,7 @@
 #include "element.hpp"              // for MatrixOverSemiring
 #include "froidure-pin.hpp"         // for FroidurePin, FroidurePin<>::eleme...
 #include "iterator.hpp"             // for iterator_base
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "semiring.hpp"             // for TropicalMaxPlusSemiring, Semiring
 #include "traits.hpp"               // for TraitsHashEqual
 

@@ -22,7 +22,7 @@
 
 #include "bmat8.hpp"
 #include "froidure-pin.hpp"
-#include "libsemigroups.tests.hpp"
+#include "test-main.hpp"
 #include "timer.hpp"
 
 namespace libsemigroups {

@@ -20,7 +20,7 @@
 #include <string>    // for operator==
 #include <thread>    // for sleep_for
 
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "timer.hpp"                // for internal::Timer, operator<<
 
 namespace libsemigroups {

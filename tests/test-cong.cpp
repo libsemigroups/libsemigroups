@@ -24,7 +24,7 @@
 #include "fpsemi.hpp"               // for FpSemigroup
 #include "froidure-pin.hpp"         // for FroidurePin
 #include "knuth-bendix.hpp"         // for KnuthBendix
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "report.hpp"               // for REPORTER, Reporter
 #include "types.hpp"                // for word_type
 

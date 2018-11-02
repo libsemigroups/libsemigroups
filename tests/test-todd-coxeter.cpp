@@ -30,7 +30,7 @@
 #include "froidure-pin-base.hpp"    // for FroidurePinBase
 #include "froidure-pin.hpp"         // for FroidurePin, FroidurePin<>::eleme...
 #include "knuth-bendix.hpp"         // for KnuthBendix
-#include "libsemigroups.tests.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "tce.hpp"                  // for TCE
 #include "todd-coxeter.hpp"         // for ToddCoxeter
 #include "types.hpp"                // for relation_type, word_type
