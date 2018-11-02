@@ -14,15 +14,12 @@ if ! [[ -x configure ]]; then
 fi
 if ! [[ -f config.log ]]; then
   ./configure --enable-code-coverage;
-elif grep -q \"--enable-code-coverage\" config.log; then 
+elif ! grep -q "\-\-enable-code\-coverage" config.log; then 
+  make clean
   ./configure --enable-code-coverage;
 fi
 
 make $1 -j4
-if [[ ! -f $1 || ! -x $1 ]]; then 
-  echo "Error: can't find the executable $1"; 
-  exit 1
-fi
 find . -name '*.gcda' -delete
 
 ./$1 "[quick]"

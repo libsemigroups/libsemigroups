@@ -146,7 +146,8 @@ namespace libsemigroups {
       using Code = ColourGuard::Code;
 
      public:
-      Reporter() : _next_tid(0), _report(false), _thread_map() {
+      Reporter()
+          : _next_tid(0), _ostream(&std::cout), _report(false), _thread_map() {
         // Get thread id 0 for the main thread
         thread_id(std::this_thread::get_id());
       }
@@ -159,10 +160,10 @@ namespace libsemigroups {
           size_t tid = thread_id(std::this_thread::get_id());
           std::lock_guard<std::mutex> lg(_mtx);
           ColourGuard                 cg(tid);
-          std::cout << cg << "#" << tid << ": " << class_name(ptr) << ": ";
-          int dummy[sizeof...(TParams)] = {(std::cout << args, 0)...};
+          (*_ostream) << cg << "#" << tid << ": " << class_name(ptr) << ": ";
+          int dummy[sizeof...(TParams)] = {((*_ostream) << args, 0)...};
           (void) dummy;
-          std::cout << '\n';
+          (*_ostream) << '\n';
         }
       }
 
@@ -199,6 +200,10 @@ namespace libsemigroups {
           _thread_map.emplace(tid, _next_tid++);
           return _next_tid - 1;
         }
+      }
+
+      void set_ostream(std::ostream& os) {
+        _ostream = &os;
       }
 
      private:
@@ -242,6 +247,7 @@ namespace libsemigroups {
       std::unordered_map<size_t, std::string>     _class_name_map;
       std::mutex                                  _mtx;
       size_t                                      _next_tid;
+      std::ostream*                               _ostream;
       std::atomic<bool>                           _report;
       std::unordered_map<std::thread::id, size_t> _thread_map;
     };
@@ -250,7 +256,7 @@ namespace libsemigroups {
   extern internal::Reporter REPORTER;
 
   struct ReportGuard {
-    ReportGuard();
+    explicit ReportGuard(std::ostream& os = std::cout);
     ~ReportGuard();
   };
 

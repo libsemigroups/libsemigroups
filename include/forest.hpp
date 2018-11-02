@@ -16,6 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(FLS):
+// 1. Doc
+// 2. Code coverage
+// 3. Assertions and exceptions
+
 #ifndef LIBSEMIGROUPS_INCLUDE_FOREST_HPP_
 #define LIBSEMIGROUPS_INCLUDE_FOREST_HPP_
 

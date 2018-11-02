@@ -161,10 +161,12 @@ namespace libsemigroups {
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
 
+    row_orb.reserve(1000);
+
     REQUIRE(row_orb.size() == 553);
-    REQUIRE(row_orb.nr_scc() == 14);
-    REQUIRE(std::vector<size_t>(row_orb.cbegin_scc_roots(),
-                                row_orb.cend_scc_roots())
+    REQUIRE(row_orb.digraph().nr_scc() == 14);
+    REQUIRE(std::vector<size_t>(row_orb.digraph().cbegin_scc_roots(),
+                                row_orb.digraph().cend_scc_roots())
             == std::vector<size_t>({277,
                                     317,
                                     160,
@@ -380,7 +382,7 @@ namespace libsemigroups {
                           16));
     o.reserve(70000);
     REQUIRE(o.size() == 65536);
-    REQUIRE(o.action_digraph().nr_scc() == 17);
+    REQUIRE(o.digraph().nr_scc() == 17);
   }
 
   template <>
@@ -415,7 +417,7 @@ namespace libsemigroups {
                           {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                           16));
     REQUIRE(o.size() == 65536);
-    REQUIRE(o.action_digraph().nr_scc() == 17);
+    REQUIRE(o.digraph().nr_scc() == 17);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Orb", "011", "permutation on integers", "[quick]") {
@@ -426,7 +428,7 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
 
     REQUIRE(o.size() == 8);
-    REQUIRE(o.action_digraph().nr_scc() == 1);
+    REQUIRE(o.digraph().nr_scc() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Orb",
@@ -489,4 +491,68 @@ namespace libsemigroups {
 
     REQUIRE(o.size() == 30240);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb", "016", "misc", "[quick]") {
+    using Perm = Perm<8>::type;
+    Orb<Perm, u_int8_t, on_points<Perm, u_int8_t>> o;
+    REQUIRE(o.current_size() == 0);
+    REQUIRE(o.empty());
+    REQUIRE_THROWS_AS(o.multiplier_to_scc_root(10), LibsemigroupsException);
+    o.add_seed(0);
+    REQUIRE(!o.empty());
+    REQUIRE(std::vector<u_int8_t>(o.cbegin(), o.cend()) ==
+            std::vector<u_int8_t>({0}));
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
+    o.report_every(std::chrono::nanoseconds(10));
+
+    REQUIRE(o.current_size() == 1);
+    std::ostringstream os;
+    auto rg = ReportGuard(os);
+    REQUIRE(o.size() == 8);
+    REQUIRE(o.digraph().nr_scc() == 1);
+    REQUIRE(o.position(10) == UNDEFINED);
+    REQUIRE(o.current_size() == 8);
+    REQUIRE_THROWS_AS(o.at(10), std::out_of_range);
+    REQUIRE_NOTHROW(o[10]);
+    REQUIRE(o[0] == 0);
+    REQUIRE(o[1] == 1);
+    REQUIRE(o.at(0) == 0);
+    REQUIRE(o.at(1) == 1);
+    REQUIRE_THROWS_AS(o.multiplier_to_scc_root(10), LibsemigroupsException);
+    REQUIRE_THROWS_AS(o.multiplier_from_scc_root(10), LibsemigroupsException);
+    std::vector<u_int8_t> result(o.cbegin(), o.cend());
+    std::sort(result.begin(), result.end());
+    REQUIRE(result == std::vector<u_int8_t>({0, 1, 2, 3, 4, 5, 6, 7}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb", "017", "partial perm image orbit", "[quick]") {
+    // auto rg = ReportGuard();
+    using PPerm = PPerm<3>::type;
+    Orb<PPerm, PPerm, right_action<PPerm, PPerm>> o;
+    o.add_seed(one<PPerm>()(3));
+    o.add_generator(
+        PPerm({0, 1, 2}, {1, 2, 0}, 3));
+    o.add_generator(
+        PPerm({0, 1, 2}, {1, 0, 2 }, 3));
+    o.add_generator(PPerm({1, 2}, {0, 1}, 3));
+    o.add_generator(PPerm({0, 1}, {1, 2}, 3));
+    REQUIRE(o.size() == 9);
+    REQUIRE(std::vector<PPerm>(o.cbegin(), o.cend())
+            == std::vector<PPerm>({one<PPerm>()(3),
+                                   PPerm({0, 1, 2}, {0, 1, 2}, 3),
+                                   PPerm({0, 1}, {0, 1}, 3),
+                                   PPerm({1, 2}, {1, 2}, 3),
+                                   PPerm({0}, {0}, 3),
+                                   PPerm({0, 2}, {0, 2}, 3),
+                                   PPerm({2}, {2}, 3),
+                                   PPerm({1}, {1}, 3),
+                                   PPerm({}, {}, 3)}));
+    REQUIRE_THROWS_AS(o.digraph().cbegin_scc(10), LibsemigroupsException);
+    REQUIRE(o.root_of_scc(PPerm({0, 2}, {0, 2}, 3)) == PPerm({0, 2}, {0, 2}, 3));
+    REQUIRE(o.root_of_scc(PPerm({0, 1}, {0, 1}, 3)) == PPerm({0, 2}, {0, 2}, 3));
+    REQUIRE_THROWS_AS(o.root_of_scc(PPerm({0, 3}, {0, 3}, 4)),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups

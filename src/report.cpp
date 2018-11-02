@@ -21,11 +21,13 @@
 namespace libsemigroups {
   internal::Reporter REPORTER;
 
-  ReportGuard::ReportGuard() {
+  ReportGuard::ReportGuard(std::ostream& os) {
     REPORTER.set_report(true);
+    REPORTER.set_ostream(os);
   }
 
   ReportGuard::~ReportGuard() {
     REPORTER.set_report(false);
+    REPORTER.set_ostream(std::cout);
   }
 }  // namespace libsemigroups
