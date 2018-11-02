@@ -138,7 +138,7 @@ namespace libsemigroups {
           _orb(),
           _pos(0),
           _tmp_point(),
-          _tmp_point_init(false) { }
+          _tmp_point_init(false) {}
 
     ~Orb() {
       if (_tmp_point_init) {
@@ -285,10 +285,9 @@ namespace libsemigroups {
 
     element_type multiplier_from_scc_root(index_type pos) {
       if (pos >= current_size()) {
-        (
-            "index out of range, expected value in [0, "
-            + internal::to_string(current_size()) + ") but found "
-            + internal::to_string(pos));
+        ("index out of range, expected value in [0, "
+         + internal::to_string(current_size()) + ") but found "
+         + internal::to_string(pos));
       }
       element_type out = one()();  // TODO Not general enough
       element_type tmp = one()();  // TODO Not general enough
@@ -302,10 +301,9 @@ namespace libsemigroups {
 
     element_type multiplier_to_scc_root(index_type pos) {
       if (pos >= current_size()) {
-        (
-            "index out of range, expected value in [0, "
-            + internal::to_string(current_size()) + ") but found "
-            + internal::to_string(pos));
+        ("index out of range, expected value in [0, "
+         + internal::to_string(current_size()) + ") but found "
+         + internal::to_string(pos));
       }
       element_type out = one()();  // TODO Not general enough
       element_type tmp = one()();  // TODO Not general enough

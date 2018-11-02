@@ -18,6 +18,7 @@
 #include "froidure-pin.hpp"
 #include "konieczny.hpp"
 #include "test-main.hpp"
+#include "catch.hpp"
 
 using namespace libsemigroups;
 

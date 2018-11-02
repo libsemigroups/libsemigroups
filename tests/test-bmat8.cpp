@@ -20,9 +20,11 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
+#include "catch.hpp"
+#include "test-main.hpp"
+
 #include "bmat8.hpp"
 #include "froidure-pin.hpp"
-#include "test-main.hpp"
 #include "timer.hpp"
 
 namespace libsemigroups {
@@ -583,8 +585,8 @@ namespace libsemigroups {
     FroidurePin<BMat8> S(gens);
 
     for (auto it = S.begin(); it < S.end(); it++) {
-      BMat8                x          = *it;
-      rows       = x.rows();
+      BMat8 x                         = *it;
+      rows                            = x.rows();
       std::vector<uint8_t> basis_rows = x.row_space_basis().rows();
       for (uint8_t row : basis_rows) {
         REQUIRE((row == 0
@@ -606,12 +608,11 @@ namespace libsemigroups {
   //}
 
   /*
-  LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "count row space sizes", "[extreme]") {
-    const std::vector<BMat8> bmat4_gens
-        = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "count row space sizes", "[extreme]")
+  { const std::vector<BMat8> bmat4_gens = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0},
+  {0, 0, 1, 0}, {0, 0, 0, 1}}), BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1},
+  {0, 0, 1, 1}}), BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0,
+  1}}), BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}),
            BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),

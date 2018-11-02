@@ -26,7 +26,7 @@
 #define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
 
 #include <algorithm>  // for std::sort
-#include <utility>  // for std::swap
+#include <utility>    // for std::swap
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
 

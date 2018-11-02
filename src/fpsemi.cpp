@@ -92,8 +92,7 @@ namespace libsemigroups {
     if (_race.empty()) {
       if (alphabet().empty()) {
         // TODO(now) is this consistent with CongBase?
-        LIBSEMIGROUPS_EXCEPTION(
-            "no alphabet or rules have been specified");
+        LIBSEMIGROUPS_EXCEPTION("no alphabet or rules have been specified");
       } else {
         // Nothing in _race means no rules
         return true;
@@ -114,8 +113,7 @@ namespace libsemigroups {
         return true;
       } else {
         // TODO(now) is this consistent with CongBase?
-        LIBSEMIGROUPS_EXCEPTION(
-            "no alphabet or rules have been specified");
+        LIBSEMIGROUPS_EXCEPTION("no alphabet or rules have been specified");
       }
     }
     for (auto it = _race.begin(); it < _race.end(); ++it) {

@@ -313,9 +313,9 @@ namespace libsemigroups {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
         LIBSEMIGROUPS_EXCEPTION("invalid letter " + internal::to_string(l)
-                                      + " in word " + internal::to_string(w)
-                                      + ", the valid range is [0, "
-                                      + internal::to_string(_nr_gens) + ")");
+                                + " in word " + internal::to_string(w)
+                                + ", the valid range is [0, "
+                                + internal::to_string(_nr_gens) + ")");
       }
     }
   }

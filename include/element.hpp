@@ -977,7 +977,8 @@ namespace libsemigroups {
     }
 
     PartialPerm<TValueType> image() const {
-      std::vector<TValueType> img(this->degree(), static_cast<TValueType>(UNDEFINED));
+      std::vector<TValueType> img(this->degree(),
+                                  static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
       for (size_t i = 0; i < size; ++i) {
         if (this->_vector[i] != UNDEFINED) {
@@ -988,7 +989,8 @@ namespace libsemigroups {
     }
 
     PartialPerm<TValueType> domain() const {
-      std::vector<TValueType> dom(this->degree(), static_cast<TValueType>(UNDEFINED));
+      std::vector<TValueType> dom(this->degree(),
+                                  static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
       for (size_t i = 0; i < size; ++i) {
         if (this->_vector[i] != UNDEFINED) {
@@ -1574,10 +1576,9 @@ namespace libsemigroups {
       std::vector<bool> present(this->degree(), false);
       for (auto const& val : this->_vector) {
         if (val < 0 || val >= this->degree()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "image value out of bounds, found "
-              <<static_cast<size_t>(val)
-              << ", must be less than " <<this->degree());
+          LIBSEMIGROUPS_EXCEPTION("image value out of bounds, found "
+                                  << static_cast<size_t>(val)
+                                  << ", must be less than " << this->degree());
         } else if (present[val]) {
           LIBSEMIGROUPS_EXCEPTION("duplicate image value "
                                   << static_cast<size_t>(val));

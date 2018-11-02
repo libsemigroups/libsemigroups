@@ -20,10 +20,11 @@
 
 #include <vector>  // for vector
 
-#include "element.hpp"              // for BooleanMat
-#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "semiring.hpp"             // for BooleanSemiring
+#include "element.hpp"       // for BooleanMat
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "test-main.hpp"
+#include "catch.hpp"     // for LIBSEMIGROUPS_TEST_CASE
+#include "semiring.hpp"  // for BooleanSemiring
 
 namespace libsemigroups {
   // Forward declaration

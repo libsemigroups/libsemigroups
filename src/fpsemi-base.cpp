@@ -74,8 +74,7 @@ namespace libsemigroups {
 
   void FpSemiBase::set_alphabet(std::string const& lphbt) {
     if (!_alphabet.empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the alphabet cannot be set more than once");
+      LIBSEMIGROUPS_EXCEPTION("the alphabet cannot be set more than once");
     } else if (lphbt.empty()) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
     }
@@ -95,13 +94,11 @@ namespace libsemigroups {
 
   void FpSemiBase::set_alphabet(size_t const nr_letters) {
     if (!_alphabet.empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the alphabet cannot be set more than once");
+      LIBSEMIGROUPS_EXCEPTION("the alphabet cannot be set more than once");
     } else if (nr_letters == 0) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
     } else if (nr_letters > 256) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the alphabet must contain at most 256 letters");
+      LIBSEMIGROUPS_EXCEPTION("the alphabet must contain at most 256 letters");
     }
     for (size_t i = 0; i < nr_letters; ++i) {
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -159,9 +156,9 @@ namespace libsemigroups {
   void FpSemiBase::add_rules(FroidurePinBase& S) {
     if (!_alphabet.empty() && _alphabet.size() != S.nr_generators()) {
       LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
-                                    + internal::to_string(S.nr_generators())
-                                    + ", should be at most "
-                                    + internal::to_string(_alphabet.size()));
+                              + internal::to_string(S.nr_generators())
+                              + ", should be at most "
+                              + internal::to_string(_alphabet.size()));
     }
     add_rules_impl(S);
     reset();
@@ -403,9 +400,9 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter " + std::string(1, l) + " in word " + w
-            + ", valid letters are \"" + _alphabet + "\"");
+        LIBSEMIGROUPS_EXCEPTION("invalid letter " + std::string(1, l)
+                                + " in word " + w + ", valid letters are \""
+                                + _alphabet + "\"");
       }
     }
     // Use validate_word_impl to impose or lift any further restrictions on
@@ -418,10 +415,10 @@ namespace libsemigroups {
     for (auto l : w) {
       // validate_letter throws if no generators are defined
       if (!validate_letter(l)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter " + internal::to_string(l) + " in word "
-            + internal::to_string(w) + ", the valid range is [0, "
-            + internal::to_string(_alphabet.size()) + ")");
+        LIBSEMIGROUPS_EXCEPTION("invalid letter " + internal::to_string(l)
+                                + " in word " + internal::to_string(w)
+                                + ", the valid range is [0, "
+                                + internal::to_string(_alphabet.size()) + ")");
       }
     }
     // Use validate_word_impl to impose or lift any further restrictions on
@@ -486,22 +483,22 @@ namespace libsemigroups {
   void FpSemiBase::validate_word_impl(std::string const& w) const {
     if (w.empty()) {
       LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
-                                    "words must be non-empty");
+                              "words must be non-empty");
     }
   }
 
   void FpSemiBase::validate_word_impl(word_type const& w) const {
     if (w.empty()) {
       LIBSEMIGROUPS_EXCEPTION("invalid word, found the empty word but "
-                                    "words must be non-empty");
+                              "words must be non-empty");
     }
   }
 
   bool FpSemiBase::validate_identity_impl(std::string const& id) const {
     if (id.length() != 1) {
       LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
-                                    + internal::to_string(id.length())
-                                    + " letters, should be single letter");
+                              + internal::to_string(id.length())
+                              + " letters, should be single letter");
     }
     validate_letter(id[0]);
     return true;

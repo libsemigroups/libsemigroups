@@ -30,10 +30,10 @@
 #include <utility>    // for hash
 #include <vector>     // for vector
 
-#include "adapters.hpp"             // for complexity, degree, etc . . .
+#include "adapters.hpp"  // for complexity, degree, etc . . .
+#include "element.hpp"
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "stl.hpp"                  // for internal::to_string
-#include "element.hpp"
 
 namespace libsemigroups {
 
@@ -169,23 +169,23 @@ namespace libsemigroups {
     BMat8 operator*(BMat8 const& that) const;
 
     Permutation<uint8_t> right_perm_action_on_basis(BMat8 bm) const {
-    // LIBSEMIGROUPS_ASSERT(basis.row_space_basis() == basis);
-    std::vector<uint8_t> rows = this->rows();
-    BMat8                product   = *this * bm;
-    std::vector<uint8_t> prod_rows = product.rows();
+      // LIBSEMIGROUPS_ASSERT(basis.row_space_basis() == basis);
+      std::vector<uint8_t> rows      = this->rows();
+      BMat8                product   = *this * bm;
+      std::vector<uint8_t> prod_rows = product.rows();
 
-    // LIBSEMIGROUPS_ASSERT(product.row_space_basis() == basis);
+      // LIBSEMIGROUPS_ASSERT(product.row_space_basis() == basis);
 
-    std::vector<uint8_t> perm(8);
-    for (size_t i = 0; i < nr_rows(); ++i) {
+      std::vector<uint8_t> perm(8);
+      for (size_t i = 0; i < nr_rows(); ++i) {
         uint8_t row = rows[i];
         perm[i]
             = std::distance(prod_rows.begin(),
                             std::find(prod_rows.begin(), prod_rows.end(), row));
+      }
+      std::iota(perm.begin() + nr_rows(), perm.end(), nr_rows());
+      return Permutation<uint8_t>(perm);
     }
-    std::iota(perm.begin() + nr_rows(), perm.end(), nr_rows());
-    return Permutation<uint8_t>(perm);
- }
 
     //! Insertion operator
     //!

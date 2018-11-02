@@ -18,6 +18,7 @@
 
 #include "containers.hpp"
 #include "test-main.hpp"
+#include "catch.hpp"
 
 namespace libsemigroups {
   namespace internal {

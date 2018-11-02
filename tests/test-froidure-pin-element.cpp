@@ -26,11 +26,12 @@
 #include "froidure-pin.hpp"          // for FroidurePin, FroidurePi...
 #include "iterator.hpp"              // for iterator_base, operator+
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-#include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
-#include "report.hpp"                // for REPORTER, Reporter
-#include "semiring.hpp"              // for Integers, Semiring, Max...
-#include "traits.hpp"                // for TraitsHashEqual
-#include "types.hpp"                 // for word_type, letter_type
+#include "test-main.hpp"
+#include "catch.hpp"     // for LIBSEMIGROUPS_TEST_CASE
+#include "report.hpp"    // for REPORTER, Reporter
+#include "semiring.hpp"  // for Integers, Semiring, Max...
+#include "traits.hpp"    // for TraitsHashEqual
+#include "types.hpp"     // for word_type, letter_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

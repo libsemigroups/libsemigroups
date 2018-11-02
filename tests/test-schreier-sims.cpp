@@ -27,9 +27,10 @@
 
 #include <cstdint>  // for uint64_t
 
-#include "element.hpp"              // for Permutation
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "schreier-sims.hpp"        // for SchreierSims, SchreierSims<>::ele...
+#include "element.hpp"  // for Permutation
+#include "test-main.hpp"
+#include "catch.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 
 namespace libsemigroups {
   struct LibsemigroupsException;

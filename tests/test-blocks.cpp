@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "blocks.hpp"     // for Blocks
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "element.hpp"    // for Bipartition
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE, ...
+#include "blocks.hpp"   // for Blocks
+#include "element.hpp"  // for Bipartition
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE, ...
 
 namespace libsemigroups {
 

@@ -25,7 +25,8 @@
 #include "element.hpp"
 #include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "froidure-pin.hpp"
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
 namespace libsemigroups {

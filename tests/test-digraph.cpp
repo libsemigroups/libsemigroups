@@ -19,9 +19,9 @@
 #include <stddef.h>  // for size_t
 #include <vector>    // for vector
 
-#include "catch.hpp"                // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "digraph.hpp"              // for ActionDigraph
-#include "forest.hpp"               // for Forest
+#include "catch.hpp"    // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "digraph.hpp"  // for ActionDigraph
+#include "forest.hpp"   // for Forest
 #include "test-main.hpp"
 
 namespace libsemigroups {
@@ -362,9 +362,9 @@ namespace libsemigroups {
     using node_type             = decltype(graph)::node_type;
 
     REQUIRE(std::all_of(
-        graph.cbegin_nodes(), graph.cend_nodes(), [&graph](node_type i) -> bool {
-          return graph.scc_id(i) == 0;
-        }));
+        graph.cbegin_nodes(),
+        graph.cend_nodes(),
+        [&graph](node_type i) -> bool { return graph.scc_id(i) == 0; }));
     add_cycle(graph, 10101);
     REQUIRE(std::all_of(
         graph.cbegin_nodes(),
@@ -443,7 +443,7 @@ namespace libsemigroups {
       REQUIRE(g.nr_edges() == 2 * n * n);
       REQUIRE(g.nr_scc() == 2);
 
-      auto expected   = std::vector<node_type>(n, 0);
+      auto expected = std::vector<node_type>(n, 0);
       std::iota(expected.begin(), expected.end(), 0);
       auto result = std::vector<node_type>(g.cbegin_scc(0), g.cend_scc(0));
       std::sort(result.begin(), result.end());
@@ -480,7 +480,7 @@ namespace libsemigroups {
                      result.begin(),
                      [&g](node_type i) { return g.scc_id(i); });
 
-      auto expected   = std::vector<node_type>(100, 0);
+      auto expected = std::vector<node_type>(100, 0);
       std::iota(expected.begin(), expected.end(), 0);
 
       REQUIRE(result == expected);
@@ -499,7 +499,7 @@ namespace libsemigroups {
 
       using node_type = decltype(g)::node_type;
 
-      auto expected   = std::vector<node_type>(n, 0);
+      auto expected = std::vector<node_type>(n, 0);
       std::iota(expected.begin(), expected.end(), 0);
 
       for (auto it = g.cbegin_nodes(); it < g.cend_nodes(); ++it) {

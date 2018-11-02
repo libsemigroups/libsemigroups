@@ -19,7 +19,6 @@
 // 1. iwyu
 // 2. add examples from Orb
 
-#include "catch.hpp"                // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "bmat8.hpp"
 #include "element.hpp"
 #include "hpcombi.hpp"
@@ -28,6 +27,7 @@
 #include "timer.hpp"
 
 #include "test-main.hpp"
+#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 
 namespace libsemigroups {
 

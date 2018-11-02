@@ -24,8 +24,9 @@
 #include "bmat8.hpp"                 // for BMat8
 #include "froidure-pin.hpp"          // for FroidurePin, FroidurePi...
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-#include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
-#include "types.hpp"                 // for word_type
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "types.hpp"  // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

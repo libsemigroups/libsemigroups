@@ -18,8 +18,9 @@
 
 // The purpose of this file is to test the Race class.
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "race.hpp"                 // for Race
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "race.hpp"   // for Race
 
 namespace libsemigroups {
   struct LibsemigroupsException;

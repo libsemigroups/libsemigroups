@@ -138,12 +138,11 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter const& copy)
         : ToddCoxeter(typ) {
       if (copy.type() != congruence_type::TWOSIDED && typ != copy.type()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "incompatible types of congruence, found ("
-            + congruence_type_to_string(copy.type()) + " / "
-            + congruence_type_to_string(typ)
-            + ") but only (left / left), (right / "
-              "right), (two-sided / *) are valid");
+        LIBSEMIGROUPS_EXCEPTION("incompatible types of congruence, found ("
+                                + congruence_type_to_string(copy.type()) + " / "
+                                + congruence_type_to_string(typ)
+                                + ") but only (left / left), (right / "
+                                  "right), (two-sided / *) are valid");
       }
       LIBSEMIGROUPS_ASSERT(!_relations_are_reversed
                            || typ == congruence_type::LEFT);

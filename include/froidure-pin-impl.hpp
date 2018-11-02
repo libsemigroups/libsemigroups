@@ -134,10 +134,10 @@ namespace libsemigroups {
     for (size_t i = 0; i < _nrgens; ++i) {
       size_t degree = internal_degree()(this->to_internal_const((*gens)[i]));
       if (degree != _degree) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "generator " + internal::to_string(i) + " has degree "
-            + internal::to_string(degree) + " but should have degree "
-            + internal::to_string(_degree));
+        LIBSEMIGROUPS_EXCEPTION("generator " + internal::to_string(i)
+                                + " has degree " + internal::to_string(degree)
+                                + " but should have degree "
+                                + internal::to_string(_degree));
       }
     }
     for (const_reference x : *gens) {
@@ -1173,9 +1173,9 @@ namespace libsemigroups {
 
   VOID FROIDURE_PIN::validate_letter_index(letter_type i) const {
     if (i >= nr_generators()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "there are only  " + internal::to_string(nr_generators())
-          + " generators, not " + internal::to_string(i));
+      LIBSEMIGROUPS_EXCEPTION("there are only  "
+                              + internal::to_string(nr_generators())
+                              + " generators, not " + internal::to_string(i));
     }
   }
 

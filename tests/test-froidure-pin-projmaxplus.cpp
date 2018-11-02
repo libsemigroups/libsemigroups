@@ -21,10 +21,11 @@
 #include <cinttypes>  // for int64_t
 #include <vector>     // for vector
 
-#include "element.hpp"              // for ProjectiveMaxPlusMatrix
-#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "semiring.hpp"             // for MaxPlusSemiring, Semiring
+#include "element.hpp"       // for ProjectiveMaxPlusMatrix
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "test-main.hpp"
+#include "catch.hpp"     // for LIBSEMIGROUPS_TEST_CASE
+#include "semiring.hpp"  // for MaxPlusSemiring, Semiring
 
 namespace libsemigroups {
   // Forward declaration

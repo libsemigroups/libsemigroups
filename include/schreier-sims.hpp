@@ -139,10 +139,9 @@ namespace libsemigroups {
 
     const_reference generator(size_t index) {
       if (index >= _strong_gens.size(0)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the argument must be at most "
-            + internal::to_string(_strong_gens.size(0)) + ", not "
-            + internal::to_string(index));
+        LIBSEMIGROUPS_EXCEPTION("the argument must be at most "
+                                + internal::to_string(_strong_gens.size(0))
+                                + ", not " + internal::to_string(index));
       }
       return this->to_external_const(_strong_gens.at(0, index));
     }
@@ -228,16 +227,16 @@ namespace libsemigroups {
     void add_base_point(point_type const pt) {
       if (pt >= N) {
         LIBSEMIGROUPS_EXCEPTION("the new base point must be at most "
-                                      + internal::to_string(N - 1) + ", not "
-                                      + internal::to_string(size_t(pt)));
+                                + internal::to_string(N - 1) + ", not "
+                                + internal::to_string(size_t(pt)));
       } else if (finished()) {
         LIBSEMIGROUPS_EXCEPTION("cannot add "
-                                      "further base points");
+                                "further base points");
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
             LIBSEMIGROUPS_EXCEPTION(internal::to_string(size_t(pt))
-                                          + " is already a base point");
+                                    + " is already a base point");
           }
         }
       }
@@ -247,8 +246,8 @@ namespace libsemigroups {
     point_type base(index_type const index) const {
       if (index >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION("the index must be at most "
-                                      + internal::to_string(_base_size)
-                                      + ", not " + internal::to_string(index));
+                                + internal::to_string(_base_size) + ", not "
+                                + internal::to_string(index));
       }
       return _base[index];
     }

@@ -16,8 +16,9 @@
 //
 
 #include "forest.hpp"
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include <stddef.h>                 // for size_t
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include <stddef.h>   // for size_t
 
 namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Forest", "001", "test forest", "[quick]") {

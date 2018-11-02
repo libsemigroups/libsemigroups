@@ -209,9 +209,8 @@ namespace libsemigroups {
         ++next;
       } else if (j > next) {
         LIBSEMIGROUPS_EXCEPTION("expected " + internal::to_string(next)
-                                      + " but found " + internal::to_string(j)
-                                      + ", in position "
-                                      + internal::to_string(i));
+                                + " but found " + internal::to_string(j)
+                                + ", in position " + internal::to_string(i));
       }
     }
   }
@@ -436,12 +435,11 @@ namespace libsemigroups {
       }
     }
     if (deg < 2 * max) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the blocks given do not "
-          "disjoint union to the ranges [-"
-          + internal::to_string(-max) + ".. -1] U [1 .. "
-          + internal::to_string(max) + "]: " + internal::to_string(deg)
-          + " elements given");
+      LIBSEMIGROUPS_EXCEPTION("the blocks given do not "
+                              "disjoint union to the ranges [-"
+                              + internal::to_string(-max) + ".. -1] U [1 .. "
+                              + internal::to_string(max) + "]: "
+                              + internal::to_string(deg) + " elements given");
     }
     if (max >= static_cast<int32_t>(0x40000000)) {
       LIBSEMIGROUPS_EXCEPTION("too many points");
@@ -463,14 +461,14 @@ namespace libsemigroups {
           if (out[static_cast<uint32_t>(max - x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
             LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
-                                          + " twice");
+                                    + " twice");
           }
           out[static_cast<uint32_t>(max - x - 1)] = i;
         } else {
           if (out[static_cast<uint32_t>(x - 1)]
               != std::numeric_limits<uint32_t>::max()) {
             LIBSEMIGROUPS_EXCEPTION("found " + internal::to_string(x)
-                                          + " twice");
+                                    + " twice");
           }
 
           out[static_cast<uint32_t>(x - 1)] = i;
@@ -793,8 +791,7 @@ namespace libsemigroups {
     std::vector<uint32_t>              v;
 
     if (n != right.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the two vectors must have the same length");
+      LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
     }
     if (n > 0x40000000) {
       LIBSEMIGROUPS_EXCEPTION("too many points!");

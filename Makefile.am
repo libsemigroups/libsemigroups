@@ -177,7 +177,6 @@ LDADD = libsemigroups.la
 ## takes a serious amount of time.
 
 test_all_SOURCES =  tests/fpsemi-examples.cpp
-test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-blocks.cpp
 test_all_SOURCES += tests/test-bmat8.cpp
 test_all_SOURCES += tests/test-cong-pair.cpp
@@ -214,106 +213,106 @@ test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-uf.cpp
 
-test_blocks_SOURCES = tests/test-blocks.cpp
+test_blocks_SOURCES =  tests/test-blocks.cpp
 test_blocks_SOURCES += tests/test-main.cpp
 
-test_bmat8_SOURCES = tests/test-bmat8.cpp
+test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
 
-test_cong_pair_SOURCES = tests/test-cong-pair.cpp
+test_cong_pair_SOURCES =  tests/test-cong-pair.cpp
 test_cong_pair_SOURCES += tests/test-main.cpp
 
-test_cong_SOURCES = tests/test-cong.cpp
+test_cong_SOURCES =  tests/test-cong.cpp
 test_cong_SOURCES += tests/test-main.cpp
 
-test_constants_SOURCES = tests/test-constants.cpp # TODO this file is empty
+test_constants_SOURCES =  tests/test-constants.cpp # TODO this file is empty
 test_constants_SOURCES += tests/test-main.cpp
 
-test_containers_SOURCES = tests/test-containers.cpp
+test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
 
-test_digraph_SOURCES = tests/test-digraph.cpp
+test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
 
-test_element_SOURCES = tests/test-element.cpp
+test_element_SOURCES =  tests/test-element.cpp
 test_element_SOURCES += tests/test-main.cpp
 
-test_forest_SOURCES = tests/test-forest.cpp
+test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
 
-test_fpsemi_SOURCES = tests/test-fpsemi.cpp
+test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
 test_fpsemi_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_bipart_SOURCES = tests/test-froidure-pin-bipart.cpp
+test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp
 test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_bmat8_SOURCES = tests/test-froidure-pin-bmat8.cpp
+test_froidure_pin_bmat8_SOURCES =  tests/test-froidure-pin-bmat8.cpp
 test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_boolmat_SOURCES = tests/test-froidure-pin-boolmat.cpp
+test_froidure_pin_boolmat_SOURCES =  tests/test-froidure-pin-boolmat.cpp
 test_froidure_pin_boolmat_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_element_SOURCES = tests/test-froidure-pin-element.cpp
+test_froidure_pin_element_SOURCES =  tests/test-froidure-pin-element.cpp
 test_froidure_pin_element_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_integers_SOURCES = tests/test-froidure-pin-integers.cpp
+test_froidure_pin_integers_SOURCES =  tests/test-froidure-pin-integers.cpp
 test_froidure_pin_integers_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_intmat_SOURCES = tests/test-froidure-pin-intmat.cpp
+test_froidure_pin_intmat_SOURCES =  tests/test-froidure-pin-intmat.cpp
 test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_intpairs_SOURCES = tests/test-froidure-pin-intpairs.cpp
+test_froidure_pin_intpairs_SOURCES =  tests/test-froidure-pin-intpairs.cpp
 test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_pbr_SOURCES = tests/test-froidure-pin-pbr.cpp
+test_froidure_pin_pbr_SOURCES =  tests/test-froidure-pin-pbr.cpp
 test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_pperm_SOURCES = tests/test-froidure-pin-pperm.cpp
+test_froidure_pin_pperm_SOURCES =  tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_pperm_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_projmaxplus_SOURCES = tests/test-froidure-pin-projmaxplus.cpp
+test_froidure_pin_projmaxplus_SOURCES =  tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_transf_SOURCES = tests/test-froidure-pin-transf.cpp
+test_froidure_pin_transf_SOURCES =  tests/test-froidure-pin-transf.cpp
 test_froidure_pin_transf_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_tropmaxplus_SOURCES = tests/test-froidure-pin-tropmaxplus.cpp
+test_froidure_pin_tropmaxplus_SOURCES =  tests/test-froidure-pin-tropmaxplus.cpp
 test_froidure_pin_tropmaxplus_SOURCES += tests/test-main.cpp
 
-test_hpcombi_SOURCES = tests/test-hpcombi.cpp
+test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
 
-test_kbe_SOURCES = tests/test-kbe.cpp
+test_kbe_SOURCES =  tests/test-kbe.cpp
 test_kbe_SOURCES += tests/test-main.cpp
 
-test_knuth_bendix_SOURCES = tests/test-knuth-bendix.cpp
+test_knuth_bendix_SOURCES =  tests/test-knuth-bendix.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
 
-test_konieczny_SOURCES = tests/test-konieczny.cpp
+test_konieczny_SOURCES =  tests/test-konieczny.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
 
-test_orb_SOURCES = tests/test-orb.cpp
+test_orb_SOURCES =  tests/test-orb.cpp
 test_orb_SOURCES += tests/test-main.cpp
 
-test_race_SOURCES = tests/test-race.cpp
+test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
 
-test_runner_SOURCES = tests/test-runner.cpp
+test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
 
-test_schreier_sims_SOURCES = tests/test-schreier-sims.cpp
+test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
 
-test_semiring_SOURCES = tests/test-semiring.cpp
+test_semiring_SOURCES =  tests/test-semiring.cpp
 test_semiring_SOURCES += tests/test-main.cpp
 
-test_timer_SOURCES = tests/test-timer.cpp
+test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 
-test_todd_coxeter_SOURCES = tests/test-todd-coxeter.cpp
+test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
 
-test_uf_SOURCES = tests/test-uf.cpp
+test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
 
 ## Make targets

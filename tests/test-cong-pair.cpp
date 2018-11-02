@@ -24,15 +24,16 @@
 #include <string>      // for string
 #include <vector>      // for vector
 
-#include "cong-base.hpp"            // for congruence_type, CongBase::non_tr...
-#include "cong-pair.hpp"            // for KBP, P
-#include "element.hpp"              // for Element
-#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "knuth-bendix.hpp"         // for KnuthBendix
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "report.hpp"               // for REPORTER, Reporter
-#include "types.hpp"                // for relation_type, word_type
-#include "wrap.hpp"                 // for WrappedCong
+#include "cong-base.hpp"     // for congruence_type, CongBase::non_tr...
+#include "cong-pair.hpp"     // for KBP, P
+#include "element.hpp"       // for Element
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "knuth-bendix.hpp"  // for KnuthBendix
+#include "test-main.hpp"
+#include "catch.hpp"   // for LIBSEMIGROUPS_TEST_CASE
+#include "report.hpp"  // for REPORTER, Reporter
+#include "types.hpp"   // for relation_type, word_type
+#include "wrap.hpp"    // for WrappedCong
 
 namespace libsemigroups {
   template <class TElementType>

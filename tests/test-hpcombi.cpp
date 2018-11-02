@@ -24,6 +24,7 @@
 
 #include "froidure-pin.hpp"
 #include "test-main.hpp"
+#include "catch.hpp"
 
 using namespace HPCombi;
 

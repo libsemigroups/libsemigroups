@@ -108,7 +108,8 @@ namespace std {
     size_t operator()(std::array<TValueType, N> const& ar) const {
       size_t seed = 0;
       for (auto const& x : ar) {
-        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6)
+                + (seed >> 2);
       }
       return seed;
     }
@@ -119,7 +120,8 @@ namespace std {
     size_t operator()(std::vector<TValueType> const& vec) const {
       size_t seed = 0;
       for (auto const& x : vec) {
-        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        seed ^= std::hash<TValueType>{}(x) + 0x9e3779b9 + (seed << 6)
+                + (seed >> 2);
       }
       return seed;
     }

@@ -33,9 +33,10 @@
 #include "kbe.hpp"                   // for KBE
 #include "knuth-bendix.hpp"          // for KnuthBendix, operator<<
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
-#include "report.hpp"                // for REPORTER, Reporter
-#include "types.hpp"                 // for word_type
+#include "test-main.hpp"
+#include "catch.hpp"   // for LIBSEMIGROUPS_TEST_CASE
+#include "report.hpp"  // for REPORTER, Reporter
+#include "types.hpp"   // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

@@ -219,7 +219,7 @@ namespace libsemigroups {
     VOID P_CLASS::add_pair_impl(word_type const& u, word_type const& v) {
       if (!has_parent_semigroup()) {
         LIBSEMIGROUPS_EXCEPTION("cannot add generating pairs before "
-                                      "the parent semigroup is defined");
+                                "the parent semigroup is defined");
       }
       auto prnt = static_cast<froidure_pin_type&>(parent_semigroup());
       auto x    = prnt.word_to_element(u);

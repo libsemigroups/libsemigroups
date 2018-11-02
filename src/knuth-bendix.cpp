@@ -249,8 +249,8 @@ namespace libsemigroups {
     bool KnuthBendix::validate_identity_impl(std::string const& id) const {
       if (id.length() > 1) {
         LIBSEMIGROUPS_EXCEPTION("invalid identity, found "
-                                      + internal::to_string(id.length())
-                                      + " letters, should be 0 or 1 letters");
+                                + internal::to_string(id.length())
+                                + " letters, should be 0 or 1 letters");
       }
       if (id.length() == 1) {
         validate_letter(id[0]);
@@ -379,10 +379,9 @@ namespace libsemigroups {
       if (_kb->alphabet().empty()) {
         _kb->set_alphabet(n);
       } else if (_kb->alphabet().size() != n) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "incompatible number of generators, should be "
-            + internal::to_string(_kb->alphabet().size()) + ", but found "
-            + internal::to_string(n));
+        LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, should be "
+                                + internal::to_string(_kb->alphabet().size())
+                                + ", but found " + internal::to_string(n));
       }
     }
   }  // namespace congruence

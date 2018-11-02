@@ -23,8 +23,9 @@
 
 #include <vector>  // for operator==, vector
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "uf.hpp"                   // for UF, UF::blocks_t, UF::table_t
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "uf.hpp"     // for UF, UF::blocks_t, UF::table_t
 
 namespace libsemigroups {
 

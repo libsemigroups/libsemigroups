@@ -20,9 +20,10 @@
 #include <stddef.h>  // for size_t
 #include <vector>    // for vector
 
-#include "element.hpp"              // for PartialPerm
-#include "froidure-pin.hpp"         // for FroidurePin<>::element_index_type
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "element.hpp"       // for PartialPerm
+#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "test-main.hpp"
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   // Forward declaration
