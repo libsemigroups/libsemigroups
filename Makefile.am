@@ -125,11 +125,8 @@ EXTRA_DIST += README.md LICENSE CPPLINT.cfg .clang-format Doxyfile
 EXTRA_DIST += VERSION extern/HPCombi/VERSION
 
 ## The following are not included in the distro
-BENCHMARK_LINT_FORMAT =  benchmark/src/bmat8.bm.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/cong.bm.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/examples.hpp
-BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
-BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
+BENCHMARK_LINT_FORMAT =  benchmark/bench_digraph.cpp
+# BENCHMARK_LINT_FORMAT += benchmark/
 
 ## For testing . . .
 
@@ -137,13 +134,20 @@ CHECK_PROG    = ./test_all$(EXEEXT)
 CHECK_FLAGS1  = --use-colour yes --order lex --abort
 CHECK_FLAGS2  = [quick]
 
-check_PROGRAMS = test_all test_digraph test_orb
+check_PROGRAMS =  test_all 
+check_PROGRAMS += test_blocks
+check_PROGRAMS += test_digraps
+check_PROGRAMS += test_orb
 
 LDADD = libsemigroups.la
 
 test_all_SOURCES =  tests/test_main.cpp
+test_all_SOURCES += tests/test_blocks.cpp
 test_all_SOURCES += tests/test_digraph.cpp
 test_all_SOURCES += tests/test_orb.cpp
+
+test_blocks_SOURCES =  tests/test_blocks.cpp
+test_blocks_SOURCES += tests/test_main.cpp
 
 test_digraph_SOURCES =  tests/test_digraph.cpp
 test_digraph_SOURCES += tests/test_main.cpp
