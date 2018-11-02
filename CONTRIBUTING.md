@@ -5,14 +5,14 @@
 To run `lldb` after switching to autohell we have to do 
 
     ./configure --enable-debug && make check-am 
-    libtool --mode=execute lldb lstest
+    libtool --mode=execute lldb test_all 
 
-because of the way the executable is linked. `lstest` is the name of the
+because of the way the executable is linked. `test_all` is the name of the
 check program produced by `make check`. Similarly to run valgrind you have
 to do:
 
     ./configure --enable-debug && make check-am 
-    libtool --mode=execute valgrind --leak-check=full ./lstest [quick],[standard] 2>&1 | tee --append valgrind.txt
+    libtool --mode=execute valgrind --leak-check=full ./test_all [quick],[standard] 2>&1 | tee --append valgrind.txt
 
 ## Adding new test cases
 

@@ -12,7 +12,7 @@ echo "Valgrind version:"
 valgrind --version
 
 ./configure --enable-debug
-make lstest -j2
+make test_all -j2
 
 if [ ! -e log ]
 then
@@ -20,7 +20,7 @@ then
 fi
 touch log/valgrind-log.txt
 
-libtool --mode=execute valgrind --leak-check=full ./lstest -d yes [quick],[standard] 2>&1 | tee log/valgrind-log.txt
+libtool --mode=execute valgrind --leak-check=full ./test_all -d yes [quick] 2>&1 | tee log/valgrind-log.txt
 
 echo
 ( ! grep -i "Invalid" log/valgrind-log.txt )

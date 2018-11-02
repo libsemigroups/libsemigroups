@@ -136,77 +136,185 @@ CHECK_FLAGS2  = [quick]
 
 check_PROGRAMS =  test_all 
 check_PROGRAMS += test_blocks
-check_PROGRAMS += test_digraps
+check_PROGRAMS += test_bmat8
+check_PROGRAMS += test_cong_pair
+check_PROGRAMS += test_cong
+check_PROGRAMS += test_constants
+check_PROGRAMS += test_containers
+check_PROGRAMS += test_digraph
+check_PROGRAMS += test_element
+check_PROGRAMS += test_forest
+check_PROGRAMS += test_fpsemi
+check_PROGRAMS += test_froidure_pin_bipart
+check_PROGRAMS += test_froidure_pin_bmat8
+check_PROGRAMS += test_froidure_pin_boolmat
+check_PROGRAMS += test_froidure_pin_element
+check_PROGRAMS += test_froidure_pin_integers
+check_PROGRAMS += test_froidure_pin_intmat
+check_PROGRAMS += test_froidure_pin_intpairs
+check_PROGRAMS += test_froidure_pin_pbr
+check_PROGRAMS += test_froidure_pin_pperm
+check_PROGRAMS += test_froidure_pin_projmaxplus
+check_PROGRAMS += test_froidure_pin_transf
+check_PROGRAMS += test_froidure_pin_tropmaxplus
+check_PROGRAMS += test_hpcombi
+check_PROGRAMS += test_kbe
+check_PROGRAMS += test_knuth_bendix
+check_PROGRAMS += test_konieczny
 check_PROGRAMS += test_orb
+check_PROGRAMS += test_race
+check_PROGRAMS += test_runner
+check_PROGRAMS += test_schreier_sims
+check_PROGRAMS += test_semiring
+check_PROGRAMS += test_timer
+check_PROGRAMS += test_todd_coxeter
+check_PROGRAMS += test_uf
 
 LDADD = libsemigroups.la
 
-test_all_SOURCES =  tests/test_main.cpp
-test_all_SOURCES += tests/test_blocks.cpp
-test_all_SOURCES += tests/test_digraph.cpp
-test_all_SOURCES += tests/test_orb.cpp
+## Do not specify CXXFLAGS/CFLAGS/LDFLAGS because this causes a separate ##
+## test-main.o executable to be generated for every test_* executable, which
+## takes a serious amount of time.
 
-test_blocks_SOURCES =  tests/test_blocks.cpp
-test_blocks_SOURCES += tests/test_main.cpp
+test_all_SOURCES =  tests/fpsemi-examples.cpp
+test_all_SOURCES += tests/test-main.cpp
+test_all_SOURCES += tests/test-blocks.cpp
+test_all_SOURCES += tests/test-bmat8.cpp
+test_all_SOURCES += tests/test-cong-pair.cpp
+test_all_SOURCES += tests/test-cong.cpp
+test_all_SOURCES += tests/test-constants.cpp # TODO this file is empty
+test_all_SOURCES += tests/test-containers.cpp
+test_all_SOURCES += tests/test-digraph.cpp
+test_all_SOURCES += tests/test-element.cpp
+test_all_SOURCES += tests/test-forest.cpp
+test_all_SOURCES += tests/test-fpsemi.cpp
+test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
+test_all_SOURCES += tests/test-froidure-pin-bmat8.cpp
+test_all_SOURCES += tests/test-froidure-pin-boolmat.cpp
+test_all_SOURCES += tests/test-froidure-pin-element.cpp
+test_all_SOURCES += tests/test-froidure-pin-integers.cpp
+test_all_SOURCES += tests/test-froidure-pin-intmat.cpp
+test_all_SOURCES += tests/test-froidure-pin-intpairs.cpp
+test_all_SOURCES += tests/test-froidure-pin-pbr.cpp
+test_all_SOURCES += tests/test-froidure-pin-pperm.cpp
+test_all_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
+test_all_SOURCES += tests/test-froidure-pin-transf.cpp
+test_all_SOURCES += tests/test-froidure-pin-tropmaxplus.cpp
+test_all_SOURCES += tests/test-hpcombi.cpp
+test_all_SOURCES += tests/test-kbe.cpp
+test_all_SOURCES += tests/test-knuth-bendix.cpp
+test_all_SOURCES += tests/test-konieczny.cpp
+test_all_SOURCES += tests/test-main.cpp
+test_all_SOURCES += tests/test-orb.cpp
+test_all_SOURCES += tests/test-race.cpp
+test_all_SOURCES += tests/test-runner.cpp
+test_all_SOURCES += tests/test-schreier-sims.cpp
+test_all_SOURCES += tests/test-semiring.cpp
+test_all_SOURCES += tests/test-timer.cpp
+test_all_SOURCES += tests/test-todd-coxeter.cpp
+test_all_SOURCES += tests/test-uf.cpp
 
-test_digraph_SOURCES =  tests/test_digraph.cpp
-test_digraph_SOURCES += tests/test_main.cpp
+test_blocks_SOURCES = tests/test-blocks.cpp
+test_blocks_SOURCES += tests/test-main.cpp
 
-test_orb_SOURCES =  tests/test_orb.cpp
-test_orb_SOURCES += tests/test_main.cpp
- 
-# lstest_SOURCES =  tests/blocks.test.cpp
-# lstest_SOURCES += tests/bmat8.test.cpp
-# lstest_SOURCES += tests/cong-pair.test.cpp
-# lstest_SOURCES += tests/cong.test.cpp
-# lstest_SOURCES += tests/constants.test.cpp # TODO this file is empty
-# lstest_SOURCES += tests/containers.test.cpp
-# lstest_SOURCES += tests/element.test.cpp
-# lstest_SOURCES += tests/forest.test.cpp
-# lstest_SOURCES += tests/fpsemi-examples.cpp
-# lstest_SOURCES += tests/fpsemi.test.cpp
-# lstest_SOURCES += tests/froidure-pin.bipart.test.cpp
-# lstest_SOURCES += tests/froidure-pin.bmat8.test.cpp
-# lstest_SOURCES += tests/froidure-pin.boolmat.test.cpp
-# lstest_SOURCES += tests/froidure-pin.element.test.cpp
-# lstest_SOURCES += tests/froidure-pin.integers.test.cpp
-# lstest_SOURCES += tests/froidure-pin.intmat.test.cpp
-# lstest_SOURCES += tests/froidure-pin.intpairs.test.cpp
-# lstest_SOURCES += tests/froidure-pin.pbr.test.cpp
-# lstest_SOURCES += tests/froidure-pin.pperm.test.cpp
-# lstest_SOURCES += tests/froidure-pin.projmaxplus.test.cpp
-# lstest_SOURCES += tests/froidure-pin.transf.test.cpp
-# lstest_SOURCES += tests/froidure-pin.tropmaxplus.test.cpp
-# lstest_SOURCES += tests/hpcombi.test.cpp
-# lstest_SOURCES += tests/kbe.test.cpp
-# lstest_SOURCES += tests/knuth-bendix.test.cpp
-# lstest_SOURCES += tests/konieczny.test.cpp
-# lstest_SOURCES += tests/main.test.cpp
-# lstest_SOURCES += tests/orb.test.cpp
-# lstest_SOURCES += tests/race.test.cpp
-# lstest_SOURCES += tests/runner.test.cpp
-# lstest_SOURCES += tests/schreier-sims.test.cpp
-# lstest_SOURCES += tests/semiring.test.cpp
-# lstest_SOURCES += tests/timer.test.cpp
-# lstest_SOURCES += tests/todd-coxeter.test.cpp
-# lstest_SOURCES += tests/uf.test.cpp
-# 
-# lstest_CPPFLAGS = $(AM_CPPFLAGS) $(CODE_COVERAGE_CPPFLAGS)
-# lstest_CFLAGS   = $(AM_CFLAGS)   $(CODE_COVERAGE_CFLAGS)
-# lstest_CXXFLAGS = $(AM_CXXFLAGS) $(CODE_COVERAGE_CXXFLAGS)
-# if LIBSEMIGROUPS_ASAN
-# lstest_CXXFLAGS += -fno-omit-frame-pointer -fsanitize=address
-# endif
-# if LIBSEMIGROUPS_UBSAN
-# lstest_CXXFLAGS += -fsanitize=undefined
-# endif
-# if LIBSEMIGROUPS_TSAN
-# lstest_CXXFLAGS += -fsanitize=thread
-# endif
-# ## Not currently supported on Mac OSX
-# ## lstest_CXXFLAGS += -fsanitize=memory -fPIE -pie
-# 
-# lstest_LIBS = $(AM_LDFLAGS) $(CODE_COVERAGE_LIBS)
+test_bmat8_SOURCES = tests/test-bmat8.cpp
+test_bmat8_SOURCES += tests/test-main.cpp
+
+test_cong_pair_SOURCES = tests/test-cong-pair.cpp
+test_cong_pair_SOURCES += tests/test-main.cpp
+
+test_cong_SOURCES = tests/test-cong.cpp
+test_cong_SOURCES += tests/test-main.cpp
+
+test_constants_SOURCES = tests/test-constants.cpp # TODO this file is empty
+test_constants_SOURCES += tests/test-main.cpp
+
+test_containers_SOURCES = tests/test-containers.cpp
+test_containers_SOURCES += tests/test-main.cpp
+
+test_digraph_SOURCES = tests/test-digraph.cpp
+test_digraph_SOURCES += tests/test-main.cpp
+
+test_element_SOURCES = tests/test-element.cpp
+test_element_SOURCES += tests/test-main.cpp
+
+test_forest_SOURCES = tests/test-forest.cpp
+test_forest_SOURCES += tests/test-main.cpp
+
+test_fpsemi_SOURCES = tests/test-fpsemi.cpp
+test_fpsemi_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_bipart_SOURCES = tests/test-froidure-pin-bipart.cpp
+test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_bmat8_SOURCES = tests/test-froidure-pin-bmat8.cpp
+test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_boolmat_SOURCES = tests/test-froidure-pin-boolmat.cpp
+test_froidure_pin_boolmat_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_element_SOURCES = tests/test-froidure-pin-element.cpp
+test_froidure_pin_element_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_integers_SOURCES = tests/test-froidure-pin-integers.cpp
+test_froidure_pin_integers_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_intmat_SOURCES = tests/test-froidure-pin-intmat.cpp
+test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_intpairs_SOURCES = tests/test-froidure-pin-intpairs.cpp
+test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_pbr_SOURCES = tests/test-froidure-pin-pbr.cpp
+test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_pperm_SOURCES = tests/test-froidure-pin-pperm.cpp
+test_froidure_pin_pperm_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_projmaxplus_SOURCES = tests/test-froidure-pin-projmaxplus.cpp
+test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_transf_SOURCES = tests/test-froidure-pin-transf.cpp
+test_froidure_pin_transf_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_tropmaxplus_SOURCES = tests/test-froidure-pin-tropmaxplus.cpp
+test_froidure_pin_tropmaxplus_SOURCES += tests/test-main.cpp
+
+test_hpcombi_SOURCES = tests/test-hpcombi.cpp
+test_hpcombi_SOURCES += tests/test-main.cpp
+
+test_kbe_SOURCES = tests/test-kbe.cpp
+test_kbe_SOURCES += tests/test-main.cpp
+
+test_knuth_bendix_SOURCES = tests/test-knuth-bendix.cpp
+test_knuth_bendix_SOURCES += tests/test-main.cpp
+
+test_konieczny_SOURCES = tests/test-konieczny.cpp
+test_konieczny_SOURCES += tests/test-main.cpp
+
+test_orb_SOURCES = tests/test-orb.cpp
+test_orb_SOURCES += tests/test-main.cpp
+
+test_race_SOURCES = tests/test-race.cpp
+test_race_SOURCES += tests/test-main.cpp
+
+test_runner_SOURCES = tests/test-runner.cpp
+test_runner_SOURCES += tests/test-main.cpp
+
+test_schreier_sims_SOURCES = tests/test-schreier-sims.cpp
+test_schreier_sims_SOURCES += tests/test-main.cpp
+
+test_semiring_SOURCES = tests/test-semiring.cpp
+test_semiring_SOURCES += tests/test-main.cpp
+
+test_timer_SOURCES = tests/test-timer.cpp
+test_timer_SOURCES += tests/test-main.cpp
+
+test_todd_coxeter_SOURCES = tests/test-todd-coxeter.cpp
+test_todd_coxeter_SOURCES += tests/test-main.cpp
+
+test_uf_SOURCES = tests/test-uf.cpp
+test_uf_SOURCES += tests/test-main.cpp
 
 ## Make targets
 
@@ -247,13 +355,13 @@ check-all: check
 format:
 	@echo "Running clang-format . . .";
 	@clang-format -i --verbose $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES)
-	@clang-format -i --verbose $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
+	@clang-format -i --verbose $(test_all_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
 	@clang-format -i --verbose $(BENCHMARK_LINT_FORMAT)
 
 lint:
 	@echo "Running cpplint . . .";
 	@cpplint $(pkginclude_HEADERS) $(libsemigroups_la_SOURCES)
-	@cpplint $(lstest_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
+	@cpplint $(test_all_SOURCES) $(LINT_FORMAT_FILES_EXTRA)
 	@cpplint $(BENCHMARK_LINT_FORMAT)
 
 doc:

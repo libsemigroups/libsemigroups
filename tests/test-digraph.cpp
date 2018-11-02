@@ -22,7 +22,7 @@
 #include "catch.hpp"                // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "digraph.hpp"              // for ActionDigraph
 #include "forest.hpp"               // for Forest
-#include "test_main.hpp"
+#include "test-main.hpp"
 
 namespace libsemigroups {
 

@@ -27,7 +27,7 @@
 #include "report.hpp"
 #include "timer.hpp"
 
-#include "test_main.hpp"
+#include "test-main.hpp"
 
 namespace libsemigroups {
 
