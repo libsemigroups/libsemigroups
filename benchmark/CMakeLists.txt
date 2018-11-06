@@ -24,11 +24,14 @@ include(CheckCXXSourceCompiles)
 include_directories(
   ${CMAKE_SOURCE_DIR}/../include
   ${CMAKE_SOURCE_DIR}/../src
+  ${CMAKE_SOURCE_DIR}/..
+  ${CMAKE_SOURCE_DIR}/../extern/HPCombi/include/
+  ${CMAKE_SOURCE_DIR}/../extern/HPCombi/include/fallback
   ${PROJECT_BINARY_DIR})
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
-set(benchmark_src bench_digraph.cpp)
+set(benchmark_src bench_digraph.cpp bench_orb.cpp)
 
 if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
   # Workaround of CMAKE bug https://stackoverflow.com/questions/47213356/
@@ -42,4 +45,6 @@ foreach(f ${benchmark_src})
   target_compile_options(${benchName} PUBLIC -mavx -mtune=native -funroll-loops
     -flax-vector-conversions -O3 -g)
   target_link_libraries(${benchName} benchmark pthread)
+  target_link_libraries(${benchName} -L${CMAKE_SOURCE_DIR}/../.libs)
+  target_link_libraries(${benchName} libsemigroups.dylib)
 endforeach(f)

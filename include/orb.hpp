@@ -22,8 +22,8 @@
 //! the action of a semigroup on a set.
 
 // TODO(now):
-// 1. Check that all of the methods actually work now (i.e. they have not been
-//    revised).
+// 1. Doc
+// 2. Benchmarks
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ORB_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ORB_HPP_
@@ -83,10 +83,10 @@ namespace libsemigroups {
     using element_type               = TElementType;
     using point_type                 = TPointType;
     using const_reference_point_type = typename TTraits::const_reference;
-    using const_pointer_point_type = typename TTraits::const_pointer;
+    using const_pointer_point_type   = typename TTraits::const_pointer;
 
-    using index_type          = size_t;
-    using scc_index_type      = ActionDigraph<size_t>::scc_index_type;
+    using index_type     = size_t;
+    using scc_index_type = ActionDigraph<size_t>::scc_index_type;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -94,13 +94,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     struct iterator_methods {
-      const_reference_point_type
-      indirection(typename std::vector<internal_point_type>::const_iterator it) const {
+      const_reference_point_type indirection(
+          typename std::vector<internal_point_type>::const_iterator it) const {
         return this->to_external_const((*it).first);
       }
 
-      const_pointer_point_type
-      addressof(typename std::vector<internal_point_type>::const_iterator it) const {
+      const_pointer_point_type addressof(
+          typename std::vector<internal_point_type>::const_iterator it) const {
         return &(this->to_external_const((*it).first));
       }
     };
@@ -354,6 +354,10 @@ namespace libsemigroups {
     }
 
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - member functions - private
+    ////////////////////////////////////////////////////////////////////////
+
     void validate_index(index_type i) const {
       if (i > _orb.size()) {
         LIBSEMIGROUPS_EXCEPTION("index out of range, expected value in [0, "
@@ -367,6 +371,10 @@ namespace libsemigroups {
                                 "used until at least one generator is added")
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Orb - data members - private
+    ////////////////////////////////////////////////////////////////////////
 
     std::vector<element_type> _gens;
     ActionDigraph<size_t>     _graph;

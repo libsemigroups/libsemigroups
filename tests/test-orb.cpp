@@ -554,5 +554,4 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(o.root_of_scc(PPerm({0, 3}, {0, 3}, 4)),
                       LibsemigroupsException);
   }
-
 }  // namespace libsemigroups

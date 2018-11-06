@@ -148,7 +148,7 @@ namespace libsemigroups {
 
     static ActionDigraph
     random(TIntType nr_ndes, TIntType dgree, std::mt19937 mt = std::mt19937()) {
-      std::uniform_int_distribution<TIntType> dist(0, nr_ndes);
+      std::uniform_int_distribution<TIntType> dist(0, nr_ndes - 1);
       ActionDigraph<TIntType>                 g(nr_ndes, dgree);
       LIBSEMIGROUPS_ASSERT(g._recvec.nr_rows() == nr_ndes);
       LIBSEMIGROUPS_ASSERT(g._recvec.nr_cols() == dgree);

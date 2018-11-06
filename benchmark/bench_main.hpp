@@ -28,6 +28,12 @@
     }                                                           \
   })
 
+#define LIBSEMIGROUPS_BENCHMARK2(string, name)                   \
+  size_t init_##name##_benchmark();                              \
+  BENCHMARK(init_##name##_benchmark); \
+  size_t init_##name##_benchmark(benchmark::State& st) {         \
+    for (auto _ : st)
+
 #define LIBSEMIGROUPS_BENCHMARKS() static int init_bench()
 
 #define LIBSEMIGROUPS_BENCHMARK_MAIN() \
