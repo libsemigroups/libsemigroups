@@ -14,12 +14,12 @@ if ! [[ -x configure ]]; then
 fi
 if ! [[ -f config.log ]]; then
   ./configure --enable-code-coverage;
-elif ! grep -q "\-\-enable-code\-coverage" config.log; then 
+elif ! grep -q "\.\/configure \-\-enable-code\-coverage" config.log; then 
   make clean
   ./configure --enable-code-coverage;
 fi
 
-make $1 -j4
+make $1 -j8
 find . -name '*.gcda' -delete
 
 ./$1 "[quick]"

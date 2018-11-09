@@ -28,12 +28,12 @@
 #define HPCOMBI_CONSTEXPR_FUN_ARGS
 #endif
 
+#include "bmat8.hpp"
 #include "element.hpp"
 #include "orb.hpp"
 
-using Perm = libsemigroups::Perm<10>::type;
-
-void BM_orb_perm_on_tuples_vector(benchmark::State& st) {
+void BM_orb_perm_on_tuples_10_5_vector(benchmark::State& st) {
+  using Perm = libsemigroups::Perm<10>::type;
   using Orb  = libsemigroups::
     Orb<Perm, std::vector<u_int8_t>, libsemigroups::on_tuples<Perm, u_int8_t>>;
   for (auto _ : st) {
@@ -45,9 +45,10 @@ void BM_orb_perm_on_tuples_vector(benchmark::State& st) {
   }
 }
 
-BENCHMARK(BM_orb_perm_on_tuples_vector)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_orb_perm_on_tuples_10_5_vector)->Unit(benchmark::kMillisecond);
 
-void BM_orb_perm_on_tuples_array(benchmark::State& st) {
+void BM_orb_perm_on_tuples_10_5_array(benchmark::State& st) {
+  using Perm = libsemigroups::Perm<10>::type;
   using Orb = libsemigroups::Orb<
       Perm,
       std::array<u_int8_t, 5>,
@@ -61,6 +62,159 @@ void BM_orb_perm_on_tuples_array(benchmark::State& st) {
   }
 }
 
-BENCHMARK(BM_orb_perm_on_tuples_array)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_orb_perm_on_tuples_10_5_array)->Unit(benchmark::kMillisecond);
 
+void BM_orb_perm_on_tuples_15_5_vector(benchmark::State& st) {
+  using Perm = libsemigroups::Perm<15>::type;
+  using Orb = libsemigroups::Orb<
+      Perm,
+      std::vector<u_int8_t>,
+      libsemigroups::on_tuples<Perm, u_int8_t>>;
+  for (auto _ : st) {
+    Orb o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
+    o.size();
+  }
+}
+
+BENCHMARK(BM_orb_perm_on_tuples_15_5_vector)->Unit(benchmark::kMillisecond);
+
+void BM_orb_perm_on_tuples_15_5_array(benchmark::State& st) {
+  using Perm = libsemigroups::Perm<15>::type;
+  using Orb = libsemigroups::Orb<
+      Perm,
+      std::array<u_int8_t, 5>,
+      libsemigroups::on_tuples<Perm, u_int8_t, std::array<u_int8_t, 5>>>;
+  for (auto _ : st) {
+    Orb o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
+    o.size();
+  }
+}
+
+BENCHMARK(BM_orb_perm_on_tuples_15_5_array)->Unit(benchmark::kMillisecond);
+
+void BM_orb_bmat8_on_rows_regular_5(benchmark::State& st) {
+  using BMat8 = libsemigroups::BMat8;
+  using right_action = libsemigroups::right_action<BMat8, BMat8>;
+  using row_orb_type
+      = libsemigroups::Orb<BMat8, BMat8, right_action>;
+  for (auto _ : st) {
+    row_orb_type o;
+
+    o.add_seed(BMat8::one());
+    o.add_generator(BMat8({{0, 1, 0, 0, 0},
+                           {1, 0, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1},
+                           {1, 0, 0, 0, 0}}));
+    o.add_generator(BMat8({{1, 0, 0, 0, 0},
+                           {1, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{0, 0, 0, 0, 0},
+                           {0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.enumerate();
+  }
+}
+
+BENCHMARK(BM_orb_bmat8_on_rows_regular_5)->Unit(benchmark::kMillisecond);
+
+void BM_orb_bmat8_on_rows_5(benchmark::State& st) {
+  using BMat8 = libsemigroups::BMat8;
+  using right_action = libsemigroups::right_action<BMat8, BMat8>;
+  using row_orb_type
+      = libsemigroups::Orb<BMat8, BMat8, right_action>;
+  for (auto _ : st) {
+    row_orb_type o;
+
+    o.add_seed(BMat8::one());
+    o.add_generator(BMat8({{1, 0, 0, 0, 0},
+                           {0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1},
+                           {1, 0, 0, 0, 0}}));
+    o.add_generator(BMat8({{0, 1, 0, 0, 0},
+                           {1, 0, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{1, 0, 0, 0, 0},
+                           {0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {1, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{1, 1, 0, 0, 0},
+                           {1, 0, 1, 0, 0},
+                           {0, 1, 0, 1, 0},
+                           {0, 0, 1, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{1, 1, 0, 0, 0},
+                           {1, 0, 1, 0, 0},
+                           {0, 1, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{1, 1, 1, 0, 0},
+                           {1, 0, 0, 1, 0},
+                           {0, 1, 0, 1, 0},
+                           {0, 0, 1, 1, 0},
+                           {0, 0, 0, 0, 1}}));
+    o.add_generator(BMat8({{1, 1, 0, 0, 0},
+                           {1, 0, 1, 0, 0},
+                           {0, 1, 0, 1, 0},
+                           {0, 0, 1, 0, 1},
+                           {0, 0, 0, 1, 1}}));
+    o.add_generator(BMat8({{1, 1, 1, 1, 0},
+                           {1, 0, 0, 0, 1},
+                           {0, 1, 0, 0, 1},
+                           {0, 0, 1, 0, 1},
+                           {0, 0, 0, 1, 1}}));
+    o.add_generator(BMat8({{1, 0, 0, 0, 0},
+                           {0, 1, 0, 0, 0},
+                           {0, 0, 1, 0, 0},
+                           {0, 0, 0, 1, 0},
+                           {0, 0, 0, 0, 0}}));
+    o.add_generator(BMat8({{1, 1, 1, 0, 0},
+                           {1, 0, 0, 1, 0},
+                           {0, 1, 0, 1, 0},
+                           {0, 0, 1, 0, 1},
+                           {0, 0, 0, 1, 1}}));
+    o.add_generator(BMat8({{1, 1, 1, 0, 0},
+                           {1, 0, 0, 1, 0},
+                           {1, 0, 0, 0, 1},
+                           {0, 1, 0, 1, 0},
+                           {0, 0, 1, 0, 1}}));
+    o.add_generator(BMat8({{1, 1, 1, 0, 0},
+                           {1, 0, 0, 1, 1},
+                           {0, 1, 0, 1, 0},
+                           {0, 1, 0, 0, 1},
+                           {0, 0, 1, 1, 0}}));
+    o.add_generator(BMat8({{1, 1, 1, 0, 0},
+                           {1, 1, 0, 1, 0},
+                           {1, 0, 0, 0, 1},
+                           {0, 1, 0, 0, 1},
+                           {0, 0, 1, 1, 1}}));
+    o.enumerate();
+  }
+}
+
+BENCHMARK(BM_orb_bmat8_on_rows_5)->Unit(benchmark::kMillisecond);
 BENCHMARK_MAIN();

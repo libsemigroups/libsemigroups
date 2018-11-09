@@ -317,7 +317,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "008",
                           "partial perm image orbit",
-                          "[standard]") {
+                          "[quick]") {
     // auto rg = ReportGuard();
     using PPerm = PartialPerm<uint_fast8_t>;
     Orb<PPerm, PPerm, right_action<PPerm, PPerm>> o;
@@ -344,7 +344,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "009",
                           "partial perm image orbit",
-                          "[standard]") {
+                          "[quick]") {
     // auto rg = ReportGuard();
     using PPerm = PPerm<16>::type;
     Orb<PPerm, PPerm, right_action<PPerm, PPerm>> o;
@@ -371,7 +371,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "010",
                           "partial perm image orbit",
-                          "[standard]") {
+                          "[quick]") {
     // auto rg = ReportGuard();
     using PPerm = PPerm<16>::type;
     Orb<PPerm, PPerm, left_action<PPerm, PPerm>, Side::LEFT> o;
@@ -429,8 +429,8 @@ namespace libsemigroups {
     using Perm = Perm<10>::type;
 
     Orb<Perm,
-        std::array<u_int8_t, 10>,
-        on_tuples<Perm, u_int8_t, std::array<u_int8_t, 10>>>
+        std::array<u_int8_t, 5>,
+        on_tuples<Perm, u_int8_t, std::array<u_int8_t, 5>>>
         o;
     o.add_seed({0, 1, 2, 3, 4});
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
@@ -465,6 +465,7 @@ namespace libsemigroups {
 
     REQUIRE(o.size() == 30240);
   }
+
 
   LIBSEMIGROUPS_TEST_CASE("Orb", "016", "misc", "[quick]") {
     using Perm = Perm<8>::type;
@@ -504,7 +505,7 @@ namespace libsemigroups {
     // auto rg = ReportGuard();
     using PPerm = PPerm<3>::type;
     Orb<PPerm, PPerm, right_action<PPerm, PPerm>> o;
-    o.add_seed(one<PPerm>()(3));
+    o.add_seed(PPerm({0, 1, 2}, {0, 1, 2}, 3));
     o.add_generator(
         PPerm({0, 1, 2}, {1, 2, 0}, 3));
     o.add_generator(
@@ -526,5 +527,22 @@ namespace libsemigroups {
     REQUIRE(o.root_of_scc(PPerm({0, 1}, {0, 1}, 3)) == PPerm({0, 2}, {0, 2}, 3));
     REQUIRE_THROWS_AS(o.root_of_scc(PPerm({0, 3}, {0, 3}, 4)),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Orb",
+                          "018",
+                          "permutation on tuples, arrays (360360)",
+                          "[standard]") {
+    using Perm = Perm<15>::type;
+
+    Orb<Perm,
+        std::array<u_int8_t, 5>,
+        on_tuples<Perm, u_int8_t, std::array<u_int8_t, 5>>>
+        o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+    o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
+
+    REQUIRE(o.size() == 360360);
   }
 }  // namespace libsemigroups
