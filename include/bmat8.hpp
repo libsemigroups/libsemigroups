@@ -21,6 +21,18 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
 #define LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_
 
+// Includes required whether or not HPCombi is available.
+
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+
+#ifdef LIBSEMIGROUPS_HPCOMBI
+#include "hpcombi.hpp"
+namespace libsemigroups {
+  using BMat8 = HPCombi::BMat8;
+}
+#else
+
 #include <algorithm>  // for uniform_int_distribution, swap
 #include <climits>    // for CHAR_BIT
 #include <cstddef>    // for size_t
@@ -32,11 +44,9 @@
 
 #include "adapters.hpp"  // for complexity, degree, etc . . .
 #include "element.hpp"
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "stl.hpp"                  // for internal::to_string
+#include "stl.hpp"  // for internal::to_string
 
 namespace libsemigroups {
-
   //! Class for fast boolean matrices of dimension up to 8 x 8
   //!
   //! The methods for these small matrices over the boolean semiring
@@ -252,9 +262,6 @@ namespace libsemigroups {
     }
 
     size_t row_space_size() const;
-    size_t col_space_size() const {
-      return transpose().row_space_size();
-    }
 
     //! Returns the number of non-zero rows in \c this.
     //!
@@ -271,15 +278,6 @@ namespace libsemigroups {
       return count;
     }
 
-    //! Returns the number of non-zero rows in \c this
-    //!
-    //! BMat8s do not know their "dimension" - in effect they are all of
-    //! dimension 8. However, this method can be used to obtain the number of
-    //! non-zero rows of \c this.
-    size_t nr_cols() const {
-      return transpose().nr_rows();
-    }
-
     //! Returns whether \c this is a regular element of the full boolean matrix
     //! monoid of appropriate size.
     bool is_regular_element() const {
@@ -291,22 +289,12 @@ namespace libsemigroups {
              == *this;
     }
 
-    size_t min_possible_dim() const {
-      size_t i = 1;
-      size_t x = transpose().to_int();
-      while ((_data >> (8 * i)) << (8 * i) == _data
-             && (x >> (8 * i)) << (8 * i) == x && i < 9) {
-        ++i;
-      }
-      return 9 - i;
-    }
-
-    static bool is_group_index(BMat8 const& x, BMat8 const& y);
-
     //! Returns the identity BMat8
     //!
     //! This method returns the dim x dim BMat8 with 1s on the main diagonal.
-    static BMat8 one(size_t dim = 8);
+    static BMat8 one() {
+      return BMat8(0x8040201008040201);
+    }
 
    private:
     void sort_rows();
@@ -316,6 +304,36 @@ namespace libsemigroups {
     static std::mt19937                            _gen;
     static std::uniform_int_distribution<uint64_t> _dist;
   };
+
+}  // namespace libsemigroups
+
+namespace std {
+  template <>
+  struct hash<libsemigroups::BMat8> {
+    size_t operator()(libsemigroups::BMat8 const& bm) const {
+      return hash<uint64_t>()(bm.to_int());
+    }
+  };
+}  // namespace std
+#endif  // LIBSEMIGROUPS_HPCOMBI
+
+namespace libsemigroups {
+  ////////////////////////////////////////////////////////////////////////
+  // Functions that are independent of HPCombi and libsemigroups
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO move to konieczny
+  bool is_group_index(BMat8 const& x, BMat8 const& y);
+
+  //! Returns the number of non-zero rows in \c this
+  //!
+  //! BMat8s do not know their "dimension" - in effect they are all of
+  //! dimension 8. However, this method can be used to obtain the number of
+  //! non-zero rows of \c this.
+  size_t nr_cols(BMat8 const&);
+  size_t col_space_size(BMat8 const&);
+  BMat8  bmat8_sub_one(size_t);
+  size_t min_possible_dim(BMat8 const&);
 
   // Specialization for adapters.hpp structs
   template <>
@@ -379,17 +397,6 @@ namespace libsemigroups {
     }
   };
 
-  // The following is comment out since lz_cnt is unreliable, this serves as a
-  // POC only.
-
-  // template <typename TIndexType> struct action<BMat8, TIndexType> {
-  //   inline TIndexType operator()(BMat8 const& x, TIndexType const i) const
-  //       noexcept {
-  //     LIBSEMIGROUPS_ASSERT(0 <= i && i < 8);
-  //     return _lzcnt_u64(x.to_int() << (8 * i));
-  //   }
-  // };
-
   template <>
   struct inverse<BMat8> {
     inline BMat8 operator()(BMat8 const& x) const noexcept {
@@ -399,12 +406,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-namespace std {
-  template <>
-  struct hash<libsemigroups::BMat8> {
-    size_t operator()(libsemigroups::BMat8 const& bm) const {
-      return hash<uint64_t>()(bm.to_int());
-    }
-  };
-}  // namespace std
 #endif  // LIBSEMIGROUPS_INCLUDE_BMAT8_HPP_

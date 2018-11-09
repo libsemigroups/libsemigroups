@@ -69,7 +69,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny",
 LIBSEMIGROUPS_TEST_CASE("Konieczny",
                         "002",
                         "regular elements and idempotents",
-                        "[standard]") {
+                        "[quick]") {
   const std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -268,7 +268,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny",
 LIBSEMIGROUPS_TEST_CASE("Konieczny",
                         "008",
                         "non-regular D classes 02",
-                        "[standard]") {
+                        "[quick]") {
   const std::vector<BMat8> gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
          BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
@@ -776,7 +776,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny", "009", "D class containment", "[quick]") {
   }
 }
 
-LIBSEMIGROUPS_TEST_CASE("Konieczny", "010", "full bmat monoids", "[extreme]") {
+LIBSEMIGROUPS_TEST_CASE("Konieczny", "010", "full bmat monoids", "[quick]") {
   const std::vector<BMat8> bmat4_gens
       = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
@@ -868,7 +868,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny", "010", "full bmat monoids", "[extreme]") {
 LIBSEMIGROUPS_TEST_CASE("Konieczny",
                         "011",
                         "regular generated bmat monoids",
-                        "[extreme]") {
+                        "[quick]") {
   const std::vector<BMat8> reg_bmat4_gens
       = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -1017,7 +1017,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny",
 LIBSEMIGROUPS_TEST_CASE("Konieczny",
                         "013",
                         "another large example",
-                        "[standard][finite]") {
+                        "[quick]") {
   const std::vector<BMat8> gens = {BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
@@ -1090,7 +1090,7 @@ LIBSEMIGROUPS_TEST_CASE("Konieczny",
 LIBSEMIGROUPS_TEST_CASE("Konieczny",
                         "014",
                         "my favourite example transposed",
-                        "[standard][finite]") {
+                        "[quick]") {
   const std::vector<BMat8> gens = {BMat8({{0, 0, 0, 0, 1, 0, 0, 0},
                                           {1, 0, 0, 0, 0, 0, 1, 0},
                                           {0, 0, 1, 0, 0, 0, 0, 0},

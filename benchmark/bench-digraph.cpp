@@ -22,7 +22,7 @@
 
 #include <benchmark/benchmark.h>
 
-#include "bench_main.hpp"
+#include "bench-main.hpp"
 #include "digraph.hpp"
 
 using libsemigroups::ActionDigraph;

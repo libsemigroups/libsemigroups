@@ -223,6 +223,7 @@ test_cong_pair_SOURCES =  tests/test-cong-pair.cpp
 test_cong_pair_SOURCES += tests/test-main.cpp
 
 test_cong_SOURCES =  tests/test-cong.cpp
+test_cong_SOURCES += tests/fpsemi-examples.cpp
 test_cong_SOURCES += tests/test-main.cpp
 
 test_constants_SOURCES =  tests/test-constants.cpp # TODO this file is empty
@@ -241,6 +242,7 @@ test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
 
 test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
+test_fpsemi_SOURCES += tests/fpsemi-examples.cpp
 test_fpsemi_SOURCES += tests/test-main.cpp
 
 test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp

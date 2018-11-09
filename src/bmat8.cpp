@@ -23,6 +23,50 @@
 
 #include <array>
 
+#include "libsemigroups-config.hpp"
+
+namespace libsemigroups {
+  std::vector<BMat8> const BMAT8_ONES = {BMat8(0x8000000000000000),
+                                         BMat8(0x8040000000000000),
+                                         BMat8(0x8040200000000000),
+                                         BMat8(0x8040201000000000),
+                                         BMat8(0x8040201008000000),
+                                         BMat8(0x8040201008040000),
+                                         BMat8(0x8040201008040200),
+                                         BMat8(0x8040201008040201)};
+  bool is_group_index(BMat8 const& x, BMat8 const& y) {
+    LIBSEMIGROUPS_ASSERT(x.col_space_basis() == x && y.row_space_basis() == y);
+    return (y * x).row_space_basis() == x.row_space_basis()
+           && (y * x).col_space_basis() == y.col_space_basis();
+  }
+
+  BMat8 bmat8_sub_one(size_t dim) {
+    return BMAT8_ONES[dim - 1];
+  }
+
+  size_t nr_cols(BMat8 const& x) {
+    // TODO move to cpp file or to konieczny
+    return x.transpose().nr_rows();
+  }
+  size_t col_space_size(BMat8 const& x) {
+    // TODO move to cpp file or to konieczny
+    return x.transpose().row_space_size();
+  }
+  size_t min_possible_dim(BMat8 const& x) {
+    size_t i = 1;
+    size_t d = x.to_int();
+    size_t y = x.transpose().to_int();
+
+    while ((d >> (8 * i)) << (8 * i) == d && (y >> (8 * i)) << (8 * i) == y
+           && i < 9) {
+      ++i;
+    }
+    return 9 - i;
+  }
+}  // namespace libsemigroups
+
+#ifndef LIBSEMIGROUPS_HPCOMBI
+
 namespace libsemigroups {
   static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
 
@@ -109,14 +153,6 @@ namespace libsemigroups {
                                           0x2,
                                           0x1};
 
-  std::vector<BMat8> const BMAT8_ONES = {BMat8(0x8000000000000000),
-                                         BMat8(0x8040000000000000),
-                                         BMat8(0x8040200000000000),
-                                         BMat8(0x8040201000000000),
-                                         BMat8(0x8040201008000000),
-                                         BMat8(0x8040201008040000),
-                                         BMat8(0x8040201008040200),
-                                         BMat8(0x8040201008040201)};
 
   // Cyclically shifts bits to left by 8m
   // https://stackoverflow.com/a/776523
@@ -308,14 +344,5 @@ namespace libsemigroups {
     }
     return row_space.size() + 1;
   }
-
-  bool BMat8::is_group_index(BMat8 const& x, BMat8 const& y) {
-    LIBSEMIGROUPS_ASSERT(x.col_space_basis() == x && y.row_space_basis() == y);
-    return (y * x).row_space_basis() == x.row_space_basis()
-           && (y * x).col_space_basis() == y.col_space_basis();
-  }
-
-  BMat8 BMat8::one(size_t dim) {
-    return BMAT8_ONES[dim - 1];
-  }
 }  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_HPCOMBI

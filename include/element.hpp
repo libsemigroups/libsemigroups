@@ -48,7 +48,6 @@
 
 namespace libsemigroups {
   // Forward declarations
-  class BMat8;
   class Blocks;
   struct BooleanSemiring;
   template <typename T>
@@ -2144,7 +2143,11 @@ namespace libsemigroups {
 #endif
   };
 
-  class BMat8;
+#ifdef LIBSEMIGROUPS_HPCOMBI
+  using BMat8 = HPCombi::BMat8;
+#else
+  class BMat8; // Forward declaration
+#endif
   template <size_t N>
   struct BMat {
     using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;

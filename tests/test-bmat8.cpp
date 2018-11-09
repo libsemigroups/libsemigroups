@@ -391,16 +391,16 @@ namespace libsemigroups {
     BMat8 one  = BMat8::one();
     BMat8 zero = BMat8(0);
 
-    REQUIRE(BMat8::is_group_index(one, one));
+    REQUIRE(is_group_index(one, one));
     for (size_t i = 0; i < 7; ++i) {
       idem.set(7 - i, 7 - i, false);
-      REQUIRE(BMat8::is_group_index(idem, idem));
+      REQUIRE(is_group_index(idem, idem));
 
-      REQUIRE(!BMat8::is_group_index(idem, one));
-      REQUIRE(!BMat8::is_group_index(idem, zero));
+      REQUIRE(!is_group_index(idem, one));
+      REQUIRE(!is_group_index(idem, zero));
     }
-    REQUIRE(BMat8::is_group_index(zero, zero));
-    REQUIRE(!BMat8::is_group_index(one, zero));
+    REQUIRE(is_group_index(zero, zero));
+    REQUIRE(!is_group_index(one, zero));
 
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -419,7 +419,7 @@ namespace libsemigroups {
             {(*it).col_space_basis(), (*it2).row_space_basis()});
         if (vec[0].col_space_basis() == vec[0]
             && vec[1].row_space_basis() == vec[1]
-            && BMat8::is_group_index(vec[0], vec[1])) {
+            && is_group_index(vec[0], vec[1])) {
           if (std::find(group_indices.begin(), group_indices.end(), vec)
               == group_indices.end()) {
             group_indices.push_back(vec);
@@ -437,15 +437,15 @@ namespace libsemigroups {
     BMat8 zero  = BMat8(0);
 
     REQUIRE(one.nr_rows() == 8);
-    REQUIRE(one.nr_cols() == 8);
+    REQUIRE(nr_cols(one) == 8);
     for (size_t i = 0; i < 7; ++i) {
       idem1.set(i, i, false);
       idem2.set(7 - i, 7 - i, false);
 
       REQUIRE(idem1.nr_rows() == 7 - i);
-      REQUIRE(idem1.nr_cols() == 7 - i);
+      REQUIRE(nr_cols(idem1) == 7 - i);
       REQUIRE(idem2.nr_rows() == 7 - i);
-      REQUIRE(idem2.nr_cols() == 7 - i);
+      REQUIRE(nr_cols(idem2) == 7 - i);
     }
 
     const std::vector<BMat8> gens
@@ -462,7 +462,7 @@ namespace libsemigroups {
       REQUIRE((*it).nr_rows() <= 8);
 
       REQUIRE((*it).row_space_basis().nr_rows() <= (*it).nr_rows());
-      REQUIRE((*it).col_space_basis().nr_cols() <= (*it).nr_cols());
+      REQUIRE(nr_cols((*it).col_space_basis()) <= nr_cols(*it));
     }
   }
 
@@ -473,15 +473,15 @@ namespace libsemigroups {
     BMat8 zero  = BMat8(0);
 
     REQUIRE(one.row_space_size() == 256);
-    REQUIRE(one.col_space_size() == 256);
+    REQUIRE(col_space_size(one) == 256);
     for (size_t i = 0; i < 8; ++i) {
       idem1.set(7 - i, 7 - i, false);
       idem2.set(i, i, false);
 
       REQUIRE(idem1.row_space_size() == pow(2, 7 - i));
-      REQUIRE(idem1.col_space_size() == pow(2, 7 - i));
+      REQUIRE(col_space_size(idem1) == pow(2, 7 - i));
       REQUIRE(idem2.row_space_size() == pow(2, 7 - i));
-      REQUIRE(idem2.col_space_size() == pow(2, 7 - i));
+      REQUIRE(col_space_size(idem2) == pow(2, 7 - i));
     }
 
     const std::vector<BMat8> gens
@@ -498,15 +498,15 @@ namespace libsemigroups {
       BMat8 rows = x.row_space_basis();
       BMat8 cols = x.col_space_basis();
       REQUIRE(x.row_space_size() <= 16);
-      REQUIRE(x.col_space_size() <= 16);
+      REQUIRE(col_space_size(x) <= 16);
 
       REQUIRE(rows.row_space_size() <= pow(2, rows.nr_rows()));
-      REQUIRE(cols.col_space_size() <= pow(2, cols.nr_cols()));
+      REQUIRE(col_space_size(cols) <= pow(2, nr_cols(cols)));
 
       for (auto it2 = S.begin(); it2 < S.end(); it2++) {
         BMat8 y = *it2;
         REQUIRE((x * y).row_space_size() <= x.row_space_size());
-        REQUIRE((x * y).col_space_size() <= x.col_space_size());
+        REQUIRE(col_space_size(x * y) <= col_space_size(x));
       }
     }
 

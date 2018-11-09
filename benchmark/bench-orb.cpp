@@ -22,7 +22,7 @@
 
 #include <benchmark/benchmark.h>
 
-#include "bench_main.hpp"
+#include "bench-main.hpp"
 
 #ifndef HPCOMBI_CONSTEXPR_FUN_ARGS
 #define HPCOMBI_CONSTEXPR_FUN_ARGS

@@ -297,17 +297,6 @@ namespace libsemigroups {
     const_reference generator(letter_type) const;
 
 
-    // TODO the following should be private
-    //! Returns \c true if the semigroup is fully enumerated and \c false if
-    //! not.
-    //!
-    //! The semigroup is fully enumerated when the product of every element
-    //! by every generator is known.
-    bool finished_impl() const override;
-
-    //! Returns \c true if elements other than the generators have been
-    //! enumerated so far and \c false otherwise.
-    bool started_impl() const noexcept override;
 
     //! Returns the position of the element \p x in the semigroup if it is
     //! already known to belong to the semigroup.
@@ -769,12 +758,17 @@ namespace libsemigroups {
 
    private:
     ////////////////////////////////////////////////////////////////////////
+    // Runner - non-pure virtual member functions - private
+    ////////////////////////////////////////////////////////////////////////
+    bool started_impl() const noexcept override;
+    bool finished_impl() const override;
+
+    ////////////////////////////////////////////////////////////////////////
     // FroidurePin - validation methods - private
     ////////////////////////////////////////////////////////////////////////
 
     void validate_element_index(element_index_type) const;
     void validate_letter_index(letter_type) const;
-
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - enumeration methods - private
     ////////////////////////////////////////////////////////////////////////

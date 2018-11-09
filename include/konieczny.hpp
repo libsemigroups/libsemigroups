@@ -110,7 +110,7 @@ namespace libsemigroups {
         for (auto it = _row_orb.digraph().cbegin_scc(row_scc_id);
              it < _row_orb.digraph().cend_scc(row_scc_id);
              it++) {
-          if (BMat8::is_group_index(col_space_basis, _row_orb.at(*it))) {
+          if (is_group_index(col_space_basis, _row_orb.at(*it))) {
             _group_indices.emplace(key, *it);
             return *it;
           }
@@ -177,7 +177,7 @@ namespace libsemigroups {
     void compute_min_possible_dim() {
       _dim = 1;
       for (BMat8 x : _gens) {
-        size_t d = x.min_possible_dim();
+        size_t d = min_possible_dim(x);
         if (d > _dim) {
           _dim = d;
         }
@@ -191,18 +191,18 @@ namespace libsemigroups {
       // TODO: this isn't quite right - could be 0 generators etc.
       compute_min_possible_dim();
       for (BMat8 x : _gens) {
-        if (x * x.transpose() == BMat8::one(_dim)) {
+        if (x * x.transpose() == bmat8_sub_one(_dim)) {
           _perm_in_gens = true;
         }
       }
       if (!_perm_in_gens) {
-        _gens.push_back(BMat8::one(_dim));
+        _gens.push_back(bmat8_sub_one(_dim));
       }
     }
 
     void compute_orbs() {
-      _row_orb.add_seed(BMat8::one(_dim));
-      _col_orb.add_seed(BMat8::one(_dim));
+      _row_orb.add_seed(bmat8_sub_one(_dim));
+      _col_orb.add_seed(bmat8_sub_one(_dim));
       for (BMat8 g : _gens) {
         _row_orb.add_generator(g);
         _col_orb.add_generator(g);
@@ -506,7 +506,7 @@ namespace libsemigroups {
           for (auto it2 = _parent->_col_orb.digraph().cbegin_scc(col_scc_id);
                !found && it2 < _parent->_col_orb.digraph().cend_scc(col_scc_id);
                it2++) {
-            if (BMat8::is_group_index(_parent->_col_orb.at(*it2),
+            if (is_group_index(_parent->_col_orb.at(*it2),
                                       _parent->_row_orb.at(*it))) {
               _parent->_group_indices_alt.emplace(key, *it2);
               found = true;
@@ -1042,7 +1042,7 @@ namespace libsemigroups {
     size_t           max_card = 0;
     cards.insert(0);
 
-    RegularDClass* top = new RegularDClass(this, BMat8::one(_dim));
+    RegularDClass* top = new RegularDClass(this, bmat8_sub_one(_dim));
     add_D_class(top);
     for (BMat8 x : top->covering_reps()) {
       size_t card = x.row_space_size();

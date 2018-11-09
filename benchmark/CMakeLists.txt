@@ -31,7 +31,7 @@ include_directories(
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
-set(benchmark_src bench_digraph.cpp bench_orb.cpp)
+set(benchmark_src bench-digraph.cpp bench-orb.cpp)
 
 if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
   # Workaround of CMAKE bug https://stackoverflow.com/questions/47213356/
