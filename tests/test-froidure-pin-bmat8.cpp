@@ -50,7 +50,7 @@ namespace libsemigroups {
 
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(!S.finished());
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == UNDEFINED);
     REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
                                       {0, 1, 0, 0, 1},
@@ -80,7 +80,7 @@ namespace libsemigroups {
     REQUIRE(S.generator(3)
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
     REQUIRE(S.finished());
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.current_position(S.generator(0) * S.generator(3)) == 7);
     REQUIRE(S.current_position(BMat8({{1, 0, 0, 1, 1},
                                       {0, 1, 0, 0, 1},
@@ -216,7 +216,7 @@ namespace libsemigroups {
     REQUIRE(T.generator(3)
             == BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
     REQUIRE(T.finished());
-    REQUIRE(T.is_begun());
+    REQUIRE(T.started());
   }
 #endif
 

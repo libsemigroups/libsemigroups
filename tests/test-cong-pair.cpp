@@ -73,7 +73,7 @@ namespace libsemigroups {
       REQUIRE(p.word_to_class_index({0, 0, 0, 1})
               == p.word_to_class_index({0, 0, 1, 0, 0}));
       REQUIRE(p.finished());
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 21);
@@ -103,7 +103,7 @@ namespace libsemigroups {
 
       REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
       REQUIRE(p.word_to_class_index({0, 0, 1, 0, 0}) == 1);
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 69);
@@ -133,7 +133,7 @@ namespace libsemigroups {
 
       REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 4);
       REQUIRE(p.word_to_class_index({0, 0, 1, 0, 0}) == 5);
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 72);
@@ -172,7 +172,7 @@ namespace libsemigroups {
               != p.word_to_class_index({0, 0, 0}));
       REQUIRE(p.word_to_class_index({1, 1})
               == p.word_to_class_index({1, 1, 1}));
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 53);
@@ -212,7 +212,7 @@ namespace libsemigroups {
               != p.word_to_class_index({0, 0, 0}));
       REQUIRE(p.word_to_class_index({1, 1})
               == p.word_to_class_index({1, 1, 1}));
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 53);
@@ -252,7 +252,7 @@ namespace libsemigroups {
               != p.word_to_class_index({0, 0, 0}));
       REQUIRE(p.word_to_class_index({1, 1})
               == p.word_to_class_index({1, 1, 1}));
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 53);
@@ -292,7 +292,7 @@ namespace libsemigroups {
               == p.word_to_class_index({0, 0, 0}));
       REQUIRE(p.word_to_class_index({1, 1})
               == p.word_to_class_index({1, 1, 1}));
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 1);
@@ -338,7 +338,7 @@ namespace libsemigroups {
       REQUIRE(p.word_to_class_index({1, 1, 0})
               != p.word_to_class_index({1, 3, 3, 2, 2, 1, 0}));
 
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 525);
@@ -383,7 +383,7 @@ namespace libsemigroups {
       REQUIRE(p.word_to_class_index({1, 1, 0})
               != p.word_to_class_index({1, 3, 3, 2, 2, 1, 0}));
 
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 9597);
@@ -426,7 +426,7 @@ namespace libsemigroups {
       REQUIRE(p.word_to_class_index({1, 3, 2, 1, 3, 1, 3, 2, 2, 1, 3, 3, 3})
               != p.word_to_class_index({3, 1, 0, 2, 0, 3, 1}));
 
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.nr_classes() == 7449);
@@ -1024,7 +1024,7 @@ namespace libsemigroups {
 
       REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
       // REQUIRE(p.finished());
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.size() == 21);
@@ -1055,7 +1055,7 @@ namespace libsemigroups {
 
       REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
       REQUIRE(p.finished());
-      REQUIRE(!S.is_begun());
+      REQUIRE(!S.started());
       REQUIRE(!S.finished());
 
       REQUIRE(p.size() == 21);

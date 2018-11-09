@@ -296,6 +296,8 @@ namespace libsemigroups {
     //! is not equal to FroidurePin::at(pos).
     const_reference generator(letter_type) const;
 
+
+    // TODO the following should be private
     //! Returns \c true if the semigroup is fully enumerated and \c false if
     //! not.
     //!
@@ -305,8 +307,7 @@ namespace libsemigroups {
 
     //! Returns \c true if elements other than the generators have been
     //! enumerated so far and \c false otherwise.
-    // TODO(now) make this a member function for Runner called started.
-    bool is_begun() const noexcept override;
+    bool started_impl() const noexcept override;
 
     //! Returns the position of the element \p x in the semigroup if it is
     //! already known to belong to the semigroup.

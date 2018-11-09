@@ -55,7 +55,6 @@ namespace libsemigroups {
     virtual size_t current_max_word_length() const                    = 0;
     virtual size_t degree() const                                     = 0;
     virtual size_t nr_generators() const                              = 0;
-    virtual bool   is_begun() const                                   = 0;
     virtual size_t current_size() const                               = 0;
     virtual size_t current_nr_rules() const                           = 0;
     virtual element_index_type prefix(element_index_type) const       = 0;

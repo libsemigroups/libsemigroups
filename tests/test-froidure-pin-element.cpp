@@ -1079,7 +1079,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "027",
-                          "finished, is_begun",
+                          "finished, started",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
@@ -1090,16 +1090,16 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
     S.set_batch_size(1024);
     S.enumerate(10);
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
 
     S.enumerate(8000);
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     delete_gens(gens);
   }
@@ -1547,7 +1547,7 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 5);
     REQUIRE(S.current_nr_rules() == 0);
@@ -1557,7 +1557,7 @@ namespace libsemigroups {
     FroidurePin<> T = FroidurePin<>(S);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!T.is_begun());
+    REQUIRE(!T.started());
     REQUIRE(!T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
@@ -1569,7 +1569,7 @@ namespace libsemigroups {
     REQUIRE(T.size() == 7776);
     REQUIRE(T.nr_idempotents() == 537);
     REQUIRE(T.nr_rules() == 2459);
-    REQUIRE(T.is_begun());
+    REQUIRE(T.started());
     REQUIRE(T.finished());
     delete_gens(gens);
   }
@@ -1584,7 +1584,7 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.degree() == 6);
@@ -1601,7 +1601,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     delete_gens(coll);
 
-    REQUIRE(T->is_begun());
+    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1620,7 +1620,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     delete_gens(coll);
 
-    REQUIRE(U->is_begun());
+    REQUIRE(U->started());
     REQUIRE(U->finished());
     REQUIRE(U->nr_generators() == 6);
     REQUIRE(U->degree() == 7);
@@ -1635,7 +1635,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(V != U);
-    REQUIRE(V->is_begun());
+    REQUIRE(V->started());
     REQUIRE(V->finished());
     REQUIRE(V->nr_generators() == 6);
     REQUIRE(V->degree() == 7);
@@ -1660,7 +1660,7 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 2);
     REQUIRE(S.degree() == 6);
@@ -1677,7 +1677,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     delete_gens(coll);
 
-    REQUIRE(!T->is_begun());
+    REQUIRE(!T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1696,7 +1696,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     delete_gens(coll);
 
-    REQUIRE(U->is_begun());
+    REQUIRE(U->started());
     REQUIRE(U->finished());
     REQUIRE(U->nr_generators() == 6);
     REQUIRE(U->degree() == 7);
@@ -1711,7 +1711,7 @@ namespace libsemigroups {
     delete_gens(coll);
 
     REQUIRE(V != U);
-    REQUIRE(V->is_begun());
+    REQUIRE(V->started());
     REQUIRE(V->finished());
     REQUIRE(V->nr_generators() == 6);
     REQUIRE(V->degree() == 7);
@@ -1741,7 +1741,7 @@ namespace libsemigroups {
     S.set_batch_size(1000);
     S.enumerate(1001);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 1006);
     REQUIRE(S.current_nr_rules() == 70);
@@ -1751,7 +1751,7 @@ namespace libsemigroups {
     FroidurePin<> T = FroidurePin<>(S);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(T.is_begun());
+    REQUIRE(T.started());
     REQUIRE(!T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
@@ -1770,7 +1770,7 @@ namespace libsemigroups {
     REQUIRE(T.size() == 7776);
     REQUIRE(T.nr_idempotents() == 537);
     REQUIRE(T.nr_rules() == 2459);
-    REQUIRE(T.is_begun());
+    REQUIRE(T.started());
     REQUIRE(T.finished());
     delete_gens(gens);
   }
@@ -1788,7 +1788,7 @@ namespace libsemigroups {
     S.set_batch_size(60);
     S.enumerate(60);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
@@ -1806,7 +1806,7 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
     delete_gens(coll);
 
-    REQUIRE(T->is_begun());
+    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1835,7 +1835,7 @@ namespace libsemigroups {
     S.set_batch_size(60);
     S.enumerate(60);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
@@ -1852,7 +1852,7 @@ namespace libsemigroups {
     REQUIRE(*coll[0] == *(T->generator(3)));
     REQUIRE(*coll[1] == *(T->generator(4)));
 
-    REQUIRE(T->is_begun());
+    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1884,7 +1884,7 @@ namespace libsemigroups {
 
     S.enumerate(8000);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.size() == 7776);
     REQUIRE(S.nr_idempotents() == 537);
@@ -1893,7 +1893,7 @@ namespace libsemigroups {
     FroidurePin<> T = FroidurePin<>(S);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(T.is_begun());
+    REQUIRE(T.started());
     REQUIRE(T.finished());
     REQUIRE(T.nr_generators() == 5);
     REQUIRE(T.degree() == 6);
@@ -1915,7 +1915,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     S.enumerate(121);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
@@ -1932,7 +1932,7 @@ namespace libsemigroups {
     REQUIRE(*coll[0] == *(T->generator(3)));
     REQUIRE(*coll[1] == *(T->generator(4)));
 
-    REQUIRE(T->is_begun());
+    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1961,7 +1961,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
     S.enumerate(121);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 3);
     REQUIRE(S.degree() == 6);
@@ -1978,7 +1978,7 @@ namespace libsemigroups {
     REQUIRE(*coll[0] == *(T->generator(3)));
     REQUIRE(*coll[1] == *(T->generator(4)));
 
-    REQUIRE(T->is_begun());
+    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -2093,7 +2093,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     S.enumerate(LIMIT_MAX);
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
     REQUIRE(S.degree() == 6);
@@ -2134,7 +2134,7 @@ namespace libsemigroups {
     REPORTER.set_report(REPORT);
 
     S.enumerate(LIMIT_MAX);
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
     REQUIRE(S.degree() == 6);
@@ -2333,7 +2333,7 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
     std::vector<Element*> coll
@@ -2396,7 +2396,7 @@ namespace libsemigroups {
     FroidurePin<> S = FroidurePin<>(gens);
     REPORTER.set_report(REPORT);
 
-    REQUIRE(!S.is_begun());
+    REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
     std::vector<Element*> coll
@@ -2461,7 +2461,7 @@ namespace libsemigroups {
 
     S.enumerate(10);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
 
     std::vector<Element*> coll
@@ -2525,7 +2525,7 @@ namespace libsemigroups {
 
     S.enumerate(10);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(!S.finished());
 
     std::vector<Element*> coll
@@ -2587,7 +2587,7 @@ namespace libsemigroups {
 
     S.enumerate(8000);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
 
     std::vector<Element*> coll
@@ -2652,7 +2652,7 @@ namespace libsemigroups {
 
     S.enumerate(8000);
 
-    REQUIRE(S.is_begun());
+    REQUIRE(S.started());
     REQUIRE(S.finished());
 
     std::vector<Element*> coll

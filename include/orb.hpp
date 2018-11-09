@@ -23,7 +23,6 @@
 
 // TODO(now):
 // 1. Doc
-// 2. Benchmarks
 
 #ifndef LIBSEMIGROUPS_INCLUDE_ORB_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ORB_HPP_

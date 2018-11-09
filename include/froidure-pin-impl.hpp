@@ -458,7 +458,7 @@ namespace libsemigroups {
     return (_pos >= _nr);
   }
 
-  BOOL FROIDURE_PIN::is_begun() const noexcept {
+  BOOL FROIDURE_PIN::started_impl() const noexcept {
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
     return (_pos >= _lenindex[1]);
   }
@@ -1086,7 +1086,7 @@ namespace libsemigroups {
              " rules, max word length ",
              current_max_word_length());
     }
-    if (is_begun()) {
+    if (started()) {
       REPORT("elapsed time = ", timer);
     }
     report_why_we_stopped();

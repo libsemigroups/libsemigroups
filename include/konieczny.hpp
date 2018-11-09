@@ -102,13 +102,13 @@ namespace libsemigroups {
     size_t find_group_index(BMat8 bm) {
       BMat8  col_space_basis        = bm.col_space_basis();
       size_t pos                    = _row_orb.position(bm.row_space_basis());
-      size_t row_scc_id             = _row_orb.action_digraph().scc_id(pos);
+      size_t row_scc_id             = _row_orb.digraph().scc_id(pos);
       std::pair<size_t, size_t> key = std::make_pair(
-          col_space_basis.to_int(), _row_orb.action_digraph().scc_id(pos));
+          col_space_basis.to_int(), _row_orb.digraph().scc_id(pos));
 
       if (_group_indices.find(key) == _group_indices.end()) {
-        for (auto it = _row_orb.cbegin_scc(row_scc_id);
-             it < _row_orb.cend_scc(row_scc_id);
+        for (auto it = _row_orb.digraph().cbegin_scc(row_scc_id);
+             it < _row_orb.digraph().cend_scc(row_scc_id);
              it++) {
           if (BMat8::is_group_index(col_space_basis, _row_orb.at(*it))) {
             _group_indices.emplace(key, *it);
@@ -491,20 +491,20 @@ namespace libsemigroups {
       size_t row_basis_pos = _parent->_row_orb.position(_rep.row_space_basis());
       size_t col_basis_pos = _parent->_col_orb.position(_rep.col_space_basis());
       size_t row_scc_id
-          = _parent->_row_orb.action_digraph().scc_id(row_basis_pos);
+          = _parent->_row_orb.digraph().scc_id(row_basis_pos);
       size_t col_scc_id
-          = _parent->_col_orb.action_digraph().scc_id(col_basis_pos);
+          = _parent->_col_orb.digraph().scc_id(col_basis_pos);
 
       std::pair<size_t, size_t> key = std::make_pair(col_scc_id, 0);
-      for (auto it = _parent->_row_orb.cbegin_scc(row_scc_id);
-           it < _parent->_row_orb.cend_scc(row_scc_id);
+      for (auto it = _parent->_row_orb.digraph().cbegin_scc(row_scc_id);
+           it < _parent->_row_orb.digraph().cend_scc(row_scc_id);
            it++) {
         std::get<1>(key) = *it;
         if (_parent->_group_indices_alt.find(key)
             == _parent->_group_indices_alt.end()) {
           bool found = false;
-          for (auto it2 = _parent->_col_orb.cbegin_scc(col_scc_id);
-               !found && it2 < _parent->_col_orb.cend_scc(col_scc_id);
+          for (auto it2 = _parent->_col_orb.digraph().cbegin_scc(col_scc_id);
+               !found && it2 < _parent->_col_orb.digraph().cend_scc(col_scc_id);
                it2++) {
             if (BMat8::is_group_index(_parent->_col_orb.at(*it2),
                                       _parent->_row_orb.at(*it))) {
@@ -535,9 +535,9 @@ namespace libsemigroups {
       }
       size_t col_basis_pos = _parent->_col_orb.position(_rep.col_space_basis());
       size_t col_scc_id
-          = _parent->_col_orb.action_digraph().scc_id(col_basis_pos);
-      for (auto it = _parent->_col_orb.cbegin_scc(col_scc_id);
-           it < _parent->_col_orb.cend_scc(col_scc_id);
+          = _parent->_col_orb.digraph().scc_id(col_basis_pos);
+      for (auto it = _parent->_col_orb.digraph().cbegin_scc(col_scc_id);
+           it < _parent->_col_orb.digraph().cend_scc(col_scc_id);
            it++) {
         BMat8 x = _parent->_col_orb.multiplier_from_scc_root(*it)
                   * _parent->_col_orb.multiplier_to_scc_root(col_basis_pos)
@@ -606,7 +606,7 @@ namespace libsemigroups {
       BMat8  col_basis     = _rep.col_space_basis();
       size_t col_basis_pos = _parent->_col_orb.position(col_basis);
       size_t col_basis_scc_id
-          = _parent->_col_orb.action_digraph().scc_id(col_basis_pos);
+          = _parent->_col_orb.digraph().scc_id(col_basis_pos);
       std::vector<BMat8> right_invs;
 
       for (size_t i = 0; i < _left_indices.size(); ++i) {
@@ -654,9 +654,9 @@ namespace libsemigroups {
       size_t row_basis_pos = _parent->_row_orb.position(row_basis);
       size_t col_basis_pos = _parent->_col_orb.position(col_basis);
       size_t row_scc_id
-          = _parent->_row_orb.action_digraph().scc_id(row_basis_pos);
+          = _parent->_row_orb.digraph().scc_id(row_basis_pos);
       size_t col_scc_id
-          = _parent->_col_orb.action_digraph().scc_id(col_basis_pos);
+          = _parent->_col_orb.digraph().scc_id(col_basis_pos);
 
       // this all relies on the indices having been computed already
 
