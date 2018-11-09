@@ -299,15 +299,6 @@ namespace libsemigroups {
     // REQUIRE(row_orb.size() == 37977468);
   }
 
-  template <>
-  struct right_action<PartialPerm<uint_fast8_t>, PartialPerm<uint_fast8_t>> {
-    void operator()(PartialPerm<uint_fast8_t>&       res,
-                    PartialPerm<uint_fast8_t> const& pt,
-                    PartialPerm<uint_fast8_t> const& x) const noexcept {
-      res.redefine(pt, x);
-      res.swap(res.image());
-    }
-  };
 
   LIBSEMIGROUPS_TEST_CASE("Orb", "007", "partial perm image orbit", "[quick]") {
     // auto rg = ReportGuard();
@@ -349,23 +340,15 @@ namespace libsemigroups {
     REQUIRE(o.size() == 65536);
   }
 
-  template <>
-  struct right_action<HPCombi::PPerm16, HPCombi::PPerm16> {
-    void operator()(HPCombi::PPerm16&       res,
-                    HPCombi::PPerm16 const& pt,
-                    HPCombi::PPerm16 const& x) const noexcept {
-      res = (x * pt).left_one();
-    }
-  };
 
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "009",
                           "partial perm image orbit",
                           "[standard]") {
     // auto rg = ReportGuard();
-    using PPerm = HPCombi::PPerm16;
+    using PPerm = PPerm<16>::type;
     Orb<PPerm, PPerm, right_action<PPerm, PPerm>> o;
-    o.add_seed(PPerm::one());
+    o.add_seed(one<PPerm>()(16));
     o.add_generator(
         PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
               {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
@@ -385,23 +368,14 @@ namespace libsemigroups {
     REQUIRE(o.digraph().nr_scc() == 17);
   }
 
-  template <>
-  struct left_action<HPCombi::PPerm16, HPCombi::PPerm16> {
-    void operator()(HPCombi::PPerm16&       res,
-                    HPCombi::PPerm16 const& pt,
-                    HPCombi::PPerm16 const& x) const noexcept {
-      res = (pt * x).right_one();
-    }
-  };
-
   LIBSEMIGROUPS_TEST_CASE("Orb",
                           "010",
                           "partial perm image orbit",
                           "[standard]") {
     // auto rg = ReportGuard();
-    using PPerm = HPCombi::PPerm16;
+    using PPerm = PPerm<16>::type;
     Orb<PPerm, PPerm, left_action<PPerm, PPerm>, Side::LEFT> o;
-    o.add_seed(PPerm::one());
+    o.add_seed(one<PPerm>()(16));
     o.add_generator(
         PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
               {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
@@ -537,10 +511,9 @@ namespace libsemigroups {
         PPerm({0, 1, 2}, {1, 0, 2 }, 3));
     o.add_generator(PPerm({1, 2}, {0, 1}, 3));
     o.add_generator(PPerm({0, 1}, {1, 2}, 3));
-    REQUIRE(o.size() == 9);
+    REQUIRE(o.size() == 8);
     REQUIRE(std::vector<PPerm>(o.cbegin(), o.cend())
-            == std::vector<PPerm>({one<PPerm>()(3),
-                                   PPerm({0, 1, 2}, {0, 1, 2}, 3),
+            == std::vector<PPerm>({PPerm({0, 1, 2}, {0, 1, 2}, 3),
                                    PPerm({0, 1}, {0, 1}, 3),
                                    PPerm({1, 2}, {1, 2}, 3),
                                    PPerm({0}, {0}, 3),

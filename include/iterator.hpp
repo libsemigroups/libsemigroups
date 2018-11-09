@@ -31,7 +31,7 @@ namespace libsemigroups {
       using internal_value_type = typename TInternalIteratorType::value_type;
 
      public:
-      using size_type         = typename TInternalIteratorType::size_type;
+      using size_type         = size_t;
       using difference_type   = typename TInternalIteratorType::difference_type;
       using const_pointer     = TExternalConstPointer;
       using pointer           = TExternalConstPointer;
@@ -91,7 +91,8 @@ namespace libsemigroups {
         return out += val;
       }
 
-      friend const_iterator_base operator+(size_type val, const_iterator_base const& it) {
+      friend const_iterator_base operator+(size_type                  val,
+                                           const_iterator_base const& it) {
         return it + val;
       }
 
@@ -183,9 +184,9 @@ namespace libsemigroups {
           "constructible!");
 
       using const_iterator_base = const_iterator_base<TInternalIteratorType,
+                                                      TExternalValueType,
                                                       TExternalConstPointer,
-                                                      TExternalConstReference,
-                                                      TExternalValueType>;
+                                                      TExternalConstReference>;
 
      public:
       using const_iterator_base::const_iterator_base;
@@ -219,10 +220,11 @@ namespace libsemigroups {
         std::is_same<typename TInternalIteratorType::value_type,
                      TExternalValueType>::value,
         TInternalIteratorType,
-        const_iterator_stateless<TInternalIteratorType,
+        const_iterator_stateless<TMethodsType,
+                                 TInternalIteratorType,
+                                 TExternalValueType,
                                  TExternalConstPointer,
-                                 TExternalConstReference,
-                                 TExternalValueType>>::type;
+                                 TExternalConstReference>>::type;
 
     // The class iterator_base provides a base class for random access
     // iterators that wrap an iterator to a vector of TWrappedItemType. The

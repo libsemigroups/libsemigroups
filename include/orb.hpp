@@ -55,15 +55,15 @@ namespace libsemigroups {
             typename TPointHash  = internal::hash<TPointType>,
             typename TPointEqual = internal::equal_to<TPointType>,
             typename TTraits
-            = TraitsHashEqual<TPointType, TPointHash, TPointEqual>>
+            = new_traits_hash_equal<TPointType, TPointHash, TPointEqual>>
   class Orb : public internal::Runner, private TTraits {
     ////////////////////////////////////////////////////////////////////////
     // Orb - typedefs - private
     ////////////////////////////////////////////////////////////////////////
 
-    using internal_point_type = typename TTraits::internal_element_type;
+    using internal_point_type = typename TTraits::internal_value_type;
     using internal_const_point_type =
-        typename TTraits::internal_const_element_type;
+        typename TTraits::internal_const_value_type;
     using internal_const_reference = typename TTraits::internal_const_reference;
 
     using internal_equal_to = typename TTraits::internal_equal_to;
@@ -93,15 +93,15 @@ namespace libsemigroups {
     // Orb - iterators - private
     ////////////////////////////////////////////////////////////////////////
 
-    struct iterator_methods {
+    struct iterator_methods : private TTraits {
       const_reference_point_type indirection(
           typename std::vector<internal_point_type>::const_iterator it) const {
-        return this->to_external_const((*it).first);
+        return this->to_external_const((*it));
       }
 
       const_pointer_point_type addressof(
           typename std::vector<internal_point_type>::const_iterator it) const {
-        return &(this->to_external_const((*it).first));
+        return &(this->to_external_const((*it)));
       }
     };
 
@@ -289,7 +289,7 @@ namespace libsemigroups {
     }
 
     inline const_reference_point_type at(size_t pos) const {
-      return _orb.at(pos);
+      return this->to_external_const(_orb.at(pos));
     }
 
     size_t size() {
@@ -340,12 +340,13 @@ namespace libsemigroups {
       return out;
     }
 
-    point_type root_of_scc(point_type x) {
-      return _orb[_graph.root_of_scc(position(x))];
+    const_reference_point_type root_of_scc(const_reference_point_type x) {
+      return this->to_external_const(
+          _orb[_graph.root_of_scc(position(x))]);
     }
 
-    point_type root_of_scc(index_type pos) {
-      return _orb[_graph.root_of_scc(pos)];
+    const_reference_point_type root_of_scc(index_type pos) {
+      return this->to_external_const(_orb[_graph.root_of_scc(pos)]);
     }
 
     ActionDigraph<size_t> const& digraph() {
@@ -378,13 +379,13 @@ namespace libsemigroups {
 
     std::vector<element_type> _gens;
     ActionDigraph<size_t>     _graph;
-    std::unordered_map<internal_point_type,
+    std::unordered_map<internal_const_point_type,
                        size_t,
                        internal_hash,
                        internal_equal_to>
-                                     _map;
+                                           _map;
     std::vector<internal_point_type> _orb;
-    size_t                           _pos;
+    size_t                                 _pos;
     internal_point_type              _tmp_point;
     bool                             _tmp_point_init;
   };

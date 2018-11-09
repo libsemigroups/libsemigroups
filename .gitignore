@@ -40,3 +40,4 @@ libsemigroups-config.hpp
 libtool
 m4/
 test_*
+tags

@@ -149,6 +149,24 @@ namespace libsemigroups {
       res = static_cast<TIntType>(p[pt]);
     }
   };
+
+  template <>
+  struct right_action<HPCombi::PPerm16, HPCombi::PPerm16> {
+    void operator()(HPCombi::PPerm16&       res,
+                    HPCombi::PPerm16 const& pt,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = (x * pt).left_one();
+    }
+  };
+
+  template <>
+  struct left_action<HPCombi::PPerm16, HPCombi::PPerm16> {
+    void operator()(HPCombi::PPerm16&       res,
+                    HPCombi::PPerm16 const& pt,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = (pt * x).right_one();
+    }
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI

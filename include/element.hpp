@@ -976,7 +976,7 @@ namespace libsemigroups {
                    this->_vector.cbegin(), this->_vector.cend(), UNDEFINED);
     }
 
-    PartialPerm<TValueType> image() const {
+    PartialPerm<TValueType> right_one() const {
       std::vector<TValueType> img(this->degree(),
                                   static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
@@ -988,7 +988,7 @@ namespace libsemigroups {
       return PartialPerm<TValueType>(img);
     }
 
-    PartialPerm<TValueType> domain() const {
+    PartialPerm<TValueType> left_one() const {
       std::vector<TValueType> dom(this->degree(),
                                   static_cast<TValueType>(UNDEFINED));
       size_t const            size = this->_vector.size();
@@ -1975,6 +1975,19 @@ namespace libsemigroups {
   };
 
   template <class TSubclass>
+  struct one<TSubclass,
+             typename std::enable_if<
+                 std::is_base_of<Element, TSubclass>::value>::type> {
+    TSubclass operator()(TSubclass const& x) const {
+      return static_cast<TSubclass>(x.identity());
+    }
+
+    TSubclass operator()(size_t n) {
+      return TSubclass(std::move(TSubclass::identity(n)));
+    }
+  };
+
+  template <class TSubclass>
   struct product<TSubclass*,
                  typename std::enable_if<
                      std::is_base_of<Element, TSubclass>::value>::type> {
@@ -1983,6 +1996,18 @@ namespace libsemigroups {
                     TSubclass const* y,
                     size_t           tid = 0) {
       xy->Element::redefine(*x, *y, tid);
+    }
+  };
+
+  template <class TSubclass>
+  struct product<TSubclass,
+                 typename std::enable_if<
+                     std::is_base_of<Element, TSubclass>::value>::type> {
+    void operator()(TSubclass&       xy,
+                    TSubclass const& x,
+                    TSubclass const& y,
+                    size_t           tid = 0) {
+      xy.Element::redefine(x, y, tid);
     }
   };
 
@@ -2033,6 +2058,26 @@ namespace libsemigroups {
     //! Hashes an Element given by Element pointer.
     size_t operator()(TSubclass const* x) const {
       return x->hash_value();
+    }
+  };
+
+  template <typename TIntType>
+  struct right_action<PartialPerm<TIntType>, PartialPerm<TIntType>> {
+    void operator()(PartialPerm<TIntType>&       res,
+                    PartialPerm<TIntType> const& pt,
+                    PartialPerm<TIntType> const& x) const noexcept {
+      res.redefine(pt, x);
+      res.swap(res.right_one());
+    }
+  };
+
+  template <typename TIntType>
+  struct left_action<PartialPerm<TIntType>, PartialPerm<TIntType>> {
+    void operator()(PartialPerm<TIntType>&       res,
+                    PartialPerm<TIntType> const& pt,
+                    PartialPerm<TIntType> const& x) const noexcept {
+      res.redefine(x, pt);
+      res.swap(res.left_one());
     }
   };
 
