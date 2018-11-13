@@ -137,6 +137,7 @@ CHECK_FLAGS2  = [quick]
 check_PROGRAMS =  test_all 
 check_PROGRAMS += test_blocks
 check_PROGRAMS += test_bmat8
+check_PROGRAMS += test_bmat8_enum
 check_PROGRAMS += test_cong_pair
 check_PROGRAMS += test_cong
 check_PROGRAMS += test_constants
@@ -218,6 +219,9 @@ test_blocks_SOURCES += tests/test-main.cpp
 
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
+
+test_bmat8_enum_SOURCES =  tests/bmat8-enum.cpp
+test_bmat8_enum_SOURCES += tests/test-main.cpp
 
 test_cong_pair_SOURCES =  tests/test-cong-pair.cpp
 test_cong_pair_SOURCES += tests/test-main.cpp

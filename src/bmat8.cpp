@@ -211,6 +211,18 @@ namespace libsemigroups {
     }
   }
 
+  BMat8::BMat8(std::vector<uint8_t> const& mat) {
+    // FIXME exceptions
+    LIBSEMIGROUPS_ASSERT(mat.size() <= 8);
+    LIBSEMIGROUPS_ASSERT(0 < mat.size());
+    _data        = 0;
+    size_t i = 0;
+    for (uint8_t x : mat){
+      _data |= (static_cast<size_t>(x) << 8 * (7 - i));
+      ++i;
+    }
+  }
+
   BMat8 BMat8::random() {
     return BMat8(_dist(_gen));
   }

@@ -77,6 +77,12 @@ namespace libsemigroups {
 
     //! A constructor.
     //!
+    //! This constructor initializes a matrix where the rows of the matrix
+    //! are the numbers in \p mat.
+    explicit BMat8(std::vector<uint8_t> const& mat);
+
+    //! A constructor.
+    //!
     //! This is the copy constructor.
     BMat8(BMat8 const&) = default;
 
