@@ -145,16 +145,16 @@ namespace libsemigroups {
                                      TExternalConstReference,
                                      TExternalValueType> {
 
-      using const_iterator_base = const_iterator_base<TInternalIteratorType,
+      using const_iterator_base_type = const_iterator_base<TInternalIteratorType,
                                      TExternalConstPointer,
                                      TExternalConstReference,
                                      TExternalValueType>;
 
       const_iterator_stateful(TStateType* st, TInternalIteratorType it_vec)
-          : const_iterator_base(it_vec), _state(st) {}
+          : const_iterator_base_type(it_vec), _state(st) {}
 
-      using const_reference = typename const_iterator_base::const_reference;
-      using const_pointer   = typename const_iterator_base::const_pointer;
+      using const_reference = typename const_iterator_base_type::const_reference;
+      using const_pointer   = typename const_iterator_base_type::const_pointer;
 
       const_reference operator*() const {
         return TMethodsType().indirection(_state, this->_it_vec);
@@ -183,21 +183,21 @@ namespace libsemigroups {
           "the final template parameter is not trivially default "
           "constructible!");
 
-      using const_iterator_base = const_iterator_base<TInternalIteratorType,
+      using const_iterator_base_type = const_iterator_base<TInternalIteratorType,
                                                       TExternalValueType,
                                                       TExternalConstPointer,
                                                       TExternalConstReference>;
 
      public:
-      using const_iterator_base::const_iterator_base;
+      using const_iterator_base_type::const_iterator_base;
 
-      using size_type         = typename const_iterator_base::size_type;
-      using difference_type   = typename const_iterator_base::difference_type;
-      using const_pointer     = typename const_iterator_base::const_pointer;
-      using pointer           = typename const_iterator_base::pointer;
-      using const_reference   = typename const_iterator_base::const_reference;
-      using reference         = typename const_iterator_base::reference;
-      using value_type        = typename const_iterator_base::value_type;
+      using size_type         = typename const_iterator_base_type::size_type;
+      using difference_type   = typename const_iterator_base_type::difference_type;
+      using const_pointer     = typename const_iterator_base_type::const_pointer;
+      using pointer           = typename const_iterator_base_type::pointer;
+      using const_reference   = typename const_iterator_base_type::const_reference;
+      using reference         = typename const_iterator_base_type::reference;
+      using value_type        = typename const_iterator_base_type::value_type;
       using iterator_category = std::random_access_iterator_tag;
 
       const_reference operator*() const {

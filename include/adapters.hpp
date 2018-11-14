@@ -27,6 +27,7 @@
 
 #include <algorithm>  // for std::sort
 #include <utility>    // for std::swap
+#include <vector>     // for std::vector
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
 

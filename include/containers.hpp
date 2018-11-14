@@ -275,23 +275,37 @@ namespace libsemigroups {
         typedef std::random_access_iterator_tag             iterator_category;
 
         iterator_base(iterator_type it_vec, iterator_methods const* methods)
-            : _it_vec(it_vec), _methods(methods) {}
+            : _it_vec(it_vec), _methods(methods) {
+          LIBSEMIGROUPS_ASSERT(_methods != nullptr);
+        }
 
         iterator_base(RecVec<T, A> const& rv, iterator_type it_vec)
             : _it_vec(it_vec), _methods(nullptr) {
           if (rv._nr_unused_cols == 0) {
+            if (_fast_methods == nullptr) {
+              _fast_methods = new typename RecVec<T, A>::template iterator_base<
+                  iterator_type,
+                  reference_type,
+                  pointer_type>::fast_iterator_methods();
+            }
             _methods = _fast_methods;
+            LIBSEMIGROUPS_ASSERT(_methods != nullptr);
           } else {
             _methods = new slow_iterator_methods(rv);
+            LIBSEMIGROUPS_ASSERT(_methods != nullptr);
           }
+          LIBSEMIGROUPS_ASSERT(_methods != nullptr);
         }
 
         iterator_base(iterator_base const& that)
-            : iterator_base(that._it_vec, that._methods->copy()) {}
+            : iterator_base(that._it_vec, that._methods->copy()) {
+          LIBSEMIGROUPS_ASSERT(_methods != nullptr);
+        }
 
         iterator_base& operator=(iterator_base const& that) {
           _it_vec  = that._it_vec;
           _methods = that._methods->copy();
+          LIBSEMIGROUPS_ASSERT(_methods != nullptr);
           return *this;
         }
 
@@ -399,6 +413,7 @@ namespace libsemigroups {
         static iterator_methods const* _fast_methods;
 
         struct iterator_methods {
+          iterator_methods() = default;
           virtual iterator_methods const* copy() const = 0;
           virtual ~iterator_methods() {}
 
@@ -419,6 +434,8 @@ namespace libsemigroups {
         };
 
         struct fast_iterator_methods : public iterator_methods {
+          fast_iterator_methods() = default;
+
           iterator_methods const* copy() const final {
             return this;
           }
@@ -654,7 +671,7 @@ namespace libsemigroups {
         = new typename RecVec<T, A>::template iterator_base<
             iterator_type,
             reference_type,
-            pointer_type>::fast_iterator_methods();
+            pointer_type>::fast_iterator_methods{};
 
     template <typename T, size_t N>
     class SquareVector {

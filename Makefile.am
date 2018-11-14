@@ -10,7 +10,7 @@ AM_CXXFLAGS += -mavx -flax-vector-conversions
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -march=native -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 
-AM_LDFLAGS  =  -no-undefined
+AM_LDFLAGS  =  -no-undefined -pthread
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
