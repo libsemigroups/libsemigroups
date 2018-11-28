@@ -110,6 +110,12 @@ libsemigroups_la_SOURCES += src/tce.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 
+libsemigroups_la_SOURCES += extern/bliss-0.73/defs.cc extern/bliss-0.73/graph.cc 
+libsemigroups_la_SOURCES += extern/bliss-0.73/partition.cc extern/bliss-0.73/orbit.cc
+libsemigroups_la_SOURCES += extern/bliss-0.73/uintseqhash.cc extern/bliss-0.73/heap.cc
+libsemigroups_la_SOURCES += extern/bliss-0.73/timer.cc extern/bliss-0.73/utils.cc 
+libsemigroups_la_SOURCES += extern/bliss-0.73/bliss_C.cc
+
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
