@@ -27,6 +27,15 @@ namespace bmat8_enum {
   static size_t                            first_row;
   static int                               min_ones;
   bliss_digraphs::Stats                    stats;
+  
+  std::vector<BMat8> const BMAT8_ONES = {BMat8(0x8000000000000000),
+                                         BMat8(0x8040000000000000),
+                                         BMat8(0x8040200000000000),
+                                         BMat8(0x8040201000000000),
+                                         BMat8(0x8040201008000000),
+                                         BMat8(0x8040201008040000),
+                                         BMat8(0x8040201008040200),
+                                         BMat8(0x8040201008040201)};
 
   BMat8 BMat8_from_rows(std::vector<uint8_t> const& rows) {
     LIBSEMIGROUPS_ASSERT(rows.size() <= 8);
@@ -261,7 +270,7 @@ namespace bmat8_enum {
       }
       rows[i] = 0;
     }
-    out.push_back(BMat8(1 << (9 * (8 - dim))));
+    out.push_back(canonical_BMat8(BMat8(static_cast<size_t>(1) << 63), dim));
     out.push_back(BMat8(0));
     return out;
   }
@@ -282,6 +291,7 @@ namespace libsemigroups {
     dgx2.change_color(4, 1);
     dgx2.change_color(5, 1);
     dgx2.add_edge(1, 5);
+    /*
     dgx2.add_edge(2, 4);
     dgx2.add_edge(2, 5);
 
@@ -294,6 +304,7 @@ namespace libsemigroups {
 
     REQUIRE(canonx == canony);
 
+    */
     std::ofstream o;
 
 
@@ -359,7 +370,6 @@ namespace libsemigroups {
     o.close();
     */
 
-    /*
     std::vector<BMat8> bmat_trim_enum_7 = bmat_enum(7, true);
     REQUIRE(bmat_trim_enum_7.size() == 34014);
     o.open("bmat_trim_enum_7.txt", std::ios::out | std::ios::trunc);
@@ -367,7 +377,8 @@ namespace libsemigroups {
       o << i.to_int() << "\n";
     }
     o.close();
-    
+   
+    /*
     std::vector<BMat8> bmat_trim_enum_8 = bmat_enum(8, true);
     std::cout << bmat_trim_enum_8.size() << std::endl;
     //REQUIRE(bmat_trim_enum_8.size() == 34014);
@@ -502,16 +513,25 @@ namespace libsemigroups {
     std::cout << "got here!" << std::endl;
     std::vector<BMat8> filtered;
     size_t i = 0;
+    
+    for (size_t i = 1; i < 128; ++i) {
+      std::unordered_set<std::bitset<256>> set(row_spaces[i].begin(), row_spaces[i].end());
+      row_spaces[i].assign(set.begin(), set.end());
+    }
+
+    std::cout << "removed duplicates!" << std::endl;
     for (BMat8 bm : bmat7_enum) {
       std::cout << i << std::endl;
       std::bitset<256> bitset = row_space_bitset(bm);
       bool found = false;
-      for (size_t i = bitset.count() + 1; i < 128; ++i) {
+      // TODO: not this
+      if (bitset.count() == 128) {
+        found = true; // get rid of any permutation matrices
+      }
+      for (size_t i = bitset.count() + 1; i < 128 && !found; ++i) {
         for (size_t j = 0; j < row_spaces[i].size(); ++j) {
           if ((bitset | row_spaces[i][j]) == row_spaces[i][j]) {
-            // TODO: not this
             found = true;
-            i = 257;
             break;
           }
         }
@@ -521,16 +541,16 @@ namespace libsemigroups {
       }
       ++i;
     }
+    for (Perm p : S7_gens) {
+      filtered.push_back(BMat8_from_perm<7>(p));
+    }
+    filtered.push_back(BMAT8_ONES[6]);
     std::ofstream o;
     o.open("bmat_gens_7.txt", std::ios::out | std::ios::trunc);
     for (BMat8 i : filtered) {
       o << i.to_int() << "\n";
     }
-    for (Perm p : S7_gens) {
-      o << BMat8_from_perm<6>(p).to_int() << "\n";
-    }
     o.close();
-    REQUIRE(filtered.size() == 421); 
-    
+    REQUIRE(filtered.size() == 2143); 
   }
 } // namespace libsemigroups
