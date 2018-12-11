@@ -167,10 +167,18 @@ namespace bmat8_enum {
   
   void dive(size_t k, bool trim = false) {
     LIBSEMIGROUPS_ASSERT(k > 0);
+    size_t next_one = 1;
+    while ((rows[k - 1] >> next_one) != 0) {
+      next_one += 1;
+    }
+    next_one = 1 << next_one;
     if (k < n - 1) {
       for (size_t row = rows[k - 1]; row < max; ++row) {
         if (!row_seen[row] && nr_ones(row) >= min_ones) {
           if (trim) {
+            if ((row > next_one) && ((row & next_one) == 0)) {
+              continue;
+            }
             bool trim_fail = false;
             for (size_t i = first_row; i < k; ++i) {
               if (rows[i] && ((rows[i] | row) == row)) {
@@ -183,7 +191,6 @@ namespace bmat8_enum {
             }
           }
           rows[k] = row;
-
 
           // UPDATE ROW ORB
           for (size_t i = first_row; i < k; ++i) {
@@ -207,7 +214,7 @@ namespace bmat8_enum {
         }
       }
     } else if (k == n - 1) {
-      for (uint8_t row = rows[k - 1]; row <= max; ++row) {
+      for (uint8_t row = rows[k - 1]; row <= next_one; ++row) {
         if (!row_seen[row] && nr_ones(row) >= min_ones) {
           if (trim) {
             bool trim_fail = false;
@@ -310,6 +317,7 @@ namespace libsemigroups {
 
     //TODO : check all the trim sizes
 
+    /*
     std::vector<BMat8> bmat_enum_4 = bmat_enum(4);
     REQUIRE(bmat_enum_4.size() == 60);
     o.open("bmat_enum_4.txt", std::ios::out | std::ios::trunc);
@@ -317,7 +325,7 @@ namespace libsemigroups {
       o << i.to_int() << "\n";
     }
     o.close();
-   
+   */
     /*
     std::vector<BMat8> bmat_trim_enum_4 = bmat_enum(4, true);
     REQUIRE(bmat_trim_enum_4.size() == 10);
@@ -351,7 +359,7 @@ namespace libsemigroups {
       o << i.to_int() << "\n";
     }
     o.close();
-
+*/
     std::vector<BMat8> bmat_trim_enum_6 = bmat_enum(6, true);
     REQUIRE(bmat_trim_enum_6.size() == 394);
     o.open("bmat_trim_enum_6.txt", std::ios::out | std::ios::trunc);
@@ -359,7 +367,7 @@ namespace libsemigroups {
       o << i.to_int() << "\n";
     }
     o.close();
-    */
+ 
     /*
     std::vector<BMat8> bmat_enum_7 = bmat_enum(7);
     REQUIRE(bmat_enum_7.size() == 7339704);
@@ -377,17 +385,15 @@ namespace libsemigroups {
       o << i.to_int() << "\n";
     }
     o.close();
-   
-    /*
+
     std::vector<BMat8> bmat_trim_enum_8 = bmat_enum(8, true);
     std::cout << bmat_trim_enum_8.size() << std::endl;
-    //REQUIRE(bmat_trim_enum_8.size() == 34014);
     o.open("bmat_trim_enum_8.txt", std::ios::out | std::ios::trunc);
     for (BMat8 i : bmat_trim_enum_8) {
       o << i.to_int() << "\n";
     }
     o.close();
-    */
+    REQUIRE(bmat_trim_enum_8.size() == 34014);
   }
   
   LIBSEMIGROUPS_TEST_CASE("BMat8 enum", "002", "filter 6", "[extreme]") {
