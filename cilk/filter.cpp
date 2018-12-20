@@ -20,7 +20,7 @@
 
 using namespace HPCombi;
 
-const int N = 7;
+const int N = 8;
 
 
 /**** Cycle for permutation enumeration *************************************/
@@ -40,6 +40,8 @@ void init_cycles() {
 
 bool permute_row_space_included(BMat8 a, BMat8 b) {
     Perm16 p = Perm16::one();
+    for (uint64_t i7=0; i7 <= 7; i7 ++) {
+        p = p * cycles[8];
     for (uint64_t i6=0; i6 <= 6; i6 ++) {
         p = p * cycles[7];
     for (uint64_t i5=0; i5 <= 5; i5 ++) {
@@ -56,6 +58,7 @@ bool permute_row_space_included(BMat8 a, BMat8 b) {
         if (ap.row_space_included(b)) {
             return true;
         }
+    }
     }
     }
     }
@@ -112,12 +115,17 @@ int main(int argc, char *argv[]) {
         done++;
         std::cout << "Done= " << done << " / " << bmat_enum.size() << std::endl;
     }
+
+    std::ostringstream outfilename;
+    outfilename << "bmat_filter_enum_" << N << ".txt";
+    std::ofstream  outf(outfilename.str());
     int count = 0;
     for (unsigned int i=0; i < bmat_enum.size(); i++) {
         if (not removed[i]) {
-//            std::cout << bmat_enum[i] << std::endl;
+            outf << bmat_enum[i].to_int() << std::endl;
             count ++;
         }
     }
+    outf.close();
     std::cout << "Kept= " << count << " / " << bmat_enum.size() << std::endl;
 }
