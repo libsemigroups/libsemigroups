@@ -18,9 +18,10 @@
 
 #include <hpcombi.hpp>
 
+using namespace std;
 using namespace HPCombi;
 
-const int N = 8;
+const int N = 7;
 
 
 /**** Cycle for permutation enumeration *************************************/
@@ -39,11 +40,12 @@ void init_cycles() {
 
 
 bool permute_row_space_included(BMat8 a, BMat8 b) {
+    a = a.transpose();
     Perm16 p = Perm16::one();
-    for (uint64_t i7=0; i7 <= 7; i7 ++) {
-        p = p * cycles[8];
+/*    for (uint64_t i7=0; i7 <= 7; i7 ++) {
+      p = p * cycles[8]; */
     for (uint64_t i6=0; i6 <= 6; i6 ++) {
-        p = p * cycles[7];
+    p = p * cycles[7];
     for (uint64_t i5=0; i5 <= 5; i5 ++) {
         p = p * cycles[6];
     for (uint64_t i4=0; i4 <= 4; i4 ++) {
@@ -52,10 +54,11 @@ bool permute_row_space_included(BMat8 a, BMat8 b) {
         p = p * cycles[4];
     for (uint64_t i2=0; i2 <= 2; i2 ++) {
         p = p * cycles[3];
-    for (uint64_t i1=0; i1 <= 1; i1 ++) {
-        p = p * cycles[2];
-        BMat8 ap = a.col_permuted(p);
-        if (ap.row_space_included(b)) {
+        BMat8 ap1 = a.row_permuted(p);
+        BMat8 ap2 = a.row_permuted(p * cycles[2]);
+        BMat8::transpose2(ap1, ap2);
+        auto res = BMat8::row_space_included2(ap1, b, ap2, b);
+        if (res.first || res.second) {
             return true;
         }
     }
@@ -63,8 +66,7 @@ bool permute_row_space_included(BMat8 a, BMat8 b) {
     }
     }
     }
-    }
-    }
+/*      } */
     return false;
 }
 
@@ -83,7 +85,31 @@ std::vector<BMat8> readfile(std::string filename) {
     return res;
 }
 
+int writefile(std::string filename,
+              std::vector<BMat8> & bmat_enum,
+              std::vector<bool> & removed) {
+    std::ofstream  outf(filename);
+    int count = 0;
+    for (unsigned int i=0; i < bmat_enum.size(); i++) {
+        if (not removed[i]) {
+            outf << bmat_enum[i].to_int() << std::endl;
+            count ++;
+        }
+    }
+    outf.close();
+    return count;
+}
+
 int main(int argc, char *argv[]) {
+    /*
+    cout << "extra " << endl
+         << BMat8(13853107707017724416) << endl << endl
+         << BMat8(4620710844295184384) << endl << endl
+         << BMat8(4647750068672397824) << endl << endl
+         << BMat8(9241421688590303744) << endl;
+    
+    return 0;
+    */
     std::ostringstream filename;
     filename << "bmat_trim_enum_" << N << ".txt";
     std::vector<BMat8> bmat_enum = readfile(filename.str());
@@ -98,13 +124,19 @@ int main(int argc, char *argv[]) {
               << v2.row_space_included(v1) << std::endl;
 
     std::vector<bool> removed(bmat_enum.size(), false);
+    for (unsigned int i=0; i < bmat_enum.size(); i++) {
+        if (bmat_enum[i].nr_rows() != N ||
+            bmat_enum[i].transpose().row_space_basis().nr_rows() != N) {
+            removed[i] = true;
+        }
+    }
 
     std::cout << "Vector size = " << bmat_enum.size() << std::endl;
     std::atomic<int> done (0);
     cilk_for (unsigned int i=0; i < bmat_enum.size(); i++) {
         auto v = bmat_enum[i];
         cilk_for (unsigned int j=0; j < bmat_enum.size(); j++) {
-            if (i != j) {
+            if (i != j && not removed[j]) {
                 auto v1 = bmat_enum[j];
 //                 if (not removed[i] && v1.row_space_included(v)) {
                 if (not removed[i] && permute_row_space_included(v1, v)) {
@@ -117,15 +149,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::ostringstream outfilename;
-    outfilename << "bmat_filter_enum_" << N << ".txt";
-    std::ofstream  outf(outfilename.str());
-    int count = 0;
-    for (unsigned int i=0; i < bmat_enum.size(); i++) {
-        if (not removed[i]) {
-            outf << bmat_enum[i].to_int() << std::endl;
-            count ++;
-        }
-    }
-    outf.close();
+    outfilename << "bmat_filter_new_enum_" << N << ".txt";
+    int count = writefile(outfilename.str(), bmat_enum, removed);
     std::cout << "Kept= " << count << " / " << bmat_enum.size() << std::endl;
 }
