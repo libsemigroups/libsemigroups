@@ -21,7 +21,8 @@
 using namespace std;
 using namespace HPCombi;
 
-#include"idemp6.hpp"
+
+#include"idemp7.hpp"
 
 
 vector<BMat8> make_gens(size_t n) {
@@ -56,19 +57,19 @@ using BMat8set = google::dense_hash_set<BMat8, MyHash, equal_to<BMat8>>;
 using BMat8set = unordered_set<BMat8>;
 #endif
 
-int ideal(pair<BMat8, vector<BMat8>> pr) {
-    int lg = 0, res = 0;
-    BMat8set todo, newtodo;
+BMat8set ideal(pair<BMat8, vector<BMat8>> pr) {
+    int lg = 0;
+    BMat8set res;
 
 #ifdef  USE_GOOGLE_SET
-    todo.set_empty_key(BMat8(0));
-    newtodo.set_empty_key(BMat8(0));
+    res.set_empty_key(BMat8(0));
 #endif
 
-    todo.insert(pr.first);
+    res.insert(pr.first);
+    std::vector<BMat8> todo, newtodo;
+    todo.push_back(pr.first);
     while (todo.size()) {
-        res += todo.size();
-        newtodo.clear();
+         newtodo.clear();
         lg++;
         for (auto v : todo) {
             for (auto g : gens) {
@@ -80,17 +81,13 @@ int ideal(pair<BMat8, vector<BMat8>> pr) {
                         break;
                     }
                 }
-                if (not out and todo.find(el) == todo.end())
-                    newtodo.insert(el);
+                if (not out and res.insert(el).second)
+                    newtodo.push_back(el);
             }
         }
-        std::cout << lg
-                  << ", todo = " << todo.size()
-                  << ", newtodo = " << newtodo.size()
-                  << ", res = " << res
-                  << ", #Bucks = " << todo.bucket_count() << std::endl;
-        if (lg > 20) return 0;
         std::swap(todo, newtodo);
+        std::cout << lg << ", todo = " << todo.size() << ", res = " << res.size()
+                  << ", #Bucks = " << res.bucket_count() << std::endl;
     }
     return res;
 }
@@ -99,7 +96,7 @@ int main() {
     vector<int> result;
     for (auto pr : input) {
         cout << pr.first;
-        result.push_back(ideal(pr));
+        result.push_back(ideal(pr).size());
     }
     for (auto i : result) {
         cout << i << ",";
