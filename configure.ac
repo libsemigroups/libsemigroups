@@ -170,5 +170,5 @@ AX_CODE_COVERAGE()
 
 dnl Output configured files
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile libsemigroups.pc])
 AC_OUTPUT
