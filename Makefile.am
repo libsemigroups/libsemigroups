@@ -67,6 +67,9 @@ BENCHMARK_LINT_FORMAT += benchmark/src/semigroups.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/nridempotents.bm.cpp
 BENCHMARK_LINT_FORMAT += benchmark/src/examples.h
 
+pkgconfigdir       = $(libdir)/pkgconfig
+pkgconfig_DATA     = libsemigroups.pc
+
 ## lstest sources 
 
 CHECK_LOG_DIR = tests/log

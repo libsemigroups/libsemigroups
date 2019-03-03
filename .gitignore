@@ -13,7 +13,6 @@ gh-pages
 config.status
 config.log
 *~
-Makefile.in
 README
 aclocal.m4
 autom4te.cache/
@@ -26,6 +25,8 @@ configure
 *.la
 libtool
 *.in
+!libsemigroups.pc.in
+libsemigroups.pc
 autom4te.cache
 config
 .!*
