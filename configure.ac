@@ -218,5 +218,5 @@ AC_CHECK_FILE([$srcdir/extern/fmt-5.3.0/README.rst],
                [AC_MSG_ERROR([fmt-5.3.0 is not available, please download fmt-5.3.0 from https://fmt.dev/ and put the unpacked archive in the libsemigroups/extern directory])])
 dnl Output configured files
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile libsemigroups.pc])
 AC_OUTPUT
