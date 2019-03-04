@@ -2,9 +2,9 @@
 set -e
 
 # Install doxygen
-wget -q ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.linux.bin.tar.gz
-tar -xf doxygen-1.8.13.linux.bin.tar.gz
-cd doxygen-1.8.13/
+curl -L -O http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz
+tar -xf doxygen-1.8.15.linux.bin.tar.gz
+cd doxygen-1.8.15/
 ./configure
 head -n 15 Makefile > temp.txt
 mv temp.txt Makefile

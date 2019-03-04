@@ -33,44 +33,51 @@ mv $INITIALDIR src/libsemigroups
 ./autogen.sh
 ./configure $PKG_FLAGS
 make -j2
+
+DIGRAPHS_VERS=$(perl -lne '/"digraphs",\s*">=(\d+.\d+.\d+)/ && print $1' PackageInfo.g)
+GENSS_VERS=$(perl -lne '/"genss",\s*">=(\d+.\d+.\d+)/ && print $1' PackageInfo.g)
+ORB_VERS=$(perl -lne '/"orb",\s*">=(\d+.\d+.\d+)/ && print $1' PackageInfo.g)
+IO_VERS=$(perl -lne '/"io",\s*">=(\d+.\d+.\d+)/ && print $1' PackageInfo.g)
 cd ..
 
 # Digraphs
-git clone -b $DIGRAPHS_BR --depth=1 https://github.com/gap-packages/Digraphs.git digraphs
-cd digraphs
-./autogen.sh
+DIGRAPHS=digraphs-$DIGRAPHS_VERS
+echo "Downloading $DIGRAPHS . . ."
+curl -L -O https://github.com/gap-packages/digraphs/releases/download/v$DIGRAPHS_VERS/$DIGRAPHS.tar.gz
+tar xzf $DIGRAPHS.tar.gz
+rm $DIGRAPHS.tar.gz
+cd $DIGRAPHS
 ./configure $PKG_FLAGS
 make -j2
-cd ..
+cd .. # pkg
 
-# GenSS
-GENSS=genss-$GENSSVERS
-echo "Downloading $GENSS..."
-curl -L -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GENSS.tar.gz
-tar xzf $GENSS.tar.gz
-rm $GENSS.tar.gz
-
-# IO
-IO=io-$IOVERS
-echo "Downloading $IO..."
-curl -L -O https://github.com/gap-packages/io/releases/download/v$IOVERS/$IO.tar.gz
+IO=io-$IO_VERS
+echo "Downloading $IO . . ."
+curl -L -O https://github.com/gap-packages/io/releases/download/v$IO_VERS/$IO.tar.gz
 tar xzf $IO.tar.gz
 rm $IO.tar.gz
 cd $IO
 ./configure $PKG_FLAGS
 make -j2
-cd ..
+cd .. # pkg
 
 # Orb
-ORB=orb-$ORBVERS
+ORB=orb-$ORB_VERS
 echo "Downloading $ORB..."
-curl -L -O https://github.com/gap-packages/orb/releases/download/v$ORBVERS/$ORB.tar.gz
+curl -L -O https://github.com/gap-packages/orb/releases/download/v$ORB_VERS/$ORB.tar.gz
 tar xzf $ORB.tar.gz
 rm $ORB.tar.gz
 cd $ORB
 ./configure $PKG_FLAGS
 make -j2
 cd ..
+
+# GenSS
+GENSS=genss-$GENSS_VERS
+echo "Downloading $GENSS..."
+curl -L -O https://www.gap-system.org/pub/gap/gap4/tar.gz/packages/$GENSS.tar.gz
+tar xzf $GENSS.tar.gz
+rm $GENSS.tar.gz
 
 ################################################################################
 # Install required GAP packages
