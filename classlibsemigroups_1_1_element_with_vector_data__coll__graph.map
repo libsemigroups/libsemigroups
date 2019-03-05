@@ -1,3 +1,4 @@
 <map id="libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt;" name="libsemigroups::ElementWithVectorData&lt; TValueType, TSubclass &gt;">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="19,5,179,31"/>
+<area shape="rect" id="node1" title="Abstract base class for elements using a vector to store their defining data." alt="" coords="5,79,192,131"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="19,5,179,31"/>
 </map>

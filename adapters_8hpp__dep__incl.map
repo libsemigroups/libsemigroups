@@ -1,11 +1,14 @@
 <map id="include/adapters.hpp" name="include/adapters.hpp">
-<area shape="rect" id="node2" href="$bmat8_8hpp_source.html" title="include/bmat8.hpp" alt="" coords="5,299,136,324"/>
-<area shape="rect" id="node4" href="$cong-pair_8hpp_source.html" title="include/cong&#45;pair.hpp" alt="" coords="186,299,334,324"/>
-<area shape="rect" id="node5" href="$froidure-pin_8hpp.html" title="This file contains a declaration of the class template FroidurePin which implements the Froidure&#45;Pin ..." alt="" coords="131,152,292,177"/>
-<area shape="rect" id="node6" href="$kbe_8hpp.html" title="This file contains the declaration of the class KBE, which can be used as the element_type for a Froi..." alt="" coords="249,225,364,251"/>
-<area shape="rect" id="node7" href="$element_8hpp_source.html" title="include/element.hpp" alt="" coords="367,152,507,177"/>
-<area shape="rect" id="node8" href="$schreier-sims_8hpp_source.html" title="include/schreier&#45;sims.hpp" alt="" coords="388,225,561,251"/>
-<area shape="rect" id="node9" href="$hpcombi_8hpp_source.html" title="include/hpcombi.hpp" alt="" coords="365,79,509,104"/>
-<area shape="rect" id="node10" href="$tce_8hpp_source.html" title="include/tce.hpp" alt="" coords="584,79,695,104"/>
-<area shape="rect" id="node3" href="$libsemigroups_8hpp.html" title="This file includes all the headers in libsemigroups, for convenience. " alt="" coords="253,372,429,397"/>
+<area shape="rect" id="node2" href="$hpcombi_8hpp_source.html" title="include/hpcombi.hpp" alt="" coords="380,79,523,104"/>
+<area shape="rect" id="node6" href="$element_8hpp_source.html" title="include/element.hpp" alt="" coords="511,152,651,177"/>
+<area shape="rect" id="node7" href="$kbe_8hpp.html" title="This file contains the declaration of the class KBE, which can be used as the element_type for a Froi..." alt="" coords="642,225,757,251"/>
+<area shape="rect" id="node8" href="$cong-pair_8hpp_source.html" title="include/cong&#45;pair.hpp" alt="" coords="679,299,827,324"/>
+<area shape="rect" id="node10" href="$schreier-sims_8hpp_source.html" title="include/schreier&#45;sims.hpp" alt="" coords="299,225,471,251"/>
+<area shape="rect" id="node11" href="$froidure-pin_8hpp.html" title="This file contains a declaration of the class template FroidurePin which implements the Froidure&#45;Pin ..." alt="" coords="726,152,887,177"/>
+<area shape="rect" id="node12" href="$orb_8hpp.html" title="This file contains a generic implementation of a class Orb which represents the action of a semigroup..." alt="" coords="170,79,282,104"/>
+<area shape="rect" id="node13" href="$tce_8hpp_source.html" title="include/tce.hpp" alt="" coords="5,299,116,324"/>
+<area shape="rect" id="node3" href="$bmat8_8hpp_source.html" title="include/bmat8.hpp" alt="" coords="93,225,223,251"/>
+<area shape="rect" id="node9" href="$transf_8hpp_source.html" title="include/transf.hpp" alt="" coords="360,152,487,177"/>
+<area shape="rect" id="node4" href="$konieczny_8hpp_source.html" title="include/konieczny.hpp" alt="" coords="196,299,347,324"/>
+<area shape="rect" id="node5" href="$libsemigroups_8hpp.html" title="This file includes all the headers in libsemigroups, for convenience. " alt="" coords="184,372,359,397"/>
 </map>

@@ -1,3 +1,4 @@
 <map id="libsemigroups::SHORTLEX" name="libsemigroups::SHORTLEX">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_reduction_ordering.html" title="This class provides a call operator which can be used to compare libsemigroups::rws_word_t. " alt="" coords="11,5,182,44"/>
+<area shape="rect" id="node1" title="This class implements the shortlex reduction ordering derived from an ordering on libsemigroups::rws_..." alt="" coords="5,92,188,117"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_reduction_ordering.html" title="This class provides a call operator which can be used to compare libsemigroups::rws_word_t." alt="" coords="11,5,182,44"/>
 </map>

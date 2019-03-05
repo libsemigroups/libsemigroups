@@ -191,6 +191,9 @@ template&lt;class TCollection &gt; </td></tr>
 <tr class="memitem:ae6ca700bd25d6c246c3beb119608e931"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ae6ca700bd25d6c246c3beb119608e931">closure</a> (std::initializer_list&lt; const_element_type &gt;)</td></tr>
 <tr class="memdesc:ae6ca700bd25d6c246c3beb119608e931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add copies of the non-redundant generators in <code>coll</code> to the generators of <code>this</code>.  <a href="#ae6ca700bd25d6c246c3beb119608e931">More...</a><br /></td></tr>
 <tr class="separator:ae6ca700bd25d6c246c3beb119608e931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb734853b124748c84f2c1b34b3f729f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#afb734853b124748c84f2c1b34b3f729f">concurrency_threshold</a> () const noexcept override</td></tr>
+<tr class="memdesc:afb734853b124748c84f2c1b34b3f729f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value of.  <a href="#afb734853b124748c84f2c1b34b3f729f">More...</a><br /></td></tr>
+<tr class="separator:afb734853b124748c84f2c1b34b3f729f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9aca6d89e44d8a97d7ed813ed3d12534"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a9aca6d89e44d8a97d7ed813ed3d12534">contains</a> (const_reference)</td></tr>
 <tr class="memdesc:a9aca6d89e44d8a97d7ed813ed3d12534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if <code>x</code> is an element of <code>this</code> and <code>false</code> if it is not.  <a href="#a9aca6d89e44d8a97d7ed813ed3d12534">More...</a><br /></td></tr>
 <tr class="separator:a9aca6d89e44d8a97d7ed813ed3d12534"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -257,18 +260,12 @@ template&lt;class TCollection &gt; </td></tr>
 <tr class="memitem:ad2ee9cbfcca17b7ea551afdc33589267"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups.html#ae76d5a532336fcdead943379d7b9cec7">letter_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ad2ee9cbfcca17b7ea551afdc33589267">final_letter</a> (element_index_type pos) const override</td></tr>
 <tr class="memdesc:ad2ee9cbfcca17b7ea551afdc33589267"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the last letter of the element in position <code>pos</code>.  <a href="#ad2ee9cbfcca17b7ea551afdc33589267">More...</a><br /></td></tr>
 <tr class="separator:ad2ee9cbfcca17b7ea551afdc33589267"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a489b8f0e534b83033eea76c4f741d007"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a489b8f0e534b83033eea76c4f741d007">finished_impl</a> () const override</td></tr>
-<tr class="memdesc:a489b8f0e534b83033eea76c4f741d007"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the semigroup is fully enumerated and <code>false</code> if not.  <a href="#a489b8f0e534b83033eea76c4f741d007">More...</a><br /></td></tr>
-<tr class="separator:a489b8f0e534b83033eea76c4f741d007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addbbdbe9438eee4aa6e953fcde6a7b8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups.html#ae76d5a532336fcdead943379d7b9cec7">letter_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#addbbdbe9438eee4aa6e953fcde6a7b8d">first_letter</a> (element_index_type pos) const override</td></tr>
 <tr class="memdesc:addbbdbe9438eee4aa6e953fcde6a7b8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the first letter of the element in position <code>pos</code>.  <a href="#addbbdbe9438eee4aa6e953fcde6a7b8d">More...</a><br /></td></tr>
 <tr class="separator:addbbdbe9438eee4aa6e953fcde6a7b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97210d28b09d11ffce68c29044063d5c"><td class="memItemLeft" align="right" valign="top">const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a97210d28b09d11ffce68c29044063d5c">generator</a> (<a class="el" href="namespacelibsemigroups.html#ae76d5a532336fcdead943379d7b9cec7">letter_type</a>) const</td></tr>
 <tr class="memdesc:a97210d28b09d11ffce68c29044063d5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the generator with index <code>pos</code>.  <a href="#a97210d28b09d11ffce68c29044063d5c">More...</a><br /></td></tr>
 <tr class="separator:a97210d28b09d11ffce68c29044063d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8743d744e906af315374de8498d9a4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ab8743d744e906af315374de8498d9a4a">is_begun</a> () const noexcept override</td></tr>
-<tr class="memdesc:ab8743d744e906af315374de8498d9a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if elements other than the generators have been enumerated so far and <code>false</code> otherwise.  <a href="#ab8743d744e906af315374de8498d9a4a">More...</a><br /></td></tr>
-<tr class="separator:ab8743d744e906af315374de8498d9a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebc730ee9c1c395f798fcdb2ef8820a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#aebc730ee9c1c395f798fcdb2ef8820a1">is_idempotent</a> (element_index_type) override</td></tr>
 <tr class="memdesc:aebc730ee9c1c395f798fcdb2ef8820a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the element in position <code>pos</code> is an idempotent and <code>false</code> if it is not.  <a href="#aebc730ee9c1c395f798fcdb2ef8820a1">More...</a><br /></td></tr>
 <tr class="separator:aebc730ee9c1c395f798fcdb2ef8820a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -287,6 +284,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_monoid</b> () over
 <tr class="memitem:a17b152c493a7a8a37a4301a2ed74aeee"><td class="memItemLeft" align="right" valign="top">element_index_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a17b152c493a7a8a37a4301a2ed74aeee">letter_to_pos</a> (<a class="el" href="namespacelibsemigroups.html#ae76d5a532336fcdead943379d7b9cec7">letter_type</a>) const override</td></tr>
 <tr class="memdesc:a17b152c493a7a8a37a4301a2ed74aeee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position in <code>this</code> of the generator with index <code>i</code>.  <a href="#a17b152c493a7a8a37a4301a2ed74aeee">More...</a><br /></td></tr>
 <tr class="separator:a17b152c493a7a8a37a4301a2ed74aeee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b8c86827687805d830684c4cfdf96d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a60b8c86827687805d830684c4cfdf96d">max_threads</a> () const noexcept override</td></tr>
+<tr class="memdesc:a60b8c86827687805d830684c4cfdf96d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value of.  <a href="#a60b8c86827687805d830684c4cfdf96d">More...</a><br /></td></tr>
+<tr class="separator:a60b8c86827687805d830684c4cfdf96d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9833f76f7b7e83d381c2a43e2d30d99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ab9833f76f7b7e83d381c2a43e2d30d99">minimal_factorisation</a> (<a class="el" href="namespacelibsemigroups.html#a676fa302ec473b5bef941c85cbdb3842">word_type</a> &amp;, element_index_type) override</td></tr>
 <tr class="memdesc:ab9833f76f7b7e83d381c2a43e2d30d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes <code>word</code> in-place to contain a minimal word with respect to the short-lex ordering in the generators equal to the <code>pos</code> element of the semigroup.  <a href="#ab9833f76f7b7e83d381c2a43e2d30d99">More...</a><br /></td></tr>
 <tr class="separator:ab9833f76f7b7e83d381c2a43e2d30d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -344,6 +344,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> (size_t)</td>
 <tr class="memitem:a81169e9e015985bf7959c9aa5bef4a27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a81169e9e015985bf7959c9aa5bef4a27">set_batch_size</a> (size_t) noexcept override</td></tr>
 <tr class="memdesc:a81169e9e015985bf7959c9aa5bef4a27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new value for the batch size.  <a href="#a81169e9e015985bf7959c9aa5bef4a27">More...</a><br /></td></tr>
 <tr class="separator:a81169e9e015985bf7959c9aa5bef4a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac64640965625a67d2301b27b9401039"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#aac64640965625a67d2301b27b9401039">set_concurrency_threshold</a> (size_t) noexcept override</td></tr>
+<tr class="memdesc:aac64640965625a67d2301b27b9401039"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value of.  <a href="#aac64640965625a67d2301b27b9401039">More...</a><br /></td></tr>
+<tr class="separator:aac64640965625a67d2301b27b9401039"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec2111e45f6eb680ea16d1f422b294c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a7ec2111e45f6eb680ea16d1f422b294c">set_max_threads</a> (size_t) noexcept override</td></tr>
 <tr class="memdesc:a7ec2111e45f6eb680ea16d1f422b294c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum number of threads that any method of an instance of <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class for semigroups generated by instances of Element. ">FroidurePin</a> can use.  <a href="#a7ec2111e45f6eb680ea16d1f422b294c">More...</a><br /></td></tr>
 <tr class="separator:a7ec2111e45f6eb680ea16d1f422b294c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -368,9 +371,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> (size_t)</td>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a206b18312e79aafcf12717bcd3f798db"><td class="memItemLeft" align="right" valign="top"><a id="a206b18312e79aafcf12717bcd3f798db"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>_batch_size</b></td></tr>
-<tr class="separator:a206b18312e79aafcf12717bcd3f798db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a474ca687fc189f1932b6f625e94ff724"><td class="memItemLeft" align="right" valign="top"><a id="a474ca687fc189f1932b6f625e94ff724"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>_degree</b></td></tr>
 <tr class="separator:a474ca687fc189f1932b6f625e94ff724"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -422,9 +422,6 @@ std::vector&lt; element_index_type &gt;&#160;</td><td class="memItemRight" valig
 <tr class="memitem:a7596d32ecff7167987f94b6075df66ba"><td class="memItemLeft" align="right" valign="top"><a id="a7596d32ecff7167987f94b6075df66ba"></a>
 std::unordered_map&lt; internal_const_element_type, element_index_type, internal_hash, internal_equal_to &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_map</b></td></tr>
 <tr class="separator:a7596d32ecff7167987f94b6075df66ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91fab5ee88a6441760990733f5cb8e8f"><td class="memItemLeft" align="right" valign="top"><a id="a91fab5ee88a6441760990733f5cb8e8f"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>_max_threads</b></td></tr>
-<tr class="separator:a91fab5ee88a6441760990733f5cb8e8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a700b8934d7ee4389ae24cef17eed3173"><td class="memItemLeft" align="right" valign="top"><a id="a700b8934d7ee4389ae24cef17eed3173"></a>
 std::mutex&#160;</td><td class="memItemRight" valign="bottom"><b>_mtx</b></td></tr>
 <tr class="separator:a700b8934d7ee4389ae24cef17eed3173"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -458,6 +455,9 @@ enumerate_index_type&#160;</td><td class="memItemRight" valign="bottom"><b>_rela
 <tr class="memitem:a8b33100b866d24b81ad5cb5c3946e2c5"><td class="memItemLeft" align="right" valign="top"><a id="a8b33100b866d24b81ad5cb5c3946e2c5"></a>
 cayley_graph_type&#160;</td><td class="memItemRight" valign="bottom"><b>_right</b></td></tr>
 <tr class="separator:a8b33100b866d24b81ad5cb5c3946e2c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2dacade9a4cd9fd3e68a2e1047bafdb"><td class="memItemLeft" align="right" valign="top"><a id="ab2dacade9a4cd9fd3e68a2e1047bafdb"></a>
+struct libsemigroups::FroidurePin::Settings&#160;</td><td class="memItemRight" valign="bottom"><b>_settings</b></td></tr>
+<tr class="separator:ab2dacade9a4cd9fd3e68a2e1047bafdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab2258833e9d5900aad3fcd2e5d4437f"><td class="memItemLeft" align="right" valign="top"><a id="aab2258833e9d5900aad3fcd2e5d4437f"></a>
 std::vector&lt; std::pair&lt; internal_element_type, element_index_type &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_sorted</b></td></tr>
 <tr class="separator:aab2258833e9d5900aad3fcd2e5d4437f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -846,9 +846,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a95514b17592385e49be35b4a08a5c7b4">const_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::begin </td>
@@ -857,11 +854,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to the first element of the semigroup. </p>
@@ -876,9 +868,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a95514b17592385e49be35b4a08a5c7b4">const_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cbegin </td>
@@ -887,11 +876,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to the first element of the semigroup. </p>
@@ -906,9 +890,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ad7b4bc2ed33c1888222bbb7012850593">const_iterator_idempotents</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cbegin_idempotents </td>
@@ -917,11 +898,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing at the first idempotent in the semigroup. </p>
@@ -937,9 +913,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a1b25fb1414699d00d393cf1b263e4c5d">const_iterator_sorted</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cbegin_sorted </td>
@@ -948,11 +921,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to the first element of the semigroup when the elements are sorted by <a class="el" href="classlibsemigroups_1_1_element.html#ab24e090bd9768f4301e29c21c55b5fd5" title="Returns true if this is less than that. ">Element::operator&lt;</a>. </p>
@@ -967,9 +935,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a95514b17592385e49be35b4a08a5c7b4">const_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cend </td>
@@ -978,11 +943,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to one past the last currently known element of the semigroup. </p>
@@ -997,9 +957,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#ad7b4bc2ed33c1888222bbb7012850593">const_iterator_idempotents</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cend_idempotents </td>
@@ -1008,11 +965,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator referring to past the end of the last idempotent in the semigroup. </p>
@@ -1027,9 +979,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a1b25fb1414699d00d393cf1b263e4c5d">const_iterator_sorted</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::cend_sorted </td>
@@ -1038,11 +987,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to one past the last element of the semigroup when the elements are sorted by <a class="el" href="classlibsemigroups_1_1_element.html#ab24e090bd9768f4301e29c21c55b5fd5" title="Returns true if this is less than that. ">Element::operator&lt;</a>. </p>
@@ -1098,6 +1042,35 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 
 <p>Add copies of the non-redundant generators in <code>coll</code> to the generators of <code>this</code>. </p>
 <p>See <a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a5d183298c1674e99f4af25f507b9d88b" title="Add copies of the non-redundant generators in coll to the generators of this. ">FroidurePin::closure</a> for more details. </p>
+
+</div>
+</div>
+<a id="afb734853b124748c84f2c1b34b3f729f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb734853b124748c84f2c1b34b3f729f">&#9670;&nbsp;</a></span>concurrency_threshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::concurrency_threshold </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the current value of. </p>
 
 </div>
 </div>
@@ -1183,9 +1156,6 @@ template&lt;class TCollection &gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a8bbeec3bafafb5f03e6c3e367fa46fd1">const_reverse_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::crbegin </td>
@@ -1194,11 +1164,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const reverse iterator pointing to the last currently known element of the semigroup. </p>
@@ -1213,9 +1178,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#aece8d9dcc0c9eadd25e6e3d8eef032e3">const_reverse_iterator_sorted</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::crbegin_sorted </td>
@@ -1224,11 +1186,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to the last element of the semigroup when the elements are sorted by <a class="el" href="classlibsemigroups_1_1_element.html#ab24e090bd9768f4301e29c21c55b5fd5" title="Returns true if this is less than that. ">Element::operator&lt;</a>. </p>
@@ -1243,9 +1200,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a8bbeec3bafafb5f03e6c3e367fa46fd1">const_reverse_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::crend </td>
@@ -1254,11 +1208,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const reverse iterator pointing to one before the first element of the semigroup. </p>
@@ -1273,9 +1222,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#aece8d9dcc0c9eadd25e6e3d8eef032e3">const_reverse_iterator_sorted</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::crend_sorted </td>
@@ -1284,11 +1230,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to one before the first element of the semigroup when the elements are sorted by <a class="el" href="classlibsemigroups_1_1_element.html#ab24e090bd9768f4301e29c21c55b5fd5" title="Returns true if this is less than that. ">Element::operator&lt;</a>. </p>
@@ -1446,9 +1387,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a95514b17592385e49be35b4a08a5c7b4">const_iterator</a> <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::end </td>
@@ -1457,11 +1395,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns a const iterator pointing to one past the last currently known element of the semigroup. </p>
@@ -1741,36 +1674,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 
 </div>
 </div>
-<a id="a489b8f0e534b83033eea76c4f741d007"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a489b8f0e534b83033eea76c4f741d007">&#9670;&nbsp;</a></span>finished_impl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::finished_impl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns <code>true</code> if the semigroup is fully enumerated and <code>false</code> if not. </p>
-<p>The semigroup is fully enumerated when the product of every element by every generator is known. </p>
-
-</div>
-</div>
 <a id="addbbdbe9438eee4aa6e953fcde6a7b8d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#addbbdbe9438eee4aa6e953fcde6a7b8d">&#9670;&nbsp;</a></span>first_letter()</h2>
 
@@ -1824,35 +1727,6 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 
 <p>Returns a const reference to the generator with index <code>pos</code>. </p>
 <p>If <code>pos</code> is not less than <a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a8957d580797dcbac29ccf209c4424c68" title="Returns the number of generators of the semigroup. ">FroidurePin::nr_generators()</a>, a LIBSEMIGROUPS_EXCEPTION will be thrown. Note that FroidurePin::gens(pos) is in general in general not in position <code>pos</code> in the semigroup, i.e. is not equal to FroidurePin::at(pos). </p>
-
-</div>
-</div>
-<a id="ab8743d744e906af315374de8498d9a4a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8743d744e906af315374de8498d9a4a">&#9670;&nbsp;</a></span>is_begun()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::is_begun </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns <code>true</code> if elements other than the generators have been enumerated so far and <code>false</code> otherwise. </p>
 
 </div>
 </div>
@@ -2022,6 +1896,35 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 <li>there are duplicate generators;</li>
 <li>FroidurePin::add_generators was called after the semigroup was already partially enumerated. </li>
 </ul>
+
+</div>
+</div>
+<a id="a60b8c86827687805d830684c4cfdf96d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60b8c86827687805d830684c4cfdf96d">&#9670;&nbsp;</a></span>max_threads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::max_threads </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the current value of. </p>
 
 </div>
 </div>
@@ -2562,6 +2465,36 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 
 </div>
 </div>
+<a id="aac64640965625a67d2301b27b9401039"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac64640965625a67d2301b27b9401039">&#9670;&nbsp;</a></span>set_concurrency_threshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TElementType  = Element const*, typename TElementHash  = internal::hash&lt;TElementType&gt;, typename TElementEqual  = internal::equal_to&lt;TElementType&gt;, class TTraits  = TraitsHashEqual&lt;TElementType, TElementHash, TElementEqual&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a>&lt; TElementType, TElementHash, TElementEqual, TTraits &gt;::set_concurrency_threshold </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the current value of. </p>
+
+</div>
+</div>
 <a id="a7ec2111e45f6eb680ea16d1f422b294c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ec2111e45f6eb680ea16d1f422b294c">&#9670;&nbsp;</a></span>set_max_threads()</h2>
 
@@ -2762,7 +2695,7 @@ template&lt;typename TElementType  = Element const*, typename TElementHash  = in
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 20 2018 14:57:10 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 8 2019 15:17:28 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

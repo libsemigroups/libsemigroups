@@ -1,7 +1,8 @@
 <map id="libsemigroups::Permutation&lt; T &gt;" name="libsemigroups::Permutation&lt; T &gt;">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_transformation.html" title="Template class for transformations. " alt="" coords="12,352,243,377"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_partial_transformation.html" title="libsemigroups::PartialTransformation\l\&lt; T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="8,265,246,304"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="libsemigroups::ElementWith\lVectorDataDefaultHash\&lt;\l T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="34,165,220,217"/>
-<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="libsemigroups::ElementWith\lVectorData\&lt; T, Transformation\&lt; T \&gt; \&gt;" alt="" coords="5,79,249,117"/>
-<area shape="rect" id="node6" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="47,5,207,31"/>
+<area shape="rect" id="node1" title="Template class for permutations." alt="" coords="20,425,234,451"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_transformation.html" title="Template class for transformations." alt="" coords="12,352,243,377"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_partial_transformation.html" title=" " alt="" coords="8,265,246,304"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title=" " alt="" coords="34,165,220,217"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element_with_vector_data.html" title=" " alt="" coords="5,79,249,117"/>
+<area shape="rect" id="node6" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="47,5,207,31"/>
 </map>

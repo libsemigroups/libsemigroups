@@ -1,6 +1,7 @@
 <map id="libsemigroups::ElementWithVectorDataDefaultHash&lt; TValueType, TSubclass &gt;" name="libsemigroups::ElementWithVectorDataDefaultHash&lt; TValueType, TSubclass &gt;">
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="Matrices over a semiring. " alt="" coords="707,5,896,57"/>
-<area shape="rect" id="node5" href="$classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations. " alt="" coords="682,81,920,120"/>
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data. " alt="" coords="213,40,400,92"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,53,165,79"/>
+<area shape="rect" id="node1" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="448,40,634,92"/>
+<area shape="rect" id="node4" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title="Matrices over a semiring." alt="" coords="707,5,896,57"/>
+<area shape="rect" id="node5" href="$classlibsemigroups_1_1_partial_transformation.html" title="Abstract class for partial transformations." alt="" coords="682,81,920,120"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data." alt="" coords="213,40,400,92"/>
+<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="5,53,165,79"/>
 </map>

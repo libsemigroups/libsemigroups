@@ -1,3 +1,4 @@
 <map id="libsemigroups::RWSE" name="libsemigroups::RWSE">
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements. " alt="" coords="5,5,165,31"/>
+<area shape="rect" id="node1" title="Subclass of Element that wraps an libsemigroups::rws_word_t." alt="" coords="10,79,161,104"/>
+<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="5,5,165,31"/>
 </map>

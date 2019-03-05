@@ -1,36 +1,33 @@
 <map id="include/libsemigroups.hpp" name="include/libsemigroups.hpp">
-<area shape="rect" id="node2" href="$blocks_8hpp_source.html" title="blocks.hpp" alt="" coords="182,472,267,497"/>
-<area shape="rect" id="node6" href="$bmat8_8hpp_source.html" title="bmat8.hpp" alt="" coords="4653,325,4738,351"/>
-<area shape="rect" id="node15" href="$libsemigroups-config_8hpp_source.html" title="libsemigroups&#45;config.hpp" alt="" coords="3949,619,4119,644"/>
-<area shape="rect" id="node16" href="$libsemigroups-debug_8hpp_source.html" title="libsemigroups&#45;debug.hpp" alt="" coords="3598,545,3769,571"/>
-<area shape="rect" id="node17" href="$stl_8hpp_source.html" title="stl.hpp" alt="" coords="2478,619,2539,644"/>
-<area shape="rect" id="node18" href="$cong-base_8hpp_source.html" title="cong&#45;base.hpp" alt="" coords="1365,325,1474,351"/>
-<area shape="rect" id="node21" href="$runner_8hpp_source.html" title="runner.hpp" alt="" coords="1596,399,1681,424"/>
-<area shape="rect" id="node22" href="$report_8hpp_source.html" title="report.hpp" alt="" coords="1777,472,1859,497"/>
-<area shape="rect" id="node24" href="$libsemigroups-exception_8hpp_source.html" title="libsemigroups&#45;exception.hpp" alt="" coords="1725,545,1916,571"/>
-<area shape="rect" id="node25" href="$types_8hpp_source.html" title="types.hpp" alt="" coords="2623,399,2702,424"/>
-<area shape="rect" id="node26" href="$cong-pair_8hpp_source.html" title="cong&#45;pair.hpp" alt="" coords="3452,79,3555,104"/>
-<area shape="rect" id="node30" href="$constants_8hpp_source.html" title="constants.hpp" alt="" coords="3945,399,4049,424"/>
-<area shape="rect" id="node31" href="$containers_8hpp_source.html" title="containers.hpp" alt="" coords="3386,399,3495,424"/>
-<area shape="rect" id="node32" href="$froidure-pin-base_8hpp_source.html" title="froidure&#45;pin&#45;base.hpp" alt="" coords="2232,325,2380,351"/>
-<area shape="rect" id="node33" href="$timer_8hpp_source.html" title="timer.hpp" alt="" coords="2909,472,2986,497"/>
-<area shape="rect" id="node34" href="$traits_8hpp_source.html" title="traits.hpp" alt="" coords="2471,399,2547,424"/>
-<area shape="rect" id="node36" href="$knuth-bendix_8hpp_source.html" title="knuth&#45;bendix.hpp" alt="" coords="2708,252,2832,277"/>
-<area shape="rect" id="node37" href="$fpsemi-base_8hpp_source.html" title="fpsemi&#45;base.hpp" alt="" coords="1116,325,1235,351"/>
-<area shape="rect" id="node39" href="$uf_8hpp_source.html" title="uf.hpp" alt="" coords="4826,252,4885,277"/>
-<area shape="rect" id="node40" href="$wrap_8hpp_source.html" title="wrap.hpp" alt="" coords="1052,252,1128,277"/>
-<area shape="rect" id="node41" href="$cong_8hpp_source.html" title="cong.hpp" alt="" coords="1525,252,1602,277"/>
-<area shape="rect" id="node42" href="$race_8hpp_source.html" title="race.hpp" alt="" coords="1682,325,1755,351"/>
-<area shape="rect" id="node43" href="$fpsemi_8hpp_source.html" title="fpsemi.hpp" alt="" coords="1200,79,1287,104"/>
-<area shape="rect" id="node44" href="$todd-coxeter_8hpp_source.html" title="todd&#45;coxeter.hpp" alt="" coords="1035,165,1156,191"/>
-<area shape="rect" id="node45" href="$obvinf_8hpp_source.html" title="obvinf.hpp" alt="" coords="747,399,830,424"/>
-<area shape="rect" id="node46" href="$range_8hpp_source.html" title="range.hpp" alt="" coords="1959,399,2040,424"/>
-<area shape="rect" id="node47" href="$reduct_8hpp_source.html" title="reduct.hpp" alt="" coords="23,472,107,497"/>
-<area shape="rect" id="node48" href="$schreier-sims_8hpp_source.html" title="schreier&#45;sims.hpp" alt="" coords="1879,325,2005,351"/>
-<area shape="rect" id="node49" href="$semiring_8hpp_source.html" title="semiring.hpp" alt="" coords="5180,79,5278,104"/>
-<area shape="rect" id="node50" href="$tce_8hpp_source.html" title="tce.hpp" alt="" coords="4178,325,4243,351"/>
-<area shape="rect" id="node14" href="$adapters_8hpp.html" title="This file contains function templates for adapting a user&#45;defined type so that it can be used with li..." alt="" coords="4073,399,4172,424"/>
-<area shape="rect" id="node20" href="$owned__ptr_8hpp_source.html" title="owned_ptr.hpp" alt="" coords="1412,399,1521,424"/>
-<area shape="rect" id="node29" href="$froidure-pin_8hpp.html" title="This file contains a declaration of the class template FroidurePin which implements the Froidure&#45;Pin ..." alt="" coords="3446,252,3561,277"/>
-<area shape="rect" id="node35" href="$kbe_8hpp.html" title="This file contains the declaration of the class KBE, which can be used as the element_type for a Froi..." alt="" coords="3610,165,3679,191"/>
+<area shape="rect" id="node2" href="$blocks_8hpp_source.html" title="blocks.hpp" alt="" coords="35,459,120,484"/>
+<area shape="rect" id="node6" href="$bmat8_8hpp_source.html" title="bmat8.hpp" alt="" coords="3193,372,3277,397"/>
+<area shape="rect" id="node7" href="$libsemigroups-config_8hpp_source.html" title="libsemigroups&#45;config.hpp" alt="" coords="3190,619,3360,644"/>
+<area shape="rect" id="node8" href="$libsemigroups-debug_8hpp_source.html" title="libsemigroups&#45;debug.hpp" alt="" coords="2616,545,2787,571"/>
+<area shape="rect" id="node25" href="$cong-base_8hpp_source.html" title="cong&#45;base.hpp" alt="" coords="883,299,992,324"/>
+<area shape="rect" id="node26" href="$runner_8hpp_source.html" title="runner.hpp" alt="" coords="1504,372,1589,397"/>
+<area shape="rect" id="node27" href="$report_8hpp_source.html" title="report.hpp" alt="" coords="1984,459,2067,484"/>
+<area shape="rect" id="node28" href="$libsemigroups-exception_8hpp_source.html" title="libsemigroups&#45;exception.hpp" alt="" coords="1983,545,2174,571"/>
+<area shape="rect" id="node29" href="$stl_8hpp_source.html" title="stl.hpp" alt="" coords="1890,619,1950,644"/>
+<area shape="rect" id="node30" href="$types_8hpp_source.html" title="types.hpp" alt="" coords="1011,372,1090,397"/>
+<area shape="rect" id="node31" href="$cong-pair_8hpp_source.html" title="cong&#45;pair.hpp" alt="" coords="1016,152,1118,177"/>
+<area shape="rect" id="node32" href="$knuth-bendix_8hpp_source.html" title="knuth&#45;bendix.hpp" alt="" coords="460,225,583,251"/>
+<area shape="rect" id="node33" href="$fpsemi-base_8hpp_source.html" title="fpsemi&#45;base.hpp" alt="" coords="587,299,707,324"/>
+<area shape="rect" id="node34" href="$traits_8hpp_source.html" title="traits.hpp" alt="" coords="2001,372,2077,397"/>
+<area shape="rect" id="node35" href="$uf_8hpp_source.html" title="uf.hpp" alt="" coords="1715,372,1773,397"/>
+<area shape="rect" id="node36" href="$wrap_8hpp_source.html" title="wrap.hpp" alt="" coords="1035,225,1112,251"/>
+<area shape="rect" id="node37" href="$froidure-pin-base_8hpp_source.html" title="froidure&#45;pin&#45;base.hpp" alt="" coords="1422,299,1570,324"/>
+<area shape="rect" id="node38" href="$constants_8hpp_source.html" title="constants.hpp" alt="" coords="3972,372,4076,397"/>
+<area shape="rect" id="node39" href="$cong_8hpp_source.html" title="cong.hpp" alt="" coords="1243,225,1320,251"/>
+<area shape="rect" id="node40" href="$race_8hpp_source.html" title="race.hpp" alt="" coords="1898,299,1971,324"/>
+<area shape="rect" id="node41" href="$timer_8hpp_source.html" title="timer.hpp" alt="" coords="2254,372,2330,397"/>
+<area shape="rect" id="node42" href="$containers_8hpp_source.html" title="containers.hpp" alt="" coords="2406,372,2515,397"/>
+<area shape="rect" id="node43" href="$fpsemi_8hpp_source.html" title="fpsemi.hpp" alt="" coords="773,79,859,104"/>
+<area shape="rect" id="node44" href="$todd-coxeter_8hpp_source.html" title="todd&#45;coxeter.hpp" alt="" coords="773,152,894,177"/>
+<area shape="rect" id="node45" href="$obvinf_8hpp_source.html" title="obvinf.hpp" alt="" coords="347,372,430,397"/>
+<area shape="rect" id="node46" href="$range_8hpp_source.html" title="range.hpp" alt="" coords="1267,372,1349,397"/>
+<area shape="rect" id="node47" href="$reduct_8hpp_source.html" title="reduct.hpp" alt="" coords="1235,459,1320,484"/>
+<area shape="rect" id="node48" href="$schreier-sims_8hpp_source.html" title="schreier&#45;sims.hpp" alt="" coords="2202,299,2329,324"/>
+<area shape="rect" id="node49" href="$semiring_8hpp_source.html" title="semiring.hpp" alt="" coords="4074,79,4172,104"/>
+<area shape="rect" id="node50" href="$tce_8hpp_source.html" title="tce.hpp" alt="" coords="4052,299,4117,324"/>
+<area shape="rect" id="node9" href="$hpcombi_8hpp_source.html" title="hpcombi.hpp" alt="" coords="3183,545,3281,571"/>
 </map>
