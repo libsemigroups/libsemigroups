@@ -1,7 +1,7 @@
-# libsemigroups - C++ library for semigroups and monoids - Version 0.6.5
-### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/), [Dima Pasechnik](http://users.ox.ac.uk/~coml0531/), and [N. Thiery](http://nicolas.thiery.name)
+# libsemigroups - C++ library for semigroups and monoids - Version 0.6.6
+### by [J. D. Mitchell](http://www-groups.mcs.st-andrews.ac.uk/~jamesm/) and [M. Torpey](http://www-circa.mcs.st-andrews.ac.uk/~mct25/) with contributions by [J. Jonusas](http://www-circa.mcs.st-andrews.ac.uk/~julius/), [D. V. Pasechnik](http://users.ox.ac.uk/~coml0531/), and [N. Thiery](http://nicolas.thiery.name)
 
-The current version of libsemigroups is 0.6.5.
+The current version of libsemigroups is 0.6.6.
 
 libsemigroups is a C++ library for semigroups and monoids using C++11; it is
 partly based on [Algorithms for computing finite
