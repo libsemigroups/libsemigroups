@@ -100,6 +100,28 @@ To enable assertions and other debugging checks enabled do:
 
     ./autogen.sh && ./configure --enable-debug && make && sudo make install
 
+By default, `make install` installs the library and its `pkg-config`
+configuration into `/usr/local`.  One can also specify another install
+location, say, `/foo/bar`, by calling `./configure` with parameter `--prefix`,
+e.g. `./configure --prefix=/foo/bar`. This might be useful if `sudo` is not
+available.
+
+If you have `pkg-config` installed, it may be called to get `libsemigroups`'s
+version, location, etc (see its docs for details; this facility is used in GAP
+package Semigroups, which may be configured to use the external libsemigroups). E.g.
+
+    pkg-config --modversion libsemigroups
+
+will print the version of the installed libsemigroups, provided it is scanning
+configurations in the install location.  For installation location unknown to
+`pkg-config`, one needs to add it to `PKG_CONFIG_PATH` (an environment variable).
+E.g. if it is `/foo/bar` as above then
+
+    PKG_CONFIG_PATH=/foo/bar/lib/pkgconfig pkg-config --modversion libsemigroups
+
+will print the version of the installed libsemigroups. (As usual, `PKG_CONFIG_PATH`
+may be exported, added to shell configuration, etc.)
+
 ## Documentation
 The documentation is generated using
 [doxygen](http://www.doxygen.org) and is available
