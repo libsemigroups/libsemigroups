@@ -29,7 +29,7 @@ cd pkg
 git clone -b $SEMIGROUPS_BR --depth=1 https://github.com/gap-packages/Semigroups.git semigroups
 cd semigroups
 # Move the libsemigroups to the correct location
-mv $INITIALDIR src/libsemigroups
+mv $INITIALDIR . 
 ./autogen.sh
 ./configure $PKG_FLAGS
 make -j2
