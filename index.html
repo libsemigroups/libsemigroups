@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>libsemigroups: libsemigroups - C++ library for semigroups and monoids - Version 0.6.6</title>
+<title>libsemigroups: libsemigroups - C++ library for semigroups and monoids - Version 0.6.7</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,11 +68,11 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">libsemigroups - C++ library for semigroups and monoids - Version 0.6.6 </div>  </div>
+<div class="title">libsemigroups - C++ library for semigroups and monoids - Version 0.6.7 </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h3>by <a href="http://www-groups.mcs.st-andrews.ac.uk/~jamesm/">J. D. Mitchell</a> and <a href="http://www-circa.mcs.st-andrews.ac.uk/~mct25/">M. Torpey</a> with contributions by <a href="http://www-circa.mcs.st-andrews.ac.uk/~julius/">J. Jonusas</a>, <a href="http://users.ox.ac.uk/~coml0531/">D. V. Pasechnik</a>, and <a href="http://nicolas.thiery.name">N. Thiery</a></h3>
-<p>The current version of libsemigroups is 0.6.6.</p>
+<p>The current version of libsemigroups is 0.6.7.</p>
 <p>libsemigroups is a C++ library for semigroups and monoids using C++11; it is partly based on <a href="https://www.irif.fr/~jep/PDF/Rio.pdf">Algorithms for computing finite semigroups</a>, <a href="https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf">Expository Slides</a>, and <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> by Jean-Eric Pin. libsemigroups uses <a href="https://github.com/philsquared/Catch">catch</a> for its unit tests.</p>
 <p>The libsemigroups library is used in the <a href="http://gap-packages.github.io/Semigroups/">Semigroups package for GAP</a>. The development version is available on <a href="https://github.com/james-d-mitchell/libsemigroups">Github</a>, and there are <a href="http://github.com/james-d-mitchell/libsemigroups-python-bindings/">python bindings</a> (for Python 2 and 3).</p>
 <p>Some of the features of <a href="https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html">Semigroupe 2.01</a> are not yet implemented in libsemigroups, this is a work in progress. Missing features include those for:</p>
@@ -109,7 +109,11 @@ $(function() {
 cd libsemigroups
 ./autogen.sh &amp;&amp; ./configure &amp;&amp; make &amp;&amp; sudo make install
 </pre><p>To enable assertions and other debugging checks enabled do: </p><pre class="fragment">./autogen.sh &amp;&amp; ./configure --enable-debug &amp;&amp; make &amp;&amp; sudo make install
-</pre><h2>Documentation</h2>
+</pre><p>By default, <code>make install</code> installs the library and its <code>pkg-config</code> configuration into <code>/usr/local</code>. One can also specify another install location, say, <code>/foo/bar</code>, by calling <code>./configure</code> with parameter <code>--prefix</code>, e.g. <code>./configure --prefix=/foo/bar</code>. This might be useful if <code>sudo</code> is not available.</p>
+<p>If you have <code>pkg-config</code> installed, it may be called to get <code>libsemigroups</code>'s version, location, etc (see its docs for details; this facility is used in GAP package Semigroups, which may be configured to use the external libsemigroups). E.g. </p><pre class="fragment">pkg-config --modversion libsemigroups
+</pre><p>will print the version of the installed libsemigroups, provided it is scanning configurations in the install location. For installation location unknown to <code>pkg-config</code>, one needs to add it to <code>PKG_CONFIG_PATH</code> (an environment variable). E.g. if it is <code>/foo/bar</code> as above then </p><pre class="fragment">PKG_CONFIG_PATH=/foo/bar/lib/pkgconfig pkg-config --modversion libsemigroups
+</pre><p>will print the version of the installed libsemigroups. (As usual, <code>PKG_CONFIG_PATH</code> may be exported, added to shell configuration, etc.)</p>
+<h2>Documentation</h2>
 <p>The documentation is generated using <a href="http://www.doxygen.org">doxygen</a> and is available <a href="http://james-d-mitchell.github.io/libsemigroups/">here</a>. This documentation can be compiled by running <code>./autogen.sh &amp;&amp; ./configure &amp;&amp; make doc</code> in the <code>libsemigroups</code> directory, and the tests can be run by doing <code>make check</code> in the <code>libsemigroups</code> directory.</p>
 <h2>Python bindings</h2>
 <p>There are <a href="http://github.com/james-d-mitchell/libsemigroups-python-bindings/">python bindings</a> (for Python 2 and 3) for most of the functionality of libsemigroups.</p>
@@ -123,7 +127,7 @@ cd libsemigroups
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2019 11:57:09 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Mar 15 2019 12:06:42 for libsemigroups by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.15
 </small></address>
