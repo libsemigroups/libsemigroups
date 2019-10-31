@@ -1,37 +1,30 @@
 #!/bin/bash
 set -e
 
-# Install doxygen
-curl -L -O http://doxygen.nl/files/doxygen-1.8.15.src.tar.gz
-tar -xf doxygen-1.8.15.src.tar.gz
-
-# From http://www.linuxfromscratch.org/blfs/view/8.3-systemd/general/doxygen.html
-cd doxygen-1.8.15/
-mkdir -v build &&
-cd       build &&
-
-cmake -G "Unix Makefiles"         \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -DCMAKE_INSTALL_PREFIX=/usr \
-      -Wno-dev .. &&
-make
-sudo make install
-cd ../..
-
-# Setup
+# The following are required to build all of the documentation
 ci/travis-setup.sh
+ci/travis-setup-hpcombi.sh
+./configure
 
-# Print version
-echo "Doxygen version:"
+sudo -H pip3 install --upgrade pip
+
+sudo -H pip3 install sphinx 
+sudo -H pip3 install bs4 
+sudo -H pip3 install --upgrade --ignore-installed pyyaml
+sudo -H pip3 install lxml 
+sudo -H pip3 install breathe 
+sudo -H pip3 install sphinx_rtd_theme 
+sudo -H pip3 install sphinx-copybutton 
+sudo -H pip3 install sphinxcontrib-bibtex
+
+echo "Doxygen version: "
 doxygen --version
 
-# make doc and look for warnings
-if [ ! -e log ]
-then
-    mkdir log
-fi
-touch log/make-doc-log.txt
-make doc 2>&1 | tee log/make-doc-log.txt
+echo "Sphinx version: "
+sphinx-build --version
+
+etc/make-doc-yml.sh | tee make-doc-yml.log
+etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
 
 echo
-( ! grep -i "warning" log/make-doc-log.txt )
+( ! grep "WARNING:" make-doc-sphinx.log)

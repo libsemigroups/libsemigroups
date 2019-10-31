@@ -1,0 +1,32 @@
+libsemigroups::BMat8:
+- Constructors:
+  - BMat8()
+  - BMat8(uint64_t)
+  - BMat8(std::vector<std::vector<bool>> const&)
+  - BMat8(BMat8 const&)
+  - BMat8(BMat8&&)
+  - operator=(BMat8 const&)
+  - operator=(BMat8&&)
+  - random()
+  - random(size_t)
+- Initialization:
+  - set
+  - swap
+- Operators:
+  - operator*(BMat8 const&)
+  - operator!=
+  - operator<
+  - operator==
+  - operator>
+  - get(size_t, size_t)
+  - one
+  - transpose
+  - to_int
+- Column and row space:
+  - col_space_basis
+  - row_space_basis
+  - row_space_size
+  - rows
+  - nr_rows
+- Miscellanea:
+  - is_regular_element

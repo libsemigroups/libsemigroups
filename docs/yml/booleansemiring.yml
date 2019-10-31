@@ -1,0 +1,14 @@
+libsemigroups::BooleanSemiring:
+- _kind: struct
+- Constructors:
+  - BooleanSemiring()
+  - BooleanSemiring(BooleanSemiring const&)
+  - BooleanSemiring(BooleanSemiring&&)
+  - operator=(BooleanSemiring const&)
+  - operator=(BooleanSemiring&&)
+- Public member functions:
+  - one
+  - zero
+  - plus
+  - prod
+  - contains

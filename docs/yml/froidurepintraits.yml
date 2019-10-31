@@ -1,0 +1,14 @@
+libsemigroups::FroidurePinTraits:
+- _kind: struct
+- Stateful type aliases:
+  - [typedef, element_type]
+- Stateless type aliases:
+  - [typedef, Complexity]
+  - [typedef, Degree]
+  - [typedef, EqualTo]
+  - [typedef, Hash]
+  - [typedef, IncreaseDegree]
+  - [typedef, Less]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Swap]

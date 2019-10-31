@@ -1,0 +1,14 @@
+libsemigroups::Integers:
+- _kind: struct
+- Constructors:
+  - Integers()
+  - Integers(Integers const&)
+  - Integers(Integers&&)
+  - operator=(Integers const&)
+  - operator=(Integers&&)
+- Public member functions:
+  - one
+  - zero
+  - plus
+  - prod
+  - contains

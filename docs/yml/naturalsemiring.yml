@@ -1,0 +1,16 @@
+libsemigroups::NaturalSemiring:
+- Constructors:
+  - NaturalSemiring(int64_t, int64_t)
+  - NaturalSemiring()
+  - NaturalSemiring(NaturalSemiring const&)
+  - NaturalSemiring(NaturalSemiring&&)
+  - operator=(NaturalSemiring const&)
+  - operator=(NaturalSemiring&&)
+- Public member functions:
+  - threshold
+  - period
+  - one
+  - zero
+  - plus
+  - prod
+  - contains

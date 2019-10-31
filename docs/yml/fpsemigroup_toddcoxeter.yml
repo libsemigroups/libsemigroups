@@ -1,0 +1,2 @@
+libsemigroups::fpsemigroup::ToddCoxeter:
+- _kind: typedef

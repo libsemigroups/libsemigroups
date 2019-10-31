@@ -1,0 +1,75 @@
+libsemigroups::FroidurePinBase:
+- Type aliases:
+  - [typedef, size_type]
+  - [typedef, element_index_type]
+  - [typedef, cayley_graph_type]
+- Constructors:
+  - FroidurePinBase()
+  - FroidurePinBase(FroidurePinBase const&)
+  - FroidurePinBase(FroidurePinBase&&)
+  - operator=(FroidurePinBase const&)
+  - operator=(FroidurePinBase&&)
+- Settings:
+  - batch_size(size_t)
+  - batch_size() const
+  - max_threads(size_t)
+  - max_threads() const   
+  - concurrency_threshold(size_t)
+  - concurrency_threshold() const
+  - immutable(bool)
+  - reserve
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Enumerating:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+  - enumerate
+- Attributes:
+  - degree
+  - nr_generators
+  - is_monoid
+  - current_size
+  - current_nr_rules
+  - size
+  - nr_idempotents
+  - is_idempotent
+- Cayley graphs:
+  - right_cayley_graph
+  - left_cayley_graph
+  - right
+  - left
+- Factorisation and relations:
+  - current_max_word_length
+  - word_to_pos
+  - letter_to_pos
+  - minimal_factorisation(word_type&, element_index_type)
+  - minimal_factorisation(element_index_type)
+  - factorisation(word_type&, element_index_type)
+  - factorisation(element_index_type)
+  - reset_next_relation
+  - next_relation
+  - position_to_sorted_position
+  - nr_rules
+  - length_const
+  - length_non_const
+  - equal_to
+- Prefixes and suffixes:
+  - prefix
+  - suffix
+  - first_letter
+  - final_letter
+- Products:
+  - product_by_reduction
+  - fast_product
+- State:
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out

@@ -4,5 +4,5 @@ set -e
 # Setup
 ci/travis-setup.sh
 
-# Check standard tests standard build
-make check -j2
+./configure
+make test_all -j2 && ./test_all "[quick],[standard]"

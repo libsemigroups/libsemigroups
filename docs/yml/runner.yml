@@ -1,0 +1,24 @@
+libsemigroups::Runner: 
+- Constructors:
+  - Runner()
+  - Runner(Runner const&)
+  - Runner(Runner&&)
+  - operator=(Runner const&)
+  - operator=(Runner&&)
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- State:
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+- Operators:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until

@@ -1,0 +1,53 @@
+libsemigroups::Action: 
+- Type aliases:
+  - [typedef, element_type]
+  - [typedef, point_type]
+  - [typedef, const_reference_point_type]
+  - [typedef, const_pointer_point_type]
+  - [typedef, index_type]
+  - [typedef, scc_index_type]
+  - [typedef, const_iterator]
+  - [typedef, const_iterator_scc]
+  - [typedef, const_iterator_scc_roots]
+  - [typedef, const_iterator_sccs]
+- Constructors:
+  - Action
+  - Action(Action const&)
+  - Action(Action&&)
+  - operator=(Action const&)
+  - operator=(Action&&)
+- Modifiers:
+  - reserve
+  - add_seed
+  - add_generator
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Position, size, empty...: 
+  - position
+  - empty
+  - operator[]
+  - at
+  - size
+  - current_size
+  - cbegin
+  - cend
+- Strongly connected components:
+  - multiplier_from_scc_root
+  - multiplier_to_scc_root
+  - root_of_scc(const_reference_point_type)
+  - root_of_scc(index_type)
+  - digraph
+- State:
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out

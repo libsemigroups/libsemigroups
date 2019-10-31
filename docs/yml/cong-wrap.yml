@@ -1,0 +1,77 @@
+libsemigroups::CongruenceWrapper:
+- Type aliases:
+  - [typedef, wrapped_type]
+- Constructors:
+  - CongruenceWrapper()
+  - CongruenceWrapper(std::shared_ptr<FroidurePinBase>)
+  - CongruenceWrapper(S const&)
+- Deleted constructors:
+  - CongruenceWrapper(CongruenceWrapper const&) 
+  - CongruenceWrapper(CongruenceWrapper&&) 
+  - operator=(CongruenceWrapper const&) 
+  - operator=(CongruenceWrapper&&)
+- Underlying congruence:
+  - congruence
+- Validation:
+  - validate_letter(char) const
+  - validate_letter(letter_type) const
+  - validate_word(word_type const&) const
+  - validate_word(std::string const&) const
+- Initialization:
+  - set_alphabet(size_t)
+  - set_alphabet(std::string const&)
+  - alphabet
+  - set_identity(letter_type)
+  - set_identity(std::string const&)
+  - identity
+  - set_inverses
+  - inverses
+  - add_rule(relation_type)
+  - add_rule(rule_type)
+  - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_rule(std::string const&, std::string const&)
+  - add_rule(word_type const&, word_type const&)
+  - add_rules(FroidurePinBase&)
+  - add_rules(std::vector<rule_type> const&)
+  - nr_rules
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Operators:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+- State:
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+- Normal forms and equality testing:
+  - normal_form(std::string const&)
+  - normal_form(word_type const&)
+  - normal_form(std::initializer_list<letter_type>)
+  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
+  - equal_to(std::string const&, std::string const&)
+  - equal_to(word_type const&, word_type const&)
+- Words to strings and vice versa:
+  - word_to_string
+  - string_to_word
+  - uint_to_char
+  - char_to_uint
+- Related semigroups:
+  - has_froidure_pin
+  - froidure_pin
+- Finiteness:
+  - is_obviously_finite
+  - is_obviously_infinite
+  - size
+- Iterators:
+  - cbegin_rules
+  - cend_rules
+- Miscellanea:
+  - to_gap_string
