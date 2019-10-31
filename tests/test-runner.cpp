@@ -1,0 +1,177 @@
+//
+// libsemigroups - C++ library for semigroups and monoids
+// Copyright (C) 2019 James D. Mitchell
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+// The purpose of this file is to test the Runner class.
+
+#include <cstddef>  // for size_t
+
+#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
+#include "report.hpp"     // for ReportGuard
+#include "runner.hpp"     // for Runner
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+namespace libsemigroups {
+  struct LibsemigroupsException;
+
+  constexpr bool REPORT = false;
+
+  namespace detail {
+
+    class TestRunner1 : public Runner {
+     public:
+      void run() {
+        if (finished()) {
+          return;
+        }
+        set_started(true);
+        while (!stopped()) {
+        }
+        set_finished(true);
+      }
+    };
+
+    class TestRunner2 : public Runner {
+     public:
+      void run() {
+        if (finished()) {
+          return;
+        }
+        set_started(true);
+        while (!timed_out()) {
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+      }
+    };
+
+    class TestRunner3 : public Runner {
+     public:
+      void run() {
+        if (finished()) {
+          return;
+        }
+        set_started(true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        set_finished(true);
+      }
+    };
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "000", "run_for", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      tr.run_for(std::chrono::milliseconds(10));
+      REQUIRE(tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+
+      tr.run_for(std::chrono::nanoseconds(1000000));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "001", "run_for", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      tr.run_for(std::chrono::nanoseconds(1000000));
+      REQUIRE(tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "002", "run_for", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner2 tr;
+      tr.run_for(std::chrono::milliseconds(100));
+      REQUIRE(!tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+      REQUIRE(tr.timed_out());
+      REQUIRE_NOTHROW(tr.report_why_we_stopped());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "003", "run_for", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner3 tr;
+      tr.run_for(FOREVER);
+      REQUIRE(tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+      REQUIRE(!tr.timed_out());
+      REQUIRE_NOTHROW(tr.report_why_we_stopped());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "004", "started", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      REQUIRE(!tr.started());
+      tr.run_for(std::chrono::nanoseconds(1000000));
+      REQUIRE(tr.finished());
+      REQUIRE(tr.started());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner",
+                            "005",
+                            "run_until",
+                            "[quick][no-valgrind]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      size_t      i = 0;
+      tr.run_until([&i]() -> bool {
+        ++i;
+        return i == 1000000;
+      });
+      REQUIRE(tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "006", "kill", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      tr.kill();
+      REQUIRE(!tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(tr.dead());
+      REQUIRE_NOTHROW(tr.report_why_we_stopped());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "007", "copy constructor", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr1;
+      tr1.run_for(std::chrono::milliseconds(10));
+      REQUIRE(tr1.finished());
+      REQUIRE(tr1.stopped());
+      REQUIRE(!tr1.dead());
+      REQUIRE_NOTHROW(tr1.report_why_we_stopped());
+
+      TestRunner1 tr2(tr1);
+      REQUIRE(tr2.finished());
+      REQUIRE(tr2.stopped());
+      REQUIRE(!tr2.dead());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner", "008", "report", "[quick]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      REQUIRE(!tr.report());
+      tr.report_every(std::chrono::milliseconds(10));
+      tr.run_for(std::chrono::milliseconds(20));
+      REQUIRE(tr.report());
+    }
+
+  }  // namespace detail
+}  // namespace libsemigroups

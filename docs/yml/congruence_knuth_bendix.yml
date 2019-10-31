@@ -1,0 +1,57 @@
+libsemigroups::congruence::KnuthBendix: 
+- Public Types:
+  - [typedef, const_iterator]
+  - [typedef, class_index_type]
+  - [typedef, non_trivial_class_iterator]
+  - [typedef, non_trivial_classes_type]
+- Constructors:
+  - KnuthBendix
+  - KnuthBendix(T const&)
+  - KnuthBendix(fpsemigroup::KnuthBendix const&)
+  - KnuthBendix(KnuthBendix const&)
+  - KnuthBendix(std::shared_ptr<FroidurePinBase>)
+  - operator=(KnuthBendix const&)
+- Converters:
+  - class_index_to_word
+  - word_to_class_index
+- Initialisation:
+  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_pair(word_type const&, word_type const&)
+  - set_nr_generators
+- Attributes:
+  - cbegin_generating_pairs
+  - cbegin_ntc
+  - cend_generating_pairs
+  - cend_ntc
+  - has_parent_froidure_pin
+  - has_quotient_froidure_pin
+  - is_quotient_obviously_finite
+  - is_quotient_obviously_infinite
+  - knuth_bendix
+  - nr_classes
+  - nr_generating_pairs
+  - nr_generators
+  - nr_non_trivial_classes
+  - parent_froidure_pin
+  - quotient_froidure_pin
+  - kind
+- Settings:
+  - report
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report_why_we_stopped
+- Running:
+  - run
+  - run_for(TIntType)
+  - run_for(std::chrono::nanoseconds)
+  - run_until
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+  - kill
+- Operators:
+  - const_contains
+  - contains
+  - less

@@ -1,0 +1,8 @@
+version: 1
+
+sphinx:
+  configuration: docs/source/conf.py
+
+formats: []
+
+requirements_file: docs/requirements.txt

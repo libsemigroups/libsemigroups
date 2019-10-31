@@ -1,0 +1,56 @@
+libsemigroups::KnuthBendixCongruenceByPairs:
+- Type aliases:
+- Constructors:
+  - KnuthBendixCongruenceByPairs(congruence_type, std::shared_ptr<KnuthBendix>)
+  - KnuthBendixCongruenceByPairs(congruence_type, KnuthBendix const&)
+- Deleted constructors:
+  - KnuthBendixCongruenceByPairs()                                  
+  - KnuthBendixCongruenceByPairs(KnuthBendixCongruenceByPairs const&)
+  - KnuthBendixCongruenceByPairs(KnuthBendixCongruenceByPairs&&)     
+  - operator=(KnuthBendixCongruenceByPairs const&)
+  - operator=(KnuthBendixCongruenceByPairs&&)
+- Initialization:
+  - set_nr_generators
+  - nr_generators
+  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_pair(word_type const&, word_type const&)
+  - nr_generating_pairs
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Operators:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+- Container-like:
+  - less
+  - const_contains
+  - contains
+  - nr_classes
+  - nr_non_trivial_classes
+- Related semigroups:
+  - quotient_froidure_pin
+  - has_quotient_froidure_pin
+  - parent_froidure_pin
+  - has_parent_froidure_pin
+  - is_quotient_obviously_finite
+  - is_quotient_obviously_infinite
+- Words and class indices:
+  - word_to_class_index
+  - class_index_to_word
+- State:
+  - kind
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+- Iterators:
+  - cbegin_generating_pairs
+  - cend_generating_pairs
+  - cbegin_ntc
+  - cend_ntc

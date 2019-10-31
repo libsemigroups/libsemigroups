@@ -1,0 +1,45 @@
+libsemigroups::ActionDigraph:
+- Aliases:
+  - [typedef, node_type]
+  - [typedef, label_type]
+  - [typedef, scc_index_type]
+  - [typedef, const_iterator_nodes]
+  - [typedef, const_iterator_edges]
+  - [typedef, const_iterator_scc]
+  - [typedef, const_iterator_sccs]
+  - [typedef, const_iterator_scc_roots]
+- Constructors:
+  - ActionDigraph(T, T)
+  - ActionDigraph(ActionDigraph const&)
+  - ActionDigraph(ActionDigraph&&)
+  - operator=(ActionDigraph const&)
+  - operator=(ActionDigraph&&)
+  - random
+- Modifiers:
+  - add_nodes
+  - add_to_out_degree
+  - add_edge
+  - reserve
+- Nodes, edges, neighbors:
+  - neighbor
+  - nr_nodes
+  - nr_edges
+  - out_degree
+  - validate
+  - cbegin_nodes
+  - cend_nodes
+  - cbegin_edges
+  - cend_edges
+- Strongly connected components:
+  - scc_id
+  - nr_scc
+  - root_of_scc
+  - cbegin_sccs
+  - cend_sccs
+  - cbegin_scc
+  - cend_scc
+  - cbegin_scc_roots
+  - cend_scc_roots
+- Spanning forests:
+  - spanning_forest
+  - reverse_spanning_forest

@@ -1,0 +1,15 @@
+libsemigroups::TropicalMaxPlusSemiring:
+- _kind: struct
+- Constructors:
+  - TropicalMaxPlusSemiring()
+  - TropicalMaxPlusSemiring(TropicalMaxPlusSemiring const&)
+  - TropicalMaxPlusSemiring(TropicalMaxPlusSemiring&&)
+  - operator=(TropicalMaxPlusSemiring const&)
+  - operator=(TropicalMaxPlusSemiring&&)
+- Public member functions:
+  - threshold
+  - one
+  - zero
+  - plus
+  - prod
+  - contains

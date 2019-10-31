@@ -1,35 +1,52 @@
-cmake_minimum_required(VERSION 3.5.0)
-project(Libsemigroups_Benchmarks LANGUAGES CXX)
-include_directories(/usr/local/include/)
+#****************************************************************************#
+#       Copyright (C) 2016 Florent Hivert <Florent.Hivert@lri.fr>,           #
+#                                                                            #
+#  Distributed under the terms of the GNU General Public License (GPL)       #
+#                                                                            #
+#    This code is distributed in the hope that it will be useful,            #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of          #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       #
+#   General Public License for more details.                                 #
+#                                                                            #
+#  The full text of the GPL is available at:                                 #
+#                                                                            #
+#                  http://www.gnu.org/licenses/                              #
+#****************************************************************************#
 
-# Location of additional cmake modules
-#
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH}
-    ${PROJECT_SOURCE_DIR}/cmake
-    )
+cmake_minimum_required(VERSION 3.7)
 
-# Guard against in-source builds and bad build-type strings
-#
-include(ConfigSafeGuards)
+find_package(benchmark)
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include(CheckCXXSymbolExists)
+include(CheckIncludeFileCXX)
+include(CheckCXXSourceCompiles)
 
-# If you want to self-test benchmark lib too, turn me ON
-#
-set(BENCHMARK_ENABLE_TESTING OFF)
+include_directories(
+  ${CMAKE_SOURCE_DIR}/../include
+  ${CMAKE_SOURCE_DIR}/../src
+  ${CMAKE_SOURCE_DIR}/..
+  ${CMAKE_SOURCE_DIR}/../extern/HPCombi/include/
+  ${CMAKE_SOURCE_DIR}/../extern/HPCombi/include/fallback
+  ${CMAKE_SOURCE_DIR}/../extern/fmt-5.3.0/include/fmt
+  /include/fallback
+  ${PROJECT_BINARY_DIR})
 
-# Configure google micro benchmark
-#
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 11)
+set(benchmark_src bench-action.cpp bench-digraph.cpp  bench-todd-coxeter.cpp)
 
-# c++11 is required
-#
-if((CMAKE_CXX_COMPILER_ID MATCHES GNU) OR (CMAKE_CXX_COMPILER_ID MATCHES Clang))
-   set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -std=c++11")
-   set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3")
-   set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-endif()
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+  # Workaround of CMAKE bug https://stackoverflow.com/questions/47213356/
+  set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} -std=c++11)
+  add_compile_options( -std=c++11 -Wall)
+endif ( )
 
-include(ConfigGBench)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/bench/)
+foreach(f ${benchmark_src})
+  get_filename_component(benchName ${f} NAME_WE)
+  add_executable (${benchName} ${f})
+  target_compile_options(${benchName} PUBLIC -mavx -mtune=native -funroll-loops
+    -flax-vector-conversions -O3 -g)
+  target_link_libraries(${benchName} benchmark pthread)
+  target_link_libraries(${benchName} -L${CMAKE_SOURCE_DIR}/../.libs)
+  target_link_libraries(${benchName} libsemigroups.dylib)
+endforeach(f)

@@ -1,0 +1,17 @@
+coverage:
+  precision: 2
+  round: down
+  range: "90...100"
+
+  status:
+    project: no
+    patch: no
+    changes: no
+
+comment:
+  layout: "header, diff, changes, tree"
+  behavior: default
+
+ignore:
+ - "extern"
+ - "tests"

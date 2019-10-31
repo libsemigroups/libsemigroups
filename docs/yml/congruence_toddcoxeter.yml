@@ -1,0 +1,91 @@
+libsemigroups::congruence::ToddCoxeter:
+- Enums:
+  - [enum, policy::strategy]
+  - [enum, policy::lookahead]
+  - [enum, policy::froidure_pin]
+  - [enum, order]
+- Type aliases:
+  - [typedef, class_index_type]
+  - [typedef, non_trivial_classes_type]
+  - [typedef, non_trivial_class_iterator]
+  - [typedef, const_iterator]
+- Public types:
+  - [struct, policy]
+- Constructors:
+  - ToddCoxeter(congruence_type)
+  - ToddCoxeter(congruence_type, T const&)
+  - ToddCoxeter(congruence_type,
+                std::shared_ptr<FroidurePinBase>,
+                policy::froidure_pin)
+  - ToddCoxeter(congruence_type, ToddCoxeter&)
+  - ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&)
+  - ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&)
+  - ToddCoxeter(ToddCoxeter const&)
+  - ToddCoxeter()
+  - ToddCoxeter(ToddCoxeter&&)
+  - operator=(ToddCoxeter const&)
+  - operator=(ToddCoxeter&&)
+- Initialization:
+  - set_nr_generators
+  - nr_generators
+  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_pair(word_type const&, word_type const&)
+  - nr_generating_pairs
+- Settings:
+  - froidure_pin_policy(policy::froidure_pin)
+  - lookahead
+  - lower_bound
+  - next_lookahead
+  - save
+  - standardize(bool)
+  - strategy() const
+  - strategy(policy::strategy)
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Operators:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+- Container-like:
+  - less
+  - const_contains
+  - contains
+  - empty
+  - nr_classes
+  - nr_non_trivial_classes
+  - reserve
+  - shrink_to_fit
+- Related semigroups:
+  - quotient_froidure_pin
+  - has_quotient_froidure_pin
+  - parent_froidure_pin
+  - has_parent_froidure_pin
+  - is_quotient_obviously_finite
+  - is_quotient_obviously_infinite
+- Words and class indices:
+  - word_to_class_index
+  - class_index_to_word
+- State:
+  - kind
+  - complete
+  - compatible
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+- Standardization:
+  - is_standardized
+  - standardize(order)
+- Iterators:
+  - cbegin_generating_pairs
+  - cend_generating_pairs
+  - cbegin_ntc
+  - cend_ntc
+  - cbegin_normal_forms
+  - cend_normal_forms

@@ -1,0 +1,13 @@
+libsemigroups::Semiring:
+- Constructors:
+  - Semiring()
+  - Semiring(Semiring const&)
+  - Semiring(Semiring&&)
+  - operator=(Semiring const&)
+  - operator=(Semiring&&)
+- Public member functions:
+  - one
+  - zero
+  - plus
+  - prod
+  - contains

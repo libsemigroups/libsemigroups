@@ -1,0 +1,37 @@
+PROJECT_NAME          = "libsemigroups"
+XML_OUTPUT            = build/xml
+INPUT                 = ../include
+GENERATE_LATEX        = NO
+GENERATE_MAN          = NO
+GENERATE_RTF          = NO
+CASE_SENSE_NAMES      = NO
+GENERATE_HTML         = NO
+GENERATE_XML          = YES
+RECURSIVE             = YES
+QUIET                 = YES
+JAVADOC_AUTOBRIEF     = YES
+WARNINGS              = YES
+WARN_IF_UNDOCUMENTED  = YES
+WARN_IF_DOC_ERROR     = YES
+# The next warning option leads to lots of false negatives, and so is disabled
+# for now.
+# WARN_NO_PARAMDOC      = YES
+INLINE_INHERITED_MEMB = YES
+INHERIT_DOCS          = YES
+EXCLUDE_SYMBOLS       = std::hash \
+                        libsemigroups::detail::* \
+                        libsemigroups::IntegralRange* \
+                        *KBE* \
+                        *TCE* \
+                        Internal* \
+                        THREAD_ID_MANAGER \
+                        REPORTER
+EXCLUDE_PATTERNS      = *-impl.hpp transf.hpp order.hpp string.hpp *KBE*
+ALIASES               =  exceptions="\par Exceptions"
+ALIASES               += noexcept="This function is `noexcept` and is guaranteed never to throw."
+ALIASES               += no_libsemigroups_except="This function guarantees not to throw a LibsemigroupsException."
+ALIASES               += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
+ALIASES               += basic_guarantee="If an exception is thrown, \c this might be modified but is guaranteed to be in a valid state (basic exception guarantee)."
+ALIASES               += iterator_validity="\par Iterator validity"
+ALIASES               += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function." 
+ALIASES               += complexity="\par Complexity"

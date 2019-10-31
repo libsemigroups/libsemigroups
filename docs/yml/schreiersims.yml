@@ -1,0 +1,39 @@
+libsemigroups::SchreierSims: 
+- Stateful type aliases:
+  - [typedef, index_type]
+  - [typedef, domain_type]
+  - [typedef, element_type]
+  - [typedef, point_type]
+- Stateless type aliases:
+  - [typedef, Action]
+  - [typedef, Degree]
+  - [typedef, EqualTo]
+  - [typedef, Inverse]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Swap]
+- Constructors:
+  - SchreierSims()
+  - SchreierSims(SchreierSims&&)
+- Deleted constructors:
+  - SchreierSims(SchreierSims const&)
+  - operator=(SchreierSims const&)
+  - operator=(SchreierSims&&)
+- Initialisation:
+  - add_base_point
+  - add_generator
+  - clear
+- Attributes:
+  - base
+  - base_size
+  - empty
+  - finished
+  - nr_generators
+  - nr_strong_generators
+  - strong_generator
+- Operators: 
+  - contains
+  - generator
+  - identity
+  - sift
+  - size

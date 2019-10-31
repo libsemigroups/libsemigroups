@@ -1,0 +1,81 @@
+libsemigroups::fpsemigroup::KnuthBendix: 
+- Public Types:
+  - [typedef, rule_type]
+  - [typedef, const_iterator]
+  - [enum, policy::overlap]
+- Constructors:
+  - KnuthBendix
+  - KnuthBendix(FroidurePinBase&)
+  - KnuthBendix(KnuthBendix const&)
+  - KnuthBendix(KnuthBendix&&)
+  - KnuthBendix(std::shared_ptr<FroidurePinBase>)
+  - operator=(KnuthBendix const&)
+- Validation:
+  - validate_letter(char) const
+  - validate_letter(letter_type) const
+  - validate_word(std::string const&) const
+  - validate_word(word_type const&) const
+- Converters:
+  - char_to_uint
+  - uint_to_char
+  - string_to_word
+  - word_to_string
+  - to_gap_string
+- Initialisation:
+  - add_rule(rule_type)
+  - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_rule(std::string const&, std::string const&)
+  - add_rule(word_type const&, word_type const&)
+  - add_rules(FroidurePinBase&)
+  - add_rules(std::vector<rule_type> const&)
+  - set_alphabet(std::string const&)
+  - set_alphabet(size_t)
+  - set_identity(letter_type)
+  - set_identity(std::string const&)
+  - set_inverses
+- Attributes:
+  - alphabet
+  - cbegin_rules
+  - cend_rules
+  - size
+  - nr_active_rules
+  - active_rules
+  - confluent
+  - is_obviously_finite
+  - is_obviously_infinite
+  - froidure_pin
+  - has_froidure_pin
+  - nr_rules
+  - identity
+  - inverses
+- Settings:
+  - check_confluence_interval
+  - overlap_policy
+  - max_overlap
+  - max_rules
+  - report
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report_why_we_stopped
+- Running:
+  - knuth_bendix
+  - knuth_bendix_by_overlap_length
+  - run
+  - run_for(TIntType)
+  - run_for(std::chrono::nanoseconds)
+  - run_until
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+  - kill
+- Operators:
+  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
+  - equal_to(std::string const&, std::string const&)
+  - equal_to(word_type const&, word_type const&)
+  - rewrite(std::string) const
+  - rewrite(std::string *) const
+  - normal_form(std::string const&)
+  - normal_form(word_type const&)
+  - normal_form(std::initializer_list<letter_type>)

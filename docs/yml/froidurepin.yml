@@ -1,0 +1,129 @@
+libsemigroups::FroidurePin:
+- Public types:
+  - [typedef, element_type]
+  - [typedef, const_element_type]
+  - [typedef, const_reference]
+  - [typedef, const_pointer]
+  - [typedef, size_type]
+  - [typedef, element_index_type]
+  - [typedef, cayley_graph_type]
+  - [typedef, const_iterator]
+  - [typedef, const_iterator_idempotents]
+  - [typedef, const_iterator_sorted]
+  - [typedef, const_pointer]
+  - [typedef, const_reference]
+  - [typedef, const_reverse_iterator]
+  - [typedef, const_reverse_iterator_idempotents]
+  - [typedef, const_reverse_iterator_sorted]
+- Stateless public types:
+  - [typedef, Complexity]
+  - [typedef, Degree]
+  - [typedef, EqualTo]
+  - [typedef, Hash]
+  - [typedef, IncreaseDegree]
+  - [typedef, Less]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Swap]
+- Constructors:
+  - operator=(FroidurePin const&)
+  - operator=(FroidurePin&&)
+  - FroidurePin(FroidurePin&&)
+  - FroidurePin(std::vector<element_type> const *)
+  - FroidurePin(std::vector<element_type> const&)
+  - FroidurePin(std::initializer_list<element_type>)
+  - FroidurePin(FroidurePin const&)
+- Settings:
+  - batch_size(size_t)
+  - batch_size() const
+  - max_threads(size_t)
+  - max_threads() const   
+  - concurrency_threshold(size_t)
+  - concurrency_threshold() const
+  - immutable(bool)
+  - reserve
+- Reporting:
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report
+  - report_why_we_stopped
+- Initialisation:
+  - add_generators(TCollection const&)
+  - add_generators(std::initializer_list<const_element_type>)
+  - closure(TCollection const&)
+  - closure(std::initializer_list<const_element_type>)
+  - copy_add_generators
+  - copy_closure
+- Enumerating:
+  - kill
+  - run
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until
+  - enumerate
+- Attributes:
+  - generator
+  - degree
+  - nr_generators
+  - is_monoid
+  - current_size
+  - current_nr_rules
+  - size
+  - nr_idempotents
+  - is_idempotent
+- Cayley graphs:
+  - right_cayley_graph
+  - left_cayley_graph
+  - right
+  - left
+- Factorisation and relations:
+  - current_max_word_length
+  - word_to_pos
+  - letter_to_pos
+  - minimal_factorisation(word_type&, element_index_type)
+  - minimal_factorisation(element_index_type)
+  - factorisation(word_type&, element_index_type)
+  - factorisation(element_index_type)
+  - reset_next_relation
+  - next_relation
+  - position_to_sorted_position
+  - nr_rules
+  - length_const
+  - length_non_const
+  - equal_to
+  - word_to_element
+- Prefixes and suffixes:
+  - prefix
+  - suffix
+  - first_letter
+  - final_letter
+- Products:
+  - product_by_reduction
+  - fast_product
+- Membership:
+  - contains
+  - current_position
+  - position
+  - sorted_at
+  - sorted_position
+  - at
+  - operator[]
+- State:
+  - dead
+  - finished
+  - started
+  - stopped
+  - timed_out
+- Iterators:
+  - begin
+  - cbegin
+  - cbegin_idempotents
+  - cbegin_sorted
+  - cend
+  - cend_idempotents
+  - cend_sorted
+  - crbegin
+  - crbegin_sorted
+  - crend
+  - crend_sorted
+  - end

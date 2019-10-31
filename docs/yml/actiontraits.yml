@@ -1,0 +1,8 @@
+libsemigroups::ActionTraits:
+- _kind: struct
+- Type aliases:
+  - [typedef, Hash]
+  - [typedef, EqualTo]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Swap]

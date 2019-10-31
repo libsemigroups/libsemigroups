@@ -1,0 +1,15 @@
+libsemigroups::SchreierSimsTraits:
+- _kind: struct
+- Stateful type aliases:
+  - [typedef, index_type]
+  - [typedef, domain_type]
+  - [typedef, element_type]
+  - [typedef, point_type]
+- Stateless type aliases:
+  - [typedef, Action]
+  - [typedef, Degree]
+  - [typedef, EqualTo]
+  - [typedef, Inverse]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Swap]
