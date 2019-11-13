@@ -47,20 +47,13 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  // Runner - pure virtual overridden function - public
+  // Runner - non-pure virtual overridden function - public
   ////////////////////////////////////////////////////////////////////////////
 
-  void CongruenceInterface::run() {
+  void CongruenceInterface::before_run() {
     if (nr_generators() == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("no generators have been set!");
-    } else if (finished()) {
-      // TODO(later) this shouldn't be in here but in Runner itself
-      return;
-    } else if (stopped()) {
-      // TODO(later) this shouldn't be in here but in Runner itself
-      clear_stoppage();
     }
-    run_impl();
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -227,7 +220,6 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(_parent == nullptr);
     LIBSEMIGROUPS_ASSERT(nr_generators() == UNDEFINED
                          || prnt->nr_generators() == nr_generators());
-    LIBSEMIGROUPS_ASSERT(!started());
     LIBSEMIGROUPS_ASSERT(!finished());
     if (nr_generators() == UNDEFINED) {
       set_nr_generators(prnt->nr_generators());
@@ -293,7 +285,7 @@ namespace libsemigroups {
   }
 
   void CongruenceInterface::reset() noexcept {
-    set_finished(false);
+    // set_finished(false);
     _non_trivial_classes.reset();
     _init_ntc_done = false;
     _quotient.reset();

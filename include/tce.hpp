@@ -166,6 +166,7 @@ namespace libsemigroups {
     }
   };
 
+  //! No doc
   std::ostream& operator<<(std::ostream&                     os,
                            libsemigroups::detail::TCE const& tc);
 }  // namespace libsemigroups

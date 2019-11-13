@@ -50,6 +50,8 @@ libsemigroups::FpSemigroup:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate
 - Normal forms and equality testing:
   - normal_form(std::string const&)
   - normal_form(word_type const&)

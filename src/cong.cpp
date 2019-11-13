@@ -155,32 +155,6 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(!_race.empty());
   }
 
-  //////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure virtual member functions - private
-  //////////////////////////////////////////////////////////////////////////
-
-  // TODO(later) finished_impl and started_impl -> Race and Race should be a
-  // Runner itself
-  // TODO(now) after processing runner this could be noexcept
-  bool Congruence::finished_impl() const {
-    for (auto runner : _race) {
-      if (runner->finished()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // TODO(now) after processing runner this could be noexcept
-  bool Congruence::started_impl() const {
-    for (auto runner : _race) {
-      if (runner->started()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   ////////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - non-pure virtual member functions - public
   ////////////////////////////////////////////////////////////////////////////
@@ -190,7 +164,7 @@ namespace libsemigroups {
     if (r != tril::unknown) {
       return r == tril::TRUE;
     }
-    _race.run_until([this, &lhs, &rhs]() -> bool {
+    run_until([this, &lhs, &rhs]() -> bool {
       return const_contains(lhs, rhs) != tril::unknown;
     });
     return const_contains(lhs, rhs) == tril::TRUE;
@@ -232,6 +206,7 @@ namespace libsemigroups {
   }
 
   size_t Congruence::nr_classes_impl() {
+    run();  // to ensure the state is correctly set.
     if (_race.winner() == nullptr) {
       // The next line is not testable, this is just a sanity check in case
       // all threads in the _race throw, and so there is no winner.
@@ -280,6 +255,7 @@ namespace libsemigroups {
 
   std::shared_ptr<CongruenceInterface::non_trivial_classes_type>
   Congruence::non_trivial_classes_impl() {
+    run();  // required so that state is correctly set.
     auto winner = static_cast<CongruenceInterface*>(_race.winner().get());
     if (winner == nullptr) {
       // The next line is not testable, this is just a sanity check in case

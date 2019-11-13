@@ -70,6 +70,7 @@ namespace libsemigroups {
         _lenindex(),
         _letter_to_pos(),
         _map(),
+        _mtx(),
         _nr(0),
         _nrgens(gens->size()),
         _nr_rules(0),
@@ -140,7 +141,7 @@ namespace libsemigroups {
         _map.emplace(_elements.back(), _nr);
         _prefix.push_back(UNDEFINED);
         // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos, and
-        // the extra clause in the enumerate member function!
+        // the extra clause in the run member function!
         _suffix.push_back(UNDEFINED);
         _nr++;
       }
@@ -404,13 +405,7 @@ namespace libsemigroups {
   }
 
   SIZE_T FROIDURE_PIN::current_max_word_length() const noexcept {
-    if (finished()) {
-      return _lenindex.size() - 2;
-    } else if (_nr > _lenindex.back()) {
-      return _lenindex.size();
-    } else {
-      return _lenindex.size() - 1;
-    }
+    return _length[_enumerate_order.back()];
   }
 
   SIZE_T FROIDURE_PIN::degree() const noexcept {
@@ -424,15 +419,6 @@ namespace libsemigroups {
   CONST_REFERENCE FROIDURE_PIN::generator(letter_type pos) const {
     validate_letter_index(pos);
     return this->to_external_const(_gens[pos]);
-  }
-
-  BOOL FROIDURE_PIN::finished_impl() const {
-    return (_pos >= _nr);
-  }
-
-  BOOL FROIDURE_PIN::started_impl() const noexcept {
-    LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
-    return (_pos >= _lenindex[1]);
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::current_position(const_reference x) const {
@@ -483,7 +469,7 @@ namespace libsemigroups {
 
   SIZE_T FROIDURE_PIN::length_non_const(element_index_type pos) {
     if (pos >= _nr) {
-      enumerate();
+      run();
     }
     return length_const(pos);
   }
@@ -543,7 +529,7 @@ namespace libsemigroups {
   }
 
   SIZE_T FROIDURE_PIN::nr_rules() {
-    enumerate();
+    run();
     return _nr_rules;
   }
 
@@ -572,7 +558,7 @@ namespace libsemigroups {
   }
 
   SIZE_T FROIDURE_PIN::size() {
-    enumerate();
+    run();
     return _elements.size();
   }
 
@@ -594,7 +580,7 @@ namespace libsemigroups {
         return UNDEFINED;
       }
       enumerate(_nr + 1);
-      // _nr + 1 means we enumerate batch_size() more elements
+      // _nr + 1 means we run batch_size() more elements
     }
   }
 
@@ -604,7 +590,7 @@ namespace libsemigroups {
 
   ELEMENT_INDEX_TYPE
   FROIDURE_PIN::position_to_sorted_position(element_index_type pos) {
-    enumerate(LIMIT_MAX);
+    run();
     if (pos >= _nr) {
       return UNDEFINED;
     }
@@ -628,23 +614,23 @@ namespace libsemigroups {
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::right(element_index_type i, letter_type j) {
-    enumerate();
+    run();
     return _right.get(i, j);
   }
 
   CAYLEY_GRAPH_TYPE const& FROIDURE_PIN::right_cayley_graph() {
-    enumerate();
+    run();
     _right.shrink_rows_to(size());
     return _right;
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::left(element_index_type i, letter_type j) {
-    enumerate();
+    run();
     return _left.get(i, j);
   }
 
   CAYLEY_GRAPH_TYPE const& FROIDURE_PIN::left_cayley_graph() {
-    enumerate();
+    run();
     _left.shrink_rows_to(size());
     return _left;
   }
@@ -697,7 +683,7 @@ namespace libsemigroups {
 
   VOID FROIDURE_PIN::next_relation(word_type& relation) {
     if (!finished()) {
-      enumerate();
+      run();
     }
 
     relation.clear();
@@ -743,29 +729,24 @@ namespace libsemigroups {
     }
   }
 
-  VOID FROIDURE_PIN::enumerate(size_t limit64) {
-    run(limit64);
-  }
-
-  VOID FROIDURE_PIN::run() {
-    run(LIMIT_MAX);
-  }
-
-  VOID FROIDURE_PIN::run(size_t limit64) {
-    std::lock_guard<std::mutex> lg(_mtx);
-    if (_pos >= _nr || limit64 <= _nr || stopped()) {
+  VOID FROIDURE_PIN::enumerate(size_t limit) {
+    if (finished() || limit <= current_size()) {
       return;
-    }
-    // Ensure that limit isn't too big
-    size_type limit = static_cast<size_type>(limit64);
-
-    if (LIMIT_MAX - batch_size() > _nr) {
-      limit = std::max(limit, _nr + batch_size());
+    } else if (LIMIT_MAX - batch_size() > current_size()) {
+      limit = std::max(limit, current_size() + batch_size());
     } else {  // batch_size() is very big for some reason
       limit = batch_size();
     }
-
     REPORT_DEFAULT("limit = %llu (%s)\n", limit, __func__);
+    run_until([this, &limit]() -> bool { return current_size() >= limit; });
+  }
+
+  VOID FROIDURE_PIN::run_impl() {
+    std::lock_guard<std::mutex> lg(_mtx);
+    if (_pos >= _nr) {
+      return;
+    }
+
     detail::Timer timer;
     size_t        tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
 
@@ -816,12 +797,10 @@ namespace libsemigroups {
       _lenindex.push_back(_enumerate_order.size());
     }
 
-    // Product the words of length > 1 by every generator
-    bool stop = (_nr >= limit || stopped());
-
-    while (_pos != _nr && !stop) {
+    // Multiply the words of length > 1 by every generator
+    while (_pos != _nr && !stopped()) {
       size_type nr_shorter_elements = _nr;
-      while (_pos != _lenindex[_wordlen + 1] && !stop) {
+      while (_pos != _lenindex[_wordlen + 1] && !stopped()) {
         element_index_type i = _enumerate_order[_pos];
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
@@ -861,7 +840,6 @@ namespace libsemigroups {
               _suffix.push_back(_right.get(s, j));
               _enumerate_order.push_back(_nr);
               _nr++;
-              stop = (_nr >= limit || stopped());
             }
           }
         }  // finished applying gens to <_elements.at(_pos)>
@@ -890,6 +868,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
     REPORT_DEFAULT("number of products = %llu\n", _nr_products);
 #endif
+  }
+
+  BOOL FROIDURE_PIN::finished_impl() const {
+    return _pos >= _nr;
   }
 
   VOID FROIDURE_PIN::add_generator(element_type const& x) {
@@ -1135,9 +1117,9 @@ namespace libsemigroups {
     } else {
       // The next line is required so that when we call the closure member
       // function on out, the partial copy contains enough information to all
-      // membership testing without a call to enumerate (which will fail because
-      // the partial copy does not contain enough data to run enumerate).
-      this->enumerate(LIMIT_MAX);
+      // membership testing without a call to run (which will fail because
+      // the partial copy does not contain enough data to run run).
+      this->run();
       // Partially copy
       FroidurePin* out = new FroidurePin(*this, &coll);
       out->closure(coll);
@@ -1328,7 +1310,7 @@ namespace libsemigroups {
       return;
     }
     _idempotents_found = true;
-    enumerate();
+    run();
     _is_idempotent.resize(_nr, false);
 
     detail::Timer timer;

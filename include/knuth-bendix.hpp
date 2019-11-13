@@ -352,7 +352,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      void knuth_bendix();
+      // void knuth_bendix();
 
       //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
       //! on the KnuthBendix instance.
@@ -372,7 +372,7 @@ namespace libsemigroups {
       //! \warning This will terminate when the KnuthBendix instance is
       //! confluent, which might be never.
       //!
-      //! \sa KnuthBendix::knuth_bendix.
+      //! \sa KnuthBendix::run.
       //!
       //! \par Parameters
       //! (None)
@@ -414,8 +414,10 @@ namespace libsemigroups {
       void add_rule_impl(std::string const&, std::string const&) override;
       std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
 
-      void run_impl() override {
-        knuth_bendix();
+      void run_impl() override;
+
+      bool finished_impl() const override {
+        return confluent();
       }
 
       bool is_obviously_infinite_impl() override;
@@ -578,13 +580,11 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////////
-      // Runner - non-pure virtual member functions - protected
+      // Runner - pure virtual member functions - protected
       ////////////////////////////////////////////////////////////////////////////
 
       bool finished_impl() const override;
-      bool started_impl() const override;
 
-     private:
       ////////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - pure virtual methods - private
       ////////////////////////////////////////////////////////////////////////////

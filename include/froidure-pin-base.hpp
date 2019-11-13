@@ -75,7 +75,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    FroidurePinBase(FroidurePinBase const&) = default;
+    FroidurePinBase(FroidurePinBase const& other) = default;
 
     //! Default move constructor.
     //!
@@ -84,7 +84,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    FroidurePinBase(FroidurePinBase&&) = default;
+    FroidurePinBase(FroidurePinBase&& other) = default;
 
     //! FroidurePinBase instances are not copy assignable and this function is
     //! deleted.
@@ -103,7 +103,7 @@ namespace libsemigroups {
     //! Set a new value for the batch size.
     //!
     //! The *batch size* is the number of new elements to be found by any call
-    //! to FroidurePin::enumerate. A call to enumerate returns between 0 and
+    //! to FroidurePin::run. A call to run returns between 0 and
     //! approximately the batch size.
     //! This is used by, for example, FroidurePin::position so that it is
     //! possible to find the position of an element without fully enumerating
@@ -137,7 +137,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa This is the minimum number of elements enumerated in any call to
-    //! FroidurePin::enumerate, see batch_size(size_t).
+    //! FroidurePin::run, see batch_size(size_t).
     //!
     //! \par Parameters
     //! None.
@@ -351,19 +351,19 @@ namespace libsemigroups {
     //! \copydoc FroidurePin::left_cayley_graph
     virtual cayley_graph_type const& left_cayley_graph() = 0;
 
-    //! \copydoc FroidurePin::minimal_factorisation(word_type& word,
-    //! element_index_type pos)
+    // clang-format off
+    //! \copydoc FroidurePin::minimal_factorisation(word_type&, element_index_type) NOLINT(whitespace/line_length)
+    // clang-format on
     virtual void minimal_factorisation(word_type& word, element_index_type pos)
         = 0;
 
-    //! \copydoc FroidurePin::minimal_factorisation(element_index_type pos)
+    //! \copydoc FroidurePin::minimal_factorisation(element_index_type)
     virtual word_type minimal_factorisation(element_index_type pos) = 0;
 
-    //! \copydoc FroidurePin::factorisation(word_type& word,
-    //! element_index_type pos)
+    //! \copydoc FroidurePin::factorisation(word_type&, element_index_type)
     virtual void factorisation(word_type& word, element_index_type pos) = 0;
 
-    //! \copydoc FroidurePin::factorisation(element_index_type pos)
+    //! \copydoc FroidurePin::factorisation(element_index_type)
     virtual word_type factorisation(element_index_type pos) = 0;
 
     //! \copydoc FroidurePin::reset_next_relation
@@ -372,8 +372,7 @@ namespace libsemigroups {
     //! \copydoc FroidurePin::next_relation
     virtual void next_relation(word_type& relation) = 0;
 
-    //! \copydoc FroidurePin::enumerate
-    virtual void enumerate(size_t = LIMIT_MAX) = 0;
+    virtual void enumerate(size_t) = 0;
 
    private:
     struct Settings {
@@ -383,6 +382,7 @@ namespace libsemigroups {
             _max_threads(std::thread::hardware_concurrency()),
             _immutable(false) {}
       Settings(Settings const&) noexcept = default;
+      Settings(Settings&&) noexcept      = default;
       ~Settings()                        = default;
       size_t _batch_size;
       size_t _concurrency_threshold;

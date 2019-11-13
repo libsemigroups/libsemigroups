@@ -35,6 +35,7 @@ libsemigroups::congruence::KnuthBendix:
   - parent_froidure_pin
   - quotient_froidure_pin
   - kind
+  - non_trivial_classes
 - Settings:
   - report
   - report_every(TIntType)
@@ -45,12 +46,15 @@ libsemigroups::congruence::KnuthBendix:
   - run_for(TIntType)
   - run_for(std::chrono::nanoseconds)
   - run_until
+  - kill
+- State:
   - dead
   - finished
   - started
   - stopped
   - timed_out
-  - kill
+  - running
+  - stopped_by_predicate
 - Operators:
   - const_contains
   - contains

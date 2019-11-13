@@ -72,6 +72,10 @@ namespace libsemigroups {
         return _winner;
       }
 
+      bool finished() const noexcept {
+        return _winner != nullptr;
+      }
+
       // Adds a Runner to the race, throws if the race is already over.
       void add_runner(std::shared_ptr<Runner>);
 

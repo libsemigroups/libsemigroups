@@ -115,12 +115,14 @@ namespace libsemigroups {
   //! \tparam N the dimension of the boolean matrices.
   template <size_t N>
   struct BMatHelper {
+#ifdef LIBSEMIGROUPS_HPCOMBI
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
-#ifdef LIBSEMIGROUPS_HPCOMBI
     using type =
         typename std::conditional<N >= 9, BooleanMat, HPCombi::BMat8>::type;
 #else
+    //! The type of the smallest sized boolean \p N by \p N
+    //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
     using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
 #endif
   };

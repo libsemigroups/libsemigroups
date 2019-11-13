@@ -36,16 +36,13 @@ namespace libsemigroups {
       : KnuthBendixCongruenceByPairs(type, std::make_shared<KnuthBendix>(kb)) {}
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairs - virtual member functions - public
+  // Runner - pure virtual member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  void KnuthBendixCongruenceByPairs::run() {
-    if (stopped()) {
-      return;
-    }
-    auto stppd = [this]() -> bool { return dead() || timed_out(); };
+  void KnuthBendixCongruenceByPairs::run_impl() {
+    auto stppd = [this]() -> bool { return stopped(); };
     _kb->run_until(stppd);
-    if (!stppd()) {
+    if (!stopped()) {
       if (!has_parent_froidure_pin()) {
         set_parent_froidure_pin(_kb->froidure_pin());
       }
@@ -54,10 +51,18 @@ namespace libsemigroups {
       // causing an infinite loop. We really want to call run_until on the
       // p_type, using its run member function, but that's not currently
       // possible.
-      p_type::run();
+      p_type::run_impl();
     }
     report_why_we_stopped();
   }
+
+  bool KnuthBendixCongruenceByPairs::finished_impl() const {
+    return has_parent_froidure_pin() && p_type::finished_impl();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // CongruenceInterface - virtual member functions - public
+  ////////////////////////////////////////////////////////////////////////
 
   // Override the method for the class CongruenceByPairs to avoid having to
   // know the parent semigroup (found as part of

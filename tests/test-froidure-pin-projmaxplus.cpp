@@ -33,7 +33,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "111",
+                          "107",
                           "(projective max plus matrices) non-pointer",
                           "[quick][froidure-pin][projmaxplus]") {
     auto                                 rg = ReportGuard(REPORT);

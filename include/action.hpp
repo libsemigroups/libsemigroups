@@ -103,6 +103,15 @@ namespace libsemigroups {
   //! o.size();              // 65536
   //! o.digraph().nr_scc();  // 17
   //! \endcode
+  //!
+  //! The ``run`` member function finds points that can be obtained by acting
+  //! on the seeds of \c this by the generators of \c this until no
+  //! further points can be found, or Runner::stopped returns \c true.
+  //! This is achieved by performing a breadth first search.
+  //!
+  //! \complexity
+  //! The time complexity is \f$O(mn)\f$ where \f$m\f$ is the total
+  //! number of points in the orbit and \f$n\f$ is the number of generators.
   template <typename TElementType,
             typename TPointType,
             typename TActionType,
@@ -323,7 +332,6 @@ namespace libsemigroups {
       _map.emplace(internal_seed, _orb.size());
       _orb.push_back(internal_seed);
       _graph.add_nodes(1);
-      set_finished(false);
     }
 
     //! Add a generator to the action. An Action instance represents the
@@ -341,80 +349,6 @@ namespace libsemigroups {
     //! At most linear in the size() of the action.
     void add_generator(element_type gen) {
       _gens.push_back(gen);
-      set_finished(false);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual member functions - public
-    ////////////////////////////////////////////////////////////////////////
-
-    //! This member function finds points that can be obtained by acting
-    //! on the seeds of \c this by the generators of \c this until no
-    //! further points can be found, or Runner::stopped returns \c true.
-    //! This is achieved by performing a breadth first search.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! The time complexity is O(mn) where m is the total
-    //! number of points in the orbit and n is the number of generators.
-    //!
-    //! \par Parameters
-    //! (None)
-    void run() {
-      if (finished()) {
-        return;
-      }
-      size_t old_nr_gens = _graph.out_degree();
-      _graph.add_to_out_degree(_gens.size() - _graph.out_degree());
-      if (started() && old_nr_gens < _gens.size()) {
-        // Generators were added after the last call to run
-        for (size_t i = 0; i < _pos; i++) {
-          for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
-            ActionOp()(this->to_external(_tmp_point),
-                       this->to_external_const(_orb[i]),
-                       _gens[j]);
-            auto it = _map.find(_tmp_point);
-            if (it == _map.end()) {
-              _graph.add_nodes(1);
-              _graph.add_edge(i, _orb.size(), j);
-              _orb.push_back(this->internal_copy(_tmp_point));
-              _map.emplace(_orb.back(), _orb.size() - 1);
-            } else {
-              _graph.add_edge(i, (*it).second, j);
-            }
-          }
-        }
-      }
-      set_started(true);
-
-      for (; _pos < _orb.size() && !stopped(); ++_pos) {
-        for (size_t j = 0; j < _gens.size(); ++j) {
-          ActionOp()(this->to_external(_tmp_point),
-                     this->to_external_const(_orb[_pos]),
-                     _gens[j]);
-          auto it = _map.find(_tmp_point);
-          if (it == _map.end()) {
-            _graph.add_nodes(1);
-            _graph.add_edge(_pos, _orb.size(), j);
-            _orb.push_back(this->internal_copy(_tmp_point));
-            _map.emplace(_orb.back(), _orb.size() - 1);
-          } else {
-            _graph.add_edge(_pos, (*it).second, j);
-          }
-        }
-        if (report()) {
-          REPORT_DEFAULT("found %d points, so far\n", _orb.size());
-        }
-      }
-      if (_pos == _orb.size()) {
-        set_finished(true);
-      }
-      report_why_we_stopped();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -685,6 +619,59 @@ namespace libsemigroups {
     }
 
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual member functions - private
+    ////////////////////////////////////////////////////////////////////////
+
+    bool finished_impl() const override {
+      return (_pos == _orb.size()) && (_graph.out_degree() == _gens.size());
+    }
+
+    void run_impl() override {
+      size_t old_nr_gens = _graph.out_degree();
+      _graph.add_to_out_degree(_gens.size() - _graph.out_degree());
+      if (started() && old_nr_gens < _gens.size()) {
+        // Generators were added after the last call to run
+        for (size_t i = 0; i < _pos; i++) {
+          for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
+            ActionOp()(this->to_external(_tmp_point),
+                       this->to_external_const(_orb[i]),
+                       _gens[j]);
+            auto it = _map.find(_tmp_point);
+            if (it == _map.end()) {
+              _graph.add_nodes(1);
+              _graph.add_edge(i, _orb.size(), j);
+              _orb.push_back(this->internal_copy(_tmp_point));
+              _map.emplace(_orb.back(), _orb.size() - 1);
+            } else {
+              _graph.add_edge(i, (*it).second, j);
+            }
+          }
+        }
+      }
+
+      for (; _pos < _orb.size() && !stopped(); ++_pos) {
+        for (size_t j = 0; j < _gens.size(); ++j) {
+          ActionOp()(this->to_external(_tmp_point),
+                     this->to_external_const(_orb[_pos]),
+                     _gens[j]);
+          auto it = _map.find(_tmp_point);
+          if (it == _map.end()) {
+            _graph.add_nodes(1);
+            _graph.add_edge(_pos, _orb.size(), j);
+            _orb.push_back(this->internal_copy(_tmp_point));
+            _map.emplace(_orb.back(), _orb.size() - 1);
+          } else {
+            _graph.add_edge(_pos, (*it).second, j);
+          }
+        }
+        if (report()) {
+          REPORT_DEFAULT("found %d points, so far\n", _orb.size());
+        }
+      }
+      report_why_we_stopped();
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Action - member functions - private
     ////////////////////////////////////////////////////////////////////////

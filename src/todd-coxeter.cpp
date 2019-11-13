@@ -669,7 +669,6 @@ namespace libsemigroups {
             "there are infinitely many classes in the congruence and "
             "Todd-Coxeter will never terminate");
       }
-      set_started(true);
       if (_settings->lower_bound != UNDEFINED) {
         size_t const bound     = _settings->lower_bound;
         _settings->lower_bound = UNDEFINED;
@@ -683,6 +682,10 @@ namespace libsemigroups {
       } else if (_settings->strategy == policy::strategy::random) {
         sims();
       }
+    }
+
+    bool ToddCoxeter::finished_impl() const {
+      return _state == state::finished;
     }
 
     coset_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
@@ -1088,7 +1091,6 @@ namespace libsemigroups {
       if (!stopped()) {
         LIBSEMIGROUPS_ASSERT(_current == first_free_coset());
         _state = state::finished;
-        set_finished(true);
       }
       TODD_COXETER_REPORT_COSETS()
       REPORT_TIME(tmr);
@@ -1177,7 +1179,6 @@ namespace libsemigroups {
       if (!stopped()) {
         LIBSEMIGROUPS_ASSERT(_current == first_free_coset());
         _state = state::finished;
-        set_finished(true);
       }
       TODD_COXETER_REPORT_COSETS();
       REPORT_TIME(tmr);
@@ -1234,6 +1235,8 @@ namespace libsemigroups {
         standardize(stand[m]);
 
         REPORT(line).prefix().color(fmt::color::dim_gray).flush();
+        // Second param, means don't lock, since we already locked in run_impl
+        // above.
         run_for(_settings->random_interval);
       }
       LIBSEMIGROUPS_ASSERT(_coinc.empty());

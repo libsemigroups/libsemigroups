@@ -92,7 +92,7 @@ namespace libsemigroups {
   // #endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "107",
+                          "102",
                           "(integers)",
                           "[quick][froidure-pin][integers]") {
     auto             rg = ReportGuard(REPORT);

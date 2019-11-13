@@ -77,6 +77,8 @@ def run_doxygen():
         "First generated file in docs/build/html  "
         + _time_since_epoch_to_human(first_built_file)
     )
+    if _time_since_epoch_to_human(first_built_file) == "N/A":
+        return True
     return first_built_file < last_changed_source
 
 

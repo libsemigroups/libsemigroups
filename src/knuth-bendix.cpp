@@ -167,7 +167,7 @@ namespace libsemigroups {
       return _impl->confluent();
     }
 
-    void KnuthBendix::knuth_bendix() {
+    void KnuthBendix::run_impl() {
       _impl->knuth_bendix();
       report_why_we_stopped();
     }
@@ -271,18 +271,6 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual method - protected
-    ////////////////////////////////////////////////////////////////////////////
-
-    bool KnuthBendix::finished_impl() const {
-      return _kb->has_froidure_pin() && _kb->froidure_pin()->finished();
-    }
-
-    bool KnuthBendix::started_impl() const {
-      return _kb->started();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual methods - public
     ////////////////////////////////////////////////////////////////////////////
 
@@ -328,6 +316,7 @@ namespace libsemigroups {
     }
 
     size_t KnuthBendix::nr_classes_impl() {
+      run();  // required so that the state of this is correctly set.
       return _kb->size();
     }
 
@@ -347,14 +336,11 @@ namespace libsemigroups {
     void KnuthBendix::run_impl() {
       auto stppd = [this]() -> bool { return stopped(); };
       _kb->run_until(stppd);
-      // The following 3 lines of comments and 1 line of code were here before,
-      // but I can't see why, so for now they are commented out.
-
-      // It is essential that we call _kb->run() first and then
-      // _kb->froidure_pin(), since this might get killed
-      // during _kb->run().
-      // _kb->froidure_pin()->run_until(stppd);
       report_why_we_stopped();
+    }
+
+    bool KnuthBendix::finished_impl() const {
+      return _kb->has_froidure_pin() && _kb->froidure_pin()->finished();
     }
 
     ////////////////////////////////////////////////////////////////////////////

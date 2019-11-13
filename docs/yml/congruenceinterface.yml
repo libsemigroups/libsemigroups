@@ -1,5 +1,5 @@
 libsemigroups::CongruenceInterface:
-- Aliases:
+- Aliases and public types:
   - [typedef, class_index_type]
   - [typedef, non_trivial_classes_type]
   - [typedef, non_trivial_class_iterator]
@@ -36,6 +36,8 @@ libsemigroups::CongruenceInterface:
   - started
   - stopped
   - timed_out
+  - running 
+  - stopped_by_predicate
 - Iterators:
   - cbegin_generating_pairs
   - cend_generating_pairs
@@ -50,6 +52,7 @@ libsemigroups::CongruenceInterface:
   - contains
   - nr_classes
   - nr_non_trivial_classes
+  - non_trivial_classes
 - Related semigroups:
   - quotient_froidure_pin
   - has_quotient_froidure_pin

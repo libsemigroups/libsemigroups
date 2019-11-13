@@ -33,7 +33,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "106",
+                          "103",
                           "(integer matrices)",
                           "[quick][froidure-pin][intmat]") {
     auto                                     rg = ReportGuard(REPORT);

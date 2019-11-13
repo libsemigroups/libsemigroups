@@ -48,6 +48,7 @@ libsemigroups::FroidurePin:
   - report
   - report_why_we_stopped
 - Initialisation:
+  - add_generator
   - add_generators(TCollection const&)
   - add_generators(std::initializer_list<const_element_type>)
   - closure(TCollection const&)
@@ -60,7 +61,6 @@ libsemigroups::FroidurePin:
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until
-  - enumerate
 - Attributes:
   - generator
   - degree
@@ -114,6 +114,8 @@ libsemigroups::FroidurePin:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate
 - Iterators:
   - begin
   - cbegin

@@ -141,12 +141,14 @@ namespace libsemigroups {
 
     // Documented in FpSemigroupInterface
     bool equal_to(std::string const& u, std::string const& v) override {
+      run();  // to ensure the state is correct
       return static_cast<FpSemigroupInterface*>(_race.winner().get())
           ->equal_to(u, v);
     }
 
     // Documented in FpSemigroupInterface
     std::string normal_form(std::string const& w) override {
+      run();  // to ensure the state is correct
       return static_cast<FpSemigroupInterface*>(_race.winner().get())
           ->normal_form(w);
     }
@@ -242,13 +244,6 @@ namespace libsemigroups {
 
    private:
     //////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual member functions - private
-    //////////////////////////////////////////////////////////////////////////
-
-    bool finished_impl() const override;
-    bool started_impl() const override;
-
-    //////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
 
@@ -258,6 +253,10 @@ namespace libsemigroups {
 
     void run_impl() override {
       _race.winner();
+    }
+
+    bool finished_impl() const override {
+      return _race.finished();
     }
 
     //////////////////////////////////////////////////////////////////////////

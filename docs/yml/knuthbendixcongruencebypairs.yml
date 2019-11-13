@@ -9,6 +9,11 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - KnuthBendixCongruenceByPairs(KnuthBendixCongruenceByPairs&&)     
   - operator=(KnuthBendixCongruenceByPairs const&)
   - operator=(KnuthBendixCongruenceByPairs&&)
+- Public types:
+  - [typedef, class_index_type]
+  - [typedef, const_iterator]
+  - [typedef, non_trivial_class_iterator]
+  - [typedef, non_trivial_classes_type]
 - Initialization:
   - set_nr_generators
   - nr_generators
@@ -32,6 +37,7 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - contains
   - nr_classes
   - nr_non_trivial_classes
+  - non_trivial_classes
 - Related semigroups:
   - quotient_froidure_pin
   - has_quotient_froidure_pin
@@ -49,6 +55,8 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate
 - Iterators:
   - cbegin_generating_pairs
   - cend_generating_pairs

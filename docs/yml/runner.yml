@@ -16,6 +16,8 @@ libsemigroups::Runner:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate
 - Operators:
   - kill
   - run

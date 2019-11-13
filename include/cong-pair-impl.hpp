@@ -165,7 +165,6 @@ namespace libsemigroups {
   VOID P_CLASS::run_impl() {
     detail::Timer t;
     init();
-    set_started(true);
 
     size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
     while (!_pairs_to_mult.empty() && !stopped()) {
@@ -213,7 +212,7 @@ namespace libsemigroups {
       }
     }
 
-    if (!stopped()) {
+    if (_pairs_to_mult.empty()) {
       // Make a normalised class lookup (class numbers {0, .., n-1}, in
       // order)
       if (_lookup.get_size() > 0) {
@@ -236,6 +235,7 @@ namespace libsemigroups {
       // Record information about non-trivial classes
       _nr_non_trivial_classes = _next_class;
       _nr_non_trivial_elemnts = _map_next;
+      delete_tmp_storage();
     }
 
     REPORT_DEFAULT("stopping with %d pairs: %d elements in %d classes\n",
@@ -244,10 +244,10 @@ namespace libsemigroups {
                    _lookup.nr_blocks());
     REPORT_TIME(t);
     report_why_we_stopped();
-    if (!dead() && !timed_out()) {
-      set_finished(true);
-      delete_tmp_storage();
-    }
+  }
+
+  BOOL P_CLASS::finished_impl() const {
+    return _pairs_to_mult.empty();
   }
 
   CLASS_INDEX_TYPE P_CLASS::word_to_class_index_impl(word_type const& w) {

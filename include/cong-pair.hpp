@@ -288,6 +288,16 @@ namespace libsemigroups {
     //! No doc
     void internal_add_pair(internal_element_type, internal_element_type);
 
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual member functions - protected
+    ////////////////////////////////////////////////////////////////////////
+
+    //! No doc
+    void run_impl() override;
+
+    //! No doc
+    bool finished_impl() const override;
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual member functions - private
@@ -296,7 +306,6 @@ namespace libsemigroups {
     word_type class_index_to_word_impl(class_index_type) override;
     size_t    nr_classes_impl() override;
     std::shared_ptr<FroidurePinBase> quotient_impl() override;
-    void                             run_impl() override;
     class_index_type word_to_class_index_impl(word_type const&) override;
 
     ////////////////////////////////////////////////////////////////////////
@@ -477,13 +486,13 @@ namespace libsemigroups {
     KnuthBendixCongruenceByPairs& operator=(KnuthBendixCongruenceByPairs&&)
         = delete;
 
-    ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairs - virtual member functions - public
-    ////////////////////////////////////////////////////////////////////////
-
-    void run() override;
-
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual member functions - public
+    ////////////////////////////////////////////////////////////////////////
+    void run_impl() override;
+    bool finished_impl() const override;
+
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
