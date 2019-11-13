@@ -1,0 +1,9 @@
+name: libsemigroups
+
+channels:
+- conda-forge
+
+dependencies:
+  - libsemigroups
+  - xeus-cling
+  - notebook
