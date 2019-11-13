@@ -17,6 +17,9 @@ libsemigroups - Version 1.0.0
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/libsemigroups/libsemigroups/master
     :alt: Launch Binder
+    
+.. image:: https://codecov.io/gh/libsemigroups/libsemigroups/branch/libsemigroups/graph/badge.svg
+  :target: https://codecov.io/gh/libsemigroups/libsemigroups
 
 C++ library for semigroups and monoids
 --------------------------------------
