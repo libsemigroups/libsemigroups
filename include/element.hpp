@@ -884,9 +884,9 @@ namespace libsemigroups {
             deg);
       }
       for (auto it = dom.cbegin(); it < dom.cend(); ++it) {
-        if (std::find(it + 1, dom.cend(), *it) !=  dom.cend()) {
-            LIBSEMIGROUPS_EXCEPTION("duplicate value %d in domain",
-                                    static_cast<size_t>(*it));
+        if (std::find(it + 1, dom.cend(), *it) != dom.cend()) {
+          LIBSEMIGROUPS_EXCEPTION("duplicate value %d in domain",
+                                  static_cast<size_t>(*it));
         }
       }
       this->_vector.resize(deg, UNDEFINED);

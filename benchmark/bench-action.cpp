@@ -126,7 +126,7 @@ void BM_orb_bmat8_on_rows_regular_5(benchmark::State& st) {
                            {0, 0, 1, 0, 0},
                            {0, 0, 0, 1, 0},
                            {0, 0, 0, 0, 1}}));
-    o.enumerate();
+    o.run();
   }
 }
 
@@ -210,7 +210,7 @@ void BM_orb_bmat8_on_rows_5(benchmark::State& st) {
                            {1, 0, 0, 0, 1},
                            {0, 1, 0, 0, 1},
                            {0, 0, 1, 1, 1}}));
-    o.enumerate();
+    o.run();
   }
 }
 

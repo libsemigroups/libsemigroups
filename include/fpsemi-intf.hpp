@@ -91,13 +91,6 @@ namespace libsemigroups {
 
     virtual ~FpSemigroupInterface() = default;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual overridden function - public
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Document in derived classes.
-    void run() override;
-
     ///////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - public
     ///////////////////////////////////////////////////////////////////////////
@@ -800,13 +793,18 @@ namespace libsemigroups {
     // void validate_relation(word_type const&, word_type const&) const;
 
    private:
+    ////////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual overridden function - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    void before_run() override;
+
     //////////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////////
 
     virtual void add_rule_impl(std::string const&, std::string const&)    = 0;
     virtual std::shared_ptr<FroidurePinBase> froidure_pin_impl()          = 0;
-    virtual void                             run_impl()                   = 0;
     virtual bool                             is_obviously_infinite_impl() = 0;
     // bool is_obviously_infinite_impl() {
     //   return false;

@@ -34,9 +34,10 @@ namespace libsemigroups {
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "095",
+                          "001",
                           "(BMat8) regular boolean mat monoid 4",
                           "[quick][froidure-pin][bmat8]") {
+    auto               rg = ReportGuard(REPORT);
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -44,7 +45,6 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
     FroidurePin<BMat8> S(gens);
-    auto               rg = ReportGuard(REPORT);
 
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(!S.finished());
@@ -195,7 +195,7 @@ namespace libsemigroups {
     }
     REQUIRE(pos == S.size());
 
-    // Copy - after enumerate
+    // Copy - after run
     FroidurePin<BMat8> T(S);
     REQUIRE(T.size() == 63904);
     REQUIRE(T.nr_idempotents() == 2360);
@@ -219,7 +219,7 @@ namespace libsemigroups {
 #endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "096",
+                          "002",
                           "(BMat8) exception zero generators given",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens;
@@ -228,7 +228,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "097",
+                          "003",
                           "(BMat8) exception word_to_element",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -245,7 +245,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "098",
+                          "004",
                           "(BMat8) exception prefix",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -261,7 +261,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "099",
+                          "005",
                           "(BMat8) exception suffix",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -272,7 +272,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "100",
+                          "006",
                           "(BMat8) exception first_letter",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -288,7 +288,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "101",
+                          "007",
                           "(BMat8) exception final_letter",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -299,7 +299,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "102",
+                          "008",
                           "(BMat8) exception length_const",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -315,7 +315,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "103",
+                          "009",
                           "(BMat8) exception product_by_reduction",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -337,7 +337,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "104",
+                          "010",
                           "(BMat8) exception fast_product",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
@@ -359,7 +359,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "105",
+                          "011",
                           "(BMat8) exception is_idempotent",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
     std::vector<BMat8> gens
@@ -379,7 +379,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "000",
+                          "012",
                           "(BMat8) copy constructor",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
     auto               rg = ReportGuard(REPORT);
@@ -407,7 +407,7 @@ namespace libsemigroups {
   }
 
   // LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-  //                         "131",
+  //                         "013",
   //                         "(BMat8) find an element",
   //                         "[quick][froidure-pin][bmat8]") {
   //   FroidurePin<BMat8> S({BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
@@ -425,7 +425,7 @@ namespace libsemigroups {
   // }
 
   //  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-  //                          "132",
+  //                          "014",
   //                          "(BMat8) find an element",
   //                          "[quick][froidure-pin][bmat8]") {
   //    FroidurePin<BMat8> S(
@@ -433,7 +433,7 @@ namespace libsemigroups {
   //         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
   //         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
   //         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
-  //    S.enumerate();
+  //    S.run();
   //    for (auto y : S) {
   //         std::cout << y.row_space_basis() << std::endl;
   //        for (auto x : S) {
@@ -450,7 +450,7 @@ namespace libsemigroups {
   //  }
 
   //  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-  //                          "133",
+  //                          "015",
   //                          "(BMat8) find an element",
   //                          "[quick][froidure-pin][bmat8]") {
   //    FroidurePin<BMat8> S({BMat8({{1, 0, 0, 0, 0},

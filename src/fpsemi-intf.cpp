@@ -65,13 +65,10 @@ namespace libsemigroups {
   // Runner - pure virtual overridden function - public
   ////////////////////////////////////////////////////////////////////////////
 
-  void FpSemigroupInterface::run() {
+  void FpSemigroupInterface::before_run() {
     if (alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION("no alphabet specified!");
-    } else if (stopped()) {
-      return;
     }
-    run_impl();
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -412,7 +409,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
 
   void FpSemigroupInterface::reset() noexcept {
-    set_finished(false);
+    // set_finished(false);
     _froidure_pin          = nullptr;
     _is_obviously_finite   = false;
     _is_obviously_infinite = false;

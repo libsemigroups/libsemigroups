@@ -326,7 +326,7 @@ namespace libsemigroups {
                           "008",
                           "(cong)   2-sided congruence on finite semigroup",
                           "[standard][cong][cong-pair]") {
-    auto                  rg = ReportGuard(true);
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
            new Transformation<uint16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
@@ -1221,7 +1221,7 @@ namespace libsemigroups {
                word_type({1, 0, 0, 0, 1}));
 
     REQUIRE(p.equal_to(word_type({0, 0, 0, 1}), word_type({0, 0, 1, 0, 0})));
-    REQUIRE(p.finished());
+    REQUIRE(!p.finished());
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 

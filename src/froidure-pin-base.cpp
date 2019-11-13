@@ -72,7 +72,7 @@ namespace libsemigroups {
 
   void relations(FroidurePinBase&                            S,
                  std::function<void(word_type, word_type)>&& hook) {
-    S.enumerate();
+    S.run();
 
     std::vector<size_t> relation;  // a triple
     S.reset_next_relation();
@@ -93,7 +93,7 @@ namespace libsemigroups {
   }
 
   void relations(FroidurePinBase& S, std::function<void(word_type)>&& hook) {
-    S.enumerate();
+    S.run();
 
     std::vector<size_t> relation;  // a triple
     S.reset_next_relation();

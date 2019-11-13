@@ -36,6 +36,8 @@ libsemigroups::CongruenceByPairs:
   - contains
   - nr_classes
   - nr_non_trivial_classes
+  - non_trivial_classes
+  - nr_generating_pairs
 - Related semigroups:
   - quotient_froidure_pin
   - has_quotient_froidure_pin
@@ -53,6 +55,8 @@ libsemigroups::CongruenceByPairs:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate
 - Iterators:
   - cbegin_generating_pairs
   - cend_generating_pairs

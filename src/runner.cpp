@@ -26,51 +26,48 @@
 
 namespace libsemigroups {
   Runner::Runner()
-      : _dead(false),
-        _finished(false),
-        _last_report(std::chrono::high_resolution_clock::now()),
+      : _last_report(std::chrono::high_resolution_clock::now()),
         _report_time_interval(),
         _run_for(FOREVER),
         _start_time(),
-        _started(false),
-        _stopped_by_predicate(false),
+        _state(state::never_run),
         _stopper() {
     report_every(std::chrono::seconds(1));
   }
 
-  Runner::Runner(Runner const& copy) : Runner() {
-    _dead                 = (copy._dead ? true : false);
-    _finished             = copy._finished;
-    _started              = copy._started;
-    _stopped_by_predicate = copy._stopped_by_predicate;
-  }
-
   void Runner::run_for(std::chrono::nanoseconds val) {
-    if (!finished_impl()) {
+    if (!finished() && !dead()) {
       if (val != FOREVER) {
         REPORT_DEFAULT("running for approx. %s\n", detail::Timer::string(val));
       } else {
         REPORT_DEFAULT("running until finished, with no time limit\n");
+        run();
+        return;
       }
+      before_run();
+      set_state(state::running_for);
       _start_time = std::chrono::high_resolution_clock::now();
       _run_for    = val;
-      this->run();  // should depend on the method timed_out!
+      // run_impl should depend on the method timed_out!
+      run_impl();
+      if (!finished()) {
+        if (!dead()) {
+          set_state(state::timed_out);
+        }
+      } else {
+        set_state(state::not_running);
+      }
     } else {
       REPORT_DEFAULT("already finished, not running\n");
     }
   }
 
-  bool Runner::timed_out() const {
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(
-               std::chrono::high_resolution_clock::now() - _start_time)
-           >= _run_for;
-  }
-
   bool Runner::report() const {
+    auto t       = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now() - _last_report);
+        t - _last_report);
     if (elapsed > _report_time_interval) {
-      _last_report = std::chrono::high_resolution_clock::now();
+      _last_report = t;
       return true;
     } else {
       return false;
@@ -83,23 +80,12 @@ namespace libsemigroups {
   }
 
   void Runner::report_why_we_stopped() const {
-    if (finished()) {
-      REPORT_DEFAULT("finished!\n");
-    } else if (dead()) {
+    if (dead()) {
       REPORT_DEFAULT("killed!\n");
     } else if (timed_out()) {
       REPORT_DEFAULT("timed out!\n");
     }
-  }
-
-  bool Runner::stopped() const {
-    if (dead() || timed_out() || stopped_by_predicate() || finished()) {
-      return true;
-    } else if (_stopper.valid() && _stopper()) {
-      _stopped_by_predicate = true;
-      return true;
-    }
-    return false;
+    // Checking finished can be expensive, so we don't
   }
 
 }  // namespace libsemigroups

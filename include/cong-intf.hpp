@@ -95,12 +95,6 @@ namespace libsemigroups {
     virtual ~CongruenceInterface() = default;
 
     ////////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual overridden function - public
-    ////////////////////////////////////////////////////////////////////////////
-
-    void run() override;
-
-    ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual functions - public
     ////////////////////////////////////////////////////////////////////////////
 
@@ -388,8 +382,13 @@ namespace libsemigroups {
       return _non_trivial_classes->cend();
     }
 
-    // TODO(now) doc
-    std::shared_ptr<non_trivial_classes_type> const& non_trivial_classes() {
+    //! Returns a shared pointer to the non-trivial classes.
+    //!
+    //! \returns A std::shared_ptr to
+    //! CongruenceInterface::non_trivial_classes_type.
+    //!
+    //!
+    std::shared_ptr<non_trivial_classes_type> non_trivial_classes() {
       init_non_trivial_classes();
       return _non_trivial_classes;
     }
@@ -670,6 +669,12 @@ namespace libsemigroups {
     static std::string const& congruence_type_to_string(congruence_type);
 
    private:
+    ////////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual overridden function - public
+    ////////////////////////////////////////////////////////////////////////////
+
+    void before_run() override;
+
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual functions - private
     /////////////////////////////////////////////////////////////////////////
@@ -677,7 +682,6 @@ namespace libsemigroups {
     virtual word_type class_index_to_word_impl(class_index_type i)        = 0;
     virtual size_t    nr_classes_impl()                                   = 0;
     virtual std::shared_ptr<FroidurePinBase> quotient_impl()              = 0;
-    virtual void                             run_impl()                   = 0;
     virtual class_index_type word_to_class_index_impl(word_type const& w) = 0;
 
     /////////////////////////////////////////////////////////////////////////

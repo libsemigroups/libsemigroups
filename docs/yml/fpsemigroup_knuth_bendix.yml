@@ -58,18 +58,20 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - report_every(std::chrono::nanoseconds)
   - report_why_we_stopped
 - Running:
-  - knuth_bendix
   - knuth_bendix_by_overlap_length
   - run
   - run_for(TIntType)
   - run_for(std::chrono::nanoseconds)
   - run_until
+  - kill
+- State:
   - dead
   - finished
   - started
   - stopped
   - timed_out
-  - kill
+  - stopped_by_predicate
+  - running
 - Operators:
   - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
   - equal_to(std::string const&, std::string const&)

@@ -32,7 +32,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "109",
+                          "106",
                           "(partial perm)",
                           "[quick][froidure-pin][pperm]") {
     auto                               rg = ReportGuard(REPORT);

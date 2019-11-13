@@ -774,7 +774,7 @@ namespace libsemigroups {
         if (!_stack.empty()) {
           return false;
         }
-        if (!_confluence_known && !_kb->stopped()) {
+        if (!_confluence_known && (!_kb->running() || !_kb->stopped())) {
           LIBSEMIGROUPS_ASSERT(_stack.empty());
           _confluent        = true;
           _confluence_known = true;
@@ -783,17 +783,20 @@ namespace libsemigroups {
           size_t               seen = 0;
 
           for (auto it1 = _active_rules.cbegin();
-               it1 != _active_rules.cend() && !_kb->stopped();
+               it1 != _active_rules.cend()
+               && (!_kb->running() || !_kb->stopped());
                ++it1) {
             Rule const* rule1 = *it1;
             // Seems to be much faster to do this in reverse.
             for (auto it2 = _active_rules.crbegin();
-                 it2 != _active_rules.crend() && !_kb->stopped();
+                 it2 != _active_rules.crend()
+                 && (!_kb->running() || !_kb->stopped());
                  ++it2) {
               seen++;
               Rule const* rule2 = *it2;
               for (auto it = rule1->lhs()->cend() - 1;
-                   it >= rule1->lhs()->cbegin() && !_kb->stopped();
+                   it >= rule1->lhs()->cbegin()
+                   && (!_kb->running() || !_kb->stopped());
                    --it) {
                 // Find longest common prefix of suffix B of rule1.lhs() defined
                 // by it and R = rule2.lhs()
@@ -830,7 +833,7 @@ namespace libsemigroups {
                              _active_rules.size() * _active_rules.size());
             }
           }
-          if (_kb->stopped()) {
+          if (_kb->running() && _kb->stopped()) {
             _confluence_known = false;
           }
         }
@@ -838,22 +841,17 @@ namespace libsemigroups {
       }
 
       // KBS_2 from Sims, p77-78
-      void knuth_bendix() {
-        if (_kb->stopped()) {
-          return;
-        }
+      bool knuth_bendix() {
         detail::Timer timer;
-        _kb->set_started(true);
         if (_stack.empty() && confluent() && !_kb->stopped()) {
           // _stack can be non-empty if non-reduced rules were used to define
           // the KnuthBendix.  If _stack is non-empty, then it means that the
           // rules in _active_rules might not define the system.
           REPORT_DEFAULT("the system is confluent already\n");
-          _kb->set_finished(true);
-          return;
+          return true;
         } else if (_active_rules.size() >= _kb->_settings._max_rules) {
           REPORT_DEFAULT("too many rules\n");
-          return;
+          return false;
         }
         // Reduce the rules
         _next_rule_it1 = _active_rules.begin();
@@ -897,6 +895,7 @@ namespace libsemigroups {
         // LIBSEMIGROUPS_ASSERT(_stack.empty());
         // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
         // and maybe more
+        bool ret;
         if (_kb->_settings._max_overlap == POSITIVE_INFINITY
             && _kb->_settings._max_rules == POSITIVE_INFINITY
             && !_kb->stopped()) {
@@ -906,8 +905,11 @@ namespace libsemigroups {
             delete rule;
           }
           _inactive_rules.clear();
-          _kb->set_finished(true);
+          ret = true;
+        } else {
+          ret = false;
         }
+
         REPORT_DEFAULT("stopping with active rules = %d, inactive rules = %d, "
                        "rules defined = %d\n",
                        _active_rules.size(),
@@ -915,6 +917,7 @@ namespace libsemigroups {
                        _total_rules);
         REPORT_VERBOSE_DEFAULT("max stack depth = %d", _max_stack_depth);
         REPORT_TIME(timer);
+        return ret;
       }
 
       void knuth_bendix_by_overlap_length() {

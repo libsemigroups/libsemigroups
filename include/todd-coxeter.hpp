@@ -539,6 +539,9 @@ namespace libsemigroups {
       }
 
      private:
+      void run_impl() override;
+      bool finished_impl() const override;
+
       ////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - pure virtual member functions - private
       ////////////////////////////////////////////////////////////////////////
@@ -548,7 +551,6 @@ namespace libsemigroups {
       // Guaranteed to return a FroidurePin<TCE>.
       std::shared_ptr<FroidurePinBase> quotient_impl() override;
       coset_type word_to_class_index_impl(word_type const&) override;
-      void       run_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - non-pure virtual member functions - private

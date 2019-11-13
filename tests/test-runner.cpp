@@ -33,40 +33,37 @@ namespace libsemigroups {
   namespace detail {
 
     class TestRunner1 : public Runner {
-     public:
-      void run() {
-        if (finished()) {
-          return;
-        }
-        set_started(true);
+     private:
+      void run_impl() override {
         while (!stopped()) {
         }
-        set_finished(true);
+      }
+
+      bool finished_impl() const override {
+        return stopped();
       }
     };
 
     class TestRunner2 : public Runner {
-     public:
-      void run() {
-        if (finished()) {
-          return;
-        }
-        set_started(true);
-        while (!timed_out()) {
+     private:
+      void run_impl() override {
+        while (!stopped()) {
           std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
+      }
+      bool finished_impl() const override {
+        return false;
       }
     };
 
     class TestRunner3 : public Runner {
-     public:
-      void run() {
-        if (finished()) {
-          return;
-        }
-        set_started(true);
+     private:
+      void run_impl() override {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        set_finished(true);
+      }
+
+      bool finished_impl() const override {
+        return started();
       }
     };
 
@@ -93,18 +90,39 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("Runner", "002", "run_for", "[quick]") {
       auto        rg = ReportGuard(REPORT);
       TestRunner2 tr;
-      tr.run_for(std::chrono::milliseconds(100));
+      tr.run_for(std::chrono::milliseconds(50));
       REQUIRE(!tr.finished());
       REQUIRE(tr.stopped());
       REQUIRE(!tr.dead());
       REQUIRE(tr.timed_out());
+      REQUIRE(!tr.stopped_by_predicate());
+      tr.run_for(std::chrono::milliseconds(50));
+      REQUIRE(!tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+      REQUIRE(tr.timed_out());
+      REQUIRE(!tr.stopped_by_predicate());
       REQUIRE_NOTHROW(tr.report_why_we_stopped());
+
+      size_t i = 0;
+      tr.run_until([&i]() -> bool {
+        ++i;
+        return i > 10;
+      });
+
+      REQUIRE(!tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+      REQUIRE(!tr.timed_out());
+      REQUIRE(tr.stopped_by_predicate());
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "003", "run_for", "[quick]") {
       auto        rg = ReportGuard(REPORT);
       TestRunner3 tr;
       tr.run_for(FOREVER);
+      REQUIRE(tr.started());
+      REQUIRE(!tr.running());
       REQUIRE(tr.finished());
       REQUIRE(tr.stopped());
       REQUIRE(!tr.dead());

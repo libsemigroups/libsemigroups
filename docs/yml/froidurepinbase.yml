@@ -29,7 +29,6 @@ libsemigroups::FroidurePinBase:
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until
-  - enumerate
 - Attributes:
   - degree
   - nr_generators
@@ -73,3 +72,5 @@ libsemigroups::FroidurePinBase:
   - started
   - stopped
   - timed_out
+  - running
+  - stopped_by_predicate

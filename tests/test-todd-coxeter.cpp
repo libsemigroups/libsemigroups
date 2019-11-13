@@ -1185,7 +1185,7 @@ namespace libsemigroups {
       REQUIRE(tc.quotient_froidure_pin()->size() == 34);
       using detail::TCE;
       auto& S = static_cast<FroidurePin<TCE>&>(*tc.quotient_froidure_pin());
-      S.enumerate();
+      S.run();
       std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());
       REQUIRE(v
@@ -1491,7 +1491,7 @@ namespace libsemigroups {
       kb.add_rule("bb", "B");
       kb.add_rule("BaB", "aba");
       REQUIRE(!kb.confluent());
-      kb.knuth_bendix();
+      kb.run();
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 6);
       REQUIRE(kb.finished());
@@ -1547,7 +1547,7 @@ namespace libsemigroups {
       kb.add_rule("b", "B");
 
       REQUIRE(kb.confluent());
-      kb.knuth_bendix();
+      kb.run();
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.size() == 1);

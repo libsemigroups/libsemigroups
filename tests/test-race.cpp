@@ -34,34 +34,34 @@ namespace libsemigroups {
 
   namespace detail {
 
-    class TestRunner : public Runner {
-     public:
-      void run() override {
-        if (finished()) {
-          return;
-        }
+    class TestRunner1 : public Runner {
+     private:
+      void run_impl() override {
         while (!stopped()) {
         }
-        set_finished(true);
+      }
+
+      bool finished_impl() const override {
+        return stopped();
       }
     };
 
     class TestRunner2 : public Runner {
-     public:
-      void run() override {}
+     private:
+      void run_impl() override {}
+      bool finished_impl() const override {
+        return true;
+      }
     };
 
     class TestRunner3 : public Runner {
-     public:
-      void run() override {
-        if (finished()) {
-          return;
-        }
+     private:
+      void run_impl() override {
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
-        if (dead()) {
-          LIBSEMIGROUPS_EXCEPTION("for testing");
-        }
-        set_finished(true);
+      }
+
+      bool finished_impl() const override {
+        return started();
       }
     };
 
@@ -70,7 +70,7 @@ namespace libsemigroups {
       Race rc;
       rc.max_threads(1);
       REQUIRE(rc.max_threads() == 1);
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       rc.run_for(std::chrono::milliseconds(10));
       rc.run_until([]() -> bool { return true; });
       REQUIRE(rc.winner() != nullptr);
@@ -79,7 +79,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("Race", "002", "run_until", "[quick]") {
       auto rg = ReportGuard(REPORT);
       Race rc;
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       size_t nr  = 0;
       auto   foo = [&nr]() -> bool { return ++nr == 2; };
       rc.run_until(foo, std::chrono::milliseconds(10));
@@ -95,10 +95,10 @@ namespace libsemigroups {
                         LibsemigroupsException);
       REQUIRE_THROWS_AS(rc.run(), LibsemigroupsException);
 
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       rc.run_for(std::chrono::milliseconds(10));
       REQUIRE(rc.winner() != nullptr);
-      auto tr = std::make_shared<TestRunner>();
+      auto tr = std::make_shared<TestRunner1>();
       REQUIRE_THROWS_AS(rc.add_runner(tr), LibsemigroupsException);
     }
 
@@ -106,8 +106,8 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       Race rc;
       rc.max_threads(2);
-      rc.add_runner(std::make_shared<TestRunner>());
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       REQUIRE(rc.end() - rc.begin() == rc.number_runners());
       REQUIRE(rc.cend() - rc.cbegin() == rc.number_runners());
       REQUIRE(2 == rc.number_runners());
@@ -117,9 +117,9 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       Race rc;
       rc.max_threads(2);
-      rc.add_runner(std::make_shared<TestRunner>());
-      rc.add_runner(std::make_shared<TestRunner>());
-      REQUIRE(rc.find_runner<TestRunner>() != nullptr);
+      rc.add_runner(std::make_shared<TestRunner1>());
+      rc.add_runner(std::make_shared<TestRunner1>());
+      REQUIRE(rc.find_runner<TestRunner1>() != nullptr);
       REQUIRE(rc.find_runner<TestRunner2>() == nullptr);
     }
 
@@ -127,7 +127,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       Race rc;
       rc.max_threads(2);
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       rc.add_runner(std::make_shared<TestRunner3>());
       rc.run_for(std::chrono::milliseconds(10));
       REQUIRE(rc.winner() != nullptr);
@@ -137,9 +137,9 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       Race rc;
       rc.max_threads(2);
-      TestRunner* tr = new TestRunner();
+      TestRunner1* tr = new TestRunner1();
       tr->run_for(std::chrono::milliseconds(10));
-      rc.add_runner(std::shared_ptr<TestRunner>(tr));
+      rc.add_runner(std::shared_ptr<TestRunner1>(tr));
       rc.add_runner(std::make_shared<TestRunner3>());
       rc.run_for(std::chrono::milliseconds(10));
       REQUIRE(rc.winner() != nullptr);
@@ -149,10 +149,10 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       Race rc;
       rc.max_threads(4);
-      rc.add_runner(std::make_shared<TestRunner>());
-      rc.add_runner(std::make_shared<TestRunner>());
-      rc.add_runner(std::make_shared<TestRunner>());
-      rc.add_runner(std::make_shared<TestRunner>());
+      rc.add_runner(std::make_shared<TestRunner1>());
+      rc.add_runner(std::make_shared<TestRunner1>());
+      rc.add_runner(std::make_shared<TestRunner1>());
+      rc.add_runner(std::make_shared<TestRunner1>());
       rc.run_for(std::chrono::milliseconds(10));
       REQUIRE(rc.winner() != nullptr);
     }

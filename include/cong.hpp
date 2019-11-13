@@ -268,6 +268,7 @@ namespace libsemigroups {
     }
 
     // The next function is required by the GAP package Semigroups.
+    //! No doc
     template <typename T>
     void add_runner(T const& r) {
       static_assert(std::is_base_of<CongruenceInterface, T>::value,
@@ -277,13 +278,6 @@ namespace libsemigroups {
     }
 
    private:
-    //////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual member functions - private
-    //////////////////////////////////////////////////////////////////////////
-
-    bool finished_impl() const override;
-    bool started_impl() const override;
-
     //////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
@@ -295,6 +289,10 @@ namespace libsemigroups {
 
     void run_impl() override {
       _race.run();
+    }
+
+    bool finished_impl() const override {
+      return _race.finished();
     }
 
     //////////////////////////////////////////////////////////////////////////

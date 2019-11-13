@@ -59,34 +59,9 @@ namespace libsemigroups {
     if (is_obviously_infinite()) {
       return POSITIVE_INFINITY;
     } else {
+      run();  // required so that the state is correct
       return static_cast<FpSemigroupInterface*>(_race.winner().get())->size();
     }
-  }
-
-  //////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure virtual member functions - protected
-  //////////////////////////////////////////////////////////////////////////
-
-  // TODO(later) finished_impl and started_impl should move to Race and Race
-  // should be a Runner itself
-  // TODO(now) after processing runner this could be noexcept
-  bool FpSemigroup::finished_impl() const {
-    for (auto runner : _race) {
-      if (runner->finished()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // TODO(now) after processing runner this could be noexcept
-  bool FpSemigroup::started_impl() const {
-    for (auto runner : _race) {
-      if (runner->started()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -108,6 +83,7 @@ namespace libsemigroups {
         return ptr->froidure_pin();
       }
     }
+    run();  // required to that the state is correct.
     return static_cast<FpSemigroupInterface*>(_race.winner().get())
         ->froidure_pin();
   }

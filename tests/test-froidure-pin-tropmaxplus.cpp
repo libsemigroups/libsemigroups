@@ -34,7 +34,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "128",
+                          "125",
                           "(tropical max-plus semiring matrices)",
                           "[quick][froidure-pin][tropmaxplus]") {
     Semiring<int64_t>* sr = new TropicalMaxPlusSemiring(9);

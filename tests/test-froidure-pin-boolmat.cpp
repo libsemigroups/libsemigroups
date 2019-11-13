@@ -32,7 +32,7 @@ namespace libsemigroups {
   bool constexpr REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "129",
+                          "016",
                           "non-pointer BooleanMat",
                           "[quick][froidure-pin][boolmat][booleanmat]") {
     std::vector<BooleanMat> gens

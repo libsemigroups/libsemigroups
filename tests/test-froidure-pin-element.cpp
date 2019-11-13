@@ -67,7 +67,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "001",
+                          "017",
                           "small transformation semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens = {new Transformation<uint16_t>({0, 1, 0}),
@@ -112,7 +112,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "002",
+                          "018",
                           "small partial perm semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -173,7 +173,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "003",
+                          "019",
                           "small bipartition semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -220,7 +220,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "004",
+                          "020",
                           "small Boolean matrix semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -257,7 +257,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "005",
+                          "021",
                           "small projective max plus matrix semigroup",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>* sr = new MaxPlusSemiring();
@@ -285,7 +285,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "006",
+                          "022",
                           "small matrix semigroup [Integers]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -329,7 +329,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "007",
+                          "023",
                           "small matrix semigroup [MaxPlusSemiring]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new MaxPlusSemiring();
@@ -372,7 +372,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "008",
+                          "024",
                           "small matrix semigroup [MinPlusSemiring]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new MinPlusSemiring();
@@ -410,7 +410,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "009",
+                          "025",
                           "small matrix semigroup [TropicalMaxPlusSemiring]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
@@ -449,7 +449,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "010",
+                          "026",
                           "small matrix semigroup [TropicalMinPlusSemiring]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
@@ -488,7 +488,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "011",
+                          "027",
                           "small matrix semigroup [NaturalSemiring]",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
@@ -527,7 +527,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "012",
+                          "028",
                           "small pbr semigroup",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -560,7 +560,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "013",
+                          "029",
                           "large transformation semigroup",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -581,49 +581,43 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "014",
+                          "030",
                           "at, position, current_*",
                           "[quick][froidure-pin][element][no-valgrind]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
            new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
     delete_gens(gens);
 
     S.batch_size(1024);
 
-    Element* expected = new Transformation<uint16_t>({5, 3, 4, 1, 2, 5});
-    REQUIRE(*S.at(100) == *expected);
+    REQUIRE(*S.at(100) == Transformation<uint16_t>({5, 3, 4, 1, 2, 5}));
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
-    delete expected;
 
     Element* x = new Transformation<uint16_t>({5, 3, 4, 1, 2, 5});
     REQUIRE(S.position(x) == 100);
     delete x;
 
-    expected = new Transformation<uint16_t>({5, 4, 3, 4, 1, 5});
-    REQUIRE(*S.at(1023) == *expected);
+    REQUIRE(*S.at(1023) == Transformation<uint16_t>({5, 4, 3, 4, 1, 5}));
     REQUIRE(S.current_size() == 1029);
     REQUIRE(S.current_nr_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
-    delete expected;
 
     x = new Transformation<uint16_t>({5, 4, 3, 4, 1, 5});
     REQUIRE(S.position(x) == 1023);
     delete x;
 
-    expected = new Transformation<uint16_t>({5, 3, 5, 3, 4, 5});
-    REQUIRE(*S.at(3000) == *expected);
+    REQUIRE(*S.at(3000) == Transformation<uint16_t>({5, 3, 5, 3, 4, 5}));
     REQUIRE(S.current_size() == 3001);
     REQUIRE(S.current_nr_rules() == 526);
     REQUIRE(S.current_max_word_length() == 9);
-    delete expected;
 
     x = new Transformation<uint16_t>({5, 3, 5, 3, 4, 5});
     REQUIRE(S.position(x) == 3000);
@@ -637,8 +631,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "015",
-                          "enumerate",
+                          "031",
+                          "run",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
@@ -675,8 +669,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "016",
-                          "enumerate [many stops and starts]",
+                          "032",
+                          "run [many stops and starts]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
@@ -702,7 +696,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "017",
+                          "033",
                           "factorisation, length [1 element]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -734,7 +728,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "018",
+                          "034",
                           "factorisation, products [all elements]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -757,7 +751,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "019",
+                          "035",
                           "first/final letter, prefix, suffix, products",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -845,7 +839,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "020",
+                          "036",
                           "letter_to_pos [standard]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -866,7 +860,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "021",
+                          "037",
                           "letter_to_pos [duplicate gens]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -922,7 +916,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "022",
+                          "038",
                           "letter_to_pos [after add_generators]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -977,7 +971,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "023",
+                          "039",
                           "cbegin_idempotents/cend [1 thread]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -999,7 +993,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "024",
+                          "040",
                           "idempotent_cend/cbegin [1 thread]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1022,7 +1016,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "025",
+                          "041",
                           "is_idempotent [1 thread]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1050,7 +1044,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
-      "026",
+      "042",
       "cbegin_idempotents/cend, is_idempotent [2 threads]",
       "[standard][froidure-pin][element][multithread][no-valgrind]") {
     std::vector<Element*> gens
@@ -1083,7 +1077,7 @@ namespace libsemigroups {
 #endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "027",
+                          "043",
                           "finished, started",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1110,7 +1104,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "028",
+                          "044",
                           "current_position",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1161,7 +1155,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "029",
+                          "045",
                           "sorted_position, sorted_at",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1219,7 +1213,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "030",
+                          "046",
                           "right/left Cayley graph",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1248,7 +1242,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "031",
+                          "047",
                           "iterator",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1310,7 +1304,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "066",
+                          "048",
                           "reverse iterator",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1372,7 +1366,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "067",
+                          "049",
                           "iterator arithmetic",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1430,7 +1424,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "068",
+                          "050",
                           "iterator sorted",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1480,7 +1474,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "069",
+                          "051",
                           "iterator sorted arithmetic",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1538,7 +1532,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "032",
+                          "052",
                           "copy [not enumerated]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1577,7 +1571,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "033",
+                          "053",
                           "copy_closure [not enumerated]",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -1650,14 +1644,14 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "034",
+                          "054",
                           "copy_add_generators [not enumerated]",
                           "[quick][froidure-pin][element][no-valgrind]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
 
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
@@ -1693,14 +1687,15 @@ namespace libsemigroups {
     FroidurePin<Element const*>* U = T->copy_add_generators(coll);
     delete_gens(coll);
 
-    REQUIRE(U->started());
-    REQUIRE(U->finished());
+    // REQUIRE(U->started());
+    // REQUIRE(U->finished());
     REQUIRE(U->nr_generators() == 6);
     REQUIRE(U->degree() == 7);
     REQUIRE(U->current_size() == 16807);
     REQUIRE(U->current_max_word_length() == 16);
     REQUIRE(U->nr_idempotents() == 1358);
     REQUIRE(U->nr_rules() == 7901);
+    REQUIRE(U->finished());
 
     coll                           = std::vector<Element*>();
     FroidurePin<Element const*>* V = U->copy_add_generators(coll);
@@ -1723,7 +1718,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "035",
+                          "055",
                           "copy [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1771,7 +1766,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "036",
+                          "056",
                           "copy_closure [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1817,7 +1812,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "037",
+                          "057",
                           "copy_add_generators [partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1845,7 +1840,6 @@ namespace libsemigroups {
     REQUIRE(*coll[0] == *(T->generator(3)));
     REQUIRE(*coll[1] == *(T->generator(4)));
 
-    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1863,7 +1857,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "038",
+                          "058",
                           "copy [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1896,7 +1890,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "039",
+                          "059",
                           "copy_closure [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1941,7 +1935,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "040",
+                          "060",
                           "copy_add_generators [fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -1968,7 +1962,6 @@ namespace libsemigroups {
     REQUIRE(*coll[0] == *(T->generator(3)));
     REQUIRE(*coll[1] == *(T->generator(4)));
 
-    REQUIRE(T->started());
     REQUIRE(!T->finished());
     REQUIRE(T->nr_generators() == 5);
     REQUIRE(T->degree() == 6);
@@ -1986,7 +1979,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "041",
+                          "061",
                           "relations [duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2023,7 +2016,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "042",
+                          "062",
                           "relations",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2070,7 +2063,7 @@ namespace libsemigroups {
     delete_gens(gens);
   }
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "043",
+                          "063",
                           "relations [copy_closure, duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2082,7 +2075,7 @@ namespace libsemigroups {
     FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
     auto                        rg = ReportGuard(REPORT);
 
-    S.enumerate(LIMIT_MAX);
+    S.run();
     REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
@@ -2110,7 +2103,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "044",
+                          "064",
                           "relations [copy_add_generators, duplicate gens]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2122,7 +2115,7 @@ namespace libsemigroups {
     FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
     auto                        rg = ReportGuard(REPORT);
 
-    S.enumerate(LIMIT_MAX);
+    S.run();
     REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.nr_generators() == 5);
@@ -2150,7 +2143,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "045",
+                          "065",
                           "relations [from copy, not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2201,7 +2194,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "046",
+                          "066",
                           "relations [from copy, partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2255,7 +2248,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "047",
+                          "067",
                           "relations [from copy, fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2308,7 +2301,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "050",
+                          "068",
                           "relations [from copy_closure, not enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2370,7 +2363,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
-      "051",
+      "069",
       "relations [from copy_add_generators, not enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2431,7 +2424,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "052",
+                          "070",
                           "relations [from copy_closure, partly enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2494,7 +2487,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
-      "053",
+      "071",
       "relations [from copy_add_generators, partly enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2556,7 +2549,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "054",
+                          "072",
                           "relations [from copy_closure, fully enumerated]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2620,7 +2613,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
-      "055",
+      "073",
       "relations [from copy_add_generators, fully enumerated]",
       "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2683,7 +2676,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "056",
+                          "074",
                           "add_generators [duplicate generators]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2755,7 +2748,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "057",
+                          "075",
                           "add_generators [incremental 1]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2795,7 +2788,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "058",
+                          "076",
                           "add_generators [incremental 2]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2815,11 +2808,11 @@ namespace libsemigroups {
         = FroidurePin<Element const*>({gens[0], gens[0]});
     S.add_generators(std::vector<Element*>({}));
     S.add_generators({gens[0]});
-    S.enumerate(LIMIT_MAX);
+    S.run();
     S.add_generators({gens[1]});
-    S.enumerate(LIMIT_MAX);
+    S.run();
     S.add_generators({gens[2]});
-    S.enumerate(LIMIT_MAX);
+    S.run();
     REQUIRE(S.current_size() == 7);
     S.add_generators({gens[3], gens[4], gens[5]});
     REQUIRE(S.nr_generators() == 8);
@@ -2845,7 +2838,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "059",
+                          "077",
                           "closure [duplicate generators]",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2899,7 +2892,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "060",
+                          "078",
                           "closure ",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens = {new Transformation<uint16_t>({0, 0, 0}),
@@ -2940,7 +2933,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "061",
+                          "079",
                           "factorisation ",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2955,7 +2948,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "062",
+                          "080",
                           "my favourite example with reserve",
                           "[standard][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -2976,7 +2969,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "063",
+                          "081",
                           "minimal_factorisation ",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -3000,7 +2993,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "064",
+                          "082",
                           "batch_size (for an extremely large value)",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -3010,14 +3003,14 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(REPORT);
     S.batch_size(LIMIT_MAX);
-    S.enumerate();
+    S.run();
 
     REQUIRE(S.size() == 5);
     delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "065",
+                          "083",
                           "my favourite example without reserve",
                           "[standard][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -3038,7 +3031,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "070",
+                          "084",
                           "number of idempotents",
                           "[extreme][froidure-pin][element]") {
     auto               rg = ReportGuard();
@@ -3058,7 +3051,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "071",
+                          "085",
                           "number of idempotents",
                           "[extreme][froidure-pin][element]") {
     auto                  rg = ReportGuard();
@@ -3073,10 +3066,11 @@ namespace libsemigroups {
     REQUIRE(S.nr_idempotents() == 541254);
     delete_gens(gens);
   }
+
 #if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "073",
+                          "086",
                           "regular boolean mat monoid 4 using BooleanMat",
                           "[quick][froidure-pin][element][no-valgrind]") {
     std::vector<Element*> gens
@@ -3097,7 +3091,7 @@ namespace libsemigroups {
 #endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "079",
+                          "087",
                           "exception: zero generators given",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens;
@@ -3107,7 +3101,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "080",
+                          "088",
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -3128,7 +3122,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "081",
+                          "089",
                           "exception: word_to_pos",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3169,7 +3163,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "082",
+                          "090",
                           "exception: word_to_element",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3213,7 +3207,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "083",
+                          "091",
                           "exception: gens",
                           "[quick][froidure-pin][element]") {
     for (size_t i = 1; i < 20; ++i) {
@@ -3237,7 +3231,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "084",
+                          "092",
                           "exception: prefix",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3255,7 +3249,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "085",
+                          "093",
                           "exception: suffix",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3273,7 +3267,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "086",
+                          "094",
                           "exception: first_letter",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3291,7 +3285,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "087",
+                          "095",
                           "exception: final_letter",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3309,7 +3303,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "088",
+                          "096",
                           "exception: length_const",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3327,7 +3321,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "089",
+                          "097",
                           "exception: product_by_reduction",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3353,7 +3347,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "090",
+                          "098",
                           "exception: fast_product",
                           "[quick][froidure-pin][element]") {
     Semiring<int64_t>*    sr = new Integers();
@@ -3379,7 +3373,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "091",
+                          "099",
                           "exception: letter_to_pos",
                           "[quick][froidure-pin][element]") {
     for (size_t i = 1; i < 20; ++i) {
@@ -3403,7 +3397,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "092",
+                          "100",
                           "exception: is_idempotent",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens
@@ -3426,7 +3420,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "093",
+                          "101",
                           "exception: add_generators",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens1

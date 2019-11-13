@@ -27,18 +27,20 @@
 #include <chrono>       // for nanoseconds, high_resolution_clock
 #include <type_traits>  // for forward
 
-#include "function-ref.hpp"  // for FunctionRef
+#include "function-ref.hpp"             // for FunctionRef
+#include "libsemigroups-exception.hpp"  // for LibsemigroupsException
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
   //! Derived classes of this abstract class must implement a member function
-  //! Runner::run. The Runner class exists to collect various common tasks
-  //! required by such a derived class with a possibly long running Runner::run
+  //! Runner::run_impl. The Runner class exists to collect various common tasks
+  //! required by such a derived class with a possibly long running
+  //! Runner::run_impl
   //! implementation. These include:
   //! * running for a given amount of time (Runner::run_for)
-  //! * running until a unary predicate is true (Runner::run_until)
+  //! * running until a nullary predicate is true (Runner::run_until)
   //! * reporting after a given amount of time (Runner::report_every)
   //! * checking if the given amount of time has elapsed since last report
   //! (Runner::report)
@@ -49,10 +51,21 @@ namespace libsemigroups {
   //! * permit the Runner::run implementation to be killed from another thread
   //! (Runner::kill).
   //!
-  //! The implementation of the ``run`` member function in a derived class must
-  //! periodically check whether or not it has stopped for any reason for this
-  //! to work.
+  //! The implementation of the ``run_impl`` member function in a derived class
+  //! must periodically check whether or not it has stopped for this to work.
   class Runner {
+    // Enum class for the state of the Runner.
+    enum class state {
+      never_run            = 0,
+      running_to_finish    = 1,
+      running_for          = 2,
+      running_until        = 3,
+      timed_out            = 4,
+      stopped_by_predicate = 6,
+      not_running          = 7,
+      dead                 = 8
+    };
+
    public:
     ////////////////////////////////////////////////////////////////////////
     // Runner - constructors + destructor - public
@@ -76,10 +89,14 @@ namespace libsemigroups {
     //! to run_until (if any) is not copied.
     //!
     //! \param copy the Runner to copy.
-    Runner(Runner const& copy);
+    Runner(Runner const& other) : Runner() {
+      _state = other._state.load();
+    }
 
-    //! Deleted.
-    Runner(Runner&&) = delete;
+    //!
+    Runner(Runner&& other) : Runner() {
+      _state = other._state.load();
+    }
 
     //! Deleted.
     Runner& operator=(Runner const&) = delete;
@@ -93,17 +110,35 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Pure virtual member function implemented in derived class.
+    //! Member function that wraps `run_impl` which is implemented in a derived
+    //! class.
     //!
-    //! The run method of any class derived from Runner ought to be the main
-    //! algorithm that it implements.
+    //! Run the main algorithm implemented by a derived class derived of
+    //! Runner.
     //!
     //! \returns
     //! (None)
     //!
     //! \par Parameters
     //! (None)
-    virtual void run() = 0;
+    // At the end of this either finished, or dead.
+    void run() {
+      if (!finished() && !dead()) {
+        before_run();
+        set_state(state::running_to_finish);
+        try {
+          run_impl();
+        } catch (LibsemigroupsException const& e) {
+          if (!dead()) {
+            set_state(state::not_running);
+          }
+          throw;
+        }
+        if (!dead()) {
+          set_state(state::not_running);
+        }
+      }
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - non-virtual member functions - public
@@ -121,9 +156,11 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \sa Runner::run_for(TIntType)
+    // At the end of this either finished, dead, or timed_out.
     void run_for(std::chrono::nanoseconds t);
 
     //! Run for a specified amount of time.
+    //!
     //!
     //! For this to work it is necessary to periodically check if
     //! Runner::timed_out returns \c true, and to stop if it is, in the
@@ -150,7 +187,13 @@ namespace libsemigroups {
     //!
     //! \sa Runner::run_for(std::chrono::nanoseconds) and
     //! Runner::run_for(TIntType).
-    bool timed_out() const;
+    bool timed_out() const {
+      return (running_for()
+                  ? std::chrono::duration_cast<std::chrono::nanoseconds>(
+                        std::chrono::high_resolution_clock::now() - _start_time)
+                        >= _run_for
+                  : get_state() == state::timed_out);
+    }
 
     //! Run until a nullary predicate returns \p true or Runner::finished.
     //!
@@ -159,13 +202,25 @@ namespace libsemigroups {
     //!
     //! \returns
     //! (None)
+    // At the end of this either finished, dead, or stopped_by_predicate.
     template <typename T>
     void run_until(T&& func) {
-      _stopper              = std::forward<T>(func);
-      _stopped_by_predicate = false;
-      run();
-      _stopped_by_predicate = _stopper();
-      _stopper.invalidate();
+      if (!finished() && !dead()) {
+        before_run();
+        _stopper = std::forward<T>(func);
+        if (!_stopper()) {
+          set_state(state::running_until);
+          run_impl();
+          if (!finished()) {
+            if (!dead()) {
+              set_state(state::stopped_by_predicate);
+            }
+          } else {
+            set_state(state::not_running);
+          }
+        }
+        _stopper.invalidate();
+      }
     }
 
     //! Check if it is time to report.
@@ -243,18 +298,20 @@ namespace libsemigroups {
     //!
     //! \sa Runner::started
     bool finished() const {
-      return !(dead_impl()) && finished_impl();
-      // Since kill() may leave the object in an invalid state we only return
+      if (started() && !dead() && finished_impl()) {
+        _state = state::not_running;
+        return true;
+      } else {
+        return false;
+      }
+      // since kill() may leave the object in an invalid state we only return
       // true here if we are not dead and the object thinks it is finished.
     }
 
     //! Check if Runner::run has already been called.
     //!
     //! Returns \c true if Runner::run has started to run (it can be running or
-    //! not). For this to
-    //! work, the implementation of Runner::run in a derived class of Runner
-    //! must either use Runner::set_started or implement a specialisation of
-    //! Runner::started_impl.
+    //! not).
     //!
     //! \par Parameters
     //! (None)
@@ -264,7 +321,25 @@ namespace libsemigroups {
     //!
     //! \sa Runner::finished
     bool started() const {
-      return finished() || started_impl();
+      return get_state() != state::never_run;
+    }
+
+    //! Check if a Runner instance is currently running.
+    //!
+    //! \returns
+    //! \c true if Runner::run is in the process to run and \c false it is not.
+    //!
+    //! \par Parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A ``bool``.
+    //!
+    //! \sa Runner::finished
+    bool running() const noexcept {
+      return get_state() == state::running_to_finish
+             || get_state() == state::running_for
+             || get_state() == state::running_until;
     }
 
     //! Stop Runner::run from running (thread-safe).
@@ -284,7 +359,7 @@ namespace libsemigroups {
     //!
     //! \sa Runner::finished
     void kill() noexcept {
-      _dead = true;
+      set_state(state::dead);
     }
 
     //! Check if the runner is dead.
@@ -303,7 +378,7 @@ namespace libsemigroups {
     //!
     //! \sa Runner::kill
     bool dead() const noexcept {
-      return dead_impl();
+      return get_state() == state::dead;
     }
 
     //! Check if the runner is stopped.
@@ -312,70 +387,80 @@ namespace libsemigroups {
     //! stopped for whatever reason. In other words, it checks if
     //! Runner::timed_out, Runner::finished, or Runner::dead.
     //!
+    //! \returns
+    //! A ``bool``.
+    //!
     //! \par Parameters
     //! (None)
+    bool stopped() const {
+      return (running() ? (timed_out() || stopped_by_predicate())
+                        : get_state() > state::running_until);
+    }
+
+    //! Check if the runner was, or should, stop because the nullary predicate
+    //! passed as first argument to Runner::run_until.
+    //!
+    //! If \c this is running, then the nullary predicate is called and its
+    //! return value is returned. If \c this is not running, then \c true is
+    //! returned if and only if the last time \c this was running it was
+    //! stopped by a call to the nullary predicate passed to Runner::run_until.
     //!
     //! \returns
     //! A ``bool``.
-    bool stopped() const;
-
-    void clear_stoppage() {
-      _run_for              = FOREVER;
-      _start_time           = std::chrono::high_resolution_clock::now();
-      _stopped_by_predicate = false;
-    }
-
-   protected:
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual member functions - protected
-    ////////////////////////////////////////////////////////////////////////
-    //! Stub
-    virtual bool dead_impl() const {
-      return _dead;
-    }
-
-    //! Stub
-    virtual bool finished_impl() const {
-      return _finished;
-    }
-
-    //! Stub
-    virtual bool started_impl() const {
-      return _started;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - non-virtual member functions - protected
-    ////////////////////////////////////////////////////////////////////////
-
-    //! Stub
-    void set_finished(bool val) const noexcept {
-      _finished = val;
-    }
-
-    //! Stub
-    void set_started(bool val) const noexcept {
-      _started = val;
-    }
-
-    //! Stub
-    inline bool stopped_by_predicate() const noexcept {
-      return _stopped_by_predicate;
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    // noexcept should depend on whether _stopper can throw or not
+    bool stopped_by_predicate() const {
+      if (running_until()) {
+        LIBSEMIGROUPS_ASSERT(_stopper.valid());
+        return _stopper();
+      } else {
+        return get_state() == state::stopped_by_predicate;
+      }
     }
 
    private:
+    bool running_for() const noexcept {
+      return _state == state::running_for;
+    }
+
+    bool running_until() const noexcept {
+      return _state == state::running_until;
+    }
+
+    virtual void run_impl()            = 0;
+    virtual bool finished_impl() const = 0;
+    virtual void before_run() {}
+
+    state get_state() const noexcept {
+      return _state;
+    }
+
+    void set_state(state stt) const {
+      LIBSEMIGROUPS_ASSERT(stt != state::never_run);
+      if (!dead()) {
+        // It can be that *this* becomes dead after this function has been
+        // called.
+        _state = stt;
+      }
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Runner - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    std::atomic<bool>                                      _dead;
-    mutable bool                                           _finished;
     mutable std::chrono::high_resolution_clock::time_point _last_report;
     std::chrono::nanoseconds                       _report_time_interval;
     std::chrono::nanoseconds                       _run_for;
     std::chrono::high_resolution_clock::time_point _start_time;
-    mutable bool                                   _started;
-    mutable bool                                   _stopped_by_predicate;
+    mutable std::atomic<state>                     _state;
     detail::FunctionRef<bool(void)>                _stopper;
   };
 }  // namespace libsemigroups

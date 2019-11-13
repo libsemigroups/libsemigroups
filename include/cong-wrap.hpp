@@ -135,6 +135,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     size_t size() override {
+      run();  // to ensure the state is correct
       return _wrapped_cong->nr_classes();
     }
 
@@ -191,22 +192,18 @@ namespace libsemigroups {
     }
 
    private:
-    ////////////////////////////////////////////////////////////////////////////
-    // Runner - non-pure virtual member function - private
-    ////////////////////////////////////////////////////////////////////////////
-
-    bool finished_impl() const override {
-      return _wrapped_cong->finished();
-    }
+    //////////////////////////////////////////////////////////////////////////
+    // FpSemigroupInterface - pure virtual member functions - private
+    //////////////////////////////////////////////////////////////////////////
 
     void run_impl() override {
       _wrapped_cong->run_until(
           [this]() -> bool { return dead() || timed_out(); });
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - pure virtual member functions - private
-    //////////////////////////////////////////////////////////////////////////
+    bool finished_impl() const override {
+      return _wrapped_cong->finished();
+    }
 
     void add_rule_impl(std::string const& u, std::string const& v) override {
       // This is only ever called if u and v are valid
