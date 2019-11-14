@@ -346,6 +346,10 @@ namespace libsemigroups {
                                             std::vector<uint16_t>({0, 2}),
                                             4),
                       LibsemigroupsException);
+    REQUIRE_THROWS_AS(PartialPerm<uint16_t>(std::vector<uint16_t>({1, 1}),
+                                            std::vector<uint16_t>({0, 2}),
+                                            3),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("BooleanMat", "001", "methods", "[quick][element]") {

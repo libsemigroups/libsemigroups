@@ -107,17 +107,18 @@ pkginclude_HEADERS += extern/HPCombi/include/vect16.hpp
 pkginclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
 endif
 
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/chrono.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/core.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/format-inl.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/format.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/locale.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/ostream.h	
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/posix.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/printf.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h  
-pkginclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
+fmtincludedir = $(includedir)/fmt
+fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/core.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/format-inl.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/format.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/locale.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ostream.h	
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/posix.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/printf.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h  
+fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
 
 lib_LTLIBRARIES = libsemigroups.la
 

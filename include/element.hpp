@@ -883,6 +883,12 @@ namespace libsemigroups {
             static_cast<size_t>(*std::max_element(dom.cbegin(), dom.cend())),
             deg);
       }
+      for (auto it = dom.cbegin(); it < dom.cend(); ++it) {
+        if (std::find(it + 1, dom.cend(), *it) !=  dom.cend()) {
+            LIBSEMIGROUPS_EXCEPTION("duplicate value %d in domain",
+                                    static_cast<size_t>(*it));
+        }
+      }
       this->_vector.resize(deg, UNDEFINED);
       for (size_t i = 0; i < dom.size(); i++) {
         this->_vector[dom[i]] = ran[i];
