@@ -29,7 +29,7 @@ See also :cpp:any:`libsemigroups::ImageLeftAction` and
 
     using namespace libsemigroups;
     using PPerm = PPermHelper<16>::type;
-    RightAction<PPerm, PPerm, RightSemigroupAction<PPerm, PPerm>> o;
+    RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
     o.add_seed(One<PPerm>()(16));
     o.add_generator(
         PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
