@@ -61,7 +61,6 @@ Then actually build ``libsemigroups`` by doing:
 
 ::
 
-   cd libsemigroups
    ./autogen.sh && ./configure && make -j8 && sudo make install
 
 .. A bash script is available: TODO the script is etc/install-libsemigroups.sh
