@@ -1,7 +1,0 @@
-<map id="libsemigroups::SemiringWithThreshold" name="libsemigroups::SemiringWithThreshold">
-<area shape="rect" id="node1" title="This abstract class provides common methods for its subclasses TropicalMaxPlusSemiring,..." alt="" coords="217,55,407,93"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_natural_semiring.html" title="This class implements the semiring consisting of &#160;for some threshold &#160;and period &#160;with operations add..." alt="" coords="455,5,662,31"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_tropical_max_plus_semiring.html" title="The tropical max&#45;plus semiring consists of the integers &#160;for some value &#160;(called the threshold of the..." alt="" coords="467,55,650,93"/>
-<area shape="rect" id="node5" href="$classlibsemigroups_1_1_tropical_min_plus_semiring.html" title="The tropical min&#45;plus semiring consists of the integers &#160;for some value &#160;(called the threshold of the..." alt="" coords="469,117,648,156"/>
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_semiring.html" title=" " alt="" coords="5,55,169,93"/>
-</map>

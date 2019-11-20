@@ -1,5 +1,0 @@
-<map id="libsemigroups::NaturalSemiring" name="libsemigroups::NaturalSemiring">
-<area shape="rect" id="node1" title="This class implements the semiring consisting of &#160;for some threshold &#160;and period &#160;with operations add..." alt="" coords="5,179,212,204"/>
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_semiring_with_threshold.html" title="This abstract class provides common methods for its subclasses TropicalMaxPlusSemiring,..." alt="" coords="13,92,204,131"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_semiring.html" title=" " alt="" coords="27,5,190,44"/>
-</map>

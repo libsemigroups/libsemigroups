@@ -1,6 +1,0 @@
-<map id="libsemigroups::MatrixOverSemiringBase&lt; TValueType, TSubclass &gt;" name="libsemigroups::MatrixOverSemiringBase&lt; TValueType, TSubclass &gt;">
-<area shape="rect" id="node1" title="Matrices over a semiring." alt="" coords="5,279,195,331"/>
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title="Abstract base class for elements using a vector to store their defining data and the default hash fun..." alt="" coords="7,179,193,231"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data.html" title="Abstract base class for elements using a vector to store their defining data." alt="" coords="7,79,193,131"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="20,5,180,31"/>
-</map>

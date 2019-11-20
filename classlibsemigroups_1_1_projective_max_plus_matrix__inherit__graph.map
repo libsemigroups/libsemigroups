@@ -1,7 +1,0 @@
-<map id="libsemigroups::ProjectiveMaxPlusMatrix" name="libsemigroups::ProjectiveMaxPlusMatrix">
-<area shape="rect" id="node1" title="Class for projective max&#45;plus matrices." alt="" coords="974,12,1144,51"/>
-<area shape="rect" id="node2" href="$classlibsemigroups_1_1_matrix_over_semiring_base.html" title=" " alt="" coords="744,5,926,57"/>
-<area shape="rect" id="node3" href="$classlibsemigroups_1_1_element_with_vector_data_default_hash.html" title=" " alt="" coords="466,5,696,57"/>
-<area shape="rect" id="node4" href="$classlibsemigroups_1_1_element_with_vector_data.html" title=" " alt="" coords="213,5,418,57"/>
-<area shape="rect" id="node5" href="$classlibsemigroups_1_1_element.html" title="Abstract base class for semigroup elements." alt="" coords="5,19,165,44"/>
-</map>
