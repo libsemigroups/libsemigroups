@@ -388,7 +388,7 @@ namespace libsemigroups {
     //! CongruenceInterface::non_trivial_classes_type.
     //!
     //!
-    std::shared_ptr<non_trivial_classes_type> non_trivial_classes() {
+    std::shared_ptr<non_trivial_classes_type const> non_trivial_classes() {
       init_non_trivial_classes();
       return _non_trivial_classes;
     }
@@ -694,7 +694,7 @@ namespace libsemigroups {
     virtual void             add_pair_impl(word_type const&, word_type const&);
     virtual class_index_type const_word_to_class_index(word_type const&) const;
     virtual void             set_nr_generators_impl(size_t);
-    virtual std::shared_ptr<non_trivial_classes_type>
+    virtual std::shared_ptr<non_trivial_classes_type const>
     non_trivial_classes_impl();
 
     virtual bool is_quotient_obviously_finite_impl() = 0;
@@ -739,7 +739,7 @@ namespace libsemigroups {
     mutable bool                                      _is_obviously_finite;
     mutable bool                                      _is_obviously_infinite;
     mutable std::shared_ptr<FroidurePinBase>          _quotient;
-    mutable std::shared_ptr<non_trivial_classes_type> _non_trivial_classes;
+    mutable std::shared_ptr<non_trivial_classes_type const> _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - static data members - private

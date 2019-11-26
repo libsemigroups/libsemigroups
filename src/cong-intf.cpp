@@ -243,7 +243,7 @@ namespace libsemigroups {
     // do nothing
   }
 
-  std::shared_ptr<CongruenceInterface::non_trivial_classes_type>
+  std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
   CongruenceInterface::non_trivial_classes_impl() {
     if (_parent == nullptr) {
       // This means this was constructed from an fp semigroup that did not

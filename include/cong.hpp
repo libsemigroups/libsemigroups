@@ -300,7 +300,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void add_pair_impl(word_type const&, word_type const&) override;
-    std::shared_ptr<CongruenceInterface::non_trivial_classes_type>
+    std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
          non_trivial_classes_impl() override;
     bool is_quotient_obviously_finite_impl() override;
     bool is_quotient_obviously_infinite_impl() override;
