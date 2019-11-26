@@ -253,7 +253,7 @@ namespace libsemigroups {
     }
   }
 
-  std::shared_ptr<CongruenceInterface::non_trivial_classes_type>
+  std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
   Congruence::non_trivial_classes_impl() {
     run();  // required so that state is correctly set.
     auto winner = static_cast<CongruenceInterface*>(_race.winner().get());

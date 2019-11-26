@@ -278,7 +278,7 @@ namespace libsemigroups {
     // protected here since KnuthBendixCongruenceByPairs uses it and derives
     // from class CongruenceByPairs.
     //! No doc
-    std::shared_ptr<non_trivial_classes_type>
+    std::shared_ptr<non_trivial_classes_type const>
     non_trivial_classes_impl() override;
 
     ////////////////////////////////////////////////////////////////////////

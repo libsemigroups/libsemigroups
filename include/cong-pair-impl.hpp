@@ -48,7 +48,7 @@
 #define CLASS_INDEX_TYPE TEMPLATE CongruenceInterface::class_index_type
 #define SHARED_PTR_NON_TRIV_CLASSES \
   TEMPLATE                          \
-  std::shared_ptr<CongruenceInterface::non_trivial_classes_type>
+  std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
