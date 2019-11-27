@@ -116,9 +116,8 @@ namespace libsemigroups {
     //! The FroidurePinBase pointed to by \p S is not copied.
     explicit FpSemigroup(std::shared_ptr<FroidurePinBase> S);
 
-    //! A FpSemigroup instance is not copyable.
-    //! This constructor is deleted.
-    FpSemigroup(FpSemigroup const&) = delete;
+    //! Default copy constructor.
+    FpSemigroup(FpSemigroup const&) = default;
 
     //! A FpSemigroup instance is not copy assignable.
     //! This constructor is deleted.

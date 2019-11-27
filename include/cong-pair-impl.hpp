@@ -84,6 +84,8 @@ namespace libsemigroups {
     set_parent_froidure_pin(S);
   }
 
+  // TODO(later) use SFINAE to have another one of these where T is derived from
+  // FpSemigroupInterface? If necessary?
   TEMPLATE
   template <typename T>
   P_CLASS::CongruenceByPairs(congruence_type type, T const& S)

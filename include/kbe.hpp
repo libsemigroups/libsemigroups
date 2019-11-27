@@ -244,6 +244,9 @@ namespace libsemigroups {
   word_type
   FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE>>::factorisation(
       detail::KBE const& x);
+
+  template <>
+  tril FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE>>::is_finite();
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_

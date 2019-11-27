@@ -288,9 +288,10 @@ namespace libsemigroups {
       //! std::shared_ptr to avoid the copy!
       template <typename T>
       ToddCoxeter(congruence_type type, T const& S) : ToddCoxeter(type) {
-        static_assert(std::is_base_of<FroidurePinBase, T>::value,
+        static_assert(std::is_base_of<FroidurePinBase, T>::value
+                          || std::is_base_of<FpSemigroupInterface, T>::value,
                       "the template parameter must be a derived class of "
-                      "FroidurePinBase");
+                      "FroidurePinBase or FpSemigroupInterface");
         set_parent_froidure_pin(S);
         set_nr_generators(S.nr_generators());
       }

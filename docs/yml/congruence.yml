@@ -12,7 +12,7 @@ libsemigroups::Congruence:
   - Congruence(congruence_type, policy::runners)
   - Congruence(congruence_type, T const&)
   - Congruence(congruence_type, std::shared_ptr<FroidurePinBase>)
-  - Congruence(congruence_type, FpSemigroup const&)
+  - Congruence(congruence_type, FpSemigroup&)
   - Congruence()
   - Congruence(Congruence const&)
   - operator=(Congruence const&)

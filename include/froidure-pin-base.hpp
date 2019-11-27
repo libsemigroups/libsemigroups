@@ -30,7 +30,7 @@
 #include "constants.hpp"   // for LIMIT_MAX
 #include "containers.hpp"  // for DynamicArray2
 #include "runner.hpp"      // for Runner
-#include "types.hpp"       // for word_type, letter_type
+#include "types.hpp"       // for word_type, letter_type, tril
 
 namespace libsemigroups {
   //! Defined in ``froidure-pin-base.hpp``.
@@ -328,6 +328,9 @@ namespace libsemigroups {
 
     //! \copydoc FroidurePin::is_monoid
     virtual bool is_monoid() = 0;
+
+    //! \copydoc FroidurePin::is_monoid
+    virtual tril is_finite() = 0;
 
     //! \copydoc FroidurePin::nr_rules
     virtual size_t nr_rules() = 0;

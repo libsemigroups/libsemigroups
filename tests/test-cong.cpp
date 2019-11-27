@@ -429,10 +429,10 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair({1, 1, 1}, {0});
     REQUIRE(cong.nr_classes() == 3);
-    // The following currently throws since we cannot set the _parent
-    // semigroup when it is an FpSemigroup.
-    REQUIRE_THROWS_AS(cong.nr_non_trivial_classes() == 3,
-                      LibsemigroupsException);
+    // The following runs forever because !S.is_obviously_infinite(), but it is
+    // infinite
+    // REQUIRE_THROWS_AS(cong.nr_non_trivial_classes() == 3,
+    //                 LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1591,7 +1591,6 @@ namespace libsemigroups {
   //     }
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     cong.set_parent_froidure_pin(S);
   //     REQUIRE(cong.nr_generators() == S.nr_generators());
   //     cong.add_pair({0, 0}, {0});
   //     REQUIRE(cong.nr_classes() == 6);
@@ -1615,7 +1614,6 @@ namespace libsemigroups {
   //     }
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     cong.set_parent_froidure_pin(S);
   //     REQUIRE(cong.nr_generators() == S.nr_generators());
   //     cong.add_pair({0, 0}, {0});
   //     REQUIRE(cong.nr_classes() == 6);

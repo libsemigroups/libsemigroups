@@ -908,6 +908,8 @@ namespace libsemigroups {
     //! (None).
     bool is_monoid() override;
 
+    tril is_finite() override;
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - validation member functions - private
