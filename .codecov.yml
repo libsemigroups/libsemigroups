@@ -1,10 +1,12 @@
 coverage:
-  precision: 2
+  precision: 0
   round: down
   range: "90...100"
 
   status:
-    project: no
+    project:
+      target: auto
+      only_pulls: true
     patch: no
     changes: no
 
