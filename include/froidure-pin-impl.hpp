@@ -34,6 +34,7 @@
 #define INLINE_VOID TEMPLATE inline void
 #define SIZE_T TEMPLATE size_t
 #define BOOL TEMPLATE bool
+#define TRIL TEMPLATE tril
 #define ELEMENT_INDEX_TYPE TEMPLATE element_index_type
 #define LETTER_TYPE TEMPLATE letter_type
 #define CONST_REFERENCE TEMPLATE typename FROIDURE_PIN::const_reference
@@ -1130,6 +1131,11 @@ namespace libsemigroups {
   BOOL FROIDURE_PIN::is_monoid() {
     run();
     return _found_one;
+  }
+
+  // More specialisations below in kbe.*pp and element.*pp
+  TRIL FROIDURE_PIN::is_finite() {
+    return tril::TRUE;
   }
 
   ////////////////////////////////////////////////////////////////////////

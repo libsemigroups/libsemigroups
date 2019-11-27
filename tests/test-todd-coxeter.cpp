@@ -1515,7 +1515,7 @@ namespace libsemigroups {
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
-      REQUIRE(!tc->has_parent_froidure_pin());
+      REQUIRE(tc->has_parent_froidure_pin());
       tc->add_pair({1}, {2});
       REQUIRE(tc->is_quotient_obviously_infinite());
       REQUIRE(tc->nr_classes() == POSITIVE_INFINITY);

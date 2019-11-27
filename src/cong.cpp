@@ -67,20 +67,20 @@ namespace libsemigroups {
     set_parent_froidure_pin(S);
   }
 
-  Congruence::Congruence(congruence_type type, FpSemigroup const& S)
+  Congruence::Congruence(congruence_type type, FpSemigroup& S)
       : Congruence(type, policy::runners::none) {
     set_nr_generators(S.alphabet().size());
+    LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
+    set_parent_froidure_pin(S);
     _race.max_threads(POSITIVE_INFINITY);
     if (S.has_todd_coxeter()) {
       // Method 1: use only the relations used to define S and genpairs to
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
+      // TODO(later) change the next line to S, instead of S.todd_coxeter!
       _race.add_runner(std::make_shared<ToddCoxeter>(type, *S.todd_coxeter()));
 
       if (S.todd_coxeter()->finished()) {
-        LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
-        set_parent_froidure_pin(S.todd_coxeter()->froidure_pin());
-
         // Method 2: use the Cayley graph of S and genpairs to run
         // Todd-Coxeter. If the policy here is use_relations, then this is
         // the same as Method 1. Note that the froidure_pin
@@ -99,12 +99,6 @@ namespace libsemigroups {
     }
     if (S.has_knuth_bendix()) {
       if (S.knuth_bendix()->finished()) {
-        if (!has_parent_froidure_pin()) {
-          set_parent_froidure_pin(S.knuth_bendix()->froidure_pin());
-          // Even if the FpSemigroup S is infinite, the
-          // froidure_pin() can still be useful in this case,
-          // for example, when factorizing elements.
-        }
         // TODO(later) remove the if-condition, make it so that if the
         // ToddCoxeter's below are killed then so too is the enumeration of
         // S.knuth_bendix().froidure_pin()

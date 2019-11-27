@@ -26,6 +26,52 @@
 #include "stl.hpp"                      // for detail::to_string
 
 namespace libsemigroups {
+
+  class CongruenceInterface::LazyFroidurePin {
+   public:
+    LazyFroidurePin() = default;
+
+    void set(std::shared_ptr<FroidurePinBase> ptr) {
+      LIBSEMIGROUPS_ASSERT(_froidure_pin == nullptr);
+      LIBSEMIGROUPS_ASSERT(_fp_semigroup == nullptr);
+      _froidure_pin = ptr;
+    }
+
+    void set(std::shared_ptr<FpSemigroupInterface> ptr) {
+      LIBSEMIGROUPS_ASSERT(_froidure_pin == nullptr);
+      LIBSEMIGROUPS_ASSERT(_fp_semigroup == nullptr);
+      _fp_semigroup = ptr;
+    }
+
+    bool has_froidure_pin() const noexcept {
+      return _froidure_pin != nullptr;
+    }
+
+    bool can_compute_froidure_pin() const noexcept {
+      return _froidure_pin != nullptr || _fp_semigroup != nullptr;
+    }
+
+    std::shared_ptr<FroidurePinBase> froidure_pin() const {
+      if (!has_froidure_pin()) {
+        if (_fp_semigroup != nullptr
+            && !_fp_semigroup->is_obviously_infinite()) {
+          _froidure_pin = _fp_semigroup->froidure_pin();
+        } else {
+          // This can be the case if a CongruenceInterface is default
+          // constructed, i.e. constructed neither from a FroidurePinBase
+          // nor an FpSemigroupInterface, or the _fp_semigroup is obviously
+          // infinite
+          LIBSEMIGROUPS_EXCEPTION("no parent FroidurePin can be determined!");
+        }
+      }
+      return _froidure_pin;
+    }
+
+   private:
+    mutable std::shared_ptr<FroidurePinBase>      _froidure_pin;
+    mutable std::shared_ptr<FpSemigroupInterface> _fp_semigroup;
+  };
+
   ////////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
@@ -35,7 +81,7 @@ namespace libsemigroups {
         // Non-mutable
         _gen_pairs(),
         _nr_gens(UNDEFINED),
-        _parent(nullptr),
+        _parent(std::make_shared<LazyFroidurePin>()),
         _type(type),
         // Mutable
         _init_ntc_done(),
@@ -45,6 +91,8 @@ namespace libsemigroups {
         _non_trivial_classes() {
     reset();
   }
+
+  CongruenceInterface::~CongruenceInterface() = default;
 
   ////////////////////////////////////////////////////////////////////////////
   // Runner - non-pure virtual overridden function - public
@@ -216,15 +264,28 @@ namespace libsemigroups {
   /////////////////////////////////////////////////////////////////////////
 
   void CongruenceInterface::set_parent_froidure_pin(
-      std::shared_ptr<FroidurePinBase> prnt) noexcept {
-    LIBSEMIGROUPS_ASSERT(_parent == nullptr);
+      std::shared_ptr<FroidurePinBase> prnt) {
+    LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
     LIBSEMIGROUPS_ASSERT(nr_generators() == UNDEFINED
                          || prnt->nr_generators() == nr_generators());
     LIBSEMIGROUPS_ASSERT(!finished());
     if (nr_generators() == UNDEFINED) {
       set_nr_generators(prnt->nr_generators());
     }
-    _parent = prnt;
+    _parent->set(prnt);
+    reset();
+  }
+
+  void CongruenceInterface::set_parent_froidure_pin(
+      std::shared_ptr<FpSemigroupInterface> prnt) {
+    LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
+    LIBSEMIGROUPS_ASSERT(nr_generators() == UNDEFINED
+                         || prnt->alphabet().size() == nr_generators());
+    LIBSEMIGROUPS_ASSERT(!finished());
+    if (nr_generators() == UNDEFINED && !prnt->alphabet().empty()) {
+      set_nr_generators(prnt->alphabet().size());
+    }
+    _parent->set(prnt);
     reset();
   }
 
@@ -245,22 +306,17 @@ namespace libsemigroups {
 
   std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
   CongruenceInterface::non_trivial_classes_impl() {
-    if (_parent == nullptr) {
-      // This means this was constructed from an fp semigroup that did not
-      // have an isomorphic FroidurePin instance computed at the time. Since
-      // we don't currently store the fp semigroup, we cannot ask for the
-      // isomorphic FroidurePin now.
-      //
-      // TODO(later) store the FpSemigroup used to create this and here try
-      // to compute the isomorphic FroidurePin.
-      LIBSEMIGROUPS_EXCEPTION("there's no parent semigroup in which to "
-                              "find the non-trivial classes");
+    if (!_parent->can_compute_froidure_pin()) {
+      LIBSEMIGROUPS_EXCEPTION("Cannot determine the parent FroidurePin and so "
+                              "cannot compute non-trivial classes!");
     }
+    // The next line may trigger an infinite computation
+    auto fp  = _parent->froidure_pin();
     auto ntc = non_trivial_classes_type(nr_classes(), std::vector<word_type>());
 
     word_type w;
-    for (size_t pos = 0; pos < _parent->size(); ++pos) {
-      _parent->factorisation(w, pos);
+    for (size_t pos = 0; pos < fp->size(); ++pos) {
+      fp->factorisation(w, pos);
       LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < ntc.size());
       ntc[word_to_class_index(w)].push_back(w);
     }
@@ -291,6 +347,15 @@ namespace libsemigroups {
     _quotient.reset();
     _is_obviously_finite   = false;
     _is_obviously_infinite = false;
+  }
+
+  std::shared_ptr<FroidurePinBase>
+  CongruenceInterface::parent_froidure_pin() const {
+    return _parent->froidure_pin();
+  }
+
+  bool CongruenceInterface::has_parent_froidure_pin() const noexcept {
+    return _parent->has_froidure_pin();
   }
 
   /////////////////////////////////////////////////////////////////////////

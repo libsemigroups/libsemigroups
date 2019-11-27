@@ -116,8 +116,9 @@ namespace libsemigroups {
                     "FroidurePinBase");
     }
 
-    //! Deleted
-    CongruenceWrapper(CongruenceWrapper const&) = delete;
+    //! Default copy constructor.
+    CongruenceWrapper(CongruenceWrapper const& other)
+        : _wrapped_cong(detail::make_unique<T>(*other._wrapped_cong)) {}
 
     //! Deleted
     CongruenceWrapper(CongruenceWrapper&&) = delete;

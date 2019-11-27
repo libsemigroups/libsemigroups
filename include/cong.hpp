@@ -150,7 +150,7 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Constant.
-    Congruence(congruence_type type, FpSemigroup const& S);
+    Congruence(congruence_type type, FpSemigroup& S);
 
     ~Congruence() = default;
 

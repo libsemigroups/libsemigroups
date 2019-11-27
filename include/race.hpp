@@ -47,8 +47,14 @@ namespace libsemigroups {
       // Construct an empty Race object, with maximum number of threads set to
       // std::thread::hardware_concurrency.
       Race();
-      Race(Race const&) = delete;
-      Race(Race&&)      = delete;
+      Race(Race const& other) : Race() {
+        // Can't use = default because std::mutex is non-copyable.
+        _runners     = other._runners;
+        _max_threads = other._max_threads;
+        _winner      = other._winner;
+      }
+
+      Race(Race&&)  = delete;
       Race& operator=(Race const&) = delete;
       Race& operator=(Race&&) = delete;
 

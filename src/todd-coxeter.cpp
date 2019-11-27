@@ -386,8 +386,8 @@ namespace libsemigroups {
     ToddCoxeter::ToddCoxeter(congruence_type           typ,
                              fpsemigroup::ToddCoxeter& copy)
         : ToddCoxeter(typ) {
+      set_parent_froidure_pin(copy);
       if (copy.finished()) {
-        set_parent_froidure_pin(copy.froidure_pin());
         set_nr_generators(copy.froidure_pin()->nr_generators());
         _settings->froidure_pin = policy::froidure_pin::use_cayley_graph;
 
@@ -404,8 +404,10 @@ namespace libsemigroups {
       for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
         add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
       }
+      // FIXME something goes horribly wrong if the next line is above the for
+      // loop above.
+      set_parent_froidure_pin(kb);
       if (kb.finished() && kb.is_obviously_finite()) {
-        set_parent_froidure_pin(kb.froidure_pin());
         LIBSEMIGROUPS_ASSERT(_settings->froidure_pin
                              == policy::froidure_pin::none);
         _settings->froidure_pin = policy::froidure_pin::use_cayley_graph;
@@ -474,6 +476,7 @@ namespace libsemigroups {
     ToddCoxeter& ToddCoxeter::save(bool x) {
       if ((_prefilled
            || (has_parent_froidure_pin()
+               && parent_froidure_pin()->is_finite() == tril::TRUE
                && (_settings->froidure_pin == policy::froidure_pin::none
                    || _settings->froidure_pin
                           == policy::froidure_pin::use_cayley_graph)))
@@ -488,6 +491,7 @@ namespace libsemigroups {
     ToddCoxeter& ToddCoxeter::strategy(policy::strategy x) {
       if ((_prefilled
            || (has_parent_froidure_pin()
+               && parent_froidure_pin()->is_finite() == tril::TRUE
                && (_settings->froidure_pin == policy::froidure_pin::none
                    || _settings->froidure_pin
                           == policy::froidure_pin::use_cayley_graph)))
@@ -817,7 +821,8 @@ namespace libsemigroups {
       if (_state == state::constructed) {
         REPORT_DEBUG_DEFAULT("initializing...\n");
         // Add the relations/Cayley graph from parent() if any.
-        if (has_parent_froidure_pin()) {
+        if (has_parent_froidure_pin()
+            && parent_froidure_pin()->is_finite() == tril::TRUE) {
           if (_settings->froidure_pin == policy::froidure_pin::use_cayley_graph
               || _settings->froidure_pin == policy::froidure_pin::none) {
             REPORT_DEBUG_DEFAULT("using Cayley graph...\n");

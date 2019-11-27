@@ -26,6 +26,7 @@
 #include <string>   // for string
 #include <vector>   // for vector
 
+#include "fpsemi-intf.hpp"              // for FpSemigroupInterface
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "runner.hpp"                   // for Runner
 #include "types.hpp"  // for word_type, letter_type, relation_type
@@ -92,7 +93,7 @@ namespace libsemigroups {
     //! specified by the argument.
     explicit CongruenceInterface(congruence_type);
 
-    virtual ~CongruenceInterface() = default;
+    virtual ~CongruenceInterface();
 
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual functions - public
@@ -510,12 +511,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    std::shared_ptr<FroidurePinBase> parent_froidure_pin() const {
-      if (!has_parent_froidure_pin()) {
-        LIBSEMIGROUPS_EXCEPTION("the parent semigroup is not defined");
-      }
-      return _parent;
-    }
+    std::shared_ptr<FroidurePinBase> parent_froidure_pin() const;
 
     //! Returns \c true if the congruence represented by \c this was created
     //! from a FroidurePin instance.
@@ -533,9 +529,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool has_parent_froidure_pin() const noexcept {
-      return _parent != nullptr;
-    }
+    bool has_parent_froidure_pin() const noexcept;
 
     //! Return if the congruence represented by this object was created as a
     //! left, right, or two-sided congruence.
@@ -630,17 +624,35 @@ namespace libsemigroups {
     // CongruenceInterface - non-virtual functions - protected
     /////////////////////////////////////////////////////////////////////////
 
-    //! No doc
-    void set_parent_froidure_pin(std::shared_ptr<FroidurePinBase>) noexcept;
+    // TODO(later): add a new constructor to every derived class of this which
+    // has FpSemigroup const& as a parameter of a constructor, the new
+    // constructor should have parameter shared_ptr<FpSemigroupInterface>.
+    // If necessary.
 
     //! No doc
-    template <typename T>
-    void set_parent_froidure_pin(T const& prnt) {
-      static_assert(std::is_base_of<FroidurePinBase, T>::value,
-                    "the template parameter must be a derived class of "
-                    "FroidurePinBase");
+    void set_parent_froidure_pin(std::shared_ptr<FroidurePinBase>);
+    void set_parent_froidure_pin(std::shared_ptr<FpSemigroupInterface>);
+
+    //! No doc
+    template <typename T, typename SFINAE = void>
+    auto set_parent_froidure_pin(T const& prnt) ->
+        typename std::enable_if<std::is_base_of<FroidurePinBase, T>::value,
+                                SFINAE>::type {
       set_parent_froidure_pin(static_cast<std::shared_ptr<FroidurePinBase>>(
           std::make_shared<T>(prnt)));
+    }
+
+    template <typename T, typename SFINAE = void>
+    auto set_parent_froidure_pin(T& prnt) ->
+        typename std::enable_if<std::is_base_of<FpSemigroupInterface, T>::value,
+                                SFINAE>::type {
+      if (prnt.finished()) {
+        set_parent_froidure_pin(prnt.froidure_pin());
+      } else {
+        set_parent_froidure_pin(
+            static_cast<std::shared_ptr<FpSemigroupInterface>>(
+                std::make_shared<T>(prnt)));
+      }
     }
 
     //! No doc
@@ -724,22 +736,26 @@ namespace libsemigroups {
     // CongruenceInterface - non-mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
+    // Forward decl
+    class LazyFroidurePin;
+
     // Only data members which (potentially) change the mathematical object
     // defined by *this are non-mutable.
     std::vector<relation_type>       _gen_pairs;
     size_t                           _nr_gens;
-    std::shared_ptr<FroidurePinBase> _parent;
+    std::shared_ptr<LazyFroidurePin> _parent;
     congruence_type                  _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - mutable data members - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable bool                                      _init_ntc_done;
-    mutable bool                                      _is_obviously_finite;
-    mutable bool                                      _is_obviously_infinite;
-    mutable std::shared_ptr<FroidurePinBase>          _quotient;
-    mutable std::shared_ptr<non_trivial_classes_type const> _non_trivial_classes;
+    mutable bool                             _init_ntc_done;
+    mutable bool                             _is_obviously_finite;
+    mutable bool                             _is_obviously_infinite;
+    mutable std::shared_ptr<FroidurePinBase> _quotient;
+    mutable std::shared_ptr<non_trivial_classes_type const>
+        _non_trivial_classes;
 
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - static data members - private
