@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.2 (released 30/11/2019)
+----------------------------
+
+This is a very minor release to fix a bad test that failed in the conda package
+continuous integration.
+
 v1.0.1 (released 29/11/2019)
 ----------------------------
 
