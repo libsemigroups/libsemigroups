@@ -118,7 +118,8 @@ namespace libsemigroups {
 
     //! Default copy constructor.
     CongruenceWrapper(CongruenceWrapper const& other)
-        : _wrapped_cong(detail::make_unique<T>(*other._wrapped_cong)) {}
+        : FpSemigroupInterface(),
+          _wrapped_cong(detail::make_unique<T>(*other._wrapped_cong)) {}
 
     //! Deleted
     CongruenceWrapper(CongruenceWrapper&&) = delete;
