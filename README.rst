@@ -18,7 +18,7 @@ libsemigroups - Version 1.0.2
     :target: https://mybinder.org/v2/gh/libsemigroups/libsemigroups/master
     :alt: Launch Binder
     
-.. image:: https://codecov.io/gh/libsemigroups/libsemigroups/branch/libsemigroups/graph/badge.svg
+.. image:: https://codecov.io/gh/libsemigroups/libsemigroups/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/libsemigroups/libsemigroups
 
 .. image:: https://img.shields.io/conda/dn/conda-forge/libsemigroups
