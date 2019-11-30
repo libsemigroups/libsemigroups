@@ -21,6 +21,10 @@ libsemigroups - Version 1.0.1
 .. image:: https://codecov.io/gh/libsemigroups/libsemigroups/branch/libsemigroups/graph/badge.svg
   :target: https://codecov.io/gh/libsemigroups/libsemigroups
 
+.. image:: https://img.shields.io/conda/dn/conda-forge/libsemigroups
+  :target: https://github.com/conda-forge/libsemigroups-feedstock
+
+
 C++ library for semigroups and monoids
 --------------------------------------
 
