@@ -368,16 +368,16 @@ namespace libsemigroups {
 
     //! Returns the size of the group represented by this.
     //!
-    //! \returns the size, a value of \c size_t.
+    //! \returns the size, a value of \c uint64_t.
     //!
     //! \par Parameters
     //! (None)
-    size_t size() {
+    uint64_t size() {
       if (empty()) {
         return 1;
       }
       schreier_sims();
-      size_t out = 1;
+      uint64_t out = 1;
       for (index_type i = 0; i < _base_size; i++) {
         out *= _orbits.size(i);
       }
