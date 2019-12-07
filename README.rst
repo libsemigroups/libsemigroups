@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 1.0.2
+libsemigroups - Version 1.0.3
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -110,6 +110,7 @@ Contributors
 
 - `F. Hivert`_ contributed many helpful ideas to libsemigroups, an allocator
   implementation (to be included in a future version), and HPCombi.
+- `J. James`_ contributed some bugfixes.
 - `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
 - `F. Smith`_ contributed to the Todd-Coxeter implementation, and to BMat8s. 
@@ -123,6 +124,7 @@ Contributors
 .. _F. Smith: 
 .. _N. Thiery: http://nicolas.thiery.name/
 .. _M. Torpey: https://mtorpey.github.io/
+.. _J. James: http://www.jamezone.org/
 
 Acknowledgements
 ~~~~~~~~~~~~~~~~
