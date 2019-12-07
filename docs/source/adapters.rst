@@ -14,7 +14,7 @@ Declared in ``adapters.hpp``.
 This file contains class templates for adapting a user-defined type for use
 with the algorithms in ``libsemigroups``. There are explicit implementations for
 relevant element types from ``libsemigroups`` and ``HPCombi``, details of which
-can be found elsewhere in this documentation.  .
+can be found elsewhere in this documentation.
 
 No default implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
