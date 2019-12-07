@@ -24,6 +24,17 @@ libsemigroups - Version 1.0.2
 .. image:: https://img.shields.io/conda/dn/conda-forge/libsemigroups
   :target: https://github.com/conda-forge/libsemigroups-feedstock
 
+.. image:: https://anaconda.org/conda-forge/libsemigroups/badges/installer/conda.svg   
+  :target: https://conda.anaconda.org/conda-forge
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1437752.svg
+  :target: https://doi.org/10.5281/1437752
+
+.. image:: https://anaconda.org/conda-forge/libsemigroups/badges/license.svg   
+  :target: https://anaconda.org/conda-forge/libsemigroups
+
+.. image:: https://anaconda.org/conda-forge/libsemigroups/badges/platforms.svg   
+  :target: https://anaconda.org/conda-forge/libsemigroups
 
 C++ library for semigroups and monoids
 --------------------------------------
