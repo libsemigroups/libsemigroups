@@ -122,6 +122,53 @@
 #define TODD_COXETER_REPORT_OK()
 #endif
 
+// Helper functions
+namespace {
+  using class_index_type = libsemigroups::CongruenceInterface::class_index_type;
+  using word_type        = libsemigroups::word_type;
+
+  void sort_generating_pairs(std::vector<class_index_type>& perm,
+                             std::vector<word_type>&        vec) {
+    // Apply the permutation (adapted from
+    // stl.hpp:apply_permutation)
+    size_t const n = perm.size();
+    for (size_t i = 0; i < n; ++i) {
+      size_t current = i;
+      while (i != perm[current]) {
+        size_t next = perm[current];
+        std::swap(vec[2 * current], vec[2 * next]);
+        std::swap(vec[2 * current + 1], vec[2 * next + 1]);
+        perm[current] = current;
+        current       = next;
+      }
+      perm[current] = current;
+    }
+  }
+
+  void sort_generating_pairs(
+      std::function<bool(word_type const&, word_type const&)> func,
+      std::vector<class_index_type>&                          perm,
+      std::vector<word_type>&                                 vec) {
+    // Sort each relation so that the lhs is greater than the rhs according
+    // to func.
+    for (auto it = vec.begin(); it < vec.end(); it += 2) {
+      if (func(*it, *(it + 1))) {
+        std::swap(*it, *(it + 1));
+      }
+    }
+
+    // Create a permutation of the even indexed entries in vec
+    perm.resize(vec.size() / 2);
+    std::iota(perm.begin(), perm.end(), 0);
+    std::sort(perm.begin(),
+              perm.end(),
+              [&func, &vec](class_index_type x, class_index_type y) -> bool {
+                return func(vec[2 * x], vec[2 * y]);
+              });
+    sort_generating_pairs(perm, vec);
+  }
+}  // namespace
+
 namespace libsemigroups {
   namespace congruence {
     ////////////////////////////////////////////////////////////////////////
@@ -510,6 +557,33 @@ namespace libsemigroups {
     ToddCoxeter&
     ToddCoxeter::random_interval(std::chrono::nanoseconds x) noexcept {
       _settings->random_interval = x;
+      return *this;
+    }
+
+    ToddCoxeter& ToddCoxeter::sort_generating_pairs(
+        std::function<bool(word_type const&, word_type const&)> func) {
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "Cannot sort relations, the coset enumeration has started!")
+      }
+      init();
+      std::vector<class_index_type> perm;
+      ::sort_generating_pairs(func, perm, _relations);
+      ::sort_generating_pairs(func, perm, _extra);
+      return *this;
+    }
+
+    ToddCoxeter& ToddCoxeter::random_shuffle_generating_pairs() {
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "Cannot shuffle relations, the coset enumeration has started!")
+      }
+      init();
+      std::vector<class_index_type> perm(0, _relations.size());
+      std::iota(perm.begin(), perm.end(), 0);
+      std::random_shuffle(perm.begin(), perm.end());
+      ::sort_generating_pairs(perm, _relations);
+      ::sort_generating_pairs(perm, _extra);
       return *this;
     }
 

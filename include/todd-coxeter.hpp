@@ -25,6 +25,7 @@
 #include <chrono>   // for chrono::nanoseconds
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
+#include <numeric>  // for std::iota
 #include <stack>    // for stack
 #include <utility>  // for pair
 #include <vector>   // for vector
@@ -36,6 +37,7 @@
 #include "int-range.hpp"            // for IntegralRange
 #include "iterator.hpp"             // for ConstIteratorStateful
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "order.hpp"                // shortlex_compare
 #include "report.hpp"               // for REPORT
 #include "string.hpp"               // for to_string
 #include "types.hpp"                // for word_type, letter_type...
@@ -464,6 +466,61 @@ namespace libsemigroups {
       ToddCoxeter& random_interval(T x) noexcept {
         return random_interval(std::chrono::nanoseconds(x));
       }
+
+      //! A type alias for functions that can be used as an argument to
+      //! sort_generating_pairs.
+      // This alias only really exists to make the documentation work :(
+      using sort_function_type
+          = std::function<bool(word_type const&, word_type const&)>;
+
+      //! Sorts all existing generating pairs according to the binary function
+      //! \p func.
+      //!
+      //! Additionally, if \c this was defined over a finitely presented
+      //! semigroup, then the copy of the defining relations of that semigroup
+      //! contained in \c this (if any) are also sorted according to \p func.
+      //!
+      //! \param func a value of type sort_function_type
+      //! that defines a linear order on the relations in a
+      //! ToddCoxeter instance.
+      //!
+      //! \returns a reference to the object pointed to by \c this.
+      //!
+      //! \throws LibsemigroupsException if started() returns \c true.
+      //!
+      //! \warning
+      //! If add_pair is called after this function, then it may no longer be
+      //! the case that the defining relations and generating pairs of \c this
+      //! are sorted by \p func.
+      //!
+      //! \sa
+      //! random_shuffle_generating_pairs
+      ToddCoxeter& sort_generating_pairs(sort_function_type func);
+
+      //! A type alias for free functions that can be used as an argument to
+      //! sort_generating_pairs.
+      // This alias only really exists to make the documentation work :(
+      using sort_free_function_type = bool(word_type const&, word_type const&);
+
+      //! \copydoc sort_generating_pairs(sort_function_type)
+      ToddCoxeter& sort_generating_pairs(sort_free_function_type func
+                                         = shortlex_compare) {
+        return sort_generating_pairs(sort_function_type(func));
+      }
+
+      //! Randomly shuffle all existing generating pairs.
+      //!
+      //! Additionally, if \c this was defined over a finitely presented
+      //! semigroup, then the copy of the defining relations of that semigroup
+      //! contained in \c this (if any) are also sorted according to \p func.
+      //!
+      //! \returns a reference to the object pointed to by \c this.
+      //!
+      //! \throws LibsemigroupsException if started() returns \c true.
+      //!
+      //! \par Parameters
+      //! (None)
+      ToddCoxeter& random_shuffle_generating_pairs();
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (container-like) - public
