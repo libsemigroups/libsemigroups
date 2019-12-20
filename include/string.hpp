@@ -167,9 +167,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(first_word <= last_word);
       // Check if [first_prefix, last_prefix) equals [first_word, first_word +
       // (last_suffix - first_suffix))
-      return first_prefix <= last_prefix &&
-             last_prefix - first_prefix <= last_word - first_word &&
-             std::equal(first_prefix, last_prefix, first_word);
+      return first_prefix <= last_prefix
+             && last_prefix - first_prefix <= last_word - first_word
+             && std::equal(first_prefix, last_prefix, first_word);
     }
 
     static inline std::pair<std::string::const_iterator,

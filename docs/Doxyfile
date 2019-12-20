@@ -26,7 +26,7 @@ EXCLUDE_SYMBOLS       = std::hash \
                         Internal* \
                         THREAD_ID_MANAGER \
                         REPORTER
-EXCLUDE_PATTERNS      = *-impl.hpp transf.hpp order.hpp string.hpp *KBE*
+EXCLUDE_PATTERNS      = *-impl.hpp transf.hpp string.hpp *KBE*
 ALIASES               =  exceptions="\par Exceptions"
 ALIASES               += noexcept="This function is `noexcept` and is guaranteed never to throw."
 ALIASES               += no_libsemigroups_except="This function guarantees not to throw a LibsemigroupsException."
