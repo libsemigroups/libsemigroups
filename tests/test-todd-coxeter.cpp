@@ -1725,6 +1725,7 @@ namespace libsemigroups {
       tc.add_pair({0}, {1});
       tc.add_pair({0, 0}, {0});
       tc.strategy(policy::strategy::felsch);
+      REQUIRE(tc.strategy() == policy::strategy::felsch);
       REQUIRE(!tc.complete());
       REQUIRE(tc.compatible());
       REQUIRE(tc.nr_classes() == 1);
@@ -1826,8 +1827,6 @@ namespace libsemigroups {
       tc.add_rule("aafdcdbaeefacddbbdeabbdea", "g");
 
       REQUIRE(tc.size() == 1);
-      REQUIRE(tc.froidure_pin()->size() == 1);
-      REQUIRE(KnuthBendix(tc.froidure_pin()).confluent());
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1980,26 +1979,27 @@ namespace libsemigroups {
       tc.add_rule("H", "Z");
       tc.add_rule("I", "Y");
 
-      /*     tc.congruence().next_lookahead(500000);
-           tc.congruence().run_until([&tc]() -> bool {
-             return tc.congruence().coset_capacity() >= 10000;
-           });
-           REQUIRE(!tc.finished());
-           REQUIRE(!tc.is_obviously_finite());
-           tc.congruence().standardize(order::shortlex);
-           REQUIRE(!tc.finished());
-           tc.congruence().standardize(order::lex);
-           REQUIRE(!tc.finished());
-           tc.congruence().standardize(order::recursive);
-           REQUIRE(!tc.finished());*/
+      tc.congruence().sort_generating_pairs(shortlex_compare);
+      tc.congruence().next_lookahead(500000);
+      tc.congruence().run_until([&tc]() -> bool {
+        return tc.congruence().coset_capacity() >= 10000;
+      });
+      REQUIRE(!tc.finished());
+      REQUIRE(!tc.is_obviously_finite());
+      tc.congruence().standardize(order::shortlex);
+      REQUIRE(!tc.finished());
+      tc.congruence().standardize(order::lex);
+      REQUIRE(!tc.finished());
+      tc.congruence().standardize(order::recursive);
+      REQUIRE(!tc.finished());
 
-      /*      TEST_HLT(tc.congruence());*/
+      TEST_HLT(tc.congruence());
       TEST_FELSCH(tc.congruence());
-      // TEST_RANDOM_SIMS(tc.congruence());
+      TEST_RANDOM_SIMS(tc.congruence());
 
       // This takes approx 1 seconds with Felsch . . .
       REQUIRE(tc.size() == 1);
-      /*tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
@@ -2010,7 +2010,7 @@ namespace libsemigroups {
       tc.congruence().standardize(order::recursive);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));*/
+                             RecursivePathCompare<word_type>{}));
     }
 
     // The following example is a good one for using the lookahead.
@@ -2075,7 +2075,7 @@ namespace libsemigroups {
 
       REQUIRE(!tc.is_obviously_finite());
 
-      // TEST_HLT(tc.congruence());
+      TEST_HLT(tc.congruence());
       SECTION("Felsch strategy + standardization") {
         tc.congruence().strategy(policy::strategy::felsch).standardize(true);
         tc.congruence().run_until([&tc]() -> bool {
@@ -2086,10 +2086,7 @@ namespace libsemigroups {
         REQUIRE(!tc.congruence().compatible());
         tc.congruence().strategy(policy::strategy::hlt).standardize(true);
       }
-      // TEST_RANDOM_SIMS(tc.congruence());
-      REQUIRE(!tc.congruence().finished());
-      REQUIRE(!tc.congruence().complete());
-      REQUIRE(!tc.congruence().compatible());
+      TEST_RANDOM_SIMS(tc.congruence());
       REQUIRE(tc.size() == 36412);
     }
 
@@ -2205,14 +2202,10 @@ namespace libsemigroups {
       tc.add_rule("abbbbbbbbbbbabb", "bba");
 
       // This example is extremely slow with Felsch
-      /*TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());*/
-      tc.congruence()
-          .lookahead(policy::lookahead::full)
-          .standardize(false)
-          .save(true);
+      TEST_HLT(tc.congruence());
+      TEST_RANDOM_SIMS(tc.congruence());
 
-      // REQUIRE(!tc.is_obviously_finite());
+      REQUIRE(!tc.is_obviously_finite());
       REQUIRE(tc.size() == 270272);
     }
 
@@ -2250,9 +2243,9 @@ namespace libsemigroups {
       auto        rg = ReportGuard();
       ToddCoxeter tc;
 
-      tc.set_alphabet("aAbBcCdDexy");
+      tc.set_alphabet("eaAbBcCdDxy");
       tc.set_identity("e");
-      tc.set_inverses("AaBbCcDdexy");
+      tc.set_inverses("eAaBbCcDdxy");
 
       tc.add_rule("aaaaaaaaaaa", "x");
       tc.add_rule("x", "e");
@@ -2264,11 +2257,8 @@ namespace libsemigroups {
       tc.add_rule("y", "e");
       tc.add_rule("aacdcdaDCDC", "e");
 
-      SECTION("HLT strategy") {
-        tc.congruence()
-            .strategy(policy::strategy::hlt)
-            .lookahead(policy::lookahead::partial);
-      }
+      tc.congruence().sort_generating_pairs().strategy(
+          policy::strategy::felsch);
 
       REQUIRE(tc.size() == 95040);
     }
@@ -2373,7 +2363,6 @@ namespace libsemigroups {
         tc.congruence().run_for(2 * t);
         t *= 2;
       }
-      // TEST_HLT(tc.congruence());
       REQUIRE(tc.size() == 6561);
     }
 
@@ -2825,9 +2814,9 @@ namespace libsemigroups {
       G.add_rule("Bxbx", "e");
       G.add_rule("Cxcx", "e");
 
-      /*REQUIRE(G.equal_to("aBCbac", "e"));
+      REQUIRE(G.equal_to("aBCbac", "e"));
       REQUIRE(G.equal_to("bACbaacA", "e"));
-      REQUIRE(G.equal_to("accAABab", "e"));*/
+      REQUIRE(G.equal_to("accAABab", "e"));
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
@@ -3432,9 +3421,141 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::felsch).standardize(true);
+      H.strategy(policy::strategy::felsch)
+          .standardize(true)
+          .random_shuffle_generating_pairs();
 
       REQUIRE(H.nr_classes() == 60);
+      REQUIRE_THROWS_AS(H.random_shuffle_generating_pairs(),
+                        LibsemigroupsException);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "097",
+                            "relation ordering",
+                            "[todd-coxeter][extreme]") {
+      ToddCoxeter tc;
+      tc.set_alphabet(13);
+      for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
+        tc.add_rule(rl);
+      }
+      REQUIRE(tc.nr_rules() == 173);
+      REQUIRE(!tc.is_obviously_infinite());
+      tc.congruence().sort_generating_pairs(&shortlex_compare);
+      tc.congruence().sort_generating_pairs(recursive_path_compare);
+
+      tc.congruence().strategy(policy::strategy::felsch);
+
+      REQUIRE(tc.size() == 258661);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "098",
+                            "relation ordering",
+                            "[todd-coxeter][quick]") {
+      ToddCoxeter tc;
+      tc.set_alphabet(10);
+      tc.add_rule({0, 1}, {0});
+      tc.add_rule({0, 2}, {0});
+      tc.add_rule({0, 3}, {0});
+      tc.add_rule({0, 4}, {0});
+      tc.add_rule({0, 5}, {0});
+      tc.add_rule({0, 6}, {0});
+      tc.add_rule({0, 7}, {0});
+      tc.add_rule({0, 8}, {0});
+      tc.add_rule({0, 9}, {0});
+      tc.add_rule({1, 0}, {1});
+      tc.add_rule({1, 1}, {1});
+      tc.add_rule({1, 2}, {1});
+      tc.add_rule({1, 3}, {1});
+      tc.add_rule({1, 4}, {1});
+      tc.add_rule({1, 5}, {1});
+      tc.add_rule({1, 6}, {1});
+      tc.add_rule({1, 7}, {1});
+      tc.add_rule({1, 8}, {1});
+      tc.add_rule({1, 9}, {1});
+      tc.add_rule({2, 0}, {2});
+      tc.add_rule({2, 1}, {2});
+      tc.add_rule({2, 2}, {2});
+      tc.add_rule({2, 3}, {2});
+      tc.add_rule({2, 4}, {2});
+      tc.add_rule({2, 5}, {2});
+      tc.add_rule({2, 6}, {2});
+      tc.add_rule({2, 7}, {2});
+      tc.add_rule({2, 8}, {2});
+      tc.add_rule({2, 9}, {2});
+      tc.add_rule({3, 0}, {3});
+      tc.add_rule({3, 1}, {3});
+      tc.add_rule({3, 2}, {3});
+      tc.add_rule({3, 3}, {3});
+      tc.add_rule({3, 4}, {3});
+      tc.add_rule({3, 5}, {3});
+      tc.add_rule({3, 6}, {3});
+      tc.add_rule({3, 7}, {3});
+      tc.add_rule({3, 8}, {3});
+      tc.add_rule({3, 9}, {3});
+      tc.add_rule({4, 0}, {4});
+      tc.add_rule({4, 1}, {4});
+      tc.add_rule({4, 2}, {4});
+      tc.add_rule({4, 3}, {4});
+      tc.add_rule({4, 4}, {4});
+      tc.add_rule({4, 5}, {4});
+      tc.add_rule({4, 6}, {4});
+      tc.add_rule({4, 7}, {4});
+      tc.add_rule({4, 8}, {4});
+      tc.add_rule({4, 9}, {4});
+      tc.add_rule({5, 0}, {5});
+      tc.add_rule({5, 1}, {5});
+      tc.add_rule({5, 2}, {5});
+      tc.add_rule({5, 3}, {5});
+      tc.add_rule({5, 4}, {5});
+      tc.add_rule({5, 5}, {5});
+      tc.add_rule({5, 6}, {5});
+      tc.add_rule({5, 7}, {5});
+      tc.add_rule({5, 8}, {5});
+      tc.add_rule({5, 9}, {5});
+      tc.add_rule({6, 0}, {6});
+      tc.add_rule({6, 1}, {6});
+      tc.add_rule({6, 2}, {6});
+      tc.add_rule({6, 3}, {6});
+      tc.add_rule({6, 4}, {6});
+      tc.add_rule({6, 5}, {6});
+      tc.add_rule({6, 6}, {6});
+      tc.add_rule({6, 7}, {6});
+      tc.add_rule({6, 8}, {6});
+      tc.add_rule({6, 9}, {6});
+      tc.add_rule({7, 0}, {7});
+      tc.add_rule({7, 1}, {7});
+      tc.add_rule({7}, {7, 2});
+      tc.add_rule({7, 3}, {7});
+      tc.add_rule({7, 4}, {7});
+      tc.add_rule({7, 5}, {7});
+      tc.add_rule({7, 6}, {7});
+      tc.add_rule({7, 7}, {7});
+      tc.add_rule({7, 8}, {7});
+      tc.add_rule({7, 9}, {7});
+      tc.add_rule({8, 0}, {8});
+      tc.add_rule({8, 1}, {8});
+      tc.add_rule({8, 2}, {8});
+      tc.add_rule({8, 3}, {8});
+      tc.add_rule({8, 4}, {8});
+      tc.add_rule({8, 5}, {8});
+      tc.add_rule({8, 6}, {8});
+      tc.add_rule({8, 7}, {8});
+      tc.add_rule({8, 8}, {8});
+      tc.add_rule({8, 9}, {8});
+      tc.add_rule({9, 0}, {9});
+      tc.add_rule({9, 0, 1, 2, 3, 4, 5, 5, 1, 5, 6, 9, 8, 8, 8, 8, 8, 0}, {9});
+      tc.congruence().sort_generating_pairs(recursive_path_compare);
+
+      TEST_FELSCH(tc.congruence());
+      TEST_HLT(tc.congruence());
+      TEST_RANDOM_SIMS(tc.congruence());
+
+      REQUIRE(tc.size() == 10);
+
+      REQUIRE_THROWS_AS(tc.congruence().sort_generating_pairs(shortlex_compare),
+                        LibsemigroupsException);
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

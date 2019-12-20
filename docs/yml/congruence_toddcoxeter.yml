@@ -11,6 +11,8 @@ libsemigroups::congruence::ToddCoxeter:
   - [typedef, const_iterator]
   - [typedef, normal_form_iterator]
   - [typedef, coset_type]
+  - [typedef, sort_free_function_type]
+  - [typedef, sort_function_type]
 - Public types:
   - [struct, policy]
 - Constructors:
@@ -46,6 +48,9 @@ libsemigroups::congruence::ToddCoxeter:
   - strategy(policy::strategy)
   - random_interval(std::chrono::nanoseconds)
   - random_interval(T)
+  - sort_generating_pairs(sort_function_type)
+  - sort_generating_pairs(sort_free_function_type)
+  - random_shuffle_generating_pairs
 - Reporting:
   - report_every(TIntType)
   - report_every(std::chrono::nanoseconds)
