@@ -69,6 +69,7 @@ be in the future too, but presently they don't work.
    digraphs
    elements
    fpsemigroups
+   order
    semigroups
    semiring
    misc
