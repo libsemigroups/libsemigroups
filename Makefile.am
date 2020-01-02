@@ -8,8 +8,7 @@ AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include/fallback
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/sparsehash-c11
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/fmt-5.3.0/include
-AM_CXXFLAGS += -mavx -flax-vector-conversions
-AM_CXXFLAGS += -std=gnu++11 -g -O3 -march=native -Wall -Wextra
+AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 
 AM_LDFLAGS  =  -no-undefined -lpthread
@@ -158,7 +157,7 @@ EXTRA_DIST += etc/make-doc-yml.sh
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += extern/fmt-5.3.0
-EXTRA_DIST += extern/HPCombi/
+EXTRA_DIST += extern/HPCombi
 EXTRA_DIST += extern/.HPCombi_VERSION
 EXTRA_DIST += src/kbe-impl.hpp 
 EXTRA_DIST += src/knuth-bendix-impl.hpp 
