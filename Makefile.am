@@ -106,7 +106,7 @@ pkginclude_HEADERS += extern/HPCombi/include/vect16.hpp
 pkginclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
 endif
 
-fmtincludedir = $(includedir)/fmt
+fmtincludedir = $(includedir)/libsemigroups/fmt
 fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/core.h  
