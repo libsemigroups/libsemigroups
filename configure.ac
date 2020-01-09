@@ -118,11 +118,8 @@ AX_CODE_COVERAGE()
 # Check if HPCombi is enable, and available
 AX_CHECK_HPCOMBI()
 
-# Check if HPCombi is enabled/available
-AC_CHECK_FILE([$srcdir/extern/fmt-5.3.0/README.rst], 
-               [], 
-               []
-               [AC_MSG_ERROR([fmt-5.3.0 is not available, please download fmt-5.3.0 from https://fmt.dev/ and put the unpacked archive in the libsemigroups/extern directory])])
+# Check if the vendored fmt should be used or not
+AX_CHECK_FMT()
 
 dnl Output configured files
 

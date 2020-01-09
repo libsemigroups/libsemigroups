@@ -84,15 +84,16 @@ Configuration options
 In addition to the usual ``autoconf`` configuration options, the following
 configuration options are available for ``libsemigroups``:
 
-==========================  ============================
+==========================  ===================================
 Option 
---------------------------  ----------------------------
+--------------------------  -----------------------------------
 --enable-code-coverage      enable code coverage support
 --enable-compile-warnings   enable compiler warnings
 --enable-debug              enable debug mode
 --enable-hpcombi            enable ``HPCombi``
 --enable-verbose            enable verbose mode
-==========================  ============================
+--with-external-fmt         do not use the included copy of fmt
+==========================  ===================================
 
 Debug mode and verbose mode significantly degrade the performance of
 ``libsemigroups``.
