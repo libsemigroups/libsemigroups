@@ -6,7 +6,6 @@ AM_CXXFLAGS =  -I$(abs_top_srcdir)
 AM_CXXFLAGS += -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include/fallback
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/sparsehash-c11
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/fmt-5.3.0/include
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
