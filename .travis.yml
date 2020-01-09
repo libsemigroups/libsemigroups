@@ -31,6 +31,12 @@ matrix:
 
     - env: TEST_SUITE=quick 
 
+    - env: TEST_SUITE=external-fmt
+      addons:
+        apt:
+          packages:
+            - pkg-config
+
     - env: TEST_SUITE=distcheck
 
     - env: TEST_SUITE=hpcombi
@@ -83,5 +89,15 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
+    - if [[ "$TEST_SUITE" == "external-fmt" ]]; then
+        wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+        chmod +x miniconda.sh;
+        ./miniconda.sh -b;
+        export PATH=/home/travis/miniconda3/bin:$PATH;
+        export PKG_CONFIG_PATH=/home/travis/miniconda3/lib/pkgconfig
+        conda update --yes conda;
+        conda install -c conda-forge --yes fmt;
+
+      fi;
 script:
   - ci/travis-$TEST_SUITE.sh
