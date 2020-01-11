@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.0.4 (released 11/01/2020)
+----------------------------
+
+This is a minor release with several improvements to the build system. It is
+now possible to build ``libsemigroups`` using an external installation of ``fmt`` 
+with the configure option ``--with-external-fmt``, and it should also be
+possible to build ``libsemigroups`` on non-x86 architectures.
+
 v1.0.3 (released 07/12/2019)
 ----------------------------
 
