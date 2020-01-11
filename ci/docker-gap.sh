@@ -8,7 +8,7 @@ sudo apt-get install git --yes
 sudo apt-get install libtool-bin --yes 
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=libsemigroups-1.0.0
+GAP_SEMIGROUPS_BRANCH=libsemigroups-abi-version
 GAP_SEMIGROUPS_REPO=james-d-mitchell
 GAP_VERSION=$(ls inst)
 export GAPROOT=$HOME/inst/$GAP_VERSION
