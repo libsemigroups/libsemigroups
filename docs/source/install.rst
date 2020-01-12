@@ -78,6 +78,23 @@ To build ``libsemigroups`` from a release archive:
    cd libsemigroups-|libsemigroups-version|
    ./configure && make -j8 && sudo make install
 
+Docker
+~~~~~~
+
+If you have Docker_ installed, you can download a `docker container`_ for
+``libsemigroups`` as follows:
+
+.. parsed-literal::
+   docker pull libsemigroups/libsemigroups
+
+and run it by doing
+
+.. parsed-literal::
+   docker run --rm -it libsemigroups/libsemigroups
+
+.. _Docker: https://www.docker.com
+.. _docker container: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups
+
 Configuration options
 ---------------------
 
