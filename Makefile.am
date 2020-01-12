@@ -143,6 +143,9 @@ libsemigroups_la_SOURCES += src/uf.cpp
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
+## See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
+libsemigroups_la_LDFLAGS = -version-info 1:0:0
+
 ## Extra files for the distribution
 
 EXTRA_DIST =  .clang-format
