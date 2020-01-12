@@ -46,7 +46,6 @@ What is ``libsemigroups``?
 algorithms for computing finite and finitely presented semigroups. Namely:
 
 - the `Froidure-Pin algorithm`_ for computing finite semigroups
-  :cite:`Froidure1997aa`;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
 - the `Schreier-Sims algorithm`_ for permutation groups.
@@ -86,9 +85,9 @@ and `fmt`_ for reporting.
 How to use it
 ~~~~~~~~~~~~~
 
-See `the documentation <https://libsemigroups.readthedocs.io/en/latest/>`. 
+See the documentation https://libsemigroups.readthedocs.io/en/latest/
 
-Installation instructions are `here <https://libsemigroups.readthedocs.io/en/latest/install.html>`.
+Installation instructions are here https://libsemigroups.readthedocs.io/en/latest/install.html
 
 Issues
 ~~~~~~
