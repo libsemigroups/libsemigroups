@@ -118,31 +118,30 @@ fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/printf.h
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
 
-lib_LTLIBRARIES = libsemigroups-1.0.la
+lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_1_0_la_SOURCES =  src/blocks.cpp
-libsemigroups_1_0_la_SOURCES += src/bmat8.cpp
-libsemigroups_1_0_la_SOURCES += src/cong-intf.cpp
-libsemigroups_1_0_la_SOURCES += src/cong-pair.cpp
-libsemigroups_1_0_la_SOURCES += src/cong.cpp
-libsemigroups_1_0_la_SOURCES += src/coset.cpp
-libsemigroups_1_0_la_SOURCES += src/element.cpp
-libsemigroups_1_0_la_SOURCES += src/fpsemi-intf.cpp
-libsemigroups_1_0_la_SOURCES += src/fpsemi.cpp
-libsemigroups_1_0_la_SOURCES += src/froidure-pin-base.cpp
-libsemigroups_1_0_la_SOURCES += src/knuth-bendix.cpp
-libsemigroups_1_0_la_SOURCES += src/order.cpp
-libsemigroups_1_0_la_SOURCES += src/race.cpp
-libsemigroups_1_0_la_SOURCES += src/report.cpp
-libsemigroups_1_0_la_SOURCES += src/runner.cpp
-libsemigroups_1_0_la_SOURCES += src/tce.cpp
-libsemigroups_1_0_la_SOURCES += src/todd-coxeter.cpp
-libsemigroups_1_0_la_SOURCES += src/uf.cpp
+libsemigroups_la_SOURCES =  src/blocks.cpp
+libsemigroups_la_SOURCES += src/bmat8.cpp
+libsemigroups_la_SOURCES += src/cong-intf.cpp
+libsemigroups_la_SOURCES += src/cong-pair.cpp
+libsemigroups_la_SOURCES += src/cong.cpp
+libsemigroups_la_SOURCES += src/coset.cpp
+libsemigroups_la_SOURCES += src/element.cpp
+libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
+libsemigroups_la_SOURCES += src/fpsemi.cpp
+libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
+libsemigroups_la_SOURCES += src/knuth-bendix.cpp
+libsemigroups_la_SOURCES += src/order.cpp
+libsemigroups_la_SOURCES += src/race.cpp
+libsemigroups_la_SOURCES += src/report.cpp
+libsemigroups_la_SOURCES += src/runner.cpp
+libsemigroups_la_SOURCES += src/tce.cpp
+libsemigroups_la_SOURCES += src/todd-coxeter.cpp
+libsemigroups_la_SOURCES += src/uf.cpp
 
-libsemigroups_1_0_la_CPPFLAGS = $(AM_CPPFLAGS) 
-libsemigroups_1_0_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsemigroups_1_0_la_LDFLAGS = -version-info 0:0:0
+libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
+libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 ## Extra files for the distribution
 
@@ -210,7 +209,7 @@ check_PROGRAMS += test_timer
 check_PROGRAMS += test_todd_coxeter
 check_PROGRAMS += test_uf
 
-LDADD = libsemigroups-1.0.la
+LDADD = libsemigroups.la
 
 ## Do not specify CXXFLAGS/CFLAGS/LDFLAGS because this causes a separate
 ## test-main.o executable to be generated for every test_* executable, which
@@ -369,7 +368,7 @@ test_uf_SOURCES += tests/test-main.cpp
 
 @CODE_COVERAGE_RULES@
 
-all-local: libsemigroups-1.0.la
+all-local: libsemigroups.la
 if LIBSEMIGROUPS_DEBUG
 	@echo "********************************************************************"
 	@echo "************************ Debug mode enabled ************************"
