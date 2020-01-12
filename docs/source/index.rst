@@ -8,7 +8,8 @@ What is ``libsemigroups``?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``libsemigroups``  is a C++11 library containing implementations of several
-algorithms for computing finite and finitely presented semigroups. Namely:
+algorithms for computing finite and finitely presented semigroups. 
+Namely:
 
 - the `Froidure-Pin algorithm`_ for computing finite semigroups
   :cite:`Froidure1997aa`;
@@ -20,6 +21,11 @@ algorithms for computing finite and finitely presented semigroups. Namely:
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
 .. _Knuth-Bendix algorithm: https://en.wikipedia.org/wiki/Knuth%E2%80%93Bendix_completion_algorithm
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
+
+The development version of ``libsemigroups`` is available on github_, and some related projects are here_.
+
+.. _github: https://github.com/libsemigroups/libsemigroups
+.. _here: https://github.com/libsemigroups 
 
 The main classes in ``libsemigroups`` are named after the algorithms they
 implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
