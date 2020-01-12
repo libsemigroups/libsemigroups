@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.5 (released 12/01/2020)
+----------------------------
+
+This is a minor release with the ABI version number corrected in
+libsemigroups.pc.in.
+
 v1.0.4 (released 11/01/2020)
 ----------------------------
 
