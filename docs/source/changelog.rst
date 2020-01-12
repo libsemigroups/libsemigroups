@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.5 (released 12/01/2020)
+----------------------------
+
+This is a minor release with some minor changes to the documentation and build
+system. The non-trivial changes in this release were made by `Isuru Fernando`_
+
 v1.0.4 (released 11/01/2020)
 ----------------------------
 
@@ -36,3 +42,4 @@ This is a major release that dramatically expands the scope of
 rewritten, generalised, and some new features have been added. 
 
 .. _J. James: http://www.jamezone.org/
+.. _Isuru Fernando: https://github.com/isuruf
