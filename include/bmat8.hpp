@@ -79,6 +79,7 @@ namespace libsemigroups {
       return T(ones[dim]);
     }
 
+
   }  // namespace bmat8_helpers
 
   //! Defined in ``bmat8.hpp``.
@@ -625,6 +626,42 @@ namespace libsemigroups {
                                                    0xc040201008040201};
 
       return T(elem[dim - 1]);
+    }
+
+    // TODO(now) doc
+    // TODO(now) check that T is really a either BMat8 or HPCombi::BMat8
+    // TODO(now) check that S has an operator[]
+    // TODO(now) noexcept should depend on whether or not the constructor of
+    // T is noexcept
+    template <typename S, typename T = BMat8>
+    T make(S const& x, size_t N) {
+      LIBSEMIGROUPS_ASSERT(N <= 8);
+      T out(0);
+      for (size_t i = 0; i < N; ++i) {
+        out.set(x[i], i, true);
+      }
+      return out;
+    }
+
+    template <size_t N, typename S, typename T = BMat8>
+    T make(S const& x) {
+      static_assert(N <= 8, "the template parameter must be at most 8");
+      return make<S, T>(x, N);
+    }
+
+    // TODO(now) doc
+    // TODO(now) check that T is really a either BMat8 or HPCombi::BMat8
+    // TODO(now) check that S has an operator[]
+    // TODO(now) noexcept should depend on whether or not the constructor of
+    // T is noexcept
+    template <typename T, typename S>
+    T make(S first, S const & last) {
+      uint64_t out = 0;
+      for (auto it = first; it < last; ++it) {
+        out = (out << 8) | *it;
+      }
+      out = out << 8 * (8 - (last - first));
+      return T(out);
     }
 
     // TODO(later) these should be templated to allow using HPCombi::BMat8's

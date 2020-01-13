@@ -23,6 +23,7 @@
 
 #include "bmat8.hpp"         // for BMat8, operator<<
 #include "catch.hpp"         // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "element-helper.hpp"  // PermHelper
 #include "froidure-pin.hpp"  // for FroidurePin
 #include "test-main.hpp"     // for LIBSEMIGROUPS_TEST_CASE
 #include "timer.hpp"         // for Timer
@@ -717,6 +718,21 @@ namespace libsemigroups {
     REQUIRE(bmat8_helpers::elementary(6).to_int() == 0xc040201008040000);
     REQUIRE(bmat8_helpers::elementary(7).to_int() == 0xc040201008040200);
     REQUIRE(bmat8_helpers::elementary(8).to_int() == 0xc040201008040201);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("bmat8_helper", "019", "make from perm", "[quick]") {
+    using Perm = typename PermHelper<4>::type;
+    Perm x({1, 0, 2, 3});
+    Perm y({1, 2, 3, 0});
+
+    REQUIRE(bmat8_helpers::make(x, 4) * bmat8_helpers::make(y, 4)
+            == bmat8_helpers::make(x * y, 4));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("bmat8_helper", "020", "make from iterators", "[quick]") {
+    BMat8 x = BMat8::one(7);
+    std::vector<uint8_t> rows = x.rows();
+    REQUIRE(bmat8_helpers::make<BMat8>(rows.cbegin(), rows.cend()) == x);
   }
 
 }  // namespace libsemigroups
