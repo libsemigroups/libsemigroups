@@ -6,10 +6,9 @@ AM_CXXFLAGS =  -I$(abs_top_srcdir)
 AM_CXXFLAGS += -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include/fallback
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/sparsehash-c11
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/fmt-5.3.0/include
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
+AM_CXXFLAGS += $(FMT_CFLAGS)
 
 AM_LDFLAGS  =  -no-undefined -lpthread
 
@@ -144,6 +143,9 @@ libsemigroups_la_SOURCES += src/uf.cpp
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
+## See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
+libsemigroups_la_LDFLAGS = -version-info 1:0:0
+
 ## Extra files for the distribution
 
 EXTRA_DIST =  .clang-format
@@ -159,6 +161,7 @@ EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += extern/fmt-5.3.0
 EXTRA_DIST += extern/HPCombi
 EXTRA_DIST += extern/.HPCombi_VERSION
+EXTRA_DIST += extern/.FMT_VERSION
 EXTRA_DIST += src/kbe-impl.hpp 
 EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += tests/catch.hpp

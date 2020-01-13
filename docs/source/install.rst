@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 1.0.3
+.. |libsemigroups-version| replace:: 1.0.5
 
 .. _Installation:
 
@@ -78,21 +78,39 @@ To build ``libsemigroups`` from a release archive:
    cd libsemigroups-|libsemigroups-version|
    ./configure && make -j8 && sudo make install
 
+Docker
+~~~~~~
+
+If you have Docker_ installed, you can download a `docker container`_ for
+``libsemigroups`` as follows:
+
+.. parsed-literal::
+   docker pull libsemigroups/libsemigroups
+
+and run it by doing
+
+.. parsed-literal::
+   docker run --rm -it libsemigroups/libsemigroups
+
+.. _Docker: https://www.docker.com
+.. _docker container: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups
+
 Configuration options
 ---------------------
 
 In addition to the usual ``autoconf`` configuration options, the following
 configuration options are available for ``libsemigroups``:
 
-==========================  ============================
+==========================  ===================================
 Option 
---------------------------  ----------------------------
+--------------------------  -----------------------------------
 --enable-code-coverage      enable code coverage support
 --enable-compile-warnings   enable compiler warnings
 --enable-debug              enable debug mode
 --enable-hpcombi            enable ``HPCombi``
 --enable-verbose            enable verbose mode
-==========================  ============================
+--with-external-fmt         do not use the included copy of fmt
+==========================  ===================================
 
 Debug mode and verbose mode significantly degrade the performance of
 ``libsemigroups``.
