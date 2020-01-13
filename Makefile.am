@@ -4,8 +4,7 @@
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)
 AM_CXXFLAGS += -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include/fallback
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
@@ -88,21 +87,24 @@ pkginclude_HEADERS += include/types.hpp
 pkginclude_HEADERS += include/uf.hpp
 
 if LIBSEMIGROUPS_HPCOMBI
-pkginclude_HEADERS += extern/HPCombi/include/bmat8.hpp
-pkginclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
-pkginclude_HEADERS += extern/HPCombi/include/epu.hpp
-pkginclude_HEADERS += extern/HPCombi/include/epu_impl.hpp
-pkginclude_HEADERS += extern/HPCombi/include/fallback/gcdlcm.hpp
-pkginclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
-pkginclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
-pkginclude_HEADERS += extern/HPCombi/include/perm16.hpp
-pkginclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
-pkginclude_HEADERS += extern/HPCombi/include/perm_generic.hpp
-pkginclude_HEADERS += extern/HPCombi/include/perm_generic_impl.hpp
-pkginclude_HEADERS += extern/HPCombi/include/power.hpp
-pkginclude_HEADERS += extern/HPCombi/include/testtools.hpp
-pkginclude_HEADERS += extern/HPCombi/include/vect16.hpp
-pkginclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
+hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
+hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/epu.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/epu_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/perm16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/power.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/testtools.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/vect16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
+
+hpcombifallbackincludedir = $(includedir)/libsemigroups/HPCombi/include/fallback
+hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
+hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
 endif
 
 fmtincludedir = $(includedir)/libsemigroups/fmt
