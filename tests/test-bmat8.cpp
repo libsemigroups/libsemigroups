@@ -708,5 +708,15 @@ namespace libsemigroups {
     REQUIRE(BMat8::one(8) == BMat8::one());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("bmat8_helper", "018", "elementary", "[quick]") {
+    REQUIRE(bmat8_helpers::elementary(1).to_int() == 0xc000000000000000);
+    REQUIRE(bmat8_helpers::elementary(2).to_int() == 0xc040000000000000);
+    REQUIRE(bmat8_helpers::elementary(3).to_int() == 0xc040200000000000);
+    REQUIRE(bmat8_helpers::elementary(4).to_int() == 0xc040201000000000);
+    REQUIRE(bmat8_helpers::elementary(5).to_int() == 0xc040201008000000);
+    REQUIRE(bmat8_helpers::elementary(6).to_int() == 0xc040201008040000);
+    REQUIRE(bmat8_helpers::elementary(7).to_int() == 0xc040201008040200);
+    REQUIRE(bmat8_helpers::elementary(8).to_int() == 0xc040201008040201);
+  }
 
 }  // namespace libsemigroups
