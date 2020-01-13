@@ -54,8 +54,8 @@ Optionally, if you want to use ``HPCombi``, you should also do:
 ::
 
    cd extern
-   curl -L -O https://github.com/hivert/HPCombi/archive/v0.0.3.zip
-   tar -xzf v0.0.3.zip && rm -f v0.0.3.zip && cd ..
+   curl -L -O https://github.com/hivert/HPCombi/archive/v0.0.5.zip
+   unzip v0.0.3.zip && rm -f v0.0.5.zip && cd ..
 
 Then actually build ``libsemigroups`` by doing:
 
