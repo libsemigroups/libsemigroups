@@ -693,4 +693,20 @@ namespace libsemigroups {
                {0, 0, 0, 0, 0, 0, 0, 1}});
     REQUIRE(Inverse<BMat8>()(bm6) == bm6 * bm6);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "018", "one", "[quick]") {
+    BMat8 bm5({{1, 0, 0, 0, 0, 0, 0, 0},
+               {0, 1, 0, 0, 0, 0, 0, 0},
+               {0, 0, 1, 0, 0, 0, 0, 0},
+               {0, 0, 0, 1, 0, 0, 0, 0},
+               {0, 0, 0, 0, 1, 0, 0, 0},
+               {0, 0, 0, 0, 0, 0, 0, 0},
+               {0, 0, 0, 0, 0, 0, 0, 0},
+               {0, 0, 0, 0, 0, 0, 0, 0}});
+    REQUIRE(BMat8::one(5) == bm5);
+    REQUIRE(BMat8::one(0) == BMat8(0));
+    REQUIRE(BMat8::one(8) == BMat8::one());
+  }
+
+
 }  // namespace libsemigroups

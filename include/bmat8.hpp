@@ -58,7 +58,8 @@ namespace libsemigroups {
     template <typename T>
     T one(size_t dim) noexcept {
       LIBSEMIGROUPS_ASSERT(dim <= 8);
-      static std::array<uint64_t, 8> const ones = {0x8000000000000000,
+      static std::array<uint64_t, 9> const ones = {0x0000000000000000,
+                                                   0x8000000000000000,
                                                    0x8040000000000000,
                                                    0x8040200000000000,
                                                    0x8040201000000000,
@@ -66,7 +67,7 @@ namespace libsemigroups {
                                                    0x8040201008040000,
                                                    0x8040201008040200,
                                                    0x8040201008040201};
-      return T(ones[dim - 1]);
+      return T(ones[dim]);
     }
   }  // namespace bmat8_helpers
 
