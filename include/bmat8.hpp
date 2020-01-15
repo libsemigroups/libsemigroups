@@ -492,6 +492,13 @@ namespace libsemigroups {
     // TODO(later) make this return an array instead of a vector
     std::vector<uint8_t> rows() const;
 
+    void rows(std::array<uint8_t, 8>& rows) const {
+      rows.fill(0);
+      for (size_t i = 0; i < 8; ++i) {
+        rows[i] = static_cast<uint8_t>(_data << (8 * i) >> 56);
+      }
+    }
+
     //! Find the size of the row space of \c this.
     //!
     //! \returns
