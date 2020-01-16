@@ -26,10 +26,10 @@
 #include <string>   // for string
 #include <vector>   // for vector
 
-#include "fpsemi-intf.hpp"              // for FpSemigroupInterface
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "runner.hpp"                   // for Runner
-#include "types.hpp"  // for word_type, letter_type, relation_type
+#include "libsemigroups/fpsemi-intf.hpp"              // for FpSemigroupInterface
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"                   // for Runner
+#include "libsemigroups/types.hpp"  // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
   class Congruence;       // Forward declaration, for friendship

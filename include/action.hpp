@@ -27,13 +27,13 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "adapters.hpp"                 // for One
-#include "bruidhinn-traits.hpp"         // for detail::BruidhinnTraits
-#include "digraph.hpp"                  // for ActionDigraph
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"                   // for REPORT_DEFAULT
-#include "runner.hpp"                   // for Runner
+#include "libsemigroups/adapters.hpp"                 // for One
+#include "libsemigroups/bruidhinn-traits.hpp"         // for detail::BruidhinnTraits
+#include "libsemigroups/digraph.hpp"                  // for ActionDigraph
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"                   // for REPORT_DEFAULT
+#include "libsemigroups/runner.hpp"                   // for Runner
 
 namespace libsemigroups {
   //! The values in this enum can be used as a template parameter for the Action

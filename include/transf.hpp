@@ -30,9 +30,9 @@
 #include <type_traits>  // for is_integral
 #include <vector>       // for vector
 
-#include "constants.hpp"  // for UNDEFINED
-#include "hpcombi.hpp"    // for HPCombi::Transf16, ...
-#include "types.hpp"      // for SmallestInteger
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/hpcombi.hpp"    // for HPCombi::Transf16, ...
+#include "libsemigroups/types.hpp"      // for SmallestInteger
 
 namespace libsemigroups {
 

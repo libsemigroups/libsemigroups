@@ -33,12 +33,12 @@
 #include <thread>   // for mutex
 #include <vector>   // for vector
 
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"                   // for REPORT_DEFAULT, REPORT_TIME
-#include "runner.hpp"                   // for Runner
-#include "stl.hpp"                      // for IsCallable
-#include "timer.hpp"                    // for Timer
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"                   // for REPORT_DEFAULT, REPORT_TIME
+#include "libsemigroups/runner.hpp"                   // for Runner
+#include "libsemigroups/stl.hpp"                      // for IsCallable
+#include "libsemigroups/timer.hpp"                    // for Timer
 
 namespace libsemigroups {
   namespace detail {

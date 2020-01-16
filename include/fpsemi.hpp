@@ -26,10 +26,10 @@
 #include <memory>   // for shared_ptr
 #include <string>   // for string
 
-#include "fpsemi-intf.hpp"   // for FpSemigroupInterface
-#include "knuth-bendix.hpp"  // for KnuthBendix
-#include "race.hpp"          // for Race
-#include "todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/fpsemi-intf.hpp"   // for FpSemigroupInterface
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/race.hpp"          // for Race
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration

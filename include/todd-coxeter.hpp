@@ -30,17 +30,17 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "cong-intf.hpp"            // for congruence_type,...
-#include "cong-wrap.hpp"            // for CongruenceWrapper
-#include "containers.hpp"           // for DynamicArray2
-#include "coset.hpp"                // for CosetManager
-#include "int-range.hpp"            // for IntegralRange
-#include "iterator.hpp"             // for ConstIteratorStateful
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "order.hpp"                // shortlex_compare
-#include "report.hpp"               // for REPORT
-#include "string.hpp"               // for to_string
-#include "types.hpp"                // for word_type, letter_type...
+#include "libsemigroups/cong-intf.hpp"            // for congruence_type,...
+#include "libsemigroups/cong-wrap.hpp"            // for CongruenceWrapper
+#include "libsemigroups/containers.hpp"           // for DynamicArray2
+#include "libsemigroups/coset.hpp"                // for CosetManager
+#include "libsemigroups/int-range.hpp"            // for IntegralRange
+#include "libsemigroups/iterator.hpp"             // for ConstIteratorStateful
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/order.hpp"                // shortlex_compare
+#include "libsemigroups/report.hpp"               // for REPORT
+#include "libsemigroups/string.hpp"               // for to_string
+#include "libsemigroups/types.hpp"                // for word_type, letter_type...
 
 namespace libsemigroups {
   // Forward declarations

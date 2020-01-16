@@ -27,10 +27,10 @@
 #include <memory>   // for unique_ptr, shared_ptr
 #include <string>   // for string
 
-#include "cong-intf.hpp"          // for congruence_type, con...
-#include "fpsemi-intf.hpp"        // for FpSemigroupInterface
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "stl.hpp"                // for detail::make_unique
+#include "libsemigroups/cong-intf.hpp"          // for congruence_type, con...
+#include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/stl.hpp"                // for detail::make_unique
 
 namespace libsemigroups {
   //! Defined in ``cong-wrap.hpp``.

@@ -27,8 +27,8 @@
 #include <chrono>       // for nanoseconds, high_resolution_clock
 #include <type_traits>  // for forward
 
-#include "function-ref.hpp"             // for FunctionRef
-#include "libsemigroups-exception.hpp"  // for LibsemigroupsException
+#include "libsemigroups/function-ref.hpp"             // for FunctionRef
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupsException
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().

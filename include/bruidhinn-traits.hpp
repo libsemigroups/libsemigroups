@@ -25,7 +25,7 @@
 
 #include <cstddef>  // for size_t
 
-#include "iterator.hpp"  // for ConstIteratorTraits
+#include "libsemigroups/iterator.hpp"  // for ConstIteratorTraits
 
 namespace libsemigroups {
   namespace detail {

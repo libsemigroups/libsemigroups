@@ -24,13 +24,13 @@
 // <i> belongs to the <j>th block, <transverse blocks>[j] = true if block <j> is
 // transverse and false if it is not.
 
-#include "blocks.hpp"
+#include "libsemigroups/blocks.hpp"
 
 #include <algorithm>  // for max_element, count
 #include <cstdint>    // for uint32_t
 
-#include "constants.hpp"            // for UNDEFINED
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/constants.hpp"            // for UNDEFINED
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

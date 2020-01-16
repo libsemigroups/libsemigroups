@@ -30,9 +30,9 @@
 #include <memory>      // for shared_ptr
 #include <sstream>     // for ostream, ostringstream
 
-#include "adapters.hpp"    // for Complexity, Degree, Less, One, Product, ...
-#include "constants.hpp"   // for LIMIT_MAX
-#include "containers.hpp"  // for DynamicArray2
+#include "libsemigroups/adapters.hpp"    // for Complexity, Degree, Less, One, Product, ...
+#include "libsemigroups/constants.hpp"   // for LIMIT_MAX
+#include "libsemigroups/containers.hpp"  // for DynamicArray2
 
 namespace libsemigroups {
   // Forward declarations

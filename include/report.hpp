@@ -32,16 +32,16 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"               // for wrap
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/string.hpp"               // for wrap
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Winline"
-#include "fmt/color.h"
-#include "fmt/printf.h"
+#include "libsemigroups/fmt/color.h"
+#include "libsemigroups/fmt/printf.h"
 #pragma GCC diagnostic pop
 
 // To avoid computing the parameters __VA_ARGS__ when we aren't even

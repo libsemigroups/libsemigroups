@@ -29,11 +29,11 @@
 #include <string>   // for string
 #include <utility>  // for hash
 
-#include "adapters.hpp"      // for One
-#include "element.hpp"       // for Element
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
-#include "types.hpp"         // for word_type, letter_type
+#include "libsemigroups/adapters.hpp"      // for One
+#include "libsemigroups/element.hpp"       // for Element
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "libsemigroups/types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
   namespace detail {

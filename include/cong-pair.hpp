@@ -72,16 +72,16 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"          // for Product
-#include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
-#include "cong-intf.hpp"         // for CongruenceInterface::class_index_type
-#include "cong-wrap.hpp"         // for CongruenceWrapper
-#include "froidure-pin.hpp"      // for FroidurePin
-#include "kbe.hpp"               // for detail::KBE
-#include "knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
-#include "tce.hpp"               // for TCE
-#include "types.hpp"             // for word_type
-#include "uf.hpp"                // for UF
+#include "libsemigroups/adapters.hpp"          // for Product
+#include "libsemigroups/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "libsemigroups/cong-intf.hpp"         // for CongruenceInterface::class_index_type
+#include "libsemigroups/cong-wrap.hpp"         // for CongruenceWrapper
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/kbe.hpp"               // for detail::KBE
+#include "libsemigroups/knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
+#include "libsemigroups/tce.hpp"               // for TCE
+#include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/uf.hpp"                // for UF
 
 namespace libsemigroups {
   class Element;          // Forward declaration, for default template parameter
@@ -521,5 +521,5 @@ namespace libsemigroups {
       CongruenceByPairs<TElementType, TElementHash, TElementEqual>>;
 }  // namespace libsemigroups
 
-#include "cong-pair-impl.hpp"
+#include "libsemigroups/cong-pair-impl.hpp"
 #endif  // LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_

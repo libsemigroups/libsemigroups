@@ -36,15 +36,15 @@
 #include <type_traits>  // for is_integral
 #include <vector>       // for vector
 
-#include "adapters.hpp"    // for complexity, degree, IncreaseDegree, . . .
-#include "constants.hpp"   // for UNDEFINED
-#include "containers.hpp"  // for detail::DynamicArray2
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "stl.hpp"                      // for Hash, EqualTo, Less
-#include "string.hpp"                   // for to_string
-#include "types.hpp"                    // for SmallestInteger
+#include "libsemigroups/adapters.hpp"    // for complexity, degree, IncreaseDegree, . . .
+#include "libsemigroups/constants.hpp"   // for UNDEFINED
+#include "libsemigroups/containers.hpp"  // for detail::DynamicArray2
+#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/stl.hpp"                      // for Hash, EqualTo, Less
+#include "libsemigroups/string.hpp"                   // for to_string
+#include "libsemigroups/types.hpp"                    // for SmallestInteger
 
 namespace libsemigroups {
   // Forward declarations

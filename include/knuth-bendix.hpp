@@ -30,9 +30,9 @@
 #include <memory>   // for unique_ptr
 #include <vector>   // for vector
 
-#include "cong-intf.hpp"    // for CongruenceInterface
-#include "fpsemi-intf.hpp"  // for FpSemigroupInterface
-#include "types.hpp"        // for word_type
+#include "libsemigroups/cong-intf.hpp"    // for CongruenceInterface
+#include "libsemigroups/fpsemi-intf.hpp"  // for FpSemigroupInterface
+#include "libsemigroups/types.hpp"        // for word_type
 
 namespace libsemigroups {
   // Forward declarations

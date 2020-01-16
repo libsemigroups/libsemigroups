@@ -25,12 +25,12 @@
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
 
-#include "cong-intf.hpp"     // for congruence::type
-#include "knuth-bendix.hpp"  // for KnuthBendix
-#include "race.hpp"          // for Race
-#include "runner.hpp"        // for Runner
-#include "todd-coxeter.hpp"  // for ToddCoxeter
-#include "types.hpp"         // for word_type
+#include "libsemigroups/cong-intf.hpp"     // for congruence::type
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/race.hpp"          // for Race
+#include "libsemigroups/runner.hpp"        // for Runner
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {
   class FpSemigroup;      // Forward declaration

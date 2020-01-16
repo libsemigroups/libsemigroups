@@ -35,12 +35,12 @@
 #include <type_traits>  // for is_integral, is_unsigned
 #include <vector>       // for vector
 
-#include "containers.hpp"               // for DynamicArray2
-#include "forest.hpp"                   // for Forest
-#include "int-range.hpp"                // for IntegralRange
-#include "iterator.hpp"                 // for ConstIteratorStateless
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/containers.hpp"               // for DynamicArray2
+#include "libsemigroups/forest.hpp"                   // for Forest
+#include "libsemigroups/int-range.hpp"                // for IntegralRange
+#include "libsemigroups/iterator.hpp"                 // for ConstIteratorStateless
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

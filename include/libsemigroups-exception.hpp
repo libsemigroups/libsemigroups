@@ -22,14 +22,14 @@
 #include <exception>  // for std::runtime_error
 #include <string>     // for std::string
 
-#include "string.hpp"  // for to_string
+#include "libsemigroups/string.hpp"  // for to_string
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Winline"
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
-#include "fmt/printf.h"  // for fmt::sprintf
+#include "libsemigroups/fmt/printf.h"  // for fmt::sprintf
 #pragma GCC diagnostic pop
 
 namespace libsemigroups {

@@ -29,7 +29,7 @@
 #include <utility>    // for make_pair, pair
 #include <vector>     // for vector
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

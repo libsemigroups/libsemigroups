@@ -57,16 +57,16 @@
 #include <string>         // for operator+, basic_string
 #include <unordered_set>  // for unordered_set
 
-#include "adapters.hpp"                 // for action, degree, inverse
-#include "bruidhinn-traits.hpp"         // for detail::BruidhinnTraits
-#include "containers.hpp"               // for Array2, StaticVector2
-#include "int-range.hpp"                // for IntegralRange
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "stl.hpp"                      // for EqualTo
-#include "transf.hpp"                   // for Perm
-#include "types.hpp"                    // for SmallestInteger
+#include "libsemigroups/adapters.hpp"                 // for action, degree, inverse
+#include "libsemigroups/bruidhinn-traits.hpp"         // for detail::BruidhinnTraits
+#include "libsemigroups/containers.hpp"               // for Array2, StaticVector2
+#include "libsemigroups/int-range.hpp"                // for IntegralRange
+#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/stl.hpp"                      // for EqualTo
+#include "libsemigroups/transf.hpp"                   // for Perm
+#include "libsemigroups/types.hpp"                    // for SmallestInteger
 
 namespace libsemigroups {
 

@@ -37,8 +37,8 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "runner.hpp"  // for Runner
-#include "types.hpp"   // for word_type, letter_type, relation_type
+#include "libsemigroups/runner.hpp"  // for Runner
+#include "libsemigroups/types.hpp"   // for word_type, letter_type, relation_type
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration

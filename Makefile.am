@@ -2,8 +2,7 @@
 # Automake configuration
 ##############################################################################
 
-AM_CXXFLAGS =  -I$(abs_top_srcdir)
-AM_CXXFLAGS += -I$(abs_top_srcdir)/include
+AM_CXXFLAGS = -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)

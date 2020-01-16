@@ -26,7 +26,7 @@
 #include <cstdint>  // for uint32_t
 #include <vector>   // for vector, vector<>::const_iterator
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 // TODO(later)
 // 1. Use noexcept where appropriate

@@ -31,18 +31,18 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
-#include "bruidhinn-traits.hpp"   // for detail::BruidhinnTraits
-#include "constants.hpp"          // for libsemigroups::UNDEFINED, LIMIT_MAX
-#include "containers.hpp"         // for DynamicArray2
-#include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "iterator.hpp"           // for ConstIteratorStateless
-// #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
-#include "stl.hpp"    // for EqualTo, Hash
-#include "types.hpp"  // for letter_type, word_type
+#include "libsemigroups/adapters.hpp"           // for Complexity, Degree, IncreaseDegree
+#include "libsemigroups/bruidhinn-traits.hpp"   // for detail::BruidhinnTraits
+#include "libsemigroups/constants.hpp"          // for libsemigroups::UNDEFINED, LIMIT_MAX
+#include "libsemigroups/containers.hpp"         // for DynamicArray2
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
+#include "libsemigroups/iterator.hpp"           // for ConstIteratorStateless
+// #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "libsemigroups/stl.hpp"    // for EqualTo, Hash
+#include "libsemigroups/types.hpp"  // for letter_type, word_type
 
 // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-// #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
+// #include "libsemigroups/extern/sparsehash-c11/sparsehash/dense_hash_map"
 // #endif
 
 //! Namespace for everything in the libsemigroups library.
@@ -1171,5 +1171,5 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 // Include the implementation of the member functions for FroidurePin
-#include "froidure-pin-impl.hpp"
+#include "libsemigroups/froidure-pin-impl.hpp"
 #endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_

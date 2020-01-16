@@ -22,8 +22,8 @@
 #include <algorithm>  // for min, max
 #include <cinttypes>  // for int64_t
 
-#include "constants.hpp"            // for NEGATIVE_INFINITY
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/constants.hpp"            // for NEGATIVE_INFINITY
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

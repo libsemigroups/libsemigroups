@@ -24,14 +24,14 @@
 
 // Must include libsemigroups-config.hpp so that LIBSEMIGROUPS_HPCOMBI is
 // defined, if so specified at during configure.
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
-#include "HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
+#include "libsemigroups/HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
 
-#include "adapters.hpp"             // for Complexity, Degree, ...
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/adapters.hpp"             // for Complexity, Degree, ...
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

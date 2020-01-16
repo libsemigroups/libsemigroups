@@ -27,10 +27,10 @@
 #include <functional>  // for function
 #include <thread>      // for thread::hardware_concurrency
 
-#include "constants.hpp"   // for LIMIT_MAX
-#include "containers.hpp"  // for DynamicArray2
-#include "runner.hpp"      // for Runner
-#include "types.hpp"       // for word_type, letter_type, tril
+#include "libsemigroups/constants.hpp"   // for LIMIT_MAX
+#include "libsemigroups/containers.hpp"  // for DynamicArray2
+#include "libsemigroups/runner.hpp"      // for Runner
+#include "libsemigroups/types.hpp"       // for word_type, letter_type, tril
 
 namespace libsemigroups {
   //! Defined in ``froidure-pin-base.hpp``.

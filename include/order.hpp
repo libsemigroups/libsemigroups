@@ -30,7 +30,7 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "types.hpp"  // for word_type
+#include "libsemigroups/types.hpp"  // for word_type
 
 namespace libsemigroups {
   std::vector<word_type> shortlex_words(size_t nr_gens, size_t len);

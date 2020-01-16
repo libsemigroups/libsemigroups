@@ -23,8 +23,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "constants.hpp"                // for UNDEFINED
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/constants.hpp"                // for UNDEFINED
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
   //! Defined in ``forest.hpp``.

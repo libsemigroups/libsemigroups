@@ -23,7 +23,7 @@
 #include <functional>  // for std::equal_to
 #include <vector>      // for std::vector
 
-// #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
+// #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
 
 namespace libsemigroups {
   // Adapters with no default implementation

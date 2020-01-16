@@ -22,9 +22,9 @@
 #ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_HPP_
 #define LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_HPP_
 
-#include "bmat8.hpp"    // for BMat8
-#include "element.hpp"  // for Permutation ...
-#include "hpcombi.hpp"  // for HPCombi::Perm16, Transf16, . . .
+#include "libsemigroups/bmat8.hpp"    // for BMat8
+#include "libsemigroups/element.hpp"  // for Permutation ...
+#include "libsemigroups/hpcombi.hpp"  // for HPCombi::Perm16, Transf16, . . .
 
 namespace libsemigroups {
   //! Defined in ``element-helper.hpp``.

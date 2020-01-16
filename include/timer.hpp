@@ -24,7 +24,7 @@
 #include <iostream>  // for ostream
 #include <string>    // for string
 
-#include "string.hpp"  // for to_string
+#include "libsemigroups/string.hpp"  // for to_string
 
 namespace libsemigroups {
   namespace detail {
