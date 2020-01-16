@@ -21,12 +21,12 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "bmat8.hpp"         // for BMat8, operator<<
-#include "catch.hpp"         // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "bmat8.hpp"  // for BMat8, operator<<
+#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
 #include "element-helper.hpp"  // PermHelper
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "test-main.hpp"     // for LIBSEMIGROUPS_TEST_CASE
-#include "timer.hpp"         // for Timer
+#include "froidure-pin.hpp"    // for FroidurePin
+#include "test-main.hpp"       // for LIBSEMIGROUPS_TEST_CASE
+#include "timer.hpp"           // for Timer
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
@@ -729,8 +729,11 @@ namespace libsemigroups {
             == bmat8_helpers::make(x * y, 4));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("bmat8_helper", "020", "make from iterators", "[quick]") {
-    BMat8 x = BMat8::one(7);
+  LIBSEMIGROUPS_TEST_CASE("bmat8_helper",
+                          "020",
+                          "make from iterators",
+                          "[quick]") {
+    BMat8                x    = BMat8::one(7);
     std::vector<uint8_t> rows = x.rows();
     REQUIRE(bmat8_helpers::make<BMat8>(rows.cbegin(), rows.cend()) == x);
   }

@@ -79,7 +79,6 @@ namespace libsemigroups {
       return T(ones[dim]);
     }
 
-
   }  // namespace bmat8_helpers
 
   //! Defined in ``bmat8.hpp``.
@@ -662,7 +661,7 @@ namespace libsemigroups {
     // TODO(now) noexcept should depend on whether or not the constructor of
     // T is noexcept
     template <typename T, typename S>
-    T make(S first, S const & last) {
+    T make(S first, S const& last) {
       uint64_t out = 0;
       for (auto it = first; it < last; ++it) {
         out = (out << 8) | *it;
