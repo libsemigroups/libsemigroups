@@ -29,11 +29,19 @@
 #include <utility>    // for hash
 #include <vector>     // for vector
 
-#include "adapters.hpp"             // for Complexity, Degree, etc . . .
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"               // for detail::to_string
+#include "adapters.hpp"                 // for Complexity, Degree, etc . . .
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "string.hpp"                   // for detail::to_string
+
+namespace HPCombi {
+  // Forward decl
+  class BMat8;
+}  // namespace HPCombi
 
 namespace libsemigroups {
+  // Forward decl
+  class BMat8;
   namespace bmat8_helpers {
     //! Returns the identity boolean matrix of a given dimension.
     //!
@@ -55,7 +63,8 @@ namespace libsemigroups {
     //! \sa BMat8::one.
     // TODO(later) noexcept should depend on whether or not the constructor of
     // T is noexcept
-    template <typename T>
+    // TODO check that T is really a either BMat8 or HPCombi::BMat8
+    template <typename T = BMat8>
     T one(size_t dim) noexcept {
       LIBSEMIGROUPS_ASSERT(dim <= 8);
       static std::array<uint64_t, 9> const ones = {0x0000000000000000,
@@ -69,6 +78,7 @@ namespace libsemigroups {
                                                    0x8040201008040201};
       return T(ones[dim]);
     }
+
   }  // namespace bmat8_helpers
 
   //! Defined in ``bmat8.hpp``.
@@ -481,6 +491,13 @@ namespace libsemigroups {
     // TODO(later) make this return an array instead of a vector
     std::vector<uint8_t> rows() const;
 
+    void rows(std::array<uint8_t, 8>& rows) const {
+      rows.fill(0);
+      for (size_t i = 0; i < 8; ++i) {
+        rows[i] = static_cast<uint8_t>(_data << (8 * i) >> 56);
+      }
+    }
+
     //! Find the size of the row space of \c this.
     //!
     //! \returns
@@ -588,6 +605,71 @@ namespace libsemigroups {
   //! public member functions of BMat8, and so they are declared as free
   //! functions instead.
   namespace bmat8_helpers {
+    // TODO doc
+    template <typename T = BMat8>
+    T elementary(size_t dim) {
+      static_assert(std::is_same<T, BMat8>::value
+#ifdef LIBSEMIGROUPS_HPCOMBI
+                        || std::is_same<T, HPCombi::BMat8>::value
+#endif
+                    ,
+                    "the template parameter must be libsemigroups::BMat "
+#ifdef LIBSEMIGROUPS_HPCOMBI
+                    "or HPCombi::BMat8"
+#endif
+      );  // NOLINT(whitespace/parens)
+      if (dim == 0 || dim > 8) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "incorrect dimension found %d should be in range [1, 8]");
+      }
+      static std::array<uint64_t, 8> const elem = {0xc000000000000000,
+                                                   0xc040000000000000,
+                                                   0xc040200000000000,
+                                                   0xc040201000000000,
+                                                   0xc040201008000000,
+                                                   0xc040201008040000,
+                                                   0xc040201008040200,
+                                                   0xc040201008040201};
+
+      return T(elem[dim - 1]);
+    }
+
+    // TODO(now) doc
+    // TODO(now) check that T is really a either BMat8 or HPCombi::BMat8
+    // TODO(now) check that S has an operator[]
+    // TODO(now) noexcept should depend on whether or not the constructor of
+    // T is noexcept
+    template <typename S, typename T = BMat8>
+    T make(S const& x, size_t N) {
+      LIBSEMIGROUPS_ASSERT(N <= 8);
+      T out(0);
+      for (size_t i = 0; i < N; ++i) {
+        out.set(x[i], i, true);
+      }
+      return out;
+    }
+
+    template <size_t N, typename S, typename T = BMat8>
+    T make(S const& x) {
+      static_assert(N <= 8, "the template parameter must be at most 8");
+      return make<S, T>(x, N);
+    }
+
+    // TODO(now) doc
+    // TODO(now) check that T is really a either BMat8 or HPCombi::BMat8
+    // TODO(now) check that S has an operator[]
+    // TODO(now) noexcept should depend on whether or not the constructor of
+    // T is noexcept
+    template <typename T, typename S>
+    T make(S first, S const& last) {
+      uint64_t out = 0;
+      for (auto it = first; it < last; ++it) {
+        out = (out << 8) | *it;
+      }
+      out = out << 8 * (8 - (last - first));
+      return T(out);
+    }
+
     // TODO(later) these should be templated to allow using HPCombi::BMat8's
     // here too.
     //! Returns the number of non-zero columns in \p x.
