@@ -20,11 +20,11 @@
 #include <cstdint>  // for int64_t
 #include <vector>   // for vector
 
-#include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "libsemigroups/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "catch.hpp"             // for LIBSEMIGROUPS_TEST_CASE
-#include "element.hpp"           // for MatrixOverSemiring
-#include "froidure-pin.hpp"      // for FroidurePin, FroidurePin<>::eleme...
-#include "semiring.hpp"          // for TropicalMaxPlusSemiring, Semiring
+#include "libsemigroups/element.hpp"           // for MatrixOverSemiring
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin, FroidurePin<>::eleme...
+#include "libsemigroups/semiring.hpp"          // for TropicalMaxPlusSemiring, Semiring
 #include "test-main.hpp"
 
 namespace libsemigroups {

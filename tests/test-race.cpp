@@ -21,10 +21,10 @@
 #include <cstddef>  // for size_t
 
 #include "catch.hpp"                    // for REQUIRE, REQUIRE_THROWS_AS
-#include "libsemigroups-exception.hpp"  // for LibsemigroupsException (ptr o...
-#include "race.hpp"                     // for Race
-#include "report.hpp"                   // for ReportGuard
-#include "runner.hpp"                   // for Runner
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupsException (ptr o...
+#include "libsemigroups/race.hpp"                     // for Race
+#include "libsemigroups/report.hpp"                   // for ReportGuard
+#include "libsemigroups/runner.hpp"                   // for Runner
 #include "test-main.hpp"                // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

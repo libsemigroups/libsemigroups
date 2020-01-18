@@ -23,12 +23,12 @@
 // member function delegates to the corresponding member function in every
 // fpsemigroup::FpSemigroupInterface* object in the _race.
 
-#include "fpsemi.hpp"
+#include "libsemigroups/fpsemi.hpp"
 
 #include <string>  // for string
 
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 
 namespace libsemigroups {
 

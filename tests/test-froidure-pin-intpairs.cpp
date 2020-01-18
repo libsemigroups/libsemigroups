@@ -19,10 +19,10 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for integral_constant<>::value
 
-#include "adapters.hpp"             // for complexity etc
+#include "libsemigroups/adapters.hpp"             // for complexity etc
 #include "catch.hpp"                // for LIBSEMIGROUPS_TEST_CASE
-#include "froidure-pin.hpp"         // for FroidurePin<>::element_i...
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/froidure-pin.hpp"         // for FroidurePin<>::element_i...
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "test-main.hpp"
 
 namespace libsemigroups {

@@ -21,9 +21,9 @@
 #include <vector>     // for vector
 
 #include "catch.hpp"         // for LIBSEMIGROUPS_TEST_CASE
-#include "element.hpp"       // for ProjectiveMaxPlusMatrix
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
-#include "semiring.hpp"      // for MaxPlusSemiring, Semiring
+#include "libsemigroups/element.hpp"       // for ProjectiveMaxPlusMatrix
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "libsemigroups/semiring.hpp"      // for MaxPlusSemiring, Semiring
 #include "test-main.hpp"
 
 namespace libsemigroups {

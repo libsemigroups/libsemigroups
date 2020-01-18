@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "froidure-pin-base.hpp"
+#include "libsemigroups/froidure-pin-base.hpp"
 
 #include <vector>
 
-#include "libsemigroups-exception.hpp"
+#include "libsemigroups/libsemigroups-exception.hpp"
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////

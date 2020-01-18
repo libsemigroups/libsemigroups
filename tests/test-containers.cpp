@@ -19,7 +19,7 @@
 #include <numeric>  // for iota
 
 #include "catch.hpp"
-#include "containers.hpp"
+#include "libsemigroups/containers.hpp"
 #include "test-main.hpp"
 
 namespace libsemigroups {

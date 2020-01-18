@@ -21,13 +21,13 @@
 // obtaining the winner.
 //
 
-#include "race.hpp"
+#include "libsemigroups/race.hpp"
 
 #include <functional>  // for mem_fn
 #include <thread>
 
-#include "libsemigroups-exception.hpp"  // for LibsemigroupException
-#include "runner.hpp"                   // for Runner
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupException
+#include "libsemigroups/runner.hpp"                   // for Runner
 
 namespace libsemigroups {
   namespace detail {

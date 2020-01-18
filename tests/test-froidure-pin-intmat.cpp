@@ -21,9 +21,9 @@
 #include <vector>   // for vector
 
 #include "catch.hpp"         // for LIBSEMIGROUPS_TEST_CASE
-#include "element.hpp"       // for MatrixOverSemiring
-#include "froidure-pin.hpp"  // for FroidurePin, FroidurePin<>::eleme...
-#include "semiring.hpp"      // for Integers, Semiring
+#include "libsemigroups/element.hpp"       // for MatrixOverSemiring
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<>::eleme...
+#include "libsemigroups/semiring.hpp"      // for Integers, Semiring
 #include "test-main.hpp"
 
 namespace libsemigroups {

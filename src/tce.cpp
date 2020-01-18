@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "tce.hpp"
+#include "libsemigroups/tce.hpp"
 
-#include "cong-intf.hpp"            // for CongruenceInterface::class_index_type
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "todd-coxeter.hpp"         // for congruence::ToddCoxeter
+#include "libsemigroups/cong-intf.hpp"            // for CongruenceInterface::class_index_type
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/todd-coxeter.hpp"         // for congruence::ToddCoxeter
 
 namespace libsemigroups {
   using ToddCoxeter = congruence::ToddCoxeter;
