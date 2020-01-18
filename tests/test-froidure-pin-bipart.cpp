@@ -21,8 +21,8 @@
 #include <vector>  // for vector
 
 #include "catch.hpp"         // for LIBSEMIGROUPS_TEST_CASE
-#include "element.hpp"       // for Bipartition
-#include "froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "libsemigroups/element.hpp"       // for Bipartition
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "test-main.hpp"
 
 namespace libsemigroups {

@@ -21,8 +21,8 @@
 #include <cstddef>  // for size_t
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
-#include "report.hpp"     // for ReportGuard
-#include "runner.hpp"     // for Runner
+#include "libsemigroups/report.hpp"     // for ReportGuard
+#include "libsemigroups/runner.hpp"     // for Runner
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

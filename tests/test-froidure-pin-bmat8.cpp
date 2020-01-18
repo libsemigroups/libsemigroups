@@ -19,12 +19,12 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "bmat8.hpp"                 // for BMat8
+#include "libsemigroups/bmat8.hpp"                 // for BMat8
 #include "catch.hpp"                 // for LIBSEMIGROUPS_TEST_CASE
-#include "froidure-pin.hpp"          // for FroidurePin, FroidurePi...
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "libsemigroups/froidure-pin.hpp"          // for FroidurePin, FroidurePi...
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "test-main.hpp"
-#include "types.hpp"  // for word_type
+#include "libsemigroups/types.hpp"  // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

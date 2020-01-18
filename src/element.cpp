@@ -19,16 +19,16 @@
 // This file contains implementations of the non-template derived classes of
 // the Elements abstract base class.
 
-#include "element.hpp"
+#include "libsemigroups/element.hpp"
 
 #include <algorithm>  // for fill, max_element, find
 #include <cmath>      // for abs
 #include <ostream>    // for operator<<, basic_ostream, ostringstream
 #include <thread>     // for thread, get_id
 
-#include "blocks.hpp"    // for Blocks
-#include "report.hpp"    // for THREAD_ID_MANAGER
-#include "semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
+#include "libsemigroups/blocks.hpp"    // for Blocks
+#include "libsemigroups/report.hpp"    // for THREAD_ID_MANAGER
+#include "libsemigroups/semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
 
 namespace libsemigroups {
 

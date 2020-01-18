@@ -19,7 +19,7 @@
 // This file contains an implementation of the Todd-Coxeter algorithm for
 // semigroups.
 
-#include "todd-coxeter.hpp"
+#include "libsemigroups/todd-coxeter.hpp"
 
 #include <algorithm>  // for reverse
 #include <chrono>     // for nanoseconds etc
@@ -34,20 +34,20 @@
 #include <set>  // for set
 #endif
 
-#include "cong-intf.hpp"                // for CongruenceInterface
-#include "coset.hpp"                    // for CosetManager
-#include "froidure-pin-base.hpp"        // for FroidurePinBase
-#include "froidure-pin.hpp"             // for FroidurePin
-#include "knuth-bendix.hpp"             // for fpsemigroup::KnuthBendix
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "obvinf.hpp"                   // for IsObviouslyInfinite
-#include "report.hpp"                   // for REPORT
-#include "stl.hpp"                      // for apply_permutation
-#include "tce.hpp"                      // for TCE
-#include "timer.hpp"                    // for detail::Timer
-#include "types.hpp"                    // for letter_type
+#include "libsemigroups/cong-intf.hpp"                // for CongruenceInterface
+#include "libsemigroups/coset.hpp"                    // for CosetManager
+#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"             // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"             // for fpsemigroup::KnuthBendix
+#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/obvinf.hpp"                   // for IsObviouslyInfinite
+#include "libsemigroups/report.hpp"                   // for REPORT
+#include "libsemigroups/stl.hpp"                      // for apply_permutation
+#include "libsemigroups/tce.hpp"                      // for TCE
+#include "libsemigroups/timer.hpp"                    // for detail::Timer
+#include "libsemigroups/types.hpp"                    // for letter_type
 
 // TODO(later)
 //

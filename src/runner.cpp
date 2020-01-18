@@ -19,10 +19,10 @@
 // This file contains implementations of the member functions for the Runner
 // class.
 
-#include "runner.hpp"
+#include "libsemigroups/runner.hpp"
 
-#include "report.hpp"  // for REPORT_DEFAULT
-#include "timer.hpp"   // for Timer::string
+#include "libsemigroups/report.hpp"  // for REPORT_DEFAULT
+#include "libsemigroups/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
   Runner::Runner()

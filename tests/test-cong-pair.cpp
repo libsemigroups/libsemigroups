@@ -24,16 +24,16 @@
 #include <vector>      // for vector
 
 #include "catch.hpp"      // for REQUIRE, SECTION, REQUIRE_THROWS_AS, REQ...
-#include "cong-intf.hpp"  // for congruence_type, CongruenceInterface::non_tr...
-#include "cong-pair.hpp"  // for KnuthBendixCongruenceByPairs, CongruenceByPairs
-#include "element-helper.hpp"  // for TransfHelper and chums
-#include "element.hpp"         // for Element
-#include "knuth-bendix.hpp"    // for KnuthBendix
-#include "report.hpp"          // for ReportGuard
-#include "tce.hpp"             // for TCE
+#include "libsemigroups/cong-intf.hpp"  // for congruence_type, CongruenceInterface::non_tr...
+#include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs, CongruenceByPairs
+#include "libsemigroups/element-helper.hpp"  // for TransfHelper and chums
+#include "libsemigroups/element.hpp"         // for Element
+#include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
+#include "libsemigroups/report.hpp"          // for ReportGuard
+#include "libsemigroups/tce.hpp"             // for TCE
 #include "test-main.hpp"       // for LIBSEMIGROUPS_TEST_CASE
-#include "todd-coxeter.hpp"    // for ToddCoxeter
-#include "types.hpp"           // for relation_type, word_type
+#include "libsemigroups/todd-coxeter.hpp"    // for ToddCoxeter
+#include "libsemigroups/types.hpp"           // for relation_type, word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;
