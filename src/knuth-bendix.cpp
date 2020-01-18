@@ -19,17 +19,17 @@
 #include <cstddef>  // for size_t
 #include <string>   // for string
 
-#include "cong-intf.hpp"    // for CongruenceInterface, CongruenceInterface::...
-#include "fpsemi-intf.hpp"  // for FpSemigroupInterface
-#include "froidure-pin-base.hpp"        // for FroidurePinBase
-#include "froidure-pin.hpp"             // for FroidurePin
-#include "kbe.hpp"                      // for detail::KBE
-#include "knuth-bendix.hpp"             // for KnuthBendix, KnuthBe...
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "obvinf.hpp"                   // for IsObviouslyInfinitePairs
-#include "stl.hpp"                      // for detail::make_unique
-#include "types.hpp"                    // for word_type
+#include "libsemigroups/cong-intf.hpp"    // for CongruenceInterface, CongruenceInterface::...
+#include "libsemigroups/fpsemi-intf.hpp"  // for FpSemigroupInterface
+#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"             // for FroidurePin
+#include "libsemigroups/kbe.hpp"                      // for detail::KBE
+#include "libsemigroups/knuth-bendix.hpp"             // for KnuthBendix, KnuthBe...
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/obvinf.hpp"                   // for IsObviouslyInfinitePairs
+#include "libsemigroups/stl.hpp"                      // for detail::make_unique
+#include "libsemigroups/types.hpp"                    // for word_type
 
 #include "knuth-bendix-impl.hpp"
 

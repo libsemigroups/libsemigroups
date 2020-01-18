@@ -17,7 +17,7 @@
 //
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
-#include "constants.hpp"  // for UNDEFINED, POSITIVE_INFINITY, ...
+#include "libsemigroups/constants.hpp"  // for UNDEFINED, POSITIVE_INFINITY, ...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

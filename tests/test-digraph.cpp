@@ -21,8 +21,8 @@
 #include <vector>     // for vector
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "digraph.hpp"    // for ActionDigraph
-#include "forest.hpp"     // for Forest
+#include "libsemigroups/digraph.hpp"    // for ActionDigraph
+#include "libsemigroups/forest.hpp"     // for Forest
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

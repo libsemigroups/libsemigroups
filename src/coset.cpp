@@ -19,13 +19,13 @@
 // This file contains the implementation for a class to manage cosets for a
 // ToddCoxeter instance.
 
-#include "coset.hpp"
+#include "libsemigroups/coset.hpp"
 
 #include <cstddef>  // for size_t
 #include <numeric>  // for iota
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "report.hpp"               // for REPORT_DEBUG
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/report.hpp"               // for REPORT_DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////
 //

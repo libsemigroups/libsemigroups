@@ -25,9 +25,9 @@
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "include/stl.hpp"     // for detail::to_string
-#include "include/string.hpp"  // for detail::wrap
-#include "include/timer.hpp"   // for detail::Timer
+#include "libsemigroups/stl.hpp"     // for detail::to_string
+#include "libsemigroups/string.hpp"  // for detail::wrap
+#include "libsemigroups/timer.hpp"   // for detail::Timer
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)

@@ -26,20 +26,20 @@
 #include <functional>  // for mem_fn
 #include <vector>      // for vector
 
-#include "bmat8.hpp"            // for Bmat8
+#include "libsemigroups/bmat8.hpp"            // for Bmat8
 #include "catch.hpp"            // for SECTION, REQUIRE, REQUIRE_THROWS_AS
-#include "cong-intf.hpp"        // for congruence::type
-#include "element-helper.hpp"   // for TransfHelper
-#include "element.hpp"          // for Element, Transf,
+#include "libsemigroups/cong-intf.hpp"        // for congruence::type
+#include "libsemigroups/element-helper.hpp"   // for TransfHelper
+#include "libsemigroups/element.hpp"          // for Element, Transf,
 #include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
-#include "fpsemi.hpp"           // for FpSemigroup
-#include "froidure-pin.hpp"  // for FroidurePin, FroidurePin<Element const*>::eleme...
-#include "knuth-bendix.hpp"  // for KnuthBendix
-#include "order.hpp"         // for shortlex_words
-#include "tce.hpp"           // for TCE
+#include "libsemigroups/fpsemi.hpp"           // for FpSemigroup
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<Element const*>::eleme...
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/order.hpp"         // for shortlex_words
+#include "libsemigroups/tce.hpp"           // for TCE
 #include "test-main.hpp"     // for LIBSEMIGROUPS_TEST_CASE
-#include "todd-coxeter.hpp"  // for ToddCoxeter
-#include "types.hpp"         // for relation_type, word_type
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/types.hpp"         // for relation_type, word_type
 
 // Macros for testing different strategies on the same example.
 

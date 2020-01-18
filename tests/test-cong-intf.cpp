@@ -18,13 +18,13 @@
 // The purpose of this file is to test the CongruenceInterface class.
 
 #include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "cong-pair.hpp"
-#include "cong.hpp"
-#include "fpsemi.hpp"
-#include "knuth-bendix.hpp"
-#include "tce.hpp"
+#include "libsemigroups/cong-pair.hpp"
+#include "libsemigroups/cong.hpp"
+#include "libsemigroups/fpsemi.hpp"
+#include "libsemigroups/knuth-bendix.hpp"
+#include "libsemigroups/tce.hpp"
 #include "test-main.hpp"
-#include "todd-coxeter.hpp"
+#include "libsemigroups/todd-coxeter.hpp"
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
