@@ -19,13 +19,13 @@
 // 1. iwyu
 // 2. add examples from Action
 
-#include "action.hpp"
-#include "bmat8.hpp"
-#include "element-helper.hpp"
-#include "element.hpp"
-#include "hpcombi.hpp"
-#include "report.hpp"
-#include "timer.hpp"
+#include "libsemigroups/action.hpp"
+#include "libsemigroups/bmat8.hpp"
+#include "libsemigroups/element-helper.hpp"
+#include "libsemigroups/element.hpp"
+#include "libsemigroups/hpcombi.hpp"
+#include "libsemigroups/report.hpp"
+#include "libsemigroups/timer.hpp"
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"

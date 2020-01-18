@@ -19,7 +19,7 @@
 // This file contains an implemesntation of fast boolean matrices up to
 // dimension 8 x 8.
 
-#include "bmat8.hpp"
+#include "libsemigroups/bmat8.hpp"
 
 #include <algorithm>  // for uniform_int_distribution
 #include <array>      // for array
@@ -28,7 +28,7 @@
 #include <random>     // for mt19937, random_device
 #include <vector>     // for vector
 
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

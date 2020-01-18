@@ -20,12 +20,12 @@
 // the integers {1 .. n}, using the UNION-FIND METHOD: new pairs can be added
 // and the appropriate classes combined quickly.
 
-#include "uf.hpp"
+#include "libsemigroups/uf.hpp"
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
   namespace detail {

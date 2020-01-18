@@ -19,17 +19,17 @@
 // This file contains stuff for creating congruence over FroidurePinBase objects
 // or over FpSemigroup objects.
 
-#include "cong.hpp"
+#include "libsemigroups/cong.hpp"
 
 #include <memory>  // for shared_ptr
 
-#include "cong-pair.hpp"                // for KnuthBendixCongruenceByPairs
-#include "fpsemi.hpp"                   // for FpSemigroup
-#include "froidure-pin-base.hpp"        // for FroidurePinBase
-#include "knuth-bendix.hpp"             // for KnuthBendix
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "todd-coxeter.hpp"             // for ToddCoxeter
+#include "libsemigroups/cong-pair.hpp"                // for KnuthBendixCongruenceByPairs
+#include "libsemigroups/fpsemi.hpp"                   // for FpSemigroup
+#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups/knuth-bendix.hpp"             // for KnuthBendix
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/todd-coxeter.hpp"             // for ToddCoxeter
 
 namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;

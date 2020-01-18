@@ -19,9 +19,9 @@
 // This file contains some functionality missing in some implementations of the
 // stl, or to augment the stl implementations.
 
-#include "order.hpp"
+#include "libsemigroups/order.hpp"
 
-#include "types.hpp"  // for word_type
+#include "libsemigroups/types.hpp"  // for word_type
 #include <vector>     // for vector
 
 namespace libsemigroups {

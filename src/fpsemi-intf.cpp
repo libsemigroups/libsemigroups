@@ -18,16 +18,16 @@
 
 // This file contains a base class for f.p. semigroup like classes.
 
-#include "fpsemi-intf.hpp"
+#include "libsemigroups/fpsemi-intf.hpp"
 
 #include <algorithm>  // for sort
 #include <string>     // for std::string
 
-#include "froidure-pin-base.hpp"        // for FroidurePinBase
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"                   // for REPORT_DEFAULT ...
-#include "string.hpp"                   // for detail::to_string
+#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"                   // for REPORT_DEFAULT ...
+#include "libsemigroups/string.hpp"                   // for detail::to_string
 
 namespace libsemigroups {
 

@@ -20,15 +20,15 @@
 #include <cstddef>
 
 #include "catch.hpp"           // for REQUIRE, SECTION, ...
-#include "cong-pair.hpp"       // for FpSemigroupByPairs
-#include "element-helper.hpp"  // for FpSemigroupByPairs
-#include "fpsemi-intf.hpp"     // for FpSemigroupInterface
-#include "fpsemi.hpp"          // for FpSemigroup
-#include "knuth-bendix.hpp"    // for fpsemigroup::KnuthBendix
-#include "order.hpp"           // for shortlex_words
-#include "string.hpp"          // for to_string of rule_type for debugging
+#include "libsemigroups/cong-pair.hpp"       // for FpSemigroupByPairs
+#include "libsemigroups/element-helper.hpp"  // for FpSemigroupByPairs
+#include "libsemigroups/fpsemi-intf.hpp"     // for FpSemigroupInterface
+#include "libsemigroups/fpsemi.hpp"          // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"    // for fpsemigroup::KnuthBendix
+#include "libsemigroups/order.hpp"           // for shortlex_words
+#include "libsemigroups/string.hpp"          // for to_string of rule_type for debugging
 #include "test-main.hpp"       // for LIBSEMIGROUPS_TEST_CASE
-#include "todd-coxeter.hpp"    // for fpsemigroup::ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"    // for fpsemigroup::ToddCoxeter
 
 // The following is required to get catch to print rules
 namespace std {

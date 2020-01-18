@@ -24,7 +24,7 @@
 
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "uf.hpp"         // for UF, UF::blocks_type, UF::table_type
+#include "libsemigroups/uf.hpp"         // for UF, UF::blocks_type, UF::table_type
 
 namespace libsemigroups {
   using detail::UF;

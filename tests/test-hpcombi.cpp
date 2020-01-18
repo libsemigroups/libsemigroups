@@ -18,18 +18,18 @@
 
 // Must include hpcombi.hpp so that LIBSEMIGROUPS_HPCOMBI is defined, if so
 // specified at during configure.
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
 
 #ifdef LIBSEMIGROUPS_HPCOMBI
 
 #include <cstddef>  // for size_t
 
 #include "catch.hpp"         // for REQUIRE
-#include "element.hpp"       // for Transformation
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "hpcombi.hpp"       // for PTransf16, ...
-#include "int-range.hpp"     // for IntegralRange
-#include "report.hpp"        // for ReportGuard
+#include "libsemigroups/element.hpp"       // for Transformation
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
+#include "libsemigroups/int-range.hpp"     // for IntegralRange
+#include "libsemigroups/report.hpp"        // for ReportGuard
 #include "test-main.hpp"     // for LIBSEMIGROUPS_TEST_CASE
 
 using namespace HPCombi;

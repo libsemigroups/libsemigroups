@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "cong-intf.hpp"
+#include "libsemigroups/cong-intf.hpp"
 
-#include "constants.hpp"                // for UNDEFINED
-#include "froidure-pin-base.hpp"        // for FroidurePinBase
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"                   // for REPORT_VERBOSE_DEFAULT
-#include "stl.hpp"                      // for detail::to_string
+#include "libsemigroups/constants.hpp"                // for UNDEFINED
+#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"                   // for REPORT_VERBOSE_DEFAULT
+#include "libsemigroups/stl.hpp"                      // for detail::to_string
 
 namespace libsemigroups {
 

@@ -19,7 +19,7 @@
 #ifndef LIBSEMIGROUPS_TESTS_FPSEMI_EXAMPLES_HPP_
 #define LIBSEMIGROUPS_TESTS_FPSEMI_EXAMPLES_HPP_
 
-#include "types.hpp"
+#include "libsemigroups/types.hpp"
 
 namespace libsemigroups {
   template <typename T>
