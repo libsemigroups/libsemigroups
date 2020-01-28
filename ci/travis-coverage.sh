@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
 
-ci/travis-setup.sh
+sudo ln -sf /usr/bin/gcov-7 /usr/bin/gcov
+export GCOV=/usr/bin/gcov-7
 
-sudo ln -sf /usr/bin/gcov-5 /usr/bin/gcov
+ci/travis-setup.sh
 
 etc/test-code-coverage.sh test_all "[quick]"
 bash <(curl -s https://codecov.io/bash)
