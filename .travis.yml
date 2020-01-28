@@ -1,8 +1,6 @@
 language: cpp
 
-dist: xenial 
-
-sudo: required
+dist: bionic 
 
 compiler:
   - gcc
@@ -18,6 +16,12 @@ services:
 
 matrix:
   include:
+    - env: TEST_SUITE=cppyy
+      addons:
+        apt:
+          packages:
+            - python3-pip
+
     - env: TEST_SUITE=lint
 
     - env: TEST_SUITE=doc
@@ -64,7 +68,7 @@ matrix:
       osx_image: xcode8
 
     - env: TEST_SUITE=gap
-
+    
     - env: TEST_SUITE=coverage
       addons:
         apt:
