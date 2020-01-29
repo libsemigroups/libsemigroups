@@ -16,13 +16,54 @@ services:
 
 matrix:
   include:
+    - env: TEST_SUITE=hpcombi
+
+    - env: TEST_SUITE=external-fmt
+      addons:
+        apt:
+          packages:
+            - pkg-config
+
+    - env: TEST_SUITE=distcheck
+
+    - env: TEST_SUITE=quick 
+
+    - env: TEST_SUITE=debug
+
+    - os: osx
+      compiler: clang
+      env: TEST_SUITE=quick
+      osx_image: xcode8
+
+    - env: TEST_SUITE=quick MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+      compiler: clang
+      addons:
+        apt:
+          packages:
+            - clang-5.0
+
+    - env: TEST_SUITE=gap
+
+    - env: TEST_SUITE=coverage
+      addons:
+        apt:
+          packages:
+            - lcov
+
+    - env: TEST_SUITE=valgrind
+      addons:
+        apt:
+          packages:
+            - expect
+            - libc6-dbg
+            - libtool-bin
+
+
     - env: TEST_SUITE=cppyy
       addons:
         apt:
           packages:
             - python3-pip
-
-    - env: TEST_SUITE=lint
 
     - env: TEST_SUITE=doc
       addons:
@@ -33,48 +74,8 @@ matrix:
             - graphviz
             - python3-pip
 
-    - env: TEST_SUITE=quick 
-
-    - env: TEST_SUITE=external-fmt
-      addons:
-        apt:
-          packages:
-            - pkg-config
-
-    - env: TEST_SUITE=distcheck
-
-    - env: TEST_SUITE=hpcombi
-
-    - env: TEST_SUITE=debug
-
-    - env: TEST_SUITE=valgrind
-      addons:
-        apt:
-          packages:
-            - expect
-            - libc6-dbg
-            - libtool-bin
-
-    - env: TEST_SUITE=quick MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
-      compiler: clang
-      addons:
-        apt:
-          packages:
-            - clang-5.0
-
-    - os: osx
-      compiler: clang
-      env: TEST_SUITE=quick
-      osx_image: xcode8
-
-    - env: TEST_SUITE=gap
+    - env: TEST_SUITE=lint
     
-    - env: TEST_SUITE=coverage
-      addons:
-        apt:
-          packages:
-            - lcov
-
     # The next suite produces a too long log file, and so terminates.
     # - env: TEST_SUITE=compile-warnings
      
