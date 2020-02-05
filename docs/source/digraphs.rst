@@ -17,3 +17,10 @@ The classes in ``libsemigroups`` for digraphs are:
 
    _generated/libsemigroups__actiondigraph
    _generated/libsemigroups__forest
+
+There are also some helper functions available:
+
+.. toctree::
+   :maxdepth: 1
+
+   api/digraph-helper

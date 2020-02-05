@@ -331,6 +331,11 @@ namespace libsemigroups {
       return _dynamic_array_2.get(v, lbl);
     }
 
+    // Not noexcept because DynamicArray2::get is not
+    node_type inline unsafe_neighbor(node_type v, label_type lbl) const {
+      return _dynamic_array_2.get(v, lbl);
+    }
+
     //! Returns the number of nodes of \c this
     //!
     //! \returns
