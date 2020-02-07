@@ -18,8 +18,8 @@
 
 // This file contains a base class for congruence-like classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_INTF_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_INTF_HPP_
+#ifndef LIBSEMIGROUPS_CONG_INTF_HPP_
+#define LIBSEMIGROUPS_CONG_INTF_HPP_
 
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
@@ -766,4 +766,4 @@ namespace libsemigroups {
     static const std::string STRING_RIGHT;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_INTF_HPP_
+#endif  // LIBSEMIGROUPS_CONG_INTF_HPP_

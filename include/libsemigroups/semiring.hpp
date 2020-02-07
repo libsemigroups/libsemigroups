@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SEMIRING_HPP_
-#define LIBSEMIGROUPS_INCLUDE_SEMIRING_HPP_
+#ifndef LIBSEMIGROUPS_SEMIRING_HPP_
+#define LIBSEMIGROUPS_SEMIRING_HPP_
 
 #include <algorithm>  // for min, max
 #include <cinttypes>  // for int64_t
@@ -548,4 +548,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_SEMIRING_HPP_
+#endif  // LIBSEMIGROUPS_SEMIRING_HPP_

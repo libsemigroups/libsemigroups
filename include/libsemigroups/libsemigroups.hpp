@@ -18,8 +18,8 @@
 
 // This file includes all the headers in libsemigroups, for convenience.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
+#ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
+#define LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
 
 #include "action.hpp"
 #include "adapters.hpp"
@@ -71,4 +71,4 @@
 // #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
 // #endif
 
-#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_HPP_
+#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_

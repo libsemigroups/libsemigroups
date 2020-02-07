@@ -19,8 +19,8 @@
 // This file contains a declaration of a class for performing the Todd-Coxeter
 // algorithm for semigroups and monoid.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
+#ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
+#define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include <chrono>   // for chrono::nanoseconds
 #include <cstddef>  // for size_t
@@ -966,4 +966,4 @@ namespace libsemigroups {
 
   }  // namespace congruence
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_TODD_COXETER_HPP_
+#endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_

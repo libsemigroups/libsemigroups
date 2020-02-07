@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TIMER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_TIMER_HPP_
+#ifndef LIBSEMIGROUPS_TIMER_HPP_
+#define LIBSEMIGROUPS_TIMER_HPP_
 
 #include <chrono>    // for nanoseconds, duration_cast, minutes, operator>
 #include <cstddef>   // for size_t
@@ -109,4 +109,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_TIMER_HPP_
+#endif  // LIBSEMIGROUPS_TIMER_HPP_

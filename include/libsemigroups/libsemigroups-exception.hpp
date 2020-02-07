@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_
-#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_
+#ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
+#define LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
 
 #include <exception>  // for std::runtime_error
 #include <string>     // for std::string
@@ -76,4 +76,4 @@ namespace libsemigroups {
         __FILE__, __LINE__, __func__, fmt::sprintf(__VA_ARGS__)); \
   }
 
-#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_EXCEPTION_HPP_
+#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_

@@ -22,8 +22,8 @@
 // 1. doc
 // 2. tests
 
-#ifndef LIBSEMIGROUPS_INCLUDE_INT_RANGE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_INT_RANGE_HPP_
+#ifndef LIBSEMIGROUPS_INT_RANGE_HPP_
+#define LIBSEMIGROUPS_INT_RANGE_HPP_
 
 #include <cstddef>      // for size_t
 #include <iterator>     // for random_access_iterator_tag
@@ -182,4 +182,4 @@ namespace libsemigroups {
     const_iterator _end;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_INT_RANGE_HPP_
+#endif  // LIBSEMIGROUPS_INT_RANGE_HPP_

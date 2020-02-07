@@ -22,8 +22,8 @@
 // WARNING Nothing in this file is documented (in the online manual), and this
 // is a work in progress, and we don't currently recommend using it.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TRANSF_HPP_
-#define LIBSEMIGROUPS_INCLUDE_TRANSF_HPP_
+#ifndef LIBSEMIGROUPS_TRANSF_HPP_
+#define LIBSEMIGROUPS_TRANSF_HPP_
 
 #include <limits>       // for numeric_limits
 #include <numeric>      // for std::iota
@@ -567,4 +567,4 @@ namespace libsemigroups {
 #endif
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_TRANSF_HPP_
+#endif  // LIBSEMIGROUPS_TRANSF_HPP_

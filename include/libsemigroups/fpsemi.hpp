@@ -19,8 +19,8 @@
 // This file contains the declaration of a class for finitely presented
 // semigroups.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
+#ifndef LIBSEMIGROUPS_FPSEMI_HPP_
+#define LIBSEMIGROUPS_FPSEMI_HPP_
 
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
@@ -273,4 +273,4 @@ namespace libsemigroups {
     detail::Race _race;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_HPP_
+#endif  // LIBSEMIGROUPS_FPSEMI_HPP_

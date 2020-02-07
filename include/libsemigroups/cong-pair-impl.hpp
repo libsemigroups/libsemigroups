@@ -23,8 +23,8 @@
 //   1. the type of the congruence defined by class CongruenceByPairs could be
 //      a template parameter
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_
+#ifndef LIBSEMIGROUPS_CONG_PAIR_IMPL_HPP_
+#define LIBSEMIGROUPS_CONG_PAIR_IMPL_HPP_
 
 #ifdef TEMPLATE
 #undef TEMPLATE
@@ -384,4 +384,4 @@ namespace libsemigroups {
     }
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_PAIR_IMPL_HPP_
+#endif  // LIBSEMIGROUPS_CONG_PAIR_IMPL_HPP_

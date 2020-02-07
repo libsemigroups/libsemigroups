@@ -23,8 +23,8 @@
 // TODO(later)
 // 1. More benchmarks
 
-#ifndef LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
-#define LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
+#ifndef LIBSEMIGROUPS_DIGRAPH_HPP_
+#define LIBSEMIGROUPS_DIGRAPH_HPP_
 
 #include <cstddef>  // for size_t
 
@@ -958,4 +958,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_DIGRAPH_HPP_
+#endif  // LIBSEMIGROUPS_DIGRAPH_HPP_

@@ -24,8 +24,8 @@
 #include "report.hpp"                   // for REPORT
 #include "timer.hpp"                    // for detail::Timer
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_
+#ifndef LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_
+#define LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_
 
 #define TEMPLATE template <typename TElementType, typename TTraits>
 #define FROIDURE_PIN FroidurePin<TElementType, TTraits>
@@ -1605,4 +1605,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_IMPL_HPP_
+#endif  // LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_

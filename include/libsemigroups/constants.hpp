@@ -24,8 +24,8 @@
 // 2. specialisation of operator<< for ostringstream for better printing. I
 //    couldn't immediately get this to work.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONSTANTS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONSTANTS_HPP_
+#ifndef LIBSEMIGROUPS_CONSTANTS_HPP_
+#define LIBSEMIGROUPS_CONSTANTS_HPP_
 
 #include <cinttypes>    // for int64_t
 #include <limits>       // for numeric_limits
@@ -258,4 +258,4 @@ namespace libsemigroups {
     }
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONSTANTS_HPP_
+#endif  // LIBSEMIGROUPS_CONSTANTS_HPP_

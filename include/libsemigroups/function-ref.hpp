@@ -32,8 +32,8 @@
 // temporary, and so the FunctionRef is not valid after the line where it is
 // created.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FUNCTION_REF_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FUNCTION_REF_HPP_
+#ifndef LIBSEMIGROUPS_FUNCTION_REF_HPP_
+#define LIBSEMIGROUPS_FUNCTION_REF_HPP_
 
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "stl.hpp"                  // for IsCallable
@@ -85,4 +85,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_FUNCTION_REF_HPP_
+#endif  // LIBSEMIGROUPS_FUNCTION_REF_HPP_

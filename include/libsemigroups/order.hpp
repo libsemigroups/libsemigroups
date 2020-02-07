@@ -24,8 +24,8 @@
 // 1. add the others (recursive path words) from test-todd-coxeter.cpp
 // 2. add some documentation
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ORDER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ORDER_HPP_
+#ifndef LIBSEMIGROUPS_ORDER_HPP_
+#define LIBSEMIGROUPS_ORDER_HPP_
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -410,4 +410,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_ORDER_HPP_
+#endif  // LIBSEMIGROUPS_ORDER_HPP_

@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_DIGRAPH_HELPER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_DIGRAPH_HELPER_HPP_
+#ifndef LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
+#define LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 
 #include <stack>        // for stack
 #include <type_traits>  // for decay
@@ -101,4 +101,4 @@ namespace libsemigroups {
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_DIGRAPH_HELPER_HPP_
+#endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
