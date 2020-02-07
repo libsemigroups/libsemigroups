@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_REPORT_HPP_
-#define LIBSEMIGROUPS_INCLUDE_REPORT_HPP_
+#ifndef LIBSEMIGROUPS_REPORT_HPP_
+#define LIBSEMIGROUPS_REPORT_HPP_
 
 #include <cxxabi.h>  // for abi::
 
@@ -455,4 +455,4 @@ namespace libsemigroups {
     }
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_REPORT_HPP_
+#endif  // LIBSEMIGROUPS_REPORT_HPP_

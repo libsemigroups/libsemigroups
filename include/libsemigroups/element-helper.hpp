@@ -19,8 +19,8 @@
 // This file contains some helper classes for creating various types of
 // elements in libsemigroups.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_HPP_
+#ifndef LIBSEMIGROUPS_ELEMENT_HELPER_HPP_
+#define LIBSEMIGROUPS_ELEMENT_HELPER_HPP_
 
 #include "bmat8.hpp"    // for BMat8
 #include "element.hpp"  // for Permutation ...
@@ -127,4 +127,4 @@ namespace libsemigroups {
 #endif
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_HELPER_HPP_
+#endif  // LIBSEMIGROUPS_ELEMENT_HELPER_HPP_

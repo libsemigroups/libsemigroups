@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
+#ifndef LIBSEMIGROUPS_ADAPTERS_HPP_
+#define LIBSEMIGROUPS_ADAPTERS_HPP_
 
 #include <algorithm>   // for std::sort
 #include <functional>  // for std::equal_to
@@ -519,4 +519,4 @@ namespace libsemigroups {
   //   struct EmptyKey;
   // #endif
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ADAPTERS_HPP_
+#endif  // LIBSEMIGROUPS_ADAPTERS_HPP_

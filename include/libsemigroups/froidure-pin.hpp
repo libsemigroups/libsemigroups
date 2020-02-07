@@ -20,8 +20,8 @@
 // 1. Use the new document template for all methods.
 // 2. noexcept
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
+#ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
+#define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
 #include <cstddef>        // for size_t
 #include <iterator>       // for reverse_iterator
@@ -1172,4 +1172,4 @@ namespace libsemigroups {
 
 // Include the implementation of the member functions for FroidurePin
 #include "froidure-pin-impl.hpp"
-#endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_HPP_
+#endif  // LIBSEMIGROUPS_FROIDURE_PIN_HPP_

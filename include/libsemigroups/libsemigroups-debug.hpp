@@ -18,8 +18,8 @@
 
 // This file declares debugging functionality.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_DEBUG_HPP_
-#define LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_DEBUG_HPP_
+#ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_
+#define LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_
 
 #include <assert.h>
 
@@ -36,4 +36,4 @@
 #error "GCC version 5.0 or higher is required"
 #endif
 
-#endif  // LIBSEMIGROUPS_INCLUDE_LIBSEMIGROUPS_DEBUG_HPP_
+#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_

@@ -22,8 +22,8 @@
 
 // For technical reasons this is implemented in src/kbe-impl.hpp
 
-#ifndef LIBSEMIGROUPS_INCLUDE_KBE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_KBE_HPP_
+#ifndef LIBSEMIGROUPS_KBE_HPP_
+#define LIBSEMIGROUPS_KBE_HPP_
 
 #include <cstddef>  // for size_t
 #include <string>   // for string
@@ -249,4 +249,4 @@ namespace libsemigroups {
   tril FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE>>::is_finite();
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_KBE_HPP_
+#endif  // LIBSEMIGROUPS_KBE_HPP_

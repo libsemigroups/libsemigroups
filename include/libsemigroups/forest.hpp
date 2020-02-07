@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FOREST_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FOREST_HPP_
+#ifndef LIBSEMIGROUPS_FOREST_HPP_
+#define LIBSEMIGROUPS_FOREST_HPP_
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -236,4 +236,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_FOREST_HPP_
+#endif  // LIBSEMIGROUPS_FOREST_HPP_

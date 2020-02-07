@@ -24,8 +24,8 @@
 // 1. consider if keeping killed off methods has any uses
 // 2. update run_until to be similar to Runner::run_until
 
-#ifndef LIBSEMIGROUPS_INCLUDE_RACE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_RACE_HPP_
+#ifndef LIBSEMIGROUPS_RACE_HPP_
+#define LIBSEMIGROUPS_RACE_HPP_
 
 #include <chrono>   // for nanoseconds
 #include <cstddef>  // for size_t
@@ -273,4 +273,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_RACE_HPP_
+#endif  // LIBSEMIGROUPS_RACE_HPP_

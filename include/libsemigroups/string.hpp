@@ -18,8 +18,8 @@
 
 // This file contains some string related functionality.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_STRING_HPP_
-#define LIBSEMIGROUPS_INCLUDE_STRING_HPP_
+#ifndef LIBSEMIGROUPS_STRING_HPP_
+#define LIBSEMIGROUPS_STRING_HPP_
 
 #include <algorithm>  // for equal
 #include <array>      // for array
@@ -214,4 +214,4 @@ namespace libsemigroups {
 #endif
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_STRING_HPP_
+#endif  // LIBSEMIGROUPS_STRING_HPP_

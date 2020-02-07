@@ -18,8 +18,8 @@
 
 // This file contains some functionality for wrapping iterators.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_
+#ifndef LIBSEMIGROUPS_ITERATOR_HPP_
+#define LIBSEMIGROUPS_ITERATOR_HPP_
 
 // TODO(later)
 // 1. Remove duplicate code, make sure that all member functions are
@@ -885,4 +885,4 @@ namespace libsemigroups {
     }
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ITERATOR_HPP_
+#endif  // LIBSEMIGROUPS_ITERATOR_HPP_
