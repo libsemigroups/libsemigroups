@@ -17,8 +17,8 @@
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/digraph-helper.hpp" // for is_acyclic
-#include "libsemigroups/digraph.hpp"        // for ActionDigraph
+#include "libsemigroups/digraph-helper.hpp"  // for is_acyclic
+#include "libsemigroups/digraph.hpp"         // for ActionDigraph
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 

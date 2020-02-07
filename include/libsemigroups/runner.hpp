@@ -20,8 +20,8 @@
 // different functions/member functions in different threads, and obtaining the
 // winner.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_RUNNER_HPP_
-#define LIBSEMIGROUPS_INCLUDE_RUNNER_HPP_
+#ifndef LIBSEMIGROUPS_RUNNER_HPP_
+#define LIBSEMIGROUPS_RUNNER_HPP_
 
 #include <atomic>       // for atomic
 #include <chrono>       // for nanoseconds, high_resolution_clock
@@ -464,4 +464,4 @@ namespace libsemigroups {
     detail::FunctionRef<bool(void)>                _stopper;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_RUNNER_HPP_
+#endif  // LIBSEMIGROUPS_RUNNER_HPP_

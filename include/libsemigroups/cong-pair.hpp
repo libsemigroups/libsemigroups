@@ -61,8 +61,8 @@
 //    less space by using union-find, but I'm not 100% sure about this, and it
 //    would be a good idea to double check.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
+#ifndef LIBSEMIGROUPS_CONG_PAIR_HPP_
+#define LIBSEMIGROUPS_CONG_PAIR_HPP_
 
 #include <cstddef>        // for size_t
 #include <memory>         // for shared_ptr
@@ -522,4 +522,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "cong-pair-impl.hpp"
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_PAIR_HPP_
+#endif  // LIBSEMIGROUPS_CONG_PAIR_HPP_

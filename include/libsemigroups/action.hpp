@@ -19,8 +19,8 @@
 // This file contains a generic implementation of a class Action which
 // represents the action of a semigroup on a set.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ACTION_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ACTION_HPP_
+#ifndef LIBSEMIGROUPS_ACTION_HPP_
+#define LIBSEMIGROUPS_ACTION_HPP_
 
 #include <cstddef>        // for size_t
 #include <type_traits>    // for is_trivially_default_construc...
@@ -751,4 +751,4 @@ namespace libsemigroups {
       = Action<TElementType, TPointType, TActionType, TTraits, side::left>;
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ACTION_HPP_
+#endif  // LIBSEMIGROUPS_ACTION_HPP_

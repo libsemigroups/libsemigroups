@@ -22,8 +22,8 @@
 // TODO(later):
 // 1. Don't use Pimpl (what was I thinking??)
 
-#ifndef LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
-#define LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
 #include <cstddef>  // for size_t
 #include <iosfwd>   // for string, ostream
@@ -614,4 +614,4 @@ namespace libsemigroups {
     };
   }  // namespace congruence
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_KNUTH_BENDIX_HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_

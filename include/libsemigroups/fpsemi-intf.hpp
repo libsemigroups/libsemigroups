@@ -26,8 +26,8 @@
 //   set of rules.
 // 2. Compare with cong-intf.hpp
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_HPP_
+#ifndef LIBSEMIGROUPS_FPSEMI_INTF_HPP_
+#define LIBSEMIGROUPS_FPSEMI_INTF_HPP_
 
 #include <cstddef>  // for size_t
 
@@ -855,4 +855,4 @@ namespace libsemigroups {
     mutable bool                             _is_obviously_infinite;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FPSEMI_INTF_HPP_
+#endif  // LIBSEMIGROUPS_FPSEMI_INTF_HPP_

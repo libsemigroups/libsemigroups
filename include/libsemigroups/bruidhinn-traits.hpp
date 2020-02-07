@@ -20,8 +20,8 @@
 // types, and functions for translating between then, for use by the
 // FroidurePin, SchreierSims, CongruenceByPairs, and other classes.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_BRUIDHINN_TRAITS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_BRUIDHINN_TRAITS_HPP_
+#ifndef LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
+#define LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
 
 #include <cstddef>  // for size_t
 
@@ -275,4 +275,4 @@ namespace libsemigroups {
                                          TContainer>>>::type;
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_BRUIDHINN_TRAITS_HPP_
+#endif  // LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_

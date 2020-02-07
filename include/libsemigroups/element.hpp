@@ -22,8 +22,8 @@
 // 1. split this file into several files, avoid virtual inheritance, generally
 //    improve this.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
-#define LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
+#ifndef LIBSEMIGROUPS_ELEMENT_HPP_
+#define LIBSEMIGROUPS_ELEMENT_HPP_
 
 #include <cstddef>  // for size_t
 #include <math.h>   // for sqrt, pow
@@ -2185,4 +2185,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_ELEMENT_HPP_
+#endif  // LIBSEMIGROUPS_ELEMENT_HPP_

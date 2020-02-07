@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONTAINERS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONTAINERS_HPP_
+#ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
+#define LIBSEMIGROUPS_CONTAINERS_HPP_
 
 #include <array>     // for array
 #include <cstddef>   // for size_t
@@ -768,4 +768,4 @@ namespace libsemigroups {
     };
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONTAINERS_HPP_
+#endif  // LIBSEMIGROUPS_CONTAINERS_HPP_

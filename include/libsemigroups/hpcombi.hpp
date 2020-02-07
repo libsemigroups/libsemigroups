@@ -19,8 +19,8 @@
 // This file contains specializations of the class adapters in adapters.hpp
 // for the element types in HPCombi.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_HPCOMBI_HPP_
-#define LIBSEMIGROUPS_INCLUDE_HPCOMBI_HPP_
+#ifndef LIBSEMIGROUPS_HPCOMBI_HPP_
+#define LIBSEMIGROUPS_HPCOMBI_HPP_
 
 // Must include libsemigroups-config.hpp so that LIBSEMIGROUPS_HPCOMBI is
 // defined, if so specified at during configure.
@@ -364,4 +364,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI
-#endif  // LIBSEMIGROUPS_INCLUDE_HPCOMBI_HPP_
+#endif  // LIBSEMIGROUPS_HPCOMBI_HPP_

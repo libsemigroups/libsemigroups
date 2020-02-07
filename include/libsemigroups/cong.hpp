@@ -19,8 +19,8 @@
 // This file contains stuff for creating congruence over FroidurePin objects or
 // over FpSemigroup objects.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_HPP_
+#ifndef LIBSEMIGROUPS_CONG_HPP_
+#define LIBSEMIGROUPS_CONG_HPP_
 
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
@@ -313,4 +313,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_HPP_
+#endif  // LIBSEMIGROUPS_CONG_HPP_

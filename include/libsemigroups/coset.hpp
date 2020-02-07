@@ -19,8 +19,8 @@
 // This file contains the declaration for a class to manage cosets for a
 // ToddCoxeter instance.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_COSET_HPP_
-#define LIBSEMIGROUPS_INCLUDE_COSET_HPP_
+#ifndef LIBSEMIGROUPS_COSET_HPP_
+#define LIBSEMIGROUPS_COSET_HPP_
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -174,4 +174,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_COSET_HPP_
+#endif  // LIBSEMIGROUPS_COSET_HPP_
