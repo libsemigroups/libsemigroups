@@ -49,8 +49,8 @@
 
 // THIS FILE CAN BE USED AS HEADER ONLY
 
-#ifndef LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
+#ifndef LIBSEMIGROUPS_SCHREIER_SIMS_HPP_
+#define LIBSEMIGROUPS_SCHREIER_SIMS_HPP_
 
 #include <array>          // for array
 #include <cstddef>        // for size_t
@@ -749,4 +749,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_SCHREIER_SIMS_HPP_
+#endif  // LIBSEMIGROUPS_SCHREIER_SIMS_HPP_

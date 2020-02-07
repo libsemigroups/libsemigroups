@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TYPES_HPP_
-#define LIBSEMIGROUPS_INCLUDE_TYPES_HPP_
+#ifndef LIBSEMIGROUPS_TYPES_HPP_
+#define LIBSEMIGROUPS_TYPES_HPP_
 
 #include <cstddef>  // for size_t
 
@@ -68,4 +68,4 @@ namespace libsemigroups {
   using relation_type = std::pair<word_type, word_type>;
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_TYPES_HPP_
+#endif  // LIBSEMIGROUPS_TYPES_HPP_

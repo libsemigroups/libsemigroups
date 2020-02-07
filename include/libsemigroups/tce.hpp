@@ -22,8 +22,8 @@
 // This file also contains specializations of the adapters complexity, degree,
 // less, one, product, and std::hash for TCE.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_TCE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_TCE_HPP_
+#ifndef LIBSEMIGROUPS_TCE_HPP_
+#define LIBSEMIGROUPS_TCE_HPP_
 
 #include <cstddef>     // for size_t
 #include <functional>  // for hash
@@ -183,4 +183,4 @@ namespace std {
   };
 }  // namespace std
 
-#endif  // LIBSEMIGROUPS_INCLUDE_TCE_HPP_
+#endif  // LIBSEMIGROUPS_TCE_HPP_

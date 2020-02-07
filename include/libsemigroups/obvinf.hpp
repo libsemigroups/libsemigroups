@@ -34,8 +34,8 @@
 // 2) check if the kernel of the matrix is not null using eigen, so that the
 //    semigroup has an infinite homomorphic image.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_OBVINF_HPP_
-#define LIBSEMIGROUPS_INCLUDE_OBVINF_HPP_
+#ifndef LIBSEMIGROUPS_OBVINF_HPP_
+#define LIBSEMIGROUPS_OBVINF_HPP_
 
 #include <cstddef>        // for size_t
 #include <string>         // for string
@@ -207,4 +207,4 @@ namespace libsemigroups {
     };
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_OBVINF_HPP_
+#endif  // LIBSEMIGROUPS_OBVINF_HPP_

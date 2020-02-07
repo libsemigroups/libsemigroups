@@ -20,8 +20,8 @@
 // 1. Remove virtualness
 // 2. Avoid code duplication in the relations helper func
 
-#ifndef LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_
-#define LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_
+#ifndef LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
+#define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
 #include <cstddef>     // for size_t
 #include <functional>  // for function
@@ -414,4 +414,4 @@ namespace libsemigroups {
   //! \copydoc libsemigroups::relations
   void relations(FroidurePinBase& S, std::function<void(word_type)>&& hook);
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_FROIDURE_PIN_BASE_HPP_
+#endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_

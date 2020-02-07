@@ -20,8 +20,8 @@
 // FpSemigroupInterface, the resulting FpSemigroupInterface delegates everything
 // to CongruenceInterface which it wraps.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_CONG_WRAP_HPP_
-#define LIBSEMIGROUPS_INCLUDE_CONG_WRAP_HPP_
+#ifndef LIBSEMIGROUPS_CONG_WRAP_HPP_
+#define LIBSEMIGROUPS_CONG_WRAP_HPP_
 
 #include <cstddef>  // for size_t
 #include <memory>   // for unique_ptr, shared_ptr
@@ -258,4 +258,4 @@ namespace libsemigroups {
     std::unique_ptr<wrapped_type> _wrapped_cong;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INCLUDE_CONG_WRAP_HPP_
+#endif  // LIBSEMIGROUPS_CONG_WRAP_HPP_

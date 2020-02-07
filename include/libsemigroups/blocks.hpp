@@ -19,8 +19,8 @@
 // This file contains the declaration of a blocks class, which is needed by the
 // bipartitions code.
 
-#ifndef LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
-#define LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
+#ifndef LIBSEMIGROUPS_BLOCKS_HPP_
+#define LIBSEMIGROUPS_BLOCKS_HPP_
 
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint32_t
@@ -311,4 +311,4 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_INCLUDE_BLOCKS_HPP_
+#endif  // LIBSEMIGROUPS_BLOCKS_HPP_
