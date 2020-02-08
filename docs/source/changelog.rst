@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.0.6 (released 08/02/2020)
+----------------------------
+
+This is a minor release fixing some bugs.
+
 v1.0.5 (released 13/01/2020)
 ----------------------------
 
