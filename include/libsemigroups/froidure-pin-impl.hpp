@@ -872,7 +872,12 @@ namespace libsemigroups {
   }
 
   BOOL FROIDURE_PIN::finished_impl() const {
-    return _pos >= _nr;
+    std::unique_lock<std::mutex> lock(_mtx, std::try_to_lock);
+    if (lock.owns_lock()) {
+      return _pos >= _nr;
+    } else {
+      return false;
+    }
   }
 
   VOID FROIDURE_PIN::add_generator(element_type const& x) {
@@ -1317,7 +1322,7 @@ namespace libsemigroups {
     }
     _idempotents_found = true;
     run();
-    _is_idempotent.resize(_nr, false);
+    _is_idempotent.resize(_nr, 0);
 
     detail::Timer timer;
 
@@ -1446,7 +1451,7 @@ namespace libsemigroups {
 
     for (; pos < std::min(threshold, last); pos++) {
       element_index_type k = _enumerate_order[pos];
-      if (!_is_idempotent[k]) {
+      if (_is_idempotent[k] == 0) {
         // The following is product_by_reduction, don't have to consider
         // lengths because they are equal!!
         element_index_type i = k, j = k;
@@ -1459,7 +1464,7 @@ namespace libsemigroups {
         }
         if (i == k) {
           idempotents.emplace_back(_elements[k], k);
-          _is_idempotent[k] = true;
+          _is_idempotent[k] = 1;
         }
       }
     }
@@ -1475,14 +1480,14 @@ namespace libsemigroups {
 
     for (; pos < last; pos++) {
       element_index_type k = _enumerate_order[pos];
-      if (!_is_idempotent[k]) {
+      if (_is_idempotent[k] == 0) {
         Product()(this->to_external(tmp_product),
                   this->to_external(_elements[k]),
                   this->to_external(_elements[k]),
                   tid);
         if (InternalEqualTo()(tmp_product, _elements[k])) {
           idempotents.emplace_back(_elements[k], k);
-          _is_idempotent[k] = true;
+          _is_idempotent[k] = 1;
         }
       }
     }
