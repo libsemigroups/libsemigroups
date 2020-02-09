@@ -872,12 +872,7 @@ namespace libsemigroups {
   }
 
   BOOL FROIDURE_PIN::finished_impl() const {
-    std::unique_lock<std::mutex> lock(_mtx, std::try_to_lock);
-    if (lock.owns_lock()) {
-      return _pos >= _nr;
-    } else {
-      return false;
-    }
+    return !running() && _pos >= _nr;
   }
 
   VOID FROIDURE_PIN::add_generator(element_type const& x) {
