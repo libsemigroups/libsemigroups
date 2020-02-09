@@ -321,6 +321,7 @@ namespace libsemigroups {
       template <typename TClass>
       Reporter& prefix(TClass const* const ptr) {
         if (_report) {
+          std::lock_guard<std::mutex> lg(_mtx);
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].prefix
@@ -331,6 +332,7 @@ namespace libsemigroups {
 
       Reporter& prefix() {
         if (_report) {
+          std::lock_guard<std::mutex> lg(_mtx);
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].prefix = "";
@@ -349,6 +351,7 @@ namespace libsemigroups {
 
       Reporter& thread_color() {
         if (_report) {
+          std::lock_guard<std::mutex> lg(_mtx);
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].color = thread_colors[tid % thread_colors.size()];
@@ -358,6 +361,7 @@ namespace libsemigroups {
 
       Reporter& flush_right() {
         if (_report) {
+          std::lock_guard<std::mutex> lg(_mtx);
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].flush_right = true;
@@ -376,6 +380,7 @@ namespace libsemigroups {
       template <typename... TArgs>
       Reporter& operator()(TArgs... args) {
         if (_report) {
+          std::lock_guard<std::mutex> lg(_mtx);
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           if (tid >= _last_msg.size()) {
             resize(tid + 1);
@@ -414,7 +419,6 @@ namespace libsemigroups {
      private:
       void resize(size_t n) {
         if (n > _msg.size()) {
-          std::lock_guard<std::mutex> lg(_mtx);
           _last_msg.resize(n);
           _msg.resize(n);
           _options.resize(n);
