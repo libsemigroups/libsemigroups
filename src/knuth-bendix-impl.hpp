@@ -270,6 +270,7 @@ namespace libsemigroups {
             _confluence_known(false),
             _inactive_rules(),
             _internal_is_same_as_external(false),
+            _contains_empty_string(false),
             _kb(kb),
             _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
             _overlap_measure(nullptr),
@@ -516,6 +517,9 @@ namespace libsemigroups {
           // orderings (such as RECURSIVE)
           _min_length_lhs_rule = rule->lhs()->size();
         }
+        if (!_contains_empty_string) {
+          _contains_empty_string = rule->lhs()->empty() || rule->rhs()->empty();
+        }
         LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
       }
 
@@ -549,6 +553,10 @@ namespace libsemigroups {
       }
 
      public:
+      bool contains_empty_string() const noexcept {
+        return _contains_empty_string;
+      }
+
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - other methods - public
       //////////////////////////////////////////////////////////////////////////
@@ -993,6 +1001,7 @@ namespace libsemigroups {
       mutable std::atomic<bool>        _confluence_known;
       mutable std::list<Rule*>         _inactive_rules;
       bool                             _internal_is_same_as_external;
+      bool                             _contains_empty_string;
       KnuthBendix*                     _kb;
       size_t                           _min_length_lhs_rule;
       std::list<Rule const*>::iterator _next_rule_it1;

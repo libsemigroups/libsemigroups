@@ -24,7 +24,7 @@
 #include <algorithm>  // for uniform_int_distribution, swap
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint64_t
-#include <iostream>   // for operator<<, ostringstream
+#include <iosfwd>     // for operator<<, ostringstream
 #include <random>     // for mt19937, random_device
 #include <utility>    // for hash
 #include <vector>     // for vector

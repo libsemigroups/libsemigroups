@@ -1555,23 +1555,20 @@ namespace libsemigroups {
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
         tc = detail::make_unique<ToddCoxeter>(twosided, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("left") {
         tc = detail::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
         tc = detail::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       REQUIRE(tc->has_parent_froidure_pin());

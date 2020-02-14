@@ -19,10 +19,10 @@
 #ifndef LIBSEMIGROUPS_TIMER_HPP_
 #define LIBSEMIGROUPS_TIMER_HPP_
 
-#include <chrono>    // for nanoseconds, duration_cast, minutes, operator>
-#include <cstddef>   // for size_t
-#include <iostream>  // for ostream
-#include <string>    // for string
+#include <chrono>   // for nanoseconds, duration_cast, minutes, operator>
+#include <cstddef>  // for size_t
+#include <iosfwd>   // for ostream
+#include <string>   // for string
 
 #include "string.hpp"  // for to_string
 

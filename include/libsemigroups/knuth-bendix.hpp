@@ -31,9 +31,11 @@
 #include <vector>   // for vector
 
 #include "cong-intf.hpp"     // for CongruenceInterface
+#include "digraph.hpp"       // for ActionDigraph
 #include "fpsemi-intf.hpp"   // for FpSemigroupInterface
 #include "froidure-pin.hpp"  // for FroidurePin
 #include "types.hpp"         // for word_type
+#include "word.hpp"          // for word_to_string
 
 namespace libsemigroups {
   // Forward declarations
@@ -300,6 +302,91 @@ namespace libsemigroups {
       // const_iterator cbegin_active_rules() const;
       // const_iterator cend_active_rules() const;
 
+      struct NormalFormsIteratorTraits {
+        // state_type::first = this, state_type::second = current value
+        using state_type = std::pair<std::string, std::string>;
+        using internal_iterator_type
+            = ActionDigraph<size_t>::const_pislo_iterator;
+        using value_type        = std::string;
+        using reference         = std::string&;
+        using const_reference   = std::string const&;
+        using difference_type   = std::ptrdiff_t;
+        using size_type         = std::size_t;
+        using const_pointer     = std::string const*;
+        using pointer           = std::string*;
+        using iterator_category = std::forward_iterator_tag;
+
+        struct Deref {
+          const_reference operator()(state_type&                   state,
+                                     internal_iterator_type const& it) const
+              noexcept {
+            if (state.second.empty()) {
+              libsemigroups::word_to_string(state.first, *it, state.second);
+            }
+            return state.second;
+          }
+        };
+
+        struct AddressOf {
+          const_pointer operator()(state_type&                   state,
+                                   internal_iterator_type const& it) const
+              noexcept {
+            Deref()(state, it);  // to ensure that state.second is initialised
+            return &state.second;
+          }
+        };
+
+        struct PrefixIncrement {
+          void operator()(state_type& state, internal_iterator_type& it) const
+              noexcept {
+            ++it;
+            state.second.clear();
+          }
+        };
+
+        struct Swap {
+          void operator()(internal_iterator_type& it_this,
+                          internal_iterator_type& it_that,
+                          state_type&             state_this,
+                          state_type&             state_that) const noexcept {
+            swap(it_this, it_that);
+            swap(state_this, state_that);
+          }
+        };
+
+        using EqualTo          = void;
+        using NotEqualTo       = void;
+        using PostfixIncrement = void;
+      };
+
+      using const_normal_form_iterator
+          = detail::ConstIteratorStateful<NormalFormsIteratorTraits>;
+
+      static_assert(
+          std::is_default_constructible<const_normal_form_iterator>::value,
+          "forward iterator requires default-constructible");
+      static_assert(
+          std::is_copy_constructible<const_normal_form_iterator>::value,
+          "forward iterator requires copy-constructible");
+      static_assert(std::is_copy_assignable<const_normal_form_iterator>::value,
+                    "forward iterator requires copy-assignable");
+      static_assert(std::is_destructible<const_normal_form_iterator>::value,
+                    "forward iterator requires destructible");
+
+      const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
+                                                     size_t const       min,
+                                                     size_t const       max);
+
+      const_normal_form_iterator cbegin_normal_forms(size_t min, size_t max) {
+        return cbegin_normal_forms(alphabet(), min, max);
+      }
+
+      const_normal_form_iterator cend_normal_forms() {
+        using state_type = NormalFormsIteratorTraits::state_type;
+        return const_normal_form_iterator(state_type("", ""),
+                                          gilman_digraph().cend_pislo());
+      }
+
       //! Rewrite a word in-place.
       //!
       //! The word \p w is rewritten in-place according to the current active
@@ -347,24 +434,6 @@ namespace libsemigroups {
       //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
       //! on the KnuthBendix instance.
       //!
-      //! \returns
-      //! (None)
-      //!
-      //! \complexity
-      //! See warning.
-      //!
-      //! \warning This will terminate when the KnuthBendix instance is
-      //! confluent, which might be never.
-      //!
-      //! \sa knuth_bendix_by_overlap_length.
-      //!
-      //! \par Parameters
-      //! (None)
-      // void knuth_bendix();
-
-      //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
-      //! on the KnuthBendix instance.
-      //!
       //! This function runs the Knuth-Bendix algorithm on the rewriting
       //! system represented by a KnuthBendix instance by considering all
       //! overlaps of a given length \f$n\f$ (according to the
@@ -386,6 +455,15 @@ namespace libsemigroups {
       //! (None)
       void knuth_bendix_by_overlap_length();
 
+      // TODO doc
+      ActionDigraph<size_t> const& gilman_digraph();
+
+      // TODO rename to contains_empty_string
+      bool contains_empty_string() const;
+
+      // TODO DOC
+      uint64_t number_of_normal_forms(size_t const min, size_t const max);
+
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - pure virtual member functions - public
       //////////////////////////////////////////////////////////////////////////
@@ -394,11 +472,7 @@ namespace libsemigroups {
 
       bool equal_to(std::string const&, std::string const&) override;
 
-      std::string normal_form(std::string const& w) override {
-        validate_word(w);
-        run();
-        return rewrite(w);
-      }
+      std::string normal_form(std::string const& w) override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - non-pure virtual member functions - public
@@ -429,6 +503,7 @@ namespace libsemigroups {
       }
 
       bool is_obviously_infinite_impl() override;
+      bool is_obviously_finite_impl() override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - non-pure virtual member functions - private
@@ -455,7 +530,10 @@ namespace libsemigroups {
         policy::overlap _overlap_policy;
       } _settings;
 
-      class KnuthBendixImpl;  // Forward declaration
+      // Forward declarations
+      class KnuthBendixImpl;
+
+      ActionDigraph<size_t>            _gilman_digraph;
       std::unique_ptr<KnuthBendixImpl> _impl;
     };
   }  // namespace fpsemigroup
@@ -610,9 +688,7 @@ namespace libsemigroups {
       void add_pair_impl(word_type const&, word_type const&) override;
       void set_nr_generators_impl(size_t) override;
       bool is_quotient_obviously_finite_impl() override;
-      bool is_quotient_obviously_infinite_impl() override {
-        return _kb->is_obviously_infinite();
-      }
+      bool is_quotient_obviously_infinite_impl() override;
 
       ////////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private

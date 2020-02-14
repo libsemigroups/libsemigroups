@@ -38,15 +38,76 @@
 
 #include "containers.hpp"               // for DynamicArray2
 #include "digraph-helper.hpp"           // for is_reachable
+#include "element.hpp"                  // for MatrixOverSemiring
 #include "forest.hpp"                   // for Forest
 #include "int-range.hpp"                // for IntegralRange
 #include "iterator.hpp"                 // for ConstIteratorStateless
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "semiring.hpp"                 // for Integers
 #include "types.hpp"                    // for word_type
 #include "word.hpp"                     // for number_of_words
 
 namespace libsemigroups {
+
+  namespace detail {
+    // std::vector<int64_t> my_one(size_t const N) {
+    //  std::vector<int64_t> out(N * N, 0);
+    //  for (size_t i = 0; i < N; ++i) {
+    //    out[i * N] = 1;
+    //  }
+    //  return out;
+    // }
+
+    /*template <typename S, typename T>
+    void pow(S& x, T e, size_t N) {
+      if (e <= 1) {
+        return;
+      }
+      S y = x;
+      S z = (e % 2 == 0 ? my_one(N) : x);
+
+      while (e > 1) {
+        matrix_product_in_place(yy, y, y);
+        y = y * y;
+        e /= 2;
+        if (e % 2 == 1) {
+          z = z * y;
+        }
+      }
+      x = z;
+    }*/
+
+    template <typename T>
+    std::vector<int64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
+      size_t const         N = ad.nr_nodes();
+      std::vector<int64_t> mat(N * N);
+
+      for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
+        for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
+          if (*e != UNDEFINED) {
+            mat[(*n) * N + *e] = 1;
+          }
+        }
+      }
+      return mat;
+    }
+
+    static inline void matrix_product_in_place(std::vector<int64_t>&       xy,
+                                               std::vector<int64_t> const& x,
+                                               std::vector<int64_t> const& y,
+                                               size_t const                N) {
+      for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+          int64_t v = 0;
+          for (size_t k = 0; k < N; ++k) {
+            v += x[i * N + k] * y[k * N + j];
+          }
+          xy[i * N + j] = v;
+        }
+      }
+    }
+  }  // namespace detail
 
   //! Defined in ``digraph.hpp``.
   //!
@@ -1976,14 +2037,94 @@ namespace libsemigroups {
                            node_type const target,
                            size_t const    min,
                            size_t const    max) const {
-      // TODO use adjacency matrix if nr_nodes is small enough
       action_digraph_helper::validate_node(*this, source);
       action_digraph_helper::validate_node(*this, target);
-      if (!action_digraph_helper::is_reachable(*this, source, target)) {
+      if (min >= max
+          || !action_digraph_helper::is_reachable(*this, source, target)) {
         return 0;
       }
-      return std::distance(cbegin_pstilo(source, target, min, max),
-                           cend_pstilo());
+
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty()) {
+        // Can't topologically sort, so the digraph contains cycles.
+        if (max == POSITIVE_INFINITY) {
+          return POSITIVE_INFINITY;
+        } else {
+          // #ifndef LIBSEMIGROUPS_EIGEN_ENABLED
+          // if (nr_nodes() < 1028) {
+          //   auto am = adjacency_matrix(*this);
+          //   auto acc = am;
+          //   auto tmp = am;
+          //   // pow(acc, min);
+          //   auto const N = nr_nodes();
+          //   uint64_t total = (min == 0 ? 1 : 0);
+          //   for (size_t i = min + 1; i < max; ++i) {
+          //     uint64_t add = std::accumulate(acc.cbegin() + source * N,
+          //                            acc.cbegin() + source * N + N,
+          //                            uint64_t(0));
+          //     if (add == 0) {
+          //       break;
+          //     }
+          //     total += add;
+          //     matrix_product_in_place(tmp, acc, am, N);
+          //     tmp.swap(acc);
+          //   }
+          //   return total;
+          // }
+          return std::distance(cbegin_pstilo(source, target, min, max),
+                               cend_pstilo());
+        }
+      } else {
+        if ((max == 1 && source != target) || (min != 0 && source == target)) {
+          return 0;
+        } else if (source == target) {
+          return 1;
+        }
+        // Digraph is acyclic...
+        LIBSEMIGROUPS_ASSERT(source == topo.back());
+        auto it = std::find(topo.cbegin(), topo.cend(), target);
+        LIBSEMIGROUPS_ASSERT(it != topo.cend());
+        if (size_t(std::distance(it, topo.cend())) <= min) {
+          return 0;
+        }
+        // Don't visit nodes that occur after target in "topo".
+        std::vector<bool> lookup(nr_nodes(), true);
+        std::for_each(topo.cbegin(), it, [&lookup](node_type const& n) {
+          lookup[n] = false;
+        });
+
+        // Remove the entries in topo after target
+        topo.erase(topo.cbegin(), it);
+
+        // Columns correspond to path lengths, rows to nodes in the graph
+        // TODO replace with DynamicTriangularArray2
+        auto number_paths = detail::DynamicArray2<uint64_t>(
+            std::min(topo.size(), max),
+            *std::max_element(topo.cbegin(), topo.cend()) + 1,
+            0);
+
+        for (size_t m = 1; m < topo.size(); ++m) {
+          for (auto n = cbegin_edges(topo[m]); n != cend_edges(topo[m]); ++n) {
+            if (*n == target) {
+              number_paths.set(topo[m], 1, 1);
+            }
+            if (*n != UNDEFINED && lookup[*n]) {
+              // there are no paths longer than m + 1 from the m-th entry in
+              // the topological sort.
+              for (size_t i = 1; i < std::min(max, m + 1); ++i) {
+                number_paths.set(topo[m],
+                                 i,
+                                 number_paths.get(*n, i - 1)
+                                     + number_paths.get(topo[m], i));
+              }
+            }
+          }
+        }
+        return std::accumulate(number_paths.cbegin_row(source) + min,
+                               number_paths.cbegin_row(source)
+                                   + std::min(topo.size(), max),
+                               0);
+      }
     }
 
     //! Returns the number of paths starting at a given node with length in a
@@ -2002,17 +2143,112 @@ namespace libsemigroups {
     size_t number_of_paths(node_type const source,
                            size_t const    min,
                            size_t const    max) const {
-      // TODO use adjacency matrix if nr_nodes is small enough
       action_digraph_helper::validate_node(*this, source);
-      if (validate()) {
+      if (min >= max) {
+        return 0;
+      } else if (validate()) {
+        // every edge is defined, so the number of words labelling paths is
+        // just the number of words
         return (max == POSITIVE_INFINITY
                     ? POSITIVE_INFINITY
                     : number_of_words(out_degree(), min, max));
-      } else if (!action_digraph_helper::is_acyclic(*this, source)
-                 && max == POSITIVE_INFINITY) {
-        return POSITIVE_INFINITY;
       }
-      return std::distance(cbegin_panilo(source, min, max), cend_panilo());
+
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty()) {
+        // Can't topologically sort, so the digraph contains cycles.
+        if (max == POSITIVE_INFINITY) {
+          return POSITIVE_INFINITY;
+        } else {
+          // #ifndef LIBSEMIGROUPS_EIGEN_ENABLED
+          // if (nr_nodes() < 1028) {
+          //   auto am = adjacency_matrix(*this);
+          //   auto acc = am;
+          //   auto tmp = am;
+          //   // pow(acc, min);
+          //   auto const N = nr_nodes();
+          //   uint64_t total = (min == 0 ? 1 : 0);
+          //   for (size_t i = min + 1; i < max; ++i) {
+          //     uint64_t add = std::accumulate(acc.cbegin() + source * N,
+          //                            acc.cbegin() + source * N + N,
+          //                            uint64_t(0));
+          //     if (add == 0) {
+          //       break;
+          //     }
+          //     total += add;
+          //     matrix_product_in_place(tmp, acc, am, N);
+          //     tmp.swap(acc);
+          //   }
+          //   return total;
+          // }
+          return std::distance(cbegin_panilo(source, min, max), cend_panilo());
+        }
+      } else if (topo.size() <= min) {
+        return 0;
+      } else {
+        LIBSEMIGROUPS_ASSERT(source == topo.back());
+        // Digraph is acyclic...
+        // Columns correspond to path lengths, rows to nodes in the graph
+        // TODO replace with DynamicTriangularArray2
+        auto number_paths = detail::DynamicArray2<uint64_t>(
+            std::min(max, topo.size()),
+            *std::max_element(topo.cbegin(), topo.cend()) + 1,
+            0);
+        number_paths.set(topo[0], 0, 1);
+        for (size_t m = 1; m < topo.size(); ++m) {
+          number_paths.set(topo[m], 0, 1);
+          for (auto n = cbegin_edges(topo[m]); n != cend_edges(topo[m]); ++n) {
+            if (*n != UNDEFINED) {
+              // there are no paths longer than m + 1 from the m-th entry in
+              // the topological sort.
+              for (size_t i = 1; i < std::min(max, m + 1); ++i) {
+                number_paths.set(topo[m],
+                                 i,
+                                 number_paths.get(*n, i - 1)
+                                     + number_paths.get(topo[m], i));
+              }
+            }
+          }
+        }
+        return std::accumulate(number_paths.cbegin_row(source) + min,
+                               number_paths.cbegin_row(source)
+                                   + std::min(topo.size(), max),
+                               0);
+      }
+    }
+
+    // TODO doc
+    size_t number_of_paths(node_type const source) const {
+      // TODO cache the computed values of number_paths etc
+      action_digraph_helper::validate_node(*this, source);
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+
+      if (topo.empty()) {
+        // Can't topologically sort, so the digraph contains cycles, and so
+        // there are infinitely many words labelling paths.
+        return POSITIVE_INFINITY;
+      } else {
+        // Digraph is acyclic...
+        LIBSEMIGROUPS_ASSERT(topo.back() == source);
+        if (source == topo[0]) {
+          // source is the "sink" of the digraph, and so there's only 1 path
+          // (the empty one).
+          return 1;
+        } else {
+          std::vector<uint64_t> number_paths(nr_nodes(), 0);
+          for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
+            for (auto n = cbegin_edges(*m); n != cend_edges(*m); ++n) {
+              if (*n != UNDEFINED) {
+                number_paths[*m] += (number_paths[*n] + 1);
+              }
+            }
+            if (*m == source) {
+              break;
+            }
+          }
+          return number_paths[source] + 1;
+        }
+      }
     }
 
    private:

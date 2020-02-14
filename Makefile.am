@@ -271,7 +271,12 @@ test_all_SOURCES += tests/test-froidure-pin-tropmaxplus.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kbe.cpp
-test_all_SOURCES += tests/test-knuth-bendix.cpp
+test_all_SOURCES += tests/test-knuth-bendix-1.cpp
+test_all_SOURCES += tests/test-knuth-bendix-2.cpp
+test_all_SOURCES += tests/test-knuth-bendix-3.cpp
+test_all_SOURCES += tests/test-knuth-bendix-4.cpp
+test_all_SOURCES += tests/test-knuth-bendix-5.cpp
+test_all_SOURCES += tests/test-knuth-bendix-6.cpp
 test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-order.cpp
 test_all_SOURCES += tests/test-race.cpp
@@ -285,9 +290,6 @@ test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-wilo.cpp
 test_all_SOURCES += tests/test-wislo.cpp
 test_all_SOURCES += tests/test-word.cpp
-
-test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
-test_digraph_helper_SOURCES += tests/test-main.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
@@ -313,6 +315,9 @@ test_constants_SOURCES += tests/test-main.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
+
+test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
+test_digraph_helper_SOURCES += tests/test-main.cpp
 
 test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
@@ -375,7 +380,12 @@ test_iterator_SOURCES += tests/test-main.cpp
 test_kbe_SOURCES =  tests/test-kbe.cpp
 test_kbe_SOURCES += tests/test-main.cpp
 
-test_knuth_bendix_SOURCES =  tests/test-knuth-bendix.cpp
+test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-3.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
 
 test_order_SOURCES =  tests/test-order.cpp
