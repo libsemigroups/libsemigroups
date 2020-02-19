@@ -369,8 +369,9 @@ namespace libsemigroups {
     // Not noexcept because std::count isn't
     size_t nr_edges() const {
       return _dynamic_array_2.nr_rows() * _dynamic_array_2.nr_cols()
-             - std::count(
-                 _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
+             - std::count(_dynamic_array_2.cbegin(),
+                          _dynamic_array_2.cend(),
+                          UNDEFINED);
     }
 
     //! Returns the out-degree of \c this.
@@ -952,8 +953,8 @@ namespace libsemigroups {
 
     mutable struct SCC : public Attr {
       SCC() : Attr(), _comps(), _id() {}
-      std::vector<std::vector<size_t>> _comps;
-      std::vector<T>                   _id;
+      std::vector<std::vector<node_type>> _comps;
+      std::vector<scc_index_type>         _id;
     } _scc;
   };
 
