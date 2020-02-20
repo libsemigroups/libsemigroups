@@ -251,17 +251,15 @@ namespace libsemigroups {
     //! This constructor is deleted.
     CongruenceByPairs() = delete;
 
-    //! A CongruenceByPairs instance is not copyable.
-    //! This constructor is deleted.
-    CongruenceByPairs(CongruenceByPairs const&) = delete;
+    //! A default copy constructor.
+    CongruenceByPairs(CongruenceByPairs const&) = default;
 
     //! A CongruenceByPairs instance is not copy assignable.
     //! This constructor is deleted.
     CongruenceByPairs& operator=(CongruenceByPairs const&) = delete;
 
-    //! A CongruenceByPairs instance is not move copyable.
-    //! This constructor is deleted.
-    CongruenceByPairs(CongruenceByPairs&&) = delete;
+    //! A default move constructor.
+    CongruenceByPairs(CongruenceByPairs&&) = default;
 
     //! A CongruenceByPairs instance is not move assignable.
     //! This constructor is deleted.
