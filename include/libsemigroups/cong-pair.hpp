@@ -226,7 +226,7 @@ namespace libsemigroups {
     //! representing a left/right/2-sided congruence according to \p type.
     //!
     //! \tparam T a class derived from FroidurePinBase. It is required that
-    //! `T::element_type` be the same as CongruenceByPairs::element_type
+    //! `T::element_type` is the same as CongruenceByPairs::element_type
     //! (which is the same as the template parameter \p TElementType).
     //!
     //! \param type whether the congruence is left, right, or 2-sided
@@ -240,7 +240,7 @@ namespace libsemigroups {
     //! \par Complexity
     //! Constant.
     //!
-    //! \warning the parameter `T& S` is copied, this might be expensive, use
+    //! \warning The parameter `T& S` is copied, this might be expensive, use
     //! a std::shared_ptr to avoid the copy!
     template <typename T>
     CongruenceByPairs(congruence_type type, T const& fp);
