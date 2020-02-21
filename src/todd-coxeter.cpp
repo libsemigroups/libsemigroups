@@ -581,7 +581,9 @@ namespace libsemigroups {
       init();
       std::vector<class_index_type> perm(0, _relations.size());
       std::iota(perm.begin(), perm.end(), 0);
-      std::random_shuffle(perm.begin(), perm.end());
+      std::random_device rd;
+      std::mt19937 g(rd());
+      std::shuffle(perm.begin(), perm.end(), g);
       ::sort_generating_pairs(perm, _relations);
       ::sort_generating_pairs(perm, _extra);
       return *this;
