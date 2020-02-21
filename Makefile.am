@@ -425,9 +425,9 @@ clean-local-check:
 	rm -f benchmark/gbench/__py_cache__/*.pyc
 .PHONY: clean-local-check
 
-distclean-local: distclean-local-check
+distclean-local:
 	rm -f include/libsemigroups/libsemigroups-config.hpp
-.PHONY: distclean-local-check
+.PHONY: distclean-local
 
 superclean: distclean
 	git clean -xdf --exclude *.swp --exclude *.swo
