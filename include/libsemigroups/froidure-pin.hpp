@@ -951,14 +951,21 @@ namespace libsemigroups {
                      enumerate_index_type const,
                      std::vector<internal_idempotent_pair>&);
 
+   public:
+    // Forward declarations - implemented in froidure-pin-impl.hpp
+    //! No doc
+    struct DerefPairFirst;
+
+    //! No doc
+    struct AddressOfPairFirst;
+
+    //! No doc
+    struct IteratorPairFirstTraits;
+
+   private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - iterators - private
     ////////////////////////////////////////////////////////////////////////
-
-    // Forward declarations - implemented in froidure-pin-impl.hpp
-    struct DerefPairFirst;
-    struct AddressOfPairFirst;
-    struct IteratorPairFirstTraits;
 
     // A type for const iterators through (element, index) pairs of \c this.
     using const_iterator_pair_first
