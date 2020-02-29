@@ -87,8 +87,7 @@ namespace libsemigroups {
     auto                                      rg = ReportGuard(REPORT);
     std::vector<Transformation<uint_fast8_t>> gens1;
 
-    REQUIRE_THROWS_AS(FroidurePin<Transformation<uint_fast8_t>>(gens1),
-                      LibsemigroupsException);
+    REQUIRE_NOTHROW(FroidurePin<Transformation<uint_fast8_t>>(gens1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",

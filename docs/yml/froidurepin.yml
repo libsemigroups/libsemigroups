@@ -26,6 +26,7 @@ libsemigroups::FroidurePin:
   - [typedef, Product]
   - [typedef, Swap]
 - Constructors:
+  - FroidurePin
   - operator=(FroidurePin const&)
   - operator=(FroidurePin&&)
   - FroidurePin(FroidurePin&&)
