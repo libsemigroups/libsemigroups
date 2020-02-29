@@ -224,7 +224,7 @@ namespace libsemigroups {
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens;
 
-    REQUIRE_THROWS_AS(FroidurePin<BMat8>(gens), LibsemigroupsException);
+    REQUIRE_NOTHROW(FroidurePin<BMat8>(gens));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",

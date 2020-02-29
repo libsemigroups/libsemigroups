@@ -3095,9 +3095,7 @@ namespace libsemigroups {
                           "exception: zero generators given",
                           "[quick][froidure-pin][element]") {
     std::vector<Element*> gens;
-
-    REQUIRE_THROWS_AS(FroidurePin<Element const*>(gens),
-                      LibsemigroupsException);
+    REQUIRE_NOTHROW(FroidurePin<Element const*>(gens));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",

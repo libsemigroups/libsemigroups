@@ -51,7 +51,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  FROIDURE_PIN::FroidurePin(std::vector<element_type> const* gens)
+  FROIDURE_PIN::FroidurePin()
       : detail::BruidhinnTraits<TElementType>(),
         FroidurePinBase(),
         _degree(UNDEFINED),
@@ -66,89 +66,39 @@ namespace libsemigroups {
         _idempotents(),
         _idempotents_found(false),
         _is_idempotent(),
-        _left(gens->size()),
+        _left(),
         _length(),
-        _lenindex(),
+        _lenindex({0, 0}),
         _letter_to_pos(),
         _map(),
         _mtx(),
         _nr(0),
-        _nrgens(gens->size()),
         _nr_rules(0),
         _pos(0),
         _pos_one(0),
         _prefix(),
-        _reduced(gens->size()),
+        _reduced(),
         _relation_gen(0),
         _relation_pos(UNDEFINED),
-        _right(gens->size()),
+        _right(),
         _sorted(),
         _suffix(),
         _tmp_product(),
         _wordlen(0) {  // (length of the current word) - 1
-    if (_nrgens == 0) {
-      LIBSEMIGROUPS_EXCEPTION("no generators given");
-    }
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
     _right.set_default_value(UNDEFINED);
-    // FIXME(later) inclusion of the next line makes test FroidurePin of BMats
-    // 01 extremely slow (~50ms to ~10s!!!!)
-    // reserve(_nrgens);
-    _degree = Degree()((*gens)[0]);
+  }
 
-    for (size_t i = 0; i < _nrgens; ++i) {
-      size_t degree = Degree()((*gens)[i]);
-      if (degree != _degree) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "generator %d has degree %d but should have degree %d",
-            i,
-            degree,
-            _degree);
-      }
-    }
-    for (const_reference x : *gens) {
-      _gens.push_back(this->internal_copy(this->to_internal_const(x)));
-    }
-
-    _tmp_product = this->to_internal(One()(this->to_external_const(_gens[0])));
-    _id          = this->to_internal(One()(this->to_external_const(_gens[0])));
-    _lenindex.push_back(0);
-
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     _map.set_empty_key(this->empty_key(_id));
-    // #endif
-
-    // add the generators
-    for (letter_type i = 0; i < _nrgens; i++) {
-      auto it = _map.find(_gens[i]);
-      if (it != _map.end()) {  // duplicate generator
-        _letter_to_pos.push_back(it->second);
-        _nr_rules++;
-        _duplicate_gens.emplace_back(i, _first[it->second]);
-        // i.e. _gens[i] = _gens[_first[it->second]]
-        // _first maps from element_index_type -> letter_type :)
-      } else {
-        is_one(_gens[i], _nr);
-        _elements.push_back(_gens[i]);
-        // Note that every non-duplicate generator is *really* stored in
-        // _elements, and so must be deleted from _elements but not _gens.
-        _first.push_back(i);
-        _final.push_back(i);
-        _enumerate_order.push_back(_nr);
-        _letter_to_pos.push_back(_nr);
-        _length.push_back(1);
-        _map.emplace(_elements.back(), _nr);
-        _prefix.push_back(UNDEFINED);
-        // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos, and
-        // the extra clause in the run member function!
-        _suffix.push_back(UNDEFINED);
-        _nr++;
-      }
-    }
-    expand(_nr);
-    _lenindex.push_back(_enumerate_order.size());
+  TEMPLATE
+  FROIDURE_PIN::FroidurePin(std::vector<element_type> const* gens)
+      : FroidurePin() {
+#ifdef LIBSEMIGROUPS_VERBOSE
+    _nr_products = 0;
+#endif
+    validate_element_collection(gens->cbegin(), gens->cend());
+    add_generators_before_start(gens->cbegin(), gens->cend());
   }
 
   TEMPLATE
@@ -163,7 +113,7 @@ namespace libsemigroups {
   FROIDURE_PIN::FroidurePin(FroidurePin const& S)
       : detail::BruidhinnTraits<TElementType>(),
         FroidurePinBase(S),
-        _degree(S._degree),
+        _degree(UNDEFINED),  // _degree must be UNDEFINED until !_gens.empty()
         _duplicate_gens(S._duplicate_gens),
         _elements(),
         _enumerate_order(S._enumerate_order),
@@ -171,7 +121,7 @@ namespace libsemigroups {
         _first(S._first),
         _found_one(S._found_one),
         _gens(),
-        _id(this->internal_copy(S._id)),
+        _id(),
         _idempotents(S._idempotents),
         _idempotents_found(S._idempotents_found),
         _is_idempotent(S._is_idempotent),
@@ -180,7 +130,6 @@ namespace libsemigroups {
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
-        _nrgens(S._nrgens),
         _nr_rules(S._nr_rules),
         _pos(S._pos),
         _pos_one(S._pos_one),
@@ -197,29 +146,24 @@ namespace libsemigroups {
 #endif
     _elements.reserve(_nr);
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     _map.set_empty_key(this->empty_key(_id));
-    //     _map.resize(_nr);
-    // #else
-    //     // _map.reserve(_nr); // FIXME(later) uncommenting this line causes
-    //     huge
-    //     // slow down in FroidurePin 000
-    // #endif
-    _tmp_product = this->internal_copy(S._id);
-
     element_index_type i = 0;
     for (internal_const_reference x : S._elements) {
       auto y = this->internal_copy(x);
       _elements.push_back(y);
       _map.emplace(y, i++);
     }
-    copy_gens();
+    if (S.nr_generators() != 0) {
+      copy_generators_from_elements(S.nr_generators());
+      init_degree(this->to_external_const(_gens[0]));
+    }
   }
 
   TEMPLATE
   FROIDURE_PIN::~FroidurePin() {
-    this->internal_free(_tmp_product);
-    this->internal_free(_id);
+    if (nr_generators() > 0) {
+      this->internal_free(_tmp_product);
+      this->internal_free(_id);
+    }
 
     // delete those generators not in _elements, i.e. the duplicate ones
     for (auto& x : _duplicate_gens) {
@@ -266,9 +210,9 @@ namespace libsemigroups {
         _idempotents_found(S._idempotents_found),
         _is_idempotent(S._is_idempotent),
         _left(S._left),
+        _lenindex({0, S._lenindex[1]}),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
-        _nrgens(S._nrgens),
         _nr_rules(0),
         _pos(S._pos),
         _pos_one(S._pos_one),  // copy in case degree doesn't change in
@@ -279,6 +223,7 @@ namespace libsemigroups {
         _right(S._right),
         _sorted(),
         _wordlen(0) {
+    LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
     LIBSEMIGROUPS_ASSERT(!coll->empty());
     LIBSEMIGROUPS_ASSERT(Degree()(coll->at(0)) >= S.degree());
 
@@ -308,11 +253,10 @@ namespace libsemigroups {
       _pos_one   = 0;
     }
 
-    _lenindex.push_back(0);
-    _lenindex.push_back(S._lenindex[1]);
     _enumerate_order.reserve(S._nr);
 
     // add the distinct old generators to new _enumerate_order
+    LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
     for (enumerate_index_type i = 0; i < S._lenindex[1]; i++) {
       _enumerate_order.push_back(S._enumerate_order[i]);
       _final[_enumerate_order[i]]  = S._final[S._enumerate_order[i]];
@@ -325,12 +269,7 @@ namespace libsemigroups {
     _id          = One()(this->to_internal(coll->at(0)));
     _tmp_product = this->internal_copy(_id);
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     _map.set_empty_key(this->empty_key(_id));
-    //     _map.resize(S._nr);
-    // #else
     _map.reserve(S._nr);
-    // #endif
 
     element_index_type i = 0;
     for (internal_const_reference x : S._elements) {
@@ -340,7 +279,8 @@ namespace libsemigroups {
       _map.emplace(y, i);
       is_one(y, i++);
     }
-    copy_gens();  // copy the old generators
+    // copy the old generators
+    copy_generators_from_elements(S.nr_generators());
     // Now this is ready to have add_generators or closure called on it
   }
 
@@ -500,10 +440,8 @@ namespace libsemigroups {
   FROIDURE_PIN::fast_product(element_index_type i, element_index_type j) const {
     validate_element_index(i);
     validate_element_index(j);
-    if (length_const(i)
-            < 2 * Complexity()(this->to_external_const(_tmp_product))
-        || length_const(j)
-               < 2 * Complexity()(this->to_external_const(_tmp_product))) {
+    auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
+    if (length_const(i) < n || length_const(j) < n) {
       return product_by_reduction(i, j);
     } else {
       Product()(this->to_external(_tmp_product),
@@ -545,13 +483,7 @@ namespace libsemigroups {
     _enumerate_order.reserve(nn);
     _left.reserve(nn);
     _length.reserve(nn);
-
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //    _map.resize(nn);
-    // #else
     _map.reserve(nn);
-    // #endif
-
     _prefix.reserve(nn);
     _reduced.reserve(nn);
     _right.reserve(nn);
@@ -695,7 +627,7 @@ namespace libsemigroups {
 
     if (_relation_pos != UNDEFINED) {
       while (_relation_pos < _nr) {
-        while (_relation_gen < _nrgens) {
+        while (_relation_gen < nr_generators()) {
           if (!_reduced.get(_enumerate_order[_relation_pos], _relation_gen)
               && (_relation_pos < _lenindex[1]
                   || _reduced.get(_suffix[_enumerate_order[_relation_pos]],
@@ -708,7 +640,7 @@ namespace libsemigroups {
           }
           _relation_gen++;
         }
-        if (_relation_gen == _nrgens) {  // then relation is empty
+        if (_relation_gen == nr_generators()) {  // then relation is empty
           _relation_gen = 0;
           _relation_pos++;
         } else {
@@ -751,12 +683,14 @@ namespace libsemigroups {
     detail::Timer timer;
     size_t        tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
 
+    LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
+
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
       size_type nr_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_type i = _enumerate_order[_pos];
-        for (letter_type j = 0; j != _nrgens; ++j) {
+        for (letter_type j = 0; j != nr_generators(); ++j) {
           Product()(this->to_external(_tmp_product),
                     this->to_external_const(_elements[i]),
                     this->to_external_const(_gens[j]),
@@ -789,7 +723,7 @@ namespace libsemigroups {
       }
       for (enumerate_index_type i = 0; i != _pos; ++i) {
         letter_type b = _final[_enumerate_order[i]];
-        for (letter_type j = 0; j != _nrgens; ++j) {
+        for (letter_type j = 0; j != nr_generators(); ++j) {
           _left.set(_enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
         }
       }
@@ -805,7 +739,7 @@ namespace libsemigroups {
         element_index_type i = _enumerate_order[_pos];
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
-        for (letter_type j = 0; j != _nrgens; ++j) {
+        for (letter_type j = 0; j != nr_generators(); ++j) {
           if (!_reduced.get(s, j)) {
             element_index_type r = _right.get(s, j);
             if (_found_one && r == _pos_one) {
@@ -852,7 +786,7 @@ namespace libsemigroups {
         for (enumerate_index_type i = _lenindex[_wordlen]; i != _pos; ++i) {
           element_index_type p = _prefix[_enumerate_order[i]];
           letter_type        b = _final[_enumerate_order[i]];
-          for (letter_type j = 0; j != _nrgens; ++j) {
+          for (letter_type j = 0; j != nr_generators(); ++j) {
             _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
           }
         }
@@ -875,78 +809,85 @@ namespace libsemigroups {
     return !running() && _pos >= _nr;
   }
 
-  VOID FROIDURE_PIN::add_generator(element_type const& x) {
-    add_generators({x});
+  VOID FROIDURE_PIN::validate_element(const_reference x) const {
+    size_t const n = Degree()(x);
+    if (degree() != UNDEFINED && n != degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "element has degree %d but should have degree %d", n, degree());
+    }
   }
 
   TEMPLATE
-  template <typename TCollection>
-  void FROIDURE_PIN::add_generators(TCollection const& coll) {
-    static_assert(!std::is_pointer<TCollection>::value,
-                  "TCollection should not be a pointer");
-    if (immutable()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
-                              "has been set to immutable");
-    } else if (coll.size() == 0) {
-      return;
-    }
-    for (auto it = coll.begin(); it < coll.end(); ++it) {
-      element_index_type degree = Degree()(*it);
-      if (degree != _degree) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "new generator %llu has degree %llu but should have degree %llu",
-            it - coll.begin(),
-            degree,
-            _degree);
+  template <typename T>
+  void FROIDURE_PIN::validate_element_collection(T const& first,
+                                                 T const& last) const {
+    if (degree() == UNDEFINED && std::distance(first, last) != 0) {
+      auto const n = Degree()(*first);
+      for (auto it = first + 1; it < last; ++it) {
+        auto const m = Degree()(*it);
+        if (m != n) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "element has degree %d but should have degree %d", n, m);
+        }
+      }
+    } else {
+      for (auto it = first; it < last; ++it) {
+        validate_element(*it);
       }
     }
-    detail::Timer timer;
-    size_t        tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+  }
 
-    // get some parameters from the old semigroup
-    letter_type old_nrgens  = _nrgens;
-    size_type   old_nr      = _nr;
-    size_type   nr_old_left = _pos;
+  VOID FROIDURE_PIN::init_degree(const_reference x) {
+    if (_degree == UNDEFINED) {
+      _degree      = Degree()(x);
+      _id          = this->to_internal(One()(x));
+      _tmp_product = this->to_internal(One()(x));
+    }
+  }
 
-    // erase the old index
-    _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
-                           _enumerate_order.end());
-
-    // old_new[i] indicates if we have seen _elements.at(i) yet in new.
-    std::vector<bool> old_new;
-    old_new.clear();
-    old_new.resize(old_nr, false);
-    for (letter_type i = 0; i < _letter_to_pos.size(); i++) {
-      old_new[_letter_to_pos[i]] = true;
+  TEMPLATE
+  template <typename T>
+  void FROIDURE_PIN::add_generators_before_start(T const& first,
+                                                 T const& last) {
+    size_t const m = std::distance(first, last);
+    if (m != 0) {
+      init_degree(*first);
     }
 
-    // add the new generators to new _gens, _elements, and _enumerate_order
-    for (const_reference x : coll) {
-      auto it = _map.find(this->to_internal_const(x));
-      if (it == _map.end()) {  // new generator
-        _gens.push_back(this->internal_copy(this->to_internal_const(x)));
+    size_t nr_new_elements = 0;
+
+    for (auto it_coll = first; it_coll < last; ++it_coll) {
+      auto it = _map.find(this->to_internal_const(*it_coll));
+      if (it == _map.end()) {
+        // new generator
+        nr_new_elements++;
+        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
+        letter_type const n = _gens.size() - 1;
+
+        is_one(_gens.back(), _nr);
         _elements.push_back(_gens.back());
-        _map.emplace(_gens.back(), _nr);
-
-        _first.push_back(_gens.size() - 1);
-        _final.push_back(_gens.size() - 1);
-
-        _letter_to_pos.push_back(_nr);
         _enumerate_order.push_back(_nr);
-
-        is_one(this->to_internal_const(x), _nr);
+        // Note that every non-duplicate generator is *really* stored in
+        // _elements, and so must be deleted from _elements but not _gens.
+        _first.push_back(n);
+        _final.push_back(n);
+        _letter_to_pos.push_back(_nr);
+        _length.push_back(1);
+        _map.emplace(_elements.back(), _nr);
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
-        _length.push_back(1);
         _nr++;
-      } else if (_letter_to_pos[_first[it->second]] == it->second) {
-        _gens.push_back(this->internal_copy(this->to_internal_const(x)));
-        // x is one of the existing generators
-        _duplicate_gens.push_back(
-            std::make_pair(_gens.size() - 1, _first[it->second]));
-        // _gens[_gens.size() - 1] = _gens[_first[it->second])]
-        // since _first maps element_index_type -> letter_type
+        // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos, and
+        // the extra clause in the run member function!
+      } else if (!started()
+                 || _letter_to_pos[_first[it->second]] == it->second) {
+        // duplicate generator
+        // i.e. _gens[i] = _gens[_first[it->second]]
+        // _first maps from element_index_type -> letter_type :)
         _letter_to_pos.push_back(it->second);
+        _nr_rules++;
+        _duplicate_gens.emplace_back(_gens.size(), _first[it->second]);
+        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
       } else {
         // x is an old element that will now be a generator
         _gens.push_back(_elements[it->second]);
@@ -958,30 +899,52 @@ namespace libsemigroups {
         _prefix[it->second] = UNDEFINED;
         _suffix[it->second] = UNDEFINED;
         _length[it->second] = UNDEFINED;
-
-        old_new[it->second] = true;
       }
     }
+    expand(nr_new_elements);
+    LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
+    _lenindex[1] += nr_new_elements;
+    _left.add_cols(m);
+    _reduced.add_cols(m);
+    _right.add_cols(m);
+  }
 
+  TEMPLATE
+  template <typename T>
+  void FROIDURE_PIN::add_generators_after_start(T const& first, T const& last) {
+    detail::Timer timer;
+    size_t const  tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+
+    // get some parameters from the old semigroup
+    letter_type const old_nrgens  = nr_generators();
+    size_type const   old_nr      = _nr;
+    size_type         nr_old_left = _pos;
+
+    // erase the old index
+    _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
+                           _enumerate_order.end());
+
+    add_generators_before_start(first, last);
+
+    // old_new[i] indicates if we have seen _elements.at(i) yet in new.
+    std::vector<bool> old_new(old_nr, false);
+
+    for (letter_type i = 0; i < _letter_to_pos.size(); i++) {
+      if (_letter_to_pos[i] < old_nr) {
+        old_new[_letter_to_pos[i]] = true;
+      } else {
+        break;
+      }
+    }
     // reset the data structure
     _idempotents_found = false;
     _nr_rules          = _duplicate_gens.size();
     _pos               = 0;
     _wordlen           = 0;
-    _nrgens            = _gens.size();
     _lenindex.clear();
     _lenindex.push_back(0);
-    _lenindex.push_back(_nrgens - _duplicate_gens.size());
-
-    // Add columns for new generators
-    _reduced = detail::DynamicArray2<bool>(
-        _nrgens, _reduced.nr_rows() + _nrgens - old_nrgens);
-    _left.add_cols(_nrgens - _left.nr_cols());
-    _right.add_cols(_nrgens - _right.nr_cols());
-
-    // Add rows in for newly added generators
-    _left.add_rows(_nrgens - old_nrgens);
-    _right.add_rows(_nrgens - old_nrgens);
+    _lenindex.push_back(nr_generators() - _duplicate_gens.size());
+    std::fill(_reduced.begin(), _reduced.end(), false);
 
     size_type nr_shorter_elements;
 
@@ -1019,13 +982,13 @@ namespace libsemigroups {
               _nr_rules++;
             }
           }
-          for (letter_type j = old_nrgens; j < _nrgens; j++) {
+          for (letter_type j = old_nrgens; j < nr_generators(); j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new);
           }
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
-          for (letter_type j = 0; j < _nrgens; j++) {
+          for (letter_type j = 0; j < nr_generators(); j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new);
           }
         }
@@ -1037,7 +1000,7 @@ namespace libsemigroups {
         if (_wordlen == 0) {
           for (enumerate_index_type i = 0; i < _pos; i++) {
             size_t b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < _nrgens; j++) {
+            for (letter_type j = 0; j < nr_generators(); j++) {
               // TODO(JDM) reuse old info here!
               _left.set(
                   _enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
@@ -1047,7 +1010,7 @@ namespace libsemigroups {
           for (enumerate_index_type i = _lenindex[_wordlen]; i < _pos; i++) {
             element_index_type p = _prefix[_enumerate_order[i]];
             letter_type        b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < _nrgens; j++) {
+            for (letter_type j = 0; j < nr_generators(); j++) {
               // TODO(JDM) reuse old info here!
               _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
             }
@@ -1065,6 +1028,42 @@ namespace libsemigroups {
       REPORT_TIME(timer);
     }
     report_why_we_stopped();
+  }
+
+  VOID FROIDURE_PIN::add_generator(const_reference x) {
+    if (immutable()) {
+      LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
+                              "has been set to immutable");
+    }
+    validate_element(x);
+    if (_pos == 0) {
+      add_generators_before_start(&x, &x + 1);
+    } else {
+      add_generators_after_start(&x, &x + 1);
+    }
+  }
+
+  TEMPLATE
+  template <typename T>
+  void FROIDURE_PIN::add_generators(T const& first, T const& last) {
+    if (immutable()) {
+      LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
+                              "has been set to immutable");
+    }
+    validate_element_collection(first, last);
+    if (_pos == 0) {
+      add_generators_before_start(first, last);
+    } else {
+      add_generators_after_start(first, last);
+    }
+  }
+
+  TEMPLATE
+  template <typename T>
+  void FROIDURE_PIN::add_generators(T const& coll) {
+    static_assert(!std::is_pointer<T>::value,
+                  "the template parameter T must not be a pointer");
+    add_generators(coll.begin(), coll.end());
   }
 
   VOID
@@ -1098,7 +1097,7 @@ namespace libsemigroups {
     } else {
       for (const_reference x : coll) {
         if (!contains(x)) {
-          add_generators({x});
+          add_generator(x);
         }
       }
     }
@@ -1185,12 +1184,15 @@ namespace libsemigroups {
     }
   }
 
-  // _nrgens, _duplicates_gens, _letter_to_pos, and _elements must all be
-  // initialised for this to work, and _gens must point to an empty vector.
-  VOID FROIDURE_PIN::copy_gens() {
+  // _duplicates_gens, _letter_to_pos, and _elements must all be
+  // initialised for this to work, and _gens must be an empty vector.
+  VOID FROIDURE_PIN::copy_generators_from_elements(size_t N) {
     LIBSEMIGROUPS_ASSERT(_gens.empty());
-    _gens.resize(_nrgens);
-    std::vector<bool> seen(_nrgens, false);
+    if (N == 0) {
+      return;
+    }
+    _gens.resize(N);
+    std::vector<bool> seen(N, false);
     // really copy duplicate gens from _elements
     for (std::pair<letter_type, letter_type> const& x : _duplicate_gens) {
       // The degree of everything in _elements has already been increased (if
@@ -1200,7 +1202,7 @@ namespace libsemigroups {
       seen[x.first]  = true;
     }
     // the non-duplicate gens are already in _elements, so don't really copy
-    for (letter_type i = 0; i < _nrgens; i++) {
+    for (letter_type i = 0; i < N; i++) {
       if (!seen[i]) {
         _gens[i] = _elements[_letter_to_pos[i]];
       }
