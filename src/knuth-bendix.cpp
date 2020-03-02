@@ -189,13 +189,11 @@ namespace libsemigroups {
     std::shared_ptr<FroidurePinBase> KnuthBendix::froidure_pin_impl() {
       LIBSEMIGROUPS_ASSERT(!alphabet().empty());
       run();
-      // TODO(later) use 0-param FroidurePin constructor
-      auto T = std::make_shared<FroidurePin<detail::KBE>>(
-          std::vector<detail::KBE>({detail::KBE(*this, 0)}));
-      for (size_t i = 1; i < alphabet().size(); ++i) {
-        T->add_generator(detail::KBE(*this, i));
+      auto ptr = std::make_shared<FroidurePin<detail::KBE>>();
+      for (size_t i = 0; i < alphabet().size(); ++i) {
+        ptr->add_generator(detail::KBE(*this, i));
       }
-      return T;
+      return ptr;
     }
 
     bool KnuthBendix::is_obviously_infinite_impl() {

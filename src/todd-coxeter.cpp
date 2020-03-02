@@ -732,15 +732,14 @@ namespace libsemigroups {
         standardize(order::shortlex);
       }
 
-      // TODO(later) replace with 0-parameter constructor when available
-      std::vector<TCE> gens;
-      TCE              x(this);
+      auto ptr = std::make_shared<FroidurePin<TCE>>();
+      TCE  x(this);
       for (size_t i = 0; i < nr_generators(); ++i) {
         // We use _table.get(0, i) instead of just i, because there might be
         // more generators than cosets.
-        gens.emplace_back(x, _table.get(0, i));
+        ptr->add_generator(TCE(x, _table.get(0, i)));
       }
-      return std::make_shared<FroidurePin<TCE>>(gens);
+      return ptr;
     }
 
     void ToddCoxeter::run_impl() {
