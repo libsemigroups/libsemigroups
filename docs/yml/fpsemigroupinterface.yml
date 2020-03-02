@@ -17,7 +17,8 @@ libsemigroups::FpSemigroupInterface:
 - Initialization:
   - set_alphabet(size_t)
   - set_alphabet(std::string const&)
-  - alphabet
+  - alphabet() const
+  - alphabet(size_t) const
   - set_identity(letter_type)
   - set_identity(std::string const&)
   - identity

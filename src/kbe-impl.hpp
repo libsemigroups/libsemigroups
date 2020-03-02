@@ -26,126 +26,64 @@
 
 namespace libsemigroups {
   namespace detail {
-    //////////////////////////////////////////////////////////////////////////////
-    // KBE - constructors - private
-    //////////////////////////////////////////////////////////////////////////////
 
-    KBE::KBE(KnuthBendix* kb, internal_string_type w, bool reduce)
-        : Element(), _kb(kb), _kb_word(w) {
-      if (reduce) {
-        _kb->_impl->internal_rewrite(&_kb_word);
-      }
+    KBE::KBE(internal_string_type const& w) : _kb_word(w) {}
+    KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
+
+    KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
+      kb._impl->internal_rewrite(&_kb_word);
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    // KBE - constructors - public
-    //////////////////////////////////////////////////////////////////////////////
+    KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
+      kb._impl->internal_rewrite(&_kb_word);
+    }
 
-    KBE::KBE(KnuthBendix* kb) : KBE(kb, "", false) {}
-
-    KBE::KBE(KnuthBendix* kb, internal_string_type const& w)
-        : KBE(kb, w, true) {}
-
-    KBE::KBE(KnuthBendix* kb, letter_type const& a)
+    KBE::KBE(KnuthBendix& kb, letter_type const& a)
         : KBE(kb, KnuthBendix::KnuthBendixImpl::uint_to_internal_string(a)) {}
 
-    KBE::KBE(KnuthBendix& kb, letter_type const& a) : KBE(&kb, a) {}
-
-    KBE::KBE(KnuthBendix* kb, word_type const& w)
+    KBE::KBE(KnuthBendix& kb, word_type const& w)
         : KBE(kb, KnuthBendix::KnuthBendixImpl::word_to_internal_string(w)) {}
 
-    KBE::KBE(KnuthBendix& kb, word_type const& w) : KBE(&kb, w) {}
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Element - overriden member functions - public
-    //////////////////////////////////////////////////////////////////////////////
-
-    bool KBE::operator==(Element const& that) const {
-      return static_cast<KBE const&>(that)._kb_word == this->_kb_word;
+    bool KBE::operator==(KBE const& that) const {
+      return that._kb_word == this->_kb_word;
     }
 
-    bool KBE::operator<(Element const& that) const {
-      internal_string_type const& u = this->_kb_word;
-      internal_string_type const& v = static_cast<KBE const&>(that)._kb_word;
-      if (u != v && (u.size() < v.size() || (u.size() == v.size() && u < v))) {
-        // TODO(later) allow other reduction orders here
-        return true;
-      } else {
-        return false;
-      }
+    bool KBE::operator<(KBE const& that) const {
+      return shortlex_compare(_kb_word, that._kb_word);
     }
 
-    void KBE::swap(Element& x) {
-      auto& xx = static_cast<KBE&>(x);
-      _kb_word.swap(xx._kb_word);
-      std::swap(_kb, xx._kb);
-      std::swap(this->_hash_value, xx._hash_value);
+    void KBE::swap(KBE& x) {
+      std::swap(x._kb_word, _kb_word);
     }
 
-    size_t KBE::complexity() const {
-      return LIMIT_MAX;
+    KBE::internal_string_type const& KBE::string() const noexcept {
+      return _kb_word;
     }
 
-    size_t KBE::degree() const {
-      return 0;
+    word_type KBE::word(KnuthBendix const& kb) const {
+      return kb._impl->internal_string_to_word(_kb_word);
     }
 
-    KBE KBE::identity() const {
-      return KBE(_kb);
-    }
-
-    KBE* KBE::heap_copy() const {
-      return new KBE(*this);
-    }
-
-    KBE* KBE::heap_identity() const {
-      return this->identity().heap_copy();
-    }
-
-    void KBE::cache_hash_value() const {
-      this->_hash_value = Hash<internal_string_type>()(_kb_word);
-    }
-
-    void KBE::redefine(Element const& x, Element const& y, size_t) {
-      auto const& xx = static_cast<KBE const&>(x);
-      auto const& yy = static_cast<KBE const&>(y);
-      LIBSEMIGROUPS_ASSERT(xx._kb == yy._kb);
-      _kb_word.clear();
-      _kb_word.append(xx._kb_word);
-      _kb_word.append(yy._kb_word);
-      _kb->_impl->internal_rewrite(&_kb_word);
-      this->reset_hash_value();
-    }
-
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     Element* KBE::empty_key() const {
-    //       return new KBE(_kb, "supercalifragilisticexpialidocious");
-    //     }
-    // #endif
-
-    KBE::operator word_type() const {
-      return _kb->_impl->internal_string_to_word(_kb_word);
-    }
-
-    KBE::operator std::string() const {
+    std::string KBE::string(KnuthBendix const& kb) const {
       std::string out(_kb_word);
-      _kb->_impl->internal_to_external_string(out);  // changes out in-place
+      kb._impl->internal_to_external_string(out);  // changes out in-place
       return out;
     }
 
   }  // namespace detail
 
-  detail::KBE* One<detail::KBE*>::operator()(detail::KBE const* x) {
-    return new detail::KBE(x->identity());
+  template <>
+  word_type
+  FroidurePin<detail::KBE,
+              FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
+      factorisation(detail::KBE const& x) {
+    return x.word(*state());
   }
 
   template <>
-  word_type FroidurePin<detail::KBE>::factorisation(detail::KBE const& x) {
-    return x;
-  }
-
-  template <>
-  tril FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE>>::is_finite() {
+  tril FroidurePin<
+      detail::KBE,
+      FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::is_finite() {
     return (finished() ? tril::TRUE : tril::unknown);
   }
 }  // namespace libsemigroups

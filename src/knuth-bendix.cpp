@@ -38,6 +38,9 @@
 #include "kbe-impl.hpp"
 
 namespace libsemigroups {
+  using froidure_pin_type
+      = FroidurePin<detail::KBE,
+                    FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>;
   namespace fpsemigroup {
 
     //////////////////////////////////////////////////////////////////////////
@@ -189,7 +192,7 @@ namespace libsemigroups {
     std::shared_ptr<FroidurePinBase> KnuthBendix::froidure_pin_impl() {
       LIBSEMIGROUPS_ASSERT(!alphabet().empty());
       run();
-      auto ptr = std::make_shared<FroidurePin<detail::KBE>>();
+      auto ptr = std::make_shared<froidure_pin_type>(*this);
       for (size_t i = 0; i < alphabet().size(); ++i) {
         ptr->add_generator(detail::KBE(*this, i));
       }
@@ -324,9 +327,8 @@ namespace libsemigroups {
 
     class_index_type
     KnuthBendix::word_to_class_index_impl(word_type const& word) {
-      auto S
-          = static_cast<FroidurePin<detail::KBE>*>(_kb->froidure_pin().get());
-      size_t pos = S->position(detail::KBE(_kb.get(), word));
+      auto   S   = static_cast<froidure_pin_type*>(_kb->froidure_pin().get());
+      size_t pos = S->position(detail::KBE(*_kb, word));
       LIBSEMIGROUPS_ASSERT(pos != UNDEFINED);
       return pos;
     }

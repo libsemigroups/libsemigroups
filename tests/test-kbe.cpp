@@ -33,7 +33,10 @@ namespace libsemigroups {
         delete x;
       }
     }
-    using KnuthBendix     = fpsemigroup::KnuthBendix;
+
+    using KnuthBendix = fpsemigroup::KnuthBendix;
+    using FroidurePinKBE
+        = FroidurePin<KBE, FroidurePinTraits<KBE, KnuthBendix>>;
     constexpr bool REPORT = false;
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
@@ -57,11 +60,9 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                                  rg = ReportGuard(REPORT);
+      FroidurePin<Transformation<uint16_t>> S(
+          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
@@ -70,10 +71,11 @@ namespace libsemigroups {
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
 
-      gens                          = {new KBE(kb, 0), new KBE(kb, 1)};
-      FroidurePin<Element const*> T = FroidurePin<Element const*>(gens);
+      FroidurePinKBE T(kb);
+      T.add_generator(KBE(kb, 0));
+      T.add_generator(KBE(kb, 1));
+
       REQUIRE(T.size() == 4);
-      delete_gens(gens);
 
       KBE ab(kb, word_type({0, 1}));
       KBE b(kb, 1);
@@ -87,58 +89,25 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                                  rg = ReportGuard(REPORT);
+      FroidurePin<Transformation<uint16_t>> S(
+          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      {
-        std::vector<KBE*> kbe_gens = {new KBE(kb, 0), new KBE(kb, 1)};
-        FroidurePin<KBE*> T        = FroidurePin<KBE*>(kbe_gens);
-        delete_gens(kbe_gens);
+      FroidurePinKBE T(kb);
+      T.add_generators({KBE(kb, 0), KBE(kb, 1)});
 
-        KBE ab(kb, word_type({0, 1}));
-        REQUIRE(T.factorisation(&ab) == word_type({1}));
-
-        KBE aaa(kb, word_type({0, 0, 0}));
-        REQUIRE(T.factorisation(&aaa) == word_type({0}));
-      }
-      {
-        std::vector<KBE> kbe_gens = {KBE(kb, 0), KBE(kb, 1)};
-        FroidurePin<KBE> T        = FroidurePin<KBE>(kbe_gens);
-
-        KBE ab(kb, word_type({0, 1}));
-        REQUIRE(T.factorisation(ab) == word_type({1}));
-        KBE aaa(kb, word_type({0, 0, 0}));
-        REQUIRE(T.factorisation(aaa) == word_type({0}));
-      }
+      KBE ab(kb, word_type({0, 1}));
+      REQUIRE(T.factorisation(ab) == word_type({1}));
+      KBE aaa(kb, word_type({0, 0, 0}));
+      REQUIRE(T.factorisation(aaa) == word_type({0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "003", "increase_degree_by", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
-
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
-
-      auto x = KBE(kb, 0);
-      REQUIRE(x == KBE(kb, 0));
-      x.increase_degree_by(1000);  // Does nothing
-      REQUIRE(x == KBE(kb, 0));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("KBE", "004", "swap", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+    LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
+      auto                                  rg = ReportGuard(REPORT);
+      FroidurePin<Transformation<uint16_t>> S(
+          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -154,39 +123,31 @@ namespace libsemigroups {
       REQUIRE(y == KBE(kb, 0));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "005", "adapters", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+    LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
+      auto                                  rg = ReportGuard(REPORT);
+      FroidurePin<Transformation<uint16_t>> S(
+          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
 
       auto x = KBE(kb, 0);
       REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
-      REQUIRE(x.complexity() == LIMIT_MAX);
       REQUIRE(EqualTo<KBE>()(x, x));
-      REQUIRE(One<KBE>()(x) == KBE(&kb));
-      auto one = One<KBE*>()(&x);
-      REQUIRE(*one == KBE(&kb));
-      delete one;
+      REQUIRE(One<KBE>()(x) == KBE());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "006", "implicit conversions", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+    LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
+      auto                                  rg = ReportGuard(REPORT);
+      FroidurePin<Transformation<uint16_t>> S(
+          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
 
       auto x = KBE(kb, 0);
-      REQUIRE(static_cast<word_type>(x) == word_type({0}));
-      REQUIRE(static_cast<std::string>(x) == std::string(1, kb.alphabet()[0]));
+      REQUIRE(x.word(kb) == word_type({0}));
+      REQUIRE(x.string(kb) == std::string(1, kb.alphabet()[0]));
     }
   }  // namespace detail
 }  // namespace libsemigroups

@@ -12,6 +12,7 @@ libsemigroups::FroidurePin:
   - [typedef, const_iterator_sorted]
   - [typedef, const_pointer]
   - [typedef, const_reference]
+  - [typedef, reference]
   - [typedef, const_reverse_iterator]
   - [typedef, const_reverse_iterator_idempotents]
   - [typedef, const_reverse_iterator_sorted]

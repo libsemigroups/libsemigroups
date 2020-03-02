@@ -1189,35 +1189,29 @@ namespace libsemigroups {
       std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());
       REQUIRE(v
-              == std::vector<TCE>(
-                  {TCE(v[0], 1),  TCE(v[0], 2),  TCE(v[0], 3),  TCE(v[0], 4),
-                   TCE(v[0], 5),  TCE(v[0], 6),  TCE(v[0], 7),  TCE(v[0], 8),
-                   TCE(v[0], 9),  TCE(v[0], 10), TCE(v[0], 11), TCE(v[0], 12),
-                   TCE(v[0], 13), TCE(v[0], 14), TCE(v[0], 15), TCE(v[0], 16),
-                   TCE(v[0], 17), TCE(v[0], 18), TCE(v[0], 19), TCE(v[0], 20),
-                   TCE(v[0], 21), TCE(v[0], 22), TCE(v[0], 23), TCE(v[0], 24),
-                   TCE(v[0], 25), TCE(v[0], 26), TCE(v[0], 27), TCE(v[0], 28),
-                   TCE(v[0], 29), TCE(v[0], 30), TCE(v[0], 31), TCE(v[0], 32),
-                   TCE(v[0], 33), TCE(v[0], 34)}));
+              == std::vector<TCE>({TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),
+                                   TCE(6),  TCE(7),  TCE(8),  TCE(9),  TCE(10),
+                                   TCE(11), TCE(12), TCE(13), TCE(14), TCE(15),
+                                   TCE(16), TCE(17), TCE(18), TCE(19), TCE(20),
+                                   TCE(21), TCE(22), TCE(23), TCE(24), TCE(25),
+                                   TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
+                                   TCE(31), TCE(32), TCE(33), TCE(34)}));
       REQUIRE(std::vector<TCE>(S.cbegin_sorted(), S.cend_sorted())
-              == std::vector<TCE>(
-                  {TCE(v[0], 1),  TCE(v[0], 2),  TCE(v[0], 3),  TCE(v[0], 4),
-                   TCE(v[0], 5),  TCE(v[0], 6),  TCE(v[0], 7),  TCE(v[0], 8),
-                   TCE(v[0], 9),  TCE(v[0], 10), TCE(v[0], 11), TCE(v[0], 12),
-                   TCE(v[0], 13), TCE(v[0], 14), TCE(v[0], 15), TCE(v[0], 16),
-                   TCE(v[0], 17), TCE(v[0], 18), TCE(v[0], 19), TCE(v[0], 20),
-                   TCE(v[0], 21), TCE(v[0], 22), TCE(v[0], 23), TCE(v[0], 24),
-                   TCE(v[0], 25), TCE(v[0], 26), TCE(v[0], 27), TCE(v[0], 28),
-                   TCE(v[0], 29), TCE(v[0], 30), TCE(v[0], 31), TCE(v[0], 32),
-                   TCE(v[0], 33), TCE(v[0], 34)}));
-      REQUIRE(detail::to_string(TCE(v[0], 1)) == "TCE(1)");
+              == std::vector<TCE>({TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),
+                                   TCE(6),  TCE(7),  TCE(8),  TCE(9),  TCE(10),
+                                   TCE(11), TCE(12), TCE(13), TCE(14), TCE(15),
+                                   TCE(16), TCE(17), TCE(18), TCE(19), TCE(20),
+                                   TCE(21), TCE(22), TCE(23), TCE(24), TCE(25),
+                                   TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
+                                   TCE(31), TCE(32), TCE(33), TCE(34)}));
+      REQUIRE(detail::to_string(TCE(1)) == "1");
 
       std::ostringstream oss;
-      oss << TCE(v[0], 10);  // Does not do anything visible
+      oss << TCE(10);  // Does not do anything visible
 
       std::stringbuf buf;
       std::ostream   os(&buf);
-      os << TCE(v[0], 32);  // Does not do anything visible
+      os << TCE(32);  // Does not do anything visible
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

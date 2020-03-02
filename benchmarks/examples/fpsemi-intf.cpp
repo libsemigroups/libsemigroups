@@ -26,6 +26,17 @@
 
 namespace libsemigroups {
 
+  size_t create_id(FpSemiIntfArgs const& x) {
+    using item_type          = decltype(x.A);
+    std::vector<item_type> A = {x.A};
+    auto                   R = x.R;
+    for (auto& p : R) {
+      A.push_back(p.first);
+      A.push_back(p.second);
+    }
+    return detail::hash_combine(A);
+  }
+
   namespace fpsemigroup {
     FpSemiIntfArgs const& finite_examples(size_t id) {
       for (auto const& p : fpsemigroup::finite_examples()) {
@@ -213,8 +224,6 @@ namespace libsemigroups {
                  {"BaAAaAaAAaAAA", "cAAaAAaAaAAa"},
                  {"BaAaAAaAAaAAA", "cAAaAaAAaAAa"},
                  {"BaAAaAAaAAaAAA", "cAAaAAaAAaAAa"}}}};
-      // std::cout << "0x" << std::hex << std::uppercase
-      //           << create_id(examples.back()) << std::endl;
       return examples;
     }
 

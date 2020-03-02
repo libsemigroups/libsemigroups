@@ -13,6 +13,7 @@ libsemigroups::congruence::ToddCoxeter:
   - [typedef, coset_type]
   - [typedef, sort_free_function_type]
   - [typedef, sort_function_type]
+  - [typedef, table_type]
 - Public types:
   - [struct, policy]
 - Constructors:
@@ -36,7 +37,7 @@ libsemigroups::congruence::ToddCoxeter:
   - add_pair(word_type const&, word_type const&)
   - nr_generating_pairs
   - prefill(FroidurePinBase&)
-  - prefill(Table const&)
+  - prefill(table_type const&)
 - Settings:
   - froidure_pin_policy(policy::froidure_pin)
   - lookahead

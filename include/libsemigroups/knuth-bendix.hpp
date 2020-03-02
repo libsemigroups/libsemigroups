@@ -30,13 +30,13 @@
 #include <memory>   // for unique_ptr
 #include <vector>   // for vector
 
-#include "cong-intf.hpp"    // for CongruenceInterface
-#include "fpsemi-intf.hpp"  // for FpSemigroupInterface
-#include "types.hpp"        // for word_type
+#include "cong-intf.hpp"     // for CongruenceInterface
+#include "fpsemi-intf.hpp"   // for FpSemigroupInterface
+#include "froidure-pin.hpp"  // for FroidurePin
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
   // Forward declarations
-  class FroidurePinBase;
   namespace detail {
     class KBE;
   }
@@ -100,6 +100,14 @@ namespace libsemigroups {
           MAX_AB_BC = 2
         };
       };
+
+      //! The type of the return value of froidure_pin().
+      //!
+      //! froidure_pin() returns a ``std::shared_ptr`` to a FroidurePinBase,
+      //! which is really of type froidure_pin_type.
+      using froidure_pin_type
+          = FroidurePin<detail::KBE,
+                        FroidurePinTraits<detail::KBE, KnuthBendix>>;
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - constructors and destructor - public

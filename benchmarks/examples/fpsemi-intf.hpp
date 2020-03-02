@@ -50,16 +50,7 @@ namespace libsemigroups {
     return thing;
   }
 
-  size_t create_id(FpSemiIntfArgs const& x) {
-    using item_type          = decltype(x.A);
-    std::vector<item_type> A = {x.A};
-    auto                   R = x.R;
-    for (auto& p : R) {
-      A.push_back(p.first);
-      A.push_back(p.second);
-    }
-    return detail::hash_combine(A);
-  }
+  size_t create_id(FpSemiIntfArgs const& x);
 
   namespace fpsemigroup {
     std::vector<FpSemiIntfArgs> const& infinite_examples();
