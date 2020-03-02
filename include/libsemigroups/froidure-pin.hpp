@@ -48,7 +48,7 @@ namespace libsemigroups {
   //! This is a traits class for use with FroidurePin.
   //!
   //! \sa FroidurePinBase and FroidurePin.
-  template <typename TElementType>
+  template <typename TElementType, typename TStateType = void>
   struct FroidurePinTraits {
     // Require to get the value_type from detail::BruidhinnTraits to remove
     // pointer to const.
@@ -57,6 +57,8 @@ namespace libsemigroups {
     //! also removed.
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
+
+    using state_type = TStateType;
 
     //! \copydoc libsemigroups::Complexity
     using Complexity = ::libsemigroups::Complexity<element_type>;
@@ -204,6 +206,10 @@ namespace libsemigroups {
     using const_reference =
         typename detail::BruidhinnTraits<TElementType>::const_reference;
 
+    //! The type of a reference to an element of the semigroup represented by
+    //! \c this.
+    using reference = typename detail::BruidhinnTraits<TElementType>::reference;
+
     //! The type of a const pointer to an element of the semigroup
     //! represented by \c this.
     using const_pointer =
@@ -217,6 +223,9 @@ namespace libsemigroups {
 
     //! \copydoc FroidurePinBase::cayley_graph_type
     using cayley_graph_type = FroidurePinBase::cayley_graph_type;
+
+    //! No doc
+    using state_type = typename TTraits::state_type;
 
     //! \copydoc libsemigroups::Complexity
     using Complexity = typename TTraits::Complexity;
@@ -246,6 +255,12 @@ namespace libsemigroups {
     using Swap = typename TTraits::Swap;
 
    private:
+    template <typename T>
+    struct IsState final
+        : std::integral_constant<bool,
+                                 !std::is_void<T>::value
+                                     && std::is_same<state_type, T>::value> {};
+
     struct InternalEqualTo : private detail::BruidhinnTraits<TElementType> {
       bool operator()(internal_const_reference x,
                       internal_const_reference y) const {
@@ -265,6 +280,30 @@ namespace libsemigroups {
                                         InternalHash,
                                         InternalEqualTo>;
 
+    struct InternalProduct {
+      template <typename SFINAE = void>
+      auto operator()(reference       xy,
+                      const_reference x,
+                      const_reference y,
+                      void*,
+                      size_t tid = 0) ->
+          typename std::enable_if<std::is_void<state_type>::value,
+                                  SFINAE>::type {
+        Product()(xy, x, y, tid);
+      }
+
+      template <typename SFINAE = void>
+      auto operator()(reference       xy,
+                      const_reference x,
+                      const_reference y,
+                      state_type*     stt,
+                      size_t          tid = 0) ->
+          typename std::enable_if<!std::is_void<state_type>::value,
+                                  SFINAE>::type {
+        Product()(xy, x, y, stt, tid);
+      }
+    };
+
    public:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - constructors + destructor - public
@@ -276,6 +315,21 @@ namespace libsemigroups {
     //!
     //! \sa add_generators and add_generator.
     FroidurePin();
+
+    //! No doc
+    template <typename T,
+              typename SFINAE
+              = typename std::enable_if<IsState<T>::value, T>::type>
+    explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
+      _state = stt;
+    }
+
+    //! No doc
+    template <typename T,
+              typename SFINAE
+              = typename std::enable_if<IsState<T>::value, T>::type>
+    explicit FroidurePin(T const& stt)
+        : FroidurePin(std::make_shared<state_type>(stt)) {}
 
     //! Deleted.
     //!
@@ -911,7 +965,13 @@ namespace libsemigroups {
     //! (None).
     bool is_monoid() override;
 
+    // TODO doc
     tril is_finite() override;
+
+    //! No doc
+    std::shared_ptr<state_type> state() {
+      return _state;
+    }
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -943,7 +1003,8 @@ namespace libsemigroups {
                         element_index_type,
                         size_type,
                         size_t const&,
-                        std::vector<bool>&);
+                        std::vector<bool>&,
+                        state_type*);
 
     void init_degree(const_reference);
 
@@ -1170,6 +1231,7 @@ namespace libsemigroups {
     enumerate_index_type                             _relation_pos;
     cayley_graph_type                                _right;
     std::vector<std::pair<internal_element_type, element_index_type>> _sorted;
+    std::shared_ptr<state_type>                                       _state;
     std::vector<element_index_type>                                   _suffix;
     mutable internal_element_type _tmp_product;
     size_t                        _wordlen;

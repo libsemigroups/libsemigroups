@@ -17,9 +17,12 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
+// TODO IWYU!
+
 #include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/cong-pair.hpp"
 #include "libsemigroups/cong.hpp"
+#include "libsemigroups/element.hpp"
 #include "libsemigroups/fpsemi.hpp"
 #include "libsemigroups/knuth-bendix.hpp"
 #include "libsemigroups/tce.hpp"
@@ -35,6 +38,7 @@ namespace libsemigroups {
   congruence_type constexpr right    = congruence_type::right;
 
   using detail::TCE;
+  using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;
 
   namespace congruence {
     LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
@@ -57,7 +61,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<TCE>>(
+        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
         // FIXME(when CongruenceByPairs has a proper traits class) We can't use
         // "twosided" here because TCE's products are only defined on the right
@@ -115,7 +119,7 @@ namespace libsemigroups {
           tc.add_pair({0, 0, 0}, {0});
           tc.add_pair({1, 1, 1, 1}, {1});
           tc.add_pair({0, 1, 0, 1}, {0, 0});
-          cong = detail::make_unique<CongruenceByPairs<TCE>>(
+          cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               right, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
           // use "twosided" here because TCE's products are only defined on the
@@ -165,7 +169,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<TCE>>(
+        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
         // FIXME(when CongruenceByPairs has a proper traits class) We can't use
         // "twosided" here because TCE's products are only defined on the right
@@ -242,7 +246,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<TCE>>(
+        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
       }
       SECTION("Congruence") {
@@ -297,7 +301,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<TCE>>(
+        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             left, tc.quotient_froidure_pin());
       }
 

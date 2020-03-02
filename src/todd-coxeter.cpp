@@ -483,7 +483,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // Init
-    void ToddCoxeter::prefill(Table const& table) {
+    void ToddCoxeter::prefill(table_type const& table) {
       prefill_and_validate(table, true);
       init_preimages_from_table();
     }
@@ -727,17 +727,25 @@ namespace libsemigroups {
     std::shared_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
       using detail::TCE;
       run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      if (!is_standardized()) {
-        standardize(order::shortlex);
+      standardize(order::shortlex);
+      shrink_to_fit();
+      // Ensure class indices and letters are equal!
+      auto   table = std::make_shared<table_type>(_table);
+      size_t n     = nr_generators();
+      for (letter_type a = 0; a < n;) {
+        if (table->get(0, a) != a + 1) {
+          table->erase_column(a);
+          n--;
+        } else {
+          ++a;
+        }
       }
-
-      auto ptr = std::make_shared<FroidurePin<TCE>>();
-      TCE  x(this);
+      auto ptr = std::make_shared<
+          FroidurePin<TCE, FroidurePinTraits<TCE, table_type>>>(table);
       for (size_t i = 0; i < nr_generators(); ++i) {
-        // We use _table.get(0, i) instead of just i, because there might be
+        // We use table.get(0, i) instead of just i, because there might be
         // more generators than cosets.
-        ptr->add_generator(TCE(x, _table.get(0, i)));
+        ptr->add_generator(TCE(_table.get(0, i)));
       }
       return ptr;
     }
@@ -826,18 +834,18 @@ namespace libsemigroups {
 
     void ToddCoxeter::set_nr_generators_impl(size_t n) {
       // TODO(later) add columns to make it up to n?
-      _preim_init = Table(n, 1, UNDEFINED);
-      _preim_next = Table(n, 1, UNDEFINED);
-      _table      = Table(n, 1, UNDEFINED);
+      _preim_init = table_type(n, 1, UNDEFINED);
+      _preim_next = table_type(n, 1, UNDEFINED);
+      _table      = table_type(n, 1, UNDEFINED);
     }
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - member functions (validation) - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeter::validate_table(Table const& table,
-                                     size_t const first,
-                                     size_t const last) const {
+    void ToddCoxeter::validate_table(table_type const& table,
+                                     size_t const      first,
+                                     size_t const      last) const {
       REPORT_DEBUG_DEFAULT("validating coset table...\n");
       if (nr_generators() == UNDEFINED) {
         LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
@@ -992,7 +1000,8 @@ namespace libsemigroups {
       init_preimages_from_table();
     }
 
-    void ToddCoxeter::prefill_and_validate(Table const& table, bool validate) {
+    void ToddCoxeter::prefill_and_validate(table_type const& table,
+                                           bool              validate) {
       if (_settings->strategy == policy::strategy::felsch) {
         LIBSEMIGROUPS_EXCEPTION(
             "it is not possible to prefill when using the Felsch strategy");

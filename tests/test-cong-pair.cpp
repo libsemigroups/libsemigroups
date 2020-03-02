@@ -53,6 +53,9 @@ namespace libsemigroups {
   congruence_type const right    = congruence_type::right;
   using congruence::ToddCoxeter;
 
+  using detail::TCE;
+  using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;
+
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "001",
                           "(cong)   2-sided cong. on finite semigroup",
@@ -70,8 +73,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.nr_rules() == 18);
 
-    CongruenceByPairs<decltype(S)::element_type> p(twosided,
-                                                   S);  // p copies S!
+    CongruenceByPairs<decltype(S)> p(twosided, S);  // p copies S!
     REQUIRE(p.has_parent_froidure_pin());
 
     p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -107,7 +109,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 88);
     // REQUIRE(S.nr_rules(false) == 18);
 
-    CongruenceByPairs<decltype(S)::element_type> p(left, S);
+    CongruenceByPairs<decltype(S)> p(left, S);
     p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
 
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
@@ -140,7 +142,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 88);
     // REQUIRE(S.nr_rules(false) == 18);
 
-    CongruenceByPairs<decltype(S)::element_type> p(right, S);
+    CongruenceByPairs<decltype(S)> p(right, S);
     p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
 
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 4);
@@ -173,7 +175,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 53);
     // REQUIRE(S.nr_rules(false) == 20);
 
-    CongruenceByPairs<decltype(S)::element_type> p(twosided, S);
+    CongruenceByPairs<decltype(S)> p(twosided, S);
 
     // Class indices are assigned starting at 0
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
@@ -214,7 +216,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 53);
     // REQUIRE(S.nr_rules(false) == 20);
 
-    CongruenceByPairs<decltype(S)::element_type> p(left, S);
+    CongruenceByPairs<decltype(S)> p(left, S);
 
     // Class indices are assigned starting at 0
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
@@ -256,7 +258,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 53);
     // REQUIRE(S.nr_rules(false) == 20);
 
-    CongruenceByPairs<decltype(S)::element_type> p(right, S);
+    CongruenceByPairs<decltype(S)> p(right, S);
 
     // Class indices are assigned starting at 0
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
@@ -297,7 +299,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 142);
     // REQUIRE(S.nr_rules(false) == 32);
 
-    CongruenceByPairs<decltype(S)::element_type> p(twosided, S);
+    CongruenceByPairs<decltype(S)> p(twosided, S);
     p.add_pair({1}, {0, 0, 0, 1, 0});
 
     // Class indices are assigned starting at 0
@@ -341,7 +343,7 @@ namespace libsemigroups {
     // REQUIRE(S.size(false) == 11804);
     // REQUIRE(S.nr_rules(false) == 2460);
 
-    CongruenceByPairs<decltype(S)::element_type> p(twosided, S);
+    CongruenceByPairs<decltype(S)> p(twosided, S);
     p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
 
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 0);
@@ -393,7 +395,7 @@ namespace libsemigroups {
 
     std::vector<relation_type> extra(
         {relation_type({1, 3, 0, 1, 2, 2, 0, 2}, {1, 0, 0, 1, 3, 1})});
-    CongruenceByPairs<decltype(S)::element_type> p(twosided, S);
+    CongruenceByPairs<decltype(S)> p(twosided, S);
     p.add_pair({1, 3, 0, 1, 2, 2, 0, 2}, {1, 0, 0, 1, 3, 1});
 
     REQUIRE(p.word_to_class_index({0, 0, 0, 1}) == 1);
@@ -439,8 +441,8 @@ namespace libsemigroups {
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 11804);
     // REQUIRE(S.nr_rules(false) == 2460);
-    std::vector<relation_type>                   extra({relation_type()});
-    CongruenceByPairs<decltype(S)::element_type> p(left, S);
+    std::vector<relation_type>     extra({relation_type()});
+    CongruenceByPairs<decltype(S)> p(left, S);
     p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
 
     REQUIRE(p.word_to_class_index({1, 1, 0, 3}) == 1);
@@ -484,24 +486,27 @@ namespace libsemigroups {
     // This doesn't throw because the type of tc.quotient_froidure_pin() is
     // std::shared_ptr<FroidurePinBase> and so it isn't easy to check if
     // the element type is TCE.
-    REQUIRE_NOTHROW(CongruenceByPairs<TCE>(left, tc.quotient_froidure_pin()));
     REQUIRE_NOTHROW(
-        CongruenceByPairs<TCE>(twosided, tc.quotient_froidure_pin()));
-    REQUIRE_NOTHROW(CongruenceByPairs<TCE>(right, tc.quotient_froidure_pin()));
+        CongruenceByPairs<FroidurePinTCE>(left, tc.quotient_froidure_pin()));
+    REQUIRE_NOTHROW(CongruenceByPairs<FroidurePinTCE>(
+        twosided, tc.quotient_froidure_pin()));
+    REQUIRE_NOTHROW(
+        CongruenceByPairs<FroidurePinTCE>(right, tc.quotient_froidure_pin()));
 
     REQUIRE_THROWS_AS(
-        CongruenceByPairs<TCE>(
-            left, static_cast<FroidurePin<TCE>&>(*tc.quotient_froidure_pin())),
+        CongruenceByPairs<FroidurePinTCE>(
+            left, static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin())),
         LibsemigroupsException);
-    REQUIRE_THROWS_AS(CongruenceByPairs<TCE>(twosided,
-                                             static_cast<FroidurePin<TCE>&>(
-                                                 *tc.quotient_froidure_pin())),
-                      LibsemigroupsException);
-    REQUIRE_NOTHROW(CongruenceByPairs<TCE>(
-        right, static_cast<FroidurePin<TCE>&>(*tc.quotient_froidure_pin())));
+    REQUIRE_THROWS_AS(
+        CongruenceByPairs<FroidurePinTCE>(
+            twosided,
+            static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin())),
+        LibsemigroupsException);
+    REQUIRE_NOTHROW(CongruenceByPairs<FroidurePinTCE>(
+        right, static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin())));
 
-    CongruenceByPairs<TCE> cong(
-        right, static_cast<FroidurePin<TCE>&>(*tc.quotient_froidure_pin()));
+    CongruenceByPairs<FroidurePinTCE> cong(
+        right, static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin()));
 
     REQUIRE_THROWS_AS(cong.quotient_froidure_pin(), LibsemigroupsException);
     REQUIRE(cong.nr_classes() == 27);
@@ -521,7 +526,7 @@ namespace libsemigroups {
     REQUIRE(tc.quotient_froidure_pin()->size() == 27);
 
     using detail::TCE;
-    CongruenceByPairs<TCE> cong(right, tc.quotient_froidure_pin());
+    CongruenceByPairs<FroidurePinTCE> cong(right, tc.quotient_froidure_pin());
     REQUIRE(!cong.finished());
     REQUIRE(cong.has_parent_froidure_pin());
     REQUIRE(cong.parent_froidure_pin()->finished());
@@ -542,7 +547,7 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 321);
 
-    using P = CongruenceByPairs<decltype(S)::element_type>;
+    using P = CongruenceByPairs<decltype(S)>;
     std::unique_ptr<P> cong;
 
     SECTION("right congruence") {
@@ -571,7 +576,7 @@ namespace libsemigroups {
                            Transf({0, 6, 4, 2, 2, 6, 6, 4}),
                            Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
-    using P = CongruenceByPairs<decltype(S)::element_type>;
+    using P = CongruenceByPairs<decltype(S)>;
     std::unique_ptr<P> cong;
 
     SECTION("right congruence") {
@@ -599,7 +604,7 @@ namespace libsemigroups {
                            Transf({0, 6, 4, 2, 2, 6, 6, 4}),
                            Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
-    using P = CongruenceByPairs<decltype(S)::element_type>;
+    using P = CongruenceByPairs<decltype(S)>;
 
     P cong1(right, S);
     REQUIRE(cong1.nr_classes() == 11804);
@@ -987,6 +992,7 @@ namespace libsemigroups {
                           "009",
                           "finite fp semigroup, dihedral group of order 6",
                           "[quick][kbp][cong-pair]") {
+    using detail::KBE;
     auto                     rg = ReportGuard(REPORT);
     fpsemigroup::KnuthBendix kb;
     kb.set_alphabet(5);
@@ -1006,6 +1012,22 @@ namespace libsemigroups {
     kb.add_rule({2, 2}, {0});
     kb.add_rule({1, 4, 2, 3, 3}, {0});
     kb.add_rule({4, 4, 4}, {0});
+
+    auto fp = static_cast<
+        FroidurePin<KBE, FroidurePinTraits<KBE, fpsemigroup::KnuthBendix>>*>(
+        kb.froidure_pin().get());
+    REQUIRE(fp->size() == 6);
+
+    std::vector<detail::KBE> expected
+        = {KBE(kb, kb.alphabet(0)),
+           KBE(kb, kb.alphabet(1)),
+           KBE(kb, kb.alphabet(3)),
+           KBE(kb, kb.alphabet(4)),
+           KBE(kb, kb.alphabet(1) + kb.alphabet(3)),
+           KBE(kb, kb.alphabet(1) + kb.alphabet(4))};
+    auto result = std::vector<detail::KBE>(fp->cbegin(), fp->cend());
+
+    REQUIRE(result == expected);
 
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
 
@@ -1182,7 +1204,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.nr_rules() == 18);
 
-    FpSemigroupByPairs<decltype(S)::element_type> p(S);
+    FpSemigroupByPairs<decltype(S)> p(S);
     p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),
                word_type({1, 0, 0, 0, 1}));
 
@@ -1216,7 +1238,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.nr_rules() == 18);
 
-    FpSemigroupByPairs<decltype(S)::element_type> p(S);
+    FpSemigroupByPairs<decltype(S)> p(S);
     p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),
                word_type({1, 0, 0, 0, 1}));
 

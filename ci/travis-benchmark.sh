@@ -3,6 +3,7 @@ set -e
 
 # Setup
 ci/travis-setup.sh
+ci/travis-setup-hpcombi.sh
 
 ./configure
 make bench_all -j4

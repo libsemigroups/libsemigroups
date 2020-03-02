@@ -26,8 +26,8 @@ namespace libsemigroups {
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(
       congruence_type              type,
       std::shared_ptr<KnuthBendix> kb) noexcept
-      : p_type(type), _kb(kb) {
-    set_nr_generators(_kb->alphabet().size());
+      : CongruenceByPairsHelper_(type, kb, false) {  // final param is a dummy
+    set_nr_generators(kb->alphabet().size());
   }
 
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(
@@ -41,23 +41,24 @@ namespace libsemigroups {
 
   void KnuthBendixCongruenceByPairs::run_impl() {
     auto stppd = [this]() -> bool { return stopped(); };
-    _kb->run_until(stppd);
+    state().run_until(stppd);
     if (!stopped()) {
       if (!has_parent_froidure_pin()) {
-        set_parent_froidure_pin(_kb->froidure_pin());
+        set_parent_froidure_pin(state().froidure_pin());
       }
       // TODO(later) should just run_until in the next line, that doesn't
       // currently work because run_until calls run (i.e. this function),
       // causing an infinite loop. We really want to call run_until on the
       // p_type, using its run member function, but that's not currently
       // possible.
-      p_type::run_impl();
+      CongruenceByPairsHelper_::run_impl();
     }
     report_why_we_stopped();
   }
 
   bool KnuthBendixCongruenceByPairs::finished_impl() const {
-    return has_parent_froidure_pin() && p_type::finished_impl();
+    return has_parent_froidure_pin()
+           && CongruenceByPairsHelper_::finished_impl();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -70,8 +71,9 @@ namespace libsemigroups {
   // TODO(later) this copies KBE(_kb, l) and KBE(_kb, r) twice.
   void KnuthBendixCongruenceByPairs::add_pair_impl(word_type const& u,
                                                    word_type const& v) {
-    internal_element_type x = new element_type(_kb.get(), u);
-    internal_element_type y = new element_type(_kb.get(), v);
+    // FIXME this is not generic.
+    internal_element_type x = new element_type(state(), u);
+    internal_element_type y = new element_type(state(), v);
     internal_add_pair(x, y);
     this->internal_free(x);
     this->internal_free(y);

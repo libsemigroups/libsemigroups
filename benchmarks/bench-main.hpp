@@ -52,6 +52,7 @@ namespace libsemigroups {
     s << "0x" << std::hex << std::uppercase << i;
     return s.str();
   }
+
   template <typename TReturnType, typename... TArgs>
   struct FunctionBase {
     using return_type = TReturnType;

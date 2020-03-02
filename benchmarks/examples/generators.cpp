@@ -21,8 +21,14 @@
 #include "common.hpp"
 
 #include "libsemigroups/element-helper.hpp"
+#include "libsemigroups/libsemigroups-config.hpp"
 
 namespace libsemigroups {
+#ifndef LIBSEMIGROUPS_HPCOMBI
+  static_assert(false,
+                "HPCombi must be enabled for benchmarks");
+#endif
+
   using Transf = typename TransfHelper<16>::type;
 
   namespace {
@@ -126,7 +132,6 @@ namespace libsemigroups {
                   Transf({7, 7, 4, 0, 6, 4, 1, 7})}},
         full_transf_monoid(7),
     };
-    std::cout << to_hex_string(create_id(examples.back())) << std::endl;
     return examples;
   }
 }  // namespace libsemigroups

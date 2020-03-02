@@ -82,6 +82,7 @@ namespace libsemigroups {
         _relation_pos(UNDEFINED),
         _right(),
         _sorted(),
+        _state(nullptr),
         _suffix(),
         _tmp_product(),
         _wordlen(0) {  // (length of the current word) - 1
@@ -139,6 +140,7 @@ namespace libsemigroups {
         _relation_pos(S._relation_pos),
         _right(S._right),
         _sorted(),  // TODO(later) S this if set
+        _state(S._state),
         _suffix(S._suffix),
         _wordlen(S._wordlen) {
 #ifdef LIBSEMIGROUPS_VERBOSE
@@ -222,6 +224,7 @@ namespace libsemigroups {
         _relation_pos(UNDEFINED),
         _right(S._right),
         _sorted(),
+        _state(S._state),
         _wordlen(0) {
     LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
     LIBSEMIGROUPS_ASSERT(!coll->empty());
@@ -315,15 +318,19 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(w[0] < nr_generators() && w[1] < nr_generators());
     element_type prod
         = this->external_copy(this->to_external_const(_tmp_product));
-    Product()(prod,
-              this->to_external_const(_gens[w[0]]),
-              this->to_external_const(_gens[w[1]]));
+
+    auto* state_ptr = _state.get();
+    InternalProduct()(prod,
+                      this->to_external_const(_gens[w[0]]),
+                      this->to_external_const(_gens[w[1]]),
+                      state_ptr);
     for (auto it = w.begin() + 2; it < w.end(); ++it) {
       LIBSEMIGROUPS_ASSERT(*it < nr_generators());
       Swap()(this->to_external(_tmp_product), prod);
-      Product()(prod,
-                this->to_external_const(_tmp_product),
-                this->to_external_const(_gens[*it]));
+      InternalProduct()(prod,
+                        this->to_external_const(_tmp_product),
+                        this->to_external_const(_gens[*it]),
+                        state_ptr);
     }
     return prod;
   }
@@ -444,9 +451,10 @@ namespace libsemigroups {
     if (length_const(i) < n || length_const(j) < n) {
       return product_by_reduction(i, j);
     } else {
-      Product()(this->to_external(_tmp_product),
-                this->to_external_const(_elements[i]),
-                this->to_external_const(_elements[j]));
+      InternalProduct()(this->to_external(_tmp_product),
+                        this->to_external_const(_elements[i]),
+                        this->to_external_const(_elements[j]),
+                        _state.get());
       return _map.find(_tmp_product)->second;
     }
   }
@@ -685,16 +693,19 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
 
+    auto ptr = _state.get();
+
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
       size_type nr_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_type i = _enumerate_order[_pos];
         for (letter_type j = 0; j != nr_generators(); ++j) {
-          Product()(this->to_external(_tmp_product),
-                    this->to_external_const(_elements[i]),
-                    this->to_external_const(_gens[j]),
-                    tid);
+          InternalProduct()(this->to_external(_tmp_product),
+                            this->to_external_const(_elements[i]),
+                            this->to_external_const(_gens[j]),
+                            ptr,
+                            tid);
 
 #ifdef LIBSEMIGROUPS_VERBOSE
           _nr_products++;
@@ -750,10 +761,11 @@ namespace libsemigroups {
               _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
             }
           } else {
-            Product()(this->to_external(_tmp_product),
-                      this->to_external_const(_elements[i]),
-                      this->to_external_const(_gens[j]),
-                      tid);
+            InternalProduct()(this->to_external(_tmp_product),
+                              this->to_external_const(_elements[i]),
+                              this->to_external_const(_gens[j]),
+                              ptr,
+                              tid);
 #ifdef LIBSEMIGROUPS_VERBOSE
             _nr_products++;
 #endif
@@ -947,7 +959,7 @@ namespace libsemigroups {
     std::fill(_reduced.begin(), _reduced.end(), false);
 
     size_type nr_shorter_elements;
-
+    auto      ptr = _state.get();
     // Repeat until we have multiplied all of the elements of <old> up to the
     // old value of _pos by all of the (new and old) generators
 
@@ -983,13 +995,13 @@ namespace libsemigroups {
             }
           }
           for (letter_type j = old_nrgens; j < nr_generators(); j++) {
-            closure_update(i, j, b, s, old_nr, tid, old_new);
+            closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
           for (letter_type j = 0; j < nr_generators(); j++) {
-            closure_update(i, j, b, s, old_nr, tid, old_new);
+            closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         }
         _pos++;
@@ -1215,7 +1227,8 @@ namespace libsemigroups {
                                     element_index_type s,
                                     size_type          old_nr,
                                     size_t const&      tid,
-                                    std::vector<bool>& old_new) {
+                                    std::vector<bool>& old_new,
+                                    state_type*        ptr) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       element_index_type r = _right.get(s, j);
       if (_found_one && r == _pos_one) {
@@ -1226,10 +1239,11 @@ namespace libsemigroups {
         _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
       }
     } else {
-      Product()(this->to_external(_tmp_product),
-                this->to_external_const(_elements[i]),
-                this->to_external_const(_gens[j]),
-                tid);
+      InternalProduct()(this->to_external(_tmp_product),
+                        this->to_external_const(_elements[i]),
+                        this->to_external_const(_gens[j]),
+                        ptr,
+                        tid);
       auto it = _map.find(_tmp_product);
       if (it == _map.end()) {  // it's new!
         is_one(_tmp_product, _nr);
@@ -1474,14 +1488,16 @@ namespace libsemigroups {
     // Cannot use _tmp_product itself since there are multiple threads here!
     internal_element_type tmp_product = this->internal_copy(_tmp_product);
     size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+    auto   ptr = _state.get();
 
     for (; pos < last; pos++) {
       element_index_type k = _enumerate_order[pos];
       if (_is_idempotent[k] == 0) {
-        Product()(this->to_external(tmp_product),
-                  this->to_external(_elements[k]),
-                  this->to_external(_elements[k]),
-                  tid);
+        InternalProduct()(this->to_external(tmp_product),
+                          this->to_external(_elements[k]),
+                          this->to_external(_elements[k]),
+                          ptr,
+                          tid);
         if (InternalEqualTo()(tmp_product, _elements[k])) {
           idempotents.emplace_back(_elements[k], k);
           _is_idempotent[k] = 1;

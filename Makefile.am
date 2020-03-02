@@ -139,7 +139,6 @@ libsemigroups_la_SOURCES += src/order.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
-libsemigroups_la_SOURCES += src/tce.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 
