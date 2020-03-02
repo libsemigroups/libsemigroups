@@ -22,7 +22,7 @@
 #include "libsemigroups/order.hpp"
 
 #include "libsemigroups/types.hpp"  // for word_type
-#include <vector>     // for vector
+#include <vector>                   // for vector
 
 namespace libsemigroups {
   std::vector<word_type> shortlex_words(size_t nr_gens, size_t len) {

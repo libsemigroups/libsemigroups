@@ -34,13 +34,13 @@
 #include <set>  // for set
 #endif
 
-#include "libsemigroups/cong-intf.hpp"                // for CongruenceInterface
-#include "libsemigroups/coset.hpp"                    // for CosetManager
-#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"             // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"             // for fpsemigroup::KnuthBendix
-#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
+#include "libsemigroups/coset.hpp"              // for CosetManager
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/obvinf.hpp"                   // for IsObviouslyInfinite
 #include "libsemigroups/report.hpp"                   // for REPORT
@@ -582,7 +582,7 @@ namespace libsemigroups {
       std::vector<class_index_type> perm(0, _relations.size());
       std::iota(perm.begin(), perm.end(), 0);
       std::random_device rd;
-      std::mt19937 g(rd());
+      std::mt19937       g(rd());
       std::shuffle(perm.begin(), perm.end(), g);
       ::sort_generating_pairs(perm, _relations);
       ::sort_generating_pairs(perm, _extra);

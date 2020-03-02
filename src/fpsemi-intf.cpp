@@ -23,8 +23,8 @@
 #include <algorithm>  // for sort
 #include <string>     // for std::string
 
-#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
-#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/froidure-pin-base.hpp"     // for FroidurePinBase
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/report.hpp"                   // for REPORT_DEFAULT ...
 #include "libsemigroups/string.hpp"                   // for detail::to_string

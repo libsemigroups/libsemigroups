@@ -23,8 +23,8 @@
 #include "libsemigroups/fpsemi.hpp"
 #include "libsemigroups/knuth-bendix.hpp"
 #include "libsemigroups/tce.hpp"
-#include "test-main.hpp"
 #include "libsemigroups/todd-coxeter.hpp"
+#include "test-main.hpp"
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration

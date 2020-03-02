@@ -22,9 +22,9 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for operator==, vector
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/uf.hpp"         // for UF, UF::blocks_type, UF::table_type
+#include "catch.hpp"             // for REQUIRE
+#include "libsemigroups/uf.hpp"  // for UF, UF::blocks_type, UF::table_type
+#include "test-main.hpp"         // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   using detail::UF;

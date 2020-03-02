@@ -21,15 +21,15 @@
 #include <iterator>   // for reverse_iterator, opera...
 #include <vector>     // for vector
 
-#include "libsemigroups/bruidhinn-traits.hpp"      // for detail::BruidhinnTraits
-#include "catch.hpp"                 // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/element.hpp"               // for Element
-#include "libsemigroups/froidure-pin.hpp"          // for FroidurePin, FroidurePi...
+#include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "libsemigroups/element.hpp"           // for Element
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin, FroidurePi...
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/report.hpp"                // for ReportGuard
-#include "libsemigroups/semiring.hpp"              // for Integers, Semiring, Max...
+#include "libsemigroups/semiring.hpp"  // for Integers, Semiring, Max...
+#include "libsemigroups/types.hpp"     // for word_type, letter_type
 #include "test-main.hpp"
-#include "libsemigroups/types.hpp"  // for word_type, letter_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;
