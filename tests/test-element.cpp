@@ -20,15 +20,15 @@
 #include <cstdint>  // for uint32_t, int32_t, int64_t
 #include <vector>   // for vector
 
+#include "catch.hpp"                               // for TEST_CASE
 #include "libsemigroups/blocks.hpp"                // for Blocks
 #include "libsemigroups/bmat8.hpp"                 // for BMat8
-#include "catch.hpp"                 // for TEST_CASE
 #include "libsemigroups/element-helper.hpp"        // for TransfHelper
 #include "libsemigroups/element.hpp"               // for Bipartition, Element
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/semiring.hpp"              // for Semiring ...
-#include "test-main.hpp"             // LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/types.hpp"                 // for SmallestInteger, Smalle...
+#include "libsemigroups/types.hpp"  // for SmallestInteger, Smalle...
+#include "test-main.hpp"            // LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

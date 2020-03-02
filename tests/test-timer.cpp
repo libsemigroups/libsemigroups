@@ -20,9 +20,9 @@
 #include <string>    // for operator==
 #include <thread>    // for sleep_for
 
-#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "test-main.hpp"
+#include "catch.hpp"                // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/timer.hpp"  // for detail::Timer, operator<<
+#include "test-main.hpp"
 
 namespace libsemigroups {
 

@@ -18,18 +18,18 @@
 
 // The purpose of this file is to provide unit tests for the FpSemigroup class.
 
-#include "catch.hpp"              // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"            // for LIBSEMIGROUPS_TEST_CASE
+#include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
 #include "libsemigroups/element-helper.hpp"     // for Transf, Transf<>::type
 #include "libsemigroups/element.hpp"            // for Transf, Transf<>::type
-#include "fpsemi-examples.hpp"    // for RennerTypeDMonoid, RennerTypeBMonoid
 #include "libsemigroups/fpsemi.hpp"             // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin<>::element_index_type
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
-#include "libsemigroups/report.hpp"             // for ReportGuard
-#include "test-main.hpp"
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/types.hpp"         // for relation_type
+#include "test-main.hpp"
 
 namespace libsemigroups {
 

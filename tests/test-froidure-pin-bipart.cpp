@@ -95,7 +95,7 @@ namespace libsemigroups {
                           "013",
                           "default constructed",
                           "[quick][froidure-pin][bipartition][bipart]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(REPORT);
 
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition(
