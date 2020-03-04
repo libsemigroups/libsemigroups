@@ -70,7 +70,7 @@ namespace libsemigroups {
     //! kb.add_rule("bcbc", "bbb");
     //!
     //! !kb.confluent();       // true
-    //! kb.knuth_bendix();
+    //! kb.run();
     //! kb.nr_active_rules();  // 31
     //! kb.confluent();        // true
     //! \endcode
