@@ -366,7 +366,7 @@ namespace libsemigroups {
 
   namespace bmat8_helpers {
     size_t minimum_dim(BMat8 const& x) noexcept {
-      size_t i = 0;
+      size_t   i = 0;
       uint64_t c = x.to_int();
       uint64_t d = x.to_int();
       uint64_t y = x.transpose().to_int();

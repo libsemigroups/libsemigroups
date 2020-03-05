@@ -34,13 +34,13 @@
 #include <set>  // for set
 #endif
 
-#include "libsemigroups/cong-intf.hpp"                // for CongruenceInterface
-#include "libsemigroups/coset.hpp"                    // for CosetManager
-#include "libsemigroups/froidure-pin-base.hpp"        // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"             // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"             // for fpsemigroup::KnuthBendix
-#include "libsemigroups/libsemigroups-config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
+#include "libsemigroups/coset.hpp"              // for CosetManager
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/obvinf.hpp"                   // for IsObviouslyInfinite
 #include "libsemigroups/report.hpp"                   // for REPORT

@@ -1137,7 +1137,7 @@ namespace libsemigroups {
     internal_element_type                            _id;
     std::vector<internal_idempotent_pair>            _idempotents;
     bool                                             _idempotents_found;
-    std::vector<int>                                _is_idempotent;
+    std::vector<int>                                 _is_idempotent;
     cayley_graph_type                                _left;
     std::vector<size_type>                           _length;
     std::vector<enumerate_index_type>                _lenindex;

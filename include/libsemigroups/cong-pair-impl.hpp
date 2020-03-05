@@ -17,10 +17,11 @@
 //
 
 // This file contains implementations of the member functions for
-// CongruenceByPairs.
+// CongruenceByPairsHelper.
 
 // TODO(later):
-//   1. the type of the congruence defined by class CongruenceByPairs could be
+//   1. the type of the congruence defined by class CongruenceByPairsHelper
+//   could be
 //      a template parameter
 
 #ifndef LIBSEMIGROUPS_CONG_PAIR_IMPL_HPP_
@@ -30,19 +31,8 @@
 #undef TEMPLATE
 #endif
 
-#define TEMPLATE                      \
-  template <typename TElementType,    \
-            typename TElementHash,    \
-            typename TElementEqual,   \
-            typename TElementProduct, \
-            typename TFroidurePinType>
-#define P_CLASS                      \
-  CongruenceByPairs<TElementType,    \
-                    TElementHash,    \
-                    TElementEqual,   \
-                    TElementProduct, \
-                    TFroidurePinType>
-
+#define TEMPLATE template <typename TFroidurePinType>
+#define P_CLASS CongruenceByPairsHelper<TFroidurePinType>
 #define VOID TEMPLATE void
 #define SIZE_T TEMPLATE size_t
 #define CLASS_INDEX_TYPE TEMPLATE CongruenceInterface::class_index_type
@@ -52,11 +42,11 @@
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairs - constructor - protected
+  // CongruenceByPairsHelper - constructor - protected
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairs(congruence_type type)
+  P_CLASS::CongruenceByPairsHelper(congruence_type type)
       : CongruenceInterface(type),
         _class_lookup(),
         _found_pairs(),
@@ -73,13 +63,13 @@ namespace libsemigroups {
         _tmp2() {}
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairs - constructor + destructor - public
+  // CongruenceByPairsHelper - constructor + destructor - public
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairs(congruence_type                  type,
-                             std::shared_ptr<FroidurePinBase> S) noexcept
-      : CongruenceByPairs(type) {
+  P_CLASS::CongruenceByPairsHelper(congruence_type                  type,
+                                   std::shared_ptr<FroidurePinBase> S) noexcept
+      : CongruenceByPairsHelper(type) {
     set_nr_generators(S->nr_generators());
     set_parent_froidure_pin(S);
   }
@@ -88,17 +78,18 @@ namespace libsemigroups {
   // FpSemigroupInterface? If necessary?
   TEMPLATE
   template <typename T>
-  P_CLASS::CongruenceByPairs(congruence_type type, T const& S)
-      : CongruenceByPairs(type,
-                          static_cast<std::shared_ptr<FroidurePinBase>>(
-                              std::make_shared<T>(S))) {
+  P_CLASS::CongruenceByPairsHelper(congruence_type type, T const& S)
+      : CongruenceByPairsHelper(type,
+                                static_cast<std::shared_ptr<FroidurePinBase>>(
+                                    std::make_shared<T>(S))) {
     static_assert(std::is_base_of<FroidurePinBase, T>::value,
                   "the template parameter must be a derived class of "
                   "FroidurePinBase");
     static_assert(
         std::is_same<typename T::element_type, element_type>::value,
         "incompatible element_type's, the element_type of the FroidurePin "
-        "instance must be the same as the CongruenceByPairs element_type");
+        "instance must be the same as the CongruenceByPairsHelper "
+        "element_type");
     if (type != congruence_type::right
         && std::is_same<typename T::element_type, detail::TCE>::value) {
       LIBSEMIGROUPS_EXCEPTION("Cannot create a left or 2-sided congruence "
@@ -107,7 +98,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE
-  P_CLASS::~CongruenceByPairs() {
+  P_CLASS::~CongruenceByPairsHelper() {
     delete_tmp_storage();
     this->internal_free(_tmp1);
     this->internal_free(_tmp2);
@@ -291,7 +282,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairs - member functions - protected
+  // CongruenceByPairsHelper - member functions - protected
   ////////////////////////////////////////////////////////////////////////
 
   VOID P_CLASS::internal_add_pair(internal_element_type x,
@@ -341,7 +332,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairs - member functions - private
+  // CongruenceByPairsHelper - member functions - private
   ////////////////////////////////////////////////////////////////////////
 
   SIZE_T P_CLASS::add_index(internal_element_type x) const {
