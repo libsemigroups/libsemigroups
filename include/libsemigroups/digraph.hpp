@@ -369,8 +369,9 @@ namespace libsemigroups {
     // Not noexcept because std::count isn't
     size_t nr_edges() const {
       return _dynamic_array_2.nr_rows() * _dynamic_array_2.nr_cols()
-             - std::count(
-                 _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
+             - std::count(_dynamic_array_2.cbegin(),
+                          _dynamic_array_2.cend(),
+                          UNDEFINED);
     }
 
     //! Returns the out-degree of \c this.
