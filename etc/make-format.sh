@@ -11,5 +11,7 @@ find src/*.hpp -type f -exec clang-format -i --verbose {} \;
 find src/*.cpp -type f -exec clang-format -i --verbose {} \;
 find tests/*.hpp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
 find tests/*.cpp -type f -exec clang-format -i --verbose {} \;
+find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
+find benchmarks/*.cpp -type f -exec clang-format -i --verbose {} \;
 
 exit 0
