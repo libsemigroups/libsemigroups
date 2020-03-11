@@ -28,6 +28,8 @@ matrix:
 
     - env: TEST_SUITE=quick 
 
+    - env: TEST_SUITE=benchmark
+
     - env: TEST_SUITE=debug
 
     - os: osx
