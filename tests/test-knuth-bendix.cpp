@@ -20,6 +20,8 @@
 //    reduction orderings different from shortlex
 // 2. Examples from MAF
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <iostream>  // for ostringstream
 #include <string>    // for string
 #include <utility>   // for pair
@@ -287,7 +289,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "010",
-                            "(fpsemi) Example 5.3 in Sims (infinite)",
+                            "(fpsemi) Example 5.3 in Sims",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -301,11 +303,12 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 6);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "011",
-                            "(fpsemi) Example 5.4 in Sims (infinite)",
+                            "(fpsemi) Example 5.4 in Sims",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -320,6 +323,7 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -608,8 +612,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "023",
-                            "(fpsemi) F(2, 6) - Chapter 9, Section 1 in NR "
-                            "(infinite)",
+                            "(fpsemi) F(2, 6) - Chapter 9, Section 1 in NR",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -626,6 +629,7 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 35);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -852,9 +856,8 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "032: (fpsemi) from GAP smalloverlap gap/test.gi",
-        "32 "
-        "(infinite)",
+        "032",
+        "(fpsemi) from GAP smalloverlap gap/test.gi (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -1259,6 +1262,8 @@ namespace libsemigroups {
 
     // This group is actually D_22 (although it wasn't meant to be). All
     // generators are unexpectedly involutory.
+    // FIXME what? The semigroup below is infinite, should add inverses and
+    // identity
 
     // knuth_bendix does not terminate with the given ordering, terminates
     // almost immediately with the standard order.
@@ -1587,6 +1592,7 @@ namespace libsemigroups {
 
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
+      // FIXME this isn't the free group
 
       REQUIRE(kb.confluent());
 
@@ -1861,6 +1867,7 @@ namespace libsemigroups {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aA");
+      // FIXME not a group!
 
       REQUIRE(kb.confluent());
 
@@ -2451,6 +2458,10 @@ namespace libsemigroups {
       kb.add_rule("BaAAaAaAAaAAA", "cAAaAAaAaAAa");
       kb.add_rule("BaAaAAaAAaAAA", "cAAaAaAAaAAa");
       kb.add_rule("BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
+
+      // REQUIRE(std::vector<std::pair<std::string,
+      //     std::string>>(kb.cbegin_rules(), kb.cbegin_rules() + 14) ==
+      //     std::vector<std::pair<std::string, std::string>>());
 
       REQUIRE(!kb.confluent());
       kb.run();
