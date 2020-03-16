@@ -73,8 +73,8 @@ namespace libsemigroups {
                             "[KnuthBendix][normal_forms_short_lex][quick]",
                             before_normal_forms<StringPresentation>,
                             bench_normal_forms,
-                            // subset);
                             string_infinite_examples());
+                            // subset);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
