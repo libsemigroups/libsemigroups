@@ -28,7 +28,7 @@ cd semigroups
 mv $HOME/libsemigroups . 
 ./autogen.sh
 ./configure
-make -j2
+make -j4
 
 cd ..
 git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
