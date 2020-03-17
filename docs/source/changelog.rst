@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.7 (released 17/03/2020)
+----------------------------
+
+This is a minor release fixing some minor issues, mostly highlighted from
+`libsemigroups_cppyy`_
+
 v1.0.6 (released 09/02/2020)
 ----------------------------
 
@@ -48,3 +54,4 @@ rewritten, generalised, and some new features have been added.
 
 .. _J. James: http://www.jamezone.org/
 .. _Isuru Fernando: https://github.com/isuruf
+.. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
