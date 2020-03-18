@@ -1510,7 +1510,7 @@ namespace libsemigroups {
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = detail::make_unique<ToddCoxeter>(right, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));

@@ -16,25 +16,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_BENCHMARKS_FPSEMI_EXAMPLES_HPP_
-#define LIBSEMIGROUPS_BENCHMARKS_FPSEMI_EXAMPLES_HPP_
+#ifndef LIBSEMIGROUPS_BENCHMARKS_EXAMPLES_FPSEMI_INTF_HPP_
+#define LIBSEMIGROUPS_BENCHMARKS_EXAMPLES_FPSEMI_INTF_HPP_
 
 #include <cstddef>  // for size_t
 #include <string>   // for string
 #include <vector>   // for vector
 
+#include "libsemigroups/cong-intf.hpp"
+#include "libsemigroups/fpsemi-intf.hpp"
+#include "libsemigroups/types.hpp"
+
 namespace libsemigroups {
 
-  struct StringPresentation {
+  struct FpSemiIntfArgs {
     size_t                                           id;
     std::string                                      name;
     std::string                                      A;
     std::vector<std::pair<std::string, std::string>> R;
   };
 
-  std::vector<StringPresentation> const& string_infinite_examples();
-  StringPresentation const&              string_infinite_examples(size_t);
+  namespace fpsemigroup {
+    std::vector<FpSemiIntfArgs> const& infinite_examples();
+    FpSemiIntfArgs const&              infinite_examples(size_t);
+
+    std::vector<FpSemiIntfArgs> const& finite_examples();
+    FpSemiIntfArgs const&              finite_examples(size_t);
+  }  // namespace fpsemigroup
+
+  template <typename S, typename T, typename SFINAE = S>
+  auto make(T const& p) ->
+      typename std::enable_if<std::is_base_of<FpSemigroupInterface, S>::value,
+                              SFINAE*>::type {
+    auto thing = new S();
+    thing->set_alphabet(p.A);
+    for (auto const& x : p.R) {
+      thing->add_rule(x.first, x.second);
+    }
+    return thing;
+  }
+
+  FpSemiIntfArgs special_linear_2(size_t);
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_BENCHMARKS_FPSEMI_EXAMPLES_HPP_
+#endif  // LIBSEMIGROUPS_BENCHMARKS_EXAMPLES_FPSEMI_INTF_HPP_

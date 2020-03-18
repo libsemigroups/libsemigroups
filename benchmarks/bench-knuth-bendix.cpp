@@ -18,28 +18,15 @@
 
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "libsemigroups/kbe.hpp"           // for detail::KBE
+#include "examples/fpsemi-intf.hpp"
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
-
-#include "fpsemi-examples.hpp"
 
 namespace libsemigroups {
   namespace fpsemigroup {
-
     namespace {
-      template <typename T>
-      KnuthBendix* make(T const& p) {
-        auto kb = new KnuthBendix();
-        kb->set_alphabet(p.A);
-        for (auto const& x : p.R) {
-          kb->add_rule(x);
-        }
-        return kb;
-      }
-
-      template <typename T>
-      KnuthBendix* before_normal_forms(T const& p) {
-        auto kb = make(p);
+      KnuthBendix* before_normal_forms(FpSemiIntfArgs const& p) {
+        auto kb = make<KnuthBendix>(p);
         kb->run();
         REQUIRE(kb->confluent());
         // REQUIRE(!kb->is_finite());
@@ -62,19 +49,22 @@ namespace libsemigroups {
         ptr->run_until([&ptr, &id]() -> bool {
           return ptr->current_max_word_length() >= data.find(id)->second;
         });
-        delete kb;
+      }
+      void after_normal_forms(KnuthBendix* tc) {
+        delete tc;
       }
     }  // namespace
 
-    // std::vector<StringPresentation> subset =
+    // std::vector<FpSemiIntfArgs> subset =
     // {string_infinite_examples(0x1565E7D947EC2828)};
 
     LIBSEMIGROUPS_BENCHMARK("Shortlex normal forms 1",
                             "[KnuthBendix][normal_forms_short_lex][quick]",
-                            before_normal_forms<StringPresentation>,
+                            before_normal_forms,
                             bench_normal_forms,
-                            string_infinite_examples());
-                            // subset);
+                            after_normal_forms,
+                            fpsemigroup::infinite_examples());
+    // subset);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

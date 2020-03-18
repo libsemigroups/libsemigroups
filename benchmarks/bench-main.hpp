@@ -29,7 +29,7 @@
 // TODO can this be a function rather than a macro??
 
 #define LIBSEMIGROUPS_BENCHMARK(                                              \
-    test_case_name, tags, before_func, bench_func, sample)                    \
+    test_case_name, tags, before_func, bench_func, after_func, sample)        \
   TEST_CASE(test_case_name, tags) {                                           \
     auto rg = ReportGuard(false);                                             \
     for (auto var : sample) {                                                 \
@@ -41,12 +41,13 @@
             meter, var, before_func);                                         \
         meter.measure(                                                        \
             [&vec, &var](int i) { return bench_func(vec[i], var.id); });      \
+        cleanup_sample(after_func, vec);                                      \
       }; /* NOLINT(readability/braces) */                                     \
     }                                                                         \
   }
 
 namespace libsemigroups {
-  std::string to_hex_string(size_t i) {
+  static std::string to_hex_string(size_t i) {
     std::stringstream s;
     s << "0x" << std::hex << std::uppercase << i;
     return s.str();
@@ -64,6 +65,16 @@ namespace libsemigroups {
   struct Function<TReturnType(TArgs...)> : FunctionBase<TReturnType, TArgs...> {
   };
 
+  // Function pointer
+  template <typename TReturnType, typename... TArgs>
+  struct Function<TReturnType (*)(TArgs...)>
+      : FunctionBase<TReturnType, TArgs...> {};
+
+  // Function pointer const
+  template <typename TReturnType, typename... TArgs>
+  struct Function<TReturnType (*const)(TArgs...)>
+      : FunctionBase<TReturnType, TArgs...> {};
+
   template <typename T, typename S>
   std::vector<T> initialised_sample(Catch::Benchmark::Chronometer meter,
                                     S const& sample_constructor_params,
@@ -73,6 +84,13 @@ namespace libsemigroups {
       out.push_back(before_func(sample_constructor_params));
     }
     return out;
+  }
+
+  template <typename S, typename T>
+  void cleanup_sample(S after_func, T& data) {
+    for (auto& x : data) {
+      after_func(x);
+    }
   }
 
 }  // namespace libsemigroups
