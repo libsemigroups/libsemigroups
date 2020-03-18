@@ -170,9 +170,6 @@ EXTRA_DIST += src/knuth-bendix-impl.hpp
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += tests/fpsemi-examples.hpp
 EXTRA_DIST += tests/test-main.hpp
-EXTRA_DIST += benchmarks/catch.hpp
-EXTRA_DIST += benchmarks/fpsemi-examples.hpp
-EXTRA_DIST += benchmarks/bench-main.hpp
 
 ## For testing . . .
 
@@ -221,6 +218,7 @@ check_PROGRAMS += test_uf
 
 EXTRA_PROGRAMS =  bench_all
 EXTRA_PROGRAMS += bench_knuth_bendix
+EXTRA_PROGRAMS += bench_todd_coxeter
 
 LDADD = libsemigroups.la
 
@@ -382,13 +380,20 @@ test_todd_coxeter_SOURCES += tests/test-main.cpp
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
 
-bench_all_SOURCES =  benchmarks/fpsemi-examples.cpp
+bench_all_SOURCES =  benchmarks/examples/fpsemi-intf.cpp
+bench_all_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
+bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 
 bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
-bench_knuth_bendix_SOURCES += benchmarks/fpsemi-examples.cpp
+bench_knuth_bendix_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
+
+bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
+bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
+bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
+bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 
 ## Make targets
 
