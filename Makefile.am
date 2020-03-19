@@ -217,6 +217,7 @@ check_PROGRAMS += test_todd_coxeter
 check_PROGRAMS += test_uf
 
 EXTRA_PROGRAMS =  bench_all
+EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_todd_coxeter
 
@@ -380,8 +381,10 @@ test_todd_coxeter_SOURCES += tests/test-main.cpp
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
 
-bench_all_SOURCES =  benchmarks/examples/fpsemi-intf.cpp
-bench_all_SOURCES += benchmarks/examples/cong-intf.cpp
+bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
+bench_all_SOURCES += benchmarks/examples/fpsemi-intf.cpp
+bench_all_SOURCES += benchmarks/examples/generators.cpp
+bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
@@ -394,6 +397,10 @@ bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
+
+bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
+bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
+bench_froidure_pin_SOURCES += benchmarks/bench-main.cpp
 
 ## Make targets
 

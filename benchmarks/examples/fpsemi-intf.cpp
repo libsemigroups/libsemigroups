@@ -310,7 +310,7 @@ namespace libsemigroups {
                                 {"eY", "Y"},
                                 {"xxYXYXYX", "e"},
                                 {second(p), "e"}}};
-    out.id             = detail::create_id(out);
+    out.id             = create_id(out);
     return out;
   }
 }  // namespace libsemigroups
