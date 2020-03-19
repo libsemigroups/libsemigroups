@@ -27,6 +27,8 @@
 #include "libsemigroups/fpsemi-intf.hpp"
 #include "libsemigroups/types.hpp"
 
+#include "common.hpp"
+
 namespace libsemigroups {
 
   struct FpSemiIntfArgs {
@@ -35,14 +37,6 @@ namespace libsemigroups {
     std::string                                      A;
     std::vector<std::pair<std::string, std::string>> R;
   };
-
-  namespace fpsemigroup {
-    std::vector<FpSemiIntfArgs> const& infinite_examples();
-    FpSemiIntfArgs const&              infinite_examples(size_t);
-
-    std::vector<FpSemiIntfArgs> const& finite_examples();
-    FpSemiIntfArgs const&              finite_examples(size_t);
-  }  // namespace fpsemigroup
 
   template <typename S, typename T, typename SFINAE = S>
   auto make(T const& p) ->
@@ -56,7 +50,26 @@ namespace libsemigroups {
     return thing;
   }
 
-  FpSemiIntfArgs special_linear_2(size_t);
+  size_t create_id(FpSemiIntfArgs const& x) {
+    using item_type          = decltype(x.A);
+    std::vector<item_type> A = {x.A};
+    auto                   R = x.R;
+    for (auto& p : R) {
+      A.push_back(p.first);
+      A.push_back(p.second);
+    }
+    return detail::hash_combine(A);
+  }
+
+  namespace fpsemigroup {
+    std::vector<FpSemiIntfArgs> const& infinite_examples();
+    FpSemiIntfArgs const&              infinite_examples(size_t);
+
+    std::vector<FpSemiIntfArgs> const& finite_examples();
+    FpSemiIntfArgs const&              finite_examples(size_t);
+
+    FpSemiIntfArgs special_linear_2(size_t);
+  }  // namespace fpsemigroup
 
 }  // namespace libsemigroups
 

@@ -39,17 +39,6 @@ namespace libsemigroups {
       return s;
     }
 
-    template <typename T>
-    size_t create_id(T const& x) {
-      using item_type          = decltype(x.A);
-      std::vector<item_type> A = {x.A};
-      auto                   R = x.R;
-      for (auto& p : R) {
-        A.push_back(p.first);
-        A.push_back(p.second);
-      }
-      return hash_combine(A);
-    }
   }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BENCHMARKS_EXAMPLES_COMMON_HPP_
