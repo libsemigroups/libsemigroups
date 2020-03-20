@@ -78,6 +78,7 @@ be in the future too, but presently they don't work.
    order
    semigroups
    semiring
+   words
    misc
 
 .. toctree::

@@ -20,4 +20,14 @@
 #define CATCH_CONFIG_FAST_COMPILE
 #define CATCH_CONFIG_MAIN
 
+#include <sstream>
+
 #include "catch.hpp"
+
+namespace libsemigroups {
+  std::string to_hex_string(size_t i) {
+    std::stringstream s;
+    s << "0x" << std::hex << std::uppercase << i;
+    return s.str();
+  }
+}  // namespace libsemigroups

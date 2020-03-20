@@ -19,7 +19,6 @@
 #ifndef LIBSEMIGROUPS_BENCHMARKS_BENCH_MAIN_HPP_
 #define LIBSEMIGROUPS_BENCHMARKS_BENCH_MAIN_HPP_
 
-#include <sstream>
 #include <vector>
 
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
@@ -47,11 +46,7 @@
   }
 
 namespace libsemigroups {
-  static std::string to_hex_string(size_t i) {
-    std::stringstream s;
-    s << "0x" << std::hex << std::uppercase << i;
-    return s.str();
-  }
+  std::string to_hex_string(size_t);
 
   template <typename TReturnType, typename... TArgs>
   struct FunctionBase {

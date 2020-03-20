@@ -25,8 +25,7 @@
 
 namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_HPCOMBI
-  static_assert(false,
-                "HPCombi must be enabled for benchmarks");
+  static_assert(false, "HPCombi must be enabled for benchmarks");
 #endif
 
   using Transf = typename TransfHelper<16>::type;
