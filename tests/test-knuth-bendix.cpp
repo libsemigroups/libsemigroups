@@ -27,7 +27,9 @@
 #include <utility>   // for pair
 #include <vector>    // for vector
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/element-helper.hpp"  // for TransfHelper
 #include "libsemigroups/element.hpp"         // for Element, Transf, Transf...
 #include "libsemigroups/froidure-pin.hpp"    // for FroidurePin
@@ -36,7 +38,6 @@
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/report.hpp"                // for ReportGuard
 #include "libsemigroups/types.hpp"                 // for word_type
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

@@ -53,7 +53,6 @@ namespace libsemigroups {
   //! number \c m is referred to as the *out-degree* of the digraph, or any of
   //! its nodes.
   //!
-  //!
   //! \tparam T the type of the nodes in the digraph, must be an unsigned
   //! integer type.
   //!

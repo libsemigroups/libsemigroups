@@ -319,13 +319,13 @@ namespace libsemigroups {
                              tc.cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
 
-      for (size_t i = 2; i < 6; ++i) {
-        for (size_t j = 2; j < 10 - i; ++j) {
-          auto v = shortlex_words(i, j);
-          std::sort(v.begin(), v.end(), RecursivePathCompare<word_type>{});
-          REQUIRE(v == recursive_path_words(i, j));
-        }
-      }
+      // for (size_t i = 2; i < 6; ++i) {
+      //   for (size_t j = 2; j < 10 - i; ++j) {
+      //     auto v = shortlex_words(i, j);
+      //     std::sort(v.begin(), v.end(), RecursivePathCompare<word_type>{});
+      //     REQUIRE(v == recursive_path_words(i, j));
+      //   }
+      // }
       tc.standardize(order::recursive);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
       REQUIRE(tc.class_index_to_word(1) == word_type({0, 0}));
