@@ -58,6 +58,10 @@ namespace libsemigroups {
     IntegralRange& operator=(IntegralRange const&) noexcept = default;
     IntegralRange& operator=(IntegralRange&&) noexcept = default;
 
+    value_type operator[](size_t i) const noexcept {
+      return _begin + i;
+    }
+
     class const_iterator final {
       friend class IntegralRange;
 
