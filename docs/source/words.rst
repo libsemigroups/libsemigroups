@@ -18,5 +18,7 @@ Functions
 .. toctree::
    :maxdepth: 1
 
+   api/silo.rst
+   api/sislo.rst
    api/wilo.rst
    api/wislo.rst

@@ -23,15 +23,5 @@
 #include "libsemigroups/types.hpp"  // for word_type
 
 namespace libsemigroups {
-  LIBSEMIGROUPS_TEST_CASE("number_of_words", "001", "corner cases", "[quick]") {
-    REQUIRE(1 - std::pow(3, 4) / (1 - 4) == 0);
-    REQUIRE(39 == number_of_words(3, 1, 4));
-    REQUIRE(29524 == number_of_words(3, 0, 10));
-    REQUIRE(32 == number_of_words(2, 5, 6));
-    REQUIRE(797161 == number_of_words(3, 0, 13));
-    REQUIRE(number_of_words(2, 4, 1) == 0);
-    REQUIRE(number_of_words(2, 4, 4) == 0);
-    REQUIRE(number_of_words(2, 4, 2) == 0);
-  }
-
+  // TODO
 }  // namespace libsemigroups

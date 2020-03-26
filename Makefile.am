@@ -78,6 +78,7 @@ pkginclude_HEADERS += include/libsemigroups/report.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/semiring.hpp
+pkginclude_HEADERS += include/libsemigroups/siso.hpp
 pkginclude_HEADERS += include/libsemigroups/stl.hpp
 pkginclude_HEADERS += include/libsemigroups/string.hpp
 pkginclude_HEADERS += include/libsemigroups/tce.hpp
@@ -141,6 +142,7 @@ libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
+libsemigroups_la_SOURCES += src/siso.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 libsemigroups_la_SOURCES += src/wilo.cpp
@@ -216,6 +218,7 @@ check_PROGRAMS += test_order
 check_PROGRAMS += test_race
 check_PROGRAMS += test_runner
 check_PROGRAMS += test_schreier_sims
+check_PROGRAMS += test_siso
 check_PROGRAMS += test_semiring
 check_PROGRAMS += test_timer
 check_PROGRAMS += test_todd_coxeter
@@ -227,6 +230,7 @@ check_PROGRAMS += test_word
 EXTRA_PROGRAMS =  bench_all
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
+EXTRA_PROGRAMS += bench_siso
 EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_wilo
 EXTRA_PROGRAMS += bench_wislo
@@ -269,10 +273,12 @@ test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kbe.cpp
 test_all_SOURCES += tests/test-knuth-bendix.cpp
 test_all_SOURCES += tests/test-main.cpp
+test_all_SOURCES += tests/test-order.cpp
 test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-semiring.cpp
+test_all_SOURCES += tests/test-siso.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-uf.cpp
@@ -387,6 +393,9 @@ test_schreier_sims_SOURCES += tests/test-main.cpp
 test_semiring_SOURCES =  tests/test-semiring.cpp
 test_semiring_SOURCES += tests/test-main.cpp
 
+test_siso_SOURCES =  tests/test-siso.cpp
+test_siso_SOURCES += tests/test-main.cpp
+
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 
@@ -412,6 +421,7 @@ bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
+bench_all_SOURCES += benchmarks/bench-siso.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
@@ -423,6 +433,9 @@ bench_froidure_pin_SOURCES += benchmarks/bench-main.cpp
 bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
 bench_knuth_bendix_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
+
+bench_siso_SOURCES =  benchmarks/bench-siso.cpp
+bench_siso_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
@@ -459,6 +472,7 @@ clean-local-check:
 .PHONY: clean-local-check
 
 distclean-local:
+	rm -f configure
 	rm -f include/libsemigroups/libsemigroups-config.hpp
 .PHONY: distclean-local
 
