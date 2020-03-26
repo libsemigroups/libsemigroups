@@ -19,3 +19,4 @@ Functions
    :maxdepth: 1
 
    api/wilo.rst
+   api/wislo.rst

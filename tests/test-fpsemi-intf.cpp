@@ -30,7 +30,8 @@
 #include "libsemigroups/order.hpp"           // for shortlex_words
 #include "libsemigroups/string.hpp"  // for to_string of rule_type for debugging
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/wislo.hpp"         // for cbegin_wislo
+#include "libsemigroups/word.hpp"          // for number_of_words
 
 // The following is required to get catch to print rules
 namespace std {
@@ -106,14 +107,13 @@ namespace libsemigroups {
       }
       REQUIRE(fp->equal_to({0, 0, 0}, {0}));
       REQUIRE(!fp->equal_to({1, 1, 1, 1, 1, 1}, {0}));
-      // auto words = shortlex_words(2, 10);
-      // REQUIRE(words.size() == 2046);
-      // REQUIRE(std::count_if(words.cbegin(),
-      //                       words.cend(),
-      //                       [&fp](word_type const& w) -> bool {
-      //                         return fp->equal_to(w, {0});
-      //                       })
-      //         == nr_words);
+      REQUIRE(number_of_words(2, 1, 11) == 2046);
+      REQUIRE(std::count_if(cbegin_wislo(2, {0}, word_type(11, 0)),
+                            cend_wislo(2, {0}, word_type(11, 0)),
+                            [&fp](word_type const& w) -> bool {
+                              return fp->equal_to(w, {0});
+                            })
+              == nr_words);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
@@ -142,76 +142,75 @@ namespace libsemigroups {
       // }
       REQUIRE(fp->normal_form({0, 0, 0}) == word_type({0}));
       REQUIRE(fp->normal_form({1, 1, 1, 1, 1, 1}) == word_type({1, 1, 1}));
-      // auto words = shortlex_words(2, 5);
-      // REQUIRE(words.size() == 62);
-      // std::transform(words.cbegin(),
-      //                words.cend(),
-      //                words.begin(),
-      //                [&fp](word_type const& w) { return fp->normal_form(w);
-      //                });
-      // REQUIRE(words
-      //         == std::vector<word_type>({{0},
-      //                                    {1},
-      //                                    {0, 0},
-      //                                    {0, 1},
-      //                                    {1, 0},
-      //                                    {1, 1},
-      //                                    {0},
-      //                                    {0, 0, 1},
-      //                                    {0, 1, 0},
-      //                                    {0, 1, 1},
-      //                                    {1, 0, 0},
-      //                                    {1, 0, 1},
-      //                                    {1, 1, 0},
-      //                                    {1, 1, 1},
-      //                                    {0, 0},
-      //                                    {0, 1},
-      //                                    {0, 1, 1},
-      //                                    {0, 1, 0},
-      //                                    {0, 1},
-      //                                    {0, 0},
-      //                                    {0, 0, 1},
-      //                                    {0},
-      //                                    {1, 0},
-      //                                    {1, 0, 0, 1},
-      //                                    {1, 0, 1, 0},
-      //                                    {1, 0, 1, 1},
-      //                                    {1, 1, 0, 0},
-      //                                    {1, 1, 0, 1},
-      //                                    {1, 1, 1, 0},
-      //                                    {1},
-      //                                    {0},
-      //                                    {0, 0, 1},
-      //                                    {0, 1, 0},
-      //                                    {0, 1, 1},
-      //                                    {0, 0, 1},
-      //                                    {0},
-      //                                    {0, 1},
-      //                                    {0, 0},
-      //                                    {0, 1, 0},
-      //                                    {0, 1, 1},
-      //                                    {0},
-      //                                    {0, 0, 1},
-      //                                    {0, 1, 1},
-      //                                    {0, 1, 0},
-      //                                    {0, 0},
-      //                                    {0, 1},
-      //                                    {1, 0, 0},
-      //                                    {1, 0, 1},
-      //                                    {1, 0, 1, 1},
-      //                                    {1, 0, 1, 0},
-      //                                    {1, 0, 1},
-      //                                    {1, 0, 0},
-      //                                    {1, 0, 0, 1},
-      //                                    {1, 0},
-      //                                    {1, 1, 0},
-      //                                    {1, 1, 0, 0, 1},
-      //                                    {1, 1, 0, 1, 0},
-      //                                    {1, 1, 0, 1, 1},
-      //                                    {1, 1, 1, 0, 0},
-      //                                    {1, 1, 1, 0, 1},
-      //                                    {1, 0},
-      //                                    {1, 1}}));
+      REQUIRE(number_of_words(2, 1, 6) == 62);
+      std::vector<word_type> w(62, word_type({}));
+      std::transform(cbegin_wislo(2, {0}, word_type(6, 0)),
+                     cend_wislo(2, {0}, word_type(6, 0)),
+                     w.begin(),
+                     [&fp](word_type const& w) { return fp->normal_form(w); });
+      REQUIRE(w
+              == std::vector<word_type>({{0},
+                                         {1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0},
+                                         {1, 1},
+                                         {0},
+                                         {0, 0, 1},
+                                         {0, 1, 0},
+                                         {0, 1, 1},
+                                         {1, 0, 0},
+                                         {1, 0, 1},
+                                         {1, 1, 0},
+                                         {1, 1, 1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {0, 1, 1},
+                                         {0, 1, 0},
+                                         {0, 1},
+                                         {0, 0},
+                                         {0, 0, 1},
+                                         {0},
+                                         {1, 0},
+                                         {1, 0, 0, 1},
+                                         {1, 0, 1, 0},
+                                         {1, 0, 1, 1},
+                                         {1, 1, 0, 0},
+                                         {1, 1, 0, 1},
+                                         {1, 1, 1, 0},
+                                         {1},
+                                         {0},
+                                         {0, 0, 1},
+                                         {0, 1, 0},
+                                         {0, 1, 1},
+                                         {0, 0, 1},
+                                         {0},
+                                         {0, 1},
+                                         {0, 0},
+                                         {0, 1, 0},
+                                         {0, 1, 1},
+                                         {0},
+                                         {0, 0, 1},
+                                         {0, 1, 1},
+                                         {0, 1, 0},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0, 0},
+                                         {1, 0, 1},
+                                         {1, 0, 1, 1},
+                                         {1, 0, 1, 0},
+                                         {1, 0, 1},
+                                         {1, 0, 0},
+                                         {1, 0, 0, 1},
+                                         {1, 0},
+                                         {1, 1, 0},
+                                         {1, 1, 0, 0, 1},
+                                         {1, 1, 0, 1, 0},
+                                         {1, 1, 0, 1, 1},
+                                         {1, 1, 1, 0, 0},
+                                         {1, 1, 1, 0, 1},
+                                         {1, 0},
+                                         {1, 1}}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",

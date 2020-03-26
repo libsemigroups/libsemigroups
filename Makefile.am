@@ -87,6 +87,7 @@ pkginclude_HEADERS += include/libsemigroups/transf.hpp
 pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/uf.hpp
 pkginclude_HEADERS += include/libsemigroups/wilo.hpp
+pkginclude_HEADERS += include/libsemigroups/wislo.hpp
 pkginclude_HEADERS += include/libsemigroups/word.hpp
 
 if LIBSEMIGROUPS_HPCOMBI
@@ -143,6 +144,7 @@ libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 libsemigroups_la_SOURCES += src/wilo.cpp
+libsemigroups_la_SOURCES += src/wislo.cpp
 libsemigroups_la_SOURCES += src/word.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
@@ -219,6 +221,7 @@ check_PROGRAMS += test_timer
 check_PROGRAMS += test_todd_coxeter
 check_PROGRAMS += test_uf
 check_PROGRAMS += test_wilo
+check_PROGRAMS += test_wislo
 check_PROGRAMS += test_word
 
 EXTRA_PROGRAMS =  bench_all
@@ -226,6 +229,7 @@ EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_wilo
+EXTRA_PROGRAMS += bench_wislo
 
 LDADD = libsemigroups.la
 
@@ -273,6 +277,7 @@ test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-wilo.cpp
+test_all_SOURCES += tests/test-wislo.cpp
 test_all_SOURCES += tests/test-word.cpp
 
 test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
@@ -395,6 +400,9 @@ test_uf_SOURCES += tests/test-main.cpp
 test_wilo_SOURCES =  tests/test-wilo.cpp
 test_wilo_SOURCES += tests/test-main.cpp
 
+test_wislo_SOURCES =  tests/test-wislo.cpp
+test_wislo_SOURCES += tests/test-main.cpp
+
 test_word_SOURCES =  tests/test-word.cpp
 test_word_SOURCES += tests/test-main.cpp
 
@@ -406,6 +414,7 @@ bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
+bench_all_SOURCES += benchmarks/bench-wislo.cpp
 
 bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
 bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
@@ -422,6 +431,9 @@ bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
 bench_wilo_SOURCES += benchmarks/bench-main.cpp
+
+bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
+bench_wislo_SOURCES += benchmarks/bench-main.cpp
 
 ## Make targets
 
