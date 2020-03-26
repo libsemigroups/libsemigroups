@@ -37,7 +37,8 @@
 namespace libsemigroups {
   namespace detail {
 
-    template <typename TInternalType>
+    template <typename TInternalType,
+              typename TIteratorCategory = std::random_access_iterator_tag>
     struct IteratorTraitsBase {
       using value_type        = typename TInternalType::value_type;
       using reference         = typename TInternalType::reference;
@@ -46,7 +47,7 @@ namespace libsemigroups {
       using size_type         = typename TInternalType::size_type;
       using const_pointer     = typename TInternalType::const_pointer;
       using pointer           = typename TInternalType::pointer;
-      using iterator_category = std::random_access_iterator_tag;
+      using iterator_category = TIteratorCategory;
 
       using Deref            = void;
       using AddressOf        = void;
@@ -66,6 +67,7 @@ namespace libsemigroups {
       using AddAssign        = void;
       using SubtractAssign   = void;
       using Subscript        = void;  // TODO(later) implement
+      using Swap             = void;
     };
 
     template <typename TInternalType>
@@ -114,6 +116,8 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // IteratorBase - constructors/destructor - public
       ////////////////////////////////////////////////////////////////////////
+
+      IteratorBase() = default;
 
       explicit IteratorBase(internal_iterator_type it) noexcept(
           std::is_nothrow_copy_constructible<internal_iterator_type>::value)
@@ -267,6 +271,8 @@ namespace libsemigroups {
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
 
+      IteratorStatefulBase() = default;
+
       explicit IteratorStatefulBase(
           state_type             stt,
           internal_iterator_type it) noexcept(std::
@@ -282,7 +288,7 @@ namespace libsemigroups {
 
       virtual ~IteratorStatefulBase() = default;
 
-      state_type const get_state() const noexcept {
+      state_type& get_state() const noexcept {
         return _state;
       }
 
@@ -380,8 +386,25 @@ namespace libsemigroups {
             get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
       }
 
+      template <typename TSfinae   = TIteratorTraits,
+                typename TOperator = typename TSfinae::Swap>
+      auto swap(IteratorStatefulBase& that) noexcept
+          -> ReturnTypeIfExists<TOperator, void> {
+        return TOperator()(this->get_wrapped_iter(),
+                           that.get_wrapped_iter(),
+                           this->get_state(),
+                           that.get_state());
+      }
+
+      template <typename TSfinae   = TIteratorTraits,
+                typename TOperator = typename TSfinae::Swap>
+      auto swap(IteratorStatefulBase& that) noexcept
+          -> ReturnTypeIfNotExists<TOperator, void> {
+        return std::swap(*this, that);
+      }
+
      private:
-      state_type _state;
+      mutable state_type _state;
     };
 
     template <typename TSubclass, typename TIteratorTraits>
@@ -400,6 +423,8 @@ namespace libsemigroups {
       using reference         = typename TIteratorTraits::reference;
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
+
+      IteratorStatelessBase() = default;
 
       explicit IteratorStatelessBase(internal_iterator_type it) noexcept(
           std::is_nothrow_copy_constructible<IteratorBaseAlias>::value)
@@ -528,6 +553,7 @@ namespace libsemigroups {
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
 
+      ConstIteratorStateful() = default;
       ConstIteratorStateful(state_type stt, internal_iterator_type it) noexcept(
           std::is_nothrow_copy_constructible<IteratorStatefulBaseAlias>::value)
           : IteratorStatefulBaseAlias(stt, it) {}
@@ -610,6 +636,8 @@ namespace libsemigroups {
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
 
+      ConstIteratorStateless() = default;
+
       explicit ConstIteratorStateless(internal_iterator_type it) noexcept(
           std::is_nothrow_copy_constructible<IteratorStatelessBaseAlias>::value)
           : IteratorStatelessBaseAlias(it) {}
@@ -690,6 +718,8 @@ namespace libsemigroups {
       using reference         = typename TIteratorTraits::reference;
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
+
+      IteratorStateful() = default;
 
       explicit IteratorStateful(
           state_type stt,
@@ -784,6 +814,8 @@ namespace libsemigroups {
       using reference         = typename TIteratorTraits::reference;
       using value_type        = typename TIteratorTraits::value_type;
       using iterator_category = typename TIteratorTraits::iterator_category;
+
+      IteratorStateless() = default;
 
       explicit IteratorStateless(internal_iterator_type it) noexcept(
           std::is_nothrow_copy_constructible<IteratorStatelessBaseAlias>::value)
@@ -884,5 +916,56 @@ namespace libsemigroups {
       return it - val;
     }
   }  // namespace detail
+  template <typename T>
+  inline void swap(detail::ConstIteratorStateless<T>& x,
+                   detail::ConstIteratorStateless<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void swap(detail::IteratorStateless<T>& x,
+                   detail::IteratorStateless<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void swap(detail::ConstIteratorStateful<T>& x,
+                   detail::ConstIteratorStateful<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void swap(detail::IteratorStateful<T>& x,
+                   detail::IteratorStateful<T>& y) noexcept {
+    x.swap(y);
+  }
 }  // namespace libsemigroups
+
+namespace std {
+  template <typename T>
+  inline void
+  swap(libsemigroups::detail::ConstIteratorStateless<T>& x,
+       libsemigroups::detail::ConstIteratorStateless<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void swap(libsemigroups::detail::IteratorStateless<T>& x,
+                   libsemigroups::detail::IteratorStateless<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void
+  swap(libsemigroups::detail::ConstIteratorStateful<T>& x,
+       libsemigroups::detail::ConstIteratorStateful<T>& y) noexcept {
+    x.swap(y);
+  }
+
+  template <typename T>
+  inline void swap(libsemigroups::detail::IteratorStateful<T>& x,
+                   libsemigroups::detail::IteratorStateful<T>& y) noexcept {
+    x.swap(y);
+  }
+}  // namespace std
 #endif  // LIBSEMIGROUPS_ITERATOR_HPP_

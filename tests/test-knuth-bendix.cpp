@@ -37,6 +37,7 @@
 #include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix, operator<<
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/report.hpp"                // for ReportGuard
+#include "libsemigroups/siso.hpp"                  // for cbegin_silo
 #include "libsemigroups/types.hpp"                 // for word_type
 
 namespace libsemigroups {
@@ -2790,6 +2791,53 @@ namespace libsemigroups {
       REQUIRE(kb3.nr_rules() == 1);
       REQUIRE_THROWS_AS(kb3.set_identity("ab"), LibsemigroupsException);
       REQUIRE_NOTHROW(kb3.set_identity("a"));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "102",
+                            "small overlap 1",
+                            "[extreme]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("BCA");
+      kb.add_rule("AABC", "ACBA");
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.normal_form("CBACBAABCAABCACBACBA") == "CBACBACBAACBAACBACBA");
+      REQUIRE(kb.equal_to("CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
+      REQUIRE(kb.equal_to("AABCAABCCACAACBBCBCCACBBAABCBA",
+                          "ACBAACBACACAACBBCBCCACBBACBABA"));
+      REQUIRE(kb.equal_to("CACCBABACCBABACCAAAABCAABCBCAA",
+                          "CACCBABACCBABACCAAACBAACBABCAA"));
+      REQUIRE(kb.equal_to("CAAACAABCCBABCCBCCBCACABACBBAC",
+                          "CAAACACBACBABCCBCCBCACABACBBAC"));
+      REQUIRE(kb.equal_to("BABCACBACBCCCCCAACCAAABAABCBCC",
+                          "BABCACBACBCCCCCAACCAAABACBABCC"));
+      // REQUIRE(std::vector<std::string>(cbegin_silo("BCA", 5, 6),
+      //                                cend_silo("BCA", 5, 6))
+      //         == std::vector<std::string>());
+      // REQUIRE(number_of_words(3, 20, 21) == size_t(18446744071562067968ULL));
+
+      // auto lex_normal_form = [&kb](std::string const& w) {
+      //   auto ww = kb.normal_form(w);
+      //   auto it = std::find_if(cbegin_silo("BCA", ww, 4 * w.size()),
+      //                          cend_silo("BCA", ww.size(), 4 * w.size()),
+      //                          [&kb, &ww](std::string const& u) {
+      //                            return kb.normal_form(u) == ww;
+      //                          });
+      //   return *it;
+      // };
+      // kb.run();
+      // REQUIRE(kb.finished());
+      // REQUIRE(lex_normal_form("BBBBB") == "BBBBB");
+      // REQUIRE(kb.normal_form("AABCB") == "ACBAB");
+      // REQUIRE(lex_normal_form("AABCB") == "");
+      //      std::vector<std::string> result(number_of_words(3, 5, 20));
+      //      std::transform(cbegin_
+      // TODO The following code spends the majority of its time in
+      // FpSemigroupInterface::validate_letter
+      //  auto it =
+      //  REQUIRE(it != cend_silo("BCA", 0, 80));
+      //  REQUIRE(*it ==  "CBACBAABCAABCACBACBA");
     }
   }  // namespace fpsemigroup
 
