@@ -43,6 +43,10 @@
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for pair
 #include <vector>         // for vector
+#include <Eigen/QR>       // for dimensionOfKernel
+#include <iostream>
+
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
   namespace detail {
@@ -133,7 +137,8 @@ namespace libsemigroups {
 
      public:
       explicit IsObviouslyInfinite(size_t n)
-          : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique() {}
+          : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique(), 
+            _matrix_col_index(), _matrix() {}
 
       explicit IsObviouslyInfinite(std::string const& lphbt)
           : IsObviouslyInfinite(lphbt.size()) {}
@@ -144,6 +149,11 @@ namespace libsemigroups {
       IsObviouslyInfinite& operator=(IsObviouslyInfinite&&) = delete;
 
       void add_rules(const_iterator first, const_iterator last) {
+        auto matrix_start = _matrix.rows();
+        _matrix.conservativeResize(matrix_start+(last-first)/2, 
+                                   Eigen::NoChange);
+        _matrix.block(matrix_start, 0, 
+                      (last-first)/2, _matrix.cols()).setZero();
         for (auto it = first; it < last; it += 2) {
           if ((*it).empty() || (*(it + 1)).empty()) {
             _empty_word = true;
@@ -166,13 +176,33 @@ namespace libsemigroups {
             if (x.second != 0) {
               _preserve.insert(x.first);
             }
+            auto col = _matrix_col_index.find(x.first);
+            if (col == _matrix_col_index.end()) {
+              _matrix_col_index.emplace(x.first, _matrix.cols());
+              _matrix.conservativeResize(Eigen::NoChange, 
+                                         _matrix.cols()+1);
+              _matrix.block(0, _matrix.cols()-1, 
+                            _matrix.rows(), 1).setZero();
+              _matrix(matrix_start+(it-first)/2, _matrix.cols()-1) += x.second;  
+            } else {
+              //std::cout << "Matrix:" << std::endl;
+              //std::cout << _matrix << std::endl;
+              //std::cout << "i, j:" << std::endl;
+              //std::cout << matrix_start+(it-first)/2 << " " << col->second << std::endl;
+              _matrix(matrix_start+(it-first)/2, col->second) += x.second;  
+            }
           }
         }
+        //std::cout << _matrix << std::endl;
       }
 
       bool result() const {
+        LIBSEMIGROUPS_ASSERT(_matrix.rows()>=0);
+        LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()>=0);
         return (!_empty_word && _unique.size() != _nr_gens)
-               || _preserve.size() != _nr_gens;
+               || _preserve.size() != _nr_gens 
+               || size_t(_matrix.rows()) < _nr_gens
+               || size_t(_matrix.cast<float>().colPivHouseholderQr().rank()) != _nr_gens;
       }
 
      private:
@@ -199,11 +229,13 @@ namespace libsemigroups {
       // the number of occurrences of i is not the same on both sides of the
       // relation TLetterType i belongs to "unique" if there is a relation
       // where one side consists solely of i.
-      bool                                     _empty_word;
-      std::unordered_map<TLetterType, int64_t> _map;
-      size_t                                   _nr_gens;
-      std::unordered_set<TLetterType>          _preserve;
-      std::unordered_set<TLetterType>          _unique;
+      bool                                                   _empty_word;
+      std::unordered_map<TLetterType, int64_t>               _map;
+      size_t                                                 _nr_gens;
+      std::unordered_set<TLetterType>                        _preserve;
+      std::unordered_set<TLetterType>                        _unique;
+      std::unordered_map<TLetterType, size_t>                _matrix_col_index;
+      Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
     };
   }  // namespace detail
 }  // namespace libsemigroups
