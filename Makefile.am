@@ -214,6 +214,7 @@ check_PROGRAMS += test_iterator
 check_PROGRAMS += test_kbe
 check_PROGRAMS += test_knuth_bendix
 check_PROGRAMS += test_order
+check_PROGRAMS += test_obvinf
 check_PROGRAMS += test_race
 check_PROGRAMS += test_runner
 check_PROGRAMS += test_schreier_sims
@@ -274,6 +275,7 @@ test_all_SOURCES += tests/test-kbe.cpp
 test_all_SOURCES += tests/test-knuth-bendix.cpp
 test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-order.cpp
+test_all_SOURCES += tests/test-obvinf.cpp
 test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
@@ -380,6 +382,9 @@ test_knuth_bendix_SOURCES += tests/test-main.cpp
 
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
+
+test_obvinf_SOURCES =  tests/test-obvinf.cpp
+test_obvinf_SOURCES += tests/test-main.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
