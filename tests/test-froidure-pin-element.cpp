@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <cinttypes>  // for int64_t
 #include <cstddef>    // for size_t
 #include <iterator>   // for reverse_iterator, opera...
@@ -35,20 +37,6 @@ namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
-  static inline size_t evaluate_reduct(FroidurePin<Element const*>& S,
-                                       word_type const&             word) {
-    letter_type out = S.letter_to_pos(word[0]);
-    for (auto it = word.cbegin() + 1; it < word.cend(); ++it) {
-      out = S.right(out, *it);
-    }
-    return out;
-  }
-
-  static inline size_t evaluate_reduct(FroidurePin<Element const*>* S,
-                                       word_type const&             word) {
-    return evaluate_reduct(*S, word);
-  }
-
   static inline void test_idempotent(FroidurePin<Element const*>& S,
                                      Element const*               x) {
     REQUIRE(S.is_idempotent(S.position(x)));
@@ -64,6 +52,15 @@ namespace libsemigroups {
     for (auto x : gens) {
       delete x;
     }
+  }
+
+  static void test_rules_iterator(FroidurePin<Element const*>& S) {
+    size_t nr = 0;
+    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+      REQUIRE(S.word_to_pos(it->first) == S.word_to_pos(it->second));
+      nr++;
+    }
+    REQUIRE(nr == S.current_nr_rules());
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -746,7 +743,7 @@ namespace libsemigroups {
     word_type result;
     for (size_t i = 0; i < S.size(); i++) {
       S.factorisation(result, i);
-      REQUIRE(evaluate_reduct(S, result) == i);
+      REQUIRE(S.word_to_pos(result) == i);
     }
   }
 
@@ -1982,86 +1979,75 @@ namespace libsemigroups {
                           "061",
                           "relations [duplicate gens]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    std::vector<size_t> result;
-    S.next_relation(result);
-    REQUIRE(result.size() == 2);
-    REQUIRE(result[0] == 1);
-    REQUIRE(result[1] == 0);
-
-    S.next_relation(result);
-    REQUIRE(result.size() == 2);
-    REQUIRE(result[0] == 3);
-    REQUIRE(result[1] == 2);
-
-    S.next_relation(result);
-    size_t nr = 2;
-    while (!result.empty()) {
-      S.next_relation(result);
-      nr++;
-    }
-    REQUIRE(S.nr_rules() == nr);
-
-    S.next_relation(result);
-    REQUIRE(result.empty());
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
     delete_gens(gens);
+
+    S.run();
+    auto it = S.cbegin_rules();
+
+    REQUIRE(*it == relation_type({1}, {0}));
+
+    ++it;
+    REQUIRE(*it == relation_type({3}, {2}));
+    size_t nr = 2;
+
+    while (it != S.cend_rules()) {
+      ++it;
+      ++nr;
+    }
+    REQUIRE(S.nr_rules() == nr - 1);
+    std::vector<relation_type> rules(S.cbegin_rules(), S.cend_rules());
+    REQUIRE(S.nr_rules() == rules.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "062",
                           "relations",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
            new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    std::vector<size_t> result;
-    S.next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      S.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      S.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(S, lhs) == evaluate_reduct(S, rhs));
-      S.next_relation(result);
-      nr++;
-    }
-    REQUIRE(S.nr_rules() == nr);
-
-    S.reset_next_relation();
-    S.next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      S.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      S.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(S, lhs) == evaluate_reduct(S, rhs));
-      REQUIRE(evaluate_reduct(S, lhs) == evaluate_reduct(S, rhs));
-      S.next_relation(result);
-      nr++;
-    }
-
-    REQUIRE(S.nr_rules() == nr);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
     delete_gens(gens);
+    // No rules, because not enumerated
+    REQUIRE(S.cbegin_rules() == S.cend_rules());
+    S.run_until([&S]() { return S.current_nr_rules() >= 2; });
+    REQUIRE(!S.finished());
+    {  // test cbegin_rules, cend_rules on partially enumerated S
+      auto it = S.cbegin_rules();
+      REQUIRE(*it == relation_type({0, 0}, {0}));
+      ++it;
+      REQUIRE(*it == relation_type({0, 1}, {1}));
+      test_rules_iterator(S);
+      REQUIRE(!S.finished());
+      REQUIRE(S.current_nr_rules() == 15);
+    }
+
+    S.run();
+    REQUIRE(S.finished());
+    REQUIRE(S.nr_rules() == 2459);
+    {
+      auto it = S.cbegin_rules();
+      REQUIRE(*it == relation_type({0, 0}, {0}));
+      ++it;
+      REQUIRE(*it == relation_type({0, 1}, {1}));
+
+      test_rules_iterator(S);
+      test_rules_iterator(S);
+    }
   }
+
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "063",
                           "relations [copy_closure, duplicate gens]",
@@ -2146,170 +2132,97 @@ namespace libsemigroups {
                           "065",
                           "relations [from copy, not enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
            new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     FroidurePin<Element const*> T = FroidurePin<Element const*>(S);
-    REQUIRE(T.nr_rules() == S.nr_rules());
+    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
+    REQUIRE(!T.finished());
 
-    std::vector<size_t> result;
-    T.next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
-
-    T.reset_next_relation();
-    T.next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
-    delete_gens(gens);
+    test_rules_iterator(T);
+    test_rules_iterator(T);
+    T.run();
+    REQUIRE(T.finished());
+    test_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "066",
                           "relations [from copy, partly enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
            new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     S.batch_size(1023);
     S.enumerate(1000);
 
     FroidurePin<Element const*> T = FroidurePin<Element const*>(S);
+    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
+
+    test_rules_iterator(T);
+    test_rules_iterator(T);
+
+    T.run();
+    REQUIRE(T.finished());
     REQUIRE(T.nr_rules() == S.nr_rules());
-
-    std::vector<size_t> result;
-    T.next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
-
-    T.reset_next_relation();
-    T.next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
-    delete_gens(gens);
+    test_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "067",
                           "relations [from copy, fully enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5}),
            new Transformation<uint16_t>({5, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     S.enumerate(8000);
 
     FroidurePin<Element const*> T = FroidurePin<Element const*>(S);
     REQUIRE(T.nr_rules() == S.nr_rules());
 
-    std::vector<size_t> result;
-    T.next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
+    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
 
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
+    test_rules_iterator(T);
+    test_rules_iterator(T);
 
-    T.reset_next_relation();
-    T.next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T.factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T.factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T.next_relation(result);
-      nr++;
-    }
-    REQUIRE(T.nr_rules() == nr);
-    delete_gens(gens);
+    T.run();
+    REQUIRE(T.finished());
+    REQUIRE(T.nr_rules() == S.nr_rules());
+    test_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "068",
                           "relations [from copy_closure, not enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(false);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
@@ -2323,42 +2236,15 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
+    REQUIRE(!T->finished());
+    REQUIRE(T->current_nr_rules() == 2418);
+    test_rules_iterator(*T);
+    REQUIRE(!T->finished());
+    REQUIRE(T->current_nr_rules() == 2418);
+    test_rules_iterator(*T);
+    REQUIRE(T->current_nr_rules() == 2418);
 
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2366,12 +2252,13 @@ namespace libsemigroups {
       "069",
       "relations [from copy_add_generators, not enumerated]",
       "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
@@ -2385,54 +2272,23 @@ namespace libsemigroups {
     REQUIRE(*coll[1] == *(T->generator(4)));
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
+    test_rules_iterator(*T);
+    REQUIRE(T->nr_rules() == 2459);
+    test_rules_iterator(*T);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "070",
                           "relations [from copy_closure, partly enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
     S.batch_size(100);
 
     S.enumerate(10);
@@ -2447,42 +2303,8 @@ namespace libsemigroups {
     FroidurePin<Element const*>* T = S.copy_closure(coll);
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
+    test_rules_iterator(*T);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2490,12 +2312,14 @@ namespace libsemigroups {
       "071",
       "relations [from copy_add_generators, partly enumerated]",
       "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
+
     S.batch_size(100);
 
     S.enumerate(10);
@@ -2510,54 +2334,23 @@ namespace libsemigroups {
     FroidurePin<Element const*>* T = S.copy_add_generators(coll);
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
+    test_rules_iterator(*T);
+    REQUIRE(T->nr_rules() == 2459);
+    test_rules_iterator(*T);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "072",
                           "relations [from copy_closure, fully enumerated]",
                           "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     S.enumerate(8000);
 
@@ -2571,44 +2364,11 @@ namespace libsemigroups {
     FroidurePin<Element const*>* T = S.copy_closure(coll);
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      REQUIRE(result.size() == 3);  // there are no duplicate gens
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
+    test_rules_iterator(*T);
+    REQUIRE(T->nr_rules() == 2459);
+    test_rules_iterator(*T);
 
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      REQUIRE(result.size() == 3);
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2616,12 +2376,13 @@ namespace libsemigroups {
       "073",
       "relations [from copy_add_generators, fully enumerated]",
       "[quick][froidure-pin][element]") {
+    auto                  rg = ReportGuard(REPORT);
     std::vector<Element*> gens
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
            new Transformation<uint16_t>({4, 0, 1, 2, 3, 5})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
+    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+    delete_gens(gens);
 
     S.enumerate(8000);
 
@@ -2635,44 +2396,11 @@ namespace libsemigroups {
     FroidurePin<Element const*>* T = S.copy_add_generators(coll);
     delete_gens(coll);
 
-    std::vector<size_t> result;
-    T->next_relation(result);
-    size_t nr = 0;
-    while (!result.empty()) {
-      REQUIRE(result.size() == 3);  // there are no duplicate gens
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
+    test_rules_iterator(*T);
+    REQUIRE(T->nr_rules() == 2459);
+    test_rules_iterator(*T);
 
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
-
-    T->reset_next_relation();
-    T->next_relation(result);
-    nr = 0;
-
-    while (!result.empty()) {
-      REQUIRE(result.size() == 3);
-      word_type lhs, rhs;
-      T->factorisation(lhs, result[0]);
-      lhs.push_back(result[1]);
-      T->factorisation(rhs, result[2]);
-
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      REQUIRE(evaluate_reduct(T, lhs) == evaluate_reduct(T, rhs));
-      T->next_relation(result);
-      nr++;
-    }
-    REQUIRE(T->nr_rules() == nr);
-    REQUIRE(2459 == nr);
     delete T;
-    delete_gens(gens);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
