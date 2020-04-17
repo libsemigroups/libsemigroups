@@ -24,7 +24,8 @@ libsemigroups::Action:
   - run
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
 - Reporting:
   - report_every(TIntType)
   - report_every(std::chrono::nanoseconds)

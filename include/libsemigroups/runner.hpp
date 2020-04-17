@@ -222,7 +222,16 @@ namespace libsemigroups {
         _stopper.invalidate();
       }
     }
-    // TODO a version for function pointers
+
+    //! Run until a nullary predicate returns \p true or Runner::finished.
+    //!
+    //! \param func a function pointer.
+    //!
+    //! \returns
+    //! (None)
+    void run_until(bool (*func)()) {
+      run_until(detail::FunctionRef<bool(void)>(func));
+    }
 
     //! Check if it is time to report.
     //!
