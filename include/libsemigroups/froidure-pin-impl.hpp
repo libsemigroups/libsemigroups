@@ -370,7 +370,7 @@ namespace libsemigroups {
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::current_position(const_reference x) const {
-    if (Degree()(this->to_internal_const(x)) != _degree) {
+    if (Degree()(x) != _degree) {
       return UNDEFINED;
     }
 
@@ -470,8 +470,10 @@ namespace libsemigroups {
   }
 
   BOOL FROIDURE_PIN::is_idempotent(element_index_type pos) {
-    validate_element_index(pos);
     init_idempotents();
+    // only validate pos after init_idempotents, because we don't know if it's
+    // valid until then
+    validate_element_index(pos);
     return _is_idempotent[pos];
   }
 
@@ -555,7 +557,9 @@ namespace libsemigroups {
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::right(element_index_type i, letter_type j) {
+    validate_letter_index(j);
     run();
+    validate_element_index(i);
     return _right.get(i, j);
   }
 
@@ -566,7 +570,9 @@ namespace libsemigroups {
   }
 
   ELEMENT_INDEX_TYPE FROIDURE_PIN::left(element_index_type i, letter_type j) {
+    validate_letter_index(j);
     run();
+    validate_element_index(i);
     return _left.get(i, j);
   }
 
