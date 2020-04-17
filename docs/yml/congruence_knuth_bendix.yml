@@ -45,7 +45,8 @@ libsemigroups::congruence::KnuthBendix:
   - run
   - run_for(TIntType)
   - run_for(std::chrono::nanoseconds)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
   - kill
 - State:
   - dead
