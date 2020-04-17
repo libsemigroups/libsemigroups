@@ -629,6 +629,8 @@ namespace libsemigroups {
     //! the generator with index \p j.
     //!
     //! This member function fully enumerates the semigroup.
+    //!
+    //! \throws LibsemigroupsException if \p i or \p j is out of bounds.
     element_index_type right(element_index_type i, letter_type j) override;
 
     //! Returns a const reference to the right Cayley graph of \c this.
@@ -650,11 +652,13 @@ namespace libsemigroups {
     //! the element in position \p i.
     //!
     //! This member function fully enumerates the semigroup.
+    //!
+    //! \throws LibsemigroupsException if \p i or \p j is out of bounds.
     element_index_type left(element_index_type i, letter_type j) override;
 
     //! Returns a const reference to the left Cayley graph of \c this.
     //!
-    //! \returns A const reference to cayley_graph_type.
+    //! \returns A const reference to `cayley_graph_type`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -733,6 +737,7 @@ namespace libsemigroups {
     //! After a call to this function, the next call to
     //! FroidurePin::next_relation will return the first relation of the
     //! presentation defining the semigroup.
+    // Deprecate this, and use an iterator instead
     void reset_next_relation() noexcept override;
 
     //! This member function changes \p relation in-place to contain the next
@@ -767,6 +772,7 @@ namespace libsemigroups {
     //! semigroup.
     //!
     //! \sa FroidurePin::reset_next_relation.
+    // Deprecate this, and use an iterator instead
     void next_relation(word_type& relation) override;
 
     //! Enumerate the semigroup until \p limit elements are found.

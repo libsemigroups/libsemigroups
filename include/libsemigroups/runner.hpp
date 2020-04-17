@@ -222,6 +222,7 @@ namespace libsemigroups {
         _stopper.invalidate();
       }
     }
+    // TODO a version for function pointers
 
     //! Check if it is time to report.
     //!

@@ -2,8 +2,6 @@ libsemigroups::FroidurePin:
 - Public types:
   - [typedef, element_type]
   - [typedef, const_element_type]
-  - [typedef, const_reference]
-  - [typedef, const_pointer]
   - [typedef, size_type]
   - [typedef, element_index_type]
   - [typedef, cayley_graph_type]
@@ -61,13 +59,13 @@ libsemigroups::FroidurePin:
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until
+  - enumerate
 - Attributes:
   - generator
   - degree
   - nr_generators
   - is_monoid
   - current_size
-  - current_nr_rules
   - size
   - nr_idempotents
   - is_idempotent
@@ -78,6 +76,7 @@ libsemigroups::FroidurePin:
   - left
 - Factorisation and relations:
   - current_max_word_length
+  - current_nr_rules
   - word_to_pos
   - letter_to_pos
   - minimal_factorisation(word_type&, element_index_type)
@@ -86,7 +85,6 @@ libsemigroups::FroidurePin:
   - factorisation(element_index_type)
   - reset_next_relation
   - next_relation
-  - position_to_sorted_position
   - nr_rules
   - length_const
   - length_non_const
@@ -106,6 +104,7 @@ libsemigroups::FroidurePin:
   - position
   - sorted_at
   - sorted_position
+  - position_to_sorted_position
   - at
   - operator[]
 - State:
