@@ -51,6 +51,7 @@ pkginclude_HEADERS += include/libsemigroups/cong.hpp
 pkginclude_HEADERS += include/libsemigroups/constants.hpp
 pkginclude_HEADERS += include/libsemigroups/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/coset.hpp
+pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph.hpp
 pkginclude_HEADERS += include/libsemigroups/element-helper.hpp

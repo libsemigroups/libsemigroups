@@ -360,6 +360,9 @@ namespace libsemigroups {
     virtual void minimal_factorisation(word_type& word, element_index_type pos)
         = 0;
 
+    virtual void minimal_factorisation(word_type&         word,
+                                       element_index_type pos) const = 0;
+
     //! \copydoc FroidurePin::minimal_factorisation(element_index_type)
     virtual word_type minimal_factorisation(element_index_type pos) = 0;
 

@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
@@ -23,6 +25,7 @@
 #include "libsemigroups/bmat8.hpp"         // for BMat8
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "libsemigroups/todd-coxeter.hpp"          // for word_type
 #include "libsemigroups/types.hpp"                 // for word_type
 #include "test-main.hpp"
 
@@ -37,7 +40,7 @@ namespace libsemigroups {
                           "001",
                           "(BMat8) regular boolean mat monoid 4",
                           "[quick][froidure-pin][bmat8]") {
-    auto               rg = ReportGuard(REPORT);
+    auto               rg = ReportGuard(false);
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -181,12 +184,12 @@ namespace libsemigroups {
 
     REQUIRE_THROWS_AS(S.factorisation(1000000), LibsemigroupsException);
 
-    S.next_relation(w);
-    REQUIRE(w == std::vector<size_t>({2, 2, 2}));
-    S.next_relation(w);
-    REQUIRE(w == std::vector<size_t>({3, 0, 7}));
-    S.next_relation(w);
-    REQUIRE(w == std::vector<size_t>({3, 2, 3}));
+    auto it = S.cbegin_rules();
+    REQUIRE(*it == relation_type({2, 2}, {2}));
+    ++it;
+    REQUIRE(*it == relation_type({3, 0}, {0, 3}));
+    ++it;
+    REQUIRE(*it == relation_type({3, 2}, {3}));
 
     size_t pos = 0;
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -194,6 +197,19 @@ namespace libsemigroups {
       pos++;
     }
     REQUIRE(pos == S.size());
+    std::vector<relation_type> v(S.cbegin_rules(), S.cend_rules());
+    REQUIRE(v.size() == S.nr_rules());
+    REQUIRE(v.size() == 13716);
+
+    // The next works but is a bit slow
+    // congruence::ToddCoxeter tc(congruence_type::twosided);
+    // tc.set_nr_generators(S.nr_generators());
+    // for (auto const& rel : v) {
+    //   tc.add_pair(rel.first, rel.second);
+    // }
+
+    // REQUIRE(tc.nr_classes() == 63904);
+    // REQUIRE(tc.nr_classes() == S.size());
 
     // Copy - after run
     FroidurePin<BMat8> T(S);
@@ -404,6 +420,39 @@ namespace libsemigroups {
       FroidurePin<BMat8> T(S);  // copy
       REQUIRE(T.size() == 63904);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "014",
+                          "(BMat8) cbegin/end_rules",
+                          "[quick][froidure-pin][bmat8]") {
+    FroidurePin<BMat8> S;
+    S.add_generator(
+        BMat8({{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}}));
+    S.add_generator(
+        BMat8({{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}}));
+    S.add_generator(
+        BMat8({{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}}));
+    S.add_generator(
+        BMat8({{0, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 1}}));
+    REQUIRE(S.size() == 4);
+    REQUIRE(std::vector<relation_type>(S.cbegin_rules(), S.cend_rules())
+            == std::vector<relation_type>({{{0, 0}, {0}},
+                                           {{0, 1}, {1}},
+                                           {{0, 2}, {2}},
+                                           {{0, 3}, {3}},
+                                           {{1, 0}, {0}},
+                                           {{1, 1}, {1}},
+                                           {{1, 2}, {2}},
+                                           {{1, 3}, {3}},
+                                           {{2, 0}, {0}},
+                                           {{2, 1}, {1}},
+                                           {{2, 2}, {2}},
+                                           {{2, 3}, {3}},
+                                           {{3, 0}, {0}},
+                                           {{3, 1}, {1}},
+                                           {{3, 2}, {2}},
+                                           {{3, 3}, {3}}}));
   }
 
   // LIBSEMIGROUPS_TEST_CASE("FroidurePin",

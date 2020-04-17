@@ -35,6 +35,7 @@
 #include "bruidhinn-traits.hpp"   // for detail::BruidhinnTraits
 #include "constants.hpp"          // for libsemigroups::UNDEFINED, LIMIT_MAX
 #include "containers.hpp"         // for DynamicArray2
+#include "deprecated.hpp"         // for LIBSEMIGROUPS_DEPRECATED
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless
 #include "stl.hpp"                // for EqualTo, Hash
@@ -744,6 +745,15 @@ namespace libsemigroups {
     //! the \p pos element is known. If \p pos is greater than the size of the
     //! semigroup, then a LibsemigroupsException is thrown.
     void minimal_factorisation(word_type&, element_index_type) override;
+    // TODO use the const version in the non-const version
+    void minimal_factorisation(word_type&         word,
+                               element_index_type pos) const override {
+      word.clear();
+      while (pos != UNDEFINED) {
+        word.push_back(_first[pos]);
+        pos = _suffix[pos];
+      }
+    }
 
     //! Returns a minimal libsemigroups::word_type which evaluates to the
     //! TElementType in position \p pos of \c this.
@@ -798,8 +808,10 @@ namespace libsemigroups {
     //! After a call to this function, the next call to
     //! FroidurePin::next_relation will return the first relation of the
     //! presentation defining the semigroup.
-    // Deprecate this, and use an iterator instead
-    void reset_next_relation() noexcept override;
+    //!
+    //! \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
+    //! instead.
+    LIBSEMIGROUPS_DEPRECATED void reset_next_relation() noexcept override;
 
     //! This member function changes \p relation in-place to contain the next
     //! relation of the presentation defining \c this.
@@ -832,9 +844,293 @@ namespace libsemigroups {
     //! FroidurePin::factorisation to obtain a presentation defining the
     //! semigroup.
     //!
-    //! \sa FroidurePin::reset_next_relation.
-    // Deprecate this, and use an iterator instead
-    void next_relation(word_type& relation) override;
+    //! \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
+    //! instead.
+    LIBSEMIGROUPS_DEPRECATED void next_relation(word_type& relation) override;
+
+    friend class const_rule_iterator;
+
+    //! No doc
+    class const_rule_iterator {
+     public:
+      using size_type = typename std::vector<relation_type>::size_type;
+      using difference_type =
+          typename std::vector<relation_type>::difference_type;
+      using const_pointer = typename std::vector<relation_type>::const_pointer;
+      using pointer       = typename std::vector<relation_type>::pointer;
+      using const_reference =
+          typename std::vector<relation_type>::const_reference;
+      using reference         = typename std::vector<relation_type>::reference;
+      using value_type        = relation_type;
+      using iterator_category = std::forward_iterator_tag;
+
+      // None of the constructors are noexcept because the corresponding
+      // constructors for std::vector aren't (until C++17).
+      const_rule_iterator()                           = default;
+      const_rule_iterator(const_rule_iterator const&) = default;
+      const_rule_iterator(const_rule_iterator&&)      = default;
+      const_rule_iterator& operator=(const_rule_iterator const&) = default;
+      const_rule_iterator& operator=(const_rule_iterator&&) = default;
+
+      const_rule_iterator(FroidurePin const*   ptr,
+                          enumerate_index_type pos,
+                          letter_type          gen)
+          : _current(),
+            _froidure_pin(ptr),
+            _gen(gen),
+            _pos(pos),
+            _relation({}, {}) {
+        ++(*this);
+      }
+
+      ~const_rule_iterator() = default;
+
+      bool operator==(const_rule_iterator const& that) const noexcept {
+        return _gen == that._gen && _pos == that._pos;
+      }
+
+      bool operator!=(const_rule_iterator const& that) const noexcept {
+        return !(this->operator==(that));
+      }
+
+      const_reference operator*() const noexcept {
+        populate_relation();
+        return _relation;
+      }
+
+      const_pointer operator->() const noexcept {
+        populate_relation();
+        return &_relation;
+      }
+
+      // prefix
+      const_rule_iterator const& operator++() noexcept {
+        auto const* ptr = _froidure_pin;
+
+        if (_pos == ptr->current_size()) {  // no more relations
+          return *this;
+        }
+
+        _relation.first.clear();
+        _relation.second.clear();
+
+        if (_pos == UNDEFINED) {
+          // duplicate generators
+          if (_gen < ptr->_duplicate_gens.size()) {
+            _current[0] = ptr->_duplicate_gens[_gen].first;
+            _current[1] = ptr->_duplicate_gens[_gen].second;
+            _current[2] = UNDEFINED;
+            _gen++;
+            return *this;
+          }
+          _gen = 0;
+          _pos = 0;
+        }
+
+        while (_pos < ptr->current_size()) {
+          while (_gen < ptr->nr_generators()) {
+            if (!ptr->_reduced.get(ptr->_enumerate_order[_pos], _gen)
+                && (_pos < ptr->_lenindex[1]
+                    || ptr->_reduced.get(
+                        ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
+              _current[0] = ptr->_enumerate_order[_pos];
+              _current[1] = _gen;
+              _current[2] = ptr->_right.get(ptr->_enumerate_order[_pos], _gen);
+              if (_current[2] != UNDEFINED) {
+                _gen++;
+                return *this;
+              }
+            }
+            _gen++;
+          }
+          _gen = 0;
+          _pos++;
+        }
+        return *this;
+      }
+
+      // postfix
+      const_rule_iterator operator++(int) noexcept {
+        const_rule_iterator copy(*this);
+        ++(*this);
+        return copy;
+      }
+
+      void swap(const_rule_iterator& that) noexcept {
+        _current.swap(that._current);
+        std::swap(_froidure_pin, that._froidure_pin);
+        std::swap(_gen, that._gen);
+        std::swap(_pos, that._pos);
+      }
+
+     private:
+      void populate_relation() const {
+        if (_relation.first.empty()) {
+          if (_current[2] == UNDEFINED) {
+            _relation.first  = word_type({_current[0]});
+            _relation.second = word_type({_current[1]});
+          } else {
+            _froidure_pin->minimal_factorisation(_relation.first, _current[0]);
+            _relation.first.push_back(_current[1]);
+            _froidure_pin->minimal_factorisation(_relation.second, _current[2]);
+          }
+        }
+      }
+
+      std::array<letter_type, 3> _current;
+      FroidurePin const*         _froidure_pin;
+      letter_type                _gen;
+      enumerate_index_type       _pos;
+      mutable relation_type      _relation;
+    };  // const_rule_iterator
+
+    // Assert that the forward iterator requirements are met
+    static_assert(std::is_default_constructible<const_rule_iterator>::value,
+                  "forward iterator requires default-constructible");
+    static_assert(std::is_copy_constructible<const_rule_iterator>::value,
+                  "forward iterator requires copy-constructible");
+    static_assert(std::is_copy_assignable<const_rule_iterator>::value,
+                  "forward iterator requires copy-assignable");
+    static_assert(std::is_destructible<const_rule_iterator>::value,
+                  "forward iterator requires destructible");
+
+    //! Returns a forward iterator pointing to the first rule in a confluent
+    //! terminating rewriting system defining a semigroup isomorphic to the
+    //! one defined by \c this.
+    //!
+    //! This function does not perform any enumeration of the FroidurePin. If
+    //! you want to obtain the complete set of rules, then it is necessary to
+    //! FroidurePin::run until the FroidurePin is fully enumerated.
+    //!
+    //! \returns An iterator of type const_rule_iterator pointing to a
+    //! libsemigroups::relation_type.
+    //!
+    //! \par Parameters
+    //! (None).
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \iterator_validity
+    //! The iterators returned by this are valid until \c this is deleted.
+    //!
+    //! \sa cend_rules
+    //!
+    // clang-format off
+    //! \par Example
+    //! \code
+    //! FroidurePin<BMat8> S;
+    //! S.add_generator(BMat8({{1, 0, 0, 0},
+    //!                        {1, 0, 0, 0},
+    //!                        {1, 0, 0, 0},
+    //!                        {1, 0, 0, 0}}));
+    //! S.add_generator(BMat8({{0, 1, 0, 0},
+    //!                        {0, 1, 0, 0},
+    //!                        {0, 1, 0, 0},
+    //!                        {0, 1, 0, 0}}));
+    //! S.add_generator(BMat8({{0, 0, 1, 0},
+    //!                        {0, 0, 1, 0},
+    //!                        {0, 0, 1, 0},
+    //!                        {0, 0, 1, 0}}));
+    //! S.add_generator(BMat8({{0, 0, 0, 1},
+    //!                        {0, 0, 0, 1},
+    //!                        {0, 0, 0, 1},
+    //!                        {0, 0, 0, 1}}));
+    //! S.size(); // 4
+    //! std::vector<relation_type>(S.cbegin_rules(), S.cend_rules());
+    //! // {{{0, 0}, {0}},
+    //! //  {{0, 1}, {1}},
+    //! //  {{0, 2}, {2}},
+    //! //  {{0, 3}, {3}},
+    //! //  {{1, 0}, {0}},
+    //! //  {{1, 1}, {1}},
+    //! //  {{1, 2}, {2}},
+    //! //  {{1, 3}, {3}},
+    //! //  {{2, 0}, {0}},
+    //! //  {{2, 1}, {1}},
+    //! //  {{2, 2}, {2}},
+    //! //  {{2, 3}, {3}},
+    //! //  {{3, 0}, {0}},
+    //! //  {{3, 1}, {1}},
+    //! //  {{3, 2}, {2}},
+    //! //  {{3, 3}, {3}}}
+    //! \endcode
+    // clang-format on
+    const_rule_iterator cbegin_rules() const {
+      return const_rule_iterator(this, UNDEFINED, 0);
+    }
+
+    //! Returns a forward iterator pointing one-past-the-last rule (currently
+    //! known) in a confluent terminating rewriting system defining a semigroup
+    //! isomorphic to the one defined by \c this.
+    //!
+    //! This function does not perform any enumeration of the FroidurePin. If
+    //! you want to obtain the complete set of rules, then it is necessary to
+    //! FroidurePin::run until the FroidurePin is fully enumerated.
+    //!
+    //! \returns An iterator of type const_rule_iterator pointing to a
+    //! libsemigroups::relation_type.
+    //!
+    //! \par Parameters
+    //! (None).
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \iterator_validity
+    //! The iterators returned by this are valid until \c this is deleted.
+    //!
+    //! \sa cbegin_rules
+    //!
+    // clang-format off
+    //! \par Example
+    //! \code
+    //! FroidurePin<BMat8> S;
+    //! S.add_generator(BMat8({{1, 0, 0, 0},
+    //!                        {1, 0, 0, 0},
+    //!                        {1, 0, 0, 0},
+    //!                        {1, 0, 0, 0}}));
+    //! S.add_generator(BMat8({{0, 1, 0, 0},
+    //!                        {0, 1, 0, 0},
+    //!                        {0, 1, 0, 0},
+    //!                        {0, 1, 0, 0}}));
+    //! S.add_generator(BMat8({{0, 0, 1, 0},
+    //!                        {0, 0, 1, 0},
+    //!                        {0, 0, 1, 0},
+    //!                        {0, 0, 1, 0}}));
+    //! S.add_generator(BMat8({{0, 0, 0, 1},
+    //!                        {0, 0, 0, 1},
+    //!                        {0, 0, 0, 1},
+    //!                        {0, 0, 0, 1}}));
+    //! S.size(); // 4
+    //! std::vector<relation_type>(S.cbegin_rules(), S.cend_rules());
+    //! // {{{0, 0}, {0}},
+    //! //  {{0, 1}, {1}},
+    //! //  {{0, 2}, {2}},
+    //! //  {{0, 3}, {3}},
+    //! //  {{1, 0}, {0}},
+    //! //  {{1, 1}, {1}},
+    //! //  {{1, 2}, {2}},
+    //! //  {{1, 3}, {3}},
+    //! //  {{2, 0}, {0}},
+    //! //  {{2, 1}, {1}},
+    //! //  {{2, 2}, {2}},
+    //! //  {{2, 3}, {3}},
+    //! //  {{3, 0}, {0}},
+    //! //  {{3, 1}, {1}},
+    //! //  {{3, 2}, {2}},
+    //! //  {{3, 3}, {3}}}
+    //! \endcode
+    // clang-format on
+    const_rule_iterator cend_rules() const {
+      return const_rule_iterator(this, current_size(), 0);
+    }
 
     //! Enumerate the semigroup until \p limit elements are found.
     //!

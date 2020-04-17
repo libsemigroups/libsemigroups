@@ -35,3 +35,4 @@ ALIASES               += basic_guarantee="If an exception is thrown, \c this mig
 ALIASES               += iterator_validity="\par Iterator validity"
 ALIASES               += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function." 
 ALIASES               += complexity="\par Complexity"
+ALIASES               += deprecated="\warning This function is deprecated and will be removed in libsemigroups v2"
