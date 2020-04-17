@@ -60,7 +60,8 @@ libsemigroups::FroidurePin:
   - run
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
   - enumerate
 - Attributes:
   - generator

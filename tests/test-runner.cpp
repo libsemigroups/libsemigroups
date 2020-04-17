@@ -191,5 +191,27 @@ namespace libsemigroups {
       REQUIRE(tr.report());
     }
 
+    bool first_time = true;
+    bool fn_ptr() {
+      if (first_time) {
+        first_time = false;
+        return false;
+      }
+      // if we return true the first time, then run is not called at all
+      return true;
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner",
+                            "009",
+                            "run_until with function pointer",
+                            "[quick][no-valgrind]") {
+      auto        rg = ReportGuard(REPORT);
+      TestRunner1 tr;
+      tr.run_until(fn_ptr);
+      REQUIRE(tr.finished());
+      REQUIRE(tr.stopped());
+      REQUIRE(!tr.dead());
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
