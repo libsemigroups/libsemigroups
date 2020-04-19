@@ -1465,7 +1465,7 @@ namespace libsemigroups {
       }
       apply_permutation(p, q);
 
-      REPORT("%d\n", tmr).prefix().flush_right().flush();
+      REPORT("%d\n", tmr.string()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();
@@ -1489,7 +1489,7 @@ namespace libsemigroups {
         }
       }
       apply_permutation(p, q);
-      REPORT("%d\n", tmr).prefix().flush_right().flush();
+      REPORT("%d\n", tmr.string()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();
@@ -1617,7 +1617,7 @@ namespace libsemigroups {
         }
       }
       apply_permutation(p, q);
-      REPORT("%d\n", tmr).prefix().flush_right().flush();
+      REPORT("%d\n", tmr.string()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();
