@@ -1,3 +1,5 @@
+os: linux
+
 language: cpp
 
 dist: bionic 
@@ -14,7 +16,7 @@ branches:
 services:
   - docker
 
-matrix:
+jobs:
   include:
     - env: TEST_SUITE=hpcombi
 
