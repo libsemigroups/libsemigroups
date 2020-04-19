@@ -17,9 +17,9 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "libsemigroups/forest.hpp"     // for Forest
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "libsemigroups/forest.hpp"  // for Forest
+#include "test-main.hpp"             // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

@@ -23,7 +23,7 @@
 #include <functional>  // for mem_fn
 #include <vector>      // for vector
 
-#include "catch.hpp"      // for REQUIRE, SECTION, REQUIRE_THROWS_AS, REQ...
+#include "catch.hpp"  // for REQUIRE, SECTION, REQUIRE_THROWS_AS, REQ...
 #include "libsemigroups/cong-intf.hpp"  // for congruence_type, CongruenceInterface::non_tr...
 #include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs, CongruenceByPairs
 #include "libsemigroups/element-helper.hpp"  // for TransfHelper and chums
@@ -31,9 +31,9 @@
 #include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
 #include "libsemigroups/report.hpp"          // for ReportGuard
 #include "libsemigroups/tce.hpp"             // for TCE
-#include "test-main.hpp"       // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/todd-coxeter.hpp"    // for ToddCoxeter
 #include "libsemigroups/types.hpp"           // for relation_type, word_type
+#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

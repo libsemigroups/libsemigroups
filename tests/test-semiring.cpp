@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"     // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/semiring.hpp"  // for BooleanSemiring, NaturalSemiring
 #include "test-main.hpp"
 

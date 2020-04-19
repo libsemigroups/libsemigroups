@@ -18,9 +18,9 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector, vector<>::const_iterator, allocator
 
-#include "catch.hpp"      // for REQUIRE
-#include "libsemigroups/iterator.hpp"   // for ConstIteratorStateless, ConstIteratorTraits
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                   // for REQUIRE
+#include "libsemigroups/iterator.hpp"  // for ConstIteratorStateless, ConstIteratorTraits
+#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 

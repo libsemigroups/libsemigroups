@@ -20,10 +20,10 @@
 #include <stdexcept>  // for runtime_error
 #include <vector>     // for vector
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/digraph.hpp"    // for ActionDigraph
-#include "libsemigroups/forest.hpp"     // for Forest
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "libsemigroups/digraph.hpp"  // for ActionDigraph
+#include "libsemigroups/forest.hpp"   // for Forest
+#include "test-main.hpp"              // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 

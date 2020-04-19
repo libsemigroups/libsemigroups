@@ -20,10 +20,10 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
-#include "libsemigroups/report.hpp"     // for ReportGuard
-#include "libsemigroups/runner.hpp"     // for Runner
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                 // for REQUIRE, REQUIRE_NOTHROW
+#include "libsemigroups/report.hpp"  // for ReportGuard
+#include "libsemigroups/runner.hpp"  // for Runner
+#include "test-main.hpp"             // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -200,7 +200,6 @@ namespace libsemigroups {
       // if we return true the first time, then run is not called at all
       return true;
     }
-
 
     LIBSEMIGROUPS_TEST_CASE("Runner",
                             "009",
