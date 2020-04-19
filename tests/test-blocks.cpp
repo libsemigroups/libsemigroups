@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "catch.hpp"                  // for LIBSEMIGROUPS_TEST_CASE, ...
 #include "libsemigroups/blocks.hpp"   // for Blocks
-#include "catch.hpp"    // for LIBSEMIGROUPS_TEST_CASE, ...
 #include "libsemigroups/element.hpp"  // for Bipartition
 #include "test-main.hpp"
 

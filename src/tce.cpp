@@ -18,7 +18,7 @@
 
 #include "libsemigroups/tce.hpp"
 
-#include "libsemigroups/cong-intf.hpp"            // for CongruenceInterface::class_index_type
+#include "libsemigroups/cong-intf.hpp"  // for CongruenceInterface::class_index_type
 #include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/todd-coxeter.hpp"         // for congruence::ToddCoxeter
 

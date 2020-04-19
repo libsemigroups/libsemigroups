@@ -74,7 +74,7 @@ namespace libsemigroups {
                             before_normal_forms<StringPresentation>,
                             bench_normal_forms,
                             string_infinite_examples());
-                            // subset);
+    // subset);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
