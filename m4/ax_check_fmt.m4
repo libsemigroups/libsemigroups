@@ -21,7 +21,7 @@ AC_DEFUN([AX_CHECK_FMT], [
 	[AC_MSG_ERROR([cannot use flag --with-external-fmt, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
   else
   	AC_CHECK_FILE(
-   		[$srcdir/extern/fmt-5.3.0/README.rst],
+   		[$srcdir/extern/fmt-5.3.0/include/fmt/printf.h],
    		[],
    		[AC_MSG_ERROR([fmt is required, clone or download the repo from https://github.com/fmt/fmt into this directory])])
 
