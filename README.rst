@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 1.0.8
+libsemigroups - Version 1.0.9
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master

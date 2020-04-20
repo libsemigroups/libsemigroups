@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.9 (released 20/04/2020)
+----------------------------
+
+This is an exceedingly minor release removing some extraneous files from the
+distro. 
+
 v1.0.8 (released 20/04/2020)
 ----------------------------
 
