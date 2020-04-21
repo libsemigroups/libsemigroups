@@ -301,7 +301,7 @@ namespace libsemigroups {
     }
     element_index_type out = _letter_to_pos[w[0]];
     for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
-      out = _right.get(out, _letter_to_pos[*it]);
+      out = _right.get(out, *it);
     }
     return out;
   }
