@@ -81,9 +81,9 @@ namespace libsemigroups {
   }
 
   template <>
-  tril FroidurePin<
-      detail::KBE,
-      FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::is_finite() {
+  tril FroidurePin<detail::KBE,
+                   FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
+      is_finite() const {
     return (finished() ? tril::TRUE : tril::unknown);
   }
 }  // namespace libsemigroups
