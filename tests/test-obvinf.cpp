@@ -64,4 +64,39 @@ namespace libsemigroups {
   ioi.add_rules(v.cbegin(), v.cend());
   REQUIRE(ioi.result());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "005",
+                          "description",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"a", "aa", "b", "bb"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(!ioi.result());
+  // Currently the test does not pass, but the semigroup
+  // is infinite!
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "006",
+                          "description",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(3);
+  std::vector<std::string> v = {"aababbaccabbc", "a", "aaabbbbaaabbbbacbbb", "bb"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  v = {"cc", "bababab"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  v = {"bbbaaaaabbbaaaaabbbaaaaabbbcccbbbbbbbbb", "bcbab",
+       "aaababaabbbccc", "aa", "", "aaaaaaabbbbbbbbbc"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  v = {"a", "aa"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(!ioi.result());
+  v = {"b", "bbaa", "caa", "ccbbbaa"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(!ioi.result());
+  }
 }  // namespace libsemigroups
