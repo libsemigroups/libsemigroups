@@ -34,7 +34,7 @@ html_static_path = ["_static"]
 source_suffix = ".rst"
 master_doc = "index"
 project = "libsemigroups"
-copyright = "2019, J. D. Mitchell"
+copyright = "2019-20, J. D. Mitchell"
 author = "J. D. Mitchell"
 cpp_index_common_prefix = ["libsemigroups::"]
 

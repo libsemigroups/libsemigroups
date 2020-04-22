@@ -12,7 +12,7 @@ import yaml
 
 from bs4 import BeautifulSoup
 
-_COPYRIGHT_NOTICE = """.. Copyright (c) 2019, J. D. Mitchell
+_COPYRIGHT_NOTICE = """.. Copyright (c) 2019-20, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
