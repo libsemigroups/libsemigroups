@@ -28,11 +28,31 @@
 //    relations. Otherwise, it is not possible to use the relations to reduce
 //    the number of occurrences of a generator in a word, and so there are
 //    infinitely many distinct words.
+//
+// 3. The number of generators on the left hand side of a relation is not the
+//    same as the number of generators on the right hand side for at least
+//    one generator. Otherwise the relations preserve the length of any word
+//    and so there are infinitely many distinct words.
+// 
+// 4. There are at least as many relations as there are generators. Otherwise
+//    we can find a surjective homomorphism onto an infinite subsemigroup of
+//    the rationals under addition.
+//
+// 5. The checks 2., 3. and 4. are a special case of a more general matrix based
+//    condition. We construct a matrix whose columns correspond to generators
+//    and rows correspond to relations. The (i, j)-th entry is the number of
+//    occurences of the j-th generator in the left hand side of the i-th
+//    relation minus the number of occurences of it on the right hand side.
+//    If this matrix has a non-trivial kernel, then we can construct a 
+//    surjective homomorphism onto an infinite subsemigroup of the rationals
+//    under addition. So we check that the matrix is full rank. 
 
 // TODO(later):
 // 1) remove code duplication
-// 2) check if the kernel of the matrix is not null using eigen, so that the
-//    semigroup has an infinite homomorphic image.
+// 2) check wether the graph with generators as vertices and
+//    edges connecting two generators if they occur in the same
+//    relation is connected. If not we have a semigroup free 
+//    product which is infinite.
 
 #ifndef LIBSEMIGROUPS_OBVINF_HPP_
 #define LIBSEMIGROUPS_OBVINF_HPP_
@@ -138,7 +158,7 @@ namespace libsemigroups {
      public:
       explicit IsObviouslyInfinite(size_t n)
           : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique(), 
-            _matrix_col_index(), _matrix() {}
+            _matrix_col_index(), _matrix(), _preserve_length(true) {}
 
       explicit IsObviouslyInfinite(std::string const& lphbt)
           : IsObviouslyInfinite(lphbt.size()) {}
@@ -192,14 +212,18 @@ namespace libsemigroups {
               _matrix(matrix_start+(it-first)/2, col->second) += x.second;  
             }
           }
+          if (_preserve_length && (_matrix.row(matrix_start+(it-first)/2).sum() != 0)) {
+            _preserve_length = false; 
+          } 
         }
-        //std::cout << _matrix << std::endl;
+       //std::cout << "Matrix" << std::endl << _matrix << std::endl;
       }
 
       bool result() const {
         LIBSEMIGROUPS_ASSERT(_matrix.rows()>=0);
         LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()>=0);
-        return (!_empty_word && _unique.size() != _nr_gens)
+        return _preserve_length
+               || (!_empty_word && _unique.size() != _nr_gens)
                || _preserve.size() != _nr_gens 
                || size_t(_matrix.rows()) < _nr_gens
                || size_t(_matrix.cast<float>().colPivHouseholderQr().rank()) != _nr_gens;
@@ -236,6 +260,7 @@ namespace libsemigroups {
       std::unordered_set<TLetterType>                        _unique;
       std::unordered_map<TLetterType, size_t>                _matrix_col_index;
       Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
+      bool                                                   _preserve_length;
     };
   }  // namespace detail
 }  // namespace libsemigroups
