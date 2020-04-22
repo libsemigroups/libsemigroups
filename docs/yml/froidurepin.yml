@@ -86,8 +86,6 @@ libsemigroups::FroidurePin:
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
-  - reset_next_relation
-  - next_relation
   - nr_rules
   - length_const
   - length_non_const
@@ -122,6 +120,8 @@ libsemigroups::FroidurePin:
   - begin
   - cbegin
   - cbegin_idempotents
+  - cbegin_rules
+  - cend_rules
   - cbegin_sorted
   - cend
   - cend_idempotents

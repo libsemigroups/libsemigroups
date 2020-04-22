@@ -144,9 +144,9 @@ namespace libsemigroups {
       factorisation(detail::KBE const& x);
 
   template <>
-  tril FroidurePin<
-      detail::KBE,
-      FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::is_finite();
+  tril FroidurePin<detail::KBE,
+                   FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
+      is_finite() const;
 }  // namespace libsemigroups
 
 ////////////////////////////////////////////////////////////////////////

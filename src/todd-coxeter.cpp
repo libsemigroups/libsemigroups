@@ -920,10 +920,12 @@ namespace libsemigroups {
             REPORT_DEBUG_DEFAULT("using presentation...\n");
             LIBSEMIGROUPS_ASSERT(_settings->froidure_pin
                                  == policy::froidure_pin::use_relations);
-            auto sucker = [this](word_type const& w) -> void {
-              reverse_if_necessary_and_push_back(w, _relations);
-            };
-            relations(*parent_froidure_pin(), sucker);
+            auto fp = parent_froidure_pin();
+            fp->run();
+            for (auto it = fp->cbegin_rules(); it != fp->cend_rules(); ++it) {
+              reverse_if_necessary_and_push_back(it->first, _relations);
+              reverse_if_necessary_and_push_back(it->second, _relations);
+            }
 #ifdef LIBSEMIGROUPS_DEBUG
             // This is a check of program logic, since we use parent() to
             // obtain the relations, so we only validate in debug mode.
