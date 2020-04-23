@@ -49,6 +49,7 @@ namespace libsemigroups {
   using Transf = typename TransfHelper<16>::type;
 
   std::vector<Generators<Transf>> const& transf_examples();
+  Generators<Transf> const&              transf_examples(size_t id);
 
   Generators<Transf> full_transf_monoid(size_t n);
 
