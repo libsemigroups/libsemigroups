@@ -133,4 +133,13 @@ namespace libsemigroups {
     };
     return examples;
   }
+
+  Generators<Transf> const& transf_examples(size_t id) {
+    for (auto const& ex : transf_examples()) {
+      if (id == ex.id) {
+        return ex;
+      }
+    }
+    LIBSEMIGROUPS_EXCEPTION("no example with id %d", id);
+  }
 }  // namespace libsemigroups

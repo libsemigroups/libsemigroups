@@ -19,7 +19,9 @@
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
+#include "libsemigroups/froidure-pin-base.hpp"
 #include "libsemigroups/froidure-pin.hpp"
+#include "libsemigroups/types.hpp"
 
 #include "examples/generators.hpp"
 
@@ -41,6 +43,29 @@ namespace libsemigroups {
     delete fp;
   }
 
+  template <typename T>
+  FroidurePin<T>* before_bench_rules(Generators<T> const& p) {
+    auto fp = before_bench(p);
+    fp->run();
+    REQUIRE(fp->finished());
+    return fp;
+  }
+
+  template <typename T>
+  void bench_const_rule_iterator(FroidurePin<T>* fp, size_t) {
+    std::vector<relation_type> v(fp->cbegin_rules(), fp->cend_rules());
+    REQUIRE(v.size() == fp->nr_rules());
+  }
+
+  template <typename T>
+  void bench_relations(FroidurePin<T>* fp, size_t) {
+    std::vector<relation_type> v;
+    relations(*fp, [&v](word_type l, word_type r) -> void {
+      v.emplace_back(std::move(l), std::move(r));
+    });
+    REQUIRE(v.size() == fp->nr_rules());
+  }
+
   using Transf = typename TransfHelper<16>::type;
 
   LIBSEMIGROUPS_BENCHMARK("FroidurePin<Transf>",
@@ -49,5 +74,19 @@ namespace libsemigroups {
                           bench_run<Transf>,
                           after_bench<Transf>,
                           transf_examples());
+
+  LIBSEMIGROUPS_BENCHMARK("cbegin/end_rules",
+                          "[FroidurePin][002]",
+                          before_bench_rules<Transf>,
+                          bench_const_rule_iterator<Transf>,
+                          after_bench<Transf>,
+                          {transf_examples(0x9806816B9D761476)});
+
+  LIBSEMIGROUPS_BENCHMARK("relations",
+                          "[FroidurePin][003]",
+                          before_bench_rules<Transf>,
+                          bench_relations<Transf>,
+                          after_bench<Transf>,
+                          {transf_examples(0x9806816B9D761476)});
 
 }  // namespace libsemigroups

@@ -742,7 +742,29 @@ namespace libsemigroups {
         _relation.first.clear();
         _relation.second.clear();
 
-        if (_pos == UNDEFINED) {
+        if (_pos != UNDEFINED) {
+          while (_pos < ptr->current_size()) {
+            while (_gen < ptr->nr_generators()) {
+              if (!ptr->_reduced.get(ptr->_enumerate_order[_pos], _gen)
+                  && (_pos < ptr->_lenindex[1]
+                      || ptr->_reduced.get(
+                          ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
+                _current[0] = ptr->_enumerate_order[_pos];
+                _current[1] = _gen;
+                _current[2]
+                    = ptr->_right.get(ptr->_enumerate_order[_pos], _gen);
+                if (_current[2] != UNDEFINED) {
+                  _gen++;
+                  return *this;
+                }
+              }
+              _gen++;
+            }
+            _gen = 0;
+            _pos++;
+          }
+          return *this;
+        } else {
           // duplicate generators
           if (_gen < ptr->_duplicate_gens.size()) {
             _current[0] = ptr->_duplicate_gens[_gen].first;
@@ -753,28 +775,8 @@ namespace libsemigroups {
           }
           _gen = 0;
           _pos = 0;
+          return operator++();
         }
-
-        while (_pos < ptr->current_size()) {
-          while (_gen < ptr->nr_generators()) {
-            if (!ptr->_reduced.get(ptr->_enumerate_order[_pos], _gen)
-                && (_pos < ptr->_lenindex[1]
-                    || ptr->_reduced.get(
-                        ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
-              _current[0] = ptr->_enumerate_order[_pos];
-              _current[1] = _gen;
-              _current[2] = ptr->_right.get(ptr->_enumerate_order[_pos], _gen);
-              if (_current[2] != UNDEFINED) {
-                _gen++;
-                return *this;
-              }
-            }
-            _gen++;
-          }
-          _gen = 0;
-          _pos++;
-        }
-        return *this;
       }
 
       // postfix
