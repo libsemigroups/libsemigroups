@@ -63,10 +63,13 @@
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for pair
 #include <vector>         // for vector
+#include <iterator>       // for next
 #include <Eigen/QR>       // for dimensionOfKernel
+
 #include <iostream>
 
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-debug.hpp" // for LIBSEMIGROUPS_ASSERT
+#include "uf.hpp"                  // for UF 
 
 namespace libsemigroups {
   namespace detail {
@@ -158,7 +161,8 @@ namespace libsemigroups {
      public:
       explicit IsObviouslyInfinite(size_t n)
           : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique(), 
-            _matrix_col_index(), _matrix(), _preserve_length(true) {}
+            _matrix_col_index(), _matrix(), _preserve_length(true),
+            _letter_components(n) {}
 
       explicit IsObviouslyInfinite(std::string const& lphbt)
           : IsObviouslyInfinite(lphbt.size()) {}
@@ -205,18 +209,25 @@ namespace libsemigroups {
                             _matrix.rows(), 1).setZero();
               _matrix(matrix_start+(it-first)/2, _matrix.cols()-1) += x.second;  
             } else {
-              //std::cout << "Matrix:" << std::endl;
-              //std::cout << _matrix << std::endl;
-              //std::cout << "i, j:" << std::endl;
-              //std::cout << matrix_start+(it-first)/2 << " " << col->second << std::endl;
               _matrix(matrix_start+(it-first)/2, col->second) += x.second;  
             }
           }
           if (_preserve_length && (_matrix.row(matrix_start+(it-first)/2).sum() != 0)) {
             _preserve_length = false; 
           } 
+          for (auto i = _map.begin(); std::next(i) != _map.end(); ++i) {
+            //std::cout << i->first << " " << std::next(i)->first << std::endl;
+            _letter_components.unite(_matrix_col_index.find(i->first)->second, 
+                                     _matrix_col_index.find(std::next(i)->first)->second);
+          }
+          //std::cout << "UF: ";
+          //for (auto i = 0; i<_nr_gens; i++)
+          //  std::cout << _letter_components.find(i) << " ";
+          //std::cout << std::endl;
+          //std::cout << _letter_components.nr_blocks() << std::endl;
         }
        //std::cout << "Matrix" << std::endl << _matrix << std::endl;
+        _nr_letter_components = _letter_components.nr_blocks(); 
       }
 
       bool result() const {
@@ -226,6 +237,7 @@ namespace libsemigroups {
                || (!_empty_word && _unique.size() != _nr_gens)
                || _preserve.size() != _nr_gens 
                || size_t(_matrix.rows()) < _nr_gens
+               || (!_empty_word && _nr_letter_components > 1)
                || size_t(_matrix.cast<float>().colPivHouseholderQr().rank()) != _nr_gens;
       }
 
@@ -261,6 +273,8 @@ namespace libsemigroups {
       std::unordered_map<TLetterType, size_t>                _matrix_col_index;
       Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
       bool                                                   _preserve_length;
+      detail::UF                                             _letter_components;
+      size_t                                                 _nr_letter_components;
     };
   }  // namespace detail
 }  // namespace libsemigroups
