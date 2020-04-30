@@ -532,4 +532,27 @@ namespace libsemigroups {
     }
     REQUIRE_THROWS_AS(g.root_of_scc(1000), LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "029",
+                          "reverse node iterator",
+                          "[quick]") {
+    using node_type = ActionDigraph<size_t>::node_type;
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(10);
+    REQUIRE(ad.nr_nodes() == 10);
+    REQUIRE(std::vector<node_type>(ad.cbegin_nodes(), ad.cend_nodes())
+            == std::vector<node_type>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
+
+    auto it = ad.cbegin_nodes();
+    REQUIRE(*it == 0);
+    auto copy(it);
+    REQUIRE(*copy == 0);
+    it       = ad.cend_nodes();
+    auto tmp = it;
+    REQUIRE(*--tmp == 9);
+
+    REQUIRE(std::vector<node_type>(ad.crbegin_nodes(), ad.crend_nodes())
+            == std::vector<node_type>({9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+  }
 }  // namespace libsemigroups

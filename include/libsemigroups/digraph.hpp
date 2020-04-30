@@ -114,6 +114,11 @@ namespace libsemigroups {
     //! Alias for the type of an iterator pointing to the nodes of a digraph.
     using const_iterator_nodes = typename IntegralRange<T>::const_iterator;
 
+    //! Alias for the type of a reverse iterator pointing to the nodes of a
+    //! digraph.
+    using const_reverse_nodes_iterator =
+        typename IntegralRange<T>::const_reverse_iterator;
+
     //! Alias for the type of an iterator pointing to the out-edges of a node in
     //! a digraph.
     using const_iterator_edges =
@@ -424,8 +429,44 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).cbegin();
     }
 
-    //! Returns a ActionDigraph::const_iterator_nodes (random access iterator)
-    //! pointing one-past-the-last node of the digraph.
+    //! Returns a ActionDigraph::const_reverse_nodes_iterator (random access
+    //! iterator) pointing at the last node of the digraph.
+    //!
+    //! \returns
+    //! An ActionDigraph::const_reverse_nodes_iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    const_reverse_nodes_iterator crbegin_nodes() const noexcept {
+      return IntegralRange<T>(0, nr_nodes()).crbegin();
+    }
+
+    //! Returns a ActionDigraph::const_reverse_iterator_nodes (random access
+    //! iterator) pointing one-past-the-first node of the digraph.
+    //!
+    //! \returns
+    //! An ActionDigraph::const_reverse_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    const_reverse_nodes_iterator crend_nodes() const noexcept {
+      return IntegralRange<T>(0, nr_nodes()).crend();
+    }
+
+    //! Returns a ActionDigraph::const_iterator_nodes (random access
+    //! iterator) pointing one-past-the-last node of the digraph.
     //!
     //! \returns
     //! An ActionDigraph::const_iterator_nodes.
