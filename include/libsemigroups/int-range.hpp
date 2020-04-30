@@ -31,26 +31,23 @@
 #include <vector>       // for vector
 
 namespace libsemigroups {
-  template <typename TIntegralType, size_t TBegin = 0, size_t TEnd = 0>
+  template <typename T, T TBegin = 0, T TEnd = 0>
   class IntegralRange final {
-    static_assert(
-        std::is_integral<TIntegralType>::value,
-        "the template parameter TIntegralType must be an integral type");
+    static_assert(std::is_integral<T>::value,
+                  "the template parameter value_type must be an integral type");
 
    public:
-    using size_type = typename std::vector<TIntegralType>::size_type;
-    using difference_type =
-        typename std::vector<TIntegralType>::difference_type;
-    using const_pointer = typename std::vector<TIntegralType>::const_pointer;
-    using pointer       = typename std::vector<TIntegralType>::pointer;
-    using const_reference =
-        typename std::vector<TIntegralType>::const_reference;
-    using reference  = const_reference;
-    using value_type = TIntegralType;
+    using value_type      = T;
+    using size_type       = typename std::vector<value_type>::size_type;
+    using difference_type = typename std::vector<value_type>::difference_type;
+    using const_pointer   = typename std::vector<value_type>::const_pointer;
+    using pointer         = typename std::vector<value_type>::pointer;
+    using const_reference = typename std::vector<value_type>::const_reference;
+    using reference       = const_reference;
 
     IntegralRange() noexcept : _begin(TBegin), _end(TEnd) {}
 
-    IntegralRange(TIntegralType begin, TIntegralType end) noexcept
+    IntegralRange(value_type begin, value_type end) noexcept
         : _begin(begin), _end(end) {}
 
     IntegralRange(IntegralRange const&) noexcept = default;
@@ -66,17 +63,16 @@ namespace libsemigroups {
       friend class IntegralRange;
 
      public:
-      using size_type = typename std::vector<TIntegralType>::size_type;
-      using difference_type =
-          typename std::vector<TIntegralType>::difference_type;
-      using const_pointer = typename std::vector<TIntegralType>::const_pointer;
-      using pointer       = typename std::vector<TIntegralType>::pointer;
-      using const_reference =
-          typename std::vector<TIntegralType>::const_reference;
-      using reference         = const_reference;
-      using value_type        = TIntegralType;
+      using value_type      = T;
+      using size_type       = typename std::vector<value_type>::size_type;
+      using difference_type = typename std::vector<value_type>::difference_type;
+      using const_pointer   = typename std::vector<value_type>::const_pointer;
+      using pointer         = typename std::vector<value_type>::pointer;
+      using const_reference = typename std::vector<value_type>::const_reference;
+      using reference       = value_type;
       using iterator_category = std::random_access_iterator_tag;
 
+      const_iterator() noexcept                      = default;
       const_iterator(const_iterator const&) noexcept = default;
       const_iterator(const_iterator&&) noexcept      = default;
       const_iterator& operator=(const_iterator const&) noexcept = default;
@@ -160,17 +156,21 @@ namespace libsemigroups {
         return _i - that._i;
       }
 
-      TIntegralType operator[](size_type pos) const noexcept {
+      value_type operator[](size_type pos) const noexcept {
         return *(*this + pos);
       }
 
-      TIntegralType operator*() const noexcept {
+      value_type operator*() const noexcept {
         return _i;
       }
 
+      const_pointer operator->() const noexcept {
+        return &_i;
+      }
+
      private:
-      explicit const_iterator(TIntegralType start) : _i(start) {}
-      TIntegralType _i;
+      explicit const_iterator(value_type start) : _i(start) {}
+      value_type _i;
     };
 
     const_iterator cbegin() const {
@@ -179,6 +179,16 @@ namespace libsemigroups {
 
     const_iterator cend() const {
       return _end;
+    }
+
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+    const_reverse_iterator crbegin() const {
+      return const_reverse_iterator(cend());
+    }
+
+    const_reverse_iterator crend() const {
+      return const_reverse_iterator(cbegin());
     }
 
    private:

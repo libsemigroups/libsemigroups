@@ -4,6 +4,7 @@ libsemigroups::ActionDigraph:
   - [typedef, label_type]
   - [typedef, scc_index_type]
   - [typedef, const_iterator_nodes]
+  - [typedef, const_reverse_nodes_iterator]
   - [typedef, const_iterator_edges]
   - [typedef, const_iterator_scc]
   - [typedef, const_iterator_sccs]
@@ -28,6 +29,8 @@ libsemigroups::ActionDigraph:
   - validate
   - cbegin_nodes
   - cend_nodes
+  - crbegin_nodes
+  - crend_nodes
   - cbegin_edges
   - cend_edges
 - Strongly connected components:
