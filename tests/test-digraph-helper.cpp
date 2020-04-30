@@ -23,6 +23,42 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
+  namespace {
+    void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
+      size_t old_nodes = digraph.nr_nodes();
+      digraph.add_nodes(n);
+      for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
+        digraph.add_edge(i, i + 1, 0);
+      }
+      digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
+    }
+
+    ActionDigraph<size_t> cycle(size_t n) {
+      ActionDigraph<size_t> g(0, 1);
+      add_cycle(g, n);
+      return g;
+    }
+
+    void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+      if (n != digraph.out_degree()) {
+        throw std::runtime_error("can't do it!");
+      }
+      size_t old_nodes = digraph.nr_nodes();
+      digraph.add_nodes(n);
+
+      for (size_t i = old_nodes; i < digraph.nr_nodes(); ++i) {
+        for (size_t j = old_nodes; j < digraph.nr_nodes(); ++j) {
+          digraph.add_edge(i, j, j - old_nodes);
+        }
+      }
+    }
+
+    ActionDigraph<size_t> clique(size_t n) {
+      ActionDigraph<size_t> g(0, n);
+      add_clique(g, n);
+      return g;
+    }
+  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
                           "000",
@@ -115,6 +151,44 @@ namespace libsemigroups {
       ad.add_edge(i, i + 1, 0);
     }
     REQUIRE(action_digraph_helper::is_acyclic(ad));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "006", "for a node", "[quick]") {
+    using node_type = ActionDigraph<size_t>::node_type;
+    ActionDigraph<size_t> ad;
+    size_t const          n = 100;
+    ad.add_nodes(n);
+    ad.add_to_out_degree(2);
+    for (size_t i = 0; i < n - 1; ++i) {
+      ad.add_edge(i, i + 1, i % 2);
+    }
+    add_cycle(ad, 100);
+
+    REQUIRE(std::all_of(
+        ad.cbegin_nodes(), ad.cbegin_nodes() + 100, [&ad](node_type const& v) {
+          return action_digraph_helper::is_acyclic(ad, v);
+        }));
+
+    REQUIRE(std::none_of(ad.crbegin_nodes(),
+                         ad.crbegin_nodes() + 100,
+                         [&ad](node_type const& v) {
+                           return action_digraph_helper::is_acyclic(ad, v);
+                         }));
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "012", "for a node", "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(4);
+    ad.add_to_out_degree(1);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+    ad.add_edge(2, 3, 0);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!action_digraph_helper::is_acyclic(ad, 0));
+    REQUIRE(!action_digraph_helper::is_acyclic(ad, 1));
+    REQUIRE(action_digraph_helper::is_acyclic(ad, 2));
+    REQUIRE(action_digraph_helper::is_acyclic(ad, 3));
   }
 
   LIBSEMIGROUPS_TEST_CASE("follow_path", "011", "20 node clique", "[quick]") {
