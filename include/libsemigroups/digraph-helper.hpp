@@ -24,13 +24,52 @@
 #include <vector>       // for vector
 
 #include "constants.hpp"
+#include "types.hpp"
 
 namespace libsemigroups {
   template <typename T>
   class ActionDigraph;
 
   namespace action_digraph_helper {
-    //! This function returns \c true if \p ad is an acyclic digraph.
+    //! Undoc
+    template <typename T>
+    using node_type = typename ActionDigraph<T>::node_type;
+
+    //! Undoc
+    template <typename T>
+    using label_type = typename ActionDigraph<T>::label_type;
+
+    //! Find the node that a path starting at a given node leads to.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //! \param first the ActionDigraph object to check.
+    //! \param path the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A value of type ActionDigraph::node_type. If one or more edges in
+    //! \p path are not defined, then libsemigroups::UNDEFINED is returned.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! Linear in the length of \p path.
+    // TODO example
+    template <typename T>
+    node_type<T> follow_path(ActionDigraph<T> const& ad,
+                             node_type<T> const      first,
+                             word_type const&        path) {
+      node_type<T> last = first;
+      for (auto it = path.cbegin(); it < path.cend() && last != UNDEFINED;
+           ++it) {
+        last = ad.neighbor(last, *it);
+      }
+      return last;
+    }
+
+    //! Check if a digraph is acyclic.
     //!
     //! \tparam T the type used as the template parameter for the ActionDigraph.
     //!
@@ -48,7 +87,7 @@ namespace libsemigroups {
     //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
     //! ActionDigraph::out_degree.
     //!
-    //! A digraph is *acyclic* if every directed cycle on the digraph is
+    //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
     //!
     //! \par Example
@@ -62,16 +101,13 @@ namespace libsemigroups {
     //! \endcode
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad) {
-      using node_type  = typename ActionDigraph<T>::node_type;
-      using label_type = typename ActionDigraph<T>::label_type;
-
-      node_type const                              N = ad.nr_nodes();
-      size_t const                                 M = ad.out_degree();
-      std::stack<std::pair<node_type, label_type>> stck;
+      node_type<T> const                                 N = ad.nr_nodes();
+      size_t const                                       M = ad.out_degree();
+      std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       stck.emplace(0, 0);
       std::vector<uint8_t> seen(N, 0);
 
-      for (node_type m = 0; m < N; ++m) {
+      for (node_type<T> m = 0; m < N; ++m) {
         if (seen[m] == 0) {
           stck.emplace(m, 0);
           do {
@@ -84,7 +120,7 @@ namespace libsemigroups {
               seen[stck.top().first] = 0;
               stck.top().second++;
             } else {
-              node_type n;
+              node_type<T> n;
               do {
                 n = ad.unsafe_neighbor(p.first, p.second);
                 p.second++;

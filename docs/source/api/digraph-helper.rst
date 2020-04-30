@@ -20,4 +20,7 @@ Full API
 --------
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic
+.. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path
+   :project: libsemigroups
+
    :project: libsemigroups

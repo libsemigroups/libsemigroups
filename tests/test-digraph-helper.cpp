@@ -116,4 +116,11 @@ namespace libsemigroups {
     }
     REQUIRE(action_digraph_helper::is_acyclic(ad));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("follow_path", "011", "20 node clique", "[quick]") {
+    ActionDigraph<size_t> ad = path(20);
+    for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
+      REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first) == it->second);
+    }
+  }
 }  // namespace libsemigroups
