@@ -19,8 +19,12 @@ This page contains the documentation for helper function for the class
 Full API
 --------
 
-.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic
 .. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path
    :project: libsemigroups
 
+.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&)
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&, node_type<T>)
+   :project: libsemigroups
    :project: libsemigroups

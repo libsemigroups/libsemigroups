@@ -23,7 +23,10 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+// TODO iwyu
+
 #include "constants.hpp"
+#include "libsemigroups-exception.hpp"
 #include "types.hpp"
 
 namespace libsemigroups {
@@ -38,6 +41,18 @@ namespace libsemigroups {
     //! Undoc
     template <typename T>
     using label_type = typename ActionDigraph<T>::label_type;
+
+    namespace detail {
+      template <typename T>
+      void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
+        if (v >= ad.nr_nodes()) {
+          LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
+                                  "the range [0, %d), got %d",
+                                  ad.nr_nodes(),
+                                  v);
+        }
+      }
+    }  // namespace detail
 
     //! Find the node that a path starting at a given node leads to.
     //!
@@ -69,6 +84,40 @@ namespace libsemigroups {
       return last;
     }
 
+    namespace detail {
+      template <typename T>
+      using stack_type  = std::stack<std::pair<node_type<T>, label_type<T>>>;
+      using lookup_type = std::vector<uint8_t>;
+
+      // Helper function for the two versions of is_acyclic below.
+      template <typename T>
+      bool is_acyclic(ActionDigraph<T> const& ad,
+                      stack_type<T>&          stck,
+                      lookup_type&            seen) {
+        size_t const M = ad.out_degree();
+        do {
+          auto& p = stck.top();
+          if (seen[p.first] == 2) {
+            return false;
+          } else if (seen[p.first] == 1 || p.second >= M) {
+            seen[p.first] = 1;
+            stck.pop();
+            seen[stck.top().first] = 0;
+            stck.top().second++;
+          } else {
+            node_type<T> node;
+            std::tie(node, p.second)
+                = ad.unsafe_next_neighbor(p.first, p.second);
+            if (node != UNDEFINED) {
+              seen[p.first] = 2;
+              stck.emplace(node, 0);
+            }
+          }
+        } while (stck.size() > 1);
+        return true;
+      }
+    }  // namespace detail
+
     //! Check if a digraph is acyclic.
     //!
     //! \tparam T the type used as the template parameter for the ActionDigraph.
@@ -78,7 +127,7 @@ namespace libsemigroups {
     //! \returns
     //! A value of type `bool`.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
@@ -102,38 +151,63 @@ namespace libsemigroups {
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad) {
       node_type<T> const                                 N = ad.nr_nodes();
-      size_t const                                       M = ad.out_degree();
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
-      stck.emplace(0, 0);
-      std::vector<uint8_t> seen(N, 0);
-
+      std::vector<uint8_t>                               seen(N, 0);
       for (node_type<T> m = 0; m < N; ++m) {
         if (seen[m] == 0) {
           stck.emplace(m, 0);
-          do {
-            auto& p = stck.top();
-            if (seen[p.first] == 2) {
-              return false;
-            } else if (seen[p.first] == 1 || p.second >= M) {
-              seen[p.first] = 1;
-              stck.pop();
-              seen[stck.top().first] = 0;
-              stck.top().second++;
-            } else {
-              node_type<T> n;
-              do {
-                n = ad.unsafe_neighbor(p.first, p.second);
-                p.second++;
-              } while (n == libsemigroups::UNDEFINED && p.second < M);
-              if (n != libsemigroups::UNDEFINED) {
-                seen[p.first] = 2;
-                stck.emplace(n, 0);
-              }
-            }
-          } while (stck.size() > 1);
+          if (!detail::is_acyclic(ad, stck, seen)) {
+            return false;
+          }
         }
       }
       return true;
+    }
+
+    //! Check if the subdigraph induced by the nodes reachable from a source
+    //! node is acyclic.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //! \param source the source node.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
+    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
+    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
+    //! ActionDigraph::out_degree.
+    //!
+    //! A digraph is acyclic if every directed cycle on the digraph is
+    //! trivial.
+    //!
+    //! \par Example
+    //! \code
+    //! ActionDigraph<size_t> ad;
+    //! ad.add_nodes(4);
+    //! ad.add_to_out_degree(1);
+    //! ad.add_edge(0, 1, 0);
+    //! ad.add_edge(1, 0, 0);
+    //! ad.add_edge(2, 3, 0);
+    //! action_digraph_helper::is_acyclic(ad); // returns false
+    //! action_digraph_helper::is_acyclic(ad, 0); // returns false
+    //! action_digraph_helper::is_acyclic(ad, 1); // returns false
+    //! action_digraph_helper::is_acyclic(ad, 2); // returns true
+    //! action_digraph_helper::is_acyclic(ad, 3); // returns true
+    //! \endcode
+    template <typename T>
+    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
+      detail::validate_node(ad, source);
+      std::stack<std::pair<node_type<T>, label_type<T>>> stck;
+      stck.emplace(source, 0);
+      std::vector<uint8_t> seen(ad.nr_nodes(), 0);
+      return detail::is_acyclic(ad, stck, seen);
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
