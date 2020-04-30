@@ -15,21 +15,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <cstddef>
 
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/digraph-helper.hpp"  // for is_acyclic
 #include "libsemigroups/digraph.hpp"         // for ActionDigraph
-
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/order.hpp"           // for LexicographicalCompare
+#include "libsemigroups/wilo.hpp"            // for cbegin/end_wilo
+#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   namespace {
-    void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_path(ActionDigraph<size_t>& digraph, size_t n) {
       size_t old_nodes = digraph.nr_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
         digraph.add_edge(i, i + 1, 0);
       }
+    }
+
+    ActionDigraph<size_t> path(size_t n) {
+      ActionDigraph<size_t> g(0, 1);
+      add_path(g, n);
+      return g;
+    }
+
+    void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
+      size_t old_nodes = digraph.nr_nodes();
+      add_path(digraph, n);
       digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
     }
 
@@ -60,10 +73,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
-                          "000",
-                          "2-cycle",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "000", "2-cycle", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(1);
@@ -72,10 +82,7 @@ namespace libsemigroups {
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
-                          "001",
-                          "1-cycle",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "001", "1-cycle", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(1);
     ad.add_to_out_degree(1);
@@ -83,10 +90,7 @@ namespace libsemigroups {
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
-                          "002",
-                          "multi-digraph",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "002", "multi-digraph", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
@@ -95,7 +99,7 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic",
                           "003",
                           "complete digraph 100",
                           "[quick]") {
@@ -113,7 +117,7 @@ namespace libsemigroups {
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic",
                           "004",
                           "acyclic digraph with 20000 nodes",
                           "[quick]") {
@@ -133,7 +137,7 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper::is_acyclic",
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic",
                           "005",
                           "acyclic digraph with 10 million nodes",
                           "[standard]") {

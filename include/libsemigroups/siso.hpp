@@ -103,6 +103,7 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! No doc
   using const_silo_iterator = detail::ConstIteratorStateful<
       detail::SisoIteratorTraits<const_wilo_iterator>>;
 
@@ -115,6 +116,7 @@ namespace libsemigroups {
   static_assert(std::is_destructible<const_silo_iterator>::value,
                 "forward iterator requires destructible");
 
+  //! No doc
   using const_sislo_iterator = detail::ConstIteratorStateful<
       detail::SisoIteratorTraits<const_wislo_iterator>>;
 

@@ -90,12 +90,14 @@ namespace libsemigroups {
                   "TCE's sizeof exceeds 8!!");
   }  // namespace detail
 
+  //! No doc
   inline std::ostringstream& operator<<(std::ostringstream& os,
                                         detail::TCE const&  x) {
     os << "TCE(" << detail::TCE::class_index_type(x) << ")";
     return os;
   }
 
+  //! No doc
   inline std::ostream& operator<<(std::ostream& os, detail::TCE const& x) {
     os << detail::to_string(x);
     return os;

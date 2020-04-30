@@ -51,6 +51,7 @@ libsemigroups::FroidurePin:
   - add_generator
   - add_generators(TCollection const&)
   - add_generators(std::initializer_list<const_element_type>)
+  - add_generators(T const&, T const&)
   - closure(TCollection const&)
   - closure(std::initializer_list<const_element_type>)
   - copy_add_generators

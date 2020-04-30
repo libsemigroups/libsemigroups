@@ -38,25 +38,40 @@
 //    approach as const_silo_iterator.
 
 namespace libsemigroups {
+  //! No doc
   class const_wilo_iterator {
    public:
-    using size_type         = typename std::vector<word_type>::size_type;
-    using difference_type   = typename std::vector<word_type>::difference_type;
-    using const_pointer     = typename std::vector<word_type>::const_pointer;
-    using pointer           = typename std::vector<word_type>::pointer;
-    using const_reference   = typename std::vector<word_type>::const_reference;
-    using reference         = typename std::vector<word_type>::reference;
-    using value_type        = word_type;
+    //! No doc
+    using size_type = typename std::vector<word_type>::size_type;
+    //! No doc
+    using difference_type = typename std::vector<word_type>::difference_type;
+    //! No doc
+    using const_pointer = typename std::vector<word_type>::const_pointer;
+    //! No doc
+    using pointer = typename std::vector<word_type>::pointer;
+    //! No doc
+    using const_reference = typename std::vector<word_type>::const_reference;
+    //! No doc
+    using reference = typename std::vector<word_type>::reference;
+    //! No doc
+    using value_type = word_type;
+    //! No doc
     using iterator_category = std::forward_iterator_tag;
 
     // None of the constructors are noexcept because the corresponding
     // constructors for std::vector aren't (until C++17).
-    const_wilo_iterator()                           = default;
+    //! No doc
+    const_wilo_iterator() = default;
+    //! No doc
     const_wilo_iterator(const_wilo_iterator const&) = default;
-    const_wilo_iterator(const_wilo_iterator&&)      = default;
+    //! No doc
+    const_wilo_iterator(const_wilo_iterator&&) = default;
+    //! No doc
     const_wilo_iterator& operator=(const_wilo_iterator const&) = default;
+    //! No doc
     const_wilo_iterator& operator=(const_wilo_iterator&&) = default;
 
+    //! No doc
     const_wilo_iterator(size_type const n,
                         size_type const upper_bound,
                         word_type&&     first,
@@ -70,25 +85,31 @@ namespace libsemigroups {
       _index = (_current == _last ? UNDEFINED : size_type(0));
     }
 
+    //! No doc
     ~const_wilo_iterator() = default;
 
+    //! No doc
     bool operator==(const_wilo_iterator const& that) const noexcept {
       return _index == that._index;
     }
 
+    //! No doc
     bool operator!=(const_wilo_iterator const& that) const noexcept {
       return !(this->operator==(that));
     }
 
+    //! No doc
     const_reference operator*() const noexcept {
       return _current;
     }
 
+    //! No doc
     const_pointer operator->() const noexcept {
       return &_current;
     }
 
     // prefix
+    //! No doc
     const_wilo_iterator const& operator++() noexcept {
       if (_index != UNDEFINED) {
         ++_index;
@@ -109,6 +130,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! No doc
     // postfix
     const_wilo_iterator operator++(int) noexcept {
       const_wilo_iterator copy(*this);
@@ -116,6 +138,7 @@ namespace libsemigroups {
       return copy;
     }
 
+    //! No doc
     void swap(const_wilo_iterator& that) noexcept {
       std::swap(_letter, that._letter);
       std::swap(_index, that._index);
@@ -144,6 +167,7 @@ namespace libsemigroups {
   static_assert(std::is_destructible<const_wilo_iterator>::value,
                 "forward iterator requires destructible");
 
+  //! No doc
   inline void swap(const_wilo_iterator& x, const_wilo_iterator& y) noexcept {
     x.swap(y);
   }

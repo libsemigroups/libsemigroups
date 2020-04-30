@@ -30,6 +30,7 @@ libsemigroups::FroidurePinBase:
   - run_for(TIntType)
   - run_until(T&&)
   - run_until(bool (*))
+  - enumerate
 - Attributes:
   - degree
   - nr_generators
@@ -39,6 +40,7 @@ libsemigroups::FroidurePinBase:
   - size
   - nr_idempotents
   - is_idempotent
+  - is_finite
 - Cayley graphs:
   - right_cayley_graph
   - left_cayley_graph

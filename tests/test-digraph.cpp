@@ -16,18 +16,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <cstddef>    // for size_t
 #include <stdexcept>  // for runtime_error
 #include <vector>     // for vector
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/digraph.hpp"  // for ActionDigraph
-#include "libsemigroups/forest.hpp"   // for Forest
-#include "test-main.hpp"              // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/digraph-helper.hpp"  // for follow_path
+#include "libsemigroups/digraph.hpp"         // for ActionDigraph
+#include "libsemigroups/forest.hpp"          // for Forest
+#include "libsemigroups/kbe.hpp"             // for KBE
+#include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
+#include "libsemigroups/wilo.hpp"            // for cbegin_wilo
+#include "libsemigroups/wislo.hpp"           // for cbegin_wislo
+#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
+  using KnuthBendix = fpsemigroup::KnuthBendix;
 
-  struct LibsemigroupsException;
+  struct LibsemigroupsException;  // forward decl
 
   void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
     size_t old_nodes = digraph.nr_nodes();
@@ -64,8 +72,54 @@ namespace libsemigroups {
     return g;
   }
 
+  template <typename T>
+  auto verify_deref(T const& it) ->
+      typename std::enable_if<std::is_same<typename T::value_type, word_type>::value,
+                              void>::type {
+    REQUIRE_NOTHROW(it->size());
+  }
+
+  template <typename T>
+  auto verify_deref(T const& it) ->
+      typename std::enable_if<!std::is_same<typename T::value_type, word_type>::value,
+                              void>::type {
+    REQUIRE_NOTHROW(it->first);
+  }
+
+  template <typename T>
+  void verify_forward_iterator_requirements(T it) {
+    using deref_type = decltype(*it);
+    verify_deref(it);
+    REQUIRE(std::is_reference<deref_type>::value);
+    REQUIRE(
+        std::is_const<typename std::remove_reference<deref_type>::type>::value);
+    T copy(it);
+    REQUIRE(&copy != &it);
+    it++;
+    auto it_val   = *it;
+    auto copy_val = *copy;
+    std::swap(it, copy);
+    REQUIRE(copy_val == *it);
+    REQUIRE(it_val == *copy);
+
+    it.swap(copy);
+    REQUIRE(it_val == *it);
+    REQUIRE(copy_val == *copy);
+
+    ++copy;
+    REQUIRE(*it == *copy);
+
+    ++it;
+    copy++;
+    REQUIRE(*it == *copy);
+
+    REQUIRE(std::is_same<
+            typename std::iterator_traits<T>::reference,
+            typename std::iterator_traits<T>::value_type const&>::value);
+  }
+
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "001",
+                          "000",
                           "constructor with 1  default arg",
                           "[quick][digraph]") {
     ActionDigraph<size_t> g;
@@ -74,7 +128,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "002",
+                          "001",
                           "constructor with 0 default args",
                           "[quick][digraph]") {
     for (size_t j = 0; j < 100; ++j) {
@@ -85,7 +139,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "003",
+                          "002",
                           "add nodes",
                           "[quick][digraph]") {
     ActionDigraph<size_t> g(3);
@@ -99,7 +153,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "004",
+                          "003",
                           "add edges",
                           "[quick][digraph]") {
     ActionDigraph<size_t> g(17, 31);
@@ -138,7 +192,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "005",
+                          "004",
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
     auto g = cycle(32);
@@ -155,7 +209,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "006",
+                          "005",
                           "strongly connected components - no edges",
                           "[quick][digraph][no-valgrind]") {
     ActionDigraph<size_t> graph = ActionDigraph<size_t>(0);
@@ -169,7 +223,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "007",
+                          "006",
                           "strongly connected components - disjoint cycles",
                           "[quick][digraph]") {
     ActionDigraph<size_t> g;
@@ -189,7 +243,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "008",
+                          "007",
                           "strongly connected components - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
@@ -208,7 +262,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "009",
+                          "008",
                           "exceptions",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph(10, 5);
@@ -228,7 +282,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "010",
+                          "009",
                           "spanning forest - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
@@ -249,7 +303,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "011",
+                          "010",
                           "spanning forest - disjoint cycles",
                           "[quick][digraph]") {
     size_t                j = 33;
@@ -304,7 +358,7 @@ namespace libsemigroups {
 
   // TODO(FLS) uncomment this
   //  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-  //                          "012",
+  //                          "011",
   //                          "scc root paths - complete graphs",
   //                          "[quick][digraph]") {
   //    for (size_t k = 2; k < 50; ++k) {
@@ -328,7 +382,7 @@ namespace libsemigroups {
   //  }
 
   // LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-  //                         "013",
+  //                         "012",
   //                         "scc root paths - disjoint cycles",
   //                         "[quick][digraph]") {
   //   for (size_t j = 2; j < 35; ++j) {
@@ -355,7 +409,7 @@ namespace libsemigroups {
   // }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "014",
+                          "013",
                           "scc large cycle",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph = cycle(100000);
@@ -377,7 +431,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "015",
+                          "014",
                           "random",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph = ActionDigraph<size_t>::random(10, 10);
@@ -386,7 +440,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "016",
+                          "015",
                           "reserve",
                           "[quick][digraph]") {
     ActionDigraph<size_t> graph;
@@ -401,7 +455,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "017",
+                          "016",
                           "default constructors",
                           "[quick][digraph]") {
     auto g1 = cycle(10);
@@ -426,8 +480,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "018",
-                          "iterators",
+                          "017",
+                          "scc iterators",
                           "[quick][digraph]") {
     using node_type = decltype(clique(1))::node_type;
 
@@ -488,7 +542,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "019",
+                          "018",
                           "iterator to edges",
                           "[quick][digraph]") {
     for (size_t n = 10; n < 512; n *= 4) {
@@ -512,7 +566,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "020",
+                          "019",
                           "root of scc",
                           "[quick][digraph]") {
     auto g = clique(10);
@@ -531,6 +585,612 @@ namespace libsemigroups {
       }));
     }
     REQUIRE_THROWS_AS(g.root_of_scc(1000), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "020",
+                          "cbegin/end_panislo - 100 node path",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    using node_type = decltype(ad)::node_type;
+    size_t const n  = 100;
+    ad.add_nodes(n);
+    ad.add_to_out_degree(2);
+    for (size_t i = 0; i < n - 1; ++i) {
+      ad.add_edge(i, i + 1, i % 2);
+    }
+    std::vector<std::pair<word_type, node_type>> pths(ad.cbegin_panilo(0),
+                                                      ad.cend_panilo());
+    REQUIRE(pths.size() == 100);
+    REQUIRE(std::distance(ad.cbegin_panilo(50), ad.cend_panilo()) == 50);
+
+    REQUIRE(ad.cbegin_panislo(0) != ad.cend_panislo());
+    pths.clear();
+    pths.insert(pths.end(), ad.cbegin_panislo(0), ad.cend_panislo());
+    REQUIRE(pths.size() == 100);
+    REQUIRE(pths[3].first == word_type({0, 1, 0}));
+    REQUIRE(std::distance(ad.cbegin_panislo(50), ad.cend_panislo()) == 50);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "021",
+                          "cbegin/end_pislo",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(9);
+    ad.add_to_out_degree(3);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(2, 3, 0);
+    ad.add_edge(2, 4, 1);
+    ad.add_edge(4, 5, 1);
+
+    ad.add_edge(2, 6, 2);
+    ad.add_edge(6, 7, 1);
+    ad.add_edge(7, 8, 0);
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(2, 3, 4), ad.cend_pislo())
+            == std::vector<word_type>({{2, 1, 0}}));
+
+    std::vector<word_type> expected;
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 0), ad.cend_pislo())
+            == expected);
+
+    expected.emplace_back(word_type());
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 1), ad.cend_pislo())
+            == expected);
+
+    expected.emplace_back(word_type({0}));
+    expected.emplace_back(word_type({1}));
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 2), ad.cend_pislo())
+            == expected);
+
+    expected.emplace_back(word_type({1, 0}));
+    expected.emplace_back(word_type({1, 1}));
+    expected.emplace_back(word_type({1, 2}));
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 3), ad.cend_pislo())
+            == expected);
+
+    expected.emplace_back(word_type({1, 1, 1}));
+    expected.emplace_back(word_type({1, 2, 1}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 4), ad.cend_pislo())
+            == expected);
+    expected.emplace_back(word_type({1, 2, 1, 0}));
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo())
+            == expected);
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 2, 3), ad.cend_pislo())
+            == std::vector<word_type>({{1, 0}, {1, 1}, {1, 2}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "022",
+                          "cbegin/end_pani(s)lo - 100 node cycle",
+                          "[quick]") {
+    ActionDigraph<size_t> ad = cycle(100);
+
+    REQUIRE(std::distance(ad.cbegin_panilo(0, 0, 200), ad.cend_panilo())
+            == 200);
+    REQUIRE(std::distance(ad.cbegin_panislo(0, 0, 200), ad.cend_panislo())
+            == 200);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "023",
+                          "cbegin/cend_pilo - tree 14 nodes",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(15);
+    ad.add_to_out_degree(2);
+
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+
+    ad.add_edge(1, 3, 0);
+    ad.add_edge(1, 4, 1);
+
+    ad.add_edge(2, 5, 0);
+    ad.add_edge(2, 6, 1);
+
+    ad.add_edge(3, 7, 0);
+    ad.add_edge(3, 8, 1);
+
+    ad.add_edge(4, 9, 0);
+    ad.add_edge(4, 10, 1);
+
+    ad.add_edge(5, 11, 0);
+    ad.add_edge(5, 12, 1);
+
+    ad.add_edge(6, 13, 0);
+    ad.add_edge(6, 14, 1);
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pilo(0, 0, 3), ad.cend_pilo())
+            == std::vector<word_type>(
+                {{}, {0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 3), ad.cend_pislo())
+            == std::vector<word_type>(
+                {{}, {0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pilo(0), ad.cend_pilo())
+            == std::vector<word_type>({{},
+                                       {0},
+                                       {0, 0},
+                                       {0, 0, 0},
+                                       {0, 0, 1},
+                                       {0, 1},
+                                       {0, 1, 0},
+                                       {0, 1, 1},
+                                       {1},
+                                       {1, 0},
+                                       {1, 0, 0},
+                                       {1, 0, 1},
+                                       {1, 1},
+                                       {1, 1, 0},
+                                       {1, 1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0), ad.cend_pislo())
+            == std::vector<word_type>({{},
+                                       {0},
+                                       {1},
+                                       {0, 0},
+                                       {0, 1},
+                                       {1, 0},
+                                       {1, 1},
+                                       {0, 0, 0},
+                                       {0, 0, 1},
+                                       {0, 1, 0},
+                                       {0, 1, 1},
+                                       {1, 0, 0},
+                                       {1, 0, 1},
+                                       {1, 1, 0},
+                                       {1, 1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pilo(0, 1), ad.cend_pilo())
+            == std::vector<word_type>({{0},
+                                       {0, 0},
+                                       {0, 0, 0},
+                                       {0, 0, 1},
+                                       {0, 1},
+                                       {0, 1, 0},
+                                       {0, 1, 1},
+                                       {1},
+                                       {1, 0},
+                                       {1, 0, 0},
+                                       {1, 0, 1},
+                                       {1, 1},
+                                       {1, 1, 0},
+                                       {1, 1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 1), ad.cend_pislo())
+            == std::vector<word_type>({{0},
+                                       {1},
+                                       {0, 0},
+                                       {0, 1},
+                                       {1, 0},
+                                       {1, 1},
+                                       {0, 0, 0},
+                                       {0, 0, 1},
+                                       {0, 1, 0},
+                                       {0, 1, 1},
+                                       {1, 0, 0},
+                                       {1, 0, 1},
+                                       {1, 1, 0},
+                                       {1, 1, 1}}));
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pilo(2, 1), ad.cend_pilo())
+        == std::vector<word_type>({{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}}));
+
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pislo(2, 1), ad.cend_pislo())
+        == std::vector<word_type>({{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pilo(2, 2, 3), ad.cend_pilo())
+            == std::vector<word_type>({{0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(2, 2, 3), ad.cend_pislo())
+            == std::vector<word_type>({{0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "024",
+                          "cbegin/end_pstilo - Cayley digraph",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(2);
+
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(1, 3, 0);
+    ad.add_edge(1, 4, 1);
+    ad.add_edge(2, 4, 0);
+    ad.add_edge(2, 2, 1);
+    ad.add_edge(3, 1, 0);
+    ad.add_edge(3, 5, 1);
+    ad.add_edge(4, 5, 0);
+    ad.add_edge(4, 4, 1);
+    ad.add_edge(5, 4, 0);
+    ad.add_edge(5, 5, 1);
+
+    REQUIRE(ad.validate());
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+
+    std::vector<word_type> expected = {{0, 1},
+                                       {1, 0},
+                                       {0, 1, 1},
+                                       {1, 1, 0},
+                                       {1, 0, 1},
+                                       {1, 1, 0, 1},
+                                       {1, 0, 1, 1},
+                                       {1, 1, 1, 0},
+                                       {0, 1, 1, 1},
+                                       {1, 0, 0, 0},
+                                       {0, 0, 0, 1},
+                                       {0, 0, 1, 0},
+                                       {0, 1, 0, 0}};
+
+    std::sort(
+        expected.begin(), expected.end(), LexicographicalCompare<word_type>());
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pstilo(0, 4, 0, 5), ad.cend_pstilo())
+        == expected);
+
+    size_t const N = 18;
+
+    expected.clear();
+    for (auto it = cbegin_wilo(2, N, {}, word_type(N, 1));
+         it != cend_wilo(2, N, {}, word_type(N, 1));
+         ++it) {
+      auto node = action_digraph_helper::follow_path(ad, 0, *it);
+      if (node == 4) {
+        expected.push_back(*it);
+      }
+    }
+    REQUIRE(expected.size() == 131062);
+
+    auto result = std::vector<word_type>(ad.cbegin_pstilo(0, 4, 0, N),
+                                         ad.cend_pstilo());
+    REQUIRE(result.size() == 131062);
+    REQUIRE(result == expected);
+
+    REQUIRE(ad.number_of_paths(0, 4, 0, N) == 131062);
+    REQUIRE(ad.number_of_paths(0, 4, 10, N) == 130556);
+    REQUIRE(ad.number_of_paths(4, 1, 0, N) == 0);
+    REQUIRE(ad.number_of_paths(0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths(0, 0, 10) == 1023);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "025",
+                          "cbegin_pstilo - Tsalakou",
+                          "[quick]") {
+    using action_digraph_helper::follow_path;
+    auto        rg = ReportGuard(false);
+    KnuthBendix kb;
+    kb.set_alphabet("ab");
+    kb.add_rule("aaaaa", "aa");
+    kb.add_rule("bb", "b");
+    kb.add_rule("ab", "b");
+
+    REQUIRE(kb.size() == 9);
+    auto S = static_cast<KnuthBendix::froidure_pin_type&>(*kb.froidure_pin());
+
+    ActionDigraph<size_t> ad;
+    ad.add_to_out_degree(S.nr_generators());
+    ad.add_nodes(S.size() + 1);
+
+    for (size_t j = 0; j < S.nr_generators(); ++j) {
+      ad.add_edge(S.size(), j, j);
+    }
+
+    for (size_t i = 0; i < S.size(); ++i) {
+      for (size_t j = 0; j < S.nr_generators(); ++j) {
+        ad.add_edge(i, S.right(i, j), j);
+      }
+    }
+
+    std::vector<word_type> tprime;
+
+    for (size_t i = 0; i < S.size(); ++i) {
+      tprime.push_back(*ad.cbegin_pstilo(S.size(), i, 0, 9));
+    }
+    REQUIRE(tprime.size() == 9);
+    REQUIRE(tprime
+            == std::vector<word_type>({{0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0},
+                                       {0, 0, 0, 0, 0, 0, 1, 0},
+                                       {0, 0, 0},
+                                       {0, 0, 0, 0, 0, 1, 0, 0},
+                                       {0, 0, 0, 0},
+                                       {0, 0, 0, 0, 1, 0, 0, 0},
+                                       {0, 0, 0, 1, 0, 0, 0, 0}}));
+
+    std::vector<word_type> lprime;
+    for (auto const& w : tprime) {
+      for (size_t j = 0; j < S.nr_generators(); ++j) {
+        word_type ww(w);
+        ww.push_back(j);
+        if (std::find(tprime.cbegin(), tprime.cend(), ww) == tprime.cend()) {
+          lprime.push_back(ww);
+        }
+      }
+    }
+
+    std::sort(
+        lprime.begin(), lprime.end(), LexicographicalCompare<word_type>());
+
+    REQUIRE(lprime.size() == 15);
+    REQUIRE(lprime
+            == std::vector<word_type>({{0, 0, 0, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1, 1},
+                                       {0, 0, 0, 0, 0, 0, 1, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 1, 0, 1},
+                                       {0, 0, 0, 0, 0, 1, 0, 0, 0},
+                                       {0, 0, 0, 0, 0, 1, 0, 0, 1},
+                                       {0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 1, 0, 0, 0, 0},
+                                       {0, 0, 0, 0, 1, 0, 0, 0, 1},
+                                       {0, 0, 0, 1},
+                                       {0, 0, 0, 1, 0, 0, 0, 0, 0},
+                                       {0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                       {0, 0, 1},
+                                       {0, 1}}));
+    std::vector<word_type> rhs(lprime.size(), word_type({}));
+    for (size_t i = 0; i < lprime.size(); ++i) {
+      rhs[i] = tprime[follow_path(ad, S.size(), lprime[i])];
+    }
+
+    REQUIRE(rhs
+            == std::vector<word_type>({{0, 0},
+                                       {0, 0, 0, 0, 0, 0, 1, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 1, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 1, 0, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 1, 0, 0, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 1, 0, 0},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0, 0, 1}}));
+    for (size_t i = 0; i < lprime.size(); ++i) {
+      REQUIRE(kb.equal_to(lprime[i], rhs[i]));
+    }
+
+    KnuthBendix kb2;
+    kb2.set_alphabet(2);
+    for (size_t i = 0; i < lprime.size(); ++i) {
+      kb2.add_rule(lprime[i], rhs[i]);
+    }
+    kb2.add_rule({1}, {0, 0, 0, 0, 0, 0, 0, 1});
+    REQUIRE(kb2.size() == 9);
+    REQUIRE(std::vector<relation_type>(kb2.froidure_pin()->cbegin_rules(),
+                                       kb2.froidure_pin()->cend_rules())
+            == std::vector<relation_type>(
+                {{{0, 1}, {1}}, {{1, 1}, {1}}, {{0, 0, 0, 0, 0}, {0, 0}}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "026",
+                          "cbegin/end_pstislo - Cayley digraph",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(2);
+
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(1, 3, 0);
+    ad.add_edge(1, 4, 1);
+    ad.add_edge(2, 4, 0);
+    ad.add_edge(2, 2, 1);
+    ad.add_edge(3, 1, 0);
+    ad.add_edge(3, 5, 1);
+    ad.add_edge(4, 5, 0);
+    ad.add_edge(4, 4, 1);
+    ad.add_edge(5, 4, 0);
+    ad.add_edge(5, 5, 1);
+
+    std::vector<word_type> expected = {{0, 1},
+                                       {1, 0},
+                                       {0, 1, 1},
+                                       {1, 1, 0},
+                                       {1, 0, 1},
+                                       {1, 1, 0, 1},
+                                       {1, 0, 1, 1},
+                                       {1, 1, 1, 0},
+                                       {0, 1, 1, 1},
+                                       {1, 0, 0, 0},
+                                       {0, 0, 0, 1},
+                                       {0, 0, 1, 0},
+                                       {0, 1, 0, 0}};
+
+    std::sort(expected.begin(), expected.end(), ShortLexCompare<word_type>());
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pstislo(0, 4, 0, 5), ad.cend_pstislo())
+        == expected);
+
+    size_t const N = 18;
+
+    expected.clear();
+    for (auto it = cbegin_wislo(2, {}, word_type(N, 0));
+         it != cend_wislo(2, {}, word_type(N, 0));
+         ++it) {
+      auto node = action_digraph_helper::follow_path(ad, 0, *it);
+      if (node == 4) {
+        expected.push_back(*it);
+      }
+    }
+    REQUIRE(expected.size() == 131062);
+
+    auto result = std::vector<word_type>(ad.cbegin_pstislo(0, 4, 0, N),
+                                         ad.cend_pstislo());
+    REQUIRE(result.size() == 131062);
+    REQUIRE(result == expected);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "027",
+                          "cbegin/end_pstislo - Cayley digraph",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(3);
+
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(1, 2, 0);
+    ad.add_edge(1, 0, 1);
+    ad.add_edge(1, 3, 2);
+    ad.add_edge(2, 3, 2);
+    ad.add_edge(3, 4, 0);
+    ad.add_edge(4, 5, 1);
+    ad.add_edge(5, 3, 0);
+
+    REQUIRE(std::is_sorted(ad.cbegin_pislo(0, 0, 10),
+                           ad.cend_pislo(),
+                           ShortLexCompare<word_type>()));
+    REQUIRE(std::distance(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo()) == 75);
+    REQUIRE(ad.number_of_paths(0, 0, 10) == 75);
+    REQUIRE(ad.number_of_paths(0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
+    REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo())
+            == std::vector<word_type>({{},
+                                       {0},
+                                       {1},
+                                       {0, 0},
+                                       {0, 1},
+                                       {0, 2},
+                                       {1, 2},
+                                       {0, 0, 2},
+                                       {0, 1, 0},
+                                       {0, 1, 1},
+                                       {0, 2, 0},
+                                       {1, 2, 0},
+                                       {0, 0, 2, 0},
+                                       {0, 1, 0, 0},
+                                       {0, 1, 0, 1},
+                                       {0, 1, 0, 2},
+                                       {0, 1, 1, 2},
+                                       {0, 2, 0, 1},
+                                       {1, 2, 0, 1},
+                                       {0, 0, 2, 0, 1},
+                                       {0, 1, 0, 0, 2},
+                                       {0, 1, 0, 1, 0},
+                                       {0, 1, 0, 1, 1},
+                                       {0, 1, 0, 2, 0},
+                                       {0, 1, 1, 2, 0},
+                                       {0, 2, 0, 1, 0},
+                                       {1, 2, 0, 1, 0},
+                                       {0, 0, 2, 0, 1, 0},
+                                       {0, 1, 0, 0, 2, 0},
+                                       {0, 1, 0, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 1},
+                                       {0, 1, 0, 1, 0, 2},
+                                       {0, 1, 0, 1, 1, 2},
+                                       {0, 1, 0, 2, 0, 1},
+                                       {0, 1, 1, 2, 0, 1},
+                                       {0, 2, 0, 1, 0, 0},
+                                       {1, 2, 0, 1, 0, 0},
+                                       {0, 0, 2, 0, 1, 0, 0},
+                                       {0, 1, 0, 0, 2, 0, 1},
+                                       {0, 1, 0, 1, 0, 0, 2},
+                                       {0, 1, 0, 1, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 1, 1},
+                                       {0, 1, 0, 1, 0, 2, 0},
+                                       {0, 1, 0, 1, 1, 2, 0},
+                                       {0, 1, 0, 2, 0, 1, 0},
+                                       {0, 1, 1, 2, 0, 1, 0},
+                                       {0, 2, 0, 1, 0, 0, 1},
+                                       {1, 2, 0, 1, 0, 0, 1},
+                                       {0, 0, 2, 0, 1, 0, 0, 1},
+                                       {0, 1, 0, 0, 2, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 0, 2, 0},
+                                       {0, 1, 0, 1, 0, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 1, 0, 1},
+                                       {0, 1, 0, 1, 0, 1, 0, 2},
+                                       {0, 1, 0, 1, 0, 1, 1, 2},
+                                       {0, 1, 0, 1, 0, 2, 0, 1},
+                                       {0, 1, 0, 1, 1, 2, 0, 1},
+                                       {0, 1, 0, 2, 0, 1, 0, 0},
+                                       {0, 1, 1, 2, 0, 1, 0, 0},
+                                       {0, 2, 0, 1, 0, 0, 1, 0},
+                                       {1, 2, 0, 1, 0, 0, 1, 0},
+                                       {0, 0, 2, 0, 1, 0, 0, 1, 0},
+                                       {0, 1, 0, 0, 2, 0, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 0, 2, 0, 1},
+                                       {0, 1, 0, 1, 0, 1, 0, 0, 2},
+                                       {0, 1, 0, 1, 0, 1, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 1, 0, 1, 1},
+                                       {0, 1, 0, 1, 0, 1, 0, 2, 0},
+                                       {0, 1, 0, 1, 0, 1, 1, 2, 0},
+                                       {0, 1, 0, 1, 0, 2, 0, 1, 0},
+                                       {0, 1, 0, 1, 1, 2, 0, 1, 0},
+                                       {0, 1, 0, 2, 0, 1, 0, 0, 1},
+                                       {0, 1, 1, 2, 0, 1, 0, 0, 1},
+                                       {0, 2, 0, 1, 0, 0, 1, 0, 0},
+                                       {1, 2, 0, 1, 0, 0, 1, 0, 0}}));
+
+    auto expected
+        = std::vector<word_type>(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo());
+    std::sort(
+        expected.begin(), expected.end(), LexicographicalCompare<word_type>());
+    REQUIRE(
+        expected
+        == std::vector<word_type>(ad.cbegin_pilo(0, 0, 10), ad.cend_pilo()));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "028",
+                          "path iterators corner cases",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(3);
+
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(1, 2, 0);
+    ad.add_edge(1, 0, 1);
+    ad.add_edge(1, 3, 2);
+    ad.add_edge(2, 3, 2);
+    ad.add_edge(3, 4, 0);
+    ad.add_edge(4, 5, 1);
+    ad.add_edge(5, 3, 0);
+    REQUIRE_THROWS_AS(ad.cbegin_pstilo(1, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(ad.cbegin_pstilo(6, 1), LibsemigroupsException);
+    REQUIRE(ad.cbegin_pstilo(2, 1) == ad.cend_pstilo());
+    REQUIRE(ad.cbegin_pstilo(0, 3, 10, 1) == ad.cend_pstilo());
+
+    REQUIRE_THROWS_AS(ad.cbegin_pstislo(1, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(ad.cbegin_pstislo(6, 1), LibsemigroupsException);
+    REQUIRE(ad.cbegin_pstislo(2, 1) == ad.cend_pstislo());
+    REQUIRE(ad.cbegin_pstislo(0, 3, 10, 1) == ad.cend_pstislo());
+
+    REQUIRE_THROWS_AS(ad.cbegin_panilo(6), LibsemigroupsException);
+    REQUIRE(ad.cbegin_panilo(0, 1, 1) == ad.cend_panilo());
+
+    REQUIRE_THROWS_AS(ad.cbegin_panislo(6), LibsemigroupsException);
+    REQUIRE(ad.cbegin_panislo(0, 1, 1) == ad.cend_panislo());
+
+    REQUIRE_THROWS_AS(ad.cbegin_pilo(6), LibsemigroupsException);
+    REQUIRE(ad.cbegin_pilo(0, 1, 1) == ad.cend_pilo());
+
+    REQUIRE_THROWS_AS(ad.cbegin_pislo(6), LibsemigroupsException);
+    REQUIRE(ad.cbegin_pislo(0, 1, 1) == ad.cend_pislo());
+
+    verify_forward_iterator_requirements(ad.cbegin_panilo(0));
+    verify_forward_iterator_requirements(ad.cbegin_panislo(0));
+    verify_forward_iterator_requirements(ad.cbegin_pilo(0));
+    verify_forward_iterator_requirements(ad.cbegin_pislo(0));
+    verify_forward_iterator_requirements(ad.cbegin_pstilo(0, 1));
+    verify_forward_iterator_requirements(ad.cbegin_pstislo(0, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -554,5 +1214,27 @@ namespace libsemigroups {
 
     REQUIRE(std::vector<node_type>(ad.crbegin_nodes(), ad.crend_nodes())
             == std::vector<node_type>({9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "030",
+                          "pstilo corner case",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(5);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 1);
+    ad.add_edge(0, 2, 0);
+    ad.add_edge(2, 3, 0);
+    ad.add_edge(3, 4, 0);
+    ad.add_edge(4, 2, 0);
+    // Tests the case then there is only a single path, but if we would have
+    // used panilo (i.e. not use the reachability check that is in pstilo),
+    // then we'd enter an infinite loop.
+
+    auto it = ad.cbegin_pstilo(0, 1);
+    REQUIRE(*it == word_type({1}));
+    ++it;
+    REQUIRE(it == ad.cend_pstilo());
   }
 }  // namespace libsemigroups

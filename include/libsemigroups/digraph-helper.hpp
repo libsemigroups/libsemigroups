@@ -18,20 +18,18 @@
 #ifndef LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 #define LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 
-#include <stack>        // for stack
-#include <type_traits>  // for decay
-#include <utility>      // for pair
-#include <vector>       // for vector
+#include <cstddef>  // for size_t
+#include <stack>    // for stack
+#include <utility>  // for pair
+#include <vector>   // for vector
 
-// TODO iwyu
-
-#include "constants.hpp"
-#include "libsemigroups-exception.hpp"
-#include "types.hpp"
+#include "constants.hpp"                // for UNDEFINED
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"                    // for word_type
 
 namespace libsemigroups {
   template <typename T>
-  class ActionDigraph;
+  class ActionDigraph;  // forward decl
 
   namespace action_digraph_helper {
     //! Undoc
@@ -42,17 +40,16 @@ namespace libsemigroups {
     template <typename T>
     using label_type = typename ActionDigraph<T>::label_type;
 
-    namespace detail {
-      template <typename T>
-      void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
-        if (v >= ad.nr_nodes()) {
-          LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
-                                  "the range [0, %d), got %d",
-                                  ad.nr_nodes(),
-                                  v);
-        }
+    //! No doc
+    template <typename T>
+    void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
+      if (v >= ad.nr_nodes()) {
+        LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
+                                "the range [0, %d), got %d",
+                                ad.nr_nodes(),
+                                v);
       }
-    }  // namespace detail
+    }
 
     //! Find the node that a path starting at a given node leads to.
     //!
@@ -203,7 +200,7 @@ namespace libsemigroups {
     //! \endcode
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
-      detail::validate_node(ad, source);
+      validate_node(ad, source);
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       stck.emplace(source, 0);
       std::vector<uint8_t> seen(ad.nr_nodes(), 0);
@@ -291,8 +288,8 @@ namespace libsemigroups {
     bool is_reachable(ActionDigraph<T> const& ad,
                       node_type<T> const      source,
                       node_type<T> const      target) {
-      detail::validate_node(ad, source);
-      detail::validate_node(ad, target);
+      validate_node(ad, source);
+      validate_node(ad, target);
       if (source == target) {
         return true;
       }

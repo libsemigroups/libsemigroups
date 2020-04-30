@@ -89,12 +89,18 @@ namespace libsemigroups {
     //! is the same as \p copy, except that the function passed as an argument
     //! to run_until (if any) is not copied.
     //!
-    //! \param copy the Runner to copy.
+    //! \param other the Runner to copy.
     Runner(Runner const& other) : Runner() {
       _state = other._state.load();
     }
 
+    //! Move constructor
     //!
+    //! Returns a runner that is initialised from \p other. The state of the
+    //! new runner is the same as \p copy, except that the function passed as
+    //! an argument to run_until (if any) is not copied.
+    //!
+    //! \param other the Runner to move from.
     Runner(Runner&& other) : Runner() {
       _state = other._state.load();
     }

@@ -23,6 +23,9 @@ libsemigroups::ActionDigraph:
   - reserve
 - Nodes, edges, neighbors:
   - neighbor
+  - unsafe_neighbor
+  - next_neighbor
+  - unsafe_next_neighbor
   - nr_nodes
   - nr_edges
   - out_degree
@@ -46,3 +49,18 @@ libsemigroups::ActionDigraph:
 - Spanning forests:
   - spanning_forest
   - reverse_spanning_forest
+- Paths:
+  - cbegin_panilo
+  - cend_panilo
+  - cbegin_panislo
+  - cend_panislo
+  - cbegin_pilo
+  - cend_pilo
+  - cbegin_pislo
+  - cend_pislo
+  - cbegin_pstilo
+  - cend_pstilo
+  - cbegin_pstislo
+  - cend_pstislo
+  - number_of_paths(node_type const, node_type const, size_t const, size_t const) const
+  - number_of_paths(node_type const, size_t const, size_t const) const

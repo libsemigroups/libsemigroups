@@ -256,12 +256,12 @@ namespace libsemigroups {
     template <typename TSubclass, typename TIteratorTraits>
     class IteratorStatefulBase
         : public IteratorBase<TSubclass, TIteratorTraits> {
-      using state_type = typename TIteratorTraits::state_type;
       using internal_iterator_type =
           typename TIteratorTraits::internal_iterator_type;
       using IteratorBaseAlias = IteratorBase<TSubclass, TIteratorTraits>;
 
      public:
+      using state_type        = typename TIteratorTraits::state_type;
       using size_type         = typename TIteratorTraits::size_type;
       using difference_type   = typename TIteratorTraits::difference_type;
       using const_pointer     = typename TIteratorTraits::const_pointer;
@@ -526,6 +526,23 @@ namespace libsemigroups {
           -> ReturnTypeIfExists<TOperator, difference_type> {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
       }
+
+      template <typename TSfinae   = TIteratorTraits,
+                typename TOperator = typename TSfinae::Swap>
+      auto swap(IteratorStatelessBase& that) noexcept
+          -> ReturnTypeIfExists<TOperator, void> {
+        return TOperator()(this->get_wrapped_iter(),
+                           that.get_wrapped_iter(),
+                           this->get_state(),
+                           that.get_state());
+      }
+
+      template <typename TSfinae   = TIteratorTraits,
+                typename TOperator = typename TSfinae::Swap>
+      auto swap(IteratorStatelessBase& that) noexcept
+          -> ReturnTypeIfNotExists<TOperator, void> {
+        return std::swap(*this, that);
+      }
     };
 
     template <typename TIteratorTraits>
@@ -533,7 +550,6 @@ namespace libsemigroups {
         : public ConstIterator,
           public IteratorStatefulBase<ConstIteratorStateful<TIteratorTraits>,
                                       TIteratorTraits> {
-      using state_type = typename TIteratorTraits::state_type;
       using internal_iterator_type =
           typename TIteratorTraits::internal_iterator_type;
       using IteratorBaseAlias
@@ -544,6 +560,7 @@ namespace libsemigroups {
                                  TIteratorTraits>;
 
      public:
+      using state_type        = typename TIteratorTraits::state_type;
       using size_type         = typename TIteratorTraits::size_type;
       using difference_type   = typename TIteratorTraits::difference_type;
       using const_pointer     = typename TIteratorTraits::const_pointer;
@@ -700,7 +717,6 @@ namespace libsemigroups {
     class IteratorStateful final
         : public IteratorStatefulBase<IteratorStateful<TIteratorTraits>,
                                       TIteratorTraits> {
-      using state_type = typename TIteratorTraits::state_type;
       using internal_iterator_type =
           typename TIteratorTraits::internal_iterator_type;
       using IteratorBaseAlias
@@ -710,6 +726,7 @@ namespace libsemigroups {
                                  TIteratorTraits>;
 
      public:
+      using state_type        = typename TIteratorTraits::state_type;
       using size_type         = typename TIteratorTraits::size_type;
       using difference_type   = typename TIteratorTraits::difference_type;
       using const_pointer     = typename TIteratorTraits::const_pointer;
@@ -916,24 +933,29 @@ namespace libsemigroups {
       return it - val;
     }
   }  // namespace detail
+
+  //! No doc
   template <typename T>
   inline void swap(detail::ConstIteratorStateless<T>& x,
                    detail::ConstIteratorStateless<T>& y) noexcept {
     x.swap(y);
   }
 
+  //! No doc
   template <typename T>
   inline void swap(detail::IteratorStateless<T>& x,
                    detail::IteratorStateless<T>& y) noexcept {
     x.swap(y);
   }
 
+  //! No doc
   template <typename T>
   inline void swap(detail::ConstIteratorStateful<T>& x,
                    detail::ConstIteratorStateful<T>& y) noexcept {
     x.swap(y);
   }
 
+  //! No doc
   template <typename T>
   inline void swap(detail::IteratorStateful<T>& x,
                    detail::IteratorStateful<T>& y) noexcept {
