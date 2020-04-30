@@ -4,8 +4,8 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-action_digraph_helper
-=====================
+Helper functions for ActionDigraph
+==================================
 
 Overview
 --------
@@ -24,7 +24,7 @@ Full API
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&, node_type<T>)
+.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&, node_type<T> const)
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_reachable

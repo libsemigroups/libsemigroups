@@ -59,6 +59,8 @@ namespace libsemigroups {
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
 
+    //! The type of any state that it might be required to store inside the
+    //! FroidurePin instance
     using state_type = TStateType;
 
     //! \copydoc libsemigroups::Complexity
@@ -561,7 +563,10 @@ namespace libsemigroups {
     //! the size of the semigroup, then a LibsemigroupsException is thrown.
     word_type minimal_factorisation(const_reference);
 
+    //! \copydoc FroidurePinBase::factorisation
     using FroidurePinBase::factorisation;
+
+    //! \copydoc FroidurePinBase::minimal_factorisation
     using FroidurePinBase::minimal_factorisation;
 
     //! Returns a libsemigroups::word_type which evaluates to \p x.
@@ -573,7 +578,8 @@ namespace libsemigroups {
     //! LibsemigroupsException is thrown.
     word_type factorisation(const_reference);
 
-    // TODO doc
+    //! Returns tril::TRUE if the semigroup represented by \c this is finite,
+    //! tril::FALSE if it is infinite, and tril::unknown if it is not known.
     tril is_finite() const override {
       return tril::TRUE;
     }
@@ -615,6 +621,10 @@ namespace libsemigroups {
     //! See FroidurePin::add_generator for more details.
     void add_generators(std::initializer_list<const_element_type> coll);
 
+    //! Add copies of the generators in the range \p first to \p last to \c
+    //! this.
+    //!
+    //! See FroidurePin::add_generator for more details.
     template <typename T>
     void add_generators(T const& first, T const& last);
 

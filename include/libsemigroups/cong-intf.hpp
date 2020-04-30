@@ -631,6 +631,7 @@ namespace libsemigroups {
 
     //! No doc
     void set_parent_froidure_pin(std::shared_ptr<FroidurePinBase>);
+    //! No doc
     void set_parent_froidure_pin(std::shared_ptr<FpSemigroupInterface>);
 
     //! No doc
@@ -642,6 +643,7 @@ namespace libsemigroups {
           std::make_shared<T>(prnt)));
     }
 
+    //! No doc
     template <typename T, typename SFINAE = void>
     auto set_parent_froidure_pin(T& prnt) ->
         typename std::enable_if<std::is_base_of<FpSemigroupInterface, T>::value,

@@ -161,6 +161,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // CongruenceByPairsHelper - typedefs - protected
     ////////////////////////////////////////////////////////////////////////
+    //! No doc
     using internal_element_type =
         typename detail::BruidhinnTraits<element_type>::internal_value_type;
 
@@ -171,6 +172,7 @@ namespace libsemigroups {
     // CongruenceByPairsHelper object without it being defined over a parent
     // semigroup.
 
+    //! No doc
     explicit CongruenceByPairsHelper(congruence_type);
 
    private:
@@ -229,7 +231,7 @@ namespace libsemigroups {
     //! (which is the same as the template parameter \p element_type).
     //!
     //! \param type whether the congruence is left, right, or 2-sided
-    //! \param fp  a reference to the semigroup over which the congruence is
+    //! \param S  a reference to the semigroup over which the congruence is
     //! defined.
     //!
     //! \throws LibsemigroupsException if \p type and the template parameter
@@ -286,12 +288,14 @@ namespace libsemigroups {
     // CongruenceByPairsHelper - member functions - protected
     ////////////////////////////////////////////////////////////////////////
 
+    //! No doc
     template <typename SFINAE = state_type>
     auto state() ->
         typename std::enable_if<IsState<SFINAE>::value, SFINAE&>::type {
       return *_state;
     }
 
+    //! No doc
     void internal_add_pair(internal_element_type, internal_element_type);
 
     ////////////////////////////////////////////////////////////////////////
@@ -309,7 +313,10 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - protected
     ////////////////////////////////////////////////////////////////////////
 
+    //! No doc
     void run_impl() override;
+
+    //! No doc
     bool finished_impl() const override;
 
    private:

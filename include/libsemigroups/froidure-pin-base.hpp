@@ -57,12 +57,14 @@ namespace libsemigroups {
     //! \c std::numeric_limits<element_index_type>::max()
     using element_index_type = size_type;
 
-    // See comments in FroidurePin
-    using enumerate_index_type = size_type;
-
     //! Type for a left or right Cayley graph of a FroidurePin instance.
     using cayley_graph_type = detail::DynamicArray2<element_index_type>;
 
+   private:
+    // See comments in FroidurePin
+    using enumerate_index_type = size_type;
+
+   public:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - constructors - public
     ////////////////////////////////////////////////////////////////////////
@@ -579,6 +581,11 @@ namespace libsemigroups {
       return word;
     }
 
+    //! Changes \p word in-place to contain a short-lex minimal word in the
+    //! generators equal to the \p pos element of the semigroup.
+    //!
+    //! If \p pos is greater than the size of the semigroup, then a
+    //! LibsemigroupsException is thrown.
     void minimal_factorisation(word_type& word, element_index_type pos) const {
       private_minimal_factorisation(word, pos);
     }
@@ -616,6 +623,7 @@ namespace libsemigroups {
     //
     // \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
     // instead.
+    //! No doc
     LIBSEMIGROUPS_DEPRECATED void reset_next_relation() noexcept {
       _relation_pos = UNDEFINED;
       _relation_gen = 0;
@@ -655,6 +663,7 @@ namespace libsemigroups {
     // \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
     // instead.
     // Deprecated, remove in v2
+    //! No doc
     LIBSEMIGROUPS_DEPRECATED void next_relation(word_type& relation);
 
     //! Enumerate the semigroup until \p limit elements are found.
@@ -676,30 +685,42 @@ namespace libsemigroups {
     //! The parameter \p limit defaults to FroidurePin::LIMIT_MAX.
     void enumerate(size_t limit);
 
-    friend class const_rule_iterator;
-
     //! No doc
     class const_rule_iterator {
      public:
+      //! No doc
       using size_type = typename std::vector<relation_type>::size_type;
+      //! No doc
       using difference_type =
           typename std::vector<relation_type>::difference_type;
+      //! No doc
       using const_pointer = typename std::vector<relation_type>::const_pointer;
-      using pointer       = typename std::vector<relation_type>::pointer;
+      //! No doc
+      using pointer = typename std::vector<relation_type>::pointer;
+      //! No doc
       using const_reference =
           typename std::vector<relation_type>::const_reference;
-      using reference         = typename std::vector<relation_type>::reference;
-      using value_type        = relation_type;
+      //! No doc
+      using reference = typename std::vector<relation_type>::reference;
+      //! No doc
+      using value_type = relation_type;
+      //! No doc
       using iterator_category = std::forward_iterator_tag;
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
-      const_rule_iterator()                           = default;
+      //! No doc
+      const_rule_iterator() = default;
+      //! No doc
       const_rule_iterator(const_rule_iterator const&) = default;
-      const_rule_iterator(const_rule_iterator&&)      = default;
+      //! No doc
+      const_rule_iterator(const_rule_iterator&&) = default;
+      //! No doc
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
+      //! No doc
       const_rule_iterator& operator=(const_rule_iterator&&) = default;
 
+      //! No doc
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,
                           letter_type            gen)
@@ -711,26 +732,32 @@ namespace libsemigroups {
         ++(*this);
       }
 
+      //! No doc
       ~const_rule_iterator() = default;
 
+      //! No doc
       bool operator==(const_rule_iterator const& that) const noexcept {
         return _gen == that._gen && _pos == that._pos;
       }
 
+      //! No doc
       bool operator!=(const_rule_iterator const& that) const noexcept {
         return !(this->operator==(that));
       }
 
+      //! No doc
       const_reference operator*() const noexcept {
         populate_relation();
         return _relation;
       }
 
+      //! No doc
       const_pointer operator->() const noexcept {
         populate_relation();
         return &_relation;
       }
 
+      //! No doc
       // prefix
       const_rule_iterator const& operator++() noexcept {
         auto const* ptr = _froidure_pin;
@@ -779,6 +806,7 @@ namespace libsemigroups {
         }
       }
 
+      //! No doc
       // postfix
       const_rule_iterator operator++(int) noexcept {
         const_rule_iterator copy(*this);
@@ -786,6 +814,7 @@ namespace libsemigroups {
         return copy;
       }
 
+      //! No doc
       void swap(const_rule_iterator& that) noexcept {
         _current.swap(that._current);
         std::swap(_froidure_pin, that._froidure_pin);
@@ -1048,10 +1077,12 @@ namespace libsemigroups {
     enumerate_index_type _relation_pos;
   };
 
+  //! No doc
   LIBSEMIGROUPS_DEPRECATED void
   relations(FroidurePinBase&                            S,
             std::function<void(word_type, word_type)>&& hook);
 
+  //! No doc
   LIBSEMIGROUPS_DEPRECATED void
   relations(FroidurePinBase& S, std::function<void(word_type)>&& hook);
 }  // namespace libsemigroups
