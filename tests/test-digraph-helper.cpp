@@ -191,6 +191,68 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_acyclic(ad, 3));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("is_reachable",
+                          "007",
+                          "acyclic 20 node digraph",
+                          "[quick]") {
+    ActionDigraph<size_t> ad;
+    size_t const          n = 20;
+    ad.add_nodes(n);
+    ad.add_to_out_degree(2);
+    for (size_t i = 0; i < (n / 2 - 1); ++i) {
+      ad.add_edge(i, i + 1, 0);
+    }
+    ad.add_edge(n / 2 - 1, n - 1, 1);
+    ad.add_edge(n / 2 + 1, (3 * n) / 4 - 1, 1);
+    ad.add_edge(n / 2, 0, 1);
+    for (size_t i = n / 2; i < n - 1; ++i) {
+      ad.add_edge(i, i + 1, 0);
+    }
+    REQUIRE(!action_digraph_helper::is_reachable(ad, 1, 10));
+    REQUIRE(action_digraph_helper::is_reachable(ad, 10, 1));
+    REQUIRE_THROWS_AS(action_digraph_helper::is_reachable(ad, 20, 1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(action_digraph_helper::is_reachable(ad, 1, 20),
+                      LibsemigroupsException);
+    REQUIRE(action_digraph_helper::is_reachable(ad, 1, 1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "008", "100 node path", "[quick]") {
+    ActionDigraph<size_t> ad;
+    size_t const          n = 100;
+    ad.add_nodes(n);
+    ad.add_to_out_degree(2);
+    for (size_t i = 0; i < n - 1; ++i) {
+      ad.add_edge(i, i + 1, i % 2);
+    }
+    for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
+      for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
+        REQUIRE(action_digraph_helper::is_reachable(ad, *it1, *it2));
+        REQUIRE(!action_digraph_helper::is_reachable(ad, *it2, *it1));
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "009", "100 node cycle", "[quick]") {
+    ActionDigraph<size_t> ad = cycle(100);
+    for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
+      for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
+        REQUIRE(action_digraph_helper::is_reachable(ad, *it1, *it2));
+        REQUIRE(action_digraph_helper::is_reachable(ad, *it2, *it1));
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "010", "20 node clique", "[quick]") {
+    ActionDigraph<size_t> ad = clique(20);
+    for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
+      for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
+        REQUIRE(action_digraph_helper::is_reachable(ad, *it1, *it2));
+        REQUIRE(action_digraph_helper::is_reachable(ad, *it2, *it1));
+      }
+    }
+  }
+
   LIBSEMIGROUPS_TEST_CASE("follow_path", "011", "20 node clique", "[quick]") {
     ActionDigraph<size_t> ad = path(20);
     for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
