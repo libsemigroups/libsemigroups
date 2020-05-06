@@ -4,7 +4,7 @@ libsemigroups::ActionDigraph:
   - [typedef, label_type]
   - [typedef, scc_index_type]
   - [typedef, const_iterator_nodes]
-  - [typedef, const_reverse_nodes_iterator]
+  - [typedef, const_reverse_iterator_nodes]
   - [typedef, const_iterator_edges]
   - [typedef, const_iterator_scc]
   - [typedef, const_iterator_sccs]

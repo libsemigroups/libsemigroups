@@ -181,7 +181,7 @@ namespace libsemigroups {
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "012", "for a node", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_acyclic", "007", "for a node", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(4);
     ad.add_to_out_degree(1);
@@ -196,7 +196,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable",
-                          "007",
+                          "008",
                           "acyclic 20 node digraph",
                           "[quick]") {
     ActionDigraph<size_t> ad;
@@ -221,7 +221,7 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_reachable(ad, 1, 1));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("is_reachable", "008", "100 node path", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "009", "100 node path", "[quick]") {
     ActionDigraph<size_t> ad;
     size_t const          n = 100;
     ad.add_nodes(n);
@@ -237,7 +237,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("is_reachable", "009", "100 node cycle", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "010", "100 node cycle", "[quick]") {
     ActionDigraph<size_t> ad = cycle(100);
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
@@ -247,7 +247,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("is_reachable", "010", "20 node clique", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("is_reachable", "011", "20 node clique", "[quick]") {
     ActionDigraph<size_t> ad = clique(20);
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
@@ -257,10 +257,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("follow_path", "011", "20 node clique", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("follow_path", "012", "20 node clique", "[quick]") {
     ActionDigraph<size_t> ad = path(20);
     for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
-      REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first) == it->second);
+      REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first)
+              == it->second);
     }
   }
 }  // namespace libsemigroups
