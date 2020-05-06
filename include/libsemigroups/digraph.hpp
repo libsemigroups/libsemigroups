@@ -120,7 +120,7 @@ namespace libsemigroups {
 
     //! Alias for the type of a reverse iterator pointing to the nodes of a
     //! digraph.
-    using const_reverse_nodes_iterator =
+    using const_reverse_iterator_nodes =
         typename IntegralRange<T>::const_reverse_iterator;
 
     //! Alias for the type of an iterator pointing to the out-edges of a node in
@@ -283,7 +283,7 @@ namespace libsemigroups {
     void inline add_edge(node_type i, node_type j, label_type lbl) {
       action_digraph_helper::validate_node(*this, i);
       action_digraph_helper::validate_node(*this, j);
-      validate_label(lbl);
+      action_digraph_helper::validate_label(*this, lbl);
       _dynamic_array_2.set(i, lbl, j);
       reset();
     }
@@ -335,7 +335,7 @@ namespace libsemigroups {
     // Not noexcept because validate_node/label aren't
     node_type inline neighbor(node_type v, label_type lbl) const {
       action_digraph_helper::validate_node(*this, v);
-      validate_label(lbl);
+      action_digraph_helper::validate_label(*this, lbl);
       return _dynamic_array_2.get(v, lbl);
     }
 
@@ -523,11 +523,11 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).cbegin();
     }
 
-    //! Returns a ActionDigraph::const_reverse_nodes_iterator (random access
+    //! Returns a ActionDigraph::const_reverse_iterator_nodes (random access
     //! iterator) pointing at the last node of the digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_reverse_nodes_iterator.
+    //! An ActionDigraph::const_reverse_iterator_nodes.
     //!
     //! \exceptions
     //! \noexcept
@@ -537,7 +537,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    const_reverse_nodes_iterator crbegin_nodes() const noexcept {
+    const_reverse_iterator_nodes crbegin_nodes() const noexcept {
       return IntegralRange<T>(0, nr_nodes()).crbegin();
     }
 
@@ -555,7 +555,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    const_reverse_nodes_iterator crend_nodes() const noexcept {
+    const_reverse_iterator_nodes crend_nodes() const noexcept {
       return IntegralRange<T>(0, nr_nodes()).crend();
     }
 
@@ -1344,8 +1344,8 @@ namespace libsemigroups {
     // TODO example and what is the complexity?
     // not noexcept because const_panislo_iterator constructors aren't
     const_panislo_iterator cbegin_panislo(node_type const source,
-                                          size_t    const min = 0,
-                                          size_t    const max
+                                          size_t const    min = 0,
+                                          size_t const    max
                                           = POSITIVE_INFINITY) const {
       action_digraph_helper::validate_node(*this, source);
       return const_panislo_iterator(this, source, min, max);
@@ -1919,8 +1919,8 @@ namespace libsemigroups {
     // not noexcept because cbegin_panislo isn't
     const_pstislo_iterator cbegin_pstislo(node_type const source,
                                           node_type const target,
-                                          size_t    const min = 0,
-                                          size_t    const max
+                                          size_t const    min = 0,
+                                          size_t const    max
                                           = POSITIVE_INFINITY) const {
       using state_type = typename const_pstislo_iterator::state_type;
       // source & target are validated in is_reachable.
@@ -1969,8 +1969,8 @@ namespace libsemigroups {
     // not noexcept because cbegin_pstilo isn't
     size_t number_of_paths(node_type const source,
                            node_type const target,
-                           size_t    const min,
-                           size_t    const max) const {
+                           size_t const    min,
+                           size_t const    max) const {
       // TODO use adjacency matrix if nr_nodes is small enough
       action_digraph_helper::validate_node(*this, source);
       action_digraph_helper::validate_node(*this, target);
@@ -2004,7 +2004,7 @@ namespace libsemigroups {
                     ? POSITIVE_INFINITY
                     : number_of_words(out_degree(), min, max));
       } else if (!action_digraph_helper::is_acyclic(*this, source)
-          && max == POSITIVE_INFINITY) {
+                 && max == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
       return std::distance(cbegin_panilo(source, min, max), cend_panilo());
@@ -2014,15 +2014,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - validation - private
     ////////////////////////////////////////////////////////////////////////
-
-    void validate_label(label_type lbl) const {
-      if (lbl >= out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
-                                "the range [0, %d), got %d",
-                                out_degree(),
-                                lbl);
-      }
-    }
 
     void validate_scc_index(scc_index_type i) const {
       if (i >= nr_scc()) {

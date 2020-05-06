@@ -73,16 +73,16 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  auto verify_deref(T const& it) ->
-      typename std::enable_if<std::is_same<typename T::value_type, word_type>::value,
-                              void>::type {
+  auto verify_deref(T const& it) -> typename std::enable_if<
+      std::is_same<typename T::value_type, word_type>::value,
+      void>::type {
     REQUIRE_NOTHROW(it->size());
   }
 
   template <typename T>
-  auto verify_deref(T const& it) ->
-      typename std::enable_if<!std::is_same<typename T::value_type, word_type>::value,
-                              void>::type {
+  auto verify_deref(T const& it) -> typename std::enable_if<
+      !std::is_same<typename T::value_type, word_type>::value,
+      void>::type {
     REQUIRE_NOTHROW(it->first);
   }
 

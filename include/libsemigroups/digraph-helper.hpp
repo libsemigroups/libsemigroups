@@ -41,6 +41,7 @@ namespace libsemigroups {
     using label_type = typename ActionDigraph<T>::label_type;
 
     //! No doc
+    // not noexcept because it throws an exception!
     template <typename T>
     void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
       if (v >= ad.nr_nodes()) {
@@ -51,28 +52,42 @@ namespace libsemigroups {
       }
     }
 
+    //! No doc
+    // not noexcept because it throws an exception!
+    template <typename T>
+    void validate_label(ActionDigraph<T> const& ad, label_type<T> const lbl) {
+      if (lbl >= ad.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
+                                "the range [0, %d), got %d",
+                                ad.out_degree(),
+                                lbl);
+      }
+    }
+
     //! Find the node that a path starting at a given node leads to.
     //!
     //! \tparam T the type used as the template parameter for the ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
-    //! \param first the ActionDigraph object to check.
-    //! \param path the ActionDigraph object to check.
+    //! \param first the starting node.
+    //! \param path the path to follow.
     //!
     //! \returns
     //! A value of type ActionDigraph::node_type. If one or more edges in
     //! \p path are not defined, then libsemigroups::UNDEFINED is returned.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throw LibsemigroupsException if \p first is not a node in the digraph
+    //! or \p path contains a value that is not an edge-label.
     //!
     //! \par Complexity
     //! Linear in the length of \p path.
     // TODO example
+    // not noexcept because ActionDigraph::neighbor isn't
     template <typename T>
     node_type<T> follow_path(ActionDigraph<T> const& ad,
                              node_type<T> const      first,
                              word_type const&        path) {
+      // first is validated in neighbor
       node_type<T> last = first;
       for (auto it = path.cbegin(); it < path.cend() && last != UNDEFINED;
            ++it) {
@@ -87,6 +102,7 @@ namespace libsemigroups {
       using lookup_type = std::vector<uint8_t>;
 
       // Helper function for the two versions of is_acyclic below.
+      // Not noexcept because std::stack::emplace isn't
       template <typename T>
       bool is_acyclic(ActionDigraph<T> const& ad,
                       stack_type<T>&          stck,
@@ -145,6 +161,7 @@ namespace libsemigroups {
     //! ad.add_edge(1, 0, 0);
     //! action_digraph_helper::is_acyclic(ad); // returns false
     //! \endcode
+    // Not noexcept because detail::is_acyclic isn't
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad) {
       node_type<T> const                                 N = ad.nr_nodes();
@@ -198,53 +215,15 @@ namespace libsemigroups {
     //! action_digraph_helper::is_acyclic(ad, 2); // returns true
     //! action_digraph_helper::is_acyclic(ad, 3); // returns true
     //! \endcode
+    // Not noexcept because detail::is_acyclic isn't
     template <typename T>
-    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
+    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> const source) {
       validate_node(ad, source);
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       stck.emplace(source, 0);
       std::vector<uint8_t> seen(ad.nr_nodes(), 0);
       return detail::is_acyclic(ad, stck, seen);
     }
-
-    namespace detail {
-      template <typename T>
-      bool is_reachable(ActionDigraph<T> const&    ad,
-                        node_type<T> const         source,
-                        node_type<T> const         target,
-                        std::stack<node_type<T>>&  nodes,
-                        std::stack<label_type<T>>& edges,
-                        std::vector<bool>&         seen,
-                        label_type<T>              edge) {
-        nodes.push(source);
-        seen[source] = true;
-        do {
-          node_type<T> node;
-          std::tie(node, edge) = ad.unsafe_next_neighbor(nodes.top(), edge);
-          if (node == target) {
-            return true;
-          } else if (node != UNDEFINED) {
-            if (!seen[node]) {
-              // dive, dive, dive!!
-              seen[node] = true;
-              nodes.push(node);
-              edges.push(edge);
-              edge = 0;
-            } else {
-              ++edge;
-            }
-          } else {
-            // backtrack
-            nodes.pop();
-            if (!edges.empty()) {
-              edge = edges.top();
-              edges.pop();
-            }
-          }
-        } while (!nodes.empty());
-        return false;
-      }
-    }  // namespace detail
 
     //! Check if there is a path from one node to another.
     //!
@@ -293,10 +272,38 @@ namespace libsemigroups {
       if (source == target) {
         return true;
       }
+      label_type<T>             edge = 0;
       std::stack<node_type<T>>  nodes;
       std::stack<label_type<T>> edges;
       std::vector<bool>         seen(ad.nr_nodes(), false);
-      return detail::is_reachable(ad, source, target, nodes, edges, seen, 0);
+      nodes.push(source);
+      seen[source] = true;
+
+      do {
+        node_type<T> node;
+        std::tie(node, edge) = ad.unsafe_next_neighbor(nodes.top(), edge);
+        if (node == target) {
+          return true;
+        } else if (node != UNDEFINED) {
+          if (!seen[node]) {
+            // dive, dive, dive!!
+            seen[node] = true;
+            nodes.push(node);
+            edges.push(edge);
+            edge = 0;
+          } else {
+            ++edge;
+          }
+        } else {
+          // backtrack
+          nodes.pop();
+          if (!edges.empty()) {
+            edge = edges.top();
+            edges.pop();
+          }
+        }
+      } while (!nodes.empty());
+      return false;
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
