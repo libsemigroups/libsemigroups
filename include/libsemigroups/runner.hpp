@@ -29,6 +29,7 @@
 
 #include "function-ref.hpp"             // for FunctionRef
 #include "libsemigroups-exception.hpp"  // for LibsemigroupsException
+#include "report.hpp"                   // for REPORT_DEFAULT
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
@@ -205,6 +206,7 @@ namespace libsemigroups {
     // At the end of this either finished, dead, or stopped_by_predicate.
     template <typename T>
     void run_until(T&& func) {
+      REPORT_DEFAULT("running until predicate returns true or finished. . .\n");
       if (!finished() && !dead()) {
         before_run();
         _stopper = std::forward<T>(func);
