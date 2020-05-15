@@ -44,11 +44,11 @@ namespace libsemigroups {
     _race.add_runner(std::make_shared<KnuthBendix>());
   }
 
-  FpSemigroup::FpSemigroup(std::shared_ptr<FroidurePinBase> S)
-      : FpSemigroupInterface(), _race() {
+  FpSemigroup::FpSemigroup(std::shared_ptr<FroidurePinBase> S) : FpSemigroup() {
     set_alphabet(S->nr_generators());
-    _race.add_runner(std::make_shared<ToddCoxeter>(S));
-    _race.add_runner(std::make_shared<KnuthBendix>(S));
+    for (auto it = S->cbegin_rules(); it != S->cend_rules(); ++it) {
+      add_rule(*it);
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////
