@@ -144,9 +144,7 @@ namespace libsemigroups {
         while (!func() && _winner == nullptr) {
           // if _winner != nullptr, then the race is over.
           run_for(check_interval);
-          if (check_interval < std::chrono::milliseconds(1024)) {
-            check_interval *= 2;
-          }
+          check_interval *= 2;
         }
       }
 
