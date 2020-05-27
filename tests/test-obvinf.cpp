@@ -27,80 +27,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
                           "001",
-                          "Fails to have free occurence of generator 'a', otherwise has full rank matrix.",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(2);
-  std::vector<std::string> v = {"ab", "a", "aba", "ba"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "002",
-                          "description",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(2);
-  std::vector<std::string> v = {"aba", "aa", "bb", "b", "abab", "abbba"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "003",
-                          "description",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(3);
-  std::vector<std::string> v = {"aba", "bc", "ca", "b"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "004",
-                          "Matrix has non empty kernel",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(2);
-  std::vector<std::string> v = {"aa", "bba", "bbaa", "bbbbbb"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "005",
-                          "Free product of trivial semigroups",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(2);
-  std::vector<std::string> v = {"a", "aa", "b", "bb"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "006",
-                          "Another free product",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(5);
-  std::vector<std::string> v = {"a", "aa", "b", "bb", "abe", "eee", 
-                                "dc", "c", "cc", "ddd"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(ioi.result());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "007",
-                          "Infinite but not obviously so",
-                          "[quick]") {
-  detail::IsObviouslyInfinite<char, std::string> ioi(2);
-  std::vector<std::string> v = {"a", "abb", "b", "baa"};
-  ioi.add_rules(v.cbegin(), v.cend());
-  REQUIRE(!ioi.result());
-  // Currently the test does not pass, but the semigroup
-  // is infinite! Contains (ab)^n for all n.
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "008",
-                          "Test multiple rule additions",
+                          "Multiple rule additions",
                           "[quick]") {
   detail::IsObviouslyInfinite<char, std::string> ioi(3);
   std::vector<std::string> v = {"aababbaccabbc", "a", "aaabbbbaaabbbbacbbb", "bb"};
@@ -122,12 +49,99 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "009",
-                          "Preserves length",
+                          "002",
+                          "A power of the generator 'b' does not occur on its own in any relation",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"ab", "a", "aba", "ba"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "003",
+                          "Preserves the number of occurences of the generator 'a'",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"aba", "aa", "bb", "b", "abab", "abbba"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "004",
+                          "Less relations than generators",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(3);
+  std::vector<std::string> v = {"aba", "bc", "ca", "b"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "005",
+                          "Relations preserve length",
                           "[quick]") {
   detail::IsObviouslyInfinite<char, std::string> ioi(3);
   std::vector<std::string> v = {"aaa", "bbc", "cccc", "bcba", "bb", "cb", "cba", "bbc"};
   ioi.add_rules(v.cbegin(), v.cend());
   REQUIRE(ioi.result());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "006",
+                          "Matrix has non empty kernel",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"aa", "bba", "bbaa", "bbbbbb"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "007",
+                          "Free product of trivial semigroups",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"a", "aa", "b", "bb"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "008",
+                          "Another free product",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(5);
+  std::vector<std::string> v = {"a", "aa", "b", "bb", "abe", "eee", 
+                                "dc", "c", "cc", "ddd"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(ioi.result());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "009",
+                          "Infinite but not obviously so",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(2);
+  std::vector<std::string> v = {"a", "abb", "b", "baa"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(!ioi.result());
+  // Currently the test does not pass, but the semigroup
+  // is infinite! Contains (ab)^n for all n.
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "010",
+                          "Finite semigroup",
+                          "[quick]") {
+  detail::IsObviouslyInfinite<char, std::string> ioi(3);
+  std::vector<std::string> v = {"a", "aa", "b", "bb", "", "cc", 
+                                "ac", "bc", "abab", "ab"};
+  ioi.add_rules(v.cbegin(), v.cend());
+  REQUIRE(!ioi.result());
+  // This is a presentation for a finite semigroup so 
+  // we should never detect it as obviously infinite
+  }
+
 }  // namespace libsemigroups
