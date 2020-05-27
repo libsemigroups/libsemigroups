@@ -951,4 +951,20 @@ namespace libsemigroups {
     REQUIRE(!S.finished());
     REQUIRE(nr_calls == 3);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "045",
+                          "constructors",
+                          "[fpsemigroup][quick]") {
+    using Transf8 = Transformation<uint8_t>;
+    auto        rg = ReportGuard(REPORT);
+    FroidurePin<Transf8> S({Transf8({1, 0, 1}), Transf8({0, 0, 0})});
+
+    FpSemigroup T(S);
+
+    REQUIRE(!T.has_froidure_pin());
+    REQUIRE(T.size() == S.size());
+  }
+
+
 }  // namespace libsemigroups
