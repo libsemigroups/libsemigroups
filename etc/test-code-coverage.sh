@@ -31,22 +31,22 @@ if ! [[ -x configure ]]; then
   printf "\033[0m";
 fi
 if [[ ! -f config.log ]]; then
-  bold "No config.log file found, running ./configure --enable-code-coverage CXXFLAGS=\"--coverage\". . ."
+  bold "No config.log file found, running ./configure --enable-code-coverage. . ."
   printf "\033[2m";
-  ./configure --enable-code-coverage CXXFLAGS="--coverage";
-  ./autogen.sh;
-  printf "\033[0m";
+  ./configure --enable-code-coverage
+  ./autogen.sh
+  printf "\033[0m"
 elif [[ ! -f Makefile ]]; then
-  bold "No Makefile found, running ./configure --enable-code-coverage CXXFLAGS=\"--coverage\". . .";
-  printf "\033[2m";
-  ./configure --enable-code-coverage CXXFLAGS="--coverage";
-  printf "\033[0m";
-elif ! grep -q "\.\/configure.*\-\-enable-code\-coverage \-\-CXXFLAGS=\"\-\-coverage\"" config.log; then
-  bold "Didn't find --enable-code-coverage flag in config.log, running make clean && ./configure --enable-code-coverage CXXFLAGS=\"--coverage\". . .";
-  printf "\033[2m";
+  bold "No Makefile found, running ./configure --enable-code-coverage. . ."
+  printf "\033[2m"
+  ./configure --enable-code-coverage
+  printf "\033[0m"
+elif ! grep -q "\.\/configure.*\-\-enable-code\-coverage" config.log; then
+  bold "Didn't find --enable-code-coverage flag in config.log, running make clean && ./configure --enable-code-coverage. . ."
+  printf "\033[2m"
   make clean
-  ./configure --enable-code-coverage CXXFLAGS="--coverage";
-  printf "\033[0m";
+  ./configure --enable-code-coverage
+  printf "\033[0m"
 fi
 
 bold "Running make -j8 . . .";
@@ -84,9 +84,13 @@ fnam=$1
 fnam=${fnam/test_/}
 fnam=${fnam//_/-}
 dir=$(pwd)
-hpp=coverage${dir}/include/${fnam}.hpp.gcov.html
-echo "See: $hpp"
+hpp=coverage${dir}/include/libsemigroups/${fnam}.hpp.gcov.html
 cpp=coverage${dir}/src/${fnam}.cpp.gcov.html
-echo "Or:  $cpp"
+if [[ -f $hpp ]]; then
+  echo "See: $hpp"
+fi;
+if [[ -f $cpp ]]; then
+  echo "See: $cpp"
+fi;
 
 exit 0

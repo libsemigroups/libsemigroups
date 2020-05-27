@@ -240,11 +240,10 @@ namespace libsemigroups {
     // }
 
     void add_rules_impl(FroidurePinBase& S) override {
-      relations(S, [this](word_type lhs, word_type rhs) -> void {
-        validate_word(lhs);
-        validate_word(rhs);
-        add_rule(lhs, rhs);
-      });
+      S.run();
+      for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+        add_rule(*it);
+      }
     }
 
     bool is_obviously_finite_impl() override {

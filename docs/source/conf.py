@@ -18,7 +18,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 
 def setup(app):
-    app.add_stylesheet("main_stylesheet.css")
+    app.add_css_file("main_stylesheet.css")
 
 
 extensions = [
@@ -34,7 +34,7 @@ html_static_path = ["_static"]
 source_suffix = ".rst"
 master_doc = "index"
 project = "libsemigroups"
-copyright = "2019, J. D. Mitchell"
+copyright = "2019-20, J. D. Mitchell"
 author = "J. D. Mitchell"
 cpp_index_common_prefix = ["libsemigroups::"]
 

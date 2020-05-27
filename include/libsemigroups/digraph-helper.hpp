@@ -23,7 +23,7 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "libsemigroups/constants.hpp"
+#include "constants.hpp"
 
 namespace libsemigroups {
   template <typename T>

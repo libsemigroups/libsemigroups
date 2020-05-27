@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2020 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,33 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some functionality missing in some implementations of the
-// stl, or to augment the stl implementations.
+#include "catch.hpp"      // for REQUIRE etc
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/order.hpp"
-
+#include "libsemigroups/order.hpp"  // for words
 #include "libsemigroups/types.hpp"  // for word_type
-#include <vector>                   // for vector
 
 namespace libsemigroups {
-  std::vector<word_type> shortlex_words(size_t nr_gens, size_t len) {
-    std::vector<word_type> out;
-    for (size_t i = 0; i < nr_gens; ++i) {
-      out.push_back({i});
-    }
-    size_t frst = 0;
-    size_t last = nr_gens;
-    for (size_t i = 2; i <= len; ++i) {
-      for (size_t j = frst; j < last; ++j) {
-        for (size_t k = 0; k < nr_gens; ++k) {
-          word_type nxt = out.at(j);
-          nxt.push_back(k);
-          out.push_back(nxt);
-        }
-      }
-      frst = last;
-      last = out.size();
-    }
-    return out;
-  }
+  // TODO
 }  // namespace libsemigroups

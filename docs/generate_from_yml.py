@@ -12,7 +12,7 @@ import yaml
 
 from bs4 import BeautifulSoup
 
-_COPYRIGHT_NOTICE = """.. Copyright (c) 2019, J. D. Mitchell
+_COPYRIGHT_NOTICE = """.. Copyright (c) 2019-20, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
@@ -57,15 +57,15 @@ def run_doxygen():
         _info("Running doxygen, build/xml does not exist")
         return True
     last_changed_source = 0
-    for f in os.listdir("../include"):
+    for f in os.listdir("../include/libsemigroups"):
         if not f.startswith("."):
-            f = os.path.join("..", "include", f)
+            f = os.path.join("..", "include/libsemigroups", f)
             if os.path.isfile(f) and f.endswith(".hpp"):
                 last_changed_source = max(
                     os.path.getmtime(f), last_changed_source
                 )
     _info(
-        "Last modified file in include/*.hpp      "
+        "Last modified file in include/libsemigroups/*.hpp      "
         + _time_since_epoch_to_human(last_changed_source)
     )
     first_built_file = float("inf")

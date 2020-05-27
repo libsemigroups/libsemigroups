@@ -11,6 +11,10 @@ find src/*.hpp -type f -exec cpplint --repository='..' {} \; | tee --append lint
 find src/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log 
 find tests/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee --append lint.log
 find tests/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log
+find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee --append lint.log
+find benchmarks/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log
+find benchmarks/examples/*.hpp -type f -exec cpplint --repository='..' {} \; | tee --append lint.log
+find benchmarks/examples/*.cpp -type f -exec cpplint {} \; | tee --append lint.log
 
 ! grep -E "Total errors found:" lint.log
 exit_code=$?

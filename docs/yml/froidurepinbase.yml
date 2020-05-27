@@ -28,7 +28,8 @@ libsemigroups::FroidurePinBase:
   - run
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
 - Attributes:
   - degree
   - nr_generators
@@ -51,8 +52,6 @@ libsemigroups::FroidurePinBase:
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
-  - reset_next_relation
-  - next_relation
   - position_to_sorted_position
   - nr_rules
   - length_const
@@ -74,3 +73,6 @@ libsemigroups::FroidurePinBase:
   - timed_out
   - running
   - stopped_by_predicate
+- Iterators:
+  - cbegin_rules
+  - cend_rules

@@ -1,4 +1,4 @@
-libsemigroups::CongruenceByPairs:
+libsemigroups::CongruenceByPairsHelper:
 - Aliases:
   - [typedef, element_type]
   - [typedef, const_reference]
@@ -7,13 +7,13 @@ libsemigroups::CongruenceByPairs:
   - [typedef, non_trivial_class_iterator]
   - [typedef, const_iterator]
 - Constructors:
-  - CongruenceByPairs
-  - CongruenceByPairs(CongruenceByPairs const&)
-  - CongruenceByPairs(congruence_type, std::shared_ptr<FroidurePinBase>)
-  - CongruenceByPairs(congruence_type, T const&)
-  - operator=(CongruenceByPairs const&)
-  - CongruenceByPairs(CongruenceByPairs&&)
-  - operator=(CongruenceByPairs&&)
+  - CongruenceByPairsHelper
+  - CongruenceByPairsHelper(CongruenceByPairsHelper const&)
+  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<FroidurePinBase>)
+  - CongruenceByPairsHelper(congruence_type, T const&)
+  - operator=(CongruenceByPairsHelper const&)
+  - CongruenceByPairsHelper(CongruenceByPairsHelper&&)
+  - operator=(CongruenceByPairsHelper&&)
 - Initialization:
   - set_nr_generators
   - nr_generators
@@ -29,7 +29,8 @@ libsemigroups::CongruenceByPairs:
   - run
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
 - Container-like:
   - less
   - const_contains

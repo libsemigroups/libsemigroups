@@ -26,7 +26,9 @@
 #include <functional>  // for mem_fn
 #include <vector>      // for vector
 
-#include "catch.hpp"                // for SECTION, REQUIRE, REQUIRE_THROWS_AS
+#include "catch.hpp"      // for SECTION, REQUIRE, REQUIRE_THROWS_AS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "fpsemi-examples.hpp"      // for RennerTypeDMonoid, RennerTypeBMonoid
 #include "libsemigroups/bmat8.hpp"  // for Bmat8
 #include "libsemigroups/cong-intf.hpp"       // for congruence::type
@@ -39,7 +41,7 @@
 #include "libsemigroups/tce.hpp"           // for TCE
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/types.hpp"         // for relation_type, word_type
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/wislo.hpp"         // for cbegin_wislo
 
 // Macros for testing different strategies on the same example.
 
@@ -130,7 +132,7 @@ namespace libsemigroups {
   congruence_type constexpr left     = congruence_type::left;
   congruence_type constexpr right    = congruence_type::right;
   using KnuthBendix                  = fpsemigroup::KnuthBendix;
-  using order                        = congruence::ToddCoxeter::order;
+  using tc_order                     = congruence::ToddCoxeter::order;
   using policy                       = congruence::ToddCoxeter::policy;
 
   template <typename TElementType>
@@ -288,7 +290,7 @@ namespace libsemigroups {
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
 
       REQUIRE(tc.word_to_class_index({0, 0, 0}) != tc.word_to_class_index({1}));
-      tc.standardize(order::lex);
+      tc.standardize(tc_order::lex);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
       REQUIRE(tc.class_index_to_word(1) == word_type({0, 0}));
       REQUIRE(tc.class_index_to_word(2) == word_type({0, 0, 1}));
@@ -306,7 +308,7 @@ namespace libsemigroups {
                              tc.cend_normal_forms(),
                              LexicographicalCompare<word_type>{}));
 
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
                                      tc.cend_normal_forms())
               == std::vector<word_type>({{0}, {1}, {0, 0}, {0, 1}, {0, 0, 1}}));
@@ -321,12 +323,14 @@ namespace libsemigroups {
 
       for (size_t i = 2; i < 6; ++i) {
         for (size_t j = 2; j < 10 - i; ++j) {
-          auto v = shortlex_words(i, j);
+          auto v = std::vector<word_type>(
+              cbegin_wislo(i, {0}, word_type(j + 1, 0)),
+              cend_wislo(i, {0}, word_type(j + 1, 0)));
           std::sort(v.begin(), v.end(), RecursivePathCompare<word_type>{});
           REQUIRE(v == recursive_path_words(i, j));
         }
       }
-      tc.standardize(order::recursive);
+      tc.standardize(tc_order::recursive);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
       REQUIRE(tc.class_index_to_word(1) == word_type({0, 0}));
       REQUIRE(tc.class_index_to_word(2) == word_type({1}));
@@ -377,7 +381,7 @@ namespace libsemigroups {
       }
       REQUIRE(tc.finished());
 
-      tc.standardize(order::recursive);
+      tc.standardize(tc_order::recursive);
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
                              RecursivePathCompare<word_type>{}));
@@ -394,7 +398,7 @@ namespace libsemigroups {
                                           {2, 1, 2},
                                           {2, 1, 2, 1}}}));
 
-      tc.standardize(order::lex);
+      tc.standardize(tc_order::lex);
       for (size_t c = 0; c < tc.nr_classes(); ++c) {
         REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
       }
@@ -413,7 +417,7 @@ namespace libsemigroups {
                                          {0, 1, 2, 1, 2, 1, 2, 1},
                                          {0, 1, 2, 1, 2, 1, 2, 1, 2},
                                          {0, 1, 2, 1, 2, 1, 2, 1, 2, 1}}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       for (size_t c = 0; c < tc.nr_classes(); ++c) {
         REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
       }
@@ -462,7 +466,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 3);
       REQUIRE(tc.nr_generators() == 4);
       REQUIRE(tc.contains({0}, {1}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
 
       auto& T = *tc.quotient_froidure_pin();
       REQUIRE(T.size() == 3);
@@ -477,7 +481,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
 
-      tc.standardize(order::lex);
+      tc.standardize(tc_order::lex);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
       REQUIRE(tc.class_index_to_word(1) == word_type({0, 0}));
       REQUIRE(tc.class_index_to_word(2) == word_type({0, 0, 2}));
@@ -485,7 +489,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
 
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
       REQUIRE(tc.class_index_to_word(1) == word_type({2}));
       REQUIRE(tc.class_index_to_word(2) == word_type({0, 0}));
@@ -509,7 +513,7 @@ namespace libsemigroups {
       REQUIRE(!tc.finished());
       tc.shrink_to_fit();  // does nothing
       REQUIRE(!tc.finished());
-      tc.standardize(order::none);  // does nothing
+      tc.standardize(tc_order::none);  // does nothing
       REQUIRE(!tc.finished());
 
       TEST_HLT_NO_SAVE(tc);
@@ -520,7 +524,7 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 21);
       tc.shrink_to_fit();
       REQUIRE(tc.nr_classes() == 21);
-      tc.standardize(order::recursive);
+      tc.standardize(tc_order::recursive);
       auto w = std::vector<word_type>(tc.cbegin_normal_forms(),
                                       tc.cend_normal_forms());
       REQUIRE(w.size() == 21);
@@ -581,7 +585,7 @@ namespace libsemigroups {
       TEST_RANDOM_SIMS(tc);
 
       REQUIRE(tc.nr_classes() == 2);
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -601,7 +605,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 5);
       REQUIRE(tc.finished());
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -627,7 +631,7 @@ namespace libsemigroups {
               != tc.word_to_class_index({0, 0, 0, 0}));
       REQUIRE(tc.word_to_class_index({0, 0, 0})
               != tc.word_to_class_index({0, 0, 0, 0}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -650,7 +654,7 @@ namespace libsemigroups {
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
       REQUIRE(tc.word_to_class_index({0, 0, 0}) != tc.word_to_class_index({1}));
       REQUIRE(tc.word_to_class_index({0, 0, 0, 0}) < tc.nr_classes());
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -682,7 +686,7 @@ namespace libsemigroups {
               == tc.word_to_class_index(
                   S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
 
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 1);
       REQUIRE(tc.cbegin_ntc()->size() == 68);
     }
@@ -716,7 +720,7 @@ namespace libsemigroups {
               != tc.word_to_class_index(
                   S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
 
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 1);
       REQUIRE(tc.cbegin_ntc()->size() == 20);
     }
@@ -763,7 +767,7 @@ namespace libsemigroups {
               != tc.word_to_class_index(
                   S.factorisation(Transformation<uint16_t>({2, 3, 3, 3, 3}))));
 
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 4);
 
       std::vector<size_t> v(tc.nr_non_trivial_classes(), 0);
@@ -818,7 +822,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
 
       delete t1, delete t2, delete t3, delete t4;
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -850,7 +854,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 69);
       REQUIRE(tc.nr_classes() == 69);
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -895,7 +899,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
       REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w6));
       delete t1, delete t2, delete t3, delete t4, delete t5, delete t6;
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -927,7 +931,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 6);
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -965,7 +969,7 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 16);
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1037,7 +1041,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({6}));
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({8}));
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
-      tc.standardize(order::shortlex);
+      tc.standardize(tc_order::shortlex);
     }
 
     // ToddCoxeter 021 removed
@@ -1068,7 +1072,7 @@ namespace libsemigroups {
 
         TEST_HLT(tc);
         REQUIRE(tc.nr_classes() == 78);
-        tc.standardize(order::shortlex);
+        tc.standardize(tc_order::shortlex);
       }
       {
         ToddCoxeter tc(left);
@@ -1091,7 +1095,7 @@ namespace libsemigroups {
 
         TEST_HLT(tc);
         REQUIRE(tc.nr_classes() == 78);
-        tc.standardize(order::shortlex);
+        tc.standardize(tc_order::shortlex);
       }
     }
 
@@ -1189,35 +1193,29 @@ namespace libsemigroups {
       std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());
       REQUIRE(v
-              == std::vector<TCE>(
-                  {TCE(v[0], 1),  TCE(v[0], 2),  TCE(v[0], 3),  TCE(v[0], 4),
-                   TCE(v[0], 5),  TCE(v[0], 6),  TCE(v[0], 7),  TCE(v[0], 8),
-                   TCE(v[0], 9),  TCE(v[0], 10), TCE(v[0], 11), TCE(v[0], 12),
-                   TCE(v[0], 13), TCE(v[0], 14), TCE(v[0], 15), TCE(v[0], 16),
-                   TCE(v[0], 17), TCE(v[0], 18), TCE(v[0], 19), TCE(v[0], 20),
-                   TCE(v[0], 21), TCE(v[0], 22), TCE(v[0], 23), TCE(v[0], 24),
-                   TCE(v[0], 25), TCE(v[0], 26), TCE(v[0], 27), TCE(v[0], 28),
-                   TCE(v[0], 29), TCE(v[0], 30), TCE(v[0], 31), TCE(v[0], 32),
-                   TCE(v[0], 33), TCE(v[0], 34)}));
+              == std::vector<TCE>({TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),
+                                   TCE(6),  TCE(7),  TCE(8),  TCE(9),  TCE(10),
+                                   TCE(11), TCE(12), TCE(13), TCE(14), TCE(15),
+                                   TCE(16), TCE(17), TCE(18), TCE(19), TCE(20),
+                                   TCE(21), TCE(22), TCE(23), TCE(24), TCE(25),
+                                   TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
+                                   TCE(31), TCE(32), TCE(33), TCE(34)}));
       REQUIRE(std::vector<TCE>(S.cbegin_sorted(), S.cend_sorted())
-              == std::vector<TCE>(
-                  {TCE(v[0], 1),  TCE(v[0], 2),  TCE(v[0], 3),  TCE(v[0], 4),
-                   TCE(v[0], 5),  TCE(v[0], 6),  TCE(v[0], 7),  TCE(v[0], 8),
-                   TCE(v[0], 9),  TCE(v[0], 10), TCE(v[0], 11), TCE(v[0], 12),
-                   TCE(v[0], 13), TCE(v[0], 14), TCE(v[0], 15), TCE(v[0], 16),
-                   TCE(v[0], 17), TCE(v[0], 18), TCE(v[0], 19), TCE(v[0], 20),
-                   TCE(v[0], 21), TCE(v[0], 22), TCE(v[0], 23), TCE(v[0], 24),
-                   TCE(v[0], 25), TCE(v[0], 26), TCE(v[0], 27), TCE(v[0], 28),
-                   TCE(v[0], 29), TCE(v[0], 30), TCE(v[0], 31), TCE(v[0], 32),
-                   TCE(v[0], 33), TCE(v[0], 34)}));
-      REQUIRE(detail::to_string(TCE(v[0], 1)) == "TCE(1)");
+              == std::vector<TCE>({TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),
+                                   TCE(6),  TCE(7),  TCE(8),  TCE(9),  TCE(10),
+                                   TCE(11), TCE(12), TCE(13), TCE(14), TCE(15),
+                                   TCE(16), TCE(17), TCE(18), TCE(19), TCE(20),
+                                   TCE(21), TCE(22), TCE(23), TCE(24), TCE(25),
+                                   TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
+                                   TCE(31), TCE(32), TCE(33), TCE(34)}));
+      REQUIRE(detail::to_string(TCE(1)) == "1");
 
       std::ostringstream oss;
-      oss << TCE(v[0], 10);  // Does not do anything visible
+      oss << TCE(10);  // Does not do anything visible
 
       std::stringbuf buf;
       std::ostream   os(&buf);
-      os << TCE(v[0], 32);  // Does not do anything visible
+      os << TCE(32);  // Does not do anything visible
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1510,7 +1508,7 @@ namespace libsemigroups {
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = detail::make_unique<ToddCoxeter>(right, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
@@ -1986,11 +1984,11 @@ namespace libsemigroups {
       });
       REQUIRE(!tc.finished());
       REQUIRE(!tc.is_obviously_finite());
-      tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(!tc.finished());
-      tc.congruence().standardize(order::lex);
+      tc.congruence().standardize(tc_order::lex);
       REQUIRE(!tc.finished());
-      tc.congruence().standardize(order::recursive);
+      tc.congruence().standardize(tc_order::recursive);
       REQUIRE(!tc.finished());
 
       TEST_HLT(tc.congruence());
@@ -1999,15 +1997,15 @@ namespace libsemigroups {
 
       // This takes approx 1 seconds with Felsch . . .
       REQUIRE(tc.size() == 1);
-      tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
-      tc.congruence().standardize(order::lex);
+      tc.congruence().standardize(tc_order::lex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              LexicographicalCompare<word_type>{}));
-      tc.congruence().standardize(order::recursive);
+      tc.congruence().standardize(tc_order::recursive);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              RecursivePathCompare<word_type>{}));
@@ -2036,7 +2034,7 @@ namespace libsemigroups {
 
       // This takes approx 6 seconds with Felsch . . .
       REQUIRE(tc.size() == 14911);
-      tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -2381,7 +2379,7 @@ namespace libsemigroups {
       TEST_RANDOM_SIMS(tc.congruence());
 
       REQUIRE(tc.size() == 14);
-      tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::vector<word_type>(tc.congruence().cbegin_normal_forms(),
                                      tc.congruence().cend_normal_forms())
               == std::vector<word_type>({{0},
@@ -2423,17 +2421,17 @@ namespace libsemigroups {
       TEST_FELSCH(tc.congruence());
       TEST_RANDOM_SIMS(tc.congruence());
 
-      tc.congruence().standardize(order::shortlex);
+      tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
-      tc.congruence().standardize(order::lex);
+      tc.congruence().standardize(tc_order::lex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
                              LexicographicalCompare<word_type>{}));
       // The next section is very slow
       // SECTION("standardizing with recursive order") {
-      //  tc.congruence().standardize(order::recursive);
+      //  tc.congruence().standardize(tc_order::recursive);
       //  REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
       //                         tc.congruence().cend_normal_forms(),
       //                         RecursivePathCompare<word_type>{}));

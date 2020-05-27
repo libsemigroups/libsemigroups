@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 1.0.6
+.. |libsemigroups-version| replace:: 1.0.9
 
 .. _Installation:
 
@@ -85,15 +85,27 @@ If you have Docker_ installed, you can download a `docker container`_ for
 ``libsemigroups`` as follows:
 
 .. parsed-literal::
-   docker pull libsemigroups/libsemigroups
+   docker pull libsemigroups/libsemigroups-docker
 
 and run it by doing
 
 .. parsed-literal::
-   docker run --rm -it libsemigroups/libsemigroups
+   docker run --rm -it libsemigroups/libsemigroups-docker
+
+If you want to use a specific version of ``libsemigroups``, then use:
+
+.. parsed-literal::
+   docker pull libsemigroups/libsemigroups-docker:version-1.0.9
+   docker run --rm -it libsemigroups/libsemigroups-docker:version-1.0.9
+
+or, for the latest version, use:
+
+.. parsed-literal::
+  docker pull libsemigroups/libsemigroups-docker:latest
+  docker run --rm -it libsemigroups/libsemigroups-docker:latest
 
 .. _Docker: https://www.docker.com
-.. _docker container: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups
+.. _docker container: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker
 
 Configuration options
 ---------------------

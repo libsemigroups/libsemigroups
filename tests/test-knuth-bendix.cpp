@@ -20,12 +20,16 @@
 //    reduction orderings different from shortlex
 // 2. Examples from MAF
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <iostream>  // for ostringstream
 #include <string>    // for string
 #include <utility>   // for pair
 #include <vector>    // for vector
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/element-helper.hpp"  // for TransfHelper
 #include "libsemigroups/element.hpp"         // for Element, Transf, Transf...
 #include "libsemigroups/froidure-pin.hpp"    // for FroidurePin
@@ -33,8 +37,8 @@
 #include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix, operator<<
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/report.hpp"                // for ReportGuard
+#include "libsemigroups/siso.hpp"                  // for cbegin_silo
 #include "libsemigroups/types.hpp"                 // for word_type
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -48,6 +52,16 @@ namespace libsemigroups {
   }
 
   namespace fpsemigroup {
+
+    using FroidurePinKBE = KnuthBendix::froidure_pin_type;
+
+    std::vector<std::string> get_strings(FroidurePinKBE& S) {
+      auto get_string
+          = [&S](detail::KBE const& x) { return x.string(*S.state()); };
+      std::vector<std::string> result(S.current_size(), "");
+      std::transform(S.cbegin(), S.cend(), result.begin(), get_string);
+      return result;
+    }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "001",
@@ -194,20 +208,26 @@ namespace libsemigroups {
       REQUIRE(kb.nr_active_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 4);
-      auto S = static_cast<FroidurePin<detail::KBE>&>(*kb.froidure_pin());
+      auto S = static_cast<FroidurePinKBE&>(*kb.froidure_pin());
 
       // At this point only the generators are known
       REQUIRE(S.current_size() == 2);
-      std::vector<std::string> v(S.cbegin(), S.cend());
-      REQUIRE(v == std::vector<std::string>({"0", "2"}));
+
+      std::vector<std::string> result = get_strings(S);
+      std::vector<std::string> expected({"0", "2"});
+
+      REQUIRE(result == expected);
 
       S.batch_size(10);
       S.enumerate(10);
       REQUIRE(S.current_size() == 12);
-      v.clear();
-      v.insert(v.begin(), S.cbegin(), S.cend());
-      REQUIRE(v.size() == S.current_size());
-      REQUIRE(v
+      auto get_string
+          = [&S](detail::KBE const& x) { return x.string(*S.state()); };
+      result.resize(S.current_size());
+      std::transform(S.cbegin(), S.cend(), result.begin(), get_string);
+
+      REQUIRE(result.size() == S.current_size());
+      REQUIRE(result
               == std::vector<std::string>({"0",
                                            "2",
                                            "22",
@@ -221,7 +241,6 @@ namespace libsemigroups {
                                            "2222222222",
                                            "22222222222"}));
     }
-
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "007",
                             "(fpsemi) non-confluent fp semigroup from "
@@ -287,7 +306,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "010",
-                            "(fpsemi) Example 5.3 in Sims (infinite)",
+                            "(fpsemi) Example 5.3 in Sims",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -301,11 +320,12 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 6);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "011",
-                            "(fpsemi) Example 5.4 in Sims (infinite)",
+                            "(fpsemi) Example 5.4 in Sims",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -320,6 +340,7 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 11);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -349,13 +370,15 @@ namespace libsemigroups {
       REQUIRE(kb.normal_form("ccc") == "");
 
       REQUIRE(kb.size() == 168);
-      auto S = static_cast<FroidurePin<detail::KBE>&>(*kb.froidure_pin());
+      auto S = static_cast<FroidurePinKBE&>(*kb.froidure_pin());
       REQUIRE(S.size() == 168);
-      REQUIRE(std::string(S.generator(2)) == "c");
-      auto T = FroidurePin<detail::KBE>({S.generator(2)});
+      REQUIRE(S.generator(2).string(kb) == "c");
+      // FIXME the next line compiles but leaves T in an invalid state.
+      // auto T = FroidurePinKBE({S.generator(2)});
+      auto T = FroidurePinKBE(kb);
+      T.add_generator(S.generator(2));
       REQUIRE(T.size() == 3);
-      REQUIRE(std::vector<std::string>(T.cbegin(), T.cend())
-              == std::vector<std::string>({"c", "b", ""}));
+      REQUIRE(get_strings(T) == std::vector<std::string>({"c", "b", ""}));
     }
 
     // Takes approx. 1m33s
@@ -608,8 +631,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "023",
-                            "(fpsemi) F(2, 6) - Chapter 9, Section 1 in NR "
-                            "(infinite)",
+                            "(fpsemi) F(2, 6) - Chapter 9, Section 1 in NR",
                             "[knuth-bendix][fpsemigroup][fpsemi][quick]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -626,6 +648,7 @@ namespace libsemigroups {
       kb.run();
       REQUIRE(kb.nr_active_rules() == 35);
       REQUIRE(kb.confluent());
+      REQUIRE(kb.size() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -852,9 +875,8 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "032: (fpsemi) from GAP smalloverlap gap/test.gi",
-        "32 "
-        "(infinite)",
+        "032",
+        "(fpsemi) from GAP smalloverlap gap/test.gi (infinite)",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
@@ -1259,6 +1281,8 @@ namespace libsemigroups {
 
     // This group is actually D_22 (although it wasn't meant to be). All
     // generators are unexpectedly involutory.
+    // FIXME what? The semigroup below is infinite, should add inverses and
+    // identity
 
     // knuth_bendix does not terminate with the given ordering, terminates
     // almost immediately with the standard order.
@@ -1587,6 +1611,7 @@ namespace libsemigroups {
 
       KnuthBendix kb;
       kb.set_alphabet("aAbB");
+      // FIXME this isn't the free group
 
       REQUIRE(kb.confluent());
 
@@ -1861,6 +1886,7 @@ namespace libsemigroups {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("aA");
+      // FIXME not a group!
 
       REQUIRE(kb.confluent());
 
@@ -2452,6 +2478,10 @@ namespace libsemigroups {
       kb.add_rule("BaAaAAaAAaAAA", "cAAaAaAAaAAa");
       kb.add_rule("BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
 
+      // REQUIRE(std::vector<std::pair<std::string,
+      //     std::string>>(kb.cbegin_rules(), kb.cbegin_rules() + 14) ==
+      //     std::vector<std::pair<std::string, std::string>>());
+
       REQUIRE(!kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
@@ -2747,7 +2777,7 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
 
       auto x = detail::KBE(kb, 0);
-      REQUIRE(static_cast<word_type>(x) == word_type({0}));
+      REQUIRE(x.word(kb) == word_type({0}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "066", "code coverage", "[quick]") {
@@ -2761,6 +2791,53 @@ namespace libsemigroups {
       REQUIRE(kb3.nr_rules() == 1);
       REQUIRE_THROWS_AS(kb3.set_identity("ab"), LibsemigroupsException);
       REQUIRE_NOTHROW(kb3.set_identity("a"));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "102",
+                            "small overlap 1",
+                            "[extreme]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("BCA");
+      kb.add_rule("AABC", "ACBA");
+      REQUIRE(kb.confluent());
+      REQUIRE(kb.normal_form("CBACBAABCAABCACBACBA") == "CBACBACBAACBAACBACBA");
+      REQUIRE(kb.equal_to("CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
+      REQUIRE(kb.equal_to("AABCAABCCACAACBBCBCCACBBAABCBA",
+                          "ACBAACBACACAACBBCBCCACBBACBABA"));
+      REQUIRE(kb.equal_to("CACCBABACCBABACCAAAABCAABCBCAA",
+                          "CACCBABACCBABACCAAACBAACBABCAA"));
+      REQUIRE(kb.equal_to("CAAACAABCCBABCCBCCBCACABACBBAC",
+                          "CAAACACBACBABCCBCCBCACABACBBAC"));
+      REQUIRE(kb.equal_to("BABCACBACBCCCCCAACCAAABAABCBCC",
+                          "BABCACBACBCCCCCAACCAAABACBABCC"));
+      // REQUIRE(std::vector<std::string>(cbegin_silo("BCA", 5, 6),
+      //                                cend_silo("BCA", 5, 6))
+      //         == std::vector<std::string>());
+      // REQUIRE(number_of_words(3, 20, 21) == size_t(18446744071562067968ULL));
+
+      // auto lex_normal_form = [&kb](std::string const& w) {
+      //   auto ww = kb.normal_form(w);
+      //   auto it = std::find_if(cbegin_silo("BCA", ww, 4 * w.size()),
+      //                          cend_silo("BCA", ww.size(), 4 * w.size()),
+      //                          [&kb, &ww](std::string const& u) {
+      //                            return kb.normal_form(u) == ww;
+      //                          });
+      //   return *it;
+      // };
+      // kb.run();
+      // REQUIRE(kb.finished());
+      // REQUIRE(lex_normal_form("BBBBB") == "BBBBB");
+      // REQUIRE(kb.normal_form("AABCB") == "ACBAB");
+      // REQUIRE(lex_normal_form("AABCB") == "");
+      //      std::vector<std::string> result(number_of_words(3, 5, 20));
+      //      std::transform(cbegin_
+      // TODO The following code spends the majority of its time in
+      // FpSemigroupInterface::validate_letter
+      //  auto it =
+      //  REQUIRE(it != cend_silo("BCA", 0, 80));
+      //  REQUIRE(*it ==  "CBACBAABCAABCACBACBA");
     }
   }  // namespace fpsemigroup
 

@@ -251,7 +251,7 @@ namespace libsemigroups {
     bool                             is_obviously_infinite_impl() override;
 
     void run_impl() override {
-      _race.winner();
+      _race.run_until([this]() { return this->stopped(); });
     }
 
     bool finished_impl() const override {

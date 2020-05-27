@@ -68,7 +68,7 @@
 #endif
 
 #define REPORT_TIME(var) \
-  REPORT_DEFAULT("elapsed time (%s): %s\n", __func__, var);
+  REPORT_DEFAULT("elapsed time (%s): %s\n", __func__, var.string());
 
 namespace libsemigroups {
 

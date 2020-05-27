@@ -80,10 +80,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "109",
-                          "(transformations) exception zero generators given",
-                          "[quick][froidure-pin][transformation][transf]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "FroidurePin",
+      "109",
+      "(transformations) no exception zero generators given",
+      "[quick][froidure-pin][transformation][transf]") {
     auto                                      rg = ReportGuard(REPORT);
     std::vector<Transformation<uint_fast8_t>> gens1;
 

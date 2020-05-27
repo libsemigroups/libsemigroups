@@ -2,6 +2,7 @@ libsemigroups::fpsemigroup::KnuthBendix:
 - Public Types:
   - [typedef, rule_type]
   - [typedef, const_iterator]
+  - [typedef, froidure_pin_type]
   - [enum, policy::overlap]
 - Constructors:
   - KnuthBendix
@@ -34,7 +35,8 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - set_identity(std::string const&)
   - set_inverses
 - Attributes:
-  - alphabet
+  - alphabet() const
+  - alphabet(size_t) const
   - cbegin_rules
   - cend_rules
   - size
@@ -62,7 +64,8 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - run
   - run_for(TIntType)
   - run_for(std::chrono::nanoseconds)
-  - run_until
+  - run_until(T&&)
+  - run_until(bool (*))
   - kill
 - State:
   - dead

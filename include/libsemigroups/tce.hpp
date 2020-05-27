@@ -42,99 +42,82 @@ namespace libsemigroups {
   }  // namespace congruence
 
   namespace detail {
-    // This class is a wrapper around congruence::ToddCoxeter class indices,
-    // that can be used as the template parameter TElementType for the
-    // FroidurePin class template.
     class TCE {
       using ToddCoxeter = congruence::ToddCoxeter;
 
      public:
-      // The type of the wrapped indices.
       using class_index_type = size_t;
+      using Table            = detail::DynamicArray2<class_index_type>;
 
-      // The type of the underlying coset table produced by an instance of
-      // ToddCoxeter.
-      using CosetTable = detail::DynamicArray2<class_index_type>;
+      TCE() noexcept           = default;
+      TCE(TCE const&) noexcept = default;
+      TCE(TCE&&) noexcept      = default;
+      TCE& operator=(TCE const&) noexcept = default;
+      TCE& operator=(TCE&&) noexcept = default;
+      ~TCE()                         = default;
 
-      // A default constructor.
-      TCE() = default;
+      explicit TCE(class_index_type i) noexcept : _index(i) {}
 
-      // A constructor from a pointer to a ToddCoxeter instance. This
-      // constructor ensures that the ToddCoxeter is run to conclusion (if
-      // possible), and standardized according to ToddCoxeter::order::shortlex.
-      // A copy of the resulting TCE::CosetTable object is stored in a
-      // std::shared_ptr. The TCE::CosetTable is shared by the TCE constructed
-      // by this constructor (let's call it \c x) and any instance of TCE
-      // constructed using the constructor TCE::TCE(TCE const&,
-      // class_index_type) with first parameter \c x.
-      // The class index of the TCE constructed is UNDEFINED.
-      explicit TCE(ToddCoxeter*) noexcept;
+      bool operator==(TCE const& that) const noexcept {
+        return _index == that._index;
+      }
 
-      // A constructor from a TCE instance and class index. The resulting
-      // object has a shared pointer to a TCE::CosetTable of the ToddCoxeter
-      // instance that this object is derived from. It is necessary to create
-      // one element using the constructor TCE::TCE(ToddCoxeter*) which can
-      // then be given as the first parameter of this constructor.
-      TCE(TCE const&, class_index_type) noexcept;
+      bool operator<(TCE const& that) const noexcept {
+        return _index < that._index;
+      }
 
-      // Two TCE objects are equal if they have equal class index, even if they
-      // refer to different ToddCoxeter instances.
-      bool operator==(TCE const&) const noexcept;
+      TCE one() const noexcept {
+        return TCE(0);
+      }
 
-      // A TCE is less than another TCE if the class index is less. This
-      // corresponds to the short-lex order on words in the generators of the
-      // original ToddCoxeter instance.
-      bool operator<(TCE const&) const noexcept;
-
-      // Instances of TCE are multiplied according to the TCE::CosetTable used
-      // to construct the original TCE (using TCE::TCE(ToddCoxeter*)). This
-      // operator can only be used to multiply a TCE by a TCE that represents a
-      // generator of the original ToddCoxeter instance. This is one of the
-      // minimum requirements to ensure that the FroidurePin algorithm applies
-      // to TCE.
-      TCE operator*(TCE const&) const;
-
-      // The one of a TCE is just a multiplicative identity, in the sense that
-      // any TCE \c x multiplied by the one, on either side, yields \c x. This
-      // is always the TCE with class index 0.
-      TCE one() const noexcept;
-
-      // Friend function to allow stringstream insertion of a TCE instance.
-      friend std::ostringstream& operator<<(std::ostringstream&, TCE const&);
-
-      // Friend function to allow specialization of std::hash for TCE.
-      friend struct ::std::hash<TCE>;
+      operator class_index_type() const {
+        return _index;
+      }
 
      private:
-      std::shared_ptr<CosetTable> _table;
-      // Note that the class_index_type below is the actual class_index_type
-      // used in the ToddCoxeter class and not that number minus 1, which is
-      // what "class_index" means in the context of CongruenceInterface objects.
+      // Note that the value of the class_index_type _value below is the actual
+      // class_index_type  used in the ToddCoxeter class and not that number
+      // minus 1, which is what "class_index" means in the context of
+      // CongruenceInterface objects.
       class_index_type _index;
     };
+
+    // The following are not really required but are here as a reminder that
+    // KBE are used in BruidhinnTraits which depends on the values in the
+    // static_asserts below.
+    static_assert(std::is_trivial<TCE>::value, "TCE is not trivial!!!");
+    static_assert(std::integral_constant<bool, (sizeof(TCE) <= 8)>::value,
+                  "TCE's sizeof exceeds 8!!");
   }  // namespace detail
 
-  //! Specialization of the adapter libsemigroups::Complexity for detail::TCE.
+  inline std::ostringstream& operator<<(std::ostringstream& os,
+                                        detail::TCE const&  x) {
+    os << "TCE(" << detail::TCE::class_index_type(x) << ")";
+    return os;
+  }
+
+  inline std::ostream& operator<<(std::ostream& os, detail::TCE const& x) {
+    os << detail::to_string(x);
+    return os;
+  }
+
+  // Specialization of the adapter libsemigroups::Complexity for detail::TCE.
   template <>
   struct Complexity<detail::TCE> {
-    //! Returns LIMIT_MAX, because it is not possible to
-    //! multiply arbitrary TCE instances, only arbitrary TCE by a TCE
-    //! representing a generator (see TCE::operator*).  This adapter is used by
-    //! the FroidurePin class to determine if it is better to trace paths in
-    //! the Cayley graph or to directly multiply elements (using the \c *
-    //! operator). Since LIMIT_MAX is returned, elements are not directly
-    //! multiplied by the \c * operator (except if the right hand argument
-    //! represents a TCE).
+    // Returns LIMIT_MAX, because it is not possible to multiply arbitrary TCE
+    // instances, only arbitrary TCE by a TCE representing a generator (see
+    // TCE::operator*).  This adapter is used by the FroidurePin class to
+    // determine if it is better to trace paths in the Cayley graph or to
+    // directly multiply elements (using the \c * operator). Since LIMIT_MAX is
+    // returned, elements are not directly multiplied by the \c * operator
+    // (except if the right hand argument represents a TCE).
     constexpr size_t operator()(detail::TCE const&) const noexcept {
       return LIMIT_MAX;
     }
   };
 
-  //! Specialization of the adapter Degree for TCE.
   template <>
   struct Degree<detail::TCE> {
-    //! This returns 0, because there is no meaningful notion of degree for TCE
-    //! instances.
     constexpr size_t operator()(detail::TCE const&) const noexcept {
       return 0;
     }
@@ -149,36 +132,25 @@ namespace libsemigroups {
     }
   };
 
-  // Specialization of the adapter less for TCE.
-  //
   template <>
   struct Product<detail::TCE> {
-    // The call operator directly uses the member function TCE::operator*.
-    //
-    // \warning If the parameter \p y does not represent a generator of the
-    // original ToddCoxeter instance, then the behaviour of the call operator
-    // of product is undefined.
-    void operator()(detail::TCE&       xy,
-                    detail::TCE const& x,
-                    detail::TCE const& y,
+    void operator()(detail::TCE&        xy,
+                    detail::TCE const&  x,
+                    detail::TCE const&  y,
+                    detail::TCE::Table* t,
                     size_t = 0) const {
-      xy = x * y;
+      xy = detail::TCE(t->get(x, y - 1));
     }
   };
 
-  //! No doc
-  std::ostream& operator<<(std::ostream&                     os,
-                           libsemigroups::detail::TCE const& tc);
 }  // namespace libsemigroups
 
 namespace std {
-  // Specialization of
-  // [std::hash](https://en.cppreference.com/w/cpp/utility/hash) for
-  // libsemigroups::TCE, that directly used the class index of the element.
   template <>
   struct hash<libsemigroups::detail::TCE> {
+    using class_index_type = libsemigroups::detail::TCE::class_index_type;
     size_t operator()(libsemigroups::detail::TCE const& x) const noexcept {
-      return x._index;
+      return std::hash<class_index_type>()(x);
     }
   };
 }  // namespace std

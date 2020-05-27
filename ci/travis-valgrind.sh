@@ -16,7 +16,7 @@ valgrind --version
 
 ci/travis-setup.sh
 ./configure --enable-debug --disable-hpcombi
-make test_all -j2
+make test_all -j4
 
 unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
 

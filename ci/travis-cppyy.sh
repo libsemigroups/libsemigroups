@@ -5,7 +5,7 @@ set -e
 ci/travis-setup.sh
 
 ./configure
-make -j2 && sudo make install 
+make -j4 && sudo make install 
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 export CFLAGS="$CFLAGS -I$/usr/local/include -O2 -g"

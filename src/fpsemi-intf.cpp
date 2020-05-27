@@ -369,11 +369,10 @@ namespace libsemigroups {
   }
 
   void FpSemigroupInterface::add_rules_impl(FroidurePinBase& S) {
-    relations(S, [this](word_type lhs, word_type rhs) -> void {
-      validate_word(lhs);
-      validate_word(rhs);
-      add_rule(word_to_string(lhs), word_to_string(rhs));
-    });
+    S.run();
+    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+      add_rule(*it);
+    }
   }
 
   bool FpSemigroupInterface::is_obviously_finite_impl() {

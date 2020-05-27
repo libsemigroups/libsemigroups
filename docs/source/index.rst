@@ -1,4 +1,4 @@
-libsemigroups - Version 1.0.6
+libsemigroups - Version 1.0.9
 =============================
 
 C++ library for semigroups and monoids
@@ -78,6 +78,7 @@ be in the future too, but presently they don't work.
    order
    semigroups
    semiring
+   words
    misc
 
 .. toctree::

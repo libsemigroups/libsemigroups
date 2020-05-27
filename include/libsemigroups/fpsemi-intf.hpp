@@ -512,6 +512,21 @@ namespace libsemigroups {
       return _alphabet;
     }
 
+    //! Returns the i-th letter of the alphabet of the finitely presented
+    //! semigroup represented by \p this.
+    //!
+    //! \param i the index of the letter.
+    //!
+    //! \returns A std::string by value.
+    //!
+    //! \throws std::range_error if the index \p i is out of range.
+    //!
+    //! \complexity
+    //! Constant.
+    std::string alphabet(size_t i) const {
+      return std::string({_alphabet.at(i)});
+    }
+
     //! Returns the identity of \p this, or throws an exception if there isn't
     //! one.
     //!

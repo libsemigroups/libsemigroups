@@ -152,8 +152,6 @@ namespace libsemigroups {
       // ToddCoxeter - typedefs - private
       ////////////////////////////////////////////////////////////////////////
 
-      using Table = detail::DynamicArray2<class_index_type>;
-
       // Forward declared
       struct NormalFormIteratorTraits;
 
@@ -161,6 +159,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs + enums - public
       ////////////////////////////////////////////////////////////////////////
+
+      //! This is the type of the coset table stored inside a ToddCoxeter
+      //! instance.
+      using table_type = detail::DynamicArray2<class_index_type>;
 
       //! This is the type of the indices used for cosets in a
       //! ToddCoxeter instance.
@@ -373,7 +375,7 @@ namespace libsemigroups {
       //! with an existing coset table. The argument should represent the left
       //! or right Cayley graph of a finite semigroup. If an invalid table is
       //! given, then an exception is thrown.
-      void prefill(Table const&);
+      void prefill(table_type const&);
 
       // Settings
       //! Sets the value of the "Froidure-Pin policy" specified by the argument
@@ -572,7 +574,7 @@ namespace libsemigroups {
       void standardize(order);
 
       //! Friend functions for TCE
-      friend Table* table(ToddCoxeter*);
+      // friend table_type* table(ToddCoxeter*);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - iterators - public
@@ -623,7 +625,7 @@ namespace libsemigroups {
       // ToddCoxeter - member functions (validation) - private
       ////////////////////////////////////////////////////////////////////////
 
-      void validate_table(Table const&, size_t const, size_t const) const;
+      void validate_table(table_type const&, size_t const, size_t const) const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (initialisation) - private
@@ -634,7 +636,7 @@ namespace libsemigroups {
       void init_felsch_tree();
       void init_preimages_from_table();
       void prefill(FroidurePinBase&);
-      void prefill_and_validate(Table const&, bool);
+      void prefill_and_validate(table_type const&, bool);
       void reverse_if_necessary_and_push_back(word_type,
                                               std::vector<word_type>&);
 
@@ -954,13 +956,13 @@ namespace libsemigroups {
       std::unique_ptr<FelschTree> _felsch_tree;
       size_t                      _nr_pairs_added_earlier;
       bool                        _prefilled;
-      Table                       _preim_init;
-      Table                       _preim_next;
+      table_type                  _preim_init;
+      table_type                  _preim_next;
       std::vector<word_type>      _relations;
       std::unique_ptr<Settings>   _settings;
       order                       _standardized;
       state                       _state;
-      Table                       _table;
+      table_type                  _table;
       std::unique_ptr<Tree>       _tree;
     };
 

@@ -678,8 +678,10 @@ namespace libsemigroups {
     REQUIRE(S.nr_rules() == 18);
 
     FpSemigroup T(S);
+    REQUIRE(T.nr_rules() == 18);
     T.add_rule(S.factorisation(Transf({3, 4, 4, 4, 4})),
                S.factorisation(Transf({3, 1, 3, 3, 3})));
+    REQUIRE(T.nr_rules() == 19);
 
     REQUIRE(T.size() == 21);
     REQUIRE(T.equal_to(S.factorisation(Transf({1, 3, 1, 3, 3})),
@@ -834,6 +836,7 @@ namespace libsemigroups {
     S.add_rule("001010101010", "00");
 
     REQUIRE(S.size() == 240);
+    REQUIRE(S.froidure_pin()->size() == 240);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "039", "add_rule", "[quick][fpsemi]") {
@@ -924,4 +927,44 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 3);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "044",
+                          "run_for/until",
+                          "[fpsemigroup][quick]") {
+    auto        rg = ReportGuard(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("abce");
+    S.set_identity("e");
+    S.add_rule("aa", "e");
+    S.add_rule("bc", "e");
+    S.add_rule("bbb", "e");
+    S.add_rule("ababababababab", "e");
+    S.add_rule("abacabacabacabacabacabacabacabac", "e");
+    S.run_for(std::chrono::nanoseconds(1));
+    REQUIRE(!S.finished());
+    size_t nr_calls = 0;
+    S.run_until([&nr_calls]() {
+      ++nr_calls;
+      return nr_calls == 3;
+    });
+    REQUIRE(!S.finished());
+    REQUIRE(nr_calls == 3);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "045",
+                          "constructors",
+                          "[fpsemigroup][quick]") {
+    using Transf8 = Transformation<uint8_t>;
+    auto        rg = ReportGuard(REPORT);
+    FroidurePin<Transf8> S({Transf8({1, 0, 1}), Transf8({0, 0, 0})});
+
+    FpSemigroup T(S);
+
+    REQUIRE(!T.has_froidure_pin());
+    REQUIRE(T.size() == S.size());
+  }
+
+
 }  // namespace libsemigroups
