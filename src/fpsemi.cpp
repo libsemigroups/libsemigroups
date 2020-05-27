@@ -45,6 +45,7 @@ namespace libsemigroups {
   }
 
   FpSemigroup::FpSemigroup(std::shared_ptr<FroidurePinBase> S) : FpSemigroup() {
+    S->run();
     set_alphabet(S->nr_generators());
     for (auto it = S->cbegin_rules(); it != S->cend_rules(); ++it) {
       add_rule(*it);
