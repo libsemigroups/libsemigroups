@@ -148,13 +148,6 @@ namespace libsemigroups {
     //! \endcode
     class ToddCoxeter final : public CongruenceInterface,
                               public detail::CosetManager {
-      ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeter - typedefs - private
-      ////////////////////////////////////////////////////////////////////////
-
-      // Forward declared
-      struct NormalFormIteratorTraits;
-
      public:
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs + enums - public
@@ -167,12 +160,6 @@ namespace libsemigroups {
       //! This is the type of the indices used for cosets in a
       //! ToddCoxeter instance.
       using coset_type = CongruenceInterface::class_index_type;
-
-      //! This is the return type of ToddCoxeter::cbegin_normal_forms and
-      //! ToddCoxeter::cend_normal_forms, which can be used to access normal
-      //! forms from a coset index.
-      using normal_form_iterator
-          = detail::ConstIteratorStateful<NormalFormIteratorTraits>;
 
       //! This struct holds various enums which effect the coset enumeration
       //! process used by ToddCoxeter::run.
@@ -580,6 +567,38 @@ namespace libsemigroups {
       // ToddCoxeter - iterators - public
       ////////////////////////////////////////////////////////////////////////
 
+      //! No doc
+      struct NormalFormIteratorTraits
+          : detail::ConstIteratorTraits<IntegralRange<coset_type>> {
+        using value_type      = word_type;
+        using const_reference = value_type const;
+        using reference       = value_type;
+        using const_pointer   = value_type const*;
+        using pointer         = value_type*;
+
+        using state_type = ToddCoxeter*;
+
+        struct Deref {
+          value_type operator()(state_type                                tc,
+                                IntegralRange<coset_type>::const_iterator it) {
+            return tc->class_index_to_word(*it);
+          }
+        };
+
+        struct AddressOf {
+          pointer operator()(state_type,
+                             IntegralRange<coset_type>::const_iterator) {
+            LIBSEMIGROUPS_ASSERT(false);
+            return nullptr;
+          }
+        };
+      };
+      //! This is the return type of ToddCoxeter::cbegin_normal_forms and
+      //! ToddCoxeter::cend_normal_forms, which can be used to access normal
+      //! forms from a coset index.
+      using normal_form_iterator
+          = detail::ConstIteratorStateful<NormalFormIteratorTraits>;
+
       //! Returns a const iterator pointing to the normal form of the first
       //! class of the congruence represented by an instance of ToddCoxeter.
       //! The order of the classes, and the normal form, that is returned are
@@ -896,34 +915,6 @@ namespace libsemigroups {
       struct Settings;                    // Forward declaration
       friend struct ProcessCoincidences;  // Forward declaration
       struct TreeNode;                    // Forward declaration
-
-      struct DerefNormalForm {
-        word_type operator()(ToddCoxeter*                              tc,
-                             IntegralRange<coset_type>::const_iterator it) {
-          return tc->class_index_to_word(*it);
-        }
-      };
-
-      struct AddressOfNormalForm {
-        word_type* operator()(ToddCoxeter*,
-                              IntegralRange<coset_type>::const_iterator) {
-          LIBSEMIGROUPS_ASSERT(false);
-          return nullptr;
-        }
-      };
-
-      struct NormalFormIteratorTraits
-          : detail::ConstIteratorTraits<IntegralRange<coset_type>> {
-        using value_type      = word_type;
-        using const_reference = word_type const;
-        using reference       = word_type;
-        using const_pointer   = word_type const*;
-        using pointer         = word_type*;
-
-        using state_type = ToddCoxeter*;
-        using Deref      = DerefNormalForm;
-        using AddressOf  = AddressOfNormalForm;
-      };
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - aliases - private
