@@ -46,13 +46,16 @@
 //    If this matrix has a non-trivial kernel, then we can construct a 
 //    surjective homomorphism onto an infinite subsemigroup of the rationals
 //    under addition. So we check that the matrix is full rank. 
+//
+// 6. The presentation is not that of a free product. To do this we consider
+//    a graph whose vertices are generators and an edge connects two generators
+//    if they occur on either side of the same relation. If this graph is 
+//    disconnected then the presentation is a free product and is therefore
+//    infinite. Note that we currently do not consider the case where the 
+//    identity occurs in the presentation.
 
 // TODO(later):
 // 1) remove code duplication
-// 2) check wether the graph with generators as vertices and
-//    edges connecting two generators if they occur in the same
-//    relation is connected. If not we have a semigroup free 
-//    product which is infinite.
 
 #ifndef LIBSEMIGROUPS_OBVINF_HPP_
 #define LIBSEMIGROUPS_OBVINF_HPP_
@@ -65,8 +68,6 @@
 #include <vector>         // for vector
 #include <iterator>       // for next
 #include <Eigen/QR>       // for dimensionOfKernel
-
-#include <iostream>
 
 #include "libsemigroups-debug.hpp" // for LIBSEMIGROUPS_ASSERT
 #include "uf.hpp"                  // for UF 
@@ -178,6 +179,7 @@ namespace libsemigroups {
                                    Eigen::NoChange);
         _matrix.block(matrix_start, 0, 
                       (last-first)/2, _matrix.cols()).setZero();
+
         for (auto it = first; it < last; it += 2) {
           if ((*it).empty() || (*(it + 1)).empty()) {
             _empty_word = true;
@@ -216,17 +218,11 @@ namespace libsemigroups {
             _preserve_length = false; 
           } 
           for (auto i = _map.begin(); std::next(i) != _map.end(); ++i) {
-            //std::cout << i->first << " " << std::next(i)->first << std::endl;
             _letter_components.unite(_matrix_col_index.find(i->first)->second, 
                                      _matrix_col_index.find(std::next(i)->first)->second);
           }
-          //std::cout << "UF: ";
-          //for (auto i = 0; i<_nr_gens; i++)
-          //  std::cout << _letter_components.find(i) << " ";
-          //std::cout << std::endl;
-          //std::cout << _letter_components.nr_blocks() << std::endl;
         }
-       //std::cout << "Matrix" << std::endl << _matrix << std::endl;
+
         _nr_letter_components = _letter_components.nr_blocks(); 
       }
 
