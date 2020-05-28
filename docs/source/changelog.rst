@@ -1,6 +1,41 @@
 Changelog
 =========
 
+v1.1.0 (released 28/05/2020)
+----------------------------
+
+This is a minor release which adds some new features and fixes some bugs. 
+
+The more major new features in this release are:
+
+* iterators for words and strings with respect to lexicographic and short-lex
+  orders (``cbegin_wilo``, ``cbegin_wislo``, ``cbegin_silo``, ``cbegin_sislo``)
+* the class template ``FroidurePin`` now has member functions for iterating
+  through its rules (``cbegin_rules``)
+* the namespace ``action_digraph_helper`` is introduced. This namespace
+  contains the helper functions ``follow_path``, ``is_acyclic``, 
+  ``is_reachable``, ``validate_node``, and ``validate_label`` for the class
+  template ``ActionDigraph``.  
+* the class template ``ActionDigraph`` has new member functions for iterating
+  through nodes in reverse (``crbegin_nodes``); for iterating through paths
+  (``cbegin_panilo``, ``cbegin_panislo``, ``cbegin_pilo``, ``cbegin_pislo``,
+  ``cbegin_pstilo``, and ``cbegin_pstislo``); and for counting the number of
+  paths starting at a source (and optionally ending at a target) node
+  (``number_of_paths``).
+
+The more major bugs fixed are:
+
+* the class ``FpSemigroup`` member functions ``nr_rules``, ``run_until``, and
+  ``run_for`` now behave as expected
+* a fix so that ``libsemigroups`` can be used with ``fmt`` version 6.2.0 was
+  made.
+* a bug was resolved in ``FroidurePin::word_to_pos`` which resulted in
+  incorrect results for instances with duplicate generators.
+
+There were also several further minor improvements and bug fixes implemented in
+this version, many of which arose while developing `libsemigroups_cppyy`_.
+Thanks to Murray Whyte for pointing out several of these bugs. 
+
 v1.0.9 (released 20/04/2020)
 ----------------------------
 
