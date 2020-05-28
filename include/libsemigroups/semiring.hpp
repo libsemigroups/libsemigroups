@@ -38,9 +38,10 @@ namespace libsemigroups {
   //! \f$(R, \times)\f$ is a monoid with identity \f$1\f$, and the
   //! following hold:
   //!
-  //! * Mulitplication is left and right distributive over addition, i.e.
-  //! \f$a \times (b + c) = a \times b + a \times c\f$ and \f$(a + b)
-  //! \times c = (a \times c) + (b \times c)\f$ for all \f$a,b,c\in R\f$;
+  //! * Multiplication is left and right distributive over addition, i.e.
+  //! \f$a \times (b + c) = a \times b + a \times c\f$ and
+  //! \f$(a + b) \times c = (a \times c) + (b \times c)\f$ for all
+  //! \f$a,b,c\in R\f$;
   //!
   //! * Multiplication by \f$0\f$ annihilates \f$R\f$:
   //!   \f$0 \times a = a \times 0\f$ for all \f$R\f$.
