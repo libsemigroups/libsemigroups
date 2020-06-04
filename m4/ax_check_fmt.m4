@@ -23,7 +23,7 @@ AC_DEFUN([AX_CHECK_FMT], [
   	AC_CHECK_FILE(
    		[$srcdir/extern/fmt-5.3.0/include/fmt/printf.h],
    		[],
-   		[AC_MSG_ERROR([fmt is required, clone or download the repo from https://github.com/fmt/fmt into this directory])])
+   		[AC_MSG_ERROR([fmt is required, clone or download the repo from https://github.com/fmtlib/fmt into this directory])])
 
 	AC_SUBST(FMT_CFLAGS, ['-I$(srcdir)/extern/fmt-5.3.0/include'])
         
