@@ -25,13 +25,29 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "001", "", "[freeband][quick]") {
-    REQUIRE(right({0, 0, 0, 0, 1, 1, 0, 0, 2}, 2)
+    word_type w = {0, 0, 0, 0, 1, 1, 0, 0, 2};
+    REQUIRE(right(w.cbegin(), w.cend(), 2)
             == word_type({7, 7, 7, 7, 7, 7, 8, 8, UNDEFINED}));
-
-    REQUIRE(right({0, 0, 0, 0, 1, 1, 0, 0, 2}, 3)
+    w = {0, 0, 0, 0, 1, 1, 0, 0, 2};
+    REQUIRE(right(w.cbegin(), w.cend(), 3)
             == word_type({8, 8, 8, 8, 8, 8, UNDEFINED, UNDEFINED, UNDEFINED}));
+    w = {0, 0, 0, 1, 2, 1, 2, 1, 3, 1, 2, 1, 0, 1, 2, 3};
+    REQUIRE(
+        right(w.cbegin(), w.cend(), 2)
+        == word_type(
+            {3, 3, 3, 7, 7, 7, 7, 9, 9, 11, 11, 13, 13, 14, 15, UNDEFINED}));
 
-    REQUIRE(right({0, 0, 0, 1, 2, 1, 2, 1, 3, 1, 2, 1, 0, 1, 2, 3}, 2) ==
-            word_type({3, 3, 3, 7, 7, 7, 7, 9, 9, 11, 11, 13, 13, 14, 15, UNDEFINED}));
+    w = {0, 1, 2, 2, 3, 4, 0, 1, 5, 1};
+    REQUIRE(
+        reverse(right(w.crbegin(), w.crend(), 4))
+        == word_type(
+            {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 0, 1, 2, 4, 5, 5}));
+
+    w = {1, 5, 1, 0, 4, 3, 2, 2, 1, 0};
+    standardize(w);
+    REQUIRE(
+        right(w.cbegin(), w.cend(), 4)
+        == word_type(
+            {4, 4, 5, 7, 8, 9, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
   }
 }  // namespace libsemigroups
