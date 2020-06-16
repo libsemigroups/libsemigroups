@@ -1601,7 +1601,7 @@ namespace libsemigroups {
             _max(max),
             _nodes(),
             _target(target) {
-        if (_digraph != nullptr && _min < _max && source != target) {
+        if (_digraph != nullptr && _min < _max) {
           _nodes.push_back(source);
           ++(*this);
         }
@@ -1640,6 +1640,11 @@ namespace libsemigroups {
           // first call
           _edge = 0;
           init_can_reach_target();
+          if (_min == 0 && _nodes.front() == _target) {
+            // special case if the source == target, and we allow words of
+            // length 0, then we return the empty word here.
+            return *this;
+          }
         }
 
         do {

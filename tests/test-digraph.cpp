@@ -37,6 +37,20 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;  // forward decl
 
+  void add_chain(ActionDigraph<size_t>& digraph, size_t n) {
+    size_t old_nodes = digraph.nr_nodes();
+    digraph.add_nodes(n);
+    for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
+      digraph.add_edge(i, i + 1, 0);
+    }
+  }
+
+  ActionDigraph<size_t> chain(size_t n) {
+    ActionDigraph<size_t> g(0, 1);
+    add_chain(g, n);
+    return g;
+  }
+
   void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
     size_t old_nodes = digraph.nr_nodes();
     digraph.add_nodes(n);
@@ -1236,5 +1250,21 @@ namespace libsemigroups {
     REQUIRE(*it == word_type({1}));
     ++it;
     REQUIRE(it == ad.cend_pstilo());
+
+    ad = chain(5);
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 100), ad.cend_pstilo())
+            == 1);
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 4, 100), ad.cend_pstilo())
+            == 0);
+    ad = cycle(5);
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 6), ad.cend_pstilo()) == 2);
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 100), ad.cend_pstilo())
+            == 20);
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 4, 100), ad.cend_pstilo())
+            == 19);
+
+    // There's 1 path from 0 to 0 of length in range [0, 1), the path of length
+    // 0.
+    REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 2), ad.cend_pstilo()) == 1);
   }
 }  // namespace libsemigroups
