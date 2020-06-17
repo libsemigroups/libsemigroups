@@ -2673,7 +2673,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 30);
+      REQUIRE(kb.nr_rules() == 18);
       REQUIRE(kb.size() == 22);
     }
 
@@ -2698,7 +2698,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 30);
+      REQUIRE(kb.nr_rules() == 18);
       REQUIRE(kb.size() == 22);
     }
 

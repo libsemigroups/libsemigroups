@@ -956,8 +956,8 @@ namespace libsemigroups {
                           "045",
                           "constructors",
                           "[fpsemigroup][quick]") {
-    using Transf8 = Transformation<uint8_t>;
-    auto        rg = ReportGuard(REPORT);
+    using Transf8           = Transformation<uint8_t>;
+    auto                 rg = ReportGuard(REPORT);
     FroidurePin<Transf8> S({Transf8({1, 0, 1}), Transf8({0, 0, 0})});
 
     FpSemigroup T(S);
@@ -966,5 +966,14 @@ namespace libsemigroups {
     REQUIRE(T.size() == S.size());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "046",
+                          "set_inverses",
+                          "[fpsemigroup][quick]") {
+    FpSemigroup S;
+    S.set_alphabet("abAe");
+    S.set_identity("e");
+    REQUIRE_THROWS_AS(S.set_inverses("bAae"), LibsemigroupsException);
+  }
 
 }  // namespace libsemigroups

@@ -181,6 +181,7 @@ namespace libsemigroups {
                               + " but found " + detail::to_string(inv.size()));
     }
 
+    // Checks the inv consists of valid letters in the alphabet
     validate_word(inv);
 
     std::string cpy = inv;
@@ -193,11 +194,36 @@ namespace libsemigroups {
       }
     }
 
+    // Check that (x ^ - 1) ^ -1 = x
+    for (size_t i = 0; i < _alphabet.size(); ++i) {
+      if (_alphabet[i] == identity()[0] && inv[i] != identity()[0]) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid inverses, the identity is %c, but %c ^ -1 = %c",
+            _alphabet[i],
+            _alphabet[i],
+            inv[i]);
+      }
+      for (size_t j = 0; j < _alphabet.size(); ++j) {
+        if (_alphabet[j] == inv[i]) {
+          if (inv[j] != _alphabet[i]) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "invalid inverses, %c ^ -1 = %c but %c ^ -1 = %c",
+                _alphabet[i],
+                inv[i],
+                inv[i],
+                inv[j]);
+          }
+          break;
+        }
+      }
+    }
+
     _inverses = inv;
 
     for (size_t i = 0; i < _alphabet.size(); ++i) {
-      add_rule(std::string(1, _alphabet[i]) + _inverses[i], _identity);
-      add_rule(std::string(1, _inverses[i]) + _alphabet[i], _identity);
+      if (_alphabet[i] != identity()[0]) {
+        add_rule(std::string(1, _alphabet[i]) + _inverses[i], _identity);
+      }
     }
   }
 

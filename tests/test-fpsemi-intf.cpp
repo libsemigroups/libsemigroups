@@ -17,6 +17,8 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <cstddef>
 
 #include "catch.hpp"      // for REQUIRE, SECTION, ...
@@ -704,17 +706,13 @@ namespace libsemigroups {
       // Can't set inverses more than once
       REQUIRE_THROWS_AS(fp->set_inverses("abc"), LibsemigroupsException);
       REQUIRE(std::vector<rule_type>(fp->cbegin_rules(), fp->cend_rules())
-              == std::vector<rule_type>({rule_type({"ac", "a"}),
-                                         rule_type({"ca", "a"}),
-                                         rule_type({"bc", "b"}),
-                                         rule_type({"cb", "b"}),
-                                         rule_type({"cc", "c"}),
-                                         rule_type({"ab", "c"}),
-                                         rule_type({"ba", "c"}),
-                                         rule_type({"ba", "c"}),
-                                         rule_type({"ab", "c"}),
-                                         rule_type({"cc", "c"}),
-                                         rule_type({"cc", "c"})}));
+              == std::vector<rule_type>({{"ac", "a"},
+                                         {"ca", "a"},
+                                         {"bc", "b"},
+                                         {"cb", "b"},
+                                         {"cc", "c"},
+                                         {"ab", "c"},
+                                         {"ba", "c"}}));
       REQUIRE(fp->inverses() == "bac");
     }
 
@@ -722,7 +720,7 @@ namespace libsemigroups {
                             "019",
                             "set_inverses + inverses (2/2)",
                             "[quick]") {
-      using rule_type = typename FpSemigroupInterface::rule_type;
+      // using rule_type = typename FpSemigroupInterface::rule_type;
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<5>::type;
@@ -750,43 +748,45 @@ namespace libsemigroups {
       // Not set
       REQUIRE_THROWS_AS(fp->inverses(), LibsemigroupsException);
 
-      fp->set_inverses(b + a);
+      // Inverse of the identity isn't the identity
+      REQUIRE_THROWS_AS(fp->set_inverses(b + a), LibsemigroupsException);
+
+      fp->set_inverses(a + b);
 
       // Can't set inverses more than once
       REQUIRE_THROWS_AS(fp->set_inverses(b + a), LibsemigroupsException);
 
-      REQUIRE(std::vector<rule_type>(fp->cbegin_rules(), fp->cend_rules())
-              == std::vector<rule_type>(
-                  {rule_type({b + b + b, b}),
-                   rule_type({b + b + a + b, b + a + b}),
-                   rule_type({a + a + a + a + a, a + a}),
-                   rule_type({a + b + a + a + b, a + a + a + a + b}),
-                   rule_type({b + a + a + a + a, b + a}),
-                   rule_type({b + b + a + a + b, b + a + a + a + b}),
-                   rule_type({a + a + b + a + b + a, a + a + b + b}),
-                   rule_type({a + a + b + a + b + b, a + a + b + a}),
-                   rule_type({b + a + b + a + b + a, b + a + b + b}),
-                   rule_type({b + a + b + a + b + b, b + a + b + a}),
-                   rule_type({b + b + a + a + a + b, b + a + a + b}),
-                   rule_type({a + a + b + b + a + a + a, a + a + b + b}),
-                   rule_type(
-                       {b + a + b + a + a + a + b, a + a + b + a + a + a + b}),
-                   rule_type({b + a + b + b + a + a + a, b + a + b + b}),
-                   rule_type({a + a + a + b + a + a + a + b,
-                              a + a + b + a + a + a + b}),
-                   rule_type({a + a + b + a + a + a + b + b,
-                              a + a + b + a + a + a + b}),
-                   rule_type({b + a + a + b + a + a + a + b,
-                              a + a + b + a + a + a + b}),
-                   rule_type({a + a + b + a + a + a + b + a + a + a,
-                              a + a + b + a + a + a + b}),
-                   rule_type({a + a, a}),
-                   rule_type({b + a, b}),
-                   rule_type({a + b, b}),
-                   rule_type({a + b, a}),
-                   rule_type({b + a, a}),
-                   rule_type({b + a, a}),
-                   rule_type({a + b, a})}));
+      // REQUIRE(std::vector<rule_type>(fp->cbegin_rules(), fp->cend_rules())
+      //         == std::vector<rule_type>(
+      //             {rule_type({b + b + b, b}),
+      //              rule_type({b + b + a + b, b + a + b}),
+      //              rule_type({a + a + a + a + a, a + a}),
+      //              rule_type({a + b + a + a + b, a + a + a + a + b}),
+      //              rule_type({b + a + a + a + a, b + a}),
+      //              rule_type({b + b + a + a + b, b + a + a + a + b}),
+      //              rule_type({a + a + b + a + b + a, a + a + b + b}),
+      //              rule_type({a + a + b + a + b + b, a + a + b + a}),
+      //              rule_type({b + a + b + a + b + a, b + a + b + b}),
+      //              rule_type({b + a + b + a + b + b, b + a + b + a}),
+      //              rule_type({b + b + a + a + a + b, b + a + a + b}),
+      //              rule_type({a + a + b + b + a + a + a, a + a + b + b}),
+      //              rule_type(
+      //                  {b + a + b + a + a + a + b, a + a + b + a + a + a +
+      //                  b}),
+      //              rule_type({b + a + b + b + a + a + a, b + a + b + b}),
+      //              rule_type({a + a + a + b + a + a + a + b,
+      //                         a + a + b + a + a + a + b}),
+      //              rule_type({a + a + b + a + a + a + b + b,
+      //                         a + a + b + a + a + a + b}),
+      //              rule_type({b + a + a + b + a + a + a + b,
+      //                         a + a + b + a + a + a + b}),
+      //              rule_type({a + a + b + a + a + a + b + a + a + a,
+      //                         a + a + b + a + a + a + b}),
+      //              rule_type({a + a, a}),
+      //              rule_type({b + a, b}),
+      //              rule_type({a + b, b}),
+      //              rule_type({a + b, a}),
+      //              rule_type({b + a, a})}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
