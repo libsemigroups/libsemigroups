@@ -33,7 +33,7 @@
 //    same as the number of generators on the right hand side for at least
 //    one generator. Otherwise the relations preserve the length of any word
 //    and so there are infinitely many distinct words.
-// 
+//
 // 4. There are at least as many relations as there are generators. Otherwise
 //    we can find a surjective homomorphism onto an infinite subsemigroup of
 //    the rationals under addition.
@@ -43,15 +43,15 @@
 //    and rows correspond to relations. The (i, j)-th entry is the number of
 //    occurences of the j-th generator in the left hand side of the i-th
 //    relation minus the number of occurences of it on the right hand side.
-//    If this matrix has a non-trivial kernel, then we can construct a 
+//    If this matrix has a non-trivial kernel, then we can construct a
 //    surjective homomorphism onto an infinite subsemigroup of the rationals
-//    under addition. So we check that the matrix is full rank. 
+//    under addition. So we check that the matrix is full rank.
 //
 // 6. The presentation is not that of a free product. To do this we consider
 //    a graph whose vertices are generators and an edge connects two generators
-//    if they occur on either side of the same relation. If this graph is 
+//    if they occur on either side of the same relation. If this graph is
 //    disconnected then the presentation is a free product and is therefore
-//    infinite. Note that we currently do not consider the case where the 
+//    infinite. Note that we currently do not consider the case where the
 //    identity occurs in the presentation.
 
 // TODO(later):
@@ -60,17 +60,17 @@
 #ifndef LIBSEMIGROUPS_OBVINF_HPP_
 #define LIBSEMIGROUPS_OBVINF_HPP_
 
+#include <Eigen/QR>       // for dimensionOfKernel
 #include <cstddef>        // for size_t
+#include <iterator>       // for next
 #include <string>         // for string
 #include <unordered_map>  // for unordered_map
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for pair
 #include <vector>         // for vector
-#include <iterator>       // for next
-#include <Eigen/QR>       // for dimensionOfKernel
 
-#include "libsemigroups-debug.hpp" // for LIBSEMIGROUPS_ASSERT
-#include "uf.hpp"                  // for UF 
+#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "uf.hpp"                   // for UF
 
 namespace libsemigroups {
   namespace detail {
@@ -161,8 +161,13 @@ namespace libsemigroups {
 
      public:
       explicit IsObviouslyInfinite(size_t n)
-          : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique(), 
-            _matrix_col_index(), _matrix(), _preserve_length(true),
+          : _empty_word(false),
+            _nr_gens(n),
+            _preserve(n, false),
+            _unique(n, false),
+            _seen(n, false),
+            _matrix(0, n),
+            _preserve_length(true),
             _letter_components(n) {}
 
       explicit IsObviouslyInfinite(std::string const& lphbt)
@@ -175,86 +180,87 @@ namespace libsemigroups {
 
       void add_rules(const_iterator first, const_iterator last) {
         auto matrix_start = _matrix.rows();
-        _matrix.conservativeResize(matrix_start+(last-first)/2, 
+        _matrix.conservativeResize(matrix_start + (last - first) / 2,
                                    Eigen::NoChange);
-        _matrix.block(matrix_start, 0, 
-                      (last-first)/2, _matrix.cols()).setZero();
+        _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+            .setZero();
 
         for (auto it = first; it < last; it += 2) {
           if ((*it).empty() || (*(it + 1)).empty()) {
             _empty_word = true;
           }
-          _map.clear();
-          plus_letters_in_word(*it);
-          if (!_empty_word && _map.size() == 1) {
-            _unique.insert((*it)[0]);
+          std::fill(_seen.begin(), _seen.end(), false);
+          plus_letters_in_word(matrix_start + (it - first) / 2, *it);
+          if (!_empty_word
+              && std::all_of(
+                  (*it).cbegin() + 1,
+                  (*it).cend(),
+                  [&it](TLetterType i) -> bool { return i == (*it)[0]; })) {
+            _unique[(*it)[0]] = true;
           }
-          minus_letters_in_word(*(it + 1));
+          minus_letters_in_word(matrix_start + (it - first) / 2, *(it + 1));
           if (!_empty_word && !(*(it + 1)).empty()
               && std::all_of((*(it + 1)).cbegin() + 1,
                              (*(it + 1)).cend(),
                              [&it](TLetterType i) -> bool {
                                return i == (*(it + 1))[0];
                              })) {
-            _unique.insert((*(it + 1))[0]);
+            _unique[(*(it + 1))[0]] = true;
           }
-          for (auto const& x : _map) {
-            if (x.second != 0) {
-              _preserve.insert(x.first);
-            }
-            auto col = _matrix_col_index.find(x.first);
-            if (col == _matrix_col_index.end()) {
-              _matrix_col_index.emplace(x.first, _matrix.cols());
-              _matrix.conservativeResize(Eigen::NoChange, 
-                                         _matrix.cols()+1);
-              _matrix.block(0, _matrix.cols()-1, 
-                            _matrix.rows(), 1).setZero();
-              _matrix(matrix_start+(it-first)/2, _matrix.cols()-1) += x.second;  
-            } else {
-              _matrix(matrix_start+(it-first)/2, col->second) += x.second;  
+          for (size_t x = 0; x < _nr_gens; x++) {
+            if (_matrix(matrix_start + (it - first) / 2, x) != 0) {
+              _preserve[x] = true;
             }
           }
-          if (_preserve_length && (_matrix.row(matrix_start+(it-first)/2).sum() != 0)) {
-            _preserve_length = false; 
-          } 
-          for (auto i = _map.begin(); std::next(i) != _map.end(); ++i) {
-            _letter_components.unite(_matrix_col_index.find(i->first)->second, 
-                                     _matrix_col_index.find(std::next(i)->first)->second);
+          if (_preserve_length
+              && (_matrix.row(matrix_start + (it - first) / 2).sum() != 0)) {
+            _preserve_length = false;
+          }
+          size_t last_seen = -1;
+          for (size_t x = 0; x < _nr_gens; ++x) {
+            if (_seen[x]) {
+              if (last_seen != -1)
+                _letter_components.unite(last_seen, x);
+              last_seen = x;
+            }
           }
         }
 
-        _nr_letter_components = _letter_components.nr_blocks(); 
+        _nr_letter_components = _letter_components.nr_blocks();
       }
 
       bool result() const {
-        LIBSEMIGROUPS_ASSERT(_matrix.rows()>=0);
-        LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()>=0);
+        LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
+        LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()
+                             >= 0);
         return _preserve_length
-               || (!_empty_word && _unique.size() != _nr_gens)
-               || _preserve.size() != _nr_gens 
+               || (!_empty_word
+                   && !std::all_of(_unique.begin(),
+                                   _unique.end(),
+                                   [](bool v) -> bool { return v; }))
+               || !std::all_of(_preserve.begin(),
+                               _preserve.end(),
+                               [](bool v) -> bool { return v; })
                || size_t(_matrix.rows()) < _nr_gens
                || (!_empty_word && _nr_letter_components > 1)
-               || size_t(_matrix.cast<float>().colPivHouseholderQr().rank()) != _nr_gens;
+               || size_t(_matrix.cast<float>().colPivHouseholderQr().rank())
+                      != _nr_gens;
       }
 
      private:
-      void letters_in_word(TWordType const& w, size_t adv) {
-        for (auto const& x : w) {
-          auto it = _map.find(x);
-          if (it == _map.end()) {
-            _map.emplace(x, adv);
-          } else {
-            it->second += adv;
-          }
+      void letters_in_word(size_t row, TWordType const& w, size_t adv) {
+        for (size_t const& x : w) {
+          _matrix(row, x) += adv;
+          _seen[x] = true;
         }
       }
 
-      void plus_letters_in_word(TWordType const& w) {
-        letters_in_word(w, 1);
+      void plus_letters_in_word(size_t row, TWordType const& w) {
+        letters_in_word(row, w, 1);
       }
 
-      void minus_letters_in_word(TWordType const& w) {
-        letters_in_word(w, -1);
+      void minus_letters_in_word(size_t row, TWordType const& w) {
+        letters_in_word(row, w, -1);
       }
 
       // TLetterType i belongs to "preserve" if there exists a relation where
@@ -262,15 +268,14 @@ namespace libsemigroups {
       // relation TLetterType i belongs to "unique" if there is a relation
       // where one side consists solely of i.
       bool                                                   _empty_word;
-      std::unordered_map<TLetterType, int64_t>               _map;
       size_t                                                 _nr_gens;
-      std::unordered_set<TLetterType>                        _preserve;
-      std::unordered_set<TLetterType>                        _unique;
-      std::unordered_map<TLetterType, size_t>                _matrix_col_index;
+      std::vector<bool>                                      _preserve;
+      std::vector<bool>                                      _unique;
+      std::vector<bool>                                      _seen;
       Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
       bool                                                   _preserve_length;
       detail::UF                                             _letter_components;
-      size_t                                                 _nr_letter_components;
+      size_t _nr_letter_components;
     };
   }  // namespace detail
 }  // namespace libsemigroups
