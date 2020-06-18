@@ -122,7 +122,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("silo",
                           "003",
                           "alphabet: abc, min: 0, max: 13",
-                          "[silo][quick]") {
+                          "[silo][quick][no-valgrind]") {
     auto w = std::vector<std::string>(
         cbegin_silo("abc", 13, "", std::string(13, 'c')),
         cend_silo("abc", 13, "", std::string(13, 'c')));
@@ -278,7 +278,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("sislo",
                           "008",
                           "alphabet: abc, min: 0, max: 13",
-                          "[sislo][quick]") {
+                          "[sislo][quick][no-valgrind]") {
     auto w = std::vector<std::string>(
         cbegin_sislo("abc", "", std::string(13, 'a')),
         cend_sislo("abc", "", std::string(13, 'a')));
