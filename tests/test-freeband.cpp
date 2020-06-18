@@ -50,4 +50,60 @@ namespace libsemigroups {
         == word_type(
             {4, 4, 5, 7, 8, 9, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Test radix_sort", "002", "", "[freeband][quick]") {
+    std::vector<word_type> level_edges = {{0, 0, 0, 0},
+                                          {0, 1, 1, 0},
+                                          {0, 2, 2, 0},
+                                          {0, 0, 0, 0},
+                                          {0, 1, 1, 0},
+                                          {0, 2, 2, 0}};
+    REQUIRE(radix_sort(level_edges, 3) == word_type({0, 1, 2, 0, 1, 2}));
+    level_edges = std::vector<word_type>(
+        6, word_type({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
+    REQUIRE(radix_sort(level_edges, 3) == word_type({0, 0, 0, 0, 0, 0}));
+    level_edges = {{0, 0, 0, 1},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {0, 0, 0, 1},
+                   {0, 0, 0, 1},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {0, 0, 0, 1}};
+    REQUIRE(radix_sort(level_edges, 8) == word_type({0, 1, 0, 0, 1, 0}));
+    level_edges = {{1, 2, 0, 5},
+                   {1, 2, 0, 5},
+                   {1, 2, 0, 5},
+                   {5, 3, 3, 5},
+                   {8, 3, 3, 5},
+                   {5, 3, 3, 5},
+                   {8, 3, 3, 5},
+                   {7, 2, 3, 5},
+                   {10, 2, 3, 5},
+                   {5, 0, 0, 4},
+                   {8, 0, 0, 4},
+                   {2, 2, 0, 4},
+                   {1, 2, 0, 4},
+                   {4, 3, 1, 9},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {1, 1, 0, 4},
+                   {1, 1, 0, 5},
+                   {1, 1, 0, 4},
+                   {1, 1, 0, 5},
+                   {5, 1, 2, 6},
+                   {5, 1, 2, 7},
+                   {5, 1, 3, 4},
+                   {5, 1, 3, 5},
+                   {5, 1, 2, 3},
+                   {5, 1, 2, 2},
+                   {5, 1, 0, 4},
+                   {4, 3, 1, 9}};
+    REQUIRE(radix_sort(level_edges, 4)
+            == word_type({10, 10, 10, 14, 15, 14, 15, 12, 13, 2, 3,
+                          7,  6,  18, 19, 19, 19, 19, 19, 19, 4, 9,
+                          4,  9,  16, 17, 8,  11, 1,  0,  5,  18}));
+  }
 }  // namespace libsemigroups
