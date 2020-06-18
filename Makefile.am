@@ -470,6 +470,7 @@ clean-local:
 	rm -rf docs/build
 	rm -rf docs/source/_generated
 	rm -rf coverage/
+	rm -f bench_*
 
 clean-local-check:
 	rm -rf $(check_PROGRAMS)
