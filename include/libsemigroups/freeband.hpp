@@ -26,7 +26,7 @@
 
 #include "libsemigroups/constants.hpp"
 #include "libsemigroups/libsemigroups-debug.hpp"
-#include "types.hpp" // word_type
+#include "types.hpp"  // word_type
 
 namespace libsemigroups {
 
@@ -41,50 +41,48 @@ namespace libsemigroups {
 
   void standardize(word_type& x);
 
-    template <typename T>
-    word_type right(T const first, T const last, size_t const k) {
-      // LIBSEMIGROUPS_ASSERT(is_standardized(first, last));
-      word_type out;
-      if (std::distance(first, last) == 0) {
-        return out;
-      }
-      T                   j            = first;
-      size_t              content_size = 0;
-      size_t const        N = *std::max_element(first, last) + 1;
-      std::vector<size_t> multiplicity(N + 1, 0);
-      for (auto i = first; i != last; ++i) {
-        if (i != first) {
-          LIBSEMIGROUPS_ASSERT(multiplicity[*(i- 1)] != 0);
-          --multiplicity[*(i - 1)];
-          if (multiplicity[*(i - 1)] == 0) {
-            --content_size;
-          }
-        }
-        while (j < last
-              && (multiplicity[*j] != 0 || content_size < k)) {
-          if (multiplicity[*j] == 0) {
-            ++content_size;
-          }
-          ++multiplicity[*j];
-          ++j;
-        }
-        out.push_back(content_size == k ? size_t(std::distance(first, j)) - 1
-                                        : UNDEFINED);
-      }
+  template <typename T>
+  word_type right(T const first, T const last, size_t const k) {
+    // LIBSEMIGROUPS_ASSERT(is_standardized(first, last));
+    word_type out;
+    if (std::distance(first, last) == 0) {
       return out;
     }
-
-    // Reverses and corrects output of "right" to "left"
-    word_type reverse(word_type&& out) {
-      std::reverse(out.begin(), out.end());
-      for (auto& x : out) {
-        if (x != UNDEFINED) {
-          x = out.size() - x - 1;
+    T                   j            = first;
+    size_t              content_size = 0;
+    size_t const        N            = *std::max_element(first, last) + 1;
+    std::vector<size_t> multiplicity(N + 1, 0);
+    for (auto i = first; i != last; ++i) {
+      if (i != first) {
+        LIBSEMIGROUPS_ASSERT(multiplicity[*(i - 1)] != 0);
+        --multiplicity[*(i - 1)];
+        if (multiplicity[*(i - 1)] == 0) {
+          --content_size;
         }
       }
-      return std::move(out);
+      while (j < last && (multiplicity[*j] != 0 || content_size < k)) {
+        if (multiplicity[*j] == 0) {
+          ++content_size;
+        }
+        ++multiplicity[*j];
+        ++j;
+      }
+      out.push_back(content_size == k ? size_t(std::distance(first, j)) - 1
+                                      : UNDEFINED);
     }
+    return out;
+  }
 
+  // Reverses and corrects output of "right" to "left"
+  word_type reverse(word_type&& out) {
+    std::reverse(out.begin(), out.end());
+    for (auto& x : out) {
+      if (x != UNDEFINED) {
+        x = out.size() - x - 1;
+      }
+    }
+    return std::move(out);
+  }
 
 }  // namespace libsemigroups
 

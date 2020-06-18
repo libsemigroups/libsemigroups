@@ -19,8 +19,8 @@
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/freeband.hpp"
 #include "libsemigroups/constants.hpp"
+#include "libsemigroups/freeband.hpp"
 
 namespace libsemigroups {
 
