@@ -8,13 +8,19 @@ sudo apt-get install git --yes
 sudo apt-get install libtool-bin --yes 
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=stable-3.2
+GAP_SEMIGROUPS_BRANCH=stable-3.3
 GAP_SEMIGROUPS_REPO=gap-packages
 GAP_VERSION=$(ls inst)
 export GAPROOT=$HOME/inst/$GAP_VERSION
 GAP_SH="$GAPROOT/bin/gap.sh"
 
 sudo chown 1000:1000 -R libsemigroups/
+if [ -x libsemigroups/etc/version-number.sh ] && [ ! -f libsemigroups/.VERSION ]; then
+  cd libsemigroups
+  etc/version-number.sh > .TMP_VERSION
+  mv .TMP_VERSION .VERSION
+  cd ..
+fi
 
 # Remove packaged GAP version of Semigroups package
 rm -rf $HOME/inst/$GAP_VERSION/pkg/semigroups-*.*.*
@@ -33,7 +39,13 @@ make -j4
 cd ..
 git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
 
-echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); InstallPackage(\"digraphs\", false); InstallPackage(\"io\", false); InstallPackage(\"orb\", false); InstallPackage(\"genss\", false); QUIT;" | $GAP_SH -A -r -T
+INSTALL_PKGS="InstallPackage(\"digraphs\", false); "
+INSTALL_PKGS+="InstallPackage(\"io\", false); "
+INSTALL_PKGS+="InstallPackage(\"orb\", false); "
+INSTALL_PKGS+="InstallPackage(\"genss\", false); "
+INSTALL_PKGS+="InstallPackage(\"images\", false);"
+
+echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -r -T
 # The next line is a hack until the package manager compiles Orb
 cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
