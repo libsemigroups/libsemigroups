@@ -126,7 +126,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("wilo",
                           "005",
                           "letters: 3, min: 0, max: 13",
-                          "[wilo][quick]") {
+                          "[wilo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(13, 2);
 
@@ -141,7 +141,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("wilo",
                           "006",
                           "forward iterator requirements",
-                          "[wilo][quick]") {
+                          "[wilo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(4, 1);
     auto      it = cbegin_wilo(2, 4, first, last);

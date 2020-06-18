@@ -103,7 +103,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("wislo",
                           "003",
                           "n: 3, min; 0, max: 13",
-                          "[wislo][quick]") {
+                          "[wislo][quick][no-valgrind]") {
     word_type              first = {};
     word_type              last(13, 0);
     std::vector<word_type> w;
@@ -114,7 +114,10 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<word_type>()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wislo", "004", "lex + sort", "[wislo][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("wislo",
+                          "004",
+                          "lex + sort",
+                          "[wislo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(13, 2);
     auto      w = std::vector<word_type>(cbegin_wilo(3, 13, first, last),
