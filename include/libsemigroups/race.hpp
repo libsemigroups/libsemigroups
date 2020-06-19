@@ -152,7 +152,7 @@ namespace libsemigroups {
       std::shared_ptr<T> find_runner() const {
         static_assert(
             std::is_base_of<Runner, T>::value,
-            "the template parameter must be derived from CongruenceInterface");
+            "the template parameter must be derived from Runner");
         // We use find_if so that this works even if we haven't computed
         // anything at all.
         auto it = std::find_if(_runners.begin(),
@@ -175,7 +175,8 @@ namespace libsemigroups {
         static_assert(std::is_same<typename std::result_of<TCallable(
                                        std::shared_ptr<Runner>)>::type,
                                    void>::value,
-                      "the template parameter TCallable must be void");
+                      "the result of calling the template parameter TCallable "
+                      "must be void");
         LIBSEMIGROUPS_ASSERT(!empty());
         if (_winner == nullptr) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);

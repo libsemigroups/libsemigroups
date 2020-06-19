@@ -30,8 +30,6 @@ jobs:
 
     - env: TEST_SUITE=quick 
 
-    - env: TEST_SUITE=benchmark
-
     - env: TEST_SUITE=debug
 
     - os: osx
@@ -46,14 +44,6 @@ jobs:
           packages:
             - clang-5.0
 
-    - env: TEST_SUITE=gap
-
-    - env: TEST_SUITE=coverage
-      addons:
-        apt:
-          packages:
-            - lcov
-
     - env: TEST_SUITE=valgrind
       addons:
         apt:
@@ -62,12 +52,21 @@ jobs:
             - libc6-dbg
             - libtool-bin
 
+    - env: TEST_SUITE=gap
+
+    - env: TEST_SUITE=coverage
+      addons:
+        apt:
+          packages:
+            - lcov
 
     - env: TEST_SUITE=cppyy
       addons:
         apt:
           packages:
             - python3-pip
+    
+    - env: TEST_SUITE=benchmark
 
     - env: TEST_SUITE=doc
       addons:

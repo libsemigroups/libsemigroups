@@ -1817,7 +1817,7 @@ namespace libsemigroups {
       kb.add_rule("ab", "");
       kb.add_rule("abb", "");
 
-      REQUIRE(!kb.confluent());
+      REQUIRE(kb.confluent());
 
       kb.run();
       REQUIRE(kb.confluent());
@@ -2485,7 +2485,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 69);
+      REQUIRE(kb.nr_active_rules() == 32);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -2838,6 +2838,75 @@ namespace libsemigroups {
       //  auto it =
       //  REQUIRE(it != cend_silo("BCA", 0, 80));
       //  REQUIRE(*it ==  "CBACBAABCAABCACBACBA");
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "999",
+                            "(fpsemi) bug",
+                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
+      kb.add_rule("b", "a");
+      kb.add_rule("aa", "a");
+      kb.add_rule("ac", "a");
+      kb.add_rule("bc", "b");
+      kb.add_rule("ca", "a");
+      kb.add_rule("cc", "ac");
+
+      REQUIRE(kb.confluent());  // But not reduced!
+      REQUIRE(!kb.stopped());
+      kb.run();
+      REQUIRE(kb.nr_active_rules() == 5);
+      kb.run();
+
+      REQUIRE(kb.equal_to("bc", "a"));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "998",
+                            "(fpsemi) bug",
+                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      using rule_type = std::pair<std::string, std::string>;
+      auto        rg  = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_alphabet("abc");
+
+      kb.add_rule("aa", "cc");
+      kb.add_rule("ab", "c");
+      kb.add_rule("ba", "ccc");
+      kb.add_rule("bb", "cc");
+      kb.add_rule("bc", "a");
+      kb.add_rule("ca", "b");
+      kb.add_rule("cca", "cb");
+      kb.add_rule("ccb", "ac");
+      kb.add_rule("aca", "c");
+      kb.add_rule("acb", "cccc");
+      kb.add_rule("acc", "cb");
+      kb.add_rule("ccca", "ac");
+      kb.add_rule("cccb", "a");
+      kb.add_rule("cba", "cccc");
+      kb.add_rule("cbb", "ccc");
+      kb.add_rule("cbc", "b");
+      kb.add_rule("cccca", "a");
+      kb.add_rule("ccccb", "b");
+      kb.add_rule("ccccc", "c");
+
+      REQUIRE(kb.confluent());  // But not reduced!
+      kb.run();
+      REQUIRE(kb.nr_active_rules() == 10);
+      REQUIRE(kb.active_rules()
+              == std::vector<rule_type>({{"ab", "c"},
+                                         {"bb", "aa"},
+                                         {"bc", "a"},
+                                         {"ca", "b"},
+                                         {"cc", "aa"},
+                                         {"aaa", "cb"},
+                                         {"aac", "ba"},
+                                         {"baa", "ac"},
+                                         {"bac", "acb"},
+                                         {"cba", "acb"}}));
     }
   }  // namespace fpsemigroup
 

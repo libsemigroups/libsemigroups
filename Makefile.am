@@ -2,8 +2,7 @@
 # Automake configuration
 ##############################################################################
 
-AM_CXXFLAGS =  -I$(abs_top_srcdir)
-AM_CXXFLAGS += -I$(abs_top_srcdir)/include
+AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern
 AM_CXXFLAGS += -std=gnu++11 -g -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
@@ -464,10 +463,14 @@ if LIBSEMIGROUPS_DEBUG
 	@echo "********************************************************************"
 endif
 
+.VERSION: 
+	etc/version-number.sh > .TMP_VERSION && mv .TMP_VERSION .VERSION
+
 clean-local:
 	rm -rf docs/build
 	rm -rf docs/source/_generated
 	rm -rf coverage/
+	rm -f bench_*
 
 clean-local-check:
 	rm -rf $(check_PROGRAMS)
@@ -479,6 +482,7 @@ clean-local-check:
 distclean-local:
 	rm -f configure
 	rm -f include/libsemigroups/libsemigroups-config.hpp
+	rm -f .VERSION
 .PHONY: distclean-local
 
 superclean: distclean

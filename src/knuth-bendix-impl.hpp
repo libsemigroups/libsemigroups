@@ -403,7 +403,7 @@ namespace libsemigroups {
         auto qq = new external_string_type(q);
         external_to_internal_string(*pp);
         external_to_internal_string(*qq);
-        add_rule(new_rule(pp, qq));
+        push_stack(new_rule(pp, qq));
       }
 
       void add_rules(KnuthBendixImpl const* impl) {
@@ -498,13 +498,10 @@ namespace libsemigroups {
         _max_active_rules = std::max(_max_active_rules, _active_rules.size());
         _unique_lhs_rules.insert(*rule->lhs());
 #endif
-        if (!_set_rules.emplace(RuleLookup(rule)).second) {
-          // The rules are not reduced, this should only happen if we are
-          // calling add_rule from outside the class (i.e. we are initialising
-          // the KnuthBendix).
-          push_stack(rule);
-          return;  // Do not activate or actually add the rule at this point
-        }
+        LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
+#ifndef LIBSEMIGROUPS_DEBUG
+        _set_rules.emplace(RuleLookup(rule));
+#endif
         rule->activate();
         _active_rules.push_back(rule);
         if (_next_rule_it1 == _active_rules.end()) {
