@@ -315,18 +315,15 @@ namespace libsemigroups {
           size_t      v = source(mt);
           uint64_t    result;
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
-                    + std::to_string(N) + " out-degree, " + m
-                    + " edges") {
+                    + std::to_string(N) + " out-degree, " + m + " edges") {
             result = ad.number_of_paths(v, 0, 16, algorithm::dfs);
           };
           BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
-                    + std::to_string(N) + " out-degree, " + m
-                    + " edges") {
+                    + std::to_string(N) + " out-degree, " + m + " edges") {
             REQUIRE(result == ad.number_of_paths(v, 0, 16, algorithm::matrix));
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
-                    + std::to_string(N) + " out-degree, " + m
-                    + " edges") {
+                    + std::to_string(N) + " out-degree, " + m + " edges") {
             REQUIRE(result
                     == ad.number_of_paths(v, 0, 16, algorithm::automatic));
           };

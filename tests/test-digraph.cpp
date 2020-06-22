@@ -1487,10 +1487,8 @@ namespace libsemigroups {
     action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(!ad.validate());
-    // REQUIRE(number_of_words(20, 0, 16) == 0);
-    // REQUIRE(ad.number_of_paths(0, 0, 16, ActionDigraph<size_t>::algorithm::dfs) == 47268);
-    REQUIRE(ad.number_of_paths(0, 0, 16, ActionDigraph<size_t>::algorithm::matrix) == 47268);
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
             == ActionDigraph<size_t>::algorithm::dfs);
+    REQUIRE(ad.number_of_paths(0, 0, 16) == 47268);
   }
 }  // namespace libsemigroups

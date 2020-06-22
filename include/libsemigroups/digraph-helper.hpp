@@ -407,7 +407,7 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    void add_cycle(ActionDigraph<T>&                      ad,
+    void add_cycle(ActionDigraph<T>&                               ad,
                    typename ActionDigraph<T>::const_iterator_nodes first,
                    typename ActionDigraph<T>::const_iterator_nodes last) {
       for (auto it = first; it < last - 1; ++it) {
@@ -416,12 +416,9 @@ namespace libsemigroups {
       ad.add_edge(*(last - 1), *first, 0);
     }
 
-  // TODO(now) -> namespace detail
-    template <typename T>
-    bool fallback_nopnam_threshold(ActionDigraph<T> const& ad) {
-      return true;
-      return ad.nr_edges() > ad.out_degree() * (ad.nr_nodes() / 2);
-    }
+    class AdjacencyMatrix {
+
+    };
 
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups

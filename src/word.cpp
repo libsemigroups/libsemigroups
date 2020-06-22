@@ -50,7 +50,7 @@ namespace libsemigroups {
   }
 
   void detail::StringToWord::operator()(std::string const& input,
-                                word_type&         output) const {
+                                        word_type&         output) const {
     output.clear();
     output.reserve(input.size());
     for (auto const& c : input) {

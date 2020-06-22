@@ -60,8 +60,8 @@ namespace libsemigroups {
     }
 
     // TODO(now) put in cpp file
-    static inline std::vector<int64_t> one(size_t const N) {
-      std::vector<int64_t> out(N * N, 0);
+    static inline std::vector<uint64_t> one(size_t const N) {
+      std::vector<uint64_t> out(N * N, 0);
       for (size_t i = 0; i < N; ++i) {
         out[i * N + i] = 1;
       }
@@ -69,13 +69,13 @@ namespace libsemigroups {
     }
 
     // TODO(now) put in cpp file
-    static inline void matrix_product_in_place(std::vector<int64_t>&       xy,
-                                               std::vector<int64_t> const& x,
-                                               std::vector<int64_t> const& y,
+    static inline void matrix_product_in_place(std::vector<uint64_t>&       xy,
+                                               std::vector<uint64_t> const& x,
+                                               std::vector<uint64_t> const& y,
                                                size_t const                N) {
       for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < N; ++j) {
-          int64_t v = 0;
+          uint64_t v = 0;
           for (size_t k = 0; k < N; ++k) {
             v += x[i * N + k] * y[k * N + j];
           }
@@ -109,9 +109,9 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    std::vector<int64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
+    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
       size_t const         N = ad.nr_nodes();
-      std::vector<int64_t> mat(N * N);
+      std::vector<uint64_t> mat(N * N, 0);
 
       for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
         for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
@@ -2073,8 +2073,8 @@ namespace libsemigroups {
     // TODO(now) doc
     // Returns the algorithm selected "automatically"
     algorithm number_of_paths_algorithm(node_type const source,
-                                                  size_t const    min,
-                                                  size_t const    max) const {
+                                        size_t const    min,
+                                        size_t const    max) const {
       if (min >= max || validate()) {
         return algorithm::trivial;
       }
@@ -2218,10 +2218,7 @@ namespace libsemigroups {
           // intentional fall through
         default:
           return number_of_paths(
-              source,
-              min,
-              max,
-              number_of_paths_algorithm(source, min, max));
+              source, min, max, number_of_paths_algorithm(source, min, max));
       }
     }
 
@@ -2259,8 +2256,9 @@ namespace libsemigroups {
       }
     }
 
-    using vector_view = std::pair<typename std::vector<node_type>::const_iterator,
-                                  typename std::vector<node_type>::const_iterator>;
+    using vector_view
+        = std::pair<typename std::vector<node_type>::const_iterator,
+                    typename std::vector<node_type>::const_iterator>;
 
     vector_view topological_sort(node_type const source) const {
       if (!_topo_sort._defined) {
@@ -2286,8 +2284,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     uint64_t number_of_paths_trivial(node_type const source,
-                                    size_t const    min,
-                                    size_t const    max) const {
+                                     size_t const    min,
+                                     size_t const    max) const {
       if (min >= max) {
         return 0;
       } else if (validate()) {
@@ -2296,11 +2294,7 @@ namespace libsemigroups {
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
-          try {
-            uint64_t n = number_of_words(out_degree(), min, max);
-            return n;
-          } catch(LibsemigroupsException const& e) {
-          }
+          return number_of_words(out_degree(), min, max);
         }
       }
       // Some edges are not defined ...

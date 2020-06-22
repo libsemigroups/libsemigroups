@@ -279,7 +279,7 @@ namespace libsemigroups {
                         return is_subword(rule.first, s);
                       })) {
                 while (!s.empty()) {
-                  s       = std::string(s.begin() + 1, s.end());
+                  s  = std::string(s.begin() + 1, s.end());
                   it = prefixes.find(s);
                   if (it != prefixes.end()) {
                     _gilman_digraph.add_edge(p.second, it->second, i);
