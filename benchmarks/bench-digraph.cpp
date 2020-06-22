@@ -17,6 +17,8 @@
 //
 //
 
+#include <iostream>
+
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
@@ -296,6 +298,26 @@ namespace libsemigroups {
       std::vector<word_type> v(ad.cbegin_pstilo(0, 4, 0, N), ad.cend_pstilo());
       REQUIRE(v.size() == 524277);
     };
+  }
+
+  TEST_CASE("number_of_paths matrix vs dfs", "[quick][007]") {
+    size_t const M = 10000;
+    size_t const N = 3;
+    std::uniform_int_distribution<size_t> source(0, M - 1);
+    std::mt19937 mt;
+    for (size_t nr_edges = 1000; nr_edges < M * N; nr_edges += 1000) {
+      auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
+      REQUIRE(ad.nr_edges() == nr_edges);
+      std::string m = std::to_string(nr_edges);
+      size_t O = 0;
+      size_t v = source(mt);
+      BENCHMARK("dfs " + m + " edges") {
+        O = std::distance(ad.cbegin_pilo(v, 0, 32), ad.cend_pilo());
+      };
+      BENCHMARK("matrix powering " + m + " edges") {
+        REQUIRE(O == ad.number_of_paths(v, 0, 32));
+      };
+    }
   }
 
 }  // namespace libsemigroups

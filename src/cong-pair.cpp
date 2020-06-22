@@ -71,7 +71,6 @@ namespace libsemigroups {
   // TODO(later) this copies KBE(_kb, l) and KBE(_kb, r) twice.
   void KnuthBendixCongruenceByPairs::add_pair_impl(word_type const& u,
                                                    word_type const& v) {
-    // FIXME this is not generic.
     internal_element_type x = new element_type(state(), u);
     internal_element_type y = new element_type(state(), v);
     internal_add_pair(x, y);

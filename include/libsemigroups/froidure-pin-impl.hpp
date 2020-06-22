@@ -276,13 +276,13 @@ namespace libsemigroups {
     }
   }
 
-  // FIXME put this in FroidurePinBase??
+  // TODO(later) put this in FroidurePinBase??
   SIZE_T FROIDURE_PIN::nr_idempotents() {
     init_idempotents();
     return _idempotents.size();
   }
 
-  // FIXME put this in FroidurePinBase??
+  // TODO(later) put this in FroidurePinBase??
   BOOL FROIDURE_PIN::is_idempotent(element_index_type pos) {
     init_idempotents();
     // only validate pos after init_idempotents, because we don't know if it's

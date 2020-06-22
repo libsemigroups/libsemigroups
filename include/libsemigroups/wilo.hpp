@@ -33,7 +33,7 @@
 #include "order.hpp"      // for lexicographical_compare
 #include "types.hpp"      // for word_type
 
-// TODO
+// TODO(later)
 // 1. const_wilo_iterator using letters other than 0, 1, ... , n - 1. Same
 //    approach as const_silo_iterator.
 

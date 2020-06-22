@@ -445,10 +445,10 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     size_t nr_non_trivial_classes() {
-      // TODO this could be better, for example, if nr_classes is finite, then
-      // we can count the number of non-trivial classes, by counting the number
-      // of paths in the right Cayley graph (right action digraph if left or
-      // right) from the root to every vertex.
+      // TODO(later) this could be better, for example, if nr_classes is
+      // finite, then we can count the number of non-trivial classes, by
+      // counting the number of paths in the right Cayley graph (right action
+      // digraph if left or right) from the root to every vertex.
       init_non_trivial_classes();
       return _non_trivial_classes->size();
     }
@@ -515,7 +515,7 @@ namespace libsemigroups {
     //! (None)
     std::shared_ptr<FroidurePinBase> parent_froidure_pin() const;
 
-    // TODO doc
+    // TODO(now) doc
     std::shared_ptr<FpSemigroupInterface> parent_fpsemigroup() const;
 
     //! Returns \c true if the congruence represented by \c this was created
@@ -536,7 +536,7 @@ namespace libsemigroups {
     //! (None)
     bool has_parent_froidure_pin() const noexcept;
 
-    // TODO doc
+    // TODO(now) doc
     bool has_parent_fpsemigroup() const noexcept;
 
     //! Return if the congruence represented by this object was created as a

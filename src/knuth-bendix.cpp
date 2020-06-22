@@ -162,14 +162,14 @@ namespace libsemigroups {
       }
     }
 
-    // TODO move to the right section
-    // TODO noexcept?
+    // TODO(now) move to the right section
+    // TODO(now) noexcept?
     bool KnuthBendix::contains_empty_string() const {
       return _impl->contains_empty_string()
              || (has_identity() && identity().empty());
     }
 
-    // TODO move to the right section
+    // TODO(now) move to the right section
     uint64_t KnuthBendix::number_of_normal_forms(size_t const min,
                                                  size_t const max) {
       if (alphabet().empty()) {
@@ -254,7 +254,7 @@ namespace libsemigroups {
         run();
         std::unordered_map<std::string, size_t> prefixes;
         prefixes.emplace("", 0);
-        // FIXME
+        // FIXME(later)
         auto rules = active_rules();
 
         size_t n = 1;
@@ -280,7 +280,7 @@ namespace libsemigroups {
                       })) {
                 while (!s.empty()) {
                   s       = std::string(s.begin() + 1, s.end());
-                  auto it = prefixes.find(s);
+                  it = prefixes.find(s);
                   if (it != prefixes.end()) {
                     _gilman_digraph.add_edge(p.second, it->second, i);
                     break;

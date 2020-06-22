@@ -419,7 +419,6 @@ namespace libsemigroups {
 
     //! Returns \c true if the parameters represent the same element of the
     //! semigroup and \c false otherwise.
-    // FIXME what to do about this
     bool equal_to(word_type const&, word_type const&) const override;
 
     //! Returns the number of generators of the semigroup.

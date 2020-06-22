@@ -81,7 +81,7 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Linear in the length of \p path.
-    // TODO example
+    // TODO(later) example
     // not noexcept because ActionDigraph::neighbor isn't
     template <typename T>
     node_type<T> follow_path(ActionDigraph<T> const& ad,
@@ -405,6 +405,24 @@ namespace libsemigroups {
       } while (!nodes.empty());
       return false;
     }
+
+    template <typename T>
+    void add_cycle(ActionDigraph<T>&                      ad,
+                   typename ActionDigraph<T>::const_iterator_nodes first,
+                   typename ActionDigraph<T>::const_iterator_nodes last) {
+      for (auto it = first; it < last - 1; ++it) {
+        ad.add_edge(*it, *(it + 1), 0);
+      }
+      ad.add_edge(*(last - 1), *first, 0);
+    }
+
+  // TODO(now) -> namespace detail
+    template <typename T>
+    bool fallback_nopnam_threshold(ActionDigraph<T> const& ad) {
+      return true;
+      return ad.nr_edges() > ad.out_degree() * (ad.nr_nodes() / 2);
+    }
+
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

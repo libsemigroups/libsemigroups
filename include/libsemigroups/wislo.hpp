@@ -33,8 +33,8 @@
 #include "order.hpp"      // for shortlex_compare
 #include "types.hpp"      // for word_type
 
-// TODO:
-// 2. rvalue reference cend_wislo and cbegin_wislo
+// TODO(later)
+// 1. rvalue reference cend_wislo and cbegin_wislo
 
 namespace libsemigroups {
   //! No doc

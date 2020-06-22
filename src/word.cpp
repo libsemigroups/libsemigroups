@@ -49,7 +49,7 @@ namespace libsemigroups {
     }
   }
 
-  void StringToWord::operator()(std::string const& input,
+  void detail::StringToWord::operator()(std::string const& input,
                                 word_type&         output) const {
     output.clear();
     output.reserve(input.size());
@@ -58,7 +58,7 @@ namespace libsemigroups {
     }
   }
 
-  word_type StringToWord::operator()(std::string const& input) const {
+  word_type detail::StringToWord::operator()(std::string const& input) const {
     word_type output;
               operator()(input, output);
     return output;

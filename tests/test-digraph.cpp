@@ -32,6 +32,13 @@
 #include "libsemigroups/wislo.hpp"           // for cbegin_wislo
 #include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
 
+CATCH_REGISTER_ENUM(libsemigroups::ActionDigraph<size_t>::algorithm,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::dfs,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::matrix,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::acyclic,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::automatic,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::trivial)
+
 namespace libsemigroups {
   using KnuthBendix = fpsemigroup::KnuthBendix;
 
@@ -1469,5 +1476,23 @@ namespace libsemigroups {
     REQUIRE(ad.nr_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.number_of_paths(0) == std::pow(2, n) - 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "035",
+                          "10000 node random digraph",
+                          "[quick]") {
+    size_t const n  = 400;
+    auto         ad = ActionDigraph<size_t>::random(n, 20, n, std::mt19937());
+    action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!ad.validate());
+    REQUIRE(number_of_words(20, 0, 16) == 0);
+    REQUIRE(ad.number_of_paths(0, 0, 16, ActionDigraph<size_t>::algorithm::dfs) == 47268);
+    REQUIRE(ad.number_of_paths(0, 0, 16, ActionDigraph<size_t>::algorithm::matrix) == 47268);
+    REQUIRE(ad.number_of_paths_automatic_algorithm(0, 0, 16)
+            == ActionDigraph<size_t>::algorithm::dfs);
+    REQUIRE(ad.number_of_paths(0, 0, 16, ActionDigraph<size_t>::algorithm::dfs) == 0);
+
   }
 }  // namespace libsemigroups

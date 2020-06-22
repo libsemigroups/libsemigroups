@@ -29,30 +29,32 @@
 #include "types.hpp"  // for word_type
 
 namespace libsemigroups {
-  // TODO doc
+  // TODO(now) doc
   size_t number_of_words(size_t nr_gens, size_t min, size_t max);
 
-  // TODO doc
+  // TODO(now) doc
   void word_to_string(std::string const& alphabet,
                       word_type const&   input,
                       std::string&       output);
 
-  // TODO doc, lots
-  class StringToWord {
-   public:
-    explicit StringToWord(std::string const& alphabet) : _lookup() {
-      _lookup.fill(0);
-      for (letter_type l = 0; l < alphabet.size(); ++l) {
-        _lookup[alphabet[l]] = l;
+  namespace detail {
+    // TODO(later) doc, lots
+    class StringToWord {
+     public:
+      explicit StringToWord(std::string const& alphabet) : _lookup() {
+        _lookup.fill(0);
+        for (letter_type l = 0; l < alphabet.size(); ++l) {
+          _lookup[alphabet[l]] = l;
+        }
       }
-    }
-    // TODO doc
-    void      operator()(std::string const& input, word_type& output) const;
-    word_type operator()(std::string const& input) const;
+      // TODO(later) doc
+      void      operator()(std::string const& input, word_type& output) const;
+      word_type operator()(std::string const& input) const;
 
-   private:
-    std::array<letter_type, 256> _lookup;
-  };
+     private:
+      std::array<letter_type, 256> _lookup;
+    };
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORD_HPP_

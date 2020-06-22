@@ -394,7 +394,7 @@ namespace libsemigroups {
       auto& S              = static_cast<FroidurePinKBE&>(*kb.froidure_pin());
       REQUIRE(S.size() == 168);
       REQUIRE(S.generator(2).string(kb) == "c");
-      // FIXME the next line compiles but leaves T in an invalid state.
+      // FIXME(later) the next line compiles but leaves T in an invalid state.
       // auto T = FroidurePinKBE({S.generator(2)});
 
       // Uncommenting the following adds ~3 seconds to the compile time of this

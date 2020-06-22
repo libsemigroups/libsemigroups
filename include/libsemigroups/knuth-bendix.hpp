@@ -455,13 +455,13 @@ namespace libsemigroups {
       //! (None)
       void knuth_bendix_by_overlap_length();
 
-      // TODO doc
+      // TODO(now) doc
       ActionDigraph<size_t> const& gilman_digraph();
 
-      // TODO rename to contains_empty_string
+      // TODO(now) doc
       bool contains_empty_string() const;
 
-      // TODO DOC
+      // TODO(now) doc
       uint64_t number_of_normal_forms(size_t const min, size_t const max);
 
       //////////////////////////////////////////////////////////////////////////

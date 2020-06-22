@@ -17,7 +17,7 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
-// TODO IWYU!
+// TODO(now) IWYU!
 
 #include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/cong-pair.hpp"
@@ -476,7 +476,7 @@ namespace libsemigroups {
       SECTION("KnuthBendix") {
         cong = detail::make_unique<KnuthBendix>();
       }
-      // TODO not yet implemented
+      // TODO(later) not yet implemented
       // SECTION("CongruenceByPairs") {
       //   cong =
       //   detail::make_unique<CongruenceByPairs<decltype(S)::element_type>>(twosided,

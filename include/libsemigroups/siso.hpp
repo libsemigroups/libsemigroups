@@ -24,7 +24,7 @@
 // SISLO = Strings In Short-Lex Order
 // SISO  = Strings In Some Order
 
-// TODO:
+// TODO(later):
 // 1. cbegin_silo and cend_silo for rvalue references to strings
 // 2. cbegin_sislo and cend_sislo for rvalue references to strings
 
