@@ -301,23 +301,38 @@ namespace libsemigroups {
   }
 
   TEST_CASE("number_of_paths matrix vs dfs", "[quick][007]") {
-    size_t const M = 10000;
-    size_t const N = 3;
-    std::uniform_int_distribution<size_t> source(0, M - 1);
+    std::cout << detail::magic_number(100) << std::endl;
+    using algorithm = ActionDigraph<size_t>::algorithm;
     std::mt19937 mt;
-    for (size_t nr_edges = 1000; nr_edges < M * N; nr_edges += 1000) {
-      auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
-      REQUIRE(ad.nr_edges() == nr_edges);
-      std::string m = std::to_string(nr_edges);
-      size_t O = 0;
-      size_t v = source(mt);
-      BENCHMARK("dfs " + m + " edges") {
-        O = std::distance(ad.cbegin_pilo(v, 0, 32), ad.cend_pilo());
-      };
-      BENCHMARK("matrix powering " + m + " edges") {
-        REQUIRE(O == ad.number_of_paths(v, 0, 32));
-      };
+    for (size_t M = 100; M < 1000; M += 100) {
+      std::uniform_int_distribution<size_t> source(0, M - 1);
+      for (size_t N = 5; N < 20; N += 5) {
+        for (size_t nr_edges = 0; nr_edges < 3 * M; nr_edges += 100) {
+          auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
+          action_digraph_helper::add_cycle(
+              ad, ad.cbegin_nodes(), ad.cend_nodes());
+          std::string m = std::to_string(ad.nr_edges());
+          size_t      v = source(mt);
+          uint64_t    result;
+          BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
+                    + std::to_string(N) + " out-degree, " + m
+                    + " edges") {
+            result = ad.number_of_paths(v, 0, 16, algorithm::dfs);
+          };
+          BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
+                    + std::to_string(N) + " out-degree, " + m
+                    + " edges") {
+            REQUIRE(result == ad.number_of_paths(v, 0, 16, algorithm::matrix));
+          };
+          BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
+                    + std::to_string(N) + " out-degree, " + m
+                    + " edges") {
+            REQUIRE(result
+                    == ad.number_of_paths(v, 0, 16, algorithm::automatic));
+          };
+          std::cout << std::endl << std::string(72, '#') << std::endl;
+        }
+      }
     }
   }
-
 }  // namespace libsemigroups

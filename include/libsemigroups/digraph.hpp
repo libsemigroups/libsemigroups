@@ -53,17 +53,22 @@
 namespace libsemigroups {
 
   namespace detail {
-    // TODO(now) implement or remove
-    // TODO put in cpp file
+
+    static inline double magic_number(size_t const N) {
+      return 2.25 + 0.003183333 * N - 0.000008 * N * N
+             + 1.166667e-8 * N * N * N;
+    }
+
+    // TODO(now) put in cpp file
     static inline std::vector<int64_t> one(size_t const N) {
       std::vector<int64_t> out(N * N, 0);
       for (size_t i = 0; i < N; ++i) {
-        out[i * N] = 1;
+        out[i * N + i] = 1;
       }
       return out;
     }
 
-    // TODO put in cpp file
+    // TODO(now) put in cpp file
     static inline void matrix_product_in_place(std::vector<int64_t>&       xy,
                                                std::vector<int64_t> const& x,
                                                std::vector<int64_t> const& y,
@@ -81,7 +86,10 @@ namespace libsemigroups {
 
     template <typename S, typename T>
     void pow(S& x, T e, size_t N) {
-      if (e <= 1) {
+      if (e == 0) {
+        x = one(N);
+        return;
+      } else if (e == 1) {
         return;
       }
       S y = x;
@@ -108,7 +116,7 @@ namespace libsemigroups {
       for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
         for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
           if (*e != UNDEFINED) {
-            mat[(*n) * N + *e] = 1;
+            mat[(*n) * N + *e] += 1;
           }
         }
       }
@@ -565,6 +573,14 @@ namespace libsemigroups {
       return _dynamic_array_2.nr_rows() * _dynamic_array_2.nr_cols()
              - std::count(
                  _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
+    }
+
+    // TODO(now) doc
+    size_t nr_edges(node_type const n) const {
+      return out_degree()
+             - std::count(_dynamic_array_2.cbegin_row(n),
+                          _dynamic_array_2.cend_row(n),
+                          UNDEFINED);
     }
 
     //! Returns the out-degree of \c this.
@@ -2056,7 +2072,7 @@ namespace libsemigroups {
 
     // TODO(now) doc
     // Returns the algorithm selected "automatically"
-    algorithm number_of_paths_automatic_algorithm(node_type const source,
+    algorithm number_of_paths_algorithm(node_type const source,
                                                   size_t const    min,
                                                   size_t const    max) const {
       if (min >= max || validate()) {
@@ -2069,12 +2085,10 @@ namespace libsemigroups {
         // there are infinitely many words labelling paths.
         if (max == POSITIVE_INFINITY) {
           return algorithm::trivial;
-        } else if (std::pow(nr_nodes(), 3) * max
-            // TODO(now) is this a good bound???
-            < number_of_words(out_degree(), min, max)) {
-          return algorithm::matrix;
-        } else {
+        } else if (nr_edges() < detail::magic_number(nr_nodes()) * nr_nodes()) {
           return algorithm::dfs;
+        } else {
+          return algorithm::matrix;
         }
       } else {
         // Acyclic
@@ -2207,7 +2221,7 @@ namespace libsemigroups {
               source,
               min,
               max,
-              number_of_paths_automatic_algorithm(source, min, max));
+              number_of_paths_algorithm(source, min, max));
       }
     }
 
@@ -2282,9 +2296,10 @@ namespace libsemigroups {
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
-          mpz_class n = number_of_words(out_degree(), min, max);
-          if (n.fits_ulong_p()) {
-            return n.get_ui();
+          try {
+            uint64_t n = number_of_words(out_degree(), min, max);
+            return n;
+          } catch(LibsemigroupsException const& e) {
           }
         }
       }
@@ -2301,14 +2316,16 @@ namespace libsemigroups {
                                     size_t const    min,
                                     size_t const    max) const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      TODO
+      TODO(now)
 #else
-      auto       am  = detail::adjacency_matrix(*this);
-      auto       acc = am;
-      auto       tmp = am;
-      auto const N   = nr_nodes();
-      detail::pow(acc, min, N);
-      uint64_t total = (min == 0 ? 1 : 0);
+      auto           am  = detail::adjacency_matrix(*this);
+      auto           acc = am;
+      auto           tmp = am;
+      uint64_t const N   = nr_nodes();
+      if (min > 1) {
+        detail::pow(acc, min, N);
+      }
+      size_t total = (min == 0 ? 1 : 0);
       for (size_t i = min + 1; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
@@ -2364,8 +2381,6 @@ namespace libsemigroups {
                                  + std::min(topo.size(), max),
                              0);
     }
-
-
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - validation - private
