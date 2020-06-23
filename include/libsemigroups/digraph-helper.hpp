@@ -128,6 +128,14 @@ namespace libsemigroups {
             node_type<T> node;
             std::tie(node, p.second)
                 = ad.unsafe_next_neighbor(p.first, p.second);
+#ifdef LIBSEMIGROUPS_DEBUG
+            if (node == UNDEFINED) {
+              LIBSEMIGROUPS_ASSERT(p.second == UNDEFINED);
+            } else {
+                validate_node(ad, node);
+                validate_label(ad, p.second);
+            }
+#endif
             if (node != UNDEFINED) {
               seen[p.first] = 2;
               stck.emplace(node, 0);
@@ -415,11 +423,6 @@ namespace libsemigroups {
       }
       ad.add_edge(*(last - 1), *first, 0);
     }
-
-    class AdjacencyMatrix {
-
-    };
-
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

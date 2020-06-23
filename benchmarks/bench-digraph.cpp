@@ -301,26 +301,30 @@ namespace libsemigroups {
   }
 
   TEST_CASE("number_of_paths matrix vs dfs", "[quick][007]") {
-    std::cout << detail::magic_number(100) << std::endl;
+    std::cout << detail::magic_number(1000) << std::endl;
     using algorithm = ActionDigraph<size_t>::algorithm;
     std::mt19937 mt;
-    for (size_t M = 100; M < 1000; M += 100) {
+    for (size_t M = 1000; M < 10000; M += 1000) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
-      for (size_t N = 5; N < 20; N += 5) {
-        for (size_t nr_edges = 0; nr_edges < 3 * M; nr_edges += 100) {
-          auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
+      size_t                                v = source(mt);
+      uint64_t                              result;
+      auto                                  ad
+          = ActionDigraph<size_t>::random(M, 15, detail::magic_number(M) * M);
+      BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
+                + std::to_string(15) + " out-degree!") {
+        result = ad.number_of_paths(v, 0, 16, algorithm::matrix);
+      };
+      for (size_t N = 10; N < 20; N += 5) {
+        for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
+             nr_edges += 500) {
+          ad = ActionDigraph<size_t>::random(M, N, nr_edges);
           action_digraph_helper::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.nr_edges());
           size_t      v = source(mt);
-          uint64_t    result;
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
             result = ad.number_of_paths(v, 0, 16, algorithm::dfs);
-          };
-          BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
-                    + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(result == ad.number_of_paths(v, 0, 16, algorithm::matrix));
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {

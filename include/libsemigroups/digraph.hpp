@@ -55,8 +55,7 @@ namespace libsemigroups {
   namespace detail {
 
     static inline double magic_number(size_t const N) {
-      return 2.25 + 0.003183333 * N - 0.000008 * N * N
-             + 1.166667e-8 * N * N * N;
+      return 0.0015 * N + 2.43;
     }
 
     // TODO(now) put in cpp file
@@ -274,7 +273,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static ActionDigraph random(T m, T n, std::mt19937 mt = std::mt19937()) {
+    static ActionDigraph
+    random(T m, T n, std::mt19937 mt = std::mt19937(std::random_device()())) {
       std::uniform_int_distribution<T> dist(0, m - 1);
       ActionDigraph<T>                 g(m, n);
       LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_rows() == m);
@@ -301,6 +301,34 @@ namespace libsemigroups {
       do {
         for (size_t i = 0; i < edges_to_add; ++i) {
           g._dynamic_array_2.set(source(mt), label(mt), target(mt));
+        }
+        size_t new_nr_edges = g.nr_edges();
+        edges_to_add -= (new_nr_edges - old_nr_edges);
+        old_nr_edges = new_nr_edges;
+      } while (edges_to_add != 0);
+      return g;
+    }
+
+    static ActionDigraph
+    random_acyclic(T const      nr_nodes,
+                   T const      out_degree,
+                   T const      nr_edges,
+                   std::mt19937 mt = std::mt19937(std::random_device()())) {
+      std::uniform_int_distribution<T> source(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> label(0, out_degree - 1);
+
+      ActionDigraph<T> g(nr_nodes, out_degree);
+      size_t           edges_to_add = nr_edges;
+      size_t           old_nr_edges = 0;
+      do {
+        for (size_t i = 0; i < edges_to_add; ++i) {
+          auto v = source(mt);
+          if (v != nr_nodes - 1) {
+            g._dynamic_array_2.set(
+                v,
+                label(mt),
+                std::uniform_int_distribution<T>(v + 1, nr_nodes - 1)(mt));
+          }
         }
         size_t new_nr_edges = g.nr_edges();
         edges_to_add -= (new_nr_edges - old_nr_edges);
@@ -2261,8 +2289,10 @@ namespace libsemigroups {
                     typename std::vector<node_type>::const_iterator>;
 
     vector_view topological_sort(node_type const source) const {
+      action_digraph_helper::validate_node(*this, source);
       if (!_topo_sort._defined) {
         _topo_sort._vec = action_digraph_helper::topological_sort(*this);
+        _topo_sort._defined = true;
       }
 
       return std::make_pair(
@@ -2273,6 +2303,7 @@ namespace libsemigroups {
     vector_view topological_sort() const {
       if (!_topo_sort._defined) {
         _topo_sort._vec = action_digraph_helper::topological_sort(*this);
+        _topo_sort._defined = true;
       }
 
       return std::make_pair(_topo_sort._vec.cbegin(), _topo_sort._vec.cend());
