@@ -27,7 +27,8 @@ libsemigroups::ActionDigraph:
   - next_neighbor
   - unsafe_next_neighbor
   - nr_nodes
-  - nr_edges
+  - nr_edges() const
+  - nr_edges(node_type const) const
   - out_degree
   - validate
   - cbegin_nodes

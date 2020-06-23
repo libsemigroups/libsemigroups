@@ -603,8 +603,19 @@ namespace libsemigroups {
                  _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
     }
 
-    // TODO(now) doc
+    //! Returns the number of edges leaving a node.
+    //!
+    //! \param n the node.
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \throws LibsemigroupsException if \p n is not a node.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \c n is out_degree().
     size_t nr_edges(node_type const n) const {
+      action_digraph_helper::validate_node(*this, n);
       return out_degree()
              - std::count(_dynamic_array_2.cbegin_row(n),
                           _dynamic_array_2.cend_row(n),
