@@ -1511,9 +1511,6 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_acyclic(ad));
     REQUIRE(!ad.validate());
 
-    // Node out of range
-    REQUIRE_THROWS_AS(ad.topological_sort(90), LibsemigroupsException);
-
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
             == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0, 0, 30) == 9);
@@ -1529,9 +1526,6 @@ namespace libsemigroups {
     // ad = binary_tree(n);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.validate());
-
-    // Node out of range
-    REQUIRE_THROWS_AS(ad.topological_sort(90), LibsemigroupsException);
 
     REQUIRE(ad.number_of_paths_algorithm(0)
             == algorithm::acyclic);

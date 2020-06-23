@@ -192,8 +192,8 @@ namespace libsemigroups {
           _dynamic_array_2(_degree, _nr_nodes, UNDEFINED),
           _scc_back_forest(),
           _scc_forest(),
-          _scc(),
-          _topo_sort() {}
+          _scc()
+           {}
 
     //! Default copy constructor
     ActionDigraph(ActionDigraph const&) = default;
@@ -2137,29 +2137,22 @@ namespace libsemigroups {
       // acyclicity anyway.
       // TODO(later): could use algorithm::dfs in some cases.
       action_digraph_helper::validate_node(*this, source);
-      std::vector<node_type> tmp;
-      vector_view_type topo = topological_sort(source);
-      if (topo.first == topo.second) {
-        // Entire digraph is acyclic, which means nothing
-        tmp  = action_digraph_helper::topological_sort(*this, source);
-        topo = {tmp.cbegin(), tmp.cend()};
-      }
-
-      if (topo.first == topo.second) {
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty()) {
         // Can't topologically sort, so the subdigraph induced by the nodes
         // reachable from source, contains cycles, and so there are infinitely
         // many words labelling paths.
         return POSITIVE_INFINITY;
       } else {
         // Digraph is acyclic...
-        LIBSEMIGROUPS_ASSERT(*(topo.second - 1) == source);
-        if (source == topo.first[0]) {
+        LIBSEMIGROUPS_ASSERT(topo.back() == source);
+        if (source == topo[0]) {
           // source is the "sink" of the digraph, and so there's only 1 path
           // (the empty one).
           return 1;
         } else {
           std::vector<uint64_t> number_paths(nr_nodes(), 0);
-          for (auto m = topo.first + 1; m < topo.second; ++m) {
+          for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
             for (auto n = cbegin_edges(*m); n != cend_edges(*m); ++n) {
               if (*n != UNDEFINED) {
                 number_paths[*m] += (number_paths[*n] + 1);
@@ -2301,43 +2294,6 @@ namespace libsemigroups {
       }
     }
 
-    // FIXME delete this
-    // TODO(now) move + doc
-    using vector_view_bound_type = typename std::vector<node_type>::const_iterator;
-    using vector_view_type
-        = std::pair<vector_view_bound_type,
-                    vector_view_bound_type>;
-
-    // TODO(now) doc
-    // returns a pair(first, last) where last - 1 is source, and every edge
-    // from source points to a node in the range [first, list - 1).
-    vector_view_type topological_sort(node_type const source) const {
-      action_digraph_helper::validate_node(*this, source);
-      if (!_topo_sort._defined) {
-        _topo_sort._vec = action_digraph_helper::topological_sort(*this);
-        _topo_sort._defined = true;
-      }
-
-      auto last
-          = std::find(_topo_sort._vec.cbegin(), _topo_sort._vec.cend(), source);
-      return std::make_pair(_topo_sort._vec.cbegin(),
-                            last == _topo_sort._vec.cend() ? last : last + 1);
-    }
-
-    // TODO(now) doc
-    vector_view_type topological_sort() const {
-      if (!_topo_sort._defined) {
-        _topo_sort._vec = action_digraph_helper::topological_sort(*this);
-        _topo_sort._defined = true;
-      }
-
-      return std::make_pair(_topo_sort._vec.cbegin(), _topo_sort._vec.cend());
-    }
-
-    bool topological_sort_defined() const noexcept {
-      return _topo_sort._defined;
-    }
-
    private:
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - number_of_paths - private
@@ -2354,14 +2310,14 @@ namespace libsemigroups {
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
-          // FIXME it's easy for number_of_words to exceed 2 ^ 64, so better do
-          // something more intelligent here to avoid this case.
+          // FIXME(now) it's easy for number_of_words to exceed 2 ^ 64, so
+          // better do something more intelligent here to avoid this case.
           return number_of_words(out_degree(), min, max);
         }
       }
       // Some edges are not defined ...
-      auto t = topological_sort(source);
-      if (t.first == t.second && max == POSITIVE_INFINITY) {
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty() && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -2618,7 +2574,6 @@ namespace libsemigroups {
       _scc_back_forest._defined = false;
       _scc._defined             = false;
       _scc_forest._defined      = false;
-      _topo_sort._defined       = false;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2728,11 +2683,6 @@ namespace libsemigroups {
         std::vector<std::vector<node_type>> _comps;
         std::vector<scc_index_type>         _id;
     } _scc;
-
-    mutable struct TopologicalSort : public Attr {
-        TopologicalSort() : Attr(), _vec() {}
-        std::vector<node_type> _vec;
-    } _topo_sort;
   };
 
   namespace detail {
