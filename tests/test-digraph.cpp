@@ -1298,12 +1298,15 @@ namespace libsemigroups {
                           "031",
                           "number_of_paths corner cases",
                           "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
     ActionDigraph<size_t> ad;
     REQUIRE_THROWS_AS(ad.number_of_paths(0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
     size_t const n = 20;
     ad             = cycle(n);
     REQUIRE(ad.number_of_paths(10) == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths_algorithm(10, 10, 0, POSITIVE_INFINITY)
+            == algorithm::dfs);
     REQUIRE(ad.number_of_paths(10, 10, 0, POSITIVE_INFINITY)
             == POSITIVE_INFINITY);
     ad = chain(n);
@@ -1433,6 +1436,7 @@ namespace libsemigroups {
                           "033",
                           "number_of_paths binary tree",
                           "[quick]") {
+    using algorithm =  ActionDigraph<size_t>::algorithm;
     using node_type          = ActionDigraph<size_t>::node_type;
     size_t const          n  = 6;
     ActionDigraph<size_t> ad = binary_tree(n);
@@ -1450,9 +1454,13 @@ namespace libsemigroups {
         }
       }
     }
+    REQUIRE(ad.number_of_paths_algorithm(0, 1, 0, 1) == algorithm::acyclic);
+
     REQUIRE(ad.number_of_paths(0, 1, 0, 1)
             == size_t(
                 std::distance(ad.cbegin_pstilo(0, 1, 0, 1), ad.cend_pstilo())));
+
+
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
         for (node_type min = 0; min < n; ++min) {
@@ -1494,7 +1502,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "036",
-                          "number_of_paths 400 node random acyclic digraph - dfs",
+                          "number_of_paths 400 node random acyclic digraph",
                           "[quick]") {
     using algorithm =  ActionDigraph<size_t>::algorithm;
     size_t const n  = 10;
@@ -1509,5 +1517,38 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
             == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0, 0, 30) == 9);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "037",
+                          "number_of_paths 400 node random acyclic digraph - dfs",
+                          "[quick]") {
+    using algorithm =  ActionDigraph<size_t>::algorithm;
+    size_t const n  = 10;
+    auto ad = ActionDigraph<size_t>::random(n, 20, 200, std::mt19937());
+    // ad = binary_tree(n);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(ad.validate());
+
+    // Node out of range
+    REQUIRE_THROWS_AS(ad.topological_sort(90), LibsemigroupsException);
+
+    REQUIRE(ad.number_of_paths_algorithm(0)
+            == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0) == POSITIVE_INFINITY);
+
+    ad = binary_tree(n);
+    REQUIRE(ad.number_of_paths_algorithm(0)
+            == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0) == 1023);
+
+    action_digraph_helper::add_cycle(ad, n);
+    ad.add_edge(0, n + 1, 0);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!ad.validate());
+    REQUIRE(ad.number_of_paths(1) == 511);
+    REQUIRE(ad.number_of_paths_algorithm(1, 0, POSITIVE_INFINITY)
+            == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(1, 0, POSITIVE_INFINITY) == 511);
   }
 }  // namespace libsemigroups

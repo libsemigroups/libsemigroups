@@ -251,7 +251,6 @@ namespace libsemigroups {
     //! * \p nr_nodes is less than \c 2
     //! * \p out_degree is less than \c 2
     //! * \p nr_edges exceeds the product of \p nr_nodes and \p out_degree
-    //! * \p nr_edges exceeds the square of \p nr_nodes
     //!
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
@@ -269,12 +268,11 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "the 2nd parameter `nr_edges` must be at least 2, found %llu",
             out_degree);
-      } else if (nr_edges
-                 > std::min(nr_nodes * out_degree, nr_nodes * nr_nodes)) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
-                                "most %llu, but found %llu",
-                                nr_nodes * out_degree,
-                                nr_edges);
+      } else if (nr_edges > nr_nodes * out_degree) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 3rd parameter `nr_edges` must be at "
+            "most %llu, but found %llu",
+            nr_nodes * out_degree);
       }
       std::uniform_int_distribution<T> source(0, nr_nodes - 1);
       std::uniform_int_distribution<T> target(0, nr_nodes - 1);
@@ -2129,6 +2127,51 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(now) doc
+    algorithm number_of_paths_algorithm(node_type const) const noexcept {
+      return algorithm::acyclic;
+    }
+
+    // TODO(now) doc
+    size_t number_of_paths(node_type const source) const {
+      // Don't allow selecting the algorithm because we check
+      // acyclicity anyway.
+      // TODO(later): could use algorithm::dfs in some cases.
+      action_digraph_helper::validate_node(*this, source);
+      std::vector<node_type> tmp;
+      vector_view_type topo = topological_sort(source);
+      if (topo.first == topo.second) {
+        // Entire digraph is acyclic, which means nothing
+        tmp  = action_digraph_helper::topological_sort(*this, source);
+        topo = {tmp.cbegin(), tmp.cend()};
+      }
+
+      if (topo.first == topo.second) {
+        // Can't topologically sort, so the subdigraph induced by the nodes
+        // reachable from source, contains cycles, and so there are infinitely
+        // many words labelling paths.
+        return POSITIVE_INFINITY;
+      } else {
+        // Digraph is acyclic...
+        LIBSEMIGROUPS_ASSERT(*(topo.second - 1) == source);
+        if (source == topo.first[0]) {
+          // source is the "sink" of the digraph, and so there's only 1 path
+          // (the empty one).
+          return 1;
+        } else {
+          std::vector<uint64_t> number_paths(nr_nodes(), 0);
+          for (auto m = topo.first + 1; m < topo.second; ++m) {
+            for (auto n = cbegin_edges(*m); n != cend_edges(*m); ++n) {
+              if (*n != UNDEFINED) {
+                number_paths[*m] += (number_paths[*n] + 1);
+              }
+            }
+          }
+          return number_paths[source] + 1;
+        }
+      }
+    }
+
+    // TODO(now) doc
     // Returns the algorithm selected "automatically"
     algorithm number_of_paths_algorithm(node_type const source,
                                         size_t const    min,
@@ -2137,8 +2180,8 @@ namespace libsemigroups {
         return algorithm::trivial;
       }
 
-      auto topo = topological_sort(source);
-      if (topo.first == topo.second) {
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles, and so
         // there are infinitely many words labelling paths.
         if (max == POSITIVE_INFINITY) {
@@ -2149,98 +2192,8 @@ namespace libsemigroups {
           return algorithm::matrix;
         }
       } else {
-        // Acyclic
         // TODO(now) figure out threshold for using algorithm::dfs
         return algorithm::acyclic;
-      }
-    }
-
-    //! Returns the number of paths between a pair of nodes with length in a
-    //! given range.
-    //!
-    //! \param source the first node
-    //! \param target the last node
-    //! \param min the minimum length of a path
-    //! \param max the maximum length of a path
-    //!
-    //! \returns
-    //! A value of type `size_t`.
-    //!
-    //! \throws LibsemigroupsException if \p source or \p target is not a node
-    //! in the digraph.
-    // not noexcept because cbegin_pstilo isn't
-    size_t number_of_paths(node_type const source,
-                           node_type const target,
-                           size_t const    min,
-                           size_t const    max,
-                           algorithm = algorithm::automatic) const {
-      action_digraph_helper::validate_node(*this, source);
-      action_digraph_helper::validate_node(*this, target);
-      if (min >= max
-          || !action_digraph_helper::is_reachable(*this, source, target)) {
-        return 0;
-      }
-
-      auto topo = action_digraph_helper::topological_sort(*this, source);
-      if (topo.empty()) {
-        // Can't topologically sort, so the digraph contains cycles.
-        if (max == POSITIVE_INFINITY) {
-          return POSITIVE_INFINITY;
-        } else {
-          // TODO(now) use adjacency matrix
-          return std::distance(cbegin_pstilo(source, target, min, max),
-                               cend_pstilo());
-        }
-      } else {
-        if ((max == 1 && source != target) || (min != 0 && source == target)) {
-          return 0;
-        } else if (source == target) {
-          return 1;
-        }
-        // Digraph is acyclic...
-        LIBSEMIGROUPS_ASSERT(source == topo.back());
-        auto it = std::find(topo.cbegin(), topo.cend(), target);
-        LIBSEMIGROUPS_ASSERT(it != topo.cend());
-        if (size_t(std::distance(it, topo.cend())) <= min) {
-          return 0;
-        }
-        // Don't visit nodes that occur after target in "topo".
-        std::vector<bool> lookup(nr_nodes(), true);
-        std::for_each(topo.cbegin(), it, [&lookup](node_type const& n) {
-          lookup[n] = false;
-        });
-
-        // Remove the entries in topo after target
-        topo.erase(topo.cbegin(), it);
-
-        // Columns correspond to path lengths, rows to nodes in the graph
-        // TODO(later) replace with DynamicTriangularArray2
-        auto number_paths = detail::DynamicArray2<uint64_t>(
-            std::min(topo.size(), max),
-            *std::max_element(topo.cbegin(), topo.cend()) + 1,
-            0);
-
-        for (size_t m = 1; m < topo.size(); ++m) {
-          for (auto n = cbegin_edges(topo[m]); n != cend_edges(topo[m]); ++n) {
-            if (*n == target) {
-              number_paths.set(topo[m], 1, 1);
-            }
-            if (*n != UNDEFINED && lookup[*n]) {
-              // there are no paths longer than m + 1 from the m-th entry in
-              // the topological sort.
-              for (size_t i = 1; i < std::min(max, m + 1); ++i) {
-                number_paths.set(topo[m],
-                                 i,
-                                 number_paths.get(*n, i - 1)
-                                     + number_paths.get(topo[m], i));
-              }
-            }
-          }
-        }
-        return std::accumulate(number_paths.cbegin_row(source) + min,
-                               number_paths.cbegin_row(source)
-                                   + std::min(topo.size(), max),
-                               0);
       }
     }
 
@@ -2250,17 +2203,18 @@ namespace libsemigroups {
     //! \param source the first node
     //! \param min the minimum length of a path
     //! \param max the maximum length of a path
+    //! \param lgrthm the algorithm to use (defaults to: algorithm::automatic).
     //!
     //! \returns
-    //! A value of type `size_t`.
+    //! A value of type \c size_t.
     //!
     //! \throws LibsemigroupsException if \p source is not a node
     //! in the digraph.
     // not noexcept for example number_of_paths_trivial can throw
-    size_t number_of_paths(node_type const source,
-                           size_t const    min,
-                           size_t const    max,
-                           algorithm lgrthm = algorithm::automatic) const {
+    uint64_t number_of_paths(node_type const source,
+                             size_t const    min,
+                             size_t const    max,
+                             algorithm lgrthm = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
 
       switch (lgrthm) {
@@ -2280,63 +2234,108 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(now) doc
-    size_t number_of_paths(node_type const source) const {
-      // TODO(later) cache the computed value of number_paths etc
-      action_digraph_helper::validate_node(*this, source);
+    // TODO doc
+    algorithm number_of_paths_algorithm(node_type const source,
+                                        node_type const,
+                                        size_t const    min,
+                                        size_t const    max) const {
+      if (min >= max) {
+        return algorithm::trivial;
+      }
       auto topo = action_digraph_helper::topological_sort(*this, source);
-
       if (topo.empty()) {
-        // Can't topologically sort, so the digraph contains cycles, and so
-        // there are infinitely many words labelling paths.
-        return POSITIVE_INFINITY;
-      } else {
-        // Digraph is acyclic...
-        LIBSEMIGROUPS_ASSERT(topo.back() == source);
-        if (source == topo[0]) {
-          // source is the "sink" of the digraph, and so there's only 1 path
-          // (the empty one).
-          return 1;
+        // Can't topologically sort, so the digraph contains cycles.  Even if
+        // max == POSITIVE_INFINITY, we can't conclude anything, because it
+        // might be `target` isn't reachable from `source`, for example, or
+        // there are no cycles in the graph between `source` and `target`.
+        if (nr_edges() < detail::magic_number(nr_nodes()) * nr_nodes()) {
+          return algorithm::dfs;
         } else {
-          std::vector<uint64_t> number_paths(nr_nodes(), 0);
-          for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
-            for (auto n = cbegin_edges(*m); n != cend_edges(*m); ++n) {
-              if (*n != UNDEFINED) {
-                number_paths[*m] += (number_paths[*n] + 1);
-              }
-            }
-            if (*m == source) {
-              break;
-            }
-          }
-          return number_paths[source] + 1;
+          return algorithm::matrix;
         }
+      } else {
+        // TODO(now) figure out threshold for using algorithm::dfs
+        return algorithm::acyclic;
+      }
+    }
+    //! Returns the number of paths between a pair of nodes with length in a
+    //! given range.
+    //!
+    //! \param source the first node
+    //! \param target the last node
+    //! \param min the minimum length of a path
+    //! \param max the maximum length of a path
+    //!
+    //! \returns
+    //! A value of type `size_t`.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p target is not a node
+    //! in the digraph.
+    // not noexcept because cbegin_pstilo isn't
+    uint64_t number_of_paths(node_type const source,
+                             node_type const target,
+                             size_t const    min,
+                             size_t const    max,
+                             algorithm lgrthm = algorithm::automatic) const {
+      action_digraph_helper::validate_node(*this, source);
+      action_digraph_helper::validate_node(*this, target);
+
+      switch (lgrthm) {
+        case algorithm::dfs:
+          return number_of_paths_dfs(source, target, min, max);
+        case algorithm::matrix:
+          return number_of_paths_matrix(source, target, min, max);
+        case algorithm::acyclic:
+          return number_of_paths_acyclic(source, target, min, max);
+        case algorithm::trivial:
+          return number_of_paths_trivial(source, target, min, max);
+        case algorithm::automatic:
+          // intentional fall through
+        default:
+          return number_of_paths(
+              source,
+              target,
+              min,
+              max,
+              number_of_paths_algorithm(source, target, min, max));
       }
     }
 
-    using vector_view
-        = std::pair<typename std::vector<node_type>::const_iterator,
-                    typename std::vector<node_type>::const_iterator>;
+    // FIXME delete this
+    // TODO(now) move + doc
+    using vector_view_bound_type = typename std::vector<node_type>::const_iterator;
+    using vector_view_type
+        = std::pair<vector_view_bound_type,
+                    vector_view_bound_type>;
 
-    vector_view topological_sort(node_type const source) const {
+    // TODO(now) doc
+    // returns a pair(first, last) where last - 1 is source, and every edge
+    // from source points to a node in the range [first, list - 1).
+    vector_view_type topological_sort(node_type const source) const {
       action_digraph_helper::validate_node(*this, source);
       if (!_topo_sort._defined) {
         _topo_sort._vec = action_digraph_helper::topological_sort(*this);
         _topo_sort._defined = true;
       }
 
-      return std::make_pair(
-          _topo_sort._vec.cbegin(),
-          std::find(_topo_sort._vec.cbegin(), _topo_sort._vec.cend(), source));
+      auto last
+          = std::find(_topo_sort._vec.cbegin(), _topo_sort._vec.cend(), source);
+      return std::make_pair(_topo_sort._vec.cbegin(),
+                            last == _topo_sort._vec.cend() ? last : last + 1);
     }
 
-    vector_view topological_sort() const {
+    // TODO(now) doc
+    vector_view_type topological_sort() const {
       if (!_topo_sort._defined) {
         _topo_sort._vec = action_digraph_helper::topological_sort(*this);
         _topo_sort._defined = true;
       }
 
       return std::make_pair(_topo_sort._vec.cbegin(), _topo_sort._vec.cend());
+    }
+
+    bool topological_sort_defined() const noexcept {
+      return _topo_sort._defined;
     }
 
    private:
@@ -2355,6 +2354,8 @@ namespace libsemigroups {
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
+          // FIXME it's easy for number_of_words to exceed 2 ^ 64, so better do
+          // something more intelligent here to avoid this case.
           return number_of_words(out_degree(), min, max);
         }
       }
@@ -2363,6 +2364,16 @@ namespace libsemigroups {
       if (t.first == t.second && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
+      }
+      LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
+    }
+
+    uint64_t number_of_paths_trivial(node_type const,
+                                     node_type const,
+                                     size_t const min,
+                                     size_t const max) const {
+      if (min >= max) {
+        return 0;
       }
       LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
     }
@@ -2396,14 +2407,72 @@ namespace libsemigroups {
 #endif
     }
 
+    uint64_t number_of_paths_matrix(node_type const source,
+                                    node_type const target,
+                                    size_t const    min,
+                                    size_t const    max) const {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      TODO(later)
+#else
+      if (!action_digraph_helper::is_reachable(*this, source, target)) {
+        // Complexity is O(number of nodes + number of edges).
+        return 0;
+      } else if (max == POSITIVE_INFINITY) {
+        if (source == target
+            && std::any_of(cbegin_edges(source),
+                           cend_edges(source),
+                           [this, source](node_type const n) {
+                             return n != UNDEFINED
+                                    && action_digraph_helper::is_reachable(
+                                        *this, n, source);
+                           })) {
+          return POSITIVE_INFINITY;
+        } else if (source != target
+                   && action_digraph_helper::is_reachable(*this, source, target)
+                   && action_digraph_helper::is_reachable(
+                       *this, target, source)) {
+          return POSITIVE_INFINITY;
+        }
+      }
+
+      auto           am  = detail::adjacency_matrix(*this);
+      auto           acc = am;
+      auto           tmp = am;
+      uint64_t const N   = nr_nodes();
+      if (min > 1) {
+        detail::pow(acc, min, N);
+      }
+      size_t total = (source == target && min == 0 ? 1 : 0);
+      for (size_t i = min + 1; i < max; ++i) {
+        uint64_t add = source * N + target;
+
+        if (add == 0
+            && std::all_of(acc.cbegin() + source * N,
+                           acc.cbegin() + source * N + N,
+                           [](uint64_t i) { return i == 0; })) {
+          break;
+        }
+        total += add;
+        detail::matrix_product_in_place(tmp, acc, am, N);
+        tmp.swap(acc);
+      }
+      return total;
+#endif
+    }
+
     uint64_t number_of_paths_acyclic(node_type const source,
                                      size_t const    min,
                                      size_t const    max) const {
+
       auto topo = action_digraph_helper::topological_sort(*this, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
-        LIBSEMIGROUPS_EXCEPTION("the digraph must be acyclic");
-      } else if (topo.size() <= min) {
+        LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
+                                "from %llu is not acyclic",
+                                source);
+       } else if (topo.size() <= min) {
+        // There are fewer than `min` nodes reachable from source, and so there
+        // are no paths of length `min` or greater
         return 0;
       }
 
@@ -2435,6 +2504,97 @@ namespace libsemigroups {
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
                              0);
+    }
+
+    uint64_t number_of_paths_acyclic(node_type const source,
+                                     node_type const target,
+                                     size_t const    min,
+                                     size_t const    max) const {
+      auto topo = action_digraph_helper::topological_sort(*this, source);
+      if (topo.empty()) {
+        // Can't topologically sort, so the digraph contains cycles.
+        LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
+                                "from %llu is not acyclic",
+                                source);
+      }
+
+      if ((max == 1 && source != target) || (min != 0 && source == target)) {
+        return 0;
+      } else if (source == target) {
+        // the empty path
+        return 1;
+      }
+
+      // Subdigraph induced by nodes reachable from `source` is acyclic...
+      LIBSEMIGROUPS_ASSERT(source == topo.back());
+      auto it = std::find(topo.cbegin(), topo.cend(), target);
+      if (it == topo.cend() || size_t(std::distance(it, topo.cend())) <= min) {
+        // 1) `target` not reachable from `source`, or
+        // 2) every path from `source` to `target` has length < min.
+        return 0;
+      }
+      // Don't visit nodes that occur after target in "topo".
+      std::vector<bool> lookup(nr_nodes(), true);
+      std::for_each(topo.cbegin(), it, [&lookup](node_type const& n) {
+        lookup[n] = false;
+      });
+
+      // Remove the entries in topo after target
+      topo.erase(topo.cbegin(), it);
+
+      // Columns correspond to path lengths, rows to nodes in the graph
+      // TODO(later) replace with DynamicTriangularArray2
+      auto number_paths = detail::DynamicArray2<uint64_t>(
+          std::min(topo.size(), max),
+          *std::max_element(topo.cbegin(), topo.cend()) + 1,
+          0);
+
+      for (size_t m = 1; m < topo.size(); ++m) {
+        for (auto n = cbegin_edges(topo[m]); n != cend_edges(topo[m]); ++n) {
+          if (*n == target) {
+            number_paths.set(topo[m], 1, 1);
+          }
+          if (*n != UNDEFINED && lookup[*n]) {
+            // there are no paths longer than m + 1 from the m-th entry in
+            // the topological sort.
+            for (size_t i = 1; i < std::min(max, m + 1); ++i) {
+              number_paths.set(topo[m],
+                               i,
+                               number_paths.get(*n, i - 1)
+                                   + number_paths.get(topo[m], i));
+            }
+          }
+        }
+      }
+      return std::accumulate(number_paths.cbegin_row(source) + min,
+                             number_paths.cbegin_row(source)
+                                 + std::min(topo.size(), max),
+                             0);
+    }
+
+    uint64_t number_of_paths_dfs(node_type const source,
+                                 node_type const target,
+                                 size_t const    min,
+                                 size_t const    max) const {
+      if (max == POSITIVE_INFINITY) {
+        if (source == target
+            && std::any_of(cbegin_edges(source),
+                           cend_edges(source),
+                           [this, source](node_type const n) {
+                             return n != UNDEFINED
+                                    && action_digraph_helper::is_reachable(
+                                        *this, n, source);
+                           })) {
+          return POSITIVE_INFINITY;
+        } else if (source != target
+                   && action_digraph_helper::is_reachable(*this, source, target)
+                   && action_digraph_helper::is_reachable(
+                       *this, target, source)) {
+          return POSITIVE_INFINITY;
+        }
+      }
+      return std::distance(cbegin_pstilo(source, target, min, max),
+                           cend_pstilo());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2549,29 +2709,29 @@ namespace libsemigroups {
     mutable detail::DynamicArray2<T> _dynamic_array_2;
 
     struct Attr {
-      Attr() : _defined(false) {}
-      bool _defined;
+        Attr() : _defined(false) {}
+        bool _defined;
     };
 
     mutable struct SCCBackForest : public Attr {
-      SCCBackForest() : Attr(), _forest() {}
-      Forest _forest;
+        SCCBackForest() : Attr(), _forest() {}
+        Forest _forest;
     } _scc_back_forest;
 
     mutable struct SCCForwardForest : public Attr {
-      SCCForwardForest() : Attr(), _forest() {}
-      Forest _forest;
+        SCCForwardForest() : Attr(), _forest() {}
+        Forest _forest;
     } _scc_forest;
 
     mutable struct SCC : public Attr {
-      SCC() : Attr(), _comps(), _id() {}
-      std::vector<std::vector<node_type>> _comps;
-      std::vector<scc_index_type>         _id;
+        SCC() : Attr(), _comps(), _id() {}
+        std::vector<std::vector<node_type>> _comps;
+        std::vector<scc_index_type>         _id;
     } _scc;
 
     mutable struct TopologicalSort : public Attr {
-      TopologicalSort() : Attr(), _vec() {}
-      std::vector<node_type> _vec;
+        TopologicalSort() : Attr(), _vec() {}
+        std::vector<node_type> _vec;
     } _topo_sort;
   };
 

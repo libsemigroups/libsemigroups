@@ -230,6 +230,9 @@ namespace libsemigroups {
     // Not noexcept because detail::is_acyclic isn't
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad) {
+      if (ad.validate()) {
+        return false;
+      }
       node_type<T> const                                 N = ad.nr_nodes();
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       std::vector<uint8_t>                               seen(N, 0);
@@ -247,15 +250,20 @@ namespace libsemigroups {
       return true;
     }
 
+    //TODO(doc)
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad) {
       using node_type = typename ActionDigraph<T>::node_type;
 
+      detail::topological_sort_type<T> order;
+      if (ad.validate()) {
+        return order;
+      }
+
       size_t const                     N = ad.nr_nodes();
       detail::stack_type<T>            stck;
       std::vector<uint8_t>             seen(N, 0);
-      detail::topological_sort_type<T> order;
 
       for (node_type m = 0; m < N; ++m) {
         if (seen[m] == 0) {
@@ -273,13 +281,17 @@ namespace libsemigroups {
     }
 
     // Topologically sort those nodes reachable from source
+    //TODO(doc)
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad, node_type<T> const source) {
+      detail::topological_sort_type<T> order;
+      if (ad.validate()) {
+        return order;
+      }
       size_t const                     N = ad.nr_nodes();
       detail::stack_type<T>            stck;
       std::vector<uint8_t>             seen(N, 0);
-      detail::topological_sort_type<T> order;
 
       stck.emplace(source, 0);
       detail::topological_sort(ad, stck, seen, order);
@@ -413,7 +425,7 @@ namespace libsemigroups {
       } while (!nodes.empty());
       return false;
     }
-
+  //TODO(now) doc
     template <typename T>
     void add_cycle(ActionDigraph<T>&                               ad,
                    typename ActionDigraph<T>::const_iterator_nodes first,
@@ -422,6 +434,14 @@ namespace libsemigroups {
         ad.add_edge(*it, *(it + 1), 0);
       }
       ad.add_edge(*(last - 1), *first, 0);
+    }
+
+    template <typename T>
+    void add_cycle(ActionDigraph<T>&                               ad,
+                   size_t const N) {
+      size_t M = ad.nr_nodes();
+      ad.add_nodes(N);
+      add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
