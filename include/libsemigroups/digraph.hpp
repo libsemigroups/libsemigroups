@@ -167,7 +167,19 @@ namespace libsemigroups {
     using const_iterator_scc_roots
         = detail::ConstIteratorStateless<IteratorTraits>;
 
-    enum class algorithm { dfs = 0, matrix, acyclic, automatic, trivial };
+    //! An enum for specifying the algorithm to the functions `number_of_paths`.
+    enum class algorithm {
+      //! Use a depth-first-search.
+      dfs = 0,
+      //! Use the adjacency matrix and matrix multiplication
+      matrix,
+      //! Use a dynamic programming approach for acyclic digraphs
+      acyclic,
+      //! Try to utilise some corner cases.
+      trivial,
+      //! The function number_of_paths tries to decide which algorithm is best.
+      automatic
+    };
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - constructors + destructor - public
@@ -2124,13 +2136,36 @@ namespace libsemigroups {
     // ActionDigraph - number_of_paths - public
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(now) doc
-    algorithm number_of_paths_algorithm(node_type const) const noexcept {
+    //! Returns the algorithm used by `number_of_paths` to compute the number
+    //! of paths originating at the given source node.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A value of type ActionDigraph::algorithm.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
+    algorithm number_of_paths_algorithm(node_type const source) const noexcept {
+      (void) source;
       return algorithm::acyclic;
     }
 
-    // TODO(now) doc
-    size_t number_of_paths(node_type const source) const {
+    //! Returns the number of paths originating at the given source node.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A value of type `uint64_t`.
+    //!
+    //! \throws LibsemigroupsException if \p source is not a node in the
+    //! digraph.
+    //!
+    //! \complexity
+    //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
+    //! is the out-degree of the digraph.
+    uint64_t number_of_paths(node_type const source) const {
       // Don't allow selecting the algorithm because we check
       // acyclicity anyway.
       // TODO(later): could use algorithm::dfs in some cases.
@@ -2162,8 +2197,23 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(now) doc
-    // Returns the algorithm selected "automatically"
+    //! Returns the algorithm used by `number_of_paths` to compute the number of
+    //! paths originating at the given source node with length in the range
+    //! \f$[min, max)\f$.
+    //!
+    //! \param source the source node
+    //! \param min the minimum length of paths to count
+    //! \param max the maximum length of paths to count
+    //!
+    //! \returns A value of type ActionDigraph::algorithm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
+    //! is the out-degree of the digraph.
+    // Not noexcept because action_digraph_helper::topological_sort is not.
     algorithm number_of_paths_algorithm(node_type const source,
                                         size_t const    min,
                                         size_t const    max) const {
@@ -2183,7 +2233,7 @@ namespace libsemigroups {
           return algorithm::matrix;
         }
       } else {
-        // TODO(now) figure out threshold for using algorithm::dfs
+        // TODO(later) figure out threshold for using algorithm::dfs
         return algorithm::acyclic;
       }
     }
@@ -2197,15 +2247,34 @@ namespace libsemigroups {
     //! \param lgrthm the algorithm to use (defaults to: algorithm::automatic).
     //!
     //! \returns
-    //! A value of type \c size_t.
+    //! A value of type \c uint64_t.
     //!
-    //! \throws LibsemigroupsException if \p source is not a node
-    //! in the digraph.
+    //! \throws LibsemigroupsException if:
+    //! * \p source is not a node in the digraph.
+    //! * the algorithm specified by \p lgrthm is not applicable.
+    //!
+    //! \complexity
+    //! The complexity depends on the value of \p lgrthm as follows:
+    //! * algorithm::dfs: \f$O(r)\f$ where \f$r\f$ is the number of paths in
+    //!   the digraph starting at \p source
+    //! * algorithm::matrix: at worst \f$O(n ^ 3 k)\f$ where \f$n\f$ is the
+    //!   number of nodes and \f$k\f$ equals \p max.
+    //! * algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the number
+    //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
+    //!   the subdigraph induced by the nodes reachable from \p source is acyclic)
+    //! * algorithm::trivial: at worst \f$O(nm)\f$ where \f$n\f$ is the number
+    //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid in
+    //!   some circumstances)
+    //! * algorithm::automatic: attempts to select the fastest algorithm of the
+    //!   preceding algorithms and then applies that.
+    //!
+    //! \warning If \p lgrthm is algorithm::automatic, then it is not always
+    //! the case that the fastest algorithm is used.
     // not noexcept for example number_of_paths_trivial can throw
     uint64_t number_of_paths(node_type const source,
                              size_t const    min,
                              size_t const    max,
-                             algorithm lgrthm = algorithm::automatic) const {
+                             algorithm const lgrthm = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
 
       switch (lgrthm) {
@@ -2225,11 +2294,29 @@ namespace libsemigroups {
       }
     }
 
-    // TODO doc
+    //! Returns the algorithm used by `number_of_paths` to compute the number of
+    //! paths originating at the given source node and ending at the given
+    //! target node with length in the range \f$[min, max)\f$.
+    //!
+    //! \param source the source node
+    //! \param target the target node
+    //! \param min the minimum length of paths to count
+    //! \param max the maximum length of paths to count
+    //!
+    //! \returns A value of type ActionDigraph::algorithm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$ is
+    //! the out-degree of the digraph.
+    // Not noexcept because action_digraph_helper::topological_sort isn't
     algorithm number_of_paths_algorithm(node_type const source,
-                                        node_type const,
+                                        node_type const target,
                                         size_t const min,
                                         size_t const max) const {
+      (void) target;
       if (min >= max) {
         return algorithm::trivial;
       }
@@ -2245,7 +2332,7 @@ namespace libsemigroups {
           return algorithm::matrix;
         }
       } else {
-        // TODO(now) figure out threshold for using algorithm::dfs
+        // TODO(later) figure out threshold for using algorithm::dfs
         return algorithm::acyclic;
       }
     }
@@ -2256,18 +2343,37 @@ namespace libsemigroups {
     //! \param target the last node
     //! \param min the minimum length of a path
     //! \param max the maximum length of a path
+    //! \param lgrthm the algorithm to use (defaults to: algorithm::automatic).
     //!
     //! \returns
-    //! A value of type `size_t`.
+    //! A value of type `uint64_t`.
     //!
-    //! \throws LibsemigroupsException if \p source or \p target is not a node
-    //! in the digraph.
+    //! \throws LibsemigroupsException if:
+    //! * \p source is not a node in the digraph.
+    //! * \p target is not a node in the digraph.
+    //! * the algorithm specified by \p lgrthm is not applicable.
+    //!
+    //! \complexity
+    //! The complexity depends on the value of \p lgrthm as follows:
+    //! * algorithm::dfs: \f$O(r)\f$ where \f$r\f$ is the number of paths in
+    //!   the digraph starting at \p source
+    //! * algorithm::matrix: at worst \f$O(n ^ 3 k)\f$ where \f$n\f$ is the
+    //!   number of nodes and \f$k\f$ equals \p max.
+    //! * algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the number
+    //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
+    //!   the subdigraph induced by the nodes reachable from \p source is acyclic)
+    //! * algorithm::trivial: constant (only valid in some circumstances)
+    //! * algorithm::automatic: attempts to select the fastest algorithm of the
+    //!   preceding algorithms and then applies that.
+    //!
+    //! \warning If \p lgrthm is algorithm::automatic, then it is not always
+    //! the case that the fastest algorithm is used.
     // not noexcept because cbegin_pstilo isn't
     uint64_t number_of_paths(node_type const source,
                              node_type const target,
                              size_t const    min,
                              size_t const    max,
-                             algorithm lgrthm = algorithm::automatic) const {
+                             algorithm const lgrthm = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
       action_digraph_helper::validate_node(*this, target);
 

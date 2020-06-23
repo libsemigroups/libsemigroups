@@ -22,3 +22,4 @@ Functions
    api/sislo.rst
    api/wilo.rst
    api/wislo.rst
+   api/number_of_words.rst

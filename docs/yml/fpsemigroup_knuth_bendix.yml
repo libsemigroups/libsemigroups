@@ -34,11 +34,15 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - set_identity(letter_type)
   - set_identity(std::string const&)
   - set_inverses
+- Iterators:
+  - cbegin_rules
+  - cend_rules
+  - cbegin_normal_forms(std::string const&, size_t const, size_t const)
+  - cbegin_normal_forms(size_t const, size_t const)
+  - cend_normal_forms
 - Attributes:
   - alphabet() const
   - alphabet(size_t) const
-  - cbegin_rules
-  - cend_rules
   - size
   - nr_active_rules
   - active_rules
@@ -50,6 +54,9 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - nr_rules
   - identity
   - inverses
+  - gilman_digraph
+  - contains_empty_string
+  - number_of_normal_forms
 - Settings:
   - check_confluence_interval
   - overlap_policy

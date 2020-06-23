@@ -321,7 +321,7 @@ namespace libsemigroups {
                                      internal_iterator_type const& it) const
               noexcept {
             if (state.second.empty()) {
-              libsemigroups::word_to_string(state.first, *it, state.second);
+              detail::word_to_string(state.first, *it, state.second);
             }
             return state.second;
           }
@@ -373,14 +373,86 @@ namespace libsemigroups {
       static_assert(std::is_destructible<const_normal_form_iterator>::value,
                     "forward iterator requires destructible");
 
+      //! Returns a forward iterator pointing at the first normal form whose
+      //! length is in the given range using the specified alphabet.
+      //!
+      //! If incremented, the iterator will point to the next least short-lex
+      //! normal form (if it's less than \p max in length).  Iterators of the
+      //! type returned by this function should only be compared with other
+      //! iterators created from the same KnuthBendix instance.
+      //!
+      //! \param lphbt the alphabet to use for the normal forms
+      //! \param min the minimum length of a normal form
+      //! \param max one larger than the maximum length of a normal form.
+      //!
+      //! \returns
+      //! A value of type `const_normal_form_iterator`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! Copying iterators of this type is expensive.  As a consequence, prefix
+      //! incrementing \c ++it the iterator \c it returned by \c
+      //! cbegin_normal_forms is significantly cheaper than postfix
+      //! incrementing \c it++.
+      //!
+      //! \warning
+      //! If the finitely presented semigroup represented by \c this is infinite
+      //! then \p max should be chosen with some care.
+      //!
+      //! \sa
+      //! KnuthBendix::cend_normal_forms.
       const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
                                                      size_t const       min,
                                                      size_t const       max);
 
-      const_normal_form_iterator cbegin_normal_forms(size_t min, size_t max) {
+      //! Returns a forward iterator pointing at the first normal form whose
+      //! length is in the given range using the alphabet returned by
+      //! KnuthBendix::alphabet.
+      //!
+      //! If incremented, the iterator will point to the next least short-lex
+      //! normal form (if it's less than \p max in length).  Iterators of the
+      //! type returned by this function should only be compared with other
+      //! iterators created from the same KnuthBendix instance.
+      //!
+      //! \param min the minimum length of a normal form
+      //! \param max one larger than the maximum length of a normal form.
+      //!
+      //! \returns
+      //! A value of type `const_normal_form_iterator`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! Copying iterators of this type is expensive.  As a consequence, prefix
+      //! incrementing \c ++it the iterator \c it returned by \c
+      //! cbegin_normal_forms is significantly cheaper than postfix
+      //! incrementing \c it++.
+      //!
+      //! \warning
+      //! If the finitely presented semigroup represented by \c this is infinite
+      //! then \p max should be chosen with some care.
+      //!
+      //! \sa
+      //! KnuthBendix::cend_normal_forms.
+      const_normal_form_iterator cbegin_normal_forms(size_t const min,
+                                                     size_t const max) {
         return cbegin_normal_forms(alphabet(), min, max);
       }
 
+      //! Returns a forward iterator pointing to one after the last normal form.
+      //!
+      //! The iterator returned by this function can be compared with the
+      //! return value of KnuthBendix::cbegin_normal_forms with any parameters.
+      //!
+      //! \warning The iterator returned by this function may still
+      //! dereferencable and incrementable, but will not point to a normal_form
+      //! in the correct range.
+      //!
+      //! \sa
+      //! KnuthBendix::cbegin_normal_forms.
       const_normal_form_iterator cend_normal_forms() {
         using state_type = NormalFormsIteratorTraits::state_type;
         return const_normal_form_iterator(state_type("", ""),
@@ -455,13 +527,59 @@ namespace libsemigroups {
       //! (None)
       void knuth_bendix_by_overlap_length();
 
-      // TODO(now) doc
+      //! Returns the Gilman digraph (or automata) of \c this.
+      //!
+      //! \returns A const reference to a ActionDigraph<size_t>.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \par Parameters
+      //! (None)
+      //!
+      //! \warning This will terminate when the KnuthBendix instance is
+      //! reduced and confluent, which might be never.
+      //!
+      //! \sa KnuthBendix::number_of_normal_forms,
+      //! KnuthBendix::cbegin_normal_forms, and KnuthBendix::cend_normal_forms.
       ActionDigraph<size_t> const& gilman_digraph();
 
-      // TODO(now) doc
+      //! Returns whether or not the empty string belongs to the finitely
+      //! presented semigroup represented by \c this.
+      //!
+      //! \returns
+      //! A value of type `bool`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \complexity
+      //! \f$O(n)\f$ where \f$n\f$ is the number of rules.
+      //!
+      //! \par Parameters
+      //! (None)
       bool contains_empty_string() const;
 
-      // TODO(now) doc
+      //! Returns the number of normal forms with length in a given range.
+      //!
+      //! \param min the minimum length of a normal form to count
+      //! \param max one larger than the maximum length of a normal form to
+      //! count.
+      //!
+      //! \returns
+      //! A value of type `uint64_t`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \complexity
+      //! Assuming that \c this has been run until finished, the complexity of
+      //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
+      //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
+      //! KnuthBendix::gilman_digraph.
+      //!
+      //! \par Parameters
+      //! (None)
       uint64_t number_of_normal_forms(size_t const min, size_t const max);
 
       //////////////////////////////////////////////////////////////////////////

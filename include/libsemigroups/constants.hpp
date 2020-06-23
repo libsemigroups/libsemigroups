@@ -65,7 +65,7 @@ namespace libsemigroups {
       Constant& operator=(Constant&&) = default;
       ~Constant()                     = default;
 
-      // TODO(now) move the static assert conditions into the SFINAE
+      // TODO(later) move the static assert conditions into the SFINAE
       template <typename T,
                 typename
                 = typename std::enable_if<!std::is_enum<T>::value, T>::type>

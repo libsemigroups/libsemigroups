@@ -143,8 +143,7 @@ namespace libsemigroups {
       using state_type = NormalFormsIteratorTraits::state_type;
       auto it          = const_normal_form_iterator(
           state_type(lphbt, ""), gilman_digraph().cbegin_pislo(0, min, max));
-      if (min == 0 && !_impl->contains_empty_string()
-          && (!has_identity() || !identity().empty())) {
+      if (min == 0 && !contains_empty_string()) {
         ++it;
       }
       return it;
@@ -160,30 +159,6 @@ namespace libsemigroups {
         auto const out      = gilman_digraph().number_of_paths(0);
         return (out == POSITIVE_INFINITY ? out : out + modifier);
       }
-    }
-
-    // TODO(now) move to the right section
-    // TODO(now) noexcept?
-    bool KnuthBendix::contains_empty_string() const {
-      return _impl->contains_empty_string()
-             || (has_identity() && identity().empty());
-    }
-
-    // TODO(now) move to the right section
-    uint64_t KnuthBendix::number_of_normal_forms(size_t const min,
-                                                 size_t const max) {
-      if (alphabet().empty()) {
-        return 0;
-      } else {
-        int const modifier = (contains_empty_string() ? 0 : -1);
-
-        auto const out = gilman_digraph().number_of_paths(0, min, max);
-        return (out == POSITIVE_INFINITY ? out : out + modifier);
-      }
-    }
-
-    size_t KnuthBendix::nr_active_rules() const noexcept {
-      return _impl->nr_rules();
     }
 
     bool KnuthBendix::equal_to(std::string const& u, std::string const& v) {
@@ -245,13 +220,35 @@ namespace libsemigroups {
       report_why_we_stopped();
     }
 
-    std::vector<std::string> normal_forms(size_t min = 0,
-                                          size_t max = POSITIVE_INFINITY);
+    // TODO(later) noexcept?
+    bool KnuthBendix::contains_empty_string() const {
+      return _impl->contains_empty_string()
+             || (has_identity() && identity().empty());
+    }
+
+    uint64_t KnuthBendix::number_of_normal_forms(size_t const min,
+                                                 size_t const max) {
+      if (alphabet().empty()) {
+        return 0;
+      } else {
+        int const modifier = (contains_empty_string() ? 0 : -1);
+
+        auto const out = gilman_digraph().number_of_paths(0, min, max);
+        return (out == POSITIVE_INFINITY ? out : out + modifier);
+      }
+    }
+
+    size_t KnuthBendix::nr_active_rules() const noexcept {
+      return _impl->nr_rules();
+    }
 
     ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
       if (_gilman_digraph.nr_nodes() == 0) {
+        // reset the settings so that we really run!
         max_rules(POSITIVE_INFINITY);
         run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        LIBSEMIGROUPS_ASSERT(confluent());
         std::unordered_map<std::string, size_t> prefixes;
         prefixes.emplace("", 0);
         // FIXME(later)
@@ -357,6 +354,12 @@ namespace libsemigroups {
         return false;  // Don't add rules for the identity
       }
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - main member functions - public
+    //////////////////////////////////////////////////////////////////////////
+
+
   }  // namespace fpsemigroup
 
   namespace congruence {

@@ -250,7 +250,7 @@ namespace libsemigroups {
       return true;
     }
 
-    // TODO(doc)
+    // TODO(now)
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad) {
@@ -281,7 +281,7 @@ namespace libsemigroups {
     }
 
     // Topologically sort those nodes reachable from source
-    // TODO(doc)
+    // TODO(now)
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad, node_type<T> const source) {
@@ -425,6 +425,7 @@ namespace libsemigroups {
       } while (!nodes.empty());
       return false;
     }
+
     // TODO(now) doc
     template <typename T>
     void add_cycle(ActionDigraph<T>&                               ad,
