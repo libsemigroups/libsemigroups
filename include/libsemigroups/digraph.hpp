@@ -2273,7 +2273,11 @@ namespace libsemigroups {
 
       switch (lgrthm) {
         case algorithm::dfs:
-          return number_of_paths_dfs(source, target, min, max);
+          if (number_of_paths_special(source, target, min, max)) {
+            return POSITIVE_INFINITY;
+          }
+          return std::distance(cbegin_pstilo(source, target, min, max),
+                               cend_pstilo());
         case algorithm::matrix:
           return number_of_paths_matrix(source, target, min, max);
         case algorithm::acyclic:
@@ -2293,8 +2297,14 @@ namespace libsemigroups {
     }
 
    private:
+    // Implemented below
+    bool number_of_paths_special(node_type const source,
+                                 node_type const target,
+                                 size_t const    min,
+                                 size_t const    max) const;
+
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - number_of_paths - private
+    // ActionDigraph - number_of_paths_trivial - private
     ////////////////////////////////////////////////////////////////////////
 
     uint64_t number_of_paths_trivial(node_type const source,
@@ -2331,6 +2341,10 @@ namespace libsemigroups {
       }
       LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - number_of_paths_matrix - private
+    ////////////////////////////////////////////////////////////////////////
 
     uint64_t number_of_paths_matrix(node_type const source,
                                     size_t const    min,
@@ -2371,22 +2385,8 @@ namespace libsemigroups {
       if (!action_digraph_helper::is_reachable(*this, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
-      } else if (max == POSITIVE_INFINITY) {
-        if (source == target
-            && std::any_of(cbegin_edges(source),
-                           cend_edges(source),
-                           [this, source](node_type const n) {
-                             return n != UNDEFINED
-                                    && action_digraph_helper::is_reachable(
-                                        *this, n, source);
-                           })) {
-          return POSITIVE_INFINITY;
-        } else if (source != target
-                   && action_digraph_helper::is_reachable(*this, source, target)
-                   && action_digraph_helper::is_reachable(
-                       *this, target, source)) {
-          return POSITIVE_INFINITY;
-        }
+      } else if (number_of_paths_special(source, target, min, max)) {
+        return POSITIVE_INFINITY;
       }
 
       auto           am  = detail::adjacency_matrix(*this);
@@ -2413,6 +2413,10 @@ namespace libsemigroups {
       return total;
 #endif
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ActionDigraph - number_of_paths_acyclic - private
+    ////////////////////////////////////////////////////////////////////////
 
     uint64_t number_of_paths_acyclic(node_type const source,
                                      size_t const    min,
@@ -2469,9 +2473,8 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
                                 "from %llu is not acyclic",
                                 source);
-      }
-
-      if ((max == 1 && source != target) || (min != 0 && source == target)) {
+      } else if ((max == 1 && source != target)
+                 || (min != 0 && source == target)) {
         return 0;
       } else if (source == target) {
         // the empty path
@@ -2523,31 +2526,6 @@ namespace libsemigroups {
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
                              0);
-    }
-
-    uint64_t number_of_paths_dfs(node_type const source,
-                                 node_type const target,
-                                 size_t const    min,
-                                 size_t const    max) const {
-      if (max == POSITIVE_INFINITY) {
-        if (source == target
-            && std::any_of(cbegin_edges(source),
-                           cend_edges(source),
-                           [this, source](node_type const n) {
-                             return n != UNDEFINED
-                                    && action_digraph_helper::is_reachable(
-                                        *this, n, source);
-                           })) {
-          return POSITIVE_INFINITY;
-        } else if (source != target
-                   && action_digraph_helper::is_reachable(*this, source, target)
-                   && action_digraph_helper::is_reachable(
-                       *this, target, source)) {
-          return POSITIVE_INFINITY;
-        }
-      }
-      return std::distance(cbegin_pstilo(source, target, min, max),
-                           cend_pstilo());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2681,6 +2659,37 @@ namespace libsemigroups {
       std::vector<scc_index_type>         _id;
     } _scc;
   };
+
+  ////////////////////////////////////////////////////////////////////////
+  // ActionDigraph - number_of_paths_special - private
+  ////////////////////////////////////////////////////////////////////////
+
+  // Used by the matrix(source, target) and the dfs(source, target)
+  // algorithms
+  template <typename T>
+  bool ActionDigraph<T>::number_of_paths_special(node_type const source,
+                                                 node_type const target,
+                                                 size_t const,
+                                                 size_t const max) const {
+    if (max == POSITIVE_INFINITY) {
+      if (source == target
+          && std::any_of(cbegin_edges(source),
+                         cend_edges(source),
+                         [this, source](node_type const n) {
+                           return n != UNDEFINED
+                                  && action_digraph_helper::is_reachable(
+                                      *this, n, source);
+                         })) {
+        return true;
+      } else if (source != target
+                 && action_digraph_helper::is_reachable(*this, source, target)
+                 && action_digraph_helper::is_reachable(
+                     *this, target, source)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   namespace detail {
     template <typename T>

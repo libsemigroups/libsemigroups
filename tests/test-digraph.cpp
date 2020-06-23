@@ -1477,11 +1477,13 @@ namespace libsemigroups {
                           "034",
                           "number_of_paths large binary tree",
                           "[quick]") {
+    using algorithm          = ActionDigraph<size_t>::algorithm;
     size_t const          n  = 20;
     ActionDigraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.nr_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.nr_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0) == std::pow(2, n) - 1);
   }
 
