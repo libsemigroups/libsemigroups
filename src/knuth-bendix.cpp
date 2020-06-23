@@ -359,7 +359,6 @@ namespace libsemigroups {
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-
   }  // namespace fpsemigroup
 
   namespace congruence {

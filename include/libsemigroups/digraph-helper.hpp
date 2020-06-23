@@ -212,8 +212,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -250,7 +250,29 @@ namespace libsemigroups {
       return true;
     }
 
-    // TODO(now)
+    //! Returns the nodes of the digraph in topological order (see below) if
+    //! possible.
+    //!
+    //! If it is not empty, the returned vector has the property that if an
+    //! edge from a node \c n points to a node \c m, then \c m occurs before \c
+    //! n in the vector.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! \p ad in topological order (if possible) and is otherwise empty.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
+    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad) {
@@ -280,8 +302,29 @@ namespace libsemigroups {
       return order;
     }
 
-    // Topologically sort those nodes reachable from source
-    // TODO(now)
+    //! Returns the nodes of the digraph reachable from a given node in
+    //! topological order (see below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that
+    //! if an edge from a node \c n points to a node \c m, then \c m occurs
+    //! before \c n in the vector, and the last item in the vector is \p
+    //! source.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! \p ad in topological order (if possible) and is otherwise empty.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! subdigraph of those nodes reachable from \p source
+    //! and \f$n\f$ is the number of edges.
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad, node_type<T> const source) {
@@ -315,8 +358,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -362,8 +405,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! \note
     //! If \p source and \p target are equal, then, by convention, we consider
@@ -426,7 +469,25 @@ namespace libsemigroups {
       return false;
     }
 
-    // TODO(now) doc
+    //! Adds a cycle involving the specified range of nodes.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param first a const iterator to nodes of \p ad
+    //! \param last a const iterator to nodes of \p ad
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the distance between \p first and \p last.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
     template <typename T>
     void add_cycle(ActionDigraph<T>&                               ad,
                    typename ActionDigraph<T>::const_iterator_nodes first,
@@ -437,6 +498,24 @@ namespace libsemigroups {
       ad.add_edge(*(last - 1), *first, 0);
     }
 
+    //! Adds a cycle consisting of \p N new nodes.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param N the length of the cycle and number of new nodes to add.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(N)\f$ where \f$N\f$ is the second parameter.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
     template <typename T>
     void add_cycle(ActionDigraph<T>& ad, size_t const N) {
       size_t M = ad.nr_nodes();

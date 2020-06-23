@@ -59,5 +59,7 @@ libsemigroups::CongruenceInterface:
   - has_quotient_froidure_pin
   - parent_froidure_pin
   - has_parent_froidure_pin
+  - parent_fpsemigroup
+  - has_parent_fpsemigroup
   - is_quotient_obviously_finite
   - is_quotient_obviously_infinite

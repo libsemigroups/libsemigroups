@@ -534,14 +534,14 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \par Parameters
-      //! (None)
-      //!
       //! \warning This will terminate when the KnuthBendix instance is
       //! reduced and confluent, which might be never.
       //!
       //! \sa KnuthBendix::number_of_normal_forms,
       //! KnuthBendix::cbegin_normal_forms, and KnuthBendix::cend_normal_forms.
+      //!
+      //! \par Parameters
+      //! (None)
       ActionDigraph<size_t> const& gilman_digraph();
 
       //! Returns whether or not the empty string belongs to the finitely
@@ -577,15 +577,20 @@ namespace libsemigroups {
       //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
       //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
       //! KnuthBendix::gilman_digraph.
-      //!
-      //! \par Parameters
-      //! (None)
       uint64_t number_of_normal_forms(size_t const min, size_t const max);
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - pure virtual member functions - public
       //////////////////////////////////////////////////////////////////////////
 
+      //! \copydoc FpSemigroupInterface::size
+      //!
+      //! \note If \c this has been run until finished, then this function can
+      //! determine the size of the semigroup represented by \c this even if it
+      //! is infinite. Moreover, the complexity of this function is at worst
+      //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet,
+      //! and \f$n\f$ is the number of nodes in the
+      //! KnuthBendix::gilman_digraph.
       size_t size() override;
 
       bool equal_to(std::string const&, std::string const&) override;

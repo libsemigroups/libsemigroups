@@ -500,8 +500,8 @@ namespace libsemigroups {
       return _quotient != nullptr;
     }
 
-    //! Returns a reference to the parent semigroup over which the
-    //! congruence represented by this object is defined, if it exists.
+    //! Returns a shared_ptr to the parent FroidurePin over which the
+    //! congruence represented by this object was defined, if it exists.
     //!
     //! \returns A std::shared_ptr to FroidurePinBase.
     //!
@@ -515,13 +515,26 @@ namespace libsemigroups {
     //! (None)
     std::shared_ptr<FroidurePinBase> parent_froidure_pin() const;
 
-    // TODO(now) doc
+    //! Returns a shared_ptr to the parent FpSemigroupInterface object over
+    //! which the congruence represented by this object was defined, if it
+    //! exists.
+    //!
+    //! \returns A std::shared_ptr to an FpSemigroupInterface.
+    //!
+    //! \throws LibsemigroupsException if \c this was not created using a
+    //! FpSemigroupInterface instance.
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
     std::shared_ptr<FpSemigroupInterface> parent_fpsemigroup() const;
 
     //! Returns \c true if the congruence represented by \c this was created
     //! from a FroidurePin instance.
     //!
-    //! If \c true is returned, then \c this is a congruence over the semigroup
+    //! If \c true is returned, then \c this is a congruence over a semigroup
     //! represented by a FroidurePin instance.
     //!
     //! \returns A `bool`.
@@ -536,7 +549,22 @@ namespace libsemigroups {
     //! (None)
     bool has_parent_froidure_pin() const noexcept;
 
-    // TODO(now) doc
+    //! Returns \c true if the congruence represented by \c this was created
+    //! from an FpSemigroupInterface instance.
+    //!
+    //! If \c true is returned, then \c this is a congruence over a semigroup
+    //! represented by an FpSemigroupInterface instance.
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \par Exceptions
+    //! This function is `noexcept` and is guaranteed never to throw.
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
     bool has_parent_fpsemigroup() const noexcept;
 
     //! Return if the congruence represented by this object was created as a

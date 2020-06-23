@@ -29,3 +29,15 @@ Full API
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_reachable
    :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&)
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&, node_type<T> const)
+   :project: libsemigroups
+    
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, typename ActionDigraph<T>::const_iterator_nodes, typename ActionDigraph<T>::const_iterator_nodes)
+   :project: libsemigroups
+    
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t const)
+   :project: libsemigroups

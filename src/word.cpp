@@ -40,8 +40,8 @@ namespace libsemigroups {
   }
 
   void detail::word_to_string(std::string const& alphabet,
-                      word_type const&   input,
-                      std::string&       output) {
+                              word_type const&   input,
+                              std::string&       output) {
     output.clear();
     output.reserve(input.size());
     for (auto const x : input) {

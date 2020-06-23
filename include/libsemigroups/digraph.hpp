@@ -2261,7 +2261,8 @@ namespace libsemigroups {
     //!   number of nodes and \f$k\f$ equals \p max.
     //! * algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the number
     //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
-    //!   the subdigraph induced by the nodes reachable from \p source is acyclic)
+    //!   the subdigraph induced by the nodes reachable from \p source is
+    //!   acyclic)
     //! * algorithm::trivial: at worst \f$O(nm)\f$ where \f$n\f$ is the number
     //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid in
     //!   some circumstances)
@@ -2274,7 +2275,8 @@ namespace libsemigroups {
     uint64_t number_of_paths(node_type const source,
                              size_t const    min,
                              size_t const    max,
-                             algorithm const lgrthm = algorithm::automatic) const {
+                             algorithm const lgrthm
+                             = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
 
       switch (lgrthm) {
@@ -2314,8 +2316,8 @@ namespace libsemigroups {
     // Not noexcept because action_digraph_helper::topological_sort isn't
     algorithm number_of_paths_algorithm(node_type const source,
                                         node_type const target,
-                                        size_t const min,
-                                        size_t const max) const {
+                                        size_t const    min,
+                                        size_t const    max) const {
       (void) target;
       if (min >= max) {
         return algorithm::trivial;
@@ -2361,7 +2363,8 @@ namespace libsemigroups {
     //!   number of nodes and \f$k\f$ equals \p max.
     //! * algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the number
     //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
-    //!   the subdigraph induced by the nodes reachable from \p source is acyclic)
+    //!   the subdigraph induced by the nodes reachable from \p source is
+    //!   acyclic)
     //! * algorithm::trivial: constant (only valid in some circumstances)
     //! * algorithm::automatic: attempts to select the fastest algorithm of the
     //!   preceding algorithms and then applies that.
@@ -2373,7 +2376,8 @@ namespace libsemigroups {
                              node_type const target,
                              size_t const    min,
                              size_t const    max,
-                             algorithm const lgrthm = algorithm::automatic) const {
+                             algorithm const lgrthm
+                             = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
       action_digraph_helper::validate_node(*this, target);
 
