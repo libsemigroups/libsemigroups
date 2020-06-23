@@ -15,7 +15,9 @@ libsemigroups::ActionDigraph:
   - ActionDigraph(ActionDigraph&&)
   - operator=(ActionDigraph const&)
   - operator=(ActionDigraph&&)
-  - random
+  - random(T const, T const, std::mt19937)
+  - random(T const, T const, T const, std::mt19937)
+  - random_acyclic
 - Modifiers:
   - add_nodes
   - add_to_out_degree
