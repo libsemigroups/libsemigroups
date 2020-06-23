@@ -192,8 +192,7 @@ namespace libsemigroups {
           _dynamic_array_2(_degree, _nr_nodes, UNDEFINED),
           _scc_back_forest(),
           _scc_forest(),
-          _scc()
-           {}
+          _scc() {}
 
     //! Default copy constructor
     ActionDigraph(ActionDigraph const&) = default;
@@ -269,10 +268,9 @@ namespace libsemigroups {
             "the 2nd parameter `nr_edges` must be at least 2, found %llu",
             out_degree);
       } else if (nr_edges > nr_nodes * out_degree) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd parameter `nr_edges` must be at "
-            "most %llu, but found %llu",
-            nr_nodes * out_degree);
+        LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
+                                "most %llu, but found %llu",
+                                nr_nodes * out_degree);
       }
       std::uniform_int_distribution<T> source(0, nr_nodes - 1);
       std::uniform_int_distribution<T> target(0, nr_nodes - 1);
@@ -2230,8 +2228,8 @@ namespace libsemigroups {
     // TODO doc
     algorithm number_of_paths_algorithm(node_type const source,
                                         node_type const,
-                                        size_t const    min,
-                                        size_t const    max) const {
+                                        size_t const min,
+                                        size_t const max) const {
       if (min >= max) {
         return algorithm::trivial;
       }
@@ -2419,14 +2417,13 @@ namespace libsemigroups {
     uint64_t number_of_paths_acyclic(node_type const source,
                                      size_t const    min,
                                      size_t const    max) const {
-
       auto topo = action_digraph_helper::topological_sort(*this, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
                                 "from %llu is not acyclic",
                                 source);
-       } else if (topo.size() <= min) {
+      } else if (topo.size() <= min) {
         // There are fewer than `min` nodes reachable from source, and so there
         // are no paths of length `min` or greater
         return 0;
@@ -2664,24 +2661,24 @@ namespace libsemigroups {
     mutable detail::DynamicArray2<T> _dynamic_array_2;
 
     struct Attr {
-        Attr() : _defined(false) {}
-        bool _defined;
+      Attr() : _defined(false) {}
+      bool _defined;
     };
 
     mutable struct SCCBackForest : public Attr {
-        SCCBackForest() : Attr(), _forest() {}
-        Forest _forest;
+      SCCBackForest() : Attr(), _forest() {}
+      Forest _forest;
     } _scc_back_forest;
 
     mutable struct SCCForwardForest : public Attr {
-        SCCForwardForest() : Attr(), _forest() {}
-        Forest _forest;
+      SCCForwardForest() : Attr(), _forest() {}
+      Forest _forest;
     } _scc_forest;
 
     mutable struct SCC : public Attr {
-        SCC() : Attr(), _comps(), _id() {}
-        std::vector<std::vector<node_type>> _comps;
-        std::vector<scc_index_type>         _id;
+      SCC() : Attr(), _comps(), _id() {}
+      std::vector<std::vector<node_type>> _comps;
+      std::vector<scc_index_type>         _id;
     } _scc;
   };
 

@@ -49,9 +49,9 @@ namespace libsemigroups {
       } else if (e == 1) {
         return;
       }
-      auto y = x;
+      auto                  y = x;
       std::vector<uint64_t> tmp;
-      auto z = (e % 2 == 0 ? one(N) : x);
+      auto                  z = (e % 2 == 0 ? one(N) : x);
 
       while (e > 1) {
         matrix_product_in_place(tmp, y, y, N);
@@ -66,4 +66,4 @@ namespace libsemigroups {
     }
 
   }  // namespace detail
-}
+}  // namespace libsemigroups
