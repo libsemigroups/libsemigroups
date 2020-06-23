@@ -149,6 +149,10 @@ libsemigroups_la_SOURCES += src/wilo.cpp
 libsemigroups_la_SOURCES += src/wislo.cpp
 libsemigroups_la_SOURCES += src/word.cpp
 
+if !LIBSEMIGROUPS_EIGEN_ENABLED
+libsemigroups_la_SOURCES += src/digraph.cpp
+endif
+
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS) 
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 

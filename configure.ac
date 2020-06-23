@@ -121,6 +121,7 @@ AX_CHECK_HPCOMBI()
 # Check if the vendored fmt should be used or not
 AX_CHECK_FMT()
 
+AM_CONDITIONAL([LIBSEMIGROUPS_EIGEN_ENABLED], [test "xenable_eigen" = xyes])
 dnl Output configured files
 
 AC_CONFIG_FILES([Makefile libsemigroups.pc])

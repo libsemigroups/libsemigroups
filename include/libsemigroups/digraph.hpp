@@ -53,75 +53,24 @@
 namespace libsemigroups {
 
   namespace detail {
-
     static inline double magic_number(size_t const N) {
       return 0.0015 * N + 2.43;
     }
 
-    // TODO(now) put in cpp file
-    static inline std::vector<uint64_t> one(size_t const N) {
-      std::vector<uint64_t> out(N * N, 0);
-      for (size_t i = 0; i < N; ++i) {
-        out[i * N + i] = 1;
-      }
-      return out;
-    }
+#ifndef LIBSEMIGROUPS_EIGEN_ENABLED
+    std::vector<uint64_t> one(size_t const N);
 
-    // TODO(now) put in cpp file
-    static inline void matrix_product_in_place(std::vector<uint64_t>&       xy,
-                                               std::vector<uint64_t> const& x,
-                                               std::vector<uint64_t> const& y,
-                                               size_t const                N) {
-      for (size_t i = 0; i < N; ++i) {
-        for (size_t j = 0; j < N; ++j) {
-          uint64_t v = 0;
-          for (size_t k = 0; k < N; ++k) {
-            v += x[i * N + k] * y[k * N + j];
-          }
-          xy[i * N + j] = v;
-        }
-      }
-    }
+    void matrix_product_in_place(std::vector<uint64_t>&       xy,
+                                 std::vector<uint64_t> const& x,
+                                 std::vector<uint64_t> const& y,
+                                 size_t const                 N);
 
-    template <typename S, typename T>
-    void pow(S& x, T e, size_t N) {
-      if (e == 0) {
-        x = one(N);
-        return;
-      } else if (e == 1) {
-        return;
-      }
-      S y = x;
-      S tmp;
-      S z = (e % 2 == 0 ? one(N) : x);
+    void pow(std::vector<uint64_t>& x, uint64_t e, size_t N);
 
-      while (e > 1) {
-        matrix_product_in_place(tmp, y, y, N);
-        std::swap(y, tmp);
-        e /= 2;
-        if (e % 2 == 1) {
-          matrix_product_in_place(tmp, z, y, N);
-          std::swap(z, tmp);
-        }
-      }
-      x = z;
-    }
-
+    // Implemented at end of this file.
     template <typename T>
-    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
-      size_t const         N = ad.nr_nodes();
-      std::vector<uint64_t> mat(N * N, 0);
-
-      for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
-        for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
-          if (*e != UNDEFINED) {
-            mat[(*n) * N + *e] += 1;
-          }
-        }
-      }
-      return mat;
-    }
-
+    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad);
+#endif
   }  // namespace detail
 
   //! Defined in ``digraph.hpp``.
@@ -2352,7 +2301,7 @@ namespace libsemigroups {
                                     size_t const    min,
                                     size_t const    max) const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      TODO(now)
+      TODO(later)
 #else
       auto           am  = detail::adjacency_matrix(*this);
       auto           acc = am;
@@ -2555,5 +2504,22 @@ namespace libsemigroups {
       std::vector<node_type> _vec;
     } _topo_sort;
   };
+
+  namespace detail {
+    template <typename T>
+    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
+      size_t const          N = ad.nr_nodes();
+      std::vector<uint64_t> mat(N * N, 0);
+
+      for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
+        for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
+          if (*e != UNDEFINED) {
+            mat[(*n) * N + *e] += 1;
+          }
+        }
+      }
+      return mat;
+    }
+  }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HPP_
