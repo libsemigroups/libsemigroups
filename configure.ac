@@ -123,7 +123,6 @@ AX_CHECK_FMT()
 # Check if the vendored eigen should be used or not, or if eigen should be
 # disabled altogether
 AX_CHECK_EIGEN()
-AM_CONDITIONAL([EIGEN_ENABLED], [test x$eigen_enabled = xyes])
 
 dnl Output configured files
 
