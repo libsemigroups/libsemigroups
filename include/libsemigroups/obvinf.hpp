@@ -75,89 +75,13 @@
 #include "uf.hpp"                   // for UF
 #include "word.hpp"                   // for StringToWord
 
+// TODO (Reinis):
+//
+// 1) Separate implementation into cpp file.
+// 2) IWYU
+
 namespace libsemigroups {
   namespace detail {
-    template <typename TLetterType, typename TWordType>
-    class IsObviouslyInfinitePairs final {
-      using const_iterator =
-          typename std::vector<std::pair<TWordType, TWordType>>::const_iterator;
-
-     public:
-      explicit IsObviouslyInfinitePairs(size_t n)
-          : _empty_word(false), _map(), _nr_gens(n), _preserve(), _unique() {}
-
-      explicit IsObviouslyInfinitePairs(std::string const& lphbt)
-          : IsObviouslyInfinitePairs(lphbt.size()) {}
-
-      IsObviouslyInfinitePairs(IsObviouslyInfinitePairs const&) = delete;
-      IsObviouslyInfinitePairs(IsObviouslyInfinitePairs&&)      = delete;
-      IsObviouslyInfinitePairs& operator=(IsObviouslyInfinitePairs const&)
-          = delete;
-      IsObviouslyInfinitePairs& operator=(IsObviouslyInfinitePairs&&) = delete;
-
-      void add_rules(const_iterator first, const_iterator last) {
-        for (auto it = first; it < last; ++it) {
-          if ((*it).first.empty() || (*it).second.empty()) {
-            _empty_word = true;
-          }
-          _map.clear();
-          plus_letters_in_word((*it).first);
-          if (!_empty_word && _map.size() == 1) {
-            _unique.insert((*it).first[0]);
-          }
-          minus_letters_in_word((*it).second);
-          if (!_empty_word && !(*it).second.empty()
-              && std::all_of((*it).second.cbegin() + 1,
-                             (*it).second.cend(),
-                             [&it](TLetterType i) -> bool {
-                               return i == (*it).second[0];
-                             })) {
-            _unique.insert((*it).second[0]);
-          }
-          for (auto const& x : _map) {
-            if (x.second != 0) {
-              _preserve.insert(x.first);
-            }
-          }
-        }
-      }
-
-      bool result() const {
-        return (!_empty_word && _unique.size() != _nr_gens)
-               || _preserve.size() != _nr_gens;
-      }
-
-     private:
-      void letters_in_word(TWordType const& w, size_t adv) {
-        for (auto const& x : w) {
-          auto it = _map.find(x);
-          if (it == _map.end()) {
-            _map.emplace(x, adv);
-          } else {
-            it->second += adv;
-          }
-        }
-      }
-
-      void plus_letters_in_word(TWordType const& w) {
-        letters_in_word(w, 1);
-      }
-
-      void minus_letters_in_word(TWordType const& w) {
-        letters_in_word(w, -1);
-      }
-
-      // TLetterType i belongs to "preserve" if there exists a relation where
-      // the number of occurrences of i is not the same on both sides of the
-      // relation TLetterType i belongs to "unique" if there is a relation
-      // where one side consists solely of i.
-      bool                                     _empty_word;
-      std::unordered_map<TLetterType, int64_t> _map;
-      size_t                                   _nr_gens;
-      std::unordered_set<TLetterType>          _preserve;
-      std::unordered_set<TLetterType>          _unique;
-    };
-
     class IsObviouslyInfinite final {
       using const_iterator_word_type =
           typename std::vector<word_type>::const_iterator;
@@ -278,6 +202,7 @@ namespace libsemigroups {
         }
       }
 
+      // do not put into cpp file
       void letters_in_word(size_t row, word_type const& w, size_t adv) {
         for (size_t const& x : w) {
           _matrix(row, x) += adv;
@@ -285,10 +210,12 @@ namespace libsemigroups {
         }
       }
 
+      // do not put into cpp file
       void plus_letters_in_word(size_t row, word_type const& w) {
         letters_in_word(row, w, 1);
       }
 
+      // do not put into cpp file
       void minus_letters_in_word(size_t row, word_type const& w) {
         letters_in_word(row, w, -1);
       }
