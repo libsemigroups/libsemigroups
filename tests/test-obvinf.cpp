@@ -168,7 +168,12 @@ namespace libsemigroups {
     REQUIRE(ioi.result());
     v = {{2, 2}, {1, 0, 1, 0, 1, 0, 1}};
     ioi.add_rules(v.cbegin(), v.cend());
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     REQUIRE(ioi.result());
+#else
+    REQUIRE(!ioi.result());
+#endif
+
     v = {{1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0,
           0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1},
          {1, 2, 1, 0, 1},
@@ -177,7 +182,11 @@ namespace libsemigroups {
          {},
          {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2}};
     ioi.add_rules(v.cbegin(), v.cend());
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     REQUIRE(ioi.result());
+#else
+    REQUIRE(!ioi.result());
+#endif
     v = {{0}, {0, 0}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
@@ -244,7 +253,11 @@ namespace libsemigroups {
     std::vector<word_type>                       v
         = {{0, 0}, {1, 1, 0}, {1, 1, 0, 0}, {1, 1, 1, 1, 1, 1}};
     ioi.add_rules(v.cbegin(), v.cend());
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     REQUIRE(ioi.result());
+#else
+    REQUIRE(!ioi.result());
+#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
