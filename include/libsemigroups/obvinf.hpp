@@ -60,10 +60,6 @@
 #ifndef LIBSEMIGROUPS_OBVINF_HPP_
 #define LIBSEMIGROUPS_OBVINF_HPP_
 
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include <Eigen/QR>  // for dimensionOfKernel
-#endif
-
 #include <algorithm>      // for all_of
 #include <cstddef>        // for size_t
 #include <iterator>       // for next
@@ -74,11 +70,16 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "constants.hpp"            // for UNDEFINED
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"                // for word_type etc
-#include "uf.hpp"                   // for UF
-#include "word.hpp"                 // for StringToWord
+#include "constants.hpp"             // for UNDEFINED
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "types.hpp"                 // for word_type etc
+#include "uf.hpp"                    // for UF
+#include "word.hpp"                  // for StringToWord
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#include <Eigen/QR>  // for dimensionOfKernel
+#endif
 
 // TODO (Reinis):
 //
@@ -242,7 +243,7 @@ namespace libsemigroups {
         letters_in_word(row, w, -1);
       }
 
-      size_t& matrix(size_t row, size_t col) {
+      int64_t& matrix(size_t row, size_t col) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
         return _matrix(row, col);
 #else
@@ -253,7 +254,7 @@ namespace libsemigroups {
 
       bool matrix_row_sums_to_0(size_t row) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-        return _matrix.row(row_index).sum() == 0;
+        return _matrix.row(row).sum() == 0;
 #else
         (void) row;
         return std::accumulate(_matrix.cbegin(), _matrix.cend(), 0) == 0;
@@ -278,7 +279,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
 #else
-      std::vector<letter_type> _matrix;
+      std::vector<int64_t> _matrix;
 #endif
     };
   }  // namespace detail

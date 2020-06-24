@@ -111,7 +111,6 @@ AS_IF([test "x$enable_compile_warnings" != "xno"],
        -Wold-style-cast])
    AC_SUBST([WARNING_CXXFLAGS])])
 
-
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
@@ -120,6 +119,11 @@ AX_CHECK_HPCOMBI()
 
 # Check if the vendored fmt should be used or not
 AX_CHECK_FMT()
+
+# Check if the vendored eigen should be used or not, or if eigen should be
+# disabled altogether
+AX_CHECK_EIGEN()
+AM_CONDITIONAL([EIGEN_ENABLED], [test x$eigen_enabled = xyes])
 
 dnl Output configured files
 
