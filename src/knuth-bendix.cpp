@@ -203,9 +203,9 @@ namespace libsemigroups {
       if (alphabet().size() > nr_rules()) {
         return true;
       }
-      detail::IsObviouslyInfinitePairs<char, std::string> ioi(
+      detail::IsObviouslyInfinite ioi(
           alphabet().size());
-      ioi.add_rules(cbegin_rules(), cend_rules());
+      ioi.add_rules(alphabet(), cbegin_rules(), cend_rules());
       return ioi.result();
     }
 

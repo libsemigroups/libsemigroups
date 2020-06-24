@@ -71,7 +71,9 @@
 
 #include "constants.hpp"            // for UNDEFINED
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "types.hpp"                   // for word_type etc
 #include "uf.hpp"                   // for UF
+#include "word.hpp"                   // for StringToWord
 
 namespace libsemigroups {
   namespace detail {
@@ -156,9 +158,11 @@ namespace libsemigroups {
       std::unordered_set<TLetterType>          _unique;
     };
 
-    template <typename TLetterType, typename TWordType>
     class IsObviouslyInfinite final {
-      using const_iterator = typename std::vector<TWordType>::const_iterator;
+      using const_iterator_word_type =
+          typename std::vector<word_type>::const_iterator;
+      using const_iterator_pair_string = typename std::vector<
+          std::pair<std::string, std::string>>::const_iterator;
 
      public:
       explicit IsObviouslyInfinite(size_t n)
@@ -179,54 +183,36 @@ namespace libsemigroups {
       IsObviouslyInfinite& operator=(IsObviouslyInfinite const&) = delete;
       IsObviouslyInfinite& operator=(IsObviouslyInfinite&&) = delete;
 
-      void add_rules(const_iterator first, const_iterator last) {
+      void add_rules(const_iterator_word_type first,
+                     const_iterator_word_type last) {
         auto matrix_start = _matrix.rows();
         _matrix.conservativeResize(matrix_start + (last - first) / 2,
                                    Eigen::NoChange);
         _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
             .setZero();
-
         for (auto it = first; it < last; it += 2) {
-          if ((*it).empty() || (*(it + 1)).empty()) {
-            _empty_word = true;
-          }
-          std::fill(_seen.begin(), _seen.end(), false);
-          plus_letters_in_word(matrix_start + (it - first) / 2, *it);
-          if (!_empty_word
-              && std::all_of(
-                  (*it).cbegin() + 1,
-                  (*it).cend(),
-                  [&it](TLetterType i) -> bool { return i == (*it)[0]; })) {
-            _unique[(*it)[0]] = true;
-          }
-          minus_letters_in_word(matrix_start + (it - first) / 2, *(it + 1));
-          if (!_empty_word && !(*(it + 1)).empty()
-              && std::all_of((*(it + 1)).cbegin() + 1,
-                             (*(it + 1)).cend(),
-                             [&it](TLetterType i) -> bool {
-                               return i == (*(it + 1))[0];
-                             })) {
-            _unique[(*(it + 1))[0]] = true;
-          }
-          for (size_t x = 0; x < _nr_gens; x++) {
-            if (_matrix(matrix_start + (it - first) / 2, x) != 0) {
-              _preserve[x] = true;
-            }
-          }
-          if (_preserve_length
-              && (_matrix.row(matrix_start + (it - first) / 2).sum() != 0)) {
-            _preserve_length = false;
-          }
-          size_t last_seen = UNDEFINED;
-          for (size_t x = 0; x < _nr_gens; ++x) {
-            if (_seen[x]) {
-              if (last_seen != UNDEFINED)
-                _letter_components.unite(last_seen, x);
-              last_seen = x;
-            }
-          }
+          private_add_rule(matrix_start + (it - first)/ 2, *it, *(it + 1));
         }
+        _nr_letter_components = _letter_components.nr_blocks();
+      }
 
+      void add_rules(std::string const&         lphbt,
+                     const_iterator_pair_string first,
+                     const_iterator_pair_string last) {
+        auto matrix_start = _matrix.rows();
+        _matrix.conservativeResize(matrix_start + (last - first),
+                                   Eigen::NoChange);
+        _matrix.block(matrix_start, 0, (last - first), _matrix.cols())
+            .setZero();
+
+        StringToWord stw(lphbt);
+        word_type lhs;
+        word_type rhs;
+        for (auto it = first; it < last; ++it) {
+          stw(it->first, lhs);   // lhs changed in-place
+          stw(it->second, rhs);  // rhs changed in-place
+          private_add_rule(matrix_start + (it - first), lhs, rhs);
+        }
         _nr_letter_components = _letter_components.nr_blocks();
       }
 
@@ -249,24 +235,67 @@ namespace libsemigroups {
       }
 
      private:
-      void letters_in_word(size_t row, TWordType const& w, size_t adv) {
+      void private_add_rule(size_t const     row_index,
+                            word_type const& u,
+                            word_type const& v) {
+        if (u.empty() || v.empty()) {
+          _empty_word = true;
+        }
+        std::fill(_seen.begin(), _seen.end(), false);
+        plus_letters_in_word(row_index, u);
+        if (!_empty_word
+            && std::all_of(
+                u.cbegin() + 1, u.cend(), [&u](letter_type i) -> bool {
+                  return i == u[0];
+                })) {
+          _unique[u[0]] = true;
+        }
+        minus_letters_in_word(row_index, v);
+        if (!_empty_word && !v.empty()
+            && std::all_of(
+                v.cbegin() + 1,
+                v.cend(),
+                [&v](letter_type i) -> bool { return i == v[0]; })) {
+          _unique[v[0]] = true;
+        }
+        for (size_t x = 0; x < _nr_gens; x++) {
+          if (_matrix(row_index, x) != 0) {
+            _preserve[x] = true;
+          }
+        }
+        if (_preserve_length
+            && (_matrix.row(row_index).sum() != 0)) {
+          _preserve_length = false;
+        }
+        size_t last_seen = UNDEFINED;
+        for (size_t x = 0; x < _nr_gens; ++x) {
+          if (_seen[x]) {
+            if (last_seen != UNDEFINED) {
+              _letter_components.unite(last_seen, x);
+            }
+            last_seen = x;
+          }
+        }
+      }
+
+      void letters_in_word(size_t row, word_type const& w, size_t adv) {
         for (size_t const& x : w) {
           _matrix(row, x) += adv;
           _seen[x] = true;
         }
       }
 
-      void plus_letters_in_word(size_t row, TWordType const& w) {
+      void plus_letters_in_word(size_t row, word_type const& w) {
         letters_in_word(row, w, 1);
       }
 
-      void minus_letters_in_word(size_t row, TWordType const& w) {
+      void minus_letters_in_word(size_t row, word_type const& w) {
         letters_in_word(row, w, -1);
       }
 
-      // TLetterType i belongs to "preserve" if there exists a relation where
+      // letter_type i belongs to "preserve" if there exists a relation where
       // the number of occurrences of i is not the same on both sides of the
-      // relation TLetterType i belongs to "unique" if there is a relation
+      // relation letter_type i belongs to "unique" if there is a relation
       // where one side consists solely of i.
       bool                                                   _empty_word;
       size_t                                                 _nr_gens;
