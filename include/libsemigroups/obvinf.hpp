@@ -69,6 +69,7 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
+#include "constants.hpp"            // for UNDEFINED
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "uf.hpp"                   // for UF
 
@@ -216,10 +217,10 @@ namespace libsemigroups {
               && (_matrix.row(matrix_start + (it - first) / 2).sum() != 0)) {
             _preserve_length = false;
           }
-          size_t last_seen = -1;
+          size_t last_seen = UNDEFINED;
           for (size_t x = 0; x < _nr_gens; ++x) {
             if (_seen[x]) {
-              if (last_seen != -1)
+              if (last_seen != UNDEFINED)
                 _letter_components.unite(last_seen, x);
               last_seen = x;
             }
