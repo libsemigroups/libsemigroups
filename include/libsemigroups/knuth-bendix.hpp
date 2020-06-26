@@ -31,9 +31,11 @@
 #include <vector>   // for vector
 
 #include "cong-intf.hpp"     // for CongruenceInterface
+#include "digraph.hpp"       // for ActionDigraph
 #include "fpsemi-intf.hpp"   // for FpSemigroupInterface
 #include "froidure-pin.hpp"  // for FroidurePin
 #include "types.hpp"         // for word_type
+#include "word.hpp"          // for word_to_string
 
 namespace libsemigroups {
   // Forward declarations
@@ -300,6 +302,163 @@ namespace libsemigroups {
       // const_iterator cbegin_active_rules() const;
       // const_iterator cend_active_rules() const;
 
+      struct NormalFormsIteratorTraits {
+        // state_type::first = this, state_type::second = current value
+        using state_type = std::pair<std::string, std::string>;
+        using internal_iterator_type
+            = ActionDigraph<size_t>::const_pislo_iterator;
+        using value_type        = std::string;
+        using reference         = std::string&;
+        using const_reference   = std::string const&;
+        using difference_type   = std::ptrdiff_t;
+        using size_type         = std::size_t;
+        using const_pointer     = std::string const*;
+        using pointer           = std::string*;
+        using iterator_category = std::forward_iterator_tag;
+
+        struct Deref {
+          const_reference operator()(state_type&                   state,
+                                     internal_iterator_type const& it) const
+              noexcept {
+            if (state.second.empty()) {
+              detail::word_to_string(state.first, *it, state.second);
+            }
+            return state.second;
+          }
+        };
+
+        struct AddressOf {
+          const_pointer operator()(state_type&                   state,
+                                   internal_iterator_type const& it) const
+              noexcept {
+            Deref()(state, it);  // to ensure that state.second is initialised
+            return &state.second;
+          }
+        };
+
+        struct PrefixIncrement {
+          void operator()(state_type& state, internal_iterator_type& it) const
+              noexcept {
+            ++it;
+            state.second.clear();
+          }
+        };
+
+        struct Swap {
+          void operator()(internal_iterator_type& it_this,
+                          internal_iterator_type& it_that,
+                          state_type&             state_this,
+                          state_type&             state_that) const noexcept {
+            swap(it_this, it_that);
+            swap(state_this, state_that);
+          }
+        };
+
+        using EqualTo          = void;
+        using NotEqualTo       = void;
+        using PostfixIncrement = void;
+      };
+
+      using const_normal_form_iterator
+          = detail::ConstIteratorStateful<NormalFormsIteratorTraits>;
+
+      static_assert(
+          std::is_default_constructible<const_normal_form_iterator>::value,
+          "forward iterator requires default-constructible");
+      static_assert(
+          std::is_copy_constructible<const_normal_form_iterator>::value,
+          "forward iterator requires copy-constructible");
+      static_assert(std::is_copy_assignable<const_normal_form_iterator>::value,
+                    "forward iterator requires copy-assignable");
+      static_assert(std::is_destructible<const_normal_form_iterator>::value,
+                    "forward iterator requires destructible");
+
+      //! Returns a forward iterator pointing at the first normal form whose
+      //! length is in the given range using the specified alphabet.
+      //!
+      //! If incremented, the iterator will point to the next least short-lex
+      //! normal form (if it's less than \p max in length).  Iterators of the
+      //! type returned by this function should only be compared with other
+      //! iterators created from the same KnuthBendix instance.
+      //!
+      //! \param lphbt the alphabet to use for the normal forms
+      //! \param min the minimum length of a normal form
+      //! \param max one larger than the maximum length of a normal form.
+      //!
+      //! \returns
+      //! A value of type `const_normal_form_iterator`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! Copying iterators of this type is expensive.  As a consequence, prefix
+      //! incrementing \c ++it the iterator \c it returned by \c
+      //! cbegin_normal_forms is significantly cheaper than postfix
+      //! incrementing \c it++.
+      //!
+      //! \warning
+      //! If the finitely presented semigroup represented by \c this is infinite
+      //! then \p max should be chosen with some care.
+      //!
+      //! \sa
+      //! KnuthBendix::cend_normal_forms.
+      const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
+                                                     size_t const       min,
+                                                     size_t const       max);
+
+      //! Returns a forward iterator pointing at the first normal form whose
+      //! length is in the given range using the alphabet returned by
+      //! KnuthBendix::alphabet.
+      //!
+      //! If incremented, the iterator will point to the next least short-lex
+      //! normal form (if it's less than \p max in length).  Iterators of the
+      //! type returned by this function should only be compared with other
+      //! iterators created from the same KnuthBendix instance.
+      //!
+      //! \param min the minimum length of a normal form
+      //! \param max one larger than the maximum length of a normal form.
+      //!
+      //! \returns
+      //! A value of type `const_normal_form_iterator`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! Copying iterators of this type is expensive.  As a consequence, prefix
+      //! incrementing \c ++it the iterator \c it returned by \c
+      //! cbegin_normal_forms is significantly cheaper than postfix
+      //! incrementing \c it++.
+      //!
+      //! \warning
+      //! If the finitely presented semigroup represented by \c this is infinite
+      //! then \p max should be chosen with some care.
+      //!
+      //! \sa
+      //! KnuthBendix::cend_normal_forms.
+      const_normal_form_iterator cbegin_normal_forms(size_t const min,
+                                                     size_t const max) {
+        return cbegin_normal_forms(alphabet(), min, max);
+      }
+
+      //! Returns a forward iterator pointing to one after the last normal form.
+      //!
+      //! The iterator returned by this function can be compared with the
+      //! return value of KnuthBendix::cbegin_normal_forms with any parameters.
+      //!
+      //! \warning The iterator returned by this function may still
+      //! dereferencable and incrementable, but will not point to a normal_form
+      //! in the correct range.
+      //!
+      //! \sa
+      //! KnuthBendix::cbegin_normal_forms.
+      const_normal_form_iterator cend_normal_forms() {
+        using state_type = NormalFormsIteratorTraits::state_type;
+        return const_normal_form_iterator(state_type("", ""),
+                                          gilman_digraph().cend_pislo());
+      }
+
       //! Rewrite a word in-place.
       //!
       //! The word \p w is rewritten in-place according to the current active
@@ -347,24 +506,6 @@ namespace libsemigroups {
       //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
       //! on the KnuthBendix instance.
       //!
-      //! \returns
-      //! (None)
-      //!
-      //! \complexity
-      //! See warning.
-      //!
-      //! \warning This will terminate when the KnuthBendix instance is
-      //! confluent, which might be never.
-      //!
-      //! \sa knuth_bendix_by_overlap_length.
-      //!
-      //! \par Parameters
-      //! (None)
-      // void knuth_bendix();
-
-      //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
-      //! on the KnuthBendix instance.
-      //!
       //! This function runs the Knuth-Bendix algorithm on the rewriting
       //! system represented by a KnuthBendix instance by considering all
       //! overlaps of a given length \f$n\f$ (according to the
@@ -386,19 +527,75 @@ namespace libsemigroups {
       //! (None)
       void knuth_bendix_by_overlap_length();
 
+      //! Returns the Gilman digraph (or automata) of \c this.
+      //!
+      //! \returns A const reference to a ActionDigraph<size_t>.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning This will terminate when the KnuthBendix instance is
+      //! reduced and confluent, which might be never.
+      //!
+      //! \sa KnuthBendix::number_of_normal_forms,
+      //! KnuthBendix::cbegin_normal_forms, and KnuthBendix::cend_normal_forms.
+      //!
+      //! \par Parameters
+      //! (None)
+      ActionDigraph<size_t> const& gilman_digraph();
+
+      //! Returns whether or not the empty string belongs to the finitely
+      //! presented semigroup represented by \c this.
+      //!
+      //! \returns
+      //! A value of type `bool`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \complexity
+      //! \f$O(n)\f$ where \f$n\f$ is the number of rules.
+      //!
+      //! \par Parameters
+      //! (None)
+      bool contains_empty_string() const;
+
+      //! Returns the number of normal forms with length in a given range.
+      //!
+      //! \param min the minimum length of a normal form to count
+      //! \param max one larger than the maximum length of a normal form to
+      //! count.
+      //!
+      //! \returns
+      //! A value of type `uint64_t`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \complexity
+      //! Assuming that \c this has been run until finished, the complexity of
+      //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
+      //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
+      //! KnuthBendix::gilman_digraph.
+      uint64_t number_of_normal_forms(size_t const min, size_t const max);
+
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - pure virtual member functions - public
       //////////////////////////////////////////////////////////////////////////
 
+      //! \copydoc FpSemigroupInterface::size
+      //!
+      //! \note If \c this has been run until finished, then this function can
+      //! determine the size of the semigroup represented by \c this even if it
+      //! is infinite. Moreover, the complexity of this function is at worst
+      //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet,
+      //! and \f$n\f$ is the number of nodes in the
+      //! KnuthBendix::gilman_digraph.
       size_t size() override;
 
       bool equal_to(std::string const&, std::string const&) override;
 
-      std::string normal_form(std::string const& w) override {
-        validate_word(w);
-        run();
-        return rewrite(w);
-      }
+      std::string normal_form(std::string const& w) override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - non-pure virtual member functions - public
@@ -429,6 +626,7 @@ namespace libsemigroups {
       }
 
       bool is_obviously_infinite_impl() override;
+      bool is_obviously_finite_impl() override;
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - non-pure virtual member functions - private
@@ -455,7 +653,10 @@ namespace libsemigroups {
         policy::overlap _overlap_policy;
       } _settings;
 
-      class KnuthBendixImpl;  // Forward declaration
+      // Forward declarations
+      class KnuthBendixImpl;
+
+      ActionDigraph<size_t>            _gilman_digraph;
       std::unique_ptr<KnuthBendixImpl> _impl;
     };
   }  // namespace fpsemigroup
@@ -610,9 +811,7 @@ namespace libsemigroups {
       void add_pair_impl(word_type const&, word_type const&) override;
       void set_nr_generators_impl(size_t) override;
       bool is_quotient_obviously_finite_impl() override;
-      bool is_quotient_obviously_infinite_impl() override {
-        return _kb->is_obviously_infinite();
-      }
+      bool is_quotient_obviously_infinite_impl() override;
 
       ////////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private

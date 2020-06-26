@@ -46,6 +46,22 @@ namespace libsemigroups {
       }
     }
 
+    template <typename TContainer, typename TPerm>
+    void apply_permutation(TContainer& cont1, TContainer& cont2, TPerm p) {
+      size_t const n = p.size();
+      for (size_t i = 0; i < n; ++i) {
+        size_t current = i;
+        while (i != p[current]) {
+          size_t next = p[current];
+          std::swap(cont1[current], cont1[next]);
+          std::swap(cont2[current], cont2[next]);
+          p[current] = current;
+          current    = next;
+        }
+        p[current] = current;
+      }
+    }
+
     // C++11 is missing make_unique. The following implementation is from Item
     // 21 in "Effective Modern C++" by Scott Meyers.
     template <typename T, typename... Ts>

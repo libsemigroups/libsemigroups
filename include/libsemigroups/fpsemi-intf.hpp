@@ -52,7 +52,9 @@ namespace libsemigroups {
   class FpSemigroupInterface : public Runner {
    public:
     //! Type for rules in a finitely presented semigroup.
-    using rule_type = std::pair<std::string, std::string>;
+    using char_type   = char;
+    using string_type = std::string;
+    using rule_type   = std::pair<string_type, string_type>;
 
     //! Type for const iterators to the defining rules of the finitely
     //! presented semigroup represented by \c this.
@@ -374,6 +376,10 @@ namespace libsemigroups {
     void set_identity(letter_type id) {
       validate_letter(id);
       set_identity(std::string(1, _alphabet[id]));
+    }
+
+    bool has_identity() const noexcept {
+      return _identity_defined;
     }
 
     //! Set the inverses of letters in alphabet().
