@@ -81,7 +81,7 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Linear in the length of \p path.
-    // TODO example
+    // TODO(later) example
     // not noexcept because ActionDigraph::neighbor isn't
     template <typename T>
     node_type<T> follow_path(ActionDigraph<T> const& ad,
@@ -100,9 +100,15 @@ namespace libsemigroups {
       template <typename T>
       using stack_type  = std::stack<std::pair<node_type<T>, label_type<T>>>;
       using lookup_type = std::vector<uint8_t>;
+      template <typename T>
+      using topological_sort_type = std::vector<node_type<T>>;
 
       // Helper function for the two versions of is_acyclic below.
       // Not noexcept because std::stack::emplace isn't
+      // This function does not really need to exist any longer, since
+      // topological_sort can be used for the same computation, but we retain
+      // it because it was already written and uses less space than
+      // topological_sort.
       template <typename T>
       bool is_acyclic(ActionDigraph<T> const& ad,
                       stack_type<T>&          stck,
@@ -128,6 +134,56 @@ namespace libsemigroups {
           }
         } while (stck.size() > 1);
         return true;
+      }
+
+      // helper function for the two public methods below
+      template <typename T>
+      bool topological_sort(ActionDigraph<T> const&   ad,
+                            stack_type<T>&            stck,
+                            lookup_type&              seen,
+                            topological_sort_type<T>& order) {
+        node_type<T>  m;
+        node_type<T>  n;
+        label_type<T> e;
+      dive:
+        LIBSEMIGROUPS_ASSERT(!stck.empty());
+        LIBSEMIGROUPS_ASSERT(seen[stck.top().first] == 0);
+        m       = stck.top().first;
+        seen[m] = 2;
+        e       = 0;
+        do {
+        rise:
+          std::tie(n, e) = ad.unsafe_next_neighbor(m, e);
+          if (n != UNDEFINED) {
+            if (seen[n] == 0) {
+              // never saw this node before, so dive
+              stck.emplace(n, 0);
+              goto dive;
+            } else if (seen[n] == 1) {
+              // => all descendants of n prev. explored and no cycles found
+              // => try the next neighbour of m.
+              ++e;
+            } else {
+              LIBSEMIGROUPS_ASSERT(seen[n] == 2);
+              // => n is an ancestor and a descendant of m
+              // => there's a cycle
+              order.clear();
+              return false;
+            }
+          }
+        } while (e < ad.out_degree());
+        // => all descendants of m were explored, and no cycles were found
+        // => backtrack
+        seen[m] = 1;
+        order.push_back(m);
+        stck.pop();
+        if (stck.size() == 0) {
+          return true;
+        } else {
+          m = stck.top().first;
+          e = stck.top().second;
+          goto rise;
+        }
       }
     }  // namespace detail
 
@@ -176,6 +232,97 @@ namespace libsemigroups {
         }
       }
       return true;
+    }
+
+    //! Returns the nodes of the digraph in topological order (see below) if
+    //! possible.
+    //!
+    //! If it is not empty, the returned vector has the property that if an
+    //! edge from a node \c n points to a node \c m, then \c m occurs before \c
+    //! n in the vector.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! \p ad in topological order (if possible) and is otherwise empty.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
+    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
+    template <typename T>
+    detail::topological_sort_type<T>
+    topological_sort(ActionDigraph<T> const& ad) {
+      using node_type = typename ActionDigraph<T>::node_type;
+
+      detail::topological_sort_type<T> order;
+      if (ad.validate()) {
+        return order;
+      }
+
+      size_t const          N = ad.nr_nodes();
+      detail::stack_type<T> stck;
+      std::vector<uint8_t>  seen(N, 0);
+
+      for (node_type m = 0; m < N; ++m) {
+        if (seen[m] == 0) {
+          stck.emplace(m, 0);
+          if (!detail::topological_sort(ad, stck, seen, order)) {
+            // digraph is not acyclic and so there's no topological order for
+            // the nodes.
+            LIBSEMIGROUPS_ASSERT(order.empty());
+            return order;
+          }
+        }
+      }
+      LIBSEMIGROUPS_ASSERT(order.size() == ad.nr_nodes());
+      return order;
+    }
+
+    //! Returns the nodes of the digraph reachable from a given node in
+    //! topological order (see below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that
+    //! if an edge from a node \c n points to a node \c m, then \c m occurs
+    //! before \c n in the vector, and the last item in the vector is \p
+    //! source.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! \p ad in topological order (if possible) and is otherwise empty.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! subdigraph of those nodes reachable from \p source
+    //! and \f$n\f$ is the number of edges.
+    template <typename T>
+    detail::topological_sort_type<T>
+    topological_sort(ActionDigraph<T> const& ad, node_type<T> const source) {
+      detail::topological_sort_type<T> order;
+      if (ad.validate()) {
+        return order;
+      }
+      size_t const          N = ad.nr_nodes();
+      detail::stack_type<T> stck;
+      std::vector<uint8_t>  seen(N, 0);
+
+      stck.emplace(source, 0);
+      detail::topological_sort(ad, stck, seen, order);
+      return order;
     }
 
     //! Check if the subdigraph induced by the nodes reachable from a source

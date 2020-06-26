@@ -80,6 +80,7 @@ namespace libsemigroups {
     ad.add_edge(0, 1, 0);
     ad.add_edge(1, 0, 0);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "001", "1-cycle", "[quick]") {
@@ -88,15 +89,19 @@ namespace libsemigroups {
     ad.add_to_out_degree(1);
     ad.add_edge(0, 0, 0);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "002", "multi-digraph", "[quick]") {
+    using node_type = ActionDigraph<size_t>::node_type;
     ActionDigraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
     ad.add_edge(0, 1, 1);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad)
+            == std::vector<node_type>({1, 0}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic",
@@ -115,6 +120,7 @@ namespace libsemigroups {
       }
     }
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic",
@@ -135,6 +141,8 @@ namespace libsemigroups {
       ad.add_edge(i, i + 1, 0);
     }
     REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).size()
+            == ad.nr_nodes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic",
@@ -155,6 +163,7 @@ namespace libsemigroups {
       ad.add_edge(i, i + 1, 0);
     }
     REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).size() == n);
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "006", "for a node", "[quick]") {
@@ -183,16 +192,25 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "007", "for a node", "[quick]") {
     ActionDigraph<size_t> ad;
+    using node_type = decltype(ad)::node_type;
     ad.add_nodes(4);
     ad.add_to_out_degree(1);
     ad.add_edge(0, 1, 0);
     ad.add_edge(1, 0, 0);
     ad.add_edge(2, 3, 0);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
     REQUIRE(!action_digraph_helper::is_acyclic(ad, 0));
+    REQUIRE(action_digraph_helper::topological_sort(ad, 0).empty());
     REQUIRE(!action_digraph_helper::is_acyclic(ad, 1));
+    REQUIRE(action_digraph_helper::topological_sort(ad, 1).empty());
+
     REQUIRE(action_digraph_helper::is_acyclic(ad, 2));
+    REQUIRE(action_digraph_helper::topological_sort(ad, 2)
+            == std::vector<node_type>({3, 2}));
     REQUIRE(action_digraph_helper::is_acyclic(ad, 3));
+    REQUIRE(action_digraph_helper::topological_sort(ad, 3)
+            == std::vector<node_type>({3}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable",
@@ -255,13 +273,22 @@ namespace libsemigroups {
         REQUIRE(action_digraph_helper::is_reachable(ad, *it2, *it1));
       }
     }
+    REQUIRE(ad.validate());
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
+    REQUIRE(action_digraph_helper::topological_sort(ad, 0).empty());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("follow_path", "012", "20 node clique", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("follow_path", "012", "20 node path", "[quick]") {
     ActionDigraph<size_t> ad = path(20);
     for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
       REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first)
               == it->second);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("validate_label", "013", "20 node path", "[quick]") {
+    ActionDigraph<size_t> ad = path(20);
+    REQUIRE_THROWS_AS(action_digraph_helper::validate_label(ad, 10),
+                      LibsemigroupsException);
   }
 }  // namespace libsemigroups
