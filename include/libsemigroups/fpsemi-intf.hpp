@@ -114,7 +114,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    virtual size_t size() = 0;
+    virtual uint64_t size() = 0;
 
     //! Check if two words represent the same element.
     //!

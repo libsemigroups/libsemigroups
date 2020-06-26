@@ -56,7 +56,7 @@ namespace libsemigroups {
   // FpSemigroupInterface - pure virtual member functions - public
   //////////////////////////////////////////////////////////////////////////
 
-  size_t FpSemigroup::size() {
+  uint64_t FpSemigroup::size() {
     if (is_obviously_infinite()) {
       return POSITIVE_INFINITY;
     } else {
