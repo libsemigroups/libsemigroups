@@ -9,6 +9,7 @@ libsemigroups::ActionDigraph:
   - [typedef, const_iterator_scc]
   - [typedef, const_iterator_sccs]
   - [typedef, const_iterator_scc_roots]
+  - [enum, algorithm]
 - Constructors:
   - ActionDigraph(T, T)
   - ActionDigraph(ActionDigraph const&)
@@ -65,5 +66,9 @@ libsemigroups::ActionDigraph:
   - cend_pstilo
   - cbegin_pstislo
   - cend_pstislo
-  - number_of_paths(node_type const, node_type const, size_t const, size_t const) const
-  - number_of_paths(node_type const, size_t const, size_t const) const
+  - number_of_paths_algorithm(node_type const) const
+  - number_of_paths(node_type const) const
+  - number_of_paths_algorithm(node_type const, size_t const, size_t const) const
+  - number_of_paths(node_type const, size_t const, size_t const, algorithm const) const
+  - number_of_paths_algorithm(node_type const, node_type const, size_t const, size_t const) const
+  - number_of_paths(node_type const, node_type const, size_t const, size_t const, algorithm const) const
