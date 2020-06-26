@@ -11,7 +11,7 @@ Authors
 
 `J. D. Mitchell`_
 
-.. _J. D. Mitchell: http://www-groups.mcs.st-andrews.ac.uk/~jamesm/
+.. _J. D. Mitchell: https://jdbm.me
 
 Contributors
 ------------
@@ -23,6 +23,8 @@ Contributors
 - `N. Thiery`_ contributed to the build system, packaging libsemigroups via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
+- `M. Tsalakou`_ contrinuted to the Knuth-Bendix implementation, and related
+  algorithms for the class `ActionDigraph`.
 
 .. _F. Hivert: https://www.lri.fr/~hivert/
 .. _J. Jonušas: http://julius.jonusas.work/
@@ -30,6 +32,7 @@ Contributors
 .. _F. Smith: 
 .. _N. Thiery: http://nicolas.thiery.name/
 .. _M. Torpey: https://mtorpey.github.io/
+.. _M. Tsalakou: https://mariatsalakou.github.io/
 
 Acknowledgements
 ----------------
