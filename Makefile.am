@@ -125,6 +125,39 @@ fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/printf.h
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
 
+eigenincludedir = $(includedir)/libsemigroups/eigen-3.3.7/Eigen
+eigeninclude_HEADERS =  eigen-3.3.7/Eigen/Cholesky
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/CholmodSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Core
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Dense
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Eigen
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Eigenvalues
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Geometry
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Householder
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/IterativeLinearSolvers
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Jacobi
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/LU
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/MetisSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/OrderingMethods
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/PaStiXSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/PardisoSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/QR
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/QtAlignedMalloc
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SPQRSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SVD
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/Sparse
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SparseCholesky
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SparseCore
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SparseLU
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SparseQR
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/StdDeque
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/StdList
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/StdVector
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/SuperLUSupport
+eigeninclude_HEADERS += eigen-3.3.7/Eigen/UmfPackSupport
+
+eigensrccholeskyincludedir = $(includedir)/libsemigroups/eigen-3.3.7/Eigen/src/Cholesky
+
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
