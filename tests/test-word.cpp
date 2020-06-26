@@ -34,7 +34,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("string_to_word", "002", "", "[quick]") {
-    StringToWord string_to_word("BCA");
+    detail::StringToWord string_to_word("BCA");
     REQUIRE(string_to_word("BCABACB") == word_type({0, 1, 2, 0, 2, 1, 0}));
     REQUIRE(string_to_word("B") == word_type({0}));
     REQUIRE(string_to_word("C") == word_type({1}));

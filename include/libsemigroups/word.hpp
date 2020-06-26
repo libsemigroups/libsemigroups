@@ -29,30 +29,46 @@
 #include "types.hpp"  // for word_type
 
 namespace libsemigroups {
-  // TODO doc
-  size_t number_of_words(size_t nr_gens, size_t min, size_t max);
+  //! Returns the number of words over an alphabet with a given number of
+  //! letters with length in a specified range.
+  //!
+  //! \param n the number of letters in the alphabet
+  //! \param min the minimum length of a word
+  //! \param max the maximum length of a word
+  //!
+  //! \returns
+  //! A value of type `uint64_t`.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \warning If the number of words exceeds 2 ^ 64 - 1, then
+  //! the return value of this function will not be correct.
+  uint64_t number_of_words(size_t n, size_t min, size_t max);
 
-  // TODO doc
-  void word_to_string(std::string const& alphabet,
-                      word_type const&   input,
-                      std::string&       output);
+  namespace detail {
+    // TODO(later) doc, check args etc
+    void word_to_string(std::string const& alphabet,
+                        word_type const&   input,
+                        std::string&       output);
 
-  // TODO doc, lots
-  class StringToWord {
-   public:
-    explicit StringToWord(std::string const& alphabet) : _lookup() {
-      _lookup.fill(0);
-      for (letter_type l = 0; l < alphabet.size(); ++l) {
-        _lookup[alphabet[l]] = l;
+    // TODO(later) doc, lots
+    class StringToWord {
+     public:
+      explicit StringToWord(std::string const& alphabet) : _lookup() {
+        _lookup.fill(0);
+        for (letter_type l = 0; l < alphabet.size(); ++l) {
+          _lookup[alphabet[l]] = l;
+        }
       }
-    }
-    // TODO doc
-    void      operator()(std::string const& input, word_type& output) const;
-    word_type operator()(std::string const& input) const;
+      // TODO(later) doc
+      void      operator()(std::string const& input, word_type& output) const;
+      word_type operator()(std::string const& input) const;
 
-   private:
-    std::array<letter_type, 256> _lookup;
-  };
+     private:
+      std::array<letter_type, 256> _lookup;
+    };
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORD_HPP_

@@ -63,7 +63,7 @@ namespace libsemigroups {
                                    internal_iterator_type const& it) const
             noexcept {
           if (state.second.empty()) {
-            word_to_string(state.first, *it, state.second);
+            detail::word_to_string(state.first, *it, state.second);
           }
           return state.second;
         }
