@@ -131,13 +131,6 @@ namespace libsemigroups {
         }
       }
 
-      // Method 5 (KnuthBendixCongruenceByPairs): runs Knuth-Bendix on the
-      // original fp semigroup, and then attempts to run the exhaustive pairs
-      // algorithm on that. Yes, this method sucks, but there are examples where
-      // this is useful.
-      _race.add_runner(std::make_shared<KnuthBendixCongruenceByPairs>(
-          type, S.knuth_bendix()));
-
       if (type == congruence_type::twosided) {
         // Method 6 (KBFP)
         // S.knuth_bendix() must be copied because maybe we will add more
@@ -145,6 +138,13 @@ namespace libsemigroups {
         _race.add_runner(
             std::make_shared<congruence::KnuthBendix>(*S.knuth_bendix()));
       }
+
+      // Method 7 (KBP)
+      // This can return non-trivial classes when other methods cannot, for
+      // example, when there are no generating pairs.
+      KnuthBendixCongruenceByPairs* kbp
+          = new KnuthBendixCongruenceByPairs(kind(), S.knuth_bendix());
+      _race.add_runner(std::shared_ptr<KnuthBendixCongruenceByPairs>(kbp));
     }
     LIBSEMIGROUPS_ASSERT(!_race.empty());
   }
@@ -256,7 +256,28 @@ namespace libsemigroups {
       // all threads in the _race throw, and so there is no winner.
       LIBSEMIGROUPS_EXCEPTION("cannot determine the non-trivial classes!");
     }
-    return winner->non_trivial_classes();
+    try {
+      return winner->non_trivial_classes();
+    } catch (LibsemigroupsException const& e) {
+      // Special case don't currently know a better way of doing this
+      if (has_parent_fpsemigroup()) {
+        // The following static_pointer_cast is probably a bad idea, but at
+        // present it is only possible to construct a Congruence over an
+        // FpSemigroup, and so it is currently guaranteed that
+        // parent_fpsemigroup is a shared_ptr<FpSemigroup>.
+        auto ptr = std::static_pointer_cast<FpSemigroup>(parent_fpsemigroup());
+        if (ptr->has_knuth_bendix()) {
+          KnuthBendixCongruenceByPairs kbp(kind(), ptr->knuth_bendix());
+          for (auto it = cbegin_generating_pairs();
+               it != cend_generating_pairs();
+               ++it) {
+            kbp.add_pair(it->first, it->second);
+          }
+          return kbp.non_trivial_classes();
+        }
+      }
+      throw e;
+    }
   }
 
   bool Congruence::is_quotient_obviously_infinite_impl() {

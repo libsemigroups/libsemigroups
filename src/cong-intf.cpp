@@ -47,6 +47,10 @@ namespace libsemigroups {
       return _froidure_pin != nullptr;
     }
 
+    bool has_fpsemigroup() const noexcept {
+      return _fp_semigroup != nullptr;
+    }
+
     bool can_compute_froidure_pin() const noexcept {
       return _froidure_pin != nullptr || _fp_semigroup != nullptr;
     }
@@ -65,6 +69,10 @@ namespace libsemigroups {
         }
       }
       return _froidure_pin;
+    }
+
+    std::shared_ptr<FpSemigroupInterface> fpsemigroup() const {
+      return _fp_semigroup;
     }
 
    private:
@@ -356,6 +364,15 @@ namespace libsemigroups {
 
   bool CongruenceInterface::has_parent_froidure_pin() const noexcept {
     return _parent->has_froidure_pin();
+  }
+
+  std::shared_ptr<FpSemigroupInterface>
+  CongruenceInterface::parent_fpsemigroup() const {
+    return _parent->fpsemigroup();
+  }
+
+  bool CongruenceInterface::has_parent_fpsemigroup() const noexcept {
+    return _parent->has_fpsemigroup();
   }
 
   /////////////////////////////////////////////////////////////////////////
