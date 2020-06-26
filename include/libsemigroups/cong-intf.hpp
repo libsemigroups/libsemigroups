@@ -387,8 +387,6 @@ namespace libsemigroups {
     //!
     //! \returns A std::shared_ptr to
     //! CongruenceInterface::non_trivial_classes_type.
-    //!
-    //!
     std::shared_ptr<non_trivial_classes_type const> non_trivial_classes() {
       init_non_trivial_classes();
       return _non_trivial_classes;
@@ -447,6 +445,10 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     size_t nr_non_trivial_classes() {
+      // TODO(later) this could be better, for example, if nr_classes is
+      // finite, then we can count the number of non-trivial classes, by
+      // counting the number of paths in the right Cayley graph (right action
+      // digraph if left or right) from the root to every vertex.
       init_non_trivial_classes();
       return _non_trivial_classes->size();
     }
@@ -498,8 +500,8 @@ namespace libsemigroups {
       return _quotient != nullptr;
     }
 
-    //! Returns a reference to the parent semigroup over which the
-    //! congruence represented by this object is defined, if it exists.
+    //! Returns a shared_ptr to the parent FroidurePin over which the
+    //! congruence represented by this object was defined, if it exists.
     //!
     //! \returns A std::shared_ptr to FroidurePinBase.
     //!
@@ -513,10 +515,26 @@ namespace libsemigroups {
     //! (None)
     std::shared_ptr<FroidurePinBase> parent_froidure_pin() const;
 
+    //! Returns a shared_ptr to the parent FpSemigroupInterface object over
+    //! which the congruence represented by this object was defined, if it
+    //! exists.
+    //!
+    //! \returns A std::shared_ptr to an FpSemigroupInterface.
+    //!
+    //! \throws LibsemigroupsException if \c this was not created using a
+    //! FpSemigroupInterface instance.
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    std::shared_ptr<FpSemigroupInterface> parent_fpsemigroup() const;
+
     //! Returns \c true if the congruence represented by \c this was created
     //! from a FroidurePin instance.
     //!
-    //! If \c true is returned, then \c this is a congruence over the semigroup
+    //! If \c true is returned, then \c this is a congruence over a semigroup
     //! represented by a FroidurePin instance.
     //!
     //! \returns A `bool`.
@@ -530,6 +548,24 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     bool has_parent_froidure_pin() const noexcept;
+
+    //! Returns \c true if the congruence represented by \c this was created
+    //! from an FpSemigroupInterface instance.
+    //!
+    //! If \c true is returned, then \c this is a congruence over a semigroup
+    //! represented by an FpSemigroupInterface instance.
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \par Exceptions
+    //! This function is `noexcept` and is guaranteed never to throw.
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    bool has_parent_fpsemigroup() const noexcept;
 
     //! Return if the congruence represented by this object was created as a
     //! left, right, or two-sided congruence.

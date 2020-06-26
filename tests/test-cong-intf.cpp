@@ -17,17 +17,17 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
-// TODO IWYU!
+#include "catch.hpp"      // for REQUIRE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/cong-pair.hpp"
-#include "libsemigroups/cong.hpp"
-#include "libsemigroups/element.hpp"
-#include "libsemigroups/fpsemi.hpp"
-#include "libsemigroups/knuth-bendix.hpp"
-#include "libsemigroups/tce.hpp"
-#include "libsemigroups/todd-coxeter.hpp"
-#include "test-main.hpp"
+#include "libsemigroups/cong-intf.hpp"     // for CongruenceInterface
+#include "libsemigroups/cong-pair.hpp"     // for CongruenceByPairs
+#include "libsemigroups/cong.hpp"          // for Congruence
+#include "libsemigroups/element.hpp"       // for Transformation
+#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/tce.hpp"           // for TCE
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
@@ -476,7 +476,7 @@ namespace libsemigroups {
       SECTION("KnuthBendix") {
         cong = detail::make_unique<KnuthBendix>();
       }
-      // TODO not yet implemented
+      // TODO(later) not yet implemented
       // SECTION("CongruenceByPairs") {
       //   cong =
       //   detail::make_unique<CongruenceByPairs<decltype(S)::element_type>>(twosided,
@@ -500,27 +500,26 @@ namespace libsemigroups {
                             "[quick][cong]") {
       auto                                 rg = ReportGuard(REPORT);
       std::unique_ptr<CongruenceInterface> cong;
-      SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
-        cong->set_nr_generators(4);
-        // KnuthBendix can find the class index, but the others can't
-        REQUIRE(cong->word_to_class_index({2, 2, 2, 2}) == 254);
-        REQUIRE(cong->class_index_to_word(2) == word_type({2}));
-      }
-
       SECTION("common behaviour") {
+        SECTION("KnuthBendix") {
+          cong = detail::make_unique<KnuthBendix>();
+          cong->set_nr_generators(4);
+          // KnuthBendix can find the class index, but the others can't
+        }
         SECTION("Congruence") {
           cong = detail::make_unique<Congruence>(twosided);
           cong->set_nr_generators(4);
           REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
                   == tril::FALSE);
         }
-        SECTION("ToddCoxeter") {
-          cong = detail::make_unique<ToddCoxeter>(twosided);
-          cong->set_nr_generators(4);
-          REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
-                  == tril::unknown);
-        }
+        REQUIRE(cong->word_to_class_index({2, 2, 2, 2}) == 254);
+        REQUIRE(cong->class_index_to_word(2) == word_type({2}));
+      }
+      SECTION("ToddCoxeter") {
+        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong->set_nr_generators(4);
+        REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
+                == tril::unknown);
         REQUIRE_THROWS_AS(cong->word_to_class_index({2, 2, 2, 2}),
                           LibsemigroupsException);
         REQUIRE_THROWS_AS(cong->class_index_to_word(2), LibsemigroupsException);

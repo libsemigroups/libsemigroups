@@ -570,11 +570,19 @@ namespace libsemigroups {
     S.set_alphabet("ab");
     S.add_rule("ab", "ba");
     S.add_rule("a", "b");
+    SECTION("compute size") {
+      REQUIRE(S.size() == POSITIVE_INFINITY);
+    }
+    SECTION("don't compute size") {}
 
     Congruence cong(left, S);
+
     // No generating pairs for the congruence (not the fp semigroup) means no
     // non-trivial classes.
     REQUIRE(cong.nr_non_trivial_classes() == 0);
+    REQUIRE(cong.finished());
+    REQUIRE(cong.started());
+    REQUIRE_THROWS_AS(cong.add_pair({0, 0}, {0}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -595,7 +603,7 @@ namespace libsemigroups {
                           "022",
                           "non-trivial classes",
                           "[quick][cong]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(REPORT);
 
     FpSemigroup S;
     S.set_alphabet(2);
@@ -616,7 +624,7 @@ namespace libsemigroups {
 
     // TODO(later) this test fails if we don't run the next line, since the
     // congruence below has no parent
-    REQUIRE(S.size() == 78);
+    REQUIRE(S.froidure_pin()->size() == 78);
 
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
@@ -1389,11 +1397,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence", "042", "no winner", "[quick][cong]") {
+    auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
     cong.set_nr_generators(4);
-    REQUIRE_THROWS_AS(cong.word_to_class_index({2, 2, 2, 2}),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cong.class_index_to_word(2), LibsemigroupsException);
+    REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 254);
+    REQUIRE(cong.class_index_to_word(2) == word_type({2}));
     REQUIRE_THROWS_AS(cong.quotient_froidure_pin(), LibsemigroupsException);
     REQUIRE_THROWS_AS(cong.cbegin_ntc(), LibsemigroupsException);
   }
