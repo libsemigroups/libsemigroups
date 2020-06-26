@@ -27,21 +27,21 @@
 
 namespace libsemigroups {
   namespace {
-    size_t geometric_progression(size_t n, size_t a, size_t r) {
+    uint64_t geometric_progression(size_t n, size_t a, size_t r) {
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
     }
   }  // namespace
 
-  size_t number_of_words(size_t n, size_t min, size_t max) {
+  uint64_t number_of_words(size_t n, size_t min, size_t max) {
     if (max <= min) {
       return 0;
     }
     return geometric_progression(max, 1, n) - geometric_progression(min, 1, n);
   }
 
-  void word_to_string(std::string const& alphabet,
-                      word_type const&   input,
-                      std::string&       output) {
+  void detail::word_to_string(std::string const& alphabet,
+                              word_type const&   input,
+                              std::string&       output) {
     output.clear();
     output.reserve(input.size());
     for (auto const x : input) {
@@ -49,8 +49,8 @@ namespace libsemigroups {
     }
   }
 
-  void StringToWord::operator()(std::string const& input,
-                                word_type&         output) const {
+  void detail::StringToWord::operator()(std::string const& input,
+                                        word_type&         output) const {
     output.clear();
     output.reserve(input.size());
     for (auto const& c : input) {
@@ -58,7 +58,7 @@ namespace libsemigroups {
     }
   }
 
-  word_type StringToWord::operator()(std::string const& input) const {
+  word_type detail::StringToWord::operator()(std::string const& input) const {
     word_type output;
               operator()(input, output);
     return output;

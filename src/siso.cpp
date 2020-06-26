@@ -32,7 +32,7 @@ namespace libsemigroups {
                                   size_t const       upper_bound,
                                   std::string const& first,
                                   std::string const& last) {
-    StringToWord string_to_word(alphabet);
+    detail::StringToWord string_to_word(alphabet);
     return const_silo_iterator(std::make_pair(alphabet, std::string()),
                                cbegin_wilo(alphabet.size(),
                                            upper_bound,
@@ -44,7 +44,7 @@ namespace libsemigroups {
                                 size_t const       upper_bound,
                                 std::string const& first,
                                 std::string const& last) {
-    StringToWord string_to_word(alphabet);
+    detail::StringToWord string_to_word(alphabet);
     return const_silo_iterator(std::make_pair(alphabet, std::string()),
                                cend_wilo(alphabet.size(),
                                          upper_bound,
@@ -55,7 +55,7 @@ namespace libsemigroups {
   const_sislo_iterator cbegin_sislo(std::string const& alphabet,
                                     std::string const& first,
                                     std::string const& last) {
-    StringToWord string_to_word(alphabet);
+    detail::StringToWord string_to_word(alphabet);
     return const_sislo_iterator(std::make_pair(alphabet, std::string()),
                                 cbegin_wislo(alphabet.size(),
                                              string_to_word(first),
@@ -65,7 +65,7 @@ namespace libsemigroups {
   const_sislo_iterator cend_sislo(std::string const& alphabet,
                                   std::string const& first,
                                   std::string const& last) {
-    StringToWord string_to_word(alphabet);
+    detail::StringToWord string_to_word(alphabet);
     return const_sislo_iterator(std::make_pair(alphabet, std::string()),
                                 cend_wislo(alphabet.size(),
                                            string_to_word(first),
