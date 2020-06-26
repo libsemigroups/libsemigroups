@@ -26,7 +26,7 @@
 #include <array>          // for array
 #include <atomic>         // for atomic
 #include <cstddef>        // for size_t
-#include <iostream>       // for string, operator<<, cout, ost...
+#include <iosfwd>         // for string, operator<<, cout, ost...
 #include <mutex>          // for mutex, lock_guard
 #include <thread>         // for get_id, thread, thread::id
 #include <unordered_map>  // for unordered_map
