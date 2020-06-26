@@ -35,3 +35,9 @@ Full API
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&, node_type<T> const)
    :project: libsemigroups
+    
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, U const, U const)
+   :project: libsemigroups
+    
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t const)
+   :project: libsemigroups

@@ -452,6 +452,58 @@ namespace libsemigroups {
       } while (!nodes.empty());
       return false;
     }
-  }  // namespace action_digraph_helper
+
+    //! Adds a cycle involving the specified range of nodes.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam U the type of an iterator pointing to nodes of an ActionDigraph
+    //!
+    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param first a const iterator to nodes of \p ad
+    //! \param last a const iterator to nodes of \p ad
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the distance between \p first and \p last.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
+    template <typename T, typename U>
+    void add_cycle(ActionDigraph<T>& ad, U const first, U const last) {
+      for (auto it = first; it < last - 1; ++it) {
+        ad.add_edge(*it, *(it + 1), 0);
+      }
+      ad.add_edge(*(last - 1), *first, 0);
+    }
+
+    //! Adds a cycle consisting of \p N new nodes.
+    //!
+    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param N the length of the cycle and number of new nodes to add.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(N)\f$ where \f$N\f$ is the second parameter.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
+    template <typename T>
+    void add_cycle(ActionDigraph<T>& ad, size_t const N) {
+      size_t M = ad.nr_nodes();
+      ad.add_nodes(N);
+      add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());
+    }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

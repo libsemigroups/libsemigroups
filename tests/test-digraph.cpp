@@ -51,21 +51,6 @@ namespace libsemigroups {
     return g;
   }
 
-  void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
-    size_t old_nodes = digraph.nr_nodes();
-    digraph.add_nodes(n);
-    for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
-      digraph.add_edge(i, i + 1, 0);
-    }
-    digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
-  }
-
-  ActionDigraph<size_t> cycle(size_t n) {
-    ActionDigraph<size_t> g(0, 1);
-    add_cycle(g, n);
-    return g;
-  }
-
   void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
     if (n != digraph.out_degree()) {
       throw std::runtime_error("can't do it!");
@@ -209,9 +194,13 @@ namespace libsemigroups {
                           "004",
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
-    auto g = cycle(32);
+    ActionDigraph<size_t> g;
+    g.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(g, 32);
     REQUIRE(g.scc_id(0) == 0);
-    g = cycle(33);
+    g = ActionDigraph<size_t>();
+    g.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(g, 33);
     REQUIRE(std::vector<std::vector<size_t>>(g.cbegin_sccs(), g.cend_sccs())
             == std::vector<std::vector<size_t>>(
                 {{32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22,
@@ -243,7 +232,7 @@ namespace libsemigroups {
     ActionDigraph<size_t> g;
     g.add_to_out_degree(1);
     for (size_t j = 2; j < 50; ++j) {
-      add_cycle(g, j);
+      action_digraph_helper::add_cycle(g, j);
       REQUIRE(std::count_if(
                   g.cbegin_nodes(),
                   g.cend_nodes(),
@@ -426,14 +415,16 @@ namespace libsemigroups {
                           "013",
                           "scc large cycle",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph = cycle(100000);
-    using node_type             = decltype(graph)::node_type;
+    ActionDigraph<size_t> graph;
+    graph.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(graph, 100000);
+    using node_type = decltype(graph)::node_type;
 
     REQUIRE(std::all_of(
         graph.cbegin_nodes(),
         graph.cend_nodes(),
         [&graph](node_type i) -> bool { return graph.scc_id(i) == 0; }));
-    add_cycle(graph, 10101);
+    action_digraph_helper::add_cycle(graph, 10101);
     REQUIRE(std::all_of(
         graph.cbegin_nodes(),
         graph.cend_nodes() - 10101,
@@ -472,7 +463,9 @@ namespace libsemigroups {
                           "016",
                           "default constructors",
                           "[quick][digraph]") {
-    auto g1 = cycle(10);
+    auto g1 = ActionDigraph<size_t>();
+    g1.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(g1, 10);
 
     // Copy constructor
     auto g2(g1);
@@ -682,7 +675,9 @@ namespace libsemigroups {
                           "022",
                           "cbegin/end_pani(s)lo - 100 node cycle",
                           "[quick]") {
-    ActionDigraph<size_t> ad = cycle(100);
+    ActionDigraph<size_t> ad;
+    ad.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(ad, 100);
 
     REQUIRE(std::distance(ad.cbegin_panilo(0, 0, 200), ad.cend_panilo())
             == 200);
@@ -1256,7 +1251,10 @@ namespace libsemigroups {
             == 1);
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 4, 100), ad.cend_pstilo())
             == 0);
-    ad = cycle(5);
+
+    ad = ActionDigraph<size_t>();
+    ad.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(ad, 5);
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 6), ad.cend_pstilo()) == 2);
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 100), ad.cend_pstilo())
             == 20);

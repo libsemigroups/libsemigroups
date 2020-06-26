@@ -40,18 +40,6 @@ namespace libsemigroups {
       return g;
     }
 
-    void add_cycle(ActionDigraph<size_t>& digraph, size_t n) {
-      size_t old_nodes = digraph.nr_nodes();
-      add_path(digraph, n);
-      digraph.add_edge(digraph.nr_nodes() - 1, old_nodes, 0);
-    }
-
-    ActionDigraph<size_t> cycle(size_t n) {
-      ActionDigraph<size_t> g(0, 1);
-      add_cycle(g, n);
-      return g;
-    }
-
     void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
       if (n != digraph.out_degree()) {
         throw std::runtime_error("can't do it!");
@@ -175,7 +163,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < n - 1; ++i) {
       ad.add_edge(i, i + 1, i % 2);
     }
-    add_cycle(ad, 100);
+    action_digraph_helper::add_cycle(ad, 100);
 
     REQUIRE(std::all_of(
         ad.cbegin_nodes(), ad.cbegin_nodes() + 100, [&ad](node_type const& v) {
@@ -256,7 +244,9 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable", "010", "100 node cycle", "[quick]") {
-    ActionDigraph<size_t> ad = cycle(100);
+    ActionDigraph<size_t> ad;
+    ad.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(ad, 100);
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
         REQUIRE(action_digraph_helper::is_reachable(ad, *it1, *it2));
