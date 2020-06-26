@@ -203,8 +203,7 @@ namespace libsemigroups {
       if (alphabet().size() > nr_rules()) {
         return true;
       }
-      detail::IsObviouslyInfinite ioi(
-          alphabet().size());
+      detail::IsObviouslyInfinite ioi(alphabet().size());
       ioi.add_rules(alphabet(), cbegin_rules(), cend_rules());
       return ioi.result();
     }

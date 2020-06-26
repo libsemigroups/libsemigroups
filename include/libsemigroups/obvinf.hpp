@@ -105,9 +105,11 @@ namespace libsemigroups {
             _seen(n, false),
             _unique(n, false),
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-            _matrix(0, n) {}
+            _matrix(0, n) {
+      }
 #else
-            _matrix(n, 0) {}
+            _matrix(n, 0) {
+      }
 #endif
 
       explicit IsObviouslyInfinite(std::string const& lphbt)

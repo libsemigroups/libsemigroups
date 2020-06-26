@@ -201,7 +201,7 @@ namespace libsemigroups {
       "A power of the generator 'b' does not occur on its own in any relation",
       "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
-    std::vector<word_type> v = {{0, 1}, {0}, {0, 1, 0}, {1, 0}};
+    std::vector<word_type>      v = {{0, 1}, {0}, {0, 1, 0}, {1, 0}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -212,7 +212,7 @@ namespace libsemigroups {
       "Preserves the number of occurences of the generator 'a'",
       "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
-    std::vector<word_type>                       v
+    std::vector<word_type>      v
         = {{0, 1, 0}, {0, 0}, {1, 1}, {1}, {0, 1, 0, 1}, {0, 1, 1, 1, 0}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
@@ -223,7 +223,7 @@ namespace libsemigroups {
                           "Less relations than generators",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(3);
-    std::vector<word_type> v = {{0, 1, 0}, {1, 2}, {2, 0}, {1}};
+    std::vector<word_type>      v = {{0, 1, 0}, {1, 2}, {2, 0}, {1}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -233,14 +233,14 @@ namespace libsemigroups {
                           "Relations preserve length",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(3);
-    std::vector<word_type>                       v = {{0, 0, 0},
-                                  {1, 1, 2},
-                                  {2, 2, 2, 2},
-                                  {1, 2, 1, 0},
-                                  {1, 1},
-                                  {2, 1},
-                                  {2, 1, 0},
-                                  {1, 1, 2}};
+    std::vector<word_type>      v = {{0, 0, 0},
+                                {1, 1, 2},
+                                {2, 2, 2, 2},
+                                {1, 2, 1, 0},
+                                {1, 1},
+                                {2, 1},
+                                {2, 1, 0},
+                                {1, 1, 2}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -250,7 +250,7 @@ namespace libsemigroups {
                           "Matrix has non empty kernel",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
-    std::vector<word_type>                       v
+    std::vector<word_type>      v
         = {{0, 0}, {1, 1, 0}, {1, 1, 0, 0}, {1, 1, 1, 1, 1, 1}};
     ioi.add_rules(v.cbegin(), v.cend());
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -265,7 +265,7 @@ namespace libsemigroups {
                           "Free product of trivial semigroups",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
-    std::vector<word_type> v = {{0}, {0, 0}, {1}, {1, 1}};
+    std::vector<word_type>      v = {{0}, {0, 0}, {1}, {1, 1}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -275,16 +275,16 @@ namespace libsemigroups {
                           "Another free product",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(5);
-    std::vector<word_type>                       v = {{0},
-                                  {0, 0},
-                                  {1},
-                                  {1, 1},
-                                  {0, 1, 4},
-                                  {4, 4, 4},
-                                  {3, 2},
-                                  {2},
-                                  {2, 2},
-                                  {3, 3, 3}};
+    std::vector<word_type>      v = {{0},
+                                {0, 0},
+                                {1},
+                                {1, 1},
+                                {0, 1, 4},
+                                {4, 4, 4},
+                                {3, 2},
+                                {2},
+                                {2, 2},
+                                {3, 3, 3}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -294,7 +294,7 @@ namespace libsemigroups {
                           "Infinite but not obviously so",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
-    std::vector<word_type> v = {{0}, {0, 1, 1}, {1}, {1, 0, 0}};
+    std::vector<word_type>      v = {{0}, {0, 1, 1}, {1}, {1, 0, 0}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // Currently the test does not pass, but the semigroup
@@ -306,16 +306,16 @@ namespace libsemigroups {
                           "Finite semigroup",
                           "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(3);
-    std::vector<word_type>                       v = {{0},
-                                  {0, 0},
-                                  {1},
-                                  {1, 1},
-                                  {},
-                                  {2, 2},
-                                  {0, 2},
-                                  {2, 1},
-                                  {0, 1, 0, 1},
-                                  {0, 1}};
+    std::vector<word_type>      v = {{0},
+                                {0, 0},
+                                {1},
+                                {1, 1},
+                                {},
+                                {2, 2},
+                                {0, 2},
+                                {2, 1},
+                                {0, 1, 0, 1},
+                                {0, 1}};
     ioi.add_rules(v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // This is a presentation for a finite semigroup so
