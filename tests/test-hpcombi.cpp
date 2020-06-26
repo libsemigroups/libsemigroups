@@ -328,7 +328,7 @@ namespace libsemigroups {
     FroidurePin<Transf16> S({Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
                              Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
                              Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
-    // FIXME
+    // FIXME(later)
     // 1. including the next line makes this test run extremely slowly
     // (20/09/2019) under clang.
     // 2. Without the next line this is no faster than the next test.

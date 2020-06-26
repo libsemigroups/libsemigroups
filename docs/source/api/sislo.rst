@@ -4,8 +4,8 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-Strings in short-lex order (siso)
-=================================
+Strings in short-lex order (sislo)
+==================================
 
 The functions :cpp:any:`libsemigroups::cbegin_sislo` and
 :cpp:any:`libsemigroups::cend_sislo` can be used to iterate through strings in

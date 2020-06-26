@@ -192,8 +192,8 @@ namespace libsemigroups {
     REQUIRE(*it == relation_type({3, 2}, {3}));
 
     size_t pos = 0;
-    for (auto it = S.cbegin(); it < S.cend(); ++it) {
-      REQUIRE(S.position(*it) == pos);
+    for (auto it2 = S.cbegin(); it2 < S.cend(); ++it2) {
+      REQUIRE(S.position(*it2) == pos);
       pos++;
     }
     REQUIRE(pos == S.size());

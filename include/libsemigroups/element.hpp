@@ -1947,7 +1947,8 @@ namespace libsemigroups {
     }
   };
 
-  // FIXME why is there no specialisation for non-pointers for IncreaseDegree?
+  // FIXME(later) why is there no specialisation for non-pointers for
+  // IncreaseDegree?
 
   //! Specialization of the adapter Less for pointers to subclasses
   //! of Element.

@@ -17,8 +17,8 @@
 
 // The purpose of this file is to test the ToddCoxeter classes.
 
-// TODO add tests that normal_form(c) = min. word w in the order such that
-// $\tau(0, w) = c!!
+// TODO(later) add tests that normal_form(c) = min. word w in the order such
+// that $\tau(0, w) = c!!
 
 #include <algorithm>   // for count, sort, transform
 #include <chrono>      // for duration, milliseconds
@@ -1555,23 +1555,20 @@ namespace libsemigroups {
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
         tc = detail::make_unique<ToddCoxeter>(twosided, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("left") {
         tc = detail::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
         tc = detail::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT_NO_SAVE((*tc));
-        TEST_FELSCH_THROWS((*tc));
-        TEST_HLT_SAVE_THROWS((*tc));
+        TEST_HLT((*tc));
+        TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       REQUIRE(tc->has_parent_froidure_pin());
@@ -2464,8 +2461,8 @@ namespace libsemigroups {
         // TEST_FELSCH(tc.congruence());
         // TODO(later) investigate: if the performance of creating the Felsch
         // tree can be improved, it's quite bad here if N is large enough.
-        // FIXME the following doesn't seem to work, when congruence() is
-        // removed.
+        // FIXME(later) the following doesn't seem to work, when congruence()
+        // is removed.
         // tc.congruence().run_until([&tc]() -> bool {
         //  return tc.congruence().nr_cosets_active() >= 10000;
         // });

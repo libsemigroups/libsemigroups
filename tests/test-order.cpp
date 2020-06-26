@@ -23,5 +23,5 @@
 #include "libsemigroups/types.hpp"  // for word_type
 
 namespace libsemigroups {
-  // TODO
+  // TODO(later)
 }  // namespace libsemigroups

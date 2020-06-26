@@ -340,9 +340,6 @@ namespace libsemigroups {
         }
       }
       SECTION("FpSemigroupByPairs") {
-        using Transf = typename TransfHelper<5>::type;
-        FroidurePin<Transf> S(
-            {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
         fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
       }
       size_t expected = fp->nr_rules();
