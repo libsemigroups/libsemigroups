@@ -150,9 +150,8 @@ namespace libsemigroups {
 
       template <typename T>
       std::shared_ptr<T> find_runner() const {
-        static_assert(
-            std::is_base_of<Runner, T>::value,
-            "the template parameter must be derived from Runner");
+        static_assert(std::is_base_of<Runner, T>::value,
+                      "the template parameter must be derived from Runner");
         // We use find_if so that this works even if we haven't computed
         // anything at all.
         auto it = std::find_if(_runners.begin(),

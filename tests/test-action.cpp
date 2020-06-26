@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(now):
+// TODO(later):
 // 1. iwyu
 // 2. add examples from Action
 

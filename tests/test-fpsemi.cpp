@@ -975,5 +975,4 @@ namespace libsemigroups {
     S.set_identity("e");
     REQUIRE_THROWS_AS(S.set_inverses("bAae"), LibsemigroupsException);
   }
-
 }  // namespace libsemigroups

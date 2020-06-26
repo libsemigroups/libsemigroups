@@ -100,7 +100,7 @@ namespace libsemigroups {
         _nr_unused_cols = new_nr_cols - _nr_used_cols;
 
         _vec.reserve(new_nr_cols * _nr_rows);
-        // TODO improve
+        // TODO(later) improve
         for (size_t i = 0; i < _nr_rows; i++) {
           size_t j;
           for (j = 0; j < copy._nr_used_cols; j++) {

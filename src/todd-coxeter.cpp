@@ -451,8 +451,8 @@ namespace libsemigroups {
       for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
         add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
       }
-      // FIXME something goes horribly wrong if the next line is above the for
-      // loop above.
+      // Note that something goes horribly wrong if the next line is above the
+      // for loop above.
       set_parent_froidure_pin(kb);
       if (kb.finished() && kb.is_obviously_finite()) {
         LIBSEMIGROUPS_ASSERT(_settings->froidure_pin

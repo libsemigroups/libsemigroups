@@ -31,7 +31,6 @@
 #include <vector>   // for vector
 
 namespace libsemigroups {
-
   //! Defined in ``order.hpp``.
   //!
   //! A stateless struct with binary call operator using
