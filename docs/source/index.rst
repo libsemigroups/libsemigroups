@@ -40,11 +40,12 @@ user-defined types.
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
 for very fast manipulation of transformations, partial permutations,
 permutations, and boolean matrices of small size;  `catch`_ for tests; 
-and `fmt`_ for reporting.
+`fmt`_ for reporting; and `eigen`_ for some linear algebra computations.
 
 .. _HPCombi: https://github.com/hivert/HPCombi
 .. _catch: https://github.com/catchorg/Catch2
 .. _fmt: https://github.com/fmtlib/fmt
+.. _eigen: http://eigen.tuxfamily.org/
 
 How to use it
 ~~~~~~~~~~~~~

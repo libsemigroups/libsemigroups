@@ -15,15 +15,21 @@ Authors
 
 Contributors
 ------------
-- `F. Hivert`_ contributed many helpful ideas to libsemigroups, an allocator
-  implementation (to be included in a future version), and HPCombi.
-- `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
+
+- `R. Cirpons`_ contributed to ``IsObviouslyInfinite`` and to integrating
+  ``eigen``.
+- `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
+  allocator implementation (to be included in a future version), and
+  ``HPCombi``.
+- `J. James`_ contributed some bugfixes.
+- `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
 - `F. Smith`_ contributed to the Todd-Coxeter implementation, and to BMat8s. 
-- `N. Thiery`_ contributed to the build system, packaging libsemigroups via
+- `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
 
+.. _R. Cirpons: 
 .. _F. Hivert: https://www.lri.fr/~hivert/
 .. _J. Jonušas: http://julius.jonusas.work/
 .. _D. V. Pasechnik:  http://users.ox.ac.uk/~coml0531
