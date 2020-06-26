@@ -184,24 +184,145 @@ namespace libsemigroups {
     //! Constructs a random ActionDigraph from \p mt with the specified number
     //! of nodes and out-degree.
     //!
-    //! \param m the number of nodes
-    //! \param n the out-degree of every node
-    //! \param mt a std::mt19937 used as a random source.
+    //! \param nr_nodes the number of nodes
+    //! \param out_degree the out-degree of every node
+    //! \param mt a std::mt19937 used as a random source (defaults to:
+    //! std::mt19937(std::random_device()()))
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p nr_nodes is less than \c 2
+    //! * \p out_degree is less than \c 2
     //!
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static ActionDigraph random(T m, T n, std::mt19937 mt = std::mt19937()) {
-      std::uniform_int_distribution<T> dist(0, m - 1);
-      ActionDigraph<T>                 g(m, n);
-      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_rows() == m);
-      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_cols() == n);
+    static ActionDigraph random(T const      nr_nodes,
+                                T const      out_degree,
+                                std::mt19937 mt
+                                = std::mt19937(std::random_device()())) {
+      std::uniform_int_distribution<T> dist(0, nr_nodes - 1);
+      ActionDigraph<T>                 g(nr_nodes, out_degree);
+      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_rows() == nr_nodes);
+      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_cols() == out_degree);
       std::generate(g._dynamic_array_2.begin(),
                     g._dynamic_array_2.end(),
                     [&dist, &mt]() { return dist(mt); });
+      return g;
+    }
+
+    //! Constructs a random ActionDigraph from \p mt with the specified number
+    //! of nodes and edges, and out-degree.
+    //!
+    //! \param nr_nodes the number of nodes
+    //! \param out_degree the out-degree of every node
+    //! \param nr_edges the out-degree of every node
+    //! \param mt a std::mt19937 used as a random source (defaults to:
+    //! std::mt19937(std::random_device()()))
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p nr_nodes is less than \c 2
+    //! * \p out_degree is less than \c 2
+    //! * \p nr_edges exceeds the product of \p nr_nodes and \p out_degree
+    //!
+    //! \par Complexity
+    //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
+    //! out-degree of the digraph.
+    static ActionDigraph random(T const      nr_nodes,
+                                T const      out_degree,
+                                T const      nr_edges,
+                                std::mt19937 mt
+                                = std::mt19937(std::random_device()())) {
+      if (nr_nodes < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st parameter `nr_nodes` must be at least 2, found %llu",
+            nr_nodes);
+      } else if (out_degree < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd parameter `nr_edges` must be at least 2, found %llu",
+            out_degree);
+      } else if (nr_edges > nr_nodes * out_degree) {
+        LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
+                                "most %llu, but found %llu",
+                                nr_nodes * out_degree,
+                                nr_edges);
+      }
+      std::uniform_int_distribution<T> source(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> target(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> label(0, out_degree - 1);
+
+      ActionDigraph<T> g(nr_nodes, out_degree);
+      size_t           edges_to_add = nr_edges;
+      size_t           old_nr_edges = 0;
+      do {
+        for (size_t i = 0; i < edges_to_add; ++i) {
+          g._dynamic_array_2.set(source(mt), label(mt), target(mt));
+        }
+        size_t new_nr_edges = g.nr_edges();
+        edges_to_add -= (new_nr_edges - old_nr_edges);
+        old_nr_edges = new_nr_edges;
+      } while (edges_to_add != 0);
+      return g;
+    }
+
+    //! Constructs a random acyclic ActionDigraph from \p mt with the specified
+    //! number of nodes and edges, and out-degree.
+    //!
+    //! \param nr_nodes the number of nodes
+    //! \param out_degree the out-degree of every node
+    //! \param nr_edges the out-degree of every node
+    //! \param mt a std::mt19937 used as a random source (defaults to:
+    //! std::mt19937(std::random_device()()))
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p nr_nodes is less than \c 2
+    //! * \p out_degree is less than \c 2
+    //! * \p nr_edges exceeds the product of \p nr_nodes and \p out_degree
+    //! * \p nr_edges exceeds the product of \p nr_nodes and \p nr_nodes - 1
+    //! divided by 2.
+    //!
+    //! \par Complexity
+    //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
+    //! out-degree of the digraph.
+    static ActionDigraph
+    random_acyclic(T const      nr_nodes,
+                   T const      out_degree,
+                   T const      nr_edges,
+                   std::mt19937 mt = std::mt19937(std::random_device()())) {
+      if (nr_nodes < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st parameter `nr_nodes` must be at least 2, found %llu",
+            nr_nodes);
+      } else if (out_degree < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd parameter `nr_edges` must be at least 2, found %llu",
+            out_degree);
+      } else if (nr_edges > std::min(nr_nodes * out_degree,
+                                     nr_nodes * (nr_nodes - 1) / 2)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 3rd parameter `nr_edges` must be at most %llu, but found %llu",
+            nr_nodes * out_degree,
+            nr_edges);
+      }
+      std::uniform_int_distribution<T> source(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> label(0, out_degree - 1);
+
+      ActionDigraph<T> g(nr_nodes, out_degree);
+      size_t           edges_to_add = nr_edges;
+      size_t           old_nr_edges = 0;
+      do {
+        for (size_t i = 0; i < edges_to_add; ++i) {
+          auto v = source(mt);
+          if (v != nr_nodes - 1) {
+            g._dynamic_array_2.set(
+                v,
+                label(mt),
+                std::uniform_int_distribution<T>(v + 1, nr_nodes - 1)(mt));
+          }
+        }
+        size_t new_nr_edges = g.nr_edges();
+        edges_to_add -= (new_nr_edges - old_nr_edges);
+        old_nr_edges = new_nr_edges;
+      } while (edges_to_add != 0);
       return g;
     }
 
