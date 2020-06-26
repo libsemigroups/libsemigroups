@@ -1417,7 +1417,15 @@ namespace libsemigroups {
       }
     }
 
-    size_t const N = 0;
+    size_t const N = ad.nr_nodes();
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pstilo(0, 3, 0, 2), ad.cend_pstilo())
+        == std::vector<word_type>({{0}, {2}}));
+    using algorithm          = ActionDigraph<size_t>::algorithm;
+    REQUIRE(ad.number_of_paths(0, 3, 0, 2, algorithm::acyclic)
+            == size_t(std::distance(ad.cbegin_pstilo(0, 3, 0, 2),
+                                    ad.cend_pstilo())));
+
 
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
@@ -1498,17 +1506,30 @@ namespace libsemigroups {
     REQUIRE(!ad.validate());
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
             == ActionDigraph<size_t>::algorithm::dfs);
-    REQUIRE(ad.number_of_paths(0, 0, 16) == 47268);
+    REQUIRE(ad.number_of_paths(0, 0, 16) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "036",
-                          "number_of_paths 400 node random acyclic digraph",
+                          "number_of_paths 10 node acyclic digraph",
                           "[quick]") {
     using algorithm = ActionDigraph<size_t>::algorithm;
-    size_t const n  = 10;
-    auto ad = ActionDigraph<size_t>::random_acyclic(n, 20, n, std::mt19937());
-    // ad = binary_tree(n);
+    // size_t const n  = 10;
+    // auto ad = ActionDigraph<size_t>::random_acyclic(n, 20, n, std::mt19937());
+    // std::cout << action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(10);
+    ad.add_to_out_degree(20);
+    ad.add_edge(0, 7, 5);
+    ad.add_edge(0, 5, 7);
+    ad.add_edge(1, 9, 14);
+    ad.add_edge(1, 5, 17);
+    ad.add_edge(3, 8, 5);
+    ad.add_edge(5, 8, 1);
+    ad.add_edge(6, 8, 14);
+    ad.add_edge(7, 8, 10);
+    ad.add_edge(8, 9, 12);
+    ad.add_edge(8, 9, 13);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
     REQUIRE(!ad.validate());
 
@@ -1519,12 +1540,215 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ActionDigraph",
       "037",
-      "number_of_paths 400 node random acyclic digraph - dfs",
+      "number_of_paths node acyclic digraph",
       "[quick]") {
     using algorithm = ActionDigraph<size_t>::algorithm;
     size_t const n  = 10;
-    auto         ad = ActionDigraph<size_t>::random(n, 20, 200, std::mt19937());
-    // ad = binary_tree(n);
+    // auto         ad = ActionDigraph<size_t>::random(n, 20, 200, std::mt19937());
+    // std::cout << action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(10);
+    ad.add_to_out_degree(20);
+    ad.add_edge(0, 9, 0);
+    ad.add_edge(0, 1, 1);
+    ad.add_edge(0, 6, 2);
+    ad.add_edge(0, 3, 3);
+    ad.add_edge(0, 7, 4);
+    ad.add_edge(0, 2, 5);
+    ad.add_edge(0, 2, 6);
+    ad.add_edge(0, 8, 7);
+    ad.add_edge(0, 1, 8);
+    ad.add_edge(0, 4, 9);
+    ad.add_edge(0, 3, 10);
+    ad.add_edge(0, 1, 11);
+    ad.add_edge(0, 7, 12);
+    ad.add_edge(0, 9, 13);
+    ad.add_edge(0, 4, 14);
+    ad.add_edge(0, 7, 15);
+    ad.add_edge(0, 8, 16);
+    ad.add_edge(0, 9, 17);
+    ad.add_edge(0, 6, 18);
+    ad.add_edge(0, 9, 19);
+    ad.add_edge(1, 8, 0);
+    ad.add_edge(1, 2, 1);
+    ad.add_edge(1, 5, 2);
+    ad.add_edge(1, 7, 3);
+    ad.add_edge(1, 9, 4);
+    ad.add_edge(1, 0, 5);
+    ad.add_edge(1, 2, 6);
+    ad.add_edge(1, 4, 7);
+    ad.add_edge(1, 0, 8);
+    ad.add_edge(1, 3, 9);
+    ad.add_edge(1, 2, 10);
+    ad.add_edge(1, 7, 11);
+    ad.add_edge(1, 2, 12);
+    ad.add_edge(1, 7, 13);
+    ad.add_edge(1, 6, 14);
+    ad.add_edge(1, 6, 15);
+    ad.add_edge(1, 5, 16);
+    ad.add_edge(1, 4, 17);
+    ad.add_edge(1, 6, 18);
+    ad.add_edge(1, 3, 19);
+    ad.add_edge(2, 2, 0);
+    ad.add_edge(2, 9, 1);
+    ad.add_edge(2, 0, 2);
+    ad.add_edge(2, 6, 3);
+    ad.add_edge(2, 7, 4);
+    ad.add_edge(2, 9, 5);
+    ad.add_edge(2, 5, 6);
+    ad.add_edge(2, 4, 7);
+    ad.add_edge(2, 9, 8);
+    ad.add_edge(2, 7, 9);
+    ad.add_edge(2, 9, 10);
+    ad.add_edge(2, 9, 11);
+    ad.add_edge(2, 0, 12);
+    ad.add_edge(2, 7, 13);
+    ad.add_edge(2, 9, 14);
+    ad.add_edge(2, 6, 15);
+    ad.add_edge(2, 3, 16);
+    ad.add_edge(2, 3, 17);
+    ad.add_edge(2, 4, 18);
+    ad.add_edge(2, 1, 19);
+    ad.add_edge(3, 1, 0);
+    ad.add_edge(3, 9, 1);
+    ad.add_edge(3, 6, 2);
+    ad.add_edge(3, 2, 3);
+    ad.add_edge(3, 9, 4);
+    ad.add_edge(3, 8, 5);
+    ad.add_edge(3, 1, 6);
+    ad.add_edge(3, 6, 7);
+    ad.add_edge(3, 1, 8);
+    ad.add_edge(3, 0, 9);
+    ad.add_edge(3, 5, 10);
+    ad.add_edge(3, 0, 11);
+    ad.add_edge(3, 2, 12);
+    ad.add_edge(3, 7, 13);
+    ad.add_edge(3, 4, 14);
+    ad.add_edge(3, 0, 15);
+    ad.add_edge(3, 4, 16);
+    ad.add_edge(3, 8, 17);
+    ad.add_edge(3, 3, 18);
+    ad.add_edge(3, 1, 19);
+    ad.add_edge(4, 0, 0);
+    ad.add_edge(4, 4, 1);
+    ad.add_edge(4, 8, 2);
+    ad.add_edge(4, 5, 3);
+    ad.add_edge(4, 5, 4);
+    ad.add_edge(4, 1, 5);
+    ad.add_edge(4, 3, 6);
+    ad.add_edge(4, 8, 7);
+    ad.add_edge(4, 4, 8);
+    ad.add_edge(4, 4, 9);
+    ad.add_edge(4, 4, 10);
+    ad.add_edge(4, 7, 11);
+    ad.add_edge(4, 8, 12);
+    ad.add_edge(4, 6, 13);
+    ad.add_edge(4, 3, 14);
+    ad.add_edge(4, 7, 15);
+    ad.add_edge(4, 6, 16);
+    ad.add_edge(4, 7, 17);
+    ad.add_edge(4, 0, 18);
+    ad.add_edge(4, 2, 19);
+    ad.add_edge(5, 3, 0);
+    ad.add_edge(5, 0, 1);
+    ad.add_edge(5, 4, 2);
+    ad.add_edge(5, 7, 3);
+    ad.add_edge(5, 2, 4);
+    ad.add_edge(5, 5, 5);
+    ad.add_edge(5, 7, 6);
+    ad.add_edge(5, 7, 7);
+    ad.add_edge(5, 7, 8);
+    ad.add_edge(5, 7, 9);
+    ad.add_edge(5, 0, 10);
+    ad.add_edge(5, 8, 11);
+    ad.add_edge(5, 6, 12);
+    ad.add_edge(5, 8, 13);
+    ad.add_edge(5, 8, 14);
+    ad.add_edge(5, 1, 15);
+    ad.add_edge(5, 5, 16);
+    ad.add_edge(5, 5, 17);
+    ad.add_edge(5, 3, 18);
+    ad.add_edge(5, 7, 19);
+    ad.add_edge(6, 8, 0);
+    ad.add_edge(6, 7, 1);
+    ad.add_edge(6, 6, 2);
+    ad.add_edge(6, 5, 3);
+    ad.add_edge(6, 6, 4);
+    ad.add_edge(6, 1, 5);
+    ad.add_edge(6, 7, 6);
+    ad.add_edge(6, 2, 7);
+    ad.add_edge(6, 7, 8);
+    ad.add_edge(6, 3, 9);
+    ad.add_edge(6, 3, 10);
+    ad.add_edge(6, 8, 11);
+    ad.add_edge(6, 3, 12);
+    ad.add_edge(6, 9, 13);
+    ad.add_edge(6, 4, 14);
+    ad.add_edge(6, 1, 15);
+    ad.add_edge(6, 4, 16);
+    ad.add_edge(6, 3, 17);
+    ad.add_edge(6, 9, 18);
+    ad.add_edge(6, 8, 19);
+    ad.add_edge(7, 9, 0);
+    ad.add_edge(7, 4, 1);
+    ad.add_edge(7, 3, 2);
+    ad.add_edge(7, 8, 3);
+    ad.add_edge(7, 0, 4);
+    ad.add_edge(7, 5, 5);
+    ad.add_edge(7, 6, 6);
+    ad.add_edge(7, 8, 7);
+    ad.add_edge(7, 9, 8);
+    ad.add_edge(7, 1, 9);
+    ad.add_edge(7, 7, 10);
+    ad.add_edge(7, 0, 11);
+    ad.add_edge(7, 6, 12);
+    ad.add_edge(7, 2, 13);
+    ad.add_edge(7, 3, 14);
+    ad.add_edge(7, 8, 15);
+    ad.add_edge(7, 6, 16);
+    ad.add_edge(7, 3, 17);
+    ad.add_edge(7, 2, 18);
+    ad.add_edge(7, 7, 19);
+    ad.add_edge(8, 0, 0);
+    ad.add_edge(8, 6, 1);
+    ad.add_edge(8, 3, 2);
+    ad.add_edge(8, 5, 3);
+    ad.add_edge(8, 7, 4);
+    ad.add_edge(8, 9, 5);
+    ad.add_edge(8, 9, 6);
+    ad.add_edge(8, 8, 7);
+    ad.add_edge(8, 1, 8);
+    ad.add_edge(8, 5, 9);
+    ad.add_edge(8, 7, 10);
+    ad.add_edge(8, 9, 11);
+    ad.add_edge(8, 6, 12);
+    ad.add_edge(8, 0, 13);
+    ad.add_edge(8, 0, 14);
+    ad.add_edge(8, 3, 15);
+    ad.add_edge(8, 6, 16);
+    ad.add_edge(8, 0, 17);
+    ad.add_edge(8, 8, 18);
+    ad.add_edge(8, 9, 19);
+    ad.add_edge(9, 3, 0);
+    ad.add_edge(9, 7, 1);
+    ad.add_edge(9, 9, 2);
+    ad.add_edge(9, 1, 3);
+    ad.add_edge(9, 4, 4);
+    ad.add_edge(9, 9, 5);
+    ad.add_edge(9, 4, 6);
+    ad.add_edge(9, 0, 7);
+    ad.add_edge(9, 5, 8);
+    ad.add_edge(9, 8, 9);
+    ad.add_edge(9, 3, 10);
+    ad.add_edge(9, 2, 11);
+    ad.add_edge(9, 0, 12);
+    ad.add_edge(9, 2, 13);
+    ad.add_edge(9, 3, 14);
+    ad.add_edge(9, 4, 15);
+    ad.add_edge(9, 0, 16);
+    ad.add_edge(9, 5, 17);
+    ad.add_edge(9, 3, 18);
+    ad.add_edge(9, 5, 19);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.validate());
 

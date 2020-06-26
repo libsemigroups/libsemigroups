@@ -522,6 +522,26 @@ namespace libsemigroups {
       ad.add_nodes(N);
       add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());
     }
+
+    namespace detail {
+      template <typename T>
+      std::string to_string(ActionDigraph<T>& ad) {
+        std::string out = "ActionDigraph<size_t> ad;\n";
+        out += "ad.add_nodes(" + std::to_string(ad.nr_nodes()) + ");\n";
+        out += "ad.add_to_out_degree(" + std::to_string(ad.out_degree())
+               + ");\n";
+        for (auto n = ad.cbegin_nodes(); n < ad.cend_nodes(); ++n) {
+          for (auto e = ad.cbegin_edges(*n); e < ad.cend_edges(*n); ++e) {
+            if (*e != UNDEFINED) {
+              out += "ad.add_edge(" + std::to_string(*n) + ", "
+                     + std::to_string(*e) + ", "
+                     + std::to_string(e - ad.cbegin_edges(*n)) + ");\n";
+            }
+          }
+        }
+        return out;
+      }
+    }  // namespace detail
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

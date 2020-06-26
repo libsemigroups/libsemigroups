@@ -2618,7 +2618,7 @@ namespace libsemigroups {
       for (size_t m = 1; m < topo.size(); ++m) {
         for (auto n = cbegin_edges(topo[m]); n != cend_edges(topo[m]); ++n) {
           if (*n == target) {
-            number_paths.set(topo[m], 1, 1);
+            number_paths.set(topo[m], 1, number_paths.get(topo[m], 1) + 1);
           }
           if (*n != UNDEFINED && lookup[*n]) {
             // there are no paths longer than m + 1 from the m-th entry in
