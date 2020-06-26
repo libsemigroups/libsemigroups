@@ -57,6 +57,14 @@ Optionally, if you want to use ``HPCombi``, you should also do:
    curl -L -O https://github.com/hivert/HPCombi/archive/v0.0.5.zip
    unzip v0.0.5.zip && rm -f v0.0.5.zip && mv HPCombi-0.0.5 HPCombi && cd ..
 
+
+Optionally, if you want to use ``eigen``, you should also do:
+
+::
+   cd extern 
+   curl -L -O https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+   tar -xzf eigen-3.3.7.tar.gz && rm -f eigen-3.3.7.tar.gz && cd ..
+
 Then actually build ``libsemigroups`` by doing:
 
 ::

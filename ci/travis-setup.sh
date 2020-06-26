@@ -32,6 +32,11 @@ mkdir -p m4
 
 cd extern
 curl -L -O https://github.com/fmtlib/fmt/archive/5.3.0.tar.gz
-tar -xzf 5.3.0.tar.gz && rm -f 5.3.0.tar.gz && cd ..
+tar -xzf 5.3.0.tar.gz && rm -f 5.3.0.tar.gz
+
+curl -L -O https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+tar -xzf eigen-3.3.7.tar.gz && rm -f eigen-3.3.7.tar.gz
+cd ..
+
 
 ./autogen.sh

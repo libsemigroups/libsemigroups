@@ -31,15 +31,15 @@ AC_DEFUN([AX_CHECK_EIGEN], [
           [AC_MSG_ERROR([cannot use flag --with-external-eigen, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
     else
           AC_CHECK_FILE(
-                  [$srcdir/extern/Eigen/Eigen/QR],
+                  [$srcdir/extern/eigen-3.3.7/Eigen/QR],
                   [eigen_enabled=yes],
-                  [AC_MSG_ERROR([Eigen is required, clone or download the repo from http://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2 into the libsemigroups/extern directory])])
+                  [AC_MSG_ERROR([eigen is required, clone or download the repo from https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz into the libsemigroups/extern directory])])
 
-          AC_SUBST(EIGEN_CFLAGS, ['-I$(srcdir)/extern/Eigen/'])
+          AC_SUBST(EIGEN_CFLAGS, ['-I$(srcdir)/extern/eigen-3.3.7/'])
     fi
   fi
   AS_IF([test "x$eigen_enabled" = xyes],
-        [AC_DEFINE([EIGEN_ENABLED], [1], [define if building with Eigen])])
+        [AC_DEFINE([EIGEN_ENABLED], [1], [define if building with eigen])])
   AM_CONDITIONAL([EIGEN_ENABLED], [test x$eigen_enabled = xyes])
 ])
 
