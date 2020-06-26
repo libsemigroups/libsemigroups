@@ -1265,4 +1265,16 @@ namespace libsemigroups {
     // 0.
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 2), ad.cend_pstilo()) == 1);
   }
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "040",
+                          "nr_egdes incident to a node",
+                          "[quick]") {
+    auto ad = binary_tree(10);
+    REQUIRE(ad.nr_nodes() == 1023);
+    REQUIRE(std::count_if(ad.cbegin_nodes(),
+                          ad.cend_nodes(),
+                          [&ad](size_t n) { return ad.nr_edges(n) == 2; })
+            == 511);
+  }
+
 }  // namespace libsemigroups
