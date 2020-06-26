@@ -286,9 +286,6 @@ test_all_SOURCES += tests/test-wilo.cpp
 test_all_SOURCES += tests/test-wislo.cpp
 test_all_SOURCES += tests/test-word.cpp
 
-test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
-test_digraph_helper_SOURCES += tests/test-main.cpp
-
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
 
@@ -313,6 +310,9 @@ test_constants_SOURCES += tests/test-main.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
+
+test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
+test_digraph_helper_SOURCES += tests/test-main.cpp
 
 test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
