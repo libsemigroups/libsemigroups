@@ -18,9 +18,10 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include <cstddef>    // for size_t
-#include <stdexcept>  // for runtime_error
-#include <vector>     // for vector
+#include <cstddef>        // for size_t
+#include <stdexcept>      // for runtime_error
+#include <unordered_set>  // for unordered_set
+#include <vector>         // for vector
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/digraph-helper.hpp"  // for follow_path
@@ -31,6 +32,13 @@
 #include "libsemigroups/wilo.hpp"            // for cbegin_wilo
 #include "libsemigroups/wislo.hpp"           // for cbegin_wislo
 #include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
+
+CATCH_REGISTER_ENUM(libsemigroups::ActionDigraph<size_t>::algorithm,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::dfs,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::matrix,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::acyclic,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::automatic,
+                    libsemigroups::ActionDigraph<size_t>::algorithm::trivial)
 
 namespace libsemigroups {
   using KnuthBendix = fpsemigroup::KnuthBendix;
@@ -69,6 +77,23 @@ namespace libsemigroups {
     ActionDigraph<size_t> g(0, n);
     add_clique(g, n);
     return g;
+  }
+
+  ActionDigraph<size_t> binary_tree(size_t nr_levels) {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(std::pow(2, nr_levels) - 1);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+
+    for (size_t i = 2; i <= nr_levels; ++i) {
+      size_t counter = std::pow(2, i - 1) - 1;
+      for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1; ++j) {
+        ad.add_edge(j, counter++, 0);
+        ad.add_edge(j, counter++, 1);
+      }
+    }
+    return ad;
   }
 
   template <typename T>
@@ -980,6 +1005,7 @@ namespace libsemigroups {
     }
     kb2.add_rule({1}, {0, 0, 0, 0, 0, 0, 0, 1});
     REQUIRE(kb2.size() == 9);
+    kb2.froidure_pin()->run();
     REQUIRE(std::vector<relation_type>(kb2.froidure_pin()->cbegin_rules(),
                                        kb2.froidure_pin()->cend_rules())
             == std::vector<relation_type>(
@@ -1067,6 +1093,7 @@ namespace libsemigroups {
                            ad.cend_pislo(),
                            ShortLexCompare<word_type>()));
     REQUIRE(std::distance(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo()) == 75);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.number_of_paths(0, 0, 10) == 75);
     REQUIRE(ad.number_of_paths(0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
     REQUIRE(std::vector<word_type>(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo())
@@ -1265,6 +1292,530 @@ namespace libsemigroups {
     // 0.
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 2), ad.cend_pstilo()) == 1);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "031",
+                          "number_of_paths corner cases",
+                          "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    ActionDigraph<size_t> ad;
+    REQUIRE_THROWS_AS(ad.number_of_paths(0, 0, POSITIVE_INFINITY),
+                      LibsemigroupsException);
+    size_t const n = 20;
+    ad.add_to_out_degree(1);
+    action_digraph_helper::add_cycle(ad, n);
+    REQUIRE(ad.number_of_paths(10) == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths_algorithm(10, 10, 0, POSITIVE_INFINITY)
+            == algorithm::dfs);
+    REQUIRE(ad.number_of_paths(10, 10, 0, POSITIVE_INFINITY)
+            == POSITIVE_INFINITY);
+    ad = chain(n);
+    REQUIRE(ad.number_of_paths(10) == 10);
+    REQUIRE(ad.number_of_paths(19) == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "032",
+                          "number_of_paths acyclic digraph",
+                          "[quick]") {
+    using node_type = ActionDigraph<size_t>::node_type;
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(8);
+    ad.add_to_out_degree(3);
+    ad.add_edge(0, 3, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(0, 3, 2);
+    ad.add_edge(1, 7, 0);
+    ad.add_edge(2, 1, 0);
+    ad.add_edge(3, 1, 0);
+    ad.add_edge(3, 5, 1);
+    ad.add_edge(4, 6, 0);
+    ad.add_edge(6, 3, 0);
+    ad.add_edge(6, 7, 1);
+
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+
+    size_t expected[8][8][8] = {{{0, 1, 4, 9, 12, 12, 12, 12},
+                                 {0, 0, 3, 8, 11, 11, 11, 11},
+                                 {0, 0, 0, 5, 8, 8, 8, 8},
+                                 {0, 0, 0, 0, 3, 3, 3, 3},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 2, 2, 2, 2, 2, 2},
+                                 {0, 0, 1, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 2, 3, 3, 3, 3, 3},
+                                 {0, 0, 1, 2, 2, 2, 2, 2},
+                                 {0, 0, 0, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 3, 4, 4, 4, 4, 4},
+                                 {0, 0, 2, 3, 3, 3, 3, 3},
+                                 {0, 0, 0, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 2, 4, 6, 7, 7, 7},
+                                 {0, 0, 1, 3, 5, 6, 6, 6},
+                                 {0, 0, 0, 2, 4, 5, 5, 5},
+                                 {0, 0, 0, 0, 2, 3, 3, 3},
+                                 {0, 0, 0, 0, 0, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 1, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 3, 5, 6, 6, 6, 6},
+                                 {0, 0, 2, 4, 5, 5, 5, 5},
+                                 {0, 0, 0, 2, 3, 3, 3, 3},
+                                 {0, 0, 0, 0, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{0, 1, 1, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}}};
+    for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
+      for (size_t min = 0; min < ad.nr_nodes(); ++min) {
+        for (size_t max = 0; max < ad.nr_nodes(); ++max) {
+          REQUIRE(size_t(std::distance(ad.cbegin_pilo(*s, min, max),
+                                       ad.cend_pilo()))
+                  == expected[*s][min][max]);
+        }
+      }
+    }
+
+    for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
+      for (size_t min = 0; min < ad.nr_nodes(); ++min) {
+        for (size_t max = 0; max < ad.nr_nodes(); ++max) {
+          REQUIRE(ad.number_of_paths(*s, min, max) == expected[*s][min][max]);
+        }
+      }
+    }
+
+    size_t const N = ad.nr_nodes();
+    REQUIRE(
+        std::vector<word_type>(ad.cbegin_pstilo(0, 3, 0, 2), ad.cend_pstilo())
+        == std::vector<word_type>({{0}, {2}}));
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    REQUIRE(ad.number_of_paths(0, 3, 0, 2, algorithm::acyclic)
+            == size_t(
+                std::distance(ad.cbegin_pstilo(0, 3, 0, 2), ad.cend_pstilo())));
+
+    for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
+      for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
+        for (node_type min = 0; min < N; ++min) {
+          for (size_t max = min; max < N; ++max) {
+            REQUIRE(ad.number_of_paths(*s, *t, min, max)
+                    == size_t(std::distance(ad.cbegin_pstilo(*s, *t, min, max),
+                                            ad.cend_pstilo())));
+          }
+        }
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "033",
+                          "number_of_paths binary tree",
+                          "[quick]") {
+    using algorithm          = ActionDigraph<size_t>::algorithm;
+    using node_type          = ActionDigraph<size_t>::node_type;
+    size_t const          n  = 6;
+    ActionDigraph<size_t> ad = binary_tree(n);
+    REQUIRE(ad.nr_nodes() == std::pow(2, n) - 1);
+    REQUIRE(ad.nr_edges() == std::pow(2, n) - 2);
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(ad.number_of_paths(0) == std::pow(2, n) - 1);
+
+    for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
+      for (node_type min = 0; min < n; ++min) {
+        for (size_t max = min; max < n; ++max) {
+          REQUIRE(ad.number_of_paths(*s, min, max)
+                  == size_t(std::distance(ad.cbegin_pilo(*s, min, max),
+                                          ad.cend_pilo())));
+        }
+      }
+    }
+    REQUIRE(ad.number_of_paths_algorithm(0, 1, 0, 1) == algorithm::acyclic);
+
+    REQUIRE(ad.number_of_paths(0, 1, 0, 1)
+            == size_t(
+                std::distance(ad.cbegin_pstilo(0, 1, 0, 1), ad.cend_pstilo())));
+
+    for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
+      for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
+        for (node_type min = 0; min < n; ++min) {
+          for (size_t max = min; max < n; ++max) {
+            REQUIRE(ad.number_of_paths(*s, *t, min, max)
+                    == size_t(std::distance(ad.cbegin_pstilo(*s, *t, min, max),
+                                            ad.cend_pstilo())));
+          }
+        }
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "034",
+                          "number_of_paths large binary tree",
+                          "[quick]") {
+    using algorithm          = ActionDigraph<size_t>::algorithm;
+    size_t const          n  = 20;
+    ActionDigraph<size_t> ad = binary_tree(n);
+    REQUIRE(ad.nr_nodes() == std::pow(2, n) - 1);
+    REQUIRE(ad.nr_edges() == std::pow(2, n) - 2);
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0) == std::pow(2, n) - 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "035",
+                          "number_of_paths 400 node random digraph",
+                          "[quick]") {
+    size_t const n  = 400;
+    auto         ad = ActionDigraph<size_t>::random(n, 20, n, std::mt19937());
+    action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!ad.validate());
+    REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
+            == ActionDigraph<size_t>::algorithm::dfs);
+    REQUIRE(ad.number_of_paths(0, 0, 16) != 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "036",
+                          "number_of_paths 10 node acyclic digraph",
+                          "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    // size_t const n  = 10;
+    // auto ad = ActionDigraph<size_t>::random_acyclic(n, 20, n,
+    // std::mt19937()); std::cout <<
+    // action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(10);
+    ad.add_to_out_degree(20);
+    ad.add_edge(0, 7, 5);
+    ad.add_edge(0, 5, 7);
+    ad.add_edge(1, 9, 14);
+    ad.add_edge(1, 5, 17);
+    ad.add_edge(3, 8, 5);
+    ad.add_edge(5, 8, 1);
+    ad.add_edge(6, 8, 14);
+    ad.add_edge(7, 8, 10);
+    ad.add_edge(8, 9, 12);
+    ad.add_edge(8, 9, 13);
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!ad.validate());
+
+    REQUIRE(ad.number_of_paths_algorithm(0, 0, 16) == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0, 0, 30) == 9);
+    REQUIRE(ad.number_of_paths(1, 0, 10, algorithm::matrix) == 6);
+    REQUIRE(ad.number_of_paths(1, 9, 0, 10, algorithm::matrix) == 3);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "037",
+                          "number_of_paths node digraph",
+                          "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    size_t const n  = 10;
+    // auto         ad = ActionDigraph<size_t>::random(n, 20, 200,
+    // std::mt19937()); std::cout <<
+    // action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(10);
+    ad.add_to_out_degree(20);
+    ad.add_edge(0, 9, 0);
+    ad.add_edge(0, 1, 1);
+    ad.add_edge(0, 6, 2);
+    ad.add_edge(0, 3, 3);
+    ad.add_edge(0, 7, 4);
+    ad.add_edge(0, 2, 5);
+    ad.add_edge(0, 2, 6);
+    ad.add_edge(0, 8, 7);
+    ad.add_edge(0, 1, 8);
+    ad.add_edge(0, 4, 9);
+    ad.add_edge(0, 3, 10);
+    ad.add_edge(0, 1, 11);
+    ad.add_edge(0, 7, 12);
+    ad.add_edge(0, 9, 13);
+    ad.add_edge(0, 4, 14);
+    ad.add_edge(0, 7, 15);
+    ad.add_edge(0, 8, 16);
+    ad.add_edge(0, 9, 17);
+    ad.add_edge(0, 6, 18);
+    ad.add_edge(0, 9, 19);
+    ad.add_edge(1, 8, 0);
+    ad.add_edge(1, 2, 1);
+    ad.add_edge(1, 5, 2);
+    ad.add_edge(1, 7, 3);
+    ad.add_edge(1, 9, 4);
+    ad.add_edge(1, 0, 5);
+    ad.add_edge(1, 2, 6);
+    ad.add_edge(1, 4, 7);
+    ad.add_edge(1, 0, 8);
+    ad.add_edge(1, 3, 9);
+    ad.add_edge(1, 2, 10);
+    ad.add_edge(1, 7, 11);
+    ad.add_edge(1, 2, 12);
+    ad.add_edge(1, 7, 13);
+    ad.add_edge(1, 6, 14);
+    ad.add_edge(1, 6, 15);
+    ad.add_edge(1, 5, 16);
+    ad.add_edge(1, 4, 17);
+    ad.add_edge(1, 6, 18);
+    ad.add_edge(1, 3, 19);
+    ad.add_edge(2, 2, 0);
+    ad.add_edge(2, 9, 1);
+    ad.add_edge(2, 0, 2);
+    ad.add_edge(2, 6, 3);
+    ad.add_edge(2, 7, 4);
+    ad.add_edge(2, 9, 5);
+    ad.add_edge(2, 5, 6);
+    ad.add_edge(2, 4, 7);
+    ad.add_edge(2, 9, 8);
+    ad.add_edge(2, 7, 9);
+    ad.add_edge(2, 9, 10);
+    ad.add_edge(2, 9, 11);
+    ad.add_edge(2, 0, 12);
+    ad.add_edge(2, 7, 13);
+    ad.add_edge(2, 9, 14);
+    ad.add_edge(2, 6, 15);
+    ad.add_edge(2, 3, 16);
+    ad.add_edge(2, 3, 17);
+    ad.add_edge(2, 4, 18);
+    ad.add_edge(2, 1, 19);
+    ad.add_edge(3, 1, 0);
+    ad.add_edge(3, 9, 1);
+    ad.add_edge(3, 6, 2);
+    ad.add_edge(3, 2, 3);
+    ad.add_edge(3, 9, 4);
+    ad.add_edge(3, 8, 5);
+    ad.add_edge(3, 1, 6);
+    ad.add_edge(3, 6, 7);
+    ad.add_edge(3, 1, 8);
+    ad.add_edge(3, 0, 9);
+    ad.add_edge(3, 5, 10);
+    ad.add_edge(3, 0, 11);
+    ad.add_edge(3, 2, 12);
+    ad.add_edge(3, 7, 13);
+    ad.add_edge(3, 4, 14);
+    ad.add_edge(3, 0, 15);
+    ad.add_edge(3, 4, 16);
+    ad.add_edge(3, 8, 17);
+    ad.add_edge(3, 3, 18);
+    ad.add_edge(3, 1, 19);
+    ad.add_edge(4, 0, 0);
+    ad.add_edge(4, 4, 1);
+    ad.add_edge(4, 8, 2);
+    ad.add_edge(4, 5, 3);
+    ad.add_edge(4, 5, 4);
+    ad.add_edge(4, 1, 5);
+    ad.add_edge(4, 3, 6);
+    ad.add_edge(4, 8, 7);
+    ad.add_edge(4, 4, 8);
+    ad.add_edge(4, 4, 9);
+    ad.add_edge(4, 4, 10);
+    ad.add_edge(4, 7, 11);
+    ad.add_edge(4, 8, 12);
+    ad.add_edge(4, 6, 13);
+    ad.add_edge(4, 3, 14);
+    ad.add_edge(4, 7, 15);
+    ad.add_edge(4, 6, 16);
+    ad.add_edge(4, 7, 17);
+    ad.add_edge(4, 0, 18);
+    ad.add_edge(4, 2, 19);
+    ad.add_edge(5, 3, 0);
+    ad.add_edge(5, 0, 1);
+    ad.add_edge(5, 4, 2);
+    ad.add_edge(5, 7, 3);
+    ad.add_edge(5, 2, 4);
+    ad.add_edge(5, 5, 5);
+    ad.add_edge(5, 7, 6);
+    ad.add_edge(5, 7, 7);
+    ad.add_edge(5, 7, 8);
+    ad.add_edge(5, 7, 9);
+    ad.add_edge(5, 0, 10);
+    ad.add_edge(5, 8, 11);
+    ad.add_edge(5, 6, 12);
+    ad.add_edge(5, 8, 13);
+    ad.add_edge(5, 8, 14);
+    ad.add_edge(5, 1, 15);
+    ad.add_edge(5, 5, 16);
+    ad.add_edge(5, 5, 17);
+    ad.add_edge(5, 3, 18);
+    ad.add_edge(5, 7, 19);
+    ad.add_edge(6, 8, 0);
+    ad.add_edge(6, 7, 1);
+    ad.add_edge(6, 6, 2);
+    ad.add_edge(6, 5, 3);
+    ad.add_edge(6, 6, 4);
+    ad.add_edge(6, 1, 5);
+    ad.add_edge(6, 7, 6);
+    ad.add_edge(6, 2, 7);
+    ad.add_edge(6, 7, 8);
+    ad.add_edge(6, 3, 9);
+    ad.add_edge(6, 3, 10);
+    ad.add_edge(6, 8, 11);
+    ad.add_edge(6, 3, 12);
+    ad.add_edge(6, 9, 13);
+    ad.add_edge(6, 4, 14);
+    ad.add_edge(6, 1, 15);
+    ad.add_edge(6, 4, 16);
+    ad.add_edge(6, 3, 17);
+    ad.add_edge(6, 9, 18);
+    ad.add_edge(6, 8, 19);
+    ad.add_edge(7, 9, 0);
+    ad.add_edge(7, 4, 1);
+    ad.add_edge(7, 3, 2);
+    ad.add_edge(7, 8, 3);
+    ad.add_edge(7, 0, 4);
+    ad.add_edge(7, 5, 5);
+    ad.add_edge(7, 6, 6);
+    ad.add_edge(7, 8, 7);
+    ad.add_edge(7, 9, 8);
+    ad.add_edge(7, 1, 9);
+    ad.add_edge(7, 7, 10);
+    ad.add_edge(7, 0, 11);
+    ad.add_edge(7, 6, 12);
+    ad.add_edge(7, 2, 13);
+    ad.add_edge(7, 3, 14);
+    ad.add_edge(7, 8, 15);
+    ad.add_edge(7, 6, 16);
+    ad.add_edge(7, 3, 17);
+    ad.add_edge(7, 2, 18);
+    ad.add_edge(7, 7, 19);
+    ad.add_edge(8, 0, 0);
+    ad.add_edge(8, 6, 1);
+    ad.add_edge(8, 3, 2);
+    ad.add_edge(8, 5, 3);
+    ad.add_edge(8, 7, 4);
+    ad.add_edge(8, 9, 5);
+    ad.add_edge(8, 9, 6);
+    ad.add_edge(8, 8, 7);
+    ad.add_edge(8, 1, 8);
+    ad.add_edge(8, 5, 9);
+    ad.add_edge(8, 7, 10);
+    ad.add_edge(8, 9, 11);
+    ad.add_edge(8, 6, 12);
+    ad.add_edge(8, 0, 13);
+    ad.add_edge(8, 0, 14);
+    ad.add_edge(8, 3, 15);
+    ad.add_edge(8, 6, 16);
+    ad.add_edge(8, 0, 17);
+    ad.add_edge(8, 8, 18);
+    ad.add_edge(8, 9, 19);
+    ad.add_edge(9, 3, 0);
+    ad.add_edge(9, 7, 1);
+    ad.add_edge(9, 9, 2);
+    ad.add_edge(9, 1, 3);
+    ad.add_edge(9, 4, 4);
+    ad.add_edge(9, 9, 5);
+    ad.add_edge(9, 4, 6);
+    ad.add_edge(9, 0, 7);
+    ad.add_edge(9, 5, 8);
+    ad.add_edge(9, 8, 9);
+    ad.add_edge(9, 3, 10);
+    ad.add_edge(9, 2, 11);
+    ad.add_edge(9, 0, 12);
+    ad.add_edge(9, 2, 13);
+    ad.add_edge(9, 3, 14);
+    ad.add_edge(9, 4, 15);
+    ad.add_edge(9, 0, 16);
+    ad.add_edge(9, 5, 17);
+    ad.add_edge(9, 3, 18);
+    ad.add_edge(9, 5, 19);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(ad.validate());
+
+    REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0) == POSITIVE_INFINITY);
+    REQUIRE_THROWS_AS(ad.number_of_paths(0, 0, 10, algorithm::acyclic),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 9, 0, 10, algorithm::acyclic),
+                      LibsemigroupsException);
+
+    ad = binary_tree(n);
+    REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(0) == 1023);
+
+    action_digraph_helper::add_cycle(ad, n);
+    ad.add_edge(0, n + 1, 0);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!ad.validate());
+    REQUIRE(ad.number_of_paths(1) == 511);
+    REQUIRE(ad.number_of_paths_algorithm(1, 0, POSITIVE_INFINITY)
+            == algorithm::acyclic);
+    REQUIRE(ad.number_of_paths(1, 0, POSITIVE_INFINITY) == 511);
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
+    REQUIRE(*std::find_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t n) {
+      return action_digraph_helper::topological_sort(ad, n).empty();
+    }) == 1023);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "038",
+                          "random/random_acyclic exceptions",
+                          "[quick]") {
+    // Too few nodes
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(0, 0, 0),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(0, 0, 0),
+                      LibsemigroupsException);
+    // Out degree too low
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 0, 0),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 0, 0),
+                      LibsemigroupsException);
+    // Number of edges too high
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 2, 5),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 2, 5),
+                      LibsemigroupsException);
+    // Number of edges = 0
+    auto ad = ActionDigraph<size_t>::random(2, 2, 0);
+    REQUIRE(ad.nr_edges() == 0);
+    ad = ActionDigraph<size_t>::random_acyclic(2, 2, 0);
+    REQUIRE(ad.nr_edges() == 0);
+    ad = ActionDigraph<size_t>::random_acyclic(10, 10, 41);
+    REQUIRE(ad.nr_edges() == 41);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "039",
+                          "unsafe (next) neighbour",
+                          "[quick]") {
+    auto ad = binary_tree(10);
+    REQUIRE(ad.unsafe_neighbor(0, 1) == ad.neighbor(0, 1));
+    REQUIRE(ad.unsafe_next_neighbor(0, 1) == ad.next_neighbor(0, 1));
+  }
+
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "040",
                           "nr_egdes incident to a node",
@@ -1277,4 +1828,85 @@ namespace libsemigroups {
             == 511);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "041",
+                          "number_of_paths (matrix)",
+                          "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    // REQUIRE(detail::magic_number(6) * 6 == 14.634);
+    // auto ad = ActionDigraph<size_t>::random(6, 3, 15, std::mt19937());
+    // std::cout << action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(3);
+    ad.add_edge(0, 0, 0);
+    ad.add_edge(0, 3, 1);
+    ad.add_edge(0, 4, 2);
+    ad.add_edge(1, 2, 0);
+    ad.add_edge(1, 1, 1);
+    ad.add_edge(1, 4, 2);
+    ad.add_edge(2, 4, 0);
+    ad.add_edge(2, 3, 1);
+    ad.add_edge(2, 4, 2);
+    ad.add_edge(3, 0, 0);
+    ad.add_edge(3, 1, 1);
+    ad.add_edge(4, 3, 1);
+    ad.add_edge(4, 3, 2);
+    ad.add_edge(5, 4, 0);
+    ad.add_edge(5, 2, 2);
+
+    REQUIRE(ad.nr_edges() == 15);
+    REQUIRE(std::distance(ad.cbegin_pilo(0, 0, 10), ad.cend_pilo()) == 6858);
+    REQUIRE(ad.number_of_paths_algorithm(0, 0, 10) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(0, 0, 10) == 6858);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 0, 10, algorithm::trivial),
+                      LibsemigroupsException);
+    REQUIRE(ad.number_of_paths_algorithm(0, 10, 12) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(0, 10, 12) == 35300);
+
+    auto checker1 = [&ad](word_type const& w) {
+      return 10 <= w.size() && w.size() < 12
+             && action_digraph_helper::follow_path(ad, 0, w) != UNDEFINED;
+    };
+    REQUIRE(std::all_of(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo(), checker1));
+    REQUIRE(
+        std::unordered_set<word_type>(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo())
+            .size()
+        == 35300);
+
+    REQUIRE(std::distance(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo()) == 35300);
+
+    REQUIRE(ad.number_of_paths_algorithm(1, 5, 0, 10) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(1, 5, 0, 10) == 0);
+    REQUIRE(0
+            == std::distance(ad.cbegin_pstilo(1, 5, 0, 10), ad.cend_pstilo()));
+    REQUIRE(ad.number_of_paths(1, 1, 0, 10) == 1404);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 1, 0, 10, algorithm::trivial),
+                      LibsemigroupsException);
+    REQUIRE(ad.number_of_paths(1, 1, 0, 10)
+            == std::distance(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo()));
+
+    auto checker2 = [&ad](word_type const& w) {
+      return 0 <= w.size() && w.size() < 10
+             && action_digraph_helper::follow_path(ad, 1, w) == 1;
+    };
+    REQUIRE(
+        std::all_of(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo(), checker2));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "042",
+                          "number_of_paths (matrix)",
+                          "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(2);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+
+    REQUIRE(ad.number_of_paths(0, 1, 0, POSITIVE_INFINITY, algorithm::matrix)
+            == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
+  }
 }  // namespace libsemigroups
