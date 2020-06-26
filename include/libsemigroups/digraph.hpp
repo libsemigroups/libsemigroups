@@ -282,7 +282,7 @@ namespace libsemigroups {
       } else if (nr_edges > nr_nodes * out_degree) {
         LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
                                 "most %llu, but found %llu",
-                                nr_nodes * out_degree);
+                                nr_nodes * out_degree, nr_edges);
       }
       std::uniform_int_distribution<T> source(0, nr_nodes - 1);
       std::uniform_int_distribution<T> target(0, nr_nodes - 1);
@@ -2165,6 +2165,9 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
     //! is the out-degree of the digraph.
+    //!
+    //! \warning If the number of paths exceeds 2 ^ 64, then return value of
+    //! this function will not be correct.
     uint64_t number_of_paths(node_type const source) const {
       // Don't allow selecting the algorithm because we check
       // acyclicity anyway.
@@ -2271,6 +2274,9 @@ namespace libsemigroups {
     //!
     //! \warning If \p lgrthm is algorithm::automatic, then it is not always
     //! the case that the fastest algorithm is used.
+    //!
+    //! \warning If the number of paths exceeds 2 ^ 64, then return value of
+    //! this function will not be correct.
     // not noexcept for example number_of_paths_trivial can throw
     uint64_t number_of_paths(node_type const source,
                              size_t const    min,
@@ -2371,6 +2377,9 @@ namespace libsemigroups {
     //!
     //! \warning If \p lgrthm is algorithm::automatic, then it is not always
     //! the case that the fastest algorithm is used.
+    //!
+    //! \warning If the number of paths exceeds 2 ^ 64, then return value of
+    //! this function will not be correct.
     // not noexcept because cbegin_pstilo isn't
     uint64_t number_of_paths(node_type const source,
                              node_type const target,
@@ -2428,7 +2437,7 @@ namespace libsemigroups {
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
-          // FIXME(now) it's easy for number_of_words to exceed 2 ^ 64, so
+          // TODO(later) it's easy for number_of_words to exceed 2 ^ 64, so
           // better do something more intelligent here to avoid this case.
           return number_of_words(out_degree(), min, max);
         }
@@ -2466,11 +2475,9 @@ namespace libsemigroups {
       auto           acc = am;
       auto           tmp = am;
       uint64_t const N   = nr_nodes();
-      if (min > 1) {
-        detail::pow(acc, min, N);
-      }
-      size_t total = (min == 0 ? 1 : 0);
-      for (size_t i = min + 1; i < max; ++i) {
+      detail::pow(acc, min, N);
+      size_t total = 0;
+      for (size_t i = min; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
                                        uint64_t(0));
@@ -2503,12 +2510,10 @@ namespace libsemigroups {
       auto           acc = am;
       auto           tmp = am;
       uint64_t const N   = nr_nodes();
-      if (min > 1) {
-        detail::pow(acc, min, N);
-      }
-      size_t total = (source == target && min == 0 ? 1 : 0);
-      for (size_t i = min + 1; i < max; ++i) {
-        uint64_t add = source * N + target;
+      detail::pow(acc, min, N);
+      size_t total = 0;
+      for (size_t i = min; i < max; ++i) {
+        uint64_t add = acc[source * N + target];
 
         if (add == 0
             && std::all_of(acc.cbegin() + source * N,

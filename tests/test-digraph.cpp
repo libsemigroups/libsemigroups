@@ -21,6 +21,7 @@
 #include <cstddef>    // for size_t
 #include <stdexcept>  // for runtime_error
 #include <vector>     // for vector
+#include <unordered_set>
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/digraph-helper.hpp"  // for follow_path
@@ -1535,12 +1536,14 @@ namespace libsemigroups {
 
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16) == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0, 0, 30) == 9);
+    REQUIRE(ad.number_of_paths(1, 0, 10, algorithm::matrix) == 6);
+    REQUIRE(ad.number_of_paths(1, 9, 0, 10, algorithm::matrix) == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "ActionDigraph",
       "037",
-      "number_of_paths node acyclic digraph",
+      "number_of_paths node digraph",
       "[quick]") {
     using algorithm = ActionDigraph<size_t>::algorithm;
     size_t const n  = 10;
@@ -1754,6 +1757,10 @@ namespace libsemigroups {
 
     REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0) == POSITIVE_INFINITY);
+    REQUIRE_THROWS_AS(ad.number_of_paths(0, 0, 10, algorithm::acyclic),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 9, 0, 10, algorithm::acyclic),
+                      LibsemigroupsException);
 
     ad = binary_tree(n);
     REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
@@ -1767,5 +1774,144 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths_algorithm(1, 0, POSITIVE_INFINITY)
             == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(1, 0, POSITIVE_INFINITY) == 511);
+    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
+    REQUIRE(*std::find_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t n) {
+      return action_digraph_helper::topological_sort(ad, n).empty();
+    }) == 1023);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ActionDigraph",
+      "038",
+      "random/random_acyclic exceptions",
+      "[quick]") {
+    // Too few nodes
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(0, 0, 0),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(0, 0, 0),
+                      LibsemigroupsException);
+    // Out degree too low
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 0, 0),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 0, 0),
+                      LibsemigroupsException);
+    // Number of edges too high
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 2, 5),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 2, 5),
+                      LibsemigroupsException);
+    // Number of edges = 0
+    auto ad = ActionDigraph<size_t>::random(2, 2, 0);
+    REQUIRE(ad.nr_edges() == 0);
+    ad = ActionDigraph<size_t>::random_acyclic(2, 2, 0);
+    REQUIRE(ad.nr_edges() == 0);
+    ad = ActionDigraph<size_t>::random_acyclic(10, 10, 41);
+    REQUIRE(ad.nr_edges() == 41);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ActionDigraph",
+      "039",
+      "unsafe (next) neighbour",
+      "[quick]") {
+    auto ad = binary_tree(10);
+    REQUIRE(ad.unsafe_neighbor(0, 1) == ad.neighbor(0, 1));
+    REQUIRE(ad.unsafe_next_neighbor(0, 1) == ad.next_neighbor(0, 1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ActionDigraph",
+      "040",
+      "nr_egdes incident to a node",
+      "[quick]") {
+    auto ad = binary_tree(10);
+    REQUIRE(ad.nr_nodes() == 1023);
+    REQUIRE(std::count_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t n) {
+      return ad.nr_edges(n) == 2;
+    }) == 511);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ActionDigraph",
+      "041",
+      "number_of_paths (matrix)",
+      "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    // REQUIRE(detail::magic_number(6) * 6 == 14.634);
+    // auto ad = ActionDigraph<size_t>::random(6, 3, 15, std::mt19937());
+    // std::cout << action_digraph_helper::detail::to_string(ad);
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(6);
+    ad.add_to_out_degree(3);
+    ad.add_edge(0, 0, 0);
+    ad.add_edge(0, 3, 1);
+    ad.add_edge(0, 4, 2);
+    ad.add_edge(1, 2, 0);
+    ad.add_edge(1, 1, 1);
+    ad.add_edge(1, 4, 2);
+    ad.add_edge(2, 4, 0);
+    ad.add_edge(2, 3, 1);
+    ad.add_edge(2, 4, 2);
+    ad.add_edge(3, 0, 0);
+    ad.add_edge(3, 1, 1);
+    ad.add_edge(4, 3, 1);
+    ad.add_edge(4, 3, 2);
+    ad.add_edge(5, 4, 0);
+    ad.add_edge(5, 2, 2);
+
+    REQUIRE(ad.nr_edges() == 15);
+    REQUIRE(std::distance(ad.cbegin_pilo(0, 0, 10), ad.cend_pilo()) == 6858);
+    REQUIRE(ad.number_of_paths_algorithm(0, 0, 10) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(0, 0, 10) == 6858);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 0, 10, algorithm::trivial),
+                      LibsemigroupsException);
+    REQUIRE(ad.number_of_paths_algorithm(0, 10, 12) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(0, 10, 12) == 35300);
+
+    auto checker1 = [&ad](word_type const& w) {
+      return 10 <= w.size() && w.size() < 12
+             && action_digraph_helper::follow_path(ad, 0, w) != UNDEFINED;
+    };
+    REQUIRE(std::all_of(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo(), checker1));
+    REQUIRE(
+        std::unordered_set<word_type>(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo())
+            .size()
+        == 35300);
+
+    REQUIRE(std::distance(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo()) == 35300);
+
+    REQUIRE(ad.number_of_paths_algorithm(1, 5, 0, 10) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths(1, 5, 0, 10) == 0);
+    REQUIRE(0
+            == std::distance(ad.cbegin_pstilo(1, 5, 0, 10), ad.cend_pstilo()));
+    REQUIRE(ad.number_of_paths(1, 1, 0, 10) == 1404);
+    REQUIRE_THROWS_AS(ad.number_of_paths(1, 1, 0, 10, algorithm::trivial),
+                      LibsemigroupsException);
+    REQUIRE(ad.number_of_paths(1, 1, 0, 10)
+            == std::distance(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo()));
+
+    auto checker2 = [&ad](word_type const& w) {
+      return 0 <= w.size() && w.size() < 10
+             && action_digraph_helper::follow_path(ad, 1, w) == 1;
+    };
+    REQUIRE(
+        std::all_of(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo(), checker2));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ActionDigraph",
+      "042",
+      "number_of_paths (matrix)",
+      "[quick]") {
+    using algorithm = ActionDigraph<size_t>::algorithm;
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(2);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+
+    REQUIRE(ad.number_of_paths(0, 1, 0, POSITIVE_INFINITY, algorithm::matrix)
+            == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
   }
 }  // namespace libsemigroups

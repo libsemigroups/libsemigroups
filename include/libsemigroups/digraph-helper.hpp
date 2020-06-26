@@ -472,6 +472,7 @@ namespace libsemigroups {
     //! Adds a cycle involving the specified range of nodes.
     //!
     //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam U the type of an iterator pointing to nodes of an ActionDigraph
     //!
     //! \param ad the ActionDigraph object to add a cycle to.
     //! \param first a const iterator to nodes of \p ad
@@ -488,10 +489,10 @@ namespace libsemigroups {
     //!
     //! \note
     //! The edges added by this function are all labelled \c 0.
-    template <typename T>
+    template <typename T, typename U>
     void add_cycle(ActionDigraph<T>&                               ad,
-                   typename ActionDigraph<T>::const_iterator_nodes first,
-                   typename ActionDigraph<T>::const_iterator_nodes last) {
+                   U const first,
+                   U const last) {
       for (auto it = first; it < last - 1; ++it) {
         ad.add_edge(*it, *(it + 1), 0);
       }

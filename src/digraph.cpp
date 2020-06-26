@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This entire file is only build if LIBSEMIGROUPS_ENABLE_EIGEN is defined.
+// This entire file is only build if LIBSEMIGROUPS_ENABLE_EIGEN is not defined.
 
 #include "libsemigroups/digraph.hpp"
 
@@ -29,6 +29,7 @@ namespace libsemigroups {
       }
       return out;
     }
+
     void matrix_product_in_place(std::vector<uint64_t>&       xy,
                                  std::vector<uint64_t> const& x,
                                  std::vector<uint64_t> const& y,
@@ -51,8 +52,8 @@ namespace libsemigroups {
       } else if (e == 1) {
         return;
       }
-      auto                  y = x;
-      std::vector<uint64_t> tmp;
+      std::vector<uint64_t> y(x);
+      std::vector<uint64_t> tmp(x.size(), 0);
       auto                  z = (e % 2 == 0 ? one(N) : x);
 
       while (e > 1) {
