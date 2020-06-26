@@ -603,7 +603,7 @@ namespace libsemigroups {
                           "022",
                           "non-trivial classes",
                           "[quick][cong]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(REPORT);
 
     FpSemigroup S;
     S.set_alphabet(2);
@@ -624,7 +624,7 @@ namespace libsemigroups {
 
     // TODO(later) this test fails if we don't run the next line, since the
     // congruence below has no parent
-    REQUIRE(S.size() == 78);
+    REQUIRE(S.froidure_pin()->size() == 78);
 
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
