@@ -119,20 +119,30 @@ namespace libsemigroups {
           if (seen[p.first] == 2) {
             return false;
           } else if (seen[p.first] == 1 || p.second >= M) {
+            // backtrack
             seen[p.first] = 1;
             stck.pop();
-            seen[stck.top().first] = 0;
+            seen[stck.top().first] = 3;
             stck.top().second++;
           } else {
             node_type<T> node;
             std::tie(node, p.second)
                 = ad.unsafe_next_neighbor(p.first, p.second);
+#ifdef LIBSEMIGROUPS_DEBUG
+            if (node == UNDEFINED) {
+              LIBSEMIGROUPS_ASSERT(p.second == UNDEFINED);
+            } else {
+              validate_node(ad, node);
+              validate_label(ad, p.second);
+            }
+#endif
             if (node != UNDEFINED) {
               seen[p.first] = 2;
               stck.emplace(node, 0);
             }
           }
         } while (stck.size() > 1);
+        seen[stck.top().first] = 1;
         return true;
       }
 
@@ -202,8 +212,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -220,15 +230,21 @@ namespace libsemigroups {
     // Not noexcept because detail::is_acyclic isn't
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad) {
+      if (ad.validate()) {
+        return false;
+      }
       node_type<T> const                                 N = ad.nr_nodes();
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       std::vector<uint8_t>                               seen(N, 0);
+
       for (node_type<T> m = 0; m < N; ++m) {
         if (seen[m] == 0) {
           stck.emplace(m, 0);
           if (!detail::is_acyclic(ad, stck, seen)) {
+            LIBSEMIGROUPS_ASSERT(seen[m] != 0);
             return false;
           }
+          LIBSEMIGROUPS_ASSERT(seen[m] != 0);
         }
       }
       return true;
@@ -342,8 +358,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -389,8 +405,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
     //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always \f$mk\f$ where \f$k\f$ is the
-    //! ActionDigraph::out_degree.
+    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
+    //! the ActionDigraph::out_degree.
     //!
     //! \note
     //! If \p source and \p target are equal, then, by convention, we consider
