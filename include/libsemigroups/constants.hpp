@@ -65,7 +65,10 @@ namespace libsemigroups {
       Constant& operator=(Constant&&) = default;
       ~Constant()                     = default;
 
-      template <typename T>
+      // TODO(later) move the static assert conditions into the SFINAE
+      template <typename T,
+                typename
+                = typename std::enable_if<!std::is_enum<T>::value, T>::type>
       constexpr operator T() const noexcept {
         static_assert(
             std::is_integral<T>::value
