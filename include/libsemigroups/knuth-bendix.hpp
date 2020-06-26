@@ -591,7 +591,7 @@ namespace libsemigroups {
       //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet,
       //! and \f$n\f$ is the number of nodes in the
       //! KnuthBendix::gilman_digraph.
-      size_t size() override;
+      uint64_t size() override;
 
       bool equal_to(std::string const&, std::string const&) override;
 

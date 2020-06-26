@@ -149,7 +149,7 @@ namespace libsemigroups {
       return it;
     }
 
-    size_t KnuthBendix::size() {
+    uint64_t KnuthBendix::size() {
       if (is_obviously_infinite()) {
         return POSITIVE_INFINITY;
       } else if (alphabet().empty()) {

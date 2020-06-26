@@ -136,7 +136,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     // Documented in FpSemigroupInterface
-    size_t size() override;
+    uint64_t size() override;
 
     // Documented in FpSemigroupInterface
     bool equal_to(std::string const& u, std::string const& v) override {

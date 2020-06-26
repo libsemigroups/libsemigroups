@@ -136,7 +136,7 @@ namespace libsemigroups {
     // FpSemigroupInterface - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////////
 
-    size_t size() override {
+    uint64_t size() override {
       run();  // to ensure the state is correct
       return _wrapped_cong->nr_classes();
     }
