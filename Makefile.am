@@ -275,7 +275,12 @@ test_all_SOURCES += tests/test-froidure-pin-tropmaxplus.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kbe.cpp
-test_all_SOURCES += tests/test-knuth-bendix.cpp
+test_all_SOURCES += tests/test-knuth-bendix-1.cpp
+test_all_SOURCES += tests/test-knuth-bendix-2.cpp
+test_all_SOURCES += tests/test-knuth-bendix-3.cpp
+test_all_SOURCES += tests/test-knuth-bendix-4.cpp
+test_all_SOURCES += tests/test-knuth-bendix-5.cpp
+test_all_SOURCES += tests/test-knuth-bendix-6.cpp
 test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-order.cpp
 test_all_SOURCES += tests/test-race.cpp
@@ -379,7 +384,12 @@ test_iterator_SOURCES += tests/test-main.cpp
 test_kbe_SOURCES =  tests/test-kbe.cpp
 test_kbe_SOURCES += tests/test-main.cpp
 
-test_knuth_bendix_SOURCES =  tests/test-knuth-bendix.cpp
+test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-3.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
 
 test_order_SOURCES =  tests/test-order.cpp
