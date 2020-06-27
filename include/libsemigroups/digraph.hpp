@@ -53,7 +53,7 @@ namespace libsemigroups {
       return 0.0015 * N + 2.43;
     }
 
-#ifndef LIBSEMIGROUPS_EIGEN_ENABLED
+    // #ifndef LIBSEMIGROUPS_EIGEN_ENABLED
     std::vector<uint64_t> one(size_t const N);
 
     void matrix_product_in_place(std::vector<uint64_t>&       xy,
@@ -66,7 +66,7 @@ namespace libsemigroups {
     // Implemented at end of this file.
     template <typename T>
     std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad);
-#endif
+    // #endif
   }  // namespace detail
 
   //! Defined in ``digraph.hpp``.
@@ -2465,9 +2465,9 @@ namespace libsemigroups {
     uint64_t number_of_paths_matrix(node_type const source,
                                     size_t const    min,
                                     size_t const    max) const {
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      TODO(later)
-#else
+      // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      // TODO(later)
+      // #else
       auto           am  = detail::adjacency_matrix(*this);
       auto           acc = am;
       auto           tmp = am;
@@ -2486,16 +2486,16 @@ namespace libsemigroups {
         tmp.swap(acc);
       }
       return total;
-#endif
+      // #endif
     }
 
     uint64_t number_of_paths_matrix(node_type const source,
                                     node_type const target,
                                     size_t const    min,
                                     size_t const    max) const {
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      TODO(later)
-#else
+      // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      // TODO(later)
+      // #else
       if (!action_digraph_helper::is_reachable(*this, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
@@ -2523,7 +2523,7 @@ namespace libsemigroups {
         tmp.swap(acc);
       }
       return total;
-#endif
+      // #endif
     }
 
     ////////////////////////////////////////////////////////////////////////

@@ -449,6 +449,9 @@ namespace libsemigroups {
       // finite, then we can count the number of non-trivial classes, by
       // counting the number of paths in the right Cayley graph (right action
       // digraph if left or right) from the root to every vertex.
+      // TODO(later) double check if we know that the number of classes is
+      // finite and the parent semigroup is infinite, meaning that the
+      // init_non_trivial_classes will run forever
       init_non_trivial_classes();
       return _non_trivial_classes->size();
     }

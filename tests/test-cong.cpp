@@ -424,15 +424,21 @@ namespace libsemigroups {
     S.set_alphabet(3);
     S.set_identity(0);
     S.add_rule({1, 2}, {0});
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    REQUIRE(S.is_obviously_infinite());
+#else
     REQUIRE(!S.is_obviously_infinite());
+#endif
 
     Congruence cong(twosided, S);
     cong.add_pair({1, 1, 1}, {0});
     REQUIRE(cong.nr_classes() == 3);
-    // The following runs forever because !S.is_obviously_infinite(), but it is
-    // infinite
+    // The next test currently runs forever because nr_non_trivial_classes
+    // attempts to enumerate all elements in the non_trivial_classes (and there
+    // are infinitely many).
     // REQUIRE_THROWS_AS(cong.nr_non_trivial_classes() == 3,
-    //                 LibsemigroupsException);
+    //                  LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

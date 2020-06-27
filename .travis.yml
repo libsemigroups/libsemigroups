@@ -113,10 +113,11 @@ before_install:
         chmod +x miniconda.sh;
         ./miniconda.sh -b;
         export PATH=/home/travis/miniconda3/bin:$PATH;
-        export PKG_CONFIG_PATH=/home/travis/miniconda3/lib/pkgconfig
+        export PKG_CONFIG_PATH=/home/travis/miniconda3/lib/pkgconfig:/home/travis/miniconda3/share/pkgconfig
         conda update --yes conda;
         conda install -c conda-forge --yes mamba;
         mamba install -c conda-forge --yes fmt;
+        mamba install -c conda-forge --yes eigen;
       fi;
 script:
   - ci/travis-$TEST_SUITE.sh
