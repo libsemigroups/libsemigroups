@@ -1,6 +1,52 @@
 Changelog
 =========
 
+v1.2.0 (released 28/06/2020)
+----------------------------
+
+In this release some new features have been added and some bugs have been
+fixed. The new features in this version of ``libsemigroups`` were implemented
+by `J. D. Mitchell`_ and `M. Tsalakou`_.
+
+.. _J. D. Mitchell: https://jdbm.me
+.. _M. Tsalakou: https://mariatsalakou.github.io/
+
+The major new features in this release are:
+
+* an implementation of Gilman's Algorithm :cite:`Gilman1979` to construct an
+  automaton that allows for counting, and iterating through, the normal forms
+  of strings in a ``KnuthBendix`` instance. This automaton is accessible via
+  the member function ``gilman_digraph``.  Using this approach significantly
+  improves the performance of the ``size`` member function of ``KnuthBendix``
+  and allows a ``KnuthBendix`` instance to know whether or not it is infinite. 
+
+* improvements to the algorithm used by the ``number_of_paths`` member function
+  of the class template ``ActionDigraph``, and the ability to specify the
+  algorithm to be used.
+
+* the class template ``ActionDigraph`` gets new member functions: ``nr_edges``
+  for a node; ``number_of_paths`` with a single node as argument; 
+  ``number_of_paths_algorithm`` which returns a value in an enum describing the
+  algorithm used by ``number_of_paths`` by default.
+
+* the functions ``topological_sort`` and ``add_cycle`` in the namespace
+  ``libsemigroups::action_digraph_helper``
+
+* the function ``number_of_words`` for counting the number of words with length
+  in a given range over an alphabet of specified size.
+
+* the class template ``ActionDigraph`` gets new static member functions
+  ``random`` for outputing a random action digraph with a given number of
+  edges; and ``random_acyclic``.
+
+There were also several further minor improvements and bug fixes implemented in
+this version, many of which arose while developing `libsemigroups_cppyy`_.
+Thanks to Murray Whyte for pointing out several of these bugs. 
+
+One major bug was also resolved: sometimes a ``KnuthBendix`` instance refusing
+to run even though the rules it contained were not reduced (but were
+confluent). 
+
 v1.1.0 (released 28/05/2020)
 ----------------------------
 

@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 1.1.0
+libsemigroups - Version 1.2.0
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -117,7 +117,7 @@ Contributors
 - `N. Thiery`_ contributed to the build system, packaging libsemigroups via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
-- `M. Tsalakou`_ contrinuted to the Knuth-Bendix implementation, and related
+- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, and related
   algorithms for the class `ActionDigraph`.
 
 .. _F. Hivert: https://www.lri.fr/~hivert/
