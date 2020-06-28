@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.2.1 (released 28/06/2020)
+----------------------------
+
+This is an exceedingly minor release removing some extraneous files from, and
+adding one essential file to, the distro.
+
 v1.2.0 (released 28/06/2020)
 ----------------------------
 
