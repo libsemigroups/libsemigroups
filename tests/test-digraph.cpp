@@ -1887,8 +1887,7 @@ namespace libsemigroups {
             == std::distance(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo()));
 
     auto checker2 = [&ad](word_type const& w) {
-      return 0 <= w.size() && w.size() < 10
-             && action_digraph_helper::follow_path(ad, 1, w) == 1;
+      return w.size() < 10 && action_digraph_helper::follow_path(ad, 1, w) == 1;
     };
     REQUIRE(
         std::all_of(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo(), checker2));
