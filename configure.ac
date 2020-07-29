@@ -124,5 +124,62 @@ AX_CHECK_FMT()
 AM_CONDITIONAL([LIBSEMIGROUPS_EIGEN_ENABLED], [test "xenable_eigen" = xyes])
 dnl Output configured files
 
+dnl compiler builtins
+AC_DEFUN([CHECK_COMPILER_BUILTIN],
+[AC_MSG_CHECKING([for $1])
+    AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM(
+            [[]],
+            [$1[($2)];
+            ]
+        )],
+        [AS_VAR_SET([[have_]$1], [yes])],
+        [AS_VAR_SET([[have_]$1], [no])]
+        )
+    AC_MSG_RESULT(AS_VAR_GET([[have_]$1]))
+    AS_IF([test yes = AS_VAR_GET([[have_]$1])],
+        [AC_DEFINE_UNQUOTED(AS_TR_CPP([HAVE_]$1), 1,
+            [Define to 1 if the system has the `]$1[' built-in function])], []
+        )])
+
+CHECK_COMPILER_BUILTIN([__builtin_popcountl],[0]);
+CHECK_COMPILER_BUILTIN([__builtin_clzll],[0]);
+
+dnl
+dnl User setting: Enable popcnt (on by default)
+dnl
+AC_ARG_ENABLE([popcnt],
+    AS_HELP_STRING([--enable-popcnt], [use __builtin_popcntl if available]),
+    [],
+    [enable_popcnt=yes])
+AC_MSG_CHECKING([whether to try and use __builtin_popcntl])
+AC_MSG_RESULT([$enable_popcnt])
+
+AS_IF([test "x$enable_popcnt" != "xno"],
+    [USE_POPCNT=1],
+    [USE_POPCNT=0])
+
+AC_DEFINE_UNQUOTED([USE_POPCNT],
+    [$USE_POPCNT],
+    [define as 1 if we should try and use the __builtin_popcntl function if available])
+
+dnl
+dnl User setting: Enable clz (on by default)
+dnl
+AC_ARG_ENABLE([clzll],
+    AS_HELP_STRING([--enable-clzll], [use __builtin_clzll if available]),
+    [],
+    [enable_clzll=yes])
+AC_MSG_CHECKING([whether to try and use __builtin_clzlll])
+AC_MSG_RESULT([$enable_clzll])
+
+AS_IF([test "x$enable_clzll" != "xno"],
+    [USE_CLZLL=1],
+    [USE_CLZLL=0])
+
+AC_DEFINE_UNQUOTED([USE_CLZLL],
+    [$USE_CLZLL],
+    [define as 1 if we should try and use the __builtin_clzlll function if available])
+
 AC_CONFIG_FILES([Makefile libsemigroups.pc])
 AC_OUTPUT

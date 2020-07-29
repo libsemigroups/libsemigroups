@@ -20,7 +20,7 @@ jobs:
   include:
     - env: TEST_SUITE=hpcombi
 
-    - env: TEST_SUITE=external-fmt
+    - env: TEST_SUITE=config-options
       addons:
         apt:
           packages:
@@ -97,7 +97,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
-    - if [[ "$TEST_SUITE" == "external-fmt" ]]; then
+    - if [[ "$TEST_SUITE" == "config-options" ]]; then
         wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
         chmod +x miniconda.sh;
         ./miniconda.sh -b;

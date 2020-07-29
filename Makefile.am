@@ -39,6 +39,7 @@ pkgconfig_DATA     = libsemigroups.pc
 ## libsemigroups headers
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
+pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/blocks.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat8.hpp
 pkginclude_HEADERS += include/libsemigroups/bruidhinn-traits.hpp
@@ -189,6 +190,7 @@ CHECK_FLAGS2  = [quick]
 
 check_PROGRAMS =  test_all 
 check_PROGRAMS += test_action
+check_PROGRAMS += test_bitset
 check_PROGRAMS += test_blocks
 check_PROGRAMS += test_bmat8
 check_PROGRAMS += test_cong_pair
@@ -248,6 +250,7 @@ LDADD = libsemigroups.la
 
 test_all_SOURCES =  tests/fpsemi-examples.cpp
 test_all_SOURCES += tests/test-action.cpp
+test_all_SOURCES += tests/test-bitset.cpp
 test_all_SOURCES += tests/test-blocks.cpp
 test_all_SOURCES += tests/test-bmat8.cpp
 test_all_SOURCES += tests/test-cong-intf.cpp
@@ -298,6 +301,9 @@ test_all_SOURCES += tests/test-word.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
+
+test_bitset_SOURCES =  tests/test-bitset.cpp
+test_bitset_SOURCES += tests/test-main.cpp
 
 test_blocks_SOURCES =  tests/test-blocks.cpp
 test_blocks_SOURCES += tests/test-main.cpp

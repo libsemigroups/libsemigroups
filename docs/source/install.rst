@@ -122,6 +122,8 @@ Option
 --enable-hpcombi            enable ``HPCombi``
 --enable-verbose            enable verbose mode
 --with-external-fmt         do not use the included copy of fmt
+--disable-popcnt            do not use __builtin_popcountl
+--disable-clzll             do not use __builtin_ctzll
 ==========================  ===================================
 
 Debug mode and verbose mode significantly degrade the performance of
