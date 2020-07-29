@@ -1,6 +1,6 @@
 dnl handle HPCombi checks
 
-AC_DEFUN([CHECK_COMPILER_BUILTIN],
+AC_DEFUN([CHECK_INTRINSIC],
     [AC_MSG_CHECKING([for $1])
     AC_LINK_IFELSE(
       [AC_LANG_PROGRAM(
@@ -68,21 +68,21 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
   AS_IF([test "x$enable_hpcombi" = xyes], 
         [enable_hpcombi_before_builtin_check=yes])
 
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_blendv_epi8],[__m128i{},__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpeq_epi8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpestri],[__m128i{},1,__m128i{},1,1])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmpestrm],[__m128i{},1,__m128i{},1,1])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_cmplt_epi8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_extract_epi64],[__m128i{},1])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_max_epi8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_max_epu8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_min_epi8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_min_epu8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_movemask_epi8],[__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_popcnt_u32],[{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_set_epi64x],[1,1])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_shuffle_epi8],[__m128i{},__m128i{}])])
-  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_COMPILER_BUILTIN([_mm_slli_epi32],[__m128i{},1])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_blendv_epi8],[__m128i{},__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_cmpeq_epi8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_cmpestri],[__m128i{},1,__m128i{},1,1])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_cmpestrm],[__m128i{},1,__m128i{},1,1])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_cmplt_epi8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_extract_epi64],[__m128i{},1])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_max_epi8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_max_epu8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_min_epi8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_min_epu8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_movemask_epi8],[__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_popcnt_u32],[{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_set_epi64x],[1,1])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_shuffle_epi8],[__m128i{},__m128i{}])])
+  AS_IF([test "x$enable_hpcombi" = xyes], [CHECK_INTRINSIC([_mm_slli_epi32],[__m128i{},1])])
 
   AS_IF([test "x$enable_hpcombi_before_builtin_check" = xyes],
         [AS_IF([test "x$enable_hpcombi" = xno],
