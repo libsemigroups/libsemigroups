@@ -51,8 +51,8 @@ namespace libsemigroups {
       table_type* get_table();
 
       void join(UFOld const& UFOld);
-      void join(UFOld* UFOld) {
-        join(*UFOld);
+      void join(UFOld* uf) {
+        join(*uf);
       }
 
       // get_blocks

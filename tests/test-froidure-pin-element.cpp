@@ -29,8 +29,7 @@
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin, FroidurePi...
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/report.hpp"                // for ReportGuard
-#include "libsemigroups/semiring.hpp"  // for Integers, Semiring, Max...
-#include "libsemigroups/types.hpp"     // for word_type, letter_type
+#include "libsemigroups/types.hpp"                 // for word_type, letter_type
 #include "test-main.hpp"
 
 namespace libsemigroups {
@@ -214,313 +213,6 @@ namespace libsemigroups {
     REQUIRE(S.position(y) == 7);
     REQUIRE(S.contains(y));
     delete y;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "020",
-                          "small Boolean matrix semigroup",
-                          "[quick][froidure-pin][element]") {
-    std::vector<Element*> gens
-        = {new BooleanMat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}),
-           new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
-           new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}})};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 3);
-    REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 2);
-    REQUIRE(S.nr_generators() == 3);
-    REQUIRE(S.nr_rules() == 7);
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(*S[1] == *gens[1]);
-    REQUIRE(*S[1] == *gens[2]);
-
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.contains(gens[1]));
-
-    REQUIRE(S.position(gens[2]) == 1);
-    REQUIRE(S.contains(gens[1]));
-
-    Element* y = new BooleanMat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-    y->redefine(gens[0], gens[0]);
-    REQUIRE(S.position(y) == 2);
-    REQUIRE(S.contains(y));
-    delete y;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "021",
-                          "small projective max plus matrix semigroup",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>* sr = new MaxPlusSemiring();
-    auto x = new ProjectiveMaxPlusMatrix({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, sr);
-    auto id = x->identity();
-    delete x;
-    FroidurePin<Element const*> S({&id});
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 1);
-    REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 1);
-    REQUIRE(S.nr_rules() == 1);
-    REQUIRE(*S[0] == id);
-
-    REQUIRE(S.position(&id) == 0);
-    REQUIRE(S.contains(&id));
-
-    x = new ProjectiveMaxPlusMatrix({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "022",
-                          "small matrix semigroup [Integers]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 13);
-    REQUIRE(S.degree() == 2);
-    REQUIRE(S.nr_idempotents() == 4);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 6);
-    REQUIRE(*S[0] == *(gens)[0]);
-    REQUIRE(*S[1] == *(gens)[1]);
-
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.contains(gens[1]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-
-    x->redefine(gens[1], gens[1]);
-    REQUIRE(S.position(x) == 4);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
-                                        sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "023",
-                          "small matrix semigroup [MaxPlusSemiring]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new MaxPlusSemiring();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, -4}, {-4, -1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, -3}, {-3, -1}}, sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 26);
-    REQUIRE(S.degree() == 2);
-    REQUIRE(S.nr_idempotents() == 4);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 9);
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(*S[1] == *gens[1]);
-
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    REQUIRE(S.position(gens[1]) == 1);
-    REQUIRE(S.contains(gens[1]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    x->redefine(gens[1], gens[1]);
-    REQUIRE(S.position(x) == 5);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
-                                        sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "024",
-                          "small matrix semigroup [MinPlusSemiring]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr   = new MinPlusSemiring();
-    std::vector<Element*> gens = {
-        new MatrixOverSemiring<int64_t>({{1, 0}, {0, POSITIVE_INFINITY}}, sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 3);
-    REQUIRE(S.degree() == 2);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 1);
-    REQUIRE(S.nr_rules() == 1);
-
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{-2, 2}, {-1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    x->redefine(gens[0], gens[0]);
-    REQUIRE(S.position(x) == 1);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}},
-                                        sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "025",
-                          "small matrix semigroup [TropicalMaxPlusSemiring]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr   = new TropicalMaxPlusSemiring(33);
-    std::vector<Element*> gens = {
-        new MatrixOverSemiring<int64_t>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}},
-                                        sr),
-        new MatrixOverSemiring<int64_t>({{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}, sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 119);
-    REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 18);
-
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    x->redefine(gens[0], gens[0]);
-    REQUIRE(S.position(x) == 2);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "026",
-                          "small matrix semigroup [TropicalMinPlusSemiring]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr   = new TropicalMinPlusSemiring(11);
-    std::vector<Element*> gens = {
-        new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-        new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}},
-                                        sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 1039);
-    REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 5);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 38);
-
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    x->redefine(gens[0], gens[0]);
-    REQUIRE(S.position(x) == 2);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "027",
-                          "small matrix semigroup [NaturalSemiring]",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr   = new NaturalSemiring(11, 3);
-    std::vector<Element*> gens = {
-        new MatrixOverSemiring<int64_t>({{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}, sr),
-        new MatrixOverSemiring<int64_t>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}},
-                                        sr)};
-    FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-    auto                        rg = ReportGuard(REPORT);
-
-    REQUIRE(S.size() == 86);
-    REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 10);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 16);
-
-    REQUIRE(*S[0] == *gens[0]);
-    REQUIRE(S.position(gens[0]) == 0);
-    REQUIRE(S.contains(gens[0]));
-
-    Element* x = new MatrixOverSemiring<int64_t>({{2, 2}, {1, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    delete x;
-
-    x = new MatrixOverSemiring<int64_t>({{2, 2, 0}, {1, 0, 0}, {0, 0, 0}}, sr);
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
-    x->redefine(gens[1], gens[0]);
-    REQUIRE(S.position(x) == 4);
-    REQUIRE(S.contains(x));
-    delete x;
-
-    delete sr;
     delete_gens(gens);
   }
 
@@ -2756,26 +2448,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "084",
-                          "number of idempotents",
-                          "[extreme][froidure-pin][element]") {
-    auto               rg = ReportGuard();
-    Semiring<int64_t>* sr = new NaturalSemiring(0, 6);
-
-    std::vector<Element*> gens = {
-        new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}, sr),
-        new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}, sr),
-        new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}, sr),
-        new MatrixOverSemiring<int64_t>({{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}, sr)};
-    FroidurePin<Element const*> S(gens);
-    S.reserve(10077696);
-    REQUIRE(S.size() == 10077696);
-    REQUIRE(S.nr_idempotents() == 13688);
-    delete sr;
-    delete_gens(gens);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "085",
                           "number of idempotents",
                           "[extreme][froidure-pin][element]") {
@@ -2791,29 +2463,6 @@ namespace libsemigroups {
     REQUIRE(S.nr_idempotents() == 541254);
     delete_gens(gens);
   }
-
-#if (LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "086",
-                          "regular boolean mat monoid 4 using BooleanMat",
-                          "[quick][froidure-pin][element][no-valgrind]") {
-    std::vector<Element*> gens
-        = {new BooleanMat(
-               {{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           new BooleanMat(
-               {{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           new BooleanMat(
-               {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-           new BooleanMat(
-               {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    FroidurePin<Element const*> S(gens);
-    auto                        rg = ReportGuard(REPORT);
-    REQUIRE(S.size() == 63904);
-    REQUIRE(S.nr_idempotents() == 2360);
-    delete_gens(gens);
-  }
-#endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "087",
@@ -2848,26 +2497,6 @@ namespace libsemigroups {
                           "089",
                           "exception: word_to_pos",
                           "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    REQUIRE_THROWS_AS(T.word_to_pos({}), LibsemigroupsException);
-    REQUIRE_NOTHROW(T.word_to_pos({0, 0, 1, 1}));
-    REQUIRE(T.word_to_pos({0, 0, 1, 1}) == UNDEFINED);
-    auto* w = T.word_to_element({0, 0, 1, 1});
-    REQUIRE(T.current_position(w) == UNDEFINED);
-    REQUIRE_THROWS_AS(T.word_to_pos({0, 0, 1, 2}), LibsemigroupsException);
-    delete w;
-
-    REQUIRE(T.size() == 13);
-    REQUIRE(T.word_to_pos({0, 0, 1, 1}) == 6);
-    w = T.word_to_element({0, 0, 1, 1});
-    REQUIRE(T.current_position(w) == 6);
-    delete w;
-
     std::vector<Element*> gens2
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
@@ -2880,31 +2509,13 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
     REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
 
-    delete_gens(gens);
     delete_gens(gens2);
-    delete sr;
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "090",
                           "exception: word_to_element",
                           "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}), LibsemigroupsException);
-
-    Element* t = T.word_to_element({0, 0, 1, 1});
-    REQUIRE(*t
-            == MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr)
-                   * MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr)
-                   * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)
-                   * MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr));
-
     std::vector<Element*> gens2
         = {new Transformation<uint16_t>({0, 1, 2, 3, 4, 5}),
            new Transformation<uint16_t>({1, 0, 2, 3, 4, 5}),
@@ -2922,11 +2533,8 @@ namespace libsemigroups {
                    * Transformation<uint16_t>({0, 1, 2, 3, 4, 5})
                    * Transformation<uint16_t>({1, 0, 2, 3, 4, 5})
                    * Transformation<uint16_t>({4, 0, 1, 2, 3, 5}));
-    delete t;
     delete u;
-    delete_gens(gens);
     delete_gens(gens2);
-    delete sr;
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -2951,148 +2559,6 @@ namespace libsemigroups {
       }
       REQUIRE_THROWS_AS(S.generator(i), LibsemigroupsException);
     }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "092",
-                          "exception: prefix",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-    delete_gens(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      REQUIRE_NOTHROW(T.prefix(i));
-      REQUIRE_THROWS_AS(T.prefix(i + T.size()), LibsemigroupsException);
-    }
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "093",
-                          "exception: suffix",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      REQUIRE_NOTHROW(T.suffix(i));
-      REQUIRE_THROWS_AS(T.suffix(i + T.size()), LibsemigroupsException);
-    }
-    delete_gens(gens);
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "094",
-                          "exception: first_letter",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      REQUIRE_NOTHROW(T.first_letter(i));
-      REQUIRE_THROWS_AS(T.first_letter(i + T.size()), LibsemigroupsException);
-    }
-    delete_gens(gens);
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "095",
-                          "exception: final_letter",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      REQUIRE_NOTHROW(T.final_letter(i));
-      REQUIRE_THROWS_AS(T.final_letter(i + T.size()), LibsemigroupsException);
-    }
-    delete_gens(gens);
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "096",
-                          "exception: length_const",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      REQUIRE_NOTHROW(T.length_const(i));
-      REQUIRE_THROWS_AS(T.length_const(i + T.size()), LibsemigroupsException);
-    }
-    delete_gens(gens);
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "097",
-                          "exception: product_by_reduction",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      for (size_t j = 0; j < T.size(); ++j) {
-        REQUIRE_NOTHROW(T.product_by_reduction(i, j));
-        REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(T.product_by_reduction(i, j + T.size()),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j + T.size()),
-                          LibsemigroupsException);
-      }
-    }
-
-    delete_gens(gens);
-    delete sr;
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "098",
-                          "exception: fast_product",
-                          "[quick][froidure-pin][element]") {
-    Semiring<int64_t>*    sr = new Integers();
-    std::vector<Element*> gens
-        = {new MatrixOverSemiring<int64_t>({{0, 0}, {0, 1}}, sr),
-           new MatrixOverSemiring<int64_t>({{0, 1}, {-1, 0}}, sr)};
-    FroidurePin<Element const*> T(gens);
-
-    for (size_t i = 0; i < T.size(); ++i) {
-      for (size_t j = 0; j < T.size(); ++j) {
-        REQUIRE_NOTHROW(T.fast_product(i, j));
-        REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(T.fast_product(i, j + T.size()),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j + T.size()),
-                          LibsemigroupsException);
-      }
-    }
-
-    delete_gens(gens);
-    delete sr;
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",

@@ -25,6 +25,7 @@
 #include "bmat8.hpp"    // for BMat8
 #include "element.hpp"  // for Permutation ...
 #include "hpcombi.hpp"  // for HPCombi::Perm16, Transf16, . . .
+#include "matrix.hpp"   // for BMat
 #include "types.hpp"    // for SmallestInteger
 
 namespace libsemigroups {
@@ -119,11 +120,11 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
-    using type = std::conditional_t<N >= 9, BooleanMat, HPCombi::BMat8>;
+    using type = std::conditional_t<N >= 9, BMat<>, HPCombi::BMat8>;
 #else
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
-    using type = std::conditional_t<N >= 9, BooleanMat, BMat8>;
+    using type = std::conditional_t<N >= 9, BMat<>, BMat8>;
 #endif
   };
 }  // namespace libsemigroups

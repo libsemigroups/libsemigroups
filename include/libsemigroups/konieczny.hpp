@@ -438,6 +438,17 @@ namespace libsemigroups {
       return _gens.size() - 1;
     }
 
+    const_reference generator(size_t pos) const {
+      if (pos >= number_of_generators()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "index out of bounds, expected value in [%llu, %llu) found %llu",
+            static_cast<uint64_t>(0),
+            static_cast<uint64_t>(number_of_generators()),
+            static_cast<uint64_t>(pos));
+      }
+      return this->to_external_const(_gens[pos]);
+    }
+
     //! Returns the number of \f$\mathscr{D}\f$-classes of \c this.
     //!
     //! This involves computing complete frames for every
@@ -3035,27 +3046,31 @@ namespace libsemigroups {
       internal_const_element_type right_idem_right_mult
           = _right_idem_class->cbegin_right_mults()[right_idem_indices.second];
 
-      static std::unordered_set<std::vector<internal_element_type>,
-                                Hash<std::vector<internal_element_type>>,
-                                InternalVecEqualTo>
+      static std::unordered_set<
+          std::vector<internal_element_type>,
+          Hash<std::vector<internal_element_type>, InternalHash>,
+          InternalVecEqualTo>
           Hxhw_set;
       Hxhw_set.clear();
 
-      static std::unordered_set<std::vector<internal_element_type>,
-                                Hash<std::vector<internal_element_type>>,
-                                InternalVecEqualTo>
+      static std::unordered_set<
+          std::vector<internal_element_type>,
+          Hash<std::vector<internal_element_type>, InternalHash>,
+          InternalVecEqualTo>
           Hxh_set;
       Hxh_set.clear();
 
-      static std::unordered_set<std::vector<internal_element_type>,
-                                Hash<std::vector<internal_element_type>>,
-                                InternalVecEqualTo>
+      static std::unordered_set<
+          std::vector<internal_element_type>,
+          Hash<std::vector<internal_element_type>, InternalHash>,
+          InternalVecEqualTo>
           zhHx_set;
       zhHx_set.clear();
 
-      static std::unordered_set<std::vector<internal_element_type>,
-                                Hash<std::vector<internal_element_type>>,
-                                InternalVecEqualTo>
+      static std::unordered_set<
+          std::vector<internal_element_type>,
+          Hash<std::vector<internal_element_type>, InternalHash>,
+          InternalVecEqualTo>
           hHx_set;
       hHx_set.clear();
 

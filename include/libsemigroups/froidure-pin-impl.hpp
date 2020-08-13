@@ -347,6 +347,11 @@ namespace libsemigroups {
 
   CONST_REFERENCE FROIDURE_PIN::at(element_index_type pos) {
     enumerate(pos + 1);
+    if (pos >= current_size()) {
+      LIBSEMIGROUPS_EXCEPTION("expected value in range [0, %llu), got %llu",
+                              uint64_t(current_size()),
+                              uint64_t(pos));
+    }
     return this->to_external_const(_elements.at(pos));
   }
 
@@ -357,6 +362,11 @@ namespace libsemigroups {
 
   CONST_REFERENCE FROIDURE_PIN::sorted_at(element_index_type pos) {
     init_sorted();
+    if (pos >= size()) {
+      LIBSEMIGROUPS_EXCEPTION("expected value in range [0, %llu), got %llu",
+                              uint64_t(size()),
+                              uint64_t(pos));
+    }
     return this->to_external_const(_sorted.at(pos).first);
   }
 

@@ -16,10 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
+#include <algorithm>  // for uniform_int_distribution
+#include <cstddef>    // for size_t
+#include <iostream>   // for std::cout
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
+#include "catch.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
 
 #include "libsemigroups/digraph.hpp"  // for ActionDigraph
 #include "libsemigroups/types.hpp"    // for word_type
@@ -299,11 +301,11 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("number_of_paths matrix vs dfs", "[quick][007]") {
-    std::cout << detail::magic_number(1000) << std::endl;
+  // Best with a sample size of 1
+  TEST_CASE("number_of_paths matrix vs dfs", "[standard][007]") {
     using algorithm = ActionDigraph<size_t>::algorithm;
     std::mt19937 mt;
-    for (size_t M = 1000; M < 10000; M += 1000) {
+    for (size_t M = 100; M < 1000; M += 100) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
       size_t                                v = source(mt);
       uint64_t                              result;
@@ -320,15 +322,15 @@ namespace libsemigroups {
           action_digraph_helper::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.nr_edges());
-          size_t      v = source(mt);
+          size_t      w = source(mt);
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            result = ad.number_of_paths(v, 0, 16, algorithm::dfs);
+            result = ad.number_of_paths(w, 0, 16, algorithm::dfs);
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
             REQUIRE(result
-                    == ad.number_of_paths(v, 0, 16, algorithm::automatic));
+                    == ad.number_of_paths(w, 0, 16, algorithm::automatic));
           };
           std::cout << std::endl << std::string(72, '#') << std::endl;
         }

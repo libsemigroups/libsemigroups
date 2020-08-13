@@ -9,4 +9,3 @@ Bibliography
 
 .. bibliography:: libsemigroups.bib
    :all:
-   :encoding: utf-8

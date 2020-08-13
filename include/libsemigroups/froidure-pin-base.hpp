@@ -20,14 +20,15 @@
 #define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
 #include <cstddef>     // for size_t
-#include <functional>  // for function
+#include <functional>  // for function  TODO(v2) delete when deleting deprecated
+#include <iterator>    // for forward_iterator_tag
 #include <thread>      // for thread::hardware_concurrency
 
-#include "constants.hpp"   // for LIMIT_MAX
-#include "containers.hpp"  // for DynamicArray2
-#include "deprecated.hpp"  // for LIBSEMIGROUPS_DEPRECATED
-#include "runner.hpp"      // for Runner
-#include "types.hpp"       // for word_type, letter_type, tril
+#include "constants.hpp"                // for UNDEFINED
+#include "containers.hpp"               // for DynamicArray2
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "runner.hpp"                   // for Runner
+#include "types.hpp"                    // for word_type, letter_type, tril
 
 namespace libsemigroups {
 
@@ -624,7 +625,8 @@ namespace libsemigroups {
     // \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
     // instead.
     //! No doc
-    LIBSEMIGROUPS_DEPRECATED void reset_next_relation() noexcept {
+    [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
+    reset_next_relation() noexcept {
       _relation_pos = UNDEFINED;
       _relation_gen = 0;
     }
@@ -664,7 +666,8 @@ namespace libsemigroups {
     // instead.
     // Deprecated, remove in v2
     //! No doc
-    LIBSEMIGROUPS_DEPRECATED void next_relation(word_type& relation);
+    [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
+    next_relation(word_type& relation);
 
     //! Enumerate the semigroup until \p limit elements are found.
     //!
@@ -1081,12 +1084,13 @@ namespace libsemigroups {
   };
 
   //! No doc
-  LIBSEMIGROUPS_DEPRECATED void
+  [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
+
   relations(FroidurePinBase&                            S,
             std::function<void(word_type, word_type)>&& hook);
 
   //! No doc
-  LIBSEMIGROUPS_DEPRECATED void
+  [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
   relations(FroidurePinBase& S, std::function<void(word_type)>&& hook);
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_

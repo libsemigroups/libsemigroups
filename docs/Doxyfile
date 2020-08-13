@@ -1,5 +1,5 @@
 PROJECT_NAME          = "libsemigroups"
-XML_OUTPUT            = build/xml
+XML_OUTPUT            = build/xml-tmp
 INPUT                 = ../include
 GENERATE_LATEX        = NO
 GENERATE_MAN          = NO

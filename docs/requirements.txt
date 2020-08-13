@@ -4,5 +4,5 @@ breathe==4.13.0
 pyyaml 
 sphinx_rtd_theme 
 sphinx==2.3.0
-sphinx_copybutton 
+sphinx-copybutton 
 sphinxcontrib-bibtex

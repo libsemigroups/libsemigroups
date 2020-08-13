@@ -19,10 +19,12 @@
 #ifndef LIBSEMIGROUPS_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_ADAPTERS_HPP_
 
-#include <algorithm>   // for std::sort
-#include <functional>  // for std::equal_to
-#include <memory>      // for shared_ptr
-#include <vector>      // for std::vector
+#include <algorithm>    // for std::sort
+#include <cstddef>      // for size_t
+#include <functional>   // for std::equal_to
+#include <memory>       // for shared_ptr
+#include <type_traits>  // for hash, is_same
+#include <vector>       // for std::vector
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
 
@@ -406,8 +408,38 @@ namespace libsemigroups {
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
     size_t operator()(std::vector<T> const& vec) const {
+      return Hash<std::vector<T>, Hash<T>>()(vec);
+    }
+  };
+
+  // TODO(later) same for array!
+  template <typename T, typename Hasher>
+  struct Hash<std::vector<T>, Hasher> {
+    //! This call operator hashes \p vec.
+    //!
+    //! \param vec the value to hash
+    //!
+    //! \returns A hash value for \p x, a value of type `size_t`.
+    size_t operator()(std::vector<T> const& vec) const {
       size_t val = 0;
       for (T const& x : vec) {
+        val ^= Hasher()(x) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+      }
+      return val;
+    }
+  };
+
+  // TODO(later) doc
+  template <typename T, size_t N>
+  struct Hash<std::array<T, N>> {
+    //! This call operator hashes \p vec.
+    //!
+    //! \param vec the value to hash
+    //!
+    //! \returns A hash value for \p x, a value of type `size_t`.
+    size_t operator()(std::array<T, N> const& ar) const {
+      size_t val = 0;
+      for (T const& x : ar) {
         val ^= Hash<T>()(x) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
       }
       return val;
@@ -622,7 +654,7 @@ namespace libsemigroups {
   //! \tparam TPointType the type of the lambda points.
   //!
   //! \par Used by KoniecznyTraits.
-  template <typename TElementType, typename TPointType>
+  template <typename TElementType, typename TPointType, typename = void>
   struct Lambda;
 
   //! Defined in ``adapters.hpp``.
@@ -638,7 +670,7 @@ namespace libsemigroups {
   //! \tparam TPointType the type of the rho points.
   //!
   //! \par Used by KoniecznyTraits.
-  template <typename TElementType, typename TPointType>
+  template <typename TElementType, typename TPointType, typename = void>
   struct Rho;
 
   //! Defined in ``adapters.hpp``.
@@ -654,7 +686,7 @@ namespace libsemigroups {
   //! \tparam TElementType the type of the semigroup elements.
   //!
   //! \par Used by KoniecznyTraits.
-  template <typename TElementType>
+  template <typename TElementType, typename = void>
   class RankState {
    public:
     //! By default no additional state is required to calculate
@@ -696,7 +728,8 @@ namespace libsemigroups {
   //!
   //! \par Used by KoniecznyTraits.
   template <typename TElementType,
-            typename TStateType = RankState<TElementType>>
+            typename TStateType = RankState<TElementType>,
+            typename            = void>
   struct Rank;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_

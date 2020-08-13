@@ -16,9 +16,13 @@ html_theme = "sphinx_rtd_theme"
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
+html_theme_options = {
+    # Toc options
+    'includehidden': False,
+}
 
 def setup(app):
-    app.add_css_file("main_stylesheet.css")
+    app.add_css_file("custom.css")
 
 
 extensions = [
@@ -27,6 +31,9 @@ extensions = [
     "sphinx_copybutton",
     "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ['libsemigroups.bib']
+
 breathe_projects = {"libsemigroups": "../build/xml"}
 breathe_projects_source = {}
 templates_path = ["_templates"]

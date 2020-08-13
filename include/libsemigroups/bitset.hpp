@@ -22,15 +22,18 @@
 #ifndef LIBSEMIGROUPS_BITSET_HPP_
 #define LIBSEMIGROUPS_BITSET_HPP_
 
-#include <array>    // for array
-#include <climits>  // for CHAR_BIT
-#include <cstddef>  // for size_t
-#include <iosfwd>   // for operator<<, ostringstream
-#include <utility>  // for hash
+#include <array>        // for array
+#include <bitset>       // for bitset
+#include <climits>      // for CHAR_BIT
+#include <cstddef>      // for size_t
+#include <iosfwd>       // for operator<<, ostringstream
+#include <type_traits>  // for false_type
+#include <utility>      // for hash
 
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
-#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"                // for detail::to_string
+#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "string.hpp"                   // for detail::to_string
 
 namespace libsemigroups {
 
@@ -123,7 +126,22 @@ namespace libsemigroups {
     constexpr BitSet(BitSet&&) noexcept      = default;
     BitSet& operator=(BitSet const&) noexcept = default;
     BitSet& operator=(BitSet&&) noexcept = default;
-    ~BitSet()                            = default;
+    template <typename T>
+    BitSet(T first, T last) : BitSet() {
+      size_t const K = std::distance(first, last);
+      if (K > size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the size of the container is %llu, trying to initialize with %llu "
+            "items",
+            static_cast<uint64_t>(size()),
+            static_cast<uint64_t>(K))
+      }
+      auto it = first;
+      for (size_t i = 0; i < K; ++i, ++it) {
+        set(i, *it);
+      }
+    }
+    ~BitSet() = default;
 
     // Could be static
     constexpr size_t size() const noexcept {
@@ -357,6 +375,33 @@ namespace libsemigroups {
   template <size_t N>
   constexpr uint64_t BitSet<N>::MASK[64];
 
+  namespace detail {
+    template <typename T>
+    struct IsBitSetHelper : std::false_type {};
+
+    template <size_t N>
+    struct IsBitSetHelper<BitSet<N>> : std::true_type {};
+  }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsBitSet = detail::IsBitSetHelper<T>::value;
+
+  namespace detail {
+    struct LessBitSet {
+      // not noexcept because std::bitset<N>::to_ullong throws
+      // std::overflow_error if N exceeds the capacity of a unsigned long
+      // long.
+      template <size_t N>
+      bool operator()(std::bitset<N> x, std::bitset<N> y) const {
+        return x.to_ullong() < y.to_ullong();
+      }
+
+      template <size_t N>
+      bool operator()(BitSet<N> x, BitSet<N> y) const noexcept {
+        return x < y;
+      }
+    };
+  }  // namespace detail
 }  // namespace libsemigroups
 
 namespace std {

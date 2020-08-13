@@ -25,7 +25,7 @@
 
 #include "catch.hpp"
 
-// TODO can this be a function rather than a macro??
+// TODO(later) can this be a function rather than a macro??
 
 #define LIBSEMIGROUPS_BENCHMARK(                                              \
     test_case_name, tags, before_func, bench_func, after_func, sample)        \

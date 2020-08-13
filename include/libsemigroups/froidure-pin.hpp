@@ -25,6 +25,7 @@
 
 #include <cstddef>        // for size_t
 #include <iterator>       // for reverse_iterator
+#include <memory>         // for shared_ptr, make_shared
 #include <mutex>          // for mutex
 #include <type_traits>    // for is_const, remove_pointer
 #include <unordered_map>  // for unordered_map
@@ -33,9 +34,7 @@
 
 #include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
 #include "bruidhinn-traits.hpp"   // for detail::BruidhinnTraits
-#include "constants.hpp"          // for libsemigroups::UNDEFINED, LIMIT_MAX
 #include "containers.hpp"         // for DynamicArray2
-#include "deprecated.hpp"         // for LIBSEMIGROUPS_DEPRECATED
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless
 #include "stl.hpp"                // for EqualTo, Hash
