@@ -16,14 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
+#include <cstddef>  // for size_t
+
+#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/action.hpp"            // for LeftAction
 #include "libsemigroups/bitset.hpp"            // for BitSet
+#include "libsemigroups/bmat.hpp"              // for Lambda
 #include "libsemigroups/element-adapters.hpp"  // for Lambda
 #include "libsemigroups/element-helper.hpp"    // for PPermHelper
 #include "libsemigroups/element.hpp"           // for PartialPerm
+#include "libsemigroups/matrix.hpp"            // for BMat<>
 #include "libsemigroups/report.hpp"            // for ReportGuard
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \
@@ -65,20 +69,50 @@ namespace libsemigroups {
     }
   };
 
-  // Basic version of ImageRightAction for BooleanMat and BitSet, retained for
+  // Basic version of ImageRightAction for BMat<> and BitSet, retained for
   // the purposes of comparison.
   template <size_t N>
   struct ImageRightAction2 {
     using result_type = BitSet<N>;
+
+    template <typename Mat>
     void operator()(result_type&       res,
                     result_type const& pt,
-                    BooleanMat const&  x) const {
+                    Mat const&         x) const {
       res.reset();
       pt.apply([&x, &res](size_t i) {
-        for (size_t j = 0; j < x.degree(); ++j) {
-          res.set(j, res[j] || x[i * x.degree() + j]);
+        for (size_t j = 0; j < x.number_of_rows(); ++j) {
+          res.set(j, res[j] || x(i, j));
         }
       });
+    }
+  };
+
+  // Basic version of ImageRightAction for BMat<> and vector<vector<bool>>,
+  // retained for the purposes of comparison.
+  template <typename Mat>
+  struct ImageRightAction<Mat, std::vector<std::vector<bool>>> {
+    // not noexcept because the constructor of std::vector isn't
+    //! Stores the image of \p pt under the right action of \p p in \p res.
+    void operator()(std::vector<std::vector<bool>>&       res,
+                    std::vector<std::vector<bool>> const& pt,
+                    Mat const&                            x) const {
+      res.clear();
+
+      for (auto it = pt.cbegin(); it < pt.cend(); ++it) {
+        std::vector<bool> cup(x.number_of_rows(), false);
+        for (size_t i = 0; i < x.number_of_rows(); ++i) {
+          if ((*it)[i]) {
+            for (size_t j = 0; j < x.number_of_rows(); ++j) {
+              cup[j] = cup[j] || x(i, j);
+            }
+          }
+        }
+        res.push_back(std::move(cup));
+      }
+      std::vector<std::vector<bool>> tmp;
+      matrix_helpers::row_basis<Mat>(res, tmp);
+      std::swap(tmp, res);
     }
   };
 
@@ -148,14 +182,6 @@ namespace libsemigroups {
   template <typename T>
   void booleanmat_example1(T& o) {
     using BMat = typename T::element_type;
-    /*o.add_generator(
-        BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-    o.add_generator(
-        BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-    o.add_generator(
-        BooleanMat({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-    o.add_generator(
-        BooleanMat({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));*/
     o.add_generator(BMat({{0, 1, 0, 0, 0},
                           {1, 0, 0, 0, 0},
                           {0, 0, 1, 0, 0},
@@ -181,14 +207,6 @@ namespace libsemigroups {
   template <typename T>
   void booleanmat_example2(T& o) {
     using BMat = typename T::element_type;
-    /*o.add_generator(
-        BooleanMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-    o.add_generator(
-        BooleanMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-    o.add_generator(
-        BooleanMat({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-    o.add_generator(
-        BooleanMat({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));*/
     o.add_generator(BMat({{0, 1, 0, 0, 0, 0, 0, 0, 0},
                           {1, 0, 0, 0, 0, 0, 0, 0, 0},
                           {0, 0, 1, 0, 0, 0, 0, 0, 0},
@@ -301,21 +319,11 @@ namespace libsemigroups {
 
       BitSet<17> sd;
       sd.set();
-      // sd.set(0, 17, true);
-
-      // sd.reset();
-      // for (size_t i = 0; i < 17; ++i) {
-      //  REQUIRE(sd.count() == i);
-      //  sd.set(i);
-      // }
 
       REQUIRE(sd.size() == 17);
       REQUIRE(sd.count() == 17);
       o.add_seed(sd);
       benchmark_example1(o);
-      // REQUIRE(std::all_of(
-      //    o.cbegin(), o.cend(), [](BitSet<17> i) { return i.count() == 17;
-      //    }));
       REQUIRE(o.size() == 131072);
     };
 
@@ -341,9 +349,6 @@ namespace libsemigroups {
       REQUIRE(sd.count() == 17);
       o.add_seed(sd);
       benchmark_example1(o);
-      // REQUIRE(std::all_of(
-      //    o.cbegin(), o.cend(), [](BitSet<17> const& bs) { return bs.count()
-      //    == 17; }));
 
       REQUIRE(o.size() == 131072);
     };
@@ -422,13 +427,12 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("ImageRightAction for boolean mats", "[quick][008][BooleanMat]") {
+  TEST_CASE("ImageRightAction for BMat<>", "[quick][008][BMat]") {
     auto rg = ReportGuard(false);
     BENCHMARK("StaticVector1 of BitSets") {
-      RightAction<
-          BooleanMat,
-          detail::StaticVector1<BitSet<5>, 5>,
-          ImageRightAction<BooleanMat, detail::StaticVector1<BitSet<5>, 5>>>
+      RightAction<BMat<>,
+                  detail::StaticVector1<BitSet<5>, 5>,
+                  ImageRightAction<BMat<>, detail::StaticVector1<BitSet<5>, 5>>>
                                           o;
       detail::StaticVector1<BitSet<5>, 5> seed;
       for (size_t i = 0; i < 5; ++i) {
@@ -443,9 +447,9 @@ namespace libsemigroups {
     };
 
     BENCHMARK("vectors of BitSets") {
-      RightAction<BooleanMat,
+      RightAction<BMat<>,
                   std::vector<BitSet<5>>,
-                  ImageRightAction<BooleanMat, std::vector<BitSet<5>>>>
+                  ImageRightAction<BMat<>, std::vector<BitSet<5>>>>
                              o;
       std::vector<BitSet<5>> seed;
       for (size_t i = 0; i < 5; ++i) {
@@ -460,9 +464,9 @@ namespace libsemigroups {
     };
 
     BENCHMARK("vectors of vectors") {
-      RightAction<BooleanMat,
+      RightAction<BMat<>,
                   std::vector<std::vector<bool>>,
-                  ImageRightAction<BooleanMat, std::vector<std::vector<bool>>>>
+                  ImageRightAction<BMat<>, std::vector<std::vector<bool>>>>
           o;
       o.add_seed(std::vector<std::vector<bool>>({{1, 0, 0, 0, 0},
                                                  {0, 1, 0, 0, 0},
@@ -470,7 +474,59 @@ namespace libsemigroups {
                                                  {0, 0, 0, 1, 0},
                                                  {0, 0, 0, 0, 1}}));
       booleanmat_example1(o);
-      REQUIRE(o.size() == 110519);
+      REQUIRE(o.size() == 110518);
+    };
+  }
+
+  TEST_CASE("ImageRightAction for BMat<5>", "[quick][011][BMat]") {
+    auto rg = ReportGuard(false);
+    BENCHMARK("StaticVector1 of BitSets") {
+      RightAction<
+          BMat<5>,
+          detail::StaticVector1<BitSet<5>, 5>,
+          ImageRightAction<BMat<5>, detail::StaticVector1<BitSet<5>, 5>>>
+                                          o;
+      detail::StaticVector1<BitSet<5>, 5> seed;
+      for (size_t i = 0; i < 5; ++i) {
+        BitSet<5> x;
+        x.reset();
+        x.set(i);
+        seed.push_back(x);
+      }
+      o.add_seed(seed);
+      booleanmat_example1(o);
+      REQUIRE(o.size() == 110518);
+    };
+
+    BENCHMARK("vectors of BitSets") {
+      RightAction<BMat<5>,
+                  std::vector<BitSet<5>>,
+                  ImageRightAction<BMat<5>, std::vector<BitSet<5>>>>
+                             o;
+      std::vector<BitSet<5>> seed;
+      for (size_t i = 0; i < 5; ++i) {
+        BitSet<5> x;
+        x.reset();
+        x.set(i);
+        seed.push_back(x);
+      }
+      o.add_seed(seed);
+      booleanmat_example1(o);
+      REQUIRE(o.size() == 110518);
+    };
+
+    BENCHMARK("vectors of vectors") {
+      RightAction<BMat<5>,
+                  std::vector<std::vector<bool>>,
+                  ImageRightAction<BMat<5>, std::vector<std::vector<bool>>>>
+          o;
+      o.add_seed(std::vector<std::vector<bool>>({{1, 0, 0, 0, 0},
+                                                 {0, 1, 0, 0, 0},
+                                                 {0, 0, 1, 0, 0},
+                                                 {0, 0, 0, 1, 0},
+                                                 {0, 0, 0, 0, 1}}));
+      booleanmat_example1(o);
+      REQUIRE(o.size() == 110518);
     };
   }
 
@@ -488,11 +544,11 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("ImageRightAction for boolean mats and single bitsets",
-            "[quick][010][BooleanMat]") {
+  TEST_CASE("ImageRightAction for BMat<> and single bitsets",
+            "[quick][010][BMat]") {
     auto rg = ReportGuard(false);
     BENCHMARK("Basic BitSets action") {
-      RightAction<BooleanMat, BitSet<9>, ImageRightAction2<9>> o;
+      RightAction<BMat<>, BitSet<9>, ImageRightAction2<9>> o;
       for (size_t i = 0; i < 9; ++i) {
         BitSet<9> x;
         x.reset();
@@ -504,10 +560,35 @@ namespace libsemigroups {
     };
 
     BENCHMARK("Convert matrix action") {
-      RightAction<BooleanMat,
-                  BitSet<9>,
-                  ImageRightAction<BooleanMat, BitSet<9>>>
-          o;
+      RightAction<BMat<>, BitSet<9>, ImageRightAction<BMat<>, BitSet<9>>> o;
+      for (size_t i = 0; i < 9; ++i) {
+        BitSet<9> x;
+        x.reset();
+        x.set(i);
+        o.add_seed(x);
+      }
+      booleanmat_example2(o);
+      REQUIRE(o.size() == 512);
+    };
+  }
+
+  TEST_CASE("ImageRightAction for BMat<9> and single bitsets",
+            "[quick][012][BMat]") {
+    auto rg = ReportGuard(false);
+    BENCHMARK("Basic BitSets action") {
+      RightAction<BMat<9>, BitSet<9>, ImageRightAction2<9>> o;
+      for (size_t i = 0; i < 9; ++i) {
+        BitSet<9> x;
+        x.reset();
+        x.set(i);
+        o.add_seed(x);
+      }
+      booleanmat_example2(o);
+      REQUIRE(o.size() == 512);
+    };
+
+    BENCHMARK("Convert matrix action") {
+      RightAction<BMat<9>, BitSet<9>, ImageRightAction<BMat<9>, BitSet<9>>> o;
       for (size_t i = 0; i < 9; ++i) {
         BitSet<9> x;
         x.reset();

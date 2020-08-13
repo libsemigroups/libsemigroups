@@ -19,6 +19,7 @@
 #include "catch.hpp"                           // for REQUIRE
 #include "libsemigroups/element-adapters.hpp"  // for Product
 #include "libsemigroups/element.hpp"           // for Transformation
+#include "libsemigroups/matrix.hpp"            // for BMat<>
 #include "libsemigroups/pool.hpp"              // for Pool
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
@@ -31,47 +32,42 @@ namespace libsemigroups {
       Pool<Transformation<size_t>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
       Transformation<size_t> t({0, 1, 3, 2});
-      cache.push(&t, 1);
+      cache.init(&t);
       Transformation<size_t>& x = *cache.acquire();
-      REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      cache.push(&t, 1);
-      REQUIRE_NOTHROW(cache.acquire());
-      x.increase_degree_by(10);
-      cache.release(&x);
+      REQUIRE(x == t);
+      REQUIRE_NOTHROW(cache.release(&x));
+      auto& tmp1 = *cache.acquire();
+      auto& tmp2 = *cache.acquire();
+      REQUIRE_NOTHROW(cache.release(&tmp1));
+      REQUIRE_NOTHROW(cache.release(&tmp2));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Pool",
-                            "001",
-                            "boolean matrices",
-                            "[quick][boolmat]") {
-      Pool<BooleanMat*> cache;
+    LIBSEMIGROUPS_TEST_CASE("Pool", "001", "bmat", "[quick][bmat]") {
+      Pool<BMat<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      BooleanMat* b = new BooleanMat({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
-      cache.push(b, 1);
-      BooleanMat* tmp = cache.acquire();
-      REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      cache.release(tmp);
-      tmp = cache.acquire();
-      REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      cache.release(tmp);
+      BMat<>* b = new BMat<>({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
+      cache.init(b);
+      auto tmp1 = cache.acquire();
+      auto tmp2 = cache.acquire();
+      auto tmp3 = cache.acquire();
+      REQUIRE_NOTHROW(cache.release(tmp1));
+      REQUIRE_NOTHROW(cache.release(tmp2));
+      REQUIRE_NOTHROW(cache.release(tmp3));
       delete b;
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Pool", "002", "PoolGuard", "[quick][boolmat]") {
-      Pool<BooleanMat*> cache;
+    LIBSEMIGROUPS_TEST_CASE("Pool", "002", "PoolGuard", "[quick][bmat]") {
+      Pool<BMat<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      BooleanMat* b = new BooleanMat({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
-      cache.push(b, 2);
+      BMat<>* b = new BMat<>({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
+      cache.init(b);
       {
-        PoolGuard<BooleanMat*> cg1(cache);
-        BooleanMat*            tmp1 = cg1.get();
+        PoolGuard<BMat<>*> cg1(cache);
+        BMat<>*            tmp1 = cg1.get();
         REQUIRE(b != tmp1);
         {
-          PoolGuard<BooleanMat*> cg2(cache);
-          BooleanMat*            tmp2 = cg2.get();
-          REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-          REQUIRE_THROWS_AS(PoolGuard<BooleanMat*>(cache),
-                            LibsemigroupsException);
+          PoolGuard<BMat<>*> cg2(cache);
+          BMat<>*            tmp2 = cg2.get();
           REQUIRE(tmp1 != tmp2);
           REQUIRE(b != tmp2);
         }
@@ -85,7 +81,7 @@ namespace libsemigroups {
                             "[quick][transformation]") {
       Pool<Transformation<size_t>*> cache;
       Transformation<size_t>        t({0, 1, 3, 2, 5, 7, 3, 4});
-      cache.push(&t, 5);
+      cache.init(&t);
       Transformation<size_t>* x = cache.acquire();
       Transformation<size_t>* y = cache.acquire();
       REQUIRE(x != y);

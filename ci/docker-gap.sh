@@ -7,8 +7,8 @@ sudo apt-get install git --yes
 sudo apt-get install libtool-bin --yes 
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=master
-GAP_SEMIGROUPS_REPO=semigroups
+GAP_SEMIGROUPS_BRANCH=libsemigroups-v2
+GAP_SEMIGROUPS_REPO=james-d-mitchell
 GAP_VERSION=$(ls inst)
 export GAPROOT=$HOME/inst/$GAP_VERSION
 GAP_SH="$GAPROOT/bin/gap.sh"
@@ -29,6 +29,8 @@ cd $HOME/inst/$GAP_VERSION/pkg/
 
 git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS_REPO/Semigroups.git semigroups
 cd semigroups
+git clone -b master --depth=1 https://github.com/james-d-mitchell/gapbind14.git
+
 # Move the libsemigroups to the correct location
 mv $HOME/libsemigroups . 
 ./autogen.sh
@@ -49,7 +51,7 @@ echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false)
 cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
 
-# The next lines are required by semigroups/scripts/travis-test.sh
+# The next line is required by semigroups/ci/docker-test.sh
 export SUITE="test"
 
 # Run the tests defined in Semigroups

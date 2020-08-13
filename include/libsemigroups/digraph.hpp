@@ -43,6 +43,7 @@
 #include "iterator.hpp"                 // for ConstIteratorStateless
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "matrix.hpp"                   // for IntMat
 #include "types.hpp"                    // for word_type
 #include "word.hpp"                     // for number_of_words
 
@@ -53,20 +54,9 @@ namespace libsemigroups {
       return 0.0015 * N + 2.43;
     }
 
-    // #ifndef LIBSEMIGROUPS_EIGEN_ENABLED
-    std::vector<uint64_t> one(size_t const N);
-
-    void matrix_product_in_place(std::vector<uint64_t>&       xy,
-                                 std::vector<uint64_t> const& x,
-                                 std::vector<uint64_t> const& y,
-                                 size_t const                 N);
-
-    void pow(std::vector<uint64_t>& x, uint64_t e, size_t N);
-
     // Implemented at end of this file.
     template <typename T>
-    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad);
-    // #endif
+    IntMat<0, 0, int64_t> adjacency_matrix(ActionDigraph<T> const& ad);
   }  // namespace detail
 
   //! Defined in ``digraph.hpp``.
@@ -2461,12 +2451,11 @@ namespace libsemigroups {
       // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       // TODO(later)
       // #else
-      auto           am  = detail::adjacency_matrix(*this);
-      auto           acc = am;
-      auto           tmp = am;
-      uint64_t const N   = nr_nodes();
-      detail::pow(acc, min, N);
-      size_t total = 0;
+      auto           am    = detail::adjacency_matrix(*this);
+      auto           tmp   = am;
+      uint64_t const N     = nr_nodes();
+      auto           acc   = matrix_helpers::pow(am, min);
+      size_t         total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
@@ -2475,7 +2464,7 @@ namespace libsemigroups {
           break;
         }
         total += add;
-        detail::matrix_product_in_place(tmp, acc, am, N);
+        tmp.product_inplace(acc, am);
         tmp.swap(acc);
       }
       return total;
@@ -2496,14 +2485,13 @@ namespace libsemigroups {
         return POSITIVE_INFINITY;
       }
 
-      auto           am  = detail::adjacency_matrix(*this);
-      auto           acc = am;
-      auto           tmp = am;
-      uint64_t const N   = nr_nodes();
-      detail::pow(acc, min, N);
-      size_t total = 0;
+      auto           am    = detail::adjacency_matrix(*this);
+      auto           tmp   = am;
+      uint64_t const N     = nr_nodes();
+      auto           acc   = matrix_helpers::pow(am, min);
+      size_t         total = 0;
       for (size_t i = min; i < max; ++i) {
-        uint64_t add = acc[source * N + target];
+        uint64_t add = acc(source, target);
 
         if (add == 0
             && std::all_of(acc.cbegin() + source * N,
@@ -2512,7 +2500,7 @@ namespace libsemigroups {
           break;
         }
         total += add;
-        detail::matrix_product_in_place(tmp, acc, am, N);
+        tmp.product_inplace(acc, am);
         tmp.swap(acc);
       }
       return total;
@@ -2886,14 +2874,15 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename T>
-    std::vector<uint64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
+    IntMat<0, 0, int64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
       size_t const          N = ad.nr_nodes();
-      std::vector<uint64_t> mat(N * N, 0);
+      IntMat<0, 0, int64_t> mat(N, N);
+      std::fill(mat.begin(), mat.end(), 0);
 
       for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
         for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
           if (*e != UNDEFINED) {
-            mat[(*n) * N + *e] += 1;
+            mat(*n, *e) += 1;
           }
         }
       }

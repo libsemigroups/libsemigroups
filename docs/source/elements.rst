@@ -52,16 +52,6 @@ Partial transformations
    api/perm
    api/transf
    
-Matrices
-~~~~~~~~
-
-.. toctree::
-   :maxdepth: 1
-
-   bmat
-   api/projmaxplus
-   api/mosr
-
 Partitioned binary relations and bipartitions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

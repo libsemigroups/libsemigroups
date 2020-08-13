@@ -45,38 +45,53 @@ def _info(msg, fname=None):
 
 def _time_since_epoch_to_human(n):
     try:
-        return datetime.datetime.fromtimestamp(n).strftime(
-            "%Y-%m-%d %H:%M:%S.%f"
-        )
+        return datetime.datetime.fromtimestamp(n).strftime("%Y-%m-%d %H:%M:%S.%f")
     except:
         return "N/A"
+
+
+def _write_file_if_changed(fname, contents):
+    file_contents = ""
+    if os.path.exists(fname) and os.path.isfile(fname):
+        with open(fname, "r") as f:
+            file_contents = f.read()
+            if file_contents == contents:
+                return False
+    with open(fname, "w+") as f:
+        _info("Rewriting file %s ..." % fname)
+        f.write(contents)
+    return True
 
 
 def run_doxygen():
     if not os.path.exists("build/xml"):
         _info("Running doxygen, build/xml does not exist")
         return True
-    last_changed_source = 0
+    last_changed_source = [0, ""]
     for f in os.listdir("../include/libsemigroups"):
         if not f.startswith("."):
             f = os.path.join("..", "include/libsemigroups", f)
             if os.path.isfile(f) and f.endswith(".hpp"):
-                last_changed_source = max(
-                    os.path.getmtime(f), last_changed_source
-                )
+                if os.path.getmtime(f) > last_changed_source[0]:
+                    last_changed_source = [os.path.getmtime(f), f]
+
     _info(
-        "Last modified file in include/libsemigroups/*.hpp      "
-        + _time_since_epoch_to_human(last_changed_source)
+        last_changed_source[1]
+        + " was modified at "
+        + _time_since_epoch_to_human(last_changed_source[0]).rjust(33)
     )
-    first_built_file = float("inf")
-    for root, dirs, files in os.walk("build/html/_generated"):
+    last_changed_source = last_changed_source[0]
+    first_built_file = [float("inf"), ""]
+    for root, dirs, files in os.walk("build/xml-tmp"):
         for f in files:
             f = os.path.join(root, f)
-            first_built_file = min(os.path.getmtime(f), first_built_file)
+            if os.path.getmtime(f) < first_built_file[0]:
+                first_built_file = [os.path.getmtime(f), f]
     _info(
-        "First generated file in docs/build/html  "
-        + _time_since_epoch_to_human(first_built_file)
+        first_built_file[1] + " was modified at "
+        + _time_since_epoch_to_human(first_built_file[0]).rjust(40)
     )
+    first_built_file = first_built_file[0]
     if _time_since_epoch_to_human(first_built_file) == "N/A":
         return True
     return first_built_file < last_changed_source
@@ -121,9 +136,7 @@ def rst_function_toc_filename(func):
 
 
 def rst_overview_filename(name):
-    return os.path.join(
-        "source/_generated", convert_cpp_name_to_fname(name) + ".rst"
-    )
+    return os.path.join("source/_generated", convert_cpp_name_to_fname(name) + ".rst")
 
 
 def rst_doxygen(typename, classname, funcname=None):
@@ -148,9 +161,7 @@ def rst_toc_tree_stub(name):
 
 
 def rst_cppfunc(classname, name):
-    return (
-        "       " + rst_function_toc_filename(classname + "::" + name) + "\n"
-    )
+    return "       " + rst_function_toc_filename(classname + "::" + name) + "\n"
 
 
 def rst_section(name):
@@ -168,20 +179,17 @@ def rebuild_overview_rst_file(ymlfname, rstfname):
     exist or the yml file has been modified more recently."""
     return (not os.path.isfile(rstfname)) or (
         os.path.getmtime(ymlfname) > os.path.getmtime(rstfname)
-        or os.path.getmtime("generate_from_yml.py")
-        > os.path.getmtime(ymlfname)
-        or os.path.getmtime("generate_from_yml.py")
-        > os.path.getmtime(rstfname)
+        or os.path.getmtime("generate_from_yml.py") > os.path.getmtime(ymlfname)
+        or os.path.getmtime("generate_from_yml.py") > os.path.getmtime(rstfname)
     )
 
 
 def rebuild_function_rst_file(ymlfname, rstfname):
     """Only rewrite the function rst file in docs/_generated if it doesn't
-    exist."""
+    exist or this script was modified since the file was last written."""
     return (not (os.path.exists(rstfname) and os.path.isfile(rstfname))) or (
         os.path.getmtime("generate_from_yml.py") > os.path.getmtime(ymlfname)
-        or os.path.getmtime("generate_from_yml.py")
-        > os.path.getmtime(rstfname)
+        or os.path.getmtime("generate_from_yml.py") > os.path.getmtime(rstfname)
     )
 
 
@@ -190,7 +198,8 @@ def generate_functions_rst(ymlfname):
         ymldic = yaml.load(f, Loader=yaml.FullLoader)
         classname = next(iter(ymldic))
         if ymldic[classname] is None:
-            return
+            return False
+        any_file_written = False
         for sectiondic in ymldic[classname]:
             name = next(iter(sectiondic))
             if name[0] != "_" and sectiondic[name] is not None:
@@ -199,18 +208,15 @@ def generate_functions_rst(ymlfname):
                         tnam = "function"
                     else:
                         assert len(func) == 2
-                        tnam = func[0]
-                        func = func[1]
+                        tnam, func = func[0], func[1]
                     rstfname = rst_function_source_filename(classname, func)
                     _RST_FILES_WRITTEN[rstfname] = True
                     if not rebuild_function_rst_file(ymlfname, rstfname):
                         continue
-                    else:
-                        _info("Rebuilding %s ..." % rstfname)
                     out = _COPYRIGHT_NOTICE + rst_section(func)
                     out += rst_doxygen(tnam, classname, func)
-                    with open(rstfname, "w") as f:
-                        f.write(out)
+                    any_file_written |= _write_file_if_changed(rstfname, out)
+        return any_file_written
 
 
 def generate_overview_rst(ymlfname):
@@ -219,12 +225,8 @@ def generate_overview_rst(ymlfname):
         ymldic = yaml.load(f, Loader=yaml.FullLoader)
         onam = next(iter(ymldic))  # object name
         _RST_FILES_WRITTEN[rst_overview_filename(onam)] = True
-        if not rebuild_overview_rst_file(
-            ymlfname, rst_overview_filename(onam)
-        ):
-            return
-        else:
-            _info("Rebuilding %s ..." % rst_overview_filename(onam))
+        if not rebuild_overview_rst_file(ymlfname, rst_overview_filename(onam)):
+            return False
         header_written = False
         out += rst_section(onam[onam.find("::") + 2 :])
         if ymldic[onam] is not None:
@@ -245,8 +247,7 @@ def generate_overview_rst(ymlfname):
                         if isinstance(func, list):
                             func = func[1]
                         out += rst_cppfunc(onam, func)
-        with open(rst_overview_filename(onam), "w") as f:
-            f.write(out)
+        return _write_file_if_changed(rst_overview_filename(onam), out)
 
 
 def get_doxygen_filename(name):
@@ -370,14 +371,23 @@ def main():
     if run_doxygen():
         _info("Running doxygen!")
         os.system("doxygen")
+        if not os.path.exists('build/xml'):
+            os.makedirs('build/xml')
+        for root, dirs, files in os.walk("build/xml-tmp"):
+            for f in files:
+                with open(os.path.join(root, f), "r") as ff:
+                    _write_file_if_changed(os.path.join("build/xml", f), ff.read())
+        # TODO run through files in build/xml and remove them if there's no
+        # corresponding file in build/xml-tmp
     else:
         _info("Not running doxygen!")
     for fname in os.listdir("yml"):
         if fname[0] != ".":
             fname = os.path.join("yml", fname)
-            generate_functions_rst(fname)
-            generate_overview_rst(fname)
-            check_public_mem_fns_doc(fname)
+            check = generate_functions_rst(fname)
+            check |= generate_overview_rst(fname)
+            if check:
+                check_public_mem_fns_doc(fname)
     clean_up()
 
 

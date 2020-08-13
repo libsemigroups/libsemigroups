@@ -19,10 +19,11 @@
 #ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
 #define LIBSEMIGROUPS_CONTAINERS_HPP_
 
-#include <array>     // for array
-#include <cstddef>   // for size_t
-#include <iterator>  // for reverse_iterator
-#include <vector>    // for vector, allocator
+#include <array>        // for array
+#include <cstddef>      // for size_t
+#include <iterator>     // for reverse_iterator
+#include <type_traits>  // for is_default_constructible
+#include <vector>       // for vector, allocator
 
 #include "iterator.hpp"             // for ConstIteratorStateful, ConstItera...
 #include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
@@ -669,8 +670,23 @@ namespace libsemigroups {
         _size++;
       }
 
+      template <typename... Ss>
+      void emplace_back(Ss&&... params) {
+        LIBSEMIGROUPS_ASSERT(_size < N);
+        _array[_size] = T(std::forward<Ss>(params)...);
+        _size++;
+      }
+
       size_t size() const noexcept {
         return _size;
+      }
+
+      size_t empty() const noexcept {
+        return size() == 0;
+      }
+
+      void pop_back() {
+        _size--;
       }
 
       // Not noexcept because std::array::operator[] isn't

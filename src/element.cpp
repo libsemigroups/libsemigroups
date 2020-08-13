@@ -21,172 +21,17 @@
 
 #include "libsemigroups/element.hpp"
 
-#include <algorithm>      // for fill, max_element, find
-#include <cmath>          // for abs
-#include <ostream>        // for operator<<, basic_ostream, ostringstream
-#include <thread>         // for thread, get_id
-#include <unordered_set>  // for unordered_set
+#include <algorithm>  // for fill, max_element, find
+#include <cmath>      // for abs
+#include <ostream>    // for operator<<, basic_ostream, ostringstream
+#include <thread>     // for thread, get_id
 
-#include <iostream>  // for operator<<, basic_ostream, ostringstream
-
-#include "libsemigroups/blocks.hpp"            // for Blocks
-#include "libsemigroups/element-adapters.hpp"  // for Hash<std::vector>
-#include "libsemigroups/report.hpp"            // for THREAD_ID_MANAGER
-#include "libsemigroups/semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
+#include "libsemigroups/blocks.hpp"               // for Blocks
+#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"                   // for THREAD_ID_MANAGER
 
 namespace libsemigroups {
-
-  ////////////////////////////////////////////////////////////////////////
-  // BooleanMat
-  ////////////////////////////////////////////////////////////////////////
-
-  BooleanSemiring const* const BooleanMat::_semiring = new BooleanSemiring();
-
-  BooleanMat::BooleanMat(std::vector<bool> const& matrix)
-      : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
-
-  BooleanMat::BooleanMat(std::vector<std::vector<bool>> const& matrix)
-      : MatrixOverSemiringBase<bool, BooleanMat>(matrix, _semiring) {}
-
-  BooleanMat::BooleanMat(size_t degree)
-      : BooleanMat(std::vector<bool>(degree * degree)) {}
-
-  BooleanMat::BooleanMat(BooleanMat const& copy)
-      : MatrixOverSemiringBase<bool, BooleanMat>(copy._vector, copy._semiring) {
-  }
-
-  BooleanMat::BooleanMat(BooleanMat&&) = default;
-  BooleanMat& BooleanMat::operator=(BooleanMat const&) = default;
-  BooleanMat& BooleanMat::operator=(BooleanMat&&) = default;
-
-  void BooleanMat::redefine(Element const& x, Element const& y) {
-    LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
-    LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
-    LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-
-    size_t                   k;
-    size_t                   dim = this->degree();
-    std::vector<bool> const& xx  = static_cast<BooleanMat const&>(x)._vector;
-    std::vector<bool> const& yy  = static_cast<BooleanMat const&>(y)._vector;
-
-    for (size_t i = 0; i < dim; i++) {
-      for (size_t j = 0; j < dim; j++) {
-        for (k = 0; k < dim; k++) {
-          if (xx[i * dim + k] && yy[k * dim + j]) {
-            break;
-          }
-        }
-        _vector[i * dim + j] = (k < dim);
-      }
-    }
-    this->reset_hash_value();
-  }
-
-  BooleanMat BooleanMat::transpose() const {
-    std::vector<bool> vec;
-    vec.resize(this->degree() * this->degree());
-    for (size_t i = 0; i < this->degree(); ++i) {
-      for (size_t j = 0; j < this->degree(); ++j) {
-        vec[i * this->degree() + j] = _vector[j * this->degree() + i];
-      }
-    }
-    return BooleanMat(vec);
-  }
-
-  void BooleanMat::transpose_in_place() {
-    for (size_t i = 0; i < this->degree() - 1; ++i) {
-      for (size_t j = i + 1; j < this->degree(); ++j) {
-        std::swap(_vector[i * this->degree() + j],
-                  _vector[j * this->degree() + i]);
-      }
-    }
-  }
-
-  std::vector<std::vector<bool>> BooleanMat::rows() const {
-    auto                           it = this->_vector.cbegin();
-    std::vector<std::vector<bool>> out;
-    for (size_t i = 0; i < this->degree(); ++i) {
-      std::vector<bool> row(it + (i * this->degree()),
-                            it + ((i + 1) * this->degree()));
-      out.push_back(row);
-    }
-    return out;
-  }
-
-  std::vector<std::vector<bool>> BooleanMat::row_space_basis() const {
-    std::vector<std::vector<bool>> rows = this->rows();
-    booleanmat_helpers::rows_basis(rows);
-    return rows;
-  }
-
-  size_t BooleanMat::row_space_size() const {
-    std::vector<std::vector<bool>> rows = row_space_basis();
-    std::unordered_set<std::vector<bool>, Hash<std::vector<bool>>> set;
-    std::vector<std::vector<bool>> orb(rows.cbegin(), rows.cend());
-    for (size_t i = 0; i < orb.size(); ++i) {
-      for (auto row : rows) {
-        std::vector<bool> cup = orb[i];
-        for (size_t j = 0; j < this->degree(); ++j) {
-          cup[j] = cup[j] || row[j];
-        }
-        if (set.find(cup) == set.end()) {
-          set.insert(cup);
-          orb.push_back(cup);
-        }
-      }
-    }
-    return orb.size();
-  }
-
-  // Private
-  BooleanMat::BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
-
-  // Private
-  BooleanMat::BooleanMat(std::vector<bool>     matrix,
-                         Semiring<bool> const* semiring)
-      : MatrixOverSemiringBase<bool, BooleanMat>(matrix, semiring) {}
-
-  namespace booleanmat_helpers {
-    void rows_basis(std::vector<std::vector<bool>>& rows) {
-      std::vector<std::vector<bool>> out;
-      if (rows.empty()) {
-        return;
-      }
-      static thread_local std::vector<std::vector<bool>> buf;
-      buf.clear();
-      size_t degree = rows[0].size();
-      std::sort(rows.begin(), rows.end());
-      // Remove duplicates
-      rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
-      std::vector<bool> cup(degree, false);
-      for (auto it = rows.cbegin(); it < rows.cend(); ++it) {
-        cup.assign(degree, false);
-        if (std::find((*it).begin(), (*it).end(), true) != (*it).end()) {
-          for (auto it2 = rows.cbegin(); it2 < rows.cend(); ++it2) {
-            if (it == it2) {
-              continue;
-            }
-            bool contained = true;
-            for (size_t i = 0; i < degree; ++i) {
-              if ((*it2)[i] && !(*it)[i]) {
-                contained = false;
-                break;
-              }
-            }
-            if (contained) {
-              for (size_t i = 0; i < degree; ++i) {
-                cup[i] = cup[i] || (*it2)[i];
-              }
-            }
-          }
-          if (cup != *it) {
-            buf.push_back(std::move(*it));
-          }
-        }
-      }
-      std::swap(buf, rows);
-    }
-  }  // namespace booleanmat_helpers
 
   ////////////////////////////////////////////////////////////////////////
   // Bipartitions
@@ -535,53 +380,6 @@ namespace libsemigroups {
         std::find(out.begin(), out.end(), std::numeric_limits<uint32_t>::max())
         == out.end());
     return out;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Projective max-plus matrices
-  ////////////////////////////////////////////////////////////////////////
-
-  ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(
-      std::vector<int64_t> const& matrix,
-      Semiring<int64_t> const*    semiring)
-      : MatrixOverSemiringBase(matrix, semiring) {
-    after();  // this is to put the matrix in normal form
-  }
-
-  ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(
-      std::vector<std::vector<int64_t>> const& matrix,
-      Semiring<int64_t> const*                 semiring)
-      : MatrixOverSemiringBase(matrix, semiring) {
-    after();  // this is to put the matrix in normal form
-  }
-
-  ProjectiveMaxPlusMatrix
-  ProjectiveMaxPlusMatrix::operator*(ElementWithVectorData const& y) const {
-    ProjectiveMaxPlusMatrix xy(std::vector<int64_t>(pow(y.degree(), 2)),
-                               this->semiring());
-    xy.Element::redefine(*this, y);
-    // after() is called in Element::redefine.
-    return xy;
-  }
-
-  ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(int64_t x)
-      : MatrixOverSemiringBase(x) {}
-
-  ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(std::vector<int64_t> matrix)
-      : MatrixOverSemiringBase(matrix) {}
-
-  void ProjectiveMaxPlusMatrix::after() {
-    int64_t norm = std::numeric_limits<int64_t>::min();
-    for (auto const& x : _vector) {
-      if (x != NEGATIVE_INFINITY && x > norm) {
-        norm = x;
-      }
-    }
-    for (auto& x : _vector) {
-      if (x != NEGATIVE_INFINITY) {
-        x -= norm;
-      }
-    }
   }
 
   ////////////////////////////////////////////////////////////////////////

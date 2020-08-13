@@ -64,9 +64,14 @@ namespace libsemigroups {
     //!
     //! [std::lexicographical_compare]:
     //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-    bool operator()(T const& x, T const& y) {
+    bool operator()(T const& x, T const& y) const {
       return std::lexicographical_compare(
           x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    template <typename S>
+    bool operator()(S first1, S last1, S first2, S last2) const {
+      return std::lexicographical_compare(first1, last1, first2, last2);
     }
   };
 

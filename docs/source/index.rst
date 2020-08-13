@@ -75,22 +75,21 @@ be in the future too, but presently they don't work.
 
 .. toctree::
    :caption: API REFERENCE
-   :hidden:
+   :maxdepth: 1
 
    action
    congruences
    digraphs
    elements
+   matrix/index
    fpsemigroups
    order
    semigroups
-   semiring
    words
    misc
 
 .. toctree::
    :caption: Bibliography
-   :hidden:
 
    biblio
 

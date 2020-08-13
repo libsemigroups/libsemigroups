@@ -16,9 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+// TODO(later): iwyu
 
+#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
+#include "catch.hpp"       // for REQUIRE
+
+#include "libsemigroups/element-adapters.hpp"
+#include "libsemigroups/element.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/types.hpp"

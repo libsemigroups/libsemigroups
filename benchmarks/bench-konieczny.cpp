@@ -16,42 +16,49 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <cstddef>  // for size_t
+
+#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
+#include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/bitset.hpp"            // for BitSet
-#include "libsemigroups/element-adapters.hpp"  // for Lambda
-#include "libsemigroups/element-helper.hpp"    // for PPermHelper
-#include "libsemigroups/element.hpp"           // for PartialPerm
+#include "libsemigroups/bmat.hpp"              // for BMat adapters
+#include "libsemigroups/element-adapters.hpp"  // for ImageRightAction etc
+#include "libsemigroups/element.hpp"           // for Transformation
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/matrix.hpp"            // for BMat
 #include "libsemigroups/report.hpp"            // for ReportGuard
 
 namespace libsemigroups {
+
   ////////////////////////////////////////////////////////////////////////
-  // Alternative implementations of Lambda for BooleanMat
+  // Alternative implementations of Lambda for BMat<>
   ////////////////////////////////////////////////////////////////////////
+
   template <typename T>
-  struct LambdaBooleanMatAlt1 {
-    void operator()(T& res, BooleanMat const& x) const {
+  struct LambdaBMatAlt1 {
+    template <typename Mat>
+    void operator()(T& res, Mat const& x) const {
       using S        = typename T::value_type;
       size_t const N = S().size();
-      if (x.degree() > N) {
+      if (x.number_of_rows() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected matrix of dimension at most %llu, found %llu",
             N,
-            x.degree());
+            x.number_of_rows());
       }
       T pt;
-      for (size_t i = 0; i < x.degree(); ++i) {
+      for (size_t i = 0; i < x.number_of_rows(); ++i) {
         S cup;
         cup.reset();
         cup.set(i, true);
         pt.push_back(std::move(cup));
       }
-      ImageRightAction<BooleanMat, T>()(res, pt, x);
+      ImageRightAction<Mat, T>()(res, pt, x);
     }
 
-    T operator()(BooleanMat const& x) const {
+    template <typename Mat>
+    T operator()(Mat const& x) const {
       T     res;
       this->operator()(res, x);
       return res;
@@ -59,28 +66,30 @@ namespace libsemigroups {
   };
 
   template <typename T>
-  struct LambdaBooleanMatAlt2 {
-    void operator()(T& res, BooleanMat const& x) const {
+  struct LambdaBMatAlt2 {
+    template <typename Mat>
+    void operator()(T& res, Mat const& x) const {
       using S        = typename T::value_type;
       size_t const N = S().size();
-      if (x.degree() > N) {
+      if (x.number_of_rows() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected matrix of dimension at most %llu, found %llu",
             N,
-            x.degree());
+            x.number_of_rows());
       }
       static thread_local T pt;
       pt.clear();
-      for (size_t i = 0; i < x.degree(); ++i) {
+      for (size_t i = 0; i < x.number_of_rows(); ++i) {
         S cup;
         cup.reset();
         cup.set(i, true);
         pt.push_back(std::move(cup));
       }
-      ImageRightAction<BooleanMat, T>()(res, pt, x);
+      ImageRightAction<Mat, T>()(res, pt, x);
     }
 
-    T operator()(BooleanMat const& x) const {
+    template <typename Mat>
+    T operator()(Mat const& x) const {
       T     res;
       this->operator()(res, x);
       return res;
@@ -88,12 +97,12 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Alternative implementation of Rank for BooleanMat
+  // Alternative implementation of Rank for BMat<>
   ////////////////////////////////////////////////////////////////////////
-  template <>
-  struct Rank<BooleanMat, void> {
-    size_t operator()(BooleanMat const& x, size_t = 0) {
-      return x.row_space_size();
+  template <typename Mat>
+  struct Rank<Mat, void> {
+    size_t operator()(Mat const& x, size_t = 0) {
+      return matrix_helpers::row_space_size(x);
     }
   };
 
@@ -102,7 +111,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename T>
-  void booleanmat_example1(T& S) {
+  void BMat_example1(T& S) {
     using BMat = typename T::element_type;
     S.add_generator(BMat({{1, 0, 0, 0, 0, 0, 0, 0},
                           {0, 1, 0, 0, 0, 0, 0, 0},
@@ -131,7 +140,7 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  void booleanmat_example2(T& S) {
+  void BMat_example2(T& S) {
     using BMat = typename T::element_type;
     S.add_generator(
         BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -160,46 +169,44 @@ namespace libsemigroups {
   // Benchmark functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename T>
-  void benchmark_booleanmat_lambda(FroidurePin<BooleanMat> const& S,
-                                   std::string                    title) {
+  template <typename Mat, typename T>
+  void benchmark_BMat_lambda(FroidurePin<Mat> const& S, std::string title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Lambda<BooleanMat, T>()(result, *it);
+        Lambda<Mat, T>()(result, *it);
       }
     };
   }
 
-  template <typename T>
-  void benchmark_booleanmat_rho(FroidurePin<BooleanMat> const& S,
-                                std::string                    title) {
+  template <typename Mat, typename T>
+  void benchmark_BMat_lambda_alt1(FroidurePin<Mat> const& S,
+                                  std::string             title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Rho<BooleanMat, T>()(result, *it);
+        LambdaBMatAlt1<T>()(result, *it);
       }
     };
   }
 
-  template <typename T>
-  void benchmark_booleanmat_lambda_alt1(FroidurePin<BooleanMat> const& S,
-                                        std::string                    title) {
+  template <typename Mat, typename T>
+  void benchmark_BMat_lambda_alt2(FroidurePin<Mat> const& S,
+                                  std::string             title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        LambdaBooleanMatAlt1<T>()(result, *it);
+        LambdaBMatAlt2<T>()(result, *it);
       }
     };
   }
 
-  template <typename T>
-  void benchmark_booleanmat_lambda_alt2(FroidurePin<BooleanMat> const& S,
-                                        std::string                    title) {
+  template <typename Mat, typename T>
+  void benchmark_BMat_rho(FroidurePin<Mat> const& S, std::string title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        LambdaBooleanMatAlt2<T>()(result, *it);
+        Rho<Mat, T>()(result, *it);
       }
     };
   }
@@ -227,359 +234,825 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // The actual benchmarks
+  // The actual benchmarks for BMats
   ////////////////////////////////////////////////////////////////////////
 
-  TEST_CASE("Example 1: StaticVector1<BitSet<64>, 64>", "[quick][000]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 1: BMat<> + StaticVector1<BitSet<64>, 64>",
+            "[quick][000][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
     S.run();
     REQUIRE(S.size() == 255);
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda<BMat<>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<detail::StaticVector1<BitSet<64>, 64>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_lambda_alt2<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 2: StaticVector1<BitSet<64>, 64>", "[quick][006]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 1: BMat<8> + StaticVector1<BitSet<64>, 64>",
+            "[quick][016][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
+    S.run();
+    REQUIRE(S.size() == 255);
+
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda<BMat<8>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
+        S,
+        "LambdaBMatAlt1 (using BMat<8>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 2: BMat<> + StaticVector1<BitSet<64>, 64>",
+            "[quick][006][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
     S.run();
     REQUIRE(S.size() == 63904);
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda<BMat<>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<detail::StaticVector1<BitSet<64>, 64>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_lambda_alt2<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 1: StaticVector1<BitSet<8>, 8>", "[quick][001]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 2: BMat<4> + StaticVector1<BitSet<64>, 64>",
+            "[quick][017][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
     S.run();
+    REQUIRE(S.size() == 63904);
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda<BMat<4>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<detail::StaticVector1<BitSet<8>, 8>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
-
-    benchmark_booleanmat_lambda_alt2<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda_alt1<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt1 (using BMat<4>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 2: StaticVector1<BitSet<8>, 8>", "[quick][007]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 1: BMat<> + StaticVector1<BitSet<8>, 8>",
+            "[quick][001][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
     S.run();
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda<BMat<>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<detail::StaticVector1<BitSet<8>, 8>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "LambdaBMatAlt1 (using BMat<>,ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda_alt2<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 1: std::vector<BitSet<64>>", "[quick][002]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 1: BMat<8> + StaticVector1<BitSet<8>, 8>",
+            "[quick][018][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
     S.run();
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda<BMat<8>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<std::vector<BitSet<64>>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "LambdaBMatAlt1 (using BMat<8>,ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda_alt2<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 2: std::vector<BitSet<64>>", "[quick][008]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 2: BMat<> + StaticVector1<BitSet<8>, 8>",
+            "[quick][007][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
     S.run();
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda<BMat<>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<std::vector<BitSet<64>>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda_alt2<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 1: std::vector<BitSet<8>>", "[quick][003]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 2: BMat<4> + StaticVector1<BitSet<8>, 8>",
+            "[quick][019][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
     S.run();
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda<BMat<4>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<std::vector<BitSet<8>>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
-
-    benchmark_booleanmat_lambda_alt2<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda_alt1<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt1 (using BMat<4>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 2: std::vector<BitSet<8>>", "[quick][009]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 1: BMat<> + std::vector<BitSet<64>>",
+            "[quick][002][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
     S.run();
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
-        S, "Lambda<BooleanMat> (duplicate code)");
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
+        S, "Lambda<BMat<>> (duplicate code)");
 
-    benchmark_booleanmat_lambda_alt1<std::vector<BitSet<8>>>(
-        S, "LambdaBooleanMatAlt1 (using ImageRightAction, non-static dummy)");
+    benchmark_BMat_lambda_alt1<BMat<>, std::vector<BitSet<64>>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
 
-    benchmark_booleanmat_lambda_alt2<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda_alt2<BMat<>, std::vector<BitSet<64>>>(
         S,
-        "LambdaBooleanMatAlt2 (using ImageRightAction, static thread_local "
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
         "dummy)");
   }
 
-  TEST_CASE("Example 1: Lambda<BooleanMat> std::bitset vs BitSet",
-            "[quick][004]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 1: BMat<8> + std::vector<BitSet<64>>",
+            "[quick][020][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
     S.run();
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
+
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<64>>>(
+        S, "Lambda<BMat<8>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<8>, std::vector<BitSet<64>>>(
+        S,
+        "LambdaBMatAlt1 (using BMat<8>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<8>, std::vector<BitSet<64>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 2: BMat<> + std::vector<BitSet<64>>",
+            "[quick][008][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
+        S, "Lambda<BMat<>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<>, std::vector<BitSet<64>>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<>, std::vector<BitSet<64>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 2: BMat<4> + std::vector<BitSet<64>>",
+            "[quick][021][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<64>>>(
+        S, "Lambda<BMat<4>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<4>, std::vector<BitSet<64>>>(
+        S,
+        "LambdaBMatAlt1 (using BMat<4>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<4>, std::vector<BitSet<64>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 1: BMat<> + std::vector<BitSet<8>>",
+            "[quick][003][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
+        S, "Lambda<BMat<>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<>, std::vector<BitSet<8>>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 1: BMat<8> + std::vector<BitSet<8>>",
+            "[quick][022][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<8>>>(
+        S, "Lambda<BMat<8>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<8>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt1 (using BMat<8>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<8>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 2: BMat<> + std::vector<BitSet<8>>",
+            "[quick][009][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
+        S, "Lambda<BMat<>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<>, std::vector<BitSet<8>>>(
+        S, "LambdaBMatAlt1 (using BMat<>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 2: BMat<4> + std::vector<BitSet<8>>",
+            "[quick][023][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<8>>>(
+        S, "Lambda<BMat<4>> (duplicate code)");
+
+    benchmark_BMat_lambda_alt1<BMat<4>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt1 (using BMat<4>, ImageRightAction, non-static dummy)");
+
+    benchmark_BMat_lambda_alt2<BMat<4>, std::vector<BitSet<8>>>(
+        S,
+        "LambdaBMatAlt2 (using ImageRightAction, static thread_local "
+        "dummy)");
+  }
+
+  TEST_CASE("Example 1: Lambda<BMat<>> std::bitset vs BitSet",
+            "[quick][004][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
+    S.run();
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
         S, "std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<64>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<64>>>(
         S, "std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
         S, "std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<8>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<8>>>(
         S, "std::vector<std::bitset<8>>");
   }
 
-  TEST_CASE("Example 2: Lambda<BooleanMat> std::bitset vs BitSet",
-            "[quick][010]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 1: Lambda<BMat<8>> std::bitset vs BitSet",
+            "[quick][024][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
     S.run();
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<64>>>(
         S, "std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<64>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<std::bitset<64>>>(
         S, "std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<8>>>(
         S, "std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<8>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<std::bitset<8>>>(
+        S, "std::vector<std::bitset<8>>");
+  }
+
+  TEST_CASE("Example 2: Lambda<BMat<>> std::bitset vs BitSet",
+            "[quick][010][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
+    S.run();
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
+        S, "std::vector<BitSet<64>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<64>>>(
+        S, "std::vector<std::bitset<64>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
+        S, "std::vector<BitSet<8>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<8>>>(
         S, "std::vector<std::bitset<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<4>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<4>>>(
         S, "std::vector<BitSet<4>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<4>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<4>>>(
         S, "std::vector<std::bitset<4>>");
   }
 
-  TEST_CASE("Example 1: Lambda<BooleanMat> std::bitset, BitSet too small",
-            "[quick][005]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 2: Lambda<BMat<4>> std::bitset vs BitSet",
+            "[quick][025][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
     S.run();
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<128>, 8>>(
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<64>>>(
+        S, "std::vector<BitSet<64>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<64>>>(
+        S, "std::vector<std::bitset<64>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<8>>>(
+        S, "std::vector<BitSet<8>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<8>>>(
+        S, "std::vector<std::bitset<8>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<4>>>(
+        S, "std::vector<BitSet<4>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<4>>>(
+        S, "std::vector<std::bitset<4>>");
+  }
+
+  TEST_CASE("Example 1: Lambda<BMat<>> std::bitset, BitSet too small",
+            "[quick][005][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
+    S.run();
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<128>, 8>>(
         S, "StaticVector1<std::bitset<128>, 8>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<128>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<128>>>(
         S, "std::vector<std::bitset<128>>");
   }
 
-  TEST_CASE("Example 1: Rho<BooleanMat> vs Lambda<BooleanMat>",
-            "[quick][011]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
+  TEST_CASE("Example 1: Lambda<BMat<8>> std::bitset, BitSet too small",
+            "[quick][026][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
+    S.run();
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<std::bitset<128>, 8>>(
+        S, "StaticVector1<std::bitset<128>, 8>");
+
+    benchmark_BMat_lambda<BMat<8>, std::vector<std::bitset<128>>>(
+        S, "std::vector<std::bitset<128>>");
+  }
+
+  TEST_CASE("Example 1: Rho<BMat<>> vs Lambda<BMat<>>", "[quick][011][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
     S.run();
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "Lambda + StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "Rho + StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "Lambda + StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "Rho + StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "Lambda + StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "Rho + StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "Lambda + StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "Rho + StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
         S, "Lambda + std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_rho<std::vector<BitSet<64>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<BitSet<64>>>(
         S, "Rho + std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<64>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<64>>>(
         S, "Lambda + std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_rho<std::vector<std::bitset<64>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<std::bitset<64>>>(
         S, "Rho + std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
         S, "Lambda + std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_rho<std::vector<BitSet<8>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<BitSet<8>>>(
         S, "Rho + std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<8>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<8>>>(
         S, "Lambda + std::vector<std::bitset<8>>");
 
-    benchmark_booleanmat_rho<std::vector<std::bitset<8>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<std::bitset<8>>>(
         S, "Rho + std::vector<std::bitset<8>>");
   }
 
-  TEST_CASE("Example 2: Rho<BooleanMat> vs Lambda<BooleanMat>",
-            "[quick][012]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example2(S);
+  TEST_CASE("Example 1: Rho<BMat<8>> vs Lambda<BMat<8>>",
+            "[quick][027][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
     S.run();
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "Lambda + StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<BitSet<64>, 64>>(
+    benchmark_BMat_rho<BMat<8>, detail::StaticVector1<BitSet<64>, 64>>(
         S, "Rho + StaticVector1<BitSet<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "Lambda + StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<std::bitset<64>, 64>>(
+    benchmark_BMat_rho<BMat<8>, detail::StaticVector1<std::bitset<64>, 64>>(
         S, "Rho + StaticVector1<std::bitset<64>, 64>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "Lambda + StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<BitSet<8>, 8>>(
+    benchmark_BMat_rho<BMat<8>, detail::StaticVector1<BitSet<8>, 8>>(
         S, "Rho + StaticVector1<BitSet<8>, 8>");
 
-    benchmark_booleanmat_lambda<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_lambda<BMat<8>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "Lambda + StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_rho<detail::StaticVector1<std::bitset<8>, 8>>(
+    benchmark_BMat_rho<BMat<8>, detail::StaticVector1<std::bitset<8>, 8>>(
         S, "Rho + StaticVector1<std::bitset<8>, 8>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<64>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<64>>>(
         S, "Lambda + std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_rho<std::vector<BitSet<64>>>(
+    benchmark_BMat_rho<BMat<8>, std::vector<BitSet<64>>>(
         S, "Rho + std::vector<BitSet<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<64>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<std::bitset<64>>>(
         S, "Lambda + std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_rho<std::vector<std::bitset<64>>>(
+    benchmark_BMat_rho<BMat<8>, std::vector<std::bitset<64>>>(
         S, "Rho + std::vector<std::bitset<64>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<8>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<BitSet<8>>>(
         S, "Lambda + std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_rho<std::vector<BitSet<8>>>(
+    benchmark_BMat_rho<BMat<8>, std::vector<BitSet<8>>>(
         S, "Rho + std::vector<BitSet<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<8>>>(
+    benchmark_BMat_lambda<BMat<8>, std::vector<std::bitset<8>>>(
         S, "Lambda + std::vector<std::bitset<8>>");
 
-    benchmark_booleanmat_rho<std::vector<std::bitset<8>>>(
+    benchmark_BMat_rho<BMat<8>, std::vector<std::bitset<8>>>(
+        S, "Rho + std::vector<std::bitset<8>>");
+  }
+
+  TEST_CASE("Example 2: Rho<BMat<>> vs Lambda<BMat<>>", "[quick][012][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda + StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Rho + StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "Lambda + StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "Rho + StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda + StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Rho + StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "Lambda + StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_rho<BMat<>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "Rho + StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<64>>>(
+        S, "Lambda + std::vector<BitSet<64>>");
+
+    benchmark_BMat_rho<BMat<>, std::vector<BitSet<64>>>(
+        S, "Rho + std::vector<BitSet<64>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<64>>>(
+        S, "Lambda + std::vector<std::bitset<64>>");
+
+    benchmark_BMat_rho<BMat<>, std::vector<std::bitset<64>>>(
+        S, "Rho + std::vector<std::bitset<64>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<8>>>(
+        S, "Lambda + std::vector<BitSet<8>>");
+
+    benchmark_BMat_rho<BMat<>, std::vector<BitSet<8>>>(
+        S, "Rho + std::vector<BitSet<8>>");
+
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<8>>>(
+        S, "Lambda + std::vector<std::bitset<8>>");
+
+    benchmark_BMat_rho<BMat<>, std::vector<std::bitset<8>>>(
         S, "Rho + std::vector<std::bitset<8>>");
 
-    benchmark_booleanmat_lambda<std::vector<BitSet<4>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<BitSet<4>>>(
         S, "Lambda + std::vector<BitSet<4>>");
 
-    benchmark_booleanmat_rho<std::vector<BitSet<4>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<BitSet<4>>>(
         S, "Rho + std::vector<BitSet<4>>");
 
-    benchmark_booleanmat_lambda<std::vector<std::bitset<4>>>(
+    benchmark_BMat_lambda<BMat<>, std::vector<std::bitset<4>>>(
         S, "Lambda + std::vector<std::bitset<4>>");
 
-    benchmark_booleanmat_rho<std::vector<std::bitset<4>>>(
+    benchmark_BMat_rho<BMat<>, std::vector<std::bitset<4>>>(
         S, "Rho + std::vector<std::bitset<4>>");
   }
+
+  TEST_CASE("Example 2: Rho<BMat<4>> vs Lambda<BMat<4>>",
+            "[quick][028][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<4>> S;
+    BMat_example2(S);
+    S.run();
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Lambda + StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_rho<BMat<4>, detail::StaticVector1<BitSet<64>, 64>>(
+        S, "Rho + StaticVector1<BitSet<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "Lambda + StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_rho<BMat<4>, detail::StaticVector1<std::bitset<64>, 64>>(
+        S, "Rho + StaticVector1<std::bitset<64>, 64>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Lambda + StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_rho<BMat<4>, detail::StaticVector1<BitSet<8>, 8>>(
+        S, "Rho + StaticVector1<BitSet<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<4>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "Lambda + StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_rho<BMat<4>, detail::StaticVector1<std::bitset<8>, 8>>(
+        S, "Rho + StaticVector1<std::bitset<8>, 8>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<64>>>(
+        S, "Lambda + std::vector<BitSet<64>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<BitSet<64>>>(
+        S, "Rho + std::vector<BitSet<64>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<64>>>(
+        S, "Lambda + std::vector<std::bitset<64>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<std::bitset<64>>>(
+        S, "Rho + std::vector<std::bitset<64>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<8>>>(
+        S, "Lambda + std::vector<BitSet<8>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<BitSet<8>>>(
+        S, "Rho + std::vector<BitSet<8>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<8>>>(
+        S, "Lambda + std::vector<std::bitset<8>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<std::bitset<8>>>(
+        S, "Rho + std::vector<std::bitset<8>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<BitSet<4>>>(
+        S, "Lambda + std::vector<BitSet<4>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<BitSet<4>>>(
+        S, "Rho + std::vector<BitSet<4>>");
+
+    benchmark_BMat_lambda<BMat<4>, std::vector<std::bitset<4>>>(
+        S, "Lambda + std::vector<std::bitset<4>>");
+
+    benchmark_BMat_rho<BMat<4>, std::vector<std::bitset<4>>>(
+        S, "Rho + std::vector<std::bitset<4>>");
+  }
+
+  TEST_CASE("Example 4: BMat<> (dim = 8), rank", "[quick][015][bmat]") {
+    auto                rg = ReportGuard(false);
+    FroidurePin<BMat<>> S;
+    BMat_example1(S);
+    S.run();
+    REQUIRE(S.size() == 255);
+    std::vector<BMat<>> gens = {BMat<>({{1, 0, 0, 0, 0, 0, 0, 0},
+                                        {0, 1, 0, 0, 0, 0, 0, 0},
+                                        {0, 0, 1, 0, 0, 0, 0, 0},
+                                        {0, 0, 0, 1, 0, 0, 0, 0},
+                                        {0, 0, 0, 0, 1, 0, 0, 0},
+                                        {0, 0, 0, 0, 0, 0, 1, 0},
+                                        {0, 0, 0, 0, 0, 0, 0, 1},
+                                        {0, 0, 0, 0, 0, 1, 0, 0}}),
+                                BMat<>({{0, 1, 0, 1, 0, 1, 0, 0},
+                                        {0, 1, 1, 0, 1, 1, 0, 0},
+                                        {1, 0, 1, 1, 0, 0, 0, 0},
+                                        {0, 1, 0, 0, 1, 0, 0, 0},
+                                        {0, 0, 1, 0, 0, 1, 0, 0},
+                                        {0, 1, 0, 1, 1, 0, 0, 0},
+                                        {1, 0, 0, 0, 0, 0, 0, 0},
+                                        {0, 0, 0, 0, 0, 0, 0, 0}}),
+                                BMat<>({{0, 1, 0, 1, 0, 1, 0, 0},
+                                        {1, 0, 1, 0, 0, 1, 0, 0},
+                                        {1, 0, 1, 1, 0, 1, 0, 0},
+                                        {0, 0, 1, 0, 1, 0, 0, 0},
+                                        {1, 1, 0, 1, 0, 1, 0, 0},
+                                        {0, 1, 0, 1, 0, 1, 0, 0},
+                                        {0, 0, 0, 0, 0, 0, 0, 0},
+                                        {0, 0, 0, 0, 0, 0, 0, 0}})};
+
+    BENCHMARK("row space size") {
+      for (auto it = S.cbegin(); it < S.cend(); ++it) {
+        Rank<BMat<>, void>()(*it);
+      }
+    };
+
+    BENCHMARK("transformation rank") {
+      RankState<BMat<>> st(gens.cbegin(), gens.cend());
+      for (auto it = S.cbegin(); it < S.cend(); ++it) {
+        Rank<BMat<>>()(st, *it);
+      }
+    };
+  }
+
+  TEST_CASE("Example 4: BMat<8> (dim = 8), rank", "[quick][029][bmat]") {
+    auto                 rg = ReportGuard(false);
+    FroidurePin<BMat<8>> S;
+    BMat_example1(S);
+    S.run();
+    REQUIRE(S.size() == 255);
+    std::vector<BMat<8>> gens = {BMat<8>({{1, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 1, 0, 0, 0, 0, 0, 0},
+                                          {0, 0, 1, 0, 0, 0, 0, 0},
+                                          {0, 0, 0, 1, 0, 0, 0, 0},
+                                          {0, 0, 0, 0, 1, 0, 0, 0},
+                                          {0, 0, 0, 0, 0, 0, 1, 0},
+                                          {0, 0, 0, 0, 0, 0, 0, 1},
+                                          {0, 0, 0, 0, 0, 1, 0, 0}}),
+                                 BMat<8>({{0, 1, 0, 1, 0, 1, 0, 0},
+                                          {0, 1, 1, 0, 1, 1, 0, 0},
+                                          {1, 0, 1, 1, 0, 0, 0, 0},
+                                          {0, 1, 0, 0, 1, 0, 0, 0},
+                                          {0, 0, 1, 0, 0, 1, 0, 0},
+                                          {0, 1, 0, 1, 1, 0, 0, 0},
+                                          {1, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 0, 0, 0, 0, 0, 0, 0}}),
+                                 BMat<8>({{0, 1, 0, 1, 0, 1, 0, 0},
+                                          {1, 0, 1, 0, 0, 1, 0, 0},
+                                          {1, 0, 1, 1, 0, 1, 0, 0},
+                                          {0, 0, 1, 0, 1, 0, 0, 0},
+                                          {1, 1, 0, 1, 0, 1, 0, 0},
+                                          {0, 1, 0, 1, 0, 1, 0, 0},
+                                          {0, 0, 0, 0, 0, 0, 0, 0},
+                                          {0, 0, 0, 0, 0, 0, 0, 0}})};
+
+    BENCHMARK("row space size") {
+      for (auto it = S.cbegin(); it < S.cend(); ++it) {
+        Rank<BMat<8>, void>()(*it);
+      }
+    };
+
+    BENCHMARK("transformation rank") {
+      RankState<BMat<8>> st(gens.cbegin(), gens.cend());
+      for (auto it = S.cbegin(); it < S.cend(); ++it) {
+        Rank<BMat<8>>()(st, *it);
+      }
+    };
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // The actual benchmarks for Transformations
+  ////////////////////////////////////////////////////////////////////////
 
   TEST_CASE("Example 3: transformations, rho", "[quick][013][transf]") {
     auto                                rg = ReportGuard(false);
@@ -609,52 +1082,6 @@ namespace libsemigroups {
     benchmark_transf_lambda<std::vector<size_t>>(
         S, "Lambda<Transf>, std::vector<size_t>");
     benchmark_transf_lambda<BitSet<64>>(S, "Lambda<Transf>, BitSet<64>");
-  }
-
-  TEST_CASE("Example 4: boolean matrices (dim = 8), rank",
-            "[quick][015][boolmat]") {
-    auto                    rg = ReportGuard(false);
-    FroidurePin<BooleanMat> S;
-    booleanmat_example1(S);
-    S.run();
-    REQUIRE(S.size() == 255);
-    std::vector<BooleanMat> gens = {BooleanMat({{1, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 1, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 1, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 1, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 1, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 1, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 1},
-                                                {0, 0, 0, 0, 0, 1, 0, 0}}),
-                                    BooleanMat({{0, 1, 0, 1, 0, 1, 0, 0},
-                                                {0, 1, 1, 0, 1, 1, 0, 0},
-                                                {1, 0, 1, 1, 0, 0, 0, 0},
-                                                {0, 1, 0, 0, 1, 0, 0, 0},
-                                                {0, 0, 1, 0, 0, 1, 0, 0},
-                                                {0, 1, 0, 1, 1, 0, 0, 0},
-                                                {1, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0}}),
-                                    BooleanMat({{0, 1, 0, 1, 0, 1, 0, 0},
-                                                {1, 0, 1, 0, 0, 1, 0, 0},
-                                                {1, 0, 1, 1, 0, 1, 0, 0},
-                                                {0, 0, 1, 0, 1, 0, 0, 0},
-                                                {1, 1, 0, 1, 0, 1, 0, 0},
-                                                {0, 1, 0, 1, 0, 1, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0},
-                                                {0, 0, 0, 0, 0, 0, 0, 0}})};
-
-    BENCHMARK("row space size") {
-      for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Rank<BooleanMat, void>()(*it);
-      }
-    };
-
-    BENCHMARK("transformation rank") {
-      RankState<BooleanMat> st(gens.cbegin(), gens.cend());
-      for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Rank<BooleanMat>()(st, *it);
-      }
-    };
   }
 
 }  // namespace libsemigroups

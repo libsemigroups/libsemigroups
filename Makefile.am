@@ -48,6 +48,7 @@ pkginclude_HEADERS += include/libsemigroups/adapters.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/blocks.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat8.hpp
+pkginclude_HEADERS += include/libsemigroups/bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/bruidhinn-traits.hpp
 pkginclude_HEADERS += include/libsemigroups/cong-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/cong-pair-impl.hpp
@@ -57,7 +58,6 @@ pkginclude_HEADERS += include/libsemigroups/cong.hpp
 pkginclude_HEADERS += include/libsemigroups/constants.hpp
 pkginclude_HEADERS += include/libsemigroups/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/coset.hpp
-pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph.hpp
 pkginclude_HEADERS += include/libsemigroups/element-adapters.hpp
@@ -80,6 +80,7 @@ pkginclude_HEADERS += include/libsemigroups/libsemigroups-config.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups-debug.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups-exception.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
+pkginclude_HEADERS += include/libsemigroups/matrix.hpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
 pkginclude_HEADERS += include/libsemigroups/pool.hpp
@@ -87,7 +88,6 @@ pkginclude_HEADERS += include/libsemigroups/race.hpp
 pkginclude_HEADERS += include/libsemigroups/report.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
-pkginclude_HEADERS += include/libsemigroups/semiring.hpp
 pkginclude_HEADERS += include/libsemigroups/siso.hpp
 pkginclude_HEADERS += include/libsemigroups/stl.hpp
 pkginclude_HEADERS += include/libsemigroups/string.hpp
@@ -542,9 +542,6 @@ libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
-## if !LIBSEMIGROUPS_EIGEN_ENABLED
-libsemigroups_la_SOURCES += src/digraph.cpp
-## endif
 libsemigroups_la_SOURCES += src/element.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
@@ -586,7 +583,7 @@ EXTRA_DIST += src/kbe-impl.hpp
 EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += tests/fpsemi-examples.hpp
-EXTRA_DIST += tests/test-konieczny-booleanmat-data.hpp
+EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 
 ## For testing . . .
@@ -614,21 +611,23 @@ EXTRA_PROGRAMS += test_fpsemi
 EXTRA_PROGRAMS += test_fpsemi_intf
 EXTRA_PROGRAMS += test_froidure_pin_bipart
 EXTRA_PROGRAMS += test_froidure_pin_bmat8
-EXTRA_PROGRAMS += test_froidure_pin_boolmat
+EXTRA_PROGRAMS += test_froidure_pin_bmat
 EXTRA_PROGRAMS += test_froidure_pin_element
 EXTRA_PROGRAMS += test_froidure_pin_integers
 EXTRA_PROGRAMS += test_froidure_pin_intmat
 EXTRA_PROGRAMS += test_froidure_pin_intpairs
+EXTRA_PROGRAMS += test_froidure_pin_matrix
+EXTRA_PROGRAMS += test_froidure_pin_maxplustrunc
 EXTRA_PROGRAMS += test_froidure_pin_pbr
 EXTRA_PROGRAMS += test_froidure_pin_pperm
 EXTRA_PROGRAMS += test_froidure_pin_projmaxplus
 EXTRA_PROGRAMS += test_froidure_pin_transf
-EXTRA_PROGRAMS += test_froidure_pin_tropmaxplus
 EXTRA_PROGRAMS += test_hpcombi
 EXTRA_PROGRAMS += test_iterator
 EXTRA_PROGRAMS += test_kbe
 EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
+EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
 EXTRA_PROGRAMS += test_pool
@@ -636,7 +635,6 @@ EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_siso
-EXTRA_PROGRAMS += test_semiring
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_todd_coxeter
 EXTRA_PROGRAMS += test_uf
@@ -646,6 +644,7 @@ EXTRA_PROGRAMS += test_word
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
+EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_digraph
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
@@ -662,7 +661,8 @@ LDADD = libsemigroups.la
 ## test-main.o executable to be generated for every test_* executable, which
 ## takes a serious amount of time.
 
-test_all_SOURCES =  tests/fpsemi-examples.cpp
+test_all_SOURCES =  tests/bmat-data.cpp
+test_all_SOURCES += tests/fpsemi-examples.cpp
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-bitset.cpp
 test_all_SOURCES += tests/test-blocks.cpp
@@ -680,16 +680,17 @@ test_all_SOURCES += tests/test-fpsemi.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
 test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
 test_all_SOURCES += tests/test-froidure-pin-bmat8.cpp
-test_all_SOURCES += tests/test-froidure-pin-boolmat.cpp
+test_all_SOURCES += tests/test-froidure-pin-bmat.cpp
 test_all_SOURCES += tests/test-froidure-pin-element.cpp
 test_all_SOURCES += tests/test-froidure-pin-integers.cpp
 test_all_SOURCES += tests/test-froidure-pin-intmat.cpp
 test_all_SOURCES += tests/test-froidure-pin-intpairs.cpp
+test_all_SOURCES += tests/test-froidure-pin-matrix.cpp
+test_all_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
 test_all_SOURCES += tests/test-froidure-pin-pbr.cpp
 test_all_SOURCES += tests/test-froidure-pin-pperm.cpp
 test_all_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
 test_all_SOURCES += tests/test-froidure-pin-transf.cpp
-test_all_SOURCES += tests/test-froidure-pin-tropmaxplus.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kbe.cpp
@@ -703,15 +704,16 @@ test_all_SOURCES += tests/test-konieczny-bmat8-1.cpp
 test_all_SOURCES += tests/test-konieczny-bmat8-2.cpp
 test_all_SOURCES += tests/test-konieczny-bmat8-3.cpp
 test_all_SOURCES += tests/test-konieczny-transf.cpp
-test_all_SOURCES += tests/test-konieczny-booleanmat.cpp
+test_all_SOURCES += tests/test-konieczny-bmat.cpp
 test_all_SOURCES += tests/test-konieczny-pperm.cpp
 test_all_SOURCES += tests/test-main.cpp
+test_all_SOURCES += tests/test-matrix.cpp
 test_all_SOURCES += tests/test-obvinf.cpp
 test_all_SOURCES += tests/test-order.cpp
+test_all_SOURCES += tests/test-pool.cpp
 test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
-test_all_SOURCES += tests/test-semiring.cpp
 test_all_SOURCES += tests/test-siso.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
@@ -773,8 +775,9 @@ test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
 test_froidure_pin_bmat8_SOURCES =  tests/test-froidure-pin-bmat8.cpp
 test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_boolmat_SOURCES =  tests/test-froidure-pin-boolmat.cpp
-test_froidure_pin_boolmat_SOURCES += tests/test-main.cpp
+test_froidure_pin_bmat_SOURCES =  tests/test-froidure-pin-bmat.cpp
+test_froidure_pin_bmat_SOURCES += tests/bmat-data.cpp
+test_froidure_pin_bmat_SOURCES += tests/test-main.cpp
 
 test_froidure_pin_element_SOURCES =  tests/test-froidure-pin-element.cpp
 test_froidure_pin_element_SOURCES += tests/test-main.cpp
@@ -788,6 +791,9 @@ test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
 test_froidure_pin_intpairs_SOURCES =  tests/test-froidure-pin-intpairs.cpp
 test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
 
+test_froidure_pin_matrix_SOURCES =  tests/test-froidure-pin-matrix.cpp
+test_froidure_pin_matrix_SOURCES += tests/test-main.cpp
+
 test_froidure_pin_pbr_SOURCES =  tests/test-froidure-pin-pbr.cpp
 test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
 
@@ -800,8 +806,8 @@ test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
 test_froidure_pin_transf_SOURCES =  tests/test-froidure-pin-transf.cpp
 test_froidure_pin_transf_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_tropmaxplus_SOURCES =  tests/test-froidure-pin-tropmaxplus.cpp
-test_froidure_pin_tropmaxplus_SOURCES += tests/test-main.cpp
+test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
+test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
 
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
@@ -824,9 +830,13 @@ test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
 test_konieczny_SOURCES += tests/test-konieczny-bmat8-2.cpp
 test_konieczny_SOURCES += tests/test-konieczny-bmat8-3.cpp
 test_konieczny_SOURCES += tests/test-konieczny-transf.cpp
-test_konieczny_SOURCES += tests/test-konieczny-booleanmat.cpp
+test_konieczny_SOURCES += tests/test-konieczny-bmat.cpp
 test_konieczny_SOURCES += tests/test-konieczny-pperm.cpp
+test_konieczny_SOURCES += tests/bmat-data.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
+
+test_matrix_SOURCES =  tests/test-matrix.cpp
+test_matrix_SOURCES += tests/test-main.cpp
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
@@ -845,9 +855,6 @@ test_runner_SOURCES += tests/test-main.cpp
 
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
-
-test_semiring_SOURCES =  tests/test-semiring.cpp
-test_semiring_SOURCES += tests/test-main.cpp
 
 test_siso_SOURCES =  tests/test-siso.cpp
 test_siso_SOURCES += tests/test-main.cpp
@@ -886,9 +893,14 @@ bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
+bench_all_SOURCES += tests/bmat-data.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += benchmarks/bench-main.cpp
+
+bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
+bench_bmat_SOURCES += benchmarks/bench-main.cpp
+bench_bmat_SOURCES += tests/bmat-data.cpp
 
 bench_digraph_SOURCES =  benchmarks/bench-digraph.cpp
 bench_digraph_SOURCES += benchmarks/bench-main.cpp

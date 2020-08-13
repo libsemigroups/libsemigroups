@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(now):
+// TODO(later):
 // 1. add more tests
 
 #include <iostream>
@@ -26,7 +26,7 @@
 #include "test-main.hpp"
 
 namespace libsemigroups {
-
+  // TODO(v2): uncomment these tests or remove them
   /*LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
                           "001",
                           "Multiple rule additions",
