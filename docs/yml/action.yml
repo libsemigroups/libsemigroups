@@ -10,6 +10,7 @@ libsemigroups::Action:
   - [typedef, const_iterator_scc]
   - [typedef, const_iterator_scc_roots]
   - [typedef, const_iterator_sccs]
+  - [typedef, action_type]
 - Constructors:
   - Action
   - Action(Action const&)
