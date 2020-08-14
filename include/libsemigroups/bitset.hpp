@@ -25,10 +25,12 @@
 #include <array>    // for array
 #include <climits>  // for CHAR_BIT
 #include <cstddef>  // for size_t
+#include <iosfwd>   // for operator<<, ostringstream
 #include <utility>  // for hash
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "string.hpp"                // for detail::to_string
 
 namespace libsemigroups {
 
@@ -115,13 +117,16 @@ namespace libsemigroups {
             typename std::conditional<N <= 32, uint_fast32_t, uint64_t>::type>::
             type>::type;
 
-    BitSet() noexcept              = default;
-    BitSet(BitSet const&) noexcept = default;
-    BitSet(BitSet&&) noexcept      = default;
+    explicit constexpr BitSet<N>(block_type const block) noexcept
+        : _block(block) {}
+    constexpr BitSet() noexcept              = default;
+    constexpr BitSet(BitSet const&) noexcept = default;
+    constexpr BitSet(BitSet&&) noexcept      = default;
     BitSet& operator=(BitSet const&) noexcept = default;
     BitSet& operator=(BitSet&&) noexcept = default;
     ~BitSet()                            = default;
 
+    // Could be static
     constexpr size_t size() const noexcept {
       return N;
     }
@@ -254,9 +259,20 @@ namespace libsemigroups {
       return _block;
     }
 
-   private:
-    explicit BitSet<N>(block_type const block) : _block(block) {}
+    friend std::ostringstream& operator<<(std::ostringstream& os,
+                                          BitSet<N> const&    bs) {
+      for (size_t i = 0; i < N; ++i) {
+        os << bs.test(i);
+      }
+      return os;
+    }
 
+    friend std::ostream& operator<<(std::ostream& os, BitSet<N> const& bs) {
+      os << detail::to_string(bs);
+      return os;
+    }
+
+   private:
     void clear_hi_bits() const noexcept {
       size_t s = block_count() - N;
       _block   = _block << s;
@@ -345,11 +361,11 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 namespace std {
-  // TODO(now) noexcept
   template <size_t N>
   struct hash<libsemigroups::BitSet<N>> {
-    size_t operator()(libsemigroups::BitSet<N> const& bs) const {
-      using block_type = typename libsemigroups::BitSet<N>::block_type;
+    using block_type = typename libsemigroups::BitSet<N>::block_type;
+    size_t operator()(libsemigroups::BitSet<N> const& bs) const noexcept(
+        std::is_nothrow_default_constructible<hash<block_type>>::value) {
       return hash<block_type>()(bs.to_int());
     }
   };
