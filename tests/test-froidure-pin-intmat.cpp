@@ -20,8 +20,9 @@
 #include <cstdint>  // for int64_t
 #include <vector>   // for vector
 
-#include "catch.hpp"                  // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/element.hpp"  // for MatrixOverSemiring
+#include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/element-adapters.hpp"  // for MatrixOverSemiring
+#include "libsemigroups/element.hpp"           // for MatrixOverSemiring
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<>::eleme...
 #include "libsemigroups/semiring.hpp"  // for Integers, Semiring
 #include "test-main.hpp"

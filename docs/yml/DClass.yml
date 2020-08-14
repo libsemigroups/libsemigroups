@@ -1,0 +1,10 @@
+libsemigroups::Konieczny::DClass:
+- Accessors:
+  - rep
+- Attributes:
+  - is_regular_D_class
+  - number_of_idempotents
+  - number_of_L_classes
+  - number_of_R_classes
+  - size
+  - size_H_class

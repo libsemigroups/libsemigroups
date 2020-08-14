@@ -24,7 +24,7 @@
 #include <vector>     // for vector
 
 #include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
 #include "libsemigroups/element.hpp"           // for Element
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin, FroidurePi...
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...

@@ -25,6 +25,7 @@
 #include "bmat8.hpp"    // for BMat8
 #include "element.hpp"  // for Permutation ...
 #include "hpcombi.hpp"  // for HPCombi::Perm16, Transf16, . . .
+#include "types.hpp"    // for SmallestInteger
 
 namespace libsemigroups {
   //! Defined in ``element-helper.hpp``.

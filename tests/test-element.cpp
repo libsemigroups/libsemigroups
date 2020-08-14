@@ -23,6 +23,7 @@
 #include "catch.hpp"                               // for TEST_CASE
 #include "libsemigroups/blocks.hpp"                // for Blocks
 #include "libsemigroups/bmat8.hpp"                 // for BMat8
+#include "libsemigroups/element-adapters.hpp"      // for Degree etc
 #include "libsemigroups/element-helper.hpp"        // for TransfHelper
 #include "libsemigroups/element.hpp"               // for Bipartition, Element
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...

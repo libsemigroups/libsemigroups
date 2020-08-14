@@ -24,12 +24,13 @@
 #include "catch.hpp"      // for REQUIRE, SECTION, ...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-pair.hpp"       // for FpSemigroupByPairs
-#include "libsemigroups/element-helper.hpp"  // for FpSemigroupByPairs
-#include "libsemigroups/fpsemi-intf.hpp"     // for FpSemigroupInterface
-#include "libsemigroups/fpsemi.hpp"          // for FpSemigroup
-#include "libsemigroups/knuth-bendix.hpp"    // for fpsemigroup::KnuthBendix
-#include "libsemigroups/order.hpp"           // for shortlex_words
+#include "libsemigroups/cong-pair.hpp"         // for FpSemigroupByPairs
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element-helper.hpp"    // for FpSemigroupByPairs
+#include "libsemigroups/fpsemi-intf.hpp"       // for FpSemigroupInterface
+#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
+#include "libsemigroups/order.hpp"             // for shortlex_words
 #include "libsemigroups/string.hpp"  // for to_string of rule_type for debugging
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/wislo.hpp"         // for cbegin_wislo

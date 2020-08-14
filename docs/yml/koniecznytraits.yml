@@ -1,0 +1,20 @@
+libsemigroups::KoniecznyTraits:
+- _kind: struct
+- Stateful type aliases:
+  - [typedef, element_type]
+  - [typedef, lambda_value_type]
+  - [typedef, lambda_orb_type]
+  - [typedef, rank_state_type]
+  - [typedef, rho_value_type]
+  - [typedef, rho_orb_type]
+- Stateless type aliases:
+  - [typedef, Degree]
+  - [typedef, ElementHash]
+  - [typedef, EqualTo]
+  - [typedef, Lambda]
+  - [typedef, Less]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Rank]
+  - [typedef, Rho]
+  - [typedef, Swap]

@@ -20,8 +20,9 @@
 
 #include "catch.hpp"            // for LIBSEMIGROUPS_TEST_CASE
 #include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
+#include "libsemigroups/element-adapters.hpp"   // for Degree etc
 #include "libsemigroups/element-helper.hpp"     // for Transf, Transf<>::type
-#include "libsemigroups/element.hpp"            // for Transf, Transf<>::type
+#include "libsemigroups/element.hpp"            // for Transformation
 #include "libsemigroups/fpsemi.hpp"             // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type

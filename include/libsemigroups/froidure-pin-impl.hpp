@@ -174,6 +174,7 @@ namespace libsemigroups {
       _pos_one   = 0;
     }
 
+    // FIXME the following can't be correct
     _id          = One()(this->to_internal(coll->at(0)));
     _tmp_product = this->internal_copy(_id);
 

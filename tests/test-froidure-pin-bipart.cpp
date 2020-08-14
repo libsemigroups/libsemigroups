@@ -20,10 +20,11 @@
 
 #include <vector>  // for vector
 
-#include "catch.hpp"                       // for TEST_CASE
-#include "libsemigroups/element.hpp"       // for Bipartition
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                           // for TEST_CASE
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element.hpp"           // for Bipartition
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   // Forward declaration

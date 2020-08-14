@@ -140,8 +140,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    void operator()(TPTransf16Subclass& x, TPTransf16Subclass& y) const
-        noexcept {
+    void operator()(TPTransf16Subclass& x,
+                    TPTransf16Subclass& y) const noexcept {
       std::swap(x, y);
     }
   };
@@ -183,8 +183,8 @@ namespace libsemigroups {
     }
 
     //! Returns the image of \p pt under \p p.
-    TIntType operator()(TIntType const& pt, HPCombi::Perm16 const& p) const
-        noexcept {
+    TIntType operator()(TIntType const&        pt,
+                        HPCombi::Perm16 const& p) const noexcept {
       LIBSEMIGROUPS_ASSERT(pt < 16);
       return p[pt];
     }
@@ -218,9 +218,9 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
-                    HPCombi::PPerm16 const& pt,
-                    HPCombi::PPerm16 const& x) const noexcept {
-      res = (pt * x).right_one();
+                    HPCombi::PPerm16 const& x,
+                    HPCombi::PPerm16 const& y) const noexcept {
+      res = (x * y).right_one();
     }
   };
 
@@ -347,6 +347,274 @@ namespace libsemigroups {
       return x.transpose();
     }
   };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Konieczny adapters - HPCombi::BMat8
+  ////////////////////////////////////////////////////////////////////////
+
+  //! Specialization of the adapter LambdaValue for instances of
+  //! HPCombi::BMat8.
+  //!
+  //! \sa LambdaValue
+  template <>
+  struct LambdaValue<HPCombi::BMat8> {
+    //! The type of Lambda values for HPCombi::BMat8 is also HPCombi::BMat8;
+    //! this provides an efficient representation of row space bases.
+    using type = HPCombi::BMat8;
+  };
+
+  //! Specialization of the adapter RhoValue for instances of
+  //! HPCombi::BMat8.
+  //!
+  //! \sa RhoValue
+  template <>
+  struct RhoValue<HPCombi::BMat8> {
+    //! The type of Rho values for HPCombi::BMat8 is also HPCombi::BMat8;
+    //! this provides an efficient representation of row space bases.
+    using type = HPCombi::BMat8;
+  };
+
+  //! Specialization of the adapter Lambda for instances of
+  //! BMat8.
+  //!
+  //! \sa Lambda.
+  template <>
+  struct Lambda<HPCombi::BMat8, HPCombi::BMat8> {
+    //! Set \p res to the lambda value of \p x as used in the Konieczny
+    //! algorithm; for HPCombi::BMat8 this is the row space basis.
+    void operator()(HPCombi::BMat8&       res,
+                    HPCombi::BMat8 const& x) const noexcept {
+      res = x.row_space_basis();
+    }
+  };
+
+  template <>
+  struct Rho<HPCombi::BMat8, HPCombi::BMat8> {
+    //! Set \p res to the rho value of \p x as used in the Konieczny
+    //! algorithm; for HPCombi::BMat8 this is the column space basis.
+    void operator()(HPCombi::BMat8&       res,
+                    HPCombi::BMat8 const& x) const noexcept {
+      res = x.col_space_basis();
+    }
+  };
+
+  template <>
+  struct Rank<HPCombi::BMat8> {
+    //! Returns the rank of \p x as used in the Konieczny algorithm; for BMat8
+    //! this is the size of the row space.
+    inline size_t operator()(HPCombi::BMat8 const& x) const noexcept {
+      return x.row_space_size();
+    }
+  };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Konieczny adapters - HPCombi::PPerm16
+  ////////////////////////////////////////////////////////////////////////
+
+  //! Specialization of the adapter LambdaValue for instances of
+  //! HPCombi::PPerm16.
+  //!
+  //! \sa LambdaValue
+  template <>
+  struct LambdaValue<HPCombi::PPerm16> {
+    //! The type of Lambda values for PPerm16 is also PPerm16; this provides an
+    //! efficient representation of image sets.
+    using type = HPCombi::PPerm16;
+  };
+
+  //! Specialization of the adapter RhoValue for instances of
+  //! HPCombi::PPerm16.
+  //!
+  //! \sa RhoValue
+  template <>
+  struct RhoValue<HPCombi::PPerm16> {
+    //! The type of Rho values for PPerm16 is also PPerm16; this provides an
+    //! efficient representation of domain sets.
+    using type = HPCombi::PPerm16;
+  };
+
+  //! \sa ImageRightAction.
+  template <>
+  struct Lambda<HPCombi::PPerm16, HPCombi::PPerm16> {
+    //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::PPerm16&       res,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = x.left_one();
+    }
+  };
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter ImageLeftAction for ``HPCombi::PPerm16``.
+  //!
+  //! \sa ImageLeftAction.
+  template <>
+  struct Rho<HPCombi::PPerm16, HPCombi::PPerm16> {
+    //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::PPerm16&       res,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = x.right_one();
+    }
+  };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Konieczny adapters - Transf16
+  ////////////////////////////////////////////////////////////////////////
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter ImageRightAction for ``HPCombi::Transf16``.
+  //!
+  //! \sa ImageRightAction.
+  template <>
+  struct ImageRightAction<HPCombi::Transf16, HPCombi::PTransf16> {
+    //! Changes \p res in place to hold the image of \p x under the right
+    //! action of \p y.
+    void operator()(HPCombi::PTransf16&       res,
+                    HPCombi::Transf16 const&  x,
+                    HPCombi::PTransf16 const& y) const noexcept {
+      res = (y * static_cast<HPCombi::PTransf16>(static_cast<HPCombi::epu8>(x)))
+                .left_one();
+    }
+  };
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter ImageLeftAction for ``HPCombi::Transf16``.
+  //!
+  //! \sa ImageLeftAction.
+  template <>
+  struct ImageLeftAction<HPCombi::Transf16, HPCombi::Vect16> {
+    // TODO(doc)
+    void operator()(HPCombi::Vect16&         res,
+                    HPCombi::Transf16 const& x,
+                    HPCombi::Vect16 const&   y) const noexcept {
+      HPCombi::Vect16 buf  = {0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff};
+      size_t          next = 0;
+      for (size_t i = 0; i < 16; ++i) {
+        if (buf[x[y[i]]] == 0xff) {
+          buf[x[y[i]]] = next++;
+        }
+        res[i] = buf[x[y[i]]];
+      }
+    }
+  };
+
+  //! Specialization of the adapter LambdaValue for instances of
+  //! HPCombi::Transf16.
+  //!
+  //! \sa LambdaValue
+  template <>
+  struct LambdaValue<HPCombi::Transf16> {
+    //! The type of Lambda values for Transf16 is PTransf16; this provides an
+    //! efficient representation of image sets.
+    using type = HPCombi::PTransf16;
+  };
+
+  //! Specialization of the adapter RhoValue for instances of
+  //! HPCombi::Transf16.
+  //!
+  //! \sa RhoValue
+  template <>
+  struct RhoValue<HPCombi::Transf16> {
+    //! The type of Rho values for Transf16 is a Vect16; this provides
+    //! an efficient representation of the kernel.
+    using type = HPCombi::Vect16;
+  };
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter Lambda for ``HPCombi::Transf16``.
+  //!
+  //! \sa ImageRightAction.
+  template <>
+  struct Lambda<HPCombi::Transf16, HPCombi::PTransf16> {
+    //! Stores the identity function on the image of \x in \p res.
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::PTransf16&      res,
+                    HPCombi::Transf16 const& x) const noexcept {
+      res = x.left_one();
+    }
+  };
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter Lambda for ``HPCombi::Transf16``.
+  //!
+  //! \sa ImageLeftAction.
+  template <>
+  struct Rho<HPCombi::Transf16, HPCombi::Vect16> {
+    //! Stores the kernel of \x in \p res.
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::Vect16&         res,
+                    HPCombi::Transf16 const& x) const noexcept {
+      HPCombi::Vect16 buf  = {0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff,
+                             0xff};
+      size_t          next = 0;
+      for (size_t i = 0; i < 16; ++i) {
+        if (buf[x[i]] == 0xff) {
+          buf[x[i]] = next++;
+        }
+        res[i] = buf[x[i]];
+      }
+    }
+  };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Konieczny adapters - generic
+  ////////////////////////////////////////////////////////////////////////
+
+  //! Defined in ``hpcombi.hpp``.
+  //!
+  //! Specialization of the adapter Rank for `HPCombi` types.
+  template <typename T>
+  struct Rank<
+      T,
+      typename std::enable_if<std::is_base_of<HPCombi::PTransf16, T>::value,
+                              RankState<T>>::type> {
+    //! Returns the rank of \p x as used in the Konieczny algorithm; for
+    //! HPCombi::Transf16 and HPCombi::PPerm16 this is the size of the image
+    //! set.
+    inline size_t operator()(T const& x) const noexcept {
+      return x.rank();
+    }
+  };
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED

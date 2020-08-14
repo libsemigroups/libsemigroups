@@ -31,5 +31,7 @@ The classes for semigroups and monoids in ``libsemigroups`` are:
    _generated/libsemigroups__froidurepinbase
    _generated/libsemigroups__froidurepin
    _generated/libsemigroups__froidurepintraits
+   konieczny
    _generated/libsemigroups__schreiersims
    _generated/libsemigroups__schreiersimstraits
+

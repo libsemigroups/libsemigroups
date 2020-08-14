@@ -21,9 +21,10 @@
 
 #include <algorithm>   // for std::sort
 #include <functional>  // for std::equal_to
+#include <memory>      // for shared_ptr
 #include <vector>      // for std::vector
 
-// #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DENSEHASHMAP
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
 
 namespace libsemigroups {
   // Adapters with no default implementation
@@ -381,6 +382,64 @@ namespace libsemigroups {
     }
   };
 
+  ////////////////////////////////////////////////////////////////////////
+  // Hash specializations
+  ////////////////////////////////////////////////////////////////////////
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type is stateless trivially default constructible
+  //! and has a call operator of signature `size_t operator()(std::vector<T>
+  //! const&)` for use with, for example,
+  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //!
+  //! \tparam T the type of objects to compare in the vector.
+  //!
+  //! The second template parameter exists for SFINAE in overload resolution.
+  //!
+  //! \par Used by KoniecznyTraits.
+  template <typename T>
+  struct Hash<std::vector<T>> {
+    //! This call operator hashes \p vec.
+    //!
+    //! \param vec the value to hash
+    //!
+    //! \returns A hash value for \p x, a value of type `size_t`.
+    size_t operator()(std::vector<T> const& vec) const {
+      size_t val = 0;
+      for (T const& x : vec) {
+        val ^= Hash<T>()(x) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+      }
+      return val;
+    }
+  };
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type is stateless trivially default constructible
+  //! and has a call operator of signature `size_t operator()(std::vector<T>
+  //! const&)` for use with, for example,
+  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //!
+  //! \par Used by Konieczny.
+  template <>
+  struct Hash<std::pair<size_t, size_t>> {
+    //! This call operator hashes \p x.
+    //!
+    //! \param x the value to hash
+    //!
+    //! \returns A hash value for \p x, a value of type `size_t`.
+    size_t operator()(std::pair<size_t, size_t> const& x) const noexcept {
+      // TODO(later) this is a very bad hash when the values are larger than the
+      // shift width
+#if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
+      return (x.first << 32) + x.second;
+#else
+      return (x.first << 16) + x.second;
+#endif
+    }
+  };
+
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
@@ -514,5 +573,130 @@ namespace libsemigroups {
     }
   };
 
+  /////////////////////////////////////////////////////////////////////
+  // KONIECZNY THINGS
+  /////////////////////////////////////////////////////////////////////
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type should be a stateless struct with a single typedef \c type
+  //! representing the type that should be used or returned by a \c Lambda
+  //! struct.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //!
+  //! The second template parameter exists for SFINAE in overload resolution.
+  //!
+  //! \par Used by KoniecznyTraits.
+  // Note: this has to exist in order to allow different lambda functions based
+  // on type.
+  template <typename TElementType, typename = void>
+  struct LambdaValue;
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type should be a stateless struct with a single typedef \c type
+  //! representing the type that should be used or returned by a \c Rho
+  //! struct.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //!
+  //! The second template parameter exists for SFINAE in overload resolution.
+  //!
+  //! \par Used by KoniecznyTraits.
+  // Note: this has to exist in order to allow different rho functions based
+  // on type.
+  template <typename TElementType, typename = void>
+  struct RhoValue;
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type should be a stateless trivially default constructible
+  //! with an operator of signature `void
+  //! operator()(TPointType&, TElementType const&)`, which should modify the
+  //! first argument in-place to contain the lambda value of the second
+  //! argument. The kernel of the lambda function should be Green's
+  //! \f$\mathscr{L}\f$-relation on the semigroup in question.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //! \tparam TPointType the type of the lambda points.
+  //!
+  //! \par Used by KoniecznyTraits.
+  template <typename TElementType, typename TPointType>
+  struct Lambda;
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type should be a stateless trivially default constructible
+  //! with an operator of signature `void
+  //! operator()(TPointType&, TElementType const&)`, which  should modify the
+  //! first argument in-place to contain the rho value of the second argument.
+  //! The kernel of the rho function should be Green's
+  //! \f$\mathscr{R}\f$-relation on the semigroup in question.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //! \tparam TPointType the type of the rho points.
+  //!
+  //! \par Used by KoniecznyTraits.
+  template <typename TElementType, typename TPointType>
+  struct Rho;
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! Specialisations of this class should have a typedef \c type representing
+  //! the type of data stored in the class, a 0-parameter constructor, and a
+  //! constructor of signature `template<typename T> RankState(T, T)` where \c T
+  //! is the type of a const iterator to a container of \c TElementTypes.
+  //!
+  //! The default declaration provided here has `type = void` and indicates
+  //! that no RankState object is required by Rank<TElementType>.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //!
+  //! \par Used by KoniecznyTraits.
+  template <typename TElementType>
+  class RankState {
+   public:
+    //! By default no additional state is required to calculate
+    //! Rank<TElementType>; this is represented by \c type being \c void.
+    using type = void;
+
+    //! Default constructor; does nothing.
+    RankState() {}
+    //! Iterator constructor; does nothing.
+    template <typename T>
+    RankState(T, T) {}
+
+    // Other constructors are deleted.
+    RankState(RankState const&) = delete;
+    RankState(RankState&&)      = delete;
+    RankState& operator=(RankState const&) = delete;
+    RankState& operator=(RankState&&) = delete;
+  };
+
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type should be default constructible and a call operator of signature
+  //! `size_t operator()(TElementType const&)` if no additional data is required
+  //! to compute the rank, or a call operator of signature `size_t
+  //! operator()(TStateType<TElementType> const&, TElementType const&) if
+  //! additional data is required.
+  //!
+  //! The call operator should return the rank of the semigroup element given as
+  //! argument. This must satisfy the following properties:
+  //! * \f$\operatorname{rank}\f$ should agree with the \f$D\f$-order on the
+  //!   semigroup; that is, if \f$D_x \leq D_y\f$, then
+  //!   \f$\operatorname{rank}(x) \leq \operatorname{rank}(y)\f$,
+  //! * if \f$D_x \leq D_y\f$ and \f$\operatorname{rank}(x) =
+  //!   \operatorname{rank}(y)\f$, then \f$D_x = D_y\f$.
+  //!
+  //! \tparam TElementType the type of the semigroup elements.
+  //! \tparam TStateType the type of the data required to compute ranks of
+  //!         TElementTypes; defaults to \c RankState<TElementType>.
+  //!
+  //! \par Used by KoniecznyTraits.
+  template <typename TElementType,
+            typename TStateType = RankState<TElementType>>
+  struct Rank;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_

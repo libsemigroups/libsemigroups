@@ -31,10 +31,11 @@
 
 #include "fpsemi-examples.hpp"      // for RennerTypeDMonoid, RennerTypeBMonoid
 #include "libsemigroups/bmat8.hpp"  // for Bmat8
-#include "libsemigroups/cong-intf.hpp"       // for congruence::type
-#include "libsemigroups/element-helper.hpp"  // for TransfHelper
-#include "libsemigroups/element.hpp"         // for Element, Transf,
-#include "libsemigroups/fpsemi.hpp"          // for FpSemigroup
+#include "libsemigroups/cong-intf.hpp"         // for congruence::type
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element-helper.hpp"    // for TransfHelper
+#include "libsemigroups/element.hpp"           // for Element, Transf,
+#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<Element const*>::eleme...
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/order.hpp"         // for shortlex_words

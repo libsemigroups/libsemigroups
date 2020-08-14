@@ -16,18 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"                         // for TEST_CASE
-#include "fpsemi-examples.hpp"               // for RookMonoid
-#include "libsemigroups/bmat8.hpp"           // for BMat8
-#include "libsemigroups/cong-pair.hpp"       // for KnuthBendixCongruenceByPairs
-#include "libsemigroups/cong.hpp"            // for Congruence
-#include "libsemigroups/element-helper.hpp"  // for BMatHelper
-#include "libsemigroups/element.hpp"         // for Element
-#include "libsemigroups/fpsemi.hpp"          // for FpSemigroup
-#include "libsemigroups/froidure-pin.hpp"    // for FroidurePin
-#include "libsemigroups/report.hpp"          // for ReportGuard
-#include "libsemigroups/types.hpp"           // for word_type
-#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                    // for TEST_CASE
+#include "fpsemi-examples.hpp"          // for RookMonoid
+#include "libsemigroups/bmat8.hpp"      // for BMat8
+#include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs
+#include "libsemigroups/cong.hpp"       // for Congruence
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element-helper.hpp"    // for BMatHelper
+#include "libsemigroups/element.hpp"           // for Element
+#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/types.hpp"             // for word_type
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   // Forward declarations
