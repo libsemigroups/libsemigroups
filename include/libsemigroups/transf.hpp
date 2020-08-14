@@ -124,14 +124,6 @@ namespace libsemigroups {
           _container.cend(),
           [](TValueType const& val) -> bool { return val == UNDEFINED; });
       // TODO(later) double check this is correct
-
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //     Element empty_key() const override {
-      //       std::vector<TValueType> vector(this->degree() + 1);
-      //       std::iota(vector.begin(), vector.end(), 0);
-      //       return new PPerm(std::move(vector));
-      //     }
-      // #endif
     }
 
    protected:

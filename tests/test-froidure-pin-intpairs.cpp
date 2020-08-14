@@ -94,12 +94,6 @@ namespace libsemigroups {
     }
   };
 
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   template <>
-  //   IntPair empty_key(IntPair) {
-  //     return IntPair();
-  //   }
-  // #endif
 }  // namespace libsemigroups
 
 namespace std {

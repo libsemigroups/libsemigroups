@@ -416,13 +416,6 @@ namespace libsemigroups {
       std::swap(this->_data, that._data);
     }
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     // TODO(later) do this another way
-    //     BMat8 empty_key() const {
-    //       return BMat8(0xFF7FBFDFEFF7FBFE);
-    //     }
-    // #endif
-
     //! Find a basis for the row space of \c this.
     //!
     //! This member function returns a BMat8 whose non-zero rows form a basis

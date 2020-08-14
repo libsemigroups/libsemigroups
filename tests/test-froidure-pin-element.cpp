@@ -1036,8 +1036,6 @@ namespace libsemigroups {
     }
     REQUIRE(nr == S.nr_idempotents());
   }
-// FIXME(later) the following example is extremely slow when using densehashmap.
-#if !defined(LIBSEMIGROUPS_DENSEHASHMAP)
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin",
@@ -1070,8 +1068,6 @@ namespace libsemigroups {
     REQUIRE(nr == 6322);
     delete_gens(gens);
   }
-
-#endif
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "043",
@@ -2795,7 +2791,7 @@ namespace libsemigroups {
     delete_gens(gens);
   }
 
-#if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
+#if (LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "086",

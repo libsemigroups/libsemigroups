@@ -216,10 +216,6 @@ namespace libsemigroups {
       redefine(*x, *y);
     }
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //    virtual Element* empty_key() const = 0;
-    // #endif
-
     //! Increases the degree of \c this by \p deg.
     //! This does not make sense for all subclasses of Element.
     virtual void increase_degree_by(size_t) {}
@@ -394,14 +390,6 @@ namespace libsemigroups {
         _vector.swap(xx._vector);
         std::swap(this->_hash_value, xx._hash_value);
       }
-
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //       Element* empty_key() const override {
-      //         // + 2 since bipartition must be of even degree!
-      //         std::vector<TValueType> vector(this->degree() + 2);
-      //         return new TSubclass(std::move(vector));
-      //       }
-      // #endif
 
       //! Returns an iterator.
       //!
@@ -1043,13 +1031,6 @@ namespace libsemigroups {
       return PartialPerm<T>(dom);
     }
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     Element* empty_key() const override {
-    //       std::vector<T> vector(this->degree() + 1);
-    //       std::iota(vector.begin(), vector.end(), 0);
-    //       return new PartialPerm(std::move(vector));
-    //     }
-    // #endif
   };
 
   //! Class for bipartitions.
@@ -1475,14 +1456,6 @@ namespace libsemigroups {
         this->reset_hash_value();
       }
       using Element::redefine;
-
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //       Element* empty_key() const override {
-      //         std::vector<TValueType> vector((this->degree() + 1)
-      //                                        * (this->degree() + 1));
-      //         return new TSubclass(std::move(vector), _semiring);
-      //       }
-      // #endif
 
      protected:
       friend class ElementWithVectorData<TValueType, TSubclass>;

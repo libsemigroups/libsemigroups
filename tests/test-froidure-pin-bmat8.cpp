@@ -34,7 +34,7 @@ namespace libsemigroups {
 
   bool constexpr REPORT = false;
 
-#if (!(defined(LIBSEMIGROUPS_DENSEHASHMAP)) && LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
+#if (LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "001",

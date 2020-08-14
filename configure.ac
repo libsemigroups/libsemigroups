@@ -73,30 +73,6 @@ AC_ARG_ENABLE([verbose],
 AC_MSG_CHECKING([whether to enable verbose mode])
 AC_MSG_RESULT([$enable_verbose])
 
-# Check if we should use google's dense_hash_map
-# AC_ARG_ENABLE([densehashmap],
-#     [AS_HELP_STRING([--enable-densehashmap], 
-#                     [enable google's dense_hash_map])],
-#     [enable_densehashmap=yes],
-#     [enable_densehashmap=no])
-# 
-# AC_MSG_CHECKING([whether to use google's dense_hash_map])
-# AC_MSG_RESULT([$enable_densehashmap])
-# 
-# AS_IF([test "x$enable_densehashmap" = xyes],
-#       [AC_CHECK_FILE([extern/sparsehash-c11/sparsehash/dense_hash_map], 
-#                      [], 
-#                      [AC_MSG_WARN([extern/sparsehash-c11 is not available, see https://github.com/sparsehash/sparsehash-c11])
-#                      [enable_densehashmap=no]])])
-# 
-# AS_IF([test "x$enable_densehashmap" = xyes], 
-#        [AC_DEFINE([DENSEHASHMAP], 
-#                   [1], 
-#                   [define if google's dense_hash_map is available])])
-# 
-# AM_CONDITIONAL([LIBSEMIGROUPS_DENSEHASHMAP], 
-#                [test "x$enable_densehashmap" = xyes])
-
 AC_ARG_ENABLE([compile-warnings],
     [AS_HELP_STRING([--enable-compile-warnings], [enable compiler warnings])],
     [enable_compile_warnings=yes],

@@ -67,8 +67,4 @@
 #include "types.hpp"
 #include "uf.hpp"
 
-// #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-// #include "extern/sparsehash-c11/sparsehash/dense_hash_map"
-// #endif
-
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_

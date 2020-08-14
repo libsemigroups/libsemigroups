@@ -79,18 +79,6 @@ namespace libsemigroups {
     }
   };
 
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   template <typename TIntegralType>
-  //   struct EmptyKey<
-  //       TIntegralType,
-  //       typename
-  //       std::enable_if<std::is_integral<TIntegralType>::value>::type> {
-  //     TIntegralType operator()(TIntegralType) const noexcept {
-  //       return UNDEFINED;
-  //     }
-  //   }
-  // #endif
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "102",
                           "(integers)",

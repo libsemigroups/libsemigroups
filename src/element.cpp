@@ -148,12 +148,6 @@ namespace libsemigroups {
     size_t const n = _vector.size();
     if (n == 0) {
       return;
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //     } else if (n == 1
-      //                && this->_vector[0] ==
-      //                std::numeric_limits<uint32_t>::max()) {
-      //       return;
-      // #endif
     } else if (n % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
@@ -529,12 +523,6 @@ namespace libsemigroups {
 
   void PBR::validate() const {
     size_t n = this->_vector.size();
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     if (n == 1 && this->_vector[0][0] ==
-    //     std::numeric_limits<uint32_t>::max()) {
-    //       return;
-    //     }
-    // #endif
     if (n % 2 == 1) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }

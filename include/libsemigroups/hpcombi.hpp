@@ -146,20 +146,6 @@ namespace libsemigroups {
     }
   };
 
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   template <typename TPTransf16Subclass>
-  //   struct EmptyKey<TPTransf16Subclass,
-  //                   typename std::enable_if<
-  //                       std::is_base_of<HPCombi::PTransf16,
-  //                                       TPTransf16Subclass>::value>::type> {
-  //     TPTransf16Subclass operator()(TPTransf16Subclass const&) const noexcept
-  //     {
-  //       return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE,
-  //       FE};
-  //     }
-  //   };
-  // #endif
-
   //! Defined in ``hpcombi.hpp``.
   //!
   //! Specialization of the adapter Inverse for ``HPCombi::Perm16``.

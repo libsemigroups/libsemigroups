@@ -514,9 +514,5 @@ namespace libsemigroups {
     }
   };
 
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   template <typename TElementType, typename = void>
-  //   struct EmptyKey;
-  // #endif
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_
