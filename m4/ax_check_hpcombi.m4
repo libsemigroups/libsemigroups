@@ -89,10 +89,10 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
          [AC_MSG_WARN([compiler builtin not supported, HPCombi is disabled])])])
 
   AS_IF([test "x$enable_hpcombi" = xyes],
-        [AC_DEFINE([HPCOMBI], [1], [define if building with HPCombi])])
+        [AC_DEFINE([HPCOMBI_ENABLED], [1], [define if building with HPCombi])])
 
   dnl # the following is used in Makefile.am
-  AM_CONDITIONAL([LIBSEMIGROUPS_HPCOMBI], [test "x$enable_hpcombi" = xyes])
+  AM_CONDITIONAL([LIBSEMIGROUPS_HPCOMBI_ENABLED], [test "x$enable_hpcombi" = xyes])
 
   dnl # check for HPCombi's preprocessor macro
   AS_IF([test "x$enable_hpcombi" = xyes], 

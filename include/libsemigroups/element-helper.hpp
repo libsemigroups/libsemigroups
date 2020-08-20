@@ -38,7 +38,7 @@ namespace libsemigroups {
   //! \tparam N the number of points the transformation will be defined on.
   template <size_t N>
   struct TransfHelper {
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized transformation in ``libsemigroups`` or
     //! ``HPCombi``.
     using type = typename std::conditional<
@@ -64,7 +64,7 @@ namespace libsemigroups {
   //! on.
   template <size_t N>
   struct PPermHelper {
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized partial perm in ``libsemigroups`` or
     //! ``HPCombi``.
     using type = typename std::conditional<
@@ -90,7 +90,7 @@ namespace libsemigroups {
   //! on.
   template <size_t N>
   struct PermHelper {
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized permutation in ``libsemigroups`` or
     //! ``HPCombi``.
     using type = typename std::conditional<
@@ -115,7 +115,7 @@ namespace libsemigroups {
   //! \tparam N the dimension of the boolean matrices.
   template <size_t N>
   struct BMatHelper {
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
     using type =

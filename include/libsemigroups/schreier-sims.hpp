@@ -61,7 +61,7 @@
 #include "bruidhinn-traits.hpp"         // for detail::BruidhinnTraits
 #include "containers.hpp"               // for Array2, StaticVector2
 #include "int-range.hpp"                // for IntegralRange
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "stl.hpp"                      // for EqualTo
@@ -566,7 +566,7 @@ namespace libsemigroups {
 
     bool has_valid_degree(const_element_reference x) const {
       return
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
           std::is_same<HPCombi::Perm16, element_type>::value ||
 #endif
           Degree()(x) == N;

@@ -39,7 +39,6 @@
 #include "adapters.hpp"    // for complexity, degree, IncreaseDegree, . . .
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for detail::DynamicArray2
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_HPCOMBI
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "stl.hpp"                      // for Hash, EqualTo, Less
