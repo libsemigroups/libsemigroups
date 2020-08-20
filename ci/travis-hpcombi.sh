@@ -2,7 +2,6 @@
 set -e
 
 ci/travis-setup.sh
-ci/travis-setup-hpcombi.sh
 
 # Check standard tests with HPCombi enabled
 ./configure --enable-hpcombi

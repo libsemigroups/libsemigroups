@@ -45,6 +45,17 @@ extern/fmt-5.3.0/test
 extern/fmt-5.3.0/*.yml
 extern/fmt-5.3.0/*.rst
 extern/fmt-5.3.0/*.txt
+extern/HPCombi/benchmark
+extern/HPCombi/ci
+extern/HPCombi/doc
+extern/HPCombi/examples
+extern/HPCombi/tests
+extern/HPCombi/src
+extern/HPCombi/*.md
+extern/HPCombi/*.txt
+extern/HPCombi/.*
+extern/HPCombi/AUTHORS
+extern/HPCombi/LICENSE
 gh-pages/
 html/
 libsemigroups-*-coverage*

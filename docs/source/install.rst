@@ -40,18 +40,12 @@ are detailed `here <Building the documentation from source>`_.
 From the github repo
 ~~~~~~~~~~~~~~~~~~~~
 
-Optionally, if you want to use ``HPCombi``, you should do:
+To build ``libsemigroups`` from the github repository:
 
 ::
 
-   cd extern
-   curl -L -O https://github.com/hivert/HPCombi/archive/v0.0.5.zip
-   unzip v0.0.5.zip && rm -f v0.0.5.zip && mv HPCombi-0.0.5 HPCombi && cd ..
-
-Then actually build ``libsemigroups`` by doing:
-
-::
-
+   git clone https://github.com/libsemigroups/libsemigroups
+   cd libsemigroups
    ./autogen.sh && ./configure && make -j8 && sudo make install
 
 From a release archive

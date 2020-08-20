@@ -4,7 +4,9 @@ set -e
 # Setup
 ci/travis-setup.sh
 
-./configure
+# Disable hpcombi because the tests were written without hpcombi enabled and as
+# such they fail (harmlessly) if hpcombi is enabled.
+./configure --disable-hpcombi
 make -j4 && sudo make install 
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib

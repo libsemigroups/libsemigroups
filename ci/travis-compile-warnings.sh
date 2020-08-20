@@ -2,7 +2,6 @@
 set -e
 
 ci/travis-setup.sh
-ci/travis-setup-hpcombi.sh
 
 ./configure --enable-compile-warnings --enable-hpcombi
 make test_all -j4 

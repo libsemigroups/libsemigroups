@@ -44,7 +44,9 @@ jobs:
 
     - os: osx
       compiler: clang
-      env: TEST_SUITE=quick
+      env: 
+        - TEST_SUITE=quick
+        - CONFIG_FLAGS="--disable-hpcombi"
       osx_image: xcode8
 
     - env: TEST_SUITE=quick MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
