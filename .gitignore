@@ -38,7 +38,13 @@ configure
 coverage/
 docs/build
 docs/source/_generated
-extern/
+extern/fmt-5.3.0/doc
+extern/fmt-5.3.0/src
+extern/fmt-5.3.0/support
+extern/fmt-5.3.0/test
+extern/fmt-5.3.0/*.yml
+extern/fmt-5.3.0/*.rst
+extern/fmt-5.3.0/*.txt
 gh-pages/
 html/
 libsemigroups-*-coverage*

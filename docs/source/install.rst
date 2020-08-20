@@ -40,16 +40,7 @@ are detailed `here <Building the documentation from source>`_.
 From the github repo
 ~~~~~~~~~~~~~~~~~~~~
 
-To build ``libsemigroups`` from the github repository:
-
-::
-
-   git clone https://github.com/libsemigroups/libsemigroups
-   cd libsemigroups/extern
-   curl -L -O https://github.com/fmtlib/fmt/archive/5.3.0.tar.gz
-   tar -xzf 5.3.0.tar.gz && rm -f 5.3.0.tar.gz && cd ..
-
-Optionally, if you want to use ``HPCombi``, you should also do:
+Optionally, if you want to use ``HPCombi``, you should do:
 
 ::
 
@@ -62,8 +53,6 @@ Then actually build ``libsemigroups`` by doing:
 ::
 
    ./autogen.sh && ./configure && make -j8 && sudo make install
-
-.. A bash script is available: TODO the script is etc/install-libsemigroups.sh
 
 From a release archive
 ~~~~~~~~~~~~~~~~~~~~~~
