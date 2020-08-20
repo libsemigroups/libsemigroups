@@ -16,9 +16,19 @@ branches:
 services:
   - docker
 
+cache: ccache
+
 jobs:
   include:
     - env: TEST_SUITE=hpcombi
+    
+    - env: TEST_SUITE=valgrind
+      addons:
+        apt:
+          packages:
+            - expect
+            - libc6-dbg
+            - libtool-bin
 
     - env: TEST_SUITE=config-options
       addons:
@@ -43,14 +53,6 @@ jobs:
         apt:
           packages:
             - clang-5.0
-
-    - env: TEST_SUITE=valgrind
-      addons:
-        apt:
-          packages:
-            - expect
-            - libc6-dbg
-            - libtool-bin
 
     - env: TEST_SUITE=gap
 
@@ -94,9 +96,16 @@ jobs:
     #     - LDFLAGS="$LDFLAGS -L$HOME/miniconda3/lib"
 before_install:
     - eval "${MATRIX_EVAL}"
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:dns/gnu -y; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --only-upgrade autoconf; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        sudo add-apt-repository ppa:dns/gnu -y;
+        sudo apt-get update -q;
+        sudo apt-get install --only-upgrade autoconf;
+      fi;
+    - if [[ "$TRAVIS_OS_NAME" == "linux" && "$TEST_SUITE" != "cppyy" ]]; then
+        export CC="ccache ${CC}";
+        export CXX="ccache ${CXX}"; 
+        export CXXFLAGS="${CXXFLAGS} -fdiagnostics-color";
+      fi;
     - if [[ "$TEST_SUITE" == "config-options" ]]; then
         wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
         chmod +x miniconda.sh;
