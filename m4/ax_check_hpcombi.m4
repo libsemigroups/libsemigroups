@@ -31,8 +31,8 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
 
   AS_IF([test "x$enable_hpcombi" = xyes],
         [AC_MSG_CHECKING([the required version of HPCombi])
-         REQUIRED_HPCOMBI="$(cat $srcdir/extern/.HPCombi_VERSION)"
-         AC_MSG_RESULT([$REQUIRED_HPCOMBI])])
+         MIN_HPCOMBI_VERSION="0.0.6"
+         AC_MSG_RESULT([$MIN_HPCOMBI_VERSION])])
 
   AS_IF([test "x$enable_hpcombi" = xyes],
         [AC_MSG_CHECKING([the version of HPCombi that's present])
@@ -42,7 +42,7 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
   AS_IF([test "x$enable_hpcombi" = xyes],
         [AX_COMPARE_VERSION($FOUND_HPCOMBI, 
                             [ge], 
-                            $REQUIRED_HPCOMBI,
+                            $MIN_HPCOMBI_VERSION,
                             [],
                             [AC_MSG_WARN([the incorrect version of HPCombi is present, HPCombi is disabled]) 
                             enable_hpcombi=no])])

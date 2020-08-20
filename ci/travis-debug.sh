@@ -2,7 +2,6 @@
 set -e
 
 ci/travis-setup.sh
-ci/travis-setup-hpcombi.sh
 
 ./configure --enable-hpcombi --enable-debug
 make test_all -j4 && ./test_all "[quick]"

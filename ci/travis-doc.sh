@@ -3,7 +3,6 @@ set -e
 
 # The following are required to build all of the documentation
 ci/travis-setup.sh
-ci/travis-setup-hpcombi.sh
 ./configure
 
 sudo -H pip3 install --upgrade pip
