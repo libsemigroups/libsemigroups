@@ -92,7 +92,7 @@ pkginclude_HEADERS += include/libsemigroups/wilo.hpp
 pkginclude_HEADERS += include/libsemigroups/wislo.hpp
 pkginclude_HEADERS += include/libsemigroups/word.hpp
 
-if LIBSEMIGROUPS_HPCOMBI
+if LIBSEMIGROUPS_HPCOMBI_ENABLED
 hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
 hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
@@ -111,7 +111,7 @@ hpcombiinclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
 hpcombifallbackincludedir = $(includedir)/libsemigroups/HPCombi/include/fallback
 hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
 hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
-endif
+endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 fmtincludedir = $(includedir)/libsemigroups/fmt
 fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  

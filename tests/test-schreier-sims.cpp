@@ -27,7 +27,7 @@
 #include <cstdint>  // for uint64_t
 
 #include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "libsemigroups/report.hpp"                // for ReportGuard
 #include "libsemigroups/schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 #include "libsemigroups/transf.hpp"         // for Perm

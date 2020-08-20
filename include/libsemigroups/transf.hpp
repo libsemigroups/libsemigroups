@@ -531,7 +531,7 @@ namespace libsemigroups {
   template <size_t N>
   struct NewTransfHelper {
     using int_type = typename SmallestInteger<N>::type;
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     using type =
         typename std::conditional<N >= 17,
                                   Transf<int_type, std::array<int_type, N>>,
@@ -544,7 +544,7 @@ namespace libsemigroups {
   template <size_t N>
   struct NewPPermHelper {
     using int_type = typename SmallestInteger<N>::type;
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     using type =
         typename std::conditional<N >= 17,
                                   PPerm<int_type, std::array<int_type, N>>,
@@ -557,7 +557,7 @@ namespace libsemigroups {
   template <size_t N>
   struct NewPermHelper {
     using int_type = typename SmallestInteger<N>::type;
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     using type =
         typename std::conditional<N >= 17,
                                   Perm<int_type, std::array<int_type, N>>,

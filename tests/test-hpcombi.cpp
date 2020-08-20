@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// Must include hpcombi.hpp so that LIBSEMIGROUPS_HPCOMBI is defined, if so
-// specified at during configure.
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+// Must include hpcombi.hpp so that LIBSEMIGROUPS_HPCOMBI_ENABLED is defined,
+// if so specified at during configure.
+#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #include <cstddef>  // for size_t
 

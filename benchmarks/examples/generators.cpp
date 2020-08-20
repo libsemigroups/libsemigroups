@@ -24,7 +24,7 @@
 #include "libsemigroups/libsemigroups-config.hpp"
 
 namespace libsemigroups {
-#ifndef LIBSEMIGROUPS_HPCOMBI
+#ifndef LIBSEMIGROUPS_HPCOMBI_ENABLED
   static_assert(false, "HPCombi must be enabled for benchmarks");
 #endif
 

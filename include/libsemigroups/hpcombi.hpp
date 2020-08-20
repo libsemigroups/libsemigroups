@@ -22,11 +22,11 @@
 #ifndef LIBSEMIGROUPS_HPCOMBI_HPP_
 #define LIBSEMIGROUPS_HPCOMBI_HPP_
 
-// Must include libsemigroups-config.hpp so that LIBSEMIGROUPS_HPCOMBI is
-// defined, if so specified at during configure.
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI
+// Must include libsemigroups-config.hpp so that LIBSEMIGROUPS_HPCOMBI_ENABLED
+// is defined, if so specified at during configure.
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#ifdef LIBSEMIGROUPS_HPCOMBI
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #include "HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
 
@@ -363,5 +363,5 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_HPCOMBI
+#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 #endif  // LIBSEMIGROUPS_HPCOMBI_HPP_
