@@ -929,10 +929,6 @@ namespace libsemigroups {
     std::vector<std::pair<internal_element_type, element_index_type>> _sorted;
     std::shared_ptr<state_type>                                       _state;
     mutable internal_element_type _tmp_product;
-
-#ifdef LIBSEMIGROUPS_VERBOSE
-    size_t _nr_products;
-#endif
   };
 }  // namespace libsemigroups
 
