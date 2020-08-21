@@ -102,6 +102,7 @@ Option
 --enable-code-coverage      enable code coverage support
 --enable-compile-warnings   enable compiler warnings
 --enable-debug              enable debug mode
+--enable-eigen              enable ``eigen``
 --enable-hpcombi            enable ``HPCombi``
 --enable-verbose            enable verbose mode
 --with-external-fmt         do not use the included copy of fmt

@@ -76,11 +76,12 @@ user-defined types.
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
 for very fast manipulation of transformations, partial permutations,
 permutations, and boolean matrices of small size;  `catch`_ for tests; 
-and `fmt`_ for reporting.
+`fmt`_ for reporting; and `eigen`_ for some linear algebra computations.
 
 .. _HPCombi: https://github.com/hivert/HPCombi
 .. _catch: https://github.com/catchorg/Catch2
 .. _fmt: https://github.com/fmtlib/fmt
+.. _eigen: http://eigen.tuxfamily.org/
 
 How to use it
 ~~~~~~~~~~~~~
@@ -107,26 +108,30 @@ Author
 Contributors
 ~~~~~~~~~~~~
 
-- `F. Hivert`_ contributed many helpful ideas to libsemigroups, an allocator
-  implementation (to be included in a future version), and HPCombi.
+- `R. Cirpons`_ contributed to ``IsObviouslyInfinite`` and to integrating
+  ``eigen``.
+- `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
+  allocator implementation (to be included in a future version), and
+  ``HPCombi``.
 - `J. James`_ contributed some bugfixes.
 - `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
 - `F. Smith`_ contributed to the Todd-Coxeter implementation, and to the
   `BMat8` class. 
-- `N. Thiery`_ contributed to the build system, packaging libsemigroups via
+- `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
 - `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, and related
   algorithms for the class `ActionDigraph`.
 
+.. _R. Cirpons: 
 .. _F. Hivert: https://www.lri.fr/~hivert/
+.. _J. James: http://www.jamezone.org/
 .. _J. Jonušas: http://julius.jonusas.work/
 .. _D. V. Pasechnik:  http://users.ox.ac.uk/~coml0531
 .. _F. Smith: 
 .. _N. Thiery: http://nicolas.thiery.name/
 .. _M. Torpey: https://mtorpey.github.io/
-.. _J. James: http://www.jamezone.org/
 .. _M. Tsalakou: https://mariatsalakou.github.io/
 
 Acknowledgements

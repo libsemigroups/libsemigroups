@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This entire file is only build if LIBSEMIGROUPS_ENABLE_EIGEN is not defined.
+// This entire file is only built if LIBSEMIGROUPS_ENABLE_EIGEN is not defined.
 
 #include "libsemigroups/digraph.hpp"
 

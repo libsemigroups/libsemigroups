@@ -14,7 +14,7 @@ dnl the default C/CXXFLAGS when compiling in, e.g. debug mode
 : ${CFLAGS=""}
 : ${CXXFLAGS=""}
 
-AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
+AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects tar-pax])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
 
@@ -121,7 +121,10 @@ AX_CHECK_HPCOMBI()
 # Check if the vendored fmt should be used or not
 AX_CHECK_FMT()
 
-AM_CONDITIONAL([LIBSEMIGROUPS_EIGEN_ENABLED], [test "xenable_eigen" = xyes])
+# Check if the vendored eigen should be used or not, or if eigen should be
+# disabled altogether
+AX_CHECK_EIGEN()
+
 dnl Output configured files
 
 dnl compiler builtins

@@ -826,7 +826,7 @@ namespace libsemigroups {
       } else if (nr_generators() > _relations.size() + _extra.size()) {
         return true;
       }
-      detail::IsObviouslyInfinite<letter_type, word_type> ioi(nr_generators());
+      detail::IsObviouslyInfinite ioi(nr_generators());
       ioi.add_rules(_relations.cbegin(), _relations.cend());
       ioi.add_rules(_extra.cbegin(), _extra.cend());
       return ioi.result();
