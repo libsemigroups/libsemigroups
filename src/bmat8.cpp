@@ -247,7 +247,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the arguments should each be at most 7, got %d as the %s argument",
           (7 < i) ? i : j,
-          (7 < i) ? std::string("first") : std::string("second"));
+          (7 < i) ? "first" : "second");
     }
     _data ^= (-val ^ _data) & BIT_MASK[8 * i + j];
   }

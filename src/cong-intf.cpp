@@ -393,7 +393,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "letter index out of bounds in word %s, expected "
             "value in [0, %d), got %d",
-            detail::to_string(w),
+            detail::to_string(w).c_str(),
             l,
             _nr_gens);
       }

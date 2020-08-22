@@ -24,7 +24,9 @@
 #include <algorithm>  // for equal
 #include <array>      // for array
 #include <cstddef>    // for size_t
-#include <sstream>    // for ostream, ostr...
+#include <exception>  // for runtime_error
+#include <sstream>     // for ostream, ostr...
+#include <memory>     // for unique_ptr
 #include <string>     // for string
 #include <utility>    // for make_pair, pair
 #include <vector>     // for vector
@@ -34,6 +36,23 @@
 namespace libsemigroups {
 
   namespace detail {
+    static inline std::string const& string_format(std::string const& format) {
+      return format;
+    }
+
+    template <typename... Args>
+    std::string string_format(std::string const& format, Args... args) {
+      size_t size = snprintf(nullptr, 0, format.c_str(), args...)
+                    + 1;  // Extra space for '\0'
+      if (size <= 0) {
+        throw std::runtime_error("Error during formatting.");
+      }
+      std::unique_ptr<char[]> buf(new char[size]);
+      snprintf(buf.get(), size, format.c_str(), args...);
+      return std::string(
+          buf.get(), buf.get() + size - 1);  // We don't want the '\0' inside
+    }
+
     // Forward declaration
     template <typename T>
     std::string to_string(const T& n);

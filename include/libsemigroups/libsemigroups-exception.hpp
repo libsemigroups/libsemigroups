@@ -24,14 +24,6 @@
 
 #include "string.hpp"  // for to_string
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winline"
-#pragma GCC diagnostic ignored "-Wswitch-default"
-#pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#include "fmt/printf.h"  // for fmt::sprintf
-#pragma GCC diagnostic pop
-
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.
   //!
@@ -70,10 +62,10 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#define LIBSEMIGROUPS_EXCEPTION(...)                              \
-  {                                                               \
-    throw LibsemigroupsException(                                 \
-        __FILE__, __LINE__, __func__, fmt::sprintf(__VA_ARGS__)); \
+#define LIBSEMIGROUPS_EXCEPTION(...)                                       \
+  {                                                                        \
+    throw LibsemigroupsException(                                          \
+        __FILE__, __LINE__, __func__, detail::string_format(__VA_ARGS__)); \
   }
 
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
