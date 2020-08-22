@@ -108,28 +108,6 @@ namespace libsemigroups {
       return ::libsemigroups::operator<<(os, p);
     }
 
-    template <typename... TArgs>
-    struct Stringify;
-
-    template <typename TFirst, typename... TArgs>
-    struct Stringify<TFirst, TArgs...> final {
-      std::string operator()(TFirst first, TArgs... args) const {
-        return to_string(first) + Stringify<TArgs...>()(args...);
-      }
-    };
-
-    template <>
-    struct Stringify<> final {
-      std::string operator()() const noexcept {
-        return "";
-      }
-    };
-
-    template <typename... TArgs>
-    std::string stringify(TArgs... args) {
-      return Stringify<TArgs...>()(args...);
-    }
-
     static inline std::string wrap(size_t const indent, std::string& s) {
       size_t      pos = 100 - indent;
       std::string prefix(indent, ' ');
