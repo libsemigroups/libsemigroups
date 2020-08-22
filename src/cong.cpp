@@ -228,7 +228,7 @@ namespace libsemigroups {
     // winning.
     if (_race.winner() == nullptr) {
       LIBSEMIGROUPS_EXCEPTION("cannot determine the class index of word %s",
-                              detail::to_string(word));
+                              detail::to_string(word).c_str());
     }
     LIBSEMIGROUPS_ASSERT(static_cast<CongruenceInterface*>(_race.winner().get())
                              ->word_to_class_index(word)

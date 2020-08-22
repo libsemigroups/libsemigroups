@@ -346,7 +346,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.end()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "invalid letter %c, valid letters are \"%s\"", c, _alphabet);
+          "invalid letter %c, valid letters are \"%s\"", c, _alphabet.c_str());
     }
   }
 
