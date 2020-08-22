@@ -21,7 +21,7 @@
 
 #include "libsemigroups/word.hpp"
 
-#include <cmath> // for std::pow
+#include <cmath>  // for std::pow
 
 #include "libsemigroups/int-range.hpp"                // for IntegralRange
 #include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
