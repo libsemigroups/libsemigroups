@@ -22,7 +22,7 @@
 #include <exception>  // for std::runtime_error
 #include <string>     // for std::string
 
-#include "string.hpp"  // for to_string
+#include "string.hpp"  // for detail::to_string + string_format
 
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.

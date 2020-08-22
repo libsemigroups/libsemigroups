@@ -330,44 +330,15 @@ namespace libsemigroups {
         return *this;
       }
 
-      Reporter& prefix() {
-        if (_report) {
-          std::lock_guard<std::mutex> lg(_mtx);
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-          resize(tid + 1);
-          _options[tid].prefix = "";
-        }
-        return *this;
-      }
+      Reporter& prefix();
 
-      Reporter& color(fmt::color c) {
-        if (_report) {
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-          resize(tid + 1);
-          _options[tid].color = c;
-        }
-        return *this;
-      }
+      Reporter& color(fmt::color);
 
-      Reporter& thread_color() {
-        if (_report) {
-          std::lock_guard<std::mutex> lg(_mtx);
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-          resize(tid + 1);
-          _options[tid].color = thread_colors[tid % thread_colors.size()];
-        }
-        return *this;
-      }
+      Reporter& thread_color();
 
-      Reporter& flush_right() {
-        if (_report) {
-          std::lock_guard<std::mutex> lg(_mtx);
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-          resize(tid + 1);
-          _options[tid].flush_right = true;
-        }
-        return *this;
-      }
+      Reporter& flush_right();
+
+      void flush();
 
       void report(bool val) {
         _report = val;
@@ -392,38 +363,8 @@ namespace libsemigroups {
         return *this;
       }
 
-      void flush() {
-        if (_report) {
-          std::lock_guard<std::mutex> lg(_mtx);
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-          size_t pad = 0;
-          _msg[tid]  = _options[tid].prefix + _msg[tid];
-          if (_options[tid].flush_right
-              && _last_msg[tid].size() + unicode_string_length(_msg[tid])
-                     < 80) {
-            pad = (80 - _last_msg[tid].size())
-                  - unicode_string_length(_msg[tid]);
-            _msg[tid] = std::string(pad, ' ') + _msg[tid];
-          }
-#ifdef LIBSEMIGROUPS_VERBOSE
-          if (_msg[tid].back() != '\n') {
-            _msg[tid] += "\n";
-          }
-#endif
-          _msg[tid] = wrap(_options[tid].prefix.length(), _msg[tid]);
-          fmt::print(fg(_options[tid].color), _msg[tid]);
-          _options[tid] = Options();
-        }
-      }
-
      private:
-      void resize(size_t n) {
-        if (n > _msg.size()) {
-          _last_msg.resize(n);
-          _msg.resize(n);
-          _options.resize(n);
-        }
-      }
+      void resize(size_t);
 
       struct Options {
         Options()
