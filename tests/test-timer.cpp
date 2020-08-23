@@ -17,6 +17,7 @@
 
 #include <chrono>    // for nanoseconds, milliseconds, durati...
 #include <iostream>  // for string, ostringstream, ostream
+#include <sstream>   // for ostringstream
 #include <string>    // for operator==
 #include <thread>    // for sleep_for
 

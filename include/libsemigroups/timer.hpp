@@ -24,8 +24,6 @@
 #include <iosfwd>   // for ostream
 #include <string>   // for string
 
-#include "string.hpp"  // for to_string
-
 namespace libsemigroups {
   namespace detail {
 
@@ -55,25 +53,7 @@ namespace libsemigroups {
 
       // String containing the somewhat human readable amount of time, this is
       // primarily intended for testing purposes
-      static std::string string(std::chrono::nanoseconds elapsed) {
-        std::string out;
-        if (string_it<std::chrono::hours>(out, elapsed, "h", 0)) {
-          string_it<std::chrono::minutes>(out, elapsed, "m", 0);
-          return out;
-        } else if (string_it<std::chrono::minutes>(out, elapsed, "m", 0)) {
-          string_it<std::chrono::seconds>(out, elapsed, "s", 0);
-          return out;
-        } else if (string_it<std::chrono::milliseconds>(
-                       out, elapsed, "ms", 9)) {
-          return out;
-        } else if (string_it<std::chrono::microseconds>(
-                       out, elapsed, "\u03BCs", 9)) {
-          return out;
-        } else {
-          string_it<std::chrono::nanoseconds>(out, elapsed, "ns", 0);
-          return out;
-        }
-      }
+      static std::string string(std::chrono::nanoseconds elapsed);
 
       // String containing the somewhat human readable amount of time since the
       // last reset
@@ -91,20 +71,6 @@ namespace libsemigroups {
 
      private:
       std::chrono::high_resolution_clock::time_point _start;
-
-      template <typename T>
-      static bool string_it(std::string&              str,
-                            std::chrono::nanoseconds& elapsed,
-                            std::string               unit,
-                            size_t                    threshold) {
-        T x = std::chrono::duration_cast<T>(elapsed);
-        if (x > T(threshold)) {
-          str += detail::to_string(x.count()) + unit;
-          elapsed -= std::chrono::nanoseconds(x);
-          return true;
-        }
-        return false;
-      }
     };
   }  // namespace detail
 }  // namespace libsemigroups

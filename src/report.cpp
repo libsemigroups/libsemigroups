@@ -18,21 +18,50 @@
 
 #include "libsemigroups/report.hpp"
 
+#include <iostream>
+
+#include "libsemigroups/libsemigroups-config.hpp"
+
 namespace libsemigroups {
   detail::Reporter        REPORTER;
   detail::ThreadIdManager THREAD_ID_MANAGER;
 
   namespace detail {
-    Reporter& Reporter::prefix() {
-      if (_report) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        resize(tid + 1);
-        _options[tid].prefix = "";
-      }
-      return *this;
+
+    ThreadIdManager::ThreadIdManager() : _mtx(), _next_tid(0), _thread_map() {
+      tid(std::this_thread::get_id());
     }
 
+    void ThreadIdManager::reset() {
+      // Only do this from the main thread
+      LIBSEMIGROUPS_ASSERT(tid(std::this_thread::get_id()) == 0);
+      // Delete all thread_ids
+      _thread_map.clear();
+      _next_tid = 0;
+      // Reinsert the main thread's id
+      tid(std::this_thread::get_id());
+    }
+
+    size_t ThreadIdManager::tid(std::thread::id t) {
+      std::lock_guard<std::mutex> lg(_mtx);
+      auto                        it = _thread_map.find(t);
+      if (it != _thread_map.end()) {
+        return (*it).second;
+      } else {
+        // Don't check the assert below because on a single thread machine
+        // (such as those used by appveyor), for an fp-semigroup more than 1
+        // thread will be used, and this assertion will fail.
+        // LIBSEMIGROUPS_ASSERT(_next_tid <=
+        // std::thread::hardware_concurrency());
+        _thread_map.emplace(t, _next_tid++);
+        return _next_tid - 1;
+      }
+    }
+
+    Reporter::Reporter(bool report)
+        : _last_msg(), _mtx(), _msg(), _options(), _report(report) {}
+
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
     Reporter& Reporter::color(fmt::color c) {
       if (_report) {
         size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
@@ -48,6 +77,17 @@ namespace libsemigroups {
         size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
         resize(tid + 1);
         _options[tid].color = thread_colors[tid % thread_colors.size()];
+      }
+      return *this;
+    }
+#endif
+
+    Reporter& Reporter::prefix() {
+      if (_report) {
+        std::lock_guard<std::mutex> lg(_mtx);
+        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+        resize(tid + 1);
+        _options[tid].prefix = "";
       }
       return *this;
     }
@@ -79,7 +119,11 @@ namespace libsemigroups {
         }
 #endif
         _msg[tid] = wrap(_options[tid].prefix.length(), _msg[tid]);
+#ifdef LIBSEMIGROUPS_ENABLE_FMT
         fmt::print(fg(_options[tid].color), _msg[tid]);
+#else
+        std::cout << _msg[tid];
+#endif
         _options[tid] = Options();
       }
     }

@@ -23,7 +23,6 @@
 
 #include <cxxabi.h>  // for abi::
 
-#include <array>          // for array
 #include <atomic>         // for atomic
 #include <cstddef>        // for size_t
 #include <iosfwd>         // for string, operator<<, cout, ost...
@@ -32,27 +31,33 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"               // for wrap
+#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "string.hpp"                // for wrap
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-default"
-#pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#pragma GCC diagnostic ignored "-Winline"
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/color.h"
 #include "fmt/printf.h"
-#pragma GCC diagnostic pop
+#include <array>  // for array
+#endif
 
 // To avoid computing the parameters __VA_ARGS__ when we aren't even
 // reporting, we check if we are reporting before calling REPORTER.
 #define REPORT(...) \
   (REPORTER.report() ? REPORTER(__VA_ARGS__).prefix(this) : REPORTER)
 
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
 #define REPORT_DEFAULT(...) REPORT(__VA_ARGS__).thread_color().flush();
+#else
+#define REPORT_DEFAULT(...) REPORT(__VA_ARGS__).flush();
+#endif
 
 #ifdef LIBSEMIGROUPS_DEBUG
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
 #define REPORT_DEBUG(...) REPORT(__VA_ARGS__).color(fmt::color::dim_gray)
+#else
+#define REPORT_DEBUG(...) REPORT(__VA_ARGS__)
+#endif
 #define REPORT_DEBUG_DEFAULT(...) REPORT_DEBUG(__VA_ARGS__).flush();
 #else
 #define REPORT_DEBUG(...)
@@ -60,7 +65,11 @@
 #endif
 
 #ifdef LIBSEMIGROUPS_VERBOSE
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
 #define REPORT_VERBOSE(...) REPORT(__VA_ARGS__).color(fmt::color::cyan)
+#else
+#define REPORT_VERBOSE(...) REPORT(__VA_ARGS__)
+#endif
 #define REPORT_VERBOSE_DEFAULT(...) REPORT_VERBOSE(__VA_ARGS__).flush();
 #else
 #define REPORT_VERBOSE(...)
@@ -68,7 +77,7 @@
 #endif
 
 #define REPORT_TIME(var) \
-  REPORT_DEFAULT("elapsed time (%s): %s\n", __func__, var.string());
+  REPORT_DEFAULT("elapsed time (%s): %s\n", __func__, var.string().c_str());
 
 namespace libsemigroups {
 
@@ -76,40 +85,14 @@ namespace libsemigroups {
 
     class ThreadIdManager final {
      public:
-      ThreadIdManager() : _mtx(), _next_tid(0), _thread_map() {
-        tid(std::this_thread::get_id());
-      }
-
+      ThreadIdManager();
       ThreadIdManager(ThreadIdManager const&) = delete;
       ThreadIdManager(ThreadIdManager&&)      = delete;
       ThreadIdManager& operator=(ThreadIdManager const&) = delete;
       ThreadIdManager& operator=(ThreadIdManager&&) = delete;
 
-      void reset() {
-        // Only do this from the main thread
-        LIBSEMIGROUPS_ASSERT(tid(std::this_thread::get_id()) == 0);
-        // Delete all thread_ids
-        _thread_map.clear();
-        _next_tid = 0;
-        // Reinsert the main thread's id
-        tid(std::this_thread::get_id());
-      }
-
-      size_t tid(std::thread::id t) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        auto                        it = _thread_map.find(t);
-        if (it != _thread_map.end()) {
-          return (*it).second;
-        } else {
-          // Don't check the assert below because on a single thread machine
-          // (such as those used by appveyor), for an fp-semigroup more than 1
-          // thread will be used, and this assertion will fail.
-          // LIBSEMIGROUPS_ASSERT(_next_tid <=
-          // std::thread::hardware_concurrency());
-          _thread_map.emplace(t, _next_tid++);
-          return _next_tid - 1;
-        }
-      }
+      void   reset();
+      size_t tid(std::thread::id t);
 
      private:
       std::mutex                                  _mtx;
@@ -121,52 +104,44 @@ namespace libsemigroups {
   extern detail::ThreadIdManager THREAD_ID_MANAGER;
 
   namespace detail {
-    class ClassNamer final {
-      ClassNamer()                  = delete;
-      ClassNamer(ClassNamer const&) = delete;
-      ClassNamer(ClassNamer&&)      = delete;
-      ClassNamer& operator=(ClassNamer const&) = delete;
-      ClassNamer& operator=(ClassNamer&&) = delete;
-
-     public:
-      template <typename T>
-      static std::string get(T const* o) {
-        static std::unordered_map<size_t, std::string> _class_name_map;
-        auto it = _class_name_map.find(typeid(*o).hash_code());
-        if (it != _class_name_map.end()) {
-          return (*it).second;
-        }
-        int         status;
-        char*       ptr = abi::__cxa_demangle(typeid(*o).name(), 0, 0, &status);
-        std::string out = "";
-        if (status == 0) {  // successfully demangled
-          std::string full = std::string(ptr);
-          size_t      last = full.size();
-          if (full.back() == '>') {
-            size_t bracket_count = 0;
-            do {
-              last = full.find_last_of("<>", last - 1);
-              if (last != std::string::npos) {
-                if (full.at(last) == '>') {
-                  bracket_count++;
-                } else if (full.at(last) == '<') {
-                  bracket_count--;
-                }
-              }
-            } while (bracket_count != 0);
-          }
-          size_t first = full.rfind("::", last - 1);
-          first        = (first == std::string::npos ? 0 : first + 2);
-          out          = full.substr(first, last - first);
-        }
-        free(ptr);
-        // If we couldn't demangle the name, then just add the empty string to
-        // the map
-        _class_name_map.emplace(typeid(*o).hash_code(), out);
-        return out;
+    template <typename T>
+    static std::string string_class_name(T const* o) {
+      static std::unordered_map<size_t, std::string> _class_name_map;
+      auto it = _class_name_map.find(typeid(*o).hash_code());
+      if (it != _class_name_map.end()) {
+        return (*it).second;
       }
-    };
+      int         status;
+      char*       ptr = abi::__cxa_demangle(typeid(*o).name(), 0, 0, &status);
+      std::string out = "";
+      if (status == 0) {  // successfully demangled
+        std::string full = std::string(ptr);
+        size_t      last = full.size();
+        if (full.back() == '>') {
+          size_t bracket_count = 0;
+          do {
+            last = full.find_last_of("<>", last - 1);
+            if (last != std::string::npos) {
+              if (full.at(last) == '>') {
+                bracket_count++;
+              } else if (full.at(last) == '<') {
+                bracket_count--;
+              }
+            }
+          } while (bracket_count != 0);
+        }
+        size_t first = full.rfind("::", last - 1);
+        first        = (first == std::string::npos ? 0 : first + 2);
+        out          = full.substr(first, last - first);
+      }
+      free(ptr);
+      // If we couldn't demangle the name, then just add the empty string to
+      // the map
+      _class_name_map.emplace(typeid(*o).hash_code(), out);
+      return out;
+    }
 
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
     static std::array<fmt::color, 146> const thread_colors
         = {fmt::color::white,
            fmt::color::red,
@@ -307,11 +282,11 @@ namespace libsemigroups {
            fmt::color::wheat,
            fmt::color::white_smoke,
            fmt::color::yellow_green};
+#endif
 
     class Reporter final {
      public:
-      explicit Reporter(bool report = true)
-          : _last_msg(), _mtx(), _msg(), _options(), _report(report) {}
+      explicit Reporter(bool report = true);
 
       Reporter(Reporter const&) = delete;
       Reporter(Reporter&&)      = delete;
@@ -325,16 +300,22 @@ namespace libsemigroups {
           size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].prefix
-              = fmt::sprintf("#%llu: %s: ", tid, ClassNamer::get(ptr));
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
+              = fmt::sprintf("#%llu: %s: ", tid, string_class_name(ptr));
+#else
+              = string_format(
+                  "#%llu: %s: ", tid, string_class_name(ptr).c_str());
+#endif
         }
         return *this;
       }
 
-      Reporter& prefix();
-
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
       Reporter& color(fmt::color);
-
       Reporter& thread_color();
+#endif
+
+      Reporter& prefix();
 
       Reporter& flush_right();
 
@@ -357,8 +338,13 @@ namespace libsemigroups {
             resize(tid + 1);
           }
           _last_msg[tid] = _msg[tid];
-          _msg[tid]      = fmt::sprintf(args...);
+
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
+          _msg[tid] = fmt::sprintf(args...);
           color(thread_colors[tid % thread_colors.size()]);
+#else
+          _msg[tid] = string_format(args...);
+#endif
         }
         return *this;
       }
@@ -368,8 +354,16 @@ namespace libsemigroups {
 
       struct Options {
         Options()
-            : color(fmt::color::alice_blue), flush_right(false), prefix() {}
-        fmt::color  color;
+            :
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
+              color(fmt::color::alice_blue),
+#endif
+              flush_right(false),
+              prefix() {
+        }
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
+        fmt::color color;
+#endif
         bool        flush_right;
         std::string prefix;
       };
@@ -396,7 +390,6 @@ namespace libsemigroups {
 
     ~ReportGuard() {
       REPORTER.report(false);
-      // REPORTER.set_ostream(std::cout);
     }
   };
 }  // namespace libsemigroups
