@@ -1325,9 +1325,7 @@ namespace libsemigroups {
         }
         standardize(stand[m]);
 
-        REPORT(line).prefix().color(fmt::color::dim_gray).flush();
-        // Second param, means don't lock, since we already locked in run_impl
-        // above.
+        REPORT(line).prefix().flush();
         run_for(_settings->random_interval);
       }
       LIBSEMIGROUPS_ASSERT(_coinc.empty());
@@ -1467,7 +1465,7 @@ namespace libsemigroups {
       }
       apply_permutation(p, q);
 
-      REPORT("%s\n", tmr.string()).prefix().flush_right().flush();
+      REPORT("%s\n", tmr.string().c_str()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();
@@ -1491,7 +1489,7 @@ namespace libsemigroups {
         }
       }
       apply_permutation(p, q);
-      REPORT("%s\n", tmr.string()).prefix().flush_right().flush();
+      REPORT("%s\n", tmr.string().c_str()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();
@@ -1619,7 +1617,7 @@ namespace libsemigroups {
         }
       }
       apply_permutation(p, q);
-      REPORT("%s\n", tmr.string()).prefix().flush_right().flush();
+      REPORT("%s\n", tmr.string().c_str()).prefix().flush_right().flush();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
       debug_validate_table();

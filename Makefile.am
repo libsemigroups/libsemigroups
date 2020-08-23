@@ -25,7 +25,9 @@ endif
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS += $(CODE_COVERAGE_CXXFLAGS)
 
+if LIBSEMIGROUPS_FMT_ENABLED
 AM_CPPFLAGS += -DFMT_HEADER_ONLY
+endif
 
 LIBS = $(AM_LDFLAGS) 
 
@@ -114,6 +116,7 @@ hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
 hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
+if LIBSEMIGROUPS_FMT_ENABLED
 fmtincludedir = $(includedir)/libsemigroups/fmt
 fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
@@ -126,6 +129,7 @@ fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/posix.h
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/printf.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
+endif
 
 if LIBSEMIGROUPS_EIGEN_ENABLED
 eigenincludedir = $(includedir)/libsemigroups/Eigen
@@ -535,6 +539,7 @@ libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/siso.cpp
+libsemigroups_la_SOURCES += src/timer.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/uf.cpp
 libsemigroups_la_SOURCES += src/wilo.cpp
@@ -574,52 +579,53 @@ CHECK_FLAGS1  = --use-colour yes --order lex --abort
 CHECK_FLAGS2  = [quick]
 
 check_PROGRAMS =  test_all 
-check_PROGRAMS += test_action
-check_PROGRAMS += test_bitset
-check_PROGRAMS += test_blocks
-check_PROGRAMS += test_bmat8
-check_PROGRAMS += test_cong_pair
-check_PROGRAMS += test_cong
-check_PROGRAMS += test_cong_intf
-check_PROGRAMS += test_constants
-check_PROGRAMS += test_containers
-check_PROGRAMS += test_digraph_helper
-check_PROGRAMS += test_digraph
-check_PROGRAMS += test_element
-check_PROGRAMS += test_forest
-check_PROGRAMS += test_fpsemi
-check_PROGRAMS += test_fpsemi_intf
-check_PROGRAMS += test_froidure_pin_bipart
-check_PROGRAMS += test_froidure_pin_bmat8
-check_PROGRAMS += test_froidure_pin_boolmat
-check_PROGRAMS += test_froidure_pin_element
-check_PROGRAMS += test_froidure_pin_integers
-check_PROGRAMS += test_froidure_pin_intmat
-check_PROGRAMS += test_froidure_pin_intpairs
-check_PROGRAMS += test_froidure_pin_pbr
-check_PROGRAMS += test_froidure_pin_pperm
-check_PROGRAMS += test_froidure_pin_projmaxplus
-check_PROGRAMS += test_froidure_pin_transf
-check_PROGRAMS += test_froidure_pin_tropmaxplus
-check_PROGRAMS += test_hpcombi
-check_PROGRAMS += test_iterator
-check_PROGRAMS += test_kbe
-check_PROGRAMS += test_knuth_bendix
-check_PROGRAMS += test_obvinf
-check_PROGRAMS += test_order
-check_PROGRAMS += test_race
-check_PROGRAMS += test_runner
-check_PROGRAMS += test_schreier_sims
-check_PROGRAMS += test_siso
-check_PROGRAMS += test_semiring
-check_PROGRAMS += test_timer
-check_PROGRAMS += test_todd_coxeter
-check_PROGRAMS += test_uf
-check_PROGRAMS += test_wilo
-check_PROGRAMS += test_wislo
-check_PROGRAMS += test_word
 
-EXTRA_PROGRAMS =  bench_all
+EXTRA_PROGRAMS =  test_action
+EXTRA_PROGRAMS += test_bitset
+EXTRA_PROGRAMS += test_blocks
+EXTRA_PROGRAMS += test_bmat8
+EXTRA_PROGRAMS += test_cong_pair
+EXTRA_PROGRAMS += test_cong
+EXTRA_PROGRAMS += test_cong_intf
+EXTRA_PROGRAMS += test_constants
+EXTRA_PROGRAMS += test_containers
+EXTRA_PROGRAMS += test_digraph_helper
+EXTRA_PROGRAMS += test_digraph
+EXTRA_PROGRAMS += test_element
+EXTRA_PROGRAMS += test_forest
+EXTRA_PROGRAMS += test_fpsemi
+EXTRA_PROGRAMS += test_fpsemi_intf
+EXTRA_PROGRAMS += test_froidure_pin_bipart
+EXTRA_PROGRAMS += test_froidure_pin_bmat8
+EXTRA_PROGRAMS += test_froidure_pin_boolmat
+EXTRA_PROGRAMS += test_froidure_pin_element
+EXTRA_PROGRAMS += test_froidure_pin_integers
+EXTRA_PROGRAMS += test_froidure_pin_intmat
+EXTRA_PROGRAMS += test_froidure_pin_intpairs
+EXTRA_PROGRAMS += test_froidure_pin_pbr
+EXTRA_PROGRAMS += test_froidure_pin_pperm
+EXTRA_PROGRAMS += test_froidure_pin_projmaxplus
+EXTRA_PROGRAMS += test_froidure_pin_transf
+EXTRA_PROGRAMS += test_froidure_pin_tropmaxplus
+EXTRA_PROGRAMS += test_hpcombi
+EXTRA_PROGRAMS += test_iterator
+EXTRA_PROGRAMS += test_kbe
+EXTRA_PROGRAMS += test_knuth_bendix
+EXTRA_PROGRAMS += test_obvinf
+EXTRA_PROGRAMS += test_order
+EXTRA_PROGRAMS += test_race
+EXTRA_PROGRAMS += test_runner
+EXTRA_PROGRAMS += test_schreier_sims
+EXTRA_PROGRAMS += test_siso
+EXTRA_PROGRAMS += test_semiring
+EXTRA_PROGRAMS += test_timer
+EXTRA_PROGRAMS += test_todd_coxeter
+EXTRA_PROGRAMS += test_uf
+EXTRA_PROGRAMS += test_wilo
+EXTRA_PROGRAMS += test_wislo
+EXTRA_PROGRAMS += test_word
+
+EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_digraph
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
@@ -882,6 +888,7 @@ clean-local:
 	rm -rf docs/source/_generated
 	rm -rf coverage/
 	rm -f bench_*
+	rm -f test_*
 
 clean-local-check:
 	rm -rf $(check_PROGRAMS)
