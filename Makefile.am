@@ -525,6 +525,7 @@ libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-intf.cpp
 libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
+libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
 ## if !LIBSEMIGROUPS_EIGEN_ENABLED
 libsemigroups_la_SOURCES += src/digraph.cpp
