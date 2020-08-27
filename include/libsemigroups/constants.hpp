@@ -100,25 +100,25 @@ namespace libsemigroups {
   //! This variable is used to indicate that a value is undefined. UNDEFINED is
   //! comparable with any integral value (signed or unsigned) or constant via
   //! `==` and `!=` but not via `<` or `>`.
-  constexpr Undefined UNDEFINED{};
+  extern Undefined const UNDEFINED;
 
   //! This variable represents \f$\infty\f$.  POSITIVE_INFINITY is comparable
   //! via `==`, `!=`, `<`, `>` with any integral value (signed or unsigned) and
   //! with NEGATIVE_INFINITY, and is comparable to any other constant via `==`
   //! and `!=`, but not by `<` and `>`.
-  constexpr PositiveInfinity POSITIVE_INFINITY{};
+  extern PositiveInfinity const POSITIVE_INFINITY;
 
   //! This variable represents the maximum value that certain function
   //! parameters can have. LIMIT_MAX is comparable via `==`, `!=`, `<`, `>`
   //! with any integral value (signed or unsigned), and is comparable to any
   //! other constant via `==` and `!=`, but not by `<` and `>`.
-  constexpr LimitMax LIMIT_MAX{};
+  extern LimitMax const LIMIT_MAX;
 
   //! This variable represents \f$-\infty\f$.  NEGATIVE_INFINITY is comparable
   //! via `==`, `!=`, `<`, `>` with any signed integral value and
   //! with POSITIVE_INFINITY, and is comparable to any other constant via `==`
   //! and `!=`.
-  constexpr NegativeInfinity NEGATIVE_INFINITY{};
+  extern NegativeInfinity const NEGATIVE_INFINITY;
 
   ////////////////////////////////////////////////////////////////////////
   // Operators for all constants
