@@ -36,6 +36,10 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+#ifdef LIBSEMIGROUPS_VERBOSE
+#include <unordered_set>  // for unordered_set
+#endif
+
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, KnuthBendi...
 #include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
