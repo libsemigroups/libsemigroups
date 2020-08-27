@@ -712,8 +712,8 @@ namespace libsemigroups {
                                word_type const&  v) noexcept {
         REPORT_VERBOSE_DEFAULT("pushing coset %d through %s = %s\n",
                                c,
-                               detail::to_string(u),
-                               detail::to_string(v));
+                               detail::to_string(u).c_str(),
+                               detail::to_string(v).c_str());
 
         LIBSEMIGROUPS_ASSERT(is_active_coset(c));
         LIBSEMIGROUPS_ASSERT(!u.empty());
@@ -754,8 +754,8 @@ namespace libsemigroups {
                                   word_type const&  v) noexcept {
         REPORT_VERBOSE_DEFAULT("pushing coset %d through %s = %s\n",
                                c,
-                               detail::to_string(u),
-                               detail::to_string(v));
+                               detail::to_string(u).c_str(),
+                               detail::to_string(v).c_str());
         LIBSEMIGROUPS_ASSERT(is_active_coset(c));
         LIBSEMIGROUPS_ASSERT(!u.empty());
         LIBSEMIGROUPS_ASSERT(!v.empty());
