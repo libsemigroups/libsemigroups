@@ -245,7 +245,7 @@ namespace libsemigroups {
     {
       fpsemigroup::ToddCoxeter tc(S.froidure_pin());
       REQUIRE(tc.nr_rules() == 1453);
-      REQUIRE(tc.size() == 322021);  // Runs forever
+      REQUIRE(tc.size() == 322021);
     }
   }
 
