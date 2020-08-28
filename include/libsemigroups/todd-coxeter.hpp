@@ -671,8 +671,8 @@ namespace libsemigroups {
       void make_deductions_dfs(coset_type const);
       void process_deductions();
 
-      inline coset_type tau(coset_type const c, letter_type const a) const
-          noexcept {
+      inline coset_type tau(coset_type const  c,
+                            letter_type const a) const noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
         LIBSEMIGROUPS_ASSERT(a < _table.nr_cols());
         return _table.get(c, a);

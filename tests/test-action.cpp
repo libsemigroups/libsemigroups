@@ -16,19 +16,17 @@
 //
 
 // TODO(later):
-// 1. iwyu
-// 2. add examples from Action
+// 1. add examples from Action
 
-#include "libsemigroups/action.hpp"
-#include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/element-helper.hpp"
-#include "libsemigroups/element.hpp"
-#include "libsemigroups/hpcombi.hpp"
-#include "libsemigroups/report.hpp"
-#include "libsemigroups/timer.hpp"
+#include "libsemigroups/action.hpp"            // for LeftAction, RightAction
+#include "libsemigroups/bmat8.hpp"             // for BMat8 etc
+#include "libsemigroups/element-adapters.hpp"  // for ImageRightAction etc
+#include "libsemigroups/element-helper.hpp"    // for PermHelper, PPermHelper
+#include "libsemigroups/element.hpp"           // for PartialPerm
+#include "libsemigroups/report.hpp"            // for ReportGuard
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 
@@ -270,8 +268,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "006",
                           "orbits for regular boolean mat monoid 6",
-                          "[standard]") {
-    auto                     rg             = ReportGuard(REPORT);
+                          "[extreme]") {
+    // auto                     rg             = ReportGuard(REPORT);
     const std::vector<BMat8> reg_bmat6_gens = {BMat8({{0, 1, 0, 0, 0, 0},
                                                       {1, 0, 0, 0, 0, 0},
                                                       {0, 0, 1, 0, 0, 0},
@@ -302,9 +300,9 @@ namespace libsemigroups {
     for (BMat8 g : reg_bmat6_gens) {
       row_orb.add_generator(g);
     }
-    row_orb.run_for(std::chrono::milliseconds(500));
+    // row_orb.run_for(std::chrono::milliseconds(500));
 
-    // REQUIRE(row_orb.size() == 37977468);
+    REQUIRE(row_orb.size() == 37977468);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -563,5 +561,117 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
 
     REQUIRE(o.size() == 360360);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Action",
+                          "019",
+                          "orbits for regular BMat8 monoid 5 with stop/start",
+                          "[quick][no-valgrind]") {
+    auto                     rg             = ReportGuard(REPORT);
+    const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
+                                                      {1, 0, 0, 0, 0},
+                                                      {0, 0, 1, 0, 0},
+                                                      {0, 0, 0, 1, 0},
+                                                      {0, 0, 0, 0, 1}}),
+                                               BMat8({{0, 1, 0, 0, 0},
+                                                      {0, 0, 1, 0, 0},
+                                                      {0, 0, 0, 1, 0},
+                                                      {0, 0, 0, 0, 1},
+                                                      {1, 0, 0, 0, 0}}),
+                                               BMat8({{1, 0, 0, 0, 0},
+                                                      {1, 1, 0, 0, 0},
+                                                      {0, 0, 1, 0, 0},
+                                                      {0, 0, 0, 1, 0},
+                                                      {0, 0, 0, 0, 1}}),
+                                               BMat8({{0, 0, 0, 0, 0},
+                                                      {0, 1, 0, 0, 0},
+                                                      {0, 0, 1, 0, 0},
+                                                      {0, 0, 0, 1, 0},
+                                                      {0, 0, 0, 0, 1}})};
+
+    row_orb_type row_orb;
+    col_orb_type col_orb;
+
+    row_orb.add_seed(BMat8::one());
+    col_orb.add_seed(BMat8::one());
+    for (BMat8 g : reg_bmat5_gens) {
+      row_orb.add_generator(g);
+      col_orb.add_generator(g);
+    }
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+
+    REQUIRE(row_orb.size() == 110519);
+    REQUIRE(col_orb.size() == 110519);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Action",
+      "020",
+      "orbits for regular boolean mat monoid 5 with stop/start",
+      "[extreme][no-valgrind]") {
+    auto rg = ReportGuard(REPORT);
+    using boolmat_row_action_type
+        = ImageRightAction<BooleanMat, detail::StaticVector1<BitSet<5>, 5>>;
+    using boolmat_col_action_type
+        = ImageLeftAction<BooleanMat, detail::StaticVector1<BitSet<5>, 5>>;
+    using boolmat_row_orb_type
+        = RightAction<BooleanMat,
+                      detail::StaticVector1<BitSet<5>, 5>,
+                      boolmat_row_action_type>;
+    using boolmat_col_orb_type = LeftAction<BooleanMat,
+                                            detail::StaticVector1<BitSet<5>, 5>,
+                                            boolmat_col_action_type>;
+    const std::vector<BooleanMat> reg_bmat5_gens
+        = {BooleanMat({{0, 1, 0, 0, 0},
+                       {1, 0, 0, 0, 0},
+                       {0, 0, 1, 0, 0},
+                       {0, 0, 0, 1, 0},
+                       {0, 0, 0, 0, 1}}),
+           BooleanMat({{0, 1, 0, 0, 0},
+                       {0, 0, 1, 0, 0},
+                       {0, 0, 0, 1, 0},
+                       {0, 0, 0, 0, 1},
+                       {1, 0, 0, 0, 0}}),
+           BooleanMat({{1, 0, 0, 0, 0},
+                       {1, 1, 0, 0, 0},
+                       {0, 0, 1, 0, 0},
+                       {0, 0, 0, 1, 0},
+                       {0, 0, 0, 0, 1}}),
+           BooleanMat({{0, 0, 0, 0, 0},
+                       {0, 1, 0, 0, 0},
+                       {0, 0, 1, 0, 0},
+                       {0, 0, 0, 1, 0},
+                       {0, 0, 0, 0, 1}})};
+    boolmat_row_orb_type row_orb;
+    boolmat_col_orb_type col_orb;
+
+    row_orb.add_seed({BitSet<5>(0x10),
+                      BitSet<5>(0x8),
+                      BitSet<5>(0x4),
+                      BitSet<5>(0x2),
+                      BitSet<5>(0x1)});
+    col_orb.add_seed({BitSet<5>(0x10),
+                      BitSet<5>(0x8),
+                      BitSet<5>(0x4),
+                      BitSet<5>(0x2),
+                      BitSet<5>(0x1)});
+    for (BooleanMat g : reg_bmat5_gens) {
+      row_orb.add_generator(g);
+      col_orb.add_generator(g);
+    }
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+
+    REQUIRE(row_orb.size() == 110519);
+    REQUIRE(col_orb.size() == 110519);
   }
 }  // namespace libsemigroups

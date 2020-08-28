@@ -91,6 +91,8 @@ namespace libsemigroups {
       IsObviouslyInfinite& operator=(IsObviouslyInfinite const&) = delete;
       IsObviouslyInfinite& operator=(IsObviouslyInfinite&&) = delete;
 
+      ~IsObviouslyInfinite();
+
       void add_rules(const_iterator_word_type first,
                      const_iterator_word_type last);
 

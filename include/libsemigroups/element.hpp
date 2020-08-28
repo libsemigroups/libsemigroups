@@ -29,28 +29,24 @@
 #include <math.h>   // for sqrt, pow
 
 #include <algorithm>    // for max_element
+#include <bitset>       // for bitset
 #include <cstdint>      // for uint32_t, int32_t, int64_t
+#include <iosfwd>       // for ostream, ostringstream
 #include <limits>       // for numeric_limits
 #include <numeric>      // for iota
-#include <sstream>      // for ostream, ostringstream
 #include <type_traits>  // for is_integral
 #include <vector>       // for vector
 
-#include "adapters.hpp"    // for complexity, degree, IncreaseDegree, . . .
-#include "constants.hpp"   // for UNDEFINED
-#include "containers.hpp"  // for detail::DynamicArray2
+#include "constants.hpp"                // for UNDEFINED
+#include "containers.hpp"               // for detail::DynamicArray2
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "stl.hpp"                      // for Hash, EqualTo, Less
+#include "semiring.hpp"                 // for Semiring
 #include "string.hpp"                   // for to_string
-#include "types.hpp"                    // for SmallestInteger
 
 namespace libsemigroups {
   // Forward declarations
   class Blocks;
-  struct BooleanSemiring;
-  template <typename T>
-  class Semiring;
 
   //! Abstract base class for semigroup elements
   //!
@@ -216,10 +212,6 @@ namespace libsemigroups {
       redefine(*x, *y);
     }
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //    virtual Element* empty_key() const = 0;
-    // #endif
-
     //! Increases the degree of \c this by \p deg.
     //! This does not make sense for all subclasses of Element.
     virtual void increase_degree_by(size_t) {}
@@ -286,12 +278,12 @@ namespace libsemigroups {
       //! A constructor.
       //!
       //! Returns an object with an uninitialised vector.
-      ElementWithVectorData() : Element(), _vector() {}
+      ElementWithVectorData();
 
       //! A constructor.
       //!
       //! Returns an object with an uninitialised vector of length \p n.
-      explicit ElementWithVectorData(size_t n) : Element(), _vector(n) {}
+      explicit ElementWithVectorData(size_t);
 
       //! A constructor.
       //!
@@ -299,19 +291,17 @@ namespace libsemigroups {
       //! of the element.
       //!
       //! Returns an object whose defining data is a copy of \p vector.
-      explicit ElementWithVectorData(std::vector<TValueType> const& vector)
-          : Element(), _vector(vector) {}
+      explicit ElementWithVectorData(std::vector<TValueType> const&);
 
       //! A constructor.
       //!
-      //! The parameter \p vector should be a rvalue reference to defining data
+      //! The parameter \p vec should be a rvalue reference to defining data
       //! of the element.
       //!
       //! Returns an object whose defining data is \p vec.
       //! This constructor moves the data from \p vec, meaning that \p vec is
       //! changed by this constructor.
-      explicit ElementWithVectorData(std::vector<TValueType>&& vec)
-          : Element(), _vector(std::move(vec)) {}
+      explicit ElementWithVectorData(std::vector<TValueType>&&);
 
       //! A copy constructor.
       //!
@@ -320,9 +310,11 @@ namespace libsemigroups {
       //! then this member function must be overridden by any subclass of
       //! ElementWithVectorData since there is no way of knowing how a subclass
       //! is defined by the data in the vector.
-      ElementWithVectorData(ElementWithVectorData const& copy)
-          : Element(copy._hash_value),
-            _vector(copy._vector.cbegin(), copy._vector.cend()) {}
+      ElementWithVectorData(ElementWithVectorData const&);
+
+      ElementWithVectorData(ElementWithVectorData&&) = default;
+      ElementWithVectorData& operator=(ElementWithVectorData const&) = default;
+      ElementWithVectorData& operator=(ElementWithVectorData&&) = default;
 
       //! Returns the product of \c this and \p y
       //!
@@ -394,14 +386,6 @@ namespace libsemigroups {
         _vector.swap(xx._vector);
         std::swap(this->_hash_value, xx._hash_value);
       }
-
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //       Element* empty_key() const override {
-      //         // + 2 since bipartition must be of even degree!
-      //         std::vector<TValueType> vector(this->degree() + 2);
-      //         return new TSubclass(std::move(vector));
-      //       }
-      // #endif
 
       //! Returns an iterator.
       //!
@@ -502,6 +486,34 @@ namespace libsemigroups {
       std::vector<TValueType> _vector;
     };
 
+    ////////////////////////////////////////////////////////////////////////
+    // ElementWithVectorData constructor impl
+    ////////////////////////////////////////////////////////////////////////
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData()
+        : Element(), _vector() {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        size_t n)
+        : Element(), _vector(n) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        std::vector<TValueType> const& vector)
+        : Element(), _vector(vector) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        std::vector<TValueType>&& vec)
+        : Element(), _vector(std::move(vec)) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        ElementWithVectorData const& copy)
+        : Element(copy._hash_value),
+          _vector(copy._vector.cbegin(), copy._vector.cend()) {}
+
     //! Abstract base class for elements using a vector to store their defining
     //! data and the default hash function for that underlying vector.
     //!
@@ -513,8 +525,7 @@ namespace libsemigroups {
         : public ElementWithVectorData<TValueType, TSubclass> {
      public:
       using ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData;
-      ElementWithVectorDataDefaultHash()
-          : ElementWithVectorData<TValueType, TSubclass>() {}
+      ElementWithVectorDataDefaultHash();
 
      protected:
       //! This member function implements the default hash function for an
@@ -527,6 +538,15 @@ namespace libsemigroups {
         this->_hash_value = this->vector_hash(this->_vector);
       }
     };
+
+    ////////////////////////////////////////////////////////////////////////
+    // ElementWithVectorDataDefaultHash constructor impl
+    ////////////////////////////////////////////////////////////////////////
+    template <typename TValueType, class TSubclass>
+    ElementWithVectorDataDefaultHash<TValueType, TSubclass>::
+        ElementWithVectorDataDefaultHash()
+        : ElementWithVectorData<TValueType, TSubclass>() {}
+
   }  // namespace detail
 
   //! Abstract class for partial transformations.
@@ -575,17 +595,13 @@ namespace libsemigroups {
     //! contain in position *i* the image \f$(i)f\f$, or
     //! libsemigroups::UNDEFINED if *f* is not defined on *i*, for all
     //! \f$0 < i < n\f$.
-    explicit PartialTransformation(std::vector<T> const& vec)
-        : detail::ElementWithVectorDataDefaultHash<T, TSubclass>(vec) {
-      validate();
-    }
+    explicit PartialTransformation(std::vector<T> const&);
 
     //! A constructor.
     //!
     //! Constructs a vector from \p imgs and calls the corresponding
     //! constructor.
-    PartialTransformation(std::initializer_list<T> imgs)
-        : PartialTransformation<T, TSubclass>(std::vector<T>(imgs)) {}
+    PartialTransformation(std::initializer_list<T>);
 
     //! Validates the data defining \c this.
     //!
@@ -663,6 +679,19 @@ namespace libsemigroups {
     // Used for determining rank, TODO(later) make thread-safe
     static std::vector<bool> _lookup;
   };
+
+  template <typename TValueType, typename TSubclass>
+  PartialTransformation<TValueType, TSubclass>::PartialTransformation(
+      std::vector<TValueType> const& vec)
+      : detail::ElementWithVectorDataDefaultHash<TValueType, TSubclass>(vec) {
+    validate();
+  }
+
+  template <typename TValueType, typename TSubclass>
+  PartialTransformation<TValueType, TSubclass>::PartialTransformation(
+      std::initializer_list<TValueType> imgs)
+      : PartialTransformation<TValueType, TSubclass>(
+          std::vector<TValueType>(imgs)) {}
 
   template <typename TValueType, typename TSubclass>
   std::vector<bool> PartialTransformation<TValueType, TSubclass>::_lookup
@@ -762,6 +791,9 @@ namespace libsemigroups {
     //! Constructs a Transformation which is mathematically equal to \p copy.
     Transformation(Transformation<TValueType> const& copy)
         : detail::TransfBase<TValueType, Transformation<TValueType>>(copy) {}
+
+    Transformation& operator=(Transformation<TValueType> const&) = default;
+    Transformation& operator=(Transformation<TValueType>&&) = default;
 
     //! Validates the data defining \c this.
     //!
@@ -930,8 +962,12 @@ namespace libsemigroups {
     }
 
     //! A copy constructor.
-    PartialPerm<T>(PartialPerm const& copy)
+    PartialPerm(PartialPerm const& copy)
         : PartialTransformation<T, PartialPerm<T>>(copy) {}
+
+    PartialPerm(PartialPerm&&) = default;
+    PartialPerm& operator=(PartialPerm&&) = default;
+    PartialPerm& operator=(PartialPerm const&) = default;
 
     void increase_degree_by(size_t m) override {
       this->_vector.insert(this->_vector.end(), m, UNDEFINED);
@@ -1043,13 +1079,36 @@ namespace libsemigroups {
       return PartialPerm<T>(dom);
     }
 
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     Element* empty_key() const override {
-    //       std::vector<T> vector(this->degree() + 1);
-    //       std::iota(vector.begin(), vector.end(), 0);
-    //       return new PartialPerm(std::move(vector));
-    //     }
-    // #endif
+    //! Returns the group inverse of \c this.
+    //!
+    //! The group inverse of \c this is the partial permutation which is the
+    //! permutation inverse of \c this where \c this is defined, and is
+    //! undefined otherwise.
+    PartialPerm<T> inverse() const {
+      std::vector<T> dom(this->degree(), static_cast<T>(UNDEFINED));
+      size_t const   size = this->_vector.size();
+      for (size_t i = 0; i < size; ++i) {
+        if (this->_vector[i] != UNDEFINED) {
+          dom[this->_vector[i]] = i;
+        }
+      }
+      return PartialPerm<T>(dom);
+    }
+
+    //! Modifies \p x to be the group inverse of \c this.
+    //!
+    //! The group inverse of \c this is the partial permutation which is the
+    //! permutation inverse of \c this where \c this is defined, and is
+    //! undefined otherwise.
+    void inverse(PartialPerm<T>& x) const {
+      x._vector.clear();
+      x._vector.resize(this->degree(), static_cast<T>(UNDEFINED));
+      for (size_t i = 0; i < this->degree(); ++i) {
+        if (this->_vector[i] != UNDEFINED) {
+          x._vector[this->_vector[i]] = i;
+        }
+      }
+    }
   };
 
   //! Class for bipartitions.
@@ -1106,7 +1165,10 @@ namespace libsemigroups {
     //! A copy constructor.
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
-    Bipartition(Bipartition const&) = default;
+    Bipartition(Bipartition const&);
+    Bipartition(Bipartition&&);
+    Bipartition& operator=(Bipartition const&);
+    Bipartition& operator=(Bipartition&&);
 
     //! A constructor.
     //!
@@ -1115,6 +1177,8 @@ namespace libsemigroups {
     //! degree of the bipartition. The bipartition constructed has equivalence
     //! classes given by the vectors in \p blocks.
     Bipartition(std::initializer_list<std::vector<int32_t>> const&);
+
+    ~Bipartition();
 
     //! Validates the data defining \c this.
     //!
@@ -1379,6 +1443,11 @@ namespace libsemigroups {
             _degree(copy._degree),
             _semiring(copy._semiring) {}
 
+      MatrixOverSemiringBase(MatrixOverSemiringBase&&) = default;
+      MatrixOverSemiringBase& operator=(MatrixOverSemiringBase const&)
+          = default;
+      MatrixOverSemiringBase& operator=(MatrixOverSemiringBase&&) = default;
+
       //! Validates the data defining \c this.
       //!
       //! This member function throws a libsemigroups::LibsemigroupsException if
@@ -1407,7 +1476,7 @@ namespace libsemigroups {
       //! The approximate time complexity of multiplying matrices is \f$n ^ 3\f$
       //! where \f$n\f$ is the dimension of the matrix.
       size_t complexity() const override {
-        return pow(this->degree(), 3);
+        return this->degree() * this->degree() * this->degree();
       }
 
       //! Returns the dimension of the matrix.
@@ -1475,14 +1544,6 @@ namespace libsemigroups {
         this->reset_hash_value();
       }
       using Element::redefine;
-
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //       Element* empty_key() const override {
-      //         std::vector<TValueType> vector((this->degree() + 1)
-      //                                        * (this->degree() + 1));
-      //         return new TSubclass(std::move(vector), _semiring);
-      //       }
-      // #endif
 
      protected:
       friend class ElementWithVectorData<TValueType, TSubclass>;
@@ -1576,8 +1637,6 @@ namespace libsemigroups {
     //! converted into its normal form when the object is constructed.
     ProjectiveMaxPlusMatrix(std::vector<std::vector<int64_t>> const&,
                             Semiring<int64_t> const*);
-    //! A copy constructor.
-    ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const&) = default;
 
     //! Returns the product of \c this and \p y
     //!
@@ -1586,8 +1645,8 @@ namespace libsemigroups {
     //! This is specialised to avoid trying to call
     //! ProjectiveMaxPlusMatrix::ProjectiveMaxPlusMatrix(degree) in
     //! Element::redefine (as for MatrixOverSemiring).
-    ProjectiveMaxPlusMatrix operator*(ElementWithVectorData const&)
-        const override;
+    ProjectiveMaxPlusMatrix
+    operator*(ElementWithVectorData const&) const override;
 
    private:
     // This constructor only exists to make the empty_key member function for
@@ -1703,6 +1762,10 @@ namespace libsemigroups {
 
     //! A copy constructor.
     BooleanMat(BooleanMat const&);
+    BooleanMat(BooleanMat&&);
+
+    BooleanMat& operator=(BooleanMat const&);
+    BooleanMat& operator=(BooleanMat&&);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!
@@ -1721,6 +1784,12 @@ namespace libsemigroups {
     //  this->_hash_value = std::hash<std::vector<bool>>{}(this->_vector);
     // }
 
+    BooleanMat                     transpose() const;
+    void                           transpose_in_place();
+    std::vector<std::vector<bool>> rows() const;
+    std::vector<std::vector<bool>> row_space_basis() const;
+    size_t                         row_space_size() const;
+
    private:
     // This constructor only exists to make the empty_key member function for
     // detail::ElementWithVectorData work, and because the compiler complains
@@ -1735,6 +1804,59 @@ namespace libsemigroups {
 
     static BooleanSemiring const* const _semiring;
   };
+
+  template <size_t N>
+  class BitSet;
+
+  namespace detail {
+    struct LessBitSet {
+      // not noexcept because std::bitset<N>::to_ullong throws
+      // std::overflow_error if N exceeds the capacity of a unsigned long long.
+      template <size_t N>
+      bool operator()(std::bitset<N> x, std::bitset<N> y) const {
+        return x.to_ullong() < y.to_ullong();
+      }
+      template <size_t N>
+      bool operator()(BitSet<N> x, BitSet<N> y) const noexcept {
+        return x < y;
+      }
+    };
+  }  // namespace detail
+
+  namespace booleanmat_helpers {
+    void rows_basis(std::vector<std::vector<bool>>& rows);
+
+    // This works with std::vector and StaticVector1, as well as std::bitset and
+    // BitSet. This is tested in the benchmarks.
+    template <typename T>
+    void rows_basis(T& rows) {
+      using value_type = typename T::value_type;
+      static thread_local T buf;
+      buf.clear();
+      std::sort(rows.begin(), rows.end(), detail::LessBitSet());
+      // Remove duplicates
+      rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
+      size_t const rows_size = rows.size();
+      for (size_t i = 0; i < rows_size; ++i) {
+        value_type cup;
+        cup.reset();
+        for (size_t j = 0; j < i; ++j) {
+          if ((rows[i] & rows[j]) == rows[j]) {
+            cup |= rows[j];
+          }
+        }
+        for (size_t j = i + 1; j < rows_size; ++j) {
+          if ((rows[i] & rows[j]) == rows[j]) {
+            cup |= rows[j];
+          }
+        }
+        if (cup != rows[i]) {
+          buf.push_back(std::move(rows[i]));
+        }
+      }
+      std::swap(buf, rows);
+    }
+  }  // namespace booleanmat_helpers
 
   //! Class for partitioned binary relations (PBR).
   //!
@@ -1872,316 +1994,6 @@ namespace libsemigroups {
     static std::vector<std::vector<bool>>           _y_seen;
     static std::vector<detail::DynamicArray2<bool>> _out;
     static std::vector<detail::DynamicArray2<bool>> _tmp;
-  };
-
-  // Specialization of templates from adapters.hpp for classes derived from
-  // the class Element, such as Transformation<size_t> and so on . . .
-  //! Specialization of the adapter Complexity for pointers to subclasses of
-  //! Element.
-  //!
-  //! \sa Complexity.
-  template <typename TSubclass>
-  struct Complexity<TSubclass*,
-                    typename std::enable_if<
-                        std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x->complexity().
-    inline size_t operator()(TSubclass const* x) const {
-      return x->complexity();
-    }
-  };
-
-  //! Specialization of the adapter Complexity for subclasses of
-  //! Element.
-  //!
-  //! \sa Complexity.
-  template <typename TSubclass>
-  struct Complexity<TSubclass,
-                    typename std::enable_if<
-                        std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x.complexity().
-    inline size_t operator()(TSubclass const& x) const {
-      return x.complexity();
-    }
-  };
-
-  //! Specialization of the adapter Degree for pointers to subclasses of
-  //! Element.
-  //!
-  //! \sa Degree.
-  template <typename TSubclass>
-  struct Degree<TSubclass*,
-                typename std::enable_if<
-                    std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x->degree().
-    inline size_t operator()(TSubclass const* x) const {
-      return x->degree();
-    }
-  };
-
-  //! Specialization of the adapter Degree for subclasses of
-  //! Element.
-  //!
-  //! \sa Degree.
-  template <typename TSubclass>
-  struct Degree<TSubclass,
-                typename std::enable_if<
-                    std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x.degree().
-    inline size_t operator()(TSubclass const& x) const {
-      return x.degree();
-    }
-  };
-
-  //! Specialization of the adapter IncreaseDegree for pointers to subclasses
-  //! of Element.
-  //!
-  //! \sa IncreaseDegree.
-  template <typename TSubclass>
-  struct IncreaseDegree<TSubclass*,
-                        typename std::enable_if<
-                            std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x->increase_degree_by(\p n).
-    inline void operator()(TSubclass* x, size_t n) const {
-      return x->increase_degree_by(n);
-    }
-  };
-
-  // FIXME(later) why is there no specialisation for non-pointers for
-  // IncreaseDegree?
-
-  //! Specialization of the adapter Less for pointers to subclasses
-  //! of Element.
-  //!
-  //! \sa Less.
-  template <typename TSubclass>
-  struct Less<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \c true if the object pointed to by \p x is less than the
-    //! object pointed to by \p y.
-    inline bool operator()(TSubclass const* x, TSubclass const* y) const {
-      return *x < *y;
-    }
-  };
-
-  //! Specialization of the adapter One for pointers to subclasses
-  //! of Element.
-  //!
-  //! \sa One.
-  template <typename TSubclass>
-  struct One<TSubclass*,
-             typename std::enable_if<
-                 std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns a pointer to a new instance of the one of \p x.
-    TSubclass* operator()(Element const* x) const {
-      // return new TSubclass(std::move(x->identity<TSubclass>()));
-      return static_cast<TSubclass*>(x->heap_identity());
-    }
-
-    //! Returns a pointer to a new instance of the one of \p x.
-    TSubclass* operator()(size_t n) {
-      return new TSubclass(std::move(TSubclass::one(n)));
-    }
-  };
-
-  //! Specialization of the adapter One for subclasses of Element.
-  //!
-  //! \sa One.
-  template <typename TSubclass>
-  struct One<TSubclass,
-             typename std::enable_if<
-                 std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns a new instance of the one of \p x.
-    TSubclass operator()(TSubclass const& x) const {
-      return static_cast<TSubclass>(x.identity());
-    }
-
-    //! Returns a new instance of the one of \p x.
-    TSubclass operator()(size_t n) {
-      return TSubclass(std::move(TSubclass::identity(n)));
-    }
-  };
-
-  //! Specialization of the adapter Product for pointers to subclasses of
-  //! Element.
-  //!
-  //! \sa Product.
-  template <typename TSubclass>
-  struct Product<TSubclass*,
-                 typename std::enable_if<
-                     std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Changes \p xy in-place to hold the product of \p x and \p y using
-    //! Element::redefine.
-    void operator()(TSubclass*       xy,
-                    TSubclass const* x,
-                    TSubclass const* y,
-                    size_t           tid = 0) {
-      xy->redefine(*x, *y, tid);
-    }
-  };
-
-  //! Specialization of the adapter Product for subclasses of Element.
-  //!
-  //! \sa Product.
-  template <typename TSubclass>
-  struct Product<TSubclass,
-                 typename std::enable_if<
-                     std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Changes \p xy in-place to hold the product of \p x and \p y using
-    //! Element::redefine.
-    void operator()(TSubclass&       xy,
-                    TSubclass const& x,
-                    TSubclass const& y,
-                    size_t           tid = 0) {
-      xy.redefine(x, y, tid);
-    }
-  };
-
-  //! Specialization of the adapter Swap for subclasses of Element.
-  //!
-  //! \sa Swap.
-  template <typename TSubclass>
-  struct Swap<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Swaps the object pointed to by \p x with the one pointed to by \p y.
-    void operator()(TSubclass* x, TSubclass* y) const {
-      x->swap(*y);
-    }
-  };
-
-  //! Specialization of the adapter ImageRightAction for pointers to
-  //! Permutation instances.
-  //!
-  //! \sa ImageRightAction.
-  template <typename TValueType>
-  struct ImageRightAction<
-      Permutation<TValueType>*,
-      TValueType,
-      typename std::enable_if<std::is_integral<TValueType>::value>::type> {
-    //! Returns the image of \p pt under \p x.
-    TValueType operator()(Permutation<TValueType> const* x,
-                          TValueType const               pt) {
-      return (*x)[pt];
-    }
-  };
-
-  //! Specialization of the adapter Inverse for pointers to
-  //! Permutation instances.
-  //!
-  //! \sa Inverse.
-  template <typename TValueType>
-  struct Inverse<Permutation<TValueType>*> {
-    //! Returns a pointer to a new instance of the inverse of \p x.
-    Permutation<TValueType>* operator()(Permutation<TValueType>* x) {
-      return new Permutation<TValueType>(std::move(x->inverse()));
-    }
-  };
-
-  //! Specialization of the adapter Inverse for Permutation instances.
-  //!
-  //! \sa Inverse.
-  template <typename TValueType>
-  struct Inverse<Permutation<TValueType>> {
-    //! Returns the inverse of \p x.
-    Permutation<TValueType> operator()(Permutation<TValueType> const& x) {
-      return x.inverse();
-    }
-  };
-
-  //! Specialization of the adapter Hash for subclasses of Element.
-  //!
-  //! \sa Hash.
-  template <typename TSubclass>
-  struct Hash<TSubclass,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x.hash_value()
-    size_t operator()(TSubclass const& x) const {
-      return x.hash_value();
-    }
-  };
-
-  //! Specialization of the adapter Hash for pointers to subclasses of Element.
-  //!
-  //! \sa Hash.
-  template <typename TSubclass>
-  struct Hash<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
-    //! Returns \p x->hash_value()
-    size_t operator()(TSubclass const* x) const {
-      return x->hash_value();
-    }
-  };
-
-  //! Specialization of the adapter ImageRightAction for instance of
-  //! PartialPerm.
-  //!
-  //! \sa ImageRightAction.
-  template <typename TIntType>
-  struct ImageRightAction<PartialPerm<TIntType>, PartialPerm<TIntType>> {
-    //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
-    void operator()(PartialPerm<TIntType>&       res,
-                    PartialPerm<TIntType> const& pt,
-                    PartialPerm<TIntType> const& x) const noexcept {
-      res.redefine(pt, x);
-      res.swap(res.right_one());
-    }
-  };
-
-  //! Specialization of the adapter ImageLeftAction for instances of
-  //! PartialPerm.
-  //!
-  //! \sa ImageLeftAction.
-  template <typename TIntType>
-  struct ImageLeftAction<PartialPerm<TIntType>, PartialPerm<TIntType>> {
-    //! Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
-    void operator()(PartialPerm<TIntType>&       res,
-                    PartialPerm<TIntType> const& pt,
-                    PartialPerm<TIntType> const& x) const noexcept {
-      res.redefine(x, pt);
-      res.swap(res.left_one());
-    }
-  };
-
-  //! Specialization of the adapter EqualTo for pointers to subclasses of
-  //! Element.
-  //!
-  //! \sa EqualTo.
-  template <typename TSubclass>
-  struct EqualTo<
-      TSubclass*,
-      typename std::enable_if<
-          std::is_base_of<libsemigroups::Element, TSubclass>::value>::type> {
-    //! Tests equality of two const Element pointers via equality of the
-    //! Elements they point to.
-    bool operator()(TSubclass const* x, TSubclass const* y) const {
-      return *x == *y;
-    }
-  };
-
-  //! Specialization of the adapter ImageRightAction for instances of
-  //! Permutation.
-  //!
-  //! \sa ImageRightAction.
-  template <typename TIntType>
-  struct ImageRightAction<
-      Permutation<TIntType>,
-      TIntType,
-      typename std::enable_if<std::is_integral<TIntType>::value>::type> {
-    //! Stores the image of \p pt under the action of \p p in \p res.
-    void operator()(TIntType&                    res,
-                    TIntType const&              pt,
-                    Permutation<TIntType> const& p) const noexcept {
-      LIBSEMIGROUPS_ASSERT(pt < p.degree());
-      res = p[pt];
-    }
-
-    //! Returns the image of \p pt under the action of \p p.
-    TIntType operator()(TIntType const pt, Permutation<TIntType> const& x) {
-      return x[pt];
-    }
   };
 
 }  // namespace libsemigroups

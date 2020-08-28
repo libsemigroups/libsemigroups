@@ -20,14 +20,15 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-intf.hpp"     // for CongruenceInterface
-#include "libsemigroups/cong-pair.hpp"     // for CongruenceByPairs
-#include "libsemigroups/cong.hpp"          // for Congruence
-#include "libsemigroups/element.hpp"       // for Transformation
-#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/tce.hpp"           // for TCE
-#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/cong-intf.hpp"         // for CongruenceInterface
+#include "libsemigroups/cong-pair.hpp"         // for CongruenceByPairs
+#include "libsemigroups/cong.hpp"              // for Congruence
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element.hpp"           // for Transformation
+#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix
+#include "libsemigroups/tce.hpp"               // for TCE
+#include "libsemigroups/todd-coxeter.hpp"      // for ToddCoxeter
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration

@@ -18,12 +18,13 @@
 
 #include <vector>  // for vector
 
-#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/element.hpp"       // for Element
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/kbe.hpp"           // for KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element.hpp"           // for Element
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/kbe.hpp"               // for KBE
+#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   namespace detail {

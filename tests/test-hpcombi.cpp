@@ -24,13 +24,14 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                       // for REQUIRE
-#include "libsemigroups/element.hpp"       // for Transformation
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
-#include "libsemigroups/int-range.hpp"     // for IntegralRange
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                           // for REQUIRE
+#include "libsemigroups/element-adapters.hpp"  // for Degree
+#include "libsemigroups/element.hpp"           // for Transformation
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"           // for PTransf16, ...
+#include "libsemigroups/int-range.hpp"         // for IntegralRange
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 using namespace HPCombi;
 
@@ -69,17 +70,6 @@ namespace std {
 namespace libsemigroups {
 
   constexpr bool REPORT = false;
-
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   const uint8_t FE = 0xfe;
-  //   template <>
-  //   struct EmptyKey<Renner0Element> {
-  //     Renner0Element operator()(Renner0Element const&) const {
-  //       return {FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE, FE,
-  //       FE};
-  //     }
-  //   };
-  // #endif
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "000", "Transf16", "[quick][hpcombi]") {
     auto                  rg = ReportGuard(REPORT);
@@ -189,13 +179,13 @@ namespace libsemigroups {
 
     auto id = One<Perm16>()(10);
     auto r  = IntegralRange<int, 0, 10>();
-    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int pt) {
-      return ImageRightAction<Perm16, int>()(pt, id) == pt;
+    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int y) {
+      return ImageRightAction<Perm16, int>()(y, id) == y;
     }));
-    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int pt) {
+    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int y) {
       int qt;
-      ImageRightAction<Perm16, int>()(qt, pt, id);
-      return qt == pt;
+      ImageRightAction<Perm16, int>()(qt, y, id);
+      return qt == y;
     }));
   }
 

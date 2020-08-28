@@ -1,0 +1,71 @@
+libsemigroups::Konieczny:
+- Public types:
+  - [typedef, element_type]
+  - [typedef, const_reference]
+  - [typedef, const_d_class_iterator]
+  - [typedef, const_regular_d_class_iterator]
+  - [typedef, lambda_value_type]
+  - [typedef, lambda_orb_type]
+  - [typedef, rho_value_type]
+  - [typedef, rho_orb_type]
+- Stateless public types:
+  - [typedef, Degree]
+  - [typedef, EqualTo]
+  - [typedef, Lambda]
+  - [typedef, Less]
+  - [typedef, One]
+  - [typedef, Product]
+  - [typedef, Rank]
+  - [typedef, Rho]
+  - [typedef, Swap]
+- Constructors:
+  - Konieczny
+  - Konieczny(Konieczny const&)
+  - operator=(Konieczny const&)
+  - Konieczny(Konieczny&&)
+  - operator=(Konieczny&&)
+  - Konieczny(std::vector<element_type> const&)
+- Initialisation:
+  - add_generator
+  - add_generators(T const&)
+  - add_generators(std::initializer_list<const_element_type>)
+  - add_generators(T const&, T const&)
+- Elements:
+  - is_regular_element
+  - contains
+- Attributes:
+  - size
+  - number_of_generators
+  - number_of_D_classes
+  - number_of_L_classes
+  - number_of_R_classes
+  - number_of_regular_D_classes
+  - number_of_regular_L_classes
+  - number_of_regular_R_classes
+  - number_of_regular_elements
+- Const Attributes:
+  - degree
+  - current_size
+  - number_of_idempotents
+  - current_number_of_idempotents
+  - current_number_of_D_classes
+  - current_number_of_L_classes
+  - current_number_of_R_classes
+  - current_number_of_regular_D_classes
+  - current_number_of_regular_L_classes
+  - current_number_of_regular_R_classes
+  - current_number_of_regular_elements
+- State:
+  - finished
+  - started
+  - stopped
+  - timed_out
+  - running
+  - stopped_by_predicate
+- Iterators:
+  - cbegin_D_classes
+  - cend_D_classes
+  - cbegin_regular_D_classes
+  - cbegin_rdc
+  - cend_regular_D_classes
+  - cend_rdc

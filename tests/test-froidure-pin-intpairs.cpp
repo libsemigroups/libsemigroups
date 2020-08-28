@@ -88,18 +88,12 @@ namespace libsemigroups {
 
   template <>
   struct Product<IntPair> {
-    void operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const
-        noexcept {
+    void
+    operator()(IntPair& xy, IntPair x, IntPair y, size_t = 0) const noexcept {
       xy = x * y;
     }
   };
 
-  // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-  //   template <>
-  //   IntPair empty_key(IntPair) {
-  //     return IntPair();
-  //   }
-  // #endif
 }  // namespace libsemigroups
 
 namespace std {

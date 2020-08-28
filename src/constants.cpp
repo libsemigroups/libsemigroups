@@ -23,8 +23,8 @@
 
 namespace libsemigroups {
 
-  Undefined const UNDEFINED{};
+  Undefined const        UNDEFINED{};
   PositiveInfinity const POSITIVE_INFINITY{};
-  LimitMax const LIMIT_MAX{};
+  LimitMax const         LIMIT_MAX{};
   NegativeInfinity const NEGATIVE_INFINITY{};
-}
+}  // namespace libsemigroups

@@ -59,9 +59,9 @@ namespace libsemigroups {
       using iterator_category      = std::forward_iterator_tag;
 
       struct Deref {
-        const_reference operator()(state_type&                   state,
-                                   internal_iterator_type const& it) const
-            noexcept {
+        const_reference
+        operator()(state_type&                   state,
+                   internal_iterator_type const& it) const noexcept {
           if (state.second.empty()) {
             detail::word_to_string(state.first, *it, state.second);
           }
@@ -70,17 +70,17 @@ namespace libsemigroups {
       };
 
       struct AddressOf {
-        const_pointer operator()(state_type&                   state,
-                                 internal_iterator_type const& it) const
-            noexcept {
+        const_pointer
+        operator()(state_type&                   state,
+                   internal_iterator_type const& it) const noexcept {
           Deref()(state, it);  // to ensure that state.second is initialised
           return &state.second;
         }
       };
 
       struct PrefixIncrement {
-        void operator()(state_type& state, internal_iterator_type& it) const
-            noexcept {
+        void operator()(state_type&             state,
+                        internal_iterator_type& it) const noexcept {
           ++it;
           state.second.clear();
         }

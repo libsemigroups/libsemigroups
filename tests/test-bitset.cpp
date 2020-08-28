@@ -515,6 +515,15 @@ namespace libsemigroups {
       REQUIRE(copy[6]);
       REQUIRE(copy[7]);
     }
+
+    // block_type constructor
+    BitSet<30> bs2(0x15);
+    REQUIRE(bs2.count() == 3);
+    REQUIRE(bs2[0]);
+    REQUIRE(!bs2[1]);
+    REQUIRE(bs2[2]);
+    REQUIRE(!bs2[3]);
+    REQUIRE(bs2[4]);
   }
 
   LIBSEMIGROUPS_TEST_CASE("BitSet", "016", "max_size", "[bitset][quick]") {
@@ -523,5 +532,20 @@ namespace libsemigroups {
 #else
     REQUIRE(BitSet<1>::max_size() == 32);
 #endif
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("BitSet",
+                          "017",
+                          "insertion operators",
+                          "[bitset][quick]") {
+    BitSet<10> bs;
+    bs.set();
+    bs.reset(2, 6);
+    std::ostringstream oss;
+    oss << bs;  // does nothing visible
+
+    std::stringbuf buff;
+    std::ostream   os(&buff);
+    os << bs;  // does nothing visible
   }
 }  // namespace libsemigroups

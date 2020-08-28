@@ -495,8 +495,8 @@ namespace libsemigroups {
       return *this;
     }
 
-    ToddCoxeter::policy::froidure_pin ToddCoxeter::froidure_pin_policy() const
-        noexcept {
+    ToddCoxeter::policy::froidure_pin
+    ToddCoxeter::froidure_pin_policy() const noexcept {
       return _settings->froidure_pin;
     }
 
@@ -689,6 +689,8 @@ namespace libsemigroups {
           recursive_standardize();
           break;
         case order::none: {
+        }
+        default: {
         }
       }
       if (finished()) {

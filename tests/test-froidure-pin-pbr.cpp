@@ -20,9 +20,10 @@
 #include <vector>   // for vector
 
 #include "catch.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
-#include "libsemigroups/element.hpp"       // for PBR
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element.hpp"           // for PBR
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

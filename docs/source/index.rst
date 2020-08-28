@@ -15,12 +15,17 @@ Namely:
   :cite:`Froidure1997aa`;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
-- the `Schreier-Sims algorithm`_ for permutation groups.
+- the `Schreier-Sims algorithm`_ for permutation groups;
+- a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and
+  `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
+  semigroups which act on sets.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
 .. _Knuth-Bendix algorithm: https://en.wikipedia.org/wiki/Knuth%E2%80%93Bendix_completion_algorithm
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
+.. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
+.. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
 
 The development version of ``libsemigroups`` is available on github_, and some related projects are here_.
 
@@ -29,13 +34,14 @@ The development version of ``libsemigroups`` is available on github_, and some r
 
 The main classes in ``libsemigroups`` are named after the algorithms they
 implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
-:cpp:any:`libsemigroups::congruence::ToddCoxeter`, 
+:cpp:any:`libsemigroups::Konieczny`,
+:cpp:any:`libsemigroups::congruence::ToddCoxeter`,
 :cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
 :cpp:any:`libsemigroups::SchreierSims`.
 
-The implementations in :cpp:any:`libsemigroups::FroidurePin` and
-:cpp:any:`libsemigroups::SchreierSims` are generic and easily adapted to
-user-defined types.
+The implementations in :cpp:any:`libsemigroups::FroidurePin`,
+:cpp:any:`libsemigroups::Konieczny`, and :cpp:any:`libsemigroups::SchreierSims`
+are generic and easily adapted to user-defined types.
 
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
 for very fast manipulation of transformations, partial permutations,

@@ -18,7 +18,7 @@ This page contains the documentation for the class template
 Full API
 --------
 
-.. doxygenstruct:: libsemigroups::ImageRightAction< PartialPerm< TIntType >, PartialPerm< TIntType > >
+.. doxygenstruct:: libsemigroups::ImageRightAction< PartialPerm< T >, PartialPerm< T > >
    :project: libsemigroups
    :members:
 

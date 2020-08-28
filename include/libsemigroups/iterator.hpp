@@ -280,13 +280,13 @@ namespace libsemigroups {
                                                       IteratorBaseAlias>::value)
           : IteratorBaseAlias(it), _state(stt) {}
 
-      IteratorStatefulBase(IteratorStatefulBase const&) = default;
-      IteratorStatefulBase& operator=(IteratorStatefulBase const&) = default;
+      IteratorStatefulBase(IteratorStatefulBase const&);
+      IteratorStatefulBase& operator=(IteratorStatefulBase const&);
 
-      IteratorStatefulBase(IteratorStatefulBase&&) = default;
-      IteratorStatefulBase& operator=(IteratorStatefulBase&&) = default;
+      IteratorStatefulBase(IteratorStatefulBase&&);
+      IteratorStatefulBase& operator=(IteratorStatefulBase&&);
 
-      virtual ~IteratorStatefulBase() = default;
+      virtual ~IteratorStatefulBase();
 
       state_type& get_state() const noexcept {
         return _state;
@@ -407,6 +407,28 @@ namespace libsemigroups {
       mutable state_type _state;
     };
 
+    template <typename S, typename T>
+    IteratorStatefulBase<S, T>::IteratorStatefulBase(
+        IteratorStatefulBase const&)
+        = default;
+
+    template <typename S, typename T>
+    IteratorStatefulBase<S, T>&
+    IteratorStatefulBase<S, T>::operator=(IteratorStatefulBase const&)
+        = default;
+
+    template <typename S, typename T>
+    IteratorStatefulBase<S, T>::IteratorStatefulBase(IteratorStatefulBase&&)
+        = default;
+
+    template <typename S, typename T>
+    IteratorStatefulBase<S, T>&
+    IteratorStatefulBase<S, T>::operator=(IteratorStatefulBase&&)
+        = default;
+
+    template <typename S, typename T>
+    IteratorStatefulBase<S, T>::~IteratorStatefulBase() = default;
+
     template <typename TSubclass, typename TIteratorTraits>
     class IteratorStatelessBase
         : public IteratorBase<TSubclass, TIteratorTraits> {
@@ -447,8 +469,9 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::EqualTo>
-      auto constexpr operator==(IteratorStatelessBase const& that) const
-          noexcept -> typename std::enable_if<
+      auto constexpr
+      operator==(IteratorStatelessBase const& that) const noexcept ->
+          typename std::enable_if<
               std::is_trivially_default_constructible<TOperator>::value,
               bool>::type {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
@@ -456,8 +479,9 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::NotEqualTo>
-      auto constexpr operator!=(IteratorStatelessBase const& that) const
-          noexcept -> ReturnTypeIfExists<TOperator, bool> {
+      auto constexpr
+      operator!=(IteratorStatelessBase const& that) const noexcept
+          -> ReturnTypeIfExists<TOperator, bool> {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
       }
 
@@ -477,15 +501,17 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::LessOrEqualTo>
-      auto constexpr operator<=(IteratorStatelessBase const& that) const
-          noexcept -> ReturnTypeIfExists<TOperator, bool> {
+      auto constexpr
+      operator<=(IteratorStatelessBase const& that) const noexcept
+          -> ReturnTypeIfExists<TOperator, bool> {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::MoreOrEqualTo>
-      auto constexpr operator>=(IteratorStatelessBase const& that) const
-          noexcept -> ReturnTypeIfExists<TOperator, bool> {
+      auto constexpr
+      operator>=(IteratorStatelessBase const& that) const noexcept
+          -> ReturnTypeIfExists<TOperator, bool> {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
       }
 
@@ -611,14 +637,14 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () const noexcept
+      auto operator->() const noexcept
           -> ReturnTypeIfExists<TOperator, const_pointer> {
         return TOperator()(this->get_state(), this->get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () const noexcept
+      auto operator->() const noexcept
           -> ReturnTypeIfNotExists<TOperator, const_pointer> {
         return &(*this->get_wrapped_iter());
       }
@@ -696,14 +722,14 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () const noexcept
+      auto operator->() const noexcept
           -> ReturnTypeIfExists<TOperator, const_pointer> {
         return TOperator()(this->get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () const noexcept
+      auto operator->() const noexcept
           -> ReturnTypeIfNotExists<TOperator, const_pointer> {
         return &(*this->get_wrapped_iter());
       }
@@ -794,13 +820,13 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () noexcept -> ReturnTypeIfExists<TOperator, pointer> {
+      auto operator->() noexcept -> ReturnTypeIfExists<TOperator, pointer> {
         return TOperator()(this->get_state(), this->get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () noexcept -> ReturnTypeIfNotExists<TOperator, pointer> {
+      auto operator->() noexcept -> ReturnTypeIfNotExists<TOperator, pointer> {
         return &(*this->get_wrapped_iter());
       }
 
@@ -886,13 +912,13 @@ namespace libsemigroups {
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () noexcept -> ReturnTypeIfExists<TOperator, pointer> {
+      auto operator->() noexcept -> ReturnTypeIfExists<TOperator, pointer> {
         return TOperator()(this->get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddressOf>
-      auto operator-> () noexcept -> ReturnTypeIfNotExists<TOperator, pointer> {
+      auto operator->() noexcept -> ReturnTypeIfNotExists<TOperator, pointer> {
         return &(*this->get_wrapped_iter());
       }
 

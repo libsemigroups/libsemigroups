@@ -21,13 +21,17 @@
 
 #include "libsemigroups/element.hpp"
 
-#include <algorithm>  // for fill, max_element, find
-#include <cmath>      // for abs
-#include <ostream>    // for operator<<, basic_ostream, ostringstream
-#include <thread>     // for thread, get_id
+#include <algorithm>      // for fill, max_element, find
+#include <cmath>          // for abs
+#include <ostream>        // for operator<<, basic_ostream, ostringstream
+#include <thread>         // for thread, get_id
+#include <unordered_set>  // for unordered_set
 
-#include "libsemigroups/blocks.hpp"    // for Blocks
-#include "libsemigroups/report.hpp"    // for THREAD_ID_MANAGER
+#include <iostream>  // for operator<<, basic_ostream, ostringstream
+
+#include "libsemigroups/blocks.hpp"            // for Blocks
+#include "libsemigroups/element-adapters.hpp"  // for Hash<std::vector>
+#include "libsemigroups/report.hpp"            // for THREAD_ID_MANAGER
 #include "libsemigroups/semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
 
 namespace libsemigroups {
@@ -50,6 +54,10 @@ namespace libsemigroups {
   BooleanMat::BooleanMat(BooleanMat const& copy)
       : MatrixOverSemiringBase<bool, BooleanMat>(copy._vector, copy._semiring) {
   }
+
+  BooleanMat::BooleanMat(BooleanMat&&) = default;
+  BooleanMat& BooleanMat::operator=(BooleanMat const&) = default;
+  BooleanMat& BooleanMat::operator=(BooleanMat&&) = default;
 
   void BooleanMat::redefine(Element const& x, Element const& y) {
     LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
@@ -74,6 +82,62 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
+  BooleanMat BooleanMat::transpose() const {
+    std::vector<bool> vec;
+    vec.resize(this->degree() * this->degree());
+    for (size_t i = 0; i < this->degree(); ++i) {
+      for (size_t j = 0; j < this->degree(); ++j) {
+        vec[i * this->degree() + j] = _vector[j * this->degree() + i];
+      }
+    }
+    return BooleanMat(vec);
+  }
+
+  void BooleanMat::transpose_in_place() {
+    for (size_t i = 0; i < this->degree() - 1; ++i) {
+      for (size_t j = i + 1; j < this->degree(); ++j) {
+        std::swap(_vector[i * this->degree() + j],
+                  _vector[j * this->degree() + i]);
+      }
+    }
+  }
+
+  std::vector<std::vector<bool>> BooleanMat::rows() const {
+    auto                           it = this->_vector.cbegin();
+    std::vector<std::vector<bool>> out;
+    for (size_t i = 0; i < this->degree(); ++i) {
+      std::vector<bool> row(it + (i * this->degree()),
+                            it + ((i + 1) * this->degree()));
+      out.push_back(row);
+    }
+    return out;
+  }
+
+  std::vector<std::vector<bool>> BooleanMat::row_space_basis() const {
+    std::vector<std::vector<bool>> rows = this->rows();
+    booleanmat_helpers::rows_basis(rows);
+    return rows;
+  }
+
+  size_t BooleanMat::row_space_size() const {
+    std::vector<std::vector<bool>> rows = row_space_basis();
+    std::unordered_set<std::vector<bool>, Hash<std::vector<bool>>> set;
+    std::vector<std::vector<bool>> orb(rows.cbegin(), rows.cend());
+    for (size_t i = 0; i < orb.size(); ++i) {
+      for (auto row : rows) {
+        std::vector<bool> cup = orb[i];
+        for (size_t j = 0; j < this->degree(); ++j) {
+          cup[j] = cup[j] || row[j];
+        }
+        if (set.find(cup) == set.end()) {
+          set.insert(cup);
+          orb.push_back(cup);
+        }
+      }
+    }
+    return orb.size();
+  }
+
   // Private
   BooleanMat::BooleanMat(bool x) : MatrixOverSemiringBase(x) {}
 
@@ -81,6 +145,48 @@ namespace libsemigroups {
   BooleanMat::BooleanMat(std::vector<bool>     matrix,
                          Semiring<bool> const* semiring)
       : MatrixOverSemiringBase<bool, BooleanMat>(matrix, semiring) {}
+
+  namespace booleanmat_helpers {
+    void rows_basis(std::vector<std::vector<bool>>& rows) {
+      std::vector<std::vector<bool>> out;
+      if (rows.empty()) {
+        return;
+      }
+      static thread_local std::vector<std::vector<bool>> buf;
+      buf.clear();
+      size_t degree = rows[0].size();
+      std::sort(rows.begin(), rows.end());
+      // Remove duplicates
+      rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
+      std::vector<bool> cup(degree, false);
+      for (auto it = rows.cbegin(); it < rows.cend(); ++it) {
+        cup.assign(degree, false);
+        if (std::find((*it).begin(), (*it).end(), true) != (*it).end()) {
+          for (auto it2 = rows.cbegin(); it2 < rows.cend(); ++it2) {
+            if (it == it2) {
+              continue;
+            }
+            bool contained = true;
+            for (size_t i = 0; i < degree; ++i) {
+              if ((*it2)[i] && !(*it)[i]) {
+                contained = false;
+                break;
+              }
+            }
+            if (contained) {
+              for (size_t i = 0; i < degree; ++i) {
+                cup[i] = cup[i] || (*it2)[i];
+              }
+            }
+          }
+          if (cup != *it) {
+            buf.push_back(std::move(*it));
+          }
+        }
+      }
+      std::swap(buf, rows);
+    }
+  }  // namespace booleanmat_helpers
 
   ////////////////////////////////////////////////////////////////////////
   // Bipartitions
@@ -92,6 +198,11 @@ namespace libsemigroups {
         _nr_left_blocks(UNDEFINED),
         _trans_blocks_lookup(),
         _rank(UNDEFINED) {}
+
+  Bipartition::Bipartition(Bipartition const&) = default;
+  Bipartition::Bipartition(Bipartition&&)      = default;
+  Bipartition& Bipartition::operator=(Bipartition const&) = default;
+  Bipartition& Bipartition::operator=(Bipartition&&) = default;
 
   Bipartition::Bipartition(size_t degree) : Bipartition() {
     this->_vector.resize(2 * degree);
@@ -123,6 +234,8 @@ namespace libsemigroups {
       std::initializer_list<std::vector<int32_t>> const& blocks)
       : Bipartition(blocks_to_list(blocks)) {}
 
+  Bipartition::~Bipartition() = default;
+
   void Bipartition::set_nr_blocks(size_t nr_blocks) {
     LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
     _nr_blocks = nr_blocks;
@@ -148,12 +261,6 @@ namespace libsemigroups {
     size_t const n = _vector.size();
     if (n == 0) {
       return;
-      // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-      //     } else if (n == 1
-      //                && this->_vector[0] ==
-      //                std::numeric_limits<uint32_t>::max()) {
-      //       return;
-      // #endif
     } else if (n % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
@@ -449,7 +556,7 @@ namespace libsemigroups {
   }
 
   ProjectiveMaxPlusMatrix
-      ProjectiveMaxPlusMatrix::operator*(ElementWithVectorData const& y) const {
+  ProjectiveMaxPlusMatrix::operator*(ElementWithVectorData const& y) const {
     ProjectiveMaxPlusMatrix xy(std::vector<int64_t>(pow(y.degree(), 2)),
                                this->semiring());
     xy.Element::redefine(*this, y);
@@ -529,12 +636,6 @@ namespace libsemigroups {
 
   void PBR::validate() const {
     size_t n = this->_vector.size();
-    // #ifdef LIBSEMIGROUPS_DENSEHASHMAP
-    //     if (n == 1 && this->_vector[0][0] ==
-    //     std::numeric_limits<uint32_t>::max()) {
-    //       return;
-    //     }
-    // #endif
     if (n % 2 == 1) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
     }
@@ -685,10 +786,10 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
-  inline void PBR::unite_rows(detail::DynamicArray2<bool>& out,
-                              detail::DynamicArray2<bool>& tmp,
-                              size_t const&                i,
-                              size_t const&                j) {
+  void PBR::unite_rows(detail::DynamicArray2<bool>& out,
+                       detail::DynamicArray2<bool>& tmp,
+                       size_t const&                i,
+                       size_t const&                j) {
     for (size_t k = 0; k < out.nr_cols(); k++) {
       out.set(i, k, (out.get(i, k) || tmp.get(j, k + 1)));
     }

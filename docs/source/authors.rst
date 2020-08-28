@@ -24,7 +24,9 @@ Contributors
 - `J. James`_ contributed some bugfixes.
 - `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
-- `F. Smith`_ contributed to the Todd-Coxeter implementation, and to BMat8s. 
+- `F. Smith`_ contributed the implementation of the Konieczny and
+  Lallement-McFadden algorithm, to the Todd-Coxeter implementation, and to
+  BMat8s.
 - `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.

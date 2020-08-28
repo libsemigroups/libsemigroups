@@ -180,6 +180,12 @@ namespace libsemigroups {
     //! \sa libsemigroups::ActionDigraph::scc_index_type
     using scc_index_type = ActionDigraph<size_t>::scc_index_type;
 
+    //! This is the type of the action of Action::element_types on
+    //! Action::point_types of an Action instance.
+    //!
+    //! \sa libsemigroups::ImageRightAction, libsemigroups::ImageLeftAction
+    using action_type = TActionType;
+
     ////////////////////////////////////////////////////////////////////////
     // Action - iterators - public
     ////////////////////////////////////////////////////////////////////////

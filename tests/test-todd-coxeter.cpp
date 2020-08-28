@@ -31,10 +31,11 @@
 
 #include "fpsemi-examples.hpp"      // for RennerTypeDMonoid, RennerTypeBMonoid
 #include "libsemigroups/bmat8.hpp"  // for Bmat8
-#include "libsemigroups/cong-intf.hpp"       // for congruence::type
-#include "libsemigroups/element-helper.hpp"  // for TransfHelper
-#include "libsemigroups/element.hpp"         // for Element, Transf,
-#include "libsemigroups/fpsemi.hpp"          // for FpSemigroup
+#include "libsemigroups/cong-intf.hpp"         // for congruence::type
+#include "libsemigroups/element-adapters.hpp"  // for Degree etc
+#include "libsemigroups/element-helper.hpp"    // for TransfHelper
+#include "libsemigroups/element.hpp"           // for Element, Transf,
+#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<Element const*>::eleme...
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/order.hpp"         // for shortlex_words
@@ -196,52 +197,55 @@ namespace libsemigroups {
   //
   // The next function implements this order, returning the words on an
   // n-letter alphabet of length up to M.
-  std::vector<word_type> recursive_path_words(size_t n, size_t M) {
-    std::vector<word_type> out;
-    size_t                 a = 0;
-    for (size_t i = 0; i < M; ++i) {
-      out.push_back(word_type(i + 1, a));
-    }
-    a++;
-    int x = out.size();
-    int u = out.size();
-    int v = -1;  // -1 is the empty word
-    int w = -1;  // -1 is the empty word
-    out.push_back({a});
-    while (a < n) {
-      if (v < x - 1) {
-        do {
-          v++;
-        } while (v < x && out[u].size() + out[v].size() > M);
-        if (v < x && out[u].size() + out[v].size() <= M) {
-          word_type nxt = out[u];
-          nxt.insert(nxt.end(), out[v].begin(), out[v].end());
-          out.push_back(nxt);
-        }
-      } else {
-        do {
-          w++;
-        } while (static_cast<size_t>(w) < out.size() && out[w].size() + 1 > M);
-        if (static_cast<size_t>(w) < out.size()) {
-          word_type nxt = out[w];
-          u             = out.size();
-          v             = -1;
-          nxt.push_back(a);
-          out.push_back(nxt);
+  namespace {
+    std::vector<word_type> recursive_path_words(size_t n, size_t M) {
+      std::vector<word_type> out;
+      size_t                 a = 0;
+      for (size_t i = 0; i < M; ++i) {
+        out.push_back(word_type(i + 1, a));
+      }
+      a++;
+      int x = out.size();
+      int u = out.size();
+      int v = -1;  // -1 is the empty word
+      int w = -1;  // -1 is the empty word
+      out.push_back({a});
+      while (a < n) {
+        if (v < x - 1) {
+          do {
+            v++;
+          } while (v < x && out[u].size() + out[v].size() > M);
+          if (v < x && out[u].size() + out[v].size() <= M) {
+            word_type nxt = out[u];
+            nxt.insert(nxt.end(), out[v].begin(), out[v].end());
+            out.push_back(nxt);
+          }
         } else {
-          a++;
-          if (a < n) {
-            x = out.size();
-            u = out.size();
-            v = -1;
-            w = -1;
-            out.push_back({a});
+          do {
+            w++;
+          } while (static_cast<size_t>(w) < out.size()
+                   && out[w].size() + 1 > M);
+          if (static_cast<size_t>(w) < out.size()) {
+            word_type nxt = out[w];
+            u             = out.size();
+            v             = -1;
+            nxt.push_back(a);
+            out.push_back(nxt);
+          } else {
+            a++;
+            if (a < n) {
+              x = out.size();
+              u = out.size();
+              v = -1;
+              w = -1;
+              out.push_back({a});
+            }
           }
         }
       }
+      return out;
     }
-    return out;
-  }
+  }  // namespace
 
   namespace congruence {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -557,8 +561,8 @@ namespace libsemigroups {
       REQUIRE(std::all_of(
           tc.cbegin_normal_forms(),
           tc.cend_normal_forms(),
-          [&tc](word_type const& w) -> bool {
-            return tc.class_index_to_word(tc.word_to_class_index(w)) == w;
+          [&tc](word_type const& ww) -> bool {
+            return tc.class_index_to_word(tc.word_to_class_index(ww)) == ww;
           }));
     }
 
@@ -1188,7 +1192,9 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 34);
       REQUIRE(tc.quotient_froidure_pin()->size() == 34);
       using detail::TCE;
-      auto& S = static_cast<FroidurePin<TCE>&>(*tc.quotient_froidure_pin());
+      auto& S
+          = static_cast<FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>&>(
+              *tc.quotient_froidure_pin());
       S.run();
       std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());

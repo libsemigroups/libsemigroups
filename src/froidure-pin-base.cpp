@@ -27,7 +27,7 @@ namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;
 
   ////////////////////////////////////////////////////////////////////////
-  // FroidurePinBase - constructors - public
+  // FroidurePinBase - constructors and destructor - public
   ////////////////////////////////////////////////////////////////////////
 
   FroidurePinBase::FroidurePinBase()
@@ -91,6 +91,8 @@ namespace libsemigroups {
     _nr_products = 0;
 #endif
   }
+
+  FroidurePinBase::~FroidurePinBase() = default;
 
   ////////////////////////////////////////////////////////////////////////
   // FroidurePinBase - constructors - private

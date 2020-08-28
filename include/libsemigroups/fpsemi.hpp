@@ -131,6 +131,8 @@ namespace libsemigroups {
     //! This constructor is deleted.
     FpSemigroup& operator=(FpSemigroup&&) = delete;
 
+    ~FpSemigroup() = default;
+
     //////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - public
     //////////////////////////////////////////////////////////////////////////

@@ -707,9 +707,8 @@ namespace libsemigroups {
     // FroidurePin - enumeration member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    inline void expand(size_type);
-    inline void
-    is_one(internal_const_element_type x, element_index_type) noexcept(
+    void expand(size_type);
+    void is_one(internal_const_element_type x, element_index_type) noexcept(
         std::is_nothrow_default_constructible<InternalEqualTo>::
             value&& noexcept(std::declval<InternalEqualTo>()(x, x)));
 

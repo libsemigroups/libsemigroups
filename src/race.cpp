@@ -32,6 +32,7 @@
 namespace libsemigroups {
   namespace detail {
 
+    Race::~Race() = default;
     Race::Race()
         : _max_threads(std::thread::hardware_concurrency()),
           _mtx(),

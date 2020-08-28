@@ -61,7 +61,7 @@ namespace libsemigroups {
     //! Default move assignment constructor
     Forest& operator=(Forest&&) = default;
 
-    ~Forest() = default;
+    ~Forest();
 
     //! Add nodes to the Forest.
     //!
@@ -234,6 +234,7 @@ namespace libsemigroups {
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
   };
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_FOREST_HPP_
