@@ -49,9 +49,8 @@ algorithms for computing finite and finitely presented semigroups. Namely:
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
 - the `Schreier-Sims algorithm`_ for permutation groups;
-- the `Konieczny`_ :cite:`Konieczny1994aa` and `Lallement-McFadden`_
-  :cite:`Lallement1990aa` algorithm for computing finite semigroups which act
-  on sets.
+- the `Konieczny`_  and `Lallement-McFadden`_ algorithm for computing finite
+  semigroups which act on sets.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
