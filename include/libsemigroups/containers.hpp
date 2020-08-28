@@ -382,18 +382,18 @@ namespace libsemigroups {
 
       template <typename TOperator, typename TInternalIteratorType>
       struct PrefixIncrement {
-        TInternalIteratorType& operator()(DynamicArray2 const*   da,
-                                          TInternalIteratorType& it) const
-            noexcept {
+        TInternalIteratorType&
+        operator()(DynamicArray2 const*   da,
+                   TInternalIteratorType& it) const noexcept {
           return TOperator()(da, it, 1);
         }
       };
 
       template <typename TOperator, typename TInternalIteratorType>
       struct PrefixDecrement {
-        TInternalIteratorType& operator()(DynamicArray2 const*   da,
-                                          TInternalIteratorType& it) const
-            noexcept {
+        TInternalIteratorType&
+        operator()(DynamicArray2 const*   da,
+                   TInternalIteratorType& it) const noexcept {
           return TOperator()(da, it, 1);
         }
       };
@@ -621,6 +621,136 @@ namespace libsemigroups {
       }
     };
 
+    // StaticVector1 wraps an array, providing it with some of the syntax of
+    // std::vector.
+    // TODO(later) add tests specifically targeting this class
+    template <typename T, size_t N>
+    class StaticVector1 final {
+      static_assert(std::is_default_constructible<T>::value,
+                    "StaticVector1<T> requires T to be default-constructible");
+
+     public:
+      using value_type      = typename std::array<T, N>::value_type;
+      using reference       = typename std::array<T, N>::reference;
+      using const_reference = typename std::array<T, N>::const_reference;
+      using difference_type = typename std::array<T, N>::difference_type;
+      using size_type       = typename std::array<T, N>::size_type;
+      using const_pointer   = typename std::array<T, N>::const_pointer;
+      using pointer         = typename std::array<T, N>::pointer;
+
+      StaticVector1() : _array(), _size(0) {}
+
+      StaticVector1(StaticVector1 const&) = default;
+      StaticVector1(StaticVector1&&)      = default;
+      StaticVector1& operator=(StaticVector1 const&) = default;
+      StaticVector1& operator=(StaticVector1&&) = default;
+      ~StaticVector1()                          = default;
+
+      StaticVector1(std::initializer_list<T> il) : StaticVector1() {
+        for (auto x : il) {
+          push_back(x);
+        }
+      }
+
+      // not noexcept because std::equal may not be
+      bool operator==(StaticVector1 const& that) const {
+        return size() == that.size()
+               && std::equal(cbegin(), cend(), that.cbegin());
+      }
+
+      void clear() noexcept {
+        _size = 0;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      void push_back(T x) {
+        LIBSEMIGROUPS_ASSERT(_size < N);
+        _array[_size] = x;
+        _size++;
+      }
+
+      size_t size() const noexcept {
+        return _size;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      T const& back() const {
+        return _array[_size - 1];
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      T& back() {
+        return _array[_size - 1];
+      }
+
+      using iterator       = typename std::array<T, N>::iterator;
+      using const_iterator = typename std::array<T, N>::const_iterator;
+
+      // noexcept because std::array::cbegin is noexcept
+      inline const_iterator cbegin() const noexcept {
+        return _array.cbegin();
+      }
+
+      // noexcept because std::array::cbegin is noexcept
+      inline const_iterator cend() const noexcept {
+        return _array.cbegin() + _size;
+      }
+
+      // noexcept because std::array::begin is noexcept
+      inline iterator begin() noexcept {
+        return _array.begin();
+      }
+
+      // noexcept because std::array::begin is noexcept
+      inline iterator end() noexcept {
+        return _array.begin() + _size;
+      }
+
+      // noexcept because std::array::cbegin is noexcept
+      inline const_iterator begin() const noexcept {
+        return _array.cbegin();
+      }
+
+      // noexcept because std::array::cbegin is noexcept
+      inline const_iterator end() const noexcept {
+        return _array.cbegin() + _size;
+      }
+
+      // not noexcept because std::copy can throw
+      inline iterator erase(iterator first, iterator last) {
+        iterator const old_end = end();
+        std::copy(last, end(), first);
+        _size -= std::distance(first, last);
+        return (last == old_end ? end() : first + 1);
+      }
+
+      // not noexcept because iterator operations may throw
+      inline void resize(size_t count) {
+        LIBSEMIGROUPS_ASSERT(count < N);
+        if (count >= _size) {
+          for (auto it = begin() + _size; it < begin() + (count - _size);
+               ++it) {
+            *it = T();
+          }
+        }
+        _size = count;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      T& operator[](size_t pos) {
+        return _array[pos];
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      T const& operator[](size_t pos) const {
+        return _array[pos];
+      }
+
+     private:
+      std::array<T, N> _array;
+      size_t           _size;
+    };
+
     // Currently only supports N x N 2-dimensional static vectors
     template <typename T, size_t N>
     class StaticVector2 final {
@@ -768,4 +898,19 @@ namespace libsemigroups {
     };
   }  // namespace detail
 }  // namespace libsemigroups
+
+namespace std {
+  template <typename T, size_t N>
+  struct hash<libsemigroups::detail::StaticVector1<T, N>> {
+    size_t
+    operator()(libsemigroups::detail::StaticVector1<T, N> const& sv) const {
+      size_t seed = 0;
+      for (T const& x : sv) {
+        seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
+                + (seed >> 2);
+      }
+      return seed;
+    }
+  };
+}  // namespace std
 #endif  // LIBSEMIGROUPS_CONTAINERS_HPP_
