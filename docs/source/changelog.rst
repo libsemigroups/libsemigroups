@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.3.1 (released 28/08/2020)
+----------------------------
+
+This is a tediously minor release to fix some issues in the last release.
+
 v1.3.0 (released 28/08/2020)
 ----------------------------
 
