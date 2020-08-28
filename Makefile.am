@@ -77,6 +77,7 @@ pkginclude_HEADERS += include/libsemigroups/libsemigroups-exception.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
+pkginclude_HEADERS += include/libsemigroups/pool.hpp
 pkginclude_HEADERS += include/libsemigroups/race.hpp
 pkginclude_HEADERS += include/libsemigroups/report.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
@@ -614,6 +615,7 @@ EXTRA_PROGRAMS += test_kbe
 EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
+EXTRA_PROGRAMS += test_pool
 EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
@@ -798,6 +800,9 @@ test_obvinf_SOURCES += tests/test-main.cpp
 
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
+
+test_pool_SOURCES =  tests/test-pool.cpp
+test_pool_SOURCES += tests/test-main.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
