@@ -29,6 +29,7 @@ jobs:
             - expect
             - libc6-dbg
             - libtool-bin
+            - valgrind
 
     - env: TEST_SUITE=config-options
       addons:
