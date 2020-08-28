@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-20 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "action.hpp"
 #include "adapters.hpp"
+#include "bitset.hpp"
 #include "blocks.hpp"
 #include "bmat8.hpp"
 #include "bruidhinn-traits.hpp"
@@ -33,7 +34,10 @@
 #include "constants.hpp"
 #include "containers.hpp"
 #include "coset.hpp"
+#include "deprecated.hpp"
+#include "digraph-helper.hpp"
 #include "digraph.hpp"
+#include "element-adapters.hpp"
 #include "element-helper.hpp"
 #include "element.hpp"
 #include "forest.hpp"
@@ -47,17 +51,20 @@
 #include "iterator.hpp"
 #include "kbe.hpp"
 #include "knuth-bendix.hpp"
+#include "konieczny.hpp"
 #include "libsemigroups-config.hpp"
 #include "libsemigroups-debug.hpp"
 #include "libsemigroups-exception.hpp"
 #include "libsemigroups.hpp"
 #include "obvinf.hpp"
 #include "order.hpp"
+#include "pool.hpp"
 #include "race.hpp"
 #include "report.hpp"
 #include "runner.hpp"
 #include "schreier-sims.hpp"
 #include "semiring.hpp"
+#include "siso.hpp"
 #include "stl.hpp"
 #include "string.hpp"
 #include "tce.hpp"
@@ -66,5 +73,8 @@
 #include "transf.hpp"
 #include "types.hpp"
 #include "uf.hpp"
+#include "wilo.hpp"
+#include "wislo.hpp"
+#include "word.hpp"
 
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
