@@ -28,6 +28,9 @@
 
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Winline"
 #include "HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
 
 #include "adapters.hpp"             // for Complexity, Degree, ...
@@ -489,7 +492,8 @@ namespace libsemigroups {
   //! \sa ImageLeftAction.
   template <>
   struct ImageLeftAction<HPCombi::Transf16, HPCombi::Vect16> {
-    // TODO(doc)
+    //! Changes \p res in place to hold the image of \p x under the left
+    //! action of \p y.
     void operator()(HPCombi::Vect16&         res,
                     HPCombi::Transf16 const& x,
                     HPCombi::Vect16 const&   y) const noexcept {
@@ -548,7 +552,7 @@ namespace libsemigroups {
   //! \sa ImageRightAction.
   template <>
   struct Lambda<HPCombi::Transf16, HPCombi::PTransf16> {
-    //! Stores the identity function on the image of \x in \p res.
+    //! Stores the identity function on the image of \p x in \p res.
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PTransf16&      res,
@@ -564,7 +568,7 @@ namespace libsemigroups {
   //! \sa ImageLeftAction.
   template <>
   struct Rho<HPCombi::Transf16, HPCombi::Vect16> {
-    //! Stores the kernel of \x in \p res.
+    //! Stores the kernel of \p x in \p res.
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::Vect16&         res,
@@ -617,5 +621,6 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
+#pragma GCC diagnostic pop
 #endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 #endif  // LIBSEMIGROUPS_HPCOMBI_HPP_

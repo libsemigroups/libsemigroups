@@ -31,7 +31,6 @@
 #define FROIDURE_PIN FroidurePin<TElementType, TTraits>
 
 #define VOID TEMPLATE void
-#define INLINE_VOID TEMPLATE inline void
 #define SIZE_T TEMPLATE size_t
 #define BOOL TEMPLATE bool
 #define TRIL TEMPLATE tril
@@ -836,7 +835,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   // Expand the data structures in the semigroup with space for nr elements
-  INLINE_VOID FROIDURE_PIN::expand(size_type nr) {
+  VOID FROIDURE_PIN::expand(size_type nr) {
     _left.add_rows(nr);
     _reduced.add_rows(nr);
     _right.add_rows(nr);
@@ -844,7 +843,7 @@ namespace libsemigroups {
 
   // Check if an element is the identity, x should be in the position pos
   // of _elements.
-  INLINE_VOID FROIDURE_PIN::is_one(
+  VOID FROIDURE_PIN::is_one(
       internal_const_element_type x,
       element_index_type
           pos) noexcept(std::is_nothrow_default_constructible<InternalEqualTo>::

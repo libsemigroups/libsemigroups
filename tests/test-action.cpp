@@ -16,20 +16,17 @@
 //
 
 // TODO(later):
-// 1. iwyu
-// 2. add examples from Action
+// 1. add examples from Action
 
-#include "libsemigroups/action.hpp"
-#include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"
-#include "libsemigroups/element.hpp"
-#include "libsemigroups/hpcombi.hpp"
-#include "libsemigroups/report.hpp"
-#include "libsemigroups/timer.hpp"
+#include "libsemigroups/action.hpp"            // for LeftAction, RightAction
+#include "libsemigroups/bmat8.hpp"             // for BMat8 etc
+#include "libsemigroups/element-adapters.hpp"  // for ImageRightAction etc
+#include "libsemigroups/element-helper.hpp"    // for PermHelper, PPermHelper
+#include "libsemigroups/element.hpp"           // for PartialPerm
+#include "libsemigroups/report.hpp"            // for ReportGuard
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 

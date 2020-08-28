@@ -58,7 +58,7 @@ namespace libsemigroups {
       Race& operator=(Race const&) = delete;
       Race& operator=(Race&&) = delete;
 
-      ~Race() = default;
+      ~Race();
 
       // Set the maximum number of threads, throws if try to set to 0.
       Race& max_threads(size_t val) noexcept {

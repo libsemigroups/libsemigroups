@@ -8,8 +8,8 @@ Konieczny
 =========
 
 ``libsemigroups`` contains a preliminary implementation of Konieczny's
-generalisation of Lallement-McFadden's algorithm for computing the structure of
-finite semigroups that act on sets; see the documentation below for further
+generalisation of the Lallement-McFadden' algorithm for computing the structure
+of finite semigroups that act on sets; see the documentation below for further
 details. It is preliminary in the sense that the interface exposed by the
 relevant classes is minimal, and that certain optimisations remain to be
 performed.
@@ -33,5 +33,3 @@ The classes implementing the Konieczny and Lallement-McFadden algorithm are:
    _generated/libsemigroups__konieczny
    _generated/libsemigroups__koniecznytraits
    _generated/libsemigroups__konieczny__dclass
-   _generated/libsemigroups__konieczny__nonregulardclass
-   _generated/libsemigroups__konieczny__regulardclass

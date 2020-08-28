@@ -50,7 +50,8 @@ namespace libsemigroups {
         for (size_t i = 1; i < l; ++i)
           rels.push_back({{s[i], s[i]}, {id}});
         break;
-        // default: assert(FALSE)
+      default: {
+      }
     }
     for (int i = 0; i < static_cast<int>(l); ++i) {
       for (int j = 0; j < static_cast<int>(l); ++j) {
@@ -102,7 +103,8 @@ namespace libsemigroups {
         for (size_t i = 0; i < l; ++i)
           rels.push_back({{s[i], s[i]}, {id}});
         break;
-        // default: assert(FALSE)
+      default: {
+      }
     }
     for (int i = 0; i < static_cast<int>(l); ++i) {
       for (int j = 0; j < static_cast<int>(l); ++j) {
@@ -230,7 +232,8 @@ namespace libsemigroups {
         for (size_t i = 0; i < l; ++i)
           rels.push_back({{s[i], s[i]}, {id}});
         break;
-        // default: assert(FALSE)
+      default: {
+      }
     }
     for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
       for (int j = 1; j < static_cast<int>(l); ++j) {

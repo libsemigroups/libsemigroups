@@ -278,12 +278,12 @@ namespace libsemigroups {
       //! A constructor.
       //!
       //! Returns an object with an uninitialised vector.
-      ElementWithVectorData() : Element(), _vector() {}
+      ElementWithVectorData();
 
       //! A constructor.
       //!
       //! Returns an object with an uninitialised vector of length \p n.
-      explicit ElementWithVectorData(size_t n) : Element(), _vector(n) {}
+      explicit ElementWithVectorData(size_t);
 
       //! A constructor.
       //!
@@ -291,19 +291,17 @@ namespace libsemigroups {
       //! of the element.
       //!
       //! Returns an object whose defining data is a copy of \p vector.
-      explicit ElementWithVectorData(std::vector<TValueType> const& vector)
-          : Element(), _vector(vector) {}
+      explicit ElementWithVectorData(std::vector<TValueType> const&);
 
       //! A constructor.
       //!
-      //! The parameter \p vector should be a rvalue reference to defining data
+      //! The parameter \p vec should be a rvalue reference to defining data
       //! of the element.
       //!
       //! Returns an object whose defining data is \p vec.
       //! This constructor moves the data from \p vec, meaning that \p vec is
       //! changed by this constructor.
-      explicit ElementWithVectorData(std::vector<TValueType>&& vec)
-          : Element(), _vector(std::move(vec)) {}
+      explicit ElementWithVectorData(std::vector<TValueType>&&);
 
       //! A copy constructor.
       //!
@@ -312,9 +310,11 @@ namespace libsemigroups {
       //! then this member function must be overridden by any subclass of
       //! ElementWithVectorData since there is no way of knowing how a subclass
       //! is defined by the data in the vector.
-      ElementWithVectorData(ElementWithVectorData const& copy)
-          : Element(copy._hash_value),
-            _vector(copy._vector.cbegin(), copy._vector.cend()) {}
+      ElementWithVectorData(ElementWithVectorData const&);
+
+      ElementWithVectorData(ElementWithVectorData&&) = default;
+      ElementWithVectorData& operator=(ElementWithVectorData const&) = default;
+      ElementWithVectorData& operator=(ElementWithVectorData&&) = default;
 
       //! Returns the product of \c this and \p y
       //!
@@ -486,6 +486,34 @@ namespace libsemigroups {
       std::vector<TValueType> _vector;
     };
 
+    ////////////////////////////////////////////////////////////////////////
+    // ElementWithVectorData constructor impl
+    ////////////////////////////////////////////////////////////////////////
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData()
+        : Element(), _vector() {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        size_t n)
+        : Element(), _vector(n) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        std::vector<TValueType> const& vector)
+        : Element(), _vector(vector) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        std::vector<TValueType>&& vec)
+        : Element(), _vector(std::move(vec)) {}
+
+    template <typename TValueType, typename TSubclass>
+    ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData(
+        ElementWithVectorData const& copy)
+        : Element(copy._hash_value),
+          _vector(copy._vector.cbegin(), copy._vector.cend()) {}
+
     //! Abstract base class for elements using a vector to store their defining
     //! data and the default hash function for that underlying vector.
     //!
@@ -497,8 +525,7 @@ namespace libsemigroups {
         : public ElementWithVectorData<TValueType, TSubclass> {
      public:
       using ElementWithVectorData<TValueType, TSubclass>::ElementWithVectorData;
-      ElementWithVectorDataDefaultHash()
-          : ElementWithVectorData<TValueType, TSubclass>() {}
+      ElementWithVectorDataDefaultHash();
 
      protected:
       //! This member function implements the default hash function for an
@@ -511,6 +538,15 @@ namespace libsemigroups {
         this->_hash_value = this->vector_hash(this->_vector);
       }
     };
+
+    ////////////////////////////////////////////////////////////////////////
+    // ElementWithVectorDataDefaultHash constructor impl
+    ////////////////////////////////////////////////////////////////////////
+    template <typename TValueType, class TSubclass>
+    ElementWithVectorDataDefaultHash<TValueType, TSubclass>::
+        ElementWithVectorDataDefaultHash()
+        : ElementWithVectorData<TValueType, TSubclass>() {}
+
   }  // namespace detail
 
   //! Abstract class for partial transformations.
@@ -559,17 +595,13 @@ namespace libsemigroups {
     //! contain in position *i* the image \f$(i)f\f$, or
     //! libsemigroups::UNDEFINED if *f* is not defined on *i*, for all
     //! \f$0 < i < n\f$.
-    explicit PartialTransformation(std::vector<T> const& vec)
-        : detail::ElementWithVectorDataDefaultHash<T, TSubclass>(vec) {
-      validate();
-    }
+    explicit PartialTransformation(std::vector<T> const&);
 
     //! A constructor.
     //!
     //! Constructs a vector from \p imgs and calls the corresponding
     //! constructor.
-    PartialTransformation(std::initializer_list<T> imgs)
-        : PartialTransformation<T, TSubclass>(std::vector<T>(imgs)) {}
+    PartialTransformation(std::initializer_list<T>);
 
     //! Validates the data defining \c this.
     //!
@@ -647,6 +679,19 @@ namespace libsemigroups {
     // Used for determining rank, TODO(later) make thread-safe
     static std::vector<bool> _lookup;
   };
+
+  template <typename TValueType, typename TSubclass>
+  PartialTransformation<TValueType, TSubclass>::PartialTransformation(
+      std::vector<TValueType> const& vec)
+      : detail::ElementWithVectorDataDefaultHash<TValueType, TSubclass>(vec) {
+    validate();
+  }
+
+  template <typename TValueType, typename TSubclass>
+  PartialTransformation<TValueType, TSubclass>::PartialTransformation(
+      std::initializer_list<TValueType> imgs)
+      : PartialTransformation<TValueType, TSubclass>(
+          std::vector<TValueType>(imgs)) {}
 
   template <typename TValueType, typename TSubclass>
   std::vector<bool> PartialTransformation<TValueType, TSubclass>::_lookup
@@ -746,6 +791,9 @@ namespace libsemigroups {
     //! Constructs a Transformation which is mathematically equal to \p copy.
     Transformation(Transformation<TValueType> const& copy)
         : detail::TransfBase<TValueType, Transformation<TValueType>>(copy) {}
+
+    Transformation& operator=(Transformation<TValueType> const&) = default;
+    Transformation& operator=(Transformation<TValueType>&&) = default;
 
     //! Validates the data defining \c this.
     //!
@@ -914,8 +962,12 @@ namespace libsemigroups {
     }
 
     //! A copy constructor.
-    PartialPerm<T>(PartialPerm const& copy)
+    PartialPerm(PartialPerm const& copy)
         : PartialTransformation<T, PartialPerm<T>>(copy) {}
+
+    PartialPerm(PartialPerm&&) = default;
+    PartialPerm& operator=(PartialPerm&&) = default;
+    PartialPerm& operator=(PartialPerm const&) = default;
 
     void increase_degree_by(size_t m) override {
       this->_vector.insert(this->_vector.end(), m, UNDEFINED);
@@ -1027,6 +1079,11 @@ namespace libsemigroups {
       return PartialPerm<T>(dom);
     }
 
+    //! Returns the group inverse of \c this.
+    //!
+    //! The group inverse of \c this is the partial permutation which is the
+    //! permutation inverse of \c this where \c this is defined, and is
+    //! undefined otherwise.
     PartialPerm<T> inverse() const {
       std::vector<T> dom(this->degree(), static_cast<T>(UNDEFINED));
       size_t const   size = this->_vector.size();
@@ -1038,6 +1095,11 @@ namespace libsemigroups {
       return PartialPerm<T>(dom);
     }
 
+    //! Modifies \p x to be the group inverse of \c this.
+    //!
+    //! The group inverse of \c this is the partial permutation which is the
+    //! permutation inverse of \c this where \c this is defined, and is
+    //! undefined otherwise.
     void inverse(PartialPerm<T>& x) const {
       x._vector.clear();
       x._vector.resize(this->degree(), static_cast<T>(UNDEFINED));
@@ -1103,7 +1165,10 @@ namespace libsemigroups {
     //! A copy constructor.
     //!
     //! Constructs a Bipartition that is mathematically equal to \p copy.
-    Bipartition(Bipartition const&) = default;
+    Bipartition(Bipartition const&);
+    Bipartition(Bipartition&&);
+    Bipartition& operator=(Bipartition const&);
+    Bipartition& operator=(Bipartition&&);
 
     //! A constructor.
     //!
@@ -1112,6 +1177,8 @@ namespace libsemigroups {
     //! degree of the bipartition. The bipartition constructed has equivalence
     //! classes given by the vectors in \p blocks.
     Bipartition(std::initializer_list<std::vector<int32_t>> const&);
+
+    ~Bipartition();
 
     //! Validates the data defining \c this.
     //!
@@ -1376,6 +1443,11 @@ namespace libsemigroups {
             _degree(copy._degree),
             _semiring(copy._semiring) {}
 
+      MatrixOverSemiringBase(MatrixOverSemiringBase&&) = default;
+      MatrixOverSemiringBase& operator=(MatrixOverSemiringBase const&)
+          = default;
+      MatrixOverSemiringBase& operator=(MatrixOverSemiringBase&&) = default;
+
       //! Validates the data defining \c this.
       //!
       //! This member function throws a libsemigroups::LibsemigroupsException if
@@ -1565,8 +1637,6 @@ namespace libsemigroups {
     //! converted into its normal form when the object is constructed.
     ProjectiveMaxPlusMatrix(std::vector<std::vector<int64_t>> const&,
                             Semiring<int64_t> const*);
-    //! A copy constructor.
-    ProjectiveMaxPlusMatrix(ProjectiveMaxPlusMatrix const&) = default;
 
     //! Returns the product of \c this and \p y
     //!
@@ -1690,13 +1760,12 @@ namespace libsemigroups {
     //! Constructs a boolean matrix of the specified degree
     explicit BooleanMat(size_t);
 
-    //! A debug constructor.
-    //!
-    //! Constructs a boolean matrix of degree 4
-    // BooleanMat();
-
     //! A copy constructor.
     BooleanMat(BooleanMat const&);
+    BooleanMat(BooleanMat&&);
+
+    BooleanMat& operator=(BooleanMat const&);
+    BooleanMat& operator=(BooleanMat&&);
 
     //! Multiplies \p x and \p y and stores the result in \c this.
     //!

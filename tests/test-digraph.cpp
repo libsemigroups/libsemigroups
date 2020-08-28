@@ -45,102 +45,105 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;  // forward decl
 
-  void add_chain(ActionDigraph<size_t>& digraph, size_t n) {
-    size_t old_nodes = digraph.nr_nodes();
-    digraph.add_nodes(n);
-    for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
-      digraph.add_edge(i, i + 1, 0);
-    }
-  }
-
-  ActionDigraph<size_t> chain(size_t n) {
-    ActionDigraph<size_t> g(0, 1);
-    add_chain(g, n);
-    return g;
-  }
-
-  void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
-    if (n != digraph.out_degree()) {
-      throw std::runtime_error("can't do it!");
-    }
-    size_t old_nodes = digraph.nr_nodes();
-    digraph.add_nodes(n);
-
-    for (size_t i = old_nodes; i < digraph.nr_nodes(); ++i) {
-      for (size_t j = old_nodes; j < digraph.nr_nodes(); ++j) {
-        digraph.add_edge(i, j, j - old_nodes);
+  namespace {
+    void add_chain(ActionDigraph<size_t>& digraph, size_t n) {
+      size_t old_nodes = digraph.nr_nodes();
+      digraph.add_nodes(n);
+      for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
+        digraph.add_edge(i, i + 1, 0);
       }
     }
-  }
 
-  ActionDigraph<size_t> clique(size_t n) {
-    ActionDigraph<size_t> g(0, n);
-    add_clique(g, n);
-    return g;
-  }
+    ActionDigraph<size_t> chain(size_t n) {
+      ActionDigraph<size_t> g(0, 1);
+      add_chain(g, n);
+      return g;
+    }
 
-  ActionDigraph<size_t> binary_tree(size_t nr_levels) {
-    ActionDigraph<size_t> ad;
-    ad.add_nodes(std::pow(2, nr_levels) - 1);
-    ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(0, 2, 1);
+    void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+      if (n != digraph.out_degree()) {
+        throw std::runtime_error("can't do it!");
+      }
+      size_t old_nodes = digraph.nr_nodes();
+      digraph.add_nodes(n);
 
-    for (size_t i = 2; i <= nr_levels; ++i) {
-      size_t counter = std::pow(2, i - 1) - 1;
-      for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1; ++j) {
-        ad.add_edge(j, counter++, 0);
-        ad.add_edge(j, counter++, 1);
+      for (size_t i = old_nodes; i < digraph.nr_nodes(); ++i) {
+        for (size_t j = old_nodes; j < digraph.nr_nodes(); ++j) {
+          digraph.add_edge(i, j, j - old_nodes);
+        }
       }
     }
-    return ad;
-  }
 
-  template <typename T>
-  auto verify_deref(T const& it) -> typename std::enable_if<
-      std::is_same<typename T::value_type, word_type>::value,
-      void>::type {
-    REQUIRE_NOTHROW(it->size());
-  }
+    ActionDigraph<size_t> clique(size_t n) {
+      ActionDigraph<size_t> g(0, n);
+      add_clique(g, n);
+      return g;
+    }
 
-  template <typename T>
-  auto verify_deref(T const& it) -> typename std::enable_if<
-      !std::is_same<typename T::value_type, word_type>::value,
-      void>::type {
-    REQUIRE_NOTHROW(it->first);
-  }
+    ActionDigraph<size_t> binary_tree(size_t nr_levels) {
+      ActionDigraph<size_t> ad;
+      ad.add_nodes(std::pow(2, nr_levels) - 1);
+      ad.add_to_out_degree(2);
+      ad.add_edge(0, 1, 0);
+      ad.add_edge(0, 2, 1);
 
-  template <typename T>
-  void verify_forward_iterator_requirements(T it) {
-    using deref_type = decltype(*it);
-    verify_deref(it);
-    REQUIRE(std::is_reference<deref_type>::value);
-    REQUIRE(
-        std::is_const<typename std::remove_reference<deref_type>::type>::value);
-    T copy(it);
-    REQUIRE(&copy != &it);
-    it++;
-    auto it_val   = *it;
-    auto copy_val = *copy;
-    std::swap(it, copy);
-    REQUIRE(copy_val == *it);
-    REQUIRE(it_val == *copy);
+      for (size_t i = 2; i <= nr_levels; ++i) {
+        size_t counter = std::pow(2, i - 1) - 1;
+        for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1;
+             ++j) {
+          ad.add_edge(j, counter++, 0);
+          ad.add_edge(j, counter++, 1);
+        }
+      }
+      return ad;
+    }
 
-    it.swap(copy);
-    REQUIRE(it_val == *it);
-    REQUIRE(copy_val == *copy);
+    template <typename T>
+    auto verify_deref(T const& it) -> typename std::enable_if<
+        std::is_same<typename T::value_type, word_type>::value,
+        void>::type {
+      REQUIRE_NOTHROW(it->size());
+    }
 
-    ++copy;
-    REQUIRE(*it == *copy);
+    template <typename T>
+    auto verify_deref(T const& it) -> typename std::enable_if<
+        !std::is_same<typename T::value_type, word_type>::value,
+        void>::type {
+      REQUIRE_NOTHROW(it->first);
+    }
 
-    ++it;
-    copy++;
-    REQUIRE(*it == *copy);
+    template <typename T>
+    void verify_forward_iterator_requirements(T it) {
+      using deref_type = decltype(*it);
+      verify_deref(it);
+      REQUIRE(std::is_reference<deref_type>::value);
+      REQUIRE(std::is_const<
+              typename std::remove_reference<deref_type>::type>::value);
+      T copy(it);
+      REQUIRE(&copy != &it);
+      it++;
+      auto it_val   = *it;
+      auto copy_val = *copy;
+      std::swap(it, copy);
+      REQUIRE(copy_val == *it);
+      REQUIRE(it_val == *copy);
 
-    REQUIRE(std::is_same<
-            typename std::iterator_traits<T>::reference,
-            typename std::iterator_traits<T>::value_type const&>::value);
-  }
+      it.swap(copy);
+      REQUIRE(it_val == *it);
+      REQUIRE(copy_val == *copy);
+
+      ++copy;
+      REQUIRE(*it == *copy);
+
+      ++it;
+      copy++;
+      REQUIRE(*it == *copy);
+
+      REQUIRE(std::is_same<
+              typename std::iterator_traits<T>::reference,
+              typename std::iterator_traits<T>::value_type const&>::value);
+    }
+  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "000",
@@ -1211,7 +1214,6 @@ namespace libsemigroups {
 
     REQUIRE_THROWS_AS(ad.cbegin_panilo(6), LibsemigroupsException);
     REQUIRE(ad.cbegin_panilo(0, 1, 1) == ad.cend_panilo());
-
     REQUIRE_THROWS_AS(ad.cbegin_panislo(6), LibsemigroupsException);
     REQUIRE(ad.cbegin_panislo(0, 1, 1) == ad.cend_panislo());
 
@@ -1774,8 +1776,8 @@ namespace libsemigroups {
             == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(1, 0, POSITIVE_INFINITY) == 511);
     REQUIRE(action_digraph_helper::topological_sort(ad).empty());
-    REQUIRE(*std::find_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t n) {
-      return action_digraph_helper::topological_sort(ad, n).empty();
+    REQUIRE(*std::find_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t m) {
+      return action_digraph_helper::topological_sort(ad, m).empty();
     }) == 1023);
   }
 

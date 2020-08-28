@@ -368,6 +368,9 @@ namespace libsemigroups {
     size_t minimum_dim(BMat8 const& x) noexcept {
       size_t   i = 0;
       uint64_t c = x.to_int();
+      if (!c) {
+        return 0;
+      }
       uint64_t d = x.to_int();
       uint64_t y = x.transpose().to_int();
       uint64_t z = x.transpose().to_int();
@@ -376,7 +379,7 @@ namespace libsemigroups {
         d = d >> 8;
         y = y >> 8;
         ++i;
-      } while ((d << (8 * i)) == c && (y << (8 * i)) == z && i < 8);
+      } while (i < 8 && (d << (8 * i)) == c && (y << (8 * i)) == z);
 
       return 9 - i;
     }

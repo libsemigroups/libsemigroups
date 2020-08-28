@@ -37,31 +37,32 @@ namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
-  static inline void test_idempotent(FroidurePin<Element const*>& S,
-                                     Element const*               x) {
-    REQUIRE(S.is_idempotent(S.position(x)));
-    Element* y = x->heap_copy();
-    y->redefine(x, x);
-    REQUIRE(*x == *y);
-    REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
-    delete y;
-  }
-
-  template <typename TElementType>
-  void delete_gens(std::vector<TElementType>& gens) {
-    for (auto x : gens) {
-      delete x;
+  namespace {
+    void test_idempotent(FroidurePin<Element const*>& S, Element const* x) {
+      REQUIRE(S.is_idempotent(S.position(x)));
+      Element* y = x->heap_copy();
+      y->redefine(x, x);
+      REQUIRE(*x == *y);
+      REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
+      delete y;
     }
-  }
 
-  static void test_rules_iterator(FroidurePin<Element const*>& S) {
-    size_t nr = 0;
-    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-      REQUIRE(S.word_to_pos(it->first) == S.word_to_pos(it->second));
-      nr++;
+    template <typename TElementType>
+    void delete_gens(std::vector<TElementType>& gens) {
+      for (auto x : gens) {
+        delete x;
+      }
     }
-    REQUIRE(nr == S.current_nr_rules());
-  }
+
+    void test_rules_iterator(FroidurePin<Element const*>& S) {
+      size_t nr = 0;
+      for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+        REQUIRE(S.word_to_pos(it->first) == S.word_to_pos(it->second));
+        nr++;
+      }
+      REQUIRE(nr == S.current_nr_rules());
+    }
+  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "017",

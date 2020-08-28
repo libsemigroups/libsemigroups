@@ -86,7 +86,7 @@ namespace libsemigroups {
     //! deleted.
     FroidurePinBase& operator=(FroidurePinBase&&) = delete;
 
-    virtual ~FroidurePinBase() = default;
+    virtual ~FroidurePinBase();
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - settings - public

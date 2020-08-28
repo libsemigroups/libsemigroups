@@ -534,6 +534,7 @@ libsemigroups_la_SOURCES += src/coset.cpp
 libsemigroups_la_SOURCES += src/digraph.cpp
 ## endif
 libsemigroups_la_SOURCES += src/element.cpp
+libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp

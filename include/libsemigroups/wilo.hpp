@@ -63,7 +63,7 @@ namespace libsemigroups {
     //! No doc
     const_wilo_iterator() = default;
     //! No doc
-    const_wilo_iterator(const_wilo_iterator const&) = default;
+    const_wilo_iterator(const_wilo_iterator const&);
     //! No doc
     const_wilo_iterator(const_wilo_iterator&&) = default;
     //! No doc
@@ -86,7 +86,7 @@ namespace libsemigroups {
     }
 
     //! No doc
-    ~const_wilo_iterator() = default;
+    ~const_wilo_iterator();
 
     //! No doc
     bool operator==(const_wilo_iterator const& that) const noexcept {

@@ -38,6 +38,7 @@
 
 namespace libsemigroups {
   namespace detail {
+
     using const_iterator_word_type =
         typename std::vector<word_type>::const_iterator;
     using const_iterator_pair_string = typename std::vector<
@@ -59,6 +60,8 @@ namespace libsemigroups {
           _matrix(n, 0) {
     }
 #endif
+
+    IsObviouslyInfinite::~IsObviouslyInfinite() = default;
 
     void IsObviouslyInfinite::add_rules(const_iterator_word_type first,
                                         const_iterator_word_type last) {

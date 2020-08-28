@@ -1,4 +1,9 @@
 libsemigroups::Konieczny::DClass:
+- Constructors:
+  - DClass(DClass const&)
+  - operator=(DClass const&)
+  - DClass(DClass&&)
+  - operator=(DClass&&)
 - Accessors:
   - rep
 - Attributes:

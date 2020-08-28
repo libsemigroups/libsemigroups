@@ -30,7 +30,7 @@
 #include <iostream>  // for operator<<, basic_ostream, ostringstream
 
 #include "libsemigroups/blocks.hpp"            // for Blocks
-#include "libsemigroups/element-adapters.hpp"  // for VecHash
+#include "libsemigroups/element-adapters.hpp"  // for Hash<std::vector>
 #include "libsemigroups/report.hpp"            // for THREAD_ID_MANAGER
 #include "libsemigroups/semiring.hpp"  // for BooleanSemiring, Semiring (ptr only)
 
@@ -54,6 +54,10 @@ namespace libsemigroups {
   BooleanMat::BooleanMat(BooleanMat const& copy)
       : MatrixOverSemiringBase<bool, BooleanMat>(copy._vector, copy._semiring) {
   }
+
+  BooleanMat::BooleanMat(BooleanMat&&) = default;
+  BooleanMat& BooleanMat::operator=(BooleanMat const&) = default;
+  BooleanMat& BooleanMat::operator=(BooleanMat&&) = default;
 
   void BooleanMat::redefine(Element const& x, Element const& y) {
     LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
@@ -195,6 +199,11 @@ namespace libsemigroups {
         _trans_blocks_lookup(),
         _rank(UNDEFINED) {}
 
+  Bipartition::Bipartition(Bipartition const&) = default;
+  Bipartition::Bipartition(Bipartition&&)      = default;
+  Bipartition& Bipartition::operator=(Bipartition const&) = default;
+  Bipartition& Bipartition::operator=(Bipartition&&) = default;
+
   Bipartition::Bipartition(size_t degree) : Bipartition() {
     this->_vector.resize(2 * degree);
   }
@@ -224,6 +233,8 @@ namespace libsemigroups {
   Bipartition::Bipartition(
       std::initializer_list<std::vector<int32_t>> const& blocks)
       : Bipartition(blocks_to_list(blocks)) {}
+
+  Bipartition::~Bipartition() = default;
 
   void Bipartition::set_nr_blocks(size_t nr_blocks) {
     LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
@@ -775,10 +786,10 @@ namespace libsemigroups {
     this->reset_hash_value();
   }
 
-  inline void PBR::unite_rows(detail::DynamicArray2<bool>& out,
-                              detail::DynamicArray2<bool>& tmp,
-                              size_t const&                i,
-                              size_t const&                j) {
+  void PBR::unite_rows(detail::DynamicArray2<bool>& out,
+                       detail::DynamicArray2<bool>& tmp,
+                       size_t const&                i,
+                       size_t const&                j) {
     for (size_t k = 0; k < out.nr_cols(); k++) {
       out.set(i, k, (out.get(i, k) || tmp.get(j, k + 1)));
     }

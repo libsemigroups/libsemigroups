@@ -652,8 +652,7 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  //! Specialization of the adapter Complexity for instances of
-  //! BMat8.
+  //! Specialization of the adapter Complexity for instances of BMat8.
   //!
   //! \sa Complexity.
   template <>
@@ -664,8 +663,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter Degree for instances of
-  //! BMat8.
+  //! Specialization of the adapter Degree for instances of BMat8.
   //!
   //! \sa Degree.
   template <>
@@ -676,8 +674,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter IncreaseDegree for instances of
-  //! BMat8.
+  //! Specialization of the adapter IncreaseDegree for instances of BMat8.
   //!
   //! \sa IncreaseDegree.
   template <>
@@ -686,8 +683,7 @@ namespace libsemigroups {
     inline void operator()(BMat8 const&) const noexcept {}
   };
 
-  //! Specialization of the adapter One for instances of
-  //! BMat8.
+  //! Specialization of the adapter One for instances of BMat8.
   //!
   //! \sa One.
   template <>
@@ -702,8 +698,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter Product for instances of
-  //! BMat8.
+  //! Specialization of the adapter Product for instances of BMat8.
   //!
   //! \sa Product.
   template <>
@@ -717,8 +712,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter ImageRightAction for instances of
-  //! BMat8.
+  //! Specialization of the adapter ImageRightAction for instances of BMat8.
   //!
   //! \sa ImageRightAction.
   template <>
@@ -732,8 +726,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter ImageLeftAction for instances of
-  //! BMat8.
+  //! Specialization of the adapter ImageLeftAction for instances of BMat8.
   //!
   //! \sa ImageLeftAction.
   template <>
@@ -747,8 +740,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter Inverse for instances of
-  //! BMat8.
+  //! Specialization of the adapter Inverse for instances of BMat8.
   //!
   //! \sa Inverse.
   template <>
@@ -760,8 +752,7 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter LambdaValue for instances of
-  //! BMat8.
+  //! Specialization of the adapter LambdaValue for instances of BMat8.
   //!
   //! \sa LambdaValue
   template <>
@@ -771,8 +762,7 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! Specialization of the adapter RhoValue for instances of
-  //! BMat8.
+  //! Specialization of the adapter RhoValue for instances of BMat8.
   //!
   //! \sa RhoValue
   template <>
@@ -782,8 +772,7 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! Specialization of the adapter Lambda for instances of
-  //! BMat8.
+  //! Specialization of the adapter Lambda for instances of BMat8.
   //!
   //! \sa Lambda.
   template <>
@@ -796,19 +785,20 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter Rho for instances of
-  //! BMat8.
+  //! Specialization of the adapter Rho for instances of BMat8.
   //!
   //! \sa Rho.
   template <>
   struct Rho<BMat8, BMat8> {
+    //! Returns the rho value of \p x as used in the Konieczny algorithm; for
+    //! BMat8 this is the column space basis.
+    // noexcept because BMat8::col_space_basis is noexcept
     inline void operator()(BMat8& res, BMat8 const& x) const noexcept {
       res = x.col_space_basis();
     }
   };
 
-  //! Specialization of the adapter Rank for instances of
-  //! BMat8.
+  //! Specialization of the adapter Rank for instances of BMat8.
   //!
   //! \sa Rank.
   template <>

@@ -100,6 +100,8 @@ namespace libsemigroups {
           _ident(1, 0),
           _last_active_coset(0) {}
 
+    CosetManager::~CosetManager() = default;
+
     ////////////////////////////////////////////////////////////////////////
     // CosetManager - member functions - protected
     ////////////////////////////////////////////////////////////////////////

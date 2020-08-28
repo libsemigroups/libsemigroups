@@ -15,16 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//
-// This file contains functionality for various constant values used in
-// libsemigroups.
 
-#include "libsemigroups/constants.hpp"
+#include "libsemigroups/forest.hpp"
 
 namespace libsemigroups {
-
-  Undefined const        UNDEFINED{};
-  PositiveInfinity const POSITIVE_INFINITY{};
-  LimitMax const         LIMIT_MAX{};
-  NegativeInfinity const NEGATIVE_INFINITY{};
-}  // namespace libsemigroups
+  Forest::~Forest() = default;
+}

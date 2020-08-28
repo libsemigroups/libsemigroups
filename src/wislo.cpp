@@ -30,6 +30,11 @@
 
 namespace libsemigroups {
 
+  const_wislo_iterator::~const_wislo_iterator() = default;
+
+  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
+      = default;
+
   const_wislo_iterator cbegin_wislo(size_t const n,
                                     word_type&&  first,
                                     word_type&&  last) {

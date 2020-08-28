@@ -192,14 +192,16 @@ namespace libsemigroups {
     }
 
     bool first_time = true;
-    bool fn_ptr() {
-      if (first_time) {
-        first_time = false;
-        return false;
+    namespace {
+      bool fn_ptr() {
+        if (first_time) {
+          first_time = false;
+          return false;
+        }
+        // if we return true the first time, then run is not called at all
+        return true;
       }
-      // if we return true the first time, then run is not called at all
-      return true;
-    }
+    }  // namespace
 
     LIBSEMIGROUPS_TEST_CASE("Runner",
                             "009",

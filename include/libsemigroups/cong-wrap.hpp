@@ -130,7 +130,7 @@ namespace libsemigroups {
     //! Deleted
     CongruenceWrapper& operator=(CongruenceWrapper&&) = delete;
 
-    ~CongruenceWrapper() = default;
+    ~CongruenceWrapper();
 
     ////////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - public
@@ -256,5 +256,12 @@ namespace libsemigroups {
 
     std::unique_ptr<wrapped_type> _wrapped_cong;
   };
+
+  //////////////////////////////////////////////////////////////////////////
+  // CongruenceWrapper - destructor - implementation
+  //////////////////////////////////////////////////////////////////////////
+  template <typename T>
+  CongruenceWrapper<T>::~CongruenceWrapper() = default;
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_WRAP_HPP_

@@ -31,17 +31,19 @@
 
 namespace libsemigroups {
 
-  char to_human_readable(char c) noexcept {
-    if (c > 95) {
-      return c;
-    } else {
+  namespace {
+    char to_human_readable(char c) noexcept {
+      if (c > 95) {
+        return c;
+      } else {
 #ifndef LIBSEMIGROUPS_DEBUG
-      return c + 96;
+        return c + 96;
 #else
-      return c;
+        return c;
 #endif
+      }
     }
-  }
+  }  // namespace
 
   //////////////////////////////////////////////////////////////////////////////
   // FpSemigroupInterface - constructor + destructor - public
@@ -60,6 +62,8 @@ namespace libsemigroups {
         _froidure_pin(nullptr),
         _is_obviously_finite(false),
         _is_obviously_infinite(false) {}
+
+  FpSemigroupInterface::~FpSemigroupInterface() = default;
 
   ////////////////////////////////////////////////////////////////////////////
   // Runner - pure virtual overridden function - public

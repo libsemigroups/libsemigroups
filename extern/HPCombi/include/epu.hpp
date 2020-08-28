@@ -521,7 +521,7 @@ inline epu8 eval16_cycle(epu8 v);
  */
 inline epu8 eval16_popcount(epu8 v);
 /** @copydoc common_eval16 */
-inline epu8 eval16(epu8 v) { return eval16_cycle(v); };
+inline epu8 eval16(epu8 v) { return eval16_cycle(v); }
 
 /** @class common_first_diff
  * @brief The first difference between two #HPCombi::epu8

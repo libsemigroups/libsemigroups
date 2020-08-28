@@ -179,13 +179,13 @@ namespace libsemigroups {
 
     auto id = One<Perm16>()(10);
     auto r  = IntegralRange<int, 0, 10>();
-    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int pt) {
-      return ImageRightAction<Perm16, int>()(pt, id) == pt;
+    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int y) {
+      return ImageRightAction<Perm16, int>()(y, id) == y;
     }));
-    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int pt) {
+    REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int y) {
       int qt;
-      ImageRightAction<Perm16, int>()(qt, pt, id);
-      return qt == pt;
+      ImageRightAction<Perm16, int>()(qt, y, id);
+      return qt == y;
     }));
   }
 

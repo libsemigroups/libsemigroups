@@ -828,6 +828,11 @@ namespace libsemigroups {
                           "028",
                           "2-sided congruences of BMat8 semigroup",
                           "[quick][cong][no-valgrind]") {
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     auto rg    = ReportGuard(REPORT);
     using BMat = BMatHelper<4>::type;
     std::vector<BMat> gens
@@ -896,6 +901,9 @@ namespace libsemigroups {
                                          {1, 0, 1},
                                          {0, 1, 0, 1}}));
     }
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#pragma GCC diagnostic pop
+#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
