@@ -571,6 +571,7 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
+EXTRA_DIST += extern/.EIGEN_VERSION
 EXTRA_DIST += src/kbe-impl.hpp 
 EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += tests/catch.hpp

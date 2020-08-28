@@ -55,7 +55,6 @@
 #include "libsemigroups-config.hpp"
 #include "libsemigroups-debug.hpp"
 #include "libsemigroups-exception.hpp"
-#include "libsemigroups.hpp"
 #include "obvinf.hpp"
 #include "order.hpp"
 #include "pool.hpp"
