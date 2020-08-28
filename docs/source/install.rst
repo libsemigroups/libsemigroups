@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 1.2.1
+.. |libsemigroups-version| replace:: 1.3.0
 
 .. _Installation:
 
@@ -96,22 +96,25 @@ Configuration options
 In addition to the usual ``autoconf`` configuration options, the following
 configuration options are available for ``libsemigroups``:
 
-==========================  ===================================
+==========================  ==================================================
 Option 
---------------------------  -----------------------------------
---enable-code-coverage      enable code coverage support
---enable-compile-warnings   enable compiler warnings
---enable-debug              enable debug mode
---enable-eigen              enable ``eigen``
---enable-hpcombi            enable ``HPCombi``
---enable-verbose            enable verbose mode
---with-external-fmt         do not use the included copy of fmt
---disable-popcnt            do not use __builtin_popcountl
---disable-clzll             do not use __builtin_ctzll
-==========================  ===================================
+--------------------------  --------------------------------------------------
+--enable-code-coverage      enable code coverage support (default=no)
+--enable-compile-warnings   enable compiler warnings (default=no)
+--enable-debug              enable debug mode (default=no)
+--enable-eigen              enable ``eigen`` (default=yes)
+--enable-fmt                enable fmt (default=no)
+--enable-hpcombi            enable ``HPCombi`` (default=yes)
+--enable-verbose            enable verbose mode (default=no)
+--with-external-fmt         do not use the included copy of fmt (default=no)
+--with-external-eigen       do not use the included copy of eigen (default=no)
+--disable-popcnt            do not use __builtin_popcountl (default=yes)
+--disable-clzll             do not use __builtin_ctzll (default=yes)
+==========================  ==================================================
 
 Debug mode and verbose mode significantly degrade the performance of
-``libsemigroups``.
+``libsemigroups``. Compiling with ``fmt`` enabled increases build times
+significantly. 
 
 Make install
 ------------

@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 1.2.1
+libsemigroups - Version 1.3.0
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -45,15 +45,20 @@ What is ``libsemigroups``?
 ``libsemigroups``  is a C++11 library containing implementations of several
 algorithms for computing finite and finitely presented semigroups. Namely:
 
-- the `Froidure-Pin algorithm`_ for computing finite semigroups
+- the `Froidure-Pin algorithm`_ for computing finite semigroups;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
-- the `Schreier-Sims algorithm`_ for permutation groups.
+- the `Schreier-Sims algorithm`_ for permutation groups;
+- the `Konieczny`_ :cite:`Konieczny1994aa` and `Lallement-McFadden`_
+  :cite:`Lallement1990aa` algorithm for computing finite semigroups which act
+  on sets.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
 .. _Knuth-Bendix algorithm: https://en.wikipedia.org/wiki/Knuth%E2%80%93Bendix_completion_algorithm
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
+.. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
+.. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
 
 ``libsemigroups`` is partly based on `Algorithms for computing finite
 semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.  
@@ -116,8 +121,9 @@ Contributors
 - `J. James`_ contributed some bugfixes.
 - `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
-- `F. Smith`_ contributed to the Todd-Coxeter implementation, and to the
-  `BMat8` class. 
+- `F. Smith`_ contributed the implementation of the Konieczny and
+  Lallement-McFadden algorithm, to the Todd-Coxeter implementation, and to
+  BMat8s.
 - `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
@@ -129,7 +135,7 @@ Contributors
 .. _J. James: http://www.jamezone.org/
 .. _J. Jonušas: http://julius.jonusas.work/
 .. _D. V. Pasechnik:  http://users.ox.ac.uk/~coml0531
-.. _F. Smith: 
+.. _F. Smith: https://flsmith.github.io
 .. _N. Thiery: http://nicolas.thiery.name/
 .. _M. Torpey: https://mtorpey.github.io/
 .. _M. Tsalakou: https://mariatsalakou.github.io/
@@ -144,9 +150,9 @@ python bindings).
 We thank the `Carnegie Trust for the Universities of Scotland`_ for funding
 the PhD scholarship of `J. Jonušas`_ when he worked on this project.
 
-We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_
-for funding the PhD scholarship of `M. Torpey`_ when he worked on this
-project (EP/M506631/1).
+We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_ for
+funding the PhD scholarships of `M. Torpey`_ and `F. Smith`_ when they worked
+on this project (EP/M506631/1).
 
 .. _OpenDreamKit: https://opendreamkit.org/
 .. _Carnegie Trust for the Universities of Scotland: https://www.carnegie-trust.org/

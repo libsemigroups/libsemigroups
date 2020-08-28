@@ -38,7 +38,7 @@ Contributors
 .. _J. James: http://www.jamezone.org/
 .. _J. Jonušas: http://julius.jonusas.work/
 .. _D. V. Pasechnik:  http://users.ox.ac.uk/~coml0531
-.. _F. Smith: 
+.. _F. Smith: https://flsmith.github.io
 .. _N. Thiery: http://nicolas.thiery.name/
 .. _M. Torpey: https://mtorpey.github.io/
 .. _M. Tsalakou: https://mariatsalakou.github.io/

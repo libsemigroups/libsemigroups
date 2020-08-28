@@ -1,6 +1,35 @@
 Changelog
 =========
 
+v1.3.0 (released 28/08/2020)
+----------------------------
+
+In this release some new features have been added and some issues have been
+resolved. The new features in this version of ``libsemigroups`` were implemented
+by `J. D. Mitchell`_, `Reinis Cirpons`, and `Finn Smith`_.
+
+.. _J. D. Mitchell: https://jdbm.me
+.. _Reinis Cirpons:
+.. _Finn Smith: https://flsmith.github.io
+
+The major new feature in this release is:
+
+* an implementation of the Konieczny-Lallement-McFadden Algorithm
+  :cite:`Konieczny1994aa`, :cite:`Lallement1990aa` for computing
+  finite semigroups (`Finn Smith`_ and `J. D. Mitchell`_).
+
+The major improvements in this release are:
+
+* an improvement to the `is_obviously_infinite` function for congruences, and
+  finitely presented semigroups and monoids. When ``libsemigroups`` is compiled
+  with ``eigen`` enabled (as it is by default), then an integer matrix can be
+  associated to a finite presentation, if this matrix does not have full rank,
+  then the associated finitely presented semigroup or monoid is
+  infinite. ``eigen`` is used to perform the computation of the rank of this
+  matrix if available (`Reinis Cirpons`_ and `J. D. Mitchell`_).
+
+* the time it takes to compile ``libsemigroups`` has be reduced. 
+
 v1.2.1 (released 28/06/2020)
 ----------------------------
 
