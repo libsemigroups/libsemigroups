@@ -151,7 +151,7 @@ the PhD scholarship of `J. Jonušas`_ when he worked on this project.
 
 We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_ for
 funding the PhD scholarships of `M. Torpey`_ and `F. Smith`_ when they worked
-on this project (EP/M506631/1).
+on this project (EP/M506631/1, EP/N509759/1).
 
 .. _OpenDreamKit: https://opendreamkit.org/
 .. _Carnegie Trust for the Universities of Scotland: https://www.carnegie-trust.org/
