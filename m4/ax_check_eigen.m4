@@ -27,7 +27,8 @@ AC_DEFUN([AX_CHECK_EIGEN], [
     if test "$with_external_eigen" = yes;  then
           m4_ifdef([PKG_CHECK_MODULES], [
           PKG_CHECK_MODULES([EIGEN3], 
-                            [eigen3 >= $REQUI_EIGEN_VERSION])],
+                            [eigen3 >= $REQUI_EIGEN_VERSION],
+                            [eigen_enabled=yes])],
           [AC_MSG_ERROR([cannot use flag --with-external-eigen, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
     else
           AC_CHECK_FILE(
