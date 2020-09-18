@@ -2,6 +2,8 @@ dnl handle HPCombi checks
 
 AC_DEFUN([CHECK_INTRINSIC],
     [AC_MSG_CHECKING([for $1])
+    saved_CXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="-march=native -flax-vector-conversions"
     AC_LINK_IFELSE(
       [AC_LANG_PROGRAM(
         [[#include <x86intrin.h>]],
@@ -12,9 +14,11 @@ AC_DEFUN([CHECK_INTRINSIC],
       [enable_hpcombi=no]
       )
     AC_MSG_RESULT([$enable_hpcombi])
+    CXXFLAGS="$saved_CXXFLAGS"
     ])
 
 AC_DEFUN([AX_CHECK_HPCOMBI], [
+  m4_define([ax_hpcombi_cxxflags_variable],[HPCOMBI_CXXFLAGS])
   AC_ARG_ENABLE([hpcombi],
       [AS_HELP_STRING([--enable-hpcombi], [enable HPCombi])],
       [],
@@ -50,13 +54,13 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
   dnl # Check if the flags required for HPCombi are supported 
   AS_IF([test "x$enable_hpcombi" = xyes], 
         [AX_CHECK_COMPILE_FLAG(-march=native, 
-                               AX_APPEND_FLAG(-march=native),
+                               AX_APPEND_FLAG(-march=native, [ax_hpcombi_cxxflags_variable]),
                                [AC_MSG_WARN([flag -march=native not supported, HPCombi is disabled])
                               enable_hpcombi=no])])
 
   AS_IF([test "x$enable_hpcombi" = xyes], 
         [AX_CHECK_COMPILE_FLAG(-flax-vector-conversions, 
-                               AX_APPEND_FLAG(-flax-vector-conversions),
+                               AX_APPEND_FLAG(-flax-vector-conversions, [ax_hpcombi_cxxflags_variable]),
                                [AC_MSG_WARN([flag -flax-vector-conversions not supported, HPCombi is disabled])
                                enable_hpcombi=no])])
 
@@ -110,5 +114,7 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
 
   AM_CONDITIONAL([HPCOMBI_CONSTEXPR_FUN_ARGS], 
                  [test "x$hpcombi_constexpr_fun_args" = xyes])
-
+    
+  AS_IF([test "x$enable_hpcombi" = xyes],
+        AC_SUBST(ax_hpcombi_cxxflags_variable))
 ])
