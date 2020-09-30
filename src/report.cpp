@@ -119,7 +119,7 @@ namespace libsemigroups {
         }
 #endif
         _msg[tid] = wrap(_options[tid].prefix.length(), _msg[tid]);
-#ifdef LIBSEMIGROUPS_ENABLE_FMT
+#ifdef LIBSEMIGROUPS_FMT_ENABLED
         fmt::print(fg(_options[tid].color), _msg[tid]);
 #else
         std::cout << _msg[tid];
