@@ -12,7 +12,7 @@ if LIBSEMIGROUPS_HPCOMBI_ENABLED
 AM_CXXFLAGS += $(HPCOMBI_CXXFLAGS)
 endif
 
-AM_LDFLAGS  =  -no-undefined -lpthread
+AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
@@ -28,7 +28,7 @@ endif
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS += $(CODE_COVERAGE_CXXFLAGS)
 
-if LIBSEMIGROUPS_FMT_ENABLED
+if LIBSEMIGROUPS_WITH_INTERNAL_FMT
 AM_CPPFLAGS += -DFMT_HEADER_ONLY
 endif
 
@@ -122,7 +122,7 @@ hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
 hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-if LIBSEMIGROUPS_FMT_ENABLED
+if LIBSEMIGROUPS_WITH_INTERNAL_FMT
 fmtincludedir = $(includedir)/libsemigroups/fmt
 fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
