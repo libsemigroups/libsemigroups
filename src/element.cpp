@@ -659,6 +659,14 @@ namespace libsemigroups {
         }
       }
     }
+    for (size_t u = 0; u < n; ++u) {
+      if (!std::is_sorted(this->_vector.at(u).cbegin(),
+                          this->_vector.at(u).cend())) {
+        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
+                                detail::to_string(u),
+                                " are unsorted");
+        }
+    }
   }
 
   size_t PBR::complexity() const {
@@ -870,11 +878,15 @@ namespace libsemigroups {
               n,
               x);
         }
-        if (x < 0) {
-          v.push_back(static_cast<uint32_t>(n - x - 1));
-        }
         if (x > 0) {
           v.push_back(static_cast<uint32_t>(x - 1));
+        }
+      }
+      // We have to go backwards through the vector to add the negative entries,
+      // so that users can input those negative entries in the natural order
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it ) {
+        if (*it < 0) {
+          v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
       }
       out.push_back(v);
@@ -891,11 +903,13 @@ namespace libsemigroups {
               n,
               x);
         }
-        if (x < 0) {
-          v.push_back(static_cast<uint32_t>(n - x - 1));
-        }
         if (x > 0) {
           v.push_back(static_cast<uint32_t>(x - 1));
+        }
+      }
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it ) {
+        if (*it < 0) {
+          v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
       }
       out.push_back(v);
