@@ -612,20 +612,30 @@ namespace libsemigroups {
   }
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
+    if (pbr.degree() == 0) {
+      os << "{}";
+      return os;
+    }
     os << "{";
     for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
       os << "{";
-      for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
-        os << pbr[i][j] << ", ";
+      if (!pbr[i].empty()) {
+        for (size_t j = 0; j + 1 < pbr[i].size(); ++j) {
+          os << pbr[i][j] << ", ";
+        }
+        os << detail::to_string(pbr[i].back());
       }
-      os << detail::to_string(pbr[i].back()) << "}, ";
+      os << "}, ";
     }
 
     os << "{";
-    for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
-      os << pbr[2 * pbr.degree() - 1][j] << ", ";
+    if (!pbr[2 * pbr.degree() - 1].empty()) {
+      for (size_t j = 0; j + 1 < pbr[2 * pbr.degree() - 1].size(); ++j) {
+        os << pbr[2 * pbr.degree() - 1][j] << ", ";
+      }
+      os << detail::to_string(pbr[2 * pbr.degree() - 1].back());
     }
-    os << detail::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
+    os << "}}";
     return os;
   }
 
