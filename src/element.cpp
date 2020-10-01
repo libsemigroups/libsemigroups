@@ -663,7 +663,7 @@ namespace libsemigroups {
       if (!std::is_sorted(this->_vector.at(u).cbegin(),
                           this->_vector.at(u).cend())) {
         LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
-                                detail::to_string(u),
+                                detail::to_string(u).c_str(),
                                 " are unsorted");
         }
     }
