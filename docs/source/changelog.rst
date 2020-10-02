@@ -1,6 +1,29 @@
 Changelog
 =========
 
+v1.3.2 (released 02/10/2020)
+----------------------------
+
+This is a minor release resolving some issues in the build system, and some
+issues related to PBRs.
+
+The issues resolved are:
+
+* eigen support is enabled if the configure flag `--with-external-eigen` is
+  given; Resolved by `J. James`_.
+* the order the compile flags related to HPCombi were appended was changed, so
+  that they do not override user-provided `CFLAGS`. Reported by Jan Engelhardt
+  and fixed by `J. D. Mitchell`_
+* the macro ``LIBSEMIGROUPS_FMT_ENABLED`` was incorrectly used in ``report.cpp``
+  and some weirdness ensued when ``libsemigroups`` was system installed (via
+  ``make install``). Resolved by `J. D. Mitchell`_.
+* the configuration options ``--disable-fmt`` and ``--enable-fmt`` did the same
+  thing. Resolved by `J. D. Mitchell`_.
+* it was possible to create invalid ``PBR`` objects, which caused some
+  incorrect values to be returned by ``FroidurePin<PBR>`` instances. The
+  ``to_string`` implementation for ``PBR``'s also didn't work properly in all
+  cases.  Resolved by `Finn Smith`_.
+
 v1.3.1 (released 28/08/2020)
 ----------------------------
 
