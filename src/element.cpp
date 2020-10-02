@@ -907,7 +907,7 @@ namespace libsemigroups {
           v.push_back(static_cast<uint32_t>(x - 1));
         }
       }
-      for (auto it = vec.rbegin(); it < vec.rend(); ++it ) {
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
         if (*it < 0) {
           v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
