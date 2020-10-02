@@ -884,7 +884,7 @@ namespace libsemigroups {
       }
       // We have to go backwards through the vector to add the negative entries,
       // so that users can input those negative entries in the natural order
-      for (auto it = vec.rbegin(); it < vec.rend(); ++it ) {
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
         if (*it < 0) {
           v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
