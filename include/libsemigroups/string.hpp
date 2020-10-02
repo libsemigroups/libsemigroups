@@ -61,6 +61,10 @@ namespace libsemigroups {
   // A << function for vectors
   template <typename T>
   std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
+    if (vec.empty()) {
+      os << "{}";
+      return os;
+    }
     os << "{{";  // {{ is an escaped single { for fmt
     for (auto it = vec.cbegin(); it < vec.cend() - 1; ++it) {
       os << detail::to_string(*it) << ", ";

@@ -612,20 +612,30 @@ namespace libsemigroups {
   }
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
+    if (pbr.degree() == 0) {
+      os << "{}";
+      return os;
+    }
     os << "{";
     for (size_t i = 0; i < pbr.degree() * 2 - 1; ++i) {
       os << "{";
-      for (size_t j = 0; j < pbr[i].size() - 1; ++j) {
-        os << pbr[i][j] << ", ";
+      if (!pbr[i].empty()) {
+        for (size_t j = 0; j + 1 < pbr[i].size(); ++j) {
+          os << pbr[i][j] << ", ";
+        }
+        os << detail::to_string(pbr[i].back());
       }
-      os << detail::to_string(pbr[i].back()) << "}, ";
+      os << "}, ";
     }
 
     os << "{";
-    for (size_t j = 0; j < pbr[2 * pbr.degree() - 1].size() - 1; ++j) {
-      os << pbr[2 * pbr.degree() - 1][j] << ", ";
+    if (!pbr[2 * pbr.degree() - 1].empty()) {
+      for (size_t j = 0; j + 1 < pbr[2 * pbr.degree() - 1].size(); ++j) {
+        os << pbr[2 * pbr.degree() - 1][j] << ", ";
+      }
+      os << detail::to_string(pbr[2 * pbr.degree() - 1].back());
     }
-    os << detail::to_string(pbr[2 * pbr.degree() - 1].back()) << "}}";
+    os << "}}";
     return os;
   }
 
@@ -648,6 +658,14 @@ namespace libsemigroups {
               + ", should be less than " + detail::to_string(n));
         }
       }
+    }
+    for (size_t u = 0; u < n; ++u) {
+      if (!std::is_sorted(this->_vector.at(u).cbegin(),
+                          this->_vector.at(u).cend())) {
+        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
+                                detail::to_string(u).c_str(),
+                                " are unsorted");
+        }
     }
   }
 
@@ -860,11 +878,15 @@ namespace libsemigroups {
               n,
               x);
         }
-        if (x < 0) {
-          v.push_back(static_cast<uint32_t>(n - x - 1));
-        }
         if (x > 0) {
           v.push_back(static_cast<uint32_t>(x - 1));
+        }
+      }
+      // We have to go backwards through the vector to add the negative entries,
+      // so that users can input those negative entries in the natural order
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
+        if (*it < 0) {
+          v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
       }
       out.push_back(v);
@@ -881,11 +903,13 @@ namespace libsemigroups {
               n,
               x);
         }
-        if (x < 0) {
-          v.push_back(static_cast<uint32_t>(n - x - 1));
-        }
         if (x > 0) {
           v.push_back(static_cast<uint32_t>(x - 1));
+        }
+      }
+      for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
+        if (*it < 0) {
+          v.push_back(static_cast<uint32_t>(n - *it - 1));
         }
       }
       out.push_back(v);
