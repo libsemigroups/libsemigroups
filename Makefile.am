@@ -101,8 +101,11 @@ pkginclude_HEADERS += include/libsemigroups/wilo.hpp
 pkginclude_HEADERS += include/libsemigroups/wislo.hpp
 pkginclude_HEADERS += include/libsemigroups/word.hpp
 
-if LIBSEMIGROUPS_HPCOMBI_ENABLED
+## Define hpcombiincludedir outside the conditional
+## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by 
+## uninstall-hook
 hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
+if LIBSEMIGROUPS_HPCOMBI_ENABLED
 hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/epu.hpp
@@ -122,8 +125,11 @@ hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
 hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-if LIBSEMIGROUPS_WITH_INTERNAL_FMT
+## Define fmtincludedir outside the conditional
+## LIBSEMIGROUPS_WITH_INTERNAL_FMT because it is used by 
+## uninstall-hook
 fmtincludedir = $(includedir)/libsemigroups/fmt
+if LIBSEMIGROUPS_WITH_INTERNAL_FMT
 fmtinclude_HEADERS =  extern/fmt-5.3.0/include/fmt/chrono.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/color.h  
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/core.h  
@@ -137,8 +143,11 @@ fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/ranges.h
 fmtinclude_HEADERS += extern/fmt-5.3.0/include/fmt/time.h
 endif
 
-if LIBSEMIGROUPS_EIGEN_ENABLED
+## Define eigenincludedir outside the conditional
+## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN because it is used by 
+## uninstall-hook
 eigenincludedir = $(includedir)/libsemigroups/Eigen
+if LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 eigeninclude_HEADERS =  extern/eigen-3.3.7/Eigen/StdList
 eigeninclude_HEADERS += extern/eigen-3.3.7/Eigen/Jacobi
 eigeninclude_HEADERS += extern/eigen-3.3.7/Eigen/OrderingMethods
@@ -521,7 +530,7 @@ eigensrchouseholderincludedir = $(includedir)/libsemigroups/Eigen/src/Householde
 eigensrchouseholderinclude_HEADERS =  extern/eigen-3.3.7/Eigen/src/Householder/BlockHouseholder.h
 eigensrchouseholderinclude_HEADERS += extern/eigen-3.3.7/Eigen/src/Householder/HouseholderSequence.h
 eigensrchouseholderinclude_HEADERS += extern/eigen-3.3.7/Eigen/src/Householder/Householder.h
-endif  ## LIBSEMIGROUPS_EIGEN_ENABLED
+endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN 
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -574,7 +583,6 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
-EXTRA_DIST += extern/.EIGEN_VERSION
 EXTRA_DIST += src/kbe-impl.hpp 
 EXTRA_DIST += src/knuth-bendix-impl.hpp 
 EXTRA_DIST += tests/catch.hpp
@@ -941,6 +949,13 @@ distclean-local:
 	rm -f include/libsemigroups/libsemigroups-config.hpp
 	rm -f .VERSION
 .PHONY: distclean-local
+
+uninstall-hook:
+	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
+	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir} && rmdir ${includedir}/libsemigroups/HPCombi; fi
+	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
+	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
+.PHONY: uninstall-hook
 
 superclean: distclean
 	git clean -xdf --exclude *.swp --exclude *.swo
