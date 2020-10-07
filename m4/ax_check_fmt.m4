@@ -1,8 +1,5 @@
 dnl handle fmt checks
-dnl 
-dnl if --enable-fmt and if --with-external-fmt is supplied, use it if it is
-dnl known to pkg-config and is new enough; otherwise use the included version
-dnl
+
 AC_DEFUN([AX_CHECK_FMT], [
   AC_ARG_ENABLE(
     [fmt],
@@ -13,9 +10,10 @@ AC_DEFUN([AX_CHECK_FMT], [
   AC_MSG_CHECKING([whether to enable fmt])
   AC_MSG_RESULT([$enable_fmt])
 
+  dnl The following defines the LIBSEMIGROUPS_FMT_ENABLED preprocessor macro
+  dnl (the LIBSEMIGROUPS_ prefix is added by another part of the build system)
   AS_IF([test "x$enable_fmt" = xyes], 
     [AC_DEFINE([FMT_ENABLED], [1], [define if building with fmt])])
-  AM_CONDITIONAL([LIBSEMIGROUPS_FMT_ENABLED], [test "x$enable_fmt" = xyes])
 
   if test "x$enable_fmt" = xyes;  then
     AC_ARG_WITH(
@@ -39,6 +37,7 @@ AC_DEFUN([AX_CHECK_FMT], [
     fi
   fi
 
+  dnl The following makes LIBSEMIGROUPS_WITH_INTERNAL_FMT usable in Makefile.am
   AM_CONDITIONAL([LIBSEMIGROUPS_WITH_INTERNAL_FMT], [test "x$enable_fmt" = xyes && test "x$with_external_fmt" != xyes])
 ])
 
