@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.3.3 (released 07/10/2020)
+----------------------------
+
+This is a minor release resolving an issue with `make install` including a copy
+of `eigen3` when it should not have. Reported by Antonio Rojas.
+
 v1.3.2 (released 02/10/2020)
 ----------------------------
 
