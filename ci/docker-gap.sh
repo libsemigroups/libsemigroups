@@ -8,7 +8,7 @@ sudo apt-get install git --yes
 sudo apt-get install libtool-bin --yes 
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=stable-3.3
+GAP_SEMIGROUPS_BRANCH=stable-3.4
 GAP_SEMIGROUPS_REPO=gap-packages
 GAP_VERSION=$(ls inst)
 export GAPROOT=$HOME/inst/$GAP_VERSION
