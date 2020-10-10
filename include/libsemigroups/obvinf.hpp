@@ -66,7 +66,7 @@
 
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
 #include "types.hpp"                 // for word_type etc
-#include "uf.hpp"                    // for UF
+#include "uf.hpp"                    // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include <Eigen/Core>
@@ -144,7 +144,7 @@ namespace libsemigroups {
       // relation letter_type i belongs to "unique" if there is a relation
       // where one side consists solely of i.
       bool              _empty_word;
-      detail::UF        _letter_components;
+      detail::Duf<>     _letter_components;
       size_t            _nr_gens;
       size_t            _nr_letter_components;
       size_t            _nr_relations;

@@ -665,7 +665,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
                                 detail::to_string(u).c_str(),
                                 " are unsorted");
-        }
+      }
     }
   }
 
