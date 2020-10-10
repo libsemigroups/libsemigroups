@@ -33,7 +33,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "023",
                           "partial perm",
-                          "[quick][partialperm]") {
+                          "[quick][partialperm][no-valgrind]") {
     using PPerm                 = typename PPermHelper<9>::type;
     auto                     rg = ReportGuard(REPORT);
     const std::vector<PPerm> gens
@@ -75,7 +75,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "025",
                           "exceptions",
-                          "[quick][partialperm]") {
+                          "[quick][partialperm][no-valgrind]") {
     auto                rg = ReportGuard(REPORT);
     std::vector<size_t> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
