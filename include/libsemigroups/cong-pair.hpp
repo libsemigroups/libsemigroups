@@ -75,7 +75,7 @@
 #include "knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"                    // for word_type
-#include "uf.hpp"                       // for UF
+#include "uf.hpp"                       // for Duf
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, for constructor parameter
@@ -417,9 +417,9 @@ namespace libsemigroups {
     std::unordered_set<std::pair<internal_element_type, internal_element_type>,
                        PHash,
                        PEqual>
-                       _found_pairs;
-    bool               _init_done;
-    mutable detail::UF _lookup;
+                          _found_pairs;
+    bool                  _init_done;
+    mutable detail::Duf<> _lookup;
     mutable std::unordered_map<internal_element_type,
                                size_t,
                                InternalHash,

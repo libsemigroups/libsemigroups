@@ -191,13 +191,14 @@ namespace libsemigroups {
     if (_pairs_to_mult.empty()) {
       // Make a normalised class lookup (class numbers {0, .., n-1}, in
       // order)
-      if (_lookup.get_size() > 0) {
-        _class_lookup.reserve(_lookup.get_size());
+      if (_lookup.size() > 0) {
+        _lookup.normalize();
+        _class_lookup.reserve(_lookup.size());
         _next_class = 1;
         size_t max  = 0;
         LIBSEMIGROUPS_ASSERT(_lookup.find(0) == 0);
         _class_lookup.push_back(0);
-        for (size_t i = 1; i < _lookup.get_size(); i++) {
+        for (size_t i = 1; i < _lookup.size(); i++) {
           size_t nr = _lookup.find(i);
           if (nr > max) {
             _class_lookup.push_back(_next_class++);
@@ -323,7 +324,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(_map.size() == _map_next);
     _map.emplace(x, _map_next);
     _reverse_map.push_back(x);
-    _lookup.add_entry();
+    _lookup.resize(_lookup.size() + 1);
     if (finished()) {
       _class_lookup.push_back(_next_class++);
     }

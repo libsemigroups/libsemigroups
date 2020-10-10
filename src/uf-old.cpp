@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file defines UF, a class used to make an equivalence relation on
+// This file defines UFOld, a class used to make an equivalence relation on
 // the integers {1 .. n}, using the UNION-FIND METHOD: new pairs can be added
 // and the appropriate classes combined quickly.
 
-#include "libsemigroups/uf.hpp"
+#include "libsemigroups/uf-old.hpp"
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -30,7 +30,7 @@
 namespace libsemigroups {
   namespace detail {
     // Copy constructor
-    UF::UF(const UF& copy)
+    UFOld::UFOld(const UFOld& copy)
         : _size(copy._size),
           _table(new table_type(*copy._table)),
           _blocks(nullptr),
@@ -50,7 +50,7 @@ namespace libsemigroups {
     }
 
     // Constructor by table
-    UF::UF(const table_type& table)
+    UFOld::UFOld(const table_type& table)
         : _size(table.size()),
           _table(new table_type(table)),
           _blocks(nullptr),
@@ -58,7 +58,7 @@ namespace libsemigroups {
           _next_rep(0) {}
 
     // Constructor by size
-    UF::UF(size_t size)
+    UFOld::UFOld(size_t size)
         : _size(size),
           _table(new table_type()),
           _blocks(nullptr),
@@ -71,7 +71,7 @@ namespace libsemigroups {
     }
 
     // Destructor
-    UF::~UF() {
+    UFOld::~UFOld() {
       delete _table;
       if (_blocks != nullptr) {
         for (size_t i = 0; i < _blocks->size(); i++) {
@@ -82,16 +82,16 @@ namespace libsemigroups {
     }
 
     // Getters
-    size_t UF::get_size() {
+    size_t UFOld::get_size() {
       return _size;
     }
 
-    UF::table_type* UF::get_table() {
+    UFOld::table_type* UFOld::get_table() {
       return _table;
     }
 
     // get_blocks
-    UF::blocks_type* UF::get_blocks() {
+    UFOld::blocks_type* UFOld::get_blocks() {
       table_type* block;
       // Is _blocks "bound" yet?
       if (_blocks == nullptr) {
@@ -126,7 +126,7 @@ namespace libsemigroups {
     }
 
     // find
-    size_t UF::find(size_t i) {
+    size_t UFOld::find(size_t i) {
       size_t ii;
       LIBSEMIGROUPS_ASSERT(_size == _table->size());
       do {
@@ -138,7 +138,7 @@ namespace libsemigroups {
     }
 
     // union
-    void UF::unite(size_t i, size_t j) {
+    void UFOld::unite(size_t i, size_t j) {
       size_t ii, jj;
       LIBSEMIGROUPS_ASSERT(_size == _table->size());
       ii = find(i);
@@ -154,7 +154,7 @@ namespace libsemigroups {
     }
 
     // flatten
-    void UF::flatten() {
+    void UFOld::flatten() {
       LIBSEMIGROUPS_ASSERT(_size == _table->size());
       for (size_t i = 0; i < _size; i++) {
         (*_table)[i] = find(i);
@@ -162,7 +162,7 @@ namespace libsemigroups {
     }
 
     // add_entry
-    void UF::add_entry() {
+    void UFOld::add_entry() {
       _table->push_back(_size);
       if (_blocks != nullptr) {
         _blocks->push_back(new table_type(1, _size));
@@ -171,7 +171,7 @@ namespace libsemigroups {
     }
 
     // nr_blocks
-    size_t UF::nr_blocks() {
+    size_t UFOld::nr_blocks() {
       LIBSEMIGROUPS_ASSERT(_size == _table->size());
       if (_size == 0) {
         return 0;
@@ -189,14 +189,14 @@ namespace libsemigroups {
       return count;
     }
 
-    void UF::reset_next_rep() {
+    void UFOld::reset_next_rep() {
       flatten();
       _next_rep = 0;
     }
 
     // Returns the next representative of a block, invalidated by anything that
     // changes the partition
-    size_t UF::next_rep() {
+    size_t UFOld::next_rep() {
       size_t current_rep = _next_rep;
       while (_next_rep < _size && (*_table)[_next_rep] <= current_rep) {
         _next_rep++;
@@ -204,7 +204,7 @@ namespace libsemigroups {
       return current_rep;
     }
 
-    void UF::join(UF const& uf) {
+    void UFOld::join(UFOld const& uf) {
       LIBSEMIGROUPS_ASSERT(this->_size == uf._size);
       for (size_t i = 0; i < _size; i++) {
         unite((*_table)[i], (*uf._table)[i]);
