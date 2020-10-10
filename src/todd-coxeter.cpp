@@ -1907,8 +1907,8 @@ namespace libsemigroups {
                                     a,
                                     yy,
                                     c,
-                                    detail::to_string(u),
-                                    detail::to_string(v));
+                                    detail::to_string(u).c_str(),
+                                    detail::to_string(v).c_str());
           } else if (xx != UNDEFINED && yy == UNDEFINED) {
             // tau(y, b) <- xx
             LIBSEMIGROUPS_EXCEPTION("missing deduction tau(%d, %d) = %d when "
@@ -1917,8 +1917,8 @@ namespace libsemigroups {
                                     b,
                                     xx,
                                     c,
-                                    detail::to_string(u),
-                                    detail::to_string(v));
+                                    detail::to_string(u).c_str(),
+                                    detail::to_string(v).c_str());
           } else if (xx != UNDEFINED && yy != UNDEFINED) {
             // tau(x, a) and tau(y, b) are defined
             if (xx != yy) {
@@ -1927,8 +1927,8 @@ namespace libsemigroups {
                                       xx,
                                       yy,
                                       c,
-                                      detail::to_string(u),
-                                      detail::to_string(v));
+                                      detail::to_string(u).c_str(),
+                                      detail::to_string(v).c_str());
             }
           }
         }
