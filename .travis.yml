@@ -65,11 +65,11 @@ jobs:
           packages:
             - lcov
 
-    - env: TEST_SUITE=cppyy
-      addons:
-        apt:
-          packages:
-            - python3-pip
+    # - env: TEST_SUITE=cppyy
+    #   addons:
+    #     apt:
+    #       packages:
+    #         - python3-pip
     
     - env: TEST_SUITE=benchmark
 
