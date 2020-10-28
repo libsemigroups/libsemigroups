@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <random>  // for mt19937, random_device
+
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -23,6 +25,17 @@
 #include "libsemigroups/freeband.hpp"
 
 namespace libsemigroups {
+
+  word_type random_word(size_t length, size_t nr_letters) {
+    static std::random_device               rd;
+    static std::mt19937                     gen(rd());
+    std::uniform_int_distribution<uint64_t> dist(0, nr_letters);
+    word_type                               out;
+    for (size_t i = 0; i < length; ++i) {
+      out.push_back(dist(gen));
+    }
+    return out;
+  }
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "001", "", "[freeband][quick]") {
     word_type w = {0, 0, 0, 0, 1, 1, 0, 0, 2};
@@ -39,7 +52,7 @@ namespace libsemigroups {
 
     w = {0, 1, 2, 2, 3, 4, 0, 1, 5, 1};
     REQUIRE(
-        reverse(right(w.crbegin(), w.crend(), 4))
+        left(w.cbegin(), w.cend(), 4)
         == word_type(
             {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 0, 1, 2, 4, 5, 5}));
 
@@ -106,4 +119,39 @@ namespace libsemigroups {
                           7,  6,  18, 19, 19, 19, 19, 19, 19, 4, 9,
                           4,  9,  16, 17, 8,  11, 1,  0,  5,  18}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "004", "", "[freeband][quick]") {
+    REQUIRE(freeband_equal_to({0, 0}, {0}));
+    REQUIRE(!freeband_equal_to({0, 1}, {0}));
+    REQUIRE(
+        freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0}));
+    REQUIRE(!freeband_equal_to({1, 2, 3}, {0, 1, 2}));
+    REQUIRE(freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}));
+    REQUIRE(!freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
+                               {4, 3, 2, 1, 0, 4, 3, 2, 1, 0}));
+    REQUIRE(freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2}));
+    REQUIRE(freeband_equal_to({0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9},
+                              {0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9,
+                               0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9}));
+    REQUIRE(freeband_equal_to({0, 1, 2, 3, 0, 1},
+                              {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
+                               0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
+                               0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1}));
+    REQUIRE(freeband_equal_to({0, 1, 2, 1, 0, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2},
+                              {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
+                               0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
+                               0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1, 2}));
+    REQUIRE(freeband_equal_to(
+        {0, 1, 2, 3, 0, 3, 1, 3, 2, 1, 0, 0, 3, 2, 2, 1, 0, 1, 0, 1,
+         0, 3, 1, 3, 3, 3, 3, 3, 1, 2, 0, 1, 0, 0, 1, 2, 1, 2, 3, 1,
+         1, 3, 1, 2, 1, 1, 0, 3, 0, 1, 0, 2, 3, 3, 3, 0, 0, 2, 0, 3,
+         3, 3, 1, 2, 1, 1, 1, 2, 0, 1, 1, 3, 1, 2, 2, 0, 0, 2, 3, 1,
+         2, 2, 3, 2, 2, 3, 2, 2, 2, 0, 3, 1, 2, 3, 0, 1, 2, 2, 2, 3},
+        {0, 1, 1, 2, 3, 3, 3, 1, 3, 2, 1, 1, 2, 3, 0, 3, 3, 3, 2, 1,
+         1, 1, 0, 0, 3, 2, 3, 1, 2, 3, 2, 1, 3, 1, 2, 1, 3, 2, 0, 1,
+         1, 2, 2, 2, 1, 3, 1, 1, 0, 1, 0, 3, 0, 3, 0, 2, 2, 3, 2, 2,
+         3, 1, 3, 3, 3, 2, 2, 2, 3, 3, 0, 2, 0, 1, 3, 1, 3, 1, 0, 2,
+         3, 3, 3, 2, 1, 2, 2, 1, 1, 1, 0, 1, 1, 0, 3, 0, 1, 1, 2, 3}));
+  }
+
 }  // namespace libsemigroups
