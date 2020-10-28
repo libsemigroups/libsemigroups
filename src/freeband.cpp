@@ -29,6 +29,7 @@
 
 namespace libsemigroups {
   namespace {
+
     template <typename T>
     bool is_standardized(T first, T last) {
       size_t m = 0;
@@ -42,6 +43,10 @@ namespace libsemigroups {
       return true;
     }
 
+    size_t content_size(word_type const& w) {
+      // LIBSEMIGROUPS_ASSERT(is_standardized(w.cbegin(), w.cend()));
+      return *std::max_element(w.cbegin(), w.cend()) + 1;
+    }
 
   }  // namespace
 
@@ -63,13 +68,85 @@ namespace libsemigroups {
     }
   }
 
+  using level_edges_type = std::vector<std::vector<size_t>>;
+  using left_type        = std::vector<size_t>;
+  using right_type       = std::vector<size_t>;
+
+  level_edges_type level_edges(word_type const&           w,
+                               size_t const               k,
+                               std::vector<size_t> const& rdx,
+                               right_type const&          rightk,
+                               left_type const&           leftk,
+                               right_type const&          rightm,
+                               left_type const&           leftm) {
+    size_t const     n = w.size();
+    level_edges_type outl;
+    level_edges_type outr;
+
+    if (k == 1) {
+      for (size_t i = 0; i < n; ++i) {
+        outl.push_back({0, w.at(i), w.at(i), 0});
+        outr.push_back({0, w.at(i), w.at(i), 0});
+      }
+    } else {
+      for (size_t i = 0; i < n; ++i) {
+        if (rightk.at(i) != UNDEFINED) {
+          outr.push_back({rdx.at(i),
+                          w.at(rightm.at(i) + 1),
+                          w.at(leftm.at(rightk.at(i)) - 1),
+                          rdx.at(rightk.at(i) + n)});
+        } else {
+          outr.push_back({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED});
+        }
+        if (leftk.at(i) != UNDEFINED) {
+          outl.push_back({rdx.at(leftk.at(i)),
+                          w.at(rightm.at(leftk.at(i)) + 1),
+                          w.at(leftm.at(i) - 1),
+                          rdx.at(i + n)});
+        } else {
+          outl.push_back({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED});
+        }
+      }
+    }
+    outr.insert(outr.end(), outl.cbegin(), outl.cend());
+    return outr;
+  }
+
   bool freeband_equal_to(word_type& x, word_type& y) {
-    standardize(x);
-    standardize(y);
-    //right(x, 4);
-    // std::cout << "x = " << right(x, 4) << std::endl;
-    // std::cout << "y = " << y << std::endl;
-    return false;
+    if (x == y) {
+      return true;
+    }
+    size_t N = content_size(x);
+    if (N != content_size(y)) {
+      return false;
+    }
+    word_type xy(x);
+    xy.push_back(N);
+    xy.insert(xy.end(), y.cbegin(), y.cend());
+    standardize(xy);
+    LIBSEMIGROUPS_ASSERT(xy.at(x.size())
+                         == *std::max_element(xy.cbegin(), xy.cend()));
+    N = content_size(xy);
+
+    level_edges_type    lvldgs(xy.size(), {0, 0, 0, 0});
+    std::vector<size_t> rdx(xy.size(), 0);
+
+    left_type  leftk;
+    right_type rightk;
+    left_type  leftm;
+    right_type rightm;
+
+    for (size_t k = 1; k < N; ++k) {
+      std::swap(rightm, rightk);
+      std::swap(leftm, leftk);
+
+      rightk = right(xy.begin(), xy.end(), k);
+      leftk  = left(xy.begin(), xy.end(), k);
+      lvldgs = level_edges(xy, k, rdx, rightk, leftk, rightm, leftm);
+      rdx    = radix_sort(lvldgs, N + 1);
+    }
+
+    return rdx[0] == rdx[x.size() + 1];
   }
 
 }  // namespace libsemigroups

@@ -17,6 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// This file contains a declaration of the function freeband_equal_to which
+// implements the algorithm described in:
+// TODO
+
 #ifndef LIBSEMIGROUPS_FREEBAND_HPP_
 #define LIBSEMIGROUPS_FREEBAND_HPP_
 
@@ -41,9 +45,14 @@ namespace libsemigroups {
 
   void standardize(word_type& x);
 
+  // Returns a vector `out` of indices in [0, last - first) or UNDEFINED, where
+  // [i, i + out[i]) has content exactly k, and `out[i]` is the minimum such
+  // value.
+  //
+  // Complexity O(last - first)
   template <typename T>
-  word_type right(T const first, T const last, size_t const k) {
-    // LIBSEMIGROUPS_ASSERT(is_standardized(first, last));
+  std::vector<size_t> right(T const first, T const last, size_t const k) {
+    // TODO assertions
     word_type out;
     if (std::distance(first, last) == 0) {
       return out;
@@ -51,7 +60,7 @@ namespace libsemigroups {
     T                   j            = first;
     size_t              content_size = 0;
     size_t const        N            = *std::max_element(first, last) + 1;
-    std::vector<size_t> multiplicity(N + 1, 0);
+    std::vector<size_t> multiplicity(N + 2, 0);
     for (auto i = first; i != last; ++i) {
       if (i != first) {
         LIBSEMIGROUPS_ASSERT(multiplicity[*(i - 1)] != 0);
@@ -74,18 +83,26 @@ namespace libsemigroups {
   }
 
   // Reverses and corrects output of "right" to "left"
-  word_type reverse(word_type&& out) {
+  // i.e. reverse(right(last, first, k)) = left(first, last, k)
+  void reverse(std::vector<size_t>& out) {
     std::reverse(out.begin(), out.end());
     for (auto& x : out) {
       if (x != UNDEFINED) {
         x = out.size() - x - 1;
       }
     }
-    return std::move(out);
+  }
+
+  template <typename T>
+  std::vector<size_t> left(T const first, T const last, size_t const k) {
+    auto out = right(
+        std::reverse_iterator<T>(last), std::reverse_iterator<T>(first), k);
+    reverse(out);
+    return out;
   }
 
   // What types should we be using? I get that word_type is an alias to
-  // std::vector<size_t>, but wouldnt using the vector be more useful,
+  // std::vector<size_t>, but wouldn't using the vector be more useful,
   // since the output/input is not really a representation of a word.
   // Also the input i here will range from 0 to 3, so is it better
   // to assign it to a unsigned short or something?
@@ -146,4 +163,4 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#endif
+#endif  // LIBSEMIGROUPS_FREEBAND_HPP_
