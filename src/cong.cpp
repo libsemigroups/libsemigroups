@@ -193,7 +193,8 @@ namespace libsemigroups {
     // winning.
     if (_race.winner() == nullptr) {
       LIBSEMIGROUPS_EXCEPTION(
-          "cannot determine the word corresponding to class index %llu", i);
+          "cannot determine the word corresponding to class index %llu",
+          static_cast<uint64_t>(i));
     }
     return static_cast<CongruenceInterface*>(_race.winner().get())
         ->class_index_to_word(i);

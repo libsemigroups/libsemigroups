@@ -504,7 +504,8 @@ namespace libsemigroups {
     REPORT_TIME(timer);
     report_why_we_stopped();
 #ifdef LIBSEMIGROUPS_VERBOSE
-    REPORT_DEFAULT("number of products = %llu\n", _nr_products);
+    REPORT_DEFAULT("number of products = %llu\n",
+                   static_cast<uint64_t>(_nr_products));
 #endif
   }
 
@@ -1020,19 +1021,27 @@ namespace libsemigroups {
     }
 
     REPORT_VERBOSE_DEFAULT("When finding the number of idempotents . . .");
-    REPORT_VERBOSE_DEFAULT(
-        "complexity of multiplication %*s = %llu\n", 11, " ", cmplxty);
-    REPORT_VERBOSE_DEFAULT(
-        "multiple words longer than %*s = %llu\n", 13, " ", threshold_length);
+    REPORT_VERBOSE_DEFAULT("complexity of multiplication %*s = %llu\n",
+                           11,
+                           " ",
+                           static_cast<uint64_t>(cmplxty));
+    REPORT_VERBOSE_DEFAULT("multiple words longer than %*s = %llu\n",
+                           13,
+                           " ",
+                           static_cast<uint64_t>(threshold_length));
     REPORT_VERBOSE_DEFAULT(
         "number of paths traced in Cayley graph %*s = %llu\n",
         0,
         " ",
-        threshold_index);
-    REPORT_VERBOSE_DEFAULT(
-        "mean path length %*s = %llu\n", 23, " ", total_load / threshold_index);
-    REPORT_VERBOSE_DEFAULT(
-        "number of products %*s = %llu\n", 21, " ", _nr - threshold_index);
+        static_cast<uint64_t>(threshold_index));
+    REPORT_VERBOSE_DEFAULT("mean path length %*s = %llu\n",
+                           23,
+                           " ",
+                           static_cast<uint64_t>(total_load / threshold_index));
+    REPORT_VERBOSE_DEFAULT("number of products %*s = %llu\n",
+                           21,
+                           " ",
+                           static_cast<uint64_t>(_nr - threshold_index));
 
     // _lenindex.at(threshold_length) is the element_index_type where words of
     // length (threshold_length + 1) begin

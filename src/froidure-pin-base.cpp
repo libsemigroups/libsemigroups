@@ -263,7 +263,8 @@ namespace libsemigroups {
     } else {  // batch_size() is very big for some reason
       limit = batch_size();
     }
-    REPORT_DEFAULT("limit = %llu (%s)\n", limit, __func__);
+    REPORT_DEFAULT(
+        "limit = %llu (%s)\n", static_cast<uint64_t>(limit), __func__);
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 

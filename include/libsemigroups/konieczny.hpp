@@ -1223,8 +1223,8 @@ namespace libsemigroups {
       _lambda_orb.run_until([this]() -> bool { return this->stopped(); });
       _rho_orb.run_until([this]() -> bool { return this->stopped(); });
       REPORT_DEFAULT("found %llu lambda-values and %llu rho-values in %s\n",
-                     _lambda_orb.current_size(),
-                     _rho_orb.current_size(),
+                     static_cast<uint64_t>(_lambda_orb.current_size()),
+                     static_cast<uint64_t>(_rho_orb.current_size()),
                      t.string().c_str());
     }
 

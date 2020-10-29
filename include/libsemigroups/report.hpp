@@ -297,7 +297,7 @@ namespace libsemigroups {
       Reporter& prefix(TClass const* const ptr) {
         if (_report) {
           std::lock_guard<std::mutex> lg(_mtx);
-          size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+          uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
           _options[tid].prefix
 #ifdef LIBSEMIGROUPS_FMT_ENABLED

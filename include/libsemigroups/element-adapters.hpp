@@ -467,8 +467,8 @@ namespace libsemigroups {
       if (x.degree() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected partial perm of degree at most %llu, found %llu",
-            N,
-            x.degree());
+            static_cast<uint64_t>(N),
+            static_cast<uint64_t>(x.degree()));
       }
       res.reset();
       for (size_t i = 0; i < x.degree(); ++i) {
@@ -491,8 +491,8 @@ namespace libsemigroups {
       if (x.degree() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected partial perm of degree at most %llu, found %llu",
-            N,
-            x.degree());
+            static_cast<uint64_t>(N),
+            static_cast<uint64_t>(x.degree()));
       }
       static PartialPerm<T> xx({});
       x.inverse(xx);
@@ -647,8 +647,8 @@ namespace libsemigroups {
       if (x.degree() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected a transformation of degree at most %llu, found %llu",
-            N,
-            x.degree());
+            static_cast<uint64_t>(N),
+            static_cast<uint64_t>(x.degree()));
       }
       res.reset();
       for (size_t i = 0; i < x.degree(); ++i) {
@@ -868,8 +868,8 @@ namespace libsemigroups {
       if (x.degree() > N) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected matrix of dimension at most %llu, found %llu",
-            N,
-            x.degree());
+            static_cast<uint64_t>(N),
+            static_cast<uint64_t>(x.degree()));
       }
       res.clear();
       for (size_t i = 0; i < x.degree(); ++i) {

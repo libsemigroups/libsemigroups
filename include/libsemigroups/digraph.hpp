@@ -264,16 +264,16 @@ namespace libsemigroups {
       if (nr_nodes < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st parameter `nr_nodes` must be at least 2, found %llu",
-            nr_nodes);
+            static_cast<uint64_t>(nr_nodes));
       } else if (out_degree < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 2nd parameter `nr_edges` must be at least 2, found %llu",
-            out_degree);
+            static_cast<uint64_t>(out_degree));
       } else if (nr_edges > nr_nodes * out_degree) {
         LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
                                 "most %llu, but found %llu",
-                                nr_nodes * out_degree,
-                                nr_edges);
+                                static_cast<uint64_t>(nr_nodes * out_degree),
+                                static_cast<uint64_t>(nr_edges));
       }
       std::uniform_int_distribution<T> source(0, nr_nodes - 1);
       std::uniform_int_distribution<T> target(0, nr_nodes - 1);
@@ -320,17 +320,17 @@ namespace libsemigroups {
       if (nr_nodes < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st parameter `nr_nodes` must be at least 2, found %llu",
-            nr_nodes);
+            static_cast<uint64_t>(nr_nodes));
       } else if (out_degree < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 2nd parameter `nr_edges` must be at least 2, found %llu",
-            out_degree);
+            static_cast<uint64_t>(out_degree));
       } else if (nr_edges > std::min(nr_nodes * out_degree,
                                      nr_nodes * (nr_nodes - 1) / 2)) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 3rd parameter `nr_edges` must be at most %llu, but found %llu",
-            nr_nodes * out_degree,
-            nr_edges);
+            static_cast<uint64_t>(nr_nodes * out_degree),
+            static_cast<uint64_t>(nr_edges));
       }
       std::uniform_int_distribution<T> source(0, nr_nodes - 1);
       std::uniform_int_distribution<T> label(0, out_degree - 1);
@@ -2531,7 +2531,7 @@ namespace libsemigroups {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
                                 "from %llu is not acyclic",
-                                source);
+                                static_cast<uint64_t>(source));
       } else if (topo.size() <= min) {
         // There are fewer than `min` nodes reachable from source, and so there
         // are no paths of length `min` or greater
@@ -2577,7 +2577,7 @@ namespace libsemigroups {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
                                 "from %llu is not acyclic",
-                                source);
+                                static_cast<uint64_t>(source));
       } else if ((max == 1 && source != target)
                  || (min != 0 && source == target)) {
         return 0;
