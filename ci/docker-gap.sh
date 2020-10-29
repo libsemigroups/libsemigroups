@@ -33,13 +33,13 @@ make -j4
 cd ..
 git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
 
-INSTALL_PKGS="InstallPackage(\"digraphs\", false); "
-INSTALL_PKGS+="InstallPackage(\"io\", false); "
-INSTALL_PKGS+="InstallPackage(\"orb\", false); "
-INSTALL_PKGS+="InstallPackage(\"genss\", false); "
-INSTALL_PKGS+="InstallPackage(\"images\", false);"
+INSTALL_PKGS="if not InstallPackage(\"digraphs\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not InstallPackage(\"orb\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not InstallPackage(\"genss\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not InstallPackage(\"images\", false) then QuitGap(1); fi;"
 
-echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -r -T
+echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -r -T || exit 1
 # The next line is a hack until the package manager compiles Orb
 cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
