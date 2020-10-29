@@ -794,7 +794,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
         if (!_coinc.empty()) {
           REPORT_VERBOSE_DEFAULT("processing %llu coincidences...\n",
-                                 _coinc.size());
+                                 static_cast<uint64_t>(_coinc.size()));
         }
 #endif
         while (!_coinc.empty()) {

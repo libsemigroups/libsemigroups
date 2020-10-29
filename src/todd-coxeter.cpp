@@ -1104,7 +1104,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
       if (!_deduct.empty()) {
         REPORT_VERBOSE_DEFAULT("processing %llu deductions . . .\n",
-                               _deduct.size());
+                               static_cast<uint64_t>(_deduct.size()));
       }
 #endif
       while (!_deduct.empty()) {
