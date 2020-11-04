@@ -833,7 +833,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "024",
                           "cbegin/end_pstilo - Cayley digraph",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
@@ -1444,7 +1444,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "033",
                           "number_of_paths binary tree",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     using algorithm          = ActionDigraph<size_t>::algorithm;
     using node_type          = ActionDigraph<size_t>::node_type;
     size_t const          n  = 6;
@@ -1485,7 +1485,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
                           "034",
                           "number_of_paths large binary tree",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     using algorithm          = ActionDigraph<size_t>::algorithm;
     size_t const          n  = 20;
     ActionDigraph<size_t> ad = binary_tree(n);

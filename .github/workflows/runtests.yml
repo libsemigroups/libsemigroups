@@ -1,0 +1,333 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+   benchmark:
+      runs-on: ubuntu-latest
+      env: 
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure 
+         - name: "Build libsemigroups . . ."
+           run: |
+                ccache -z && make -j4 && ccache -s
+         - name: "Build bench_all . . ."
+           run: |
+                make bench_all -j4
+   clang:
+      runs-on: ubuntu-latest
+      env: 
+        CXX: "ccache clang++"
+        CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure
+         - name: "Build libsemigroups . . ."
+           run: |
+                ccache -z && make -j4 && ccache -s
+         - name: "Build test_all . . ."
+           run: |
+                ccache -z && make test_all -j4 && ccache -s
+         - name: "Run the quick and standard tests . . ."
+           run: |
+                ./test_all "[quick],[standard]"
+   config-options:
+      runs-on: ubuntu-latest
+      env: 
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
+        PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
+        LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: Setup Miniconda
+           uses: conda-incubator/setup-miniconda@v1.7.0
+           with:
+            auto-update-conda: true
+            python-version: ${{ matrix.python-version }}
+         - name: "Install eigen3 and fmt using conda . . ."
+           run: |
+                conda install -c conda-forge --yes mamba;
+                mamba install -c conda-forge --yes fmt;
+                mamba install -c conda-forge --yes eigen;
+         - name: "Update PATH . . ."
+           run: |
+                echo "/usr/share/miniconda/bin" >> $GITHUB_PATH
+         - name: "Install other dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache
+         - name: "Run ./autogen.sh . . ."
+           run: |
+                ./autogen.sh 
+         - name: "Test flag: --with-external-fmt"
+           run: |
+                ./configure --with-external-fmt --enable-fmt
+                ccache -z
+                make test_all -j4 || exit 1
+                ccache -s
+                ./test_all "[quick]"
+         - name: "Test flag: --enable-debug"
+           run: |
+                ./configure --enable-debug
+                ccache -z
+                make test_all -j4 || exit 1
+                ccache -s
+                ./test_all "[quick]"
+         - name: "Test flag: --disable-hpcombi"
+           run: |
+                ./configure --disable-hpcombi
+                ccache -z
+                make test_all -j4 || exit 1
+                ccache -s
+                ./test_all "[quick]"
+         - name: "Test flag: --disable-popcnt --disable-clzll"
+           run: |
+                ./configure --disable-popcnt --disable-clzll
+                ccache -z
+                make test_bitset -j4|| exit 1
+                ccache -s
+                ./test_bitset "[quick]"
+         - name: "Test flag: --enable-verbose"
+           run: |
+                ./configure --enable-verbose
+                ccache -z
+                make test_all -j4 || exit 1
+                ccache -s
+                ./test_all "[quick]"
+         - name: "Test flag: --enable-fmt"
+           run: |
+                ./configure --enable-fmt
+                ccache -z
+                make test_all -j4 || exit 1
+                ccache -s
+                ./test_all "[quick]"
+         - name: "Test flag: --with-external-eigen"
+           run: |
+                ./configure --with-external-eigen
+                ccache -z
+                make test_obvinf -j4 || exit 1
+                ccache -s
+                ./test_obvinf "[quick]"
+         - name: "Test flag: --disable-eigen"
+           run: |
+                ./configure --disable-eigen
+                ccache -z
+                make test_obvinf -j4 || exit 1
+                ccache -s
+                ./test_obvinf "[quick]"
+   coverage:
+      runs-on: ubuntu-latest
+      steps:
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - uses: actions/checkout@v2
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y lcov ccache
+         - name: "Run quick tests . . ."
+           run: |
+                sudo ln -sf /usr/bin/gcov-7 /usr/bin/gcov
+                export GCOV=/usr/bin/gcov-7
+                etc/test-code-coverage.sh test_all "[quick]"
+                bash <(curl -s https://codecov.io/bash)
+                rm -f coverage.info
+   distcheck:
+      runs-on: ubuntu-latest
+      env: 
+         CXX: "ccache g++"
+         CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure
+         - name: "make discheck . . ."
+           run: |
+                make distcheck -j4
+   doc:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Install dependencies . . ."
+           run: |
+            sudo apt-get install doxygen
+            sudo apt-get install expect
+            sudo apt-get install graphviz
+            sudo apt-get install python3-pip
+            sudo -H pip3 install --upgrade pip
+            sudo -H pip3 install setuptools
+            sudo -H pip3 install -r docs/requirements.txt
+            sudo -H pip3 install --upgrade --ignore-installed pyyaml
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure 
+         - name: "Build documentation . . ."
+           run: |
+                echo "Doxygen version: "
+                doxygen --version
+
+                echo "Sphinx version: "
+                sphinx-build --version
+
+                etc/make-doc-yml.sh | tee make-doc-yml.log
+                etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
+
+                echo
+                ( ! grep "WARNING:" make-doc-sphinx.log)
+   lint:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Install dependencies . . ."
+           run: |
+                sudo pip install cpplint
+         - name: "Run cpplint . . ."
+           run: bash etc/make-lint.sh
+   macosx:
+      runs-on: macOS-latest
+      env: 
+         CXX: "ccache clang++"
+         CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                brew install ccache autoconf automake
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi 
+         - name: "Build libsemigroups . . ."
+           run: |
+                ccache -z && make -j4 && ccache -s
+         - name: "Build test_all . . ."
+           run: |
+                ccache -z && make test_all -j4 && ccache -s
+         - name: "Run the quick tests . . ."
+           run: |
+                ./test_all "[quick]"
+   quick:
+      runs-on: ubuntu-latest
+      env: 
+         CXX: "ccache g++"
+         CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh && ./configure 
+         - name: "Build libsemigroups . . ."
+           run: |
+                ccache -z && make -j4 && ccache -s
+         - name: "Build test_all . . ."
+           run: |
+                make test_all -j4
+         - name: "Run the quick and standard tests . . ."
+           run: |
+                ./test_all "[quick],[standard]"
+   valgrind:
+      runs-on: ubuntu-latest
+      env: 
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Restore cache . . ."
+           uses: actions/cache@v2
+           with:
+              path: /home/runner/.ccache
+              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+              restore-keys: |
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+         - name: "Install dependencies . . ."
+           run: |
+                sudo apt-get install -y ccache expect libc6-dbg libtool-bin valgrind
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4 && ./autogen.sh
+                ./configure --enable-debug --disable-hpcombi
+         - name: "Build libsemigroups . . ."
+           run: |
+                ccache -z && make -j4 && ccache -s
+         - name: "Build test_all . . ."
+           run: |
+                ccache -z && make test_all -j4 && ccache -s
+         - name: "Run tests with valgrind . . ."
+           run: |
+                valgrind --version
+                unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
+                echo
+                ( ! grep -i "Invalid" valgrind.log )
+                ( ! grep -E "lost: [^0]" valgrind.log )

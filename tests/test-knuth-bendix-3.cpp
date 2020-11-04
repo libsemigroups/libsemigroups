@@ -361,7 +361,8 @@ namespace libsemigroups {
         "KnuthBendix",
         "059",
         "(fpsemi) from GAP smalloverlap gap/test.gi:77 (infinite)",
-        "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][no-"
+        "valgrind]") {
       auto rg = ReportGuard(REPORT);
       // A slightly more complicated presentation for testing case (6), in which
       // the max piece suffixes of the first two relation words no longer agree

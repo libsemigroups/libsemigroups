@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-sudo apt-get --yes update
-sudo apt-get --yes upgrade
-
-sudo apt-get install git --yes
-sudo apt-get install libtool-bin --yes 
-
 # Next commands executed in the container...
 GAP_SEMIGROUPS_BRANCH=improve-uf
 GAP_SEMIGROUPS_REPO=james-d-mitchell

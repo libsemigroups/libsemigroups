@@ -405,10 +405,11 @@ namespace libsemigroups {
       // REQUIRE(get_strings(T) == std::vector<std::string>({"c", "b", ""}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "009",
-                            "(fpsemi)",
-                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "009",
+        "(fpsemi)",
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][no-valgrind]") {
       auto rg = ReportGuard(REPORT);
 
       KnuthBendix kb;
