@@ -114,7 +114,9 @@ Option
 
 Debug mode and verbose mode significantly degrade the performance of
 ``libsemigroups``. Compiling with ``fmt`` enabled increases build times
-significantly. 
+significantly. Note that the flags ``--enable-fmt`` and ``--with-external-fmt``
+are indendent of each other, and so both flags should be included to enable
+``fmt`` and use an external ``fmt``.
 
 Make install
 ------------

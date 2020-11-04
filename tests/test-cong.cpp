@@ -400,7 +400,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "013",
                           "trivial 2-sided congruence on bicyclic monoid",
-                          "[quick][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(3);

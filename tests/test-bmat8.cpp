@@ -33,7 +33,7 @@ namespace libsemigroups {
   // Forward decl
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8", "001", "transpose", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "001", "transpose", "[quick][no-valgrind]") {
     auto  rg = ReportGuard(REPORT);
     BMat8 bm1(0);
     REQUIRE(bm1.transpose() == bm1);
