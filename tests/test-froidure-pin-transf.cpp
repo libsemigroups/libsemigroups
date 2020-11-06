@@ -16,9 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint_fast8_t, uint16_t
-#include <vector>   // for vector
+#include <algorithm>  // for min
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint_fast8_t, uint16_t
+#include <vector>     // for vector
 
 #include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/element-adapters.hpp"  // for Degree etc
@@ -382,7 +383,9 @@ namespace libsemigroups {
         {Transformation<uint_fast8_t>({1, 7, 2, 6, 0, 0, 1, 2}),
          Transformation<uint_fast8_t>({2, 4, 6, 1, 4, 5, 2, 7})});
     S.max_threads(2).concurrency_threshold(0);
-    REQUIRE(S.max_threads() == 2);
+    REQUIRE(S.max_threads()
+            == std::min(static_cast<unsigned int>(2),
+                        std::thread::hardware_concurrency()));
     REQUIRE(S.concurrency_threshold() == 0);
     REQUIRE(S.nr_idempotents() == 72);
   }

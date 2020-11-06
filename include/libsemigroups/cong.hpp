@@ -277,6 +277,15 @@ namespace libsemigroups {
       _race.add_runner(std::make_shared<T>(r));
     }
 
+    size_t max_threads() const noexcept {
+      return _race.max_threads();
+    }
+
+    Congruence& max_threads(size_t val) noexcept {
+      _race.max_threads(val);
+      return *this;
+    }
+
    private:
     //////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual member functions - private
