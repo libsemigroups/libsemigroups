@@ -243,6 +243,15 @@ namespace libsemigroups {
       return _race.find_runner<ToddCoxeter>();
     }
 
+    size_t max_threads() const noexcept {
+      return _race.max_threads();
+    }
+
+    FpSemigroup& max_threads(size_t val) noexcept {
+      _race.max_threads(val);
+      return *this;
+    }
+
    private:
     //////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - private
