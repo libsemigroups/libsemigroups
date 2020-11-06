@@ -1415,6 +1415,9 @@ namespace libsemigroups {
     auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
     cong.set_nr_generators(4);
+    cong.max_threads(2);
+    // Required in case of using a 1 core computer, otherwise the tests below
+    // fail.
     REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 254);
     REQUIRE(cong.class_index_to_word(2) == word_type({2}));
     REQUIRE_THROWS_AS(cong.quotient_froidure_pin(), LibsemigroupsException);

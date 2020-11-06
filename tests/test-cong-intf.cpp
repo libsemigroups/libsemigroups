@@ -510,6 +510,7 @@ namespace libsemigroups {
         SECTION("Congruence") {
           cong = detail::make_unique<Congruence>(twosided);
           cong->set_nr_generators(4);
+          static_cast<Congruence*>(cong.get())->max_threads(2);
           REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
                   == tril::FALSE);
         }
