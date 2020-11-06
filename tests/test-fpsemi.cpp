@@ -90,6 +90,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
+    S.max_threads(2);
     for (relation_type const& rl : EGTypeBMonoid(3, 1)) {
       S.add_rule(rl);
     }
@@ -109,6 +110,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
+    S.max_threads(2);
     for (relation_type const& rl : EGTypeBMonoid(3, 0)) {
       S.add_rule(rl);
     }
@@ -355,12 +357,15 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
+    S.max_threads(2);
     for (relation_type const& rl : EGTypeDMonoid(4, 1)) {
       S.add_rule(rl);
     }
     REQUIRE(S.nr_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
+
+    REQUIRE(S.size() == POSITIVE_INFINITY);
 
     S.froidure_pin()->enumerate(10626);
     REQUIRE(S.froidure_pin()->current_nr_rules() == 417);
@@ -375,6 +380,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(11);
+    S.max_threads(2);
     for (relation_type const& rl : EGTypeDMonoid(4, 0)) {
       S.add_rule(rl);
     }
@@ -880,6 +886,7 @@ namespace libsemigroups {
     S.add_rule("aa", "a");
     S.add_rule("ab", "a");
     S.add_rule("ba", "a");
+    S.max_threads(2);
 
     REQUIRE(S.is_obviously_infinite());
     REQUIRE(S.equal_to("ab", "a"));
@@ -949,7 +956,7 @@ namespace libsemigroups {
       ++nr_calls;
       return nr_calls == 3;
     });
-    REQUIRE(!S.finished());
+    // REQUIRE(!S.finished());
     REQUIRE(nr_calls == 3);
   }
 

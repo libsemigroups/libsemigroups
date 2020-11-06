@@ -99,7 +99,7 @@ namespace libsemigroups {
 
     //! Returns the size of the finitely presented semigroup.
     //!
-    //! \returns A `size_t`, the value of which equals the size of \c this if
+    //! \returns A `uint64_t`, the value of which equals the size of \c this if
     //! this number is finite, or libsemigroups::POSITIVE_INFINITY in some
     //! cases if this number is not finite.
     //!
