@@ -6,6 +6,7 @@ trigger:
 
 variables:
   CCACHE_DIR: $(Pipeline.Workspace)/ccache
+  CXXFLAGS: "-fdiagnostics-color"
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -27,15 +28,71 @@ jobs:
       key: 'ccache | "$(Agent.OS)"'
       path: $(CCACHE_DIR)
     displayName: Restore cache . . .
-  - script: |
+  - bash: |
       mkdir -p m4 && ./autogen.sh && ./configure 
     displayName: "Configure . . ."
-  - script: |
+  - bash: |
       ccache -z && make -j4 && ccache -s
     displayName: "Build libsemigroups . . ."
-  - script: |
+  - bash: |
       ccache -z && make test_all -j4 && ccache -s
     displayName: "Build test_all . . ."
-  - script: |
+  - bash: |
       ./test_all "[quick],[standard]"
     displayName: "Run the quick and standard tests . . ."
+
+- job: config_options
+  variables:
+    PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
+    LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
+  steps:
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH 
+  - bash: |
+         conda install -c conda-forge --yes mamba;
+         mamba install -c conda-forge --yes fmt;
+         mamba install -c conda-forge --yes eigen;
+    displayName: "Install eigen3 and fmt using conda . . ."
+  - bash: |
+      sudo apt-get install -y ccache
+      echo "##vso[task.prependpath]/usr/lib/ccache"
+    displayName: "Install dependencies . . ."
+  - task: Cache@2
+    inputs:
+      key: 'ccache | "$(Agent.OS)"'
+      path: $(CCACHE_DIR)
+    displayName: Restore cache . . .
+  - bash: |
+      ./autogen.sh 
+    displayName: "Run ./autogen.sh . . ."
+  - bash: |
+      ./configure --with-external-fmt --enable-fmt
+      ccache -z
+      make test_all -j4 || exit 1
+      ccache -s
+      ./test_all "[quick]"
+    displayName: "Test flag: --with-external-fmt --enable-fmt"
+  - bash: |
+      make clean
+      ./configure --enable-fmt
+      ccache -z
+      make test_all -j4 || exit 1
+      ccache -s
+      ./test_all "[quick]"
+    displayName: "Test flag: --enable-fmt"
+  - bash: |
+      make clean
+      ./configure --with-external-eigen
+      ccache -z
+      make test_obvinf -j4 || exit 1
+      ccache -s
+      ./test_obvinf "[quick]"
+    displayName: "Test flag: --with-external-eigen"
+  - bash: |
+      make clean
+      ./configure --disable-eigen
+      ccache -z
+      make test_obvinf -j4 || exit 1
+      ccache -s
+      ./test_obvinf "[quick]"
+    displayName: "Test flag: --disable-eigen"
