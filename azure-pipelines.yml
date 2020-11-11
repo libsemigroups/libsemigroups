@@ -15,18 +15,18 @@ jobs:
 
 - job: 
   steps:
-  - displayName: "Install dependencies . . ."
-    script: |
+  - script: |
       sudo apt-get install -y ccache
-  - displayName: "Configure . . ."
-    script: |
+    displayName: "Install dependencies . . ."
+  - script: |
       mkdir -p m4 && ./autogen.sh && ./configure 
-  - displayName: "Build libsemigroups . . ."
-    script: |
+    displayName: "Configure . . ."
+  - script: |
       ccache -z && make -j4 && ccache -s
-  - displayName: "Build test_all . . ."
-    script: |
+    displayName: "Build libsemigroups . . ."
+  - script: |
       make test_all -j4
-  - displayName: "Run the quick and standard tests . . ."
-    script: |
+    displayName: "Build test_all . . ."
+  - script: |
       ./test_all "[quick],[standard]"
+    displayName: "Run the quick and standard tests . . ."
