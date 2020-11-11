@@ -661,6 +661,7 @@ EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_digraph
+EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
@@ -927,6 +928,9 @@ bench_bmat_SOURCES += tests/bmat-data.cpp
 
 bench_digraph_SOURCES =  benchmarks/bench-digraph.cpp
 bench_digraph_SOURCES += benchmarks/bench-main.cpp
+
+bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
+bench_freeband_SOURCES += benchmarks/bench-main.cpp
 
 bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
 bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
