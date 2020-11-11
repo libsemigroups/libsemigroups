@@ -4,6 +4,9 @@ pr:
 trigger:
 - master
 
+variables:
+  CCACHE_DIR: $(Pipeline.Workspace)/ccache
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -13,11 +16,17 @@ jobs:
   - script: ci/azure-gap.sh
     displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
 
-- job: 
+- job: quick
   steps:
-  - script: |
+  - bash: |
       sudo apt-get install -y ccache
+      echo "##vso[task.prependpath]/usr/lib/ccache"
     displayName: "Install dependencies . . ."
+  - task: Cache@2
+    inputs:
+      key: 'ccache | "$(Agent.OS)"'
+      path: $(CCACHE_DIR)
+    displayName: Restore cache . . .
   - script: |
       mkdir -p m4 && ./autogen.sh && ./configure 
     displayName: "Configure . . ."
@@ -25,7 +34,7 @@ jobs:
       ccache -z && make -j4 && ccache -s
     displayName: "Build libsemigroups . . ."
   - script: |
-      make test_all -j4
+      ccache -z && make test_all -j4 && ccache -s
     displayName: "Build test_all . . ."
   - script: |
       ./test_all "[quick],[standard]"
