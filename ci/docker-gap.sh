@@ -37,6 +37,7 @@ mv $HOME/libsemigroups .
 make -j4
 
 cd ..
+git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
 
 INSTALL_PKGS="if not InstallPackage(\"digraphs\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"
