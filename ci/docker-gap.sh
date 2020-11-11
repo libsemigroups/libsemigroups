@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+sudo apt-get --yes update
+sudo apt-get --yes upgrade
+
+sudo apt-get install git --yes
+sudo apt-get install libtool-bin --yes 
+
 # Next commands executed in the container...
 GAP_SEMIGROUPS_BRANCH=improve-uf
 GAP_SEMIGROUPS_REPO=james-d-mitchell
@@ -31,7 +37,6 @@ mv $HOME/libsemigroups .
 make -j4
 
 cd ..
-git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
 
 INSTALL_PKGS="if not InstallPackage(\"digraphs\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"

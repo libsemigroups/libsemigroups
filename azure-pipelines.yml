@@ -1,0 +1,32 @@
+pr:
+- master
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: GAP
+  steps:
+  - script: ci/azure-gap.sh
+    displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
+
+- job: 
+  steps:
+  - displayName: "Install dependencies . . ."
+    script: |
+      sudo apt-get install -y ccache
+  - displayName: "Configure . . ."
+    script: |
+      mkdir -p m4 && ./autogen.sh && ./configure 
+  - displayName: "Build libsemigroups . . ."
+    script: |
+      ccache -z && make -j4 && ccache -s
+  - displayName: "Build test_all . . ."
+    script: |
+      make test_all -j4
+  - displayName: "Run the quick and standard tests . . ."
+    script: |
+      ./test_all "[quick],[standard]"
