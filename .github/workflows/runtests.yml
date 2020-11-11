@@ -62,20 +62,10 @@ jobs:
    config-options:
       runs-on: ubuntu-latest
       env: 
-        CXX: "ccache g++"
-        CXXFLAGS: "-fdiagnostics-color"
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
         LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
       steps:
          - uses: actions/checkout@v2
-         - name: "Restore cache . . ."
-           uses: actions/cache@v2
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install other dependencies . . ."
            run: |
                 sudo apt-get install -y ccache
@@ -85,30 +75,22 @@ jobs:
          - name: "Test flag: --enable-debug"
            run: |
                 ./configure --enable-debug
-                ccache -z
                 make test_all -j4 || exit 1
-                ccache -s
                 ./test_all "[quick]"
          - name: "Test flag: --disable-hpcombi"
            run: |
                 ./configure --disable-hpcombi
-                ccache -z
                 make test_all -j4 || exit 1
-                ccache -s
                 ./test_all "[quick]"
          - name: "Test flag: --disable-popcnt --disable-clzll"
            run: |
                 ./configure --disable-popcnt --disable-clzll
-                ccache -z
                 make test_bitset -j4|| exit 1
-                ccache -s
                 ./test_bitset "[quick]"
          - name: "Test flag: --enable-verbose"
            run: |
                 ./configure --enable-verbose
-                ccache -z
                 make test_all -j4 || exit 1
-                ccache -s
                 ./test_all "[quick]"
    coverage:
       runs-on: ubuntu-latest
