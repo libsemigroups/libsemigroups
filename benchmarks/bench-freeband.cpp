@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <algorithm>
 #include <iostream>
 #include <random>
 #include <string>
@@ -40,29 +41,89 @@ namespace libsemigroups {
     return out;
   }
 
-  word_type random_tree_word(size_t nr_letters)
-  {
-    static std::random_device               rd;
-    static std::mt19937                     gen(rd());
-    std::uniform_int_distribution<uint64_t> dist(0, nr_letters);
-    word_type                               out;
-    
+  void random_tree_word_helper(std::vector<size_t>& cont,
+                               word_type&           out,
+                               size_t               padding) {
+    if (cont.size() == 1) {
+      out.push_back(cont[0]);
+      for (size_t i = 0; i < padding; i++)
+        out.push_back(cont[0]);
+    } else {
+      // left half
+      size_t l = cont.back();
+      // left subtree
+      cont.pop_back();
+      random_tree_word_helper(cont, out, padding);
+      // left letter
+      out.push_back(l);
+      cont.push_back(l);
+      // padding
+      if (padding > 0) {
+        word_type pad = random_word(padding, cont.size()-1);
+        for (size_t i = 0; i < pad.size(); i++)
+          pad[i] = cont[pad[i]];
+        out.insert(out.end(), pad.begin(), pad.end());
+      }
+      // right half
+      word_type           right;
+      std::vector<size_t> right_cont(cont.size());
+      std::copy(cont.begin(), cont.end(), right_cont.begin());
+      std::random_shuffle(right_cont.begin(), right_cont.end());
+      size_t r = right_cont.back();
+      // right letter
+      out.push_back(r);
+      // right subtree
+      right_cont.pop_back();
+      random_tree_word_helper(right_cont, right, padding);
+      out.insert(out.end(), right.rbegin(), right.rend());
+    }
+  }
+
+  word_type random_tree_word(size_t nr_letters, size_t padding) {
+    word_type           out;
+    std::vector<size_t> cont;
+    for (size_t i = 0; i < nr_letters; i++)
+      cont.push_back(i);
+    std::random_shuffle(cont.begin(), cont.end());
+    random_tree_word_helper(cont, out, padding);
+    return out;
   }
 
   TEST_CASE("random words against themselves", "[quick][000]") {
-    std::vector<size_t> A = {4, 10, 50};
-    std::vector<size_t> L = {100, 1000, 5000};
-    size_t              N = 100;
-
+    std::vector<size_t> A = {5, 10, 20};
+    std::vector<size_t> L = {100, 200, 300, 400};
     for (auto const& a : A)
-      for (auto const& l : L)
+      for (auto const& l : L) {
+        auto x = random_word(l, a), y = random_word(l, a);
         BENCHMARK("Random Word, Alphabet " + std::to_string(a) + " Length "
                   + std::to_string(l)) {
-          for (size_t i = 0; i < N; i++) {
-            word_type w = random_word(l, a);
-            REQUIRE(freeband_equal_to(w, w));
-          }
+          freeband_equal_to(x, y);
         };
+      }
+  }
+
+  TEST_CASE("unpadded random tree words", "[quick][001]") {
+    std::vector<size_t> A = {4, 5, 6, 7, 10};
+    for (auto const& a : A) {
+      auto x = random_tree_word(a, 0), y = random_tree_word(a, 0);
+      BENCHMARK("Random Tree Word, Alphabet " + std::to_string(a)) {
+        freeband_equal_to(x, y);
+      };
+    }
+  }
+
+  TEST_CASE("padded random tree words", "[quick][001]") {
+    std::vector<size_t> A = {4, 5, 6};
+    std::vector<size_t> P = {0, 5, 10, 15};
+    for (auto const& a : A) 
+    for (auto const& p: P )
+      {
+      auto x = random_tree_word(a, p), y = random_tree_word(a, p);
+      BENCHMARK("Random Tree Word, Alphabet " + std::to_string(a) + " Padding " +
+                std::to_string(p)) {
+        freeband_equal_to(x, y);
+      };
+    }
   }
 
 }  // namespace libsemigroups
