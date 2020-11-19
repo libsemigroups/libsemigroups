@@ -11,9 +11,6 @@ libsemigroups - Version 1.3.3
     :target: https://libsemigroups.readthedocs.io/en/devel/?badge=master
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/libsemigroups/libsemigroups.svg?branch=master
-    :target: https://travis-ci.org/libsemigroups/libsemigroups
-
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/libsemigroups/libsemigroups/master
     :alt: Launch Binder
