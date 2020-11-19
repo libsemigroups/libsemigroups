@@ -1,8 +1,10 @@
 pr:
 - master
+- stable-*.*
 
 trigger:
 - master
+- stable-*.*
 
 variables:
   CCACHE_DIR: $(Pipeline.Workspace)/ccache
