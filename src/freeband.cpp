@@ -139,8 +139,8 @@ namespace libsemigroups {
       std::swap(rightm, rightk);
       std::swap(leftm, leftk);
 
-      rightk = right(xy.begin(), xy.end(), k);
-      leftk  = left(xy.begin(), xy.end(), k);
+      right(xy.begin(), xy.end(), k, rightk);
+      left(xy.begin(), xy.end(), k, leftk);
       lvldgs = level_edges(xy, k, rdx, rightk, leftk, rightm, leftm);
       rdx    = radix_sort(lvldgs, N + 1);
     }
