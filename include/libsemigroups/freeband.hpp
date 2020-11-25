@@ -113,13 +113,23 @@ namespace libsemigroups {
     return out;
   }
 
-  word_type count_sort(std::vector<word_type> const& level_edges,
-                       word_type const&              index_list,
-                       size_t                        i,
-                       size_t                        radix);
+  void count_sort(std::vector<word_type> const& level_edges,
+                  word_type&                    index_list,
+                  size_t                        i,
+                  size_t                        radix);
+
+  void radix_sort(std::vector<word_type> const& level_edges,
+                  size_t                        alphabet_size,
+                  std::vector<size_t>&,
+                  std::vector<size_t>&);
 
   word_type radix_sort(std::vector<word_type> const& level_edges,
-                       size_t                        alphabet_size);
+                       size_t                        alphabet_size) {
+    std::vector<size_t> out1(level_edges.size());
+    std::vector<size_t> out2(level_edges.size());
+    radix_sort(level_edges, alphabet_size, out1, out2);
+    return out1;
+  }
 
 }  // namespace libsemigroups
 

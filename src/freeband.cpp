@@ -71,44 +71,43 @@ namespace libsemigroups {
   using left_type        = std::vector<size_t>;
   using right_type       = std::vector<size_t>;
 
-  level_edges_type level_edges(word_type const&           w,
-                               size_t const               k,
-                               std::vector<size_t> const& rdx,
-                               right_type const&          rightk,
-                               left_type const&           leftk,
-                               right_type const&          rightm,
-                               left_type const&           leftm) {
-    size_t const     n = w.size();
-    level_edges_type outl;
-    level_edges_type outr;
+  void level_edges(word_type const&           w,
+                   size_t const               k,
+                   std::vector<size_t> const& rdx,
+                   right_type const&          rightk,
+                   left_type const&           leftk,
+                   right_type const&          rightm,
+                   left_type const&           leftm,
+                   level_edges_type&          out) {
+    size_t const n = w.size();
+    LIBSEMIGROUPS_ASSERT(out.size() == 2 * n);
+    std::fill(
+        out.begin(),
+        out.end(),
+        std::vector<size_t>({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
 
     if (k == 1) {
       for (size_t i = 0; i < n; ++i) {
-        outl.push_back({0, w.at(i), w.at(i), 0});
-        outr.push_back({0, w.at(i), w.at(i), 0});
+        out[i]     = {0, w.at(i), w.at(i), 0};
+        out[i + n] = {0, w.at(i), w.at(i), 0};
       }
-    } else {
-      for (size_t i = 0; i < n; ++i) {
-        if (rightk.at(i) != UNDEFINED) {
-          outr.push_back({rdx.at(i),
-                          w.at(rightm.at(i) + 1),
-                          w.at(leftm.at(rightk.at(i)) - 1),
-                          rdx.at(rightk.at(i) + n)});
-        } else {
-          outr.push_back({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED});
-        }
-        if (leftk.at(i) != UNDEFINED) {
-          outl.push_back({rdx.at(leftk.at(i)),
-                          w.at(rightm.at(leftk.at(i)) + 1),
-                          w.at(leftm.at(i) - 1),
-                          rdx.at(i + n)});
-        } else {
-          outl.push_back({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED});
-        }
+      return;
+    }
+
+    for (size_t i = 0; i < n; ++i) {
+      if (rightk.at(i) != UNDEFINED) {
+        out[i] = {rdx.at(i),
+                  w.at(rightm.at(i) + 1),
+                  w.at(leftm.at(rightk.at(i)) - 1),
+                  rdx.at(rightk.at(i) + n)};
+      }
+      if (leftk.at(i) != UNDEFINED) {
+        out[i + n] = {rdx.at(leftk.at(i)),
+                      w.at(rightm.at(leftk.at(i)) + 1),
+                      w.at(leftm.at(i) - 1),
+                      rdx.at(i + n)};
       }
     }
-    outr.insert(outr.end(), outl.cbegin(), outl.cend());
-    return outr;
   }
 
   bool freeband_equal_to(word_type& x, word_type& y) {
@@ -127,8 +126,9 @@ namespace libsemigroups {
                          == *std::max_element(xy.cbegin(), xy.cend()));
     N = content_size(xy);
 
-    level_edges_type    lvldgs(xy.size(), {0, 0, 0, 0});
-    std::vector<size_t> rdx(xy.size(), 0);
+    level_edges_type    lvldgs(2 * xy.size(), {0, 0, 0, 0});
+    std::vector<size_t> rdx(2 * xy.size(), 0);
+    std::vector<size_t> ndx(2 * xy.size(), 0);
 
     left_type  leftk;
     right_type rightk;
@@ -141,45 +141,50 @@ namespace libsemigroups {
 
       right(xy.begin(), xy.end(), k, rightk);
       left(xy.begin(), xy.end(), k, leftk);
-      lvldgs = level_edges(xy, k, rdx, rightk, leftk, rightm, leftm);
-      rdx    = radix_sort(lvldgs, N + 1);
+      level_edges(xy, k, rdx, rightk, leftk, rightm, leftm, lvldgs);
+      radix_sort(lvldgs, N + 1, rdx, ndx);
     }
 
     return rdx[0] == rdx[x.size() + 1];
   }
-  word_type radix_sort(std::vector<word_type> const& level_edges,
-                       size_t                        alphabet_size) {
-    // Can reuse this instead of initializing every time
-    word_type index_list(level_edges.size(), 0);
-    for (size_t j = 0; j < index_list.size(); j++)
+
+  void radix_sort(std::vector<word_type> const& level_edges,
+                  size_t                        alphabet_size,
+                  std::vector<size_t>&          result_index_list,
+                  std::vector<size_t>&          index_list) {
+    LIBSEMIGROUPS_ASSERT(result_index_list.size() == level_edges.size());
+    LIBSEMIGROUPS_ASSERT(index_list.size() == level_edges.size());
+
+    std::fill(result_index_list.begin(), result_index_list.end(), 0);
+    std::fill(index_list.begin(), index_list.end(), 0);
+
+    for (size_t j = 0; j < index_list.size(); j++) {
       index_list[j] = j;
+    }
 
-    index_list = count_sort(level_edges, index_list, 0, index_list.size());
-    index_list = count_sort(level_edges, index_list, 1, alphabet_size);
-    index_list = count_sort(level_edges, index_list, 2, alphabet_size);
-    index_list = count_sort(level_edges, index_list, 3, index_list.size());
+    count_sort(level_edges, index_list, 0, index_list.size());
+    count_sort(level_edges, index_list, 1, alphabet_size);
+    count_sort(level_edges, index_list, 2, alphabet_size);
+    count_sort(level_edges, index_list, 3, index_list.size());
 
-    // Reuse
-    word_type result_index_list(index_list.size(), 0);
-    size_t    c = 0;
+    size_t c = 0;
     for (size_t j = 1; j < index_list.size(); j++) {
       if (level_edges[index_list[j]] != level_edges[index_list[j - 1]])
         c++;
       result_index_list[index_list[j]] = c;
     }
     result_index_list[index_list[0]] = 0;
-    // Something something, swap instead
-    return result_index_list;
   }
+
   // What types should we be using? I get that word_type is an alias to
   // std::vector<size_t>, but wouldn't using the vector be more useful,
   // since the output/input is not really a representation of a word.
   // Also the input i here will range from 0 to 3, so is it better
   // to assign it to a unsigned short or something?
-  word_type count_sort(std::vector<word_type> const& level_edges,
-                       word_type const&              index_list,
-                       size_t                        i,
-                       size_t                        radix) {
+  void count_sort(std::vector<word_type> const& level_edges,
+                  word_type&                    index_list,
+                  size_t                        i,
+                  size_t                        radix) {
     // Could actually reuse an already existing count array
     word_type counts(radix + 1, 0);
     for (auto j : index_list) {
@@ -203,7 +208,7 @@ namespace libsemigroups {
       }
     }
     // Could also swap result_index_list with index_list!
-    return result_index_list;
+    std::swap(result_index_list, index_list);
   }
 
 }  // namespace libsemigroups
