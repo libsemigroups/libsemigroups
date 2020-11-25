@@ -51,12 +51,14 @@ namespace libsemigroups {
   // value.
   //
   // Complexity O(last - first)
+
   template <typename T>
-  std::vector<size_t> right(T const first, T const last, size_t const k) {
+  void
+  right(T const first, T const last, size_t const k, std::vector<size_t>& out) {
     // TODO assertions
-    word_type out;
+    out.clear();
     if (std::distance(first, last) == 0) {
-      return out;
+      return;
     }
     T                   j            = first;
     size_t              content_size = 0;
@@ -80,19 +82,34 @@ namespace libsemigroups {
       out.push_back(content_size == k ? size_t(std::distance(first, j)) - 1
                                       : UNDEFINED);
     }
-    return out;
   }
 
   template <typename T>
-  std::vector<size_t> left(T const first, T const last, size_t const k) {
-    auto out = right(
-        std::reverse_iterator<T>(last), std::reverse_iterator<T>(first), k);
+  void
+  left(T const first, T const last, size_t const k, std::vector<size_t>& out) {
+    right(std::reverse_iterator<T>(last),
+          std::reverse_iterator<T>(first),
+          k,
+          out);
     std::reverse(out.begin(), out.end());
     for (auto& x : out) {
       if (x != UNDEFINED) {
         x = out.size() - x - 1;
       }
     }
+  }
+
+  template <typename T>
+  auto right(T const first, T const last, size_t const k) {
+    std::vector<size_t> out;
+    right(first, last, k, out);
+    return out;
+  }
+
+  template <typename T>
+  auto left(T const first, T const last, size_t const k) {
+    std::vector<size_t> out;
+    left(first, last, k, out);
     return out;
   }
 
