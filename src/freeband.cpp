@@ -29,7 +29,6 @@
 
 namespace libsemigroups {
   namespace {
-
     template <typename T>
     bool is_standardized(T first, T last) {
       size_t m = 0;
@@ -147,6 +146,64 @@ namespace libsemigroups {
     }
 
     return rdx[0] == rdx[x.size() + 1];
+  }
+  word_type radix_sort(std::vector<word_type> const& level_edges,
+                       size_t                        alphabet_size) {
+    // Can reuse this instead of initializing every time
+    word_type index_list(level_edges.size(), 0);
+    for (size_t j = 0; j < index_list.size(); j++)
+      index_list[j] = j;
+
+    index_list = count_sort(level_edges, index_list, 0, index_list.size());
+    index_list = count_sort(level_edges, index_list, 1, alphabet_size);
+    index_list = count_sort(level_edges, index_list, 2, alphabet_size);
+    index_list = count_sort(level_edges, index_list, 3, index_list.size());
+
+    // Reuse
+    word_type result_index_list(index_list.size(), 0);
+    size_t    c = 0;
+    for (size_t j = 1; j < index_list.size(); j++) {
+      if (level_edges[index_list[j]] != level_edges[index_list[j - 1]])
+        c++;
+      result_index_list[index_list[j]] = c;
+    }
+    result_index_list[index_list[0]] = 0;
+    // Something something, swap instead
+    return result_index_list;
+  }
+  // What types should we be using? I get that word_type is an alias to
+  // std::vector<size_t>, but wouldn't using the vector be more useful,
+  // since the output/input is not really a representation of a word.
+  // Also the input i here will range from 0 to 3, so is it better
+  // to assign it to a unsigned short or something?
+  word_type count_sort(std::vector<word_type> const& level_edges,
+                       word_type const&              index_list,
+                       size_t                        i,
+                       size_t                        radix) {
+    // Could actually reuse an already existing count array
+    word_type counts(radix + 1, 0);
+    for (auto j : index_list) {
+      if (level_edges[j][i] != UNDEFINED)
+        counts[level_edges[j][i]]++;
+      else
+        counts[radix]++;
+    }
+    for (size_t j = 1; j < counts.size(); j++)
+      counts[j] += counts[j - 1];
+    // This can also be reused and doesnt even have to be initialized if we
+    // reuse it.
+    word_type result_index_list(index_list.size(), 0);
+    for (auto j = index_list.rbegin(); j != index_list.rend(); j++) {
+      if (level_edges[*j][i] != UNDEFINED) {
+        counts[level_edges[*j][i]]--;
+        result_index_list[counts[level_edges[*j][i]]] = *j;
+      } else {
+        counts[radix]--;
+        result_index_list[counts[radix]] = *j;
+      }
+    }
+    // Could also swap result_index_list with index_list!
+    return result_index_list;
   }
 
 }  // namespace libsemigroups
