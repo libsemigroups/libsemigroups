@@ -59,7 +59,7 @@ namespace libsemigroups {
       cont.push_back(l);
       // padding
       if (padding > 0) {
-        word_type pad = random_word(padding, cont.size()-1);
+        word_type pad = random_word(padding, cont.size() - 1);
         for (size_t i = 0; i < pad.size(); i++)
           pad[i] = cont[pad[i]];
         out.insert(out.end(), pad.begin(), pad.end());
@@ -97,7 +97,9 @@ namespace libsemigroups {
         auto x = random_word(l, a), y = random_word(l, a);
         BENCHMARK("Random Word, Alphabet " + std::to_string(a) + " Length "
                   + std::to_string(l)) {
-          freeband_equal_to(x, y);
+          for (size_t i = 0; i < 100 / a; ++i) {
+            freeband_equal_to(x, y);
+          }
         };
       }
   }
@@ -107,23 +109,26 @@ namespace libsemigroups {
     for (auto const& a : A) {
       auto x = random_tree_word(a, 0), y = random_tree_word(a, 0);
       BENCHMARK("Random Tree Word, Alphabet " + std::to_string(a)) {
-        freeband_equal_to(x, y);
+        for (size_t i = 0; i < 1000 / (5 * a); ++i) {
+          freeband_equal_to(x, y);
+        }
       };
     }
   }
 
-  TEST_CASE("padded random tree words", "[quick][001]") {
+  TEST_CASE("padded random tree words", "[quick][002]") {
     std::vector<size_t> A = {4, 5, 6};
     std::vector<size_t> P = {0, 5, 10, 15};
-    for (auto const& a : A) 
-    for (auto const& p: P )
-      {
-      auto x = random_tree_word(a, p), y = random_tree_word(a, p);
-      BENCHMARK("Random Tree Word, Alphabet " + std::to_string(a) + " Padding " +
-                std::to_string(p)) {
-        freeband_equal_to(x, y);
-      };
-    }
+    for (auto const& a : A)
+      for (auto const& p : P) {
+        auto x = random_tree_word(a, p), y = random_tree_word(a, p);
+        BENCHMARK("Random Tree Word, Alphabet " + std::to_string(a)
+                  + " Padding " + std::to_string(p)) {
+          for (size_t i = 0; i < 1000 / (a * (p + 1)); ++i) {
+            freeband_equal_to(x, y);
+          }
+        };
+      }
   }
 
 }  // namespace libsemigroups
