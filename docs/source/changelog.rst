@@ -1,6 +1,19 @@
 Changelog
 =========
 
+v1.3.4 (released 27/11/2020)
+----------------------------
+
+This is a minor release resolving the following issues:
+
+* the tests failed when the hardware concurrency was limited to 1 (reported by
+  `Bernhard M. Wiedemann`_)
+* compilation failed when in debug mode
+* there were some bugs in the string formatting in exceptions on 32-bit
+  systems
+* the disjoint sets data structures were refactored completely, and their
+  performance improved. 
+
 v1.3.3 (released 07/10/2020)
 ----------------------------
 
@@ -217,3 +230,4 @@ rewritten, generalised, and some new features have been added.
 .. _J. James: http://www.jamezone.org/
 .. _Isuru Fernando: https://github.com/isuruf
 .. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
+.. _Bernhard M. Wiedemann: https://lizards.opensuse.org/author/bmwiedemann/
