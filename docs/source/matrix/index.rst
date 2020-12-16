@@ -35,7 +35,7 @@ specific semirings:
    intmat
    maxplusmat
    minplusmat
-   maxplustruncmat
+   maxplustruncmat/maxplustruncmat
    minplustruncmat
    ntpmat 
    projmaxplus 
