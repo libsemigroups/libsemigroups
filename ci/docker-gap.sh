@@ -53,4 +53,4 @@ cd $HOME/inst/$GAP_VERSION/pkg/semigroups
 export SUITE="test"
 
 # Run the tests defined in Semigroups
-scripts/travis-test.sh
+ci/docker-test.sh
