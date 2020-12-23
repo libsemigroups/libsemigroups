@@ -31,7 +31,7 @@ jobs:
       path: $(CCACHE_DIR)
     displayName: Restore cache . . .
   - bash: |
-      mkdir -p m4 && ./autogen.sh && ./configure 
+      mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi --disable-popcnt --disable-clzll
     displayName: "Configure . . ."
   - bash: |
       ccache -z && make -j4 && ccache -s
@@ -40,7 +40,7 @@ jobs:
       ccache -z && make test_all -j4 && ccache -s
     displayName: "Build test_all . . ."
   - bash: |
-      ./test_all "[quick],[standard]"
+          ./test_all "[quick],[standard]"
     displayName: "Run the quick and standard tests . . ."
 
 - job: config_options
