@@ -96,7 +96,6 @@ pkginclude_HEADERS += include/libsemigroups/timer.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/transf.hpp
 pkginclude_HEADERS += include/libsemigroups/types.hpp
-pkginclude_HEADERS += include/libsemigroups/uf-old.hpp
 pkginclude_HEADERS += include/libsemigroups/uf.hpp
 pkginclude_HEADERS += include/libsemigroups/wilo.hpp
 pkginclude_HEADERS += include/libsemigroups/wislo.hpp
@@ -559,7 +558,6 @@ libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/siso.cpp
 libsemigroups_la_SOURCES += src/timer.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
-libsemigroups_la_SOURCES += src/uf-old.cpp
 libsemigroups_la_SOURCES += src/wilo.cpp
 libsemigroups_la_SOURCES += src/wislo.cpp
 libsemigroups_la_SOURCES += src/word.cpp
@@ -887,6 +885,7 @@ bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
+bench_all_SOURCES += benchmarks/uf-old.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += benchmarks/bench-main.cpp
@@ -915,6 +914,7 @@ bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/bench-main.cpp
+bench_uf_SOURCES += benchmarks/uf-old.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
 bench_wilo_SOURCES += benchmarks/bench-main.cpp
