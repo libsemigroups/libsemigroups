@@ -19,8 +19,9 @@
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
+#include "uf-old.hpp"  // for UFOld
+
 #include "libsemigroups/string.hpp"  // for to_string
-#include "libsemigroups/uf-old.hpp"  // for UFOld
 #include "libsemigroups/uf.hpp"      // for Duf and Suf
 
 namespace libsemigroups {
