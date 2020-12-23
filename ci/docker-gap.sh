@@ -7,8 +7,8 @@ sudo apt-get install git --yes
 sudo apt-get install libtool-bin --yes 
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=improve-uf
-GAP_SEMIGROUPS_REPO=james-d-mitchell
+GAP_SEMIGROUPS_BRANCH=master
+GAP_SEMIGROUPS_REPO=semigroups
 GAP_VERSION=$(ls inst)
 export GAPROOT=$HOME/inst/$GAP_VERSION
 GAP_SH="$GAPROOT/bin/gap.sh"
