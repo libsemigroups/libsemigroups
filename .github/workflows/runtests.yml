@@ -172,8 +172,8 @@ jobs:
                 etc/make-doc-yml.sh | tee make-doc-yml.log
                 etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
 
-                echo
-                ( ! grep "WARNING:" make-doc-sphinx.log)
+                echo 
+                ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx") )
    lint:
       runs-on: ubuntu-latest
       steps:
