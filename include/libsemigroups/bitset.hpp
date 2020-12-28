@@ -44,8 +44,8 @@ namespace libsemigroups {
 #else
 #if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
   template <typename T>
-  static inline auto COUNT_TRUES_BLOCK(T block) ->
-      typename std::enable_if<sizeof(T) == 8, size_t>::type {
+  static inline auto COUNT_TRUES_BLOCK(T block)
+      -> std::enable_if_t<sizeof(T) == 8, size_t> {
     block
         = (block & 0x5555555555555555L) + ((block >> 1) & 0x5555555555555555L);
     block
@@ -59,8 +59,8 @@ namespace libsemigroups {
 #endif
 
   template <typename T>
-  static inline auto COUNT_TRUES_BLOCK(T block) ->
-      typename std::enable_if<sizeof(T) == 4, size_t>::type {
+  static inline auto COUNT_TRUES_BLOCK(T block)
+      -> std::enable_if_t<sizeof(T) == 4, size_t> {
     block = (block & 0x55555555) + ((block >> 1) & 0x55555555);
     block = (block & 0x33333333) + ((block >> 2) & 0x33333333);
     block = (block + (block >> 4)) & 0x0f0f0f0f;
@@ -70,8 +70,8 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  static inline auto COUNT_TRUES_BLOCK(T block) ->
-      typename std::enable_if<sizeof(T) == 2, size_t>::type {
+  static inline auto COUNT_TRUES_BLOCK(T block)
+      -> std::enable_if_t<sizeof(T) == 2, size_t> {
     block = (block & 0x5555) + ((block >> 1) & 0x5555);
     block = (block & 0x3333) + ((block >> 2) & 0x3333);
     block = (block + (block >> 4)) & 0x0f0f;
@@ -80,8 +80,8 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  static inline auto COUNT_TRUES_BLOCK(T block) ->
-      typename std::enable_if<sizeof(T) == 1, size_t>::type {
+  static inline auto COUNT_TRUES_BLOCK(T block)
+      -> std::enable_if_t<sizeof(T) == 1, size_t> {
     static constexpr std::array<size_t, 256> const lookup = {
         0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4,
         2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,

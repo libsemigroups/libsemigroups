@@ -198,8 +198,7 @@ namespace libsemigroups {
 
     //! No doc
     template <typename T,
-              typename SFINAE
-              = typename std::enable_if<IsState<T>::value, T>::type>
+              typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
     CongruenceByPairsHelper(congruence_type type, std::shared_ptr<T> stt, bool)
         : CongruenceByPairsHelper(type) {
       _state = stt;
@@ -290,8 +289,7 @@ namespace libsemigroups {
 
     //! No doc
     template <typename SFINAE = state_type>
-    auto state() ->
-        typename std::enable_if<IsState<SFINAE>::value, SFINAE&>::type {
+    auto state() -> std::enable_if_t<IsState<SFINAE>::value, SFINAE&> {
       return *_state;
     }
 
@@ -372,9 +370,8 @@ namespace libsemigroups {
                       const_reference x,
                       const_reference y,
                       void*,
-                      size_t tid = 0) ->
-          typename std::enable_if<std::is_void<state_type>::value,
-                                  SFINAE>::type {
+                      size_t tid = 0)
+          -> std::enable_if_t<std::is_void<state_type>::value, SFINAE> {
         Product()(xy, x, y, tid);
       }
 
@@ -383,9 +380,8 @@ namespace libsemigroups {
                       const_reference x,
                       const_reference y,
                       state_type*     stt,
-                      size_t          tid = 0) ->
-          typename std::enable_if<!std::is_void<state_type>::value,
-                                  SFINAE>::type {
+                      size_t          tid = 0)
+          -> std::enable_if_t<!std::is_void<state_type>::value, SFINAE> {
         Product()(xy, x, y, stt, tid);
       }
     };
@@ -447,7 +443,7 @@ namespace libsemigroups {
   template <typename T>
   class CongruenceByPairs<
       T,
-      typename std::enable_if<std::is_base_of<FroidurePinBase, T>::value>::type>
+      std::enable_if_t<std::is_base_of<FroidurePinBase, T>::value>>
       : public CongruenceByPairsHelper<T> {
     using CongruenceByPairsHelper<T>::CongruenceByPairsHelper;
   };
@@ -455,8 +451,7 @@ namespace libsemigroups {
   template <typename T>
   class CongruenceByPairs<
       T,
-      typename std::enable_if<
-          !std::is_base_of<FroidurePinBase, T>::value>::type>
+      std::enable_if_t<!std::is_base_of<FroidurePinBase, T>::value>>
       : public CongruenceByPairsHelper<FroidurePin<T>> {
     using CongruenceByPairsHelper<FroidurePin<T>>::CongruenceByPairsHelper;
   };

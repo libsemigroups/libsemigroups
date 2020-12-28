@@ -289,9 +289,8 @@ namespace libsemigroups {
                       const_reference x,
                       const_reference y,
                       void*,
-                      size_t tid = 0) ->
-          typename std::enable_if<std::is_void<state_type>::value,
-                                  SFINAE>::type {
+                      size_t tid = 0)
+          -> std::enable_if_t<std::is_void<state_type>::value, SFINAE> {
         Product()(xy, x, y, tid);
       }
 
@@ -300,9 +299,8 @@ namespace libsemigroups {
                       const_reference x,
                       const_reference y,
                       state_type*     stt,
-                      size_t          tid = 0) ->
-          typename std::enable_if<!std::is_void<state_type>::value,
-                                  SFINAE>::type {
+                      size_t          tid = 0)
+          -> std::enable_if_t<!std::is_void<state_type>::value, SFINAE> {
         Product()(xy, x, y, stt, tid);
       }
     };
@@ -321,16 +319,14 @@ namespace libsemigroups {
 
     //! No doc
     template <typename T,
-              typename SFINAE
-              = typename std::enable_if<IsState<T>::value, T>::type>
+              typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
     explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
       _state = stt;
     }
 
     //! No doc
     template <typename T,
-              typename SFINAE
-              = typename std::enable_if<IsState<T>::value, T>::type>
+              typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
     explicit FroidurePin(T const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
 
