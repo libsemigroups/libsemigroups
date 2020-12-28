@@ -67,8 +67,7 @@ namespace libsemigroups {
 
       // TODO(later) move the static assert conditions into the SFINAE
       template <typename T,
-                typename
-                = typename std::enable_if<!std::is_enum<T>::value, T>::type>
+                typename = std::enable_if_t<!std::is_enum<T>::value, T>>
       constexpr operator T() const noexcept {
         static_assert(
             std::is_integral<T>::value
@@ -203,60 +202,60 @@ namespace libsemigroups {
     // PositiveInfinity is not less than any integral value, or
     // NegativeInfinity.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(PositiveInfinity const&, T const&) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value
-                                    || std::is_same<NegativeInfinity, T>::value,
-                                SFINAE>::type {
+    constexpr auto operator<(PositiveInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value
+                                || std::is_same<NegativeInfinity, T>::value,
+                            SFINAE> {
       return false;
     }
 
     // Every integral value, and negative infinity, is less than
     // PositiveInfinity.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(T const&, PositiveInfinity const&) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value
-                                    || std::is_same<NegativeInfinity, T>::value,
-                                SFINAE>::type {
+    constexpr auto operator<(T const&, PositiveInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value
+                                || std::is_same<NegativeInfinity, T>::value,
+                            SFINAE> {
       return true;
     }
 
     // NegativeInfinity is less than every integral value.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(NegativeInfinity const&, T const&) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator<(NegativeInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return true;
     }
 
     // No integral value is less than NegativeInfinity.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(T const&, NegativeInfinity const&) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator<(T const&, NegativeInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return false;
     }
 
     // LimitMax is compared by implicit conversion with any integral value.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(LimitMax const& lhs, T const& rhs) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator<(LimitMax const& lhs, T const& rhs) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return lhs.operator T() < rhs;
     }
 
     // LimitMax is compared by implicit conversion with any integral value.
     template <typename T, typename SFINAE = bool>
-    constexpr auto operator<(T const& lhs, LimitMax const& rhs) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator<(T const& lhs, LimitMax const& rhs) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return lhs < rhs.operator T();
     }
 
     template <typename T, typename SFINAE = T>
-    constexpr auto operator-(LimitMax const& lhs, T const& rhs) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator-(LimitMax const& lhs, T const& rhs) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return lhs.operator T() - rhs;
     }
 
     template <typename T, typename SFINAE = T>
-    constexpr auto operator-(T const& lhs, LimitMax const& rhs) noexcept ->
-        typename std::enable_if<std::is_integral<T>::value, SFINAE>::type {
+    constexpr auto operator-(T const& lhs, LimitMax const& rhs) noexcept
+        -> std::enable_if_t<std::is_integral<T>::value, SFINAE> {
       return lhs - rhs.operator T();
     }
   }  // namespace detail

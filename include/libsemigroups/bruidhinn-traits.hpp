@@ -48,9 +48,9 @@ namespace libsemigroups {
     template <typename TValueType>
     struct BruidhinnTraits<
         TValueType,
-        typename std::enable_if<(!std::is_trivial<TValueType>::value
-                                 || !IsSmall<TValueType>::value)
-                                && !std::is_pointer<TValueType>::value>::type> {
+        std::enable_if_t<(!std::is_trivial<TValueType>::value
+                          || !IsSmall<TValueType>::value)
+                         && !std::is_pointer<TValueType>::value>> {
       using value_type       = TValueType;
       using const_value_type = TValueType const;
       using reference        = TValueType&;
@@ -112,9 +112,9 @@ namespace libsemigroups {
     template <typename TValueType>
     struct BruidhinnTraits<
         TValueType,
-        typename std::enable_if<std::is_trivial<TValueType>::value
-                                && IsSmall<TValueType>::value
-                                && !std::is_pointer<TValueType>::value>::type> {
+        std::enable_if_t<std::is_trivial<TValueType>::value
+                         && IsSmall<TValueType>::value
+                         && !std::is_pointer<TValueType>::value>> {
       using value_type       = TValueType;
       using const_value_type = TValueType const;
       using reference        = TValueType&;
@@ -172,7 +172,7 @@ namespace libsemigroups {
     template <typename TValueType>
     struct BruidhinnTraits<
         TValueType,
-        typename std::enable_if<std::is_pointer<TValueType>::value>::type> {
+        std::enable_if_t<std::is_pointer<TValueType>::value>> {
       using value_type = typename RemovePointerToConst<TValueType>::type*;
       using const_value_type =
           typename RemovePointerToConst<TValueType>::type const*;

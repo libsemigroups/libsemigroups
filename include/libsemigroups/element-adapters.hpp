@@ -43,9 +43,9 @@ namespace libsemigroups {
   //!
   //! \sa Complexity.
   template <typename TSubclass>
-  struct Complexity<TSubclass*,
-                    typename std::enable_if<
-                        std::is_base_of<Element, TSubclass>::value>::type> {
+  struct Complexity<
+      TSubclass*,
+      std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x->complexity().
     inline size_t operator()(TSubclass const* x) const {
       return x->complexity();
@@ -57,9 +57,9 @@ namespace libsemigroups {
   //!
   //! \sa Complexity.
   template <typename TSubclass>
-  struct Complexity<TSubclass,
-                    typename std::enable_if<
-                        std::is_base_of<Element, TSubclass>::value>::type> {
+  struct Complexity<
+      TSubclass,
+      std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x.complexity().
     inline size_t operator()(TSubclass const& x) const {
       return x.complexity();
@@ -76,8 +76,7 @@ namespace libsemigroups {
   //! \sa Degree.
   template <typename TSubclass>
   struct Degree<TSubclass*,
-                typename std::enable_if<
-                    std::is_base_of<Element, TSubclass>::value>::type> {
+                std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x->degree().
     inline size_t operator()(TSubclass const* x) const {
       return x->degree();
@@ -90,8 +89,7 @@ namespace libsemigroups {
   template <typename TSubclass>
   struct Degree<
       TSubclass,
-      typename std::enable_if<std::is_base_of<Element, TSubclass>::value,
-                              void>::type> {
+      std::enable_if_t<std::is_base_of<Element, TSubclass>::value, void>> {
     //! Returns \p x.degree().
     inline size_t operator()(TSubclass const& x) const {
       return x.degree();
@@ -107,9 +105,9 @@ namespace libsemigroups {
   //!
   //! \sa IncreaseDegree.
   template <typename TSubclass>
-  struct IncreaseDegree<TSubclass*,
-                        typename std::enable_if<
-                            std::is_base_of<Element, TSubclass>::value>::type> {
+  struct IncreaseDegree<
+      TSubclass*,
+      std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x->increase_degree_by(\p n).
     inline void operator()(TSubclass* x, size_t n) const {
       return x->increase_degree_by(n);
@@ -129,8 +127,7 @@ namespace libsemigroups {
   //! \sa Less.
   template <typename TSubclass>
   struct Less<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+              std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \c true if the object pointed to by \p x is less than the
     //! object pointed to by \p y.
     inline bool operator()(TSubclass const* x, TSubclass const* y) const {
@@ -151,8 +148,7 @@ namespace libsemigroups {
   //! \sa One.
   template <typename TSubclass>
   struct One<TSubclass*,
-             typename std::enable_if<
-                 std::is_base_of<Element, TSubclass>::value>::type> {
+             std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns a pointer to a new instance of the one of \p x.
     TSubclass* operator()(Element const* x) const {
       // return new TSubclass(std::move(x->identity<TSubclass>()));
@@ -170,8 +166,7 @@ namespace libsemigroups {
   //! \sa One.
   template <typename TSubclass>
   struct One<TSubclass,
-             typename std::enable_if<
-                 std::is_base_of<Element, TSubclass>::value>::type> {
+             std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns a new instance of the one of \p x.
     TSubclass operator()(TSubclass const& x) const {
       return static_cast<TSubclass>(x.identity());
@@ -193,8 +188,7 @@ namespace libsemigroups {
   //! \sa Product.
   template <typename TSubclass>
   struct Product<TSubclass*,
-                 typename std::enable_if<
-                     std::is_base_of<Element, TSubclass>::value>::type> {
+                 std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Changes \p xy in-place to hold the product of \p x and \p y using
     //! Element::redefine.
     void operator()(TSubclass*       xy,
@@ -210,8 +204,7 @@ namespace libsemigroups {
   //! \sa Product.
   template <typename TSubclass>
   struct Product<TSubclass,
-                 typename std::enable_if<
-                     std::is_base_of<Element, TSubclass>::value>::type> {
+                 std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Changes \p xy in-place to hold the product of \p x and \p y using
     //! Element::redefine.
     void operator()(TSubclass&       xy,
@@ -231,8 +224,7 @@ namespace libsemigroups {
   //! \sa Swap.
   template <typename TSubclass>
   struct Swap<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+              std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Swaps the object pointed to by \p x with the one pointed to by \p y.
     void operator()(TSubclass* x, TSubclass* y) const {
       x->swap(*y);
@@ -278,8 +270,7 @@ namespace libsemigroups {
   //! \sa Hash.
   template <typename TSubclass>
   struct Hash<TSubclass,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+              std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x.hash_value()
     size_t operator()(TSubclass const& x) const {
       return x.hash_value();
@@ -291,8 +282,7 @@ namespace libsemigroups {
   //! \sa Hash.
   template <typename TSubclass>
   struct Hash<TSubclass*,
-              typename std::enable_if<
-                  std::is_base_of<Element, TSubclass>::value>::type> {
+              std::enable_if_t<std::is_base_of<Element, TSubclass>::value>> {
     //! Returns \p x->hash_value()
     size_t operator()(TSubclass const* x) const {
       return x->hash_value();
@@ -308,10 +298,9 @@ namespace libsemigroups {
   //!
   //! \sa EqualTo.
   template <typename TSubclass>
-  struct EqualTo<
-      TSubclass*,
-      typename std::enable_if<
-          std::is_base_of<libsemigroups::Element, TSubclass>::value>::type> {
+  struct EqualTo<TSubclass*,
+                 std::enable_if_t<std::is_base_of<libsemigroups::Element,
+                                                  TSubclass>::value>> {
     //! Tests equality of two const Element pointers via equality of the
     //! Elements they point to.
     bool operator()(TSubclass const* x, TSubclass const* y) const {
@@ -705,7 +694,7 @@ namespace libsemigroups {
   struct ImageRightAction<
       Permutation<TValueType>*,
       TValueType,
-      typename std::enable_if<std::is_integral<TValueType>::value>::type> {
+      std::enable_if_t<std::is_integral<TValueType>::value>> {
     //! Returns the image of \p pt under \p x.
     TValueType operator()(Permutation<TValueType> const* x,
                           TValueType const               pt) {
@@ -718,10 +707,9 @@ namespace libsemigroups {
   //!
   //! \sa ImageRightAction.
   template <typename TIntType>
-  struct ImageRightAction<
-      Permutation<TIntType>,
-      TIntType,
-      typename std::enable_if<std::is_integral<TIntType>::value>::type> {
+  struct ImageRightAction<Permutation<TIntType>,
+                          TIntType,
+                          std::enable_if_t<std::is_integral<TIntType>::value>> {
     //! Stores the image of \p pt under the action of \p p in \p res.
     void operator()(TIntType&                    res,
                     TIntType const&              pt,

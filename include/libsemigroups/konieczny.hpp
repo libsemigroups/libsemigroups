@@ -304,17 +304,17 @@ namespace libsemigroups {
 
     struct InternalRank {
       template <typename SFINAE = size_t>
-      auto operator()(void*, const_reference x) -> typename std::enable_if<
+      auto operator()(void*, const_reference x) -> std::enable_if_t<
           std::is_void<typename rank_state_type::type>::value,
-          SFINAE>::type {
+          SFINAE> {
         return Rank()(x);
       }
 
       template <typename SFINAE = size_t>
-      auto operator()(rank_state_type* state, const_reference x) ->
-          typename std::enable_if<
+      auto operator()(rank_state_type* state, const_reference x)
+          -> std::enable_if_t<
               !std::is_void<typename rank_state_type::type>::value,
-              SFINAE>::type {
+              SFINAE> {
         return Rank()(*state, x);
       }
     };

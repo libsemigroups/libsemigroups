@@ -52,11 +52,11 @@ namespace libsemigroups {
      public:
       FunctionRef() noexcept : _ptr(nullptr) {}
 
-      template <typename T,
-                typename = typename std::enable_if<
-                    IsCallable<T&(TArgs...)>{}
-                    && !std::is_same<typename std::decay<T>::type,
-                                     FunctionRef>{}>::type>
+      template <
+          typename T,
+          typename = std::enable_if_t<
+              IsCallable<T&(TArgs...)>{}
+              && !std::is_same<typename std::decay<T>::type, FunctionRef>{}>>
       FunctionRef(T&& x) noexcept
           : _ptr{reinterpret_cast<void*>(std::addressof(x))} {
         _erased_fn = [](void* ptr, TArgs... xs) -> TReturn {

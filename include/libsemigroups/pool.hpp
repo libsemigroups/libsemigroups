@@ -41,12 +41,10 @@ namespace libsemigroups {
 
     // Helpers
     template <typename T>
-    using is_pointer_t =
-        typename std::enable_if<std::is_pointer<T>::value>::type;
+    using is_pointer_t = std::enable_if_t<std::is_pointer<T>::value>;
 
     template <typename T>
-    using is_non_pointer_t =
-        typename std::enable_if<!std::is_pointer<T>::value>::type;
+    using is_non_pointer_t = std::enable_if_t<!std::is_pointer<T>::value>;
 
     // Pool for non-pointer types, these are intended to be used with the
     // T = BruidhinnTraits::internal_value_type, and so the non-pointer objects

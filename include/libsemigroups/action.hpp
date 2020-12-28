@@ -231,16 +231,16 @@ namespace libsemigroups {
     template <typename TSfinae = void>
     auto internal_product(element_type&       xy,
                           element_type const& x,
-                          element_type const& y) ->
-        typename std::enable_if<side::right == TLeftOrRight, TSfinae>::type {
+                          element_type const& y)
+        -> std::enable_if_t<side::right == TLeftOrRight, TSfinae> {
       Product()(xy, x, y);
     }
 
     template <typename TSfinae = void>
     auto internal_product(element_type&       xy,
                           element_type const& x,
-                          element_type const& y) ->
-        typename std::enable_if<side::left == TLeftOrRight, TSfinae>::type {
+                          element_type const& y)
+        -> std::enable_if_t<side::left == TLeftOrRight, TSfinae> {
       Product()(xy, y, x);
     }
 

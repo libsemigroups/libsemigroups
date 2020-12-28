@@ -82,12 +82,10 @@ namespace libsemigroups {
 
     // Helpers
     template <typename T, typename S>
-    using ReturnTypeIfExists =
-        typename std::enable_if<!std::is_void<T>::value, S>::type;
+    using ReturnTypeIfExists = std::enable_if_t<!std::is_void<T>::value, S>;
 
     template <typename T, typename S>
-    using ReturnTypeIfNotExists =
-        typename std::enable_if<std::is_void<T>::value, S>::type;
+    using ReturnTypeIfNotExists = std::enable_if_t<std::is_void<T>::value, S>;
 
     struct Iterator {};
     struct ConstIterator : Iterator {};
@@ -470,10 +468,10 @@ namespace libsemigroups {
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::EqualTo>
       auto constexpr
-      operator==(IteratorStatelessBase const& that) const noexcept ->
-          typename std::enable_if<
+      operator==(IteratorStatelessBase const& that) const noexcept
+          -> std::enable_if_t<
               std::is_trivially_default_constructible<TOperator>::value,
-              bool>::type {
+              bool> {
         return TOperator()(this->get_wrapped_iter(), that.get_wrapped_iter());
       }
 
@@ -928,8 +926,8 @@ namespace libsemigroups {
     };
 
     template <typename TIteratorType,
-              typename = typename std::enable_if<
-                  std::is_base_of<Iterator, TIteratorType>::value>::type>
+              typename = std::enable_if_t<
+                  std::is_base_of<Iterator, TIteratorType>::value>>
     TIteratorType operator+(TIteratorType const& cpy, size_t val) {
       TIteratorType out(cpy);
       out += val;
@@ -937,8 +935,8 @@ namespace libsemigroups {
     }
 
     template <typename TIteratorType,
-              typename = typename std::enable_if<
-                  std::is_base_of<Iterator, TIteratorType>::value>::type>
+              typename = std::enable_if_t<
+                  std::is_base_of<Iterator, TIteratorType>::value>>
     TIteratorType operator-(TIteratorType const& cpy, size_t val) {
       TIteratorType out(cpy);
       out -= val;
@@ -946,15 +944,15 @@ namespace libsemigroups {
     }
 
     template <typename TIteratorType,
-              typename = typename std::enable_if<
-                  std::is_base_of<Iterator, TIteratorType>::value>::type>
+              typename = std::enable_if_t<
+                  std::is_base_of<Iterator, TIteratorType>::value>>
     TIteratorType operator+(size_t val, TIteratorType it) {
       return it + val;
     }
 
     template <typename TIteratorType,
-              typename = typename std::enable_if<
-                  std::is_base_of<Iterator, TIteratorType>::value>::type>
+              typename = std::enable_if_t<
+                  std::is_base_of<Iterator, TIteratorType>::value>>
     TIteratorType operator-(size_t val, TIteratorType it) {
       return it - val;
     }

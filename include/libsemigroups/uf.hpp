@@ -399,18 +399,18 @@ namespace libsemigroups {
       }
 
       template <typename SFINAE = void>
-      static auto set_data_capacity(container_type& data, size_t const N) ->
-          typename std::enable_if<
+      static auto set_data_capacity(container_type& data, size_t const N)
+          -> std::enable_if_t<
               std::is_base_of<std::vector<node_type>, container_type>::value,
-              SFINAE>::type {
+              SFINAE> {
         data.resize(N, 0);
       }
 
       template <typename SFINAE = void>
-      static auto set_data_capacity(container_type&, size_t const) ->
-          typename std::enable_if<
+      static auto set_data_capacity(container_type&, size_t const)
+          -> std::enable_if_t<
               !std::is_base_of<std::vector<node_type>, container_type>::value,
-              SFINAE>::type {}
+              SFINAE> {}
 
      protected:
       ////////////////////////////////////////////////////////////////////////

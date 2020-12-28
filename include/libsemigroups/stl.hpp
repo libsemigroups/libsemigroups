@@ -64,7 +64,6 @@ namespace libsemigroups {
 
     // Since std::is_invocable is only introduced in C++17, we use this
     //
-    //
     // from: https://stackoverflow.com/q/15393938/
     // Only works if there are no overloads of operator() in type T.
     template <typename T, typename = void>
@@ -73,8 +72,8 @@ namespace libsemigroups {
     template <typename T>
     struct IsCallable<
         T,
-        typename std::enable_if<
-            std::is_same<decltype(void(&T::operator())), void>::value>::type>
+        std::enable_if_t<
+            std::is_same<decltype(void(&T::operator())), void>::value>>
         : std::true_type {};
 
   }  // namespace detail
