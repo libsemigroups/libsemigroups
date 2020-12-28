@@ -394,16 +394,16 @@ namespace libsemigroups {
           _preim_init(copy._preim_init),
           _preim_next(copy._preim_next),
           _relations(copy._relations),
-          _settings(detail::make_unique<Settings>(*copy._settings)),
+          _settings(std::make_unique<Settings>(*copy._settings)),
           _standardized(copy._standardized),
           _state(copy._state),
           _table(copy._table),
           _tree(nullptr) {
       if (copy._felsch_tree != nullptr) {
-        _felsch_tree = detail::make_unique<FelschTree>(*copy._felsch_tree);
+        _felsch_tree = std::make_unique<FelschTree>(*copy._felsch_tree);
       }
       if (copy._tree != nullptr) {
-        _tree = detail::make_unique<Tree>(*copy._tree);
+        _tree = std::make_unique<Tree>(*copy._tree);
       }
     }
 
@@ -963,7 +963,7 @@ namespace libsemigroups {
       if (_felsch_tree == nullptr) {
         REPORT_DEFAULT("initializing the Felsch tree...\n");
         detail::Timer tmr;
-        _felsch_tree = detail::make_unique<FelschTree>(this);
+        _felsch_tree = std::make_unique<FelschTree>(this);
         _felsch_tree->add_relations(_relations);
         REPORT_TIME(tmr);
       }
@@ -1388,8 +1388,8 @@ namespace libsemigroups {
 
     void ToddCoxeter::init_standardize() {
       if (_tree == nullptr) {
-        _tree = detail::make_unique<std::vector<TreeNode>>(nr_cosets_active(),
-                                                           TreeNode());
+        _tree = std::make_unique<std::vector<TreeNode>>(nr_cosets_active(),
+                                                        TreeNode());
       } else {
         _tree->resize(nr_cosets_active());
       }

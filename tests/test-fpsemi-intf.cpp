@@ -50,13 +50,13 @@ namespace libsemigroups {
 
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       REQUIRE_THROWS_AS(fp->run(), LibsemigroupsException);
     }
@@ -71,13 +71,13 @@ namespace libsemigroups {
       size_t                                nr_words = 0;
       SECTION("human readable alphabet") {
         SECTION("ToddCoxeter") {
-          fp = detail::make_unique<ToddCoxeter>();
+          fp = std::make_unique<ToddCoxeter>();
         }
         SECTION("KnuthBendix") {
-          fp = detail::make_unique<KnuthBendix>();
+          fp = std::make_unique<KnuthBendix>();
         }
         SECTION("FpSemigroup") {
-          fp = detail::make_unique<FpSemigroup>();
+          fp = std::make_unique<FpSemigroup>();
         }
         fp->set_alphabet("ab");
         fp->add_rule("aaa", "a");
@@ -91,7 +91,7 @@ namespace libsemigroups {
         using Transf = typename TransfHelper<5>::type;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-        fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
         fp->add_rule({0, 0, 0}, {0});
         fp->add_rule({1, 1, 1, 1}, {1});
         fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -117,13 +117,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("ab");
       fp->add_rule("aaa", "a");
@@ -215,13 +215,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       // Duplicates
       REQUIRE_THROWS_AS(fp->set_alphabet("aa"), LibsemigroupsException);
@@ -247,7 +247,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<5>::type;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       fp->add_rule({0, 0, 0}, {0});
       fp->add_rule({1, 1, 1, 1}, {1});
       fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -278,13 +278,13 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("human readable alphabet") {
         SECTION("ToddCoxeter") {
-          fp = detail::make_unique<ToddCoxeter>();
+          fp = std::make_unique<ToddCoxeter>();
         }
         SECTION("KnuthBendix") {
-          fp = detail::make_unique<KnuthBendix>();
+          fp = std::make_unique<KnuthBendix>();
         }
         SECTION("FpSemigroup") {
-          fp = detail::make_unique<FpSemigroup>();
+          fp = std::make_unique<FpSemigroup>();
         }
         fp->set_alphabet("ab");
         fp->add_rule("aaa", "a");
@@ -297,7 +297,7 @@ namespace libsemigroups {
         using Transf = typename TransfHelper<5>::type;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-        fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
         fp->add_rule({0, 0, 0}, {0});
         fp->add_rule({1, 1, 1, 1}, {1});
         fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -323,17 +323,17 @@ namespace libsemigroups {
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       SECTION("human readable alphabet") {
         SECTION("ToddCoxeter") {
-          fp = detail::make_unique<ToddCoxeter>(S);
+          fp = std::make_unique<ToddCoxeter>(S);
         }
         SECTION("KnuthBendix") {
-          fp = detail::make_unique<KnuthBendix>(S);
+          fp = std::make_unique<KnuthBendix>(S);
         }
         SECTION("FpSemigroup") {
-          fp = detail::make_unique<FpSemigroup>(S);
+          fp = std::make_unique<FpSemigroup>(S);
         }
       }
       SECTION("FpSemigroupByPairs") {
-        fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       }
       size_t expected = fp->nr_rules();
       REQUIRE_NOTHROW(fp->add_rule({0}, {0}));
@@ -352,13 +352,13 @@ namespace libsemigroups {
 
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("ab");
       size_t expected = fp->nr_rules();
@@ -379,13 +379,13 @@ namespace libsemigroups {
 
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet(2);
       size_t expected = fp->nr_rules();
@@ -406,10 +406,10 @@ namespace libsemigroups {
 
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("ab");
       REQUIRE_THROWS_AS(fp->add_rule("abaaaaaaaa", ""), LibsemigroupsException);
@@ -422,7 +422,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       std::unique_ptr<FpSemigroupInterface> fp;
-      fp = detail::make_unique<KnuthBendix>();
+      fp = std::make_unique<KnuthBendix>();
       fp->set_alphabet("ab");
       REQUIRE_NOTHROW(fp->add_rule("abaaaaaaaa", ""));
     }
@@ -436,13 +436,13 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
 
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("a");
       using Transf = typename TransfHelper<5>::type;
@@ -481,13 +481,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       REQUIRE_NOTHROW(fp->set_alphabet("ab"));
       size_t const expected = fp->nr_rules() + 3;
@@ -505,13 +505,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
 
       // No alphabet
@@ -553,7 +553,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<5>::type;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
       auto a = std::string(1, fp->alphabet()[0]);
       auto b = std::string(1, fp->alphabet()[1]);
@@ -603,13 +603,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       // No alphabet
       REQUIRE_THROWS_AS(fp->set_identity(0), LibsemigroupsException);
@@ -644,13 +644,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       REQUIRE_THROWS_AS(fp->identity(), LibsemigroupsException);
     }
@@ -663,13 +663,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       // No alphabet
       REQUIRE_THROWS_AS(fp->set_inverses("bac"), LibsemigroupsException);
@@ -715,7 +715,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<5>::type;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
       auto a = std::string(1, fp->alphabet()[0]);
       auto b = std::string(1, fp->alphabet()[1]);
@@ -786,13 +786,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       // No alphabet
       REQUIRE(!fp->is_obviously_infinite());
@@ -819,7 +819,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<1>::type;
       FroidurePin<Transf> S({Transf({0})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
       REQUIRE(!fp->is_obviously_infinite());
       REQUIRE(!fp->is_obviously_infinite());
@@ -836,13 +836,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       // No alphabet
       REQUIRE(fp->is_obviously_finite());
@@ -869,7 +869,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<1>::type;
       FroidurePin<Transf> S({Transf({0})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       REQUIRE(fp->is_obviously_finite());
       REQUIRE(fp->is_obviously_finite());
       fp->add_rule({0, 0, 0}, {0});
@@ -884,13 +884,13 @@ namespace libsemigroups {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
       SECTION("ToddCoxeter") {
-        fp = detail::make_unique<ToddCoxeter>();
+        fp = std::make_unique<ToddCoxeter>();
       }
       SECTION("KnuthBendix") {
-        fp = detail::make_unique<KnuthBendix>();
+        fp = std::make_unique<KnuthBendix>();
       }
       SECTION("FpSemigroup") {
-        fp = detail::make_unique<FpSemigroup>();
+        fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("ab");
       fp->add_rule("aaa", "a");
@@ -914,7 +914,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      fp = detail::make_unique<KnuthBendix>();
+      fp = std::make_unique<KnuthBendix>();
       fp->set_alphabet("ab");
       fp->add_rule("abab", "");
 
@@ -935,7 +935,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = typename TransfHelper<1>::type;
       FroidurePin<Transf> S({Transf({0})});
-      fp = detail::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
       REQUIRE(fp->to_gap_string()
               == "free := FreeMonoid(\"a\");\n"

@@ -1452,19 +1452,19 @@ namespace libsemigroups {
 
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
-        tc = detail::make_unique<ToddCoxeter>(twosided, kb);
+        tc = std::make_unique<ToddCoxeter>(twosided, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("left") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = std::make_unique<ToddCoxeter>(left, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = std::make_unique<ToddCoxeter>(left, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
@@ -1502,19 +1502,19 @@ namespace libsemigroups {
 
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
-        tc = detail::make_unique<ToddCoxeter>(twosided, kb);
+        tc = std::make_unique<ToddCoxeter>(twosided, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("left") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = std::make_unique<ToddCoxeter>(left, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
-        tc = detail::make_unique<ToddCoxeter>(right, kb);
+        tc = std::make_unique<ToddCoxeter>(right, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
@@ -1560,19 +1560,19 @@ namespace libsemigroups {
 
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
-        tc = detail::make_unique<ToddCoxeter>(twosided, kb);
+        tc = std::make_unique<ToddCoxeter>(twosided, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("left") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = std::make_unique<ToddCoxeter>(left, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));
       }
       SECTION("right") {
-        tc = detail::make_unique<ToddCoxeter>(left, kb);
+        tc = std::make_unique<ToddCoxeter>(left, kb);
         TEST_HLT((*tc));
         TEST_FELSCH((*tc));
         TEST_RANDOM_SIMS((*tc));

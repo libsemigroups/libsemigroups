@@ -51,10 +51,10 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
       }
       SECTION("CongruenceByPairs") {
         ToddCoxeter tc(twosided);
@@ -62,7 +62,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
+        cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
         // FIXME(when CongruenceByPairs has a proper traits class) We can't use
         // "twosided" here because TCE's products are only defined on the right
@@ -74,7 +74,7 @@ namespace libsemigroups {
       SECTION("Congruence") {
         FpSemigroup S;  // free semigroup
         S.set_alphabet(2);
-        cong = detail::make_unique<Congruence>(twosided, S);
+        cong = std::make_unique<Congruence>(twosided, S);
       }
 
       cong->set_nr_generators(2);
@@ -98,10 +98,10 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
       SECTION("no parent") {
         SECTION("ToddCoxeter") {
-          cong = detail::make_unique<ToddCoxeter>(twosided);
+          cong = std::make_unique<ToddCoxeter>(twosided);
         }
         SECTION("KnuthBendix") {
-          cong = detail::make_unique<KnuthBendix>();
+          cong = std::make_unique<KnuthBendix>();
         }
         REQUIRE_THROWS_AS(cong->const_contains({0}, {1}),
                           LibsemigroupsException);
@@ -112,7 +112,7 @@ namespace libsemigroups {
         SECTION("Congruence") {
           FpSemigroup S;  // free semigroup
           S.set_alphabet(2);
-          cong = detail::make_unique<Congruence>(twosided, S);
+          cong = std::make_unique<Congruence>(twosided, S);
         }
         SECTION("CongruenceByPairs") {
           ToddCoxeter tc(twosided);
@@ -120,7 +120,7 @@ namespace libsemigroups {
           tc.add_pair({0, 0, 0}, {0});
           tc.add_pair({1, 1, 1, 1}, {1});
           tc.add_pair({0, 1, 0, 1}, {0, 0});
-          cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
+          cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               right, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
           // use "twosided" here because TCE's products are only defined on the
@@ -155,12 +155,12 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
         REQUIRE_THROWS_AS(cong->less({0}, {1}), LibsemigroupsException);
         REQUIRE(!cong->has_parent_froidure_pin());
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
         REQUIRE_THROWS_AS(cong->less({0}, {1}), LibsemigroupsException);
         REQUIRE(!cong->has_parent_froidure_pin());
       }
@@ -170,7 +170,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
+        cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
         // FIXME(when CongruenceByPairs has a proper traits class) We can't use
         // "twosided" here because TCE's products are only defined on the right
@@ -187,7 +187,7 @@ namespace libsemigroups {
       SECTION("Congruence") {
         FpSemigroup S;  // free semigroup
         S.set_alphabet(2);
-        cong = detail::make_unique<Congruence>(twosided, S);
+        cong = std::make_unique<Congruence>(twosided, S);
       }
 
       cong->set_nr_generators(2);
@@ -208,10 +208,10 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
       }
 
       REQUIRE(!cong->is_quotient_obviously_infinite());
@@ -247,7 +247,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
+        cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             right, tc.quotient_froidure_pin());
       }
       SECTION("Congruence") {
@@ -258,7 +258,7 @@ namespace libsemigroups {
         S.add_rule({0, 1, 0, 1}, {0, 0});
         REQUIRE(!S.is_obviously_infinite());
         REQUIRE(!S.is_obviously_finite());
-        cong = detail::make_unique<Congruence>(right, S);
+        cong = std::make_unique<Congruence>(right, S);
 
         REQUIRE_THROWS_AS(cong->set_nr_generators(3), LibsemigroupsException);
       }
@@ -281,10 +281,10 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
       }
       REQUIRE_THROWS_AS(cong->parent_froidure_pin(), LibsemigroupsException);
     }
@@ -302,7 +302,7 @@ namespace libsemigroups {
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({1, 1, 1, 1}, {1});
         tc.add_pair({0, 1, 0, 1}, {0, 0});
-        cong = detail::make_unique<CongruenceByPairs<FroidurePinTCE>>(
+        cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
             left, tc.quotient_froidure_pin());
       }
 
@@ -314,7 +314,7 @@ namespace libsemigroups {
         S.add_rule({0, 1, 0, 1}, {0, 0});
         REQUIRE(!S.is_obviously_infinite());
         REQUIRE_NOTHROW(S.froidure_pin());
-        cong = detail::make_unique<Congruence>(left, S);
+        cong = std::make_unique<Congruence>(left, S);
         REQUIRE_THROWS_AS(cong->set_nr_generators(3), LibsemigroupsException);
       }
 
@@ -339,10 +339,10 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided, S);
+        cong = std::make_unique<ToddCoxeter>(twosided, S);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>(S);
+        cong = std::make_unique<KnuthBendix>(S);
       }
 
       cong->add_pair(
@@ -440,12 +440,11 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       SECTION("CongruenceByPairs") {
-        cong
-            = detail::make_unique<CongruenceByPairs<decltype(S)::element_type>>(
-                right, S);
+        cong = std::make_unique<CongruenceByPairs<decltype(S)::element_type>>(
+            right, S);
       }
       SECTION("Congruence") {
-        cong = detail::make_unique<Congruence>(right, S);
+        cong = std::make_unique<Congruence>(right, S);
       }
       cong->add_pair(
           S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
@@ -472,19 +471,19 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
 
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
       }
       // TODO(later) not yet implemented
       // SECTION("CongruenceByPairs") {
       //   cong =
-      //   detail::make_unique<CongruenceByPairs<decltype(S)::element_type>>(twosided,
+      //   std::make_unique<CongruenceByPairs<decltype(S)::element_type>>(twosided,
       //   S);
       // }
       SECTION("Congruence") {
-        cong = detail::make_unique<Congruence>(twosided);
+        cong = std::make_unique<Congruence>(twosided);
       }
 
       cong->set_nr_generators(2);
@@ -503,12 +502,12 @@ namespace libsemigroups {
       std::unique_ptr<CongruenceInterface> cong;
       SECTION("common behaviour") {
         SECTION("KnuthBendix") {
-          cong = detail::make_unique<KnuthBendix>();
+          cong = std::make_unique<KnuthBendix>();
           cong->set_nr_generators(4);
           // KnuthBendix can find the class index, but the others can't
         }
         SECTION("Congruence") {
-          cong = detail::make_unique<Congruence>(twosided);
+          cong = std::make_unique<Congruence>(twosided);
           cong->set_nr_generators(4);
           static_cast<Congruence*>(cong.get())->max_threads(2);
           REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
@@ -518,7 +517,7 @@ namespace libsemigroups {
         REQUIRE(cong->class_index_to_word(2) == word_type({2}));
       }
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
         cong->set_nr_generators(4);
         REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
                 == tril::unknown);
@@ -537,13 +536,13 @@ namespace libsemigroups {
       auto                                 rg = ReportGuard(REPORT);
       std::unique_ptr<CongruenceInterface> cong;
       SECTION("ToddCoxeter") {
-        cong = detail::make_unique<ToddCoxeter>(twosided);
+        cong = std::make_unique<ToddCoxeter>(twosided);
       }
       SECTION("KnuthBendix") {
-        cong = detail::make_unique<KnuthBendix>();
+        cong = std::make_unique<KnuthBendix>();
       }
       SECTION("Congruence") {
-        cong = detail::make_unique<Congruence>(twosided);
+        cong = std::make_unique<Congruence>(twosided);
       }
       REQUIRE_THROWS_AS(cong->set_nr_generators(0), LibsemigroupsException);
       REQUIRE_THROWS_AS(
