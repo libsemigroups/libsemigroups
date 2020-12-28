@@ -17,6 +17,9 @@ libsemigroups::Action:
   - Action(Action&&)
   - operator=(Action const&)
   - operator=(Action&&)
+- Settings:
+  - cache_scc_multipliers() const
+  - cache_scc_multipliers(bool)
 - Modifiers:
   - reserve
   - add_seed

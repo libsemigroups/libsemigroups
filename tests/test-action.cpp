@@ -167,6 +167,7 @@ namespace libsemigroups {
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
 
     row_orb.reserve(1000);
+    row_orb.cache_scc_multipliers(true);
 
     REQUIRE(row_orb.size() == 553);
     REQUIRE(row_orb.digraph().nr_scc() == 14);

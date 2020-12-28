@@ -358,7 +358,10 @@ namespace libsemigroups {
           _tmp_lambda_value1(),
           _tmp_lambda_value2(),
           _tmp_rho_value1(),
-          _tmp_rho_value2() {}
+          _tmp_rho_value2() {
+      _lambda_orb.cache_scc_multipliers(true);
+      _rho_orb.cache_scc_multipliers(true);
+    }
 
     //! Deleted.
     //!
