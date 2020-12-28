@@ -108,14 +108,13 @@ namespace libsemigroups {
 #endif
 
    public:
-    using block_type = typename std::conditional<
+    using block_type = std::conditional_t<
         N <= 8,
         uint_fast8_t,
-        typename std::conditional<
+        std::conditional_t<
             N <= 16,
             uint_fast16_t,
-            typename std::conditional<N <= 32, uint_fast32_t, uint64_t>::type>::
-            type>::type;
+            std::conditional_t<N <= 32, uint_fast32_t, uint64_t>>>;
 
     explicit constexpr BitSet<N>(block_type const block) noexcept
         : _block(block) {}

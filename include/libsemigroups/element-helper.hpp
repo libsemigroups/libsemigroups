@@ -42,10 +42,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized transformation in ``libsemigroups`` or
     //! ``HPCombi``.
-    using type = typename std::conditional<
-        N >= 17,
-        Transformation<typename SmallestInteger<N>::type>,
-        HPCombi::Transf16>::type;
+    using type
+        = std::conditional_t<N >= 17,
+                             Transformation<typename SmallestInteger<N>::type>,
+                             HPCombi::Transf16>;
 #else
     //! The type of the smallest sized transformation in ``libsemigroups`` or
     //! ``HPCombi``.
@@ -68,10 +68,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized partial perm in ``libsemigroups`` or
     //! ``HPCombi``.
-    using type = typename std::conditional<
-        N >= 17,
-        PartialPerm<typename SmallestInteger<N>::type>,
-        HPCombi::PPerm16>::type;
+    using type
+        = std::conditional_t<N >= 17,
+                             PartialPerm<typename SmallestInteger<N>::type>,
+                             HPCombi::PPerm16>;
 #else
     //! The type of the smallest sized partial perm in ``libsemigroups`` or
     //! ``HPCombi``.
@@ -94,10 +94,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized permutation in ``libsemigroups`` or
     //! ``HPCombi``.
-    using type = typename std::conditional<
-        N >= 17,
-        Permutation<typename SmallestInteger<N>::type>,
-        HPCombi::Perm16>::type;
+    using type
+        = std::conditional_t<N >= 17,
+                             Permutation<typename SmallestInteger<N>::type>,
+                             HPCombi::Perm16>;
 #else
     //! The type of the smallest sized permutation in ``libsemigroups`` or
     //! ``HPCombi``.
@@ -119,12 +119,11 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
-    using type =
-        typename std::conditional<N >= 9, BooleanMat, HPCombi::BMat8>::type;
+    using type = std::conditional_t<N >= 9, BooleanMat, HPCombi::BMat8>;
 #else
     //! The type of the smallest sized boolean \p N by \p N
     //! matrix in ``libsemigroups`` or ``HPCombi``, if available.
-    using type = typename std::conditional<N >= 9, BooleanMat, BMat8>::type;
+    using type = std::conditional_t<N >= 9, BooleanMat, BMat8>;
 #endif
   };
 }  // namespace libsemigroups

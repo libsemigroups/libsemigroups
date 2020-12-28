@@ -266,13 +266,13 @@ namespace libsemigroups {
     };
 
     template <typename TValueType, typename TContainer>
-    using BruidhinnConstIterator = typename std::conditional<
+    using BruidhinnConstIterator = std::conditional_t<
         std::is_same<typename BruidhinnTraits<TValueType>::internal_value_type,
                      typename BruidhinnTraits<TValueType>::value_type>::value,
         typename TContainer::const_iterator,
         ConstIteratorStateless<
             BruidhinnConstIteratorTraits<BruidhinnTraits<TValueType>,
-                                         TContainer>>>::type;
+                                         TContainer>>>;
   }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_

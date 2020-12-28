@@ -48,14 +48,12 @@ namespace libsemigroups {
   struct SmallestInteger {
     //! The smallest (in terms of memory required) unsigned integer type which
     //! can represent \c N.
-    using type = typename std::conditional<
+    using type = std::conditional_t<
         N >= 0x100000000,
         uint64_t,
-        typename std::conditional<
-            N >= 0x10000,
-            uint32_t,
-            typename std::conditional<N >= 0x100, uint16_t, uint8_t>::type>::
-            type>::type;
+        std::conditional_t<N >= 0x10000,
+                           uint32_t,
+                           std::conditional_t<N >= 0x100, uint16_t, uint8_t>>>;
   };
 
   //! Type for the index of a generator of a semigroup.
