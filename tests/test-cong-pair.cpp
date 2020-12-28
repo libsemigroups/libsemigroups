@@ -552,13 +552,13 @@ namespace libsemigroups {
     std::unique_ptr<P> cong;
 
     SECTION("right congruence") {
-      cong = detail::make_unique<P>(right, S);
+      cong = std::make_unique<P>(right, S);
     }
     SECTION("left congruence") {
-      cong = detail::make_unique<P>(left, S);
+      cong = std::make_unique<P>(left, S);
     }
     SECTION("2-sided congruence") {
-      cong = detail::make_unique<P>(twosided, S);
+      cong = std::make_unique<P>(twosided, S);
     }
 
     cong->add_pair({0}, {1});
@@ -581,13 +581,13 @@ namespace libsemigroups {
     std::unique_ptr<P> cong;
 
     SECTION("right congruence") {
-      cong = detail::make_unique<P>(right, S);
+      cong = std::make_unique<P>(right, S);
     }
     SECTION("left congruence") {
-      cong = detail::make_unique<P>(left, S);
+      cong = std::make_unique<P>(left, S);
     }
     SECTION("2-sided congruence") {
-      cong = detail::make_unique<P>(twosided, S);
+      cong = std::make_unique<P>(twosided, S);
     }
     cong->add_pair({0}, {1});
     REQUIRE(!cong->finished());

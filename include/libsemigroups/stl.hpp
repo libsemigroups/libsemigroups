@@ -62,14 +62,9 @@ namespace libsemigroups {
       }
     }
 
-    // C++11 is missing make_unique. The following implementation is from Item
-    // 21 in "Effective Modern C++" by Scott Meyers.
-    template <typename T, typename... Ts>
-    std::unique_ptr<T> make_unique(Ts&&... params) {
-      return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
-    }
-
     // Since std::is_invocable is only introduced in C++17, we use this
+    //
+    //
     // from: https://stackoverflow.com/q/15393938/
     // Only works if there are no overloads of operator() in type T.
     template <typename T, typename = void>

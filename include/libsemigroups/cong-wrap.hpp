@@ -30,7 +30,6 @@
 #include "cong-intf.hpp"          // for congruence_type, con...
 #include "fpsemi-intf.hpp"        // for FpSemigroupInterface
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "stl.hpp"                // for detail::make_unique
 
 namespace libsemigroups {
   //! Defined in ``cong-wrap.hpp``.
@@ -61,7 +60,7 @@ namespace libsemigroups {
     //! (None)
     CongruenceWrapper()
         : _wrapped_cong(
-            detail::make_unique<wrapped_type>(congruence_type::twosided)) {}
+            std::make_unique<wrapped_type>(congruence_type::twosided)) {}
 
     //! Constructor from a shared_ptr to a FroidurePinBase.
     //!
@@ -77,7 +76,7 @@ namespace libsemigroups {
     //! this constructor.
     explicit CongruenceWrapper(std::shared_ptr<FroidurePinBase> fp)
         : _wrapped_cong(
-            detail::make_unique<wrapped_type>(congruence_type::twosided, fp)) {
+            std::make_unique<wrapped_type>(congruence_type::twosided, fp)) {
       set_alphabet(fp->nr_generators());
       // TODO(later): Adding the rules from fp in the constructor is not
       // always desirable, since it might trigger an infinite computation in
@@ -119,7 +118,7 @@ namespace libsemigroups {
     //! Default copy constructor.
     CongruenceWrapper(CongruenceWrapper const& other)
         : FpSemigroupInterface(),
-          _wrapped_cong(detail::make_unique<T>(*other._wrapped_cong)) {}
+          _wrapped_cong(std::make_unique<T>(*other._wrapped_cong)) {}
 
     //! Deleted
     CongruenceWrapper(CongruenceWrapper&&) = delete;

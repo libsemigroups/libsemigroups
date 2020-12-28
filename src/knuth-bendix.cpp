@@ -29,7 +29,6 @@
 #include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/obvinf.hpp"  // for IsObviouslyInfinitePairs
-#include "libsemigroups/stl.hpp"     // for detail::make_unique
 #include "libsemigroups/types.hpp"   // for word_type
 
 #include "knuth-bendix-impl.hpp"
@@ -93,7 +92,7 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix()
         : FpSemigroupInterface(),
           _gilman_digraph(),
-          _impl(detail::make_unique<KnuthBendixImpl>(this)) {}
+          _impl(std::make_unique<KnuthBendixImpl>(this)) {}
 
     KnuthBendix::KnuthBendix(KnuthBendix const& kb) : KnuthBendix() {
       init_from(kb);
@@ -369,7 +368,7 @@ namespace libsemigroups {
 
     KnuthBendix::KnuthBendix()
         : CongruenceInterface(congruence_type::twosided),
-          _kb(detail::make_unique<fpsemigroup::KnuthBendix>()) {}
+          _kb(std::make_unique<fpsemigroup::KnuthBendix>()) {}
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const& kb)
         : KnuthBendix() {
