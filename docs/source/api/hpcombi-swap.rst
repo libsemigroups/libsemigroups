@@ -10,6 +10,6 @@
 Swap
 ====
 
-.. doxygenstruct:: libsemigroups::Swap< TPTransf16Subclass, typename std::enable_if< std::is_base_of< HPCombi::PTransf16, TPTransf16Subclass >::value >::type >
+.. doxygenstruct:: libsemigroups::Swap< TPTransf16Subclass, std::enable_if_t< std::is_base_of< HPCombi::PTransf16, TPTransf16Subclass >::value > >
    :project: libsemigroups
    :members:

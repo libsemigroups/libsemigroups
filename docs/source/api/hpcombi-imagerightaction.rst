@@ -10,7 +10,7 @@
 ImageRightAction
 ================
 
-.. doxygenstruct:: libsemigroups::ImageRightAction< HPCombi::Perm16, TIntType, typename std::enable_if< std::is_integral< TIntType >::value >::type >
+.. doxygenstruct:: libsemigroups::ImageRightAction< HPCombi::Perm16, TIntType, std::enable_if_t< std::is_integral< TIntType >::value > >
    :project: libsemigroups
    :members:
 
