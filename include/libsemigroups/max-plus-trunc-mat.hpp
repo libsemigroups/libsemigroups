@@ -33,7 +33,7 @@ namespace libsemigroups {
   // ////////////////////////////////////////////////////////////////////////
 
   //! Specialization of the adapter ImageRightAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N> 
+  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageLeftAction.
   template <typename Mat>
@@ -72,7 +72,7 @@ namespace libsemigroups {
   };
 
   //! Specialization of the adapter ImageLeftAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N> 
+  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageRightAction.
   template <typename Mat>
@@ -131,7 +131,7 @@ namespace libsemigroups {
     void operator()(result_type& res, Mat const& x) const {
       res.clear();
       matrix_helpers::row_basis_rows<Mat>(x, res);
-    };
+    }
   };
 
   //! Specialization of the adapter Rho for instances of MaxPlusTruncMat<T, N>
