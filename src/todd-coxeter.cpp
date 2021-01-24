@@ -437,7 +437,6 @@ namespace libsemigroups {
       if (copy.finished()) {
         set_nr_generators(copy.froidure_pin()->nr_generators());
         _settings->froidure_pin = policy::froidure_pin::use_cayley_graph;
-
       } else {
         copy_relations_for_quotient(copy.congruence());
         _settings->froidure_pin = policy::froidure_pin::use_relations;
@@ -471,7 +470,12 @@ namespace libsemigroups {
       validate_word(lhs);
       validate_word(rhs);
       init();
-      if (!_prefilled && _relations.empty() && _extra.empty()) {
+      if (empty()) {
+        // Note that it's possible to be not _prefilled, and have _relations,
+        // and _extra empty, because shrink_to_fit clears _relations and
+        // _extra. That's why we use empty() here instead of checking
+        // _prefilled && _relations.empty() && _extra.empty(), as used to be the
+        // case.
         // This defines the free semigroup
         return lhs == rhs;
       }

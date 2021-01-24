@@ -49,8 +49,8 @@ echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false)
 cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
 
-# The next lines are required by semigroups/scripts/travis-test.sh
+# The next line is required by semigroups/ci/docker-test.sh
 export SUITE="test"
 
 # Run the tests defined in Semigroups
-scripts/travis-test.sh
+ci/docker-test.sh
