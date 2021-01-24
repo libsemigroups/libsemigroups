@@ -471,6 +471,9 @@ namespace libsemigroups {
       REQUIRE(tc.nr_generators() == 4);
       REQUIRE(tc.contains({0}, {1}));
       tc.standardize(tc_order::shortlex);
+      REQUIRE(tc.contains({0}, {1}));
+      tc.shrink_to_fit();
+      REQUIRE(tc.contains({0}, {1}));
 
       auto& T = *tc.quotient_froidure_pin();
       REQUIRE(T.size() == 3);
