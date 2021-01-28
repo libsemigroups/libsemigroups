@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v1.3.5 (released 28/01/2021)
+----------------------------
+
+This is a minor release fixing a bug in the ``ToddCoxeter`` class (the
+``contains`` member function could return false negatives in some cases after
+``shrink_to_fit`` was called).
+
 v1.3.4 (released 27/11/2020)
 ----------------------------
 
