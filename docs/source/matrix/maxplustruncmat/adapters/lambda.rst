@@ -7,14 +7,15 @@
 Lambda
 ======
 
-This page contains details of the specialisations of the `adapters<Adapters>`
-:cpp:any:`Lambda` and :cpp:any:`LambdaValue` for truncated max-plus matrices. 
+This page contains details of the specialisations of the
+:ref:`adapters<Adapters>` :cpp:any:`Lambda` and :cpp:any:`LambdaValue` for
+truncated max-plus matrices. 
 
 .. cpp:struct:: template <typename Mat>  \
                 LambdaValue<Mat>
 
    Specialization of the adapter :cpp:any:`LambdaValue` for instances of
-   :cpp:any:`StaticMaxPlusTruncMat<T, R, C>`.
+   :cpp:any:`StaticMaxPlusTruncMat`.
  
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>` for some threshold ``T``, row
@@ -33,7 +34,7 @@ This page contains details of the specialisations of the `adapters<Adapters>`
                  Lambda<Mat, typename LambdaValue<Mat>>
    
    Specialization of the adapter :cpp:any:`Lambda` for instances of
-   :cpp:any:`StaticMaxPlusTruncMat<T, R, C>`.
+   :cpp:any:`StaticMaxPlusTruncMat`.
       
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>` for some threshold ``T`` row

@@ -7,14 +7,15 @@
 Rho
 ===
 
-This page contains details of the specialisations of the `adapters<Adapters>`
-:cpp:any:`Rho` and :cpp:any:`RhoValue` for truncated max-plus matrices. 
+This page contains details of the specialisations of the
+:ref:`adapters<Adapters>` :cpp:any:`Rho` and :cpp:any:`RhoValue` for truncated
+max-plus matrices. 
 
 .. cpp:struct:: template <typename Mat>  \
                 RhoValue<Mat>
 
    Specialization of the adapter :cpp:any:`RhoValue` for instances of
-   :cpp:any:`StaticMaxPlusTruncMat<T, R, C>`.
+   :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>`.
  
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>` for some threshold ``T``, row
@@ -33,7 +34,7 @@ This page contains details of the specialisations of the `adapters<Adapters>`
                  Rho<Mat, typename RhoValue<Mat>>
 
    Specialization of the adapter :cpp:any:`Rho` for instances of
-   :cpp:any:`StaticMaxPlusTruncMat<T, R, C>`.
+   :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>`.
       
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>` for some threshold ``T`` row

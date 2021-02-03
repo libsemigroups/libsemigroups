@@ -23,7 +23,7 @@ ImageLeftAction
 
    .. cpp:type:: result_type
 
-      This is an alias for :cpp:any:`detail::StaticVector1\<typename Mat::Row,
+      This is an alias for :cpp:any:`detail::StaticVector1\<typename Mat::Row, \
       Mat::nr_rows`.
 
    .. cpp:function:: void operator()(result_type& res,      \

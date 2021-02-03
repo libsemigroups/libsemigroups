@@ -89,8 +89,8 @@ for certain types of matrices:
 Adapters
 ---------------
 
-There are various specialisations of the adapters described on `this
-page<Adapters>` for the matrices desribed on this page:
+There are various specialisations of the adapters described on :ref:`Adapters`
+for the matrices desribed on this page:
 
 .. toctree::
    :maxdepth: 1

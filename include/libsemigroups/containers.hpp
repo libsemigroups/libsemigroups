@@ -779,7 +779,7 @@ namespace libsemigroups {
         return size() == that.size()
                && std::equal(cbegin(), cend(), that.cbegin());
       }
-      
+
       // Not noexcept, since operator== can throw
       bool operator!=(StaticVector1 const& that) const {
         return !operator==(that);
