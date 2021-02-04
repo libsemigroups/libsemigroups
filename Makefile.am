@@ -958,7 +958,6 @@ clean-local-check:
 distclean-local:
 	rm -f configure
 	rm -f include/libsemigroups/libsemigroups-config.hpp
-	rm -f .VERSION
 .PHONY: distclean-local
 
 uninstall-hook:
