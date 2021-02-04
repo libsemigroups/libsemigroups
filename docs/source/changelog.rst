@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.3.6 (released 04/02/2021)
+----------------------------
+
+This is a minor release for compatibility with the GAP package `Semigroups`_.
+
 v1.3.5 (released 28/01/2021)
 ----------------------------
 
@@ -238,3 +243,4 @@ rewritten, generalised, and some new features have been added.
 .. _Isuru Fernando: https://github.com/isuruf
 .. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
 .. _Bernhard M. Wiedemann: https://lizards.opensuse.org/author/bmwiedemann/
+.. _Semigroups: https://github.com/semigroups/Semigroups/
