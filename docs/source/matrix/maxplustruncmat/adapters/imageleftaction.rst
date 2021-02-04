@@ -11,11 +11,11 @@ ImageLeftAction
 .. cpp:namespace:: libsemigroups
 
 .. cpp:struct:: template <typename Mat> \
-                ImageLeftAction<Mat, detail::StaticVector1<typename Mat::Row, \
-                Mat::nr_rows>>>
+                ImageLeftAction<Mat, detail::StaticVector1<Mat::Row, \
+                Mat::nr_rows>>
   
    This struct is a specialisation of :cpp:any:`ImageLeftAction` for square
-   truncated max-plus matrices and detail::StaticVector1s of rows. 
+   truncated max-plus matrices and :cpp:any:`detail::StaticVector1` of rows. 
 
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, N>` for some threshold ``T`` and
@@ -23,8 +23,7 @@ ImageLeftAction
 
    .. cpp:type:: result_type
 
-      This is an alias for :cpp:any:`detail::StaticVector1\<typename Mat::Row, \
-      Mat::nr_rows`.
+      This is an alias for :cpp:any:`detail::StaticVector1\<Mat::Row, Mat::nr_rows>`.
 
    .. cpp:function:: void operator()(result_type& res,      \
                                      result_type const& pt, \ 
