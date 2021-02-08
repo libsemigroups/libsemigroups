@@ -291,7 +291,7 @@ latter should be constructed using the dimensions.
    ``R``, ``C``, and ``Scalar``; and ``false`` if it is not. 
 
 Truncated max-plus matrix adapters
-==================================
+----------------------------------
 
 The following adapters are implemented to so that
 :cpp:any:`StaticMaxPlusTruncMat\<T, R, C, Scalar>` can be used with

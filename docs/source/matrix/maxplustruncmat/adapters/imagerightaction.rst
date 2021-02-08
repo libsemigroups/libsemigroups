@@ -1,4 +1,4 @@
-.. Copyright (c) 2020, J. D. Mitchell
+.. Copyright (c) 2021, F. L. Smith
 
    Distributed under the terms of the GPL license version 3.
 

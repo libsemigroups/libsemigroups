@@ -1,4 +1,4 @@
-.. Copyleft (c) 2020, J. D. Mitchell
+.. Copyright (c) 2021, F. L. Smith
 
    Distributed under the terms of the GPL license version 3.
 
@@ -15,7 +15,7 @@ This page contains details of the specialisations of the :ref:`adapter<Adapters>
                 Rank<Mat, RankState<Mat>>
 
    Specialization of the adapter :cpp:any:`Rank` for instances of
-   :cpp:any:`StaticMaxPlusTruncMat<T, R, C>`.
+   :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>`.
 
    :tparam Mat: 
       :cpp:any:`StaticMaxPlusTruncMat\<T, R, C>` for some threshold ``T``, row
