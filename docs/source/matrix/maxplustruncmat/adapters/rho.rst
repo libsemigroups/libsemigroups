@@ -1,4 +1,4 @@
-.. Copyright (c) 2021, F. L. Smith
+.. Copyright (c) 2021, Finn Smith
 
    Distributed under the terms of the GPL license version 3.
 
