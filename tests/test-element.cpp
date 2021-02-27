@@ -194,7 +194,7 @@ namespace libsemigroups {
 
     x.increase_degree_by(10);
     REQUIRE(x.degree() == 20);
-    REQUIRE(x.end() - x.begin() == x.degree());
+    REQUIRE(uint16_t(x.end() - x.begin()) == x.degree());
   }
 
   LIBSEMIGROUPS_TEST_CASE("PartialPerm",

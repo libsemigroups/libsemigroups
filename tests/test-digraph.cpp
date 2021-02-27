@@ -259,13 +259,15 @@ namespace libsemigroups {
                           "[quick][digraph]") {
     ActionDigraph<size_t> g;
     g.add_to_out_degree(1);
+    using difference_type = typename std::iterator_traits<
+        ActionDigraph<size_t>::const_iterator_nodes>::difference_type;
     for (size_t j = 2; j < 50; ++j) {
       action_digraph_helper::add_cycle(g, j);
       REQUIRE(std::count_if(
                   g.cbegin_nodes(),
                   g.cend_nodes(),
                   [&g, j](size_t nd) -> bool { return g.scc_id(nd) == j - 2; })
-              == j);
+              == difference_type(j));
     }
 
     REQUIRE(g.nr_nodes() == 1224);
@@ -1886,7 +1888,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(ad.number_of_paths(1, 1, 0, 10, algorithm::trivial),
                       LibsemigroupsException);
     REQUIRE(ad.number_of_paths(1, 1, 0, 10)
-            == std::distance(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo()));
+            == uint64_t(std::distance(ad.cbegin_pstilo(1, 1, 0, 10),
+                                      ad.cend_pstilo())));
 
     auto checker2 = [&ad](word_type const& w) {
       return w.size() < 10 && action_digraph_helper::follow_path(ad, 1, w) == 1;
