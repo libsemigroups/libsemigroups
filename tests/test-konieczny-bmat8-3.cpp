@@ -75,7 +75,7 @@ namespace libsemigroups {
       count += D.size();
     }
 
-    REQUIRE(KS.cend_regular_D_classes() - KS.cbegin_regular_D_classes()
+    REQUIRE(size_t(KS.cend_regular_D_classes() - KS.cbegin_regular_D_classes())
             == idems.size());
 
     REQUIRE(count == 8712);
