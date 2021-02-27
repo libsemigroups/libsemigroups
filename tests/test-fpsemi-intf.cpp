@@ -102,11 +102,11 @@ namespace libsemigroups {
       REQUIRE(fp->equal_to({0, 0, 0}, {0}));
       REQUIRE(!fp->equal_to({1, 1, 1, 1, 1, 1}, {0}));
       REQUIRE(number_of_words(2, 1, 11) == 2046);
-      REQUIRE(std::count_if(cbegin_wislo(2, {0}, word_type(11, 0)),
-                            cend_wislo(2, {0}, word_type(11, 0)),
-                            [&fp](word_type const& w) -> bool {
-                              return fp->equal_to(w, {0});
-                            })
+      REQUIRE(size_t(std::count_if(cbegin_wislo(2, {0}, word_type(11, 0)),
+                                   cend_wislo(2, {0}, word_type(11, 0)),
+                                   [&fp](word_type const& w) -> bool {
+                                     return fp->equal_to(w, {0});
+                                   }))
               == nr_words);
     }
 
