@@ -184,7 +184,17 @@ namespace libsemigroups {
             _found_pairs.size(),
             _map_next,
             _lookup.nr_blocks(),
-            _pairs_to_mult.size())
+            _pairs_to_mult.size());
+        // If the congruence is only using 1 thread, then this will never
+        // happen, if the congruence uses > 1 threads, then it is ok for this to
+        // kill itself, because another thread will complete.
+        if (_found_pairs.size() > 1048576
+            || (tid != 0 && prnt->finished()
+                && _found_pairs.size() > prnt->size())) {
+          REPORT_DEFAULT("too many pairs found, stopping");
+          kill();  // suicide
+          return;
+        }
       }
     }
 
