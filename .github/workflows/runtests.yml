@@ -174,15 +174,6 @@ jobs:
 
                 echo 
                 ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx") )
-   lint:
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v2
-         - name: "Install dependencies . . ."
-           run: |
-                sudo pip install cpplint
-         - name: "Run cpplint . . ."
-           run: bash etc/make-lint.sh
    macosx:
       runs-on: macOS-latest
       env: 
