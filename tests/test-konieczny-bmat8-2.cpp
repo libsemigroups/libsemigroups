@@ -584,7 +584,7 @@ namespace libsemigroups {
     size_t nr_classes = T.cend_D_classes() - T.cbegin_D_classes();
     REQUIRE(nr_classes > 0);
     T.run_for(std::chrono::milliseconds(2000));
-    REQUIRE(T.cend_D_classes() - T.cbegin_D_classes() > nr_classes);
+    REQUIRE(size_t(T.cend_D_classes() - T.cbegin_D_classes()) > nr_classes);
 
     REQUIRE(T.size() == 32311832);
     REQUIRE(T.number_of_regular_elements() == 8683982);
@@ -624,7 +624,7 @@ namespace libsemigroups {
     Konieczny<BMat8> KS(gens);
     KS.run();
 
-    REQUIRE(KS.cend_regular_D_classes() - KS.cbegin_regular_D_classes()
+    REQUIRE(size_t(KS.cend_regular_D_classes() - KS.cbegin_regular_D_classes())
             == idems.size());
 
     REQUIRE_THROWS_AS(KS.add_generators(gens), LibsemigroupsException);

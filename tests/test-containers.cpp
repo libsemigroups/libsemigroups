@@ -843,9 +843,9 @@ namespace libsemigroups {
         auto it = rv.begin();
         REQUIRE(*it == 0);
         for (int64_t i = 0; i < 100; i++) {
-          REQUIRE(*(it + i) == i);
+          REQUIRE(*(it + i) == size_t(i));
           it += i;
-          REQUIRE(*it == i);
+          REQUIRE(*it == size_t(i));
           it -= i;
           REQUIRE(*it == 0);
           REQUIRE(it == rv.begin());
@@ -932,9 +932,9 @@ namespace libsemigroups {
         auto it = rv.cbegin();
         REQUIRE(*it == 0);
         for (int64_t i = 0; i < 100; i++) {
-          REQUIRE(*(it + i) == i);
+          REQUIRE(*(it + i) == size_t(i));
           it += i;
-          REQUIRE(*it == i);
+          REQUIRE(*it == size_t(i));
           it -= i;
           REQUIRE(*it == 0);
           REQUIRE(it == rv.cbegin());
