@@ -3386,7 +3386,7 @@ namespace libsemigroups {
 
   template <typename TElementType, typename TTraits>
   bool Konieczny<TElementType, TTraits>::finished_impl() const {
-    return started() && _ranks.empty();
+    return _ranks.empty() && _run_initialised;
   }
 
   template <typename TElementType, typename TTraits>

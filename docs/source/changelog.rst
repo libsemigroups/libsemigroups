@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v1.3.7 (released 28/02/2021)
+----------------------------
+
+This is a minor release for with a bug in ``Konieczny`` fixed by
+`Finn Smith`_, and a limit added to ``CongruenceByPairs`` to try to resolve 
+https://github.com/semigroups/Semigroups/issues/634 (again).
+
 v1.3.6 (released 04/02/2021)
 ----------------------------
 

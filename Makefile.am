@@ -567,7 +567,12 @@ libsemigroups_la_LDFLAGS = -version-info 1:0:0
 
 ## Extra files for the distribution
 
+## Note that `autogen.sh` is required in the distro because the `make distclean`
+## target removes the `configure` script, and `.VERSION` file, and `autogen.sh`
+## is required to regenerate these.
+
 EXTRA_DIST =  .clang-format
+EXTRA_DIST += autogen.sh
 EXTRA_DIST += CPPLINT.cfg 
 EXTRA_DIST += LICENSE 
 EXTRA_DIST += README.rst
@@ -965,7 +970,6 @@ clean-local-check:
 distclean-local:
 	rm -f configure
 	rm -f include/libsemigroups/libsemigroups-config.hpp
-	rm -f .VERSION
 .PHONY: distclean-local
 
 uninstall-hook:
