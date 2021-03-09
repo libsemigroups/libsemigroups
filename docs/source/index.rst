@@ -21,6 +21,12 @@ Namely:
   semigroups which act on sets;
 - an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
   algorithm for testing equivalence of words in free bands.
+- an implementation of the algorithm for solving the word problem
+  for small overlap monoids, and for computing normal forms in such monoids;
+  see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
+  :cite:`Kambites2009aa`, 
+  `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
+  :cite:`Kambites2009ab`, and Mitchell-Tsalakou :cite:`Mitchell2021aa`. 
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm

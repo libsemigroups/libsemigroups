@@ -16,10 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, KnuthBe...
+
 #include <cstddef>  // for size_t
 #include <string>   // for string
 
-#include "libsemigroups/cong-intf.hpp"  // for CongruenceInterface, CongruenceInterface::...
+#include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
 #include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/digraph.hpp"            // for ActionDigraph
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION

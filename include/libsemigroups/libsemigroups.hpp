@@ -50,6 +50,7 @@
 #include "hpcombi.hpp"
 #include "int-range.hpp"
 #include "iterator.hpp"
+#include "kambites.hpp"
 #include "kbe.hpp"
 #include "knuth-bendix.hpp"
 #include "konieczny.hpp"

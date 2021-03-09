@@ -173,6 +173,7 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::LessOrEqualTo>
       auto constexpr operator<=(IteratorBase const& that) const noexcept
           -> ReturnTypeIfNotExists<TOperator, bool> {
+        // Shouldn't this just use < or ==?
         return _wrapped_iter <= that._wrapped_iter;
       }
 
@@ -301,40 +302,51 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::EqualTo>
       auto constexpr operator==(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::NotEqualTo>
       auto constexpr operator!=(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::Less>
       auto constexpr operator<(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
+      // TODO(now) all these operators should take 4 args, not 3
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::More>
       auto constexpr operator>(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::LessOrEqualTo>
       auto constexpr operator<=(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
@@ -380,8 +392,10 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::Difference>
       auto constexpr operator-(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, difference_type> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
@@ -570,7 +584,7 @@ namespace libsemigroups {
     };
 
     template <typename TIteratorTraits>
-    class ConstIteratorStateful final
+    class ConstIteratorStateful
         : public ConstIterator,
           public IteratorStatefulBase<ConstIteratorStateful<TIteratorTraits>,
                                       TIteratorTraits> {

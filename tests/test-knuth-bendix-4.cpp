@@ -35,9 +35,9 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
+#include <iostream>
 #include <string>  // for string
 #include <vector>  // for vector
 
@@ -47,8 +47,9 @@
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/siso.hpp"          // for XXX
 #include "libsemigroups/stl.hpp"           // for XXX
-#include "libsemigroups/string.hpp"        // for XXX
+#include "libsemigroups/string.hpp"        // for random_string
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
@@ -519,6 +520,173 @@ namespace libsemigroups {
                                        "aaaaaaaaaaaaaaaaaaaaaa",
                                        "aaaaaaaaaaaaaaaaaaaaaaa",
                                        "aaaaaaaaaaaaaaaaaaaaaaaa"}));
+    }
+
+    namespace {
+      std::string swap_a_and_b(std::string const& w) {
+        std::string result;
+        for (auto l : w) {
+          if (l == 'a') {
+            result += "b";
+          } else {
+            result += "a";
+          }
+        }
+        return result;
+      }
+
+      std::unordered_set<std::string>& get_set() {
+        static std::unordered_set<std::string> set;
+        return set;
+      }
+
+      template <typename T>
+      void register_relation(T const& it1, T const& it2, size_t& nr) {
+        auto tmp = *it1 + "#" + *it2;
+        auto u   = swap_a_and_b(*it1);
+        auto v   = swap_a_and_b(*it2);
+        if (shortlex_compare(u, v)) {
+          get_set().insert(u + "#" + v);
+        } else {
+          get_set().insert(v + "#" + u);
+        }
+        std::cout << *it1 << " = " << *it2 << std::endl;
+        nr++;
+      }
+    }  // namespace
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "015",
+        "(fpsemi) all 2-generated 1-relation semigroups 1 to 10",
+        "[extreme][kambites][fpsemigroup][fpsemi][xxx]") {
+      auto rg = ReportGuard(false);
+      auto first
+          = cbegin_sislo("ab", std::string(1, 'a'), std::string(11, 'a'));
+      auto last = cbegin_sislo("ab", std::string(1, 'a'), std::string(11, 'a'));
+      size_t N  = std::distance(
+          first, cend_sislo("ab", std::string(1, 'a'), std::string(11, 'a')));
+      REQUIRE(N == 2046);
+      std::advance(last, N - 1);
+
+      size_t total_c4 = 0;
+      size_t total    = 0;
+      auto   llast    = last;
+      ++llast;
+
+      for (auto it1 = first; it1 != last; ++it1) {
+        auto it2 = it1;
+        ++it2;
+        for (; it2 != llast; ++it2) {
+          auto tmp = *it1 + "#" + *it2;
+          if (get_set().insert(tmp).second) {
+            bool try_again = false;
+            {
+              KnuthBendix k;
+              k.set_alphabet("ab");
+              k.add_rule(*it1, *it2);
+              k.run_for(std::chrono::milliseconds(10));
+              if (k.confluent()) {
+                register_relation(it1, it2, total_c4);
+              } else {
+                try_again = true;
+              }
+            }
+            if (try_again) {
+              KnuthBendix k;
+              k.set_alphabet("ba");
+              k.add_rule(*it1, *it2);
+              k.run_for(std::chrono::milliseconds(10));
+              if (k.confluent()) {
+                register_relation(it1, it2, total_c4);
+              }
+            }
+          }
+        }
+      }
+      REQUIRE(total_c4 == 471479);
+      REQUIRE(total == 2092035);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "016",
+        "(fpsemi) hard 2-generated 1-relation semigroups 1 to 10",
+        "[extreme][kambites][fpsemigroup][fpsemi][xxx2]") {
+      KnuthBendix k;
+      k.set_alphabet("bac");
+      k.add_rule("a", "cc");
+      k.add_rule("c", "bab");
+      k.knuth_bendix_by_overlap_length();
+      std::cout << k.active_rules() << std::endl;
+      REQUIRE(k.active_rules()[0] == rule_type({"", ""}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "017",
+        "(fpsemi) Konovalov",
+        "[extreme][knuthbendix][fpsemigroup][fpsemi][xxx3]") {
+      KnuthBendix k;
+      k.set_alphabet("abAB");
+      k.add_rule("Abba", "BB");
+      k.add_rule("Baab", "AA");
+      k.run();
+      REQUIRE(k.size() == POSITIVE_INFINITY);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "018",
+        "(fpsemi) https://math.stackexchange.com/questions/2649807",
+        "[knuthbendix][fpsemigroup][fpsemi][fail]") {
+      do {
+        std::string lphbt = "abcABC";
+        std::string invrs = "ABCabc";
+        std::cout << std::string(72, '#') << std::endl;
+
+        KnuthBendix k;
+        k.set_alphabet(lphbt);
+        k.set_identity("");
+        k.set_inverses(invrs);
+
+        k.add_rule("aa", "");
+        k.add_rule("bbbbbbbbbbb", "");
+        k.add_rule("cc", "");
+        k.add_rule("abababab", "");
+        k.add_rule("abbabbabbabbabbabb", "");
+        k.add_rule("abbabaBabaBBabbaB", "");
+        k.add_rule("acacac", "");
+        k.add_rule("bcbc", "");
+
+        for (size_t i = 1; i < 3; ++i) {
+          auto lhs = detail::random_string(lphbt, 100);
+          auto rhs = detail::random_string(lphbt, 100);
+          k.add_rule(lhs, rhs);
+          std::cout << "trying rule " << lhs << " -> " << rhs << std::endl;
+        }
+        k.run_for(std::chrono::seconds(1));
+        if (k.confluent()) {
+          size_t const N = k.size();
+          std::cout << "k.size() == " << N << std::endl;
+          if (k.size() == POSITIVE_INFINITY) {
+            break;
+          }
+        }
+      } while (true);
+    }
+
+    // TODO(now) move this to the correct file
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "019",
+                            "(fpsemi) C(4) monoid",
+                            "[quick][knuthbendix][fpsemigroup][fpsemi]") {
+      KnuthBendix k;
+      k.set_alphabet("abcde");
+      k.add_rule("bceac", "aeebbc");
+      k.add_rule("aeebbc", "dabcd");
+      k.run();
+      REQUIRE(k.confluent());
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

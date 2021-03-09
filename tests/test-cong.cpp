@@ -1399,6 +1399,21 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(cong.cbegin_ntc(), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "044",
+                          "congruence over smalloverlap",
+                          "[quick][cong]") {
+    FpSemigroup k;
+    k.set_alphabet("abcdefg");
+    k.add_rule("abcd", "aaaeaa");
+    Congruence cong(twosided, k);
+    cong.add_pair({4, 5}, {3, 6});
+    REQUIRE(cong.is_quotient_obviously_infinite());
+    REQUIRE(cong.number_of_generating_pairs() == 1);
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(cong.class_index_to_word(100) == word_type({0, 6, 4}));
+  }
+
   // The next 3 test cases are commented out because they test features we
   // decided not to include in v1.0.0.
 

@@ -1,32 +1,32 @@
-libsemigroups::FpSemigroup:
-- Member types:
-  - rule_type
-  - const_iterator
+libsemigroups::fpsemigroup::Kambites: 
+- Member type:
+  - ["This page contains information about the member types of the
+     :cpp:any:`fpsemigroup::Kambites` class."]
+  - internal_type
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`fpsemigroup::Kambites` class."]
+  - Kambites()
+  - Kambites(Kambites const&)
+  - Kambites(Kambites&&) = default
+  - operator=(Kambites const&) = default
+  - operator=(Kambites&&) = default
+- Member functions:
+  - ["This page lists the member functions of the
+     :cpp:any:`Congruence` class that are not present in its base classes
+     :cpp:any:`Runner` and :cpp:any:`FpSemigroupInterface`."]
+  - small_overlap_class() const
+  - number_of_pieces(size_t) const
+  - number_of_normal_forms(size_t, size_t)
+  - equal_to(string_type&&, string_type&&)
+- Member functions and types inherited from FpSemigroupInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`fpsemigroup::Kambites` class inherited from
+     :cpp:any:`FpSemigroupInterface`."]
   - string_type
   - char_type
-- Constructors:
-  - FpSemigroup()
-  - FpSemigroup(T const&)
-  - FpSemigroup(FpSemigroup const&) = default
-  - FpSemigroup(std::shared_ptr<FroidurePinBase>) 
-- Deleted constructors:
-  - FpSemigroup(FpSemigroup&&) = delete 
-  - operator=(FpSemigroup const&) = delete
-  - operator=(FpSemigroup&&) = delete
-- Related algorithms:
-  - has_knuth_bendix() const
-  - knuth_bendix() const
-  - has_todd_coxeter() const
-  - todd_coxeter() const
-  - has_kambites() const noexcept
-  - kambites() const 
-- Settings:
-  - max_threads() const noexcept
-  - max_threads(size_t) noexcept
-- Member functions inherited from FpSemigroupInterface:
-  - ["This page contains a description of the member functions of the
-     :cpp:any:`FpSemigroup` class inherited from
-     :cpp:any:`FpSemigroupInterface`."]
+  - const_iterator
+  - rule_type
   - uint_to_char(letter_type) const
   - char_to_uint(char) const
   - string_to_word(std::string const&) const
@@ -39,7 +39,6 @@ libsemigroups::FpSemigroup:
   - alphabet(size_t) const
   - alphabet() const noexcept
   - identity() const
-  - set_identity(std::string const&)
   - set_identity(letter_type)
   - inverses() const
   - number_of_rules() const noexcept
@@ -54,22 +53,23 @@ libsemigroups::FpSemigroup:
   - froidure_pin()
   - set_alphabet(size_t)
   - set_alphabet(std::string const&)
+  - set_identity(std::string const&)
   - set_inverses(std::string const&)
   - validate_letter(char) const
   - validate_letter(letter_type) const
   - validate_word(word_type const&) const
   - validate_word(std::string const&) const
   - to_gap_string()
-  - normal_form(std::string const&) override
-  - normal_form(word_type const&)
+  - normal_form(string_type const&) override
+  - normal_form(word_type const&) 
   - normal_form(std::initializer_list<letter_type>)
   - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>) 
-  - equal_to(std::string const&, std::string const&) override
+  - equal_to(string_type const&, string_type const&) override
   - equal_to(word_type const&, word_type const&)
   - has_identity() const noexcept
 - Member functions inherited from Runner:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`FpSemigroup` class inherited from :cpp:any:`Runner`."]
+     :cpp:any:`congruence::Kambites` class inherited from :cpp:any:`Runner`."]
   - dead() const noexcept
   - finished() const
   - started() const
