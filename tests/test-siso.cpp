@@ -170,10 +170,10 @@ namespace libsemigroups {
                           "005",
                           "alphabet: a, min: 0, max: 10",
                           "[sislo][quick]") {
-    auto first = "";
-    auto last  = "aaaaaaaaaa";
-    auto w     = std::vector<std::string>(cbegin_sislo("a", first, last),
-                                      cend_sislo("a", first, last));
+    Sislo s;
+    s.alphabet("a").first("").last("aaaaaaaaaa");
+
+    auto w = std::vector<std::string>(s.cbegin(), s.cend());
     REQUIRE(w.size() == 10);
     REQUIRE(w
             == std::vector<std::string>({"",

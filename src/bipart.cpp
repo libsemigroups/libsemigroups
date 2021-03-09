@@ -194,14 +194,14 @@ namespace libsemigroups {
   // Bipartition friends
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(now) Should be defined for all of the new element types
+  // TODO(later) Should be defined for all of the new element types
   Bipartition operator*(Bipartition const& x, Bipartition const& y) {
     Bipartition xy(x.degree());
     xy.product_inplace(x, y);
     return xy;
   }
 
-  // TODO(now) Should be defined for all of the new element types
+  // TODO(later) Should be defined for all of the new element types
   bool operator!=(Bipartition const& x, Bipartition const& y) {
     return !(x == y);
   }

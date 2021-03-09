@@ -26,6 +26,7 @@
 #include <memory>   // for shared_ptr
 
 #include "cong-intf.hpp"     // for congruence::type
+#include "kambites.hpp"      // for Kambites
 #include "knuth-bendix.hpp"  // for KnuthBendix
 #include "race.hpp"          // for Race
 #include "runner.hpp"        // for Runner
@@ -254,6 +255,25 @@ namespace libsemigroups {
       return _race.find_runner<ToddCoxeter>();
     }
 
+    //! Returns the Kambites instance used to compute the congruence (if any).
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A shared_ptr to a congruence::Kambites or \c nullptr.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa has_kambites().
+    std::shared_ptr<congruence::Kambites> kambites() const {
+      using congruence::Kambites;
+      return _race.find_runner<Kambites>();
+    }
+
     //! Checks if a ToddCoxeter instance is being used to compute
     //! the congruence.
     //!
@@ -271,6 +291,25 @@ namespace libsemigroups {
     //! \sa todd_coxeter.
     bool has_todd_coxeter() const {
       return todd_coxeter() != nullptr;
+    }
+
+    //! Checks if a Kambites instance is being used to compute
+    //! the congruence.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value to type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref kambites.
+    bool has_kambites() const {
+      return kambites() != nullptr;
     }
 
     // The next function is required by the GAP package Semigroups.
@@ -349,6 +388,16 @@ namespace libsemigroups {
     class_index_type word_to_class_index_impl(word_type const&) override;
 
     void run_impl() override {
+      if (kambites() != nullptr) {
+        if (kambites()->kambites().small_overlap_class() >= 4) {
+          // Race always checks for finished in the other runners, and the
+          // kambites is finished and will be declared the winner.
+        } else {
+          _race.erase_runners(_race.cbegin());
+        }
+      }
+      // TODO(now) why's this not _race.run_until(this->stopped()) as in
+      // FpSemigroup?
       _race.run();
     }
 

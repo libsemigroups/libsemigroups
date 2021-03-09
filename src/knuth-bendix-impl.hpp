@@ -837,9 +837,10 @@ namespace libsemigroups {
               }
             }
             if (_kb->report()) {
-              REPORT_DEFAULT("checked %d pairs of overlaps out of %d\n",
-                             seen,
-                             _active_rules.size() * _active_rules.size());
+              REPORT_DEFAULT("checked %llu pairs of overlaps out of %llu\n",
+                             uint64_t(seen),
+                             uint64_t(_active_rules.size())
+                                 * uint64_t(_active_rules.size()));
             }
           }
           if (_kb->running() && _kb->stopped()) {

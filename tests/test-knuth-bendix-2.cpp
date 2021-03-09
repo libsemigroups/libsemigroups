@@ -484,10 +484,11 @@ namespace libsemigroups {
     }
 
     // fairly clearly the trivial group
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "028",
-                            "(from kbmag/standalone/kb_data/degen3)",
-                            "[quick][knuth-bendix][kbmag][shortlex]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "028",
+        "(from kbmag/standalone/kb_data/degen3)",
+        "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]") {
       auto rg = ReportGuard(REPORT);
 
       KnuthBendix kb;

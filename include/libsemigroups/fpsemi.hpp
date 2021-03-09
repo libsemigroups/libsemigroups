@@ -27,6 +27,7 @@
 #include <string>   // for string
 
 #include "fpsemi-intf.hpp"   // for FpSemigroupInterface
+#include "kambites.hpp"      // for Kambites
 #include "knuth-bendix.hpp"  // for KnuthBendix
 #include "race.hpp"          // for Race
 #include "todd-coxeter.hpp"  // for ToddCoxeter
@@ -59,6 +60,10 @@ namespace libsemigroups {
   class FpSemigroup final : public FpSemigroupInterface {
     using KnuthBendix = fpsemigroup::KnuthBendix;
     using ToddCoxeter = fpsemigroup::ToddCoxeter;
+    using Kambites    = fpsemigroup::Kambites<std::string>;
+
+    enum class use_kambites : bool { yes = true, no = false };
+    FpSemigroup(use_kambites);
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -209,6 +214,14 @@ namespace libsemigroups {
       return todd_coxeter() != nullptr;
     }
 
+    std::shared_ptr<Kambites> kambites() const {
+      return _race.find_runner<Kambites>();
+    }
+
+    bool has_kambites() const noexcept {
+      return kambites() != nullptr && kambites()->small_overlap_class() >= 4;
+    }
+
     //! Returns the fpsemigroup::KnuthBendix instance used to compute the
     //! finitely presented semigroup (if any).
     //!
@@ -290,6 +303,14 @@ namespace libsemigroups {
     bool                             is_obviously_infinite_impl() override;
 
     void run_impl() override {
+      if (kambites() != nullptr) {
+        if (kambites()->small_overlap_class() >= 4) {
+          // Race always checks for finished in the other runners, and the
+          // kambites is finished and will be declared the winner.
+        } else {
+          _race.erase_runners(_race.cbegin());
+        }
+      }
       _race.run_until([this]() { return this->stopped(); });
     }
 

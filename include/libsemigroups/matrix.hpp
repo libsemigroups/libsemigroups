@@ -1886,8 +1886,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Mat>
-  auto validate(Mat const& m)
-      -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
+  auto validate(Mat const& m) -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
     detail::semiring_validate(m);
 
@@ -2055,8 +2054,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Mat>
-  auto validate(Mat const& m)
-      -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
+  auto validate(Mat const& m) -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
     detail::semiring_validate(m);
 
@@ -2602,8 +2600,7 @@ namespace libsemigroups {
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
   template <typename Mat>
-  auto validate(Mat const& m)
-      -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
+  auto validate(Mat const& m) -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
     validate(m.underlying_matrix());
   }
 

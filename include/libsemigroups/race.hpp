@@ -95,6 +95,7 @@ namespace libsemigroups {
       const_iterator end() const noexcept {
         return _runners.cend();
       }
+
       // Returns an iterator pointing to the first Runner in the Race.
       const_iterator cbegin() const noexcept {
         return _runners.cbegin();
@@ -167,6 +168,14 @@ namespace libsemigroups {
         }
       }
 
+      void erase_runners(const_iterator pos) {
+        _runners.erase(pos);
+      }
+
+      void erase_runners(const_iterator first, const_iterator last) {
+        _runners.erase(first, last);
+      }
+
      private:
       // Runs the callable object \p func on every Runner in parallel.
       template <typename TCallable>
@@ -192,6 +201,7 @@ namespace libsemigroups {
               REPORT_DEFAULT("using 0 additional threads\n");
               _winner = _runners[i];
               REPORT_DEFAULT("#%d is already finished!\n", i);
+              // TODO delete the other runners?
               return;
             }
           }

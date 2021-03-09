@@ -267,6 +267,16 @@ namespace libsemigroups {
         return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
       }
 
+      inline T& get_ref(size_t i, size_t j) {
+        LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
+        return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
+      }
+
+      inline T const& get_ref(size_t i, size_t j) const {
+        LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
+        return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
+      }
+
       size_t number_of_rows() const noexcept {
         return _nr_rows;
       }
@@ -406,13 +416,16 @@ namespace libsemigroups {
       template <typename TInternalIteratorType>
       struct Difference {
         inline difference_type
-        operator()(DynamicArray2 const*         da,
+        operator()(DynamicArray2 const*         da1,
                    TInternalIteratorType const& it1,
+                   DynamicArray2 const*         da2,
                    TInternalIteratorType const& it2) const noexcept {
-          difference_type s = da->_nr_used_cols;
-          difference_type n = da->_nr_unused_cols;
-          difference_type b = it1 - da->_vec.begin();
-          difference_type a = it2 - da->_vec.begin();
+          LIBSEMIGROUPS_ASSERT(da1 == da2);
+          (void) da2;
+          difference_type s = da1->_nr_used_cols;
+          difference_type n = da1->_nr_unused_cols;
+          difference_type b = it1 - da1->_vec.begin();
+          difference_type a = it2 - da1->_vec.begin();
           return (b - a) - n * (quotient(b, s + n) - quotient(a, s + n));
         }
       };
@@ -447,12 +460,15 @@ namespace libsemigroups {
       template <typename TInternalIteratorType>
       struct ColumnDifference {
         inline difference_type
-        operator()(DynamicArray2 const*         da,
+        operator()(DynamicArray2 const*         da1,
                    TInternalIteratorType const& it1,
+                   DynamicArray2 const*         da2,
                    TInternalIteratorType const& it2) const noexcept {
+          LIBSEMIGROUPS_ASSERT(da1 == da2);
+          (void) da2;
           return (it1 - it2)
-                 / static_cast<difference_type>(da->_nr_used_cols
-                                                + da->_nr_unused_cols);
+                 / static_cast<difference_type>(da1->_nr_used_cols
+                                                + da1->_nr_unused_cols);
         }
       };
 

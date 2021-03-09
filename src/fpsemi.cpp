@@ -28,23 +28,31 @@
 #include <string>  // for string
 
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 
 namespace libsemigroups {
 
   using ToddCoxeter = fpsemigroup::ToddCoxeter;
   using KnuthBendix = fpsemigroup::KnuthBendix;
+  using Kambites    = fpsemigroup::Kambites<std::string>;
+
+  FpSemigroup::FpSemigroup(use_kambites val) : FpSemigroupInterface(), _race() {
+    if (val == use_kambites::yes) {
+      _race.add_runner(std::make_shared<Kambites>());
+    }
+    _race.add_runner(std::make_shared<ToddCoxeter>());
+    _race.add_runner(std::make_shared<KnuthBendix>());
+  }
 
   //////////////////////////////////////////////////////////////////////////
   // FpSemigroup - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  FpSemigroup::FpSemigroup() : FpSemigroupInterface(), _race() {
-    _race.add_runner(std::make_shared<ToddCoxeter>());
-    _race.add_runner(std::make_shared<KnuthBendix>());
-  }
+  FpSemigroup::FpSemigroup() : FpSemigroup(use_kambites::yes) {}
 
-  FpSemigroup::FpSemigroup(std::shared_ptr<FroidurePinBase> S) : FpSemigroup() {
+  FpSemigroup::FpSemigroup(std::shared_ptr<FroidurePinBase> S)
+      : FpSemigroup(use_kambites::no) {
     S->run();
     set_alphabet(S->number_of_generators());
     for (auto it = S->cbegin_rules(); it != S->cend_rules(); ++it) {

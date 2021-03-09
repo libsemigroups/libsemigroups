@@ -721,12 +721,11 @@ namespace libsemigroups {
     using type = void;
 
     //! Default constructor; does nothing.
-    // TODO(now) = default, noexcept too
-    RankState() {}
+    RankState() noexcept = default;
+
     //! Iterator constructor; does nothing.
-    // TODO(now) = default, noexcept too
     template <typename T>
-    RankState(T, T) {}
+    RankState(T, T) noexcept {}
 
     // Other constructors are deleted.
     //! Deleted.

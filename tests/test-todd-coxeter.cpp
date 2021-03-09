@@ -1710,6 +1710,7 @@ namespace libsemigroups {
       REQUIRE(copy.complete());
       REQUIRE(copy.compatible());
     }
+
   }  // namespace congruence
 
   namespace fpsemigroup {
@@ -3523,5 +3524,6 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(tc.congruence().sort_generating_pairs(shortlex_compare),
                         LibsemigroupsException);
     }
+
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

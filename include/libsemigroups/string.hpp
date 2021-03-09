@@ -26,6 +26,7 @@
 #include <cstddef>    // for size_t
 #include <exception>  // for runtime_error
 #include <memory>     // for unique_ptr
+#include <numeric>    // for accumulate
 #include <sstream>    // for ostream, ostr...
 #include <string>     // for string
 #include <utility>    // for make_pair, pair
@@ -160,25 +161,35 @@ namespace libsemigroups {
 
     // Returns true if [first_prefix, last_prefix) is a prefix of [first_word,
     // last_word).
-    static inline bool
-    is_prefix(std::string::const_iterator const& first_word,
-              std::string::const_iterator const& last_word,
-              std::string::const_iterator const& first_prefix,
-              std::string::const_iterator const& last_prefix) {
+    // Not noexcept, because std::equal isn't
+    template <typename S, typename T>
+    bool is_prefix(S const& first_word,
+                   S const& last_word,
+                   T const& first_prefix,
+                   T const& last_prefix) {
       LIBSEMIGROUPS_ASSERT(first_word <= last_word);
       // Check if [first_prefix, last_prefix) equals [first_word, first_word +
-      // (last_suffix - first_suffix))
-      return first_prefix <= last_prefix
-             && last_prefix - first_prefix <= last_word - first_word
-             && std::equal(first_prefix, last_prefix, first_word);
+      // (last_prefix - first_prefix))
+      if (!(first_prefix <= last_prefix)) {
+        return false;
+      } else if (!(last_prefix - first_prefix <= last_word - first_word)) {
+        return false;
+      } else if (!std::equal(first_prefix, last_prefix, first_word)) {
+        return false;
+      }
+      return true;
     }
 
-    static inline std::pair<std::string::const_iterator,
-                            std::string::const_iterator>
-    maximum_common_prefix(std::string::const_iterator        first_word1,
-                          std::string::const_iterator const& last_word1,
-                          std::string::const_iterator        first_word2,
-                          std::string::const_iterator const& last_word2) {
+    // Check if v is a prefix of u
+    static inline bool is_prefix(std::string const& u, std::string const& v) {
+      return is_prefix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
+    }
+
+    template <typename T>
+    std::pair<T, T> maximum_common_prefix(T        first_word1,
+                                          T const& last_word1,
+                                          T        first_word2,
+                                          T const& last_word2) {
       while (*first_word1 == *first_word2 && first_word1 < last_word1
              && first_word2 < last_word2) {
         ++first_word1;
@@ -187,7 +198,27 @@ namespace libsemigroups {
       return std::make_pair(first_word1, first_word2);
     }
 
-#ifdef LIBSEMIGROUPS_DEBUG
+    template <typename T>
+    std::pair<T, T> maximum_common_suffix(T        first_word1,
+                                          T const& last_word1,
+                                          T        first_word2,
+                                          T const& last_word2) {
+      using reverse_iterator = std::reverse_iterator<T>;
+      auto p = maximum_common_prefix(reverse_iterator(last_word1),
+                                     reverse_iterator(first_word1),
+                                     reverse_iterator(last_word2),
+                                     reverse_iterator(first_word2));
+      return std::make_pair(p.first.base(), p.second.base());
+    }
+
+    static inline std::string maximum_common_suffix(std::string const& u,
+                                                    std::string const& v) {
+      return std::string(
+          maximum_common_suffix(u.cbegin(), u.cend(), v.cbegin(), v.cend())
+              .first,
+          u.cend());
+    }
+
     // Returns true if [first_suffix, last_suffix) is a suffix of [first_word,
     // last_word).
     static inline bool
@@ -195,24 +226,36 @@ namespace libsemigroups {
               std::string::const_iterator const& last_word,
               std::string::const_iterator const& first_suffix,
               std::string::const_iterator const& last_suffix) {
-      LIBSEMIGROUPS_ASSERT(first_word <= last_word);
-      // We don't care if first_suffix > last_suffix
-      if (last_suffix - first_suffix > last_word - first_word) {
-        return false;
-      }
-
-      // Check if [first_suffix, last_suffix) equals [last_word - (last_suffix -
-      // first_suffix), end_word).
-      // The following seems faster than calling std::equal.
-      auto it_suffix = last_suffix - 1;
-      auto it_word   = last_word - 1;
-      while ((it_suffix > first_suffix) && (*it_suffix == *it_word)) {
-        --it_suffix;
-        --it_word;
-      }
-      return *it_suffix == *it_word;
+      using reverse_iterator
+          = std::reverse_iterator<std::string::const_iterator>;
+      return is_prefix(reverse_iterator(last_word),
+                       reverse_iterator(first_word),
+                       reverse_iterator(last_suffix),
+                       reverse_iterator(first_suffix));
     }
-#endif
+
+    // Check if v is a suffix of u
+    static inline bool is_suffix(std::string const& u, std::string const& v) {
+      return is_suffix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
+    }
+
+    // Random string with length <length> over <alphabet>.
+    std::string random_string(std::string const& alphabet, size_t length);
+
+    // Random string with random length in the range [min, max) over <alphabet>
+    std::string random_string(std::string const& alphabet,
+                              size_t             min,
+                              size_t             max);
+
+    std::vector<std::string> random_strings(std::string const& alphabet,
+                                            size_t             number,
+                                            size_t             min,
+                                            size_t             max);
+
+    // Returns the string s to the power N, not optimized, complexity is O(N *
+    // |s|)
+    std::string power_string(std::string const& s, size_t N);
+
   }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_STRING_HPP_

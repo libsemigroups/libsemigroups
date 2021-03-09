@@ -75,6 +75,7 @@ pkginclude_HEADERS += include/libsemigroups/function-ref.hpp
 pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
 pkginclude_HEADERS += include/libsemigroups/int-range.hpp
 pkginclude_HEADERS += include/libsemigroups/iterator.hpp
+pkginclude_HEADERS += include/libsemigroups/kambites.hpp
 pkginclude_HEADERS += include/libsemigroups/kbe.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups/konieczny.hpp
@@ -90,7 +91,9 @@ pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/siso.hpp
 pkginclude_HEADERS += include/libsemigroups/stl.hpp
+pkginclude_HEADERS += include/libsemigroups/string-view.hpp
 pkginclude_HEADERS += include/libsemigroups/string.hpp
+pkginclude_HEADERS += include/libsemigroups/suffix-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/tce.hpp
 pkginclude_HEADERS += include/libsemigroups/timer.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter.hpp
@@ -547,6 +550,7 @@ libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
+libsemigroups_la_SOURCES += src/kambites.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
@@ -554,6 +558,8 @@ libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/siso.cpp
+libsemigroups_la_SOURCES += src/string.cpp
+libsemigroups_la_SOURCES += src/suffix-tree.cpp
 libsemigroups_la_SOURCES += src/timer.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/wilo.cpp
@@ -636,6 +642,7 @@ EXTRA_PROGRAMS += test_froidure_pin_projmaxplus
 EXTRA_PROGRAMS += test_froidure_pin_transf
 EXTRA_PROGRAMS += test_hpcombi
 EXTRA_PROGRAMS += test_iterator
+EXTRA_PROGRAMS += test_kambites
 EXTRA_PROGRAMS += test_kbe
 EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
@@ -648,6 +655,9 @@ EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_siso
+EXTRA_PROGRAMS += test_string
+EXTRA_PROGRAMS += test_string_view
+EXTRA_PROGRAMS += test_suffix_tree
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_todd_coxeter
 EXTRA_PROGRAMS += test_transf
@@ -663,9 +673,11 @@ EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_digraph
 EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_froidure_pin
+EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_siso
+EXTRA_PROGRAMS += bench_string_view
 EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_uf
 EXTRA_PROGRAMS += bench_wilo
@@ -708,6 +720,7 @@ test_all_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
 test_all_SOURCES += tests/test-froidure-pin-transf.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
+test_all_SOURCES += tests/test-kambites.cpp
 test_all_SOURCES += tests/test-kbe.cpp
 test_all_SOURCES += tests/test-knuth-bendix-1.cpp
 test_all_SOURCES += tests/test-knuth-bendix-2.cpp
@@ -731,6 +744,9 @@ test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-siso.cpp
+test_all_SOURCES += tests/test-string.cpp
+test_all_SOURCES += tests/test-string-view.cpp
+test_all_SOURCES += tests/test-suffix-tree.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-types.cpp
@@ -830,6 +846,9 @@ test_hpcombi_SOURCES += tests/test-main.cpp
 test_iterator_SOURCES =  tests/test-iterator.cpp
 test_iterator_SOURCES += tests/test-main.cpp
 
+test_kambites_SOURCES =  tests/test-kambites.cpp
+test_kambites_SOURCES += tests/test-main.cpp
+
 test_kbe_SOURCES =  tests/test-kbe.cpp
 test_kbe_SOURCES += tests/test-main.cpp
 
@@ -877,6 +896,15 @@ test_schreier_sims_SOURCES += tests/test-main.cpp
 test_siso_SOURCES =  tests/test-siso.cpp
 test_siso_SOURCES += tests/test-main.cpp
 
+test_string_SOURCES =  tests/test-string.cpp
+test_string_SOURCES += tests/test-main.cpp
+
+test_string_view_SOURCES =  tests/test-string-view.cpp
+test_string_view_SOURCES += tests/test-main.cpp
+
+test_suffix_tree_SOURCES =  tests/test-suffix-tree.cpp
+test_suffix_tree_SOURCES += tests/test-main.cpp
+
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 
@@ -911,6 +939,7 @@ bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
+bench_all_SOURCES += benchmarks/bench-string-view.cpp
 bench_all_SOURCES += benchmarks/bench-siso.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
@@ -936,6 +965,9 @@ bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
 bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_froidure_pin_SOURCES += benchmarks/bench-main.cpp
 
+bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
+bench_kambites_SOURCES += benchmarks/bench-main.cpp
+
 bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
 bench_knuth_bendix_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
@@ -945,6 +977,9 @@ bench_konieczny_SOURCES += benchmarks/bench-main.cpp
 
 bench_siso_SOURCES =  benchmarks/bench-siso.cpp
 bench_siso_SOURCES += benchmarks/bench-main.cpp
+
+bench_string_view_SOURCES =  benchmarks/bench-string-view.cpp
+bench_string_view_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp

@@ -182,7 +182,7 @@ jobs:
                 etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
 
                 echo 
-                ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx") )
+                ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
       timeout-minutes: 15
       runs-on: macOS-latest

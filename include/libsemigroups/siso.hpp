@@ -86,6 +86,15 @@ namespace libsemigroups {
         }
       };
 
+      struct AddAssign {
+        void operator()(state_type&             state,
+                        internal_iterator_type& it,
+                        size_t                  val) const noexcept {
+          std::advance(it, val);
+          state.second.clear();
+        }
+      };
+
       struct Swap {
         void operator()(internal_iterator_type& it_this,
                         internal_iterator_type& it_that,
@@ -237,6 +246,69 @@ namespace libsemigroups {
   const_sislo_iterator cend_sislo(std::string const& alphabet,
                                   std::string const& first,
                                   std::string const& last);
+
+  class Sislo {
+   public:
+    Sislo()             = default;
+    Sislo(Sislo const&) = default;
+    Sislo(Sislo&&)      = default;
+    Sislo& operator=(Sislo const&) = default;
+    Sislo& operator=(Sislo&&) = default;
+
+    Sislo& alphabet(std::string const& lphbt) {
+      _alphabet = lphbt;
+      return *this;
+    }
+
+    std::string const& alphabet() const {
+      return _alphabet;
+    }
+
+    char letter(size_t i) const {
+      return _alphabet[i];
+    }
+
+    Sislo& first(std::string const& first) {
+      _first = first;
+      return *this;
+    }
+
+    Sislo& first(size_t min) {
+      _first = std::string(min, letter(0));
+      return *this;
+    }
+
+    std::string const& first() const noexcept {
+      return _first;
+    }
+
+    Sislo& last(std::string const& last) {
+      _last = last;
+      return *this;
+    }
+
+    Sislo& last(size_t max) {
+      _last = std::string(max, letter(0));
+      return *this;
+    }
+
+    std::string const& last() const noexcept {
+      return _last;
+    }
+
+    const_sislo_iterator cbegin() const noexcept {
+      return cbegin_sislo(_alphabet, _first, _last);
+    }
+
+    const_sislo_iterator cend() const noexcept {
+      return cend_sislo(_alphabet, _first, _last);
+    }
+
+   private:
+    std::string _alphabet;
+    std::string _first;
+    std::string _last;
+  };
 
 }  // namespace libsemigroups
 

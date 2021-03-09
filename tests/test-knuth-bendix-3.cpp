@@ -197,11 +197,10 @@ namespace libsemigroups {
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "054",
-        "(fpsemi) equal_to free semigroup",
-        "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap]") {
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "054",
+                            "(fpsemi) equal_to free semigroup",
+                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
       kb.set_alphabet(2);
@@ -394,6 +393,23 @@ namespace libsemigroups {
                                    kb.cend_normal_forms())
           == std::vector<std::string>(
               {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
+      // The following is for comparison with the Kambites class.
+      // size_t N = std::distance(cbegin_sislo("abcdefghijkl", "a", "bgdk"),
+      //                          cend_sislo("abcdefghijkl", "a", "bgdk"));
+      // REQUIRE(N == 4522);
+      // for (auto it1 = cbegin_sislo("abcdefghijkl", "a", "bgdk");
+      //      it1 != cend_sislo("abcdefghijkl", "a", "bgdk");
+      //      ++it1) {
+      //   for (auto it2 = cbegin_sislo("abcdefghijkl", "a", "bgdk"); it2 !=
+      //   it1;
+      //        ++it2) {
+      //     if (kb.equal_to(*it1, *it2)) {
+      //       N--;
+      //       break;
+      //     }
+      //   }
+      // }
+      // REQUIRE(N == 4392);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -424,7 +440,7 @@ namespace libsemigroups {
         "KnuthBendix",
         "061",
         "(fpsemi) Von Dyck (2,3,7) group (infinite)",
-        "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag]") {
       auto rg = ReportGuard(REPORT);
 
       KnuthBendix kb;
@@ -461,7 +477,7 @@ namespace libsemigroups {
                             "(fpsemi) Von Dyck (2,3,7) group - different "
                             "presentation (infinite)",
                             "[no-valgrind][quick][knuth-bendix][fpsemigroup]["
-                            "fpsemi][smalloverlap][kbmag]") {
+                            "fpsemi][kbmag]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
       kb.set_alphabet("abcAB");
@@ -489,7 +505,7 @@ namespace libsemigroups {
         "KnuthBendix",
         "063",
         "(fpsemi) rewriting system from KnuthBendixCongruenceByPairs 08",
-        "[quick][knuth-bendix][fpsemigroup][fpsemi][smalloverlap][kbmag]") {
+        "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag]") {
       auto rg = ReportGuard(REPORT);
 
       KnuthBendix kb;
@@ -558,8 +574,8 @@ namespace libsemigroups {
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
-    // 2-generator free abelian group (with this ordering KB terminates - but no
-    // all)
+    // 2-generator free abelian group (with this ordering KB terminates - but
+    // no all)
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
         "065",
@@ -1209,5 +1225,23 @@ namespace libsemigroups {
                                            "bba",
                                            "bbb"}));
     }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendix",
+        "998",
+        "Giles Gardam in \"A counterexample to the unit conjecture for group "
+        "rings\" (https://arxiv.org/abs/2102.11818)",
+        "[fpsemigroup][fail]") {
+      KnuthBendix k;
+      k.set_alphabet("bABea");
+      k.set_identity("e");
+      k.set_inverses("BabeA");
+      k.add_rule("Abba", "BB");
+      k.add_rule("Baab", "AA");
+      k.knuth_bendix_by_overlap_length();
+
+      REQUIRE(k.size() == POSITIVE_INFINITY);
+    }
   }  // namespace fpsemigroup
+
 }  // namespace libsemigroups

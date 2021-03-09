@@ -976,9 +976,92 @@ namespace libsemigroups {
                           "046",
                           "set_inverses",
                           "[fpsemigroup][quick]") {
+    auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet("abAe");
     S.set_identity("e");
     REQUIRE_THROWS_AS(S.set_inverses("bAae"), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "047",
+                          "smalloverlap",
+                          "[fpsemigroup][quick]") {
+    auto        rg = ReportGuard(REPORT);
+    FpSemigroup k;
+    k.set_alphabet("abcdefg");
+    k.add_rule("abcd", "aaaeaa");
+    k.add_rule("ef", "dg");
+    REQUIRE(k.size() == POSITIVE_INFINITY);
+    REQUIRE(k.equal_to("abcd", "aaaeaa"));
+    REQUIRE(k.equal_to("ef", "dg"));
+    REQUIRE(k.equal_to("aaaaaef", "aaaaadg"));
+    REQUIRE(k.equal_to("efababa", "dgababa"));
+    k.froidure_pin()->enumerate(100);
+    REQUIRE(k.froidure_pin()->current_size() == 8205);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "048",
+                          "quaternion group Q8",
+                          "[fpsemigroup][quick]") {
+    auto        rg = ReportGuard(REPORT);
+    FpSemigroup S;
+    S.set_alphabet("xyXYe");
+    S.set_identity("e");
+    S.set_inverses("XYxye");
+    S.add_rule("xxxx", "e");
+    S.add_rule("xyXy", "e");
+    S.add_rule("xxYY", "e");
+
+    REQUIRE(S.size() == 8);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "049",
+                          "symmetric group Coxeter presentation",
+                          "[fpsemigroup][quick]") {
+    size_t const N = 10;
+    FpSemigroup  S;
+    S.set_alphabet(N + 1);
+    S.set_identity(N);
+    S.set_inverses(S.alphabet());
+
+    for (size_t i = 0; i < N; ++i) {
+      S.add_rule({i, i}, {N});
+    }
+    for (size_t i = 0; i < N - 1; ++i) {
+      S.add_rule({i, i + 1, i, i + 1, i, i + 1}, {N});
+    }
+    for (size_t i = 0; i < N; ++i) {
+      for (size_t j = 0; j < N; ++j) {
+        if (std::abs(static_cast<int>(i - j)) > 1) {
+          S.add_rule({i, j, i, j}, {N});
+        }
+      }
+    }
+
+    REQUIRE(S.size() == 39916800);  // 11!
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+                          "050",
+                          "https://math.stackexchange.com/questions/2649807",
+                          "[fpsemigroup][fail]") {
+    fpsemigroup::ToddCoxeter S;
+    S.set_alphabet("abcABCe");
+    S.set_identity("e");
+    S.set_inverses("ABCabce");
+    S.add_rule("aa", "e");
+    S.add_rule("bbbbbbbbbbb", "e");
+    S.add_rule("cc", "e");
+    S.add_rule("abababab", "e");
+    S.add_rule("abbabbabbabbabbabb", "e");
+    S.add_rule("abbabaBabaBBabbaB", "e");
+    S.add_rule("acacac", "e");
+    S.add_rule("bcbc", "e");
+    S.congruence().strategy(congruence::ToddCoxeter::options::strategy::random);
+
+    REQUIRE(S.size() == 0);
   }
 }  // namespace libsemigroups

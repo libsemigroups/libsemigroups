@@ -1,45 +1,25 @@
-libsemigroups::Congruence:
-- Member types:
-  - ["This page contains information about the member types of the
-     :cpp:any:`Congruence` class."]
-  - options
-  - options::runners
-  - class_index_type
-  - non_trivial_classes_type
-  - non_trivial_class_iterator
-  - const_iterator
-- Constructors:
-  - ["This page contains information about the constructors for the
-     :cpp:any:`Congruence` class."]
-  - Congruence(congruence_kind, options::runners)
-  - Congruence(congruence_kind, T const&)
-  - Congruence(congruence_kind, std::shared_ptr<FroidurePinBase>)
-  - Congruence(congruence_kind, FpSemigroup&)
+libsemigroups::congruence::Kambites: 
+- Member functions:
+  - ["This page contains information about the member functions for the
+     :cpp:any:`congruence::Kambites` class."]
+  - Kambites()
+  - Kambites(fpsemigroup::Kambites<std::string> const&)
+  - Kambites(Kambites const&)
+  - kambites() const
 - Deleted constructors:
   - ["This page lists the deleted constructors of the
-     :cpp:any:`Congruence` class."]
-  - Congruence() = delete
-  - Congruence(Congruence const&) = delete
-  - Congruence(Congruence&&) = delete
-  - operator=(Congruence&&) = delete
-  - operator=(Congruence const&) = delete
-- Member functions:
-  - ["This page lists the member functions of the
-     :cpp:any:`Congruence` class that are not present in its base classes
-     :cpp:any:`Runner` and :cpp:any:`CongruenceInterface`."]
-  - add_runner(T const&)
-  - has_todd_coxeter() const
-  - todd_coxeter() const
-  - has_knuth_bendix() const
-  - knuth_bendix() const
-  - has_kambites() const
-  - kambites() const
-  - max_threads() const noexcept
-  - max_threads(size_t) noexcept
-- Member functions inherited from CongruenceInterface:
+     :cpp:any:`congruence::Kambites` class."]
+  - Kambites(Kambites&&) = delete
+  - operator=(Kambites const&) = delete
+  - operator=(Kambites&&) = delete
+- Member functions and types inherited from CongruenceInterface:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`Congruence` class inherited from
+     :cpp:any:`congruence::Kambites` class inherited from
      :cpp:any:`CongruenceInterface`."]
+  - class_index_type
+  - non_trivial_class_iterator
+  - non_trivial_classes_type
+  - const_iterator
   - set_number_of_generators(size_t)
   - kind() const noexcept
   - quotient_froidure_pin()
@@ -68,7 +48,7 @@ libsemigroups::Congruence:
   - has_parent_fpsemigroup() const noexcept
 - Member functions inherited from Runner:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`Congruence` class inherited from :cpp:any:`Runner`."]
+     :cpp:any:`congruence::Kambites` class inherited from :cpp:any:`Runner`."]
   - dead() const noexcept
   - finished() const
   - started() const
