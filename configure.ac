@@ -25,6 +25,7 @@ AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_14(,[mandatory])
 
 dnl ## Check for pthread, this seems to be required to compile with GCC
+AC_LANG_PUSH([C])
 AX_PTHREAD(,[AC_MSG_ERROR([pthread is required])])
 AC_CHECK_LIB([pthread], [pthread_create])
 
@@ -53,6 +54,7 @@ AC_CHECK_SIZEOF([void *])
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday memset pow sqrt])
+AC_LANG_POP([C])
 
 # Check if debug mode is enabled
 AC_ARG_ENABLE([debug],
