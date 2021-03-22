@@ -7,7 +7,7 @@
 Finitely presented semigroups 
 =============================
 
-``libsemigroups`` implements serveral algorithms for computing finitely
+``libsemigroups`` implements several algorithms for computing finitely
 presented semigroups and monoids. The main algorithms implemented are
 Todd-Coxeter, Knuth-Bendix, and brute-force enumeration; see the links below
 for further details. As a convenience, ``libsemigroups`` also has a class
