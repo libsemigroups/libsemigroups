@@ -53,8 +53,8 @@ namespace libsemigroups {
   //! the Bipartition in the monoid of all bipartitions. This is the purpose of
   //! this class.
   //!
-  //! The Blocks class is not currently used by any of the functions for the
-  //! FroidurePin class but the extra functions are used in the GAP package
+  //! The Blocks class is not currently used widely in ``libsemigroups``
+  //! but are used extensively in the GAP package
   //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/).
   class Blocks final {
    public:
@@ -425,7 +425,7 @@ namespace libsemigroups {
   //! used in the GAP package [Semigroups package for
   //! GAP](https://semigroups.github.io/Semigroups/).
   //!
-  //! \sa \ref validate.
+  //! \sa libsemigroups::validate(Bipartition const&).
   // TODO(later) add more explanation to the doc here
   class Bipartition final {
    public:
@@ -464,7 +464,7 @@ namespace libsemigroups {
     //! \param blocks a lookup for the blocks of the bipartition being
     //! constructed.
     //!
-    //! \sa \ref validate.
+    //! \sa libsemigroups::validate(Bipartition const&).
     explicit Bipartition(std::vector<uint32_t> const& blocks);
 
     //! Constructs a bipartition from an rvalue reference to blocks lookup.
@@ -472,7 +472,8 @@ namespace libsemigroups {
     //! \param blocks a lookup for the blocks of the bipartition being
     //! constructed.
     //!
-    //! \sa Bipartition(std::vector<uint32_t> const&).
+    //! \sa Bipartition(std::vector<uint32_t> const&)
+    //!  and libsemigroups::validate(Bipartition const&).
     explicit Bipartition(std::vector<uint32_t>&& blocks);
 
     //! Constructs a bipartition from an initializer list blocks lookup.
@@ -480,7 +481,8 @@ namespace libsemigroups {
     //! \param blocks a lookup for the blocks of the bipartition being
     //! constructed.
     //!
-    //! \sa Bipartition(std::vector<uint32_t> const&).
+    //! \sa Bipartition(std::vector<uint32_t> const&)
+    //!  and libsemigroups::validate(Bipartition const&).
     Bipartition(std::initializer_list<uint32_t> const& blocks);
 
     //! Constructs a bipartition from a partition.
@@ -495,7 +497,7 @@ namespace libsemigroups {
     //!
     //! \param blocks the partition.
     //!
-    //! \sa \ref validate.
+    //! \sa libsemigroups::validate(Bipartition const&).
     Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks);
 
     //! Default copy constructor.
@@ -532,12 +534,16 @@ namespace libsemigroups {
       return result;
     }
 
-    //! No doc
+    //! Validates the arguments, constructs a bipartition and validates it.
+    //!
+    //! See make(T const&) for full details.
     static Bipartition make(std::initializer_list<uint32_t> const& cont) {
       return make<std::initializer_list<uint32_t>>(cont);
     }
 
-    //! No doc
+    //! Validates the arguments, constructs a bipartition and validates it.
+    //!
+    //! See make(T const&) for full details.
     static Bipartition
     make(std::initializer_list<std::vector<int32_t>> const& cont) {
       return make<std::initializer_list<std::vector<int32_t>>>(cont);
@@ -580,7 +586,7 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \returns
-    //! A value of ``size_t``.
+    //! A value of \c size_t.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -598,7 +604,7 @@ namespace libsemigroups {
     //!
     //! \param i an integer
     //!
-    //! \returns a reference to the index of the block containing \p i.
+    //! \returns A reference to the index of the block containing \p i.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -615,7 +621,7 @@ namespace libsemigroups {
     //!
     //! \param i an integer
     //!
-    //! \returns a const reference to the index of the block containing \p i.
+    //! \returns A const reference to the index of the block containing \p i.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -630,7 +636,7 @@ namespace libsemigroups {
     //!
     //! \param i an integer
     //!
-    //! \returns a reference to the index of the block containing \p i.
+    //! \returns A reference to the index of the block containing \p i.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -647,7 +653,7 @@ namespace libsemigroups {
     //!
     //! \param i an integer
     //!
-    //! \returns a const reference to the index of the block containing \p i.
+    //! \returns A const reference to the index of the block containing \p i.
     //!
     //! \exceptions
     //! \no_libsemigroups_except

@@ -30,7 +30,7 @@ namespace libsemigroups {
   //! Defined in ``libsemigroups-exception.hpp``.
   //!
   //! This page contains the documentation for the class
-  //! libsemigroups::LibsemigroupsException.  All exceptions thrown by
+  //! LibsemigroupsException.  All exceptions thrown by
   //! ``libsemigroups`` are LibsemigroupsException instances.
   struct LibsemigroupsException final : public std::runtime_error {
     //! Create an exception with filename, line number, function name, and

@@ -82,21 +82,22 @@ namespace libsemigroups {
   //! permutation group to be represented by a SchreierSims instance.
   //! \tparam TPointType the type of the points acted on.
   //! \tparam TElementType the type of the group elements acting on
-  //! ``TPointType``
+  //! \c TPointType.
   template <size_t N, typename TPointType, typename TElementType>
   struct SchreierSimsTraits {
     //! The type of indices to be used by a SchreierSims instance.
     using index_type = size_t;
 
-    //! The type of the object containing all points acted on by a SchreierSims
-    //! instance.
+    //! Type of the object containing all points acted on.
     using domain_type = IntegralRange<TPointType, 0, N>;
 
+    //! Type of the points acted on.
+    //!
     //! The type of the points acted on by the group represented by \c this,
-    //! which is the same as the template parameter ``TPointType``.
+    //! which is the same as the template parameter \c TPointType.
     using point_type = TPointType;
 
-    //! The type of the group elements acting on ``TPointType``
+    //! Type of the elements.
     using element_type = TElementType;
 
     //! \copydoc libsemigroups::ImageRightAction
@@ -129,11 +130,12 @@ namespace libsemigroups {
   //! \tparam N the largest point not fixed by the permutations in the
   //! permutation group to be represented by this.
   //! \tparam TPointType the type of the points acted on (default:
-  //! SmallestInteger<N>::type).
+  //! the member \c type of SmallestInteger with template parameter \p N).
   //! \tparam TElementType the type of the group elements acting on
-  //! ``TPointType`` (default: NewPermHelper<N>::type)
-  //! \tparam TTraits the type of traits object (default: SchreierSimsTraits<N,
-  //! TPointType, TElementType>)
+  //! \c TPointType (default: the member \c type of \ref LeastPerm with template
+  //! parameter \p N).
+  //! \tparam TTraits the type of traits object (default: SchreierSimsTraits
+  //! with template parameters \c N, \c TPointType, and \c TElementType).
   //!
   //! \sa SchreierSimsTraits.
   //!
@@ -167,26 +169,30 @@ namespace libsemigroups {
         TElementType>::internal_const_value_type;
 
    public:
+    //! Type of the elements.
+    //!
     //! The type of the elements of a SchreierSims instance with const removed,
-    //! and if TElementType is a pointer to const, then the second const is
+    //! and if \c TElementType is a pointer to const, then the second const is
     //! also removed.
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
 
-    //! The type of the points acted on by the group represented by \c this,
-    //! which is the same as the template parameter TPointType.
+    //! Type of the points acted on.
+    //!
+    //! Also the template parameter \p TPointType.
     using point_type = TPointType;
 
-    //! The type of the object containing all points acted on by a SchreierSims
-    //! instance.
+    //! Type of the object containing all points acted on.
     using domain_type = typename TTraits::domain_type;
 
-    //! The type of indices to be used by a SchreierSims instance.
+    //! Type of indices.
     using index_type = typename TTraits::index_type;
 
-    // gcc apparently requires the extra qualification on the aliases below
-    //! \copydoc libsemigroups::Action
+    //! Alias for \p TTraits::Action.
+    //!
+    //! See Action for further details.
     using Action = typename TTraits::Action;
+
     //! \copydoc libsemigroups::Degree
     using Degree = typename TTraits::Degree;
     //! \copydoc libsemigroups::EqualTo
@@ -210,13 +216,18 @@ namespace libsemigroups {
     };
 
    public:
+    //! Default constructor.
+    //!
     //! Construct a SchreierSims object representing the trivial group.
     //!
     //! \complexity
     //! \f$O(N ^ 2)\f$ where \p N is the first template parameter.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SchreierSims()
         : _base(),
           _base_size(0),
@@ -252,7 +263,7 @@ namespace libsemigroups {
     //! Deleted.
     SchreierSims& operator=(SchreierSims&&) = delete;
 
-    //! Add a generator to this.
+    //! Add a generator.
     //!
     //! \param x a const reference to the generator to add.
     //!
@@ -300,7 +311,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     size_t nr_generators() const noexcept {
       return nr_strong_generators(0);
@@ -320,7 +331,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     // TODO(later) shouldn't this throw if depth is out of bounds??
     size_t nr_strong_generators(index_type const depth) const noexcept {
@@ -356,11 +367,14 @@ namespace libsemigroups {
     //!
     //! \returns \c true if `nr_generators() == 0` and \c false otherwise.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     // Not noexcept because StaticVector2::size isn't
     bool empty() {
       return _strong_gens.size(0) == 0;
@@ -370,8 +384,11 @@ namespace libsemigroups {
     //!
     //! \returns the size, a value of \c uint64_t.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     uint64_t size() {
       if (empty()) {
         return 1;
@@ -384,12 +401,11 @@ namespace libsemigroups {
       return out;
     }
 
-    //! Returns a copy of \p x that has been sifted through the stabiliser
-    //! chain.
+    //! Sift an element through the stabiliser chain.
     //!
     //! \param x a const reference to a group element.
     //!
-    //! \returns A value of type SchreierSims::element_type.
+    //! \returns A value of type \ref element_type.
     //!
     //! \throws LibsemigroupsException if the degree of \p x is not equal to
     //! the first template parameter \c N.
@@ -405,11 +421,14 @@ namespace libsemigroups {
       return cpy;
     }
 
-    //! Returns \c true if \p x belongs to the group.
+    //! Test membership of an element.
     //!
-    //! \param x a const reference to a group element.
+    //! \param x a const reference to the possible element.
     //!
-    //! \returns A bool.
+    //! \returns A \c bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \note
     //! Returns \c false if the degree of \p x is not equal to the first
@@ -426,13 +445,15 @@ namespace libsemigroups {
       return InternalEqualTo()(_tmp_element2, _one);
     }
 
-    //! Returns a const reference to the identity element of the group
-    //! represented by \c this.
+    //! Returns a const reference to the identity.
     //!
-    //! \returns A bool.
+    //! \returns A \c bool.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     const_element_reference identity() const {
       return this->to_external_const(_one);
     }
@@ -448,8 +469,11 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(N ^ 2)\f$ where \p N is the first template parameter.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     void clear() {
       for (size_t depth = 0; depth < N; ++depth) {
         for (size_t index = 0; index < N; ++index) {
@@ -482,8 +506,11 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     bool finished() const {
       return _finished;
     }
@@ -551,7 +578,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     size_t base_size() const noexcept {
       return _base_size;

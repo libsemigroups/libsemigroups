@@ -6,10 +6,12 @@
 
 .. _staticmatrix_transpose:
 
-StaticMatrix::transpose
-=======================
+transpose
+=========
 
-.. cpp:function::  void StaticMatrix::transpose() noexcept
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function::  void transpose() noexcept
 
    Swaps the contents of ``this`` with the contents of ``that``. 
 

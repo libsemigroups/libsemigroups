@@ -1,134 +1,161 @@
 libsemigroups::FroidurePin:
-- Public types:
-  - [typedef, element_type]
-  - [typedef, const_element_type]
-  - [typedef, size_type]
-  - [typedef, element_index_type]
-  - [typedef, cayley_graph_type]
-  - [typedef, const_iterator]
-  - [typedef, const_iterator_idempotents]
-  - [typedef, const_iterator_sorted]
-  - [typedef, const_pointer]
-  - [typedef, const_reference]
-  - [typedef, reference]
-  - [typedef, const_reverse_iterator]
-  - [typedef, const_reverse_iterator_idempotents]
-  - [typedef, const_reverse_iterator_sorted]
-- Stateless public types:
-  - [typedef, Complexity]
-  - [typedef, Degree]
-  - [typedef, EqualTo]
-  - [typedef, Hash]
-  - [typedef, IncreaseDegree]
-  - [typedef, Less]
-  - [typedef, One]
-  - [typedef, Product]
-  - [typedef, Swap]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`FroidurePin` class."]
+  - element_type
+  - const_element_type
+  - const_iterator
+  - const_iterator_idempotents
+  - const_iterator_sorted
+  - const_pointer
+  - const_reference
+  - reference
+  - const_reverse_iterator
+  - const_reverse_iterator_sorted
+  - state_type
+- Adapter member types:
+  - ["This page contains information about the adapter member types of the
+     :cpp:any:`FroidurePin` class."]
+  - Complexity
+  - Degree
+  - EqualTo
+  - Hash
+  - IncreaseDegree
+  - Less
+  - One
+  - Product
+  - Swap
 - Constructors:
-  - FroidurePin
-  - operator=(FroidurePin const&)
-  - operator=(FroidurePin&&)
-  - FroidurePin(FroidurePin&&)
+  - ["This page contains information about the constructors for the
+     :cpp:any:`FroidurePin` class."]
+  - FroidurePin()
+  - FroidurePin(std::shared_ptr<T>)
+  - FroidurePin(T const &)
+  - FroidurePin(FroidurePin &&) = default
   - FroidurePin(std::vector<element_type> const *)
   - FroidurePin(std::vector<element_type> const&)
   - FroidurePin(std::initializer_list<element_type>)
   - FroidurePin(FroidurePin const&)
-- Settings:
-  - batch_size(size_t)
-  - batch_size() const
-  - max_threads(size_t)
-  - max_threads() const   
-  - concurrency_threshold(size_t)
-  - concurrency_threshold() const
-  - immutable(bool)
-  - reserve
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the :cpp:any:`FroidurePin`
+     class."]
+  - operator=(FroidurePin const &) = delete
+  - operator=(FroidurePin &&) = delete
 - Initialisation:
-  - add_generator
-  - add_generators(TCollection const&)
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`FroidurePin` class that can be used for initialisation."]
+  - add_generator(const_reference)
+  - add_generators(T const&)
   - add_generators(std::initializer_list<const_element_type>)
   - add_generators(T const&, T const&)
-  - closure(TCollection const&)
+  - closure(T const&)
   - closure(std::initializer_list<const_element_type>)
-  - copy_add_generators
-  - copy_closure
-- Enumerating:
-  - kill
-  - run
-  - run_for(std::chrono::nanoseconds)
-  - run_for(TIntType)
-  - run_until(T&&)
-  - run_until(bool (*))
-  - enumerate
-- Attributes:
-  - generator
-  - degree
-  - nr_generators
-  - is_monoid
-  - current_size
-  - size
-  - nr_idempotents
-  - is_idempotent
-- Cayley graphs:
-  - right_cayley_graph
-  - left_cayley_graph
-  - right
-  - left
+  - copy_add_generators(T const &) const
+  - copy_add_generators(std::initializer_list< element_type >)
+  - copy_closure(T const &)
+  - copy_closure(std::initializer_list< element_type >)
+  - state()
 - Factorisation and relations:
-  - current_max_word_length
-  - current_nr_rules
-  - word_to_pos
-  - letter_to_pos
-  - minimal_factorisation(word_type&, element_index_type)
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePin` class related to factorising elements, products, and
+     defining relations."]
+  - minimal_factorisation(const_reference)
+  - factorisation(const_reference)
+  - word_to_element(word_type const &) const
+- Membership:
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePin` class related to testing membership."]
+  - generator(letter_type) const
+  - contains(const_reference)
+  - current_position(const_reference) const
+  - position(const_reference)
+  - sorted_at(element_index_type)
+  - sorted_position(const_reference)
+  - at(element_index_type)
+  - operator[](element_index_type) const
+- Iterators:
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePin` class related to iterators."]
+  - cbegin() const
+  - begin() const
+  - cend() const
+  - end() const
+  - crbegin() const
+  - crend() const
+  - cbegin_sorted()
+  - cend_sorted()
+  - crbegin_sorted()
+  - crend_sorted()
+  - cbegin_idempotents()
+  - cend_idempotents()
+- Virtual functions from FroidurePinBase:
+  - position_to_sorted_position(element_index_type) override
+  - is_finite() const override
+  - nr_generators() const noexcept override
+  - nr_idempotents() override
+  - is_idempotent(element_index_type) override
+  - equal_to(word_type const &,word_type const &) const override
+  - reserve(size_t) override
+  - fast_product(element_index_type,element_index_type) const override
+- Member functions inherited from FroidurePinBase:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`FroidurePin` class inherited from :cpp:any:`FroidurePinBase`."]
+  - cayley_graph_type
+  - element_index_type
+  - size_type
+  - batch_size(size_t) noexcept
+  - batch_size() const noexcept
+  - max_threads(size_t) noexcept
+  - max_threads() const noexcept
+  - concurrency_threshold(size_t) noexcept
+  - concurrency_threshold() const noexcept
+  - immutable(bool) noexcept
+  - immutable() const noexcept
+  - degree() const noexcept
+  - is_monoid()
+  - current_size() const noexcept
+  - current_nr_rules() const noexcept
+  - size()
+  - enumerate(size_t)
+  - right_cayley_graph()
+  - left_cayley_graph()
+  - right(element_index_type,letter_type)
+  - left(element_index_type,letter_type)
+  - current_max_word_length() const noexcept
+  - word_to_pos(word_type const &) const
+  - letter_to_pos(letter_type) const
+  - minimal_factorisation(word_type &,element_index_type) const
+  - minimal_factorisation(word_type &,element_index_type)
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
-  - nr_rules
-  - length_const
-  - length_non_const
-  - equal_to
-  - word_to_element
-- Prefixes and suffixes:
-  - prefix
-  - suffix
-  - first_letter
-  - final_letter
-- Products:
-  - product_by_reduction
-  - fast_product
-- Membership:
-  - contains
-  - current_position
-  - position
-  - sorted_at
-  - sorted_position
-  - position_to_sorted_position
-  - at
-  - operator[]
-- State:
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
-- Iterators:
-  - begin
-  - cbegin
-  - cbegin_idempotents
-  - cbegin_rules
-  - cend_rules
-  - cbegin_sorted
-  - cend
-  - cend_idempotents
-  - cend_sorted
-  - crbegin
-  - crbegin_sorted
-  - crend
-  - crend_sorted
-  - end
+  - nr_rules()
+  - length_const(element_index_type) const
+  - length_non_const(element_index_type)
+  - prefix(element_index_type) const
+  - suffix(element_index_type) const
+  - first_letter(element_index_type) const
+  - final_letter(element_index_type) const
+  - product_by_reduction(element_index_type,element_index_type) const
+  - cbegin_rules() const
+  - cend_rules() const
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`FroidurePin` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

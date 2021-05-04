@@ -378,8 +378,9 @@ namespace libsemigroups {
   extern detail::Reporter REPORTER;
 
   //! This struct can be used to enable printing of some information during
-  //! various of the computation in libsemigroups. Reporting is enable (or not)
-  //! at construction time, and disable when the ReportGuard goes out of scope.
+  //! various of the computation in ``libsemigroups``. Reporting is enable (or
+  //! not) at construction time, and disable when the ReportGuard goes out of
+  //! scope.
   struct ReportGuard {
     //! Constructs a ReportGuard with reporting enabled by default.
     //!

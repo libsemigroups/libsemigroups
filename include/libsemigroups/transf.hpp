@@ -53,7 +53,7 @@ namespace libsemigroups {
 
   //! Empty base class for polymorphism.
   //!
-  //! \sa IsDerivedFromPTransf
+  //! \sa \ref IsDerivedFromPTransf
   struct PTransfPolymorphicBase {};
 
   namespace detail {
@@ -129,7 +129,7 @@ namespace libsemigroups {
       //! (None)
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Constant.
@@ -145,7 +145,7 @@ namespace libsemigroups {
       //! \param cont the container.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in the size of the container \p cont.
@@ -164,7 +164,7 @@ namespace libsemigroups {
       //! \param cont the container.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in the size of the container \p cont.
@@ -184,7 +184,7 @@ namespace libsemigroups {
       //! \param cont the initializer list.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in the size of the initializer list \p cont.
@@ -215,7 +215,7 @@ namespace libsemigroups {
       //!
       //! \throw LibsemigroupsException if any of the following hold:
       //! * the size of \p cont is incompatible with \ref container_type.
-      //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
+      //! * any value in \p cont exceeds `cont.size()` and is not equal to
       //!   libsemigroups::UNDEFINED.
       //!
       //! \complexity
@@ -261,7 +261,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -280,7 +280,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -299,7 +299,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -318,7 +318,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -338,7 +338,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -357,7 +357,7 @@ namespace libsemigroups {
       //! A value of type \c bool.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! At worst linear in degree().
@@ -420,7 +420,7 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      value_type& at(size_t i) noexcept {
+      value_type& at(size_t i) {
         return _container.at(i);
       }
 
@@ -437,7 +437,7 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      value_type const& at(size_t i) const noexcept {
+      value_type const& at(size_t i) const {
         return _container.at(i);
       }
 
@@ -447,7 +447,7 @@ namespace libsemigroups {
       //! product of `*this` and `that`.
       //!
       //! \tparam TSubclass
-      //! A class derived from \ref libsemigroups::PTransfPolymorphicBase.
+      //! A class derived from libsemigroups::PTransfPolymorphicBase.
       //!
       //! \param that a partial transformation.
       //!
@@ -455,7 +455,7 @@ namespace libsemigroups {
       //! A value of type \c TSubclass
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in degree().
@@ -567,7 +567,7 @@ namespace libsemigroups {
       //! A value of type \c size_t.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in degree().
@@ -587,7 +587,7 @@ namespace libsemigroups {
       //! A value of type \c size_t.
       //!
       //! \exceptions
-      //! \no_libsemigroups_except
+      //! \no_libsemigroups_except_detail
       //!
       //! \complexity
       //! Linear in degree().
@@ -1037,6 +1037,7 @@ namespace libsemigroups {
 
     using PTransf<N, Scalar>::PTransf;
 
+    //! tESTING
     using base_type::degree;
 
     //! Construct from a container and validate.
@@ -1053,7 +1054,7 @@ namespace libsemigroups {
     //! \throw LibsemigroupsException if any of the following hold:
     //! * the size of \p cont is incompatible with \ref container_type.
     //! * any value in \p cont exceeds `cont.size()` or is equal to \ref
-    //!   libsemigroups::UNDEFINED.
+    //!    UNDEFINED.
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
@@ -1083,7 +1084,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in degree().
+    //! Linear in PTransf::degree.
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
@@ -1259,7 +1260,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any of the following fail to hold:
     //! * the size of \p cont is incompatible with \ref container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-    //!   libsemigroups::UNDEFINED.
+    //!   UNDEFINED.
     //! * there are repeated values in \p cont.
     template <typename T>
     static PPerm make(T&& cont) {
@@ -1279,8 +1280,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following fail to hold:
     //! * the size of \p cont is incompatible with \ref container_type.
-    //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-    //!   libsemigroups::UNDEFINED.
+    //! * any value in \p cont exceeds `cont.size()` and is not equal to
+    //!   \ref UNDEFINED.
     //! * there are repeated values in \p cont.
     static PPerm make(std::initializer_list<value_type>&& cont) {
       return make<std::initializer_list<value_type>>(std::move(cont));

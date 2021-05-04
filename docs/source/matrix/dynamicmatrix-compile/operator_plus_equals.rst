@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_operator_plus_equals:
 
-DynamicMatrix::operator+=
-=========================
+operator+=
+==========
 
-.. cpp:function:: void DynamicMatrix::operator+=(DynamicMatrix const& that)
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: void operator+=(DynamicMatrix const& that)
 
    Redefines ``this`` to be the sum of ``*this`` and ``that``. 
 
@@ -28,7 +30,7 @@ DynamicMatrix::operator+=
       The matrices must be of the same dimensions, although this is not
       verified by the implementation.
 
-.. cpp:function:: void DynamicMatrix::operator+=(RowView const& that)
+.. cpp:function:: void operator+=(RowView const& that)
 
    Redefines ``this`` to be the sum of ``*this`` and ``that``. 
 
@@ -47,7 +49,7 @@ DynamicMatrix::operator+=
       This function only works if ``this`` has a single row, i.e. the template
       parameter ``R`` is ``1``.
 
-.. cpp:function:: void DynamicMatrix::operator+=(scalar const a)
+.. cpp:function:: void operator+=(scalar const a)
 
    Adds a scalar to every entry of the matrix in-place.
 

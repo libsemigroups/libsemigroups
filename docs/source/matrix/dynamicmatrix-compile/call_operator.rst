@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_call_operator:
 
-DynamicMatrix::operator()
-=========================
+operator()
+==========
 
-.. cpp:function:: scalar_reference DynamicMatrix::operator()(size_t const r, size_t const c) 
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: scalar_reference operator()(size_t const r, size_t const c) 
 
    Returns a reference to the specified entry of the matrix. 
 
@@ -28,7 +30,7 @@ DynamicMatrix::operator()
       No checks on the validity of the parameters ``r`` and ``c`` are
       performed.
 
-.. cpp:function:: scalar_const_reference DynamicMatrix::operator()(size_t const r, size_t const c) const 
+.. cpp:function:: scalar_const_reference operator()(size_t const r, size_t const c) const 
 
    Returns a const reference to the specified entry of the matrix. 
 

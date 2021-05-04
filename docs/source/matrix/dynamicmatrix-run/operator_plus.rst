@@ -9,7 +9,7 @@
 operator+
 =========
 
-.. cpp:namespace:: libsemigroups::DynamicMatrix
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
 
 .. cpp:function:: DynamicMatrix operator+(DynamicMatrix const& that)
 

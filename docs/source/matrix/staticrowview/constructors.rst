@@ -9,6 +9,8 @@
 StaticRowView
 =============
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 This page contains information about the constructors for the
 :cpp:any:`StaticRowView` class.
 

@@ -1,80 +1,91 @@
 libsemigroups::FroidurePinBase:
-- Type aliases:
-  - [typedef, size_type]
-  - [typedef, element_index_type]
-  - [typedef, cayley_graph_type]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`FroidurePinBase` class."]
+  - size_type
+  - element_index_type
+  - cayley_graph_type
+  - const_rule_iterator
 - Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`FroidurePinBase` class."]
   - FroidurePinBase()
   - FroidurePinBase(FroidurePinBase const&)
-  - FroidurePinBase(FroidurePinBase&&)
-  - operator=(FroidurePinBase const&)
-  - operator=(FroidurePinBase&&)
+  - FroidurePinBase(FroidurePinBase &&) = default
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the :cpp:any:`FroidurePinBase`
+     class."]
+  - operator=(FroidurePinBase const &) = delete
+  - operator=(FroidurePinBase &&) = delete
 - Settings:
-  - batch_size(size_t)
-  - batch_size() const
-  - max_threads(size_t)
-  - max_threads() const   
-  - concurrency_threshold(size_t)
-  - concurrency_threshold() const
-  - immutable(bool)
-  - reserve
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Enumerating:
-  - kill
-  - run
-  - run_for(std::chrono::nanoseconds)
-  - run_for(TIntType)
-  - run_until(T&&)
-  - run_until(bool (*))
-  - enumerate
+  - ["This page contains information about the member functions of the
+     :cpp:any:`FroidurePinBase` that control various settings."]
+  - batch_size(size_t) noexcept
+  - batch_size() const noexcept
+  - max_threads(size_t) noexcept
+  - max_threads() const noexcept
+  - concurrency_threshold(size_t) noexcept
+  - concurrency_threshold() const noexcept
+  - immutable(bool) noexcept
+  - immutable() const noexcept
 - Attributes:
-  - degree
-  - nr_generators
-  - is_monoid
-  - current_size
-  - current_nr_rules
-  - size
-  - nr_idempotents
-  - is_idempotent
-  - is_finite
+  - ["This page contains information about attributes of the  
+     :cpp:any:`FroidurePinBase` class."]
+  - degree() const noexcept
+  - is_monoid()
+  - current_size() const noexcept
+  - current_nr_rules() const noexcept
+  - size()
+  - enumerate(size_t)
 - Cayley graphs:
-  - right_cayley_graph
-  - left_cayley_graph
-  - right
-  - left
-- Factorisation and relations:
-  - current_max_word_length
-  - word_to_pos
-  - letter_to_pos
-  - minimal_factorisation(word_type&, element_index_type)
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePinBase` class related to left and right Cayley graphs."]
+  - right_cayley_graph()
+  - left_cayley_graph()
+  - right(element_index_type,letter_type)
+  - left(element_index_type,letter_type)
+- Factorisation, products, and relations:
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePinBase` class related to factorising elements, products, and
+     defining relations."]
+  - current_max_word_length() const noexcept
+  - word_to_pos(word_type const &) const
+  - letter_to_pos(letter_type) const
+  - minimal_factorisation(word_type &,element_index_type) const
+  - minimal_factorisation(word_type &,element_index_type)
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
-  - position_to_sorted_position
-  - nr_rules
-  - length_const
-  - length_non_const
-  - equal_to
+  - nr_rules()
+  - length_const(element_index_type) const
+  - length_non_const(element_index_type)
+  - cbegin_rules() const
+  - cend_rules() const
+  - product_by_reduction(element_index_type,element_index_type) const
 - Prefixes and suffixes:
-  - prefix
-  - suffix
-  - first_letter
-  - final_letter
-- Products:
-  - product_by_reduction
-  - fast_product
-- State:
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
-- Iterators:
-  - cbegin_rules
-  - cend_rules
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`FroidurePinBase` class related to prefixes and suffixes."]
+  - prefix(element_index_type) const
+  - suffix(element_index_type) const
+  - first_letter(element_index_type) const
+  - final_letter(element_index_type) const
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`FroidurePinBase` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

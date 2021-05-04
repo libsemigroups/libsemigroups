@@ -1,29 +1,47 @@
 libsemigroups::FpSemigroupInterface:
-- Type Aliases:
-  - [typedef, rule_type]
-  - [typedef, const_iterator]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`FpSemigroupInterface` class."]
+  - rule_type
+  - const_iterator
+  - string_type
+  - char_type
 - Constructors:
-  - FpSemigroupInterface()
-  - FpSemigroupInterface(FpSemigroupInterface const&)
+  - ["This page contains information about the constructors for the
+     :cpp:any:`FpSemigroupInterface` class."]
+  - FpSemigroupInterface() 
+  - FpSemigroupInterface(FpSemigroupInterface const&) = default
 - Deleted constructors:
-  - operator=(FpSemigroupInterface const&)
-  - FpSemigroupInterface(FpSemigroupInterface&&)
-  - operator=(FpSemigroupInterface&&)
+  - ["This page lists the deleted constructors for the
+     :cpp:any:`FpSemigroupInterface` class."]
+  - FpSemigroupInterface(FpSemigroupInterface&&) = delete
+  - operator=(FpSemigroupInterface const&) = delete
+  - operator=(FpSemigroupInterface&&) = delete
+- Pure virtual member functions:
+  - ["This page contains information about the pure virtual member functions of
+      the :cpp:any:`FpSemigroupInterface` class."]
+  - size() = 0
+  - equal_to(std::string const&, std::string const&) = 0
+  - normal_form(std::string const&) = 0
 - Validation:
+  - ["This page contains information relating to validating input to other
+      functions for the :cpp:any:`FpSemigroupInterface` class."]
   - validate_letter(char) const
   - validate_letter(letter_type) const
   - validate_word(word_type const&) const
   - validate_word(std::string const&) const
 - Initialization:
+  - ["This page contains information about initialising the
+     :cpp:any:`FpSemigroupInterface` class."]
   - set_alphabet(size_t)
   - set_alphabet(std::string const&)
-  - alphabet() const
   - alphabet(size_t) const
+  - alphabet() const noexcept
   - set_identity(letter_type)
   - set_identity(std::string const&)
-  - identity
-  - set_inverses
-  - inverses
+  - identity() const
+  - set_inverses(std::string const&)
+  - inverses() const
   - add_rule(relation_type)
   - add_rule(rule_type)
   - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)
@@ -31,48 +49,63 @@ libsemigroups::FpSemigroupInterface:
   - add_rule(word_type const&, word_type const&)
   - add_rules(FroidurePinBase&)
   - add_rules(std::vector<rule_type> const&)
-  - nr_rules
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Operators:
-  - kill
-  - run
-  - run_for(std::chrono::nanoseconds)
-  - run_for(TIntType)
-  - run_until(T&&)
-  - run_until(bool (*))
-- State:
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
+  - nr_rules() const noexcept
+  - has_identity() const noexcept
 - Normal forms and equality testing:
-  - normal_form(std::string const&)
+  - ["This page contains information about the member functions of 
+      the :cpp:any:`FpSemigroupInterface` class for computing normal forms and
+      equality testing."]
   - normal_form(word_type const&)
   - normal_form(std::initializer_list<letter_type>)
   - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
-  - equal_to(std::string const&, std::string const&)
   - equal_to(word_type const&, word_type const&)
 - Words to strings and vice versa:
-  - word_to_string
-  - string_to_word
-  - uint_to_char
-  - char_to_uint
+  - ["This page contains information about the functions in 
+      the :cpp:any:`FpSemigroupInterface` class for converting from words to
+      strings and vice versa."]
+  - word_to_string(word_type const&) const
+  - string_to_word(std::string const&) const
+  - uint_to_char(letter_type) const
+  - char_to_uint(char) const
 - Related semigroups:
-  - has_froidure_pin
-  - froidure_pin
-- Finiteness:
-  - is_obviously_finite
-  - is_obviously_infinite
-  - size
+  - ["This page contains information about the member functions of the
+      :cpp:any:`FpSemigroupInterface` class for obtaining the parent or
+      quotient semigroup represented as a :cpp:any:`FroidurePin` instance."]
+  - has_froidure_pin() const noexcept
+  - froidure_pin()
+- Size:
+  - ["This page contains information about the member functions of the
+      :cpp:any:`FpSemigroupInterface` class for checking whether the fp
+      semigroup is obviously infinite or finite."]
+  - is_obviously_finite()
+  - is_obviously_infinite()
 - Iterators:
-  - cbegin_rules
-  - cend_rules
+  - ["This page contains information about iterators for accessing certain
+      attributes of the :cpp:any:`FpSemigroupInterface` class."]
+  - cbegin_rules() const noexcept
+  - cend_rules() const noexcept
 - Miscellanea:
-  - to_gap_string
+  - ["This page contains information about member functions of 
+      the :cpp:any:`FpSemigroupInterface` class that doesn't fall into any of
+      the other categories."]
+  - to_gap_string()
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`FpSemigroupInterface` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

@@ -65,7 +65,6 @@ namespace libsemigroups {
       Constant& operator=(Constant&&) = default;
       ~Constant()                     = default;
 
-      // TODO(later) move the static assert conditions into the SFINAE
       template <typename T,
                 typename = std::enable_if_t<!std::is_enum<T>::value, T>>
       constexpr operator T() const noexcept {
@@ -96,27 +95,27 @@ namespace libsemigroups {
   //! Type for negative infinity.
   using NegativeInfinity = detail::Constant<0, detail::Min>;
 
-  //! This variable is used to indicate that a value is undefined. UNDEFINED is
-  //! comparable with any integral value (signed or unsigned) or constant via
-  //! `==` and `!=` but not via `<` or `>`.
+  //! This variable is used to indicate that a value is undefined. \ref
+  //! UNDEFINED is comparable with any integral value (signed or unsigned) or
+  //! constant via `==` and `!=` but not via `<` or `>`.
   extern Undefined const UNDEFINED;
 
-  //! This variable represents \f$\infty\f$.  POSITIVE_INFINITY is comparable
-  //! via `==`, `!=`, `<`, `>` with any integral value (signed or unsigned) and
-  //! with NEGATIVE_INFINITY, and is comparable to any other constant via `==`
-  //! and `!=`, but not by `<` and `>`.
+  //! This variable represents \f$\infty\f$.  \ref POSITIVE_INFINITY is
+  //! comparable via `==`, `!=`, `<`, `>` with any integral value (signed or
+  //! unsigned) and with \ref NEGATIVE_INFINITY, and is comparable to any other
+  //! constant via `==` and `!=`, but not by `<` and `>`.
   extern PositiveInfinity const POSITIVE_INFINITY;
 
   //! This variable represents the maximum value that certain function
-  //! parameters can have. LIMIT_MAX is comparable via `==`, `!=`, `<`, `>`
+  //! parameters can have. \ref LIMIT_MAX is comparable via `==`, `!=`, `<`, `>`
   //! with any integral value (signed or unsigned), and is comparable to any
   //! other constant via `==` and `!=`, but not by `<` and `>`.
   extern LimitMax const LIMIT_MAX;
 
-  //! This variable represents \f$-\infty\f$.  NEGATIVE_INFINITY is comparable
-  //! via `==`, `!=`, `<`, `>` with any signed integral value and
-  //! with POSITIVE_INFINITY, and is comparable to any other constant via `==`
-  //! and `!=`.
+  //! This variable represents \f$-\infty\f$.  \ref NEGATIVE_INFINITY is
+  //! comparable via `==`, `!=`, `<`, `>` with any signed integral value and
+  //! with \ref POSITIVE_INFINITY, and is comparable to any other constant via
+  //! `==` and `!=`.
   extern NegativeInfinity const NEGATIVE_INFINITY;
 
   ////////////////////////////////////////////////////////////////////////

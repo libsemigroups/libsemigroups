@@ -42,7 +42,7 @@ namespace libsemigroups {
     //! Constructs a forest with \p n nodes.
     //!
     //! The Forest is initialised so that the parent() and label() of every
-    //! node is libsemigroups::UNDEFINED.
+    //! node is UNDEFINED.
     //!
     //! \param n the number of nodes, defaults to \c 0.
     explicit Forest(size_t n = 0)
@@ -158,7 +158,7 @@ namespace libsemigroups {
     //! \param i the node whose parent is sought.
     //!
     //! \returns
-    //! A Forest::node_type.
+    //! A \ref node_type.
     //!
     //! \throws LibsemigroupsException if \p i exceeds \p nr_nodes().
     //!
@@ -175,7 +175,7 @@ namespace libsemigroups {
     //! \param i the node whose label is sought.
     //!
     //! \returns
-    //! A Forest::label_type.
+    //! A \ref label_type.
     //!
     //! \throws LibsemigroupsException if \p i exceeds \p nr_nodes().
     //!

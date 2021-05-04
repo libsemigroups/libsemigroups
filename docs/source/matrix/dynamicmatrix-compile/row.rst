@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_row:
 
-DynamicMatrix::row
-==================
+row
+===
 
-.. cpp:function::  RowView DynamicMatrix::row(size_t i) const
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function::  RowView row(size_t i) const
    
    Returns a row view into the specified row.
 

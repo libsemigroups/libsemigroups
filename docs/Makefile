@@ -1,5 +1,4 @@
 # You can set these variables from the command line.
-SPHINXOPTS    = -j 8
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build

@@ -9,6 +9,8 @@
 operator[]
 ==========
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: scalar_reference operator[](size_t const i) 
 
    Returns a reference to the specified entry of the matrix. 

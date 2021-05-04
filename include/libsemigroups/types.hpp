@@ -41,7 +41,7 @@ namespace libsemigroups {
   //! Provides a type giving the smallest unsigned integer type capable of
   //! representing the template \c N.
   //!
-  //! The type SmallestInteger::type contains the smallest (in terms of
+  //! The member \c type contains the smallest (in terms of
   //! memory required) unsigned integer type which can represent the
   //! non-negative integer \c N.
   template <size_t N>

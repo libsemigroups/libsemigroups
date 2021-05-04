@@ -7,7 +7,7 @@
 StaticMatrix static member functions
 ====================================
 
-.. cpp:namespace:: libsemigroups::StaticMatrix
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
 
 .. _staticmatrix_identity:
 .. cpp:function:: static StaticMatrix identity()

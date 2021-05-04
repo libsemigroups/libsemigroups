@@ -9,6 +9,8 @@
 operator+=
 ==========
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: void operator+=(StaticRowView const& that)
 
    Sums a row view with another row view in-place.

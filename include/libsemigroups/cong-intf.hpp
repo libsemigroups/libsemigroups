@@ -70,28 +70,23 @@ namespace libsemigroups {
     // CongruenceInterface - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
-    //! A CongruenceInterface instance is not default-constructible.
-    //! This constructor is deleted.
-    CongruenceInterface() = delete;
-
     //! Default copy constructor.
     CongruenceInterface(CongruenceInterface const&) = default;
 
-    //! A CongruenceInterface instance is not copy assignable.
-    //! This constructor is deleted.
+    //! Constructs a congruence of the specified type.
+    explicit CongruenceInterface(congruence_type);
+
+    //! Deleted.
+    CongruenceInterface() = delete;
+
+    //! Deleted.
     CongruenceInterface& operator=(CongruenceInterface const&) = delete;
 
-    //! A CongruenceInterface instance is not move copyable.
-    //! This constructor is deleted.
+    //! Deleted.
     CongruenceInterface(CongruenceInterface&&) = delete;
 
-    //! A CongruenceInterface instance is not move assignable.
-    //! This constructor is deleted.
+    //! Deleted.
     CongruenceInterface& operator=(CongruenceInterface&&) = delete;
-
-    //! Constructors an empty instance of an interface to a congruence of type
-    //! specified by the argument.
-    explicit CongruenceInterface(congruence_type);
 
     virtual ~CongruenceInterface();
 
@@ -115,7 +110,7 @@ namespace libsemigroups {
     //! \throws std::bad_alloc if the (possibly infinite) computation uses all
     //! the available memory.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
@@ -136,21 +131,23 @@ namespace libsemigroups {
     //! the semigroup.
     //!
     //! \returns
-    //! * libsemigroups::tril::TRUE if the words \p u and \p v
+    //! * tril::TRUE if the words \p u and \p v
     //! are known to belong to the same congruence class
     //!
-    //! * libsemigroups::tril::FALSE if the words are known to not belong
+    //! * tril::FALSE if the words are known to not belong
     //! to the same congruence class
     //!
-    //! * libsemigroups::tril::unknown otherwise.
+    //! * tril::unknown otherwise.
     //!
     //! \throws LibsemigroupsException if \p u or \p v contains a letter that
     //! is out of bounds.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Linear in `u.size() + v.size()`.
     virtual tril const_contains(word_type const& u, word_type const& v) const;
 
+    //! Compare the indices of the classes containing two words.
+    //!
     //! This function returns \c true if the congruence class of \p v is less
     //! than the class of \p v in a total ordering of congruence classes.
     //!
@@ -167,7 +164,7 @@ namespace libsemigroups {
     //! \throws std::bad_alloc if the (possibly infinite) computation uses all
     //! the available memory.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
@@ -190,6 +187,8 @@ namespace libsemigroups {
     // CongruenceInterface - non-virtual functions - public
     /////////////////////////////////////////////////////////////////////////
 
+    //! Get a canonical representative of the \c i-th class.
+    //!
     //! If the congruence, that an object of this type represents, is defined
     //! over a semigroup with generators \f$A\f$, then this function defines a
     //! injective function from \f$\{0, 1, \ldots, n -  1\}\f$, where \f$n\f$
@@ -199,7 +198,7 @@ namespace libsemigroups {
     //! classes.
     //!
     //! \param i the index of the class whose representative we want to find, a
-    //! value of type libsemigroups::word_type.
+    //! value of type \ref word_type.
     //!
     //! \returns The word representing the \p i-th class of the congruence
     //!
@@ -209,7 +208,7 @@ namespace libsemigroups {
     //! \throws std::bad_alloc if the (possibly infinite) computation uses all
     //! the available memory.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The function for finding the structure of a congruence may be
@@ -217,11 +216,12 @@ namespace libsemigroups {
     //! a result.
     //!
     //! \note
-    //! CongruenceInterface::word_to_class_index and
-    //!  CongruenceInterface::class_index_to_word are mutually inverse
-    //!  functions.
+    //! word_to_class_index() and class_index_to_word() are mutually inverse
+    //! functions.
     word_type class_index_to_word(class_index_type i);
 
+    //! Convert a word into the index of the class containing it.
+    //!
     //! If the congruence, that an object of this type represents, is defined
     //! over a semigroup with generators \f$A\f$, then this function defines a
     //! surjective function from the set of all words over \f$A\f$ to either
@@ -230,7 +230,7 @@ namespace libsemigroups {
     //! this has infinitely many classes.
     //!
     //! \param w the word whose class index we want to find. The parameter \p
-    //! w must be a libsemigroups::word_type consisting of indices of the
+    //! w must be a \ref word_type consisting of indices of the
     //! generators of the semigroup over which \c this is defined.
     //!
     //! \returns The index of the congruence class corresponding to \p word.
@@ -241,7 +241,7 @@ namespace libsemigroups {
     //! \throws std::bad_alloc if the (possibly infinite) computation uses all
     //! the available memory.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The function for finding the structure of a congruence may be
@@ -249,8 +249,7 @@ namespace libsemigroups {
     //! a result.
     //!
     //! \note
-    //! CongruenceInterface::word_to_class_index and
-    //! CongruenceInterface::class_index_to_word are mutually inverse
+    //! word_to_class_index() and class_index_to_word() are mutually inverse
     //! functions.
     class_index_type word_to_class_index(word_type const& w);
 
@@ -263,7 +262,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException If the number of generators has already
     //! been set to another value, or the parameter \p n is 0.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     void set_nr_generators(size_t n);
 
@@ -276,41 +275,42 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \throws LibsemigroupsException If any of the following hold:
-    //! 1. the number of generators has not yet been set (set_nr_generators)
-    //! 2. if \p u or \p v contains a letter that is out of bounds.
-    //! 3. `this->started()` returns `true` indicating that the underlying
-    //!    algorithm has been applied (partially or fully) to the data
-    //!    structure.
+    //! \throws LibsemigroupsException if
+    //! the number of generators has not yet been set via set_nr_generators()
     //!
-    //! \par Complexity
+    //! \throws LibsemigroupsException if \p u or \p v contains a letter that
+    //! is out of bounds.
+    //!
+    //! \throws LibsemigroupsException if started() returns `true` indicating
+    //! that the underlying algorithm has been applied (partially or
+    //! fully) to the data structure.
+    //!
+    //! \complexity
     //! Linear in `u.size() + v.size()`.
     //!
     //! \note In some circumstances this function does not do anything. These
     //! are:
     //! * if \p u and \p v are identical words
-    //! * if \c this->has_parent_froidure_pin() and the words \p u and \p v
-    //! represent the same element of \c this->parent_froidure_pin().
+    //! * if \c has_parent_froidure_pin() returns \c true and the words \p u
+    //! and \p v represent the same element of \c parent_froidure_pin().
     void add_pair(word_type const& u, word_type const& v);
 
-    //! Add a pair to the congruence.
-    //! \sa add_pair.
+    //! Add a generating pair to the congruence.
+    //! \sa add_pair(word_type const&, word_type const&)
     void add_pair(std::initializer_list<size_t> l,
                   std::initializer_list<size_t> r) {
       add_pair(word_type(l), word_type(r));
     }
 
-    //! Returns a const iterator pointing to the first generating pair of the
-    //! congruence added by CongruenceInterface::add_pair (if any).
+    //! Returns a const iterator pointing to the first generating pair.
     //!
     //! \returns
-    //! A CongruenceInterface::const_iterator pointing to a
-    //! libsemigroups::relation_type.
+    //! A \ref const_iterator pointing to a \ref relation_type.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
@@ -320,17 +320,15 @@ namespace libsemigroups {
     }
 
     //! Returns a const iterator pointing one-after-the-end of the last
-    //! generating pair of the congruence added by
-    //! CongruenceInterface::add_pair (if any).
+    //! generating pair.
     //!
     //! \returns
-    //! A CongruenceInterface::const_iterator pointing to a
-    //! libsemigroups::relation_type.
+    //! A \ref const_iterator pointing to a \ref relation_type.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
@@ -339,16 +337,16 @@ namespace libsemigroups {
       return _gen_pairs.cend();
     }
 
-    //! Returns a const iterator pointing to the first non-trivial (size > 1)
-    //! class of the congruence.
+    //! Returns a const iterator pointing to the first non-singleton class.
     //!
     //! \returns
-    //! A CongruenceInterface::non_trivial_class_iterator pointing to a
+    //! A \ref non_trivial_class_iterator pointing to a
     //! std::vector<word_type>.
     //!
-    //! \throws LibsemigroupsException if `!this->has_parent_froidure_pin()`.
+    //! \throws LibsemigroupsException if has_parent_froidure_pin() returns
+    //! `false`.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warnings.
     //!
     //! \warning The problem of determining the return value of this function
@@ -361,16 +359,17 @@ namespace libsemigroups {
       return _non_trivial_classes->cbegin();
     }
 
-    //! Returns a const iterator pointing one-past-the-end of the non-trivial
-    //! (size > 1) classes of the congruence.
+    //! Returns a const iterator pointing one-past-the-end of the last
+    //! non-singleton class.
     //!
     //! \returns
-    //! A CongruenceInterface::non_trivial_class_iterator pointing to a
+    //! A \ref non_trivial_class_iterator pointing to a
     //! std::vector<word_type>.
     //!
-    //! \throws LibsemigroupsException if `!this->has_parent_froidure_pin()`
+    //! \throws LibsemigroupsException if has_parent_froidure_pin() returns
+    //! `false`.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warnings.
     //!
     //! \warning The problem of determining the return value of this function
@@ -385,58 +384,64 @@ namespace libsemigroups {
 
     //! Returns a shared pointer to the non-trivial classes.
     //!
-    //! \returns A std::shared_ptr to
-    //! CongruenceInterface::non_trivial_classes_type.
+    //! \returns A \shared_ptr to \ref non_trivial_classes_type.
     std::shared_ptr<non_trivial_classes_type const> non_trivial_classes() {
       init_non_trivial_classes();
       return _non_trivial_classes;
     }
 
-    //! Returns the number of generators specified by
-    //! CongruenceInterface::set_nr_generators.
+    //! The number of generators.
     //!
-    //! \returns The number of generators of the semigroup of the
+    //! This function returns the number of generators of the semigroup of the
     //! congruence that an object of this type represents, or
-    //! libsemigroups::UNDEFINED.
+    //! \ref UNDEFINED if this has not been defined.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \returns
+    //! A value of type \c size_t.
     //!
-    //! \par Complexity
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
+    //!
+    //! \sa set_nr_generators()
     size_t nr_generators() const noexcept {
       return _nr_gens;
     }
 
-    //! Returns the number of generating pairs added by
-    //! CongruenceInterface::add_pair.
+    //! The number of generating pairs.
     //!
-    //! \returns The number of generating pairs of the
-    //! congruence that an object of this type represents.
+    //! This function returns the number of generating pairs of the congruence.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \returns
+    //! A value of type \c size_t.
     //!
-    //! \par Complexity
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
+    //!
+    //! \sa add_pair()
     size_t nr_generating_pairs() const noexcept {
       return _gen_pairs.size();
     }
 
-    //! Returns the number of non-trivial classes (size > 1) of the
-    //! congruence.
+    //! The number of non-singleton classes.
     //!
-    //! \returns The number of non-trivial classes of the congruence.
+    //! \returns The number of non-singleton classes of the congruence.
     //!
-    //! \throws LibsemigroupsException if `!this->has_parent_froidure_pin()`
+    //! \throws LibsemigroupsException if has_parent_froidure_pin() returns \c
+    //! false.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
@@ -461,7 +466,7 @@ namespace libsemigroups {
     //! semigroup of \c this by the 2-sided congruence that \c this
     //! represents.
     //!
-    //! \returns A std::shared_ptr to FroidurePinBase.
+    //! \returns A \shared_ptr to FroidurePinBase.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the congruence is not 2-sided, `side() !=
@@ -485,16 +490,18 @@ namespace libsemigroups {
     //! (None)
     std::shared_ptr<FroidurePinBase> quotient_froidure_pin();
 
+    //! Check if the quotient semigroup has been computed.
+    //!
     //! Returns \c true if the congruence represented by this object knows an
     //! isomorphic quotient semigroup represented by an instance of
     //! FroidurePin.
     //!
     //! \returns A `bool`.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
@@ -503,37 +510,43 @@ namespace libsemigroups {
       return _quotient != nullptr;
     }
 
-    //! Returns a shared_ptr to the parent FroidurePin over which the
+    //! Get the parent FroidurePin instance (if any).
+    //!
+    //! Returns a \shared_ptr to the parent FroidurePin over which the
     //! congruence represented by this object was defined, if it exists.
     //!
-    //! \returns A std::shared_ptr to FroidurePinBase.
+    //! \returns A \shared_ptr to FroidurePinBase.
     //!
     //! \throws LibsemigroupsException if \c this was not created using a
     //! FroidurePin instance.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
     std::shared_ptr<FroidurePinBase> parent_froidure_pin() const;
 
-    //! Returns a shared_ptr to the parent FpSemigroupInterface object over
+    //! Get the parent FpSemigroupInterface instance (if any).
+    //!
+    //! Returns a \shared_ptr to the parent FpSemigroupInterface object over
     //! which the congruence represented by this object was defined, if it
     //! exists.
     //!
-    //! \returns A std::shared_ptr to an FpSemigroupInterface.
+    //! \returns A \shared_ptr to an FpSemigroupInterface.
     //!
     //! \throws LibsemigroupsException if \c this was not created using a
     //! FpSemigroupInterface instance.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
     std::shared_ptr<FpSemigroupInterface> parent_fpsemigroup() const;
 
+    //! Check if the congruence was constructed from a FroidurePin instance.
+    //!
     //! Returns \c true if the congruence represented by \c this was created
     //! from a FroidurePin instance.
     //!
@@ -542,16 +555,19 @@ namespace libsemigroups {
     //!
     //! \returns A `bool`.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
     bool has_parent_froidure_pin() const noexcept;
 
+    //! Check if the congruence was constructed from a FpSemigroupInterface
+    //! instance.
+    //!
     //! Returns \c true if the congruence represented by \c this was created
     //! from an FpSemigroupInterface instance.
     //!
@@ -560,25 +576,24 @@ namespace libsemigroups {
     //!
     //! \returns A `bool`.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
     //! (None)
     bool has_parent_fpsemigroup() const noexcept;
 
-    //! Return if the congruence represented by this object was created as a
-    //! left, right, or two-sided congruence.
+    //! The handedness of the congruence (left, right, or 2-sided).
     //!
-    //! \returns A libsemigroups::congruence_type.
+    //! \returns A \ref congruence_type.
     //!
-    //! \par Exceptions
-    //! This function is `noexcept` and is guaranteed never to throw.
+    //! \exceptions
+    //! \noexcept
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \par Parameters
@@ -587,16 +602,18 @@ namespace libsemigroups {
       return _type;
     }
 
+    //! Deterministically check if the quotient is finite.
+    //!
     //! Return \c true if the number of classes in the congruence represented
     //! by \c this is obviously finite, and \c false if it is not obviously
     //! finite.
     //!
     //! \returns A `bool`.
     //!
-    //! \par Exceptions
+    //! \exceptions
     //! This function throws if the implementation throws.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Implementation specific, but this function is guaranteed to return a
     //! result. More specifically, this function will not trigger a
     //! computation that potentially never terminates.
@@ -606,22 +623,24 @@ namespace libsemigroups {
     //! congruence, if `false` is returned, then the number of classes can be
     //! finite or infinite.
     //!
-    //! \sa CongruenceInterface::is_quotient_obviously_infinite.
+    //! \sa is_quotient_obviously_infinite()
     //!
     //! \par Parameters
     //! (None)
     bool is_quotient_obviously_finite();
 
+    //! Deterministically check if the quotient is infinite.
+    //!
     //! Return \c true if the number of classes in the congruence represented
     //! by \c this is obviously infinite, and \c false if it is not obviously
     //! infinite.
     //!
     //! \returns A `bool`.
     //!
-    //! \par Exceptions
+    //! \exceptions
     //! This function throws if the implementation throws.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Implementation specific, but this function is guaranteed to return a
     //! result. More specifically, this function will not trigger a
     //! computation that potentially never terminates.
@@ -631,23 +650,22 @@ namespace libsemigroups {
     //! congruence, if `false` is returned, then the number of classes can be
     //! finite or infinite.
     //!
-    //! \sa CongruenceInterface::is_quotient_obviously_finite.
+    //! \sa is_quotient_obviously_finite().
     //!
     //! \par Parameters
     //! (None)
     bool is_quotient_obviously_infinite();
 
-    //! Computes the total number of classes in the congruence represented by
-    //! an instance of this type.
+    //! Compute the number of classes in the congruence.
     //!
     //! \returns The number of congruences classes of \c this if this number
-    //! is finite, or libsemigroups::POSITIVE_INFINITY in some cases if \c this
+    //! is finite, or \ref POSITIVE_INFINITY in some cases if \c this
     //! number is not finite.
     //!
     //! \throws std::bad_alloc if the (possibly infinite) computation uses all
     //! the available memory.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the number of classes of a

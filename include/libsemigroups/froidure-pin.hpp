@@ -47,19 +47,26 @@ namespace libsemigroups {
   //!
   //! This is a traits class for use with FroidurePin.
   //!
+  //! \tparam TElementType the type of the elements.
+  //! \tparam TStateType the type of the state (if any, defaults to \c void,
+  //! meaning none).
+  //!
   //! \sa FroidurePinBase and FroidurePin.
   template <typename TElementType, typename TStateType = void>
   struct FroidurePinTraits {
     // Require to get the value_type from detail::BruidhinnTraits to remove
     // pointer to const.
-    //! The type of the elements of a FroidurePin instance with const removed,
-    //! and if TElementType is a pointer to const, then the second const is
-    //! also removed.
+    //! The type of the elements of a FroidurePin instance.
+    //!
+    //! This type has const removed, and if \c TElementType is a pointer to
+    //! const, then the second const is also removed.
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
 
-    //! The type of any state that it might be required to store inside the
-    //! FroidurePin instance
+    //! The type of the state (if any).
+    //!
+    //! This type can be used to store some state that might be required in an
+    //! FroidurePin instance.
     using state_type = TStateType;
 
     //! \copydoc libsemigroups::Complexity
@@ -97,11 +104,17 @@ namespace libsemigroups {
   //! by Veronique Froidure and Jean-Eric Pin; see [this] for more details.
   //!
   //! A FroidurePin instance is defined by a generating set, and the main
-  //! member function is FroidurePin::run, which implements the
-  //! [Froidure-Pin Algorithm].  If FroidurePin::run is invoked and
-  //! FroidurePin::finished returns \c true, then the size, the left and right
+  //! function is \ref run, which implements the
+  //! [Froidure-Pin Algorithm].  If \ref run is invoked and
+  //! \ref finished returns \c true, then the size, the left and right
   //! Cayley graphs are determined, and a confluent terminating presentation
   //! for the semigroup is known.
+  //!
+  //! \tparam TElementType the type of the elements in the represented
+  //! semigroup
+  //!
+  //! \tparam TTraits a traits class holding various adapters used by the
+  //! implementation (defaults to FroidurePinTraits).
   //!
   //! \sa FroidurePinTraits and FroidurePinBase.
   //!
@@ -116,24 +129,28 @@ namespace libsemigroups {
   //!     return 0;
   //!   }
   //! };
+  //!
   //! template <>
   //! struct Degree<int> {
   //!   constexpr size_t operator()(int) const noexcept {
   //!     return 0;
   //!   }
   //! };
+  //!
   //! template <>
   //! struct IncreaseDegree<int> {
   //!   int operator()(int x) const noexcept {
   //!     return x;
   //!   }
   //! };
+  //!
   //! template <>
   //! struct One<int> {
   //!   constexpr int operator()(int) const noexcept {
   //!     return 1;
   //!   }
   //! };
+  //!
   //! template <>
   //! struct Product<int> {
   //!   void operator()(int& xy,
@@ -143,6 +160,7 @@ namespace libsemigroups {
   //!     xy = x * y;
   //!   }
   //! };
+  //!
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
   //! S.nr_idempotents()  // 1
@@ -195,25 +213,22 @@ namespace libsemigroups {
     // FroidurePin - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The type of the elements of the semigroup represented by \c this.
+    //! Type of the elements.
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
 
-    //! The const type of the elements of the semigroup represented by \c this.
+    //! Type of const elements.
     using const_element_type =
         typename detail::BruidhinnTraits<TElementType>::const_value_type;
 
-    //! The type of a const reference to an element of the semigroup
-    //! represented by \c this.
+    //! Type of element const references.
     using const_reference =
         typename detail::BruidhinnTraits<TElementType>::const_reference;
 
-    //! The type of a reference to an element of the semigroup represented by
-    //! \c this.
+    //! Type of element references.
     using reference = typename detail::BruidhinnTraits<TElementType>::reference;
 
-    //! The type of a const pointer to an element of the semigroup
-    //! represented by \c this.
+    //! Type of element const pointers.
     using const_pointer =
         typename detail::BruidhinnTraits<TElementType>::const_pointer;
 
@@ -226,7 +241,7 @@ namespace libsemigroups {
     //! \copydoc FroidurePinBase::cayley_graph_type
     using cayley_graph_type = FroidurePinBase::cayley_graph_type;
 
-    //! No doc
+    //! Type of the state used for multiplication (if any).
     using state_type = typename TTraits::state_type;
 
     //! \copydoc libsemigroups::Complexity
@@ -304,6 +319,9 @@ namespace libsemigroups {
       }
     };
 
+    template <typename T>
+    using EnableIfIsState = std::enable_if_t<IsState<T>::value>;
+
    public:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - constructors + destructor - public
@@ -313,72 +331,89 @@ namespace libsemigroups {
     //!
     //! Constructs a FroidurePin instance with no generators.
     //!
-    //! \sa add_generators and add_generator.
+    //! \parameters
+    //! (None)
+    //!
+    //! \sa add_generator and add_generators.
     FroidurePin();
 
-    //! No doc
-    template <typename T,
-              typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
+    //! Construct from \shared_ptr to state.
+    //!
+    //! This function allows the construction of a FroidurePin instance with
+    //! stated given by the parameter \p stt. This constructor only exists if
+    //! \ref state_type is not \c void. This is used when the elements require
+    //! some shared state to define their multiplication, such as, for example
+    //! an instance of fpsemigroup::KnuthBendix or congruence::ToddCoxeter.
+    //!
+    //! \param stt a \shared_ptr to a state object.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    template <typename T, typename = EnableIfIsState<T>>
     explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
       _state = stt;
     }
 
-    //! No doc
-    template <typename T,
-              typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
+    //! Construct from const reference to state.
+    //!
+    //! This function allows the construction of a FroidurePin instance with
+    //! stated given by the parameter \p stt. This constructor only exists if
+    //! \ref state_type is not \c void. This is used when the elements require
+    //! some shared state to define their multiplication, such as, for example
+    //! an instance of fpsemigroup::KnuthBendix or congruence::ToddCoxeter.
+    //!
+    //! \param stt a const reference to a state object.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! The parameter \p stt is copied, which might be expensive, use
+    //! a \shared_ptr to avoid the copy.
+    template <typename T, typename = EnableIfIsState<T>>
     explicit FroidurePin(T const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
 
     //! Deleted.
-    //!
-    //! The FroidurePin class does not support an assignment contructor to avoid
-    //! accidental copying. An object in FroidurePin may use many gigabytes of
-    //! memory and might be extremely expensive to copy. A copy constructor is
-    //! provided in case such a copy should it be required anyway.
     FroidurePin& operator=(FroidurePin const&) = delete;
 
     //! Deleted.
     FroidurePin& operator=(FroidurePin&&) = delete;
 
-    //! Construct from generators.
-    //!
-    //! This is the default constructor for a semigroup generated by a vector
-    //! of generators.  There can be duplicate generators and although they do
-    //! not count as distinct elements, they do count as distinct generators.
-    //! In other words, the generators of the semigroup are precisely (a copy
-    //! of) \p gens in the same order they occur in \p gens.
-    //!
-    //! The generators \p gens are copied by the constructor, and so it is the
-    //! responsibility of the caller to delete \p gens.
-    //!
-    //! \param gens the generators of the semigroup represented by \c this.
-    //!
-    //! \throws LibsemigroupsException if \p gens is empty, or
-    //! FroidurePin::Degree()(x) != FroidurePin::Degree()(y) for \c x, \c y in
-    //! \p gens.
-    //!
-    //! \complexity
-    //! Constant.
+    //! REMOVE ME
+    // TODO(now) Remove this
     explicit FroidurePin(std::vector<element_type> const* gens);
 
     //! Construct from generators.
     //!
-    //! This constructor simply calls the above constructor with a pointer to \p
-    //! gens.
-    explicit FroidurePin(std::vector<element_type> const&);
-
-    //! Construct from generators.
+    //! This function constructs a FroidurePin instance generated by the
+    //! specified container of generators.  There can be duplicate generators
+    //! and although they do not count as distinct elements, they do count as
+    //! distinct generators.  In other words, the generators are precisely (a
+    //! copy of) \p gens in the same order they occur in \p gens.
     //!
-    //! This constructor simply constructs a vector from \p gens and calls the
-    //! above constructor.
-    explicit FroidurePin(std::initializer_list<element_type>);
+    //! \param gens the generators.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p gens is empty;
+    //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
+    //! \p gens.
+    explicit FroidurePin(std::vector<element_type> const& gens);
+
+    //! \copydoc FroidurePin(std::vector<element_type> const& gens)
+    explicit FroidurePin(std::initializer_list<element_type> gens);
 
     //! Copy constructor.
     //!
-    //! Constructs a new FroidurePin which is an exact copy of \p copy. No
-    //! enumeration is triggered for either \p copy or of the newly constructed
+    //! Constructs a new FroidurePin which is an exact copy of \p that. No
+    //! enumeration is triggered for either \p that or of the newly constructed
     //! semigroup.
-    FroidurePin(FroidurePin const&);
+    //!
+    //! \param that the FroidurePin to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    FroidurePin(FroidurePin const& that);
 
     //! Default move constructor.
     FroidurePin(FroidurePin&&) = default;
@@ -397,196 +432,337 @@ namespace libsemigroups {
     // FroidurePin - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns a copy of the element of \c this represented by the word
-    //! \p w.
+    //! Convert a word in the generators to an element.
     //!
-    //! The parameter \p w must consist of non-negative integers less than
-    //! FroidurePin::nrgens, or a LibsemigroupsException will be thrown.
-    //! This member function returns a copy of the element of \c this obtained
-    //! by evaluating \p w. This is equivalent to finding the product \c x of
-    //! the generators FroidurePin::generator(\c w[i]).
+    //! This  function returns a copy of the element obtained
+    //! by evaluating \p w.  A copy is returned instead of a reference, because
+    //! the element corresponding to \p w may not yet have been
+    //! enumerated.
     //!
-    //! A copy is returned instead of a reference, because the element of \c
-    //! this corresponding to \p w may not yet have been enumerated.
+    //! \param w the word in the generators to evaluate.
     //!
-    //! \sa FroidurePin::word_to_pos.
-    element_type word_to_element(word_type const&) const;
+    //! \returns A copy of the element represented by the word \p w.
+    //!
+    //! \throws LibsemigroupsException if \p w is not a valid word in the
+    //! generators, i.e. if it contains a value greater than or equal to the
+    //! number of generators.
+    //!
+    //! \sa \ref word_to_pos.
+    element_type word_to_element(word_type const& w) const;
 
-    //! Returns \c true if the parameters represent the same element of the
-    //! semigroup and \c false otherwise.
-    bool equal_to(word_type const&, word_type const&) const override;
+    //! Check equality of words in the generators.
+    //!
+    //! Returns \c true if the parameters represent the same element
+    //! and \c false otherwise.
+    //!
+    //! \param x the first word for comparison
+    //! \param y the second word for comparison
+    //!
+    //! \returns A value of type \c bool.
+    //!
+    //! \throws LibsemigroupsException if \p w contains an value exceeding
+    //! \ref nr_generators.
+    bool equal_to(word_type const& x, word_type const& y) const override;
 
-    //! Returns the number of generators of the semigroup.
+    //! Returns the number of generators.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
     size_t nr_generators() const noexcept override;
 
-    //! Returns a const_reference to the generator with index \p pos.
+    //! Returns the generator with specified index.
     //!
-    //! If \p pos is not less than FroidurePin::nr_generators(), a
-    //! LibsemigroupsException will be thrown. Note that
-    //! FroidurePin::generator(pos)
-    //! is in general in general not in position \p pos in the semigroup, i.e.
-    //! is not equal to FroidurePin::at(pos).
-    const_reference generator(letter_type) const;
+    //! \param i the index of a generator.
+    //!
+    //! \returns
+    //! A value of type \ref const_reference.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
+    //! nr_generators().
+    //!
+    //! \note
+    //! Note that `generator(i)` is in general not in position \p i.
+    const_reference generator(letter_type i) const;
 
+    //! Find the position of an element with no enumeration.
+    //!
     //! Returns the position of the element \p x in the semigroup if it is
-    //! already known to belong to the semigroup.
+    //! already known to belong to the semigroup or \ref UNDEFINED.  This
+    //! function finds the position of the element \p x if it is already known
+    //! to belong to \c this, and \ref UNDEFINED if not. If \c this is not yet
+    //! fully enumerated, then this  function may return \ref UNDEFINED when \p
+    //! x does belong to \c this.
     //!
-    //! This member function finds the position of the element \p x in the
-    //! semigroup if it is already known to belong to the semigroup, and
-    //! libsemigroups::UNDEFINED if not. If the semigroup is
-    //! not fully enumerated, then this member function may return
-    //! libsemigroups::UNDEFINED when \p x is in the semigroup,
-    //! but this is not yet known.
+    //! \param x a const reference to a possible element.
     //!
-    //! \sa FroidurePin::position and FroidurePin::sorted_position.
+    //! \returns A value of type \c element_index_type.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa \ref position and \ref sorted_position.
     element_index_type current_position(const_reference x) const;
 
-    //! Returns the position in \c this of the product of \c this->at(i) and
-    //! \c this->at(j).
+    //! Multiply elements via their indices.
     //!
-    //! The values \p i and \p j must be less than FroidurePin::current_size, or
-    //! a LibsemigroupsException will be thrown.
-    //! This member function either:
+    //! Returns the position of the product of the element with index \p i and
+    //! the element with index \p j.
+    //!
+    //! This function either:
     //!
     //! * follows the path in the right or left Cayley graph from \p i to \p j,
-    //!   whichever is shorter using FroidurePin::product_by_reduction or
+    //!   whichever is shorter using \ref product_by_reduction; or
     //!
     //! * multiplies the elements in postions \p i and \p j together;
     //!
-    //! whichever is better. The member function used is determined by comparing
-    //! the output of the call operator of FroidurePin::Complexity and the
-    //! FroidurePin::length_const of \p i and \p j.
+    //! whichever is better. The  function used is determined by comparing
+    //! the output of the call operator of Complexity and the
+    //! \ref length_const of \p i and \p j.
     //!
     //! For example, if the complexity of the multiplication is linear and \c
     //! this is a semigroup of transformations of degree 20, and the shortest
     //! paths in the left and right Cayley graphs from \p i to \p j are of
-    //! length 100 and 1131, then it better to just multiply the
+    //! length 100 and 1131, then it is better to just multiply the
     //! transformations together.
-    element_index_type fast_product(element_index_type,
-                                    element_index_type) const override;
-
-    //! Returns the total number of idempotents in the semigroup.
     //!
-    //! This member function involves fully enumerating the semigroup, if it is
-    //! not already fully enumerated.  The value of the positions, and number,
-    //! of idempotents is stored after they are first computed.
+    //! \param i the index of the first element to multiply
+    //! \param j the index of the second element to multiply
+    //!
+    //! \returns
+    //! A value of type \c element_index_type.
+    //!
+    //! \throws LibsemigroupsException if the values \p i and \p j are greater
+    //! than or equal to \ref current_size.
+    element_index_type fast_product(element_index_type i,
+                                    element_index_type j) const override;
+
+    //! Returns the number of idempotents.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     size_t nr_idempotents() override;
 
-    //! Returns \c true if the element in position \p pos is an idempotent
+    //! Check if an element is an idempotent via its index.
+    //!
+    //! Returns \c true if the element in position \p i is an idempotent
     //! and \c false if it is not.
     //!
-    //! The parameter \p pos must be a valid position of an element of the
-    //! semigroup, or a LibsemigroupsException will be thrown.
-    //! This member function involves fully enumerating the semigroup, if it is
-    //! not already fully enumerated.
-    bool is_idempotent(element_index_type) override;
-
-    //! Requests that the capacity (i.e. number of elements) of the semigroup
-    //! be at least enough to contain n elements.
+    //! \param i the index of the element
     //!
-    //! The parameter \p n is also used to initialise certain data members. If
-    //! you know a good upper bound for the size of your semigroup, then it is
-    //! a good idea to call this member function with that upper bound as an
-    //! argument; this can significantly improve the performance of the
-    //! FroidurePin::run member function, and consequently every other
-    //! member function too.
-    void reserve(size_t) override;
+    //! \returns
+    //! A value of type \c bool.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to the
+    //! size of \c this.
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
+    bool is_idempotent(element_index_type i) override;
 
-    //! Returns \c true if \p x is an element of \c this and \c false if it is
+    //! Requests the given capacity for elements.
+    //!
+    //! The parameter \p val is also used to initialise certain data members.
+    //! If you know a good upper bound for the size of your semigroup, then it
+    //! might be a good idea to call this  function with that upper bound as an
+    //! argument; this can significantly improve the performance of the \ref
+    //! run  function, and consequently every other function too.
+    //!
+    //! \param val the number of elements to reserve space for.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    void reserve(size_t val) override;
+
+    //! Test membership of an element.
+    //!
+    //! Returns \c true if \p x belongs to \c this and \c false if it does
     //! not.
     //!
-    //! This member function can be used to check if the element \p x is an
-    //! element of the semigroup. The semigroup is enumerated in batches until
-    //! \p x is found or the semigroup is fully enumerated but \p x was not
-    //! found (see FroidurePin::batch_size).
-    bool contains(const_reference);
-
-    //! Returns the position of \p x in \c this, or libsemigroups::UNDEFINED if
-    //! \p x is not an element of \c this.
+    //! \param x a const reference to a possible element.
     //!
-    //! This member function can be used to find the
-    //! FroidurePin::element_index_type position of the element \p x if it
-    //! belongs to the semigroup. The semigroup is enumerated in batches until
-    //! \p x is found or the semigroup is fully enumerated but \p x was not
-    //! found (see FroidurePin::batch_size(size_t)).
+    //! \returns A value of type \c bool.
     //!
-    //! \throws LibsemigroupsException This function throws a
-    //! LibsemigroupsException if the argument is not an element of the
-    //! semigroup represented by \c this. Since the semigroup may be enumerated
-    //! (fully or partially) when this function is called, it only offers the
-    //! basic exception guarantee (the object is in a valid state after any
-    //! call to this function but not necessarily the same state as it was
-    //! before the call).
-    element_index_type position(const_reference);
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    bool contains(const_reference x);
 
-    //! Returns the position of \p x in the sorted array of elements of the
-    //! semigroup, or libsemigroups::UNDEFINED if \p x is not an element of \c
+    //! Find the position of an element with enumeration if necessary.
+    //!
+    //! Returns the position of \p x in \c this, or \ref UNDEFINED if \p x is
+    //! not an element of \c this.
+    //!
+    //! \param x a const reference to a possible element.
+    //!
+    //! \returns A value of type \c element_index_type.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa \ref current_position and \ref sorted_position.
+    element_index_type position(const_reference x);
+
+    //! Returns the sorted index of an element.
+    //!
+    //! Returns the position of \p x in the elements of \c this when they are
+    //! sorted by Less,  or \ref UNDEFINED if \p x is not an element of \c
     //! this.
-    element_index_type sorted_position(const_reference);
-
-    //! Returns the position of \c this->at(pos) in the sorted array of
-    //! elements of the semigroup, or libsemigroups::UNDEFINED if \p pos is
-    //! greater than the size of the semigroup.
-    element_index_type position_to_sorted_position(element_index_type) override;
-
-    //! Returns  the element of the semigroup in position \p pos, or a
-    //! \c nullptr if there is no such element.
     //!
-    //! This member function attempts to enumerate the semigroup until at least
-    //! \c pos + 1 elements have been found. If \p pos is greater than
-    //! FroidurePin::size, then this member function returns \c nullptr.
-    const_reference at(element_index_type);
-
-    //! Returns the element of the semigroup in position \p pos.
+    //! \param x a const reference to a possible element.
     //!
-    //! This member function performs no checks on its argument, and performs no
-    //! enumeration of the semigroup.
-    const_reference operator[](element_index_type) const;
-
-    //! Returns the element of the semigroup in position \p pos of the sorted
-    //! array of elements, or \c nullptr in \p pos is not valid (i.e. too big).
+    //! \returns A value of type \c element_index_type.
     //!
-    //! This member function fully enumerates the semigroup.
-    const_reference sorted_at(element_index_type);
-
-    //! Returns a minimal libsemigroups::word_type which evaluates to \p x.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! This is the same as the member function taking a
-    //! FroidurePin::element_index_type, but it factorises an TElementType
-    //! instead of using the position of an element. If \p pos is greater than
-    //! the size of the semigroup, then a LibsemigroupsException is thrown.
-    word_type minimal_factorisation(const_reference);
+    //! \sa \ref current_position and \ref position.
+    element_index_type sorted_position(const_reference x);
 
-    //! \copydoc FroidurePinBase::factorisation
+    //! Returns the sorted index of an element via its index.
+    //!
+    //! Returns the position of the element with index \p i when the elements
+    //! are sorted using Less, or \ref UNDEFINED if \p i is greater than size().
+    //!
+    //! \param i the index of the element
+    //!
+    //! \returns
+    //! A value of type \ref element_index_type.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    element_index_type
+    position_to_sorted_position(element_index_type i) override;
+
+    //! Access element specified by index with bound checks.
+    //!
+    //! This function attempts to enumerate until at least \p i + 1 elements
+    //! have been found.
+    //!
+    //! \param i the index of the element to access.
+    //!
+    //! \returns The element with index \p i (if any).
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to the
+    //! return value of size().
+    const_reference at(element_index_type i);
+
+    //! Access element specified by index.
+    //!
+    //! This function attempts to enumerate until at least \p i + 1 elements
+    //! have been found.
+    //!
+    //! \param i the index of the element to access.
+    //!
+    //! \returns The element with index \p i (if any).
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    const_reference operator[](element_index_type i) const;
+
+    //! Access element specified by sorted index with bound checks.
+    //!
+    //! This function triggers a full enumeration, and the parameter \p i
+    //! is the index when the elements are sorted by Less.
+    //!
+    //! \param i the sorted index of the element to access.
+    //!
+    //! \returns The element with index \p i (if any).
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to the
+    //! return value of size().
+    const_reference sorted_at(element_index_type i);
+
+    //! Factorise an element as a word in the generators.
+    //!
+    //! Returns the short-lex minimum word (if any) in the generators that
+    //! evaluates to \p x.
+    //!
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \returns Returns a \ref word_type which evaluates to \p x.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \sa minimal_factorisation(element_index_type).
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    word_type minimal_factorisation(const_reference x);
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    // The following are required, they are documented in FroidurePinBase.
+    // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
+    // these two declarations.
     using FroidurePinBase::factorisation;
-
-    //! \copydoc FroidurePinBase::minimal_factorisation
     using FroidurePinBase::minimal_factorisation;
+#endif
 
-    //! Returns a libsemigroups::word_type which evaluates to \p x.
+    //! Factorise an element as a word in the generators.
     //!
-    //! The key difference between this member function and
-    //! FroidurePin::minimal_factorisation(const_reference x), is that the
+    //! The key difference between this  function and
+    //! \ref minimal_factorisation(const_reference x), is that the
     //! resulting factorisation may not be minimal.
-    //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
-    word_type factorisation(const_reference);
+    //!
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \returns Returns a \ref word_type which evaluates to \p x.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    word_type factorisation(const_reference x);
 
+    //! Check finiteness.
+    //!
     //! Returns tril::TRUE if the semigroup represented by \c this is finite,
     //! tril::FALSE if it is infinite, and tril::unknown if it is not known.
+    //!
+    //! For some types of elements, such as matrices over the integers, for
+    //! example, it is undecidable, in general, if the semigroup generated by
+    //! these elements is finite or infinite. On the other hand, for other
+    //! types, such as transformation, the semigroup is always finite.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \ref tril.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! No enumeration is triggered by calls to this function.
     tril is_finite() const override {
       return tril::TRUE;
     }
 
-    //! Add a copy of the generators \p x to the generators of \c this.
+    //! Add a copy of an element to the generators.
     //!
-    //! This member function can be used to add new generators to the existing
-    //! semigroup in such a way that any previously enumerated data is preserved
-    //! and not recomputed, or copied. This can be faster than recomputing the
-    //! semigroup generated by the old generators and the new generators in the
-    //! parameter \p coll.
+    //! This  function can be used to add new generators to an existing
+    //! FroidurePin instance in such a way that any previously enumerated data
+    //! is preserved and not recomputed, or copied. This can be faster than
+    //! recomputing the semigroup generated by the old generators and the new
+    //! generators.
     //!
-    //! This member function changes the semigroup in-place, thereby
+    //! This function changes the semigroup in-place, thereby
     //! invalidating possibly previously known data about the semigroup, such as
     //! the left or right Cayley graphs, number of idempotents, and so on.
     //!
@@ -596,94 +772,155 @@ namespace libsemigroups {
     //! the semigroup is left unchanged. The order the generators is added is
     //! also the order they occur in the parameter \p coll.
     //!
-    //! The semigroup is returned in a state where all of the previously
-    //! enumerated elements which had been multiplied by all of the old
-    //! generators, have now been multiplied by all of the old and new
-    //! generators. This means that after this member function is called the
+    //! The FroidurePin instance is returned in a state where all of the
+    //! previously enumerated elements which had been multiplied by all of the
+    //! old generators, have now been multiplied by all of the old and new
+    //! generators. This means that after this  function is called the
     //! semigroup might contain many more elements than before (whether it is
     //! fully enumerating or not).
+    //!
+    //! \param x the generator to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * immutable() returns \c true
+    //! * the degree of \p x is incompatible with the existing degree.
     void add_generator(const_reference x);
 
-    //! Add copies of the generators \p coll to the generators of \c this.
+    //! Add collection of generators via const reference.
     //!
-    //! See FroidurePin::add_generator for more details.
-    template <typename TCollection>
-    void add_generators(TCollection const& coll);
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * immutable() returns \c true
+    //! * the degree of \p x is incompatible with the existing degree.
+    template <typename T>
+    void add_generators(T const& coll);
 
-    //! Add copies of the generators \p coll to the generators of \c this.
+    //! Add collection of generators via initializer list.
     //!
-    //! See FroidurePin::add_generator for more details.
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * immutable() returns \c true
+    //! * the degree of \p x is incompatible with the existing degree.
     void add_generators(std::initializer_list<const_element_type> coll);
 
-    //! Add copies of the generators in the range \p first to \p last to \c
-    //! this.
+    //! Add collection of generators via iterators.
     //!
-    //! See FroidurePin::add_generator for more details.
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam the type of an iterator pointing to an \ref element_type.
+    //!
+    //! \param first iterator pointing to the first generator to add.
+    //! \param last iterator pointing one past the last generator to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * immutable() returns \c true
+    //! * the degree of \p x is incompatible with the existing degree.
     template <typename T>
     void add_generators(T const& first, T const& last);
 
-    //! Returns a new semigroup generated by \c this and \p coll.
+    //! Copy and add a collection of generators.
     //!
-    //! This member function is equivalent to copying \c this using
-    //! FroidurePin::FroidurePin(const FroidurePin& copy) and then calling
-    //! FroidurePin::add_generators on the copy, but this member function avoids
-    //! copying the parts of \c this that are immediately invalidated by
-    //! FroidurePin::add_generators.
+    //! This function is equivalent to copy constructing an new FroidurePin
+    //! instance and  then calling \ref add_generators on the copy. But this
+    //! function avoids copying the parts of \c this that are immediately
+    //! invalidated by \ref add_generators.
     //!
-    //! The elements the argument \p coll are copied into the semigroup, and
-    //! should be deleted by the caller.  If an element in \p coll has a degree
-    //! different to \c this->degree(), a LibsemigroupsException will be
-    //! thrown.
-    template <typename TCollection>
-    FroidurePin* copy_add_generators(TCollection const& coll) const;
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns A new FroidurePin instance by value generated by the
+    //! generators of \c this and \p coll.
+    //!
+    //! \throws LibsemigroupsException if the copy constructor or \ref
+    //! add_generators throws.
+    template <typename T>
+    FroidurePin copy_add_generators(T const& coll) const;
 
+    //! \copydoc copy_add_generators(T const &) const
+    FroidurePin copy_add_generators(std::initializer_list<element_type> coll);
+
+    //! Add non-redundant generators in collection.
+    //!
     //! Add copies of the non-redundant generators in \p coll to the generators
     //! of \c this.
     //!
-    //! This member function can be used to add new generators to an existing
-    //! semigroup in such a way that any previously enumerated data is preserved
-    //! and not recomputed, or copied. This can be faster than recomputing the
-    //! semigroup generated by the old generators and the new in \p coll.
-    //!
-    //! This member function differs from FroidurePin::add_generators in that it
+    //! This  function differs from \ref add_generators in that it
     //! tries to add the new generators one by one, and only adds those
     //! generators that are not products of existing generators (including any
     //! new generators from \p coll that were added before). The generators are
     //! added in the order they occur in \p coll.
     //!
-    //! This member function changes the semigroup in-place, thereby
-    //! invalidating possibly previously known data about the semigroup, such as
-    //! the left or right Cayley graphs, or number of idempotents, for example.
+    //! This function changes \c this in-place, thereby invalidating
+    //! some previously computed information, such as the left or
+    //! right Cayley graphs, or number of idempotents, for example.
     //!
-    //! The elements the parameter \p coll are copied into the semigroup, and
-    //! should be deleted by the caller.
-    //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
-    template <typename TCollection>
-    void closure(TCollection const& coll);
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generator to add.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException if \ref add_generator throws.
+    template <typename T>
+    void closure(T const& coll);
 
-    //! Add copies of the non-redundant generators in \p coll to the
-    //! generators of \c this.
-    //!
-    //! See FroidurePin::closure for more details.
-    void closure(std::initializer_list<const_element_type>);
+    //! \copydoc closure(T const&)
+    void closure(std::initializer_list<const_element_type> coll);
 
-    //! Returns a new semigroup generated by \c this and copies of the
-    //! non-redundant elements of \p coll.
+    //! Copy and add non-redundant generators.
     //!
-    //! This member function is equivalent to copying \c this and then calling
-    //! FroidurePin::closure on the copy with \p coll, but this member function
-    //! avoids copying the parts of \c this that are immediately invalidated by
-    //! FroidurePin::closure.
+    //! This function is equivalent to copy constructing an new FroidurePin
+    //! instance and  then calling \ref closure on the copy. But this
+    //! function avoids copying the parts of \c this that are immediately
+    //! invalidated by \ref closure.
     //!
-    //! The elements the argument \p coll are copied into the semigroup, and
-    //! should be deleted by the caller.
-    //! If an element in \p coll has a degree different to \c this->degree(), a
-    //! LibsemigroupsException will be thrown.
-    template <typename TCollection>
-    FroidurePin* copy_closure(TCollection const& coll);
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns A new FroidurePin instance by value generated by the
+    //! generators of \c this and \p coll.
+    //!
+    //! \throws LibsemigroupsException if the copy constructor or \ref
+    //! add_generators throws.
+    template <typename T>
+    FroidurePin copy_closure(T const& coll);
 
-    //! No doc
+    //! \copydoc copy_closure(T const&)
+    FroidurePin copy_closure(std::initializer_list<element_type> coll);
+
+    //! Returns a \shared_ptr to the state (if any).
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! \shared_ptr to \ref state_type.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     std::shared_ptr<state_type> state() {
       return _state;
     }
@@ -768,142 +1005,265 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - iterators - public
     ////////////////////////////////////////////////////////////////////////
-    //! A type for const iterators through the elements of \c this, in the
-    //! order they were enumerated (i.e. in short-lex order of the minimum word
-    //! in the generators of \c this equal to any given element).
+    //! Return type of \ref cbegin and \ref cend.
+    //!
+    //! Return type for const random access iterators pointing at the elements
+    //! of a FroidurePin object in the order they were enumerated (i.e. in
+    //! short-lex order of the minimum word in the generators).
     //!
     //! \sa const_reverse_iterator.
     using const_iterator
         = detail::BruidhinnConstIterator<element_type,
                                          std::vector<internal_element_type>>;
 
-    //! A type for const reverse iterators through the elements of \c this, in
+    //! Return type of \ref crbegin and \ref crend.
+    //!
+    //! A type for const random access iterators through the elements, in
     //! the reverse order of enumeration.
     //!
     //! \sa const_iterator.
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    //! A type for const iterators through the elements of \c this, sorted
-    //! according to TTraits::less.
+    //! Return type of \ref cbegin_sorted and \ref cend_sorted.
+    //!
+    //! A type for const random access iterators through the elements, sorted
+    //! according to Less.
     //!
     //! \sa const_reverse_iterator_sorted.
     using const_iterator_sorted = const_iterator_pair_first;
 
-    //! A type for const reverse iterators through the elements of \c this,
-    //! sorted according to TTraits::less.
+    //! Return type of \ref crbegin_sorted and \ref crend_sorted.
+    //!
+    //! A type for const random access iterators through the elements,
+    //! sorted according to Less.
     //!
     //! \sa const_iterator_sorted.
     using const_reverse_iterator_sorted = const_reverse_iterator_pair_first;
 
-    //! A type for const iterators through the idempotents of \c this, in
-    //! short-lex order.
+    //! Return type of \ref cbegin_idempotents and \ref cend_idempotents.
+    //!
+    //! A type for const random access iterators through the idempotents, in
+    //! order of generation (short-lex order).
     //!
     //! \sa const_iterator.
     using const_iterator_idempotents = const_iterator_pair_first;
 
-    //! A type for reverse const iterators through the idempotents of \c this,
-    //! in short-lex order.
-    //!
-    //! \sa const_iterator_idempotents.
-    using const_reverse_iterator_idempotents
-        = const_reverse_iterator_pair_first;
+    // Return type of \ref crbegin_idempotents and \ref crend_idempotents.
+    //
+    // A type for reverse const iterators through the idempotents of \c this,
+    // in short-lex order.
+    //
+    // \sa const_iterator_idempotents.
+    // using const_reverse_iterator_idempotents
+    //    = const_reverse_iterator_pair_first;
 
-    //! Returns a const iterator pointing to the first element of the
-    //! semigroup.
+    //! Returns a const iterator pointing to the first element (ordered by
+    //! discovery).
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref begin.
     const_iterator cbegin() const;
 
-    //! Returns a const iterator pointing to the first element of the
-    //! semigroup.
+    //! Returns a const iterator pointing to the first element (ordered by
+    //! discovery).
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref cbegin.
     const_iterator begin() const;
 
-    //! Returns a const iterator pointing to one past the last currently known
-    //! element of the semigroup.
+    //! Returns a const iterator pointing to one past the last known element.
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref end.
     const_iterator cend() const;
 
-    //! Returns a const iterator pointing to one past the last currently known
-    //! element of the semigroup.
+    //! Returns a const iterator pointing one past the last known element.
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref cend.
     const_iterator end() const;
 
-    //! Returns a const reverse iterator pointing to the last currently known
-    //! element of the semigroup.
+    //! Returns a const reverse iterator pointing to the last known element.
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_reverse_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref crend.
     const_reverse_iterator crbegin() const;
 
-    //! Returns a const reverse iterator pointing to one before the first
-    //! element of the semigroup.
+    //! Returns a const reverse iterator pointing one before the first
+    //! element.
     //!
-    //! This member function does not perform any enumeration of the semigroup,
-    //! the iterator returned may be invalidated by any call to a non-const
-    //! member function of the FroidurePin class.
+    //! This function does not trigger any enumeration, and the returned
+    //! iterators may be invalidated by any call to a non-const function of the
+    //! FroidurePin class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_reverse_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref crbegin.
     const_reverse_iterator crend() const;
 
-    //! Returns a const iterator pointing to the first element of the semigroup
-    //! when the elements are sorted by FroidurePin::Less.
+    //! Returns a const iterator pointing to the first element (sorted by
+    //! Less).
     //!
-    //! This member function fully enumerates the semigroup, the returned
-    //! iterator returned may be invalidated by any call to a non-const member
-    //! function of the FroidurePin class.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator_sorted.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_iterator_sorted cbegin_sorted();
 
-    //! Returns a const iterator pointing to one past the last element of the
-    //! semigroup when the elements are sorted by FroidurePin::Less.
+    //! Returns a const iterator pointing one past the last element (sorted by
+    //! Less).
     //!
-    //! This member function fully enumerates the semigroup, the returned
-    //! iterator returned may be invalidated by any call to a non-const member
-    //! function of the FroidurePin class.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator_sorted.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_iterator_sorted cend_sorted();
 
-    //! Returns a const iterator pointing to the last element of the semigroup
-    //! when the elements are sorted by FroidurePin::Less.
+    //! Returns a const iterator pointing to the last element (sorted by
+    //! \ref Less).
     //!
-    //! This member function fully enumerates the semigroup, the returned
-    //! iterator returned may be invalidated by any call to a non-const member
-    //! function of the FroidurePin class.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_reverse_iterator_sorted.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_reverse_iterator_sorted crbegin_sorted();
 
-    //! Returns a const iterator pointing to one before the first element of
-    //! the semigroup when the elements are sorted by FroidurePin::Less.
+    //! Returns a const reverse iterator pointing one before the first
+    //! element (sorted by Less).
     //!
-    //! This member function fully enumerates the semigroup, the returned
-    //! iterator returned may be invalidated by any call to a non-const member
-    //! function of the FroidurePin class.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_reverse_iterator_sorted.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_reverse_iterator_sorted crend_sorted();
 
-    //! Returns a const iterator pointing at the first idempotent in the
-    //! semigroup.
+    //! Returns a const iterator pointing at the first idempotent.
     //!
     //! If the returned iterator is incremented, then it points to the second
     //! idempotent in the semigroup (if it exists), and every subsequent
     //! increment points to the next idempotent.
     //!
-    //! This member function involves fully enumerating the semigroup, if it is
-    //! not already fully enumerated.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator_idempotents.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_iterator_idempotents cbegin_idempotents();
 
-    //! Returns a const iterator referring to past the end of the last
-    //! idempotent in the semigroup.
+    //! Returns a const iterator pointing one past the last idempotent.
     //!
-    //! This member function involves fully enumerating the semigroup, if it is
-    //! not already fully enumerated.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref const_iterator_idempotents.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration.
     const_iterator_idempotents cend_idempotents();
 
    private:

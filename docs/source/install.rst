@@ -33,7 +33,7 @@ From the sources
 ----------------
 
 Building ``libsemigroups`` from the source files requires a C++ compiler
-supporting the C++11 standard, ``autoconf``, and ``automake``.
+supporting the C++14 standard, ``autoconf``, and ``automake``.
 Building the documentation from source has some additional requirements that
 are detailed `here <Building the documentation from source>`_.
 

@@ -1,39 +1,54 @@
 libsemigroups::SchreierSims: 
-- Stateful type aliases:
-  - [typedef, index_type]
-  - [typedef, domain_type]
-  - [typedef, element_type]
-  - [typedef, point_type]
-- Stateless type aliases:
-  - [typedef, Action]
-  - [typedef, Degree]
-  - [typedef, EqualTo]
-  - [typedef, Inverse]
-  - [typedef, One]
-  - [typedef, Product]
-  - [typedef, Swap]
+- Member types:
+  - ["This page contains the documentation for member types of the
+     :cpp:any:`SchreierSims` class."]
+  - index_type
+  - domain_type
+  - element_type
+  - point_type
+- Adapter types:
+  - ["This page contains the documentation for adapters for the
+     :cpp:any:`SchreierSims` class."]
+  - Action
+  - Degree
+  - EqualTo
+  - Inverse
+  - One
+  - Product
+  - Swap
 - Constructors:
+  - ["This page contains the documentation for constructors for the 
+     :cpp:any:`SchreierSims` class."]
   - SchreierSims()
-  - SchreierSims(SchreierSims&&)
+  - SchreierSims(SchreierSims &&) = default
 - Deleted constructors:
-  - SchreierSims(SchreierSims const&)
-  - operator=(SchreierSims const&)
-  - operator=(SchreierSims&&)
+  - ["This page lists the deleted constructors for the 
+     :cpp:any:`SchreierSims` class."]
+  - SchreierSims(SchreierSims const &) = delete
+  - operator=(SchreierSims const &) = delete
+  - operator=(SchreierSims &&) = delete
 - Initialisation:
-  - add_base_point
-  - add_generator
-  - clear
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`SchreierSims` class that can be used for initialisation."]
+  - add_base_point(point_type const)
+  - add_generator(const_element_reference)
+  - clear()
 - Attributes:
-  - base
-  - base_size
-  - empty
-  - finished
-  - nr_generators
-  - nr_strong_generators
-  - strong_generator
-- Operators: 
-  - contains
-  - generator
-  - identity
-  - sift
-  - size
+  - ["This page contains information about non-const attributes of the  
+     :cpp:any:`SchreierSims` class."]
+  - base(index_type const) const
+  - base_size() const noexcept
+  - empty()
+  - finished() const
+  - nr_generators() const noexcept
+  - nr_strong_generators(index_type const) const noexcept
+  - strong_generator(index_type const,index_type const) const
+  - size()
+  - identity() const
+  - generator(index_type const) const
+- Membership: 
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`SchreierSims` class related to checking membership."]
+  - contains(const_element_reference)
+  - sift(const_element_reference)
+

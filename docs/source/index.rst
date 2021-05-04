@@ -1,4 +1,4 @@
-libsemigroups - Version 1.3.7
+libsemigroups - Version 2.0.0
 =============================
 
 C++ library for semigroups and monoids
@@ -7,7 +7,7 @@ C++ library for semigroups and monoids
 What is ``libsemigroups``?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``libsemigroups``  is a C++11 library containing implementations of several
+``libsemigroups``  is a C++14 library containing implementations of several
 algorithms for computing finite and finitely presented semigroups. 
 Namely:
 
@@ -71,7 +71,7 @@ be in the future too, but presently they don't work.
 
 .. _Github: https://github.com/libsemigroups/libsemigroups 
 .. _python bindings: https://github.com/libsemigroups/libsemigroups-python-bindings/
-.. _Semigroups package for GAP: https://gap-packages.github.io/Semigroups 
+.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
 
 .. toctree::
    :caption: API REFERENCE

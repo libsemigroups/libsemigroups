@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_end:
 
-DynamicMatrix::end, DynamicMatrix::cend
-=======================================
+end, cend
+=========
 
-.. cpp:function:: iterator DynamicMatrix::end()
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: iterator end()
 
    Returns a (random access) iterator pointing one passed the last entry of the
    matrix.
@@ -29,7 +31,7 @@ DynamicMatrix::end, DynamicMatrix::cend
      specified.
 
 
-.. cpp:function:: const_iterator DynamicMatrix::cend()
+.. cpp:function:: const_iterator cend()
 
    Returns a const (random access) iterator pointing one passed the last entry
    of the matrix.

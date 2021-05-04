@@ -152,7 +152,7 @@ namespace libsemigroups {
   //! \note
   //! The parameter \p upper_bound is required because lexicographical
   //! ordering is not a well-ordering, and there might be infinitely many
-  //! strings between a given pair of stringss.
+  //! strings between a given pair of strings.
   //!
   //! \warning
   //! Copying iterators of this type is expensive.  As a consequence, prefix

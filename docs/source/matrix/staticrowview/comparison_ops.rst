@@ -9,8 +9,10 @@
 StaticRowView comparison operators
 ==================================
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. _staticrowview_operator_equals:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template <typename U> \
                   bool operator==(U const& that) const
 
    Equality operator.
@@ -28,7 +30,7 @@ StaticRowView comparison operators
 
 
 .. _staticrowview_operator_not_equals:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template <typename U> \
                   bool operator!=(U const& that) const
 
    Inequality operator.
@@ -46,8 +48,8 @@ StaticRowView comparison operators
 
 
 .. _staticrowview_operator_less:
-.. cpp:function:: template \<typename U> \
-                  bool operator\<(U const& that) const
+.. cpp:function:: template <typename U> \
+                  bool operator<(U const& that) const
 
    Lexicographical comparison of rows.
 
@@ -64,7 +66,7 @@ StaticRowView comparison operators
 
 
 .. _staticrowview_operator_more:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template <typename U> \
                   bool operator>(U const& that) const
 
    Lexicographical comparison of rows.

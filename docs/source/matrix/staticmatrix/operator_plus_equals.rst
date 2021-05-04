@@ -6,10 +6,12 @@
 
 .. _staticmatrix_operator_plus_equals:
 
-StaticMatrix::operator+=
-========================
+operator+=
+==========
 
-.. cpp:function:: void StaticMatrix::operator+=(StaticMatrix const& that)
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: void operator+=(StaticMatrix const& that)
 
    Redefines ``this`` to be the sum of ``*this`` and ``that``. 
 
@@ -28,7 +30,7 @@ StaticMatrix::operator+=
       The matrices must be of the same dimensions, although this is not
       verified by the implementation.
 
-.. cpp:function:: void StaticMatrix::operator+=(RowView const& that)
+.. cpp:function:: void operator+=(RowView const& that)
 
    Redefines ``this`` to be the sum of ``*this`` and ``that``. 
 
@@ -47,7 +49,7 @@ StaticMatrix::operator+=
       This function only works if ``this`` has a single row, i.e. the template
       parameter ``R`` is ``1``.
 
-.. cpp:function:: void StaticMatrix::operator+=(scalar const a)
+.. cpp:function:: void operator+=(scalar const a)
 
    Adds a scalar to every entry of the matrix in-place.
 

@@ -1,65 +1,74 @@
 libsemigroups::CongruenceByPairsHelper:
 - Aliases:
-  - [typedef, element_type]
-  - [typedef, const_reference]
-  - [typedef, class_index_type]
-  - [typedef, non_trivial_classes_type]
-  - [typedef, non_trivial_class_iterator]
-  - [typedef, const_iterator]
+  - element_type
+  - const_reference
+  - class_index_type
+  - non_trivial_classes_type
+  - non_trivial_class_iterator
+  - const_iterator
+  - froidure_pin_type
+  - state_type
+  - reference
+  - Hash
+  - EqualTo
+  - Product
 - Constructors:
-  - CongruenceByPairsHelper
-  - CongruenceByPairsHelper(CongruenceByPairsHelper const&)
-  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<FroidurePinBase>)
+  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<FroidurePinBase>) noexcept
+  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<T>, bool)
   - CongruenceByPairsHelper(congruence_type, T const&)
-  - operator=(CongruenceByPairsHelper const&)
-  - CongruenceByPairsHelper(CongruenceByPairsHelper&&)
-  - operator=(CongruenceByPairsHelper&&)
-- Initialization:
-  - set_nr_generators
-  - nr_generators
+  - CongruenceByPairsHelper(CongruenceByPairsHelper&&) = default
+  - CongruenceByPairsHelper(CongruenceByPairsHelper const&) = default
+- Deleted constructors:
+  - CongruenceByPairsHelper() = delete
+  - operator=(CongruenceByPairsHelper&&) = delete
+  - operator=(CongruenceByPairsHelper const&) = delete
+- Member functions inherited from CongruenceInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`CongruenceByPairsHelper` class inherited from
+     :cpp:any:`CongruenceInterface`."]
+  - set_nr_generators(size_t)
+  - kind() const noexcept
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+  - nr_generators() const noexcept
+  - nr_generating_pairs() const noexcept
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc() 
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Operators:
-  - kill
-  - run
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const
+  - contains(word_type const&, word_type const&)
+  - nr_classes()
+  - nr_non_trivial_classes()
+  - non_trivial_classes()
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`CongruenceByPairsHelper` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until(T&&)
-  - run_until(bool (*))
-- Container-like:
-  - less
-  - const_contains
-  - contains
-  - nr_classes
-  - nr_non_trivial_classes
-  - non_trivial_classes
-  - nr_generating_pairs
-- Related semigroups:
-  - quotient_froidure_pin
-  - has_quotient_froidure_pin
-  - parent_froidure_pin
-  - has_parent_froidure_pin
-  - is_quotient_obviously_finite
-  - is_quotient_obviously_infinite
-- Words and class indices:
-  - word_to_class_index
-  - class_index_to_word
-- State:
-  - kind
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
-- Iterators:
-  - cbegin_generating_pairs
-  - cend_generating_pairs
-  - cbegin_ntc
-  - cend_ntc
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

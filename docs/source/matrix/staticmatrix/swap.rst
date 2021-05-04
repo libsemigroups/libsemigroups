@@ -6,10 +6,12 @@
 
 .. _staticmatrix_swap:
 
-StaticMatrix::swap
-==================
+swap
+====
 
-.. cpp:function::  void StaticMatrix::swap(StaticMatrix& that) noexcept
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function::  void swap(StaticMatrix& that) noexcept
 
    Swaps the contents of ``this`` with the contents of ``that``. 
 

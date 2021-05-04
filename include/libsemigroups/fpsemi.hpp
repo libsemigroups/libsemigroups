@@ -158,10 +158,14 @@ namespace libsemigroups {
     // FpSemigroupInterface - non-pure virtual member functions - public
     //////////////////////////////////////////////////////////////////////////
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     // The following are required for overload resolution.
-    // Documented in FpSemigroupInterface
+    // Documented in FpSemigroupInterface.
+    // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
+    // these two declarations.
     using FpSemigroupInterface::equal_to;
     using FpSemigroupInterface::normal_form;
+#endif
 
     //////////////////////////////////////////////////////////////////////////
     // FpSemigroup - non-virtual member functions - public
@@ -243,10 +247,34 @@ namespace libsemigroups {
       return _race.find_runner<ToddCoxeter>();
     }
 
+    //! Get the current maximum number of threads.
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
     size_t max_threads() const noexcept {
       return _race.max_threads();
     }
 
+    //! Set the maximum number of threads.
+    //!
+    //! \param val the number of threads.
+    //!
+    //! \returns a reference to \c this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \par Complexity
+    //! Constant.
     FpSemigroup& max_threads(size_t val) noexcept {
       _race.max_threads(val);
       return *this;

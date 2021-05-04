@@ -6,11 +6,13 @@
 
 .. _staticmatrix_coords:
 
-StaticMatrix::coords
-====================
+coords
+======
+
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
 
 .. cpp:function:: std::pair<scalar_type, scalar_type> \
-                  StaticMatrix::coords(const_iterator it) const 
+                  coords(const_iterator it) const 
 
    Returns a pair containing the row and columns corresponding to an iterator.
    

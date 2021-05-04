@@ -1,74 +1,86 @@
 libsemigroups::Congruence:
-- Public types:
-  - [struct, policy]
-- Enums:
-  - [enum, policy::runners]
-- Aliases:
-  - [typedef, class_index_type]
-  - [typedef, non_trivial_classes_type]
-  - [typedef, non_trivial_class_iterator]
-  - [typedef, const_iterator]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`Congruence` class."]
+  - policy
+  - policy::runners
+  - class_index_type
+  - non_trivial_classes_type
+  - non_trivial_class_iterator
+  - const_iterator
 - Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Congruence` class."]
   - Congruence(congruence_type, policy::runners)
   - Congruence(congruence_type, T const&)
   - Congruence(congruence_type, std::shared_ptr<FroidurePinBase>)
   - Congruence(congruence_type, FpSemigroup&)
-  - Congruence()
-  - Congruence(Congruence const&)
-  - operator=(Congruence const&)
-  - Congruence(Congruence&&)
-  - operator=(Congruence&&)
-- Initialization:
-  - set_nr_generators
-  - nr_generators
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the
+     :cpp:any:`Congruence` class."]
+  - Congruence() = delete
+  - Congruence(Congruence const&) = delete
+  - Congruence(Congruence&&) = delete
+  - operator=(Congruence&&) = delete
+  - operator=(Congruence const&) = delete
+- Member functions:
+  - ["This page lists the member functions of the
+     :cpp:any:`Congruence` class that are not present in its base classes
+     :cpp:any:`Runner` and :cpp:any:`CongruenceInterface`."]
+  - add_runner(T const&)
+  - has_todd_coxeter() const
+  - todd_coxeter() const
+  - has_knuth_bendix() const
+  - knuth_bendix() const
+  - max_threads() const noexcept
+  - max_threads(size_t) noexcept
+- Member functions inherited from CongruenceInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`Congruence` class inherited from
+     :cpp:any:`CongruenceInterface`."]
+  - set_nr_generators(size_t)
+  - kind() const noexcept
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+  - nr_generators() const noexcept
+  - nr_generating_pairs() const noexcept
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc() 
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
-  - nr_generating_pairs
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Operators:
-  - kill
-  - run
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const override
+  - contains(word_type const&, word_type const&) override
+  - nr_classes()
+  - nr_non_trivial_classes()
+  - non_trivial_classes()
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`Congruence` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until(T&&)
-  - run_until(bool (*))
-- Numbers of classes, and comparisons:
-  - less
-  - const_contains
-  - contains
-  - nr_classes
-  - nr_non_trivial_classes
-  - non_trivial_classes
-- Related semigroups:
-  - quotient_froidure_pin
-  - has_quotient_froidure_pin
-  - parent_froidure_pin
-  - has_parent_froidure_pin
-  - is_quotient_obviously_finite
-  - is_quotient_obviously_infinite
-- Related algorithms:
-  - has_todd_coxeter
-  - todd_coxeter
-  - has_knuth_bendix
-  - knuth_bendix
-- Words and class indices:
-  - word_to_class_index
-  - class_index_to_word
-- State:
-  - kind
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
-- Iterators:
-  - cbegin_generating_pairs
-  - cend_generating_pairs
-  - cbegin_ntc
-  - cend_ntc
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

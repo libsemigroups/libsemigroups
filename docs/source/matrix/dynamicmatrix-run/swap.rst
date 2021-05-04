@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_run_swap:
 
-DynamicMatrix::swap
-===================
+swap
+====
 
-.. cpp:function::  void DynamicMatrix::swap(DynamicMatrix& that) noexcept
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
+
+.. cpp:function::  void swap(DynamicMatrix& that) noexcept
 
    Swaps the contents of ``this`` with the contents of ``that``. 
 

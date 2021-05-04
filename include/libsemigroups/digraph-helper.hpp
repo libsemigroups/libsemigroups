@@ -74,7 +74,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A value of type ActionDigraph::node_type. If one or more edges in
-    //! \p path are not defined, then libsemigroups::UNDEFINED is returned.
+    //! \p path are not defined, then \ref UNDEFINED is returned.
     //!
     //! \throw LibsemigroupsException if \p first is not a node in the digraph
     //! or \p path contains a value that is not an edge-label.
@@ -313,6 +313,7 @@ namespace libsemigroups {
     //! \tparam T the type used as the template parameter for the ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
+    //! \param source the source node.
     //!
     //! \returns
     //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of

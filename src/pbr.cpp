@@ -200,7 +200,8 @@ namespace libsemigroups {
 
   PBR::PBR(std::vector<std::vector<uint32_t>> const& vec) : _vector(vec) {}
 
-  PBR::PBR(std::initializer_list<std::vector<uint32_t>> vec) : _vector(vec) {}
+  PBR::PBR(std::initializer_list<std::vector<uint32_t>> const& vec)
+      : _vector(vec) {}
 
   PBR::PBR(size_t degree)
       : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
@@ -243,7 +244,7 @@ namespace libsemigroups {
     return os;
   }
 
-  size_t PBR::degree() const {
+  size_t PBR::degree() const noexcept {
     return _vector.size() / 2;
   }
 

@@ -38,7 +38,8 @@ namespace libsemigroups {
   //!
   //! FroidurePinBase allows a polymorphic interface to instances of
   //! FroidurePin and its member functions reflect those member functions of
-  //! FroidurePin that do not depend on the template parameter ``TElementType``.
+  //! FroidurePin that do not depend on the template parameter ``TElementType``
+  //! (the type of the elements of the semigroup represented).
   //!
   //! \sa FroidurePin and FroidurePinTraits.
   class FroidurePinBase : public Runner {
@@ -46,18 +47,19 @@ namespace libsemigroups {
     friend class FroidurePin;
 
    public:
-    //! Type used for indexing elements in a FroidurePin.
+    //! Unsigned integer type.
     // It should be possible to change this type and everything will just work,
     // provided the size of the semigroup is less than the maximum value of
     // this type of integer.
     using size_type = size_t;
 
-    //! Type for the position of an element in an instance of FroidurePin. The
-    //! size of the semigroup being enumerated must be at most
-    //! \c std::numeric_limits<element_index_type>::max()
+    //! Type for the index of an element.
+    //!
+    //! The size of the semigroup being enumerated must be at most \c
+    //! std::numeric_limits<element_index_type>::max()
     using element_index_type = size_type;
 
-    //! Type for a left or right Cayley graph of a FroidurePin instance.
+    //! Type for a left or right Cayley graph.
     using cayley_graph_type = detail::DynamicArray2<element_index_type>;
 
    private:
@@ -78,12 +80,10 @@ namespace libsemigroups {
     //! Default move constructor.
     FroidurePinBase(FroidurePinBase&& other) = default;
 
-    //! FroidurePinBase instances are not copy assignable and this function is
-    //! deleted.
+    //! Deleted.
     FroidurePinBase& operator=(FroidurePinBase const&) = delete;
 
-    //! FroidurePinBase instances are not move assignable and this function is
-    //! deleted.
+    //! Deleted.
     FroidurePinBase& operator=(FroidurePinBase&&) = delete;
 
     virtual ~FroidurePinBase();
@@ -95,13 +95,12 @@ namespace libsemigroups {
     //! Set a new value for the batch size.
     //!
     //! The *batch size* is the number of new elements to be found by any call
-    //! to FroidurePin::run. A call to run returns between 0 and
-    //! approximately the batch size.
+    //! to \ref run.
     //! This is used by, for example, FroidurePin::position so that it is
-    //! possible to find the position of an element without fully enumerating
-    //! the semigroup.
+    //! possible to find the position of an element after only partially
+    //! enumerating the semigroup.
     //!
-    //! The default value of the batch size is **8192**.
+    //! The default value of the batch size is `8192`.
     //!
     //! \param batch_size the new value for the batch size.
     //!
@@ -129,21 +128,20 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa This is the minimum number of elements enumerated in any call to
-    //! FroidurePin::run, see batch_size(size_t).
+    //! \ref run, see batch_size(size_t).
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     size_t batch_size() const noexcept;
 
-    //! Set the maximum number of threads that any member function of an
-    //! instance of FroidurePin can use.
+    //! Set the maximum number of threads.
     //!
     //! This member function sets the maximum number of threads to be used by
     //! any member function of a FroidurePin object. The number of threads is
     //! limited to the maximum of 1 and the minimum of \p nr_threads and the
     //! number of threads supported by the hardware.
     //!
-    //! The default value is **std::thread::hardware_concurrency()**.
+    //! The default value is `std::thread::hardware_concurrency()`.
     //!
     //! \param nr_threads the maximum number of threads to use.
     //!
@@ -173,19 +171,19 @@ namespace libsemigroups {
     //! \sa
     //! max_threads(size_t).
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     size_t max_threads() const noexcept;
 
     //! Set the threshold for concurrency to be used by member functions.
     //!
-    //! This member function sets the threshold such that if `this->size()`
+    //! This member function sets the threshold such that if size()
     //! exceeds this value, then the following functions may use a concurrent
     //! implementation:
     //!
-    //! * FroidurePin::nr_idempotents
+    //! * \ref FroidurePin::nr_idempotents
     //!
-    //! The default value is **823543**.
+    //! The default value is `823543`.
     //!
     //! \param thrshld the new threshold.
     //!
@@ -215,16 +213,18 @@ namespace libsemigroups {
     //! \sa
     //! concurrency_threshold(size_t).
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     size_t concurrency_threshold() const noexcept;
 
+    //! Set immutability.
+    //!
     //! Prevent further changes to the mathematical semigroup represented by an
     //! instance of FroidurePinBase.
     //!
     //! This member function prevents certain member functions from being
-    //! applied to a FroidurePinBase, such as add_generators, if they would
-    //! change the mathematical object represented by \c this.
+    //! applied to a FroidurePinBase, such as FroidurePin::add_generators,
+    //! if they would change the mathematical object represented by \c this.
     //!
     //! The default value is **false**.
     //!
@@ -242,7 +242,7 @@ namespace libsemigroups {
     //! immutable().
     FroidurePinBase& immutable(bool val) noexcept;
 
-    //! Returns the current value of mutability of \c this.
+    //! Returns the current immutability.
     //!
     //! \returns
     //! A `bool`.
@@ -256,7 +256,7 @@ namespace libsemigroups {
     //! \sa
     //! immutable(bool).
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     bool immutable() const noexcept;
 
@@ -264,155 +264,263 @@ namespace libsemigroups {
     // FroidurePinBase - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! \copydoc FroidurePin::equal_to
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     virtual bool equal_to(word_type const&, word_type const&) const = 0;
 
-    //! \copydoc FroidurePin::nr_generators
     virtual size_t nr_generators() const = 0;
 
-    //! \copydoc FroidurePin::fast_product
     virtual element_index_type fast_product(element_index_type,
                                             element_index_type) const = 0;
-    //! \copydoc FroidurePin::nr_idempotents
+
     virtual size_t nr_idempotents() = 0;
 
-    //! \copydoc FroidurePin::is_idempotent
     virtual bool is_idempotent(element_index_type) = 0;
 
-    //! \copydoc FroidurePin::is_finite
     virtual tril is_finite() const = 0;
 
-    //! \copydoc FroidurePin::reserve
     virtual void reserve(size_t) = 0;
 
-    //! \copydoc FroidurePin::position_to_sorted_position
     virtual element_index_type position_to_sorted_position(element_index_type)
         = 0;
+#endif
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! Returns the position corresponding to a word.
+    //!
     //! Returns the position in the semigroup corresponding to the element
     //! represented by the word \p w.
     //!
-    //! The parameter \p w must consist of non-negative integers less than
-    //! FroidurePin::nr_generators, or a LibsemigroupsException will be thrown.
-    //! This member function returns the position in \c this of the element
-    //! obtained by evaluating \p w. This member function does not perform any
-    //! enumeration of the semigroup, and will return libsemigroups::UNDEFINED
-    //! if the position of the element of \c this corresponding to \p w cannot
-    //! be determined.
+    //! This function returns the position corresponding to the element
+    //! obtained by evaluating the word in the generators \p w.
+    //! No enumeration is performed, and
+    //! \ref UNDEFINED is returned if the position of the element
+    //! corresponding to \p w cannot be determined.
     //!
     //! This is equivalent to finding the product \c x of the
     //! generators FroidurePin::generator(\c w[i]) and then calling
-    //! FroidurePin::position_current with argument \c x.
+    //! FroidurePin::current_position with argument \c x.
+    //!
+    //! \param w a word in the generators
+    //!
+    //! \returns
+    //! A value of type `element_index_type` or \ref UNDEFINED.
+    //!
+    //! \throws LibsemigroupsException if \p w contains an value exceeding
+    //! FroidurePin::nr_generators.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
+    // TODO(now) rename `position`
     element_index_type word_to_pos(word_type const& w) const;
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
-    //! Every elements of the semigroup can be expressed as a product of the
-    //! generators. The elements of the semigroup are enumerated in the
-    //! short-lex order induced by the order of the generators (as passed to
-    //! FroidurePin::FroidurePin).  This member function returns the length of
-    //! the longest word in the generators that has so far been enumerated.
+    //! Every elements of the semigroup can be expressed as the short-lex least
+    //! product of the generators that equals that element.  This function
+    //! returns the length of the longest short-lex least word in the
+    //! generators that has so far been enumerated.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     size_t current_max_word_length() const noexcept {
       return _length[_enumerate_order.back()];
     }
 
     //! Returns the degree of any and all elements.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     size_t degree() const noexcept {
       return _degree;
     }
 
-    //! Returns the number of elements in the semigroup that have been
-    //! enumerated so far.
+    //! Returns the number of elements so far enumerated.
     //!
     //! This is only the actual size of the semigroup if the semigroup is fully
     //! enumerated.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     size_t current_size() const noexcept {
       return _nr;
     }
 
-    //! Returns the number of relations in the presentation for the semigroup
-    //! that have been found so far.
+    //! Returns the number of relations that have been found so far.
     //!
-    //! This is only the actual number of relations in a presentation defining
-    //! the semigroup if the semigroup is fully enumerated.
+    //! This is only guaranteed to be the actual number of relations in a
+    //! presentation defining the semigroup if the semigroup is fully
+    //! enumerated.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     size_t current_nr_rules() const noexcept {
       return _nr_rules;
     }
 
+    //! Returns the position of the longest proper prefix.
+    //!
     //! Returns the position of the prefix of the element \c x in position
     //! \p pos (of the semigroup) of length one less than the length of \c x.
     //!
-    //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref current_size.
+    //!
+    //! \complexity
+    //! Constant.
     element_index_type prefix(element_index_type pos) const {
       validate_element_index(pos);
       return _prefix[pos];
     }
 
+    //! Returns the position of the longest proper suffix.
+    //!
     //! Returns the position of the suffix of the element \c x in position
     //! \p pos (of the semigroup) of length one less than the length of \c x.
     //!
-    //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref current_size.
+    //!
+    //! \complexity
+    //! Constant.
     element_index_type suffix(element_index_type pos) const {
       validate_element_index(pos);
       return _suffix[pos];
     }
 
-    //! Returns the first letter of the element in position \p pos.
+    //! Returns the first letter of the element with specified index.
     //!
-    //! This member function returns the first letter of the element in position
+    //! This function returns the first letter of the element in position
     //! \p pos of the semigroup, which is the index of the generator
     //! corresponding to the first letter of the element.
     //!
-    //! Note that FroidurePin::generator[FroidurePin::first_letter(\c pos)] is
-    //! only equal to FroidurePin::at(FroidurePin::first_letter(\c pos)) if
+    //! \note
+    //! Note that `FroidurePin::generator(first_letter(pos))` is
+    //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c letter_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref current_size.
+    //!
+    //! \complexity
+    //! Constant.
     letter_type first_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _first[pos];
     }
 
-    //! Returns the last letter of the element in position \p pos.
+    //! Returns the last letter of the element with specified index.
     //!
-    //! This member function returns the final letter of the element in position
+    //! This function returns the final letter of the element in position
     //! \p pos of the semigroup, which is the index of the generator
     //! corresponding to the final letter of the element.
     //!
-    //! Note that FroidurePin::generator[FroidurePin::final_letter(\c pos)] is
-    //! only equal to FroidurePin::at(FroidurePin::final_letter(\c pos)) if
+    //! \note
+    //! Note that `FroidurePin::generator(first_letter(pos))` is
+    //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c letter_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref current_size.
+    //!
+    //! \complexity
+    //! Constant.
     letter_type final_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _final[pos];
     }
 
-    //! Returns the length of the element in position \c pos of the semigroup.
+    //! Returns the length of the short-lex least word.
     //!
-    //! The parameter \p pos must be a valid position of an already enumerated
-    //! element of the semigroup, or a LibsemigroupsException will be thrown.
-    //! This member function causes no enumeration of the semigroup.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c letter_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref current_size.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref length_non_const.
+    // TODO now change this to `length`
     size_t length_const(element_index_type pos) const {
       validate_element_index(pos);
       return _length[pos];
     }
 
-    //! Returns the length of the element in position \c pos of the semigroup.
+    //! Returns the length of the short-lex least word.
     //!
-    //! The parameter \p pos must be a valid position of an element of the
-    //! semigroup, or a LibsemigroupsException will be thrown.
+    //! \param pos the position
+    //!
+    //! \returns A value of type \c letter_type.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref size.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref length_const.
+    // TODO now change this to `length`
     size_t length_non_const(element_index_type pos) {
       if (pos >= _nr) {
         run();
@@ -420,75 +528,135 @@ namespace libsemigroups {
       return length_const(pos);
     }
 
-    //! Returns the position in \c this of the product of \c this->at(i) and
-    //! \c this->at(j) by following a path in the Cayley graph.
+    //! Compute a product using the Cayley graph.
     //!
-    //! The values \p i and \p j must be less than FroidurePin::current_size, or
-    //! a LibsemigroupsException will be thrown.
-    //! This member function returns the position
-    //! FroidurePin::element_index_type in the semigroup of the product of \c
-    //! this->at(i) and \c this->at(j) elements by following the path in the
-    //! right Cayley graph from \p i labelled by the word \c
-    //! this->minimal_factorisation(j) or, if this->minimal_factorisation(i) is
+    //! This function finds the product of `at(i)` and `at(j)` by following the
+    //! path in the right Cayley graph from \p i labelled by the word
+    //! `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
     //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by this->minimal_factorisation(i).
-    element_index_type product_by_reduction(element_index_type,
-                                            element_index_type) const;
-
-    //! Returns the position in \c this of the generator with index \p i.
+    //! labelled by `minimal_factorisation(i)`.
     //!
-    //! If \p i is not a valid generator index, a LibsemigroupsException will
-    //! be thrown. In many cases \p letter_to_pos(i) will equal \p i, examples
+    //! \param i the first index of an element
+    //! \param j the second index of an element
+    //!
+    //! \returns
+    //! A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i or \p j is greater than or equal
+    //! to \ref current_size.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
+    //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    element_index_type product_by_reduction(element_index_type i,
+                                            element_index_type j) const;
+
+    //! Returns the position in of the generator with specified index.
+    //!
+    //! In many cases \p letter_to_pos(i) will equal \p i, examples
     //! of when this will not be the case are:
     //!
     //! * there are duplicate generators;
     //!
     //! * FroidurePin::add_generators was called after the semigroup was already
     //! partially enumerated.
+    //!
+    //! \param i the index of the generators
+    //!
+    //! \returns A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! FroidurePin::nr_generators.
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO(now) rename `position`
     element_index_type letter_to_pos(letter_type i) const {
       validate_letter_index(i);
       return _letter_to_pos[i];
     }
 
-    //! Returns the size of the semigroup.
-    size_t size() {
-      run();
-      return _nr;
-    }
-
-    //! Check if the semigroup represented by \c this is a monoid.
+    //! Returns the size.
+    //!
+    //! \parameters
+    //! (None)
     //!
     //! \returns
-    //! \c true if the semigroup represented by \c this contains
-    //! FroidurePin::One()(), and \c false if not.
+    //! A value of type `size_t`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(|S||A|)\f$ where \f$S\f$ is the semigroup represented by \c this
-    //! and \f$A\f$ is the set of generators used to define \c this.
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    size_t size() {
+      run();
+      return _nr;
+    }
+
+    //! Check if the semigroup is a monoid.
     //!
-    //! \par Parameters
+    //! \returns
+    //! \c true if the semigroup represented by \c this contains
+    //! FroidurePin::One, and \c false if not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //!
+    //! \parameters
     //! (None).
     bool is_monoid() {
       run();
       return _found_one;
     }
 
-    //! Returns the total number of relations in the presentation defining the
-    //! semigroup.
+    //! Returns the total number of relations in the presentation.
     //!
-    //! \sa FroidurePinBase::cbegin_rules and FroidurePinBase::cend_rules.
+    //! \returns
+    //! A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //!
+    //! \sa \ref cbegin_rules and \ref cend_rules.
+    //!
+    //! \parameters
+    //! (None)
     size_t nr_rules() {
       run();
       return _nr_rules;
     }
 
+    //! Returns the index of the product of an element and a generator.
+    //!
     //! Returns the index of the product of the element in position \p i with
     //! the generator with index \p j.
     //!
-    //! This member function fully enumerates the semigroup.
+    //! \param i the index of the element
+    //! \param j the index of the generator
+    //!
+    //! \returns A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! size().
+    //! \throws LibsemigroupsException if \p j is greater than or equal to
+    //! FroidurePin::nr_generators().
+    //!
+    //! \complexity
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //!
+    //! \sa
+    //! \ref left.
     element_index_type right(element_index_type i, letter_type j) {
       validate_letter_index(j);
       run();
@@ -496,18 +664,18 @@ namespace libsemigroups {
       return _right.get(i, j);
     }
 
-    //! Returns a const reference to the right Cayley graph of \c this.
+    //! Returns a const reference to the right Cayley graph.
     //!
-    //! \returns A const reference to cayley_graph_type.
+    //! \returns A const reference to \ref cayley_graph_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(|S||A|)\f$ where \f$S\f$ is the semigroup represented by \c this
-    //! and \f$A\f$ is the set of generators used to define \c this.
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     cayley_graph_type const& right_cayley_graph() {
       run();
@@ -515,12 +683,27 @@ namespace libsemigroups {
       return _right;
     }
 
-    //! Returns the index of the product of the generator with index \p j and
+    //! Returns the index of the product of a generator and an element.
+    //!
+    //! Returns the index of the product of the generator with index \p j with
     //! the element in position \p i.
     //!
-    //! This member function fully enumerates the semigroup.
+    //! \param i the index of the element
+    //! \param j the index of the generator
     //!
-    //! \throws LibsemigroupsException if \p i or \p j is out of bounds.
+    //! \returns A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! size().
+    //! \throws LibsemigroupsException if \p j is greater than or equal to
+    //! FroidurePin::nr_generators().
+    //!
+    //! \complexity
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //!
+    //! \sa
+    //! \ref right.
     element_index_type left(element_index_type i, letter_type j) {
       validate_letter_index(j);
       run();
@@ -528,18 +711,18 @@ namespace libsemigroups {
       return _left.get(i, j);
     }
 
-    //! Returns a const reference to the left Cayley graph of \c this.
+    //! Returns a const reference to the left Cayley graph.
     //!
-    //! \returns A const reference to `cayley_graph_type`.
+    //! \returns A const reference to \ref cayley_graph_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(|S||A|)\f$ where \f$S\f$ is the semigroup represented by \c this
-    //! and \f$A\f$ is the set of generators used to define \c this.
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
+    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
     //!
-    //! \par Parameters
+    //! \parameters
     //! None.
     cayley_graph_type const& left_cayley_graph() {
       run();
@@ -547,6 +730,8 @@ namespace libsemigroups {
       return _left;
     }
 
+    //! Obtain a short-lex least word representing an element given by index.
+    //!
     //! Changes \p word in-place to contain a minimal word with respect to the
     //! short-lex ordering in the generators equal to the \p pos element of
     //! the semigroup.
@@ -555,9 +740,21 @@ namespace libsemigroups {
     //! function changes its first parameter \p word in-place by first clearing
     //! it and then to contain a minimal factorization of the element in
     //! position \p pos of the semigroup with respect to the generators of the
-    //! semigroup. This member function enumerates the semigroup until at least
-    //! the \p pos element is known. If \p pos is greater than the size of the
-    //! semigroup, then a LibsemigroupsException is thrown.
+    //! semigroup.  This function enumerates the semigroup until at least the
+    //! \p pos element is known.
+    //!
+    //! \param word the word to clear and change in-place
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::nr_generators.
     void minimal_factorisation(word_type& word, element_index_type pos) {
       if (pos >= _nr && !finished()) {
         enumerate(pos + 1);
@@ -567,108 +764,153 @@ namespace libsemigroups {
       private_minimal_factorisation(word, pos);
     }
 
-    //! Returns a minimal libsemigroups::word_type which evaluates to the
-    //! TElementType in position \p pos of \c this.
+    //! Returns a short-lex least word representing an element given by index.
     //!
     //! This is the same as the two-argument member function for
-    //! FroidurePin::minimal_factorisation, but it returns a pointer to the
-    //! factorisation instead of modifying an argument in-place.
-    //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! \ref minimal_factorisation, but it returns a \ref word_type by value
+    //! instead of modifying an argument in-place.
+    //!
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \returns
+    //! A value of type `word_type`.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::nr_generators.
     word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
       return word;
     }
 
-    //! Changes \p word in-place to contain a short-lex minimal word in the
-    //! generators equal to the \p pos element of the semigroup.
+    //! Obtain a short-lex least word representing an element given by index.
     //!
-    //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! Changes \p word in-place to contain a minimal word with respect to the
+    //! short-lex ordering in the generators equal to the \p pos element of
+    //! the semigroup. No further enumeration is performed.
+    //!
+    //! \param word the word to clear and change in-place
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! current_size().
+    //!
+    //! \complexity
+    //! Constant.
     void minimal_factorisation(word_type& word, element_index_type pos) const {
+      validate_element_index(pos);
       private_minimal_factorisation(word, pos);
     }
 
+    //! Obtain a word representing an element given by index.
+    //!
     //! Changes \p word in-place to contain a word in the generators equal to
     //! the \p pos element of the semigroup.
     //!
-    //! The key difference between this member function and
-    //! FroidurePin::minimal_factorisation(word_type& word, element_index_type
-    //! pos), is that the resulting factorisation may not be minimal. If \p pos
-    //! is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! If \p pos is less than the size of this semigroup, then this member
+    //! function changes its first parameter \p word in-place by first clearing
+    //! it and then to contain a factorization of the element in
+    //! position \p pos of the semigroup with respect to the generators of the
+    //! semigroup.  This function enumerates the semigroup until at least the
+    //! \p pos element is known.
+    //!
+    //! The key difference between this function and
+    //! minimal_factorisation(element_index_type) is that the resulting
+    //! factorisation may not be minimal.
+    //!
+    //! \param word the word to clear and change in-place
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::nr_generators.
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
 
-    //! Returns a libsemigroups::word_type which evaluates to the TElementType
-    //! in position \p pos of \c this.
+    //! Returns a word representing an element given by index.
     //!
-    //! The key difference between this member function and
-    //! FroidurePin::minimal_factorisation(element_index_type pos), is that the
-    //! resulting factorisation may not be minimal.
-    //! If \p pos is greater than the size of the semigroup, then a
-    //! LibsemigroupsException is thrown.
+    //! This is the same as the two-argument member function for
+    //! \ref factorisation, but it returns a \ref word_type by value
+    //! instead of modifying an argument in-place.
+    //!
+    //! The key difference between this function and
+    //! minimal_factorisation(element_index_type) is that the resulting
+    //! factorisation may not be minimal.
+    //!
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \returns
+    //! A value of type `word_type`.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::nr_generators.
     word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
 
-    //! Enumerate the semigroup until \p limit elements are found.
+    //! Enumerate until at least a specified number of elements are found.
     //!
     //! If the semigroup is already fully enumerated, or the number of elements
-    //! previously enumerated exceeds \p limit, then calling this member
-    //! function does nothing. Otherwise, run attempts to find at least
-    //! the maximum of \p limit and FroidurePin::batch_size elements of the
-    //! semigroup. If \p killed is set to \c true (usually by another process),
-    //! then the enumeration is terminated as soon as possible.  It is possible
-    //! to resume enumeration at some later point after any call to this member
-    //! function.
+    //! previously enumerated exceeds \p limit, then calling this
+    //! function does nothing. Otherwise, \ref run attempts to find at least
+    //! the maximum of \p limit and \ref batch_size elements of the
+    //! semigroup.
     //!
-    //! If the semigroup is fully enumerated, then it knows its left and right
-    //! Cayley graphs, and a minimal factorisation of every element (in terms of
-    //! its generating set).  All of the elements are stored in memory until the
-    //! object is destroyed.
+    //! \param limit the limit for current_size()
     //!
-    //! The parameter \p limit defaults to FroidurePin::LIMIT_MAX.
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is the
+    //! return value of FroidurePin::nr_generators.
     void enumerate(size_t limit);
 
-    //! No doc
+    //! Return type of \ref cbegin_rules and \ref cend_rules.
     class const_rule_iterator {
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
      public:
-      //! No doc
       using size_type = typename std::vector<relation_type>::size_type;
-      //! No doc
       using difference_type =
           typename std::vector<relation_type>::difference_type;
-      //! No doc
       using const_pointer = typename std::vector<relation_type>::const_pointer;
-      //! No doc
-      using pointer = typename std::vector<relation_type>::pointer;
-      //! No doc
+      using pointer       = typename std::vector<relation_type>::pointer;
       using const_reference =
           typename std::vector<relation_type>::const_reference;
-      //! No doc
-      using reference = typename std::vector<relation_type>::reference;
-      //! No doc
-      using value_type = relation_type;
-      //! No doc
+      using reference         = typename std::vector<relation_type>::reference;
+      using value_type        = relation_type;
       using iterator_category = std::forward_iterator_tag;
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
-      //! No doc
-      const_rule_iterator() = default;
-      //! No doc
+      const_rule_iterator()                           = default;
       const_rule_iterator(const_rule_iterator const&) = default;
-      //! No doc
-      const_rule_iterator(const_rule_iterator&&) = default;
-      //! No doc
+      const_rule_iterator(const_rule_iterator&&)      = default;
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
-      //! No doc
       const_rule_iterator& operator=(const_rule_iterator&&) = default;
 
-      //! No doc
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,
                           letter_type            gen)
@@ -680,32 +922,26 @@ namespace libsemigroups {
         ++(*this);
       }
 
-      //! No doc
       ~const_rule_iterator() = default;
 
-      //! No doc
       bool operator==(const_rule_iterator const& that) const noexcept {
         return _gen == that._gen && _pos == that._pos;
       }
 
-      //! No doc
       bool operator!=(const_rule_iterator const& that) const noexcept {
         return !(this->operator==(that));
       }
 
-      //! No doc
       const_reference operator*() const noexcept {
         populate_relation();
         return _relation;
       }
 
-      //! No doc
       const_pointer operator->() const noexcept {
         populate_relation();
         return &_relation;
       }
 
-      //! No doc
       // prefix
       const_rule_iterator const& operator++() noexcept {
         auto const* ptr = _froidure_pin;
@@ -754,7 +990,6 @@ namespace libsemigroups {
         }
       }
 
-      //! No doc
       // postfix
       const_rule_iterator operator++(int) noexcept {
         const_rule_iterator copy(*this);
@@ -762,13 +997,13 @@ namespace libsemigroups {
         return copy;
       }
 
-      //! No doc
       void swap(const_rule_iterator& that) noexcept {
         _current.swap(that._current);
         std::swap(_froidure_pin, that._froidure_pin);
         std::swap(_gen, that._gen);
         std::swap(_pos, that._pos);
       }
+#endif
 
      private:
       void populate_relation() const {
@@ -801,18 +1036,20 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_rule_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns a forward iterator pointing to the first rule (if any).
+    //!
     //! Returns a forward iterator pointing to the first rule in a confluent
     //! terminating rewriting system defining a semigroup isomorphic to the
     //! one defined by \c this.
     //!
     //! This function does not perform any enumeration of the FroidurePin. If
     //! you want to obtain the complete set of rules, then it is necessary to
-    //! FroidurePin::run until the FroidurePin is fully enumerated.
+    //! call run() first.
     //!
-    //! \returns An iterator of type const_rule_iterator pointing to a
-    //! libsemigroups::relation_type.
+    //! \returns An iterator of type \ref const_rule_iterator
+    //! pointing to a \ref relation_type.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None).
     //!
     //! \exceptions
@@ -822,7 +1059,8 @@ namespace libsemigroups {
     //! Constant
     //!
     //! \iterator_validity
-    //! The iterators returned by this are valid until \c this is deleted.
+    //! The iterators returned by this function are valid until the underlying
+    //! FroidurePin instance is deleted.
     //!
     //! \sa cend_rules
     //!
@@ -870,18 +1108,20 @@ namespace libsemigroups {
       return const_rule_iterator(this, UNDEFINED, 0);
     }
 
+    //! Returns a forward iterator pointing one past the last rule (if any).
+    //!
     //! Returns a forward iterator pointing one-past-the-last rule (currently
     //! known) in a confluent terminating rewriting system defining a semigroup
     //! isomorphic to the one defined by \c this.
     //!
     //! This function does not perform any enumeration of the FroidurePin. If
     //! you want to obtain the complete set of rules, then it is necessary to
-    //! FroidurePin::run until the FroidurePin is fully enumerated.
+    //! call run() first.
     //!
-    //! \returns An iterator of type const_rule_iterator pointing to a
-    //! libsemigroups::relation_type.
+    //! \returns An iterator of type \ref const_rule_iterator
+    //! pointing to a \ref relation_type.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None).
     //!
     //! \exceptions
@@ -891,7 +1131,8 @@ namespace libsemigroups {
     //! Constant
     //!
     //! \iterator_validity
-    //! The iterators returned by this are valid until \c this is deleted.
+    //! The iterators returned by this function are valid until the underlying
+    //! FroidurePin instance is deleted.
     //!
     //! \sa cbegin_rules
     //!

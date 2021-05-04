@@ -7,7 +7,7 @@
 StaticRowView member types
 ==========================
 
-.. cpp:namespace:: libsemigroups::StaticRowView
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
 
 This page contains information about the member types of the
 :cpp:any:`StaticRowView` class.

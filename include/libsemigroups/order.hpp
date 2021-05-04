@@ -49,7 +49,7 @@ namespace libsemigroups {
   template <typename T>
   struct LexicographicalCompare {
     //! Call operator that compares \p x and \p y using
-    //! std::lexicographical_compare.
+    //! [std::lexicographical_compare].
     //!
     //! \param x const reference to the first object for comparison
     //! \param y const reference to the second object for comparison
@@ -69,6 +69,24 @@ namespace libsemigroups {
           x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
 
+    //! Call operator that compares iterators using
+    //! [std::lexicographical_compare].
+    //!
+    //! \param first1 the start of the first object to compare
+    //! \param last1 one beyond the end of the first object to compare
+    //! \param first2 the start of the second object to compare
+    //! \param last2 one beyond the end of the second object to compare
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \exceptions
+    //! See [std::lexicographical_compare].
+    //!
+    //! \complexity
+    //! See [std::lexicographical_compare].
+    //!
+    //! [std::lexicographical_compare]:
+    //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
     template <typename S>
     bool operator()(S first1, S last1, S first2, S last2) const {
       return std::lexicographical_compare(first1, last1, first2, last2);
@@ -232,10 +250,10 @@ namespace libsemigroups {
   //! Defined in ``order.hpp``.
   //!
   //! A stateless struct with binary call operator using
-  //! shortlex_compare.
+  //! \ref shortlex_compare.
   //!
   //! This only exists to be used as a template parameter, and has no
-  //! advantages over using shortlex_compare otherwise.
+  //! advantages over using \ref shortlex_compare otherwise.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -244,7 +262,7 @@ namespace libsemigroups {
   template <typename T>
   struct ShortLexCompare {
     //! Call operator that compares \p x and \p y using
-    //! std::lexicographical_compare.
+    //! \ref shortlex_compare.
     //!
     //! \param x const reference to the first object for comparison
     //! \param y const reference to the second object for comparison
@@ -252,10 +270,10 @@ namespace libsemigroups {
     //! \returns A `bool`.
     //!
     //! \exceptions
-    //! See shortlex_compare(T const, T const, S const, S const)
+    //! See shortlex_compare(T const, T const, S const, S const).
     //!
     //! \complexity
-    //! See shortlex_compare(T const, T const, S const, S const)
+    //! See shortlex_compare(T const, T const, S const, S const).
     bool operator()(T const& x, T const& y) {
       return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
@@ -274,8 +292,8 @@ namespace libsemigroups {
   //! 2. \f$a > b\f$ and \f$u  > v'\f$;
   //! 3. \f$b > a\f$ and \f$u' > v\f$.
   //!
-  //! This documentation and the implementation of recursive_path_compare is
-  //! based on the source code of [Hol19]((../biblio.html#Holt2019aa).
+  //! This documentation and the implementation of \ref recursive_path_compare
+  //! is based on the source code of [Hol19](../biblio.html#Holt2019aa).
   //!
   //! \tparam T the type of iterators to the first object to be compared.
   //! \tparam S the type of iterators to the second object to be compared.
@@ -292,8 +310,8 @@ namespace libsemigroups {
   //!
   //! \warning
   //! This function has signifcantly worse performance than all
-  //! the variants of short_lex_compare(T
-  //! const, T const, S const) and [std::lexicographical_compare].
+  //! the variants of \ref shortlex_compare
+  //! and [std::lexicographical_compare].
   //!
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
@@ -384,10 +402,10 @@ namespace libsemigroups {
   //! Defined in ``order.hpp``.
   //!
   //! A stateless struct with binary call operator using
-  //! recursive_path_compare.
+  //! \ref recursive_path_compare.
   //!
   //! This only exists to be used as a template parameter, and has no
-  //! advantages over using recursive_path_compare otherwise.
+  //! advantages over using \ref recursive_path_compare otherwise.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -396,7 +414,7 @@ namespace libsemigroups {
   template <typename T>
   struct RecursivePathCompare {
     //! Call operator that compares \p x and \p y using
-    //! recursive_path_compare.
+    //! \ref recursive_path_compare.
     //!
     //! \param x const reference to the first object for comparison
     //! \param y const reference to the second object for comparison

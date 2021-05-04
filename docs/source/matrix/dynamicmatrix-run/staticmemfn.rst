@@ -7,7 +7,7 @@
 DynamicMatrix static member functions
 =====================================
 
-.. cpp:namespace:: libsemigroups::DynamicMatrix
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
 
 .. _dynamicmatrix_run_identity:
 .. cpp:function:: static DynamicMatrix identity(size_t n)

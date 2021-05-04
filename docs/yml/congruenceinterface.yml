@@ -1,65 +1,85 @@
 libsemigroups::CongruenceInterface:
-- Aliases and public types:
-  - [typedef, class_index_type]
-  - [typedef, non_trivial_classes_type]
-  - [typedef, non_trivial_class_iterator]
-  - [typedef, const_iterator]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`CongruenceInterface` class."]
+  - class_index_type
+  - non_trivial_classes_type
+  - non_trivial_class_iterator
+  - const_iterator
 - Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`CongruenceInterface` class."]
   - CongruenceInterface(congruence_type)
-  - CongruenceInterface(CongruenceInterface const&)
+  - CongruenceInterface(CongruenceInterface const&) = default
 - Deleted constructors:
-  - CongruenceInterface()
-  - operator=(CongruenceInterface const&)
-  - CongruenceInterface(CongruenceInterface&&)
-  - operator=(CongruenceInterface&&)
+  - ["This page lists the deleted constructors of the
+     :cpp:any:`CongruenceInterface` class."]
+  - CongruenceInterface() = delete
+  - CongruenceInterface(CongruenceInterface&&) = delete
+  - operator=(CongruenceInterface const&) = delete
+  - operator=(CongruenceInterface&&) = delete
 - Initialization:
-  - set_nr_generators
-  - nr_generators
+  - ["This page contains information about initialising the
+     :cpp:any:`CongruenceInterface` class."]
+  - set_nr_generators(size_t)
+  - nr_generators() const noexcept
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
-  - nr_generating_pairs
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Operators:
-  - kill
-  - run
+  - nr_generating_pairs() const noexcept
+- Handedness:
+  - kind() const noexcept
+- Iterators:
+  - ["This page contains information about iterators for accessing certain
+      attributes of the :cpp:any:`CongruenceInterface` class."]
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc() 
+- Words and class indices:
+  - ["This page contains information about the member functions of 
+      the :cpp:any:`CongruenceInterface` class for converting a word in the
+      generators to a class index and vice versa."]
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+- Numbers of classes, and comparisons:
+  - ["This page contains information about the member functions of 
+      the :cpp:any:`CongruenceInterface` class for comparing words, checking
+      membership, and counting the number of classes of several types."]
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const
+  - contains(word_type const&, word_type const&)
+  - nr_classes()
+  - nr_non_trivial_classes()
+  - non_trivial_classes()
+- Related semigroups:
+  - ["This page contains information about the member functions of the
+      :cpp:any:`CongruenceInterface` class for obtaining the parent or quotient
+      semigroup represented as a :cpp:any:`FroidurePin` instance."]
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`CongruenceInterface` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until(T&&)
-  - run_until(bool (*))
-- State:
-  - kind
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running 
-  - stopped_by_predicate
-- Iterators:
-  - cbegin_generating_pairs
-  - cend_generating_pairs
-  - cbegin_ntc
-  - cend_ntc
-- Words and class indices:
-  - word_to_class_index
-  - class_index_to_word
-- Numbers of classes, and comparisons:
-  - less
-  - const_contains
-  - contains
-  - nr_classes
-  - nr_non_trivial_classes
-  - non_trivial_classes
-- Related semigroups:
-  - quotient_froidure_pin
-  - has_quotient_froidure_pin
-  - parent_froidure_pin
-  - has_parent_froidure_pin
-  - parent_fpsemigroup
-  - has_parent_fpsemigroup
-  - is_quotient_obviously_finite
-  - is_quotient_obviously_infinite
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const
