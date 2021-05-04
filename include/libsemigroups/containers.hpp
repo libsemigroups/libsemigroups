@@ -914,7 +914,19 @@ namespace libsemigroups {
      private:
       std::array<std::array<T, N>, N> _arrays;
     };
+
+    template <typename T>
+    struct IsDynamicArray2Helper : std::false_type {};
+
+    template <typename T, typename A>
+    struct IsDynamicArray2Helper<DynamicArray2<T, A>> : std::true_type {};
+
   }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsDynamicArray2
+      = detail::IsDynamicArray2Helper<std::decay_t<T>>::value;
+
 }  // namespace libsemigroups
 
 namespace std {
