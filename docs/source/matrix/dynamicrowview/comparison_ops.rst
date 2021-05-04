@@ -10,7 +10,7 @@ Comparison operators
 ====================
 
 .. _dynamicrowview_operator_equals:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template<typename U> \
                   bool operator==(U const& that) const
 
    Equality operator.
@@ -28,7 +28,7 @@ Comparison operators
 
 
 .. _dynamicrowview_operator_not_equals:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template<typename U> \
                   bool operator!=(U const& that) const
 
    Inequality operator.
@@ -38,7 +38,7 @@ Comparison operators
    :param that: :cpp:any:`Row` or :cpp:any:`RowView` object for comparison.
   
    :returns:
-     Returns ``true`` if the first :cpp:any:`size()` entries of ``that`` dp not
+     Returns ``true`` if the first :cpp:any:`size()` entries of ``that`` do not
      equal the entries of ``this``, and ``false`` otherwise.
 
    :complexity:
@@ -46,8 +46,8 @@ Comparison operators
 
 
 .. _dynamicrowview_operator_less:
-.. cpp:function:: template \<typename U> \
-                  bool operator\<(U const& that) const
+.. cpp:function:: template<typename U> \
+                  bool operator<(U const& that) const
 
    Lexicographical comparison of rows.
 
@@ -64,7 +64,7 @@ Comparison operators
 
 
 .. _dynamicrowview_operator_more:
-.. cpp:function:: template \<typename U> \
+.. cpp:function:: template<typename U> \
                   bool operator>(U const& that) const
 
    Lexicographical comparison of rows.

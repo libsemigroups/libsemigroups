@@ -1,0 +1,53 @@
+libsemigroups::DynamicPTransf:
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`DynamicPTransf` class."]
+  - value_type
+  - container_type
+  - const_iterator
+  - iterator
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`DynamicPTransf` class."]
+  - DynamicPTransf(size_t)
+- Static member functions:
+  - ["This page contains information about the static member functions of the  
+     :cpp:any:`DynamicPTransf` class."]
+  - identity() const
+  - identity(size_t)
+  - make(TContainerAgain &&)
+  - make(std::initializer_list< value_type > const &)
+- Modifiers and accessors:
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`DynamicPTransf` class for modifying and accessing values."]
+  - increase_degree_by(size_t)
+  - swap(PTransfBase &) noexcept
+  - operator[](size_t)
+  - operator[](size_t) const
+  - at(size_t)
+  - at(size_t) const
+- Iterators:
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`DynamicPTransf` class related to iterators."]
+  - begin() noexcept
+  - end() noexcept
+  - cbegin() const noexcept
+  - cend() const noexcept
+  - begin() const noexcept
+  - end() const noexcept
+- Operators:
+  - ["This page contains information about the operators for the  
+     :cpp:any:`DynamicPTransf` class."]
+  - operator>(PTransfBase const &) const
+  - operator<(PTransfBase const &) const
+  - operator==(PTransfBase const &) const
+  - operator<=(PTransfBase const &) const
+  - operator>=(PTransfBase const &) const
+  - operator!=(PTransfBase const &) const
+  - operator*(TSubclass const &) const
+- Other member functions:
+  - ["This page contains information about the other member functions of the  
+     :cpp:any:`DynamicPTransf` class not covered on another page."]
+  - rank() const
+  - hash_value() const
+  - degree() const noexcept

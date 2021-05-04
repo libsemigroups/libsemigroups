@@ -6,11 +6,12 @@
 
 .. _staticmatrix_rows:
 
-StaticMatrix::rows
-==================
+rows
+====
 
-.. cpp:function:: template <typename T> \
-                  void StaticMatrix::rows(T& x) const 
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: template <typename T> void rows(T& x) const 
    
    Add row views for every row in the matrix to the container ``T``.
    

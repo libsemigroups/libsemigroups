@@ -50,6 +50,8 @@ namespace libsemigroups {
   //!
   //! This is a traits class for use with Konieczny.
   //!
+  //! \tparam TElementType the type of the elements.
+  //!
   //! \sa Konieczny
   template <typename TElementType>
   struct KoniecznyTraits {
@@ -61,26 +63,27 @@ namespace libsemigroups {
     using const_element_type =
         typename detail::BruidhinnTraits<TElementType>::const_value_type;
 
-    //! \copydoc LambdaValue
+    //! Alias for \ref LambdaValue with template parameter \ref
+    //! element_type.
     using lambda_value_type =
         typename ::libsemigroups::LambdaValue<element_type>::type;
 
-    //! \copydoc RhoValue
+    //! Alias for RhoValue with template parameter \ref element_type.
     using rho_value_type =
         typename ::libsemigroups::RhoValue<element_type>::type;
 
-    //! \copydoc RankState
+    //! Alias for \ref RhoValue with template parameter \ref element_type.
     using rank_state_type = typename ::libsemigroups::RankState<element_type>;
 
-    //! The orbit of the lambda values under LambdaAction
-    //! \sa LambdaAction and RightAction
+    //! The type of the orbit of the lambda values under ImageRightAction.
+    //! \sa ImageRightAction and RightAction
     using lambda_orb_type
         = RightAction<element_type,
                       lambda_value_type,
                       ImageRightAction<element_type, lambda_value_type>>;
 
-    //! The orbit of the rho values under RhoAction
-    //! \sa RhoAction and LeftAction
+    //! The type of the orbit of the rho values under ImageLeftAction
+    //! \sa ImageLeftAction and LeftAction
     using rho_orb_type
         = LeftAction<element_type,
                      rho_value_type,
@@ -128,20 +131,21 @@ namespace libsemigroups {
   //! elements which happen to be regular.
   //!
   //! A Konieczny instance is defined by a generating set, and the main
-  //! member function is Konieczny::run, which implements
+  //! function is Konieczny::run, which implements
   //! %Konieczny's Algorithm. If Konieczny::run is invoked and
   //! Konieczny::finished returns \c true, then the size, partial order of
-  //! \f$\mathscr{D}\f$-classes, and complete frames for each
+  //! \f$\mathscr{D}\f$-classes, and frames for each
   //! \f$\mathscr{D}\f$-class are known.
   //!
-  //! \tparam TElementType the type of the elements of the semigroup.
+  //! \tparam TElementType the type of the elements of the semigroup (must not
+  //! be a pointer).
   //!
   //! \tparam TTraits the type of a traits class with the requirements of
-  //! libsemigroups::KoniecznyTraits.
+  //! KoniecznyTraits.
   //!
   //! \sa KoniecznyTraits and DClass
   //!
-  //! [here]:  https://link.springer.com/article/10.1007/BF02573672
+  //! [here]: https://link.springer.com/article/10.1007/BF02573672
   //! [this]:
   //! https://www.sciencedirect.com/science/article/pii/S0747717108800570
   template <typename TElementType,
@@ -171,37 +175,31 @@ namespace libsemigroups {
     // Konieczny - aliases - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The type of the elements of the semigroup represented by \c this.
+    //! The type of elements.
     using element_type = typename TTraits::element_type;
 
-    //! The type of the elements of the semigroup represented by \c this, with
-    //! const added.
+    //! The type of const elements.
     using const_element_type = typename TTraits::const_element_type;
 
-    //! The type of a const reference to an element of the semigroup represented
-    //! by \c this.
+    //! Type of element const references.
     using const_reference =
         typename detail::BruidhinnTraits<TElementType>::const_reference;
 
-    //! The type of indices of \f$\mathscr{D}\f$-classes in the semigroup
-    //! represented by \c this. \sa cbegin_D_classes and
-    //! cbegin_regular_D_classes
+    //! Type of indices of \f$\mathscr{D}\f$-classes.
+    //!
+    //! \sa cbegin_D_classes and cbegin_regular_D_classes.
     using D_class_index_type = size_t;
 
-    //! The type of the lambda values that the semigroup represented by \c this
-    //! acts on.
+    //! The type of lambda values.
     using lambda_value_type = typename TTraits::lambda_value_type;
 
-    //! The type of the orbit of the lambda values under the action of the
-    //! semigroup represented by \c this.
+    //! The type of the orbit of the lambda values.
     using lambda_orb_type = typename TTraits::lambda_orb_type;
 
-    //! The type of the rho values that the semigroup represented by \c this
-    //! acts on.
+    //! The type of rho values.
     using rho_value_type = typename TTraits::rho_value_type;
 
-    //! The type of the orbit of the rho values under the action of the
-    //! semigroup represented by \c this.
+    //! The type of the orbit of the rho values.
     using rho_orb_type = typename TTraits::rho_orb_type;
 
     //! \copydoc libsemigroups::Degree
@@ -323,10 +321,13 @@ namespace libsemigroups {
     // Konieczny - constructor and destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! 0-parameter constructor.
+    //! Default constructor.
     //!
     //! This is the standard constructor for a Konieczny instance with
     //! unspecified generators.
+    //!
+    //! \parameters
+    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -363,41 +364,30 @@ namespace libsemigroups {
     }
 
     //! Deleted.
-    //!
-    //! Konieczny does not support a copy constructor.
     Konieczny(Konieczny const&) = delete;
 
     //! Deleted.
-    //!
-    //! Konieczny does not support a move constructor.
     Konieczny(Konieczny&&) = delete;
 
     //! Deleted.
-    //!
-    //! Konieczny does not support a copy assignment operator.
     Konieczny& operator=(Konieczny const&) = delete;
 
     //! Deleted.
-    //!
-    //! Konieczny does not support a move assignment operator.
     Konieczny& operator=(Konieczny&&) = delete;
 
     //! Construct from generators.
     //!
-    //! This is the standard constructor for a Konieczny instance generated by a
-    //! vector of generators. There can be duplicate generators and although
-    //! they do not count as distinct elements, they do count as distinct
-    //! generators. In other words, the generators of the semigroup are
-    //! precisely (a copy of) \p gens in the same order they occur in \p gens.
+    //! This function constructs a Konieczny instance generated by the
+    //! specified container of generators.  There can be duplicate generators
+    //! and although they do not count as distinct elements, they do count as
+    //! distinct generators.  In other words, the generators are precisely (a
+    //! copy of) \p gens in the same order they occur in \p gens.
     //!
-    //! The generators \p gens are copied by the constructor, and so it is the
-    //! responsibility of the caller to delete \p gens.
+    //! \param gens the generators represented by \c this.
     //!
-    //! \param gens the generators of the semigroup represented by \c this.
-    //!
-    //! \throws LibsemigroupsException if \p gens is empty, or
-    //! Konieczny::Degree()(x) != Konieczny::Degree()(y) for \c x, \c y in
-    //! \p gens.
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p gens is empty
+    //! * Degree`{}(x)` != Degree`{}(y)` for some \c x, \c y in \p gens.
     explicit Konieczny(std::vector<element_type> const& gens) : Konieczny() {
       if (gens.empty()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -424,12 +414,18 @@ namespace libsemigroups {
     // Konieczny - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns the number of generators of \c this.
+    //! Returns the number of generators.
     //!
-    //! This member function returns the number of generators given to \c this.
+    //! This  function returns the number of generators given to \c this.
     //! Note that there may be duplicate generators, and so \c this may have
     //! more generators than unique generators.
     //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \c size_t.
+    //!
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa add_generator and add_generators
@@ -437,6 +433,26 @@ namespace libsemigroups {
       return _gens.size() - 1;
     }
 
+    //! Returns a const reference to the generator given by an index.
+    //!
+    //! This function returns a const reference to the \p pos generators of \c
+    //! this.
+    //!
+    //! \param pos the index of the generator.
+    //!
+    //! \returns
+    //! A value of type \ref const_reference
+    //!
+    //! \throws LibsemigroupsException if the value of \p pos is greater than
+    //! number_of_generators().
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note There may be duplicate generators, and so \c this may
+    //! have more generators than unique generators.
+    //!
+    //! \sa add_generator and add_generators
     const_reference generator(size_t pos) const {
       if (pos >= number_of_generators()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -448,52 +464,105 @@ namespace libsemigroups {
       return this->to_external_const(_gens[pos]);
     }
 
-    //! Returns the number of \f$\mathscr{D}\f$-classes of \c this.
+    //! Returns the number of \f$\mathscr{D}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_D_classes() {
       run();
       return std::distance(cbegin_D_classes(), cend_D_classes());
     }
 
-    //! Returns the current number of \f$\mathscr{D}\f$-classes of \c this.
+    //! Returns the current number of \f$\mathscr{D}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_D_classes() const {
       return std::distance(cbegin_D_classes(), cend_D_classes());
     }
 
-    //! Returns the number of regular \f$\mathscr{D}\f$-classes of \c this.
+    //! Returns the number of regular \f$\mathscr{D}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_regular_D_classes() {
       run();
       return current_number_of_regular_D_classes();
     }
 
-    //! Returns the current number of regular \f$\mathscr{D}\f$-classes of \c
-    //! this.
+    //! Returns the current number of regular \f$\mathscr{D}\f$-classes
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_regular_D_classes() const {
       return std::distance(cbegin_regular_D_classes(),
                            cend_regular_D_classes());
     }
 
-    //! Returns the number of \f$\mathscr{L}\f$-classes of \c this.
+    //! Returns the number of \f$\mathscr{L}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_L_classes() {
       run();
       return current_number_of_L_classes();
     }
 
-    //! Returns the current number of \f$\mathscr{L}\f$-classes of \c this.
+    //! Returns the current number of \f$\mathscr{L}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_L_classes() const {
       size_t val = 0;
       std::for_each(
@@ -503,18 +572,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of regular \f$\mathscr{L}\f$-classes of \c this.
+    //! Returns the number of regular \f$\mathscr{L}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_regular_L_classes() {
       run();
       return current_number_of_regular_L_classes();
     }
 
-    //! Returns the number of regular \f$\mathscr{L}\f$-classes of \c this.
+    //! Returns the current number of regular \f$\mathscr{L}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_regular_L_classes() const {
       size_t val = 0;
       std::for_each(
@@ -524,18 +611,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of \f$\mathscr{R}\f$-classes of \c this.
+    //! Returns the number of \f$\mathscr{R}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_R_classes() {
       run();
       return current_number_of_R_classes();
     }
 
-    //! Returns the current number of \f$\mathscr{R}\f$-classes of \c this.
+    //! Returns the current number of regular \f$\mathscr{R}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_R_classes() const {
       size_t val = 0;
       std::for_each(
@@ -545,19 +650,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of regular \f$\mathscr{R}\f$-classes of \c this.
+    //! Returns the number of regular \f$\mathscr{R}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_regular_R_classes() {
       run();
       return current_number_of_regular_R_classes();
     }
 
-    //! Returns the current number of regular \f$\mathscr{R}\f$-classes of \c
-    //! this.
+    //! Returns the current number of regular \f$\mathscr{R}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_regular_R_classes() const {
       size_t val = 0;
       std::for_each(
@@ -567,18 +689,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of \f$\mathscr{H}\f$-classes of \c this.
+    //! Returns the number of \f$\mathscr{H}\f$-classes.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_H_classes() {
       run();
       return current_number_of_H_classes();
     }
 
-    //! Returns the current number of \f$\mathscr{H}\f$-classes of \c this.
+    //! Returns the current number of \f$\mathscr{H}\f$-classes.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_H_classes() const {
       size_t val = 0;
       std::for_each(
@@ -588,18 +728,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of idempotents in \c this.
+    //! Returns the number of idempotents.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_idempotents() {
       run();
       return current_number_of_idempotents();
     }
 
-    //! Returns the current number of idempotents in \c this.
+    //! Returns the current number of idempotents.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_idempotents() const {
       size_t val = 0;
       std::for_each(
@@ -609,18 +767,36 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the number of regular elements in \c this.
+    //! Returns the number of regular elements.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     size_t number_of_regular_elements() {
       run();
       return current_number_of_regular_elements();
     }
 
-    //! Returns the current number of regular elements in \c this.
+    //! Returns the current number of regular elements.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
     size_t current_number_of_regular_elements() const {
       size_t val = 0;
       std::for_each(cbegin_regular_D_classes(),
@@ -629,10 +805,19 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the size of \c this.
+    //! Returns the size.
     //!
-    //! This involves computing complete frames for every
-    //! \f$\mathscr{D}\f$-class of \c this.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers a full enumeration of the frames of every
+    //! \f$\mathscr{D}\f$-class.
     //!
     //! \sa current_size
     size_t size() {
@@ -640,12 +825,21 @@ namespace libsemigroups {
       return current_size();
     }
 
-    //! Returns the current size of \c this.
+    //! Returns the current size.
     //!
-    //! This member function does not perform any enumeration of the semigroup.
+    //! \parameters
+    //! (None)
     //!
-    //! \sa size
-    size_t current_size() {
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers no enumeration.
+    //!
+    //! \sa \ref size.
+    size_t current_size() const {
       size_t val = 0;
       std::for_each(cbegin_D_classes(),
                     cend_D_classes(),
@@ -653,11 +847,18 @@ namespace libsemigroups {
       return val;
     }
 
-    //! Returns the degree of elements of \c this.
+    //! Returns the degree of elements.
     //!
-    //! All elements of \c this must have the same degree; this member function
-    //! returns that degree.
+    //! All elements of a Konieczny must have the same degree, as computed by
+    //! an instance of Degree; this function returns that degree.
     //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa Degree
@@ -665,22 +866,35 @@ namespace libsemigroups {
       return _degree;
     }
 
-    //! Returns whether \p x is contained in \c this.
+    //! Test membership of an element.
     //!
-    //! This involves computing as many complete frames for
-    //! \f$\mathscr{D}\f$-classes of \c this as necessary.
+    //! Returns \c true if \p x belongs to \c this and \c false if it does
+    //! not.
+    //!
+    //! \param x a const reference to a possible element.
+    //!
+    //! \returns A value of type \c bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function may trigger a (partial) enumeration.
     bool contains(const_reference x) {
       return Degree()(x) == degree()
              && get_containing_D_class(this->to_internal_const(x), true)
                     != UNDEFINED;
     }
 
-    //! Returns the \f$\mathscr{D}\f$-class of \c this which contains \p x.
+    //! Returns the \f$\mathscr{D}\f$-class containing an element.
     //!
-    //! This involves computing as many complete frames for
-    //! \f$\mathscr{D}\f$-classes of \c this as necessary.
+    //! \param x a const reference to a possible element.
+    //!
+    //! \returns A reference to DClass.
     //!
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This involves computing as many frames for
+    //! \f$\mathscr{D}\f$-classes  as necessary.
     DClass& D_class_of_element(const_reference x) {
       D_class_index_type i
           = get_containing_D_class(this->to_internal_const(x), true);
@@ -691,27 +905,54 @@ namespace libsemigroups {
       return *_D_classes[i];
     }
 
-    //! Returns whether \p x is regular in \c this.
+    //! Test regularity of an element.
     //!
-    //! This involves computing the orbits of the Lambda and Rho values under
-    //! the action of \c this, if they are not already computed.
+    //! Returns \c true if \p x is a regular element and \c false if it is not.
+    //!
+    //! \param x a const reference to a possible element.
+    //!
+    //! \returns A value of type \c bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function triggers the computation of the orbits of the Lambda and
+    //! Rho values, if they are not already known.
     bool is_regular_element(const_reference x) {
       return contains(x) && is_regular_element_NC(this->to_internal_const(x));
     }
 
-    //! Add a copy of the generator \p x to the generators of \c this.
+    //! Add a copy of an element to the generators.
     //!
-    //! This member function may result in \c this having duplicate generators.
+    //! It is possible, if perhaps not desirable,  to add the same generator
+    //! multiple times.
     //!
-    //! \throws LibsemigroupsException if enumeration of \c this has already
-    //! begun
+    //! \param gen the generator to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree
+    //! * \ref started returns \c true
     void add_generator(const_reference gen) {
       add_generators(&gen, &gen + 1);
     }
 
-    //! Add copies of the generators \p coll to the generators of \c this.
+    //! Add collection of generators from container.
     //!
-    //! See Konieczny::add_generator for more details.
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    //! * \ref started returns \c true
     template <typename T>
     void add_generators(T const& coll) {
       static_assert(!std::is_pointer<T>::value,
@@ -719,18 +960,36 @@ namespace libsemigroups {
       add_generators(coll.begin(), coll.end());
     }
 
-    //! Add copies of the generators in the range \p first to \p last to \c
-    //! this.
+    //! Add collection of generators from initializer list.
     //!
-    //! See Konieczny::add_generator for more details.
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    //! * \ref started returns \c true
     void add_generators(std::initializer_list<const_element_type> coll) {
       add_generators<std::initializer_list<const_element_type>>(coll);
     }
 
-    //! Add copies of the generators in the range \p first to \p last to \c
-    //! this.
+    //! Add collection of generators from iterators.
     //!
-    //! See Konieczny::add_generator for more details.
+    //! Add copies of the generators in the range \p first to \p last to \c
+    //! this.  See \ref add_generator for a detailed description.
+    //!
+    //! \tparam the type of an iterator pointing to an \ref element_type.
+    //!
+    //! \param first iterator pointing to the first generator to add.
+    //! \param last iterator pointing one past the last generator to add.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    //! * \ref started returns \c true
     template <typename T>
     void add_generators(T const& first, T const& last) {
       if (started()) {
@@ -747,18 +1006,24 @@ namespace libsemigroups {
     // Konieczny - iterators - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! A type for const iterators through elements of \c this.
+    //! A type for const iterators through elements.
     using const_iterator
         = detail::BruidhinnConstIterator<element_type,
                                          std::vector<internal_element_type>>;
 
-    //! Returns a const iterator pointing to the first generator of the
-    //! semigroup.
+    //! Returns a const iterator pointing to the first generator.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
     //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_iterator.
+    //!
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa cend_generators
@@ -766,13 +1031,19 @@ namespace libsemigroups {
       return const_iterator(_gens.cbegin());
     }
 
-    //! Returns a const iterator pointing to past the last generator of the
-    //! semigroup.
+    //! Returns a const iterator pointing to one past the last generator.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
     //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_iterator.
+    //!
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa cbegin_generators
@@ -781,7 +1052,6 @@ namespace libsemigroups {
     }
 
     // This is a traits class for ConstIteratorStateless in iterator.hpp
-    //! No doc
     template <typename T>
     struct DClassIteratorTraits : detail::ConstIteratorTraits<std::vector<T*>> {
       using base_traits_type = detail::ConstIteratorTraits<std::vector<T*>>;
@@ -795,18 +1065,14 @@ namespace libsemigroups {
       using const_pointer   = value_type const*;
       using pointer         = value_type*;
 
-      //! No doc
       struct Deref {
-        //! No doc
         const_reference
         operator()(internal_iterator_type const& it) const noexcept {
           return **it;
         }
       };
 
-      //! No doc
       struct AddressOf {
-        //! No doc
         const_pointer
         operator()(internal_iterator_type const& it) const noexcept {
           return &(**it);
@@ -814,19 +1080,30 @@ namespace libsemigroups {
       };
     };
 
-    //! A type for const iterators through the \f$\mathscr{D}\f$-classes of \c
-    //! this, in the order they were enumerated.
+    //! Return type of \ref cbegin_D_classes and \ref cend_D_classes.
+    //!
+    //! Type for const random access iterators through the
+    //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
     //!
     //! \sa const_regular_d_class_iterator.
     using const_d_class_iterator
         = detail::ConstIteratorStateless<DClassIteratorTraits<DClass>>;
 
     //! Returns a const iterator referring to a pointer to the first
-    //! \f$\mathscr{D}\f$-class of the semigroup.
+    //! \f$\mathscr{D}\f$-class.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     // not noexcept because operator++ isn't necessarily
     const_d_class_iterator cbegin_D_classes() const {
       auto it = _D_classes.cbegin();
@@ -836,28 +1113,49 @@ namespace libsemigroups {
     }
 
     //! Returns a const iterator referring to past the pointer to the last
-    //! \f$\mathscr{D}\f$-class of the semigroup.
+    //! \f$\mathscr{D}\f$-class.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     const_d_class_iterator cend_D_classes() const noexcept {
       return const_d_class_iterator(_D_classes.cend());
     }
 
-    //! A type for const iterators through the regular \f$\mathscr{D}\f$-classes
-    //! of \c this, in the order they were enumerated.
+    //! Return type of \ref cbegin_regular_D_classes and \ref
+    //! cend_regular_D_classes.
+    //!
+    //! A type for const random access iterators through the regular
+    //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
     //!
     //! \sa const_d_class_iterator.
     using const_regular_d_class_iterator
         = detail::ConstIteratorStateless<DClassIteratorTraits<RegularDClass>>;
 
     //! Returns a const iterator referring to a pointer to the first regular
-    //! \f$\mathscr{D}\f$-class of the semigroup.
+    //! \f$\mathscr{D}\f$-class.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \sa cbegin_rdc
     // not noexcept because operator++ isn't necessarily
@@ -869,24 +1167,33 @@ namespace libsemigroups {
                     : 1);
     }
 
-    //! Alias for Konieczny::cbegin_regular_D_classes.
+    //! Shorter form of \ref cbegin_regular_D_classes.
     const_regular_d_class_iterator cbegin_rdc() const noexcept {
       return cbegin_regular_D_classes();
     }
 
     //! Returns a const iterator referring to past the pointer to the last
-    //! regular \f$\mathscr{D}\f$-class of the semigroup.
+    //! regular \f$\mathscr{D}\f$-class.
     //!
-    //! This member function does not perform any enumeration of the
-    //! semigroup; the iterator returned may be invalidated by any call to a
-    //! non-const member function of the Konieczny class.
+    //! This  function does not trigger any enumeration; the iterator returned
+    //! may be invalidated by any call to a non-const member function of the
+    //! Konieczny class.
     //!
-    //! \sa cend_rdc
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa \ref cend_rdc
     const_regular_d_class_iterator cend_regular_D_classes() const noexcept {
       return const_regular_d_class_iterator(_regular_D_classes.cend());
     }
 
-    //! Alias for Konieczny::cend_regular_D_classes.
+    //! Shorter form of \ref cend_regular_D_classes.
     const_regular_d_class_iterator cend_rdc() const {
       return cend_regular_D_classes();
     }
@@ -1144,8 +1451,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - accessor member functions - private
     ////////////////////////////////////////////////////////////////////////
-    void add_D_class(Konieczny::RegularDClass* D);
-    void add_D_class(Konieczny::NonRegularDClass* D);
+    void add_D_class(RegularDClass* D);
+    void add_D_class(NonRegularDClass* D);
 
     typename std::vector<internal_element_type>::const_iterator
     cbegin_internal_generators() const noexcept {
@@ -1219,7 +1526,7 @@ namespace libsemigroups {
       if (_lambda_orb.finished() && _rho_orb.finished()) {
         return;
       }
-      REPORT_DEFAULT("Computing orbits . . .\n");
+      REPORT_DEFAULT("Computing orbits...\n");
       detail::Timer t;
       if (!_lambda_orb.started()) {
         _lambda_orb.add_seed(OneParamLambda()(this->to_external_const(_one)));
@@ -1327,12 +1634,12 @@ namespace libsemigroups {
   //! Defined in ``konieczny.hpp``.
   //!
   //! The nested abstract class Konieczny::DClass represents a
-  //! \f$\mathscr{D}\f$-class via a complete frame as computed in %Konieczny's
+  //! \f$\mathscr{D}\f$-class via a frame as computed in %Konieczny's
   //! algorithm. See [here] for more details.
   //!
   //! As an abstract class, DClass cannot be directly constructed; instead you
-  //! should obtain a \f$\mathscr{D}\f$-class by calling Konieczny::get_D_class
-  //! on the parent semigroup.
+  //! should obtain a \f$\mathscr{D}\f$-class by calling
+  //! Konieczny::D_class_of_element.
   //!
   //! \sa Konieczny.
   //!
@@ -1348,6 +1655,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // DClass - aliases - protected
     ////////////////////////////////////////////////////////////////////////
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     using konieczny_type    = Konieczny<TElementType, TTraits>;
     using internal_set_type = std::
         unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
@@ -1405,6 +1713,7 @@ namespace libsemigroups {
           _tmp_rho_value(OneParamRho()(this->to_external_const(rep))) {
       _is_regular_D_class = _parent->is_regular_element_NC(rep);
     }
+#endif
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -1427,40 +1736,75 @@ namespace libsemigroups {
     // DClass - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns the representative which defines \c this.
+    //! Returns a representative of the \f$\mathscr{D}\f$-class.
     //!
-    //! The complete frame computed for \c this depends on the choice of
-    //! representative. This function returns the representative used by \c
-    //! this. This may not be the same representative as used to construct \c
-    //! this, but is guaranteed to not change.
+    //! The frame used to represent \f$\mathscr{D}\f$-classes depends on the
+    //! choice of representative. This function returns the representative used
+    //! by a DClass instance. This may not be the same representative as used to
+    //! construct the instance, but is guaranteed to not change.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A \ref const_reference.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     const_reference rep() const {
       return this->to_external_const(_rep);
     }
 
-    //! Returns the size of \c this.
+    //! Returns the size of a \f$\mathscr{D}\f$-class.
     //!
-    //! This member function involves computing most of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     size_t size() const {
-      // init();
       LIBSEMIGROUPS_ASSERT(this->class_computed());
       return number_of_L_classes() * number_of_R_classes() * size_H_class();
     }
 
-    //! Returns the number of \f$L\f$-classes in \c this.
+    //! Returns the number of \f$\mathscr{L}\f$-classes.
     //!
-    //! This member function involves computing some of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     size_t number_of_L_classes() const {
       LIBSEMIGROUPS_ASSERT(_left_mults.size() > 0);
       LIBSEMIGROUPS_ASSERT(this->class_computed());
       return _left_mults.size();
     }
 
-    //! Returns the number of \f$R\f$-classes in \c this.
+    //! Returns the number of \f$\mathscr{R}\f$-classes.
     //!
-    //! This member function involves computing some of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     size_t number_of_R_classes() const {
       // compute_right_mults();
       LIBSEMIGROUPS_ASSERT(_right_mults.size() > 0);
@@ -1468,10 +1812,19 @@ namespace libsemigroups {
       return _right_mults.size();
     }
 
-    //! Returns the size of the \f$H\f$-classes in \c this.
+    //! Returns the size of the \f$\mathscr{H}\f$-classes.
     //!
-    //! This member function involves computing some of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     size_t size_H_class() const {
       // compute_H_class();
       LIBSEMIGROUPS_ASSERT(_H_class.size() > 0);
@@ -1479,21 +1832,35 @@ namespace libsemigroups {
       return _H_class.size();
     }
 
-    //! Returns whether \c this is a regular \f$\mathscr{D}\f$-class.
+    //! Test regularity of a \f$\mathscr{D}\f$-class.
     //!
-    //! This member function is guaranteed to not throw an exception.
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
     bool is_regular_D_class() const noexcept {
       return _is_regular_D_class;
     }
 
-    //! Returns whether the element \p x belongs to this
-    //! \f$\mathscr{D}\f$-class.
+    //! Test membership of an element.
     //!
     //! Given an element \p x which may or may not belong to \c parent, this
     //! function returns whether \p x is an element of the
     //! \f$\mathscr{D}\f$-class represented by \c this.
-    //! This member function involves computing most of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
+    //!
+    //! \param x the element
+    //!
+    //! \returns
+    //! A value of type \c bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     bool contains(const_reference x) {
       Lambda()(_tmp_lambda_value, x);
       Rho()(_tmp_rho_value, x);
@@ -1504,15 +1871,16 @@ namespace libsemigroups {
       return contains(x, lpos, rpos);
     }
 
-    //! Returns the number of idempotents in \c this.
+    //! Returns the number of idempotents.
     //!
-    //! This member function involves computing most of the complete frame for
-    //! \c this, if it is not already known.
+    //! This function triggers the computation of most of the frame
+    //! for \c this, if it is not already known.
     virtual size_t number_of_idempotents() const {
       return 0;
     }
 
    protected:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     ////////////////////////////////////////////////////////////////////////
     // DClass - iterators - protected
     ////////////////////////////////////////////////////////////////////////
@@ -1607,7 +1975,7 @@ namespace libsemigroups {
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
     // element of the semigroup, then the behaviour is undefined.
-    // This member function involved computing most of the complete frame for
+    // This member function involved computing most of the frame for
     // \c this, if it is not already known.
     bool contains_NC(internal_const_reference x) {
       Lambda()(_tmp_lambda_value, this->to_external_const(x));
@@ -1630,7 +1998,7 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined. This overload
     // of DClass::contains_NC is provided in order to avoid recalculating the
     // rank of \p x when it is already known.
-    // This member function involves computing most of the complete frame for
+    // This member function involves computing most of the frame for
     // \c this, if it is not already known.
     bool contains_NC(internal_const_reference x, size_t rank) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
@@ -1647,7 +2015,7 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined. This overload
     // of DClass::contains_NC is provided in order to avoid recalculating the
     // rank, lambda value, and rho value of \p x when they are already known.
-    // This member function involves computing most of the complete frame for
+    // This member function involves computing most of the frame for
     // \c this, if it is not already known.
     bool contains_NC(internal_const_reference x,
                      size_t                   rank,
@@ -1666,7 +2034,7 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined. This overload
     // of DClass::contains_NC is provided in order to avoid recalculating the
     // lambda value and rho value of \p x  when they are already known.
-    // This member function involves computing most of the complete frame for
+    // This member function involves computing most of the frame for
     // \c this, if it is not already known.
     virtual bool contains_NC(internal_const_reference x,
                              lambda_orb_index_type    lpos,
@@ -1953,6 +2321,7 @@ namespace libsemigroups {
       compute_right_indices();
       return _right_indices.cend();
     }
+#endif
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -1964,7 +2333,7 @@ namespace libsemigroups {
     // The \f$\mathscr{D}\f$-classes of the parent semigroup are enumerated
     // either by finding representatives of all L-classes or all R-classes. This
     // member function returns the representatives obtainable by multipliying
-    // the representatives of \c this by generators on either the left or right.
+    // the representatives  by generators on either the left or right.
     std::vector<internal_element_type>& covering_reps() {
       init();
       _tmp_internal_vec.clear();
@@ -2062,7 +2431,7 @@ namespace libsemigroups {
   // Defined in ``konieczny.hpp``.
   //
   // The nested class Konieczny::RegularDClass inherits from DClass and
-  // represents a regular \f$\mathscr{D}\f$-class via a complete frame as
+  // represents a regular \f$\mathscr{D}\f$-class via a frame as
   // computed in %Konieczny's algorithm. See [here] for more details.
   //
   // A RegularDClass cannot be constructed directly, but may be returned by
@@ -2077,9 +2446,11 @@ namespace libsemigroups {
     // Konieczny is only a friend of RegularDClass so it can call the private
     // constructor
     friend class Konieczny<TElementType, TTraits>;
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     // NonRegularDClass is a friend of RegularDClass so it can access private
     // iterators
     friend class Konieczny<TElementType, TTraits>::NonRegularDClass;
+#endif
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -2244,11 +2615,11 @@ namespace libsemigroups {
              && (_rho_index_positions.find(rpos) != _rho_index_positions.end());
     }
 
-    // Returns the indices of the L- and R-classes of \c this that \p bm is in.
+    // Returns the indices of the L- and R-classes  that \p bm is in.
     //
-    // Returns the indices of the L- and R-classes of \c this that \p bm is in,
-    // unless bm is not in \c this, in which case returns the pair (UNDEFINED,
-    // UNDEFINED). Requires computing part of the complete frame of \c this.
+    // Returns the indices of the L- and R-classes  that \p bm is in,
+    // unless bm is not , in which case returns the pair (UNDEFINED,
+    // UNDEFINED). Requires computing part of the frame.
     std::pair<lambda_orb_index_type, rho_orb_index_type>
     index_positions(const_reference bm) {
       compute_left_indices();
@@ -2667,7 +3038,7 @@ namespace libsemigroups {
   // Defined in ``konieczny.hpp``.
   //
   // The nested class Konieczny::NonRegularDClass inherits from DClass
-  // and represents a regular \f$\mathscr{D}\f$-class via a complete frame as
+  // and represents a regular \f$\mathscr{D}\f$-class via a frame as
   // computed in %Konieczny's algorithm. See [here] for more details.
   //
   // A NonRegularDClass is defined by a pointer to the corresponding
@@ -3375,6 +3746,7 @@ namespace libsemigroups {
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   template <typename TElementType, typename TTraits>
   void Konieczny<TElementType, TTraits>::add_D_class(
       Konieczny<TElementType, TTraits>::NonRegularDClass* D) {
@@ -3382,6 +3754,7 @@ namespace libsemigroups {
     add_to_D_maps(_D_classes.size() - 1);
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
+#endif
 
   template <typename TElementType, typename TTraits>
   bool Konieczny<TElementType, TTraits>::finished_impl() const {

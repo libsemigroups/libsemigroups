@@ -1,0 +1,12 @@
+libsemigroups::Perm:
+- Member types:
+  - value_type
+  - container_type
+- Static member functions:
+  - identity() const
+  - identity(size_t)
+  - make(T&&)
+  - make(std::initializer_list<value_type>&&)
+- Member functions:
+  - product_inplace(Transf const&, Transf const&)
+  - inverse() const

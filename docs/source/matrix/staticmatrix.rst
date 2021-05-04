@@ -11,7 +11,6 @@ StaticMatrix
 
 Defined in ``matrix.hpp``.
 
-
 .. cpp:class:: template <typename PlusOp, \
                          typename ProdOp, \
                          typename ZeroOp, \

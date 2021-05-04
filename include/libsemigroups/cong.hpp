@@ -62,11 +62,15 @@ namespace libsemigroups {
   //! \endcode
   class Congruence final : public CongruenceInterface {
    public:
-    //! This struct holds various enums which effect the coset enumeration
-    //! process used by ToddCoxeter::run.
+    //! Holds values of various options.
+    //!
+    //! This struct holds various enums which can be used to
+    //! set various options.
     //!
     //! \sa policy::runners.
     struct policy {
+      //! Holds options for specifying the algorithms to be used.
+      //!
       //! This enum allows setting the policy used when adding runners to an
       //! instance of this type during construction.
       enum class runners {
@@ -81,18 +85,24 @@ namespace libsemigroups {
     // Congruence - constructors - public
     //////////////////////////////////////////////////////////////////////////
 
+    //! Construct from kind (left/right/2-sided) and options.
+    //!
     //! Constructs an empty instance of an interface to a congruence of type
     //! specified by the argument.
     //!
     //! \param type the type of the congruence.
+    //! \param opt  optionally specify algorithms to be used (defaults to
+    //! policy::runners::standard).
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa set_nr_generators and add_pair.
     explicit Congruence(congruence_type type,
-                        policy::runners = policy::runners::standard);
+                        policy::runners opt = policy::runners::standard);
 
+    //! Construct from kind (left/right/2-sided) and FroidurePin.
+    //!
     //! Constructs a Congruence over the FroidurePin instance \p S
     //! representing a left/right/2-sided congruence according to \p type.
     //!
@@ -102,12 +112,11 @@ namespace libsemigroups {
     //! \param S  a const reference to the semigroup over which the congruence
     //! is defined.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
-    //! Linear in `S.size()`.
+    //! \complexity
+    //! Linear in  the size of \p S.
     //!
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
@@ -121,83 +130,83 @@ namespace libsemigroups {
           "the template parameter must be a derived class of FroidurePinBase");
     }
 
+    //! Construct from kind (left/right/2-sided) and shared pointer to
+    //! FroidurePin.
+    //!
     //! Constructs a Congruence over the FroidurePin instance \p S
     //! representing a left/right/2-sided congruence according to \p type.
     //! \param type whether the congruence is left, right, or 2-sided
     //! \param S  a shared_ptr to the semigroup over which the congruence is
     //! defined.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \note
     //! The FroidurePinBase pointed to by \p S is not copied.
     Congruence(congruence_type type, std::shared_ptr<FroidurePinBase> S);
 
+    //! Construct from kind (left/right/2-sided) and FpSemigroup.
+    //!
     //! Constructs a Congruence over the FpSemigroup instance \p S
     //! representing a left/right/2-sided congruence according to \p type.
     //! \param type whether the congruence is left, right, or 2-sided
     //! \param S  a const reference to the finitely presented semigroup over
     //! which the congruence is defined.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     Congruence(congruence_type type, FpSemigroup& S);
 
     ~Congruence() = default;
 
-    //! A Congruence instance is not default-constructible.
-    //! This constructor is deleted.
+    //! Deleted.
     Congruence() = delete;
 
-    //! A Congruence instance is not copyable.
-    //! This constructor is deleted.
+    //! Deleted.
     Congruence(Congruence const&) = delete;
 
-    //! A Congruence instance is not copy assignable.
-    //! This constructor is deleted.
+    //! Deleted.
     Congruence& operator=(Congruence const&) = delete;
 
-    //! A Congruence instance is not move copyable.
-    //! This constructor is deleted.
+    //! Deleted.
     Congruence(Congruence&&) = delete;
 
-    //! A Congruence instance is not move assignable.
-    //! This constructor is deleted.
+    //! Deleted.
     Congruence& operator=(Congruence&&) = delete;
 
     //////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    bool contains(word_type const&, word_type const&) override;
-    tril const_contains(word_type const&, word_type const&) const override;
+    //! \copydoc CongruenceInterface::contains
+    bool contains(word_type const& u, word_type const& v) override;
+
+    //! \copydoc CongruenceInterface::const_contains
+    tril const_contains(word_type const& u, word_type const& v) const override;
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! Returns the congruence::KnuthBendix instance used to compute the
-    //! congruence (if any).
+    //! Returns the KnuthBendix instance used to compute the congruence (if
+    //! any).
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
-    //! \returns A shared_ptr to a congruence::KnuthBendix or nullptr.
+    //! \returns A std::shared_ptr to a congruence::KnuthBendix or \c nullptr.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa has_knuth_bendix().
@@ -206,19 +215,18 @@ namespace libsemigroups {
       return _race.find_runner<KnuthBendix>();
     }
 
-    //! Checks if a congruence::KnuthBendix instance is being used to compute
+    //! Checks if a KnuthBendix instance is being used to compute
     //! the congruence.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
-    //! \returns A `bool`.
+    //! \returns A value of type `bool`.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa knuth_bendix().
@@ -226,40 +234,38 @@ namespace libsemigroups {
       return knuth_bendix() != nullptr;
     }
 
-    //! Returns the congruence::ToddCoxeter instance used to compute the
+    //! Returns the ToddCoxeter instance used to compute the
     //! congruence (if any).
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
-    //! \returns A shared_ptr to a congruence::ToddCoxeter or nullptr.
+    //! \returns A shared_ptr to a congruence::ToddCoxeter or \c nullptr.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
-    //! \sa has_todd_coxeter.
+    //! \sa has_todd_coxeter().
     std::shared_ptr<congruence::ToddCoxeter> todd_coxeter() const {
       using congruence::ToddCoxeter;
       return _race.find_runner<ToddCoxeter>();
     }
 
-    //! Checks if a congruence::ToddCoxeter instance is being used to compute
+    //! Checks if a ToddCoxeter instance is being used to compute
     //! the congruence.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
-    //! \returns A `bool`.
+    //! \returns A value to type `bool`.
     //!
-    //! \par Exceptions
-    //! Does not throw itself but functions called by this function may
-    //! throw.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa todd_coxeter.
@@ -268,19 +274,65 @@ namespace libsemigroups {
     }
 
     // The next function is required by the GAP package Semigroups.
-    //! No doc
+    //! Adds a class derived from CongruenceInterface to the algorithms used to
+    //! compute the congruence.
+    //!
+    //! This function adds the algorithm represented by the parameter \p r to
+    //! the list of runners that are invoked when \ref run is called.
+    //!
+    //! \tparam T a type derived from CongruenceInterface.
+    //!
+    //! \param r a const reference to an instance of a type derived from
+    //! CongruenceInterface.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws
+    //! LibsemigroupsException if started() returns \c true.
+    //!
+    //! \warning
+    //! It's the responsibility of the caller to ensure that \p r is compatible
+    //! with any existing CongruenceInterface instances in \c this.
     template <typename T>
     void add_runner(T const& r) {
       static_assert(std::is_base_of<CongruenceInterface, T>::value,
                     "the template parameter T must be a derived class of "
                     "CongruenceInterface");
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION("cannot add a runner at this stage");
+      }
       _race.add_runner(std::make_shared<T>(r));
     }
 
+    //! Get the current maximum number of threads.
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
     size_t max_threads() const noexcept {
       return _race.max_threads();
     }
 
+    //! Set the maximum number of threads.
+    //!
+    //! \param val the number of threads.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Congruence& max_threads(size_t val) noexcept {
       _race.max_threads(val);
       return *this;

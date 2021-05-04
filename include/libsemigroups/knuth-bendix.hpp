@@ -52,13 +52,13 @@ namespace libsemigroups {
     //! On this page we describe the functionality relating to the Knuth-Bendix
     //! algorithm for semigroups and monoids that is available in
     //! ``libsemigroups``. This page contains a details of the member functions
-    //! of the class libsemigroups::fpsemigroup::KnuthBendix.
+    //! of the class fpsemigroup::KnuthBendix.
     //!
     //! This class is used to represent a
     //! [string rewriting system](https://w.wiki/9Re)
     //! defining a finitely presented monoid or semigroup.
     //!
-    //! \sa libsemigroups::congruence::KnuthBendix.
+    //! \sa congruence::KnuthBendix.
     //!
     //! \par Example
     //! \code
@@ -85,14 +85,16 @@ namespace libsemigroups {
       // KnuthBendix - types - public
       //////////////////////////////////////////////////////////////////////////
 
-      //! This type contains various enums for specifying policies to a
+      //! This type contains various enums for specifying certain options to a
       //! KnuthBendix instance.
       struct policy {
+        //! Values for specifying how to measure the length of an overlap.
+        //!
         //! The values in this enum determine how a KnuthBendix instance
         //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
         //! \f$AB\f$ and \f$BC\f$:
         //!
-        //! \sa KnuthBendix::overlap_policy(policy::overlap)
+        //! \sa overlap_policy(policy::overlap)
         enum class overlap {
           //! \f$d(AB, BC) = |A| + |B| + |C|\f$
           ABC = 0,
@@ -105,8 +107,8 @@ namespace libsemigroups {
 
       //! The type of the return value of froidure_pin().
       //!
-      //! froidure_pin() returns a ``std::shared_ptr`` to a FroidurePinBase,
-      //! which is really of type froidure_pin_type.
+      //! froidure_pin() returns a \shared_ptr to a FroidurePinBase,
+      //! which is really of type \ref froidure_pin_type.
       using froidure_pin_type
           = FroidurePin<detail::KBE,
                         FroidurePinTraits<detail::KBE, KnuthBendix>>;
@@ -115,17 +117,19 @@ namespace libsemigroups {
       // KnuthBendix - constructors and destructor - public
       //////////////////////////////////////////////////////////////////////////
 
+      //! Default constructor.
+      //!
       //! Constructs a KnuthBendix instance with no rules, and the short-lex
       //! reduction ordering.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       //!
       //! \complexity
       //! Constant.
       KnuthBendix();
 
-      //! Constructs a KnuthBendix instance from a FroidurePin instance.
+      //! Constructs from a FroidurePin instance.
       //!
       //! \param S the FroidurePin instance.
       //!
@@ -136,11 +140,17 @@ namespace libsemigroups {
         init_from(S);
       }
 
-      //! \copydoc KnuthBendix(FroidurePinBase&).
+      //! Constructs from a shared pointer to a FroidurePin instance.
+      //!
+      //! \param S the FroidurePin instance.
+      //!
+      //! \complexity
+      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
+      //! \p S.
       explicit KnuthBendix(std::shared_ptr<FroidurePinBase> S)
           : KnuthBendix(*S) {}
 
-      //! Copy construct a KnuthBendix instance.
+      //! Copy constructor.
       //!
       //! \param copy the KnuthBendix instance to copy.
       //!
@@ -166,15 +176,15 @@ namespace libsemigroups {
 
       //! Set the interval at which confluence is checked.
       //!
-      //! KnuthBendix::knuth_bendix periodically checks if
+      //! The function \ref run periodically checks if
       //! the system is already confluent. This function can be used to
       //! set how frequently this happens, it is the number of new overlaps
       //! that should be considered before checking confluence. Setting this
       //! value too low can adversely affect the performance of
-      //! KnuthBendix::knuth_bendix.
+      //! \ref run.
       //!
-      //! The default value is 4096, and should be set to
-      //! libsemigroups::LIMIT_MAX if KnuthBendix::knuth_bendix should never
+      //! The default value is \c 4096, and should be set to
+      //! \ref LIMIT_MAX if \ref run should never
       //! check if the system is already confluent.
       //!
       //! \param val the new value of the interval.
@@ -185,7 +195,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \sa KnuthBendix::knuth_bendix.
+      //! \sa \ref run.
       KnuthBendix& check_confluence_interval(size_t val) {
         _settings._check_confluence_interval = val;
         return *this;
@@ -195,10 +205,10 @@ namespace libsemigroups {
       //!
       //! This function can be used to specify the maximum length of the
       //! overlap of two left hand sides of rules that should be considered in
-      //! KnuthBendix::knuth_bendix.
+      //! \ref run.
       //!
       //! If this value is less than the longest left hand side of a rule, then
-      //! KnuthBendix::knuth_bendix can terminate without the system being
+      //! \ref run can terminate without the system being
       //! confluent.
       //!
       //! \param val the new value of the maximum overlap length.
@@ -209,7 +219,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \sa KnuthBendix::knuth_bendix.
+      //! \sa \ref run.
       KnuthBendix& max_overlap(size_t val) {
         _settings._max_overlap = val;
         return *this;
@@ -219,11 +229,11 @@ namespace libsemigroups {
       //!
       //! This member function sets the (approximate) maximum number of rules
       //! that the system should contain. If this is number is exceeded in
-      //! calls to KnuthBendix::knuth_bendix or
-      //! KnuthBendix::knuth_bendix_by_overlap_length, then they
+      //! calls to \ref run or
+      //! knuth_bendix_by_overlap_length, then they
       //! will terminate and the system may not be confluent.
       //!
-      //! By default this value is libsemigroups::POSITIVE_INFINITY.
+      //! By default this value is \ref POSITIVE_INFINITY.
       //!
       //! \param val the maximum number of rules.
       //!
@@ -233,7 +243,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \sa KnuthBendix::knuth_bendix and KnuthBendix::knuth_bendix.
+      //! \sa \ref run.
       KnuthBendix& max_rules(size_t val) {
         _settings._max_rules = val;
         return *this;
@@ -252,7 +262,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \sa KnuthBendix::policy::overlap.
+      //! \sa policy::overlap.
       KnuthBendix& overlap_policy(policy::overlap val);
 
       //////////////////////////////////////////////////////////////////////////
@@ -271,11 +281,11 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       size_t nr_active_rules() const noexcept;
 
-      //! Returns a copy of the active rules of the KnuthBendix instance.
+      //! Returns a copy of the active rules.
       //!
       //! This member function returns a vector consisting of the pairs of
       //! strings which represent the rules of the KnuthBendix instance. The \c
@@ -292,7 +302,7 @@ namespace libsemigroups {
       //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
       //! rules of \p copy.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       // TODO(later) delete this
       std::vector<rule_type> active_rules() const;
@@ -359,6 +369,7 @@ namespace libsemigroups {
         using PostfixIncrement = void;
       };
 
+      //! Type of an const iterator to a normal form.
       using const_normal_form_iterator
           = detail::ConstIteratorStateful<NormalFormsIteratorTraits>;
 
@@ -373,8 +384,8 @@ namespace libsemigroups {
       static_assert(std::is_destructible<const_normal_form_iterator>::value,
                     "forward iterator requires destructible");
 
-      //! Returns a forward iterator pointing at the first normal form whose
-      //! length is in the given range using the specified alphabet.
+      //! Returns a forward iterator pointing at the first normal form with
+      //! length in a given range.
       //!
       //! If incremented, the iterator will point to the next least short-lex
       //! normal form (if it's less than \p max in length).  Iterators of the
@@ -386,30 +397,29 @@ namespace libsemigroups {
       //! \param max one larger than the maximum length of a normal form.
       //!
       //! \returns
-      //! A value of type `const_normal_form_iterator`.
+      //! A value of type \ref const_normal_form_iterator.
       //!
       //! \exceptions
       //! \no_libsemigroups_except
       //!
       //! \warning
-      //! Copying iterators of this type is expensive.  As a consequence, prefix
-      //! incrementing \c ++it the iterator \c it returned by \c
-      //! cbegin_normal_forms is significantly cheaper than postfix
+      //! Copying iterators of this type is relatively expensive.  As a
+      //! consequence, prefix incrementing \c ++it the iterator \c it returned
+      //! by \c cbegin_normal_forms is significantly cheaper than postfix
       //! incrementing \c it++.
       //!
       //! \warning
-      //! If the finitely presented semigroup represented by \c this is infinite
-      //! then \p max should be chosen with some care.
+      //! If the finitely presented semigroup represented by \c this is
+      //! infinite, then \p max should be chosen with some care.
       //!
       //! \sa
-      //! KnuthBendix::cend_normal_forms.
+      //! \ref cend_normal_forms.
       const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
                                                      size_t const       min,
                                                      size_t const       max);
 
-      //! Returns a forward iterator pointing at the first normal form whose
-      //! length is in the given range using the alphabet returned by
-      //! KnuthBendix::alphabet.
+      //! Returns a forward iterator pointing at the first normal form with
+      //! length in a given range.
       //!
       //! If incremented, the iterator will point to the next least short-lex
       //! normal form (if it's less than \p max in length).  Iterators of the
@@ -436,7 +446,7 @@ namespace libsemigroups {
       //! then \p max should be chosen with some care.
       //!
       //! \sa
-      //! KnuthBendix::cend_normal_forms.
+      //! cend_normal_forms.
       const_normal_form_iterator cbegin_normal_forms(size_t const min,
                                                      size_t const max) {
         return cbegin_normal_forms(alphabet(), min, max);
@@ -445,14 +455,14 @@ namespace libsemigroups {
       //! Returns a forward iterator pointing to one after the last normal form.
       //!
       //! The iterator returned by this function can be compared with the
-      //! return value of KnuthBendix::cbegin_normal_forms with any parameters.
+      //! return value of \ref cbegin_normal_forms with any parameters.
       //!
       //! \warning The iterator returned by this function may still
-      //! dereferencable and incrementable, but will not point to a normal_form
+      //! dereferencable and incrementable, but will not point to a normal form
       //! in the correct range.
       //!
       //! \sa
-      //! KnuthBendix::cbegin_normal_forms.
+      //! \ref cbegin_normal_forms.
       const_normal_form_iterator cend_normal_forms() {
         using state_type = NormalFormsIteratorTraits::state_type;
         return const_normal_form_iterator(state_type("", ""),
@@ -494,23 +504,21 @@ namespace libsemigroups {
       // KnuthBendix - main member functions - public
       //////////////////////////////////////////////////////////////////////////
 
-      //! Check if the KnuthBendix instance is confluent.
+      //! Check confluence of the current rules.
       //!
       //! \returns \c true if the KnuthBendix instance is
       //! [confluent](https://w.wiki/9DA) and \c false if it is not.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       bool confluent() const;
 
-      //! Run the [Knuth-Bendix algorithm](https://w.wiki/9Cz)
-      //! on the KnuthBendix instance.
+      //! Run the Knuth-Bendix by considering all overlaps of a given length.
       //!
-      //! This function runs the Knuth-Bendix algorithm on the rewriting
-      //! system represented by a KnuthBendix instance by considering all
-      //! overlaps of a given length \f$n\f$ (according to the
-      //! KnuthBendix::overlap_measure) before those overlaps of length
-      //! \f$n + 1\f$.
+      //! This function runs the Knuth-Bendix algorithm on the rewriting system
+      //! represented by a KnuthBendix instance by considering all overlaps of
+      //! a given length \f$n\f$ (according to the \ref policy::overlap) before
+      //! those overlaps of length \f$n + 1\f$.
       //!
       //! \returns
       //! (None)
@@ -521,15 +529,15 @@ namespace libsemigroups {
       //! \warning This will terminate when the KnuthBendix instance is
       //! confluent, which might be never.
       //!
-      //! \sa KnuthBendix::run.
+      //! \sa \ref run.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       void knuth_bendix_by_overlap_length();
 
-      //! Returns the Gilman digraph (or automata) of \c this.
+      //! Returns the Gilman digraph.
       //!
-      //! \returns A const reference to a ActionDigraph<size_t>.
+      //! \returns A const reference to a \ref ActionDigraph.
       //!
       //! \exceptions
       //! \no_libsemigroups_except
@@ -537,15 +545,14 @@ namespace libsemigroups {
       //! \warning This will terminate when the KnuthBendix instance is
       //! reduced and confluent, which might be never.
       //!
-      //! \sa KnuthBendix::number_of_normal_forms,
-      //! KnuthBendix::cbegin_normal_forms, and KnuthBendix::cend_normal_forms.
+      //! \sa \ref number_of_normal_forms,
+      //! \ref cbegin_normal_forms, and \ref cend_normal_forms.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       ActionDigraph<size_t> const& gilman_digraph();
 
-      //! Returns whether or not the empty string belongs to the finitely
-      //! presented semigroup represented by \c this.
+      //! Returns whether or not the empty string belongs in the system.
       //!
       //! \returns
       //! A value of type `bool`.
@@ -556,7 +563,7 @@ namespace libsemigroups {
       //! \complexity
       //! \f$O(n)\f$ where \f$n\f$ is the number of rules.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       bool contains_empty_string() const;
 
@@ -576,7 +583,7 @@ namespace libsemigroups {
       //! Assuming that \c this has been run until finished, the complexity of
       //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
       //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
-      //! KnuthBendix::gilman_digraph.
+      //! \ref gilman_digraph.
       uint64_t number_of_normal_forms(size_t const min, size_t const max);
 
       //////////////////////////////////////////////////////////////////////////
@@ -590,7 +597,7 @@ namespace libsemigroups {
       //! is infinite. Moreover, the complexity of this function is at worst
       //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet,
       //! and \f$n\f$ is the number of nodes in the
-      //! KnuthBendix::gilman_digraph.
+      //! \ref gilman_digraph.
       uint64_t size() override;
 
       bool equal_to(std::string const&, std::string const&) override;
@@ -601,8 +608,14 @@ namespace libsemigroups {
       // FpSemigroupInterface - non-pure virtual member functions - public
       //////////////////////////////////////////////////////////////////////////
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+      // The following are required for overload resolution.
+      // Documented in FpSemigroupInterface.
+      // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
+      // these two declarations.
       using FpSemigroupInterface::equal_to;
       using FpSemigroupInterface::normal_form;
+#endif
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -669,9 +682,12 @@ namespace libsemigroups {
     //! monoids.
     //!
     //! This page contains details of the member functions of the class
-    //! libsemigroups::congruence::KnuthBendix.
+    //! congruence::KnuthBendix.
     //!
-    //! \sa libsemigroups::fpsemigroup::KnuthBendix.
+    //! \sa fpsemigroup::KnuthBendix.
+    //!
+    //! \note congruence::KnuthBendix can only be used to compute 2-sided
+    //! congruences.
     //!
     //! \par Example
     //! \code
@@ -694,16 +710,16 @@ namespace libsemigroups {
       // KnuthBendix - constructors - public
       ////////////////////////////////////////////////////////////////////////////
 
-      //! Constructs a KnuthBendix instance with no generating pairs.
+      //! Default constructor.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       //!
       //! \complexity
       //! Constant.
       KnuthBendix();
 
-      //! Constructs a KnuthBendix instance from a FroidurePin instance.
+      //! Constructs from FroidurePin instance.
       //!
       //! \param fp the FroidurePin instance.
       //!
@@ -725,8 +741,7 @@ namespace libsemigroups {
                       "FroidurePinBase");
       }
 
-      //! Constructs a congruence::KnuthBendix instance from an
-      //! fpsemigroup::KnuthBendix.
+      //! Construct from fpsemigroup::KnuthBendix.
       //!
       //! A congruence::KnuthBendix instance simply wraps an
       //! fpsemigroup::KnuthBendix, and provides an API compatible with the
@@ -739,7 +754,7 @@ namespace libsemigroups {
       //! rules of \p copy.
       explicit KnuthBendix(fpsemigroup::KnuthBendix const& copy);
 
-      //! Constructs a KnuthBendix instance from a FroidurePin instance.
+      //! Construct from \shared_ptr to FroidurePin instance.
       //!
       //! \param fpb the FroidurePin instance.
       //!
@@ -751,8 +766,7 @@ namespace libsemigroups {
       //! The FroidurePin instance used in construction is not copied.
       explicit KnuthBendix(std::shared_ptr<FroidurePinBase> fpb);
 
-      //! Copy construct a congruence::KnuthBendix instance from a
-      //! congruence::KnuthBendix.
+      //! Copy constructor
       //!
       //! \param copy the congruence::KnuthBendix to be copied.
       //!
@@ -774,7 +788,7 @@ namespace libsemigroups {
 
       //! Returns the underlying fpsemigroup::KnuthBendix.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       //!
       //! \complexity

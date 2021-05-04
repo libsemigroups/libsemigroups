@@ -6,10 +6,12 @@
 
 .. _staticmatrix_row:
 
-StaticMatrix::row
-=================
+row
+===
 
-.. cpp:function::  RowView StaticMatrix::row(size_t i) const
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function::  RowView row(size_t i) const
    
    Returns a row view into the specified row.
 

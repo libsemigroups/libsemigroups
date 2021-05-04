@@ -6,10 +6,12 @@
 
 .. _staticmatrix_begin:
 
-StaticMatrix::begin, StaticMatrix::cbegin
-=========================================
+begin, cbegin
+=============
 
-.. cpp:function:: iterator StaticMatrix::begin()
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: iterator begin()
 
    Returns a (random access) iterator pointing at the first entry in the
    matrix.
@@ -29,7 +31,7 @@ StaticMatrix::begin, StaticMatrix::cbegin
      specified.
 
 
-.. cpp:function:: const_iterator StaticMatrix::cbegin()
+.. cpp:function:: const_iterator cbegin()
 
    Returns a const (random access) iterator pointing at the first entry in the
    matrix.

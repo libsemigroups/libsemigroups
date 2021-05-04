@@ -9,6 +9,8 @@
 semiring
 ========
 
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
+
 .. cpp:function::  Semiring const* semiring() const noexcept
    
    Returns a const pointer to the underlying semiring (if any).

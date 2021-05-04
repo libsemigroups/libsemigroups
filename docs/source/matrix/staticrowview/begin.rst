@@ -9,6 +9,8 @@
 begin, cbegin
 =============
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: iterator begin()
 
    Returns a (random access) iterator pointing at the first entry in the

@@ -9,6 +9,8 @@
 size
 ====
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: size_t size() const noexcept
 
    Returns the size of the underlying row.

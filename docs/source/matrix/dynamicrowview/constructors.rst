@@ -16,6 +16,9 @@ Note that unless copying an existing ``DynamicRowView`` it's most likely that
 you will obtain a ``DynamicRowView`` from :cpp:any:`DynamicMatrix::row` or
 :cpp:any:`DynamicMatrix::rows`.
 
+
+.. cpp:namespace:: libsemigroups
+
 Default constructors
 --------------------
 

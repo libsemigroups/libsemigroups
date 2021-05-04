@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_transpose:
 
-DynamicMatrix::transpose
-========================
+transpose
+=========
 
-.. cpp:function::  void DynamicMatrix::transpose() noexcept
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function::  void transpose() noexcept
 
    Swaps the contents of ``this`` with the contents of ``that``. 
 

@@ -9,6 +9,8 @@
 end, cend
 =========
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: iterator end()
 
    Returns a (random access) iterator pointing one passed the last entry of the

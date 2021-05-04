@@ -9,7 +9,7 @@
 operator*=
 ==========
 
-.. cpp:namespace:: libsemigroups::DynamicMatrix
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
 
 .. cpp:function:: void operator*=(scalar_type const a)
 

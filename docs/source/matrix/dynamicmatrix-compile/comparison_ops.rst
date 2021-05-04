@@ -9,9 +9,11 @@
 DynamicMatrix comparison operators
 ==================================
 
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
 .. _dynamicmatrix_compile_operator_equals:
 
-.. cpp:function:: bool DynamicMatrix::operator==(DynamicMatrix const& that) const
+.. cpp:function:: bool operator==(DynamicMatrix const& that) const
 
    Equality operator.
 
@@ -25,7 +27,7 @@ DynamicMatrix comparison operators
      At worst :math:`O(mn)` where :math:`m` is the number of rows and
      :math:`n` is the number of columns of the matrix.
 
-.. cpp:function:: bool DynamicMatrix::operator==(RowView const& that) const
+.. cpp:function:: bool operator==(RowView const& that) const
 
    Equality operator.
 
@@ -60,7 +62,7 @@ DynamicMatrix comparison operators
 
 .. _dynamicmatrix_compile_operator_less:
 
-.. cpp:function:: bool DynamicMatrix::operator<(DynamicMatrix const& that) const
+.. cpp:function:: bool operator<(DynamicMatrix const& that) const
 
    Less than operator.
 
@@ -77,7 +79,7 @@ DynamicMatrix comparison operators
      :cpp:any:`DynamicMatrix::number_of_rows`
      and :math:`n` is :cpp:any:`DynamicMatrix::number_of_cols`
 
-.. cpp:function:: bool DynamicMatrix::operator<(RowView const& that) const 
+.. cpp:function:: bool operator<(RowView const& that) const 
 
    Less than operator.
 
@@ -94,7 +96,7 @@ DynamicMatrix comparison operators
 
 .. _dynamicmatrix_compile_operator_more:
 
-.. cpp:function:: bool DynamicMatrix::operator>(DynamicMatrix const& that) const
+.. cpp:function:: bool operator>(DynamicMatrix const& that) const
 
    Greater than operator.
 

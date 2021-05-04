@@ -1,74 +1,97 @@
 libsemigroups::ActionDigraph:
-- Aliases:
-  - [typedef, node_type]
-  - [typedef, label_type]
-  - [typedef, scc_index_type]
-  - [typedef, const_iterator_nodes]
-  - [typedef, const_reverse_iterator_nodes]
-  - [typedef, const_iterator_edges]
-  - [typedef, const_iterator_scc]
-  - [typedef, const_iterator_sccs]
-  - [typedef, const_iterator_scc_roots]
-  - [enum, algorithm]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`ActionDigraph` class."]
+  - node_type
+  - label_type
+  - scc_index_type
+  - const_iterator_nodes
+  - const_reverse_iterator_nodes
+  - const_iterator_edges
+  - const_iterator_scc
+  - const_iterator_sccs
+  - const_iterator_scc_roots
+  - algorithm
+  - const_pilo_iterator
+  - const_pislo_iterator
+  - const_pstislo_iterator
 - Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`ActionDigraph` class."]
   - ActionDigraph(T, T)
   - ActionDigraph(ActionDigraph const&)
   - ActionDigraph(ActionDigraph&&)
   - operator=(ActionDigraph const&)
   - operator=(ActionDigraph&&)
+- Static member functions:
+  - ["This page contains information about the static member functions for the
+     :cpp:any:`ActionDigraph` class."]
   - random(T const, T const, std::mt19937)
   - random(T const, T const, T const, std::mt19937)
-  - random_acyclic
-- Modifiers:
-  - add_nodes
-  - add_to_out_degree
-  - add_edge
-  - reserve
+  - random_acyclic(T const, T const, T const, std::mt19937)
+- Initialization:
+  - ["This page contains information about initialising the
+     :cpp:any:`ActionDigraph` class."]
+  - add_nodes(size_t)
+  - add_to_out_degree(size_t)
+  - add_edge(node_type, node_type, label_type) 
+  - reserve(T, T) const
 - Nodes, edges, neighbors:
-  - neighbor
-  - unsafe_neighbor
-  - next_neighbor
-  - unsafe_next_neighbor
-  - nr_nodes
+  - ["This page contains information about accessing the nodes, edges, and
+      neighbours of the :cpp:any:`ActionDigraph` class."]
+  - neighbor(node_type, label_type) const
+  - unsafe_neighbor(node_type, label_type) const
+  - next_neighbor(node_type, label_type) const
+  - unsafe_next_neighbor(node_type, label_type) const
+  - nr_nodes() const noexcept
   - nr_edges() const
   - nr_edges(node_type const) const
-  - out_degree
-  - validate
-  - cbegin_nodes
-  - cend_nodes
-  - crbegin_nodes
-  - crend_nodes
-  - cbegin_edges
-  - cend_edges
+  - out_degree() const noexcept
+  - validate() const noexcept
+  - cbegin_nodes() const noexcept
+  - cend_nodes() const noexcept
+  - crbegin_nodes() const noexcept
+  - crend_nodes() const noexcept
+  - cbegin_edges(node_type) const
+  - cend_edges(node_type) const
 - Strongly connected components:
-  - scc_id
-  - nr_scc
-  - root_of_scc
-  - cbegin_sccs
-  - cend_sccs
-  - cbegin_scc
-  - cend_scc
-  - cbegin_scc_roots
-  - cend_scc_roots
+  - ["This page contains information about the strongly connected components 
+      functionality of the :cpp:any:`ActionDigraph` class."]
+  - scc_id(node_type) const
+  - nr_scc() const
+  - root_of_scc(node_type) const
+  - cbegin_sccs() const
+  - cend_sccs() const
+  - cbegin_scc(scc_index_type) const
+  - cend_scc(scc_index_type) const
+  - cbegin_scc_roots() const
+  - cend_scc_roots() const
 - Spanning forests:
-  - spanning_forest
-  - reverse_spanning_forest
-- Paths:
-  - cbegin_panilo
-  - cend_panilo
-  - cbegin_panislo
-  - cend_panislo
-  - cbegin_pilo
-  - cend_pilo
-  - cbegin_pislo
-  - cend_pislo
-  - cbegin_pstilo
-  - cend_pstilo
-  - cbegin_pstislo
-  - cend_pstislo
-  - number_of_paths_algorithm(node_type const) const
-  - number_of_paths(node_type const) const
-  - number_of_paths_algorithm(node_type const, size_t const, size_t const) const
-  - number_of_paths(node_type const, size_t const, size_t const, algorithm const) const
-  - number_of_paths_algorithm(node_type const, node_type const, size_t const, size_t const) const
-  - number_of_paths(node_type const, node_type const, size_t const, size_t const, algorithm const) const
+  - ["This page contains information about the functionality of the
+      :cpp:any:`ActionDigraph` class for finding spanning forests."]
+  - spanning_forest() const
+  - reverse_spanning_forest() const
+- Path iterators:
+  - ["This page contains information about the functionality of the
+      :cpp:any:`ActionDigraph` class for iterating through paths."]
+  - cbegin_panilo(node_type, size_t, size_t) const
+  - cend_panilo() const
+  - cbegin_panislo(node_type, size_t, size_t) const
+  - cend_panislo() const
+  - cbegin_pilo(node_type, size_t, size_t) const
+  - cend_pilo() const
+  - cbegin_pislo(node_type, size_t, size_t) const
+  - cend_pislo() const
+  - cbegin_pstilo(node_type, node_type, size_t, size_t) const
+  - cend_pstilo() const
+  - cbegin_pstislo(node_type, node_type, size_t, size_t) const
+  - cend_pstislo() const
+- Counting paths:
+  - ["This page contains information about the functionality of the
+     :cpp:any:`ActionDigraph` class for counting paths."]
+  - number_of_paths_algorithm(node_type) const noexcept
+  - number_of_paths(node_type) const
+  - number_of_paths_algorithm(node_type, size_t, size_t) const
+  - number_of_paths(node_type, size_t, size_t, algorithm) const
+  - number_of_paths_algorithm(node_type, node_type, size_t, size_t) const
+  - number_of_paths(node_type, node_type, size_t, size_t, algorithm) const

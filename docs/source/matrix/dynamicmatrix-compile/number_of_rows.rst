@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_number_of_rows:
 
-DynamicMatrix::number_of_rows, DynamicMatrix::number_of_cols
-============================================================
+number_of_rows, number_of_cols
+==============================
 
-.. cpp:function:: size_t DynamicMatrix::number_of_rows()
+.. cpp:namespace:: libsemigroups::DynamicMatrix
+
+.. cpp:function:: size_t number_of_rows()
 
    Returns the number of rows of the matrix.
 
@@ -24,7 +26,7 @@ DynamicMatrix::number_of_rows, DynamicMatrix::number_of_cols
    :parameters: (None)
 
 
-.. cpp:function:: size_t DynamicMatrix::number_of_cols()
+.. cpp:function:: size_t number_of_cols()
 
    Returns the number of columns of the matrix.
 

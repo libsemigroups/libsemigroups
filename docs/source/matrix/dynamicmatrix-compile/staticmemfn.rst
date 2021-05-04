@@ -7,8 +7,10 @@
 DynamicMatrix static member functions
 =====================================
 
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
 .. _dynamicmatrix_compile_identity:
-.. cpp:function:: static DynamicMatrix DynamicMatrix::identity(size_t n)
+.. cpp:function:: static DynamicMatrix identity(size_t n)
    
    Construct the :math:`n \times n` identity matrix.
 
@@ -25,7 +27,7 @@ DynamicMatrix static member functions
 
 .. _dynamicmatrix_compile_make:
 .. cpp:function:: static DynamicMatrix \
-      DynamicMatrix::make(std::initializer_list<std::initializer_list<scalar_type>> il)
+      make(std::initializer_list<std::initializer_list<scalar_type>> il)
 
    Validates the arguments, constructs a matrix and validates it.
    

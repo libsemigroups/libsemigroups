@@ -6,10 +6,12 @@
 
 .. _staticmatrix_number_of_rows:
 
-StaticMatrix::number_of_rows, StaticMatrix::number_of_cols
-==========================================================
+number_of_rows, number_of_cols
+==============================
 
-.. cpp:function:: size_t StaticMatrix::number_of_rows()
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: size_t number_of_rows()
 
    Returns the number of rows of the matrix.
 
@@ -24,7 +26,7 @@ StaticMatrix::number_of_rows, StaticMatrix::number_of_cols
    :parameters: (None)
 
 
-.. cpp:function:: size_t StaticMatrix::number_of_cols()
+.. cpp:function:: size_t number_of_cols()
 
    Returns the number of columns of the matrix.
 

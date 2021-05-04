@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_operator_prod:
 
-DynamicMatrix::operator*
-========================
+operator*
+=========
 
-.. cpp:function:: DynamicMatrix DynamicMatrix::operator*(DynamicMatrix const& that)
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: DynamicMatrix operator*(DynamicMatrix const& that)
 
    Returns the product of ``*this`` and ``that``. 
 

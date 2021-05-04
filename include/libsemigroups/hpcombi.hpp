@@ -26,7 +26,8 @@
 // is defined, if so specified at during configure.
 #include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
+    || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"

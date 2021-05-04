@@ -35,25 +35,22 @@ namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
-  //! Derived classes of this abstract class must implement a member function
-  //! Runner::run_impl. The Runner class exists to collect various common tasks
-  //! required by such a derived class with a possibly long running
-  //! Runner::run_impl
-  //! implementation. These include:
-  //! * running for a given amount of time (Runner::run_for)
-  //! * running until a nullary predicate is true (Runner::run_until)
-  //! * reporting after a given amount of time (Runner::report_every)
+  //! Many of the classes in ``libsemigroups`` implementing the algorithms,
+  //! that are the reason for the existence of this library, are derived from
+  //! Runner.  The Runner class exists to collect various common tasks required
+  //! by such a derived class with a possibly long running \ref run.
+  //! These common tasks include:
+  //! * running for a given amount of time (\ref run_for)
+  //! * running until a nullary predicate is true (\ref run_until)
+  //! * reporting after a given amount of time (\ref report_every)
   //! * checking if the given amount of time has elapsed since last report
-  //! (Runner::report)
-  //! * checking the status of the Runner::run implementation: has it
-  //! Runner::started?  Runner::finished? been killed by another thread
-  //! (Runner::dead)? has it timed out (Runner::timed_out)? has it
-  //! Runner::stopped for any reason?
-  //! * permit the Runner::run implementation to be killed from another thread
-  //! (Runner::kill).
-  //!
-  //! The implementation of the ``run_impl`` member function in a derived class
-  //! must periodically check whether or not it has stopped for this to work.
+  //! (\ref report)
+  //! * checking the status of the algorithm: has it
+  //! \ref started?  \ref finished? been killed by another thread
+  //! (\ref dead)? has it timed out (\ref timed_out)? has it
+  //! \ref stopped for any reason?
+  //! * permit the function \ref run to be killed from another thread
+  //! (\ref kill).
   class Runner {
     // Enum class for the state of the Runner.
     enum class state {
@@ -75,7 +72,7 @@ namespace libsemigroups {
     //! Default constructor.
     //!
     //! Returns a runner that is not started, not finished, not dead, not timed
-    //! out, will run libsemigroups::FOREVER if not instructed otherwise,  that
+    //! out, will run \ref FOREVER if not instructed otherwise,  that
     //! last reported at the time of construction, and that will report every
     //! std::chrono::seconds(1) if reporting is enabled.
     //!
@@ -85,9 +82,9 @@ namespace libsemigroups {
 
     //! Copy constructor.
     //!
-    //! Returns a runner that is a copy of \p copy. The state of the new runner
-    //! is the same as \p copy, except that the function passed as an argument
-    //! to run_until (if any) is not copied.
+    //! Returns a runner that is a copy of \p other. The state of the new runner
+    //! is the same as \p other, except that the function passed as an argument
+    //! to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to copy.
     Runner(Runner const& other) : Runner() {
@@ -98,7 +95,7 @@ namespace libsemigroups {
     //!
     //! Returns a runner that is initialised from \p other. The state of the
     //! new runner is the same as \p copy, except that the function passed as
-    //! an argument to run_until (if any) is not copied.
+    //! an argument to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to move from.
     Runner(Runner&& other) : Runner() {
@@ -117,8 +114,7 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Member function that wraps `run_impl` which is implemented in a derived
-    //! class.
+    //! Run until \ref finished.
     //!
     //! Run the main algorithm implemented by a derived class derived of
     //! Runner.
@@ -154,15 +150,15 @@ namespace libsemigroups {
     //! Run for a specified amount of time.
     //!
     //! For this to work it is necessary to periodically check if
-    //! Runner::timed_out returns \c true, and to stop if it is, in the
-    //! Runner::run member function of any derived class of Runner.
+    //! timed_out() returns \c true, and to stop if it is, in the
+    //! run() member function of any derived class of Runner.
     //!
     //! \param t the time in nanoseconds to run for.
     //!
     //! \returns
     //! (None)
     //!
-    //! \sa Runner::run_for(TIntType)
+    //! \sa run_for(TIntType)
     // At the end of this either finished, dead, or timed_out.
     void run_for(std::chrono::nanoseconds t);
 
@@ -170,30 +166,30 @@ namespace libsemigroups {
     //!
     //!
     //! For this to work it is necessary to periodically check if
-    //! Runner::timed_out returns \c true, and to stop if it is, in the
-    //! Runner::run member function of any derived class of Runner.
+    //! timed_out() returns \c true, and to stop if it is, in the
+    //! run() member function of any derived class of Runner.
     //!
-    //! \param t the time to run for (in ``TIntType``).
+    //! \param t the time to run for (in \c TIntType).
     //!
     //! \returns
     //! (None)
     //!
-    //! \sa Runner::run_for(std::chrono::nanoseconds)
+    //! \sa run_for(std::chrono::nanoseconds)
     template <typename TIntType>
     void run_for(TIntType t) {
       run_for(std::chrono::nanoseconds(t));
     }
 
-    //! Check if the amount of time specified to Runner::run_for has elapsed.
+    //! Check if the amount of time passed to \ref run_for has elapsed.
     //!
     //! \par Parameters
     //! (None)
     //!
     //! \returns
-    //! A ``bool``
+    //! A \c bool
     //!
-    //! \sa Runner::run_for(std::chrono::nanoseconds) and
-    //! Runner::run_for(TIntType).
+    //! \sa run_for(std::chrono::nanoseconds) and
+    //! run_for(TIntType).
     bool timed_out() const {
       return (running_for()
                   ? std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -202,10 +198,10 @@ namespace libsemigroups {
                   : get_state() == state::timed_out);
     }
 
-    //! Run until a nullary predicate returns \p true or Runner::finished.
+    //! Run until a nullary predicate returns \p true or \ref finished.
     //!
-    //! \param func a callable type that will exist for at least until this
-    //! function returns.
+    //! \param func a callable type that will exist for at
+    //! least until this function returns, or a function pointer.
     //!
     //! \returns
     //! (None)
@@ -231,7 +227,7 @@ namespace libsemigroups {
       }
     }
 
-    //! Run until a nullary predicate returns \p true or Runner::finished.
+    //! Run until a nullary predicate returns \p true or \ref finished.
     //!
     //! \param func a function pointer.
     //!
@@ -243,12 +239,12 @@ namespace libsemigroups {
 
     //! Check if it is time to report.
     //!
-    //! This function can be used in an implementation of Runner::run (in a
-    //! derived class of Runner) to check if enough time has passed that we
-    //! should report again.
+    //! This function can be used in an implementation of run() (in a
+    //! derived class of Runner) to check if enough time has
+    //! passed that we should report again.
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
     //! \par Parameters
     //! (None)
@@ -259,8 +255,8 @@ namespace libsemigroups {
     //! Set the minimum elapsed time between reports.
     //!
     //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to Runner::report that return \c true. If
-    //! Runner::report returns \c true at time \c s, then Runner::report will
+    //! time between two calls to report() that return \c true. If
+    //! report() returns \c true at time \c s, then report() will
     //! only return \c true again after time \c s + \c t has elapsed.
     //!
     //! \param t the amount of time (in nanoseconds) between reports.
@@ -268,17 +264,18 @@ namespace libsemigroups {
     //! \returns
     //! (None)
     //!
-    //! \sa report_every(TIntType)
+    //! \sa
+    //! report_every(TIntType)
     void report_every(std::chrono::nanoseconds t);
 
     //! Set the minimum elapsed time between reports.
     //!
     //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to Runner::report that return \c true. If
-    //! Runner::report returns \c true at time \c s, then Runner::report will
+    //! time between two calls to report() that return \c true. If
+    //! report() returns \c true at time \c s, then report() will
     //! only return \c true again after time \c s + \c t has elapsed.
     //!
-    //! \param t the amount of time (in ``TIntType``) between reports.
+    //! \param t the amount of time (in \c TIntType) between reports.
     //!
     //! \returns
     //! (None)
@@ -289,10 +286,10 @@ namespace libsemigroups {
       report_every(std::chrono::nanoseconds(t));
     }
 
-    //! Report why Runner::run stopped.
+    //! Report why \ref run stopped.
     //!
-    //! Reports whether Runner::run was stopped because it is Runner::finished,
-    //! Runner::timed_out, or Runner::dead.
+    //! Reports whether run() was stopped because it is finished(),
+    //! timed_out(), or dead().
     //!
     //! \par Parameters
     //! (None)
@@ -301,20 +298,20 @@ namespace libsemigroups {
     //! (None)
     void report_why_we_stopped() const;
 
-    //! Check if Runner::run has been run to completion or not.
+    //! Check if \ref run has been run to completion or not.
     //!
-    //! Returns \c true if Runner::run has been run to completion. For this to
-    //! work, the implementation of Runner::run in a derived class of Runner
-    //! must either use Runner::set_finished or implement a specialisation of
-    //! Runner::finished_impl.
+    //! Returns \c true if run() has been run to completion. For this to
+    //! work, the implementation of run() in a derived class of
+    //! Runner must implement a specialisation of
+    //! \c finished_impl.
     //!
     //! \par Parameters
     //! (None)
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
-    //! \sa Runner::started
+    //! \sa started()
     bool finished() const {
       if (started() && !dead() && finished_impl()) {
         _state = state::not_running;
@@ -326,45 +323,45 @@ namespace libsemigroups {
       // true here if we are not dead and the object thinks it is finished.
     }
 
-    //! Check if Runner::run has already been called.
+    //! Check if \ref run has been called at least once before.
     //!
-    //! Returns \c true if Runner::run has started to run (it can be running or
+    //! Returns \c true if run() has started to run (it can be running or
     //! not).
     //!
     //! \par Parameters
     //! (None)
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
-    //! \sa Runner::finished
+    //! \sa finished()
     bool started() const {
       return get_state() != state::never_run;
     }
 
-    //! Check if a Runner instance is currently running.
+    //! Check if currently running.
     //!
     //! \returns
-    //! \c true if Runner::run is in the process to run and \c false it is not.
+    //! \c true if run() is in the process to run and \c false it is not.
     //!
     //! \par Parameters
     //! (None)
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
-    //! \sa Runner::finished
+    //! \sa finished()
     bool running() const noexcept {
       return get_state() == state::running_to_finish
              || get_state() == state::running_for
              || get_state() == state::running_until;
     }
 
-    //! Stop Runner::run from running (thread-safe).
+    //! Stop \ref run from running (thread-safe).
     //!
-    //! This function can be used to terminate Runner::run from another thread.
-    //! After Runner::kill has been called the Runner may no longer be in a
-    //! valid state, but will return \c true from Runner::dead.
+    //! This function can be used to terminate run() from another thread.
+    //! After kill() has been called the Runner may no longer be in a valid
+    //! state, but will return \c true from dead() .
     //!
     //! \par Parameters
     //! (None)
@@ -375,38 +372,38 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     //!
-    //! \sa Runner::finished
+    //! \sa finished()
     void kill() noexcept {
       set_state(state::dead);
     }
 
     //! Check if the runner is dead.
     //!
-    //! This function can be used to check if we should terminate Runner::run
+    //! This function can be used to check if we should terminate run()
     //! because it has been killed by another thread.
     //!
     //! \par Parameters
     //! (None)
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
     //! \exceptions
     //! \noexcept
     //!
-    //! \sa Runner::kill
+    //! \sa kill()
     bool dead() const noexcept {
       return get_state() == state::dead;
     }
 
     //! Check if the runner is stopped.
     //!
-    //! This function can be used to check whether or not Runner::run has been
+    //! This function can be used to check whether or not run() has been
     //! stopped for whatever reason. In other words, it checks if
-    //! Runner::timed_out, Runner::finished, or Runner::dead.
+    //! timed_out(), finished(), or dead().
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
     //! \par Parameters
     //! (None)
@@ -415,16 +412,16 @@ namespace libsemigroups {
                         : get_state() > state::running_until);
     }
 
-    //! Check if the runner was, or should, stop because the nullary predicate
-    //! passed as first argument to Runner::run_until.
+    //! Check if the runner was, or should, stop because of
+    //! the argument for \ref run_until.
     //!
     //! If \c this is running, then the nullary predicate is called and its
     //! return value is returned. If \c this is not running, then \c true is
     //! returned if and only if the last time \c this was running it was
-    //! stopped by a call to the nullary predicate passed to Runner::run_until.
+    //! stopped by a call to the nullary predicate passed to run_until().
     //!
     //! \returns
-    //! A ``bool``.
+    //! A \c bool.
     //!
     //! \exceptions
     //! \no_libsemigroups_except

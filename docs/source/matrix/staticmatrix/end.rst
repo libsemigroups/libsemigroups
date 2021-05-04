@@ -6,10 +6,12 @@
 
 .. _staticmatrix_end:
 
-StaticMatrix::end, StaticMatrix::cend
-=====================================
+end, cend
+=========
 
-.. cpp:function:: iterator StaticMatrix::end()
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: iterator end()
 
    Returns a (random access) iterator pointing one passed the last entry of the
    matrix.
@@ -30,7 +32,7 @@ StaticMatrix::end, StaticMatrix::cend
      specified.
 
 
-.. cpp:function:: const_iterator StaticMatrix::cend()
+.. cpp:function:: const_iterator cend()
 
    Returns a const (random access) iterator pointing one passed the last entry
    of the matrix.

@@ -6,11 +6,12 @@
 
 .. _dynamicmatrix_compile_rows:
 
-DynamicMatrix::rows
-===================
+rows
+====
 
-.. cpp:function:: template <typename T> \
-                  void DynamicMatrix::rows(T& x) const 
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: template <typename T> void rows(T& x) const 
    
    Add row views for every row in the matrix to the container ``T``.
    

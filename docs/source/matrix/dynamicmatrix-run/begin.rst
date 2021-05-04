@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_run_begin:
 
-DynamicMatrix::begin, DynamicMatrix::cbegin
-===========================================
+begin, cbegin
+=============
 
-.. cpp:function:: iterator DynamicMatrix::begin()
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
+
+.. cpp:function:: iterator begin()
 
    Returns a (random access) iterator pointing at the first entry in the
    matrix.
@@ -29,7 +31,7 @@ DynamicMatrix::begin, DynamicMatrix::cbegin
      specified.
 
 
-.. cpp:function:: const_iterator DynamicMatrix::cbegin()
+.. cpp:function:: const_iterator cbegin()
 
    Returns a const (random access) iterator pointing at the first entry in the
    matrix.

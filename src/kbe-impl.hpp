@@ -84,6 +84,8 @@ namespace libsemigroups {
   tril FroidurePin<detail::KBE,
                    FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
       is_finite() const {
+    // TODO(now) update this to check if the underlying KnuthBendix is
+    // infinite or not
     return (finished() ? tril::TRUE : tril::unknown);
   }
 }  // namespace libsemigroups

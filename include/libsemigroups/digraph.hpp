@@ -116,44 +116,42 @@ namespace libsemigroups {
     // ActionDigraph - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Alias for the type of nodes in a digraph.
+    //! The type of nodes in a digraph.
     using node_type = T;
 
-    //! Alias for the type of edge labels in a digraph.
+    //! The type of edge labels in a digraph.
     using label_type = T;
 
-    //! Alias for the type of an index in a strongly connected component of
-    //! a digraph.
+    //! The type of an index in a strongly connected component of a digraph.
     using scc_index_type = T;
 
-    //! Alias for the type of an iterator pointing to the nodes of a digraph.
+    //! The type of an iterator pointing to the nodes of a digraph.
     using const_iterator_nodes = typename IntegralRange<T>::const_iterator;
 
-    //! Alias for the type of a reverse iterator pointing to the nodes of a
-    //! digraph.
+    //! The type of a reverse iterator pointing to the nodes of a digraph.
     using const_reverse_iterator_nodes =
         typename IntegralRange<T>::const_reverse_iterator;
 
-    //! Alias for the type of an iterator pointing to the out-edges of a node in
-    //! a digraph.
+    //! The type of an iterator pointing to the out-edges of a node in a
+    //! digraph.
     using const_iterator_edges =
         typename detail::DynamicArray2<T>::const_iterator;
 
-    //! Alias for the type of an iterator pointing to the nodes in a strongly
-    //! connected component of a digraph.
+    //! The type of an iterator pointing to the nodes in a strongly connected
+    //! component of a digraph.
     using const_iterator_scc = typename std::vector<T>::const_iterator;
 
-    //! Alias for the type of an iterator pointing to the strongly
-    //! connected components of a digraph.
+    //! The type of an iterator pointing to the strongly connected components
+    //! of a digraph.
     using const_iterator_sccs =
         typename std::vector<std::vector<T>>::const_iterator;
 
-    //! Alias for the type of an iterator pointing to the roots of a strongly
-    //! connected components of a digraph.
+    //! The type of an iterator pointing to the roots of a strongly connected
+    //! components of a digraph.
     using const_iterator_scc_roots
         = detail::ConstIteratorStateless<IteratorTraits>;
 
-    //! An enum for specifying the algorithm to the functions `number_of_paths`.
+    //! An enum for specifying the algorithm to the functions number_of_paths().
     enum class algorithm {
       //! Use a depth-first-search.
       dfs = 0,
@@ -163,7 +161,8 @@ namespace libsemigroups {
       acyclic,
       //! Try to utilise some corner cases.
       trivial,
-      //! The function number_of_paths tries to decide which algorithm is best.
+      //! The function number_of_paths() tries to decide which algorithm is
+      //! best.
       automatic
     };
 
@@ -171,8 +170,7 @@ namespace libsemigroups {
     // ActionDigraph - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! A constructor that creates a DigraphAction instance representing the
-    //! digraph of a semigroup action.
+    //! Construct from number of nodes and out degree.
     //!
     //! \param m the number of nodes in the digraph (default: 0).
     //! \param n the out-degree of every node (default: 0).
@@ -200,8 +198,7 @@ namespace libsemigroups {
 
     ~ActionDigraph();
 
-    //! Constructs a random ActionDigraph from \p mt with the specified number
-    //! of nodes and out-degree.
+    //! Construct a random digraph from number of nodes and out-degree.
     //!
     //! \param nr_nodes the number of nodes
     //! \param out_degree the out-degree of every node
@@ -229,8 +226,7 @@ namespace libsemigroups {
       return g;
     }
 
-    //! Constructs a random ActionDigraph from \p mt with the specified number
-    //! of nodes and edges, and out-degree.
+    //! Construct a random digraph from number of nodes, edges, and out-degree.
     //!
     //! \param nr_nodes the number of nodes
     //! \param out_degree the out-degree of every node
@@ -283,8 +279,8 @@ namespace libsemigroups {
       return g;
     }
 
-    //! Constructs a random acyclic ActionDigraph from \p mt with the specified
-    //! number of nodes and edges, and out-degree.
+    //! Construct a random acyclic digraph from number of nodes, edges, and
+    //! out-degree.
     //!
     //! \param nr_nodes the number of nodes
     //! \param out_degree the out-degree of every node
@@ -349,7 +345,7 @@ namespace libsemigroups {
     // ActionDigraph - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Adds \p nr nodes to \c this.
+    //! Adds a number of new nodes.
     //!
     //! \param nr the number of nodes to add.
     //!
@@ -375,7 +371,7 @@ namespace libsemigroups {
       reset();
     }
 
-    //! Adds \p nr to the out-degree of \c this.
+    //! Adds to the out-degree.
     //!
     //! \param nr the number of new out-edges for every node.
     //!
@@ -401,9 +397,10 @@ namespace libsemigroups {
       reset();
     }
 
-    //! Add an edge from \p i to \p j labelled \p lbl.
-    //! If \p i and \p j are nodes in \c this, and \p lbl is in the range [0,
-    //! out_degree()), then this method adds an edge edge from \p i to \p j
+    //! Add an edge from one node to another with a given label.
+    //!
+    //! If \p i and \p j are nodes in \c this, and \p lbl is in the range `[0,
+    //! out_degree())`, then this method adds an edge edge from \p i to \p j
     //! labelled \p lbl.
     //!
     //! \param i the source node
@@ -428,8 +425,11 @@ namespace libsemigroups {
       reset();
     }
 
-    //! Ensures that \c this has capacity for \p m nodes each with \p
-    //! \p n out-edges, but does not modify nr_nodes() or out_degree().
+    //! Ensures that the digraph has capacity for a given number of nodes, and
+    //! out-degree.
+    //!
+    //! \note
+    //! Does not modify nr_nodes() or out_degree().
     //!
     //! \param m the number of nodes
     //! \param n the out-degree
@@ -457,15 +457,14 @@ namespace libsemigroups {
     // ActionDigraph - nodes, neighbors, etc - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Get the range of the edge with source node \p v and edge-label \p lbl.
+    //! Get the range of the edge with given source node and label.
     //!
     //! \param v the node
     //! \param lbl the label
     //!
     //! \returns
     //! Returns the node adjacent to \p v via the edge labelled \p lbl, or
-    //! libsemigroups::UNDEFINED; both are values of type
-    //! ActionDigraph::node_type.
+    //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
     //! \complexity
     //! Constant.
@@ -479,19 +478,19 @@ namespace libsemigroups {
       return _dynamic_array_2.get(v, lbl);
     }
 
-    //! Get the range of the edge with source node \p v and edge-label \p lbl.
+    //! Get the range of the edge with given source node and label.
     //!
     //! \param v the node
     //! \param lbl the label
     //!
     //! \returns
     //! Returns the node adjacent to \p v via the edge labelled \p lbl, or
-    //! libsemigroups::UNDEFINED; both are values of type
-    //! ActionDigraph::node_type.
+    //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
     //! \complexity
     //! Constant.
     //!
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \warning This function is unsafe because it does not verify \p v or \p
@@ -501,8 +500,12 @@ namespace libsemigroups {
       return _dynamic_array_2.get(v, lbl);
     }
 
-    //! Get the next neighbor of a node that doesn't equal
-    //! libsemigroups::UNDEFINED.
+    //! Get the next neighbor of a node that doesn't equal \ref
+    //! UNDEFINED.
+    //!
+    //! If `neighbor(v, i)` equals \ref UNDEFINED for every value in the range
+    //! \f$[i, n)\f$, where \f$n\f$ is the return value of out_degree() then \c
+    //! x.first and \c x.second equal \ref UNDEFINED.
     //!
     //! \param v the node
     //! \param i the label
@@ -510,18 +513,16 @@ namespace libsemigroups {
     //! \returns
     //! Returns a [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! \c x where:
-    //! 1. \c x.second is the minimum value in the range \f$[i,
-    //!    out_degree())\f$ such that neighbor(v, x.second) is not equal to
-    //!    libsemigroups::UNDEFINED; and
-    //! 2. \c x.first is adjacent to \p v via an edge labelled
+    //! 1. \c x.first is adjacent to \p v via an edge labelled
     //!    \c x.second;
-    //! If neighbor(v, i) equals libsemigroups::UNDEFINED for every value in
-    //! the range \f$[i, out_degree())\f$, then \c x.first and \c x.second
-    //! equal libsemigroups::UNDEFINED.
+    //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
+    //!    `neighbor(v, x.second)` is not equal to \ref UNDEFINED where \f$n\f$
+    //!    is the return value of out_degree(); and
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
     //!
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \sa next_neighbor.
@@ -543,7 +544,11 @@ namespace libsemigroups {
     }
 
     //! Get the next neighbor of a node that doesn't equal
-    //! libsemigroups::UNDEFINED.
+    //! \ref UNDEFINED.
+    //!
+    //! If `neighbor(v, i)` equals \ref UNDEFINED for every value in the range
+    //! \f$[i, n)\f$, where \f$n\f$ is the return value of out_degree() then \c
+    //! x.first and \c x.second equal \ref UNDEFINED.
     //!
     //! \param v the node
     //! \param i the label
@@ -551,14 +556,11 @@ namespace libsemigroups {
     //! \returns
     //! Returns a [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! \c x where:
-    //! 1. \c x.second is the minimum value in the range \f$[i,
-    //!    out_degree())\f$ such that neighbor(v, x.second) is not equal to
-    //!    libsemigroups::UNDEFINED; and
-    //! 2. \c x.first is adjacent to \p v via an edge labelled
+    //! 1. \c x.first is adjacent to \p v via an edge labelled
     //!    \c x.second;
-    //! If neighbor(v, i) equals libsemigroups::UNDEFINED for every value in
-    //! the range \f$[i, out_degree())\f$, then \c x.first and \c x.second
-    //! equal libsemigroups::UNDEFINED.
+    //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
+    //!    `neighbor(v, x.second)` is not equal to \ref UNDEFINED where \f$n\f$
+    //!    is the return value of out_degree(); and
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -574,7 +576,7 @@ namespace libsemigroups {
       return unsafe_next_neighbor(v, i);
     }
 
-    //! Returns the number of nodes of \c this
+    //! Returns the number of nodes.
     //!
     //! \returns
     //! The number of nodes, a value of type \c T.
@@ -591,7 +593,7 @@ namespace libsemigroups {
       return _nr_nodes;
     }
 
-    //! Returns the number of edges of \c this
+    //! Returns the number of edges.
     //!
     //! \returns
     //! The total number of edges, a value of type \c size_t.
@@ -611,7 +613,7 @@ namespace libsemigroups {
                  _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
     }
 
-    //! Returns the number of edges leaving a node.
+    //! Returns the number of edges with given source node.
     //!
     //! \param n the node.
     //!
@@ -630,7 +632,7 @@ namespace libsemigroups {
                           UNDEFINED);
     }
 
-    //! Returns the out-degree of \c this.
+    //! Returns the out-degree.
     //!
     //! \returns
     //! The number of out-edges of every node, a value of type \c T.
@@ -664,11 +666,11 @@ namespace libsemigroups {
       return nr_edges() == nr_nodes() * out_degree();
     }
 
-    //! Returns a ActionDigraph::const_iterator_nodes (random access iterator)
-    //! pointing at the first node of the digraph.
+    //! Returns a random access iterator pointing at the first node of the
+    //! digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_iterator_nodes.
+    //! An \ref const_iterator_nodes.
     //!
     //! \exceptions
     //! \noexcept
@@ -682,11 +684,11 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).cbegin();
     }
 
-    //! Returns a ActionDigraph::const_reverse_iterator_nodes (random access
-    //! iterator) pointing at the last node of the digraph.
+    //! Returns a random access iterator pointing at the last node of the
+    //! digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_reverse_iterator_nodes.
+    //! An \ref const_reverse_iterator_nodes.
     //!
     //! \exceptions
     //! \noexcept
@@ -700,11 +702,11 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).crbegin();
     }
 
-    //! Returns a ActionDigraph::const_reverse_iterator_nodes (random access
-    //! iterator) pointing one-past-the-first node of the digraph.
+    //! Returns a random access iterator pointing one-past-the-first node of
+    //! the digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_reverse_iterator_nodes.
+    //! An \ref const_reverse_iterator_nodes.
     //!
     //! \exceptions
     //! \noexcept
@@ -718,11 +720,11 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).crend();
     }
 
-    //! Returns a ActionDigraph::const_iterator_nodes (random access
-    //! iterator) pointing one-past-the-last node of the digraph.
+    //! Returns a random access iterator pointing one-past-the-last node of the
+    //! digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_iterator_nodes.
+    //! An \ref const_iterator_nodes.
     //!
     //! \exceptions
     //! \noexcept
@@ -736,13 +738,13 @@ namespace libsemigroups {
       return IntegralRange<T>(0, nr_nodes()).cend();
     }
 
-    //! Returns a ActionDigraph::const_iterator_edges (random access iterator)
-    //! pointing at the first neighbor of the node \p i.
+    //! Returns a random access iterator pointing at the first neighbor of a
+    //! node.
     //!
     //! \param i a node in the digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_iterator_edges.
+    //! A \ref const_iterator_edges.
     //!
     //! \throws LibsemigroupsException if \p i is not valid.
     //!
@@ -754,13 +756,13 @@ namespace libsemigroups {
       return _dynamic_array_2.cbegin_row(i);
     }
 
-    //! Returns a ActionDigraph::const_iterator_edges (random access iterator)
-    //! pointing one-past-the-last neighbor of the node \p i.
+    //! Returns a random access iterator pointing one-past-the-last neighbor of
+    //! a node.
     //!
     //! \param i a node in the digraph.
     //!
     //! \returns
-    //! An ActionDigraph::const_iterator_edges.
+    //! A \ref const_iterator_edges.
     //!
     //! \throws LibsemigroupsException if \p i is not valid.
     //!
@@ -795,14 +797,14 @@ namespace libsemigroups {
       return _scc._id[nd];
     }
 
-    //! Returns the number of strongly connected components in \p this.
+    //! Returns the number of strongly connected components.
     //!
     //! \returns
     //! A `size_t`.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -824,11 +826,11 @@ namespace libsemigroups {
     //!
     //! \returns
     //! The root of the scc containing the node \p nd, a value of
-    //! ActionDigraph::node_type.
+    //! \ref node_type.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -843,11 +845,11 @@ namespace libsemigroups {
     //! Returns an iterator pointing to the vector of nodes in the first scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_sccs.
+    //! A \ref const_iterator_sccs.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -866,11 +868,11 @@ namespace libsemigroups {
     //! final scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_sccs.
+    //! A \ref const_iterator_sccs.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -891,11 +893,11 @@ namespace libsemigroups {
     //! \param i the id-number of the scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_scc.
+    //! A \ref const_iterator_scc.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
@@ -920,11 +922,11 @@ namespace libsemigroups {
     //! \param i the id-number of the scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_scc.
+    //! A \ref const_iterator_scc.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
@@ -945,11 +947,11 @@ namespace libsemigroups {
     //! Returns an iterator pointing to the root of the first scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_scc_roots.
+    //! A \ref const_iterator_scc_roots.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -965,11 +967,11 @@ namespace libsemigroups {
     //! Returns an iterator pointing one past the root of the last scc.
     //!
     //! \returns
-    //! A ActionDigraph::const_iterator_scc_roots.
+    //! A \ref const_iterator_scc_roots.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -986,16 +988,18 @@ namespace libsemigroups {
     // ActionDigraph - spanning forests - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns a libsemigroups::Forest comprised of spanning trees for each
+    //! Returns a spanning forest of the strongly connected components.
+    //!
+    //! Returns a Forest comprised of spanning trees for each
     //! scc of \c this, rooted on the minimum node of that component, with
     //! edges oriented away from the root.
     //!
     //! \returns
-    //! A const reference to a libsemigroups::Forest.
+    //! A const reference to a Forest.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -1035,16 +1039,18 @@ namespace libsemigroups {
       return _scc_forest._forest;
     }
 
-    //! Returns a libsemigroups::Forest comprised of spanning trees for each
+    //! Returns a reverse spanning forest of the strongly connected components.
+    //!
+    //! Returns a Forest comprised of spanning trees for each
     //! scc of \c this, rooted on the minimum node of that component, with
     //! edges oriented towards the root.
     //!
     //! \returns
-    //! A const reference to a libsemigroups::Forest.
+    //! A const reference to a Forest.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! neighbor() is \ref UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -1107,7 +1113,7 @@ namespace libsemigroups {
     // PANILO = Path And (terminal) Node In Lex Order
     ////////////////////////////////////////////////////////////////////////
 
-    //! No doc
+    //! Return type of \ref cbegin_panilo and \ref cend_panilo.
     class const_panilo_iterator final {
      public:
       //! No doc
@@ -1260,12 +1266,12 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_panilo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PANILO (Path And Node In Lex Order).
+    //!
     //! Returns a forward iterator pointing to a pair consisting of the edge
     //! labels of the first path (in lexicographical order) starting at
     //! \p source with length in the range \f$[min, max)\f$ and the last node
     //! of that path.
-    //!
-    //! PANILO = Path And Node In Lexicographical Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in lexicographical order), and its last node, with
@@ -1275,17 +1281,17 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_panilo_iterator pointing to a
     //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! where:
-    //! * \c it->first is a libsemigroups::word_type consisting of the edge
+    //! * \c it->first is a \ref word_type consisting of the edge
     //! labels of the first path (in lexicographical order) from \p source of
     //! length in the range \f$[min, max)\f$; and
     //! * \c it->second is the last node on the path from \p source labelled by
-    //! \c it->first, a value of ActionDigraph::node_type.
+    //! \c it->first, a value of \ref node_type.
     //!
     //! \throws LibsemigroupsException if \p source is not a node in the
     //! digraph.
@@ -1303,14 +1309,15 @@ namespace libsemigroups {
     //! \sa
     //! cend_panilo
     // not noexcept because constructors of const_panilo_iterator aren't
-    const_panilo_iterator cbegin_panilo(node_type const source,
-                                        size_t const    min = 0,
-                                        size_t const    max
-                                        = POSITIVE_INFINITY) const {
+    const_panilo_iterator cbegin_panilo(node_type source,
+                                        size_t    min = 0,
+                                        size_t max = POSITIVE_INFINITY) const {
       action_digraph_helper::validate_node(*this, source);
       return const_panilo_iterator(this, source, min, max);
     }
 
+    //! Returns an iterator for PANILO (Path And Node In Lex Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -1333,7 +1340,7 @@ namespace libsemigroups {
     // be traversed 10 times). But the performance of this iterator is
     // dominated by memory allocation (when creating
     // iterators, at least), and so this doesn't seem that bad.
-    //! No doc
+    //! Return type of cbegin_panislo and cend_panislo.
     class const_panislo_iterator final {
      public:
       //! No doc
@@ -1458,12 +1465,12 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_panislo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PANISLO (Path And Node In Short Lex Order).
+    //!
     //! Returns a forward iterator pointing to a pair consisting of the edge
     //! labels of the first path (in short-lex order) starting at \p source
     //! with length in the range \f$[min, max)\f$ and the last node of that
     //! path.
-    //!
-    //! PANISLO = Path And Node In Short-Lex Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in short-lex order), and its last node, with
@@ -1473,17 +1480,17 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_panislo_iterator pointing to a
     //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! where:
-    //! * \c it->first is a libsemigroups::word_type consisting of the edge
+    //! * \c it->first is a \ref word_type consisting of the edge
     //! labels of the first path (in short-lex order) from \p source of
     //! length in the range \f$[min, max)\f$; and
     //! * \c it->second is the last node on the path from \p source labelled by
-    //! \c it->first, a value of ActionDigraph::node_type.
+    //! \c it->first, a value of \ref node_type.
     //!
     //! \throws LibsemigroupsException if \p source is not a node in the
     //! digraph.
@@ -1502,14 +1509,16 @@ namespace libsemigroups {
     //! cend_panislo
     // TODO(later) example and what is the complexity?
     // not noexcept because const_panislo_iterator constructors aren't
-    const_panislo_iterator cbegin_panislo(node_type const source,
-                                          size_t const    min = 0,
-                                          size_t const    max
+    const_panislo_iterator cbegin_panislo(node_type source,
+                                          size_t    min = 0,
+                                          size_t    max
                                           = POSITIVE_INFINITY) const {
       action_digraph_helper::validate_node(*this, source);
       return const_panislo_iterator(this, source, min, max);
     }
 
+    //! Returns an iterator for PANISLO (Path And Node In Short Lex Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -1564,7 +1573,7 @@ namespace libsemigroups {
 
    public:
     // PILO
-    //! No doc
+    //! Return type of \ref cbegin_pilo and \ref cend_pilo.
     using const_pilo_iterator = detail::ConstIteratorStateless<
         PiloOrPisloIteratorTraits<const_panilo_iterator>>;
 
@@ -1577,11 +1586,11 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_pilo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PILO (Path In Lex Order).
+    //!
     //! Returns a forward iterator pointing to the edge labels of the first
     //! path (in lexicographical order) starting at \p source with length in the
     //! range \f$[min, max)\f$.
-    //!
-    //! PILO = Paths In Lexicographical Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in lexicographical order), with length in the
@@ -1591,11 +1600,11 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pilo_iterator pointing to a
-    //! libsemigroups::word_type consisting of the edge labels of the first
+    //! \ref word_type consisting of the edge labels of the first
     //! path (in lexicographical order) from \p source of length in the range
     //! \f$[min, max)\f$.
     //!
@@ -1615,14 +1624,15 @@ namespace libsemigroups {
     //! \sa
     //! cend_pilo
     // not noexcept because const_panilo_iterator constructors aren't
-    const_pilo_iterator cbegin_pilo(node_type const source,
-                                    size_t const    min = 0,
-                                    size_t const    max
-                                    = POSITIVE_INFINITY) const {
+    const_pilo_iterator cbegin_pilo(node_type source,
+                                    size_t    min = 0,
+                                    size_t    max = POSITIVE_INFINITY) const {
       action_digraph_helper::validate_node(*this, source);
       return const_pilo_iterator(cbegin_panilo(source, min, max));
     }
 
+    //! Returns an iterator for PILO (Path In Lex Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -1636,7 +1646,7 @@ namespace libsemigroups {
     }
 
     // PISLO
-    //! No doc
+    //! Return type of \ref cbegin_pislo and \ref cend_pislo.
     using const_pislo_iterator = detail::ConstIteratorStateless<
         PiloOrPisloIteratorTraits<const_panislo_iterator>>;
 
@@ -1649,11 +1659,11 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_pislo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PISLO (Path In Short Lex Order).
+    //!
     //! Returns a forward iterator pointing to the edge labels of the first
     //! path (in short-lex order) starting at \p source with length in the range
     //! \f$[min, max)\f$.
-    //!
-    //! PISLO = Paths In Short-Lex Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in short-lex order), with length in the
@@ -1663,11 +1673,11 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pislo_iterator pointing to a
-    //! libsemigroups::word_type consisting of the edge labels of the first
+    //! \ref word_type consisting of the edge labels of the first
     //! path (in short-lex order) from \p source of length in the range
     //! \f$[min, max)\f$.
     //!
@@ -1687,14 +1697,15 @@ namespace libsemigroups {
     //! \sa
     //! cend_pislo
     // not noexcept because cbegin_panislo isn't
-    const_pislo_iterator cbegin_pislo(node_type const source,
-                                      size_t const    min = 0,
-                                      size_t const    max
-                                      = POSITIVE_INFINITY) const {
+    const_pislo_iterator cbegin_pislo(node_type source,
+                                      size_t    min = 0,
+                                      size_t    max = POSITIVE_INFINITY) const {
       action_digraph_helper::validate_node(*this, source);
       return const_pislo_iterator(cbegin_panislo(source, min, max));
     }
 
+    //! Returns an iterator for PISLO (Path In Short Lex Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -1909,11 +1920,11 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_pstilo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
+    //!
     //! Returns a forward iterator pointing to the edge labels of the first
     //! path (in lexicographical order) starting at the node \p source and
     //! ending at the node \p target with length in the range \f$[min, max)\f$.
-    //!
-    //! PSTILO = Path Source Target In Lexicographical Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in lexicographical order).  Iterators of the type
@@ -1924,11 +1935,11 @@ namespace libsemigroups {
     //! \param target the last node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pstilo_iterator pointing to a
-    //! libsemigroups::word_type consisting of the edge labels of the first
+    //! \ref word_type consisting of the edge labels of the first
     //! path (in lexicographical order) from the node \p source to the node \p
     //! target with length in the range \f$[min, max)\f$ (if any).
     //!
@@ -1948,11 +1959,10 @@ namespace libsemigroups {
     //! \sa
     //! cend_pstilo
     // not noexcept because const_pstilo_iterator constructors aren't
-    const_pstilo_iterator cbegin_pstilo(node_type const source,
-                                        node_type const target,
-                                        size_t const    min = 0,
-                                        size_t const    max
-                                        = POSITIVE_INFINITY) const {
+    const_pstilo_iterator cbegin_pstilo(node_type source,
+                                        node_type target,
+                                        size_t    min = 0,
+                                        size_t max = POSITIVE_INFINITY) const {
       // source & target are validated in is_reachable.
       if (!action_digraph_helper::is_reachable(*this, source, target)) {
         return cend_pstilo();
@@ -1960,6 +1970,8 @@ namespace libsemigroups {
       return const_pstilo_iterator(this, source, target, min, max);
     }
 
+    //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -2028,7 +2040,7 @@ namespace libsemigroups {
     };
 
    public:
-    //! No doc
+    //! Return type of \ref cbegin_pstislo and \ref cend_pstislo.
     using const_pstislo_iterator
         = detail::ConstIteratorStateful<PstisloIteratorTraits>;
 
@@ -2041,11 +2053,12 @@ namespace libsemigroups {
     static_assert(std::is_destructible<const_pstislo_iterator>::value,
                   "forward iterator requires destructible");
 
+    //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
+    //! Order).
+    //!
     //! Returns a forward iterator pointing to the edge labels of the first
     //! path (in short-lex order) starting at the node \p source and ending
     //! at the node \p target with length in the range \f$[min, max)\f$.
-    //!
-    //! PSTISLO = Path Source Target In Short Lex Order
     //!
     //! If incremented, the iterator will point to the next least edge
     //! labelling of a path (in short-lex order).  Iterators of the type
@@ -2056,11 +2069,11 @@ namespace libsemigroups {
     //! \param target the last node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        libsemigroups::POSITIVE_INFINITY).
+    //!        \ref POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pstislo_iterator pointing to a
-    //! libsemigroups::word_type consisting of the edge labels of the first
+    //! \ref word_type consisting of the edge labels of the first
     //! path (in short-lex order) from the node \p source to the node \p target
     //! with length in the range \f$[min, max)\f$ (if any).
     //!
@@ -2080,10 +2093,10 @@ namespace libsemigroups {
     //! \sa
     //! cend_pstislo
     // not noexcept because cbegin_panislo isn't
-    const_pstislo_iterator cbegin_pstislo(node_type const source,
-                                          node_type const target,
-                                          size_t const    min = 0,
-                                          size_t const    max
+    const_pstislo_iterator cbegin_pstislo(node_type source,
+                                          node_type target,
+                                          size_t    min = 0,
+                                          size_t    max
                                           = POSITIVE_INFINITY) const {
       using state_type = typename const_pstislo_iterator::state_type;
       // source & target are validated in is_reachable.
@@ -2098,6 +2111,9 @@ namespace libsemigroups {
       return const_pstislo_iterator(st, it);
     }
 
+    //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
+    //! Order).
+    //!
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
@@ -2116,24 +2132,23 @@ namespace libsemigroups {
     // ActionDigraph - number_of_paths - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns the algorithm used by `number_of_paths` to compute the number
-    //! of paths originating at the given source node.
+    //! Returns the \ref algorithm used by number_of_paths().
     //!
     //! \param source the source node.
     //!
-    //! \returns A value of type ActionDigraph::algorithm.
+    //! \returns A value of type \ref algorithm.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant
-    algorithm number_of_paths_algorithm(node_type const source) const noexcept {
+    algorithm number_of_paths_algorithm(node_type source) const noexcept {
       (void) source;
       return algorithm::acyclic;
     }
 
-    //! Returns the number of paths originating at the given source node.
+    //! Returns the number of paths from a source node.
     //!
     //! \param source the source node.
     //!
@@ -2148,7 +2163,7 @@ namespace libsemigroups {
     //!
     //! \warning If the number of paths exceeds 2 ^ 64, then return value of
     //! this function will not be correct.
-    uint64_t number_of_paths(node_type const source) const {
+    uint64_t number_of_paths(node_type source) const {
       // Don't allow selecting the algorithm because we check
       // acyclicity anyway.
       // TODO(later): could use algorithm::dfs in some cases.
@@ -2180,15 +2195,17 @@ namespace libsemigroups {
       }
     }
 
-    //! Returns the algorithm used by `number_of_paths` to compute the number of
-    //! paths originating at the given source node with length in the range
+    //! Returns the \ref algorithm used by number_of_paths().
+    //!
+    //! Returns the algorithm used by number_of_paths() to compute the number
+    //! of paths originating at the given source node with length in the range
     //! \f$[min, max)\f$.
     //!
     //! \param source the source node
     //! \param min the minimum length of paths to count
     //! \param max the maximum length of paths to count
     //!
-    //! \returns A value of type ActionDigraph::algorithm.
+    //! \returns A value of type \ref algorithm.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -2197,9 +2214,9 @@ namespace libsemigroups {
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
     //! is the out-degree of the digraph.
     // Not noexcept because action_digraph_helper::topological_sort is not.
-    algorithm number_of_paths_algorithm(node_type const source,
-                                        size_t const    min,
-                                        size_t const    max) const {
+    algorithm number_of_paths_algorithm(node_type source,
+                                        size_t    min,
+                                        size_t    max) const {
       if (min >= max || validate()) {
         return algorithm::trivial;
       }
@@ -2258,11 +2275,10 @@ namespace libsemigroups {
     //! \warning If the number of paths exceeds 2 ^ 64, then return value of
     //! this function will not be correct.
     // not noexcept for example number_of_paths_trivial can throw
-    uint64_t number_of_paths(node_type const source,
-                             size_t const    min,
-                             size_t const    max,
-                             algorithm const lgrthm
-                             = algorithm::automatic) const {
+    uint64_t number_of_paths(node_type source,
+                             size_t    min,
+                             size_t    max,
+                             algorithm lgrthm = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
 
       switch (lgrthm) {
@@ -2282,16 +2298,18 @@ namespace libsemigroups {
       }
     }
 
-    //! Returns the algorithm used by `number_of_paths` to compute the number of
-    //! paths originating at the given source node and ending at the given
-    //! target node with length in the range \f$[min, max)\f$.
+    //! Returns the \ref algorithm used by number_of_paths().
+    //!
+    //! Returns the \ref algorithm used by number_of_paths() to compute the
+    //! number of paths originating at the given source node and ending at the
+    //! given target node with length in the range \f$[min, max)\f$.
     //!
     //! \param source the source node
     //! \param target the target node
     //! \param min the minimum length of paths to count
     //! \param max the maximum length of paths to count
     //!
-    //! \returns A value of type ActionDigraph::algorithm.
+    //! \returns A value of type \ref algorithm.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -2300,10 +2318,10 @@ namespace libsemigroups {
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$ is
     //! the out-degree of the digraph.
     // Not noexcept because action_digraph_helper::topological_sort isn't
-    algorithm number_of_paths_algorithm(node_type const source,
-                                        node_type const target,
-                                        size_t const    min,
-                                        size_t const    max) const {
+    algorithm number_of_paths_algorithm(node_type source,
+                                        node_type target,
+                                        size_t    min,
+                                        size_t    max) const {
       (void) target;
       if (min >= max) {
         return algorithm::trivial;
@@ -2361,12 +2379,11 @@ namespace libsemigroups {
     //! \warning If the number of paths exceeds 2 ^ 64, then return value of
     //! this function will not be correct.
     // not noexcept because cbegin_pstilo isn't
-    uint64_t number_of_paths(node_type const source,
-                             node_type const target,
-                             size_t const    min,
-                             size_t const    max,
-                             algorithm const lgrthm
-                             = algorithm::automatic) const {
+    uint64_t number_of_paths(node_type source,
+                             node_type target,
+                             size_t    min,
+                             size_t    max,
+                             algorithm lgrthm = algorithm::automatic) const {
       action_digraph_helper::validate_node(*this, source);
       action_digraph_helper::validate_node(*this, target);
 

@@ -1,21 +1,21 @@
 libsemigroups::Forest:
 - Type aliases:
-  - [typedef, node_type]
-  - [typedef, label_type]
+  - node_type
+  - label_type
 - Constructors:
   - Forest(size_t)
-  - Forest(Forest const&)
-  - Forest(Forest&&)
-  - operator=(Forest const&)
-  - operator=(Forest&&)
+  - Forest(Forest const&) = default
+  - Forest(Forest&&) = default
+  - operator=(Forest const&) = default
+  - operator=(Forest&&) = default
 - Modifiers:
-  - add_nodes
-  - clear
-  - set
+  - add_nodes(size_t)
+  - clear() noexcept
+  - set(node_type, node_type, label_type)
 - Accessors:
-  - nr_nodes
-  - parent
-  - label
+  - nr_nodes() const noexcept
+  - parent(node_type) const
+  - label(node_type) const
 - Iterators:
-  - cbegin_parent
-  - cend_parent
+  - cbegin_parent() const noexcept
+  - cend_parent() const noexcept

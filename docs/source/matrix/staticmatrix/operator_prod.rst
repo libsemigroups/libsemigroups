@@ -6,10 +6,12 @@
 
 .. _staticmatrix_operator_prod:
 
-StaticMatrix::operator*
+operator*
 =======================
 
-.. cpp:function:: StaticMatrix StaticMatrix::operator*(StaticMatrix const& that)
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: StaticMatrix operator*(StaticMatrix const& that)
 
    Returns the product of ``*this`` and ``that``. 
 

@@ -18,8 +18,9 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 html_theme_options = {
     # Toc options
-    'includehidden': False,
+    "includehidden": False,
 }
+
 
 def setup(app):
     app.add_css_file("custom.css")
@@ -32,7 +33,7 @@ extensions = [
     "sphinxcontrib.bibtex",
 ]
 
-bibtex_bibfiles = ['libsemigroups.bib']
+bibtex_bibfiles = ["libsemigroups.bib"]
 
 breathe_projects = {"libsemigroups": "../build/xml"}
 breathe_projects_source = {}
@@ -41,7 +42,7 @@ html_static_path = ["_static"]
 source_suffix = ".rst"
 master_doc = "index"
 project = "libsemigroups"
-copyright = "2019-20, J. D. Mitchell"
+copyright = "2019-21, J. D. Mitchell"
 author = "J. D. Mitchell"
 cpp_index_common_prefix = ["libsemigroups::"]
 

@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_compile_operator_prod_equals:
 
-DynamicMatrix::operator*=
-=========================
+operator*=
+==========
 
-.. cpp:function:: void DynamicMatrix::operator*=(scalar_type const a)
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
+
+.. cpp:function:: void operator*=(scalar_type const a)
 
    Adds a scalar to every entry of the matrix in-place.
 
@@ -24,7 +26,7 @@ DynamicMatrix::operator*=
       :math:`O(mn)` where :math:`m` is :cpp:any:`DynamicMatrix::number_of_rows`
       and :math:`m` is :cpp:any:`DynamicMatrix::number_of_cols`
 
-.. cpp:function:: void DynamicMatrix::product_inplace(DynamicMatrix const& A, DynamicMatrix const& B)
+.. cpp:function:: void product_inplace(DynamicMatrix const& A, DynamicMatrix const& B)
 
     Multiplies ``A`` and ``B`` and stores the result in ``this``.
     

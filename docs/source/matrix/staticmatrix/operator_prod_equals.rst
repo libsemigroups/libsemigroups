@@ -9,7 +9,7 @@
 operator*=
 ==========
 
-.. cpp:namespace:: libsemigroups::StaticMatrix
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
 
 .. cpp:function:: void operator*=(scalar_type const a)
 

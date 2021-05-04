@@ -1,71 +1,114 @@
 libsemigroups::Konieczny:
-- Public types:
-  - [typedef, element_type]
-  - [typedef, const_reference]
-  - [typedef, const_d_class_iterator]
-  - [typedef, const_regular_d_class_iterator]
-  - [typedef, lambda_value_type]
-  - [typedef, lambda_orb_type]
-  - [typedef, rho_value_type]
-  - [typedef, rho_orb_type]
-- Stateless public types:
-  - [typedef, Degree]
-  - [typedef, EqualTo]
-  - [typedef, Lambda]
-  - [typedef, Less]
-  - [typedef, One]
-  - [typedef, Product]
-  - [typedef, Rank]
-  - [typedef, Rho]
-  - [typedef, Swap]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`Konieczny` class."]
+  - const_element_type
+  - element_type
+  - const_reference
+  - const_d_class_iterator
+  - const_regular_d_class_iterator
+  - lambda_value_type
+  - lambda_orb_type
+  - rho_value_type
+  - rho_orb_type
+  - D_class_index_type
+  - const_iterator
+- Adapter member types:
+  - ["This page contains information about the adapters contained in the 
+     :cpp:any:`Konieczny` class."]
+  - Degree
+  - EqualTo
+  - Lambda
+  - Less
+  - One
+  - Product
+  - Rank
+  - Rho
+  - Swap
 - Constructors:
-  - Konieczny
-  - Konieczny(Konieczny const&)
-  - operator=(Konieczny const&)
-  - Konieczny(Konieczny&&)
-  - operator=(Konieczny&&)
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Konieczny` class."]
+  - Konieczny()
   - Konieczny(std::vector<element_type> const&)
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the :cpp:any:`Konieczny`
+     class."]
+  - Konieczny(Konieczny const &) = delete
+  - Konieczny(Konieczny &&) = delete
+  - operator=(Konieczny const &) = delete
+  - operator=(Konieczny &&) = delete
 - Initialisation:
-  - add_generator
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`Konieczny` class that can be used for initialisation."]
+  - add_generator(const_reference)
   - add_generators(T const&)
   - add_generators(std::initializer_list<const_element_type>)
   - add_generators(T const&, T const&)
 - Elements:
-  - is_regular_element
-  - contains
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`Konieczny` class related to elements."]
+  - is_regular_element(const_reference)
+  - contains(const_reference)
 - Attributes:
-  - size
-  - number_of_generators
-  - number_of_D_classes
-  - number_of_L_classes
-  - number_of_R_classes
-  - number_of_regular_D_classes
-  - number_of_regular_L_classes
-  - number_of_regular_R_classes
-  - number_of_regular_elements
+  - ["This page contains information about non-const attributes of the  
+     :cpp:any:`Konieczny` class."]
+  - size()
+  - number_of_D_classes()
+  - number_of_L_classes()
+  - number_of_R_classes()
+  - number_of_H_classes()
+  - number_of_regular_D_classes()
+  - number_of_regular_L_classes()
+  - number_of_regular_R_classes()
+  - number_of_regular_elements()
+  - D_class_of_element(const_reference)
+  - number_of_idempotents()
 - Const Attributes:
-  - degree
-  - current_size
-  - number_of_idempotents
-  - current_number_of_idempotents
-  - current_number_of_D_classes
-  - current_number_of_L_classes
-  - current_number_of_R_classes
-  - current_number_of_regular_D_classes
-  - current_number_of_regular_L_classes
-  - current_number_of_regular_R_classes
-  - current_number_of_regular_elements
-- State:
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
+  - ["This page contains information about non-const attributes of the  
+     :cpp:any:`Konieczny` class."]
+  - generator(size_t) const
+  - number_of_generators() const noexcept
+  - degree() const noexcept
+  - current_size() const
+  - current_number_of_idempotents() const
+  - current_number_of_D_classes() const
+  - current_number_of_L_classes() const
+  - current_number_of_R_classes() const
+  - current_number_of_H_classes() const
+  - current_number_of_regular_D_classes() const
+  - current_number_of_regular_L_classes() const 
+  - current_number_of_regular_R_classes() const
+  - current_number_of_regular_elements() const
 - Iterators:
-  - cbegin_D_classes
-  - cend_D_classes
-  - cbegin_regular_D_classes
-  - cbegin_rdc
-  - cend_regular_D_classes
-  - cend_rdc
+  - ["This page contains information about the member functions of the  
+     :cpp:any:`Konieczny` class related to iterators."]
+  - cbegin_generators() const noexcept
+  - cend_generators() const noexcept
+  - cbegin_D_classes() const
+  - cend_D_classes() const noexcept
+  - cbegin_regular_D_classes() const
+  - cbegin_rdc() const noexcept
+  - cend_regular_D_classes() const noexcept
+  - cend_rdc() const
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`Konieczny` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const
+  
+

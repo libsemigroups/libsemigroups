@@ -70,7 +70,7 @@ namespace libsemigroups {
     //! semigroups and monoids.
     //!
     //! This page contains a summary of the main member functions of the class
-    //! libsemigroups::congruence::ToddCoxeter, and related things in
+    //! congruence::ToddCoxeter, and related things in
     //! libsemigroups.
     //!
     //! In this documentation we use the term "coset enumeration" to mean the
@@ -153,28 +153,33 @@ namespace libsemigroups {
       // ToddCoxeter - typedefs + enums - public
       ////////////////////////////////////////////////////////////////////////
 
+      //! Type of the underlying table.
+      //!
       //! This is the type of the coset table stored inside a ToddCoxeter
       //! instance.
       using table_type = detail::DynamicArray2<class_index_type>;
 
-      //! This is the type of the indices used for cosets in a
-      //! ToddCoxeter instance.
+      //! Type of the indices of cosets.
       using coset_type = CongruenceInterface::class_index_type;
 
-      //! This struct holds various enums which effect the coset enumeration
-      //! process used by ToddCoxeter::run.
+      //! Holds values of various options.
       //!
-      //! \sa policy::strategy, policy::lookahead, and policy::froidure_pin.
+      //! This struct holds various enums which effect the coset enumeration
+      //! process used by \ref run.
+      //!
+      //! \sa \ref strategy, \ref lookahead, and \ref froidure_pin.
       struct policy {
-        //! The values in this enum can be used as the argument for the
-        //! member function ToddCoxeter::strategy to specify which strategy
+        //! Values for defining the strategy.
+        //!
+        //! The values in this enum can be used as the argument for the member
+        //! function strategy(policy::strategy) to specify which strategy
         //! should be used when performing a coset enumeration.
         enum class strategy {
           //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
-          //! strategy should be used. This is the same as ACE's R-style.
+          //! strategy should be used. This is analogous to ACE's R-style.
           hlt,
-          //! This value indicates that the Felsch
-          //! strategy should be used. This is the same as ACE's C-style.
+          //! This value indicates that the Felsch strategy should be used.
+          //! This is analogous to ACE's C-style.
           felsch,
           //! This value indicates that a random combination of the HLT and
           //! Felsch strategies should be used. A random strategy (and
@@ -198,14 +203,15 @@ namespace libsemigroups {
           //! 10. Felsch + no standardization
           //!
           //! and this strategy is then run for approximately the amount
-          //! of time specified by the setting random_interval. This strategy is
-          //! inspired by Sim's TEN_CE from [Sim94](../biblio.html#sims1994aa).
+          //! of time specified by the setting random_interval(T).
           random
         };
 
+        //! Values for specifying the type of lookahead to perform.
+        //!
         //! The values in this enum can be used as the argument for
-        //! ToddCoxeter::lookahead to specify the type of lookahead that should
-        //! be performed when using the HLT strategy.
+        //! lookahead(policy::lookahead) to specify the type of lookahead that
+        //! should be performed when using the HLT strategy.
         enum class lookahead {
           //! A *full* lookahead is one starting from the initial coset.
           //! Full lookaheads are therefore sometimes slower but may
@@ -217,21 +223,24 @@ namespace libsemigroups {
           partial
         };
 
+        //! Values for specifying whether to use relations or Cayley graph.
+        //!
         //! The values in this enum can be used as the argument for
-        //! ToddCoxeter::fpp (which stands for "Froidure-Pin policy") to specify
-        //! whether the defining relations, or the left/right Cayley graph, of a
+        //! \ref froidure_pin_policy(policy::froidure_pin) to specify whether
+        //! the defining relations, or the left/right Cayley graph, of a
         //! FroidurePin instance, should be used in the coset enumeration.
         //!
         //! If the number of classes in the congruence represented by a
         //! ToddCoxeter instance is relatively small, by some definition,
-        //! compared to the size of the semigroup represented by the FroidurePin
-        //! instance, then the use_relations policy is often faster. If the
-        //! number of classes is relatively large, then use_cayley_graph is
-        //! often faster. It is guaranteed that ToddCoxeter::run will terminate
-        //! in an amount of time proportionate to the size of the input if the
-        //! policy use_cayley_graph is used, whereas the run time when using the
-        //! policy use_relations can be arbitrarily high regardless of the size
-        //! of the input.
+        //! compared to the size of the semigroup represented by the
+        //! FroidurePin instance, then the  froidure_pin::use_relations
+        //! policy is often faster. If the number of classes is relatively
+        //! large, then  froidure_pin::use_cayley_graph is often faster. It
+        //! is guaranteed that  run will terminate in an amount of time
+        //! proportionate to the size of the input if the policy
+        //! froidure_pin::use_cayley_graph is used, whereas the run time when
+        //! using the policy froidure_pin::use_relations can be arbitrarily
+        //! high regardless of the size of the input.
         enum class froidure_pin {
           //! No policy has been specified.
           none,
@@ -242,10 +251,12 @@ namespace libsemigroups {
         };
       };
 
+      //! The possible arguments for standardize(order).
+      //!
       //! The values in this enum can be used as the argument for
-      //! ToddCoxeter::standardize to specify which ordering should be used.
-      //! The normal forms for congruence classes are given with respect to one
-      //! of the orders specified by the values in this enum.
+      //! standardize(order) to specify which ordering should be used.  The
+      //! normal forms for congruence classes are given with respect to one of
+      //! the orders specified by the values in this enum.
       enum class order {
         //! No standardization has been done.
         none = 0,
@@ -254,7 +265,7 @@ namespace libsemigroups {
         shortlex,
         //! Normal forms are the lexicographical least word belonging to a given
         //! congruence class.
-        lex,
+        lex,  // TODO(now) does this even make sense?
         //! Normal forms are the recursive-path least word belonging to a given
         //! congruence class.
         recursive
@@ -265,20 +276,38 @@ namespace libsemigroups {
       // ToddCoxeter - constructors and destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! A constructor that creates a new ToddCoxeter instance representing a
+      //! Construct from kind (left/right/2-sided).
+      //!
+      //! This constructor creates a new ToddCoxeter instance representing a
       //! left, right, or two-sided congruence specified by the given
-      //! libsemigroups::congruence_type.
-      explicit ToddCoxeter(congruence_type);
+      //! \ref congruence_type.
+      //!
+      //! \param knd the handedness (left/right/2-sided) of the congruence
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      explicit ToddCoxeter(congruence_type knd);
 
-      //! A constructor that creates a new ToddCoxeter instance representing a
+      //! Construct from kind (left/right/2-sided) and FroidurePin or
+      //! FpSemigroupInterface.
+      //!
+      //! This constructor creates a new ToddCoxeter instance representing a
       //! left, right, or two-sided congruence over the semigroup
-      //! represented by a FroidurePin instance of the type specified by
-      //! the libsemigroups::congruence_type.
+      //! represented by a FroidurePin object or instance of a class derived
+      //! from FpSemigroupInterface.
+      //!
+      //! \tparam T a type derived from FroidurePinBase or FpSemigroupInterface
+      //!
+      //! \param knd the handedness (left/right/2-sided) of the congruence
+      //! \param S the underlying semigroup of the congruence.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
       //!
       //! \warning The parameter \p S is copied, this might be expensive, use a
-      //! std::shared_ptr to avoid the copy!
+      //! \shared_ptr to avoid the copy!
       template <typename T>
-      ToddCoxeter(congruence_type type, T const& S) : ToddCoxeter(type) {
+      ToddCoxeter(congruence_type knd, T const& S) : ToddCoxeter(knd) {
         static_assert(std::is_base_of<FroidurePinBase, T>::value
                           || std::is_base_of<FpSemigroupInterface, T>::value,
                       "the template parameter must be a derived class of "
@@ -287,51 +316,77 @@ namespace libsemigroups {
         set_nr_generators(S.nr_generators());
       }
 
-      //! Construct from a FroidurePinBase.
+      //! Construct from kind (left/right/2-sided), shared pointer to
+      //! FroidurePinBase, and options.
       //!
-      //! \param t the type of the congruence being constructed
-      //! \param fp a std::shared_ptr to a FroidurePinBase, this parameter is
-      //! not copied by this constructor.
-      //! \param p the policy::froidure_pin to use.
+      //! This constructor creates a new ToddCoxeter instance representing a
+      //! left, right, or two-sided congruence over the semigroup
+      //! represented by a shared pointer to a FroidurePin object.
       //!
-      //! \returns
-      //! A ToddCoxeter instance representing a congruence of type \p t over
-      //! the semigroup represented by \p fp.
-      ToddCoxeter(congruence_type                  t,
+      //! \param knd the type of the congruence being constructed
+      //! \param fp a \shared_ptr
+      //! to a FroidurePinBase, this parameter is not copied by this
+      //! constructor.
+      //! \param p the policy::froidure_pin to use (default:
+      //! policy::froidure_pin::use_cayley_graph).
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      ToddCoxeter(congruence_type                  knd,
                   std::shared_ptr<FroidurePinBase> fp,
                   policy::froidure_pin             p
                   = policy::froidure_pin::use_cayley_graph);
       // TODO(later) remove the final argument here
       // This policy::froidure_pin is guaranteed to terminate relatively quickly
 
-      //! A constructor that creates a new ToddCoxeter instance representing a
-      //! left, right, or two-sided congruence from the congruence represented
-      //! by the second argument. If the second argument is a left or right
-      //! congruence, then the first argument must be
-      //! libsemigroups::congruence_type::left or
-      //! libsemigroups::congruence_type::right, otherwise an exception is
-      //! thrown.
-      ToddCoxeter(congruence_type, ToddCoxeter&);
-
-      //! A constructor that creates a new ToddCoxeter instance representing a
-      //! left, right, or two-sided congruence from the quotient semigroup
-      //! represented by the second argument.
-      ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&);
-
-      //! A constructor that creates a new ToddCoxeter instance representing a
-      //! left, right, or two-sided congruence from the quotient semigroup
-      //! represented by the second argument.
-      ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&);
-
-      //! Copy constructor.
+      //! Construct from kind (left/right/2-sided) and ToddCoxeter.
       //!
-      //! Constructs a copy of \p copy.
+      //! This constructor creates a new ToddCoxeter instance representing a
+      //! left, right, or two-sided congruence over the quotient semigroup
+      //! represented by a ToddCoxeter instance.
       //!
-      //! \param copy the ToddCoxeter instance to copy.
+      //! \param knd the handedness (left/right/2-sided) of the congruence
+      //! \param tc the ToddCoxeter representing the underlying semigroup
+      //!
+      //! \throws LibsemigroupsException if \p tc is a left, or right,
+      //! congruence, and \p knd is not left, or not right, respectively.
+      ToddCoxeter(congruence_type knd, ToddCoxeter& tc);
+
+      //! Construct from kind (left/right/2-sided) and ToddCoxeter.
+      //!
+      //! This constructor creates a new ToddCoxeter instance representing a
+      //! left, right, or two-sided congruence over the semigroup
+      //! represented by a libsemigroups::fpsemigroup::ToddCoxeter instance.
+      //!
+      //! \param knd the handedness (left/right/2-sided) of the congruence
+      //! \param tc the ToddCoxeter representing the underlying semigroup
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      ToddCoxeter(ToddCoxeter const& copy);
+      ToddCoxeter(congruence_type knd, fpsemigroup::ToddCoxeter& tc);
+
+      //! Construct from kind (left/right/2-sided) and KnuthBendix.
+      //!
+      //! A constructor that creates a new ToddCoxeter instance representing a
+      //! left, right, or two-sided congruence over the semigroup
+      //! represented by a fpsemigroup::KnuthBendix instance.
+      //! \param knd the handedness (left/right/2-sided) of the congruence
+      //! \param kb the KnuthBendix representing the underlying semigroup
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      ToddCoxeter(congruence_type knd, fpsemigroup::KnuthBendix& kb);
+
+      //! Copy constructor.
+      //!
+      //! Constructs a complete copy of \p that, including all of the settings,
+      //! table, defining relations, and generating pairs.
+      //!
+      //! \param that the ToddCoxeter instance to copy.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      ToddCoxeter(ToddCoxeter const& that);
 
       //! Deleted
       ToddCoxeter() = delete;
@@ -358,136 +413,263 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // Initialisation
+
+      //! Prefill the coset table.
+      //!
       //! This member function allows a ToddCoxeter instance to be prefilled
       //! with an existing coset table. The argument should represent the left
-      //! or right Cayley graph of a finite semigroup. If an invalid table is
-      //! given, then an exception is thrown.
-      void prefill(table_type const&);
+      //! or right Cayley graph of a finite semigroup.
+      //!
+      //! \param t the table
+      //!
+      //! \returns
+      //! (None)
+      //!
+      //! \throws LibsemigroupsException if the table \p t is not valid.
+      //!
+      //! \complexity
+      //! Linear in the total number of entries in the table \p t.
+      void prefill(table_type const& t);
 
       // Settings
-      //! Sets the value of the "Froidure-Pin policy" specified by the argument
-      //! ToddCoxeter::policy::froidure_pin.
+
+      //! Specify whether to use the relations or the Cayley graph.
+      //!
+      //! Sets whether to use the defining relations or the Cayley graph of the
+      //! FroidurePin instance used to initialise the object.
       //!
       //! If the ToddCoxeter instance is not created from a FroidurePin
-      //! instance, or from an object that has an already computed FroidurePin
       //! instance, then the value of this setting is ignored.
-      //!
       //! The default value is policy::froidure_pin::use_cayley_graph.
-      ToddCoxeter& froidure_pin_policy(policy::froidure_pin) noexcept;
+      //!
+      //! \param val value indicating whether to use relations or Cayley graph
+      //! (policy::froidure_pin::use_cayley_graph or
+      //!  policy::froidure_pin::use_relations).
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& froidure_pin_policy(policy::froidure_pin val) noexcept;
 
-      //! Gets the current value of the "Froidure-Pin policy".
+      //! Get the current value of the Froidure-Pin policy.
       //!
       //! If the ToddCoxeter instance is not created from a FroidurePin
       //! instance, or from an object that has an already computed FroidurePin
       //! instance, then the value of this setting is ignored.
       //!
       //! \sa froidure_pin_policy(policy::froidure_pin)
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A value of type policy::froidure_pin.
+      //!
+      //! \exceptions
+      //! \noexcept
       policy::froidure_pin froidure_pin_policy() const noexcept;
 
-      //! Sets the type of lookahead to be used when using the HLT strategy. If
-      //! the strategy is not HLT, then the value of this setting is
+      //! Set the lookahead to use in HLT.
+      //!
+      //! If the strategy is not HLT, then the value of this setting is
       //! ignored.
       //!
-      //! The default value is policy::lookahead::partial.
+      //! The default value is policy::lookahead::partial, and the other
+      //! possible value is policy::lookahead::full.
+      //!
+      //! \param val value indicating whether to perform a full or partial
+      //! lookahead.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
       //!
       //! \sa ToddCoxeter::policy::lookahead.
-      ToddCoxeter& lookahead(policy::lookahead) noexcept;
+      ToddCoxeter& lookahead(policy::lookahead val) noexcept;
 
-      //! Sets a lower bound for the number of classes of the congruence
-      //! represented by a ToddCoxeter instance. If
-      //! ToddCoxeter::nr_cosets_active becomes at least the value of the
-      //! argument, and the table is complete (ToddCoxeter::complete returns
-      //! \c true), then the coset enumeration is terminated. When the given
-      //! bound is equal to the number of classes, this may save tracing
-      //! relations at many cosets when there is no possibility of finding
-      //! coincidences.
+      //! Specify minimum number of classes that may trigger early stop.
       //!
-      //! The default value is libsemigroups::UNDEFINED.
-      ToddCoxeter& lower_bound(size_t) noexcept;
+      //! Set a lower bound for the number of classes of the congruence
+      //! represented by a ToddCoxeter instance. If the number of active cosets
+      //! becomes at least the value of the argument, and the table is complete
+      //! (\ref complete returns \c true), then the coset enumeration is
+      //! terminated. When the given bound is equal to the number of classes,
+      //! this may save tracing relations at many cosets when there is no
+      //! possibility of finding coincidences.
+      //!
+      //! The default value is \ref UNDEFINED.
+      //!
+      //! \param val value indicating the lower bound.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& lower_bound(size_t val) noexcept;
 
+      //! Set the threshold that will trigger a lookahead in HLT.
+      //!
       //! If the number of cosets active exceeds the value set by this
-      //! function, then a lookahead, of the type set by
-      //! ToddCoxeter::lookahead, is triggered. This only applies when using
+      //! function, then a lookahead, of the type set using the function
+      //! \ref lookahead, is triggered. This only applies when using
       //! the HLT strategy.
       //!
       //! The default value is 5 million.
-      ToddCoxeter& next_lookahead(size_t) noexcept;
+      //!
+      //! \param val value indicating the initial threshold.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& next_lookahead(size_t val) noexcept;
 
+      //! Process deductions during HLT.
+      //!
       //! If the argument of this function is \c true and the HLT strategy is
       //! being used, then deductions are processed during the enumeration.
       //!
       //! The default value is \c false.
-      ToddCoxeter& save(bool);  // NOLINT()
+      //!
+      //! \param val value indicating the initial threshold.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \ref prefill was used to
+      //! initialise \c this.
+      //!
+      //! \throws LibsemigroupsException if the parent FroidurePin (if any) is
+      //! finite, and the value of froidure_pin_policy() is not
+      //! policy::froidure_pin::use_relations.
+      ToddCoxeter& save(bool val);  // NOLINT()
 
+      //! Short-lex standardize the table during enumeration.
+      //!
       //! If the argument of this function is \c true, then the coset table is
       //! standardized (according to the short-lex order) during the coset
       //! enumeration.
       //!
       //! The default value is \c false.
-      ToddCoxeter& standardize(bool) noexcept;  // NOLINT()
+      //!
+      //! \param val value indicating whether or not to standardize.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& standardize(bool val) noexcept;  // NOLINT()
 
+      //! Specify the strategy.
+      //!
       //! The strategy used during the coset enumeration can be specified using
       //! this function. It can be set to HLT, Felsch, or random.
       //!
       //! The default value is policy::strategy::hlt.
       //!
-      //! \sa ToddCoxeter::policy::strategy.
-      ToddCoxeter& strategy(policy::strategy);
-
-      //! The current strategy being used for coset enumeration.
+      //! \param val value indicating which strategy to use, the possible
+      //! values are:
+      //! * policy::strategy::hlt
+      //! * policy::strategy::felsch
+      //! * policy::strategy::random
       //!
-      //! \sa ToddCoxeter::policy::strategy
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p val is policy::strategy::felsch
+      //! and any of the following conditions apply:
+      //! * \ref prefill as used to initialise \c this
+      //! * if the parent FroidurePin (if any) is
+      //! finite, and the value of froidure_pin_policy() is not
+      //! policy::froidure_pin::use_relations.
+      ToddCoxeter& strategy(policy::strategy val);
+
+      //! The current strategy for enumeration.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current strategy, a value of type policy::strategy.
+      //!
+      //! \exceptions
+      //! \noexcept
       policy::strategy strategy() const noexcept;
 
+      //! Set the amount of time per strategy for policy::strategy::random.
+      //!
       //! Sets the duration in nanoseconds that a given randomly selected
       //! strategy will run for, when using the random strategy
       //! (policy::strategy::random).
       //!
       //! The default value is 200ms.
-      ToddCoxeter& random_interval(std::chrono::nanoseconds) noexcept;
+      //!
+      //! \param val the number of nanoseconds used per strategy if the
+      //! strategy is random.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& random_interval(std::chrono::nanoseconds val) noexcept;
 
+      //! Set the amount of time per strategy for policy::strategy::random.
+      //!
       //! Sets the duration (by converting to nanoseconds) that a given
       //! randomly selected strategy will run for, when using the random
       //! strategy (policy::strategy::random).
       //!
       //! The default value is 200ms.
+      //!
+      //! \tparam T \chrono_duration
+      //!
+      //! \param val the duration per strategy if the strategy is random.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
       template <typename T>
-      ToddCoxeter& random_interval(T x) noexcept {
-        return random_interval(std::chrono::nanoseconds(x));
+      ToddCoxeter& random_interval(T val) noexcept {
+        return random_interval(std::chrono::nanoseconds(val));
       }
 
+      //! Type of the argument to \ref sort_generating_pairs.
+      //!
       //! A type alias for functions that can be used as an argument to
-      //! sort_generating_pairs.
+      //! \ref sort_generating_pairs.
       // This alias only really exists to make the documentation work :(
       using sort_function_type
           = std::function<bool(word_type const&, word_type const&)>;
 
+      //! Sort generating pairs.
+      //!
       //! Sorts all existing generating pairs according to the binary function
+      //! \p func.  Additionally, if \c this was defined over a finitely
+      //! presented semigroup, then the copy of the defining relations of that
+      //! semigroup contained in \c this (if any) are also sorted according to
       //! \p func.
       //!
-      //! Additionally, if \c this was defined over a finitely presented
-      //! semigroup, then the copy of the defining relations of that semigroup
-      //! contained in \c this (if any) are also sorted according to \p func.
-      //!
-      //! \param func a value of type sort_function_type
+      //! \param func a value of type \ref sort_function_type
       //! that defines a linear order on the relations in a
       //! ToddCoxeter instance.
       //!
-      //! \returns a reference to the object pointed to by \c this.
+      //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if started() returns \c true.
       //!
       //! \warning
-      //! If add_pair is called after this function, then it may no longer be
-      //! the case that the defining relations and generating pairs of \c this
-      //! are sorted by \p func.
+      //! If \ref add_pair is called after this function, then it may no longer
+      //! be the case that the defining relations and generating pairs of \c
+      //! this are sorted by \p func.
       //!
       //! \sa
       //! random_shuffle_generating_pairs
       ToddCoxeter& sort_generating_pairs(sort_function_type func);
 
+      //! Type of the argument to \ref sort_generating_pairs.
+      //!
       //! A type alias for free functions that can be used as an argument to
-      //! sort_generating_pairs.
+      //! \ref sort_generating_pairs.
       // This alias only really exists to make the documentation work :(
       using sort_free_function_type = bool(word_type const&, word_type const&);
 
@@ -497,17 +679,17 @@ namespace libsemigroups {
         return sort_generating_pairs(sort_function_type(func));
       }
 
-      //! Randomly shuffle all existing generating pairs.
+      //! Randomly shuffle the generating pairs.
       //!
       //! Additionally, if \c this was defined over a finitely presented
       //! semigroup, then the copy of the defining relations of that semigroup
       //! contained in \c this (if any) are also sorted according to \p func.
       //!
-      //! \returns a reference to the object pointed to by \c this.
+      //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if started() returns \c true.
       //!
-      //! \par Parameters
+      //! \parameters
       //! (None)
       ToddCoxeter& random_shuffle_generating_pairs();
 
@@ -515,53 +697,123 @@ namespace libsemigroups {
       // ToddCoxeter - member functions (container-like) - public
       ////////////////////////////////////////////////////////////////////////
 
+      //! Check if there are no relations or generating pairs.
+      //!
       //! Returns \c true if there are no relations or generating pairs in the
       //! ToddCoxeter instance, and the number of active cosets is \c 1 (the
       //! minimum possible).
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \parameters
+      //! (None)
       bool empty() const;
 
+      //! Reserve the specified capacity in the coset table.
+      //!
       //! Reserves the capacity specified by the argument in the data
       //! structures for cosets used in a ToddCoxeter instance.
       //!
-      //! The default is \c 0.
-      void reserve(size_t);
+      //! \param val the capacity to reserve.
+      //!
+      //! \returns
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      void reserve(size_t val);
 
+      //! Release unused memory if \ref finished.
+      //!
       //! Release all memory used to store free cosets, and any other
-      //! unnecessary data if the enumeration is finished. Otherwise, it does
-      //! nothing.
+      //! unnecessary data if the enumeration is \ref finished. Otherwise, it
+      //! does nothing.
+      //!
+      //! \returns
+      //! (None)
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
       void shrink_to_fit();
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (state) - public
       ////////////////////////////////////////////////////////////////////////
 
+      //! Check if the table is complete.
+      //!
       //! Returns \c true if the coset table is complete, and \c false if it is
-      //! not. The table is *complete* if the value libsemigroups::UNDEFINED
+      //! not. The table is *complete* if the value \ref UNDEFINED
       //! does not appear in any row of an active coset.
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \noexcept
       bool complete() const noexcept;
 
+      //! Check if the table is compatible with the relations.
+      //!
       //! Returns \c true if the coset table is compatible with the relations
       //! and generating pairs used to create \c this, and \c false if it is
       //! not. The table is *compatible* if the values obtained by pushing
       //! a coset through the left-hand side and the right-hand side of
       //! a relation coincide for every coset and every relation.
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \noexcept
       bool compatible() const noexcept;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (standardization) - public
       ////////////////////////////////////////////////////////////////////////
 
+      //! Check if the table has been standardized.
+      //!
       //! Returns \c true if the ToddCoxeter instance is standardized. In other
-      //! words, if ToddCoxeter::standardize(order) has been
-      //! called with any argument other than order::none.
+      //! words, if standardize(order) has been called with any argument other
+      //! than order::none.
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \noexcept
       bool is_standardized() const noexcept;
 
+      //! Standardize the table according to the specified order.
+      //!
       //! Standardizes the current coset table according to the order specified
-      //! by ToddCoxeter::order.
-      void standardize(order);
-
-      //! Friend functions for TCE
-      // friend table_type* table(ToddCoxeter*);
+      //! by \ref order.
+      //!
+      //! \param val the order used for standardization, the possible values
+      //! are:
+      //! * order::shortlex
+      //! * order::lex
+      //! * order::recursive
+      //!
+      //! \returns
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      void standardize(order val);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - iterators - public
@@ -593,25 +845,50 @@ namespace libsemigroups {
           }
         };
       };
-      //! This is the return type of ToddCoxeter::cbegin_normal_forms and
-      //! ToddCoxeter::cend_normal_forms, which can be used to access normal
-      //! forms from a coset index.
+
+      //! The type of a const iterator pointing to a normal form.
+      //!
+      //! Iterators of this type point to a \ref word_type.
+      //!
+      //! \sa cbegin_normal_forms, cend_normal_forms.
       using normal_form_iterator
           = detail::ConstIteratorStateful<NormalFormIteratorTraits>;
 
+      //! Returns a \ref normal_form_iterator pointing at the first normal
+      //! form.
+      //!
       //! Returns a const iterator pointing to the normal form of the first
       //! class of the congruence represented by an instance of ToddCoxeter.
       //! The order of the classes, and the normal form, that is returned are
-      //! controlled by ToddCoxeter::standardize(order).
+      //! controlled by standardize(order).
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type \ref normal_form_iterator.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
       normal_form_iterator cbegin_normal_forms() {
         auto range = IntegralRange<coset_type>(0, nr_classes());
         return normal_form_iterator(this, range.cbegin());
       }
 
+      //! Returns a \ref normal_form_iterator pointing one past the last normal
+      //! form.
+      //!
       //! Returns a const iterator one past the normal form of the last class
       //! of the congruence represented by an instance of ToddCoxeter. The
       //! order of the classes, and the normal form, that is returned are
-      //! controlled by ToddCoxeter::standardize(order).
+      //! controlled by standardize(order).
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type \ref normal_form_iterator.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
       normal_form_iterator cend_normal_forms() {
         auto range = IntegralRange<coset_type>(0, nr_classes());
         return normal_form_iterator(this, range.cend());

@@ -1,62 +1,74 @@
 libsemigroups::congruence::KnuthBendix: 
-- Public Types:
-  - [typedef, const_iterator]
-  - [typedef, class_index_type]
-  - [typedef, non_trivial_class_iterator]
-  - [typedef, non_trivial_classes_type]
 - Constructors:
-  - KnuthBendix
-  - KnuthBendix(T const&)
+  - ["This page contains information about the constructors for the
+     :cpp:any:`KnuthBendix` class."]
+  - KnuthBendix()
   - KnuthBendix(fpsemigroup::KnuthBendix const&)
-  - KnuthBendix(KnuthBendix const&)
   - KnuthBendix(std::shared_ptr<FroidurePinBase>)
-  - operator=(KnuthBendix const&)
-- Converters:
-  - class_index_to_word
-  - word_to_class_index
-- Initialisation:
+  - KnuthBendix(T const&)
+  - KnuthBendix(KnuthBendix const&)
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the
+     :cpp:any:`KnuthBendix` class."]
+  - KnuthBendix(KnuthBendix&&) = delete
+  - operator=(KnuthBendix&&) = delete
+  - operator=(KnuthBendix const&) = delete
+- Member functions:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`KnuthBendix` class that are not inherited from 
+     :cpp:any:`CongruenceInterface` or :cpp:any:`Runner`."]
+  - knuth_bendix() const
+- Member functions and types inherited from CongruenceInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`KnuthBendix` class inherited from
+     :cpp:any:`CongruenceInterface`."]
+  - const_iterator
+  - class_index_type
+  - non_trivial_class_iterator
+  - non_trivial_classes_type
+  - set_nr_generators(size_t)
+  - kind() const noexcept
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+  - nr_generators() const noexcept
+  - nr_generating_pairs() const noexcept
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc() 
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
-  - set_nr_generators
-- Attributes:
-  - cbegin_generating_pairs
-  - cbegin_ntc
-  - cend_generating_pairs
-  - cend_ntc
-  - has_parent_froidure_pin
-  - has_quotient_froidure_pin
-  - is_quotient_obviously_finite
-  - is_quotient_obviously_infinite
-  - knuth_bendix
-  - nr_classes
-  - nr_generating_pairs
-  - nr_generators
-  - nr_non_trivial_classes
-  - parent_froidure_pin
-  - quotient_froidure_pin
-  - kind
-  - non_trivial_classes
-- Settings:
-  - report
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const override
+  - contains(word_type const&, word_type const&) override
+  - nr_classes()
+  - nr_non_trivial_classes()
+  - non_trivial_classes()
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`KnuthBendix` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
   - report_every(TIntType)
   - report_every(std::chrono::nanoseconds)
-  - report_why_we_stopped
-- Running:
-  - run
-  - run_for(TIntType)
-  - run_for(std::chrono::nanoseconds)
-  - run_until(T&&)
-  - run_until(bool (*))
-  - kill
-- State:
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - running
-  - stopped_by_predicate
-- Operators:
-  - const_contains
-  - contains
-  - less
+  - report() const
+  - report_why_we_stopped() const

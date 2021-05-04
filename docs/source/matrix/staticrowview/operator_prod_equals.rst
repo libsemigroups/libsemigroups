@@ -9,6 +9,8 @@
 operator*=
 ==========
 
+.. cpp:namespace:: libsemigroups::StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>
+
 .. cpp:function:: void operator*=(scalar_type const a)
 
    Multiplies every entry of the row by a scalar in-place.

@@ -1,22 +1,20 @@
 libsemigroups::congruence::ToddCoxeter:
-- Enums:
-  - [enum, policy::strategy]
-  - [enum, policy::lookahead]
-  - [enum, policy::froidure_pin]
-  - [enum, order]
-- Type aliases:
-  - [typedef, class_index_type]
-  - [typedef, non_trivial_classes_type]
-  - [typedef, non_trivial_class_iterator]
-  - [typedef, const_iterator]
-  - [typedef, normal_form_iterator]
-  - [typedef, coset_type]
-  - [typedef, sort_free_function_type]
-  - [typedef, sort_function_type]
-  - [typedef, table_type]
-- Public types:
-  - [struct, policy]
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`ToddCoxeter` class."]
+  - normal_form_iterator
+  - coset_type
+  - sort_free_function_type
+  - sort_function_type
+  - table_type
+  - policy
+  - policy::strategy
+  - policy::lookahead
+  - policy::froidure_pin
+  - order
 - Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`ToddCoxeter` class."]
   - ToddCoxeter(congruence_type)
   - ToddCoxeter(congruence_type, T const&)
   - ToddCoxeter(congruence_type,
@@ -26,82 +24,121 @@ libsemigroups::congruence::ToddCoxeter:
   - ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&)
   - ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&)
   - ToddCoxeter(ToddCoxeter const&)
-  - ToddCoxeter()
-  - ToddCoxeter(ToddCoxeter&&)
-  - operator=(ToddCoxeter const&)
-  - operator=(ToddCoxeter&&)
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the :cpp:any:`ToddCoxeter`
+     class."]
+  - ToddCoxeter() = delete
+  - ToddCoxeter(ToddCoxeter&&) = delete
+  - operator=(ToddCoxeter&&) = delete
+  - operator=(ToddCoxeter const&) = delete
 - Initialization:
-  - set_nr_generators
-  - nr_generators
-  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
-  - add_pair(word_type const&, word_type const&)
-  - nr_generating_pairs
-  - prefill(FroidurePinBase&)
+  - ["This page contains information about the member functions of the
+     :cpp:any:`ToddCoxeter` that can be used to initialize the object."]
   - prefill(table_type const&)
 - Settings:
-  - froidure_pin_policy(policy::froidure_pin)
-  - lookahead
-  - lower_bound
-  - next_lookahead
-  - save
-  - standardize(bool)
-  - strategy() const
+  - ["This page contains information about the member functions of the
+     :cpp:any:`ToddCoxeter` that control various settings that influence the
+     coset enumeration process."]
+  - froidure_pin_policy(policy::froidure_pin) noexcept
+  - froidure_pin_policy() const noexcept
+  - lookahead(policy::lookahead) noexcept
+  - lower_bound(size_t) noexcept
+  - next_lookahead(size_t) noexcept
+  - save(bool)
+  - standardize(bool) noexcept
+  - strategy() const noexcept
   - strategy(policy::strategy)
-  - random_interval(std::chrono::nanoseconds)
-  - random_interval(T)
+  - random_interval(std::chrono::nanoseconds) noexcept
+  - random_interval(T) noexcept
   - sort_generating_pairs(sort_function_type)
   - sort_generating_pairs(sort_free_function_type)
-  - random_shuffle_generating_pairs
-- Reporting:
-  - report_every(TIntType)
-  - report_every(std::chrono::nanoseconds)
-  - report
-  - report_why_we_stopped
-- Operators:
-  - kill
-  - run
+  - random_shuffle_generating_pairs()
+- Container-like:
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`ToddCoxeter` class that are similar to stl containers."]
+  - empty() const
+  - reserve(size_t)
+  - shrink_to_fit()
+- Standardization:
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`ToddCoxeter` class related to standardization."]
+  - is_standardized() const noexcept
+  - standardize(order)
+- Iterators:
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`ToddCoxeter` class providing iterators to normal forms."]
+  - cbegin_normal_forms()
+  - cend_normal_forms()
+- Properties:
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`ToddCoxeter` class that can be used to check if the table is
+     compelte and compatible with the defining relations."]
+  - complete() const noexcept
+  - compatible() const noexcept
+- Member functions inherited from CosetManager:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`ToddCoxeter` class inherited from
+     :cpp:any:`CosetManager`."]
+  - coset_capacity() const noexcept
+  - first_free_coset() const noexcept
+  - has_free_cosets() const noexcept
+  - is_active_coset(coset_type const) const
+  - is_valid_coset(coset_type const) const noexcept
+  - next_active_coset(coset_type const) const
+  - nr_cosets_active() const noexcept
+  - nr_cosets_defined() const noexcept
+  - nr_cosets_killed() const noexcept
+- Member functions inherited from CongruenceInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`ToddCoxeter` class inherited from
+     :cpp:any:`CongruenceInterface`."]
+  - class_index_type
+  - non_trivial_classes_type
+  - non_trivial_class_iterator
+  - const_iterator
+  - set_nr_generators(size_t)
+  - kind() const noexcept
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+  - nr_generators() const noexcept
+  - nr_generating_pairs() const noexcept
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc() 
+  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_pair(word_type const&, word_type const&)
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const
+  - contains(word_type const&, word_type const&) override
+  - nr_classes()
+  - nr_non_trivial_classes()
+  - non_trivial_classes()
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`ToddCoxeter` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
   - run_for(std::chrono::nanoseconds)
   - run_for(TIntType)
   - run_until(T&&)
-  - run_until(bool (*))
-- Container-like:
-  - less
-  - const_contains
-  - contains
-  - empty
-  - nr_classes
-  - nr_non_trivial_classes
-  - reserve
-  - shrink_to_fit
-  - non_trivial_classes
-- Related semigroups:
-  - quotient_froidure_pin
-  - has_quotient_froidure_pin
-  - parent_froidure_pin
-  - has_parent_froidure_pin
-  - is_quotient_obviously_finite
-  - is_quotient_obviously_infinite
-- Words and class indices:
-  - word_to_class_index
-  - class_index_to_word
-- State:
-  - kind
-  - complete
-  - compatible
-  - dead
-  - finished
-  - started
-  - stopped
-  - timed_out
-  - stopped_by_predicate
-  - running
-- Standardization:
-  - is_standardized
-  - standardize(order)
-- Iterators:
-  - cbegin_generating_pairs
-  - cend_generating_pairs
-  - cbegin_ntc
-  - cend_ntc
-  - cbegin_normal_forms
-  - cend_normal_forms
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report() const
+  - report_why_we_stopped() const

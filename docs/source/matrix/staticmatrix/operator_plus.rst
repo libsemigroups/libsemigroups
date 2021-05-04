@@ -6,10 +6,12 @@
 
 .. _staticmatrix_operator_plus:
 
-StaticMatrix::operator+
-=======================
+operator+
+=========
 
-.. cpp:function:: StaticMatrix StaticMatrix::operator+(StaticMatrix const& that)
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: StaticMatrix operator+(StaticMatrix const& that)
 
    Returns the sum of ``*this`` and ``that``. 
 

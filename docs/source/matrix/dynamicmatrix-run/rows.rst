@@ -9,10 +9,9 @@
 rows
 ====
 
-.. cpp:namespace:: libsemigroups::DynamicMatrix
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
 
-.. cpp:function:: template <typename T> \
-                  void rows(T& x) const 
+.. cpp:function:: template <typename T> void rows(T& x) const 
    
    Add row views for every row in the matrix to the container ``T``.
    

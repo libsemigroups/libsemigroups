@@ -6,11 +6,13 @@
 
 .. _dynamicmatrix_compile_coords:
 
-DynamicMatrix::coords
-=====================
+coords
+======
+
+.. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
 
 .. cpp:function:: std::pair<scalar_type, scalar_type> \
-                  DynamicMatrix::coords(const_iterator it) const 
+                  coords(const_iterator it) const 
 
    Returns a pair containing the row and columns corresponding to an iterator.
    

@@ -41,104 +41,186 @@ namespace libsemigroups {
     friend void validate(PBR const& x);
 
    public:
-    //! A constructor.
+    //! Type of constructor argument.
+    using vector_type = std::vector<std::vector<uint32_t>> const&;
+
+    //! Type of constructor argument.
+    template <typename T>
+    using initializer_list_type = std::initializer_list<std::vector<T>> const&;
+
+    //! Construct from adjacencies \c 0 to `2n - 1`.
     //!
-    //! Constructs a PBR defined by the vector pointed to by \p vector.
-    //! The parameter \p vector should be a pointer to a vector of vectors of
-    //! non-negative integer values of length \f$2n\f$ for some integer
+    //! The parameter \p x must be a container of vectors of
+    //! \c uint32_t with size \f$2n\f$ for some integer
     //! \f$n\f$, the vector in position \f$i\f$ is the list of points adjacent
-    //! to \f$i\f$ in the PBR.
-    explicit PBR(std::vector<std::vector<uint32_t>> const& vec);
-
-    //! A constructor.
+    //! to \f$i\f$ in the PBR constructed.
     //!
-    //! Constructs a PBR defined by the initializer list \p vec. This list
-    //! should be interpreted in the same way as \p vector in the vector
-    //! constructor PBR::PBR.
-    explicit PBR(std::initializer_list<std::vector<uint32_t>>);
-
-    //! A constructor.
+    //! \param  x the container of vectors of adjacencies.
     //!
-    //! Constructs an empty (no relation) PBR of the given degree.
-    explicit PBR(size_t);
-
-    //! Constructs a PBR from two vectors
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! The parameters \p left and \p right should be vectors of
-    //! $\f$n\f$ vectors of non-negative integer values, so that
+    //! \warning
+    //! No checks whatsoever on the validity of \p x are performed.
+    //!
+    //! \sa \ref libsemigroups::validate(PBR const&)
+    explicit PBR(vector_type x);
+
+    //! \copydoc PBR(vector_type)
+    explicit PBR(initializer_list_type<uint32_t> x);
+
+    //! Construct empty PBR of given \ref degree.
+    //!
+    //! \param n the degree
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    explicit PBR(size_t n);
+
+    //! Construct from adjancencies \c 1 to \c n and \c -1 to \c
+    //! -n.
+    //!
+    //! The parameters \p left and \p right should be containers of
+    //! \f$n\f$ vectors of integer values, so that
     //! the vector in position \f$i\f$ of \p left is the list of points
     //! adjacent to \f$i\f$ in the PBR, and the vector in position \f$i\f$
     //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
-    PBR(std::initializer_list<std::vector<int32_t>> const& left,
-        std::initializer_list<std::vector<int32_t>> const& right);
+    //! A negative value \f$i\f$ corresponds to \f$n - i\f$.
+    //!
+    //! \param left container of adjacencies of \c 1 to \c n
+    //! \param right container of adjacencies of \c n + 1 to \c 2n.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of \p left or \p right are
+    //! performed.
+    //!
+    //! \sa libsemigroups::validate(PBR const&) and
+    //! make(initializer_list_type<int32_t>, initializer_list_type<int32_t>)
+    PBR(initializer_list_type<int32_t> left,
+        initializer_list_type<int32_t> right);
 
-    //! Construct and validates.
+    //! Construct and validate.
     //!
-    //! Constructs a PBR initialized with the arguments \p cont
+    //! \tparam T the types of the arguments
     //!
-    //! \sa validate.
-    template <typename... TArgs>
-    static PBR make(TArgs... cont) {
+    //! \param args the arguments to forward to the constructor.
+    //!
+    //! \returns
+    //! A PBR constructed from \p args and validated.
+    //!
+    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+    //! throws when called with the constructed PBR.
+    template <typename... T>
+    static PBR make(T... args) {
       // TODO(later) validate_args
-      PBR result(std::forward<TArgs>(cont)...);
+      PBR result(std::forward<T>(args)...);
       validate(result);
       return result;
     }
 
-    //! Construct and validates.
+    //! Construct and validate.
     //!
-    //! Constructs a PBR initialized with the arguments \p cont
+    //! \param args the arguments to forward to the constructor.
     //!
-    //! \sa validate.
-    static PBR make(std::initializer_list<std::vector<uint32_t>> const& cont) {
-      return make<decltype(cont)>(cont);
+    //! \returns
+    //! A PBR constructed from \p args and validated.
+    //!
+    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+    //! throws when called with the constructed PBR.
+    static PBR make(initializer_list_type<uint32_t> args) {
+      return make<decltype(args)>(args);
     }
 
-    //! Construct and validates.
+    //! Construct and validate.
     //!
-    //! Constructs a PBR initialized with the arguments \p cont
+    //! \param left the 1st argument to forward to the constructor.
+    //! \param right the 2nd argument to forward to the constructor.
     //!
-    //! \sa validate.
-    static PBR make(std::initializer_list<std::vector<int32_t>> const& left,
-                    std::initializer_list<std::vector<int32_t>> const& right) {
+    //! \returns
+    //! A PBR constructed from \p args and validated.
+    //!
+    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+    //! throws when called with the constructed PBR.
+    static PBR make(initializer_list_type<int32_t> left,
+                    initializer_list_type<int32_t> right) {
       return make<decltype(left), decltype(right)>(left, right);
     }
 
     //! Returns the degree of a PBR.
     //!
     //! The *degree* of a PBR is half the number of points in the PBR.
-    size_t degree() const;
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    size_t degree() const noexcept;
 
-    //! Returns the identity PBR with degree equal to that of \c this.
+    //! Returns the identity PBR with degree degree().
     //!
     //! This member function returns a new PBR with degree equal to the degree
     //! of \c this where every value is adjacent to its negative. Equivalently,
     //! \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every \f$i\f$ less
     //! than the degree \f$n\f$.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! A PBR.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     PBR identity() const;
 
-    //! Returns the identity PBR with degree equal to \p n.
+    //! Returns the identity PBR with specified degree.
     //!
     //! This function returns a new PBR with degree equal to \p n where every
     //! value is adjacent to its negative. Equivalently, \f$i\f$ is adjacent
     //! \f$i + n\f$ and vice versa for every \f$i\f$ less than the degree
     //! \f$n\f$.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns
+    //! A PBR.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     static PBR identity(size_t n);
 
-    //! Multiply \p x and \p y and stores the result in \c this.
+    //! Multiply two PBR objects and store the product in \c this.
     //!
-    //! This member function redefines \c this to be the product
-    //! of the parameters  \p x and \p y. This member function asserts
-    //! that the degrees of \p x, \p y, and \c this, are all equal, and that
-    //! neither \p x nor  \p y equals \c this.
+    //! Replaces the contents of \c this by the product of \p x and \p y.
     //!
     //! The parameter \p thread_id is required since some temporary storage is
     //! required to find the product of \p x and \p y.  Note that if different
     //! threads call this member function with the same value of \p thread_id
     //! then bad things will happen.
-    void product_inplace(PBR const&, PBR const&, size_t = 0);
+    //!
+    //! \param x a PBR.
+    //! \param y a PBR.
+    //! \param thread_id the index of the calling thread (defaults to \c 0).
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks are made on whether or not the parameters are compatible. If
+    //! \p x and \p y have different degrees, then bad things will happen.
+    void product_inplace(PBR const& x, PBR const& y, size_t thread_id = 0);
 
-    //! Compare two PBRs for equality.
+    //! Check equality.
     //!
     //! \param that a PBR
     //!
@@ -153,7 +235,7 @@ namespace libsemigroups {
       return _vector == that._vector;
     }
 
-    //! Compare two PBRs for less.
+    //! Compare.
     //!
     //! \param that a PBR object
     //!
@@ -169,8 +251,7 @@ namespace libsemigroups {
       return _vector < that._vector;
     }
 
-    //! Returns a reference to the index of the vector of points related
-    //! to a given point.
+    //! Returns a reference to the points adjacent to a given point.
     //!
     //! \param i the point.
     //!
@@ -185,8 +266,7 @@ namespace libsemigroups {
       return _vector[i];
     }
 
-    //! Returns a const reference to the index of the vector of points related
-    //! to a given point.
+    //! Returns a const reference to the points adjacent to a given point.
     //!
     //! \param i the point.
     //!
@@ -223,19 +303,19 @@ namespace libsemigroups {
     //! Insertion operator
     //!
     //! This member function allows PBR objects to be inserted into an
-    //! ostringstream
+    //! \ostringstream
     friend std::ostringstream& operator<<(std::ostringstream&, PBR const&);
 
     //! Insertion operator
     //!
-    //! This member function allows PBR objects to be inserted into an ostream.
+    //! This member function allows PBR objects to be inserted into an \ostream.
     friend std::ostream& operator<<(std::ostream&, PBR const&);
 
    private:
     std::vector<std::vector<uint32_t>> _vector;
   };
 
-  //! Validates the data defining \c this.
+  //! Validate a PBR.
   //!
   //! This function throws a LibsemigroupsException if
   //! the argument \p x is not valid.
@@ -251,7 +331,7 @@ namespace libsemigroups {
   //! * a list of points related to a point is not sorted.
   //!
   //! \complexity
-  //! Linear in the degree() of \p x.
+  //! Linear in the PBR::degree of \p x.
   void validate(PBR const& x);
 
   //! Multiply two PBRs.
@@ -296,8 +376,14 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+  //! Helper variable template.
+  //!
+  //! The value of this variable is \c true if the template parameter \p T is
+  //! \ref PBR.
+  //!
+  //! \tparam T a type.
   template <typename T>
-  static constexpr bool IsPBR = detail::IsPBRHelper<std::decay_t<T>>::value;
+  static constexpr bool IsPBR = detail::IsPBRHelper<T>::value;
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters

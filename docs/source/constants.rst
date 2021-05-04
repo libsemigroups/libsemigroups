@@ -23,14 +23,13 @@ defined below and for certain integral type. So, the constants can be used as
 if it was an integral type (say, :code:`-1`, although the precise value is not
 defined), for the purposes of storing it in a data member and for comparisons.
 This allows us to avoid duplicating code for constants like
-:cpp:any:`libsemigroups::UNDEFINED`, and makes
-:cpp:any:`libsemigroups::UNDEFINED` more straightforward to use.
+:cpp:any:`UNDEFINED`, and makes :cpp:any:`UNDEFINED` more straightforward to
+use.
 
-This approach also has some drawbacks, if, for example,
-:cpp:any:`libsemigroups::UNDEFINED` is implicitly converted to two different
-integral types and then these are compared, this will yield :code:`false`, and
-so :code:`==` of :cpp:any:`libsemigroups::UNDEFINED` and itself is not
-transitive, so beware.
+This approach also has some drawbacks, if, for example, :cpp:any:`UNDEFINED` is
+implicitly converted to two different integral types and then these are
+compared, this will yield :code:`false`, and so :code:`==` of
+:cpp:any:`UNDEFINED` and itself is not transitive, so beware.
 
 .. code-block:: cpp 
 

@@ -1,0 +1,17 @@
+libsemigroups::RankState:
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`RankState` class."]
+  - type
+- Constructors:
+  - ["This page contains information about the constructors of the
+     :cpp:any:`RankState` class."]
+  - RankState()
+  - RankState(T, T) 
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the
+     :cpp:any:`RankState` class."]
+  - RankState(RankState const&) = delete
+  - RankState(RankState&&) = delete
+  - operator=(RankState const&) = delete
+  - operator=(RankState&&) = delete

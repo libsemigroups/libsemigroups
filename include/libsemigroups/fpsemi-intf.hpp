@@ -51,13 +51,14 @@ namespace libsemigroups {
   //! FpSemigroupInterface is an abstract class.
   class FpSemigroupInterface : public Runner {
    public:
-    //! Type for rules in a finitely presented semigroup.
-    using char_type   = char;
+    //! Type for characters.
+    using char_type = char;
+    //! Type for strings.
     using string_type = std::string;
-    using rule_type   = std::pair<string_type, string_type>;
+    //! Type for rules.
+    using rule_type = std::pair<string_type, string_type>;
 
-    //! Type for const iterators to the defining rules of the finitely
-    //! presented semigroup represented by \c this.
+    //! Type for const iterators to the defining rules.
     using const_iterator = std::vector<rule_type>::const_iterator;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -69,26 +70,23 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     FpSemigroupInterface();
 
     //! Default copy constructor.
     FpSemigroupInterface(FpSemigroupInterface const&) = default;
 
-    //! An FpSemigroupInterface instance is not copy assignable.
-    //! This constructor is deleted.
+    //! Deleted
     FpSemigroupInterface& operator=(FpSemigroupInterface const&) = delete;
 
-    //! An FpSemigroupInterface instance is not move constructible.
-    //! This constructor is deleted.
+    //! Deleted
     FpSemigroupInterface(FpSemigroupInterface&&) = delete;
 
-    //! An FpSemigroupInterface instance is not move assignable.
-    //! This constructor is deleted.
+    //! Deleted
     FpSemigroupInterface& operator=(FpSemigroupInterface&&) = delete;
 
     virtual ~FpSemigroupInterface();
@@ -100,23 +98,23 @@ namespace libsemigroups {
     //! Returns the size of the finitely presented semigroup.
     //!
     //! \returns A `uint64_t`, the value of which equals the size of \c this if
-    //! this number is finite, or libsemigroups::POSITIVE_INFINITY in some
+    //! this number is finite, or \ref POSITIVE_INFINITY in some
     //! cases if this number is not finite.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
     //! is undecidable in general, and this function may never terminate.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     virtual uint64_t size() = 0;
 
-    //! Check if two words represent the same element.
+    //! Check if two strings represent the same element.
     //!
     //! \param u a string over the alphabet of the finitely presented
     //! semigroup.
@@ -129,10 +127,10 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p u or \p v contains a letter that
     //! does not belong to alphabet().
     //!
-    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
-    //! the available memory.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
@@ -151,16 +149,16 @@ namespace libsemigroups {
     //! way.
     //!
     //! \param w the word whose normal form we want to find. The parameter \p
-    //! w must be a std::string consisting of letters in alphabet().
+    //! w must be a \string consisting of letters in alphabet().
     //!
-    //! \returns the normal form of the parameter \p w, a value of type
-    //! std::string.
+    //! \returns The normal form of the parameter \p w, a value of type
+    //! \string.
     //!
     //! \throws LibsemigroupsException if \p w contains a letter that is not
-    //! in FpSemigroupInterface::alphabet(), or the object has not been fully
+    //! in alphabet(), or the object has not been fully
     //! initialised.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The function for finding the structure of a finitely
@@ -176,9 +174,9 @@ namespace libsemigroups {
 
     //! Check if two words represent the same element.
     //!
-    //! \param u a libsemigroups::word_type consisting of indices of the
+    //! \param u a \ref word_type consisting of indices of the
     //! generators of the finitely presented semigroup.
-    //! \param v a libsemigroups::word_type consisting of indices of the
+    //! \param v a \ref word_type consisting of indices of the
     //! generators of the finitely presented semigroup.
     //!
     //! \returns \c true if the words \p u and \p v represent the same
@@ -187,7 +185,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p u or \p v contains a letter that
     //! is out of bounds.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The problem of determining the return value of this function
@@ -196,7 +194,7 @@ namespace libsemigroups {
     //! \sa equal_to(std::string const&, std::string const&).
     virtual bool equal_to(word_type const& u, word_type const& v);
 
-    //! Returns a normal form for a libsemigroups::word_type.
+    //! Returns a normal form for a \ref word_type.
     //!
     //! If \c u and \c v represent the same element of the finitely presented
     //! semigroup represented by \c this, then \c normal_form(u) is guaranteed
@@ -206,17 +204,17 @@ namespace libsemigroups {
     //! way.
     //!
     //! \param w the word whose normal form we want to find. The parameter \p
-    //! w must be a libsemigroups::word_type consisting of indices of the
+    //! w must be a \ref word_type consisting of indices of the
     //! generators of the finitely presented semigroup that \c this
     //! represents.
     //!
-    //! \returns the normal form of the parameter \p w, a value of type
-    //! libsemigroups::word_type.
+    //! \returns The normal form of the parameter \p w, a value of type
+    //! \ref word_type.
     //!
     //! \throws LibsemigroupsException if \p w contains a letter that is out
     //! of bounds, or the object has not been fully initialised.
     //!
-    //! \par Complexity
+    //! \complexity
     //! See warning.
     //!
     //! \warning The function for finding the structure of a finitely
@@ -242,61 +240,56 @@ namespace libsemigroups {
       return equal_to(word_type(u), word_type(v));
     }
 
-    //! Convert a string to a libsemigroups::word_type representing the same
-    //! element of the finitely presented semigroup represented by \c this.
+    //! Convert a string to a \ref word_type.
     //!
     //! \param w the string to convert.
     //!
-    //! \returns a libsemigroups::word_type.
+    //! \returns a \ref word_type.
     //!
     //! \throws LibsemigroupsException if \p w contains any characters not in
     //! alphabet().
     //!
-    //! \par Complexity.
+    //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the length of \p w.
     word_type string_to_word(std::string const& w) const;
 
-    //! Convert a libsemigroups::word_type to a std::string representing the
-    //! same element of the finitely presented semigroup represented by \c
-    //! this.
+    //! Convert a \ref word_type to a \string.
     //!
-    //! \param w the libsemigroups::word_type to convert.
+    //! \param w the \ref word_type to convert.
     //!
-    //! \returns a std::string.
+    //! \returns a \string
     //!
     //! \throws LibsemigroupsException if \p w contains any indices that are
     //! out of range.
     //!
-    //! \par Complexity.
+    //! \complexity.
     //! \f$O(n)\f$ where \f$n\f$ is the length of \p w.
     std::string word_to_string(word_type const& w) const;
 
-    //! Convert a char to a libsemigroups::letter_type representing the same
-    //! generator of the finitely presented semigroup represented by \c this.
+    //! Convert a char to a \ref letter_type.
     //!
     //! \param a the string to convert.
     //!
-    //! \returns a libsemigroups::letter_type.
+    //! \returns a \ref letter_type.
     //!
     //! \throws LibsemigroupsException if \p a is not in alphabet().
     //!
-    //! \par Complexity.
+    //! \complexity.
     //! Constant.
     letter_type char_to_uint(char a) const {
       validate_letter(a);
       return (*_alphabet_map.find(a)).second;
     }
 
-    //! Convert a libsemigroups::letter_type to a char representing the same
-    //! generator of the finitely presented semigroup represented by \c this.
+    //! Convert a \ref letter_type to a \c char.
     //!
-    //! \param a the libsemigroups::letter_type to convert.
+    //! \param a the \ref letter_type to convert.
     //!
     //! \returns A char.
     //!
     //! \throws LibsemigroupsException if \p a is out of range.
     //!
-    //! \par Complexity.
+    //! \complexity.
     //! Constant.
     char uint_to_char(letter_type a) const {
       validate_letter(a);
@@ -309,11 +302,11 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \throws LibsemigroupsException If the alphabet has already ! been set to
-    //! another value, the parameter \p a is empty, or there are ! repeated
+    //! \throws LibsemigroupsException If the alphabet has already been set to
+    //! another value, the parameter \p a is empty, or there are repeated
     //! characters in \p a.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa alphabet() and set_alphabet(size_t).
@@ -332,7 +325,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException If the size of the of alphabet has
     //! already been set to another value, or the parameter \p n is \c 0.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     //!
     //! \sa alphabet() and set_alphabet(std::string const&).
@@ -350,7 +343,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException If \p id has length greater than 1, or
     //! \p id contains a character that is not in alphabet().
     //!
-    //! \par Complexity
+    //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is alphabet().size().
     //!
     //! \sa
@@ -368,7 +361,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException If \p id is out of bounds.
     //!
-    //! \par Complexity
+    //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is alphabet().size().
     //!
     //! \sa
@@ -378,6 +371,25 @@ namespace libsemigroups {
       set_identity(std::string(1, _alphabet[id]));
     }
 
+    //! Check if an identity has been set.
+    //!
+    //! This function returns \c true if an identity has been set and \c false
+    //! if it has not.
+    //!
+    //! \returns
+    //! A value of type \c bool.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! set_identity(std::string const&) and set_identity(letter_type).
+    //!
+    //! \parameters
+    //! (None)
     bool has_identity() const noexcept {
       return _identity_defined;
     }
@@ -399,14 +411,14 @@ namespace libsemigroups {
     //! * the letters in \p a are not exactly those in alphabet() (perhaps in
     //! a different order).
     //!
-    //! \par Complexity
+    //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is alphabet().size().
     //!
     //! \sa
     //! set_identity(std::string const&).
     void set_inverses(std::string const& a);
 
-    //! Add a rule.
+    //! Add a rule using two \string const references.
     //!
     //! \param u the left-hand side of the rule being added.
     //! \param v the right-hand side of the rule being added.
@@ -417,13 +429,13 @@ namespace libsemigroups {
     //! * started() returns \c true; or
     //! * \p u or \p v contains a letter that does not belong to alphabet().
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     void add_rule(std::string const& u, std::string const& v) {
       add_rule_private(std::string(u), std::string(v));
     }
 
-    //! Add a rule.
+    //! Add a rule using two \ref word_type const references.
     //!
     //! \param u the left-hand side of the rule being added.
     //! \param v the right-hand side of the rule being added.
@@ -434,7 +446,7 @@ namespace libsemigroups {
     //! * started() returns \c true; or
     //! * \p u or \p v contains a letter that is out of bounds.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     void add_rule(word_type const& u, word_type const& v) {
       add_rule_private(word_to_string(u), word_to_string(v));
@@ -446,7 +458,7 @@ namespace libsemigroups {
       add_rule(word_type(u), word_type(v));
     }
 
-    //! Add a rule.
+    //! Add a rule using a \ref relation_type.
     //!
     //! \param rel the rule being added.
     //!
@@ -456,18 +468,29 @@ namespace libsemigroups {
     //! * started() returns \c true; or
     //! * \p rel.first or \p rel.second contains a letter that is out of bounds.
     //!
-    //! \par Complexity
+    //! \complexity
     //! Constant.
     void add_rule(relation_type rel) {
       add_rule(rel.first, rel.second);
     }
 
-    //! \copydoc add_rule(relation_type)
+    //! Add a rule using a \ref rule_type.
+    //!
+    //! \param rel the rule being added.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following apply:
+    //! * started() returns \c true; or
+    //! * \p rel.first or \p rel.second contains a letter that is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
     void add_rule(rule_type rel) {
       add_rule(rel.first, rel.second);
     }
 
-    //! Add the rules of a finite presentation for \p S to \c this.
+    //! Add rules from a FroidurePin instance.
     //!
     //! \param S a FroidurePin object representing a semigroup.
     //!
@@ -479,20 +502,20 @@ namespace libsemigroups {
     //! or
     //! * started() returns \c true;
     //!
-    //! \par Complexity
+    //! \complexity
     //! At most \f$O(|S||A|)\f$ where \f$A\f$ is a generating set for \p S.
     void add_rules(FroidurePinBase& S);
 
-    //! Add the rules in a vector to \c this.
+    //! Add rules in a vector.
     //!
-    //! \param rels a vector of FpSemigroupInterface::rule_type.
+    //! \param rels a vector of rule_type.
     //!
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if add_rule() with argument any item
     //! in \p rels throws.
     //!
-    //! \par Complexity
+    //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the size of \p rels.
     void add_rules(std::vector<rule_type> const& rels) {
       for (auto const& rel : rels) {
@@ -500,11 +523,10 @@ namespace libsemigroups {
       }
     }
 
-    //! Returns the alphabet of the finitely presented semigroup represented
-    //! by \p this.
+    //! Returns a const reference to the alphabet.
     //!
     //! \returns A const reference to the alphabet, a value of type
-    //! std::string.
+    //! \string.
     //!
     //! \exceptions
     //! \noexcept
@@ -512,18 +534,17 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     std::string const& alphabet() const noexcept {
       return _alphabet;
     }
 
-    //! Returns the i-th letter of the alphabet of the finitely presented
-    //! semigroup represented by \p this.
+    //! Returns the `i`th letter of the alphabet.
     //!
     //! \param i the index of the letter.
     //!
-    //! \returns A std::string by value.
+    //! \returns A \string by value.
     //!
     //! \throws std::range_error if the index \p i is out of range.
     //!
@@ -533,41 +554,38 @@ namespace libsemigroups {
       return std::string({_alphabet.at(i)});
     }
 
-    //! Returns the identity of \p this, or throws an exception if there isn't
-    //! one.
+    //! Returns the identity (if any).
     //!
     //! \returns A const reference to the identity, a value of type
-    //! std::string.
+    //! \string.
     //!
     //! \throws LibsemigroupsException if no identity has been defined.
     //!
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     std::string const& identity() const;
 
-    //! Returns the inverses of \p this, or throws an exception if there
-    //! aren't any.
+    //! Returns the inverses (if any).
     //!
     //! \returns A const reference to the inverses, a value of type
-    //! std::string.
+    //! \string.
     //!
     //! \throws LibsemigroupsException if no identity has been defined.
     //!
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     //!
     //! \sa set_inverses() for the meaning of the return value of this
     //! function.
     std::string const& inverses() const;
 
-    //! Returns the number of rules of the finitely presented semigroup
-    //! represented by \p this.
+    //! Returns the number of rules.
     //!
     //! \returns A value of type \c size_t.
     //!
@@ -577,12 +595,14 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     size_t nr_rules() const noexcept {
       return _rules.size();
     }
 
+    //! Check if an isomorphic FroidurePin instance is known.
+    //!
     //! Returns \c true if a FroidurePin instance isomorphic to the finitely
     //! presented semigroup defined by \c this has already been computed, and
     //! \c false if not.
@@ -595,12 +615,14 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     bool has_froidure_pin() const noexcept {
       return _froidure_pin != nullptr;
     }
 
+    //! Returns an isomorphic FroidurePin instance.
+    //!
     //! Returns a FroidurePin instance isomorphic to the finitely
     //! presented semigroup defined by \c this.
     //!
@@ -616,7 +638,7 @@ namespace libsemigroups {
     //! presented semigroup may be non-deterministic, or since the problem is
     //! undecidable in general, this function may never return a result.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     std::shared_ptr<FroidurePinBase> froidure_pin() {
       if (_froidure_pin == nullptr) {
@@ -625,6 +647,8 @@ namespace libsemigroups {
       return _froidure_pin;
     }
 
+    //! Check if the finitely presented semigroup is obviously finite.
+    //!
     //! Return \c true if the finitely presented semigroup represented
     //! by \c this is obviously finite, and \c false if it is not obviously
     //! finite.
@@ -634,7 +658,7 @@ namespace libsemigroups {
     //! \par Exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Implementation specific, but this function is guaranteed to return a
     //! result. More specifically, this function will not trigger a
     //! computation that potentially never terminates.
@@ -646,10 +670,12 @@ namespace libsemigroups {
     //!
     //! \sa is_obviously_infinite().
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     bool is_obviously_finite();
 
+    //! Check if the finitely presented semigroup is obviously infinite.
+    //!
     //! Return \c true if the finitely presented semigroup represented
     //! by \c this is obviously infinite, and \c false if it is not obviously
     //! infinite.
@@ -659,7 +685,7 @@ namespace libsemigroups {
     //! \par Exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Complexity
+    //! \complexity
     //! Implementation specific, but this function is guaranteed to return a
     //! result. More specifically, this function will not trigger a
     //! computation that potentially never terminates.
@@ -671,13 +697,13 @@ namespace libsemigroups {
     //!
     //! \sa is_obviously_finite().
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     bool is_obviously_infinite();
 
-    //! Returns an iterator pointing to the first rule of \c this.
+    //! Returns an iterator pointing to the first rule.
     //!
-    //! \returns A FpSemigroupInterface::const_iterator.
+    //! \returns A \ref const_iterator.
     //!
     //! \exceptions
     //! \noexcept
@@ -685,15 +711,15 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     const_iterator cbegin_rules() const noexcept {
       return _rules.cbegin();
     }
 
-    //! Returns an iterator pointing one past the last rule of \c this.
+    //! Returns an iterator pointing one past the last rule.
     //!
-    //! \returns A FpSemigroupInterface::const_iterator.
+    //! \returns A \ref const_iterator.
     //!
     //! \exceptions
     //! \noexcept
@@ -701,17 +727,16 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     const_iterator cend_rules() const noexcept {
       return _rules.cend();
     }
 
     //! Returns a string containing [GAP](https://www.gap-system.org/)
-    //! commands for defining a finitely presented semigroup equal to that
-    //! represented by \c this.
+    //! commands for defining a finitely presented semigroup.
     //!
-    //! \returns A std::string.
+    //! \returns A \string.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -720,11 +745,11 @@ namespace libsemigroups {
     //! \f$O(m + n)\f$ where \f$m\f$ is alphabet().size() and \f$n\f$ is
     //! nr_rules().
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     std::string to_gap_string();
 
-    //! Validates a letter.
+    //! Validates a letter specified by a \c char.
     //!
     //! \param c the letter to validate.
     //!
@@ -736,11 +761,11 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     void validate_letter(char c) const;
 
-    //! Validates a letter.
+    //! Validates a letter specified by an integer.
     //!
     //! \param c the letter to validate.
     //!
@@ -752,11 +777,11 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     void validate_letter(letter_type c) const;
 
-    //! Validates a word.
+    //! Validates a word given by a \string.
     //!
     //! \param w the word to validate.
     //!
@@ -769,7 +794,7 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the length of \p w.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     void validate_word(std::string const& w) const {
       for (auto l : w) {
@@ -781,7 +806,7 @@ namespace libsemigroups {
       validate_word_impl(w);
     }
 
-    //! Validates a word.
+    //! Validates a word given by a \ref word_type.
     //!
     //! \param w the word to validate.
     //!
@@ -793,7 +818,7 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the length of \p w.
     //!
-    //! \par Parameters
+    //! \parameters
     //! (None)
     void validate_word(word_type const& w) const {
       for (auto l : w) {

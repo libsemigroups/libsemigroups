@@ -1,0 +1,12 @@
+libsemigroups::Konieczny::DClass:
+- Member functions:
+  - ["This page contains the documentation for the :cpp:any:`Konieczny::DClass`
+     class."]
+  - rep() const
+  - is_regular_D_class() const noexcept
+  - number_of_idempotents() const
+  - number_of_L_classes() const
+  - number_of_R_classes() const
+  - size() const
+  - size_H_class() const
+  - contains(const_reference)

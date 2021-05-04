@@ -53,7 +53,7 @@ namespace libsemigroups {
     //! Default constructor.
     //!
     //! \exceptions
-    //! Throws if the constructor of the \c wrapped_type that \c this wraps
+    //! Throws if the constructor of the \ref wrapped_type that \c this wraps
     //! throws.
     //!
     //! \par Parameters
@@ -62,13 +62,13 @@ namespace libsemigroups {
         : _wrapped_cong(
             std::make_unique<wrapped_type>(congruence_type::twosided)) {}
 
-    //! Constructor from a shared_ptr to a FroidurePinBase.
+    //! Constructor from a \shared_ptr to a FroidurePinBase.
     //!
     //! \param fp the FroidurePinBase isomorphic to the  finitely presented
     //! semigroup represented by \c this.
     //!
     //! \exceptions
-    //! Throws if the constructor of the \c wrapped_type that \c this wraps
+    //! Throws if the constructor of the \ref wrapped_type that \c this wraps
     //! throws.
     //!
     //! \note
@@ -89,7 +89,7 @@ namespace libsemigroups {
       add_rules(*fp);
     }
 
-    //! Constructor from a const reference to a FroidurePinBase
+    //! Constructor from a const reference to a FroidurePinBase.
     //!
     //! \tparam S a derived class of FroidurePinBase
     //!
@@ -97,7 +97,7 @@ namespace libsemigroups {
     //! semigroup represented by \c this.
     //!
     //! \exceptions
-    //! Throws if the constructor of the \c wrapped_type that \c this wraps
+    //! Throws if the constructor of the \ref wrapped_type that \c this wraps
     //! throws.
     //!
     //! \warning
@@ -178,7 +178,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A reference to the underlying congruence of \c this, a value of type
-    //! CongruenceWrapper::wrapped_type.
+    //! \ref wrapped_type.
     //!
     //! \par Parameters
     //! (None)

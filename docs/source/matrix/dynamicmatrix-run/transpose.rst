@@ -6,10 +6,12 @@
 
 .. _dynamicmatrix_run_transpose:
 
-DynamicMatrix::transpose
-========================
+transpose
+=========
 
-.. cpp:function::  void DynamicMatrix::transpose() noexcept
+.. cpp:namespace:: libsemigroups::DynamicMatrix<Semiring, Scalar>
+
+.. cpp:function::  void transpose() noexcept
 
    Swaps the contents of ``this`` with the contents of ``that``. 
 

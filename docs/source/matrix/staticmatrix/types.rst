@@ -7,7 +7,7 @@
 StaticMatrix member types
 =========================
 
-.. cpp:namespace:: libsemigroups::StaticMatrix
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
 
 This page contains information about the member types of the
 :cpp:any:`StaticMatrix` class.

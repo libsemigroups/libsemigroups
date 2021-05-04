@@ -24,7 +24,7 @@ boolean matrix of specified dimension.
 .. toctree::
    :maxdepth: 1
    
-   ../../_generated/libsemigroups__bmathelper
+   ../../_generated/libsemigroups__fastestbmat
 
 Boolean matrix adapters
 -----------------------

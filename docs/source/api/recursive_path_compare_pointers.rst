@@ -7,5 +7,5 @@
 recursive_path_compare (pointers)
 =================================
 
-.. doxygenfunction:: libsemigroups::recursive_path_compare(T *const, T *const)
+.. doxygenfunction:: libsemigroups::recursive_path_compare(T *const, T *const) noexcept
    :project: libsemigroups

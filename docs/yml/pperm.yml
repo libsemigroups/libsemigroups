@@ -1,0 +1,25 @@
+libsemigroups::PPerm:
+- Member types:
+  - value_type
+  - container_type
+- Constructors:
+  - PPerm(std::vector<value_type> const&,
+          std::vector<value_type> const&,
+          size_t)
+  - PPerm(std::initializer_list<value_type>,
+          std::initializer_list<value_type>,
+          size_t)
+- Static member functions:
+  - identity() const
+  - identity(size_t)
+  - make(T&&)
+  - make(std::initializer_list<value_type>&&)
+  - make(std::vector<value_type> const&, 
+         std::vector<value_type> const&,
+         size_t const)
+- Member functions:
+  - product_inplace(PPerm const&, PPerm const&)
+  - right_one() const
+  - left_one() const
+  - inverse() const
+  - inverse(PPerm&) const
