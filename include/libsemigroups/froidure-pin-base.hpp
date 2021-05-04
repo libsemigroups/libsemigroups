@@ -19,10 +19,9 @@
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
-#include <cstddef>     // for size_t
-#include <functional>  // for function  TODO(v2) delete when deleting deprecated
-#include <iterator>    // for forward_iterator_tag
-#include <thread>      // for thread::hardware_concurrency
+#include <cstddef>   // for size_t
+#include <iterator>  // for forward_iterator_tag
+#include <thread>    // for thread::hardware_concurrency
 
 #include "constants.hpp"                // for UNDEFINED
 #include "containers.hpp"               // for DynamicArray2
@@ -615,60 +614,6 @@ namespace libsemigroups {
       return minimal_factorisation(pos);
     }
 
-    // This member function resets FroidurePin::next_relation so that when it
-    // is next called the resulting relation is the first one.
-    //
-    // After a call to this function, the next call to
-    // FroidurePin::next_relation will return the first relation of the
-    // presentation defining the semigroup.
-    //
-    // \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
-    // instead.
-    //! No doc
-    [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
-    reset_next_relation() noexcept {
-      _relation_pos = UNDEFINED;
-      _relation_gen = 0;
-    }
-
-    // This member function changes \p relation in-place to contain the next
-    // relation of the presentation defining \c this.
-    //
-    // This member function changes \p relation in-place so that one of the
-    // following holds:
-    //
-    // * \p relation is a vector consisting of a libsemigroups::letter_type and
-    // a libsemigroups::letter_type such that FroidurePin::generator(\c
-    // relation[\c 0]) == FroidurePin::generator(\c relation[\c 1]), i.e. if
-    // the semigroup was defined with duplicate generators;
-    //
-    // * \p relation is a vector consisting of a
-    // libsemigroups::element_index_type, libsemigroups::letter_type, and
-    // libsemigroups::element_index_type such that
-    // \code{.cpp}
-    //   this[relation[0]] * FroidurePin::generator(relation[1]) ==
-    //   this[relation[2]]
-    // \endcode
-    //
-    // * \p relation is empty if there are no more relations.
-    //
-    // FroidurePin::next_relation is guaranteed to output all relations of
-    // length 2 before any relations of length 3. If called repeatedly after
-    // FroidurePin::reset_next_relation, and until relation is empty, the
-    // values placed in \p relation correspond to a length-reducing confluent
-    // rewriting system that defines the semigroup.
-    //
-    // This member function can be used in conjunction with
-    // FroidurePin::factorisation to obtain a presentation defining the
-    // semigroup.
-    //
-    // \deprecated Use FroidurePin::cbegin_rules and FroidurePin::cend_rules
-    // instead.
-    // Deprecated, remove in v2
-    //! No doc
-    [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
-    next_relation(word_type& relation);
-
     //! Enumerate the semigroup until \p limit elements are found.
     //!
     //! If the semigroup is already fully enumerated, or the number of elements
@@ -1077,20 +1022,6 @@ namespace libsemigroups {
     cayley_graph_type               _right;
     std::vector<element_index_type> _suffix;
     size_t                          _wordlen;
-
-    // Deprecated remove in v2
-    letter_type          _relation_gen;
-    enumerate_index_type _relation_pos;
   };
-
-  //! No doc
-  [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
-
-  relations(FroidurePinBase&                            S,
-            std::function<void(word_type, word_type)>&& hook);
-
-  //! No doc
-  [[deprecated("Use cbegin_rules() and cend_rules() instead.")]] void
-  relations(FroidurePinBase& S, std::function<void(word_type)>&& hook);
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
