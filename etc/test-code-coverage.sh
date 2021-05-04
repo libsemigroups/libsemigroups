@@ -26,6 +26,26 @@ else
   MYCXXFLAGS="$CXXFLAGS"
 fi
 
+bold "$MYCXX --version . . ." 
+printf "\033[2m";
+$MYCXX --version
+printf "\033[0m"
+
+bold "gcov --version . . ." 
+printf "\033[2m";
+gcov --version
+printf "\033[0m"
+
+bold "lcov --version . . ." 
+printf "\033[2m";
+lcov --version
+printf "\033[0m"
+
+bold "$MYCXX --version . . ." 
+printf "\033[2m";
+$MYCXX --version
+printf "\033[0m"
+
 if [[ $# -gt 2 || $# -le 0 ]]; then
   bold "error expected 1 or 2 arguments, got $#!"
   exit 1
