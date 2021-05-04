@@ -26,27 +26,19 @@
 #include "catch.hpp"  // for REQUIRE, SECTION, REQUIRE_THROWS_AS, REQ...
 #include "libsemigroups/cong-intf.hpp"  // for congruence_type, CongruenceInterface::non_tr...
 #include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs, CongruenceByPairs
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"    // for TransfHelper and chums
-#include "libsemigroups/element.hpp"           // for Element
-#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix
-#include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/tce.hpp"               // for TCE
-#include "libsemigroups/todd-coxeter.hpp"      // for ToddCoxeter
-#include "libsemigroups/types.hpp"             // for relation_type, word_type
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/tce.hpp"           // for TCE
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "libsemigroups/types.hpp"         // for relation_type, word_type
+#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;
 }  // namespace libsemigroups
 
 namespace libsemigroups {
-  template <typename TElementType>
-  void delete_gens(std::vector<TElementType>& gens) {
-    for (auto x : gens) {
-      delete x;
-    }
-  }
   constexpr bool REPORT = false;
 
   congruence_type const twosided = congruence_type::twosided;
@@ -59,14 +51,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "001",
-                          "(cong)   2-sided cong. on finite semigroup",
+                          "(cong) 2-sided cong. on finite semigroup",
                           "[quick][cong][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    std::vector<Transf<>> gens
+        = {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -95,14 +85,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "002",
-                          "(cong)   left congruence on finite semigroup",
+                          "(cong) left congruence on finite semigroup",
                           "[quick][cong][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    std::vector<Transf<>> gens
+        = {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -128,14 +116,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "003",
-                          "(cong)   right congruence on finite semigroup",
+                          "(cong) right congruence on finite semigroup",
                           "[quick][cong][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    std::vector<Transf<>> gens
+        = {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -161,14 +147,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "004",
-                          "(cong)   trivial congruence on finite semigroup",
+                          "(cong) trivial congruence on finite semigroup",
                           "[quick][cong][cong-pair]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new PartialPerm<uint16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
-           new PartialPerm<uint16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                 rg   = ReportGuard(REPORT);
+    std::vector<PPerm<>> gens = {PPerm<>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
+                                 PPerm<>({0, 1, 2}, {0, 4, 3}, 5)};
+    FroidurePin<PPerm<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -199,17 +183,14 @@ namespace libsemigroups {
     REQUIRE(!S.finished());
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "CongruenceByPairs",
-      "005",
-      "(cong)   trivial left congruence on finite semigroup",
-      "[quick][cong][cong-pair]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new PartialPerm<uint16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
-           new PartialPerm<uint16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+  LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
+                          "005",
+                          "(cong) trivial left congruence on finite semigroup",
+                          "[quick][cong][cong-pair]") {
+    auto                 rg   = ReportGuard(REPORT);
+    std::vector<PPerm<>> gens = {PPerm<>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
+                                 PPerm<>({0, 1, 2}, {0, 4, 3}, 5)};
+    FroidurePin<PPerm<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -241,17 +222,14 @@ namespace libsemigroups {
     REQUIRE(!S.finished());
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "CongruenceByPairs",
-      "006",
-      "(cong)   trivial right congruence on finite semigroup",
-      "[quick][cong][cong-pair]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new PartialPerm<uint16_t>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
-           new PartialPerm<uint16_t>({0, 1, 2}, {0, 4, 3}, 5)};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+  LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
+                          "006",
+                          "(cong) trivial right congruence on finite semigroup",
+                          "[quick][cong][cong-pair]") {
+    auto                 rg   = ReportGuard(REPORT);
+    std::vector<PPerm<>> gens = {PPerm<>({0, 1, 3, 4}, {1, 4, 0, 3}, 5),
+                                 PPerm<>({0, 1, 2}, {0, 4, 3}, 5)};
+    FroidurePin<PPerm<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -285,14 +263,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "007",
-                          "(cong)   universal congruence on finite semigroup",
+                          "(cong) universal congruence on finite semigroup",
                           "[quick][cong][cong-pair]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new PartialPerm<uint16_t>({0, 1, 3}, {4, 1, 0}, 5),
-           new PartialPerm<uint16_t>({0, 1, 2, 3, 4}, {0, 2, 4, 1, 3}, 5)};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                 rg   = ReportGuard(REPORT);
+    std::vector<PPerm<>> gens = {PPerm<>({0, 1, 3}, {4, 1, 0}, 5),
+                                 PPerm<>({0, 1, 2, 3, 4}, {0, 2, 4, 1, 3}, 5)};
+    FroidurePin<PPerm<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -327,16 +303,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "008",
-                          "(cong)   2-sided congruence on finite semigroup",
+                          "(cong) 2-sided congruence on finite semigroup",
                           "[standard][cong][cong-pair]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
-           new Transformation<uint16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
-           new Transformation<uint16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
-           new Transformation<uint16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                  rg   = ReportGuard(REPORT);
+    std::vector<Transf<>> gens = {Transf<>({7, 3, 5, 3, 4, 2, 7, 7}),
+                                  Transf<>({1, 2, 4, 4, 7, 3, 0, 7}),
+                                  Transf<>({0, 6, 4, 2, 2, 6, 6, 4}),
+                                  Transf<>({3, 6, 3, 4, 0, 6, 0, 7})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -377,16 +351,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "009",
-                          "(cong)   2-sided congruence on finite semigroup",
+                          "(cong) 2-sided congruence on finite semigroup",
                           "[quick][cong][cong-pair][no-valgrind]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
-           new Transformation<uint16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
-           new Transformation<uint16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
-           new Transformation<uint16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                  rg   = ReportGuard(REPORT);
+    std::vector<Transf<>> gens = {Transf<>({7, 3, 5, 3, 4, 2, 7, 7}),
+                                  Transf<>({1, 2, 4, 4, 7, 3, 0, 7}),
+                                  Transf<>({0, 6, 4, 2, 2, 6, 6, 4}),
+                                  Transf<>({3, 6, 3, 4, 0, 6, 0, 7})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -426,16 +398,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
                           "010",
-                          "(cong)   left congruence on big finite semigroup",
+                          "(cong) left congruence on big finite semigroup",
                           "[quick][cong][cong-pair][no-valgrind]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({7, 3, 5, 3, 4, 2, 7, 7}),
-           new Transformation<uint16_t>({1, 2, 4, 4, 7, 3, 0, 7}),
-           new Transformation<uint16_t>({0, 6, 4, 2, 2, 6, 6, 4}),
-           new Transformation<uint16_t>({3, 6, 3, 4, 0, 6, 0, 7})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                  rg   = ReportGuard(REPORT);
+    std::vector<Transf<>> gens = {Transf<>({7, 3, 5, 3, 4, 2, 7, 7}),
+                                  Transf<>({1, 2, 4, 4, 7, 3, 0, 7}),
+                                  Transf<>({0, 6, 4, 2, 2, 6, 6, 4}),
+                                  Transf<>({3, 6, 3, 4, 0, 6, 0, 7})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that CongruenceByPairs does not enumerate the semigroup, they
@@ -538,13 +508,11 @@ namespace libsemigroups {
                           "016",
                           "(cong) class_index_to_word/quotient",
                           "[quick][cong][cong-pair][no-valgrind]") {
-    auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({5, 3, 5, 3, 4, 2}),
-           new Transformation<uint16_t>({1, 2, 4, 4, 5, 3}),
-           new Transformation<uint16_t>({0, 5, 4, 2, 2, 4})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    auto                  rg   = ReportGuard(REPORT);
+    std::vector<Transf<>> gens = {Transf<>({5, 3, 5, 3, 4, 2}),
+                                  Transf<>({1, 2, 4, 4, 5, 3}),
+                                  Transf<>({0, 5, 4, 2, 2, 4})};
+    FroidurePin<Transf<>> S(gens);
 
     REQUIRE(S.size() == 321);
 
@@ -570,12 +538,11 @@ namespace libsemigroups {
                           "017",
                           "(cong) const_word_to_class_index",
                           "[quick][cong][cong-pair]") {
-    auto rg      = ReportGuard(REPORT);
-    using Transf = typename TransfHelper<8>::type;
-    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                           Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    auto                  rg = ReportGuard(REPORT);
+    FroidurePin<Transf<>> S({Transf<>({7, 3, 5, 3, 4, 2, 7, 7}),
+                             Transf<>({1, 2, 4, 4, 7, 3, 0, 7}),
+                             Transf<>({0, 6, 4, 2, 2, 6, 6, 4}),
+                             Transf<>({3, 6, 3, 4, 0, 6, 0, 7})});
 
     using P = CongruenceByPairs<decltype(S)>;
     std::unique_ptr<P> cong;
@@ -598,12 +565,11 @@ namespace libsemigroups {
                           "018",
                           "(cong) size non-Element*",
                           "[quick][cong][cong-pair]") {
-    auto rg      = ReportGuard(REPORT);
-    using Transf = typename TransfHelper<8>::type;
-    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                           Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    auto                  rg = ReportGuard(REPORT);
+    FroidurePin<Transf<>> S({Transf<>({7, 3, 5, 3, 4, 2, 7, 7}),
+                             Transf<>({1, 2, 4, 4, 7, 3, 0, 7}),
+                             Transf<>({0, 6, 4, 2, 2, 6, 6, 4}),
+                             Transf<>({3, 6, 3, 4, 0, 6, 0, 7})});
 
     using P = CongruenceByPairs<decltype(S)>;
 
@@ -1193,11 +1159,9 @@ namespace libsemigroups {
                           "(fpsemi) 2-sided congruence on finite semigroup",
                           "[quick][fpsemi][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    std::vector<Transf<>> gens
+        = {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that FpSemigroupByPairs does not enumerate the semigroup, they
@@ -1227,11 +1191,9 @@ namespace libsemigroups {
                           "(fpsemi) 2-sided congruence on finite semigroup",
                           "[quick][fpsemi][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    std::vector<Transf<>> gens
+        = {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})};
+    FroidurePin<Transf<>> S(gens);
 
     // The following lines are intentionally commented out so that we can
     // check that FpSemigroupByPairs does not enumerate the semigroup, they

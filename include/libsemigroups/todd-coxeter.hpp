@@ -22,13 +22,14 @@
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
-#include <chrono>   // for chrono::nanoseconds
-#include <cstddef>  // for size_t
-#include <memory>   // for shared_ptr
-#include <numeric>  // for std::iota
-#include <stack>    // for stack
-#include <utility>  // for pair
-#include <vector>   // for vector
+#include <chrono>      // for chrono::nanoseconds
+#include <cstddef>     // for size_t
+#include <functional>  // for function
+#include <memory>      // for shared_ptr
+#include <numeric>     // for std::iota
+#include <stack>       // for stack
+#include <utility>     // for pair
+#include <vector>      // for vector
 
 #include "cong-intf.hpp"            // for congruence_type,...
 #include "cong-wrap.hpp"            // for CongruenceWrapper
@@ -55,7 +56,6 @@ namespace libsemigroups {
 
   namespace fpsemigroup {
     class KnuthBendix;
-
     //! This class is a wrapper for congruence::ToddCoxeter that provides the
     //! FpSemigroupInterface.
     //! See CongruenceWrapper for further details.

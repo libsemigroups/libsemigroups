@@ -20,10 +20,9 @@
 #include <vector>   // for vector
 
 #include "catch.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element.hpp"           // for PBR
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/pbr.hpp"           // for PBR
+#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -33,9 +32,9 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "105",
-                          "(pbrs)",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
+                          "000",
+                          "example 1",
                           "[quick][froidure-pin][pbr]") {
     auto             rg   = ReportGuard(REPORT);
     std::vector<PBR> gens = {PBR({{3, 5},
@@ -120,5 +119,37 @@ namespace libsemigroups {
     for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
       REQUIRE(*(it - 1) < *it);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
+                          "001",
+                          "example 2",
+                          "[quick][froidure-pin][pbr]") {
+    auto rg = ReportGuard(REPORT);
+
+    FroidurePin<PBR> S;
+    S.add_generator(PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
+    S.add_generator(
+        PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}));
+
+    REQUIRE(S.size() == 30);
+    REQUIRE(S.degree() == 3);
+    REQUIRE(S.nr_idempotents() == 22);
+    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.nr_rules() == 11);
+
+    REQUIRE(S[0] == S.generator(0));
+    REQUIRE(S.position(S.generator(0)) == 0);
+    REQUIRE(S.contains(S.generator(0)));
+    REQUIRE(S[1] == S.generator(1));
+    REQUIRE(S.position(S.generator(1)) == 1);
+    REQUIRE(S.contains(S.generator(1)));
+
+    PBR x({{}, {}, {}, {}, {}, {}});
+    REQUIRE(S.position(x) == UNDEFINED);
+    REQUIRE(!S.contains(x));
+    x.product_inplace(S.generator(1), S.generator(1));
+    REQUIRE(S.position(x) == 5);
+    REQUIRE(S.contains(x));
   }
 }  // namespace libsemigroups

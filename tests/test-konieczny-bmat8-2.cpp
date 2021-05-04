@@ -15,17 +15,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
+#include <algorithm>  // for for_each
+#include <chrono>     // for milliseconds
+#include <cstddef>    // for size_t
+#include <vector>     // for vector
 
 #include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST...
 
-#include "libsemigroups/bmat8.hpp"           // for BMat8
-#include "libsemigroups/element-helper.hpp"  // for BMatHelper
-#include "libsemigroups/konieczny.hpp"       // for Konieczny
+#include "libsemigroups/bmat8.hpp"         // for BMat8
+#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
+#include "libsemigroups/konieczny.hpp"     // for Konieczny, Koniecz...
+#include "libsemigroups/report.hpp"        // for ReportGuard
 
 namespace libsemigroups {
 
+  struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -37,7 +42,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                         = typename BMatHelper<5>::type;
+    using BMat                         = FastestBMat<5>;
     auto                    rg         = ReportGuard(true);
     const std::vector<BMat> bmat5_gens = {BMat({{1, 0, 0, 0, 0},
                                                 {0, 1, 0, 0, 0},
@@ -174,7 +179,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                             = typename BMatHelper<5>::type;
+    using BMat                             = FastestBMat<5>;
     auto                    rg             = ReportGuard(true);
     const std::vector<BMat> reg_bmat5_gens = {BMat({{0, 1, 0, 0, 0},
                                                     {1, 0, 0, 0, 0},
@@ -308,7 +313,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                   = typename BMatHelper<8>::type;
+    using BMat                   = FastestBMat<8>;
     auto                    rg   = ReportGuard(REPORT);
     const std::vector<BMat> gens = {BMat({{0, 1, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
@@ -465,7 +470,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                         = typename BMatHelper<5>::type;
+    using BMat                         = FastestBMat<5>;
     auto                    rg         = ReportGuard(true);
     const std::vector<BMat> bmat5_gens = {BMat({{1, 0, 0, 0, 0},
                                                 {0, 1, 0, 0, 0},

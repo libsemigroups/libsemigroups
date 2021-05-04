@@ -42,13 +42,12 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/element-adapters.hpp"  // for Degree
-#include "libsemigroups/element.hpp"           // for Element, Transf, Transf...
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/kbe.hpp"               // for detail::KBE
-#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix, operator<<
-#include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/kbe.hpp"           // for detail::KBE
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
@@ -65,10 +64,8 @@ namespace libsemigroups {
                             "095",
                             "(fpsemi) transformation semigroup (size 4)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = Transformation<uint16_t>;
-
-      FroidurePin<Transf> S({Transf({1, 0}), Transf({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
       REQUIRE(S.size() == 4);
       REQUIRE(S.nr_rules() == 4);
 
@@ -84,10 +81,10 @@ namespace libsemigroups {
                             "(fpsemi) transformation semigroup (size 9)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto                  rg = ReportGuard(REPORT);
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({0, 0, 0, 0, 0})};
-      FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({0, 0, 0, 0, 0}));
+
       REQUIRE(S.size() == 9);
       REQUIRE(S.degree() == 5);
       REQUIRE(S.nr_rules() == 3);
@@ -96,7 +93,6 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 3);
       REQUIRE(kb.size() == 9);
-      delete_gens(gens);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -104,10 +100,10 @@ namespace libsemigroups {
                             "(fpsemi) transformation semigroup (size 88)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto                  rg = ReportGuard(REPORT);
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-      FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
       REQUIRE(S.nr_rules() == 18);
@@ -116,18 +112,16 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
       REQUIRE(kb.nr_active_rules() == 18);
       REQUIRE(kb.size() == 88);
-      delete_gens(gens);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "098",
                             "internal_string_to_word",
                             "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 0}));
+      S.add_generator(Transf<>({0, 0}));
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -141,10 +135,10 @@ namespace libsemigroups {
         "099",
         "(fpsemi) construct from shared_ptr<FroidurePin>",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][shortlex]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = Transformation<uint16_t>;
-      auto ptr     = std::make_shared<FroidurePin<Transf>>(std::vector<Transf>(
-          {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})}));
+      auto rg  = ReportGuard(REPORT);
+      auto ptr = std::make_shared<FroidurePin<LeastTransf<5>>>(
+          std::vector<LeastTransf<5>>({LeastTransf<5>({1, 3, 4, 2, 3}),
+                                       LeastTransf<5>({3, 2, 1, 3, 3})}));
 
       KnuthBendix kb(ptr);
       kb.run();
@@ -156,8 +150,8 @@ namespace libsemigroups {
                             "100",
                             "internal_string_to_word",
                             "[quick]") {
-      using Transf = Transformation<uint16_t>;
-      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+      FroidurePin<Transf<>> S(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       congruence::KnuthBendix kb(S);
       kb.run();

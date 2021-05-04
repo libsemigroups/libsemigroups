@@ -21,14 +21,13 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/action.hpp"            // for LeftAction
-#include "libsemigroups/bitset.hpp"            // for BitSet
-#include "libsemigroups/bmat.hpp"              // for Lambda
-#include "libsemigroups/element-adapters.hpp"  // for Lambda
-#include "libsemigroups/element-helper.hpp"    // for PPermHelper
-#include "libsemigroups/element.hpp"           // for PartialPerm
-#include "libsemigroups/matrix.hpp"            // for BMat<>
-#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/action.hpp"  // for LeftAction
+#include "libsemigroups/bitset.hpp"  // for BitSet
+#include "libsemigroups/bmat.hpp"    // for Lambda
+#include "libsemigroups/bmat8.hpp"   // for BMat8
+#include "libsemigroups/matrix.hpp"  // for BMat<>
+#include "libsemigroups/report.hpp"  // for ReportGuard
+#include "libsemigroups/transf.hpp"  // for Transf, PPerm
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \
   uint_fast32_t block = __bit_int;                     \
@@ -54,11 +53,11 @@ static constexpr uint_fast32_t MASK[32]
 namespace libsemigroups {
   // Basic version of a function using BitSet in element.hpp, retained for the
   // purposes of comparison.
-  template <typename TIntType>
-  struct ImageRightAction<PartialPerm<TIntType>, uint_fast32_t> {
-    void operator()(uint_fast32_t&               res,
-                    uint_fast32_t const&         pt,
-                    PartialPerm<TIntType> const& x) const {
+  template <size_t N, typename TIntType>
+  struct ImageRightAction<PPerm<N, TIntType>, uint_fast32_t> {
+    void operator()(uint_fast32_t&            res,
+                    uint_fast32_t const&      pt,
+                    PPerm<N, TIntType> const& x) const {
       res = 0;
       FOR_SET_BITS(pt, static_cast<int>(x.degree()), i) {
         if (x[i] != UNDEFINED) {
@@ -118,51 +117,49 @@ namespace libsemigroups {
 
   template <typename T>
   void benchmark_example1(T& o) {
-    using PPerm = PPermHelper<17>::type;
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0},
-              17));
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0},
+                  17));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              17));
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  17));
     o.add_generator(
-        PPerm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              17));
+        PPerm<17>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  17));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              17));
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  17));
   }
 
   template <typename T>
   void benchmark_example1_inverse(T& o) {
-    using PPerm = PPermHelper<17>::type;
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0},
-              17));
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0},
+                  17));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              17));
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  17));
     o.add_generator(
-        PPerm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              17)
+        PPerm<17>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  17)
             .inverse());
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-              17)
+        PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+                  17)
             .inverse());
   }
 
   template <typename T>
   void transf_example1(T& o) {
-    using Transf = TransfHelper<17>::type;
+    using Transf = LeastTransf<17>;
     o.add_generator(
         Transf({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     o.add_generator(
@@ -173,7 +170,7 @@ namespace libsemigroups {
 
   template <typename T>
   void transf_example2(T& o) {
-    using Transf = Transformation<uint_fast8_t>;
+    using Transf = Transf<>;
     o.add_generator(Transf({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
     o.add_generator(Transf({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
     o.add_generator(Transf({0, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
@@ -245,41 +242,40 @@ namespace libsemigroups {
                           {0, 0, 0, 0, 0, 0, 0, 0, 0}}));
   }
 
-  TEST_CASE("Slowest PartialPerm", "[quick][001][pperm]") {
-    auto rg     = ReportGuard(false);
-    using PPerm = PPermHelper<17>::type;
-    BENCHMARK("ImageRightAction = PartialPerm") {
-      RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
-      o.add_seed(One<PPerm>()(17));
+  TEST_CASE("Slowest PPerm", "[quick][001][pperm]") {
+    auto rg = ReportGuard(false);
+    BENCHMARK("ImageRightAction = PPerm") {
+      RightAction<PPerm<17>, PPerm<17>, ImageRightAction<PPerm<17>, PPerm<17>>>
+          o;
+      o.add_seed(One<PPerm<17>>()(17));
       benchmark_example1(o);
       REQUIRE(o.size() == 131072);
     };
 
-    BENCHMARK("ImageLeftAction = PartialPerm") {
-      LeftAction<PPerm, PPerm, ImageLeftAction<PPerm, PPerm>> o;
-      o.add_seed(One<PPerm>()(17));
+    BENCHMARK("ImageLeftAction = PPerm") {
+      LeftAction<PPerm<17>, PPerm<17>, ImageLeftAction<PPerm<17>, PPerm<17>>> o;
+      o.add_seed(One<PPerm<17>>()(17));
       benchmark_example1(o);
       REQUIRE(o.size() == 131072);
     };
   }
 
-  TEST_CASE("Second slowest PartialPerm", "[quick][002][pperm]") {
+  TEST_CASE("Second slowest PPerm", "[quick][002][pperm]") {
     auto rg        = ReportGuard(false);
-    using PPerm    = PPermHelper<17>::type;
     using int_type = uint_fast8_t;
     BENCHMARK("ImageRightAction = vector") {
-      RightAction<PPerm,
+      RightAction<PPerm<17>,
                   std::vector<int_type>,
-                  ImageRightAction<PPerm, std::vector<int_type>>>
+                  ImageRightAction<PPerm<17>, std::vector<int_type>>>
           o;
       o.add_seed({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
       benchmark_example1(o);
       REQUIRE(o.size() == 131072);
     };
     BENCHMARK("ImageLeftAction = vector") {
-      LeftAction<PPerm,
+      LeftAction<PPerm<17>,
                  std::vector<int_type>,
-                 ImageLeftAction<PPerm, std::vector<int_type>>>
+                 ImageLeftAction<PPerm<17>, std::vector<int_type>>>
           o;
       o.add_seed({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
       benchmark_example1(o);
@@ -287,23 +283,24 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("Second fastest PartialPerm", "[quick][005][pperm]") {
+  TEST_CASE("Second fastest PPerm", "[quick][005][pperm]") {
     auto rg        = ReportGuard(false);
-    using PPerm    = PPermHelper<17>::type;
     using int_type = uint_fast8_t;
     BENCHMARK("ImageRightAction = array/StaticVector1") {
-      RightAction<PPerm,
-                  detail::StaticVector1<int_type, 17>,
-                  ImageRightAction<PPerm, detail::StaticVector1<int_type, 17>>>
+      RightAction<
+          PPerm<17>,
+          detail::StaticVector1<int_type, 17>,
+          ImageRightAction<PPerm<17>, detail::StaticVector1<int_type, 17>>>
           o;
       o.add_seed({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
       benchmark_example1(o);
       REQUIRE(o.size() == 131072);
     };
     BENCHMARK("ImageLeftAction = array/StaticVector1") {
-      LeftAction<PPerm,
-                 detail::StaticVector1<int_type, 17>,
-                 ImageLeftAction<PPerm, detail::StaticVector1<int_type, 17>>>
+      LeftAction<
+          PPerm<17>,
+          detail::StaticVector1<int_type, 17>,
+          ImageLeftAction<PPerm<17>, detail::StaticVector1<int_type, 17>>>
           o;
       o.add_seed({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
       benchmark_example1(o);
@@ -311,11 +308,13 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("fastest PartialPerm", "[quick][004][pperm]") {
-    auto rg     = ReportGuard(false);
-    using PPerm = PPermHelper<17>::type;
+  TEST_CASE("fastest PPerm", "[quick][004][pperm]") {
+    auto rg = ReportGuard(false);
     BENCHMARK("ImageRightAction = BitSets") {
-      RightAction<PPerm, BitSet<17>, ImageRightAction<PPerm, BitSet<17>>> o;
+      RightAction<PPerm<17>,
+                  BitSet<17>,
+                  ImageRightAction<PPerm<17>, BitSet<17>>>
+          o;
 
       BitSet<17> sd;
       sd.set();
@@ -328,7 +327,10 @@ namespace libsemigroups {
     };
 
     BENCHMARK("ImageLeftAction (via inverses) = BitSets") {
-      RightAction<PPerm, BitSet<17>, ImageRightAction<PPerm, BitSet<17>>> o;
+      RightAction<PPerm<17>,
+                  BitSet<17>,
+                  ImageRightAction<PPerm<17>, BitSet<17>>>
+          o;
 
       BitSet<17> sd;
       sd.set();
@@ -341,7 +343,8 @@ namespace libsemigroups {
     };
 
     BENCHMARK("ImageLeftAction = BitSets") {
-      LeftAction<PPerm, BitSet<17>, ImageLeftAction<PPerm, BitSet<17>>> o;
+      LeftAction<PPerm<17>, BitSet<17>, ImageLeftAction<PPerm<17>, BitSet<17>>>
+          o;
 
       BitSet<17> sd;
       sd.set();
@@ -354,11 +357,12 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("fastest PartialPerm comparison", "[quick][003][pperm]") {
-    auto rg     = ReportGuard(false);
-    using PPerm = PPermHelper<17>::type;
+  TEST_CASE("fastest PPerm comparison", "[quick][003][pperm]") {
+    auto rg = ReportGuard(false);
     BENCHMARK("ImageRightAction = naked bitset") {
-      RightAction<PPerm, uint_fast32_t, ImageRightAction<PPerm, uint_fast32_t>>
+      RightAction<PPerm<17>,
+                  uint_fast32_t,
+                  ImageRightAction<PPerm<17>, uint_fast32_t>>
           o;
       o.add_seed(static_cast<uint_fast32_t>(-1));
       benchmark_example1(o);
@@ -368,9 +372,9 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("ImageRightAction for transformations", "[quick][006][transf]") {
+  TEST_CASE("ImageRightAction for transf", "[quick][006][transf]") {
     auto rg        = ReportGuard(false);
-    using Transf   = TransfHelper<17>::type;
+    using Transf   = LeastTransf<17>;
     using int_type = uint_fast8_t;
     BENCHMARK("vectors") {
       RightAction<Transf,
@@ -403,10 +407,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("ImageLeftAction for transformations", "[quick][007][transf]") {
+  TEST_CASE("ImageLeftAction for transf", "[quick][007][transf]") {
     auto rg        = ReportGuard(false);
     using int_type = uint_fast8_t;
-    using Transf   = Transformation<int_type>;
+    using Transf   = Transf<>;
     BENCHMARK("vectors") {
       LeftAction<Transf,
                  std::vector<int_type>,

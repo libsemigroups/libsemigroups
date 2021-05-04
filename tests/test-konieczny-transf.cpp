@@ -21,10 +21,8 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"    // for TransfHelper
-#include "libsemigroups/element.hpp"           // for Transformation
-#include "libsemigroups/konieczny.hpp"         // for Konieczny
+#include "libsemigroups/konieczny.hpp"  // for Konieczny
+#include "libsemigroups/transf.hpp"     // for Transf<>
 
 namespace libsemigroups {
 
@@ -34,7 +32,7 @@ namespace libsemigroups {
                           "026",
                           "transformations",
                           "[quick][transf]") {
-    using Transf         = typename TransfHelper<5>::type;
+    using Transf         = LeastTransf<5>;
     auto              rg = ReportGuard(REPORT);
     Konieczny<Transf> S({Transf({1, 0, 2, 3, 4}),
                          Transf({1, 2, 3, 4, 0}),
@@ -61,7 +59,7 @@ namespace libsemigroups {
                           "027",
                           "transformations - JDM favourite example",
                           "[quick][no-valgrind][transf]") {
-    using Transf         = typename TransfHelper<8>::type;
+    using Transf         = LeastTransf<8>;
     auto              rg = ReportGuard(REPORT);
     Konieczny<Transf> S({Transf({1, 7, 2, 6, 0, 4, 1, 5}),
                          Transf({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -87,14 +85,13 @@ namespace libsemigroups {
                           "028",
                           "transformations - large example",
                           "[standard][no-valgrind][transf]") {
-    auto                                            rg = ReportGuard(REPORT);
-    const std::vector<Transformation<uint_fast8_t>> gens
-        = {Transformation<uint_fast8_t>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-           Transformation<uint_fast8_t>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-           Transformation<uint_fast8_t>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-           Transformation<uint_fast8_t>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-           Transformation<uint_fast8_t>({0, 0, 0, 2, 7, 7, 5, 5, 3})};
-    Konieczny<Transformation<uint_fast8_t>> S(gens);
+    auto                        rg   = ReportGuard(REPORT);
+    std::vector<Transf<>> const gens = {Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                                        Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                                        Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                                        Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                                        Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})};
+    Konieczny<Transf<>>         S(gens);
 
     for (auto x : gens) {
       REQUIRE(S.contains(x));
@@ -117,13 +114,12 @@ namespace libsemigroups {
                           "029",
                           "transformations - large example with stop",
                           "[standard][no-valgrind][transf]") {
-    auto                                    rg = ReportGuard(REPORT);
-    Konieczny<Transformation<uint_fast8_t>> S(
-        {Transformation<uint_fast8_t>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-         Transformation<uint_fast8_t>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-         Transformation<uint_fast8_t>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-         Transformation<uint_fast8_t>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-         Transformation<uint_fast8_t>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto                rg = ReportGuard(REPORT);
+    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_for(std::chrono::milliseconds(100));
     REQUIRE(S.size() == 232511);
   }
@@ -132,13 +128,12 @@ namespace libsemigroups {
                           "030",
                           "transformations - large example with run_until",
                           "[standard][no-valgrind][transf]") {
-    auto                                    rg = ReportGuard(REPORT);
-    Konieczny<Transformation<uint_fast8_t>> S(
-        {Transformation<uint_fast8_t>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-         Transformation<uint_fast8_t>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-         Transformation<uint_fast8_t>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-         Transformation<uint_fast8_t>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-         Transformation<uint_fast8_t>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto                rg = ReportGuard(REPORT);
+    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_until([&S]() -> bool {
       return S.cend_D_classes() - S.cbegin_D_classes() > 20;
     });
@@ -156,13 +151,12 @@ namespace libsemigroups {
                           "031",
                           "transformations - large example with stop in Action",
                           "[standard][no-valgrind][transf]") {
-    auto                                    rg = ReportGuard(REPORT);
-    Konieczny<Transformation<uint_fast8_t>> S(
-        {Transformation<uint_fast8_t>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-         Transformation<uint_fast8_t>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-         Transformation<uint_fast8_t>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-         Transformation<uint_fast8_t>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-         Transformation<uint_fast8_t>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto                rg = ReportGuard(REPORT);
+    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_for(std::chrono::milliseconds(5));
     S.run_for(std::chrono::milliseconds(5));
     S.run_for(std::chrono::milliseconds(5));
@@ -175,11 +169,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "032", "exceptions", "[quick][transf]") {
-    auto                      rg = ReportGuard(REPORT);
-    std::vector<uint_fast8_t> v(65, 0);
+    auto rg          = ReportGuard(REPORT);
+    using value_type = typename Transf<>::value_type;
+    std::vector<value_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
-    REQUIRE_THROWS_AS(Konieczny<Transformation<uint_fast8_t>>(
-                          {Transformation<uint_fast8_t>(v)}),
+    REQUIRE_THROWS_AS(Konieczny<Transf<>>({Transf<>(v)}),
                       LibsemigroupsException);
   }
 
@@ -187,47 +181,39 @@ namespace libsemigroups {
                           "033",
                           "transformations: contains",
                           "[quick][transf]") {
-    auto                              rg = ReportGuard(REPORT);
-    Konieczny<Transformation<size_t>> S(
-        {Transformation<size_t>({1, 0, 2, 3, 4}),
-         Transformation<size_t>({1, 2, 3, 4, 0}),
-         Transformation<size_t>({0, 0, 2, 3, 4})});
-    REQUIRE(S.contains(Transformation<size_t>({1, 0, 2, 3, 4})));
-    REQUIRE(S.contains(Transformation<size_t>({1, 2, 3, 4, 0})));
-    REQUIRE(S.contains(Transformation<size_t>({0, 0, 2, 3, 4})));
-    REQUIRE(!S.contains(Transformation<size_t>({1, 0, 2, 3, 4, 5})));
-    REQUIRE(!S.contains(Transformation<size_t>({1, 2, 3, 4, 0, 5})));
-    REQUIRE(!S.contains(Transformation<size_t>({0, 0, 2, 3, 4, 1})));
+    auto                rg = ReportGuard(REPORT);
+    Konieczny<Transf<>> S({Transf<>({1, 0, 2, 3, 4}),
+                           Transf<>({1, 2, 3, 4, 0}),
+                           Transf<>({0, 0, 2, 3, 4})});
+    REQUIRE(S.contains(Transf<>({1, 0, 2, 3, 4})));
+    REQUIRE(S.contains(Transf<>({1, 2, 3, 4, 0})));
+    REQUIRE(S.contains(Transf<>({0, 0, 2, 3, 4})));
+    REQUIRE(!S.contains(Transf<>({1, 0, 2, 3, 4, 5})));
+    REQUIRE(!S.contains(Transf<>({1, 2, 3, 4, 0, 5})));
+    REQUIRE(!S.contains(Transf<>({0, 0, 2, 3, 4, 1})));
 
-    REQUIRE_THROWS_AS(
-        S.D_class_of_element(Transformation<size_t>({1, 0, 2, 3, 4, 5})),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        S.D_class_of_element(Transformation<size_t>({1, 2, 3, 4, 0, 5})),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        S.D_class_of_element(Transformation<size_t>({0, 0, 2, 3, 4, 1})),
-        LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.D_class_of_element(Transf<>({1, 0, 2, 3, 4, 5})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.D_class_of_element(Transf<>({1, 2, 3, 4, 0, 5})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.D_class_of_element(Transf<>({0, 0, 2, 3, 4, 1})),
+                      LibsemigroupsException);
 
-    Konieczny<Transformation<size_t>> T(
-        {Transformation<size_t>({1, 0, 3, 4, 2}),
-         Transformation<size_t>({0, 0, 2, 3, 4})});
-    REQUIRE(T.contains(Transformation<size_t>({1, 0, 2, 3, 4})));
-    REQUIRE(T.contains(Transformation<size_t>({0, 0, 2, 3, 4})));
-    REQUIRE(!T.contains(Transformation<size_t>({1, 2, 3, 4, 0})));
-    REQUIRE(!T.contains(Transformation<size_t>({1, 2, 3, 0, 4})));
-    REQUIRE(!T.contains(Transformation<size_t>({1, 2, 3, 4, 0, 5})));
-    REQUIRE(!T.contains(Transformation<size_t>({0, 2, 3, 4, 1})));
+    Konieczny<Transf<>> T(
+        {Transf<>({1, 0, 3, 4, 2}), Transf<>({0, 0, 2, 3, 4})});
+    REQUIRE(T.contains(Transf<>({1, 0, 2, 3, 4})));
+    REQUIRE(T.contains(Transf<>({0, 0, 2, 3, 4})));
+    REQUIRE(!T.contains(Transf<>({1, 2, 3, 4, 0})));
+    REQUIRE(!T.contains(Transf<>({1, 2, 3, 0, 4})));
+    REQUIRE(!T.contains(Transf<>({1, 2, 3, 4, 0, 5})));
+    REQUIRE(!T.contains(Transf<>({0, 2, 3, 4, 1})));
 
-    REQUIRE_THROWS_AS(
-        T.D_class_of_element(Transformation<size_t>({1, 2, 3, 4, 0})),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        T.D_class_of_element(Transformation<size_t>({1, 2, 3, 4, 0, 5})),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        T.D_class_of_element(Transformation<size_t>({0, 2, 3, 4, 1})),
-        LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.D_class_of_element(Transf<>({1, 2, 3, 4, 0})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.D_class_of_element(Transf<>({1, 2, 3, 4, 0, 5})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.D_class_of_element(Transf<>({0, 2, 3, 4, 1})),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -235,7 +221,7 @@ namespace libsemigroups {
                           "transformations Hall monoid 5",
                           "[extreme][transf]") {
     auto rg      = ReportGuard();
-    using Transf = typename TransfHelper<31>::type;
+    using Transf = LeastTransf<31>;
     Konieczny<Transf> K;
     K.add_generator(
         Transf({0, 16, 1, 17, 2,  18, 3,  19, 4,  20, 5,  21, 6,  22, 7, 23,

@@ -16,32 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"                    // for TEST_CASE
-#include "fpsemi-examples.hpp"          // for RookMonoid
-#include "libsemigroups/bmat8.hpp"      // for BMat8
-#include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs
-#include "libsemigroups/cong.hpp"       // for Congruence
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"    // for BMatHelper
-#include "libsemigroups/element.hpp"           // for Element
-#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/types.hpp"             // for word_type
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"            // for TEST_CASE
+#include "fpsemi-examples.hpp"  // for RookMonoid
+#include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/cong-pair.hpp"     // for KnuthBendixCongruenceByPairs
+#include "libsemigroups/cong.hpp"          // for Congruence
+#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
+#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/pbr.hpp"           // for PBR
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {
   // Forward declarations
   struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
-
-  template <typename TElementType>
-  void delete_gens(std::vector<TElementType>& gens) {
-    for (auto& x : gens) {
-      delete x;
-    }
-  }
 
   constexpr congruence_type twosided = congruence_type::twosided;
   constexpr congruence_type left     = congruence_type::left;
@@ -164,7 +157,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg = ReportGuard(REPORT);
 
-    using Transf = TransfHelper<5>::type;
+    using Transf = LeastTransf<5>;
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
 
@@ -179,7 +172,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg = ReportGuard(REPORT);
 
-    using Transf = TransfHelper<5>::type;
+    using Transf = LeastTransf<5>;
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
 
@@ -290,7 +283,7 @@ namespace libsemigroups {
                           "2-sided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(REPORT);
-    using Transf = TransfHelper<8>::type;
+    using Transf = LeastTransf<8>;
     FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({1, 2, 4, 4, 7, 3, 0, 7}),
                            Transf({0, 6, 4, 2, 2, 6, 6, 4}),
@@ -377,17 +370,16 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
 
-    using PPerm = PPermHelper<6>::type;
-
-    FroidurePin<PPerm> S({PPerm({0, 1, 2}, {4, 0, 1}, 6),
-                          PPerm({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-                          PPerm({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-                          PPerm({0, 2, 5}, {3, 4, 1}, 6),
-                          PPerm({0, 2, 5}, {0, 2, 5}, 6),
-                          PPerm({0, 1, 4}, {1, 2, 0}, 6),
-                          PPerm({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-                          PPerm({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-                          PPerm({1, 3, 4}, {5, 0, 2}, 6)});
+    FroidurePin<LeastPPerm<6>> S(
+        {LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
+         LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+         LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+         LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
+         LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
+         LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
+         LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+         LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+         LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.nr_rules() == 1121);
@@ -487,7 +479,7 @@ namespace libsemigroups {
                           "2-sided congruence on finite semigroup",
                           "[quick][cong]") {
     auto rg      = ReportGuard(REPORT);
-    using Transf = TransfHelper<5>::type;
+    using Transf = LeastTransf<5>;
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -597,7 +589,7 @@ namespace libsemigroups {
                           "duplicate generators",
                           "[quick][cong]") {
     auto rg      = ReportGuard(REPORT);
-    using Transf = TransfHelper<8>::type;
+    using Transf = LeastTransf<8>;
     FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -645,7 +637,7 @@ namespace libsemigroups {
                           "right congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(REPORT);
-    using Transf = TransfHelper<8>::type;
+    using Transf = LeastTransf<8>;
     FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
                            Transf({1, 2, 3, 4, 5, 0, 6, 7}),
                            Transf({1, 0, 2, 3, 4, 5, 6, 7}),
@@ -803,7 +795,7 @@ namespace libsemigroups {
       REQUIRE(!cong.is_quotient_obviously_finite());
     }
 
-    using Transf = TransfHelper<3>::type;
+    using Transf = LeastTransf<3>;
     FroidurePin<Transf> S({Transf({0, 1, 0}), Transf({0, 1, 2})});
     REQUIRE(S.size() == 2);
     {
@@ -834,7 +826,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Winline"
 #endif
     auto rg    = ReportGuard(REPORT);
-    using BMat = BMatHelper<4>::type;
+    using BMat = FastestBMat<4>;
     std::vector<BMat> gens
         = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -911,11 +903,9 @@ namespace libsemigroups {
                           "left congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
@@ -925,10 +915,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 69);
     REQUIRE(cong.nr_classes() == 69);
 
-    Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
-    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
-    word_type w3 = S.factorisation(t3);
-    word_type w4 = S.factorisation(t4);
+    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
     REQUIRE(cong.word_to_class_index(w3)
             == cong.word_to_class_index({0, 0, 1, 0, 1}));
@@ -944,9 +932,6 @@ namespace libsemigroups {
 
     REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
     REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
-
-    delete t3;
-    delete t4;
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -954,11 +939,9 @@ namespace libsemigroups {
                           "right congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S(gens);
-    delete_gens(gens);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
@@ -968,10 +951,8 @@ namespace libsemigroups {
     REQUIRE(cong.nr_classes() == 72);
     REQUIRE(cong.nr_classes() == 72);
 
-    Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
-    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
-    word_type w3 = S.factorisation(t3);
-    word_type w4 = S.factorisation(t4);
+    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
     REQUIRE(cong.word_to_class_index(w3)
             != cong.word_to_class_index({0, 0, 1, 0, 1}));
@@ -993,46 +974,33 @@ namespace libsemigroups {
       REQUIRE(cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
       REQUIRE(!cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
     }
-
-    delete t3;
-    delete t4;
   }
 
-  // For some reason the following test case doesn't run..., i.e. it is not run
-  // when we run all the tests.
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "031",
                           "right congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(REPORT);
-    std::vector<Element*> gens
-        = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-    FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
-    delete_gens(gens);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
     REQUIRE(S.degree() == 5);
-    Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-    Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
     word_type w1, w2;
-    S.factorisation(w1, S.position(t1));
-    S.factorisation(w2, S.position(t2));
+    S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+    S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
     Congruence cong(right, S);
     cong.add_pair(w1, w2);
 
     REQUIRE(cong.nr_classes() == 72);
     REQUIRE(cong.nr_classes() == 72);
-    Element*  t3 = new Transformation<uint16_t>({1, 3, 3, 3, 3});
-    Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
-    Element*  t5 = new Transformation<uint16_t>({2, 3, 2, 2, 2});
-    Element*  t6 = new Transformation<uint16_t>({2, 3, 3, 3, 3});
     word_type w3, w4, w5, w6;
-    S.factorisation(w3, S.position(t3));
-    S.factorisation(w4, S.position(t4));
-    S.factorisation(w5, S.position(t5));
-    S.factorisation(w6, S.position(t6));
+    S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
+    S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
+    S.factorisation(w5, S.position(Transf<>({2, 3, 2, 2, 2})));
+    S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
     REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
     REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
@@ -1040,13 +1008,6 @@ namespace libsemigroups {
     REQUIRE(cong.contains(w1, w2));
     REQUIRE(cong.contains(w5, w6));
     REQUIRE(!cong.contains(w3, w5));
-
-    delete t1;
-    delete t2;
-    delete t3;
-    delete t4;
-    delete t5;
-    delete t6;
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick][cong]") {
@@ -1462,7 +1423,7 @@ namespace libsemigroups {
   //                         "[quick][cong]") {
   //   auto rg      = ReportGuard(REPORT);
 
-  //   using Transf = TransfHelper<5>::type;
+  //   using Transf = LeastTransf<5>;
   //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
   //   3})}); REQUIRE(S.size() == 88);
 
@@ -1556,7 +1517,7 @@ namespace libsemigroups {
   //                         "add_runner exceptions",
   //                         "[quick][cong]") {
   //   auto rg      = ReportGuard(REPORT);
-  //   using Transf = TransfHelper<5>::type;
+  //   using Transf = LeastTransf<5>;
   //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
   //   3})}); REQUIRE(S.size() == 88);
 

@@ -45,8 +45,8 @@ pkgconfig_DATA     = libsemigroups.pc
 ## libsemigroups headers
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
+pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
-pkginclude_HEADERS += include/libsemigroups/blocks.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat8.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/bruidhinn-traits.hpp
@@ -60,9 +60,7 @@ pkginclude_HEADERS += include/libsemigroups/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/coset.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph.hpp
-pkginclude_HEADERS += include/libsemigroups/element-adapters.hpp
-pkginclude_HEADERS += include/libsemigroups/element-helper.hpp
-pkginclude_HEADERS += include/libsemigroups/element.hpp
+pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi.hpp
@@ -83,6 +81,7 @@ pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
 pkginclude_HEADERS += include/libsemigroups/matrix.hpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
+pkginclude_HEADERS += include/libsemigroups/pbr.hpp
 pkginclude_HEADERS += include/libsemigroups/pool.hpp
 pkginclude_HEADERS += include/libsemigroups/race.hpp
 pkginclude_HEADERS += include/libsemigroups/report.hpp
@@ -535,20 +534,20 @@ endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_la_SOURCES =  src/blocks.cpp
+libsemigroups_la_SOURCES  = src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-intf.cpp
 libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
-libsemigroups_la_SOURCES += src/element.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
+libsemigroups_la_SOURCES += src/pbr.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
@@ -600,8 +599,8 @@ CHECK_FLAGS2  = [quick]
 check_PROGRAMS =  test_all 
 
 EXTRA_PROGRAMS =  test_action
+EXTRA_PROGRAMS += test_bipart
 EXTRA_PROGRAMS += test_bitset
-EXTRA_PROGRAMS += test_blocks
 EXTRA_PROGRAMS += test_bmat8
 EXTRA_PROGRAMS += test_cong_pair
 EXTRA_PROGRAMS += test_cong
@@ -610,14 +609,12 @@ EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_digraph_helper
 EXTRA_PROGRAMS += test_digraph
-EXTRA_PROGRAMS += test_element
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi
 EXTRA_PROGRAMS += test_fpsemi_intf
 EXTRA_PROGRAMS += test_froidure_pin_bipart
 EXTRA_PROGRAMS += test_froidure_pin_bmat8
 EXTRA_PROGRAMS += test_froidure_pin_bmat
-EXTRA_PROGRAMS += test_froidure_pin_element
 EXTRA_PROGRAMS += test_froidure_pin_integers
 EXTRA_PROGRAMS += test_froidure_pin_intmat
 EXTRA_PROGRAMS += test_froidure_pin_intpairs
@@ -635,6 +632,7 @@ EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
+EXTRA_PROGRAMS += test_pbr
 EXTRA_PROGRAMS += test_pool
 EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_runner
@@ -642,6 +640,8 @@ EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_siso
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_todd_coxeter
+EXTRA_PROGRAMS += test_transf
+EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_wilo
 EXTRA_PROGRAMS += test_wislo
@@ -669,8 +669,8 @@ LDADD = libsemigroups.la
 test_all_SOURCES =  tests/bmat-data.cpp
 test_all_SOURCES += tests/fpsemi-examples.cpp
 test_all_SOURCES += tests/test-action.cpp
+test_all_SOURCES += tests/test-bipart.cpp
 test_all_SOURCES += tests/test-bitset.cpp
-test_all_SOURCES += tests/test-blocks.cpp
 test_all_SOURCES += tests/test-bmat8.cpp
 test_all_SOURCES += tests/test-cong-intf.cpp
 test_all_SOURCES += tests/test-cong-pair.cpp
@@ -679,14 +679,12 @@ test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-digraph-helper.cpp
 test_all_SOURCES += tests/test-digraph.cpp
-test_all_SOURCES += tests/test-element.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
 test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
 test_all_SOURCES += tests/test-froidure-pin-bmat8.cpp
 test_all_SOURCES += tests/test-froidure-pin-bmat.cpp
-test_all_SOURCES += tests/test-froidure-pin-element.cpp
 test_all_SOURCES += tests/test-froidure-pin-integers.cpp
 test_all_SOURCES += tests/test-froidure-pin-intmat.cpp
 test_all_SOURCES += tests/test-froidure-pin-intpairs.cpp
@@ -715,6 +713,7 @@ test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-matrix.cpp
 test_all_SOURCES += tests/test-obvinf.cpp
 test_all_SOURCES += tests/test-order.cpp
+test_all_SOURCES += tests/test-pbr.cpp
 test_all_SOURCES += tests/test-pool.cpp
 test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
@@ -722,6 +721,7 @@ test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-siso.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
+test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-wilo.cpp
 test_all_SOURCES += tests/test-wislo.cpp
@@ -730,11 +730,11 @@ test_all_SOURCES += tests/test-word.cpp
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
 
+test_bipart_SOURCES =  tests/test-bipart.cpp
+test_bipart_SOURCES += tests/test-main.cpp
+
 test_bitset_SOURCES =  tests/test-bitset.cpp
 test_bitset_SOURCES += tests/test-main.cpp
-
-test_blocks_SOURCES =  tests/test-blocks.cpp
-test_blocks_SOURCES += tests/test-main.cpp
 
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
@@ -761,8 +761,6 @@ test_digraph_helper_SOURCES += tests/test-main.cpp
 test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
 
-test_element_SOURCES =  tests/test-element.cpp
-test_element_SOURCES += tests/test-main.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
@@ -783,9 +781,6 @@ test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
 test_froidure_pin_bmat_SOURCES =  tests/test-froidure-pin-bmat.cpp
 test_froidure_pin_bmat_SOURCES += tests/bmat-data.cpp
 test_froidure_pin_bmat_SOURCES += tests/test-main.cpp
-
-test_froidure_pin_element_SOURCES =  tests/test-froidure-pin-element.cpp
-test_froidure_pin_element_SOURCES += tests/test-main.cpp
 
 test_froidure_pin_integers_SOURCES =  tests/test-froidure-pin-integers.cpp
 test_froidure_pin_integers_SOURCES += tests/test-main.cpp
@@ -849,6 +844,9 @@ test_obvinf_SOURCES += tests/test-main.cpp
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
 
+test_pbr_SOURCES =  tests/test-pbr.cpp
+test_pbr_SOURCES += tests/test-main.cpp
+
 test_pool_SOURCES =  tests/test-pool.cpp
 test_pool_SOURCES += tests/test-main.cpp
 
@@ -870,6 +868,12 @@ test_timer_SOURCES += tests/test-main.cpp
 test_todd_coxeter_SOURCES =  tests/fpsemi-examples.cpp
 test_todd_coxeter_SOURCES += tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
+
+test_transf_SOURCES =  tests/test-transf.cpp
+test_transf_SOURCES += tests/test-main.cpp
+
+test_types_SOURCES =  tests/test-types.cpp
+test_types_SOURCES += tests/test-main.cpp
 
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp

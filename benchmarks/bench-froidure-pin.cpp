@@ -21,10 +21,9 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for REQUIRE
 
-#include "libsemigroups/element-adapters.hpp"
-#include "libsemigroups/element.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"
 #include "libsemigroups/froidure-pin.hpp"
+#include "libsemigroups/transf.hpp"
 #include "libsemigroups/types.hpp"
 
 #include "examples/generators.hpp"
@@ -61,36 +60,18 @@ namespace libsemigroups {
     REQUIRE(v.size() == fp->nr_rules());
   }
 
-  template <typename T>
-  void bench_relations(FroidurePin<T>* fp, size_t) {
-    std::vector<relation_type> v;
-    relations(*fp, [&v](word_type l, word_type r) -> void {
-      v.emplace_back(std::move(l), std::move(r));
-    });
-    REQUIRE(v.size() == fp->nr_rules());
-  }
-
-  using Transf = typename TransfHelper<16>::type;
-
-  LIBSEMIGROUPS_BENCHMARK("FroidurePin<Transf>",
+  LIBSEMIGROUPS_BENCHMARK("FroidurePin<LeastTransf<16>>",
                           "[FroidurePin][001]",
-                          before_bench<Transf>,
-                          bench_run<Transf>,
-                          after_bench<Transf>,
+                          before_bench<LeastTransf<16>>,
+                          bench_run<LeastTransf<16>>,
+                          after_bench<LeastTransf<16>>,
                           transf_examples());
 
   LIBSEMIGROUPS_BENCHMARK("cbegin/end_rules",
                           "[FroidurePin][002]",
-                          before_bench_rules<Transf>,
-                          bench_const_rule_iterator<Transf>,
-                          after_bench<Transf>,
-                          {transf_examples(0x9806816B9D761476)});
-
-  LIBSEMIGROUPS_BENCHMARK("relations",
-                          "[FroidurePin][003]",
-                          before_bench_rules<Transf>,
-                          bench_relations<Transf>,
-                          after_bench<Transf>,
+                          before_bench_rules<LeastTransf<16>>,
+                          bench_const_rule_iterator<LeastTransf<16>>,
+                          after_bench<LeastTransf<16>>,
                           {transf_examples(0x9806816B9D761476)});
 
 }  // namespace libsemigroups

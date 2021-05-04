@@ -18,22 +18,15 @@
 
 #include <vector>  // for vector
 
-#include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element.hpp"           // for Element
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/kbe.hpp"               // for KBE
-#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/kbe.hpp"           // for KBE
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   namespace detail {
-    template <typename TElementType>
-    void delete_gens(std::vector<TElementType>& gens) {
-      for (auto& x : gens) {
-        delete x;
-      }
-    }
 
     using KnuthBendix = fpsemigroup::KnuthBendix;
     using FroidurePinKBE
@@ -41,11 +34,10 @@ namespace libsemigroups {
     constexpr bool REPORT = false;
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
-      std::vector<Element*>       gens = {new Transformation<uint16_t>({1, 0}),
-                                    new Transformation<uint16_t>({0, 0})};
-      FroidurePin<Element const*> S    = FroidurePin<Element const*>(gens);
-      auto                        rg   = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 0}));
+      S.add_generator(Transf<>({0, 0}));
 
       KnuthBendix kb(S);
       KBE         ab(kb, word_type({0, 1}));
@@ -61,9 +53,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      auto                                  rg = ReportGuard(REPORT);
-      FroidurePin<Transformation<uint16_t>> S(
-          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
@@ -90,9 +81,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-      auto                                  rg = ReportGuard(REPORT);
-      FroidurePin<Transformation<uint16_t>> S(
-          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -106,9 +96,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
-      auto                                  rg = ReportGuard(REPORT);
-      FroidurePin<Transformation<uint16_t>> S(
-          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -125,9 +114,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
-      auto                                  rg = ReportGuard(REPORT);
-      FroidurePin<Transformation<uint16_t>> S(
-          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
@@ -139,9 +127,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
-      auto                                  rg = ReportGuard(REPORT);
-      FroidurePin<Transformation<uint16_t>> S(
-          {Transformation<uint16_t>({1, 0}), Transformation<uint16_t>({0, 0})});
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());

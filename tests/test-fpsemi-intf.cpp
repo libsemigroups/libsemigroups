@@ -24,15 +24,14 @@
 #include "catch.hpp"      // for REQUIRE, SECTION, ...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-pair.hpp"         // for FpSemigroupByPairs
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"    // for FpSemigroupByPairs
-#include "libsemigroups/fpsemi-intf.hpp"       // for FpSemigroupInterface
-#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
-#include "libsemigroups/knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
-#include "libsemigroups/order.hpp"             // for shortlex_words
+#include "libsemigroups/cong-pair.hpp"     // for FpSemigroupByPairs
+#include "libsemigroups/fpsemi-intf.hpp"   // for FpSemigroupInterface
+#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "libsemigroups/order.hpp"         // for shortlex_words
 #include "libsemigroups/string.hpp"  // for to_string of rule_type for debugging
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
+#include "libsemigroups/transf.hpp"        // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/wislo.hpp"         // for cbegin_wislo
 #include "libsemigroups/word.hpp"          // for number_of_words
 
@@ -88,7 +87,7 @@ namespace libsemigroups {
         nr_words = 171;
       }
       SECTION("FpSemigroupByPairs") {
-        using Transf = typename TransfHelper<5>::type;
+        using Transf = LeastTransf<5>;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
         fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
@@ -245,7 +244,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       fp->add_rule({0, 0, 0}, {0});
@@ -294,7 +293,7 @@ namespace libsemigroups {
         REQUIRE(fp->size() == 27);
       }
       SECTION("FpSemigroupByPairs") {
-        using Transf = typename TransfHelper<5>::type;
+        using Transf = LeastTransf<5>;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
         fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
@@ -319,7 +318,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       SECTION("human readable alphabet") {
         SECTION("ToddCoxeter") {
@@ -445,7 +444,7 @@ namespace libsemigroups {
         fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("a");
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE_THROWS_AS(fp->add_rules(S), LibsemigroupsException);
     }
@@ -456,7 +455,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
 
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       FpSemigroupByPairs<Transf> fp(S);
       REQUIRE(fp.nr_rules() == 18);
@@ -466,7 +465,7 @@ namespace libsemigroups {
       // which the congruence is defined.
       REQUIRE(fp.congruence().nr_generating_pairs() == 0);
 
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> T({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE_NOTHROW(fp.add_rules(T));
       REQUIRE(fp.nr_rules() == 36);
@@ -551,7 +550,7 @@ namespace libsemigroups {
       using rule_type = typename FpSemigroupInterface::rule_type;
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
@@ -713,7 +712,7 @@ namespace libsemigroups {
       // using rule_type = typename FpSemigroupInterface::rule_type;
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
@@ -817,7 +816,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<1>::type;
+      using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 
@@ -867,7 +866,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<1>::type;
+      using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       REQUIRE(fp->is_obviously_finite());
@@ -933,7 +932,7 @@ namespace libsemigroups {
                             "[quick]") {
       auto                                  rg = ReportGuard(REPORT);
       std::unique_ptr<FpSemigroupInterface> fp;
-      using Transf = typename TransfHelper<1>::type;
+      using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
       fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
 

@@ -20,15 +20,14 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-intf.hpp"         // for CongruenceInterface
-#include "libsemigroups/cong-pair.hpp"         // for CongruenceByPairs
-#include "libsemigroups/cong.hpp"              // for Congruence
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element.hpp"           // for Transformation
-#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
-#include "libsemigroups/knuth-bendix.hpp"      // for KnuthBendix
-#include "libsemigroups/tce.hpp"               // for TCE
-#include "libsemigroups/todd-coxeter.hpp"      // for ToddCoxeter
+#include "libsemigroups/cong-intf.hpp"     // for CongruenceInterface
+#include "libsemigroups/cong-pair.hpp"     // for CongruenceByPairs
+#include "libsemigroups/cong.hpp"          // for Congruence
+#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/tce.hpp"           // for TCE
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"        // for Transf<>
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
@@ -329,9 +328,8 @@ namespace libsemigroups {
                             "cbegin/cend_ntc",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       std::unique_ptr<CongruenceInterface> cong;
 
@@ -345,9 +343,8 @@ namespace libsemigroups {
         cong = std::make_unique<KnuthBendix>(S);
       }
 
-      cong->add_pair(
-          S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
-          S.factorisation(Transformation<uint16_t>({3, 1, 3, 3, 3})));
+      cong->add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                     S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
       REQUIRE(cong->nr_classes() == 21);
       REQUIRE(cong->nr_non_trivial_classes() == 1);
@@ -430,9 +427,8 @@ namespace libsemigroups {
                             "cbegin/cend_ntc",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       std::unique_ptr<CongruenceInterface> cong;
 
@@ -446,9 +442,8 @@ namespace libsemigroups {
       SECTION("Congruence") {
         cong = std::make_unique<Congruence>(right, S);
       }
-      cong->add_pair(
-          S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
-          S.factorisation(Transformation<uint16_t>({3, 1, 3, 3, 3})));
+      cong->add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                     S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
       REQUIRE(cong->nr_classes() == 72);
       REQUIRE(cong->nr_non_trivial_classes() == 4);
@@ -564,10 +559,9 @@ namespace libsemigroups {
                             "no generating pairs",
                             "[quick][cong]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>({Transf<>({1, 3, 4, 2, 3}),
+                                      Transf<>({1, 3, 4, 2, 3}),
+                                      Transf<>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 21);

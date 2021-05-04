@@ -26,21 +26,19 @@
 #include <functional>  // for mem_fn
 #include <vector>      // for vector
 
-#include "catch.hpp"      // for SECTION, REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"            // for SECTION, REQUIRE, REQUIRE_THROWS_AS
+#include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
+#include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
 
-#include "fpsemi-examples.hpp"      // for RennerTypeDMonoid, RennerTypeBMonoid
-#include "libsemigroups/bmat8.hpp"  // for Bmat8
-#include "libsemigroups/cong-intf.hpp"         // for congruence::type
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
-#include "libsemigroups/element-helper.hpp"    // for TransfHelper
-#include "libsemigroups/element.hpp"           // for Element, Transf,
-#include "libsemigroups/fpsemi.hpp"            // for FpSemigroup
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<Element const*>::eleme...
+#include "libsemigroups/bmat8.hpp"         // for BMat8
+#include "libsemigroups/cong-intf.hpp"     // for congruence::type
+#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/order.hpp"         // for shortlex_words
 #include "libsemigroups/tce.hpp"           // for TCE
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"        // for Transf<>
 #include "libsemigroups/types.hpp"         // for relation_type, word_type
 #include "libsemigroups/wislo.hpp"         // for cbegin_wislo
 
@@ -508,7 +506,7 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
 
-      using Transf = TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
@@ -669,17 +667,16 @@ namespace libsemigroups {
                             "2-sided cong. trans. semigroup",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(twosided, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_relations);
-      tc.add_pair(S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
-                  S.factorisation(Transformation<uint16_t>({3, 1, 3, 3, 3})));
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
       TEST_HLT(tc);
       TEST_FELSCH(tc);
@@ -688,10 +685,9 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 21);
       REQUIRE(tc.nr_classes() == 21);
 
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({1, 3, 1, 3, 3})))
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
               == tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
+                  S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
 
       tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 1);
@@ -703,17 +699,16 @@ namespace libsemigroups {
                             "left congruence on transformation semigroup",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(left, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_relations);
-      tc.add_pair(S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
-                  S.factorisation(Transformation<uint16_t>({3, 1, 3, 3, 3})));
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
       TEST_HLT(tc);
       TEST_FELSCH(tc);
@@ -722,10 +717,9 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 69);
       REQUIRE(tc.nr_classes() == 69);
 
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({1, 3, 1, 3, 3})))
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
               != tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
+                  S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
 
       tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 1);
@@ -737,17 +731,16 @@ namespace libsemigroups {
                             "right cong. trans. semigroup",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
-      auto S  = FroidurePin<Transformation<uint16_t>>(
-          {Transformation<uint16_t>({1, 3, 4, 2, 3}),
-           Transformation<uint16_t>({3, 2, 1, 3, 3})});
+      auto S  = FroidurePin<Transf<>>(
+          {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(right, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_relations);
-      tc.add_pair(S.factorisation(Transformation<uint16_t>({3, 4, 4, 4, 4})),
-                  S.factorisation(Transformation<uint16_t>({3, 1, 3, 3, 3})));
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
       TEST_HLT(tc);
       TEST_FELSCH(tc);
@@ -756,23 +749,19 @@ namespace libsemigroups {
       REQUIRE(tc.nr_classes() == 72);
       REQUIRE(tc.nr_classes() == 72);
 
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({1, 3, 1, 3, 3})))
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
               != tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
+                  S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
 
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({1, 3, 3, 3, 3})))
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
               != tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({4, 2, 4, 4, 2}))));
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({2, 4, 2, 2, 2})))
+                  S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({2, 4, 2, 2, 2})))
               == tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({2, 3, 3, 3, 3}))));
-      REQUIRE(tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({1, 3, 3, 3, 3})))
+                  S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+      REQUIRE(tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
               != tc.word_to_class_index(
-                  S.factorisation(Transformation<uint16_t>({2, 3, 3, 3, 3}))));
+                  S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
 
       tc.standardize(tc_order::shortlex);
       REQUIRE(tc.nr_non_trivial_classes() == 4);
@@ -793,11 +782,9 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
 
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-      FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
-      delete_gens(gens);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
@@ -806,11 +793,9 @@ namespace libsemigroups {
       ToddCoxeter tc(twosided, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_cayley_graph);
 
-      Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-      Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
       word_type w1, w2;
-      S.factorisation(w1, S.position(t1));
-      S.factorisation(w2, S.position(t2));
+      S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+      S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
 
       tc.add_pair(w1, w2);
 
@@ -821,14 +806,10 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 21);
       REQUIRE(tc.nr_classes() == 21);
-      Element*  t3 = new Transformation<uint16_t>({1, 3, 1, 3, 3});
-      Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
       word_type w3, w4;
-      S.factorisation(w3, S.position(t3));
-      S.factorisation(w4, S.position(t4));
+      S.factorisation(w3, S.position(Transf<>({1, 3, 1, 3, 3})));
+      S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
       REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
-
-      delete t1, delete t2, delete t3, delete t4;
       tc.standardize(tc_order::shortlex);
     }
 
@@ -836,24 +817,19 @@ namespace libsemigroups {
                             "013",
                             "left cong. on trans. semigroup (size 88)",
                             "[todd-coxeter][quick]") {
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-      FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-      auto                        rg = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
-      Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-      Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
       word_type w1, w2;
-      S.factorisation(w1, S.position(t1));
-      S.factorisation(w2, S.position(t2));
+      S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+      S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
       ToddCoxeter tc(left, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
-      delete t1, delete t2;
 
       TEST_HLT(tc);
       TEST_FELSCH(tc);
@@ -868,21 +844,17 @@ namespace libsemigroups {
                             "014",
                             "right cong. on trans. semigroup (size 88)",
                             "[todd-coxeter][quick]") {
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-      FroidurePin<Element const*> S  = FroidurePin<Element const*>(gens);
-      auto                        rg = ReportGuard(REPORT);
-      delete_gens(gens);
+      auto                  rg = ReportGuard(REPORT);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
       REQUIRE(S.degree() == 5);
-      Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-      Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
       word_type w1, w2;
-      S.factorisation(w1, S.position(t1));
-      S.factorisation(w2, S.position(t2));
+      S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+      S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
       ToddCoxeter tc(right, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
@@ -893,19 +865,14 @@ namespace libsemigroups {
 
       REQUIRE(tc.nr_classes() == 72);
       REQUIRE(tc.nr_classes() == 72);
-      Element*  t3 = new Transformation<uint16_t>({1, 3, 3, 3, 3});
-      Element*  t4 = new Transformation<uint16_t>({4, 2, 4, 4, 2});
-      Element*  t5 = new Transformation<uint16_t>({2, 4, 2, 2, 2});
-      Element*  t6 = new Transformation<uint16_t>({2, 3, 3, 3, 3});
       word_type w3, w4, w5, w6;
-      S.factorisation(w3, S.position(t3));
-      S.factorisation(w4, S.position(t4));
-      S.factorisation(w5, S.position(t5));
-      S.factorisation(w6, S.position(t6));
+      S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
+      S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
+      S.factorisation(w5, S.position(Transf<>({2, 4, 2, 2, 2})));
+      S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
       REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
       REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
       REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w6));
-      delete t1, delete t2, delete t3, delete t4, delete t5, delete t6;
       tc.standardize(tc_order::shortlex);
     }
 
@@ -1112,21 +1079,16 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
 
-      std::vector<Element*> gens
-          = {new Transformation<uint16_t>({1, 3, 4, 2, 3}),
-             new Transformation<uint16_t>({3, 2, 1, 3, 3})};
-      FroidurePin<Element const*> S = FroidurePin<Element const*>(gens);
-      delete_gens(gens);
+      FroidurePin<Transf<>> S;
+      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
 
-      Element*  t1 = new Transformation<uint16_t>({3, 4, 4, 4, 4});
-      Element*  t2 = new Transformation<uint16_t>({3, 1, 3, 3, 3});
       word_type w1, w2;
-      S.factorisation(w1, S.position(t1));
-      S.factorisation(w2, S.position(t2));
-      delete t1, delete t2;
+      S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+      S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
 
       ToddCoxeter tc(left, S);
       tc.froidure_pin_policy(policy::froidure_pin::use_cayley_graph);
@@ -1657,7 +1619,7 @@ namespace libsemigroups {
                             "congruence of ToddCoxeter",
                             "[todd-coxeter][quick]") {
       auto rg      = ReportGuard(REPORT);
-      using Transf = TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
@@ -1708,7 +1670,7 @@ namespace libsemigroups {
                             "exceptions",
                             "[todd-coxeter][quick]") {
       auto rg      = ReportGuard(REPORT);
-      using Transf = TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       ToddCoxeter         tc(twosided);
       tc.set_nr_generators(2);
@@ -1853,7 +1815,7 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
 
-      using Transf = TransfHelper<5>::type;
+      using Transf = LeastTransf<5>;
 
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE(S.size() == 88);

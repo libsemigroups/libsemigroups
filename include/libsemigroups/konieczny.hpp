@@ -38,7 +38,6 @@
 #include "adapters.hpp"                 // for Lambda, etc
 #include "bruidhinn-traits.hpp"         // for BruidhinnTraits
 #include "constants.hpp"                // for UNDEFINED
-#include "element-adapters.hpp"         // for Rank
 #include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "pool.hpp"                     // for detail::Pool

@@ -591,7 +591,7 @@ namespace libsemigroups {
     //                         "congruence (21 classes)",
     //                         "[quick][congruence][knuth-bendix][cong]") {
     //   auto rg      = ReportGuard(REPORT);
-    //   using Transf = TransfHelper<5>::type;
+    //   using Transf = LeastTransf<5>;
     //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
     //   3})});
 
