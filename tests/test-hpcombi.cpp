@@ -24,14 +24,13 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                           // for REQUIRE
-#include "libsemigroups/element-adapters.hpp"  // for Degree
-#include "libsemigroups/element.hpp"           // for Transformation
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/hpcombi.hpp"           // for PTransf16, ...
-#include "libsemigroups/int-range.hpp"         // for IntegralRange
-#include "libsemigroups/report.hpp"            // for ReportGuard
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                       // for REQUIRE
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
+#include "libsemigroups/int-range.hpp"     // for IntegralRange
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 using namespace HPCombi;
 
@@ -275,7 +274,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "011", "Transf16", "[standard][hpcombi]") {
     auto rg = ReportGuard(REPORT);
 
-    using Transf = libsemigroups::Transformation<size_t>;
+    using Transf = libsemigroups::Transf<>;
     FroidurePin<Transf> S({Transf({1, 7, 2, 6, 0, 4, 1, 5}),
                            Transf({2, 4, 6, 1, 4, 5, 2, 7}),
                            Transf({3, 0, 7, 2, 4, 6, 2, 4}),
@@ -331,7 +330,7 @@ namespace libsemigroups {
                           "014",
                           "full transformation monoid 8",
                           "[extreme][hpcombi]") {
-    using Transf           = libsemigroups::Transformation<uint_fast8_t>;
+    using Transf           = libsemigroups::Transf<>;
     auto                rg = ReportGuard(true);
     FroidurePin<Transf> S({Transf({1, 2, 3, 4, 5, 6, 7, 0}),
                            Transf({1, 0, 2, 3, 4, 5, 6, 7}),

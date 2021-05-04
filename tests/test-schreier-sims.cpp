@@ -75,23 +75,22 @@ namespace libsemigroups {
     // since 100 is too large, and causes this test to seg fault.
     auto S     = new SchreierSims<N>();
     using Perm = std::remove_pointer<decltype(S)>::type::element_type;
-    std::array<SchreierSims<N>::point_type, N> rry;
-    std::iota(rry.begin(), rry.end(), 0);
 
-    S->add_generator(Perm(rry));
+    auto p = Perm::identity(N);
+
+    S->add_generator(p);
 
     REQUIRE(S->size() == 1);
+    REQUIRE(S->contains(p));
 
-    REQUIRE(S->contains(Perm(rry)));
-
-    std::swap(rry[30], rry[31]);
-    REQUIRE(!S->contains(Perm(rry)));
-    std::swap(rry[73], rry[32]);
-    REQUIRE(!S->contains(Perm(rry)));
-    std::swap(rry[73], rry[32]);
-    std::swap(rry[30], rry[31]);
-    std::swap(rry[0], rry[99]);
-    REQUIRE(!S->contains(Perm(rry)));
+    std::swap(p[30], p[31]);
+    REQUIRE(!S->contains(p));
+    std::swap(p[73], p[32]);
+    REQUIRE(!S->contains(p));
+    std::swap(p[73], p[32]);
+    std::swap(p[30], p[31]);
+    std::swap(p[0], p[99]);
+    REQUIRE(!S->contains(p));
     delete S;
   }
 
@@ -648,7 +647,7 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 11;
-    using Perm          = Perm<size_t, std::vector<size_t>>;
+    using Perm          = Perm<0, size_t>;
     auto S              = SchreierSims<N, size_t, Perm>();
 
     S.add_generator(Perm({0, 9, 2, 10, 6, 5, 4, 8, 7, 1, 3}));
@@ -2667,7 +2666,7 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 8;
-    using Perm          = libsemigroups::Perm<size_t, std::vector<size_t>>;
+    using Perm          = libsemigroups::Perm<0, size_t>;
     auto S              = SchreierSims<N, size_t, Perm>();
 
     S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
@@ -2683,8 +2682,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 8;
-    using Perm          = Perm<size_t, std::vector<size_t>>;
-    auto S              = SchreierSims<N, size_t, Perm>();
+    using Perm          = Perm<>;
+    auto S              = SchreierSims<N, Perm::value_type, Perm>();
 
     S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
     S.add_generator(Perm({0, 1, 3, 2, 4, 5, 6, 7}));
@@ -2710,8 +2709,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 10;
-    using Perm          = Perm<size_t, std::vector<size_t>>;
-    auto S              = SchreierSims<N, size_t, Perm>();
+    using Perm          = Perm<>;
+    auto S              = SchreierSims<N, Perm::value_type, Perm>();
 
     S.add_generator(Perm({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
     S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
@@ -2725,8 +2724,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 12;
-    using Perm          = Perm<size_t, std::vector<size_t>>;
-    auto S              = SchreierSims<N, size_t, Perm>();
+    using Perm          = Perm<>;
+    auto S              = SchreierSims<N, Perm::value_type, Perm>();
 
     S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
     S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 11, 10}));
@@ -2812,8 +2811,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(REPORT);
     constexpr size_t N  = 57;
-    using Perm          = Perm<size_t, std::vector<size_t>>;
-    auto S              = new SchreierSims<N, size_t, Perm>();
+    using Perm          = Perm<>;
+    auto S              = new SchreierSims<N, Perm::value_type, Perm>();
 
     S->add_generator(
         Perm({1,  8,  15, 22, 29, 36, 43, 50, 12, 19, 26, 33, 40, 47, 54,
@@ -2940,8 +2939,8 @@ namespace libsemigroups {
                           "symmetric perm. group (degree 5)",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = Perm<size_t, std::vector<size_t>>;
-    SchreierSims<5, size_t, Perm> S;
+    using Perm = Perm<>;
+    SchreierSims<5, Perm::value_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
@@ -3018,8 +3017,8 @@ namespace libsemigroups {
                           "exceptions",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = Perm<size_t, std::vector<size_t>>;
-    SchreierSims<5, size_t, Perm> S;
+    using Perm = Perm<>;
+    SchreierSims<5, Perm::value_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
@@ -3048,8 +3047,8 @@ namespace libsemigroups {
                           "exceptions",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = Perm<size_t, std::vector<size_t>>;
-    SchreierSims<5, size_t, Perm> S;
+    using Perm = Perm<>;
+    SchreierSims<5, Perm::value_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);

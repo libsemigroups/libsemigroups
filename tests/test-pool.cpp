@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"                           // for REQUIRE
-#include "libsemigroups/element-adapters.hpp"  // for Product
-#include "libsemigroups/element.hpp"           // for Transformation
-#include "libsemigroups/matrix.hpp"            // for BMat<>
-#include "libsemigroups/pool.hpp"              // for Pool
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for REQUIRE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/matrix.hpp"  // for BMat<>
+#include "libsemigroups/pool.hpp"    // for Pool
+#include "libsemigroups/transf.hpp"  // for Transf<>
 
 namespace libsemigroups {
   namespace detail {
@@ -29,11 +29,11 @@ namespace libsemigroups {
                             "000",
                             "initial",
                             "[quick][transformation]") {
-      Pool<Transformation<size_t>*> cache;
+      Pool<Transf<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
-      Transformation<size_t> t({0, 1, 3, 2});
+      Transf<> t({0, 1, 3, 2});
       cache.init(&t);
-      Transformation<size_t>& x = *cache.acquire();
+      Transf<>& x = *cache.acquire();
       REQUIRE(x == t);
       REQUIRE_NOTHROW(cache.release(&x));
       auto& tmp1 = *cache.acquire();
@@ -79,20 +79,20 @@ namespace libsemigroups {
                             "003",
                             "transformation products",
                             "[quick][transformation]") {
-      Pool<Transformation<size_t>*> cache;
-      Transformation<size_t>        t({0, 1, 3, 2, 5, 7, 3, 4});
+      Pool<Transf<>*> cache;
+      Transf<>        t({0, 1, 3, 2, 5, 7, 3, 4});
       cache.init(&t);
-      Transformation<size_t>* x = cache.acquire();
-      Transformation<size_t>* y = cache.acquire();
+      Transf<>* x = cache.acquire();
+      Transf<>* y = cache.acquire();
       REQUIRE(x != y);
       REQUIRE(&t != x);
       REQUIRE(&t != y);
       *y = t;
-      Product<Transformation<size_t>*>()(x, &t, y);
+      Product<Transf<>>()(*x, t, *y);
       REQUIRE(*x == t * t);
       REQUIRE(&t != x);
       REQUIRE(&t != y);
-      Product<Transformation<size_t>*>()(y, &t, x);
+      Product<Transf<>>()(*y, t, *x);
       REQUIRE(*y == t * t * t);
     }
   }  // namespace detail

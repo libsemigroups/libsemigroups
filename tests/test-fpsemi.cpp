@@ -18,17 +18,15 @@
 
 // The purpose of this file is to provide unit tests for the FpSemigroup class.
 
-#include "catch.hpp"            // for LIBSEMIGROUPS_TEST_CASE
-#include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
-#include "libsemigroups/element-adapters.hpp"   // for Degree etc
-#include "libsemigroups/element-helper.hpp"     // for Transf, Transf<>::type
-#include "libsemigroups/element.hpp"            // for Transformation
-#include "libsemigroups/fpsemi.hpp"             // for FpSemigroup
+#include "catch.hpp"                 // for LIBSEMIGROUPS_TEST_CASE
+#include "fpsemi-examples.hpp"       // for RennerTypeDMonoid, RennerTypeBMonoid
+#include "libsemigroups/fpsemi.hpp"  // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"        // for Transf<>
 #include "libsemigroups/types.hpp"         // for relation_type
 #include "test-main.hpp"
 
@@ -678,23 +676,23 @@ namespace libsemigroups {
                           "[quick][fpsemi]") {
     auto rg = ReportGuard(REPORT);
 
-    using Transf = TransfHelper<5>::type;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<LeastTransf<5>> S(
+        {LeastTransf<5>({1, 3, 4, 2, 3}), LeastTransf<5>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.nr_rules() == 18);
 
     FpSemigroup T(S);
     REQUIRE(T.nr_rules() == 18);
-    T.add_rule(S.factorisation(Transf({3, 4, 4, 4, 4})),
-               S.factorisation(Transf({3, 1, 3, 3, 3})));
+    T.add_rule(S.factorisation(LeastTransf<5>({3, 4, 4, 4, 4})),
+               S.factorisation(LeastTransf<5>({3, 1, 3, 3, 3})));
     REQUIRE(T.nr_rules() == 19);
 
     REQUIRE(T.size() == 21);
-    REQUIRE(T.equal_to(S.factorisation(Transf({1, 3, 1, 3, 3})),
-                       S.factorisation(Transf({4, 2, 4, 4, 2}))));
-    REQUIRE(T.normal_form(S.factorisation(Transf({1, 3, 1, 3, 3})))
-            == T.normal_form(S.factorisation(Transf({4, 2, 4, 4, 2}))));
+    REQUIRE(T.equal_to(S.factorisation(LeastTransf<5>({1, 3, 1, 3, 3})),
+                       S.factorisation(LeastTransf<5>({4, 2, 4, 4, 2}))));
+    REQUIRE(T.normal_form(S.factorisation(LeastTransf<5>({1, 3, 1, 3, 3})))
+            == T.normal_form(S.factorisation(LeastTransf<5>({4, 2, 4, 4, 2}))));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -964,7 +962,7 @@ namespace libsemigroups {
                           "045",
                           "constructors",
                           "[fpsemigroup][quick]") {
-    using Transf8           = Transformation<uint8_t>;
+    using Transf8           = LeastTransf<3>;
     auto                 rg = ReportGuard(REPORT);
     FroidurePin<Transf8> S({Transf8({1, 0, 1}), Transf8({0, 0, 0})});
 

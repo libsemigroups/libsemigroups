@@ -25,7 +25,7 @@
 // and as implemented in the kernel module of the Digraphs package for GAP in
 // C:
 //
-// https://github.com/gap-packages/Digraphs/blob/master/src/schreier-sims.c
+// https://github.com/digraphs/Digraphs/blob/master/src/schreier-sims.c
 //
 // by Wilf A. Wilson.
 
@@ -147,7 +147,7 @@ namespace libsemigroups {
   //!  \endcode
   template <size_t N,
             typename TPointType   = typename SmallestInteger<N>::type,
-            typename TElementType = typename NewPermHelper<N>::type,
+            typename TElementType = LeastPerm<N>,
             typename TTraits = SchreierSimsTraits<N, TPointType, TElementType>>
   class SchreierSims final : private detail::BruidhinnTraits<TElementType> {
     static_assert(

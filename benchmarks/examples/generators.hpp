@@ -23,8 +23,8 @@
 #include <string>
 #include <vector>
 
-#include "libsemigroups/element-helper.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"
+#include "libsemigroups/transf.hpp"
 
 namespace libsemigroups {
 
@@ -46,12 +46,10 @@ namespace libsemigroups {
     return thing;
   }
 
-  using Transf = typename TransfHelper<16>::type;
+  std::vector<Generators<LeastTransf<16>>> const& transf_examples();
+  Generators<LeastTransf<16>> const&              transf_examples(size_t id);
 
-  std::vector<Generators<Transf>> const& transf_examples();
-  Generators<Transf> const&              transf_examples(size_t id);
-
-  Generators<Transf> full_transf_monoid(size_t n);
+  Generators<LeastTransf<16>> full_transf_monoid(size_t n);
 
 }  // namespace libsemigroups
 

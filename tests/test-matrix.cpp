@@ -14,23 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <algorithm>  // for lexicographical_compare
-#include <array>      // for array
-#include <cstddef>    // for size_t
-#include <vector>     // for vector
+#include <algorithm>    // for lexicographical_compare
+#include <array>        // for array
+#include <cstddef>      // for size_t
+#include <numeric>      // for accumulate
+#include <type_traits>  // for move, swap, dec...
+#include <utility>      // for operator==, pair
+#include <vector>       // for vector
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/containers.hpp"           // for StaticVector1
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/matrix.hpp"               // for BMat, IntMat etc
-#include "libsemigroups/report.hpp"               // for ReportGuard
+#include "libsemigroups/adapters.hpp"                 // for Complexity, Degree
+#include "libsemigroups/bmat8.hpp"                    // for BMat8
+#include "libsemigroups/constants.hpp"                // for NEGATIVE_INFINITY
+#include "libsemigroups/containers.hpp"               // for StaticVector1
+#include "libsemigroups/fastest-bmat.hpp"             // for FastestBMat
+#include "libsemigroups/libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_A...
+#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupsEx...
+#include "libsemigroups/matrix.hpp"                   // for BMat, NTPMat
+#include "libsemigroups/report.hpp"                   // for ReportGuard
 
 namespace libsemigroups {
-  struct LibsemigroupsException;  // forward decl
+  template <size_t N>
+  class BitSet;
+
   constexpr bool REPORT = false;
 
   namespace {
@@ -1206,6 +1216,13 @@ namespace libsemigroups {
       REQUIRE(z(1, 0) == 0);
       delete sr;
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FastestBMat",
+                          "046",
+                          "check no throw",
+                          "[quick][matrix]") {
+    REQUIRE_NOTHROW(FastestBMat<3>({{0, 1}, {0, 1}}));
   }
 
 }  // namespace libsemigroups

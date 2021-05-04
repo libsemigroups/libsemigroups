@@ -36,6 +36,7 @@
 // 6: contains tests for congruence::KnuthBendix.
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <string>  // for string
 #include <vector>  // for vector
@@ -46,18 +47,14 @@
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/stl.hpp"           // for XXX
+#include "libsemigroups/string.hpp"        // for XXX
 
 namespace libsemigroups {
   constexpr bool REPORT = false;
 
   using rule_type = fpsemigroup::KnuthBendix::rule_type;
 
-  template <typename TElementType>
-  void delete_gens(std::vector<TElementType>& gens) {
-    for (auto x : gens) {
-      delete x;
-    }
-  }
   namespace fpsemigroup {
     ////////////////////////////////////////////////////////////////////////
     // Standard tests
@@ -429,6 +426,99 @@ namespace libsemigroups {
           break;
         }
       } while (std::next_permutation(perm.begin(), perm.end()));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "013",
+                            "Sorouhesh",
+                            "[quick][knuth-bendix][kbmag][shortlex]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 2;
+      size_t const p  = 11;
+
+      KnuthBendix kb;
+      kb.set_alphabet("ab");
+      kb.add_rule(std::string(size_t(std::pow(5, n)), 'a'), "a");
+      kb.add_rule("aba", "b");
+      kb.add_rule("ab", std::string(p, 'b') + "a");
+
+      REQUIRE(!kb.confluent());
+
+      kb.run();
+      REQUIRE(kb.nr_active_rules() == 7);
+      REQUIRE(kb.size() == size_t(std::pow(5, n)) + 4 * p - 5);
+      REQUIRE(kb.normal_form("aabb") == "aabb");
+      REQUIRE(kb.normal_form("aabbaabb") == "bbbb");
+      REQUIRE(kb.normal_form("aabbaabbaabb") == "aabbbbbb");
+      REQUIRE(kb.normal_form("aabbaabbaabbaabb") == "bbbbbbbb");
+      REQUIRE(kb.normal_form("aabbaabbaabbaabbaabb") == "aabbbbbbbbbb");
+      REQUIRE(
+          std::vector<std::string>(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
+                                   kb.cend_normal_forms())
+          == std::vector<std::string>({"a",
+                                       "b",
+                                       "aa",
+                                       "ab",
+                                       "ba",
+                                       "bb",
+                                       "aaa",
+                                       "aab",
+                                       "abb",
+                                       "bab",
+                                       "bbb",
+                                       "aaaa",
+                                       "aabb",
+                                       "abbb",
+                                       "babb",
+                                       "bbbb",
+                                       "aaaaa",
+                                       "aabbb",
+                                       "abbbb",
+                                       "babbb",
+                                       "bbbbb",
+                                       "aaaaaa",
+                                       "aabbbb",
+                                       "abbbbb",
+                                       "babbbb",
+                                       "bbbbbb",
+                                       "aaaaaaa",
+                                       "aabbbbb",
+                                       "abbbbbb",
+                                       "babbbbb",
+                                       "bbbbbbb",
+                                       "aaaaaaaa",
+                                       "aabbbbbb",
+                                       "abbbbbbb",
+                                       "babbbbbb",
+                                       "bbbbbbbb",
+                                       "aaaaaaaaa",
+                                       "aabbbbbbb",
+                                       "abbbbbbbb",
+                                       "babbbbbbb",
+                                       "bbbbbbbbb",
+                                       "aaaaaaaaaa",
+                                       "aabbbbbbbb",
+                                       "abbbbbbbbb",
+                                       "babbbbbbbb",
+                                       "bbbbbbbbbb",
+                                       "aaaaaaaaaaa",
+                                       "aabbbbbbbbb",
+                                       "abbbbbbbbbb",
+                                       "babbbbbbbbb",
+                                       "aaaaaaaaaaaa",
+                                       "aabbbbbbbbbb",
+                                       "aaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaaaaaa",
+                                       "aaaaaaaaaaaaaaaaaaaaaaaa"}));
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

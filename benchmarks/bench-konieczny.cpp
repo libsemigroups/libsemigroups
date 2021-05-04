@@ -21,13 +21,12 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
 
-#include "libsemigroups/bitset.hpp"            // for BitSet
-#include "libsemigroups/bmat.hpp"              // for BMat adapters
-#include "libsemigroups/element-adapters.hpp"  // for ImageRightAction etc
-#include "libsemigroups/element.hpp"           // for Transformation
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/matrix.hpp"            // for BMat
-#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/bitset.hpp"        // for BitSet
+#include "libsemigroups/bmat.hpp"          // for BMat adapters
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/matrix.hpp"        // for BMat
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/transf.hpp"        // for Transformation
 
 namespace libsemigroups {
 
@@ -212,23 +211,22 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  void benchmark_transf_rho(FroidurePin<Transformation<size_t>> const& S,
-                            std::string                                title) {
+  void benchmark_transf_rho(FroidurePin<Transf<>> const& S, std::string title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Rho<Transformation<size_t>, T>()(result, *it);
+        Rho<Transf<>, T>()(result, *it);
       }
     };
   }
 
   template <typename T>
-  void benchmark_transf_lambda(FroidurePin<Transformation<size_t>> const& S,
-                               std::string title) {
+  void benchmark_transf_lambda(FroidurePin<Transf<>> const& S,
+                               std::string                  title) {
     T result;
     BENCHMARK("using " + title) {
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        Lambda<Transformation<size_t>, T>()(result, *it);
+        Lambda<Transf<>, T>()(result, *it);
       }
     };
   }
@@ -1055,8 +1053,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   TEST_CASE("Example 3: transformations, rho", "[quick][013][transf]") {
-    auto                                rg = ReportGuard(false);
-    FroidurePin<Transformation<size_t>> S;
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
     transf_example1(S);
     S.run();
     REQUIRE(S.size() == 597369);
@@ -1070,8 +1068,8 @@ namespace libsemigroups {
   }
 
   TEST_CASE("Example 3: transformations, lambda", "[quick][014][transf]") {
-    auto                                rg = ReportGuard(false);
-    FroidurePin<Transformation<size_t>> S;
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
     transf_example1(S);
     S.run();
     REQUIRE(S.size() == 597369);

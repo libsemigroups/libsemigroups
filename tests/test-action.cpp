@@ -23,14 +23,12 @@
 #include <stdexcept>  // for out_of_range
 #include <vector>     // for vector
 
-#include "libsemigroups/action.hpp"            // for LeftAction, RightAction
-#include "libsemigroups/bmat.hpp"              // for BMat adapters
-#include "libsemigroups/bmat8.hpp"             // for BMat8 etc
-#include "libsemigroups/element-adapters.hpp"  // for ImageRightAction etc
-#include "libsemigroups/element-helper.hpp"    // for PermHelper, PPermHelper
-#include "libsemigroups/element.hpp"           // for PartialPerm
-#include "libsemigroups/matrix.hpp"            // for BMat
-#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/action.hpp"  // for LeftAction, RightAction
+#include "libsemigroups/bmat.hpp"    // for BMat adapters
+#include "libsemigroups/bmat8.hpp"   // for BMat8 etc
+#include "libsemigroups/matrix.hpp"  // for BMat
+#include "libsemigroups/report.hpp"  // for ReportGuard
+#include "libsemigroups/transf.hpp"  // for PPerm<>
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -382,16 +380,15 @@ namespace libsemigroups {
                           "007",
                           "partial perm image orbit",
                           "[quick]") {
-    auto rg     = ReportGuard(REPORT);
-    using PPerm = PartialPerm<uint_fast8_t>;
-    RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
-    o.add_seed(PPerm::identity(8));
+    auto rg = ReportGuard(REPORT);
+    RightAction<PPerm<8>, PPerm<8>, ImageRightAction<PPerm<8>, PPerm<8>>> o;
+    o.add_seed(PPerm<8>::identity(8));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
-    o.add_generator(PPerm({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
-    o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
+        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
+    o.add_generator(PPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
+    o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
   }
 
@@ -399,24 +396,25 @@ namespace libsemigroups {
                           "008",
                           "partial perm image orbit",
                           "[quick][no-valgrind]") {
-    auto rg     = ReportGuard(REPORT);
-    using PPerm = PartialPerm<uint_fast8_t>;
-    RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
-    o.add_seed(PPerm::identity(16));
+    auto rg = ReportGuard(REPORT);
+    RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
+    o.add_seed(PPerm<16>::identity(16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-              16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                  16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              16));
-    o.add_generator(PPerm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          16));
-    o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
+    o.add_generator(
+        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  16));
+    o.add_generator(
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
     o.reserve(70000);
     REQUIRE(o.size() == 65536);
   }
@@ -425,24 +423,25 @@ namespace libsemigroups {
                           "009",
                           "partial perm image orbit",
                           "[quick][no-valgrind]") {
-    auto rg     = ReportGuard(REPORT);
-    using PPerm = PPermHelper<16>::type;
-    RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
-    o.add_seed(One<PPerm>()(16));
+    auto rg = ReportGuard(REPORT);
+    RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
+    o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-              16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                  16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              16));
-    o.add_generator(PPerm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          16));
-    o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
+    o.add_generator(
+        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  16));
+    o.add_generator(
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
     o.reserve(70000);
     REQUIRE(o.size() == 65536);
     REQUIRE(o.digraph().nr_scc() == 17);
@@ -452,24 +451,25 @@ namespace libsemigroups {
                           "010",
                           "partial perm image orbit",
                           "[quick][no-valgrind]") {
-    auto rg     = ReportGuard(REPORT);
-    using PPerm = PPermHelper<16>::type;
-    LeftAction<PPerm, PPerm, ImageLeftAction<PPerm, PPerm>> o;
-    o.add_seed(One<PPerm>()(16));
+    auto rg = ReportGuard(REPORT);
+    LeftAction<PPerm<16>, PPerm<16>, ImageLeftAction<PPerm<16>, PPerm<16>>> o;
+    o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-              16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                  16));
     o.add_generator(
-        PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-              16));
-    o.add_generator(PPerm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          16));
-    o.add_generator(PPerm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                          {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                          16));
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
+    o.add_generator(
+        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  16));
+    o.add_generator(
+        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                  16));
     REQUIRE(o.size() == 65536);
     REQUIRE(o.digraph().nr_scc() == 17);
   }
@@ -479,7 +479,7 @@ namespace libsemigroups {
                           "permutation on integers",
                           "[quick]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<8>::type;
+    using Perm = LeastPerm<8>;
     RightAction<Perm, uint8_t, ImageRightAction<Perm, uint8_t>> o;
     o.add_seed(0);
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
@@ -494,7 +494,7 @@ namespace libsemigroups {
                           "permutation on sets, arrays",
                           "[quick]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<10>::type;
+    using Perm = LeastPerm<10>;
 
     RightAction<Perm,
                 std::array<uint8_t, 5>,
@@ -512,7 +512,7 @@ namespace libsemigroups {
                           "permutation on tuples, arrays",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<10>::type;
+    using Perm = LeastPerm<10>;
 
     RightAction<Perm,
                 std::array<uint8_t, 5>,
@@ -530,7 +530,7 @@ namespace libsemigroups {
                           "permutation on sets, vectors",
                           "[quick]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<10>::type;
+    using Perm = LeastPerm<10>;
 
     RightAction<Perm, std::vector<uint8_t>, OnSets<Perm, uint8_t>> o;
     o.add_seed({0, 1, 2, 3, 4});
@@ -544,7 +544,7 @@ namespace libsemigroups {
                           "permutation on tuples, vectors",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<10>::type;
+    using Perm = LeastPerm<10>;
 
     RightAction<Perm, std::vector<uint8_t>, OnTuples<Perm, uint8_t>> o;
     o.add_seed({0, 1, 2, 3, 4});
@@ -556,7 +556,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action", "016", "misc", "[quick]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<8>::type;
+    using Perm = LeastPerm<8>;
     RightAction<Perm, uint8_t, ImageRightAction<Perm, uint8_t>> o;
     REQUIRE(o.current_size() == 0);
     REQUIRE(o.empty());
@@ -591,30 +591,29 @@ namespace libsemigroups {
                           "017",
                           "partial perm image orbit",
                           "[quick]") {
-    auto rg     = ReportGuard(REPORT);
-    using PPerm = PPermHelper<3>::type;
-    RightAction<PPerm, PPerm, ImageRightAction<PPerm, PPerm>> o;
-    o.add_seed(PPerm({0, 1, 2}, {0, 1, 2}, 3));
-    o.add_generator(PPerm({0, 1, 2}, {1, 2, 0}, 3));
-    o.add_generator(PPerm({0, 1, 2}, {1, 0, 2}, 3));
-    o.add_generator(PPerm({1, 2}, {0, 1}, 3));
-    o.add_generator(PPerm({0, 1}, {1, 2}, 3));
+    auto rg = ReportGuard(REPORT);
+    RightAction<PPerm<3>, PPerm<3>, ImageRightAction<PPerm<3>, PPerm<3>>> o;
+    o.add_seed(PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
+    o.add_generator(PPerm<3>({0, 1, 2}, {1, 2, 0}, 3));
+    o.add_generator(PPerm<3>({0, 1, 2}, {1, 0, 2}, 3));
+    o.add_generator(PPerm<3>({1, 2}, {0, 1}, 3));
+    o.add_generator(PPerm<3>({0, 1}, {1, 2}, 3));
     REQUIRE(o.size() == 8);
-    REQUIRE(std::vector<PPerm>(o.cbegin(), o.cend())
-            == std::vector<PPerm>({PPerm({0, 1, 2}, {0, 1, 2}, 3),
-                                   PPerm({0, 1}, {0, 1}, 3),
-                                   PPerm({1, 2}, {1, 2}, 3),
-                                   PPerm({0}, {0}, 3),
-                                   PPerm({0, 2}, {0, 2}, 3),
-                                   PPerm({2}, {2}, 3),
-                                   PPerm({1}, {1}, 3),
-                                   PPerm({}, {}, 3)}));
+    REQUIRE(std::vector<PPerm<3>>(o.cbegin(), o.cend())
+            == std::vector<PPerm<3>>({PPerm<3>({0, 1, 2}, {0, 1, 2}, 3),
+                                      PPerm<3>({0, 1}, {0, 1}, 3),
+                                      PPerm<3>({1, 2}, {1, 2}, 3),
+                                      PPerm<3>({0}, {0}, 3),
+                                      PPerm<3>({0, 2}, {0, 2}, 3),
+                                      PPerm<3>({2}, {2}, 3),
+                                      PPerm<3>({1}, {1}, 3),
+                                      PPerm<3>({}, {}, 3)}));
     REQUIRE_THROWS_AS(o.digraph().cbegin_scc(10), LibsemigroupsException);
-    REQUIRE(o.root_of_scc(PPerm({0, 2}, {0, 2}, 3))
-            == PPerm({0, 2}, {0, 2}, 3));
-    REQUIRE(o.root_of_scc(PPerm({0, 1}, {0, 1}, 3))
-            == PPerm({0, 2}, {0, 2}, 3));
-    REQUIRE_THROWS_AS(o.root_of_scc(PPerm({0, 3}, {0, 3}, 4)),
+    REQUIRE(o.root_of_scc(PPerm<3>({0, 2}, {0, 2}, 3))
+            == PPerm<3>({0, 2}, {0, 2}, 3));
+    REQUIRE(o.root_of_scc(PPerm<3>({0, 1}, {0, 1}, 3))
+            == PPerm<3>({0, 2}, {0, 2}, 3));
+    REQUIRE_THROWS_AS(o.root_of_scc(PPerm<3>::make({0, 3}, {0, 3}, 4)),
                       LibsemigroupsException);
   }
 
@@ -623,7 +622,7 @@ namespace libsemigroups {
                           "permutation on tuples, arrays (360360)",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(REPORT);
-    using Perm = PermHelper<15>::type;
+    using Perm = LeastPerm<15>;
 
     RightAction<Perm,
                 std::array<uint8_t, 5>,
