@@ -119,15 +119,16 @@ namespace libsemigroups {
             uint_fast16_t,
             std::conditional_t<N <= 32, uint_fast32_t, uint64_t>>>;
 
-    explicit constexpr BitSet<N>(block_type const block) noexcept
-        : _block(block) {}
-    constexpr BitSet() noexcept              = default;
+    explicit constexpr BitSet(block_type block) noexcept : _block(block) {}
+    constexpr BitSet() noexcept : BitSet(0) {}
     constexpr BitSet(BitSet const&) noexcept = default;
     constexpr BitSet(BitSet&&) noexcept      = default;
     BitSet& operator=(BitSet const&) noexcept = default;
     BitSet& operator=(BitSet&&) noexcept = default;
+
     template <typename T>
     BitSet(T first, T last) : BitSet() {
+      LIBSEMIGROUPS_ASSERT(first <= last);
       size_t const K = std::distance(first, last);
       if (K > size()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -141,6 +142,7 @@ namespace libsemigroups {
         set(i, *it);
       }
     }
+
     ~BitSet() = default;
 
     // Could be static
@@ -392,12 +394,12 @@ namespace libsemigroups {
       // std::overflow_error if N exceeds the capacity of a unsigned long
       // long.
       template <size_t N>
-      bool operator()(std::bitset<N> x, std::bitset<N> y) const {
+      bool operator()(std::bitset<N> const& x, std::bitset<N> const& y) const {
         return x.to_ullong() < y.to_ullong();
       }
 
       template <size_t N>
-      bool operator()(BitSet<N> x, BitSet<N> y) const noexcept {
+      bool operator()(BitSet<N> const& x, BitSet<N> const& y) const noexcept {
         return x < y;
       }
     };
