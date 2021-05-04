@@ -173,8 +173,7 @@ namespace libsemigroups {
       _pos_one   = 0;
     }
 
-    // FIXME the following can't be correct
-    _id          = One()(this->to_internal(coll->at(0)));
+    _id          = this->to_internal(One()(coll->at(0)));
     _tmp_product = this->internal_copy(_id);
 
     _map.reserve(S._nr);
@@ -182,7 +181,7 @@ namespace libsemigroups {
     element_index_type i = 0;
     for (internal_const_reference x : S._elements) {
       auto y = this->internal_copy(x);
-      IncreaseDegree()(y, deg_plus);
+      IncreaseDegree()(this->to_external(y), deg_plus);
       _elements.push_back(y);
       _map.emplace(y, i);
       is_one(y, i++);
