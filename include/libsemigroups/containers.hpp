@@ -691,11 +691,13 @@ namespace libsemigroups {
 
       // Not noexcept because std::array::operator[] isn't
       T const& back() const {
+        LIBSEMIGROUPS_ASSERT(_size != 0);
         return _array[_size - 1];
       }
 
       // Not noexcept because std::array::operator[] isn't
       T& back() {
+        LIBSEMIGROUPS_ASSERT(_size != 0);
         return _array[_size - 1];
       }
 
