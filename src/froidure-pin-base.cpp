@@ -52,10 +52,8 @@ namespace libsemigroups {
         _reduced(),
         _right(),
         _suffix(),
-        _wordlen(0),  // (length of the current word) - 1
-        // Deprecated, remove in v2
-        _relation_gen(0),
-        _relation_pos(UNDEFINED) {
+        // (length of the current word) - 1
+        _wordlen(0) {
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
@@ -84,9 +82,7 @@ namespace libsemigroups {
         _reduced(S._reduced),
         _right(S._right),
         _suffix(S._suffix),
-        _wordlen(S._wordlen),
-        _relation_gen(S._relation_gen),
-        _relation_pos(S._relation_pos) {
+        _wordlen(S._wordlen) {
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
@@ -132,11 +128,9 @@ namespace libsemigroups {
     _pos               = S._pos;
     _pos_one           = S._pos_one;  // copy in case degree doesn't change in
     // add_generators
-    _reduced      = S._reduced;
-    _right        = S._right;
-    _wordlen      = 0;
-    _relation_gen = 0;
-    _relation_pos = UNDEFINED;
+    _reduced = S._reduced;
+    _right   = S._right;
+    _wordlen = 0;
 
     LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
 
@@ -206,55 +200,6 @@ namespace libsemigroups {
     }
   }
 
-  // Deprecated, remove in v2
-  void FroidurePinBase::next_relation(word_type& relation) {
-    if (!finished()) {
-      run();
-    }
-
-    relation.clear();
-
-    if (_relation_pos == _nr) {  // no more relations
-      return;
-    }
-
-    if (_relation_pos != UNDEFINED) {
-      while (_relation_pos < _nr) {
-        while (_relation_gen < nr_generators()) {
-          if (!_reduced.get(_enumerate_order[_relation_pos], _relation_gen)
-              && (_relation_pos < _lenindex[1]
-                  || _reduced.get(_suffix[_enumerate_order[_relation_pos]],
-                                  _relation_gen))) {
-            relation.push_back(_enumerate_order[_relation_pos]);
-            relation.push_back(_relation_gen);
-            relation.push_back(
-                _right.get(_enumerate_order[_relation_pos], _relation_gen));
-            break;
-          }
-          _relation_gen++;
-        }
-        if (_relation_gen == nr_generators()) {  // then relation is empty
-          _relation_gen = 0;
-          _relation_pos++;
-        } else {
-          break;
-        }
-      }
-      _relation_gen++;
-    } else {
-      // duplicate generators
-      if (_relation_gen < _duplicate_gens.size()) {
-        relation.push_back(_duplicate_gens[_relation_gen].first);
-        relation.push_back(_duplicate_gens[_relation_gen].second);
-        _relation_gen++;
-      } else {
-        _relation_gen = 0;
-        _relation_pos++;
-        next_relation(relation);
-      }
-    }
-  }
-
   void FroidurePinBase::enumerate(size_t limit) {
     if (finished() || limit <= current_size()) {
       return;
@@ -309,54 +254,5 @@ namespace libsemigroups {
 
   bool FroidurePinBase::immutable() const noexcept {
     return _settings._immutable;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // FroidurePinBase - helper non-member functions
-  ////////////////////////////////////////////////////////////////////////
-
-  void relations(FroidurePinBase&                            S,
-                 std::function<void(word_type, word_type)>&& hook) {
-    S.run();
-
-    std::vector<size_t> relation;  // a triple
-    S.reset_next_relation();
-    S.next_relation(relation);
-
-    while (relation.size() == 2 && !relation.empty()) {
-      hook(word_type({relation[0]}), word_type({relation[1]}));
-      S.next_relation(relation);
-    }
-    word_type lhs, rhs;  // changed in-place by factorisation
-    while (!relation.empty()) {
-      S.factorisation(lhs, relation[0]);
-      S.factorisation(rhs, relation[2]);
-      lhs.push_back(relation[1]);
-      hook(lhs, rhs);
-      S.next_relation(relation);
-    }
-  }
-
-  void relations(FroidurePinBase& S, std::function<void(word_type)>&& hook) {
-    S.run();
-
-    std::vector<size_t> relation;  // a triple
-    S.reset_next_relation();
-    S.next_relation(relation);
-
-    while (relation.size() == 2 && !relation.empty()) {
-      hook(word_type({relation[0]}));
-      hook(word_type({relation[1]}));
-      S.next_relation(relation);
-    }
-    word_type word;  // changed in-place by factorisation
-    while (!relation.empty()) {
-      S.factorisation(word, relation[0]);
-      word.push_back(relation[1]);
-      hook(word);
-      S.factorisation(word, relation[2]);
-      hook(word);
-      S.next_relation(relation);
-    }
   }
 }  // namespace libsemigroups
