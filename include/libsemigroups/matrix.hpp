@@ -2340,7 +2340,7 @@ namespace libsemigroups {
       // ProjMaxPlusMat - Constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      ProjMaxPlusMat()                      = default;
+      ProjMaxPlusMat() : _is_normalized(false), _underlying_mat() {}
       ProjMaxPlusMat(ProjMaxPlusMat const&) = default;
       ProjMaxPlusMat(ProjMaxPlusMat&&)      = default;
       ProjMaxPlusMat& operator=(ProjMaxPlusMat const&) = default;
@@ -2560,8 +2560,9 @@ namespace libsemigroups {
       }
 
       void normalize(bool force = false) const {
-        if ((_is_normalized && !force) || _underlying_mat.number_of_rows() == 0
-            || _underlying_mat.number_of_cols() == 0) {
+        if ((_is_normalized && !force)
+            || (_underlying_mat.number_of_rows() == 0)
+            || (_underlying_mat.number_of_cols() == 0)) {
           _is_normalized = true;
           return;
         }
@@ -2685,7 +2686,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(views.size() <= R);
       LIBSEMIGROUPS_ASSERT(views.empty() || views[0].size() <= C);
       for (auto const& v : views) {
-        result.push_back(BitSet<C>(v.cbegin(), v.cend()));
+        result.emplace_back(v.cbegin(), v.cend());
       }
     }
 
