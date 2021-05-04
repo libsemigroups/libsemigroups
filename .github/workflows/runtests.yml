@@ -3,6 +3,7 @@ on: [pull_request]
 
 jobs:
    benchmark:
+      timeout-minutes: 10
       runs-on: ubuntu-latest
       env: 
         CXX: "ccache g++"
@@ -31,6 +32,7 @@ jobs:
            run: |
                 make bench_all -j4
    clang:
+      timeout-minutes: 15
       runs-on: ubuntu-latest
       env: 
         CXX: "ccache clang++"
@@ -62,6 +64,7 @@ jobs:
            run: |
                 ./test_all "[quick],[standard]"
    config-options:
+      timeout-minutes: 30
       runs-on: ubuntu-latest
       env: 
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
@@ -96,6 +99,7 @@ jobs:
                 make test_all -j4 || exit 1
                 ./test_all "[quick]"
    coverage:
+      timeout-minutes: 10
       runs-on: ubuntu-latest
       steps:
          - name: "Restore cache . . ."
@@ -113,12 +117,13 @@ jobs:
                 sudo apt-get install -y lcov ccache
          - name: "Run quick tests . . ."
            run: |
-                sudo ln -sf /usr/bin/gcov-7 /usr/bin/gcov
-                export GCOV=/usr/bin/gcov-7
+                sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
+                export GCOV=/usr/bin/gcov-9
                 etc/test-code-coverage.sh test_all "[quick]"
                 bash <(curl -s https://codecov.io/bash)
                 rm -f coverage.info
    distcheck:
+      timeout-minutes: 10
       runs-on: ubuntu-latest
       env: 
          CXX: "ccache g++"
@@ -144,13 +149,13 @@ jobs:
            run: |
                 make distcheck -j4
    doc:
+      timeout-minutes: 10
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v2
          - name: "Install dependencies . . ."
            run: |
                 sudo apt-get --yes update 
-                sudo apt-get install doxygen
                 sudo apt-get install expect
                 sudo apt-get install graphviz
                 sudo apt-get install python3-pip
@@ -158,6 +163,10 @@ jobs:
                 sudo -H pip3 install setuptools
                 sudo -H pip3 install -r docs/requirements.txt
                 sudo -H pip3 install --upgrade --ignore-installed pyyaml
+         - name: "Install latest doxygen . . ."
+           run: | 
+                bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+                brew install doxygen
          - name: "Configure . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh && ./configure 
@@ -175,6 +184,7 @@ jobs:
                 echo 
                 ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx") )
    macosx:
+      timeout-minutes: 15
       runs-on: macOS-latest
       env: 
          CXX: "ccache clang++"
@@ -205,6 +215,7 @@ jobs:
            run: |
                 ./test_all "[quick]"
    valgrind:
+      timeout-minutes: 20
       runs-on: ubuntu-latest
       env: 
         CXX: "ccache g++"

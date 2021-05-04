@@ -29,7 +29,6 @@ cd $HOME/inst/$GAP_VERSION/pkg/
 
 git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS_REPO/Semigroups.git semigroups
 cd semigroups
-git clone -b master --depth=1 https://github.com/james-d-mitchell/gapbind14.git
 
 # Move the libsemigroups to the correct location
 mv $HOME/libsemigroups . 
@@ -46,7 +45,7 @@ INSTALL_PKGS+="if not InstallPackage(\"orb\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"genss\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"images\", false) then QuitGap(1); fi;"
 
-echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -r -T || exit 1
+echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -T || exit 1
 # The next line is a hack until the package manager compiles Orb
 cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
