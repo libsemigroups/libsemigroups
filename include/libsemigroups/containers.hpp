@@ -686,7 +686,9 @@ namespace libsemigroups {
       }
 
       void pop_back() {
-        _size--;
+        if (_size != 0) {
+          _size--;
+        }
       }
 
       // Not noexcept because std::array::operator[] isn't
