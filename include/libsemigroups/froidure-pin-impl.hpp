@@ -786,18 +786,25 @@ namespace libsemigroups {
 
   TEMPLATE
   template <typename TCollection>
-  FROIDURE_PIN*
+  FROIDURE_PIN
   FROIDURE_PIN::copy_add_generators(TCollection const& coll) const {
     static_assert(!std::is_pointer<TCollection>::value,
                   "TCollection should not be a pointer");
     if (coll.size() == 0) {
-      return new FroidurePin(*this);
+      return FroidurePin(*this);
     } else {
       // Partially copy
-      FroidurePin* out = new FroidurePin(*this, &coll);
-      out->add_generators(coll);
+      FroidurePin out(*this, &coll);
+      out.add_generators(coll);
       return out;
     }
+  }
+
+  // TODO shouldn't element_type -> const_element_type??
+  TEMPLATE
+  FROIDURE_PIN
+  FROIDURE_PIN::copy_add_generators(std::initializer_list<element_type> coll) {
+    return copy_add_generators(std::vector<element_type>(coll));
   }
 
   TEMPLATE
@@ -822,11 +829,11 @@ namespace libsemigroups {
 
   TEMPLATE
   template <typename TCollection>
-  FROIDURE_PIN* FROIDURE_PIN::copy_closure(TCollection const& coll) {
+  FROIDURE_PIN FROIDURE_PIN::copy_closure(TCollection const& coll) {
     static_assert(!std::is_pointer<TCollection>::value,
                   "TCollection should not be a pointer");
     if (coll.size() == 0) {
-      return new FroidurePin(*this);
+      return FroidurePin(*this);
     } else {
       // The next line is required so that when we call the closure member
       // function on out, the partial copy contains enough information to all
@@ -834,10 +841,17 @@ namespace libsemigroups {
       // the partial copy does not contain enough data to run run).
       this->run();
       // Partially copy
-      FroidurePin* out = new FroidurePin(*this, &coll);
-      out->closure(coll);
+      FroidurePin out(*this, &coll);
+      out.closure(coll);
       return out;
     }
+  }
+
+  // TODO shouldn't element_type -> const_element_type??
+  TEMPLATE
+  FROIDURE_PIN
+  FROIDURE_PIN::copy_closure(std::initializer_list<element_type> coll) {
+    return copy_closure(std::vector<element_type>(coll));
   }
 
   ////////////////////////////////////////////////////////////////////////
