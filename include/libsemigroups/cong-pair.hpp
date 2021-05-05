@@ -570,8 +570,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
-    void run_impl() override;
-    bool finished_impl() const override;
+
+    void                             run_impl() override;
+    bool                             finished_impl() const override;
+    std::shared_ptr<FroidurePinBase> quotient_impl() override;
 
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-pure virtual member functions - private

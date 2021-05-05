@@ -521,17 +521,43 @@ namespace libsemigroups {
 
     SECTION("right congruence") {
       cong = std::make_unique<P>(right, S);
+      cong->add_pair({0}, {1});
+      REQUIRE(cong->number_of_classes() == 168);
+      REQUIRE(cong->word_to_class_index(word_type({0})) == 0);
+      REQUIRE(cong->word_to_class_index(word_type({1})) == 0);
+      REQUIRE(cong->class_index_to_word(0) == word_type({0}));
+
+      REQUIRE(cong->word_to_class_index(word_type({0, 0})) == 1);
+      REQUIRE(cong->class_index_to_word(1) == word_type({0, 0}));
+
+      REQUIRE(cong->word_to_class_index(word_type({0, 1})) == 2);
+      REQUIRE(cong->class_index_to_word(2) == word_type({0, 1}));
+
+      REQUIRE(cong->class_index_to_word(3) == word_type({0, 2}));
+      REQUIRE(cong->word_to_class_index(word_type({0, 2})) == 3);
     }
     SECTION("left congruence") {
       cong = std::make_unique<P>(left, S);
+      cong->add_pair({0}, {1});
+      REQUIRE(cong->number_of_classes() == 24);
     }
     SECTION("2-sided congruence") {
       cong = std::make_unique<P>(twosided, S);
+      cong->add_pair({0}, {1});
+      REQUIRE(cong->number_of_classes() == 4);
     }
 
-    cong->add_pair({0}, {1});
-    REQUIRE_THROWS_AS(cong->class_index_to_word(10), LibsemigroupsException);
-    REQUIRE_THROWS_AS(cong->quotient_froidure_pin(), LibsemigroupsException);
+    for (size_t i = 0; i < cong->number_of_classes(); ++i) {
+      auto w = cong->class_index_to_word(i);
+      REQUIRE(cong->word_to_class_index(w) == i);
+    }
+
+    REQUIRE_THROWS_AS(cong->class_index_to_word(cong->number_of_classes() + 1),
+                      LibsemigroupsException);
+
+    if (cong->kind() != twosided) {
+      REQUIRE_THROWS_AS(cong->quotient_froidure_pin(), LibsemigroupsException);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
@@ -611,6 +637,7 @@ namespace libsemigroups {
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
                                    kbp.cbegin_ntc()->cend())
             == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
+    REQUIRE_NOTHROW(kbp.quotient_froidure_pin());
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",

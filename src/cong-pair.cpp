@@ -61,6 +61,17 @@ namespace libsemigroups {
            && CongruenceByPairsHelper_::finished_impl();
   }
 
+  std::shared_ptr<FroidurePinBase>
+  KnuthBendixCongruenceByPairs::quotient_impl() {
+    fpsemigroup::KnuthBendix kb(state());
+    // The return value of state() is fpsemigroup::KnuthBendix
+    for (auto it = cbegin_generating_pairs(); it != cend_generating_pairs();
+         ++it) {
+      kb.add_rule(it->first, it->second);
+    }
+    return kb.froidure_pin();
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - virtual member functions - public
   ////////////////////////////////////////////////////////////////////////
