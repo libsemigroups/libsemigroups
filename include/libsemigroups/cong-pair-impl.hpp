@@ -107,15 +107,25 @@ namespace libsemigroups {
   // CongruenceInterface - pure virtual member functions - private
   /////////////////////////////////////////////////////////////////////////
 
-#pragma GCC diagnostic push
-#if (defined(__GNUC__) && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
-#endif
-  WORD_TYPE P_CLASS::class_index_to_word_impl(class_index_type) {
-    // TODO(later) actually implement this
-    LIBSEMIGROUPS_EXCEPTION("not yet implemented");
+  WORD_TYPE P_CLASS::class_index_to_word_impl(class_index_type i) {
+    // This completely sucks, but is the best I had time to come up with.
+    run();
+    auto&     S = *static_cast<froidure_pin_type*>(parent_froidure_pin().get());
+    word_type result;
+    size_t    start = 0;
+    do {
+      for (size_t j = start; j < S.current_size(); ++j) {
+        S.factorisation(result, j);  // changes result in-place
+        if (const_word_to_class_index(result) == i) {
+          return result;
+        }
+      }
+      start = S.current_size();
+      S.enumerate(start + 1);
+    } while (!S.finished());
+    // TODO improve
+    LIBSEMIGROUPS_EXCEPTION("class index out of bounds!!!");
   }
-#pragma GCC diagnostic pop
 
   SIZE_T P_CLASS::number_of_classes_impl() {
     run();
@@ -186,8 +196,8 @@ namespace libsemigroups {
             _lookup.number_of_blocks(),
             _pairs_to_mult.size());
         // If the congruence is only using 1 thread, then this will never
-        // happen, if the congruence uses > 1 threads, then it is ok for this to
-        // kill itself, because another thread will complete.
+        // happen, if the congruence uses > 1 threads, then it is ok for
+        // this to kill itself, because another thread will complete.
         if (_found_pairs.size() > 1048576
             || (tid != 0 && prnt->finished()
                 && _found_pairs.size() > prnt->size())) {

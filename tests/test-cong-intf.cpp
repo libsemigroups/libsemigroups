@@ -575,7 +575,7 @@ namespace libsemigroups {
       REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 0);
       REQUIRE(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
               == tril::FALSE);
-      REQUIRE_THROWS_AS(cong.class_index_to_word(2), LibsemigroupsException);
+      REQUIRE(cong.class_index_to_word(2) == word_type({2}));
       REQUIRE(!cong.contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
       REQUIRE(cong.number_of_classes() == 88);
     }
