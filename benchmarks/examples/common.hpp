@@ -22,11 +22,13 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
+#include "libsemigroups/adapters.hpp"
+
 namespace libsemigroups {
   namespace detail {
     template <typename T>
     inline void hash_combine(size_t& s, T const& v) {
-      std::hash<T> h;
+      Hash<T> h;
       s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
     }
 
