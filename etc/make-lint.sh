@@ -7,14 +7,14 @@ if [[ $# -ne 0 ]]; then
 fi
 
 find include/libsemigroups/*.hpp -type f -exec cpplint --repository='include' {} \; | tee lint.log
-find src/*.hpp -type f -exec cpplint --repository='..' {} \; | tee --append lint.log
-find src/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log 
-find tests/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee --append lint.log
-find tests/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log
-find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee --append lint.log
-find benchmarks/*.cpp -type f -exec cpplint --repository='include' {} \; | tee --append lint.log
-find benchmarks/examples/*.hpp -type f -exec cpplint --repository='..' {} \; | tee --append lint.log
-find benchmarks/examples/*.cpp -type f -exec cpplint {} \; | tee --append lint.log
+find src/*.hpp -type f -exec cpplint --repository='..' {} \; | tee -a lint.log
+find src/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log 
+find tests/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee -a lint.log
+find tests/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
+find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee -a lint.log
+find benchmarks/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
+find benchmarks/examples/*.hpp -type f -exec cpplint --repository='..' {} \; | tee -a lint.log
+find benchmarks/examples/*.cpp -type f -exec cpplint {} \; | tee -a lint.log
 
 ! grep -E "Total errors found:" lint.log
 exit_code=$?
