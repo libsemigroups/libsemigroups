@@ -1,8 +1,15 @@
-version: 1
+version: 2
+
+conda:
+  environment: docs/environment.yml
+
+build:
+  image: latest
 
 sphinx:
   configuration: docs/source/conf.py
 
 formats: []
 
-requirements_file: docs/requirements.txt
+python:
+  version: 3.8
