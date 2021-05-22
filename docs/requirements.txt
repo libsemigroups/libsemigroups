@@ -1,8 +1,8 @@
-bs4 
-lxml 
+beautifulsoup4==4.9.3
+lxml==4.6.3
 breathe==4.27.0
-pyyaml 
-sphinx_rtd_theme 
-sphinx==3.5.2
-sphinx-copybutton 
-sphinxcontrib-bibtex
+pyyaml>=5.3.1
+sphinx_rtd_theme
+sphinx==3.5.4
+sphinx-copybutton==0.3.1
+sphinxcontrib-bibtex==2.2.0
