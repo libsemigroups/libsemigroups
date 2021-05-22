@@ -1,0 +1,7 @@
+name: libsemigroups-doc
+
+channels:
+  - conda-forge
+
+dependencies:
+  - doxygen==1.9.1 
