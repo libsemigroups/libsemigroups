@@ -87,14 +87,14 @@ namespace libsemigroups {
 
       //! This type contains various enums for specifying certain options to a
       //! KnuthBendix instance.
-      struct policy {
+      struct options {
         //! Values for specifying how to measure the length of an overlap.
         //!
         //! The values in this enum determine how a KnuthBendix instance
         //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
         //! \f$AB\f$ and \f$BC\f$:
         //!
-        //! \sa overlap_policy(policy::overlap)
+        //! \sa overlap_policy(options::overlap)
         enum class overlap {
           //! \f$d(AB, BC) = |A| + |B| + |C|\f$
           ABC = 0,
@@ -262,8 +262,8 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \sa policy::overlap.
-      KnuthBendix& overlap_policy(policy::overlap val);
+      //! \sa options::overlap.
+      KnuthBendix& overlap_policy(options::overlap val);
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - member functions for rules and rewriting - public
@@ -517,7 +517,7 @@ namespace libsemigroups {
       //!
       //! This function runs the Knuth-Bendix algorithm on the rewriting system
       //! represented by a KnuthBendix instance by considering all overlaps of
-      //! a given length \f$n\f$ (according to the \ref policy::overlap) before
+      //! a given length \f$n\f$ (according to the \ref options::overlap) before
       //! those overlaps of length \f$n + 1\f$.
       //!
       //! \returns
@@ -660,10 +660,10 @@ namespace libsemigroups {
 
       struct Settings {
         Settings();
-        size_t          _check_confluence_interval;
-        size_t          _max_overlap;
-        size_t          _max_rules;
-        policy::overlap _overlap_policy;
+        size_t           _check_confluence_interval;
+        size_t           _max_overlap;
+        size_t           _max_rules;
+        options::overlap _overlap_policy;
       } _settings;
 
       // Forward declarations

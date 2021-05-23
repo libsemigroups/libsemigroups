@@ -35,15 +35,15 @@ namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;
   using KnuthBendix      = congruence::KnuthBendix;
   using class_index_type = CongruenceInterface::class_index_type;
-  using policy           = ToddCoxeter::policy;
+  using options          = ToddCoxeter::options;
 
   //////////////////////////////////////////////////////////////////////////
   // Congruence - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_type type, policy::runners p)
+  Congruence::Congruence(congruence_type type, options::runners p)
       : CongruenceInterface(type), _race() {
-    if (p == policy::runners::standard) {
+    if (p == options::runners::standard) {
       _race.add_runner(std::make_shared<ToddCoxeter>(type));
       if (type == congruence_type::twosided) {
         _race.add_runner(std::make_shared<KnuthBendix>());
@@ -53,22 +53,22 @@ namespace libsemigroups {
 
   Congruence::Congruence(congruence_type                  type,
                          std::shared_ptr<FroidurePinBase> S)
-      : Congruence(type, policy::runners::none) {
+      : Congruence(type, options::runners::none) {
     auto tc = std::make_shared<ToddCoxeter>(type, S);
     tc->froidure_pin_policy(
-        congruence::ToddCoxeter::policy::froidure_pin::use_relations);
+        congruence::ToddCoxeter::options::froidure_pin::use_relations);
     _race.add_runner(tc);
 
     tc = std::make_shared<ToddCoxeter>(type, S);
     tc->froidure_pin_policy(
-        congruence::ToddCoxeter::policy::froidure_pin::use_cayley_graph);
+        congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
     _race.add_runner(tc);
     set_nr_generators(S->nr_generators());
     set_parent_froidure_pin(S);
   }
 
   Congruence::Congruence(congruence_type type, FpSemigroup& S)
-      : Congruence(type, policy::runners::none) {
+      : Congruence(type, options::runners::none) {
     set_nr_generators(S.alphabet().size());
     LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
     set_parent_froidure_pin(S);
@@ -90,7 +90,7 @@ namespace libsemigroups {
         _race.add_runner(std::make_shared<ToddCoxeter>(
             type,
             S.todd_coxeter()->froidure_pin(),
-            congruence::ToddCoxeter::policy::froidure_pin::use_cayley_graph));
+            congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph));
 
         // Return here since we know that we can definitely complete at
         // this point.
@@ -110,7 +110,8 @@ namespace libsemigroups {
           _race.add_runner(std::make_shared<ToddCoxeter>(
               type,
               S.knuth_bendix()->froidure_pin(),
-              congruence::ToddCoxeter::policy::froidure_pin::use_cayley_graph));
+              congruence::ToddCoxeter::options::froidure_pin::
+                  use_cayley_graph));
 
           // Method 4: unlike with Method 2, this is not necessarily the same
           // as running Method 1, because the relations in S.knuth_bendix()

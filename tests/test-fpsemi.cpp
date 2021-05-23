@@ -240,7 +240,7 @@ namespace libsemigroups {
       congruence::ToddCoxeter tc(
           twosided,
           S.froidure_pin(),
-          congruence::ToddCoxeter::policy::froidure_pin::use_cayley_graph);
+          congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
       REQUIRE(tc.nr_classes() == 322021);  // Works!
     }
     {
@@ -272,7 +272,7 @@ namespace libsemigroups {
     congruence::ToddCoxeter tc(
         twosided,
         S.froidure_pin(),
-        congruence::ToddCoxeter::policy::froidure_pin::use_cayley_graph);
+        congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
     REQUIRE(tc.nr_classes() == 322021);  // Works!
   }
 

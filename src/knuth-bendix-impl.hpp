@@ -284,7 +284,7 @@ namespace libsemigroups {
             _total_rules(0) {
         _next_rule_it1 = _active_rules.end();  // null
         _next_rule_it2 = _active_rules.end();  // null
-        this->set_overlap_policy(policy::overlap::ABC);
+        this->set_overlap_policy(options::overlap::ABC);
 #ifdef LIBSEMIGROUPS_VERBOSE
         _max_stack_depth        = 0;
         _max_word_length        = 0;
@@ -590,20 +590,20 @@ namespace libsemigroups {
         return uu == vv;
       }
 
-      void set_overlap_policy(policy::overlap p) {
+      void set_overlap_policy(options::overlap p) {
         if (p == _kb->_settings._overlap_policy
             && _overlap_measure != nullptr) {
           return;
         }
         delete _overlap_measure;
         switch (p) {
-          case policy::overlap::ABC:
+          case options::overlap::ABC:
             _overlap_measure = new ABC();
             break;
-          case policy::overlap::AB_BC:
+          case options::overlap::AB_BC:
             _overlap_measure = new AB_BC();
             break;
-          case policy::overlap::MAX_AB_BC:
+          case options::overlap::MAX_AB_BC:
             _overlap_measure = new MAX_AB_BC();
             break;
           default:

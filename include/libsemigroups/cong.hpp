@@ -67,8 +67,8 @@ namespace libsemigroups {
     //! This struct holds various enums which can be used to
     //! set various options.
     //!
-    //! \sa policy::runners.
-    struct policy {
+    //! \sa options::runners.
+    struct options {
       //! Holds options for specifying the algorithms to be used.
       //!
       //! This enum allows setting the policy used when adding runners to an
@@ -92,14 +92,14 @@ namespace libsemigroups {
     //!
     //! \param type the type of the congruence.
     //! \param opt  optionally specify algorithms to be used (defaults to
-    //! policy::runners::standard).
+    //! options::runners::standard).
     //!
     //! \complexity
     //! Constant.
     //!
     //! \sa set_nr_generators and add_pair.
-    explicit Congruence(congruence_type type,
-                        policy::runners opt = policy::runners::standard);
+    explicit Congruence(congruence_type  type,
+                        options::runners opt = options::runners::standard);
 
     //! Construct from kind (left/right/2-sided) and FroidurePin.
     //!

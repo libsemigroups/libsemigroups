@@ -900,7 +900,7 @@ namespace libsemigroups {
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ababab", "");
-      kb.overlap_policy(KnuthBendix::policy::overlap::AB_BC);
+      kb.overlap_policy(KnuthBendix::options::overlap::AB_BC);
 
       REQUIRE(!kb.confluent());
 
@@ -938,9 +938,9 @@ namespace libsemigroups {
       kb.add_rule("bB", "");
       kb.add_rule("bbb", "");
       kb.add_rule("ababab", "");
-      kb.overlap_policy(KnuthBendix::policy::overlap::MAX_AB_BC);
+      kb.overlap_policy(KnuthBendix::options::overlap::MAX_AB_BC);
       // The next line tests that we don't delete the old OverlapMeasure.
-      kb.overlap_policy(KnuthBendix::policy::overlap::MAX_AB_BC);
+      kb.overlap_policy(KnuthBendix::options::overlap::MAX_AB_BC);
 
       REQUIRE(!kb.confluent());
 
