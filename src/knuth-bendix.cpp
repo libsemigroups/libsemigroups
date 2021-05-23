@@ -72,13 +72,13 @@ namespace libsemigroups {
         : _check_confluence_interval(4096),
           _max_overlap(POSITIVE_INFINITY),
           _max_rules(POSITIVE_INFINITY),
-          _overlap_policy(policy::overlap::ABC) {}
+          _overlap_policy(options::overlap::ABC) {}
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for Settings - public
     //////////////////////////////////////////////////////////////////////////
 
-    KnuthBendix& KnuthBendix::overlap_policy(policy::overlap p) {
+    KnuthBendix& KnuthBendix::overlap_policy(options::overlap p) {
       _impl->set_overlap_policy(p);
       // the next line must be after _impl->set_overlap_policy
       _settings._overlap_policy = p;

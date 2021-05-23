@@ -84,7 +84,7 @@ namespace libsemigroups {
     //! tc.set_nr_generators(2);                // 2 generators
     //! tc.add_pair({0, 0}, {0});               // generator 0 squared is itself
     //! tc.add_pair({0}, {1});                  // generator 0 equals 1
-    //! tc.strategy(policy::strategy::felsch);  // set the strategy
+    //! tc.strategy(options::strategy::felsch);  // set the strategy
     //! tc.nr_classes();                        // calculate number of classes
     //! tc.contains({0, 0, 0, 0}, {0, 0});      // check if 2 words are equal
     //! tc.word_to_class_index({0, 0, 0, 0});   // get the index of a class
@@ -109,9 +109,9 @@ namespace libsemigroups {
     //! tc.add_pair({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
     //!              1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
     //!             {0});
-    //! tc.strategy(policy::strategy::hlt)
+    //! tc.strategy(options::strategy::hlt)
     //!    .standardize(false)
-    //!    .lookahead(policy::lookahead::partial)
+    //!    .lookahead(options::lookahead::partial)
     //!    .save(false)
     //! tc.nr_classes()  // 10752
     //! tc.complete();   // true
@@ -168,11 +168,11 @@ namespace libsemigroups {
       //! process used by \ref run.
       //!
       //! \sa \ref strategy, \ref lookahead, and \ref froidure_pin.
-      struct policy {
+      struct options {
         //! Values for defining the strategy.
         //!
         //! The values in this enum can be used as the argument for the member
-        //! function strategy(policy::strategy) to specify which strategy
+        //! function strategy(options::strategy) to specify which strategy
         //! should be used when performing a coset enumeration.
         enum class strategy {
           //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
@@ -210,7 +210,7 @@ namespace libsemigroups {
         //! Values for specifying the type of lookahead to perform.
         //!
         //! The values in this enum can be used as the argument for
-        //! lookahead(policy::lookahead) to specify the type of lookahead that
+        //! lookahead(options::lookahead) to specify the type of lookahead that
         //! should be performed when using the HLT strategy.
         enum class lookahead {
           //! A *full* lookahead is one starting from the initial coset.
@@ -226,7 +226,7 @@ namespace libsemigroups {
         //! Values for specifying whether to use relations or Cayley graph.
         //!
         //! The values in this enum can be used as the argument for
-        //! \ref froidure_pin_policy(policy::froidure_pin) to specify whether
+        //! \ref froidure_pin_policy(options::froidure_pin) to specify whether
         //! the defining relations, or the left/right Cayley graph, of a
         //! FroidurePin instance, should be used in the coset enumeration.
         //!
@@ -327,17 +327,18 @@ namespace libsemigroups {
       //! \param fp a \shared_ptr
       //! to a FroidurePinBase, this parameter is not copied by this
       //! constructor.
-      //! \param p the policy::froidure_pin to use (default:
-      //! policy::froidure_pin::use_cayley_graph).
+      //! \param p the options::froidure_pin to use (default:
+      //! options::froidure_pin::use_cayley_graph).
       //!
       //! \exceptions
       //! \no_libsemigroups_except
       ToddCoxeter(congruence_type                  knd,
                   std::shared_ptr<FroidurePinBase> fp,
-                  policy::froidure_pin             p
-                  = policy::froidure_pin::use_cayley_graph);
+                  options::froidure_pin            p
+                  = options::froidure_pin::use_cayley_graph);
       // TODO(later) remove the final argument here
-      // This policy::froidure_pin is guaranteed to terminate relatively quickly
+      // This options::froidure_pin is guaranteed to terminate relatively
+      // quickly
 
       //! Construct from kind (left/right/2-sided) and ToddCoxeter.
       //!
@@ -440,17 +441,17 @@ namespace libsemigroups {
       //!
       //! If the ToddCoxeter instance is not created from a FroidurePin
       //! instance, then the value of this setting is ignored.
-      //! The default value is policy::froidure_pin::use_cayley_graph.
+      //! The default value is options::froidure_pin::use_cayley_graph.
       //!
       //! \param val value indicating whether to use relations or Cayley graph
-      //! (policy::froidure_pin::use_cayley_graph or
-      //!  policy::froidure_pin::use_relations).
+      //! (options::froidure_pin::use_cayley_graph or
+      //!  options::froidure_pin::use_relations).
       //!
       //! \returns A reference to `*this`.
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeter& froidure_pin_policy(policy::froidure_pin val) noexcept;
+      ToddCoxeter& froidure_pin_policy(options::froidure_pin val) noexcept;
 
       //! Get the current value of the Froidure-Pin policy.
       //!
@@ -458,25 +459,25 @@ namespace libsemigroups {
       //! instance, or from an object that has an already computed FroidurePin
       //! instance, then the value of this setting is ignored.
       //!
-      //! \sa froidure_pin_policy(policy::froidure_pin)
+      //! \sa froidure_pin_policy(options::froidure_pin)
       //!
       //! \parameters
       //! (None)
       //!
       //! \returns
-      //! A value of type policy::froidure_pin.
+      //! A value of type options::froidure_pin.
       //!
       //! \exceptions
       //! \noexcept
-      policy::froidure_pin froidure_pin_policy() const noexcept;
+      options::froidure_pin froidure_pin_policy() const noexcept;
 
       //! Set the lookahead to use in HLT.
       //!
       //! If the strategy is not HLT, then the value of this setting is
       //! ignored.
       //!
-      //! The default value is policy::lookahead::partial, and the other
-      //! possible value is policy::lookahead::full.
+      //! The default value is options::lookahead::partial, and the other
+      //! possible value is options::lookahead::full.
       //!
       //! \param val value indicating whether to perform a full or partial
       //! lookahead.
@@ -486,8 +487,8 @@ namespace libsemigroups {
       //! \exceptions
       //! \noexcept
       //!
-      //! \sa ToddCoxeter::policy::lookahead.
-      ToddCoxeter& lookahead(policy::lookahead val) noexcept;
+      //! \sa ToddCoxeter::options::lookahead.
+      ToddCoxeter& lookahead(options::lookahead val) noexcept;
 
       //! Specify minimum number of classes that may trigger early stop.
       //!
@@ -542,7 +543,7 @@ namespace libsemigroups {
       //!
       //! \throws LibsemigroupsException if the parent FroidurePin (if any) is
       //! finite, and the value of froidure_pin_policy() is not
-      //! policy::froidure_pin::use_relations.
+      //! options::froidure_pin::use_relations.
       ToddCoxeter& save(bool val);  // NOLINT()
 
       //! Short-lex standardize the table during enumeration.
@@ -566,40 +567,40 @@ namespace libsemigroups {
       //! The strategy used during the coset enumeration can be specified using
       //! this function. It can be set to HLT, Felsch, or random.
       //!
-      //! The default value is policy::strategy::hlt.
+      //! The default value is options::strategy::hlt.
       //!
       //! \param val value indicating which strategy to use, the possible
       //! values are:
-      //! * policy::strategy::hlt
-      //! * policy::strategy::felsch
-      //! * policy::strategy::random
+      //! * options::strategy::hlt
+      //! * options::strategy::felsch
+      //! * options::strategy::random
       //!
       //! \returns A reference to `*this`.
       //!
-      //! \throws LibsemigroupsException if \p val is policy::strategy::felsch
+      //! \throws LibsemigroupsException if \p val is options::strategy::felsch
       //! and any of the following conditions apply:
       //! * \ref prefill as used to initialise \c this
       //! * if the parent FroidurePin (if any) is
       //! finite, and the value of froidure_pin_policy() is not
-      //! policy::froidure_pin::use_relations.
-      ToddCoxeter& strategy(policy::strategy val);
+      //! options::froidure_pin::use_relations.
+      ToddCoxeter& strategy(options::strategy val);
 
       //! The current strategy for enumeration.
       //!
       //! \parameters
       //! (None)
       //!
-      //! \returns The current strategy, a value of type policy::strategy.
+      //! \returns The current strategy, a value of type options::strategy.
       //!
       //! \exceptions
       //! \noexcept
-      policy::strategy strategy() const noexcept;
+      options::strategy strategy() const noexcept;
 
-      //! Set the amount of time per strategy for policy::strategy::random.
+      //! Set the amount of time per strategy for options::strategy::random.
       //!
       //! Sets the duration in nanoseconds that a given randomly selected
       //! strategy will run for, when using the random strategy
-      //! (policy::strategy::random).
+      //! (options::strategy::random).
       //!
       //! The default value is 200ms.
       //!
@@ -612,11 +613,11 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeter& random_interval(std::chrono::nanoseconds val) noexcept;
 
-      //! Set the amount of time per strategy for policy::strategy::random.
+      //! Set the amount of time per strategy for options::strategy::random.
       //!
       //! Sets the duration (by converting to nanoseconds) that a given
       //! randomly selected strategy will run for, when using the random
-      //! strategy (policy::strategy::random).
+      //! strategy (options::strategy::random).
       //!
       //! The default value is 200ms.
       //!

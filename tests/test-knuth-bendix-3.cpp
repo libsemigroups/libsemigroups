@@ -472,7 +472,7 @@ namespace libsemigroups {
       kb.add_rule("BA", "c");
 
       REQUIRE(!kb.confluent());
-      kb.overlap_policy(KnuthBendix::policy::overlap::MAX_AB_BC);
+      kb.overlap_policy(KnuthBendix::options::overlap::MAX_AB_BC);
       kb.max_rules(100);
       kb.run();
       REQUIRE(kb.nr_active_rules() == 101);

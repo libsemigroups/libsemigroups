@@ -44,83 +44,83 @@
 
 // Macros for testing different strategies on the same example.
 
-#define TEST_FELSCH_THROWS(var)                               \
-  SECTION("Felsch (throws)") {                                \
-    REQUIRE_THROWS_AS(var.strategy(policy::strategy::felsch), \
-                      LibsemigroupsException);                \
+#define TEST_FELSCH_THROWS(var)                                \
+  SECTION("Felsch (throws)") {                                 \
+    REQUIRE_THROWS_AS(var.strategy(options::strategy::felsch), \
+                      LibsemigroupsException);                 \
   }
 
-#define TEST_FELSCH(var)                                       \
-  SECTION("Felsch + no standardisation") {                     \
-    var.strategy(policy::strategy::felsch).standardize(false); \
-  }                                                            \
-  SECTION("Felsch + standardisation") {                        \
-    var.strategy(policy::strategy::felsch).standardize(true);  \
+#define TEST_FELSCH(var)                                        \
+  SECTION("Felsch + no standardisation") {                      \
+    var.strategy(options::strategy::felsch).standardize(false); \
+  }                                                             \
+  SECTION("Felsch + standardisation") {                         \
+    var.strategy(options::strategy::felsch).standardize(true);  \
   }
 
 #define TEST_HLT_NO_SAVE(var)                                     \
   SECTION("HLT + no standardise + full lookahead + no save") {    \
-    var.strategy(policy::strategy::hlt)                           \
+    var.strategy(options::strategy::hlt)                          \
         .standardize(false)                                       \
-        .lookahead(policy::lookahead::full)                       \
+        .lookahead(options::lookahead::full)                      \
         .save(false);                                             \
   }                                                               \
   SECTION("HLT + standardise + full lookahead + no save") {       \
-    var.strategy(policy::strategy::hlt)                           \
+    var.strategy(options::strategy::hlt)                          \
         .standardize(true)                                        \
-        .lookahead(policy::lookahead::full)                       \
+        .lookahead(options::lookahead::full)                      \
         .save(false);                                             \
   }                                                               \
   SECTION("HLT + no standardise + partial lookahead + no save") { \
-    var.strategy(policy::strategy::hlt)                           \
+    var.strategy(options::strategy::hlt)                          \
         .standardize(false)                                       \
-        .lookahead(policy::lookahead::partial)                    \
+        .lookahead(options::lookahead::partial)                   \
         .save(false);                                             \
   }                                                               \
   SECTION("HLT + standardise + partial lookahead + no save") {    \
-    var.strategy(policy::strategy::hlt)                           \
+    var.strategy(options::strategy::hlt)                          \
         .standardize(true)                                        \
-        .lookahead(policy::lookahead::partial)                    \
+        .lookahead(options::lookahead::partial)                   \
         .save(false);                                             \
   }
 
 #define TEST_HLT_SAVE(var)                                     \
   SECTION("HLT + no standardise + full lookahead + save") {    \
-    var.strategy(policy::strategy::hlt)                        \
+    var.strategy(options::strategy::hlt)                       \
         .standardize(false)                                    \
-        .lookahead(policy::lookahead::full)                    \
+        .lookahead(options::lookahead::full)                   \
         .save(true);                                           \
   }                                                            \
   SECTION("HLT + standardise + full lookahead + save") {       \
-    var.strategy(policy::strategy::hlt)                        \
+    var.strategy(options::strategy::hlt)                       \
         .standardize(true)                                     \
-        .lookahead(policy::lookahead::full)                    \
+        .lookahead(options::lookahead::full)                   \
         .save(true);                                           \
   }                                                            \
   SECTION("HLT + no standardise + partial lookahead + save") { \
-    var.strategy(policy::strategy::hlt)                        \
+    var.strategy(options::strategy::hlt)                       \
         .standardize(false)                                    \
-        .lookahead(policy::lookahead::partial)                 \
+        .lookahead(options::lookahead::partial)                \
         .save(true);                                           \
   }                                                            \
   SECTION("HLT + standardise + partial lookahead + save") {    \
-    var.strategy(policy::strategy::hlt)                        \
+    var.strategy(options::strategy::hlt)                       \
         .standardize(true)                                     \
-        .lookahead(policy::lookahead::partial)                 \
+        .lookahead(options::lookahead::partial)                \
         .save(true);                                           \
   }
 
-#define TEST_HLT_SAVE_THROWS(var)                                     \
-  SECTION("HLT + save (throws)") {                                    \
-    REQUIRE_THROWS_AS(var.strategy(policy::strategy::hlt).save(true), \
-                      LibsemigroupsException);                        \
+#define TEST_HLT_SAVE_THROWS(var)                                      \
+  SECTION("HLT + save (throws)") {                                     \
+    REQUIRE_THROWS_AS(var.strategy(options::strategy::hlt).save(true), \
+                      LibsemigroupsException);                         \
   }
 
 #define TEST_HLT(var) TEST_HLT_NO_SAVE(var) TEST_HLT_SAVE(var)
 
-#define TEST_RANDOM_SIMS(var)               \
-  SECTION("random Sims strategy") {         \
-    var.strategy(policy::strategy::random); \
+#define TEST_RANDOM_SIMS(var)                \
+  SECTION("random Sims strategy") {          \
+    var.strategy(options::strategy::random); \
   }
 
 namespace libsemigroups {
@@ -132,7 +132,7 @@ namespace libsemigroups {
   congruence_type constexpr right    = congruence_type::right;
   using KnuthBendix                  = fpsemigroup::KnuthBendix;
   using tc_order                     = congruence::ToddCoxeter::order;
-  using policy                       = congruence::ToddCoxeter::policy;
+  using options                      = congruence::ToddCoxeter::options;
 
   template <typename TElementType>
   void delete_gens(std::vector<TElementType>& gens) {
@@ -453,7 +453,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
       ToddCoxeter tc(twosided, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair({0}, {1});
 
       TEST_FELSCH(tc);
@@ -512,7 +512,7 @@ namespace libsemigroups {
       REQUIRE(S.size() == 88);
 
       ToddCoxeter tc(twosided, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_cayley_graph);
+      tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
       tc.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
       REQUIRE(!tc.finished());
@@ -674,7 +674,7 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(twosided, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
@@ -706,7 +706,7 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(left, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
@@ -738,7 +738,7 @@ namespace libsemigroups {
       REQUIRE(S.nr_rules() == 18);
 
       ToddCoxeter tc(right, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
@@ -791,7 +791,7 @@ namespace libsemigroups {
       REQUIRE(S.degree() == 5);
 
       ToddCoxeter tc(twosided, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_cayley_graph);
+      tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
 
       word_type w1, w2;
       S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
@@ -828,7 +828,7 @@ namespace libsemigroups {
       S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
       S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
       ToddCoxeter tc(left, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
 
       TEST_HLT(tc);
@@ -856,7 +856,7 @@ namespace libsemigroups {
       S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
       S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
       ToddCoxeter tc(right, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_relations);
+      tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
 
       TEST_HLT(tc);
@@ -1091,7 +1091,7 @@ namespace libsemigroups {
       S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
 
       ToddCoxeter tc(left, S);
-      tc.froidure_pin_policy(policy::froidure_pin::use_cayley_graph);
+      tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
       tc.add_pair(w1, w2);
       TEST_HLT_NO_SAVE(tc);
       TEST_HLT_SAVE_THROWS(tc);
@@ -1624,7 +1624,7 @@ namespace libsemigroups {
       REQUIRE(S.size() == 88);
       REQUIRE(S.nr_rules() == 18);
       ToddCoxeter tc(twosided, S);
-      tc.froidure_pin_policy(policy::froidure_pin::none);
+      tc.froidure_pin_policy(options::froidure_pin::none);
       tc.set_nr_generators(2);
       TEST_HLT_NO_SAVE(tc);
       TEST_HLT_SAVE_THROWS(tc);
@@ -1690,8 +1690,8 @@ namespace libsemigroups {
       tc.set_nr_generators(2);
       tc.add_pair({0}, {1});
       tc.add_pair({0, 0}, {0});
-      tc.strategy(policy::strategy::felsch);
-      REQUIRE(tc.strategy() == policy::strategy::felsch);
+      tc.strategy(options::strategy::felsch);
+      REQUIRE(tc.strategy() == options::strategy::felsch);
       REQUIRE(!tc.complete());
       REQUIRE(tc.compatible());
       REQUIRE(tc.nr_classes() == 1);
@@ -1706,7 +1706,7 @@ namespace libsemigroups {
       REQUIRE(copy.nr_generating_pairs() == 2);
       REQUIRE(copy.finished());
       REQUIRE(copy.nr_classes() == 1);
-      REQUIRE(copy.froidure_pin_policy() == policy::froidure_pin::none);
+      REQUIRE(copy.froidure_pin_policy() == options::froidure_pin::none);
       REQUIRE(copy.complete());
       REQUIRE(copy.compatible());
     }
@@ -2043,14 +2043,14 @@ namespace libsemigroups {
 
       TEST_HLT(tc.congruence());
       SECTION("Felsch strategy + standardization") {
-        tc.congruence().strategy(policy::strategy::felsch).standardize(true);
+        tc.congruence().strategy(options::strategy::felsch).standardize(true);
         tc.congruence().run_until([&tc]() -> bool {
           return tc.congruence().nr_cosets_active() > 100000;
         });
         REQUIRE(!tc.congruence().finished());
         REQUIRE(!tc.congruence().complete());
         REQUIRE(!tc.congruence().compatible());
-        tc.congruence().strategy(policy::strategy::hlt).standardize(true);
+        tc.congruence().strategy(options::strategy::hlt).standardize(true);
       }
       TEST_RANDOM_SIMS(tc.congruence());
       REQUIRE(tc.size() == 36412);
@@ -2224,7 +2224,7 @@ namespace libsemigroups {
       tc.add_rule("aacdcdaDCDC", "e");
 
       tc.congruence().sort_generating_pairs().strategy(
-          policy::strategy::felsch);
+          options::strategy::felsch);
 
       REQUIRE(tc.size() == 95040);
     }
@@ -2323,9 +2323,9 @@ namespace libsemigroups {
       std::chrono::seconds t(1);
       tc.congruence().random_interval(100000);
       while (!tc.finished()) {
-        tc.congruence().strategy(policy::strategy::felsch).standardize(true);
+        tc.congruence().strategy(options::strategy::felsch).standardize(true);
         tc.congruence().run_for(t);
-        tc.congruence().strategy(policy::strategy::hlt).standardize(true);
+        tc.congruence().strategy(options::strategy::hlt).standardize(true);
         tc.congruence().run_for(2 * t);
         t *= 2;
       }
@@ -2462,9 +2462,9 @@ namespace libsemigroups {
       congruence::ToddCoxeter H(right, G.congruence());
       H.add_pair({1, 2}, {6});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 16384);
     }
@@ -2485,7 +2485,7 @@ namespace libsemigroups {
       congruence::ToddCoxeter H(right, G.congruence());
       H.add_pair({1, 2}, {6});
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
       REQUIRE(H.nr_classes() == 16384);
     }
 
@@ -2513,9 +2513,9 @@ namespace libsemigroups {
       H.add_pair({b, c}, {e});
       H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 8);
     }
@@ -2544,7 +2544,7 @@ namespace libsemigroups {
       H.add_pair({b, c}, {e});
       H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
       REQUIRE(H.nr_classes() == 8);
     }
@@ -2573,7 +2573,7 @@ namespace libsemigroups {
       H.add_pair({b, c}, {e});
       H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
       REQUIRE(H.nr_classes() == 8);
     }
 
@@ -2603,7 +2603,7 @@ namespace libsemigroups {
       H.add_pair({b, A, C, b, a, a, c, A}, {e});
       H.add_pair({a, c, c, A, A, B, a, b}, {e});
 
-      H.save(true).lookahead(policy::lookahead::partial);
+      H.save(true).lookahead(options::lookahead::partial);
       REQUIRE(H.nr_classes() == 131072);
     }
 
@@ -2633,9 +2633,9 @@ namespace libsemigroups {
       H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
       H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
       REQUIRE(H.nr_classes() == 1);
     }
 
@@ -2665,7 +2665,7 @@ namespace libsemigroups {
       H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
       H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
       REQUIRE(H.nr_classes() == 1);
     }
@@ -2696,7 +2696,7 @@ namespace libsemigroups {
       H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
       H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
       REQUIRE(H.nr_classes() == 1);
     }
 
@@ -2715,9 +2715,9 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == std::pow(2, 17));
     }
@@ -2737,7 +2737,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == std::pow(2, 17));
@@ -2758,7 +2758,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
 
       REQUIRE(H.nr_classes() == std::pow(2, 17));
     }
@@ -2786,9 +2786,9 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == std::pow(2, 18));
     }
@@ -2817,9 +2817,9 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G.congruence());
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 786432);
     }
@@ -2845,9 +2845,9 @@ namespace libsemigroups {
       congruence::ToddCoxeter H(right, G);
       H.add_pair({b}, {e});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(false)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
       REQUIRE(H.nr_classes() == 180);
     }
 
@@ -2872,7 +2872,7 @@ namespace libsemigroups {
       congruence::ToddCoxeter H(right, G);
       H.add_pair({b}, {e});
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 180);
@@ -2924,9 +2924,9 @@ namespace libsemigroups {
 
       H.add_pair({a}, {e});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 480);
     }
@@ -2977,7 +2977,7 @@ namespace libsemigroups {
 
       H.add_pair({a}, {e});
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 480);
@@ -3029,7 +3029,7 @@ namespace libsemigroups {
 
       H.add_pair({a}, {e});
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
 
       REQUIRE(H.nr_classes() == 480);
     }
@@ -3053,9 +3053,9 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 95040);
     }
@@ -3079,7 +3079,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 95040);
@@ -3104,7 +3104,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
 
       REQUIRE(H.nr_classes() == 95040);
     }
@@ -3128,9 +3128,9 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 29);
     }
@@ -3155,7 +3155,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 29);
@@ -3180,7 +3180,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::felsch);
+      H.strategy(options::strategy::felsch);
 
       REQUIRE(H.nr_classes() == 29);
     }
@@ -3199,10 +3199,10 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .standardize(true)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 5);
     }
@@ -3221,7 +3221,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 5);
@@ -3241,7 +3241,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::felsch).standardize(true);
+      H.strategy(options::strategy::felsch).standardize(true);
 
       REQUIRE(H.nr_classes() == 5);
     }
@@ -3267,10 +3267,10 @@ namespace libsemigroups {
 
       H.add_pair({a, b}, {e});
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .standardize(true)
           .save(true)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 12);
     }
@@ -3296,7 +3296,7 @@ namespace libsemigroups {
 
       H.add_pair({a, b}, {e});
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 12);
@@ -3323,7 +3323,7 @@ namespace libsemigroups {
 
       H.add_pair({a, b}, {e});
 
-      H.strategy(policy::strategy::felsch).standardize(true);
+      H.strategy(options::strategy::felsch).standardize(true);
 
       REQUIRE(H.nr_classes() == 12);
     }
@@ -3343,10 +3343,10 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::hlt)
+      H.strategy(options::strategy::hlt)
           .standardize(false)
           .save(false)
-          .lookahead(policy::lookahead::partial);
+          .lookahead(options::lookahead::partial);
 
       REQUIRE(H.nr_classes() == 60);
     }
@@ -3366,7 +3366,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::random)
+      H.strategy(options::strategy::random)
           .random_interval(std::chrono::milliseconds(100));
 
       REQUIRE(H.nr_classes() == 60);
@@ -3387,7 +3387,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(policy::strategy::felsch)
+      H.strategy(options::strategy::felsch)
           .standardize(true)
           .random_shuffle_generating_pairs();
 
@@ -3410,7 +3410,7 @@ namespace libsemigroups {
       tc.congruence().sort_generating_pairs(&shortlex_compare);
       tc.congruence().sort_generating_pairs(recursive_path_compare);
 
-      tc.congruence().strategy(policy::strategy::felsch);
+      tc.congruence().strategy(options::strategy::felsch);
 
       REQUIRE(tc.size() == 258661);
     }

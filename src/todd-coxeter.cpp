@@ -227,14 +227,14 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
             enable_debug_verify_no_missing_deductions(true),
 #endif
-            lookahead(policy::lookahead::partial),
+            lookahead(options::lookahead::partial),
             lower_bound(UNDEFINED),
             next_lookahead(5000000),
-            froidure_pin(policy::froidure_pin::none),
+            froidure_pin(options::froidure_pin::none),
             random_interval(200000000),
             save(false),
             standardize(false),
-            strategy(policy::strategy::hlt) {
+            strategy(options::strategy::hlt) {
       }
 
       Settings(Settings const& copy) = default;
@@ -242,14 +242,14 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       bool enable_debug_verify_no_missing_deductions;
 #endif
-      policy::lookahead        lookahead;
+      options::lookahead        lookahead;
       size_t                   lower_bound;
       size_t                   next_lookahead;
-      policy::froidure_pin     froidure_pin;
+      options::froidure_pin     froidure_pin;
       std::chrono::nanoseconds random_interval;
       bool                     save;
       bool                     standardize;
-      policy::strategy         strategy;
+      options::strategy         strategy;
     };
 
     class ToddCoxeter::FelschTree {
@@ -409,7 +409,7 @@ namespace libsemigroups {
 
     ToddCoxeter::ToddCoxeter(congruence_type                  type,
                              std::shared_ptr<FroidurePinBase> S,
-                             policy::froidure_pin             p)
+                             options::froidure_pin             p)
         : ToddCoxeter(type) {
       _settings->froidure_pin = p;
       set_parent_froidure_pin(S);
@@ -436,10 +436,10 @@ namespace libsemigroups {
       set_parent_froidure_pin(copy);
       if (copy.finished()) {
         set_nr_generators(copy.froidure_pin()->nr_generators());
-        _settings->froidure_pin = policy::froidure_pin::use_cayley_graph;
+        _settings->froidure_pin = options::froidure_pin::use_cayley_graph;
       } else {
         copy_relations_for_quotient(copy.congruence());
-        _settings->froidure_pin = policy::froidure_pin::use_relations;
+        _settings->froidure_pin = options::froidure_pin::use_relations;
       }
     }
 
@@ -455,8 +455,8 @@ namespace libsemigroups {
       set_parent_froidure_pin(kb);
       if (kb.finished() && kb.is_obviously_finite()) {
         LIBSEMIGROUPS_ASSERT(_settings->froidure_pin
-                             == policy::froidure_pin::none);
-        _settings->froidure_pin = policy::froidure_pin::use_cayley_graph;
+                             == options::froidure_pin::none);
+        _settings->froidure_pin = options::froidure_pin::use_cayley_graph;
       }
     }
 
@@ -494,17 +494,17 @@ namespace libsemigroups {
 
     // Settings
     ToddCoxeter&
-    ToddCoxeter::froidure_pin_policy(policy::froidure_pin x) noexcept {
+    ToddCoxeter::froidure_pin_policy(options::froidure_pin x) noexcept {
       _settings->froidure_pin = x;
       return *this;
     }
 
-    ToddCoxeter::policy::froidure_pin
+    ToddCoxeter::options::froidure_pin
     ToddCoxeter::froidure_pin_policy() const noexcept {
       return _settings->froidure_pin;
     }
 
-    ToddCoxeter& ToddCoxeter::lookahead(policy::lookahead x) noexcept {
+    ToddCoxeter& ToddCoxeter::lookahead(options::lookahead x) noexcept {
       _settings->lookahead = x;
       return *this;
     }
@@ -528,9 +528,9 @@ namespace libsemigroups {
       if ((_prefilled
            || (has_parent_froidure_pin()
                && parent_froidure_pin()->is_finite() == tril::TRUE
-               && (_settings->froidure_pin == policy::froidure_pin::none
+               && (_settings->froidure_pin == options::froidure_pin::none
                    || _settings->froidure_pin
-                          == policy::froidure_pin::use_cayley_graph)))
+                          == options::froidure_pin::use_cayley_graph)))
           && x) {
         LIBSEMIGROUPS_EXCEPTION("cannot use the save setting with a "
                                 "prefilled ToddCoxeter instance");
@@ -539,14 +539,14 @@ namespace libsemigroups {
       return *this;
     }
 
-    ToddCoxeter& ToddCoxeter::strategy(policy::strategy x) {
+    ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
       if ((_prefilled
            || (has_parent_froidure_pin()
                && parent_froidure_pin()->is_finite() == tril::TRUE
-               && (_settings->froidure_pin == policy::froidure_pin::none
+               && (_settings->froidure_pin == options::froidure_pin::none
                    || _settings->froidure_pin
-                          == policy::froidure_pin::use_cayley_graph)))
-          && x == policy::strategy::felsch) {
+                          == options::froidure_pin::use_cayley_graph)))
+          && x == options::strategy::felsch) {
         LIBSEMIGROUPS_EXCEPTION("cannot use the Felsch strategy with a "
                                 "prefilled ToddCoxeter instance");
       }
@@ -554,7 +554,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    ToddCoxeter::policy::strategy ToddCoxeter::strategy() const noexcept {
+    ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
       return _settings->strategy;
     }
 
@@ -768,11 +768,11 @@ namespace libsemigroups {
         run_until([this, &bound]() -> bool {
           return (nr_cosets_active() == bound) && complete();
         });
-      } else if (_settings->strategy == policy::strategy::felsch) {
+      } else if (_settings->strategy == options::strategy::felsch) {
         felsch();
-      } else if (_settings->strategy == policy::strategy::hlt) {
+      } else if (_settings->strategy == options::strategy::hlt) {
         hlt();
-      } else if (_settings->strategy == policy::strategy::random) {
+      } else if (_settings->strategy == options::strategy::random) {
         sims();
       }
     }
@@ -912,8 +912,8 @@ namespace libsemigroups {
         // Add the relations/Cayley graph from parent() if any.
         if (has_parent_froidure_pin()
             && parent_froidure_pin()->is_finite() == tril::TRUE) {
-          if (_settings->froidure_pin == policy::froidure_pin::use_cayley_graph
-              || _settings->froidure_pin == policy::froidure_pin::none) {
+          if (_settings->froidure_pin == options::froidure_pin::use_cayley_graph
+              || _settings->froidure_pin == options::froidure_pin::none) {
             REPORT_DEBUG_DEFAULT("using Cayley graph...\n");
             LIBSEMIGROUPS_ASSERT(_relations.empty());
             prefill(*parent_froidure_pin());
@@ -925,7 +925,7 @@ namespace libsemigroups {
           } else {
             REPORT_DEBUG_DEFAULT("using presentation...\n");
             LIBSEMIGROUPS_ASSERT(_settings->froidure_pin
-                                 == policy::froidure_pin::use_relations);
+                                 == options::froidure_pin::use_relations);
             auto fp = parent_froidure_pin();
             fp->run();
             for (auto it = fp->cbegin_rules(); it != fp->cend_rules(); ++it) {
@@ -994,8 +994,8 @@ namespace libsemigroups {
       REPORT_DEBUG_DEFAULT("prefilling the coset table from FroidurePin...\n");
       LIBSEMIGROUPS_ASSERT(_state == state::constructed);
       LIBSEMIGROUPS_ASSERT(
-          _settings->froidure_pin == policy::froidure_pin::use_cayley_graph
-          || _settings->froidure_pin == policy::froidure_pin::none);
+          _settings->froidure_pin == options::froidure_pin::use_cayley_graph
+          || _settings->froidure_pin == options::froidure_pin::none);
       LIBSEMIGROUPS_ASSERT(S.nr_generators() == nr_generators());
       if (kind() == congruence_type::left) {
         prefill_and_validate(S.left_cayley_graph(), false);
@@ -1010,7 +1010,7 @@ namespace libsemigroups {
 
     void ToddCoxeter::prefill_and_validate(table_type const& table,
                                            bool              validate) {
-      if (_settings->strategy == policy::strategy::felsch) {
+      if (_settings->strategy == options::strategy::felsch) {
         LIBSEMIGROUPS_EXCEPTION(
             "it is not possible to prefill when using the Felsch strategy");
       }
@@ -1141,7 +1141,7 @@ namespace libsemigroups {
       // to be complete.
       init_felsch_tree();
       if (_state == state::initialized) {
-        LIBSEMIGROUPS_ASSERT(_settings->strategy == policy::strategy::felsch);
+        LIBSEMIGROUPS_ASSERT(_settings->strategy == options::strategy::felsch);
         for (auto it = _extra.cbegin(); it < _extra.cend(); it += 2) {
           push_definition_hlt<StackDeductions, ProcessCoincidences>(
               _id_coset, *it, *(it + 1));
@@ -1199,7 +1199,7 @@ namespace libsemigroups {
       REPORT_DEFAULT("performing HLT %s standardization, %s lookahead, and%s"
                      "deduction processing...\n",
                      _settings->standardize ? "with" : "without",
-                     _settings->lookahead == policy::lookahead::partial
+                     _settings->lookahead == options::lookahead::partial
                          ? "partial"
                          : "full",
                      _settings->save ? " " : " no ");
@@ -1310,9 +1310,9 @@ namespace libsemigroups {
       while (!finished()) {
         size_t m = dist(mt);
         if (m < 8) {
-          strategy(policy::strategy::hlt);
+          strategy(options::strategy::hlt);
           lookahead(
-              (full[m] ? policy::lookahead::full : policy::lookahead::partial));
+              (full[m] ? options::lookahead::full : options::lookahead::partial));
           try {
             save(save_it[m]);
           } catch (...) {
@@ -1322,7 +1322,7 @@ namespace libsemigroups {
           }
         } else {
           try {
-            strategy(policy::strategy::felsch);
+            strategy(options::strategy::felsch);
           } catch (...) {
             // It isn't always possible to use the Felsch strategy (when this
             // is created from a Cayley table, for instance), and
@@ -1340,7 +1340,7 @@ namespace libsemigroups {
       // Felsch repeatedly, we can be in the situation where the table is
       // complete but not compatible. Test [ToddCoxeter][048] is a good example
       // of this.
-      lookahead(policy::lookahead::full);
+      lookahead(options::lookahead::full);
       perform_lookahead();
     }
 
@@ -1349,12 +1349,12 @@ namespace libsemigroups {
     void ToddCoxeter::perform_lookahead() {
       state const old_state = _state;
       _state                = state::lookahead;
-      if (_settings->lookahead == policy::lookahead::partial) {
+      if (_settings->lookahead == options::lookahead::partial) {
         REPORT_DEFAULT("performing partial lookahead...\n");
         // Start lookahead from the coset after _current
         _current_la = next_active_coset(_current);
       } else {
-        LIBSEMIGROUPS_ASSERT(_settings->lookahead == policy::lookahead::full);
+        LIBSEMIGROUPS_ASSERT(_settings->lookahead == options::lookahead::full);
         REPORT_DEFAULT("performing full lookahead...\n");
         // Start from the first coset
         _current_la = _id_coset;
