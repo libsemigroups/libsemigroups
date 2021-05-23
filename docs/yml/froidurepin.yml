@@ -32,7 +32,6 @@ libsemigroups::FroidurePin:
   - FroidurePin(std::shared_ptr<T>)
   - FroidurePin(T const &)
   - FroidurePin(FroidurePin &&) = default
-  - FroidurePin(std::vector<element_type> const *)
   - FroidurePin(std::vector<element_type> const&)
   - FroidurePin(std::initializer_list<element_type>)
   - FroidurePin(FroidurePin const&)
@@ -122,16 +121,17 @@ libsemigroups::FroidurePin:
   - right(element_index_type,letter_type)
   - left(element_index_type,letter_type)
   - current_max_word_length() const noexcept
-  - word_to_pos(word_type const &) const
-  - letter_to_pos(letter_type) const
+  - current_position(word_type const &) const
+  - current_position(std::initializer_list< size_t > const &) const
+  - current_position(letter_type) const
   - minimal_factorisation(word_type &,element_index_type) const
   - minimal_factorisation(word_type &,element_index_type)
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
   - number_of_rules()
-  - length_const(element_index_type) const
-  - length_non_const(element_index_type)
+  - current_length(element_index_type) const
+  - length(element_index_type)
   - prefix(element_index_type) const
   - suffix(element_index_type) const
   - first_letter(element_index_type) const

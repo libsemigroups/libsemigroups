@@ -1006,7 +1006,7 @@ namespace libsemigroups {
         prefill_and_validate(S.right_cayley_graph(), false);
       }
       for (size_t i = 0; i < number_of_generators(); i++) {
-        _table.set(0, i, S.letter_to_pos(i) + 1);
+        _table.set(0, i, S.current_position(i) + 1);
       }
       init_preimages_from_table();
     }

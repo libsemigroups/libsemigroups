@@ -315,8 +315,14 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
-    // TODO(now) rename `position`
-    element_index_type word_to_pos(word_type const& w) const;
+    element_index_type current_position(word_type const& w) const;
+
+    //! \copydoc current_position(word_type const&) const
+    element_index_type
+    current_position(std::initializer_list<size_t> const& w) const {
+      word_type ww = w;
+      return current_position(ww);
+    }
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
@@ -499,9 +505,8 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! \ref length_non_const.
-    // TODO now change this to `length`
-    size_t length_const(element_index_type pos) const {
+    //! \ref length.
+    size_t current_length(element_index_type pos) const {
       validate_element_index(pos);
       return _length[pos];
     }
@@ -519,13 +524,12 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! \ref length_const.
-    // TODO now change this to `length`
-    size_t length_non_const(element_index_type pos) {
+    //! \ref current_length.
+    size_t length(element_index_type pos) {
       if (pos >= _nr) {
         run();
       }
-      return length_const(pos);
+      return current_length(pos);
     }
 
     //! Compute a product using the Cayley graph.
@@ -553,7 +557,7 @@ namespace libsemigroups {
 
     //! Returns the position in of the generator with specified index.
     //!
-    //! In many cases \p letter_to_pos(i) will equal \p i, examples
+    //! In many cases \p current_position(i) will equal \p i, examples
     //! of when this will not be the case are:
     //!
     //! * there are duplicate generators;
@@ -570,8 +574,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(now) rename `position`
-    element_index_type letter_to_pos(letter_type i) const {
+    element_index_type current_position(letter_type i) const {
       validate_letter_index(i);
       return _letter_to_pos[i];
     }

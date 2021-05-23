@@ -108,7 +108,8 @@ namespace libsemigroups {
     void test_rules_iterator(FroidurePin<Transf<>>& S) {
       size_t nr = 0;
       for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-        REQUIRE(S.word_to_pos(it->first) == S.word_to_pos(it->second));
+        REQUIRE(S.current_position(it->first)
+                == S.current_position(it->second));
         nr++;
       }
       REQUIRE(nr == S.current_number_of_rules());
@@ -148,7 +149,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "004",
-                          "exception word_to_pos",
+                          "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
@@ -158,9 +159,9 @@ namespace libsemigroups {
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     FroidurePin<Transf<>> U(gens);
 
-    REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
-    REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
-    REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(U.current_position({}), LibsemigroupsException);
+    REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
+    REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -279,7 +280,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "011",
-                          "exception length_const",
+                          "exception current_length",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
@@ -288,8 +289,8 @@ namespace libsemigroups {
     FroidurePin<Transf<>> U(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
-      REQUIRE_NOTHROW(U.length_const(i));
-      REQUIRE_THROWS_AS(U.length_const(i + U.size()), LibsemigroupsException);
+      REQUIRE_NOTHROW(U.current_length(i));
+      REQUIRE_THROWS_AS(U.current_length(i + U.size()), LibsemigroupsException);
     }
   }
 
@@ -339,7 +340,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "014",
-                          "exception letter_to_pos",
+                          "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
     auto rg = ReportGuard(REPORT);
     for (size_t i = 1; i < 20; ++i) {
@@ -356,9 +357,9 @@ namespace libsemigroups {
       FroidurePin<Transf<>> S(gens);
 
       for (size_t j = 0; j < i; ++j) {
-        REQUIRE_NOTHROW(S.letter_to_pos(j));
+        REQUIRE_NOTHROW(S.current_position(j));
       }
-      REQUIRE_THROWS_AS(S.letter_to_pos(i), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.current_position(i), LibsemigroupsException);
     }
   }
 
@@ -589,15 +590,15 @@ namespace libsemigroups {
     S.factorisation(result, 5537);
     word_type expected = {1, 2, 2, 2, 3, 2, 4, 1, 2, 2, 3};
     REQUIRE(result == expected);
-    REQUIRE(S.length_const(5537) == 11);
-    REQUIRE(S.length_non_const(5537) == 11);
+    REQUIRE(S.current_length(5537) == 11);
+    REQUIRE(S.length(5537) == 11);
     REQUIRE(S.current_max_word_length() == 11);
 
     REQUIRE(S.current_size() == 5539);
     REQUIRE(S.current_number_of_rules() == 1484);
     REQUIRE(S.current_max_word_length() == 11);
 
-    REQUIRE(S.length_non_const(7775) == 16);
+    REQUIRE(S.length(7775) == 16);
     REQUIRE(S.current_max_word_length() == 16);
   }
 
@@ -618,7 +619,7 @@ namespace libsemigroups {
     word_type result;
     for (size_t i = 0; i < S.size(); i++) {
       S.factorisation(result, i);
-      REQUIRE(S.word_to_pos(result) == i);
+      REQUIRE(S.current_position(result) == i);
     }
   }
 
@@ -710,7 +711,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "026",
-                          "letter_to_pos [standard]",
+                          "current_position [standard]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S;
@@ -720,16 +721,16 @@ namespace libsemigroups {
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(S.letter_to_pos(0) == 0);
-    REQUIRE(S.letter_to_pos(1) == 1);
-    REQUIRE(S.letter_to_pos(2) == 2);
-    REQUIRE(S.letter_to_pos(3) == 3);
-    REQUIRE(S.letter_to_pos(4) == 4);
+    REQUIRE(S.current_position(0) == 0);
+    REQUIRE(S.current_position(1) == 1);
+    REQUIRE(S.current_position(2) == 2);
+    REQUIRE(S.current_position(3) == 3);
+    REQUIRE(S.current_position(4) == 4);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "027",
-                          "letter_to_pos [duplicate gens]",
+                          "current_position [duplicate gens]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S;
@@ -766,13 +767,13 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 0, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(S.letter_to_pos(0) == 0);
-    REQUIRE(S.letter_to_pos(1) == 1);
-    REQUIRE(S.letter_to_pos(2) == 1);
-    REQUIRE(S.letter_to_pos(3) == 1);
-    REQUIRE(S.letter_to_pos(4) == 1);
-    REQUIRE(S.letter_to_pos(10) == 1);
-    REQUIRE(S.letter_to_pos(12) == 3);
+    REQUIRE(S.current_position(0) == 0);
+    REQUIRE(S.current_position(1) == 1);
+    REQUIRE(S.current_position(2) == 1);
+    REQUIRE(S.current_position(3) == 1);
+    REQUIRE(S.current_position(4) == 1);
+    REQUIRE(S.current_position(10) == 1);
+    REQUIRE(S.current_position(12) == 3);
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
@@ -783,7 +784,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "028",
-                          "letter_to_pos [after add_generators]",
+                          "current_position [after add_generators]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S;
@@ -823,11 +824,11 @@ namespace libsemigroups {
     REQUIRE(S.number_of_generators() == 5);
     REQUIRE(S.number_of_rules() == 2459);
 
-    REQUIRE(S.letter_to_pos(0) == 0);
-    REQUIRE(S.letter_to_pos(1) == 1);
-    REQUIRE(S.letter_to_pos(2) == 2);
-    REQUIRE(S.letter_to_pos(3) == 120);
-    REQUIRE(S.letter_to_pos(4) == 1546);
+    REQUIRE(S.current_position(0) == 0);
+    REQUIRE(S.current_position(1) == 1);
+    REQUIRE(S.current_position(2) == 2);
+    REQUIRE(S.current_position(3) == 120);
+    REQUIRE(S.current_position(4) == 1546);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2159,16 +2160,16 @@ namespace libsemigroups {
     REQUIRE(S.number_of_generators() == 10);
     REQUIRE(S.number_of_rules() == 267);
 
-    REQUIRE(S.letter_to_pos(0) == 0);
-    REQUIRE(S.letter_to_pos(1) == 0);
-    REQUIRE(S.letter_to_pos(2) == 0);
-    REQUIRE(S.letter_to_pos(3) == 1);
-    REQUIRE(S.letter_to_pos(4) == 2);
-    REQUIRE(S.letter_to_pos(5) == 7);
-    REQUIRE(S.letter_to_pos(6) == 18);
-    REQUIRE(S.letter_to_pos(7) == 87);
-    REQUIRE(S.letter_to_pos(8) == 97);
-    REQUIRE(S.letter_to_pos(9) == 21);
+    REQUIRE(S.current_position(0) == 0);
+    REQUIRE(S.current_position(1) == 0);
+    REQUIRE(S.current_position(2) == 0);
+    REQUIRE(S.current_position(3) == 1);
+    REQUIRE(S.current_position(4) == 2);
+    REQUIRE(S.current_position(5) == 7);
+    REQUIRE(S.current_position(6) == 18);
+    REQUIRE(S.current_position(7) == 87);
+    REQUIRE(S.current_position(8) == 97);
+    REQUIRE(S.current_position(9) == 21);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2231,9 +2232,9 @@ namespace libsemigroups {
     REQUIRE(S.current_size() == 7);
     S.add_generators({T.generator(3), T.generator(4), T.generator(5)});
     REQUIRE(S.number_of_generators() == 8);
-    REQUIRE(S.letter_to_pos(5) == 7);
-    REQUIRE(S.letter_to_pos(6) == 8);
-    REQUIRE(S.letter_to_pos(7) == 9);
+    REQUIRE(S.current_position(5) == 7);
+    REQUIRE(S.current_position(6) == 8);
+    REQUIRE(S.current_position(7) == 9);
     REQUIRE(S.current_size() == 55);
 
     S.add_generator(S.at(44));
@@ -2414,7 +2415,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "075",
-                          "exception: word_to_pos",
+                          "exception: current_position",
                           "[quick][froidure-pin][transf]") {
     FroidurePin<Transf<>> U;
     U.add_generator(Transf<>({0, 1, 2, 3, 4, 5}));
@@ -2423,9 +2424,9 @@ namespace libsemigroups {
     U.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     U.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE_THROWS_AS(U.word_to_pos({}), LibsemigroupsException);
-    REQUIRE_NOTHROW(U.word_to_pos({0, 0, 1, 2}));
-    REQUIRE_THROWS_AS(U.word_to_pos({5}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(U.current_position({}), LibsemigroupsException);
+    REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
+    REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2449,7 +2450,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "077",
-                          "exception: gens, word_to_pos",
+                          "exception: gens, current_position",
                           "[quick][froidure-pin][transf]") {
     using value_type = typename Transf<>::value_type;
     for (size_t i = 1; i < 20; ++i) {
@@ -2464,11 +2465,11 @@ namespace libsemigroups {
       FroidurePin<Transf<>> S(gens);
 
       for (size_t j = 0; j < i; ++j) {
-        REQUIRE_NOTHROW(S.letter_to_pos(j));
+        REQUIRE_NOTHROW(S.current_position(j));
         REQUIRE_NOTHROW(S.generator(j));
       }
       REQUIRE_THROWS_AS(S.generator(i), LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.letter_to_pos(i), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.current_position(i), LibsemigroupsException);
     }
   }
 

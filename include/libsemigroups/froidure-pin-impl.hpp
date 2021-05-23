@@ -68,18 +68,14 @@ namespace libsemigroups {
   }
 
   TEMPLATE
-  FROIDURE_PIN::FroidurePin(std::vector<element_type> const* gens)
+  FROIDURE_PIN::FroidurePin(std::vector<element_type> const& gens)
       : FroidurePin() {
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
-    validate_element_collection(gens->cbegin(), gens->cend());
-    add_generators_before_start(gens->cbegin(), gens->cend());
+    validate_element_collection(gens.cbegin(), gens.cend());
+    add_generators_before_start(gens.cbegin(), gens.cend());
   }
-
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin(std::vector<element_type> const& gens)
-      : FroidurePin(&gens) {}
 
   TEMPLATE
   FROIDURE_PIN::FroidurePin(std::initializer_list<element_type> gens)
@@ -196,13 +192,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   ELEMENT_TYPE FROIDURE_PIN::word_to_element(word_type const& w) const {
-    element_index_type pos = word_to_pos(w);
+    element_index_type pos = current_position(w);
     if (pos != UNDEFINED) {
       // Return a copy
       return this->external_copy(this->to_external_const(_elements[pos]));
     }
-    // word_to_pos is always known for generators (i.e. when w.size() == 1),
-    // and word_to_pos verifies that w is valid.
+    // current_position is always known for generators (i.e. when w.size() ==
+    // 1), and current_position verifies that w is valid.
     LIBSEMIGROUPS_ASSERT(w.size() > 1);
     LIBSEMIGROUPS_ASSERT(w[0] < number_of_generators()
                          && w[1] < number_of_generators());
@@ -226,8 +222,8 @@ namespace libsemigroups {
   }
 
   BOOL FROIDURE_PIN::equal_to(word_type const& u, word_type const& v) const {
-    element_index_type u_pos = word_to_pos(u);  // validates u
-    element_index_type v_pos = word_to_pos(v);  // validates v
+    element_index_type u_pos = current_position(u);  // validates u
+    element_index_type v_pos = current_position(v);  // validates v
     if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
       LIBSEMIGROUPS_ASSERT(u_pos != UNDEFINED);
       LIBSEMIGROUPS_ASSERT(v_pos != UNDEFINED);
@@ -265,7 +261,7 @@ namespace libsemigroups {
     validate_element_index(i);
     validate_element_index(j);
     auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
-    if (length_const(i) < n || length_const(j) < n) {
+    if (current_length(i) < n || current_length(j) < n) {
       return product_by_reduction(i, j);
     } else {
       InternalProduct()(this->to_external(_tmp_product),
