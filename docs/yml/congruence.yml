@@ -11,10 +11,10 @@ libsemigroups::Congruence:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`Congruence` class."]
-  - Congruence(congruence_type, options::runners)
-  - Congruence(congruence_type, T const&)
-  - Congruence(congruence_type, std::shared_ptr<FroidurePinBase>)
-  - Congruence(congruence_type, FpSemigroup&)
+  - Congruence(congruence_kind, options::runners)
+  - Congruence(congruence_kind, T const&)
+  - Congruence(congruence_kind, std::shared_ptr<FroidurePinBase>)
+  - Congruence(congruence_kind, FpSemigroup&)
 - Deleted constructors:
   - ["This page lists the deleted constructors of the
      :cpp:any:`Congruence` class."]

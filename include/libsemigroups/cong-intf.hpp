@@ -37,7 +37,7 @@ namespace libsemigroups {
 
   //! The values in this enum can be used to indicate that a congruence should
   //! be 2-sided, left, or right.
-  enum class congruence_type { left = 0, right = 1, twosided = 2 };
+  enum class congruence_kind { left = 0, right = 1, twosided = 2 };
 
   //! Defined in ``cong-intf.hpp``.
   //!
@@ -74,7 +74,7 @@ namespace libsemigroups {
     CongruenceInterface(CongruenceInterface const&) = default;
 
     //! Constructs a congruence of the specified type.
-    explicit CongruenceInterface(congruence_type);
+    explicit CongruenceInterface(congruence_kind);
 
     //! Deleted.
     CongruenceInterface() = delete;
@@ -471,7 +471,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the congruence is not 2-sided, `side() !=
-    //! congruence_type::twosided`
+    //! congruence_kind::twosided`
     //! * the quotient semigroup is known (or can be easily be shown to be)
     //! infinite
     //! * the implementation throws.
@@ -589,7 +589,7 @@ namespace libsemigroups {
 
     //! The handedness of the congruence (left, right, or 2-sided).
     //!
-    //! \returns A \ref congruence_type.
+    //! \returns A \ref congruence_kind.
     //!
     //! \exceptions
     //! \noexcept
@@ -599,7 +599,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    congruence_type kind() const noexcept {
+    congruence_kind kind() const noexcept {
       return _type;
     }
 
@@ -738,7 +738,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     //! No doc
-    static std::string const& congruence_type_to_string(congruence_type);
+    static std::string const& congruence_kind_to_string(congruence_kind);
 
    private:
     ////////////////////////////////////////////////////////////////////////////
@@ -804,7 +804,7 @@ namespace libsemigroups {
     std::vector<relation_type>       _gen_pairs;
     size_t                           _nr_gens;
     std::shared_ptr<LazyFroidurePin> _parent;
-    congruence_type                  _type;
+    congruence_kind                  _type;
 
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - mutable data members - private

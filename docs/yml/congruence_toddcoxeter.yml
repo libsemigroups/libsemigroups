@@ -15,14 +15,14 @@ libsemigroups::congruence::ToddCoxeter:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`ToddCoxeter` class."]
-  - ToddCoxeter(congruence_type)
-  - ToddCoxeter(congruence_type, T const&)
-  - ToddCoxeter(congruence_type,
+  - ToddCoxeter(congruence_kind)
+  - ToddCoxeter(congruence_kind, T const&)
+  - ToddCoxeter(congruence_kind,
                 std::shared_ptr<FroidurePinBase>,
                 options::froidure_pin)
-  - ToddCoxeter(congruence_type, ToddCoxeter&)
-  - ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&)
-  - ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&)
+  - ToddCoxeter(congruence_kind, ToddCoxeter&)
+  - ToddCoxeter(congruence_kind, fpsemigroup::ToddCoxeter&)
+  - ToddCoxeter(congruence_kind, fpsemigroup::KnuthBendix&)
   - ToddCoxeter(ToddCoxeter const&)
 - Deleted constructors:
   - ["This page lists the deleted constructors of the :cpp:any:`ToddCoxeter`

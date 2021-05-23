@@ -31,7 +31,7 @@
 #include <utility>     // for pair
 #include <vector>      // for vector
 
-#include "cong-intf.hpp"   // for congruence_type,...
+#include "cong-intf.hpp"   // for congruence_kind,...
 #include "cong-wrap.hpp"   // for CongruenceWrapper
 #include "containers.hpp"  // for DynamicArray2
 #include "coset.hpp"       // for CosetManager
@@ -76,11 +76,11 @@ namespace libsemigroups {
     //! In this documentation we use the term "coset enumeration" to mean the
     //! execution of (any version of) the Todd-Coxeter algorithm.
     //!
-    //! \sa congruence_type and tril.
+    //! \sa congruence_kind and tril.
     //!
     //! \par Example 1
     //! \code
-    //! ToddCoxeter tc(congruence_type::left);  // construct a left congruence
+    //! ToddCoxeter tc(congruence_kind::left);  // construct a left congruence
     //! tc.set_number_of_generators(2);                // 2 generators
     //! tc.add_pair({0, 0}, {0});               // generator 0 squared is itself
     //! tc.add_pair({0}, {1});                  // generator 0 equals 1
@@ -93,7 +93,7 @@ namespace libsemigroups {
     //!
     //! \par Example 2
     //! \code
-    //! ToddCoxeter tc(congruence_type::twosided);
+    //! ToddCoxeter tc(congruence_kind::twosided);
     //! tc.set_number_of_generators(4);
     //! tc.add_pair({0, 0}, {0});
     //! tc.add_pair({1, 0}, {1});
@@ -280,13 +280,13 @@ namespace libsemigroups {
       //!
       //! This constructor creates a new ToddCoxeter instance representing a
       //! left, right, or two-sided congruence specified by the given
-      //! \ref congruence_type.
+      //! \ref congruence_kind.
       //!
       //! \param knd the handedness (left/right/2-sided) of the congruence
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      explicit ToddCoxeter(congruence_type knd);
+      explicit ToddCoxeter(congruence_kind knd);
 
       //! Construct from kind (left/right/2-sided) and FroidurePin or
       //! FpSemigroupInterface.
@@ -307,7 +307,7 @@ namespace libsemigroups {
       //! \warning The parameter \p S is copied, this might be expensive, use a
       //! \shared_ptr to avoid the copy!
       template <typename T>
-      ToddCoxeter(congruence_type knd, T const& S) : ToddCoxeter(knd) {
+      ToddCoxeter(congruence_kind knd, T const& S) : ToddCoxeter(knd) {
         static_assert(std::is_base_of<FroidurePinBase, T>::value
                           || std::is_base_of<FpSemigroupInterface, T>::value,
                       "the template parameter must be a derived class of "
@@ -332,7 +332,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      ToddCoxeter(congruence_type                  knd,
+      ToddCoxeter(congruence_kind                  knd,
                   std::shared_ptr<FroidurePinBase> fp,
                   options::froidure_pin            p
                   = options::froidure_pin::use_cayley_graph);
@@ -351,7 +351,7 @@ namespace libsemigroups {
       //!
       //! \throws LibsemigroupsException if \p tc is a left, or right,
       //! congruence, and \p knd is not left, or not right, respectively.
-      ToddCoxeter(congruence_type knd, ToddCoxeter& tc);
+      ToddCoxeter(congruence_kind knd, ToddCoxeter& tc);
 
       //! Construct from kind (left/right/2-sided) and ToddCoxeter.
       //!
@@ -364,7 +364,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      ToddCoxeter(congruence_type knd, fpsemigroup::ToddCoxeter& tc);
+      ToddCoxeter(congruence_kind knd, fpsemigroup::ToddCoxeter& tc);
 
       //! Construct from kind (left/right/2-sided) and KnuthBendix.
       //!
@@ -376,7 +376,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      ToddCoxeter(congruence_type knd, fpsemigroup::KnuthBendix& kb);
+      ToddCoxeter(congruence_kind knd, fpsemigroup::KnuthBendix& kb);
 
       //! Copy constructor.
       //!

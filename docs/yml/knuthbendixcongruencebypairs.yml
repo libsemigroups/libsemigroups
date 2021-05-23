@@ -5,9 +5,9 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - non_trivial_class_iterator
   - non_trivial_classes_type
 - Constructors:
-  - KnuthBendixCongruenceByPairs(congruence_type,std::shared_ptr<KnuthBendix>)
+  - KnuthBendixCongruenceByPairs(congruence_kind,std::shared_ptr<KnuthBendix>)
     noexcept
-  - KnuthBendixCongruenceByPairs(congruence_type,KnuthBendix const &) noexcept
+  - KnuthBendixCongruenceByPairs(congruence_kind,KnuthBendix const &) noexcept
 - Deleted constructors:
   - KnuthBendixCongruenceByPairs() = delete
   - KnuthBendixCongruenceByPairs(KnuthBendixCongruenceByPairs const &) = delete

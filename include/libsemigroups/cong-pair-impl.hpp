@@ -46,7 +46,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairsHelper(congruence_type type)
+  P_CLASS::CongruenceByPairsHelper(congruence_kind type)
       : CongruenceInterface(type),
         _class_lookup(),
         _found_pairs(),
@@ -67,7 +67,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairsHelper(congruence_type                  type,
+  P_CLASS::CongruenceByPairsHelper(congruence_kind                  type,
                                    std::shared_ptr<FroidurePinBase> S) noexcept
       : CongruenceByPairsHelper(type) {
     set_number_of_generators(S->number_of_generators());
@@ -147,8 +147,8 @@ namespace libsemigroups {
       // Add its left and/or right multiples
       for (size_t i = 0; i < prnt->number_of_generators(); i++) {
         const_reference gen = prnt->generator(i);
-        if (kind() == congruence_type::left
-            || kind() == congruence_type::twosided) {
+        if (kind() == congruence_kind::left
+            || kind() == congruence_kind::twosided) {
           InternalProduct()(this->to_external(_tmp1),
                             gen,
                             this->to_external_const(current_pair.first),
@@ -161,8 +161,8 @@ namespace libsemigroups {
                             tid);
           internal_add_pair(_tmp1, _tmp2);
         }
-        if (kind() == congruence_type::right
-            || kind() == congruence_type::twosided) {
+        if (kind() == congruence_kind::right
+            || kind() == congruence_kind::twosided) {
           InternalProduct()(this->to_external(_tmp1),
                             this->to_external_const(current_pair.first),
                             gen,

@@ -202,7 +202,7 @@ namespace libsemigroups {
     REQUIRE(v.size() == 13716);
 
     // The next works but is a bit slow
-    // congruence::ToddCoxeter tc(congruence_type::twosided);
+    // congruence::ToddCoxeter tc(congruence_kind::twosided);
     // tc.set_number_of_generators(S.number_of_generators());
     // for (auto const& rel : v) {
     //   tc.add_pair(rel.first, rel.second);

@@ -36,9 +36,9 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  constexpr congruence_type twosided = congruence_type::twosided;
-  constexpr congruence_type left     = congruence_type::left;
-  constexpr congruence_type right    = congruence_type::right;
+  constexpr congruence_kind twosided = congruence_kind::twosided;
+  constexpr congruence_kind left     = congruence_kind::left;
+  constexpr congruence_kind right    = congruence_kind::right;
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "000",
@@ -1399,10 +1399,10 @@ namespace libsemigroups {
   //                         "[quick][cong]") {
   //   auto       rg = ReportGuard(REPORT);
   //   std::unique_ptr<Congruence> cong;
-  //   SECTION("Congruence(congruence_type)") {
+  //   SECTION("Congruence(congruence_kind)") {
   //     cong = detail::make_unique<Congruence>(twosided);
   //   }
-  //   SECTION("Congruence(congruence_type, FpSemigroup const&)") {
+  //   SECTION("Congruence(congruence_kind, FpSemigroup const&)") {
   //     FpSemigroup S;
   //     S.set_alphabet(2);
   //     cong = detail::make_unique<Congruence>(twosided, S);

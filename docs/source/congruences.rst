@@ -27,7 +27,7 @@ time, or until some condition is met; for further details see, for example,
 
 The "handedness" of a congruence is determined by:
 
-.. doxygenenum:: libsemigroups::congruence_type
+.. doxygenenum:: libsemigroups::congruence_kind
    :project: libsemigroups
 
 The classes in ``libsemigroups`` for congruences are:

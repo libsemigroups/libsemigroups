@@ -365,7 +365,7 @@ namespace libsemigroups {
     // ToddCoxeter - constructors and destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    ToddCoxeter::ToddCoxeter(congruence_type type)
+    ToddCoxeter::ToddCoxeter(congruence_kind type)
         : CongruenceInterface(type),
           CosetManager(),
           _coinc(),
@@ -408,7 +408,7 @@ namespace libsemigroups {
       }
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type                  type,
+    ToddCoxeter::ToddCoxeter(congruence_kind                  type,
                              std::shared_ptr<FroidurePinBase> S,
                              options::froidure_pin            p)
         : ToddCoxeter(type) {
@@ -419,19 +419,19 @@ namespace libsemigroups {
 
     // Construct a ToddCoxeter object representing a congruence over the
     // semigroup defined by copy (the quotient that is).
-    ToddCoxeter::ToddCoxeter(congruence_type typ, ToddCoxeter& copy)
+    ToddCoxeter::ToddCoxeter(congruence_kind typ, ToddCoxeter& copy)
         : ToddCoxeter(typ) {
-      if (copy.kind() != congruence_type::twosided && typ != copy.kind()) {
+      if (copy.kind() != congruence_kind::twosided && typ != copy.kind()) {
         LIBSEMIGROUPS_EXCEPTION("incompatible types of congruence, found ("
-                                + congruence_type_to_string(copy.kind()) + " / "
-                                + congruence_type_to_string(typ)
+                                + congruence_kind_to_string(copy.kind()) + " / "
+                                + congruence_kind_to_string(typ)
                                 + ") but only (left / left), (right / "
                                   "right), (two-sided / *) are valid");
       }
       copy_relations_for_quotient(copy);
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type           typ,
+    ToddCoxeter::ToddCoxeter(congruence_kind           typ,
                              fpsemigroup::ToddCoxeter& copy)
         : ToddCoxeter(typ) {
       set_parent_froidure_pin(copy);
@@ -444,7 +444,7 @@ namespace libsemigroups {
       }
     }
 
-    ToddCoxeter::ToddCoxeter(congruence_type typ, fpsemigroup::KnuthBendix& kb)
+    ToddCoxeter::ToddCoxeter(congruence_kind typ, fpsemigroup::KnuthBendix& kb)
         : ToddCoxeter(typ) {
       set_number_of_generators(kb.alphabet().size());
       // TODO(later) use active rules when available
@@ -720,7 +720,7 @@ namespace libsemigroups {
         w.push_back(tn.gen);
         tn = (*_tree)[tn.parent];
       }
-      if (kind() != congruence_type::left) {
+      if (kind() != congruence_kind::left) {
         std::reverse(w.begin(), w.end());
       }
       return w;
@@ -804,7 +804,7 @@ namespace libsemigroups {
       validate_word(w);
       coset_type c = _id_coset;
 
-      if (kind() == congruence_type::left) {
+      if (kind() == congruence_kind::left) {
         c = tau(c, w.crbegin(), w.crend());
       } else {
         c = tau(c, w.cbegin(), w.cend());
@@ -899,8 +899,8 @@ namespace libsemigroups {
       _relations = copy._relations;
       _relations.insert(
           _relations.end(), copy._extra.cbegin(), copy._extra.cend());
-      if (kind() == congruence_type::left
-          && copy.kind() != congruence_type::left) {
+      if (kind() == congruence_kind::left
+          && copy.kind() != congruence_kind::left) {
         for (auto& w : _relations) {
           std::reverse(w.begin(), w.end());
         }
@@ -949,7 +949,7 @@ namespace libsemigroups {
 
       // Get new generating pairs (if any) from CongruenceInterface (if any)
       auto it = cbegin_generating_pairs() + _nr_pairs_added_earlier;
-      if (kind() != congruence_type::twosided) {
+      if (kind() != congruence_kind::twosided) {
         for (; it < cend_generating_pairs(); ++it) {
           reverse_if_necessary_and_push_back(it->first, _extra);
           reverse_if_necessary_and_push_back(it->second, _extra);
@@ -1000,7 +1000,7 @@ namespace libsemigroups {
           _settings->froidure_pin == options::froidure_pin::use_cayley_graph
           || _settings->froidure_pin == options::froidure_pin::none);
       LIBSEMIGROUPS_ASSERT(S.number_of_generators() == number_of_generators());
-      if (kind() == congruence_type::left) {
+      if (kind() == congruence_kind::left) {
         prefill_and_validate(S.left_cayley_graph(), false);
       } else {
         prefill_and_validate(S.right_cayley_graph(), false);
@@ -1044,7 +1044,7 @@ namespace libsemigroups {
     void
     ToddCoxeter::reverse_if_necessary_and_push_back(word_type               w,
                                                     std::vector<word_type>& v) {
-      if (kind() == congruence_type::left) {
+      if (kind() == congruence_kind::left) {
         std::reverse(w.begin(), w.end());
       }
       v.push_back(std::move(w));
