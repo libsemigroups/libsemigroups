@@ -14,7 +14,7 @@ valid (i.e. that its entries belong to the underlying semiring).
 
 
 .. cpp:function:: template <typename Mat> \
-                  void matrix_validate(Mat const& m)
+                  void validate(Mat const& m)
 
    Throws an exception if the matrix is invalid.
 
