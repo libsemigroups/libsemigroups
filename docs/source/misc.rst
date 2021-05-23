@@ -15,7 +15,7 @@ In this section we describe some miscellaneous functionality in
 
    adapters
    constants
-   libsemigroups-exception
+   exception
    report
    _generated/libsemigroups__runner
    types

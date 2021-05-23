@@ -24,8 +24,8 @@
 #include <cstddef>  // for size_t
 #include <numeric>  // for iota
 
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/report.hpp"               // for REPORT_DEBUG
+#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/report.hpp"  // for REPORT_DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////
 //

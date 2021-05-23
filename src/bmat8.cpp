@@ -28,7 +28,7 @@
 #include <random>     // for mt19937, random_device
 #include <vector>     // for vector
 
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

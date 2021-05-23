@@ -26,8 +26,8 @@
 #include <functional>  // for mem_fn
 #include <thread>
 
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupException
-#include "libsemigroups/runner.hpp"                   // for Runner
+#include "libsemigroups/exception.hpp"  // for LibsemigroupException
+#include "libsemigroups/runner.hpp"     // for Runner
 
 namespace libsemigroups {
   namespace detail {

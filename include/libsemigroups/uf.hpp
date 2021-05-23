@@ -36,10 +36,10 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "iterator.hpp"              // for ConstIteratorStateless
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
-#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"                 // for SmallestInteger
+#include "config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include "iterator.hpp"  // for ConstIteratorStateless
+#include "types.hpp"     // for SmallestInteger
 
 namespace libsemigroups {
   namespace detail {

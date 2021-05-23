@@ -35,8 +35,8 @@
 #ifndef LIBSEMIGROUPS_FUNCTION_REF_HPP_
 #define LIBSEMIGROUPS_FUNCTION_REF_HPP_
 
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "stl.hpp"                  // for IsCallable
+#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "stl.hpp"    // for IsCallable
 
 namespace libsemigroups {
   namespace detail {

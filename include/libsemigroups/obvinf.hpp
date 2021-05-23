@@ -64,9 +64,9 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "types.hpp"                 // for word_type etc
-#include "uf.hpp"                    // for Duf
+#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "types.hpp"   // for word_type etc
+#include "uf.hpp"      // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include <Eigen/Core>

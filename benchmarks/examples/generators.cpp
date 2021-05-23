@@ -20,7 +20,7 @@
 #include "../bench-main.hpp"  // for to_hex_string
 #include "common.hpp"
 
-#include "libsemigroups/libsemigroups-config.hpp"
+#include "libsemigroups/config.hpp"
 #include "libsemigroups/transf.hpp"
 
 namespace libsemigroups {

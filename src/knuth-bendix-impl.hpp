@@ -40,12 +40,12 @@
 #include <unordered_set>  // for unordered_set
 #endif
 
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, KnuthBendi...
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/order.hpp"                 // for shortlex_compare
-#include "libsemigroups/report.hpp"                // for REPORT
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/report.hpp"        // for REPORT
 #include "libsemigroups/string.hpp"  // for detail::is_suffix, maximum_comm...
 #include "libsemigroups/timer.hpp"   // for detail::Timer
 #include "libsemigroups/types.hpp"   // for word_type

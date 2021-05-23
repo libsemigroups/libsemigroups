@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "libsemigroups/libsemigroups-exception.hpp"
+#include "libsemigroups/exception.hpp"
 #include "libsemigroups/report.hpp"
 
 namespace libsemigroups {

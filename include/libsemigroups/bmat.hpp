@@ -21,12 +21,12 @@
 
 #include <cstddef>  // for size_t
 
-#include "action.hpp"                   // for RightAction
-#include "adapters.hpp"                 // for ImageRightAction
-#include "bitset.hpp"                   // for BitSet, IsBitSet
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "matrix.hpp"                   // for BMat
+#include "action.hpp"     // for RightAction
+#include "adapters.hpp"   // for ImageRightAction
+#include "bitset.hpp"     // for BitSet, IsBitSet
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "matrix.hpp"     // for BMat
 
 namespace libsemigroups {
   // ////////////////////////////////////////////////////////////////////////

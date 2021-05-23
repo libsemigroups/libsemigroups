@@ -23,11 +23,11 @@
 #include <iterator>  // for forward_iterator_tag
 #include <thread>    // for thread::hardware_concurrency
 
-#include "constants.hpp"                // for UNDEFINED
-#include "containers.hpp"               // for DynamicArray2
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "runner.hpp"                   // for Runner
-#include "types.hpp"                    // for word_type, letter_type, tril
+#include "constants.hpp"   // for UNDEFINED
+#include "containers.hpp"  // for DynamicArray2
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "runner.hpp"      // for Runner
+#include "types.hpp"       // for word_type, letter_type, tril
 
 namespace libsemigroups {
 

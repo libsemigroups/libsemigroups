@@ -23,10 +23,10 @@
 
 #include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/bmat8.hpp"         // for BMat8
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-#include "libsemigroups/todd-coxeter.hpp"          // for word_type
-#include "libsemigroups/types.hpp"                 // for word_type
+#include "libsemigroups/todd-coxeter.hpp"  // for word_type
+#include "libsemigroups/types.hpp"         // for word_type
 #include "test-main.hpp"
 
 namespace libsemigroups {

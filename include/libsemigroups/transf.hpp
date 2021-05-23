@@ -40,14 +40,14 @@
 #include <unordered_set>     // for unordered_set
 #include <vector>            // for vector
 
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#include "adapters.hpp"                 // for Hash etc
-#include "bitset.hpp"                   // for BitSet
-#include "constants.hpp"                // for UNDEFINED, Undefined
-#include "hpcombi.hpp"                  // for HPCombi::Transf16
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"                    // for SmallestInteger
+#include "adapters.hpp"   // for Hash etc
+#include "bitset.hpp"     // for BitSet
+#include "constants.hpp"  // for UNDEFINED, Undefined
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "hpcombi.hpp"    // for HPCombi::Transf16
+#include "types.hpp"      // for SmallestInteger
 
 namespace libsemigroups {
 

@@ -30,10 +30,10 @@
 #include <type_traits>  // for false_type
 #include <utility>      // for hash
 
-#include "libsemigroups-config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"                   // for detail::to_string
+#include "config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "string.hpp"     // for detail::to_string
 
 namespace libsemigroups {
 

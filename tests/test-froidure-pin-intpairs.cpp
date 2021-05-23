@@ -21,8 +21,8 @@
 
 #include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/adapters.hpp"      // for complexity etc
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "test-main.hpp"
 
 namespace libsemigroups {

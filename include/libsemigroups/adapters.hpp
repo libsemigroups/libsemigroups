@@ -26,7 +26,7 @@
 #include <type_traits>  // for hash, is_same
 #include <vector>       // for std::vector
 
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
 
 namespace libsemigroups {
   // Adapters with no default implementation

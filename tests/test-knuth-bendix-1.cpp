@@ -48,12 +48,12 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/kbe.hpp"           // for KBE
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/report.hpp"                // for ReportGuard
-#include "libsemigroups/types.hpp"                 // for word_type
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;

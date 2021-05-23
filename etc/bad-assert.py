@@ -39,9 +39,9 @@ def bash(args, show=False):
 def is_valid_file(f):
     if not (f.endswith(".hpp") or f.endswith(".cpp")):
         return False
-    if f.endswith('libsemigroups-config.hpp'):
+    if f.endswith("config.hpp"):
         return False
-    return not f.endswith("libsemigroups-debug.hpp")
+    return not f.endswith("debug.hpp")
 
 
 @accepts(str)
@@ -144,13 +144,13 @@ for exclude in range(0, nr + 1):
             rep[-1] += " assert(x)"
         rep[-1] += "\n"
 
-    with open("include/libsemigroups-debug.hpp", "r") as f:
+    with open("include/debug.hpp", "r") as f:
         lines = f.readlines()
         for i in range(len(lines)):
             if lines[i] == "#define LIBSEMIGROUPS_ASSERT(x) assert(x)\n":
                 lines = lines[0:i] + rep + lines[i + 1 :]
 
-    with open("include/libsemigroups-debug.hpp", "w") as f:
+    with open("include/debug.hpp", "w") as f:
         f.writelines(lines)
 
     bash("make test_cong_intf -j6")
@@ -158,6 +158,6 @@ for exclude in range(0, nr + 1):
         print("Assertion number " + str(exclude) + " is the culprit!!!!")
         break
     else:
-        bash("git checkout include/libsemigroups-debug.hpp")
+        bash("git checkout include/debug.hpp")
 
 # os.popen('git reset --hard')

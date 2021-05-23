@@ -24,10 +24,10 @@
 
 #include <cstddef>  // for size_t
 
-#include "bmat8.hpp"                 // for BMat8
-#include "hpcombi.hpp"               // for HPCombi::BMat8
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
-#include "matrix.hpp"                // for BMat
+#include "bmat8.hpp"    // for BMat8
+#include "config.hpp"   // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "hpcombi.hpp"  // for HPCombi::BMat8
+#include "matrix.hpp"   // for BMat
 
 namespace libsemigroups {
 
